@@ -98,7 +98,13 @@ class MailGroup extends BEAppModel
 
 		return $areaGroups;
 	}
-	
+
+	/**
+	 * return url for publication
+	 * 
+	 * @param int $mail_group_id
+	 * @return string
+	 */
 	public function getPublicationUrlByGroup($mail_group_id) {
 		$pub_id = $this->field("area_id", array("id" => $mail_group_id));
 		$areaModel = ClassRegistry::init("Area");

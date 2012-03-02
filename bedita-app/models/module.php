@@ -270,7 +270,7 @@ class Module extends BEAppModel {
 	 * delete row on modules table, all module objects and object type
 	 * @param $id
 	 * @param array $setup
-	 * @return unknown_type
+	 * @return void
 	 */
 	public function unplugModule($id, array& $setup) {
 		if (!$this->delete($id)) {

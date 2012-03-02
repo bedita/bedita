@@ -39,7 +39,13 @@ class LangText extends BEAppModel
 	);
 
 	static $paginationOrder, $paginationDir;
-	
+
+	/**
+	 * Return translations of fields for an object
+	 * 
+	 * @param int $object_id
+	 * @return array
+	 */
 	public function langsForObject($object_id) {
 		$result = array();
 		$langs=$this->find('all',
@@ -53,8 +59,20 @@ class LangText extends BEAppModel
 		}
 		return $result;
 	}
-	
-	function findObjs($filter = null, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
+
+	/**
+	 * Return object translations performing a search by $filter, including paginating data.
+	 * 
+	 * @param array $filter
+	 * @param string $order
+	 * @param boolean $dir
+	 * @param int $page
+	 * @param int $dim
+	 * @param array $excludeIds
+	 * @throws BeditaException
+	 * @return array
+	 */
+	public function findObjs($filter = null, $order = null, $dir  = true, $page = 1, $dim = 100000, $excludeIds=array()) {
 
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
