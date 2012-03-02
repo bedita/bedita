@@ -405,9 +405,6 @@ class BEObject extends BEAppModel
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
 						}
 						
-						/**
-						 * Proposta x salvare le modifiche a title e description di oggetto relazionato se ci sono i dati sufficenti. (giangi) 
-						 */
 						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
 						if($modified && $obj_id) {
 							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
