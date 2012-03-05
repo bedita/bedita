@@ -57,18 +57,28 @@ A few files are just inside this folder:
 
 The root directory also contains the following:
 
+- addons
+  addon modules extending BEdita (models, shell scripts, components…)
+
 - bedita-app
   the core, deployed as a CakePHP application
-
-- bedita-db
-  SQL scripts needed to initialize the SQL database
 
 - cake
   contains the CakePHP framework: DO NOT manually upgrade CakePHP, since the distribution
   is verified with this particular version
-  
+
+- frontends
+  preferred directory for front end applications (front web sites)
+
+- modules
+  plugin modules (BEdita extension plugins)
+
+- setup
+  only used for setup web wizard, not part of the actual application
+
 - vendors
   third party libraries, i.e. Smarty template engine and others
+
 
 
 
