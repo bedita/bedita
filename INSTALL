@@ -10,8 +10,9 @@
 $Id$
 
 
-BEdita 3.2 come with a new web wizard install procedure, that covers all the necessary steps.
-If you have access to a command line shell, you can still use the classic procedure.
+BEdita 3.2 comes with a new web wizard install procedure.
+If you have access to a command line shell, you can still use the classic procedure (see
+below).
 
 
 
@@ -22,8 +23,8 @@ If you have access to a command line shell, you can still use the classic proced
 
 MINIMUM REQUIREMENTS
 
-This requirements should be satisfied. 
-Your server should have at least:
+Minimum requirements must be satisfied. 
+Your server should have at least have:
 
     * Apache 2
     * PHP 5.2 or newer and modules GD, Mbstring (Multibyte string), Gettext (recommended)
@@ -31,21 +32,22 @@ Your server should have at least:
 
 
 BEdita is a PHP application based on CakePHP framework. All third party libraries are bundled
-in the source package.
+with the source package.
 
 
 
 DOWNLOAD BEdita
 
-You can download the latest release (stable or latest development) at
-http://www.bedita.com/download
+You can download the latest release (stable or development) from:
+
+ http://www.bedita.com/download
 
 
 
 
 INSIDE THE PACKAGE
 
-The expanded package contains a root folder called "bedita", containing all files and folders. 
+The expanded package contains a root folder called "bedita" containing all files and folders. 
 A few files are just inside this folder:
 
 - INSTALL - this setup guide
@@ -53,7 +55,7 @@ A few files are just inside this folder:
 - CHANGES - is a log of latest changes
 
 
-The root folders also contains the following folders:
+The root directory also contains the following:
 
 - bedita-app
   the core, deployed as a CakePHP application
@@ -72,9 +74,10 @@ The root folders also contains the following folders:
 
 CREATE THE DATABASE
 
-Be sure you have a MySQL database you can use with BEdita. (PostgreSQL should work as well)
-This database will be completely emptied during setup.
-The SQL user should have GRANTS on data and structure (INSERT, DELETE... and CREATE, DROP...)
+Be sure you already have a MySQL database you can use with BEdita.
+PostgreSQL should work as well, but it's not intensively tested.
+The database will be completely EMPTIED during setup.
+The SQL User should have GRANTS on data and structure (INSERT, DELETE... and CREATE, DROP...).
 
 
 
@@ -89,7 +92,7 @@ The SQL user should have GRANTS on data and structure (INSERT, DELETE... and CRE
 - make sure you have all necessary information to access your database: server address,
   name of the database and credentials (username and password)
 - point your web browser to the relative URL address (www.example.com/bedita)
-- you should access a web wizard that will guide through the process of configuring BEdita
+- follow the steps: the wizard will guide you throughout the process of configuring BEdita
 
 
 
