@@ -6,6 +6,8 @@ Version 3.1.5 - ulmus
 		- handle "inverse" relations in obj save and in obj view
 		- delete inverse relations before insert
 		- fix "inverse" relations priority
+		- fixed PagesController::showObject() to get correctly objects in relations tab
+		- PagesController::showObject() remove empty lines
 	* #308 view categories in alphabetical order
 	* added rights and notes field to searchFields index
 	* added categories for galleries
@@ -13,8 +15,6 @@ Version 3.1.5 - ulmus
  Frontend changes:
 	* #304 category 'off' should not be visible in frontend + tag [same issue]
 	* set parentAuthorized = authorized in FrontendController::setCanonicalPath() for publication to avoid warning in FrontendController::section() method
-	* fixed PagesController::showObject() to get correctly objects in relations tab
-	* PagesController::showObject() remove empty lines
 
  Developer-visibile changes:
 	* fix some errors on user creation and unitest
