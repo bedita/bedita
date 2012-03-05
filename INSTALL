@@ -9,121 +9,157 @@
 
 $Id$
 
-BEdita is in constant development. there is not a graphical user interface for install
-procedure. Anyway, as long as you have access to the command line shell, it is quite
-simple. Instructions follow.
 
+BEdita 3.2 come with a new web wizard install procedure, that covers all the necessary steps.
+If you have access to a command line shell, you can still use the classic procedure.
+
+
+
+-------------------------------------------------------------------------------
+ BEFORE INSTALL
+-------------------------------------------------------------------------------
 
 
 MINIMUM REQUIREMENTS
 
 This requirements should be satisfied. 
-You will need a system with:
+Your server should have at least:
 
-    * PHP 5.2 or newer with modules gd, mbstring, gettext (recommended)
-    * MySQL 5.0.26 or newr version
     * Apache 2
-    * access to the command line shell
-
-All third party libraries needed by BEdita are bundled in the source package.
-
+    * PHP 5.2 or newer and modules GD, Mbstring (Multibyte string), Gettext (recommended)
+    * MySQL 5.0.26 or newer
 
 
-DOWNLOAD BEdita package
+BEdita is a PHP application based on CakePHP framework. All third party libraries are bundled
+in the source package.
 
-You may download the latest stable release at
+
+
+DOWNLOAD BEdita
+
+You can download the latest release (stable or latest development) at
 http://www.bedita.com/download
 
-NB: Unstable releases are also available but not covered by this document. 
 
 
 
-WHAT IS IN THE PACKAGE
+INSIDE THE PACKAGE
 
-The package contains everything needed to install BEdita.
+The expanded package contains a root folder called "bedita", containing all files and folders. 
+A few files are just inside this folder:
 
-Once exapanded, you will find a bunch of files in the root folder: between others,
-INSTALL is this setup guide, LICENSE.AGPL contains the AGPL license under which
-BEdita open is relased, CHANGES is a log of latest CHANGES.
+- INSTALL - this setup guide
+- LICENSE.AGPL - the AGPL license
+- CHANGES - is a log of latest changes
 
-You will also find the following folders:
+
+The root folders also contains the following folders:
 
 - bedita-app
-  is the main BEdita is the core application, deployed as a CakePHP application.
+  the core, deployed as a CakePHP application
 
 - bedita-db
-  SQL scripts that are needed to initialize the SQL database.
+  SQL scripts needed to initialize the SQL database
 
 - cake
-  contains the CakePHP framework: please do not manually upgrade CakePHP, since the
-  version bundled is the only one tested with current BEdita application.
+  contains the CakePHP framework: DO NOT manually upgrade CakePHP, since the distribution
+  is verified with this particular version
   
 - vendors
-  third party libraries, like Smarty template engine and phpThumb for image processing.
-  
+  third party libraries, i.e. Smarty template engine and others
 
 
-INSTALL
 
-Now we can proceed to the real setup! Just copy the bedita directory (the content of the 
-compressed source package) in a directory served by the web server. Now you have just two 
-simple thigs to do:
+CREATE THE DATABASE
 
-1. Create the database
+Be sure you have a MySQL database you can use with BEdita. (PostgreSQL should work as well)
+This database will be completely emptied during setup.
+The SQL user should have GRANTS on data and structure (INSERT, DELETE... and CREATE, DROP...)
 
-Just create an empty database on MySQL and define a mysql user having grants on data 
-(INSERT, DELETE, etc....) and on structure (CREATE, DROP, etc....)
 
-2. Launch the shell script bedita init
 
-To initialize the system correctly, BEdita has a PHP script that you have to launch 
-from the command line (a cake shell script, more precisely). Just go to the bedita 
-directory above on the shell and type:
 
-./cake.sh bedita init
+-------------------------------------------------------------------------------
+ WEB WIZARD INSTALL (recommended)
+-------------------------------------------------------------------------------
 
-The script first checks your configuration, if it finds something wrong or not properly 
-setup it will suggest you what to do. For instance if the database connection fails it 
-will tell you variable in wich file to check and edit.
+- download BEdita (see up)
+- unpack the package and copy the root folder "bedita" into a web reachable directory
+  on your server
+- make sure you have all necessary information to access your database: server address,
+  name of the database and credentials (username and password)
+- point your web browser to the relative URL address (www.example.com/bedita)
+- you should access a web wizard that will guide through the process of configuring BEdita
 
-HINT: edit $default array in bedita-app/config/database.php, have a look to cakePHP 
-documentation.
 
-Don't worry!
 
-There are just two files to edit, bedita-app/config/database.php for the database 
-connection (look at the CakePHP docs) and bedita-app/config/bedita.cfg.php where you
- have to define two fundamental variables for BEdita.
 
-    * the first one is $config['mediaRoot'] that indicates a directory on your filesystem 
-    where BEdita will put any file uploaded (through a form) on the syste. Veirfy that 
-    the webserver has the right permissions to read and write in this directory.
-    * the second is $config['mediaUrl'] that indicates the base URL from wich you can 
-    reach the uploaded files.
+-------------------------------------------------------------------------------
+ MANUAL INSTALL FROM COMMAND LINE
+-------------------------------------------------------------------------------
 
-The simplest place where you can create such a directory is inside bedita-app/webroot. 
-Suppose you have created there a media directory the above variables will look like these:
 
-$config['mediaRoot'] = "path_to_bedita_".DS."bedita-app".DS."webroot".DS."media";
+1. Configure the database credentials in database.php
 
-$config['mediaUrl'] = "http://www.example.com/bedita/media";
+CD to the "config" directory: this directory is located inside the "bedita-app" folder.
+Edit the file "database.php" and insert proper values for elements in the $default array.
+Usually a few basic values are needed for host, login, password and database.
 
-DS stands for the generic directory separator that will be "/" for *nix systems 
-(Linux, McOSX,...) ot "\" for Windows systems.
 
- You can obviously have more complex configurations creating the media directory 
- somewhere else defining a virtual host that points to it (recommended for production systems).
 
-Once the system is correclty configured the script wil create and initialize the database. 
-At last it will ask if you want to check the status of BEdita, just press y and you will 
-receive a short summary of your configuration.
+2. Configure MediaRoot and MediaURL
 
-Be aware of the permissions on bedita-app/tmp directory that has to be recursively writable 
-from your webserver.
-And now?
+This parameters will tell BEdita where multimedia files are stored and how to reach them.
+You may enter proper values editing the file "bedita.cfg.php" which is located in the same
+"config" folder (see 1.)
 
-Open your browser and write on the address bar the location that points to your BEdita 
-installation,
+$config['mediaRoot'] indicates a directory on your filesystem where BEdita will put any file
+    uploaded. Verify that the webserver has permissions to read and write in side this
+    directory.
 
-You will redirected to the login page! Type bedita as username and also as password
- et voilà...have fun with BEdita!!
+$config['mediaUrl'] indicates the base URL to reach the same folder in a web context
+
+
+The simplest scenario is to create this directory inside bedita-app/webroot.
+Suppose you have created a directory called "media" here, than the following example values
+should be used:
+
+$config['mediaRoot'] = [system path to bedita] . DS . "bedita-app" . DS . "webroot" . DS . "media";
+$config['mediaUrl']  = "[http://www.example.com/bedita]/media";
+
+Just substitute the values inside the [ ]. 
+DS is used by CakePHP (and BEdita) to define a generic directory separator.
+
+
+
+3. Verify filesystem permissions
+
+The directory defined in $config['mediaRoot'] must be writable by the web server.
+Verify also that the bedita-app/tmp directory is recursively writable by the web server (this
+directory contains caches and logs).
+
+
+
+3. Shell script bedita init
+
+Tha database and BEdita need to be initialized.
+On the command line cd to your install directory (inside the "bedita" folder, containing the
+file "cake.sh").
+type and execute the following command:
+
+ ./cake.sh bedita init
+
+At the end of the script you will be asked to command a new system status check. Just press "y".
+
+
+
+4. Access the system
+
+Point your browser to the location of your BEdita install.
+You will redirected to the login page! Use the following credentials for the very first access:
+username: bedita
+password: bedita
+
+Just change your password in the Admin module.
+
+That's it.
