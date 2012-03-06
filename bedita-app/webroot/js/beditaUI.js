@@ -675,8 +675,14 @@ function openAtStart(defaultOpen) {
 	if (openAtStart == null) {
 		var openAtStart = defaultOpen;
 	}
-	$(openAtStart).prev(".tab").BEtabstoggle();
-	
+	var openTmp = openAtStart.split(',');
+	for(var i=0; i < openTmp.length; i++) {
+		// avoid bad id selector
+		var tabId = openTmp[i];
+		if(tabId != '#' && tabId.length > 1) {
+			$(tabId).prev(".tab").BEtabstoggle();
+		}
+	}
 
 	$(window).unload(function(){
 		openAtStart = new Array();
