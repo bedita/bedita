@@ -15,8 +15,7 @@
 function smarty_modifier_parse_links($string, $target="_blank") {
 
     if ( empty($string)) {
-        $smarty->trigger_error("modifier_parse_links: missing argument");
-        return;
+        throw new SmartyException("modifier_parse_links: missing argument");
     }
 
 	// define vars

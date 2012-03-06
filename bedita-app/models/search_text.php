@@ -58,6 +58,9 @@ class SearchText extends BEAppModel
 		$model->bviorCompactResults = $bviorCompactResults ;
 		
 		$searchFields = $this->getSearchFields($model);
+		if(empty($data["id"])) {
+			$data["id"] = $model->{$model->primaryKey};
+		}
 		$this->saveSearchTexts($searchFields, $data);
 		return true ;
 	}

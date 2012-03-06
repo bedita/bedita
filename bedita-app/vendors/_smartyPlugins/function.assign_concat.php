@@ -12,8 +12,7 @@ function smarty_function_assign_concat($params, &$smarty)
 {
 	extract($params);
     if (empty($params["var"])) {
-        $smarty->trigger_error("assign_concat: missing 'var' parameter");
-        return;
+        throw new SmartyException("assign_concat: missing 'var' parameter");
     }
 	$var = $params["var"] ;
 	unset($params["var"]) ;

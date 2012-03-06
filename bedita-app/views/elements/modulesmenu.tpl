@@ -19,7 +19,7 @@
 {/strip}
 </nav>
 
-	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	action="{$html->url('/')}{$moduleName|default:''}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
+	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	action="{$html->url('/')}{$moduleName|default:''}/{$view->action}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
 	<input type="text" placeholder="{t}search{/t}" name="searchstring" value="{$stringSearched|default:""}"/>
 	<input type="submit" value="{t}GO{/t}"/>
 	</form>

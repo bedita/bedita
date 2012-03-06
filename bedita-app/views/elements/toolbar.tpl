@@ -27,7 +27,7 @@
 			
 			{if !empty($stringSearched)}
 			
-				&nbsp; maching the query: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
+				&nbsp; {t}matching the query{/t}: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
 				
 			{/if}
 			

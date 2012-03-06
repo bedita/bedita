@@ -16,14 +16,16 @@
 
 function smarty_function_edit_url_query($params, &$smarty) {
 
-	if (!array_key_exists ("url", $params))
-		$smarty->trigger_error("editUrlQuery: missing url argument", E_USER_NOTICE);
+	if (!array_key_exists ("url", $params)) {
+		trigger_error("editUrlQuery: missing url argument", E_USER_NOTICE);
+	}
 
-	if (!($params["url"])) $smarty->trigger_error("editUrlQuery: url argument is empty", E_USER_NOTICE);
-	else
+	if (!($params["url"])) {
+		trigger_error("editUrlQuery: url argument is empty", E_USER_NOTICE);
+	} else {
 		// parse url
 		$parsed = parse_url($params["url"]);		
-
+	}
 	// define
 	$query = array();
 	$queryString = "";

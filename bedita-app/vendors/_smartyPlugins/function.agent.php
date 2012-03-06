@@ -40,8 +40,7 @@ function smarty_function_agent($params, &$smarty)
     extract($params);
 	
     if (empty($var)) {
-        $smarty->trigger_error("assign: missing 'var' parameter");
-        return;
+        throw new SmartyException("assign: missing 'var' parameter");
     }
 	
 	$agent = array(

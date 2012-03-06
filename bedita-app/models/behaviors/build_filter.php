@@ -39,6 +39,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	protected $startQuote = ""; // internal use: start quote
 	protected $endQuote = ""; // internal use: end quote
 	private $model = "";
+	private $driver = "";
 	
 	
 	function setup(&$model, $settings=array()) {
@@ -47,6 +48,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$db = ConnectionManager::getDataSource($model->useDbConfig);
 			$this->startQuote = $db->startQuote;
 			$this->endQuote = $db->endQuote;
+			$this->driver = $db->config["driver"];
     	}
 	}
 	
@@ -195,22 +197,39 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->from = " LEFT OUTER JOIN {$s}object_categories{$e} AS {$s}ObjectCategory{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectCategory{$e}.{$s}object_id{$e}
 				LEFT OUTER JOIN {$s}categories{$e} AS {$s}Category{$e} ON {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e} AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL"
 				. $this->from;
+		$this->group .= ", {$s}Category{$e}.{$s}name{$e}";
 	}
 	
 	private function queryFilter($s, $e, $value) {
-		// #MYSQL
 		App::import('Sanitize');
 		$value = Sanitize::html($value, array('remove' => true));
-		$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
-		$this->from .= ", search_texts AS SearchText";
-		$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
-		$this->order .= "points DESC ";
+		if($this->driver === "mysql") {
+			// #MYSQL
+			$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
+			$this->from .= ", search_texts AS SearchText";
+			$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
+			$this->order .= "points DESC ";
+		} else if ($this->driver === "postgres"){
+			$expr = explode(" ", $value);
+			$ts = "";
+			for($i = 0; $i < count($expr); $i++) {
+				if(!empty($expr[$i])) {
+					$ts .= (empty($ts) ? "" : " | ") . trim($expr[$i]);
+				}
+			}
+			// #POSTGRES
+			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
+			$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
+			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
+			$this->order .= "points DESC ";
+			$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
+		}
 	}
 	
 	private function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", {$s}categories{$s} AS {$s}Category{$s}, {$s}object_categories{$s} AS {$s}ObjectCategory{$s}";
+			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
 						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
 						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}

@@ -40,7 +40,7 @@ $(document).ready(function(){
 	</tr>
 	<tr>
 		<td><label>{$sys.db}</label></td>
-		<td>server: {$sys.dbServer} - client: {$sys.dbClient} - host: {$sys.dbHost} - db: {$sys.dbName}</td>
+		<td>server: {$sys.dbServer|default:'?'} - client: {$sys.dbClient|default:'?'} - host: {$sys.dbHost} - db: {$sys.dbName}</td>
 	</tr>
 	<tr>
 		<td><label>Smarty</label></td>

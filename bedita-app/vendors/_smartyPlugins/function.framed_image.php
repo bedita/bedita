@@ -90,14 +90,12 @@ function smarty_function_framed_image ($params, &$smarty)
 
 	if ( empty($file) )
 	{
-		$smarty->trigger_error ($pluginName . ": missing 'file' parameter", E_USER_NOTICE);
-		return;
+		throw new SmartyException($pluginName . ": missing 'file' parameter", E_USER_NOTICE);
 	}
 
 	if ( empty($width) && empty($height) )
 	{
-		$smarty->trigger_error ($pluginName . ": missing 'height' or 'width' parameter, at least one is needed", E_USER_NOTICE);
-		return;
+		throw new SmartyException($pluginName . ": missing 'height' or 'width' parameter, at least one is needed", E_USER_NOTICE);
 	}
 
 

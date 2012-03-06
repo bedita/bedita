@@ -71,7 +71,7 @@ class BeUploadToObjComponent extends Object {
 			$data['mediatype'] = $this->params['form']['mediatype'];
 		}
 		
-		$override = (isset($this->params['form']['override'])) ? ((boolean)$this->params['form']['override']) : false ;
+		$forceupload = (isset($this->params['form']['forceupload'])) ? ((boolean)$this->params['form']['forceupload']) : false ;
 
 		if (empty($data['title']))
 			$data['title'] = $data['original_name'];
@@ -84,7 +84,7 @@ class BeUploadToObjComponent extends Object {
 		unset($data['tmp_name']) ;
 		unset($data['error']) ;
 
-		$result = $this->BeFileHandler->save($data) ;
+		$result = $this->BeFileHandler->save($data, $forceupload) ;
 		
 		return $result;
 	}

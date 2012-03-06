@@ -7,6 +7,7 @@ Version 3.2.beta - populus
 		- change menu labels
 	* #283 basic XML export/import from publications module
 		- import/export filter models
+		- xml import, allow import of files already present
 	* #268 admin: configuration page
 		- lang selection layout
 		- added button "test smtp"
@@ -17,6 +18,10 @@ Version 3.2.beta - populus
 	* #210 frontend menu - backend interface
 		- trees.menu not nullable, view in publications module
 		- icon for hidden sections
+		- save trees.menu user selection ("visibility" checkbox)
+		- Publication module - list sections: fixed wrong label and icon visibility conditions for hidden sections
+		- added "menuhidden" class to left side tree items
+		- init data publication/section with menu = 1
 	* #233 highlight objects with permissions
 		- wrong protected class set to publications fixed
 		- locked icon on .protected elements in .publishingtree
@@ -32,7 +37,9 @@ Version 3.2.beta - populus
 		- core modules management (on-off)
 	* #296 Create new Users module to manage users and groups
 		- immutable groups + asc desc in user list
+		- added search and pagination toolbar in Users module
 	* #150 ui: show ascending/descending order for columns object lists
+	* #308 - view categories in alphabetical order
 	* other:
 		- editor css
 		- ckeditor
@@ -70,8 +77,19 @@ Version 3.2.beta - populus
 	* removed space in .htaccess
 	* ui: fix js bug - write open fieldset cookie only if "id" is set
 	* fixed PagesController::showObject() to get correctely objects in relations tab
-
-
+	* fix on search text save for new sections
+	* fix search bug: don't use "id" in order by! - trunk
+	* remove unused model
+	* New HTML5 dummy fronted (based on http://html5boilerplate.com/)
+	* Added ignore rules for /tmp in html5.example.com
+	* added tag {t} in "matching the query" string
+	* generalized search form action attribute using $view->action
+	* #265 - use and handle SmartyException
+	* #248 - fix translations and multimedia on postgres
+	* #287
+		- postgres search working (quite...) 
+		- fix multiple results in postgres search (with AND)
+		- fix postgres search like mysql - with OR
 
 
 Version 3.2.alpha - populus

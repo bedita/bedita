@@ -1,11 +1,6 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".mainfull .modules *").unbind("click");
-	$("#plugged input[type=button]").click(function() {
-		var form = $(this).parents("form");
-		form.attr("action", $(this).attr("rel"));
-		form.submit();
-	});
 })
 </script>
 
@@ -48,18 +43,20 @@ $(document).ready(function() {
 	<ul class="modules block" id="plugged">
 	{foreach from=$moduleList key=k item=mod}
 		<li class="{$mod.name} {$mod.status}">
-			<form action="{$html->url('/admin/plugModule')}" method="post">
+			<form action="{$html->url('/admin/toggleModule')}" method="post">
 			{t}{$mod.label}{/t}
 			
-			<br/><br/>
-			<input type="hidden" value="{$mod.id}" name="data[id]"/>
-			<input type="hidden" value="{$mod.name}" name="pluginName"/>
-			{if $mod.status == "on"}
-				<input type="hidden" value="off" name="data[status]"/>
-				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn off{/t}"/>
-			{elseif $mod.status == "off"}
-				<input type="hidden" value="on" name="data[status]"/>
-				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn on{/t}"/>
+			{if $mod.name != "admin" && $mod.name != "users"}
+				<br/><br/>
+				<input type="hidden" value="{$mod.id}" name="data[id]"/>
+				<input type="hidden" value="{$mod.name}" name="pluginName"/>
+				{if $mod.status == "on"}
+					<input type="hidden" value="off" name="data[status]"/>
+					<input type="submit" value="{t}turn off{/t}"/>
+				{elseif $mod.status == "off"}
+					<input type="hidden" value="on" name="data[status]"/>
+					<input type="submit" value="{t}turn on{/t}"/>
+				{/if}
 			{/if}
 			</form>
 		</li>

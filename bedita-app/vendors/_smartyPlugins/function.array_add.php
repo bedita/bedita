@@ -14,8 +14,7 @@
 function smarty_function_array_add($params, &$smarty)
 {
     if (empty($params["var"])) {
-        $smarty->trigger_error("assign_array: missing 'var' parameter");
-        return;
+        throw new SmartyException("assign_array: missing 'var' parameter");
     }
 	$var = @$params["var"] ;
     unset($params["var"]);

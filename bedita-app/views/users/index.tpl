@@ -22,7 +22,6 @@
 
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
-		<h2>{t}System users{/t}</h2>
 		{include file="./inc/toolbar.tpl" label_items='users'}
 	</div>
 </div>

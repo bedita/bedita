@@ -42,7 +42,18 @@ class UsersController extends ModulesController {
 	protected $moduleName = 'users';
 	
 	function index() {
-		$this->set('users', $this->paginate('User'));
+		$conditions = array();
+		if (!empty($this->params["form"]["searchstring"]) && strlen($this->params["form"]["searchstring"]) > 3) {
+			$conditions = array(
+				"OR" => array(
+					"User.userid LIKE" => $this->params["form"]["searchstring"] . "%",
+					"User.realname LIKE" => "%" . $this->params["form"]["searchstring"] . "%",
+					"User.email LIKE" => "%" . $this->params["form"]["searchstring"] . "%"
+				)
+			);
+			$this->set("stringSearched", $this->params["form"]["searchstring"]);
+		}
+		$this->set('users', $this->paginate('User', $conditions));
 	}
 	
 	function showUsers() {
@@ -253,7 +264,12 @@ class UsersController extends ModulesController {
 		return $groups;
 	}
 
-	function groups() { 	
+	function groups() {
+		$conditions = array();
+		if (!empty($this->params["form"]["searchstring"]) && strlen($this->params["form"]["searchstring"]) > 3) {
+			$this->paginate["Group"]["conditions"] = array("Group.name LIKE" => $this->params["form"]["searchstring"] . "%");
+			$this->set("stringSearched", $this->params["form"]["searchstring"]);
+		}
 		$this->set('groups', $this->loadGroups());
 		$this->set('group',  NULL);
 		$this->set('modules', $this->allModulesWithFlag());

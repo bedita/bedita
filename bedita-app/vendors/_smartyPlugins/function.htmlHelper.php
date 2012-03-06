@@ -15,8 +15,7 @@ function smarty_function_htmlHelper($params, &$smarty)
 	extract($params);
 	
     if (@empty($fnc)) {
-        $smarty->trigger_error("function_htmlHelper: missing 'fnc' argument");
-        return ;
+       throw new SmartyException("function_htmlHelper: missing 'fnc' argument");
     }
     if (@empty($args)) $args = "" ;
 	

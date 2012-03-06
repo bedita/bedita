@@ -12,14 +12,12 @@ function smarty_function_BE_install_isPresent($params, &$smarty)
 {
 	extract($params);
     if (empty($var)) {
-        $smarty->trigger_error("BE_install_isPresent: missing 'var' parameter");
-        return;
-    }
+        throw new SmartyException("BE_install_isPresent: missing 'var' parameter");
+   }
 
     if (empty($value)) {
-        $smarty->trigger_error("BE_install_isPresent: missing 'value' parameter");
-        return;
-    }
+        throw new SmartyException("BE_install_isPresent: missing 'value' parameter");
+     }
 	
     $smarty->assign($var, BE_install_present($value));
 }

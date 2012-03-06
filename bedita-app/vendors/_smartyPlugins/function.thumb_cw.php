@@ -300,7 +300,7 @@ function smarty_function_thumb_imp($params, &$smarty) {/*{{{*/
 	if (!file_exists($params['file']))
 	{
 		// XHO: nopn da fatal error se l'immagine non esiste, ma un notice
-		$smarty->trigger_error ( $pluginName . ": thumb: image file does not exist '" . $params['file'] . "'", E_USER_NOTICE ) ;
+		trigger_error ( $pluginName . ": thumb: image file does not exist '" . $params['file'] . "'", E_USER_NOTICE ) ;
 		//$smarty->_trigger_fatal_error("thumb: image file does not exist");return;
 	}
 	if (empty($params['link'])) $params['link'] = true;

@@ -40,8 +40,8 @@ $(document).ready(function() {
 				
 				<td class="checklist">
 					
-					{if ($s.menu == 0)}
-					<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconHidden.png" style="height:30px; vertical-align:top;">
+					{if $s.menu == 0}
+					<img title="{t}hidden from menu and canonical path{/t}" src="{$html->webroot}img/iconHidden.png" style="height:30px; vertical-align:top;">
 					{/if}
 					
 					{if !empty($s.start_date) && ($s.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}

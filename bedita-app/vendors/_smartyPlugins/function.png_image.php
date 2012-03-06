@@ -28,8 +28,7 @@ function smarty_function_png_image($params, &$smarty)
   extract($params);
 	  
   if (empty($src)) {
-    $smarty->trigger_error("assign_array: missing 'src' parameter");
-    return;
+    throw new SmartyException("assign_array: missing 'src' parameter");
   }
   if (empty($height))
     $height = 0;
