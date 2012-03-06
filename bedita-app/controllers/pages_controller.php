@@ -106,11 +106,9 @@ class PagesController extends AppController {
 			
 			$relTypes = BeLib::getObject("BeConfigure")->mergeAllRelations();
 			$usedRelation = $relation;
-			//$inverse = false;
 			if(empty($relTypes[$relation])) {
 				foreach ($relTypes as $n => $r) {
 					if(!empty($r["inverse"]) && $r["inverse"] == $relation) {
-						//$inverse = true;	
 						$usedRelation = $n;
 					}
 				}
@@ -163,7 +161,18 @@ class PagesController extends AppController {
 					if(!is_array($addLeft)) {
 						$addLeft = array($addLeft);
 					}
-					$ot = array_unique(array_merge($addRight, $addLeft));
+					
+					// if relation has not "inverse" use left and right types
+					if(empty($relTypes[$usedRelation]["inverse"])) {
+						$ot = array_unique(array_merge($addRight, $addLeft));
+					} else {
+						// otherwise use "right" types on "direct" relations, "left" types on "inverse" relations
+						if($usedRelation === $relation) {
+							$ot = $addRight;
+						} else {
+							$ot = $addLeft;
+						}
+					}
 				}
 
 				$objectTypeIds = array();
