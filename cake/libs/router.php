@@ -853,7 +853,7 @@ class Router {
 			}
 			$output = str_replace('//', '/', $base . '/' . $output);
 		} else {
-			if (((strpos($url, '://')) || (strpos($url, 'javascript:') === 0) || (strpos($url, 'mailto:') === 0)) || (!strncmp($url, '#', 1))) {
+			if (((strpos($url, '://')) !== false || (strpos($url, 'javascript:') === 0) || (strpos($url, 'mailto:') === 0)) || (!strncmp($url, '#', 1))) {
 				return $url;
 			}
 			if (empty($url)) {
@@ -948,7 +948,14 @@ class Router {
 
 		if (!empty($named)) {
 			foreach ($named as $name => $value) {
-				$output .= '/' . $name . $this->named['separator'] . $value;
+				if (is_array($value)) {
+					$flattend = Set::flatten($value, '][');
+					foreach ($flattend as $namedKey => $namedValue) {
+						$output .= '/' . $name . "[$namedKey]" . $this->named['separator'] . $namedValue;
+					}
+				} else {
+					$output .= '/' . $name . $this->named['separator'] . $value;
+				}
 			}
 		}
 		return $output;
