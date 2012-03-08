@@ -219,6 +219,10 @@ class DeployShell extends BeditaBaseShell {
 		
     }
 
+    public function up() {
+		$this->svnUpdate();
+    }
+    
     public function svnUpdate() {
     	
 		$sel = array();
@@ -258,7 +262,7 @@ class DeployShell extends BeditaBaseShell {
 			}
 		}
 		$count++;
-		$this->out("$count. quit");
+		$this->out("$count. or 'q' quit");
 		$this->hr();
 		
     	$selected = $sel[1];
@@ -266,7 +270,7 @@ class DeployShell extends BeditaBaseShell {
 		if(!empty($res)) {
 			if($res >=  1 && $res < $count) {
 				$selected = $sel[$res];
-			} else if($res == $count){
+			} else if($res == $count || $res === 'q'){
 				$this->out("Bye");
 				return;
 			} else {
@@ -291,6 +295,54 @@ class DeployShell extends BeditaBaseShell {
 		$this->svnUpdate();
     }
 
+    public function upgradeDb() {
+
+    	$this->out("BEdita upgrade Db available only from 3.1 to 3.2");
+		$this->updateVersion();
+		include APP . 'config' . DS . 'bedita.version.php';
+		$this->out("Current version: " . $config['Bedita.version']);
+		$version = substr($config['Bedita.version'], 0, 3);
+		if($version !== '3.2') {
+			$this->out("Not able to upgrade to '" . $version . "'. Bye.");
+			return;
+		}
+		
+		$oldVersion = "3.1";
+		
+		$dbCfg = 'default';
+		$db = ConnectionManager::getDataSource($dbCfg);
+    	$this->out("Updating bedita db config: " . $db->config['driver'] . 
+    		" [host=". $db->config['host']. ", database=" . $db->config['database'] . "]");
+		$res = $this->in("ACHTUNG! Database " . $db->config['database'] . " will be upgraded, proceed? [y/n]");
+		if($res != "y") {
+       		$this->out("Bye");
+			return;
+		}
+		$this->hr();
+
+		App::import('Component', 'Transaction');
+		$transaction = new TransactionComponent($dbCfg);
+		$transaction->begin();
+        
+		$upSqlPath = APP . 'config' . DS . 'sql' . DS . 'upgrade' . DS;
+		$sqlData = $upSqlPath . "0-" . $oldVersion . "-to-" . $version . "-data.sql";
+		$sqlSchema = $upSqlPath . "1-" . $oldVersion . "-to-" . $version . "-schema.sql";
+		
+		App::import('Model', 'BeSchema');
+		$beSchema = new BeSchema();
+		$this->out("Update data from $sqlData");
+		$beSchema->executeQuery($db, $sqlData);
+		$this->out("Update schema from $sqlSchema");
+		$beSchema->executeQuery($db, $sqlSchema);
+		
+		$this->out("$dbCfg database updated");
+		$transaction->commit();
+		
+    	$this->loadTasks();
+    	$this->Cleanup->execute();
+    }
+    
+    
     function help() {
         $this->out('Available functions:');
         $this->out('1. release: creates bedita release from svn, use custom script with -script, input args in ini file through -input');
@@ -299,7 +351,9 @@ class DeployShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
-        $this->out('3. svnUpdate: updates from svn backend or frontends, with cleanup, version update...');
+        $this->out('3. svnUpdate/up: updates from svn backend or frontends, with cleanup, version update...');
+  		$this->out(' ');
+        $this->out('4. upgradeDb: upgrade bedita database to newest version');
   		$this->out(' ');
     }
 }
