@@ -134,8 +134,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	}
 	else if ( !is_readable($_imageInfo['filepath']) )
 	{
-		$smarty -> trigger_error ( $pluginName . ": unable to read '" . $_imageInfo['path'] . "'", E_USER_NOTICE ) ;
-		return;
+		throw new SmartyException($pluginName . ": unable to read '" . $_imageInfo['path'] . "'", E_USER_NOTICE ) ;
 	}
 
 
@@ -144,8 +143,7 @@ function smarty_function_framed_image ($params, &$smarty)
 	{
 		if ( !$_image_data =@ getimagesize($_imageInfo['path']) )
 		{
-			$smarty -> trigger_error ( $pluginName . ": '" . $_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
-			return;
+			throw new SmartyException($pluginName . ": '" . $_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
 		}
 		
 		// set up the rest of image info array

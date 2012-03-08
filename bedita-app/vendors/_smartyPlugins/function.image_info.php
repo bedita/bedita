@@ -72,18 +72,15 @@ function smarty_function_image_info ($params, &$smarty)
 	{
 		if ( !file_exists($_image_path) )
 		{
-			$smarty -> trigger_error ( $pluginName . ": unable to find '$_image_path'", E_USER_NOTICE ) ;
-			return;
+			throw new SmartyException($pluginName . ": unable to find '$_image_path'", E_USER_NOTICE ) ;
 		}
 		else if ( !is_readable($_image_path) )
 		{
-			$smarty -> trigger_error ( $pluginName . ": unable to read '$_image_path'", E_USER_NOTICE ) ;
-			return;
+			throw new SmartyException($pluginName . ": unable to read '$_image_path'", E_USER_NOTICE ) ;
 		}
 		else
 		{
-			$smarty -> trigger_error ( $pluginName . ": '$_image_path' is not a valid image file", E_USER_NOTICE ) ;
-			return;
+			throw new SmartyException($pluginName . ": '$_image_path' is not a valid image file", E_USER_NOTICE ) ;
 		}
 	}
 
