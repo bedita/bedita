@@ -14,6 +14,9 @@ $rel["removeDirs"]= array(
 	"bedita-doc".DS."model",
 	"bedita-doc".DS."view",
 	"bedita-app".DS."webroot".DS."js".DS."wymeditor",
+	"bedita-app".DS."webroot".DS."js".DS."tiny_mce",
+	"bedita-app".DS."webroot".DS."js".DS."ckeditor".DS."_source",
+	"bedita-app".DS."webroot".DS."js".DS."ckeditor".DS."_samples",
 	"bedita-db",
 	"cake".DS."tests".DS."cases",
 	"cake".DS."tests".DS."fixtures",
@@ -38,6 +41,7 @@ $rel["renameFiles"]= array(
 	"examples".DS."debug.example.com".DS."config".DS."core.php.sample" => "examples".DS."debug.example.com".DS."config".DS."core.php",
 	"examples".DS."site.example.com".DS."config".DS."core.php.sample" => "examples".DS."site.example.com".DS."config".DS."core.php",
 	"examples".DS."dummy.example.com".DS."config".DS."core.php.sample" => "examples".DS."dummy.example.com".DS."config".DS."core.php",
+	"examples".DS."html5.example.com".DS."config".DS."core.php.sample" => "examples".DS."html5.example.com".DS."config".DS."core.php",
 	"examples".DS."wp.example.com".DS."config".DS."core.php.sample" => "examples".DS."wp.example.com".DS."config".DS."core.php"
 );
 
