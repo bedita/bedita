@@ -15,6 +15,7 @@
 		<input name="data[type]" type="radio" />HTML5 &nbsp;
 		<input name="data[type]" type="radio" />ePUB3 &nbsp;
 		<input name="data[type]" type="radio" value="xml" checked="checked" />XML &nbsp;
+		<input name="data[type]" type="radio" value="zxml" />ZXML &nbsp;
 		<input name="data[type]" type="radio" />PDF &nbsp;
 		<input name="data[type]" type="radio" />RTF &nbsp;
 		<hr />

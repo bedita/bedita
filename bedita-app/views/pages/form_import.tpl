@@ -19,6 +19,7 @@
 	<div>
 		<b>select source type:</b> &nbsp;&nbsp;&nbsp;
 		<input name="data[type]" type="radio" value="xml" checked="checked" />XML &nbsp;
+		<input name="data[type]" type="radio" value="zxml" />ZXML &nbsp;
 		<input name="data[type]" type="radio" />ePUB3 &nbsp;
 		<input name="data[type]" type="radio" />XJson &nbsp;
 		<input name="data[type]" type="radio" />autodetect
