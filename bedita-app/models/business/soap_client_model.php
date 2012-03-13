@@ -98,7 +98,12 @@ class SoapClientModel extends BEAppModel
 		if($this->useNuSoap()) {
 			$res = $this->client->call($method, $params);
 		} else {
+
+			try {
 			$res = call_user_func_array(array($this->client, $method), $params);
+			} catch (Exception $e) {
+				$this->log($e->getMessage());
+		}
 		}
 
 		if(!empty($this->soapParams["debugMode"])) {
