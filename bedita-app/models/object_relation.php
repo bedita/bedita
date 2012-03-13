@@ -55,7 +55,47 @@ class ObjectRelation extends BEAppModel
 		}
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$switch}', {$priority})";
 		return $this->query($q);
+	}
+
+	/**
+	 * Create direct and inverse relation using $switch and $inverseSwitch names
+
+	 * @param int $id, left relation element id
+	 * @param int $objectId, right relation element id
+	 * @param string $switch, direct name
+	 * @param int $priority
+	 * @param string $inverseSwitch, inverse name
+	 */
+	public function createRelationAndInverse ($id, $objectId, $switch, $inverseSwitch = null, $priority = null) {
+
+		if($priority == null) {
+			$rel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$id} AND switch='{$switch}'");
+			$priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
+		}
+		// #CUSTOM QUERY 
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$id}, {$objectId}, '{$switch}', {$priority})";
+		$res = $this->query($q);
+		if($res === false) {
+			return $res;
+		}
 		
+		if($inverseSwitch == null) {
+			$inverseSwitch = $switch;
+		}
+		
+		$inverseRel = $this->query("SELECT priority FROM object_relations WHERE id={$objectId}
+									AND object_id={$id} AND switch='{$inverseSwitch}'");
+							
+		if (empty($inverseRel[0]["object_relations"]["priority"])) {
+			// #CUSTOM QUERY
+			$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$objectId} AND switch='{$inverseSwitch}'");
+			$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+		} else {
+			$inversePriority = $inverseRel[0]["object_relations"]["priority"];
+		}						
+		// #CUSTOM QUERY
+		$q= "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority})" ;
+		return $this->query($q);	
 	}
 
 	/**
@@ -88,5 +128,22 @@ class ObjectRelation extends BEAppModel
 		}
 		return $this->query($qReverse);
 	}
+	
+	/**
+	 * 
+	 * check existence of relation between
+	 * @param unknown_type $id
+	 * @param unknown_type $objectId
+	 * @param unknown_type $switch
+	 */
+	public function relationPriority($id, $objectId, $switch) {
+		$pri = $this->query("SELECT priority FROM object_relations WHERE id={$id}
+									AND object_id={$objectId} AND switch='{$switch}'");
+		if(empty($pri[0]["object_relations"]["priority"])) {
+			return false;
+		}
+		return $pri[0]["object_relations"]["priority"];
+	}
+	
 }
 ?>
