@@ -531,13 +531,9 @@ class DbadminShell extends BeditaBaseShell {
 	
 	public function updateStreamFields() {
 		$streamModel = ClassRegistry::init("Stream");
-		$streams = $streamModel->find("all");
-		if (!empty($streams)) {
-			foreach ($streams as $s) {
-				if ($streamModel->updateStreamFields($s["Stream"]["id"])) {
-					$this->out("stream ".$s["Stream"]["id"]. " updated");
-				}
-			}
+		$streamsUpdated = $streamModel->updateStreamFields();
+		foreach ($streamsUpdated as $s) {
+			$this->out("stream ".$s["Stream"]["id"]. " updated");
 		}
 	}
 

@@ -53,85 +53,90 @@ class Stream extends BEAppModel
 	/**
 	 * update fields in streams table
 	 * 
-	 * @param int $id
-	 * @return boolean (true if row is updated, false if not)
+	 * @param int $id, if empty update all streams
+	 * @return array of updated streams (empty array if no array updated)
 	 */
-	public function updateStreamFields($id) {
+	public function updateStreamFields($id = null) {
 		
-		if (empty($id)) {
-			throw new BeditaException(__("Missing stream id"));	
+		$conditions = array();
+		if (!empty($id)) {
+			$conditions = array("id" => $id);
 		}
 		
 		$conf = Configure::getInstance();
 		
-		$stream = $this->find("first", array(
-			"conditions" => array("id" => $id)
+		$streams = $this->find("all", array(
+			"conditions" => $conditions
 		));
 		
-		if (!empty($stream["Stream"]["uri"])) {
-			$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
-			
-			$uri = $stream["Stream"]["uri"];
-			$hasFile = file_exists($conf->mediaRoot . $uri);
-			if (!$isURL && !$hasFile) {
-				return false;
-			}
-			
-			if($hasFile) {
-				// check & correct file name
-				$oldName = $stream["Stream"]["name"];
-				$p = strrpos($stream["Stream"]["name"], ".");
-				if($p === false) {
-					$newName = BeLib::getInstance()->friendlyUrlString($oldName);
-				} else {
-					$newName = BeLib::getInstance()->friendlyUrlString(substr($oldName, 0, $p));
-					$newName .=  "." . BeLib::getInstance()->friendlyUrlString(substr($oldName, $p+1)); 
-				}
-				if($newName !== $oldName) {
-					$stream["Stream"]["name"] = $newName;
-					$slash = strrpos($uri, "/"); 
-					$newUri = substr($uri, 0, $slash+1) . $newName;
-					if(rename($conf->mediaRoot . $uri, $conf->mediaRoot . $newUri) === false) {
-						throw new BeditaException(__("Error renaming stream", true) . " id: " . $id . " file: " . $fileName);
-					}
-					$stream["Stream"]["uri"] = $newUri;
-				}
-			}
-			
-			if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["uri"]))) {
-				if (empty($stream["Stream"]["name"]) || empty($stream["Stream"]["mime_type"])) {
-					$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
-					$stream["Stream"] = array_merge($stream["Stream"],$mediaProvider);
-					App::import("Component", $componentName);
-					$componentName .= "Component";
-					$providerComponent = new $componentName();
-					$providerComponent->setInfoToSave($stream["Stream"]);
-				}
-			} else {
-				if (empty($stream["Stream"]["name"])) {
-					$stream["Stream"]["name"] = basename($stream["Stream"]["uri"]);
-				}
-				
-				if (empty($stream["Stream"]["mime_type"])) {
-					$stream["Stream"]["mime_type"] = $this->getMimeType($conf->mediaRoot . $stream["Stream"]["uri"], $stream["Stream"]["name"]);
-				}
-				
-				if (!$isURL) {
-					$stream["Stream"]["file_size"] = filesize($conf->mediaRoot . $stream["Stream"]["uri"]);
-					$stream["Stream"]["hash_file"] = hash_file("md5", $conf->mediaRoot . $stream["Stream"]["uri"]);
-				}
-			}
-			
-			$this->create();
-			
-			if (!$this->save($stream)) {
-				throw new BeditaException(__("Error updating stream " . $id, true));
-			}
-
-			return true;
-		}
+		$streamsUpdated = array();
 		
-		return false;
+		if (!empty($streams)) {
+			foreach ($streams as $stream) {
+				if (!empty($stream["Stream"]["uri"])) {
+					$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
+					$uri = $stream["Stream"]["uri"];
+					$hasFile = file_exists($conf->mediaRoot . $uri);
+					
+					if ($isURL || $hasFile) {
+						
+						if($hasFile) {
+							// check & correct file name
+							$oldName = $stream["Stream"]["name"];
+							$p = strrpos($stream["Stream"]["name"], ".");
+							if($p === false) {
+								$newName = BeLib::getInstance()->friendlyUrlString($oldName);
+							} else {
+								$newName = BeLib::getInstance()->friendlyUrlString(substr($oldName, 0, $p));
+								$newName .=  "." . BeLib::getInstance()->friendlyUrlString(substr($oldName, $p+1)); 
+							}
+							if($newName !== $oldName) {
+								$stream["Stream"]["name"] = $newName;
+								$slash = strrpos($uri, "/"); 
+								$newUri = substr($uri, 0, $slash+1) . $newName;
+								if(rename($conf->mediaRoot . $uri, $conf->mediaRoot . $newUri) === false) {
+									throw new BeditaException(__("Error renaming stream", true) . " id: " . $id . " file: " . $fileName);
+								}
+								$stream["Stream"]["uri"] = $newUri;
+							}
+						}
+
+						if ($isURL && ($mediaProvider = $this->getMediaProvider($stream["Stream"]["uri"]))) {
+							if (empty($stream["Stream"]["name"]) || empty($stream["Stream"]["mime_type"])) {
+								$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
+								$stream["Stream"] = array_merge($stream["Stream"],$mediaProvider);
+								App::import("Component", $componentName);
+								$componentName .= "Component";
+								$providerComponent = new $componentName();
+								$providerComponent->setInfoToSave($stream["Stream"]);
+							}
+						} else {
+							if (empty($stream["Stream"]["name"])) {
+								$stream["Stream"]["name"] = basename($stream["Stream"]["uri"]);
+							}
+
+							if (empty($stream["Stream"]["mime_type"])) {
+								$stream["Stream"]["mime_type"] = $this->getMimeType($conf->mediaRoot . $stream["Stream"]["uri"], $stream["Stream"]["name"]);
+							}
+
+							if (!$isURL) {
+								$stream["Stream"]["file_size"] = filesize($conf->mediaRoot . $stream["Stream"]["uri"]);
+								$stream["Stream"]["hash_file"] = hash_file("md5", $conf->mediaRoot . $stream["Stream"]["uri"]);
+							}
+						}
+
+						$this->create();
+
+						if (!$this->save($stream)) {
+							throw new BeditaException(__("Error updating stream " . $id, true));
+						}
+
+						$streamsUpdated[] = $stream;						
+					}					
+				}
+			}
+		}
+		return $streamsUpdated;
 	}
 	
 	/**
