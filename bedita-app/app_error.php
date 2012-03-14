@@ -88,19 +88,35 @@ class AppError extends ErrorHandler {
 		$this->handleException($messages);
 	}
 
+	/**
+	 * handle ajax exception
+	 * 
+	 * @param array $messages 
+	 *				'msg' => the exception message
+	 *				'details' => the error detail
+	 *				'output' => the output type. It can be:
+	 *							'html' (default) BEdita html standard error message from elements/message.tpl
+	 *							'json' json object is built in view as:
+	 *									{
+	 *										errorMsg: exception message, 
+	 *										htmlMsg: BEdita html standard error message from see elements/message.tpl
+	 *									}
+	 *							'beditaMsg' output the BEdita html standard error message and trigger it
+	 *							'reload' javascript: location.reload(); used for example when the session expired in a ajax call
+	 */
 	public function handleAjaxException(array $messages) {
+		if (empty($messages['output'])) {
+			$messages['output'] = "html";
+		}
+		$this->controller->set("output", $messages['output']);
+		// html (default fallback)
 		$usrMsgParams = array("layout" => "", "params" => array());
-		if (!empty($messages['output'])) {
-			if ($messages['output'] == "beditaMsg" || $messages['output'] == "reload") {
-				$usrMsgParams = array();
-			} elseif ($messages['output'] == "json") {
-				header("Content-Type: application/json");
-				$this->controller->Session->delete("Message.error");
-				$this->controller->set("errorMsg", array("errorMsg" => $messages['msg']));
-			}
-			$this->controller->set("output", $messages['output']);
-		} else {
-			$this->controller->set("output", "html");
+		if ($messages['output'] == "beditaMsg" || $messages['output'] == "reload") {
+			$usrMsgParams = array();
+		} elseif ($messages['output'] == "json") {
+			header("Content-Type: application/json");
+			$this->controller->set("errorMsg",  $messages['msg']);
+			$usrMsgParams = array();
 		}
 		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		$this->restoreDebugLevel();
