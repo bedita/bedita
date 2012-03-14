@@ -50,9 +50,36 @@ class AdminController extends ModulesController {
 	}
 
 	public function utility() { 	
-		// TODO
+		if ($this->params["isAjax"]) {
+			if (empty($this->params["form"]["operation"])) {
+				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
+			}
+			if (!method_exists($this, $this->params["form"]["operation"])) {
+				throw new BeditaAjaxException(__("Error: utility operation doesn't found", true), array("output" => "json"));
+			}
+			try {
+				$data = $this->{$this->params["form"]["operation"]}();
+			} catch (BeditaException $ex) {
+				$details = $ex->getDetails();
+				if (!is_array($details)) {
+					$details = array($details);
+				}
+				$details["output"] = "json";
+				throw new BeditaAjaxException("failed", $details);
+			}
+			$data["message"] = $this->params["form"]["operation"] . " " . __("operation done", true);
+			$this->view = "View";
+			header("Content-Type: application/json");
+			$this->set("data", $data);
+			$this->render(null, "ajax", VIEWS . "/pages/json.ctp");
+		}
 	}
 
+	protected function updateStreamFields() {
+		$streamsUpdated = ClassRegistry::init("Stream")->updateStreamFields();
+		return $streamsUpdated;
+	}
+	
 	public function coreModules() {
 		$modules = ClassRegistry::init("Module")->find("all", array(
 			"conditions" => array("module_type" => "core"),
