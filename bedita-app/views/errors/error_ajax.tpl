@@ -1,5 +1,7 @@
 {if $output == "json"}
-	{$javascript->object($errorMsg)}
+	{$htmlMsg = $session->flash('error')}
+	{$data = ["errorMsg" => $errorMsg, "htmlMsg" => $htmlMsg]}
+	{$javascript->object($data)}
 {elseif $output == "html"}
 	{$session->flash('error')}
 {elseif $output == "beditaMsg"}
