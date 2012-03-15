@@ -1397,6 +1397,9 @@ abstract class FrontendController extends AppController {
 								$this->setCanonicalPath($obj);
 							} else {
 								$s = $this->loadObj($parent_id);
+								if ($s === self::UNAUTHORIZED || $s === self::UNLOGGED) {
+									return array();
+								}
 								$this->setCanonicalPath($s);
 								$obj["canonicalPath"] = (($s["canonicalPath"] != "/") ? $s["canonicalPath"] : "") 
 									. "/" . $obj["nickname"];
