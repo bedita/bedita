@@ -1789,7 +1789,7 @@ abstract class FrontendController extends AppController {
 					if(!empty($pathArr[$p]["canonicalPath"])) {
 						$currPath = $pathArr[$p]["canonicalPath"];
 					} else {
-						if($pathArr[$p]["menu"] !== '0') {
+						if(!empty($pathArr[$p]["menu"]) && $pathArr[$p]["menu"] !== '0') {
 							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
 						}
 						$pathArr[$p]["canonicalPath"] = empty($currPath) ? "/" : $currPath;
