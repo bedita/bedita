@@ -490,7 +490,7 @@ jQuery.fn.BEmodal = function(){
 
 
 	$('.selecteditems').text($(".objectCheck:checked").length);
-	$(".selectAll").bind("click", function(e) {
+	$(".selectAll").live("click", function(e) {
 		var status = this.checked;
 		$(".objectCheck").each(function() { 
 			this.checked = status; 
@@ -626,7 +626,7 @@ function openAtStart(defaultOpen) {
 			$(tabId).prev(".tab").BEtabstoggle();
 		}
 	}
-		
+
 	$(window).unload(function(){
 		openAtStart = new Array();
 		$(".tab").each(function(i){
