@@ -145,6 +145,14 @@ $(document).ready(function(){
 			<input type="text" id="searchMultimediaText" name="searchMultimediaItems" value="{if !empty($streamSearched)}{$streamSearched}{else}search{/if}"/>
 			<input id="searchMultimedia" type="button" value="{t}Search{/t}"/>
 			<input type="button" id="searchMultimediaShowAll" value="{t}Show all{/t}" style="display: none;" />
+
+		{if !empty($items)}
+
+			<input type="checkbox" class="selectAll" id="selectAll" />
+			<label for="selectAll">{t}(Un)Select All{/t}</label>
+			<input type="button" onclick="javascript:addItemsToParent();" value="{t}Add selected items{/t}"/>
+		{/if}		
+			
 		</div>
 
 		<hr />
