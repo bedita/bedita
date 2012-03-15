@@ -39,75 +39,141 @@ class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
 		
-		$conf = Configure::getInstance();
-		$searchText = ClassRegistry::init("SearchText");
-		$beObj = ClassRegistry::init("BEObject");
-		$beObj->contain();
-		$res = $beObj->find('all',array("fields"=>array('id')));
 		$this->hr();
-		$this->out("Objects:");
+		$this->out("Rebuilding indexes... the operation could be slow");
 		$this->hr();
-
-		$failed = array();
-
-		foreach ($res as $r) {
-			$id = $r['BEObject']['id'];
-			$type = $beObj->getType($id);
-			if(empty($type)) {
-				$this->out("Object type not found for object id ". $id);
-			} else {
-				$model = ClassRegistry::init($type);
-				
-				$model->{$model->primaryKey}=$id;
-				$this->out("id: $id - type: $type");
-				$searchText->deleteAll("object_id=".$id);
-				try {
-					$searchText->createSearchText($model);
-				} catch (BeditaException $ex) {
-					$this->out("ERROR: " . $ex->getMessage());
-					$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
-					$this->out("");
-					$failed[] = array("id" => $id, "error" => $ex->getMessage());
-				}
-			}
-		}
-		// lang texts
-		$this->hr();
-		$this->out("Translations:");
-		$this->hr();
-		$langText = ClassRegistry::init("LangText");
-		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
-		foreach ($res as $r) {
-			
-			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'], 
-												"LangText.lang" => $r['LangText']['lang'])));	
-			$dataLang = array();
-			foreach ($lt as $item) {
-				$dataLang[] = $item['LangText'];
-			}
-			$this->out("object_id: " . $r['LangText']['object_id'] . " - lang: " . $r['LangText']['lang']);
-			$searchText->saveLangTexts($dataLang);
-		}
-
-		if (!empty($failed)) {
-			$this->out("");
-			$this->hr();
-			$this->hr();
-			$this->out("ERRORS occured rebuilding index");
-			$this->hr();
-			$this->hr();
-			foreach($failed as $f) {
-				$this->out("id: " . $f["id"]);
-				$this->out("error: " . $f["error"]);
+		$result = ClassRegistry::init("SearchText")->rebuildIndex();
+		
+		$this->out("");
+		$this->out("");
+		
+		if (!empty($this->params['verbose'])) {
+			if (!empty($result['success'])) {
+				$this->out('Index rebuilt successfully');
 				$this->hr();
+				foreach ($result['success'] as $v) {
+					$this->out("id: " . $v['id']);
+				}
+				$this->hr();
+				$this->out("");
+				$this->out("");
 			}
+
+			if (!empty($result['langTextSuccess'])) {
+				$this->out('Index rebuilt successfully for translations');
+				$this->hr();
+				foreach ($result['langTextSuccess'] as $failed) {
+					foreach ($failed as $k => $v) {
+						$this->out($k . ": " . $v);
+					}
+				}
+				$this->hr();
+				$this->out("");
+				$this->out("");
+			}
+		}
+		
+		if (!empty($result['failed'])) {
+			$this->out('ERRORS occured rebuilding index');
+			$this->hr();
+			foreach ($result['failed'] as $v) {
+				$this->out("id: " . $v['id'] . " - error:" . $v['error']);
+			}
+			$this->hr();
 			$res = $this->in("Do you want to check consistency in all tables that involve objects? [y/n]");
 			if($res == "y") {
 				$this->hr();
 				$this->out("CHECKING CONSISTENCY...");
 				$this->checkConsistency($f["id"]);
 			}
+			$this->out("");
+			$this->out("");
 		}
+		
+		if (!empty($result['langTextFailed'])) {
+			$this->out('ERRORS occured rebuilding index for lang_texts table (object translations fields)');
+			$this->hr();
+			foreach ($result['langTextFailed'] as $failed) {
+				foreach ($failed as $k => $v) {
+					$this->out($k . ": " . $v);
+				}
+			}
+			$this->hr();
+			$this->out("");
+			$this->out("");
+		}
+		
+		$this->out('done.');
+		
+//		$conf = Configure::getInstance();
+//		$searchText = ClassRegistry::init("SearchText");
+//		$beObj = ClassRegistry::init("BEObject");
+//		$beObj->contain();
+//		$res = $beObj->find('all',array("fields"=>array('id')));
+//		$this->hr();
+//		$this->out("Objects:");
+//		$this->hr();
+//
+//		$failed = array();
+//
+//		foreach ($res as $r) {
+//			$id = $r['BEObject']['id'];
+//			$type = $beObj->getType($id);
+//			if(empty($type)) {
+//				$this->out("Object type not found for object id ". $id);
+//			} else {
+//				$model = ClassRegistry::init($type);
+//				
+//				$model->{$model->primaryKey}=$id;
+//				$this->out("id: $id - type: $type");
+//				$searchText->deleteAll("object_id=".$id);
+//				try {
+//					$searchText->createSearchText($model);
+//				} catch (BeditaException $ex) {
+//					$this->out("ERROR: " . $ex->getMessage());
+//					$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
+//					$this->out("");
+//					$failed[] = array("id" => $id, "error" => $ex->getMessage());
+//				}
+//			}
+//		}
+//		// lang texts
+//		$this->hr();
+//		$this->out("Translations:");
+//		$this->hr();
+//		$langText = ClassRegistry::init("LangText");
+//		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
+//		foreach ($res as $r) {
+//			
+//			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'], 
+//												"LangText.lang" => $r['LangText']['lang'])));	
+//			$dataLang = array();
+//			foreach ($lt as $item) {
+//				$dataLang[] = $item['LangText'];
+//			}
+//			$this->out("object_id: " . $r['LangText']['object_id'] . " - lang: " . $r['LangText']['lang']);
+//			$searchText->saveLangTexts($dataLang);
+//		}
+//
+//		if (!empty($failed)) {
+//			$this->out("");
+//			$this->hr();
+//			$this->hr();
+//			$this->out("ERRORS occured rebuilding index");
+//			$this->hr();
+//			$this->hr();
+//			foreach($failed as $f) {
+//				$this->out("id: " . $f["id"]);
+//				$this->out("error: " . $f["error"]);
+//				$this->hr();
+//			}
+//			$res = $this->in("Do you want to check consistency in all tables that involve objects? [y/n]");
+//			if($res == "y") {
+//				$this->hr();
+//				$this->out("CHECKING CONSISTENCY...");
+//				$this->checkConsistency($f["id"]);
+//			}
+//		}
 	}
 
 	/**
@@ -849,6 +915,10 @@ class DbadminShell extends BeditaBaseShell {
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
+		$this->out(' ');
+		$this->out('    Usage: rebuildIndex [-verbose]');
+		$this->out(' ');
+        $this->out("    -verbose \t show also successfully results");
   		$this->out(' ');
  		$this->out("2. checkLangStatus: update lang texts 'status' using master object status");
         $this->out(' ');

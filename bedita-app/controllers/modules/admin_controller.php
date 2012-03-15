@@ -80,6 +80,11 @@ class AdminController extends ModulesController {
 		return $streamsUpdated;
 	}
 	
+	protected function rebuildIndex() {
+		$results = ClassRegistry::init("SearchText")->rebuildIndex();
+		return $results;
+	}
+	
 	public function coreModules() {
 		$modules = ClassRegistry::init("Module")->find("all", array(
 			"conditions" => array("module_type" => "core"),

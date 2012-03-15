@@ -66,7 +66,7 @@
 					<td>{t}remove old items from log/job tables{/t}</td>
 				</tr>
 				<tr>
-					<th><b>{t}rebuildIndex{/t}</b>:</th><td><button class="execute"> {t}GO{/t} </button></td>
+					<th><b>{t}rebuildIndex{/t}</b>:</th><td><button class="execute" rel="rebuildIndex"> {t}GO{/t} </button></td>
 					<td>{t}rebuild search texts index. Caution: may be slow{/t}</td>
 				</tr>
 				<tr>
