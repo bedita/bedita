@@ -596,9 +596,7 @@ class AppController extends Controller
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
 
-		if(!$fixed) {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
+		if(!$fixed && isset($this->data['destination'])) {
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
 		}
 	}
