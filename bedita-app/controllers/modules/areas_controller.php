@@ -277,14 +277,19 @@ class AreasController extends ModulesController {
 			$streamId = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
 			$streamId = $this->BeUploadToObj->uploadFromURL($this->data) ;
-		}		
+		}
 		$stream = ClassRegistry::init("Stream");
 		$path = $stream->field("uri", array("id" => $streamId));
 		$filterClass = Inflector::camelize( $this->data["type"]) . "ImportFilter";
 		$filterModel = ClassRegistry::init($filterClass);
 		$options = array("sectionId" => $this->data['sectionId']);
-		$content = file_get_contents(Configure::read("mediaRoot") . $path);
-		$nObj = $filterModel->import($content, $options);
+		$nObj = 0;
+		if($this->data["type"]=="zzip") {
+			$nObj = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
+		} else {
+			$content = file_get_contents(Configure::read("mediaRoot") . $path);
+			$nObj = $filterModel->import($content, $options);
+		}
 		$this->Section->id = $this->data['sectionId'];
 		$this->userInfoMessage(__("Objects imported", true).": ". $nObj);
 		$this->eventInfo($nObj . " objects imported in section " . $this->Section->id . " from " . $path);
