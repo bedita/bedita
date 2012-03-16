@@ -19,6 +19,8 @@ $(".menutree input:checked").parent().css("background-color","#dedede").parents(
 
 {if !empty($checkbox)}			
 	
+	{* this hidden input field has to be empty to empty tree associations when no checkbox selected *}
+	<input type='hidden' name='data[destination]' value=''/>
 	{$beTree->view($tree, "checkbox", $parents)}
 	
 {else}

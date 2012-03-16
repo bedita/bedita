@@ -616,9 +616,7 @@ class AppController extends Controller
 		}
 
 		// handle tree. Section and Area handled in AreaController
-		if(!$fixed && $beModel->name != "Section" &&  $beModel->name != "Area") {
-			if(!isset($this->data['destination'])) 
-				$this->data['destination'] = array() ;
+		if(!$fixed && isset($this->data['destination']) && $beModel->name != "Section" &&  $beModel->name != "Area") {
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
 		}
 	}
