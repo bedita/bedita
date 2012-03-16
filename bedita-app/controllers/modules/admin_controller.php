@@ -71,6 +71,7 @@ class AdminController extends ModulesController {
 			$this->view = "View";
 			header("Content-Type: application/json");
 			$this->set("data", $data);
+			$this->eventInfo("utility [". $this->params["form"]["operation"] ."] executed");
 			$this->render(null, "ajax", VIEWS . "/pages/json.ctp");
 		}
 	}
