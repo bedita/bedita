@@ -4,7 +4,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2011 ChannelWeb Srl, Chialab Srl
+ * Copyright 2012 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the Affero GNU General Public License as published 
@@ -36,14 +36,14 @@ class XmlExportFilter extends BEAppModel
 	/**
 	 * Export objects in XML format
 	 * 
-	 * @param unknown_type $objects
-	 * @param array $meta, export options
+	 * @param array $objects
+	 * @param array $options, export options
 	 * @return array containing
 	 * 	"content" - export content
 	 *  "contentType" - content mime type
 	 *  "size" - content length
 	 */
-	function export(&$objects, array $options = array()) {
+	public function export(array &$objects, array $options = array()) {
 		$res = array();
 		$xmlOptions = array('attributes' => false, 'format' => 'attributes', 'header' => false);
 		$out["Bedita"]["Objects"] = $objects;

@@ -29,20 +29,23 @@
  * 
  * $Id$
  */
-class XmlImportFilter extends BEAppModel 
+class XmlImportFilter extends BeditaImportFilter 
 {
-	var $useTable = false;
 
 	/**
 	 * Import BE objects from XML source string
 	 * @param string $source, XML source
 	 * @param array $options, import options: "sectionId" => import objects in this section 
+	 * @return array , result array containing 
+	 * 	"objects" => number of imported objects
+	 *  "message" => generic message (optional)
+	 *  "error" => error message (optional)
 	 * @throws BeditaException
 	 */
-	function import($source, array $options = array()) {
-		
+	public function import($source, array $options = array()) {
+
 		App::import("Core", "Xml");
-		$xml = new XML($source);
+		$xml = new XML(file_get_contents($source));
 		$treeModel = ClassRegistry::init("Tree");
 		$nObj = 0;	
 		$parsed = set::reverse($xml);				
@@ -82,6 +85,6 @@ class XmlImportFilter extends BEAppModel
 			}
 			$nObj++;		
 		}
-		return $nObj;
+		return array("objects" => $nObj);
 	}
 };

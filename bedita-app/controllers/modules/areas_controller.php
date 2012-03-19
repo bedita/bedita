@@ -33,7 +33,7 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
@@ -271,6 +271,7 @@ class AreasController extends ModulesController {
 	 */
 	public function import() {
 		$this->checkWriteModulePermission();
+		$this->Transaction->begin();
 		if (!empty($this->params['form']['Filedata']['name'])) {
 			unset($this->data['url']);
 			$this->params['form']['forceupload'] = true;
@@ -283,16 +284,14 @@ class AreasController extends ModulesController {
 		$filterClass = Inflector::camelize( $this->data["type"]) . "ImportFilter";
 		$filterModel = ClassRegistry::init($filterClass);
 		$options = array("sectionId" => $this->data['sectionId']);
-		$nObj = 0;
-		if($this->data["type"]=="zzip") {
-			$nObj = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
-		} else {
-			$content = file_get_contents(Configure::read("mediaRoot") . $path);
-			$nObj = $filterModel->import($content, $options);
+		$result = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
+		if(!$this->BeFileHandler->del($streamId)) {
+			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
 		}
+	 	$this->Transaction->commit() ;
 		$this->Section->id = $this->data['sectionId'];
-		$this->userInfoMessage(__("Objects imported", true).": ". $nObj);
-		$this->eventInfo($nObj . " objects imported in section " . $this->Section->id . " from " . $path);
+		$this->userInfoMessage(__("Objects imported", true).": ". $result["objects"]);
+		$this->eventInfo($result["objects"] . " objects imported in section " . $this->Section->id . " from " . $path);
 	}
 	
 	

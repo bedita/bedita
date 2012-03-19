@@ -1009,7 +1009,51 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 				)
 	);
-
+	
 }
+
+/**
+ * Base model for import filters.
+ */
+abstract class BeditaImportFilter extends BEAppModel {
+	
+	public $useTable = false;
+
+	/**
+	 * Import BE objects from XML source string
+	 * 
+	 * @param string $sourcePath, path to source to import, e.g. path to local files, urls...
+	 * @param array $options, import options: "sectionId" => import objects in this section 
+	 * @return array , result array containing 
+	 * 	"objects" => number of imported objects
+	 *  "message" => generic message (optional)
+	 *  "error" => error message (optional)
+	 * @throws BeditaException
+	 */
+	abstract public function import($sourcePath, array $options = array());
+	
+};
+
+/**
+ * Base model for export filters.
+ */
+abstract class BeditaExportFilter extends BEAppModel {
+
+	public $useTable = false;
+
+	/**
+	 * Export objects in XML format
+	 * 
+	 * @param array $objects, object to export array
+	 * @param array $options, export options
+	 * @return array containing
+	 * 	"content" - export content
+	 *  "contentType" - content mime type
+	 *  "size" - content length
+	 * @throws BeditaException
+	 */
+	abstract public function export(array &$objects, array $options = array());
+	
+};
 
 ?>
