@@ -242,7 +242,7 @@ class DeployShell extends BeditaBaseShell {
 		$frontEndCount = $count;
 		if(file_exists(BEDITA_ADDONS_PATH)) {
 			$folder = new Folder(BEDITA_ADDONS_PATH);
-			$ls = $folder->ls();
+			$ls = $folder->read();
 			foreach ($ls[0] as $dir) {
 				if($dir[0] !== '.' ) {
 					$count++;
