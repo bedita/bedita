@@ -353,7 +353,7 @@ $config['statusOptions'] = array(
 ) ;
 
 // media types for objects in multimedia module
-$config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula','application');
+$config['mediaTypes'] = array('image','video','audio','archive','text','spreadsheet','presentation','drawing','chart','formula','application');
 
 
 /**
