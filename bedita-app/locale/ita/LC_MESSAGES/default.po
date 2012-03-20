@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-07-28 15:38:40\n"
+"POT-Creation-Date: 2012-03-20 13:07:26\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -430,6 +430,9 @@ msgstr "Errore in caricamento oggetto: %d"
 msgid "Error loading section: %d"
 msgstr "Errore in caricamento sezione: %d"
 
+msgid "Error loading sections tree. Missing parent"
+msgstr "Si è verificato un errore caricando l'albero delle sezioni. Manca il genitore"
+
 msgid "Error loading tag: "
 msgstr "Errore in caricamento tag: "
 
@@ -532,6 +535,9 @@ msgstr "Errore in salvataggio dati utente"
 msgid "Error saving user."
 msgstr "Errore nel salvataggio dell'utente"
 
+msgid "Error sending notification mail"
+msgstr "Errore durante l'invio di email di notifica"
+
 msgid "Error setting on Card status"
 msgstr "Errore nel cambiamento di status della Scheda"
 
@@ -623,10 +629,10 @@ msgid "Go to page"
 msgstr "Vai alla pagina"
 
 msgid "Google Earth"
-msgstr ""
+msgstr "Google Earth"
 
 msgid "Google maps StreetView"
-msgstr ""
+msgstr "Google maps StreetView"
 
 msgid "Group "
 msgstr "Gruppo"

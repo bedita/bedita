@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-07-28 15:38:40\n"
+"POT-Creation-Date: 2012-03-20 13:07:26\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -424,6 +424,9 @@ msgstr ""
 msgid "Error loading section: %d"
 msgstr ""
 
+msgid "Error loading sections tree. Missing parent"
+msgstr ""
+
 msgid "Error loading tag: "
 msgstr ""
 
@@ -524,6 +527,9 @@ msgid "Error saving user"
 msgstr ""
 
 msgid "Error saving user."
+msgstr ""
+
+msgid "Error sending notification mail"
 msgstr ""
 
 msgid "Error setting on Card status"

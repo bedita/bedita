@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-07-28 15:38:40\n"
+"POT-Creation-Date: 2012-03-20 13:07:26\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -438,6 +438,9 @@ msgstr "Fehler beim Laden des Objekts: %d"
 msgid "Error loading section: %d"
 msgstr "Fehler beim Laden der Sektion: %d"
 
+msgid "Error loading sections tree. Missing parent"
+msgstr ""
+
 msgid "Error loading tag: "
 msgstr "Fehler beim Laden des Schlüsselwortes:"
 
@@ -539,6 +542,9 @@ msgstr "Fehler beim Speichern des Benutzers"
 
 msgid "Error saving user."
 msgstr "Fehler beim Speichern des Benutzers."
+
+msgid "Error sending notification mail"
+msgstr ""
 
 msgid "Error setting on Card status"
 msgstr "Fehler beim Setzen des Kartenzustands"

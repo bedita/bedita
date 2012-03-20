@@ -411,6 +411,9 @@ msgstr ""
 msgid "Error loading section: %d"
 msgstr ""
 
+msgid "Error loading sections tree. Missing parent"
+msgstr ""
+
 msgid "Error loading tag: "
 msgstr ""
 
@@ -511,6 +514,9 @@ msgid "Error saving user"
 msgstr ""
 
 msgid "Error saving user."
+msgstr ""
+
+msgid "Error sending notification mail"
 msgstr ""
 
 msgid "Error setting on Card status"

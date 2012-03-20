@@ -1,3 +1,22 @@
+Version 3.1.6 - ulmus
+ User-visible changes:
+	* BE gray logo visible in subdirs
+	* fix problem on "select all" items after search result in "add multimedia items"
+	* important update: upgrade to tinyMCE 3.5b2 for issues with Firefox 11 and multiinstance of tinyMCE
+
+ Frontend changes:
+	* FrontendController::loadSectionObjects(): return empty array if section is protected
+	* backward compatibility with old DB w/o trees.menu field
+
+ Developer-visibile changes:
+	* javascript: avoided errors on Firefox on auto opening BEdita tabs (don't try to open bad id selectors)
+	* #307: inverse relations - use left or right object types when necessary
+	* #312 object_relations: add utility methods
+	* soap: add try/catch - on exception function returns "null"
+	* in save operations avoided to delete tree positions of objects if it isn't set relative data array (data[destination]). Pass empty data[destination] to delete all tree positions
+	* #283 - import/export filter base classes - backport to ulmus - addons compatibility problem
+
+
 Version 3.1.5 - ulmus
  User-visible changes:
 	* Added SyntaxHighlighter plugin for TinyMCE
