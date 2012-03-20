@@ -1144,9 +1144,7 @@
 						}
 
 						function getChildForDirection(parent, up) {
-							var child =  parent && parent[up ? 'lastChild' : 'firstChild'];
-							// BR is not a valid table child to return in this case we return the table cell
-							return child && child.nodeName === 'BR' ? ed.dom.getParent(child, 'td,th') : child;
+							return parent && parent[up ? 'lastChild' : 'firstChild'];
 						}
 
 						function moveCursorToStartOfElement(n) {

@@ -2,7 +2,7 @@ Version 3.1.6 - ulmus
  User-visible changes:
 	* BE gray logo visible in subdirs
 	* fix problem on "select all" items after search result in "add multimedia items"
-	* important update: upgrade to tinyMCE 3.5b2 for issues with Firefox 11 and multiinstance of tinyMCE
+	* important update: upgrade to tinyMCE 3.4.9 for issues with Firefox 11 and multiinstance of tinyMCE
 
  Frontend changes:
 	* FrontendController::loadSectionObjects(): return empty array if section is protected
