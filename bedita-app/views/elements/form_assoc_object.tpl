@@ -14,12 +14,12 @@
 	</td>
 	
 	<td>
-		{$objRelated.title|default:'<i>[no title]</i>'|truncate:18:'~':true}
+		{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}
 	</td>
 
 {if $rel == "download"}
 
-	<td>{$objRelated.mime_type|default:''|truncate:18:'~':true}</td>
+	<td>{$objRelated.mime_type|default:''|truncate:60:'~':true}</td>
 	
 	<td style="text-align:right">{$objRelated.file_size|default:0|filesize}</td>
 
