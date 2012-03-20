@@ -125,13 +125,11 @@
 			}
 
 			text = r.toString();
-			matches = text.match(/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.|[A-Z0-9._%+-]+@)(.+)$/i);
+			matches = text.match(/^(https?:\/\/|ssh:\/\/|ftp:\/\/|file:\/|www\.)(.+)$/i);
 
 			if (matches) {
 				if (matches[1] == 'www.') {
 					matches[1] = 'http://www.';
-				} else if (/@$/.test(matches[1])) {
-					matches[1] = 'mailto:' + matches[1];
 				}
 
 				bookmark = ed.selection.getBookmark();
