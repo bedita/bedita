@@ -22,7 +22,6 @@
 App::import('Model', 'BeSchema');
 App::import('Model', 'Stream');
 App::import('Component', 'Transaction');
-App::import('vendor', "Archive_Tar", true, array(), "Tar.php");
 require_once 'bedita_base.php';
 
 /**
@@ -180,7 +179,13 @@ class BeditaShell extends BeditaBaseShell {
     }
 
     function import() {
-        $dbCfg = 'default';
+
+    	if(!class_exists("PharData")) {
+			$this->out("Phar module needed for this operation. Exiting.");
+			return;			
+		}
+    	
+    	$dbCfg = 'default';
   		if (isset($this->params['db'])) {
             $dbCfg = $this->params['db'];
     	}
@@ -205,12 +210,8 @@ class BeditaShell extends BeditaBaseShell {
     	}
     	$this->out("Importing file $archFile");
 
-  		$compress = (substr($archFile, strlen($archFile)-3) == ".gz") ? "gz" : null;
-  		$tar = new Archive_Tar($archFile, $compress);
-       	if($tar === FALSE) {
-       		$this->out("Error opening archive $archFile!!");
-       	}
-       	$tar->extract($tmpBasePath);
+  		$phar = new PharData($archFile);
+       	$phar->extractTo($tmpBasePath);
        	
 		// check if media files are present
        	$tmpMediaDir = $tmpBasePath."media";
@@ -222,6 +223,21 @@ class BeditaShell extends BeditaBaseShell {
 			}
        	}
        	
+       	// TODO: check version.txt compatibility
+       	
+       	// check plugins 
+       	$currentPlugins = $this->currentPluginModules();
+       	$plugins = array();
+       	if(file_exists($tmpBasePath."plugins.php")) {
+       		include $tmpBasePath."plugins.php";	
+       	}
+		$missingPlugins = array_diff($plugins, $currentPlugins);
+		if(!empty($missingPlugins)) {
+	       	$this->out("Some plugins are needed to proceed with import: " . implode(", ", $missingPlugins));
+	       	$this->out("Load them and try again.");
+	       	return;
+       	}
+    
        	$sqlFileName = $tmpBasePath."bedita-data.sql";
 		
         $this->hr();
@@ -309,7 +325,12 @@ class BeditaShell extends BeditaBaseShell {
 
     
     public function export() {
-		$this->initConfig();
+
+    	if(!class_exists("PharData")) {
+			$this->out("Phar module needed for this operation. Exiting.");
+			return;			
+		}
+    	$this->initConfig();
     	$expFile = self::DEFAULT_ARCHIVE_FILE;
     	if (isset($this->params['f'])) {
             $expFile = $this->params['f'];
@@ -323,44 +344,23 @@ class BeditaShell extends BeditaBaseShell {
 		$tables = $beSchema->tableListOrdered();
 		$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
-		$sqlFileName = $tmpBasePath."bedita-data.sql";
-		
+		$sqlFileName = $tmpBasePath . "bedita-data.sql";
 		$this->out("Creating SQL dump....");
 		$handle = fopen($sqlFileName, "w");
 		if($handle === FALSE) 
 			throw new Exception("Error opening file: ".$sqlFileName);
 		$beSchema->tableDetails($tables, $handle);
 		fclose($handle);
-       	
-       	$this->out("Exporting to $expFile");
-       	       	       	
-		$compress = null;
-		if (isset($this->params['compress']) || (substr($expFile, strlen($expFile)-3) == ".gz")) {
-            $compress = "gz";
-    	}
-       	$tar = new Archive_Tar($expFile, $compress);
-       	if($tar === FALSE) {
-			throw new Exception("Error opening archive $expFile");
-       	}
-       	
-		if(!$tar->addString("bedita-data.sql", file_get_contents($sqlFileName)))
-			throw new Exception("Error adding SQL file to archive");
-       	
-		$this->out("SQL data exported");
-       	
-    	$cfgFileName = APP."config".DS."bedita.cfg.php";
-       	if (file_exists($cfgFileName)) {
-	       	if(!$tar->addString("bedita.cfg.php", file_get_contents($cfgFileName)))
-				throw new Exception("Error adding configuration file to archive");
-	       	
-			$this->out("Configuration file exported");
-       	}
-
-       	if(!$tar->addString("version.txt", Configure::read("majorVersion")))
-			throw new Exception("Error adding version file to archive");
 		
-		$this->out("Version file exported");
-			
+		$this->out("Creating metadata....");
+		file_put_contents($tmpBasePath."version.txt", Configure::read("majorVersion"));
+       	if(!copy(APP."config".DS."bedita.cfg.php", $tmpBasePath . "bedita.cfg.php")) {
+       		throw new Exception("Error copying bedita.cfg.php file");
+       	}
+		
+		$plugins = $this->currentPluginModules();
+		$pl = "<?php\n\$plugins = " . var_export($plugins, true) . ";\n?>";
+       	file_put_contents($tmpBasePath."plugins.php", $pl);
        	
        	if (isset($this->params['nomedia'])) { // exclude media files
 	       	
@@ -368,33 +368,62 @@ class BeditaShell extends BeditaBaseShell {
        		
        	} else {
        	
-	       	$this->out("Exporting media files");
-	       	
+			$this->out("Exporting media files....");
+       		// copy media files
+			if(!mkdir($tmpBasePath . "media")) {
+	       		throw new Exception("Error creating media directory");
+			}
+
+			$folder = new Folder();
+        	$allStream = ClassRegistry::init("Stream")->find("all");
 			$mediaRoot = Configure::read("mediaRoot");
-	       	$folder = new Folder($mediaRoot);
-	        $tree= $folder->tree($mediaRoot, false);
-	        foreach ($tree as $files) {
-	            foreach ($files as $file) {
-	                if (!is_dir($file)) {
-	     				$contents = file_get_contents($file);
-	        			if ( $contents === false ) {
-							throw new Exception("Error reading file content: $file");
-	       				}
-						$p = substr($file, strlen($mediaRoot));	
-						if(!$tar->addString("media".$p, $contents)) {
-							throw new Exception("Error adding $file to tar file");
-						}
-	//					echo "before unset ". memory_get_usage()." RAM used.\n";
-						unset($contents);
-	//					echo 'after unset  '. memory_get_usage()." RAM used.\n";
-	                }
-	            }
-	        }
-       	}
+        	foreach ($allStream as $v) {
+	        	$p = $v['Stream']['uri'];
+	        	if((stripos($p, "/") === 0) && file_exists($mediaRoot.$p)) {
+	        		$dirPath = $tmpBasePath . "media" . substr($p, 0, strrpos($p, "/"));
+	        		$folder->create($dirPath);
+	        		if(!copy($mediaRoot.$p, $tmpBasePath . "media" . $p)) {
+	       				throw new Exception("Error copying bedita.cfg.php file");
+	        		}
+	       		}
+        	}
+       		unset($allStream);
+        }
+
+        $this->out("Creating archive....");
+
+        $compress = isset($this->params['compress']);
+        $tarFile = $expFile;
+        if(substr($expFile, strlen($expFile)-3) == ".gz") {
+        	$tarFile = substr($expFile, 0, strlen($expFile)-3);
+        	$compress = true;
+        }
+        $phar = new PharData($tarFile);
+   		$phar->buildFromDirectory($tmpBasePath);
+		if ($compress) {
+        	$this->out("Compressing archive....");
+   			$phar->compress(Phar::GZ);
+   			if($expFile !== $tarFile) {
+   				unlink($tarFile);
+   			}
+		}
 		$this->cleanTempDir();
         $this->out("$expFile created");
     }
 
+    
+    private function currentPluginModules() {
+       	// list plugins
+       	$module = ClassRegistry::init("Module");
+		$mods = $module->find('all', array("conditions" => array("status" =>"on", 
+			"module_type" => "plugin")));
+		$plugins = array();
+		foreach ($mods as $m) {
+			$plugins[] = $m["Module"]["name"];
+		}
+		return $plugins;
+    }
+    
     private function extractMediaZip($zipFile) {
 		$zip = new ZipArchive;
 		if ($zip->open($zipFile) === TRUE) {
