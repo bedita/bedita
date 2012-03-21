@@ -196,7 +196,7 @@ class BeTreeComponent extends Object {
 	 */
 	public function updateTree($id, $destination) {
 		if (!is_array($destination)) {
-			$destination = array($destination);
+			$destination = (empty($destination))? array() : array($destination);
 		}
 		$currParents = $this->getParents($id);
 		// remove
