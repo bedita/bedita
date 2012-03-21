@@ -29,10 +29,11 @@
  * 
  * $Id$
  */
-class XmlExportFilter extends BEAppModel 
+class XmlExportFilter extends BeditaExportFilter 
 {
-	var $useTable = false;
-
+	protected $typeName = "BE Xml";
+	protected $mimeTypes = array("text/xml", "application/xml");
+	
 	/**
 	 * Export objects in XML format
 	 * 

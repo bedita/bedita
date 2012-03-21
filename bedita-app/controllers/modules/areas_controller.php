@@ -281,18 +281,32 @@ class AreasController extends ModulesController {
 		}
 		$stream = ClassRegistry::init("Stream");
 		$path = $stream->field("uri", array("id" => $streamId));
-		$filterClass = Inflector::camelize( $this->data["type"]) . "ImportFilter";
-		$filterModel = ClassRegistry::init($filterClass);
-		$options = array("sectionId" => $this->data['sectionId']);
-		$result = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
+		
+		if($this->data["type"] !== "auto") {
+			$filterClass = Configure::read("filters.import." . $this->data["type"]);
+		} else { // search matching mime types
+			$mimeType = $stream->field("mime_type", array("id" => $streamId));
+			$filterClass = Configure::read("filters.mime." . $mimeType . ".import");
+		}
+		
+		$this->Section->id = $this->data['sectionId'];
+		if(!empty($filterClass)) {
+			$filterModel = ClassRegistry::init($filterClass);
+			$options = array("sectionId" => $this->data['sectionId']);
+			$result = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
+			$this->userInfoMessage(__("Objects imported", true).": ". $result["objects"]);
+			$this->eventInfo($result["objects"] . " objects imported in section " . $this->Section->id . " from " . $path);
+		} else {
+			$this->userErrorMessage(__("No import filter found for file type", true). " : ". $mimeType);
+			$this->eventError("Import filter not found for type " . $mimeType);
+			
+		}
 		if(!$this->BeFileHandler->del($streamId)) {
 			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
 		}
 	 	$this->Transaction->commit() ;
-		$this->Section->id = $this->data['sectionId'];
-		$this->userInfoMessage(__("Objects imported", true).": ". $result["objects"]);
-		$this->eventInfo($result["objects"] . " objects imported in section " . $this->Section->id . " from " . $path);
 	}
+	
 	
 	
 	private function deleteArea() {

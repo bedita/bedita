@@ -1019,6 +1019,9 @@ abstract class BeditaImportFilter extends BEAppModel {
 	
 	public $useTable = false;
 
+	protected $typeName = "";
+	protected $mimeTypes = array();
+	
 	/**
 	 * Import BE objects from XML source string
 	 * 
@@ -1032,6 +1035,23 @@ abstract class BeditaImportFilter extends BEAppModel {
 	 */
 	abstract public function import($sourcePath, array $options = array());
 	
+	/**
+	 * Supported mime types
+	 * 
+	 * @return array , array of supported mime types like
+	 * 	"text/xml", "application/xml"
+	 */
+	public function mimeTypes() {
+		return $this->mimeTypes;
+	}
+	
+	/**
+	 * Filter logical name
+	 */
+	public function name() {
+		return $this->typeName;
+	}
+	
 };
 
 /**
@@ -1041,6 +1061,9 @@ abstract class BeditaExportFilter extends BEAppModel {
 
 	public $useTable = false;
 
+	protected $typeName = "";
+	protected $mimeTypes = array();
+	
 	/**
 	 * Export objects in XML format
 	 * 
@@ -1053,6 +1076,23 @@ abstract class BeditaExportFilter extends BEAppModel {
 	 * @throws BeditaException
 	 */
 	abstract public function export(array &$objects, array $options = array());
+	
+	/**
+	 * Supported mime types
+	 * 
+	 * @return array , result array containing supported mime types in the form
+	 * 	"xml" => "text/xml", "zip" => "application/zip",....
+	 */
+	public function mimeTypes() {
+		return $this->mimeTypes;
+	}
+
+	/**
+	 * Filter logical name
+	 */
+	public function name() {
+		return $this->typeName;
+	}
 	
 };
 

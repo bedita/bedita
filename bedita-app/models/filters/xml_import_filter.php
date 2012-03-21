@@ -32,6 +32,9 @@
 class XmlImportFilter extends BeditaImportFilter 
 {
 
+	protected $typeName = "BE Xml";
+	protected $mimeTypes = array("text/xml", "application/xml");
+	
 	/**
 	 * Import BE objects from XML source string
 	 * @param string $source, XML source

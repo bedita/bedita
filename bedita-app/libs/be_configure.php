@@ -116,6 +116,31 @@ class BeConfigure {
 			$conf->objectTypes = $configurations["objectTypes"];
 		}
 		
+		// read import / export filters
+		$filters = array();
+		$models = App::objects('model');
+		foreach ($models as $modName) {
+			$modClass = ClassRegistry::init($modName);
+			if($modClass instanceof BeditaImportFilter) {
+				$filters["import"][$modClass->name()] = $modName;
+				foreach ($modClass->mimeTypes() as $v) {
+					$filters["mime"][$v]["import"] = $modName;
+				}
+			} else if($modClass instanceof BeditaExportFilter) {
+				$filters["export"][$modClass->name()] = $modName;
+				foreach ($modClass->mimeTypes() as $v) {
+					$filters["mime"][$v]["export"] = $modName;
+				}
+			}
+		}
+		if(empty($filters["import"])) {
+			$filters["import"] = array();
+		}
+		if(empty($filters["export"])) {
+			$filters["export"] = array();
+		}
+		$configurations["filters"] = $filters;
+		
 		Cache::write('beConfig', $configurations);
 		
 		return $configurations;
