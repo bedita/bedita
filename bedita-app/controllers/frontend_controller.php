@@ -844,9 +844,11 @@ abstract class FrontendController extends AppController {
 			}
 	
 			$this->setCanonicalPath($s);
-			$channel = array( 'title' => $this->publication["public_name"] . " - " . $s['title'],
+			App::import("Sanitize");
+			$title = Sanitize::html($this->publication["public_name"] . " - " . $s['title']);
+			$channel = array( 'title' => $title,
 				'link' => $s["canonicalPath"],
-				'description' => $s['description'],
+				'description' => Sanitize::html($s['description']),
 				'language' => $s['lang'],
 			);
 		}
