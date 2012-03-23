@@ -4,6 +4,8 @@
 <head>
 	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action} | {if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{/if}</title>
 
+	<meta name="robots" content="noindex,nofollow"/>
+	
 	{if $agent.iPHONE or $agent.iPAD}
 		
 		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
