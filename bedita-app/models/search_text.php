@@ -102,14 +102,40 @@ class SearchText extends BEAppModel
 		$this->saveSearchTexts($searchFields, $data);
 	}
 	
-	public function rebuildIndex() {
+	/**
+	 * Rebuild indexes for text search
+	 * 
+	 * @param boolean $returnOnlyFailed, 
+	 *					true (default) return only 'failed' and 'langTextFailed' array
+	 *					false return also 'success' and 'langTextSuccess' array
+	 * 
+	 * @return array contains:
+	 *			'success' => array of objects data successfully indexed. Each item contains:
+	 *						'id' => object id indexed
+	 *			'failed' => array of objects data on which rebuild index failed. Each item contains:
+	 *						'id' =>  object id,
+	 *						'error' => message error,
+	 *						'details' => error detail
+	 *			'langTextSuccess' => array of translations successfully indexed. Each item contains:
+	 *						'object_id' => object id on which the translations was done,
+	 *						'lang' => the translation language
+	 *			'langTextFailed' => array of translations on which rebuild index failed. Each item contains:
+	 *						'object_id' =>  object id on which the translations failed,
+	 *						'lang' => the translation language,
+	 *						"error" => message error,
+	 *						"detail" => error detail
+	 */
+	public function rebuildIndex($returnOnlyFailed = true) {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$res = $beObj->find('list',array(
 			"fields" => array('id')
 		));
 		
-		$response = array('success' => array(), 'failed' => array(), 'langTextSuccess' => array(), 'langTextFailed' => array());
+		$response = array('failed' => array(), 'langTextFailed' => array());
+		if (!$returnOnlyFailed) {
+			$response = array_merge($response, array('success' => array(), 'failed' => array()));
+		}
 		
 		foreach ($res as $id) {
 			$type = $beObj->getType($id);
@@ -121,9 +147,11 @@ class SearchText extends BEAppModel
 				$this->deleteAll("object_id=".$id);
 				try {
 					$this->createSearchText($model);
-					$response['success'][] = array("id" => $id);
+					if (!$returnOnlyFailed) {
+						$response['success'][] = array("id" => $id);
+					}
 				} catch (BeditaException $ex) {
-					$response['failed'][] = array("id" => $id, "error" => $ex->getMessage());
+					$response['failed'][] = array("id" => $id, "error" => $ex->getMessage(), 'detail' => $ex->getDetails());
 				}
 			}
 		}
@@ -140,15 +168,17 @@ class SearchText extends BEAppModel
 			}
 			try {
 				$searchText->saveLangTexts($dataLang);
-				$response['langTextSuccess'][] = array(
-					"object_id" => $r['LangText']['object_id'],
-					"lang" => $r['LangText']['lang']
-				);
+				if (!$returnOnlyFailed) {
+					$response['langTextSuccess'][] = array(
+						"object_id" => $r['LangText']['object_id'],
+						"lang" => $r['LangText']['lang']
+					);
+				}
 			} catch (BeditaException $ex) {
 				$response['langTextFailed'][] = array(
 					"object_id" => $r['LangText']['object_id'],
 					"lang" => $r['LangText']['lang'],
-					"msg" => $ex->getMessage(),
+					"error" => $ex->getMessage(),
 					"detail" => $ex->getDetails()
 				);
 			}

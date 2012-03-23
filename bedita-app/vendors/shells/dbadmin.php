@@ -39,38 +39,37 @@ class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
 		
+		$returnOnlyFailed = (!isset($this->params['verbose']))? true : false;
 		$this->hr();
 		$this->out("Rebuilding indexes... the operation could be slow");
 		$this->hr();
-		$result = ClassRegistry::init("SearchText")->rebuildIndex();
+		$result = ClassRegistry::init("SearchText")->rebuildIndex($returnOnlyFailed);
 		
 		$this->out("");
 		$this->out("");
 		
-		if (!empty($this->params['verbose'])) {
-			if (!empty($result['success'])) {
-				$this->out('Index rebuilt successfully');
-				$this->hr();
-				foreach ($result['success'] as $v) {
-					$this->out("id: " . $v['id']);
-				}
-				$this->hr();
-				$this->out("");
-				$this->out("");
+		if (!empty($result['success'])) {
+			$this->out('Index rebuilt successfully');
+			$this->hr();
+			foreach ($result['success'] as $v) {
+				$this->out("id: " . $v['id']);
 			}
+			$this->hr();
+			$this->out("");
+			$this->out("");
+		}
 
-			if (!empty($result['langTextSuccess'])) {
-				$this->out('Index rebuilt successfully for translations');
-				$this->hr();
-				foreach ($result['langTextSuccess'] as $failed) {
-					foreach ($failed as $k => $v) {
-						$this->out($k . ": " . $v);
-					}
+		if (!empty($result['langTextSuccess'])) {
+			$this->out('Index rebuilt successfully for translations');
+			$this->hr();
+			foreach ($result['langTextSuccess'] as $failed) {
+				foreach ($failed as $k => $v) {
+					$this->out($k . ": " . $v);
 				}
-				$this->hr();
-				$this->out("");
-				$this->out("");
 			}
+			$this->hr();
+			$this->out("");
+			$this->out("");
 		}
 		
 		if (!empty($result['failed'])) {
