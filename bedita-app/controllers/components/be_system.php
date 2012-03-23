@@ -328,7 +328,7 @@
 	
     private function __clean($path) {
         $folder=& new Folder($path);
-        $list = $folder->ls();
+        $list = $folder->read();
         foreach ($list[0] as $d) {
         	if($d[0] != '.') { // don't delete hidden dirs (.svn,...)
 	        	if(!$folder->delete($folder->path.DS.$d)) {
