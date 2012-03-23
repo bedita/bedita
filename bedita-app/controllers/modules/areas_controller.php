@@ -246,10 +246,10 @@ class AreasController extends ModulesController {
 	public function export() {
 		$this->autoRender = false;
 		$objects = $this->BeTree->getChildren($this->data["id"]);
-		$filterClass = Inflector::camelize($this->data["type"]) . "ExportFilter";
+		$filterClass = Configure::read("filters.export." . $this->data["type"]);
 		$filterModel = ClassRegistry::init($filterClass);
 		$result = $filterModel->export($objects["items"]);
-				
+			
 		Configure::write('debug', 0);
 		// TODO: optimizations!!! use cake tools
 		header('Content-Description: File Transfer');
