@@ -74,8 +74,6 @@ function smarty_block_t($params, $text, &$smarty)
 {
 	$text = stripslashes($text);
 	
-	$trHelper = $smarty->getTemplateVars('tr');
-	
 	// set escape mode
 	if (isset($params['escape'])) {
 		$escape = $params['escape'];
@@ -94,11 +92,14 @@ function smarty_block_t($params, $text, &$smarty)
 		}
 	}
 	
+	$trHelper = $smarty->getTemplateVars('tr');
 	// use plural if required parameters are set
-	if (isset($count) && isset($plural)) {
-		$text = $trHelper->translatePlural($text, $plural, $count, true);
-	} else { // use normal
-		$text = $trHelper->translate($text, true);
+	if($trHelper != null) {
+		if (isset($count) && isset($plural)) {
+			$text = $trHelper->translatePlural($text, $plural, $count, true);
+		} else { // use normal
+			$text = $trHelper->translate($text, true);
+		}
 	}
 
 	// run strarg if there are parameters
