@@ -5,12 +5,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources
@@ -420,7 +420,7 @@ class DboSource extends DataSource {
 			}
 
 			if ($cache) {
-				if (strpos(trim(strtolower($sql)), 'select') !== false) {
+				if (preg_match('/^\s*select/i', $sql)) {
 					$this->_queryCache[$sql] = $out;
 				}
 			}
@@ -1192,14 +1192,16 @@ class DboSource extends DataSource {
 				}
 			} else {
 				foreach ($merge as $i => $row) {
-					if (count($row) == 1) {
-						if (empty($data[$association]) || (isset($data[$association]) && !in_array($row[$association], $data[$association]))) {
-							$data[$association][] = $row[$association];
-						}
-					} else if (!empty($row)) {
-						$tmp = array_merge($row[$association], $row);
-						unset($tmp[$association]);
-						$data[$association][] = $tmp;
+					$insert = array();
+					if (count($row) === 1) {
+						$insert = $row[$association];
+					} elseif (isset($row[$association])) {
+						$insert = array_merge($row[$association], $row);
+						unset($insert[$association]);
+					}
+
+					if (empty($data[$association]) || (isset($data[$association]) && !in_array($insert, $data[$association], true))) {
+						$data[$association][] = $insert;
 					}
 				}
 			}

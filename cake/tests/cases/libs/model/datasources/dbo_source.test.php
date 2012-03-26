@@ -5,12 +5,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *	Licensed under The Open Group Test Suite License
  *	Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model.datasources
@@ -4248,6 +4248,25 @@ class DboSourceTest extends CakeTestCase {
 		$query = "DROP TABLE {$name};";
 		$result = $this->db->fetchAll($query);
 		$this->assertTrue($result, 'Query did not return a boolean. %s');
+	}
+
+/**
+ * test that query propery caches/doesn't cache selects
+ *
+ * @return void
+ * @author David Kullmann
+ */
+	function testFetchAllCaching() {
+		$query = "SELECT NOW() as TIME";
+		$result = $this->db->fetchAll($query);
+		
+		$this->assertTrue(is_array($this->db->_queryCache[$query]));
+		$this->assertEqual($this->db->_queryCache[$query][0][0]['TIME'], $result[0][0]['TIME']);
+
+		$query = "DROP TABLE IF EXISTS select_test";
+		$result = $this->db->fetchAll($query);
+		
+		$this->assertTrue(!isset($this->db->_queryCache[$query]));
 	}
 
 /**

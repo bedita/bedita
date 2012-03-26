@@ -7,12 +7,12 @@
  * should respond to the different needs of a handheld computer and a desktop machine.
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
@@ -115,6 +115,7 @@ class RequestHandlerComponent extends Object {
 		'DoCoMo',
 		'iPod',
 		'iPhone',
+		'iPad',
 		'J2ME',
 		'MIDP',
 		'NetFront',
@@ -131,6 +132,7 @@ class RequestHandlerComponent extends Object {
 		'UP\.Browser',
 		'webOS',
 		'Windows CE',
+		'Windows Phone OS',
 		'Xiino'
 	);
 
