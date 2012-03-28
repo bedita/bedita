@@ -87,7 +87,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				$this->fields .= ", " . $key;
 				if (is_array($val)) {
 					$this->conditions[] = $key . " IN ('" . implode("','", $val) . "')";
-				} elseif (!empty($val)) {
+				} elseif ($val !== "" && $val !== null) {
 					$this->conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
 				}
 	
