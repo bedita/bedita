@@ -36,6 +36,9 @@
 							$_this.text(retryText).removeClass("loading").addClass("execute");
 						} else {
 							alert(data.message);
+							if (data.htmlMsg != undefined && data.htmlMsg != "") {
+								$("#messagesDiv").html(data.htmlMsg).triggerMessage(data.msgType);
+							}
 							$_this.text(doneText).removeClass("loading").addClass("execute");
 						}
 					}
@@ -58,23 +61,23 @@
 			<table id="utilities" class="bordered">
 
 				<tr>
-					<th><b>{t}cleanup files{/t}</b>:</th><td><button class="execute"> {t}GO{/t} </button></td>
-					<td>{t}delete all backend tmp files{/t}</td>
+					<th><b>{t}cleanup cache{/t}</b>:</th><td><button class="execute" rel="cleanupCache"> {t}GO{/t} </button></td>
+					<td>{t}delete all cached files from BEdita and frontends{/t}</td>
 				</tr>
 				<tr>
-					<th><b>{t}cleanup logs{/t}</b>:</th><td><button class="execute"> {t}GO{/t} </button></td>
-					<td>{t}remove old items from log/job tables{/t}</td>
+					<th><b>{t}empty logs{/t}</b>:</th><td><button class="execute" rel="emptyLogs"> {t}GO{/t} </button></td>
+					<td>{t}empty log files{/t}</td>
 				</tr>
 				<tr>
-					<th><b>{t}rebuildIndex{/t}</b>:</th><td><button class="execute" rel="rebuildIndex"> {t}GO{/t} </button></td>
+					<th><b>{t}rebuild index{/t}</b>:</th><td><button class="execute" rel="rebuildIndex"> {t}GO{/t} </button></td>
 					<td>{t}rebuild search texts index. Caution: may be slow{/t}</td>
 				</tr>
 				<tr>
-					<th><b>{t}updateStreamFields{/t}</b>:</th><td><button class="execute" rel="updateStreamFields"> {t}GO{/t} </button></td>
+					<th><b>{t}update stream fields{/t}</b>:</th><td><button class="execute" rel="updateStreamFields"> {t}GO{/t} </button></td>
 					<td>{t}update name (if empty), mime_type (if empty), size and hash_file fields of streams table{/t}</td>
 				</tr>
 				<tr>
-					<th><b>{t}clearMediaCache{/t}</b>:</th><td><button class="execute"> {t}GO{/t} </button></td>
+					<th><b>{t}clear media cache{/t}</b>:</th><td><button class="execute" rel="clearMediaCache"> {t}GO{/t} </button></td>
 					<td>{t}clears media cache files/directories{/t}</td>	
 				</tr>
 					

@@ -107,7 +107,7 @@ jQuery.fn.extend({
 	triggerMessage: function(type, pause) {
 		var $_this = $(this);
 		if (pause == undefined) {
-			pause = 4;
+			pause = 3000;
 		}
 		if (type == "error") {
 			$_this.show();
@@ -117,8 +117,7 @@ jQuery.fn.extend({
 				.animate({opacity: 1.0}, pause)
 				.fadeOut(1000);
 		} else if (type == "warn") {
-			$_this
-				.show();
+			$_this.show();
 		}
 			
 		$_this.find(".closemessage").click(function() {

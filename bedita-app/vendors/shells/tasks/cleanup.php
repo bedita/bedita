@@ -37,8 +37,8 @@ class CleanupTask extends BeditaBaseShell {
 	public function execute() {
 		$this->hr();
         $this->out("BEdita core cleanup: " . TMP);     
-        $this->cleanUpTmpDir(TMP);
 		$this->hr();
+        $this->cleanUpTmpDir(TMP);
         if (isset($this->params['frontend'])) {
        		$this->out("BEdita frontends cleanup: " . $this->params['frontend']);     
 			$this->cleanUpTmpDir($this->params['frontend'].DS."tmp".DS);
@@ -61,29 +61,45 @@ class CleanupTask extends BeditaBaseShell {
 	}
 
 	private function cleanUpTmpDir($basePath) {
+		$Utility = ClassRegistry::init('Utility');
 		if($basePath !== TMP) {
 			if(!file_exists($basePath)) {
 				$this->out("Directory $basePath not found");
 				return;
 			}
-			$this->out('Cleaning dir: '.$basePath);
-			$this->__clean($basePath . 'cache', false);
+		}
+		$this->out('Cleaning dir: '.$basePath);
+		$res = $Utility->call('cleanupCache', array('basePath' => $basePath, 'frontendsToo' => false));
+		if (!$this->outputCleaningErrors($res)) {
+			$this->out('Cache cleaned.');
+			$this->out('Smarty compiled/cache cleaned.');
 		}
 		if (isset($this->params['logs'])) {
-			$this->__clean($basePath . 'logs');
-			$this->out('Logs cleaned.');
+			$res = $Utility->call('emptyLogs', array('basePath' => $basePath . 'logs'));
+			if (!$this->outputCleaningErrors($res)) {
+				$this->out('Logs cleaned.');
+			}
 		}
-		Cache::clear();
-		$this->__clean($basePath . 'cache' . DS . 'models');
-		$this->__clean($basePath . 'cache' . DS . 'persistent');        
-		$this->__clean($basePath . 'cache' . DS . 'views');        
-		$this->out('Cache cleaned.');
-		$this->__clean($basePath . 'smarty' . DS . 'compile');
-		$this->__clean($basePath . 'smarty' . DS . 'cache');
-		$this->out('Smarty compiled/cache cleaned.');
 	}
 	
-	
+	/**
+	 * output errors
+	 * @param array $data
+	 * @return boolean, true if errors are output
+	 *					false if there aren't errors
+	 */
+	private function outputCleaningErrors($data) {
+		if (empty($data['failed'])) {
+			return false;
+		}
+		$this->hr();
+		$this->out('Some errors occured');
+		$this->hr();
+		foreach ($data['failed'] as $f) {
+			$this->out($f['error']);
+		}
+		return true;
+	}
 	
 	/**
 	 * clean PHP files from:

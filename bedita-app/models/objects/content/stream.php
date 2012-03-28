@@ -139,6 +139,54 @@ class Stream extends BEAppModel
 		return $streamsUpdated;
 	}
 	
+	
+	/**
+	 * Clears media cache
+	 * 
+	 * @param int $id, object id of which clear cache
+	 * 
+	 * @return mixed, false if no stream was found
+	 *				  empty array if cleaning operation proceeds without errors
+	 *				  array with errors if something goes wrong. Itcontains:
+	 *						'failed' => array of objects data on which clear media failed. Each item contains:
+	 *							'id' =>  object id,
+	 *							'error' => message error
+	 */
+	public function clearMediaCache($id = null) {
+		$conditions = array();
+		if (!empty($id)) {
+			$conditions['Stream.id'] = $id;
+		}
+		$streams = $this->find("all", array('conditions' => $conditions));
+		if (empty($streams)) {
+			return false;
+		}
+		$results = array();
+		$folder = new Folder();
+		foreach ($streams as $s) {
+			if(!empty($s["Stream"]["uri"])) {
+				$filePath = Configure::read("mediaRoot") . $s["Stream"]["uri"];
+				if (DS != "/") {
+					$filePath = str_replace("/", DS, $filePath);
+				}
+				if(file_exists($filePath)) {
+					$filenameBase = pathinfo($filePath, PATHINFO_FILENAME);
+					$filenameMD5 = md5($s["Stream"]["name"]);
+					$cacheDir = dirname($filePath) . DS . substr($filenameBase, 0, 5) . "_" . $filenameMD5;
+					if(file_exists($cacheDir)) {
+		        		if(!$folder->delete($cacheDir)) {
+		                	$results['failed'][] = array(
+								'id' => $s["Stream"]['id'],
+								'error' => __("Error deleting dir", true) . " " . $cacheDir
+							);
+		            	}
+	        		}
+	        	}
+			}
+		}
+		return $results;
+	}
+	
 	/**
 	 * return media provider array or false if $uri it's not managed
 	 * 

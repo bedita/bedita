@@ -58,6 +58,117 @@ class BeSystem {
 		return is_writable($filename);
 	}
 	
+	/**
+	 * delete log files
+	 * 
+	 * @param string $filename, filename to delete i.e. error.log
+	 * @return array, it contains
+	 *				'failed' => array of errors, empty if no errors occured
+	 *				'success'  => array of file deleted
+	 */
+	public function emptyLogs($filename = null, $basePath = LOGS) {
+		$results = array('success' => array(), 'failed' => array());
+		$logFiles = array();
+		if (!empty($filename)) {
+			$f = new File($basePath . $filename);
+			if (!$f->delete()) {
+				$results['failed'][] = array('error' => __("Error deleting log file", true) . " " . $file);
+			} else {
+				$results['success'][] = $file . " " . __('deleted', true);
+			}
+		} else {
+			$results = $this->cleanUpDir($basePath);
+		}
+		return $results;
+	}
+	
+	/**
+	 * cleanup cached files
+	 * 
+	 * @param string $basePath, base path on which build cake cache dir and smarty cache dir
+	 * @param type $frontendsToo, true (defualt) to delete also all frontends cached files
+	 * @return array, it contains
+	 *				'failed' => array of errors, empty if no errors occured
+	 *				'success'  => array of file deleted
+	 */
+	public function cleanupCache($basePath = TMP, $frontendsToo = true) {
+		$cakeCacheDir = $basePath . DS . 'cache';
+		$smartyCacheDir = $basePath . DS . 'smarty';
+		$results = $this->cleanUpDir($cakeCacheDir, true);
+		if (file_exists($smartyCacheDir)) {
+			$resSmarty = $this->cleanUpDir($smartyCacheDir, true);
+			foreach ($results as $key => $val) {
+				$results[$key] = array_merge($results[$key], $resSmarty[$key]);
+			}
+		}
+		Cache::clear();
+		if ($frontendsToo) {
+			$folder= new Folder(BEDITA_FRONTENDS_PATH);
+	        $dirs = $folder->read(true, true, true);
+	        foreach ($dirs[0] as $d) {
+	        	if($d[0] !== ".") {
+	            	$resCake = $this->cleanUpDir($d . DS . "tmp" . DS . "cache", true);
+					if (file_exists($d . DS . "tmp" . DS . "smarty")) {
+						$resSmarty = $this->cleanUpDir($d . DS . "tmp" . DS . "smarty", true);
+					}
+					foreach ($results as $key => $val) {
+						$results[$key] = array_merge($results[$key], $resCake[$key], $resSmarty[$key]);
+					}
+	        	}
+	        }
+		}
+		return $results;
+	}
+	
+	/**
+	 * clean directory deleting files and eventully subdirs
+	 * 
+	 * @param string $basePath, the starting directory path
+	 * @param boolean $recursive, true to deleting files recursively on subdirs
+	 * @param boolean $removeDirs, true to remove all subdirs too
+	 * @return array, it contains
+	 *				'failed' => array of errors, empty if no errors occured
+	 *				'success'  => array of file deleted
+	 */
+	public function cleanUpDir($basePath, $recursive = false, $removeDirs = false) {
+		if (!file_exists($basePath)) {
+			throw new BeditaException(__("Directory", true) . " " . $basePath . __("not found", true));
+		}
+		$results = array('success' => array(), 'failed' => array());
+		$folder = new Folder($basePath);
+		$list = $folder->read(true, true, true);
+		// delete files
+		foreach ($list[1] as $file) {
+			$f = new File($file);
+			if (!$f->delete()) {
+				$results['failed'][] = array('error' => __("Error deleting file", true) . " " . $file);
+			} else {
+				$results['success'][] = $file . " " . __('deleted', true);
+			}
+		}
+		// delete dirs
+		if ($removeDirs) {
+			foreach ($list[0] as $d) {
+				if ($d[0] != '.') { // don't delete hidden dirs (.svn,...)
+					if (!$folder->delete($d)) {
+						$results['failed'][] = __("Error deleting dir", true) . " " . $d;
+					}
+				}
+			}
+		// delete files inside dirs recursively
+		} elseif ($recursive) {
+			foreach ($list[0] as $d) {
+				if ($d[0] != '.') { // don't delete hidden dirs (.svn,...)
+					$resultsSubdir = $this->cleanUpDir($d, $recursive, $removeDirs);
+					foreach ($results as $key => $val) {
+						$results[$key] = array_merge($results[$key], $resultsSubdir[$key]);
+					}
+				}
+			}
+		}
+		return $results;
+	}
+	
 	
 	/**
 	 * edit cakephp config file

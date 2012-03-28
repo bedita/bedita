@@ -39,12 +39,13 @@ class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
 		
-		$returnOnlyFailed = (!isset($this->params['verbose']))? true : false;
+		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
+		$options['log'] = (!empty($this->params['log']))? true : false;
 		$this->hr();
 		$this->out("Rebuilding indexes... the operation could be slow");
 		$this->hr();
-		$result = ClassRegistry::init("SearchText")->rebuildIndex($returnOnlyFailed);
-		
+		$response = ClassRegistry::init("Utility")->call('rebuildIndex', $options);
+		$result = $response['results'];
 		$this->out("");
 		$this->out("");
 		
@@ -102,77 +103,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("");
 		}
 		
-		$this->out('done.');
-		
-//		$conf = Configure::getInstance();
-//		$searchText = ClassRegistry::init("SearchText");
-//		$beObj = ClassRegistry::init("BEObject");
-//		$beObj->contain();
-//		$res = $beObj->find('all',array("fields"=>array('id')));
-//		$this->hr();
-//		$this->out("Objects:");
-//		$this->hr();
-//
-//		$failed = array();
-//
-//		foreach ($res as $r) {
-//			$id = $r['BEObject']['id'];
-//			$type = $beObj->getType($id);
-//			if(empty($type)) {
-//				$this->out("Object type not found for object id ". $id);
-//			} else {
-//				$model = ClassRegistry::init($type);
-//				
-//				$model->{$model->primaryKey}=$id;
-//				$this->out("id: $id - type: $type");
-//				$searchText->deleteAll("object_id=".$id);
-//				try {
-//					$searchText->createSearchText($model);
-//				} catch (BeditaException $ex) {
-//					$this->out("ERROR: " . $ex->getMessage());
-//					$this->out("Probably there is an inconsistency in the tables that involve object with id " . $id);
-//					$this->out("");
-//					$failed[] = array("id" => $id, "error" => $ex->getMessage());
-//				}
-//			}
-//		}
-//		// lang texts
-//		$this->hr();
-//		$this->out("Translations:");
-//		$this->hr();
-//		$langText = ClassRegistry::init("LangText");
-//		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
-//		foreach ($res as $r) {
-//			
-//			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'], 
-//												"LangText.lang" => $r['LangText']['lang'])));	
-//			$dataLang = array();
-//			foreach ($lt as $item) {
-//				$dataLang[] = $item['LangText'];
-//			}
-//			$this->out("object_id: " . $r['LangText']['object_id'] . " - lang: " . $r['LangText']['lang']);
-//			$searchText->saveLangTexts($dataLang);
-//		}
-//
-//		if (!empty($failed)) {
-//			$this->out("");
-//			$this->hr();
-//			$this->hr();
-//			$this->out("ERRORS occured rebuilding index");
-//			$this->hr();
-//			$this->hr();
-//			foreach($failed as $f) {
-//				$this->out("id: " . $f["id"]);
-//				$this->out("error: " . $f["error"]);
-//				$this->hr();
-//			}
-//			$res = $this->in("Do you want to check consistency in all tables that involve objects? [y/n]");
-//			if($res == "y") {
-//				$this->hr();
-//				$this->out("CHECKING CONSISTENCY...");
-//				$this->checkConsistency($f["id"]);
-//			}
-//		}
+		$this->out($response['message']);
 	}
 
 	/**
@@ -595,8 +526,8 @@ class DbadminShell extends BeditaBaseShell {
 	
 	
 	public function updateStreamFields() {
-		$streamModel = ClassRegistry::init("Stream");
-		$streamsUpdated = $streamModel->updateStreamFields();
+		$response = ClassRegistry::init("Utility")->call('updateStreamFields');
+		$streamsUpdated = $response['results'];
 		foreach ($streamsUpdated as $s) {
 			$this->out("stream ".$s["Stream"]["id"]. " updated");
 		}
@@ -849,33 +780,19 @@ class DbadminShell extends BeditaBaseShell {
 	 * Clears media cache
 	 */
 	public function clearMediaCache() {
-		
-		$streamModel = ClassRegistry::init("Stream");
-		$streams = $streamModel->find("all");
-		if (empty($streams)) {
+		$options['log'] = (!empty($this->params['log']))? true : false;
+		$response = ClassRegistry::init("Utility")->call('clearMediaCache', $options);
+		$results = $response['results'];
+		if ($results === false) {
 			$this->out("No streams found");
 			return;
 		}
-		$folder = new Folder();
-		foreach ($streams as $s) {
-			if(!empty($s["Stream"]["uri"])) {
-				$filePath = Configure::read("mediaRoot") . $s["Stream"]["uri"];
-				if (DS != "/") {
-					$filePath = str_replace("/", DS, $filePath);
-				}
-				if(file_exists($filePath)) {
-					$filenameBase = pathinfo($filePath, PATHINFO_FILENAME);
-					$filenameMD5 = md5($s["Stream"]["name"]);
-					$cacheDir = dirname($filePath) . DS . substr($filenameBase, 0, 5) . "_" . $filenameMD5;
-					if(file_exists($cacheDir)) {
-		        		if(!$folder->delete($cacheDir)) {
-		                	throw new BeditaException("Error deleting dir $cacheDir");
-		            	}
-	        		}
-	        	}
+		if (!empty($results['failed'])) {
+			foreach ($results['failed'] as $item) {
+				$this->out($item['error']);
 			}
 		}
-		$this->out("Done");
+		$this->out($response['message']);
 	}
 	
 	public function updateCategoryName() {
@@ -915,9 +832,10 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
 		$this->out(' ');
-		$this->out('    Usage: rebuildIndex [-verbose]');
+		$this->out('    Usage: rebuildIndex [-verbose] [-log]');
 		$this->out(' ');
         $this->out("    -verbose \t show also successfully results");
+		$this->out("    -log \t write errors on rebuildIndex.log file");
   		$this->out(' ');
  		$this->out("2. checkLangStatus: update lang texts 'status' using master object status");
         $this->out(' ');
@@ -998,6 +916,10 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -t \t object type: document, short_news, event,.....");
         $this->out(' ');
 		$this->out('17. clearMediaCache: clears media cache files/directories');
+		 $this->out(' ');
+        $this->out('    Usage: clearMediaCache [-log] ');
+        $this->out(' ');
+		$this->out("    -log \t write errors on clearMediaCache.log file");
   		$this->out(' ');
 	}
 	

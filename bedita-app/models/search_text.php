@@ -132,26 +132,28 @@ class SearchText extends BEAppModel
 			"fields" => array('id')
 		));
 		
-		$response = array('failed' => array(), 'langTextFailed' => array());
+		$results = array('failed' => array(), 'langTextFailed' => array());
 		if (!$returnOnlyFailed) {
-			$response = array_merge($response, array('success' => array(), 'failed' => array()));
+			$results = array_merge($results, array('success' => array(), 'failed' => array()));
 		}
 		
 		foreach ($res as $id) {
 			$type = $beObj->getType($id);
 			if(empty($type)) {
-				$response['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
+				$results['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
 			} else {
 				$model = ClassRegistry::init($type);
 				$model->{$model->primaryKey} = $id;
-				$this->deleteAll("object_id=".$id);
 				try {
+					if (!$this->deleteAll("object_id=".$id)) {
+						throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
+					}
 					$this->createSearchText($model);
 					if (!$returnOnlyFailed) {
-						$response['success'][] = array("id" => $id);
+						$results['success'][] = array("id" => $id);
 					}
 				} catch (BeditaException $ex) {
-					$response['failed'][] = array("id" => $id, "error" => $ex->getMessage(), 'detail' => $ex->getDetails());
+					$results['failed'][] = array("id" => $id, "error" => $ex->getMessage(), 'detail' => $ex->getDetails());
 				}
 			}
 		}
@@ -169,13 +171,13 @@ class SearchText extends BEAppModel
 			try {
 				$searchText->saveLangTexts($dataLang);
 				if (!$returnOnlyFailed) {
-					$response['langTextSuccess'][] = array(
+					$results['langTextSuccess'][] = array(
 						"object_id" => $r['LangText']['object_id'],
 						"lang" => $r['LangText']['lang']
 					);
 				}
 			} catch (BeditaException $ex) {
-				$response['langTextFailed'][] = array(
+				$results['langTextFailed'][] = array(
 					"object_id" => $r['LangText']['object_id'],
 					"lang" => $r['LangText']['lang'],
 					"error" => $ex->getMessage(),
@@ -184,7 +186,7 @@ class SearchText extends BEAppModel
 			}
 		}
 
-		return $response;
+		return $results;
 	}
 			
 	private function saveSearchTexts(array &$searchFields, array &$data) {

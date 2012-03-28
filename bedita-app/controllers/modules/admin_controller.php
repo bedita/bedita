@@ -49,41 +49,45 @@ class AdminController extends ModulesController {
 		// TODO
 	}
 
-	public function utility() { 	
+	/**
+	 * http request load utility page
+	 * ajax request try to execute the utility operation defined in $this->params["form"]["operation"]
+	 * 
+	 * @throws BeditaAjaxException 
+	 */
+	public function utility() {
 		if ($this->params["isAjax"]) {
 			if (empty($this->params["form"]["operation"])) {
 				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
 			}
-			if (!method_exists($this, $this->params["form"]["operation"])) {
-				throw new BeditaAjaxException(__("Error: utility operation doesn't found", true), array("output" => "json"));
-			}
 			try {
-				$data = $this->{$this->params["form"]["operation"]}();
+				$data = ClassRegistry::init("Utility")->call($this->params["form"]["operation"], array('log' => true));
+				// render info/warn message
+				if (!empty($data['log'])) {
+					$this->set('detail', nl2br($data['log']));
+					$data['msgType'] = 'warn';
+				} else {
+					$data['msgType'] = 'info';
+				}
+				$this->set('message', $data['message']);
+				$this->set('class', $data['msgType']);
+				$data['htmlMsg'] = $this->render(null, null, ELEMENTS . 'message.tpl');
+				$this->output = "";
 			} catch (BeditaException $ex) {
 				$details = $ex->getDetails();
 				if (!is_array($details)) {
 					$details = array($details);
 				}
 				$details["output"] = "json";
-				throw new BeditaAjaxException("failed", $details);
+				throw new BeditaAjaxException($ex->getMessage(), $details);
 			}
-			$data["message"] = $this->params["form"]["operation"] . " " . __("operation done", true);
+			
 			$this->view = "View";
 			header("Content-Type: application/json");
 			$this->set("data", $data);
 			$this->eventInfo("utility [". $this->params["form"]["operation"] ."] executed");
 			$this->render(null, "ajax", VIEWS . "/pages/json.ctp");
 		}
-	}
-
-	protected function updateStreamFields() {
-		$streamsUpdated = ClassRegistry::init("Stream")->updateStreamFields();
-		return $streamsUpdated;
-	}
-	
-	protected function rebuildIndex() {
-		$results = ClassRegistry::init("SearchText")->rebuildIndex();
-		return $results;
 	}
 	
 	public function coreModules() {
