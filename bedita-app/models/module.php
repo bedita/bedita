@@ -235,12 +235,12 @@ class Module extends BEAppModel {
 				$tableMeta = $beSchema->tableMetaData($model, $db);
 				
 				// if fields do not match, error
-				// FIXME: doesn't work!! 
-				sort($tabData);
-				sort($tableMeta);
-				$diff = array_diff($tabData, $tableMeta);
-				if(!empty($diff)) {
-					throw new BeditaException(__("Database schema conflict", true));
+				ksort($tabData);
+				ksort($tableMeta);
+				$diff1 = array_diff_key($tabData, $tableMeta);
+				$diff2 = array_diff_key($tableMeta, $tabData);
+				if(!empty($diff1) || !empty($diff2)) {
+					throw new BeditaException(__("Database schema conflict, table has different schema", true) . ": " . $tabName);
 				}
 				ClassRegistry::removeObject($modelName);
 				
