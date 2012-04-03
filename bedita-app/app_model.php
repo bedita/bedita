@@ -1033,7 +1033,9 @@ abstract class BeditaImportFilter extends BEAppModel {
 	 *  "error" => error message (optional)
 	 * @throws BeditaException
 	 */
-	abstract public function import($sourcePath, array $options = array());
+	public function import($sourcePath, array $options = array())  {
+		throw new BeditaException(__("Missing method", true));
+	}
 	
 	/**
 	 * Supported mime types
@@ -1075,7 +1077,9 @@ abstract class BeditaExportFilter extends BEAppModel {
 	 *  "size" - content length
 	 * @throws BeditaException
 	 */
-	abstract public function export(array &$objects, array $options = array());
+	public function export(array &$objects, array $options = array()) {
+		throw new BeditaException(__("Missing method", true));
+	}
 	
 	/**
 	 * Supported mime types
