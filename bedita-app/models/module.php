@@ -273,6 +273,7 @@ class Module extends BEAppModel {
 	 * @return void
 	 */
 	public function unplugModule($id, array& $setup) {
+		$name = $this->field("name", array("id" => $id));
 		if (!$this->delete($id)) {
 			throw new BeditaException(__("Error deleting module " . $setup["publicName"], true));
 		}
@@ -301,6 +302,14 @@ class Module extends BEAppModel {
 		
 		clearCache(null, 'models');
 		clearCache(null, 'persistent');
+		
+		$pluginPath = BEDITA_MODULES_PATH . DS . $name . DS . "models" . DS;
+		$appPaths = App::path('models');
+		$res = array_search($pluginPath, $appPaths);
+		if($res !== false) {
+			unset($appPaths[$res]);
+			App::build(array("models" => $appPaths), true);
+		}
 		
 		// recaching configuration
 		BeLib::getObject("BeConfigure")->cacheConfig();

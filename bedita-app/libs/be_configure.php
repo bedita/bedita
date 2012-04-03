@@ -118,7 +118,7 @@ class BeConfigure {
 		
 		// read import / export filters
 		$filters = array();
-		$models = App::objects('model');
+		$models = App::objects('model', null, false);
 		foreach ($models as $modName) {
 			$modClass = ClassRegistry::init($modName);
 			if($modClass instanceof BeditaImportFilter) {
