@@ -41,8 +41,18 @@ class DbadminShell extends BeditaBaseShell {
 		
 		$conf = Configure::getInstance();
 		$searchText = ClassRegistry::init("SearchText");
-		$beObj = ClassRegistry::init("BEObject");
-		$beObj->contain();
+
+		if (isset($this->params['t'])) {
+			$beObj = ClassRegistry::init($this->params['t']);
+			if(empty($beObj)) {
+				$this->out("Bad object type: ". $this->params['t']);
+				return;
+			}
+			$beObj->contain(array("BEObject"));
+		} else {
+			$beObj = ClassRegistry::init("BEObject");
+			$beObj->contain();
+		}
 		$res = $beObj->find('all',array("fields"=>array('id')));
 		$this->hr();
 		$this->out("Objects:");
@@ -498,11 +508,11 @@ class DbadminShell extends BeditaBaseShell {
 	
 	public function exportXml() {
 		if (!isset($this->params['o'])) {
-			$this->out("output file is mandatory");
+			$this->out("output file is mandatory, use -o");
 			return;
 		}
 		if (!isset($this->params['t'])) {
-			$this->out("object type is mandatory");
+			$this->out("object type is mandatory, use -t");
 			return;
 		}
 		$conf = Configure::getInstance() ;
@@ -784,6 +794,40 @@ class DbadminShell extends BeditaBaseShell {
 		
 	}
 
+	/**
+	 * Massive removal of object type
+	 */
+	public function massRemove() {
+
+		if(empty($this->params['type'])) {
+			$this->out("Parameter -type mandatory [object type]");
+			return;
+		}
+
+		$type = $this->params['type'];
+		$objTypeId = Configure::read("objectTypes." . $type . ".id");
+		if(empty($objTypeId)) {
+			$this->out("object type " . $type . " not found");
+		}
+
+		$model = ClassRegistry::init("BEObject");
+
+		$modelType = Configure::read("objectTypes." . $type . ".model");
+		$this->out("Removing all " . $modelType ." from your instance");
+		$ans = $this->in("Proceed??? [y/n]");
+		if($ans != "y") {
+			$this->out("Bye");
+			return;
+		}				
+		$res = $model->deleteAll("BEObject.object_type_id = '$objTypeId'");
+		if($res == false) {
+			$this->out("Error removing items");
+			return;
+		}
+		$this->out("Done");		
+	}
+	
+	
 	public function updateCategoryName() {
 		$categoryModel = ClassRegistry::init("Category");
 		$categoryModel->Behaviors->disable("CompactResult");
@@ -898,6 +942,10 @@ class DbadminShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out("    -o \t xml output file path");
         $this->out("    -t \t object type: document, short_news, event,.....");
+        $this->out(' ');
+        $this->out("17. massRemove: massive removal of object type from system");
+        $this->out(' ');
+        $this->out('    Usage: massRemove -type <model-type> ');
         $this->out(' ');
 	}
 	
