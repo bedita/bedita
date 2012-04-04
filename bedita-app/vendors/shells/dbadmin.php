@@ -794,6 +794,40 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out($response['message']);
 	}
+
+	/**
+	 * Massive removal of object type
+	 */
+	public function massRemove() {
+
+		if(empty($this->params['type'])) {
+			$this->out("Parameter -type mandatory [object type]");
+			return;
+		}
+
+		$type = $this->params['type'];
+		$objTypeId = Configure::read("objectTypes." . $type . ".id");
+		if(empty($objTypeId)) {
+			$this->out("object type " . $type . " not found");
+		}
+
+		$model = ClassRegistry::init("BEObject");
+
+		$modelType = Configure::read("objectTypes." . $type . ".model");
+		$this->out("Removing all " . $modelType ." from your instance");
+		$ans = $this->in("Proceed??? [y/n]");
+		if($ans != "y") {
+			$this->out("Bye");
+			return;
+		}				
+		$res = $model->deleteAll("BEObject.object_type_id = '$objTypeId'");
+		if($res == false) {
+			$this->out("Error removing items");
+			return;
+		}
+		$this->out("Done");		
+	}
+	
 	
 	public function updateCategoryName() {
 		$categoryModel = ClassRegistry::init("Category");
@@ -921,6 +955,10 @@ class DbadminShell extends BeditaBaseShell {
         $this->out(' ');
 		$this->out("    -log \t write errors on clearMediaCache.log file");
   		$this->out(' ');
+        $this->out("18. massRemove: massive removal of object type from system");
+        $this->out(' ');
+        $this->out('    Usage: massRemove -type <model-type> ');
+        $this->out(' ');
 	}
 	
 }
