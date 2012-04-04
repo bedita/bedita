@@ -196,6 +196,7 @@ class AdminController extends ModulesController {
 	 }
 
 	private function loadGroups() {
+		$this->Group->recursive = -1;
 		return $this->paginate('Group');
 	}
 	 
@@ -206,15 +207,12 @@ class AdminController extends ModulesController {
 	 }
 	 
 	  function viewGroup($id = null) {
-		$this->set('groups', $this->loadGroups());
 	  	$g = $this->Group->findById($id);
-	  	if(empty($g))
+	  	if(empty($g)) {
 	  		throw new BeditaException(__("Bad data",true));
-	  	foreach($g['User'] as &$user) {
-	  		$u = $this->User->findById($user['id']);
-	  		$user['userid'] = $u['User']['userid'];
-	  	}
+		}
 		$this->set('group', $g);
+		$this->set('groups', $this->loadGroups());
 		
 		$modules = $this->allModulesWithFlag();
 		$permsMod = ClassRegistry::init("PermissionModule")->getPermissionModulesForGroup($id);
