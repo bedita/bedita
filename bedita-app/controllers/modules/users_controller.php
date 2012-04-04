@@ -251,40 +251,26 @@ class UsersController extends ModulesController {
 		BeLib::getObject("BeConfigure")->setExtAuthTypes();
 	}
 
-	private function loadGroups($userDetails = false) {
-		if ($userDetails) {
-			$groups = $this->paginate('Group');
-		} else {
-			$this->Group->recursive = -1;
-			$groups = $this->paginate('Group');
-			foreach ($groups as &$g) {
-				$g['Group']['num_of_users'] = $this->Group->countUsersInGroup($g["Group"]["id"]);
-			}
-		}
-		return $groups;
-	}
-
 	function groups() {
-		$conditions = array();
 		if (!empty($this->params["form"]["searchstring"]) && strlen($this->params["form"]["searchstring"]) > 3) {
 			$this->paginate["Group"]["conditions"] = array("Group.name LIKE" => $this->params["form"]["searchstring"] . "%");
 			$this->set("stringSearched", $this->params["form"]["searchstring"]);
 		}
-		$this->set('groups', $this->loadGroups());
+		$this->Group->recursive = -1;
+		$groups = $this->paginate('Group');
+		foreach ($groups as &$g) {
+			$g['Group']['num_of_users'] = $this->Group->countUsersInGroup($g["Group"]["id"]);
+		}
+		$this->set('groups', $groups);
 		$this->set('group',  NULL);
 		$this->set('modules', $this->allModulesWithFlag());
 	}
 	 
 	function viewGroup($id = null) {
-		$this->set('groups', $this->loadGroups(true));
 		if(!empty($id)) {
 			$g = $this->Group->findById($id);
 			if (empty($g)) {
 				throw new BeditaException(__("No group found with id", true) . " " . $id);
-			}
-			foreach($g['User'] as &$user) {
-				$u = $this->User->findById($user['id']);
-				$user['userid'] = $u['User']['userid'];
 			}
 			$this->set('group', $g);
 		}
