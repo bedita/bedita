@@ -277,6 +277,60 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 		$this->from = $from . $this->from;
 	}
+	
+	/**
+	 * custom property filter
+	 * filter rules:
+	 *	- default join used is INNER JOIN. It can be overriden with 'join' key in $value
+	 *  - if $value is a string or a number set condition respectively to property_value or property_id
+	 * 
+	 * @param string $s
+	 * @param string $e
+	 * @param mixed $value can be a string/number or an array with keys equal to object_properties table field
+	 */
+	private function custom_propertyFilter($s, $e, $value) {
+		if (!is_array($value)) {
+			$value = (is_numeric($value))? array('property_id' => $value) : array('property_value' => $value);
+		}
+		$defaultOptions = array('join' => 'INNER JOIN');
+		$value = array_merge($defaultOptions, $value);
+		$this->fields .= ", " . $this->model->fieldsString("ObjectProperty");
+		$from = " " . $value['join'] . " {$s}object_properties{$e} AS {$s}ObjectProperty{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectProperty{$e}.{$s}object_id{$e}";
+		unset($value['join']);
+		if (!empty($value)) {
+			foreach ($value as $k => $v) {
+				$from .= " AND {$s}ObjectProperty{$e}.{$s}{$k}{$e}='" . $v ."'";
+			}
+		}
+		$this->from = $from . $this->from;
+	}
+	
+	/**
+	 * date item filter
+	 * filter rules:
+	 *	- default join used is INNER JOIN. It can be overriden with 'join' key in $value
+	 *  - if $value is a number set condition start_date
+	 * 
+	 * @param string $s
+	 * @param string $e
+	 * @param mixed $value can be a number or an array with keys equal to date_items table field
+	 */
+	private function date_itemFilter($s, $e, $value) {
+		if (!is_array($value)) {
+			$value = array('start_date' => $value);
+		}
+		$defaultOptions = array('join' => 'INNER JOIN');
+		$value = array_merge($defaultOptions, $value);
+		$this->fields .= ", " . $this->model->fieldsString("DateItem");
+		$from = " " . $value['join'] . "  {$s}date_items{$e} AS {$s}DateItem{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}DateItem{$e}.{$s}object_id{$e}";
+		unset($value['join']);
+		if (!empty($value)) {
+			foreach ($value as $field => $value) {
+				$from .= " AND {$s}DateItem{$e}.{$s}{$k}{$e}='" . $v ."'";
+			}
+		}
+		$this->from = $from . $this->from;
+	}
 }
  
 ?>

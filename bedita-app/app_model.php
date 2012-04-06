@@ -430,6 +430,11 @@ class BEAppModel extends AppModel {
 				unset($tmp[$i]["DateItem"]);
 			}
 			
+			if (!empty($tmp[$i]["ObjectProperty"])) {
+				$tmpToAdd["ObjectProperty"] = $tmp[$i]["ObjectProperty"];
+				unset($tmp[$i]["ObjectProperty"]);
+			}
+			
 			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
 		
