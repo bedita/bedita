@@ -331,6 +331,44 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 		$this->from = $from . $this->from;
 	}
+	
+	/**
+	 * count relation filter
+	 * 
+	 * @param string $s
+	 * @param string $e
+	 * @param mixed $value relation or array of relations (object_relations.switch field)
+	 */
+	private function count_relationsFilter($s, $e, $value) {
+		if (!is_array($value)) {
+			$value = array($value);
+		}
+		if (!empty($this->filter["object_type_id"])) {
+			$object_type_id = $this->filter["object_type_id"];
+		} elseif (!empty($this->filter["BEObject.object_type_id"])) {
+			$object_type_id = $this->filter["BEObject.object_type_id"];
+		}
+		foreach ($value as $relation) {
+			$numOf =  "num_of_relations_" . $relation;
+			$alias = "Relation" . Inflector::camelize($relation);
+			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$from = " LEFT OUTER JOIN (
+						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}{$alias}{$e}.{$s}id{$e}) AS " . $numOf ."
+						FROM {$s}objects{$e} AS {$s}BEObject{$e} 
+						LEFT OUTER JOIN {$s}object_relations{$e} as {$s}{$alias}{$e} ON {$s}{$alias}{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}{$alias}{$e}.{$s}switch{$e} = '{$relation}'
+					";
+			
+			if (!empty($object_type_id)) {
+				$from .= (is_array($object_type_id))? "WHERE {$s}BEObject{$e}.{$s}object_type_id{$e} IN (" . implode(",", $object_type_id) . ")" : "WHERE {$s}BEObject{$e}.{$s}object_type_id{$e}=".$object_type_id;
+			}
+			
+			$from .= " GROUP BY {$s}BEObject{$e}.{$s}id{$e}
+					) AS {$s}{$alias}{$e} ON {$s}{$alias}{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}";
+			
+			
+			$this->from = $from . $this->from;
+		}
+	}
 }
  
 ?>
