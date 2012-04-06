@@ -325,7 +325,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$from = " " . $value['join'] . "  {$s}date_items{$e} AS {$s}DateItem{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}DateItem{$e}.{$s}object_id{$e}";
 		unset($value['join']);
 		if (!empty($value)) {
-			foreach ($value as $field => $value) {
+			foreach ($value as $k => $v) {
 				$from .= " AND {$s}DateItem{$e}.{$s}{$k}{$e}='" . $v ."'";
 			}
 		}
