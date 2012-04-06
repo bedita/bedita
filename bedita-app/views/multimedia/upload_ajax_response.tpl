@@ -8,6 +8,7 @@
 {t}Go to{/t} <a href="{$html->url('/multimedia/view/')}{$objectId}">{$objectTitle}</a>
 {/if}
 {if !empty($redirUrl)}
+REDIRECTING...
 <script type="text/javascript">
 	$(document).ready(function() { 
 		document.location = "{$html->url($redirUrl)}";

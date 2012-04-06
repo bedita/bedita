@@ -153,14 +153,10 @@ class MultimediaController extends ModulesController {
 					$id = $this->BeUploadToObj->cloneMediaObject($this->data);
 					$this->set("redirUrl","/multimedia/view/".$id);
 				} else { // new_file_old_obj
-					unset($this->params['form']['Filedata']);
 					$id = $this->data['upload_other_obj_id'];
 					$this->data['id'] = $id;
-					$oldObj = $this->Stream->findById($id);
-					$this->data['object_type_id'] = $oldObj['Stream']['object_type_id'];
-					$this->data['uri'] = $oldObj['Stream']['uri'];
-					$this->data['name'] = $oldObj['Stream']['name'];
-					$this->data['mime_type'] = $oldObj['Stream']['mime_type'];
+					$this->data['name'] = $this->params['form']['Filedata']['name'];
+					$this->params['form']['forceupload'] = true;
 					$this->save();
 					$this->set("redirUrl","/multimedia/view/".$id);
 				}
@@ -202,12 +198,16 @@ class MultimediaController extends ModulesController {
 		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
 	
 		if (!empty($this->params['form']['Filedata']['name'])) {
-			unset($this->data['url']);
+			if(!empty($this->data['url'])) {
+				unset($this->data['url']);
+			}
 			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
 		} elseif (!empty($this->data['url'])) {
 			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;
 		} else {
-			unset($this->data['url']);
+			if(!empty($this->data['url'])) {
+				unset($this->data['url']);
+			}
 			$model = (!empty($this->data["id"]))? $this->BEObject->getType($this->data["id"]) : "BEFile";
 			
 			if ($model == "Video") {
