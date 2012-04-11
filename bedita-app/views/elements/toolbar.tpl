@@ -57,7 +57,7 @@
 			
 			<td> 
 			
-				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
+				<form action="{$html->url('/')}{$moduleName}/{$view->action}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
 				<span>{t}search{/t}</span> : <span class="evidence"> &nbsp;</span>
 				<input type="text" name="searchstring" value="{$stringSearched|default:""}"/>
 				
