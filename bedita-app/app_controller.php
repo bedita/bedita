@@ -191,7 +191,7 @@ class AppController extends Controller
 		if(isset( $conf->locales[$this->currLang])) {
 			$this->currLocale = setlocale(LC_ALL, $conf->locales[$this->currLang]);
 		} else {
-			$this->currLocale = setlocale(LC_ALL, 0);
+			$this->currLocale = setlocale(LC_ALL, '');
 		}
 		$this->set('currLocale', $this->currLocale);
 		
