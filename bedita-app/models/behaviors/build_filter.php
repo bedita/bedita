@@ -22,7 +22,7 @@
 /**
  * 
  * BuildFilter Class
- * build custom sql statements used in BEAppModel::findObjects() method
+ * build custom sql statements used in BEAppModel::findObjects() method to filter list of BEdita objects
  * 
  * It can be extended with custom behavior classes to refine query according to your needs
  * 
@@ -48,7 +48,7 @@
  *	- "fields" => string of fields to add to query
  *	- "fromStart" => string of FROM statement to insert at the begin of the string (LEFT, RIGHT and INNER JOIN statements)
  *  - "fromEnd" => string of FROM statement to insert at the end of the string (list of tables and aliases)
- *	- "conditions" => array of conditions to add at WHERE statments
+ *	- "conditions" => array of conditions to add at WHERE statement
  *  - "group" => string to add at GROUP statement
  *  - "order" => string to add at ORDER statement
  * 
@@ -66,7 +66,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	private $conditions = array();
 	private $group = "";
 	private $order = "";
-	private $filter = array();
+	protected $filter = array();
 	protected $startQuote = ""; // internal use: start quote
 	protected $endQuote = ""; // internal use: end quote
 	protected $model = "";
@@ -180,6 +180,11 @@ class BuildFilterBehavior extends ModelBehavior {
 		return array($this->fields, $this->from ,$this->conditions, $this->group, $this->order);
 	}
 	
+	/**
+	 * initialize sql items and some filter
+	 * 
+	 * @param array $filter 
+	 */
 	private function initVars(array $filter) {
 		$this->fields = "";
 		$this->from = "";
@@ -211,6 +216,13 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->filter = $filter;
 	}
 	
+	/**
+	 * filter to get user_id (as obj_userid) joined to an object through object_users table
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, if not empty to get user_id joined to an object with $value relation (object_users.swicth)
+	 */
 	protected function object_userFilter($s, $e, $value = null) {
 		//$this->fields .= ", {$s}UserOU{$e}.{$s}userid{$e} AS obj_userid";
 		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS obj_userid";
@@ -224,6 +236,19 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->group .= ", obj_userid";
 	}
 	
+	/**
+	 * add a count of Annotation objects as Comment, EditoreNote, etc...
+	 * If 'object_type_id' specified in BuildFilter::filter then get annotations for that object type/s
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, annotation model or an array of annotation models
+	 *			Example:
+	 * 
+	 *			$value = "Comment" => add count of comment as 'num_of_comment'
+	 *			$value = array("Comment", "EditorNote") => add count of comments as 'num_of_comment' 
+	 *													   and count of editor notes as 'num_of_editor_note'
+	 */
 	protected function count_annotationFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = array($value);
@@ -257,6 +282,12 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 	
+	/**
+	 * get a category of an object naming it mediatype (used in Multimedia module)
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 */
 	protected function mediatypeFilter($s, $e) {
 		$this->fields .= ", {$s}Category{$e}.{$s}name{$e} AS mediatype";
 		$this->from = " LEFT OUTER JOIN {$s}object_categories{$e} AS {$s}ObjectCategory{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectCategory{$e}.{$s}object_id{$e}
@@ -264,6 +295,13 @@ class BuildFilterBehavior extends ModelBehavior {
 				. $this->from;
 	}
 	
+	/**
+	 * search text filter
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param string $value, the string to search for
+	 */
 	protected function queryFilter($s, $e, $value) {
 		// #MYSQL
 		App::import('Sanitize');
@@ -274,6 +312,13 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->order .= "points DESC ";
 	}
 	
+	/**
+	 * filter objects by category
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, id or category name
+	 */
 	protected function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
@@ -284,6 +329,13 @@ class BuildFilterBehavior extends ModelBehavior {
 						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL";
 	}
 	
+	/**
+	 * filter objects by tag
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, id or tag name
+	 */
 	protected function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
@@ -294,6 +346,13 @@ class BuildFilterBehavior extends ModelBehavior {
 						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NULL";
 	}
 	
+	/**
+	 * get RelatedObject fields
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param type $value [unused?? To verify]
+	 */
 	protected function rel_detailFilter($s, $e, $value) {
 		if (!empty($value)) {
 			if (!isset($this->filter["ObjectRelation.switch"]))
@@ -307,6 +366,18 @@ class BuildFilterBehavior extends ModelBehavior {
 		}		
 	}
 	
+	/**
+	 * get the object referenced from an Annotation object as Comment, EditorNote
+	 * 
+	 * Example: getting a list of comment you can take also the object commented with
+	 * 
+	 * $filter['object_type_id'] = Configure::read('objectTypes.comment.id'); // to filter comments
+	 * $filter['ref_object_details'] = 'Comment'; // to get also the object commented
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param string $value, the Annotation Model as Comment, EditorNote, ...
+	 */
 	protected function ref_object_detailsFilter($s, $e, $value) {
 		if (!empty($value)) {
 			$refFields = $this->model->fieldsString("BEObject", "ReferenceObject");
@@ -317,12 +388,25 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 	
+	/**
+	 * filter the cards joined at a mail group (used in Newsletter module)
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param integer $value, mail_group_id
+	 */
 	protected function mail_groupFilter($s, $e, $value) {
 		$this->from .= ", {$s}mail_group_cards{$e} AS {$s}MailGroupCard{$e}";
 		$this->conditions[] = "{$s}MailGroupCard{$e}.{$s}mail_group_id{$e}='" . $value . "' 
 					AND {$s}MailGroupCard{$e}.{$s}card_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 	}
 
+	/**
+	 * get userid (username) and real name of user that has created the object
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 */
 	protected function user_createdFilter($s, $e) {
 		$locFields = ", {$s}User{$e}.{$s}userid{$e}, {$s}User{$e}.{$s}realname{$e}";
 		$this->fields .= $locFields;
@@ -332,9 +416,11 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 
 	/**
-	 * count objects' permissions
-	 *
-	 * @param mixed $value, if it's integer then count $value permissions
+	 * count objects' permissions as num_of_permission
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, if it's integer then count $value permission
 	 */
 	protected function count_permissionFilter($s, $e, $value) {
 		$this->fields .= ", COUNT({$s}Permission{$e}.{$s}id{$e}) AS num_of_permission";
@@ -347,12 +433,14 @@ class BuildFilterBehavior extends ModelBehavior {
 	
 	/**
 	 * custom property filter
+	 * get object_properties fields as ObjectProperty
+	 * 
 	 * filter rules:
 	 *	- default join used is INNER JOIN. It can be overriden with 'join' key in $value
 	 *  - if $value is a string or a number set condition respectively to property_value or property_id
 	 * 
-	 * @param string $s
-	 * @param string $e
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
 	 * @param mixed $value can be a string/number or an array with keys equal to object_properties table field
 	 */
 	protected function custom_propertyFilter($s, $e, $value) {
@@ -374,12 +462,14 @@ class BuildFilterBehavior extends ModelBehavior {
 	
 	/**
 	 * date item filter
+	 * get date_items fields as DateItem
+	 * 
 	 * filter rules:
 	 *	- default join used is INNER JOIN. It can be overriden with 'join' key in $value
 	 *  - if $value is a number set condition start_date
 	 * 
-	 * @param string $s
-	 * @param string $e
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
 	 * @param mixed $value can be a number or an array with keys equal to date_items table field
 	 */
 	protected function date_itemFilter($s, $e, $value) {
@@ -401,10 +491,17 @@ class BuildFilterBehavior extends ModelBehavior {
 	
 	/**
 	 * count relation filter
+	 * If 'object_type_id' specified in BuildFilter::filter then get relations for that object type/s
 	 * 
-	 * @param string $s
-	 * @param string $e
-	 * @param mixed $value relation or array of relations (object_relations.switch field)
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param mixed $value, relation name or array of relations (object_relations.switch field)
+	 * 
+	 *		Example:
+	 * 
+	 *			$value = "seealso" => add count of seealso relation as 'num_of_relations_seealso'
+	 *			$value = array("seealso", "download") => add count of seealso relation as 'num_of_relations_seealso'
+	 *													 and count of download relation as 'num_of_relations_download'
 	 */
 	protected function count_relationsFilter($s, $e, $value) {
 		if (!is_array($value)) {
