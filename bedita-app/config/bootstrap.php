@@ -128,9 +128,12 @@ if (!defined("BEDITA_FRONTENDS_PATH")) {
 	define("BEDITA_FRONTENDS_PATH", BEDITA_CORE_PATH . DS . ".." . DS . 'frontends');
 }
 
-// add addons models, components, helpers and vendors path
+// add addons models, behaviors,  components, helpers and vendors path
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
 	$modelPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
+}
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors')) {
+	$vendorPaths[] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
 	$componentPaths[] = BEDITA_ADDONS_PATH . DS . 'components' . DS;

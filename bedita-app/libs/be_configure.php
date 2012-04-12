@@ -122,7 +122,7 @@ class BeConfigure {
 	}
 	
 	/**
-	 * add models and components module plugin paths to BEdita core paths
+	 * add models, behaviors and components module plugin paths to BEdita core paths
 	 * 
 	 * @param array $cachedConfig configuration cached
 	 */
@@ -131,6 +131,7 @@ class BeConfigure {
 		if (!empty($cachedConfig["plugged"]["modules"])) {
 			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
 				array_unshift($conf->modelPaths, $m["pluginPath"] . DS . "models" . DS);
+				array_unshift($conf->behaviorPaths, $m["pluginPath"] . DS . "models" . DS . "behaviors" . DS);
 				array_unshift($conf->componentPaths, $m["pluginPath"] . DS . "components" .DS);
 			}
 		}

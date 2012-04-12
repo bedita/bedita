@@ -21,7 +21,38 @@
 
 /**
  * 
- *
+ * BuildFilter Class
+ * build custom sql statements used in BEAppModel::findObjects() method
+ * 
+ * It can be extended with custom behavior classes to refine query according to your needs
+ * 
+ * Example:
+ * 
+ * App::import('Behavior', 'BuildFilter');
+ * 
+ * ClassNameFilterBehavior extends BuildFilterBehavior {
+ * 
+ *		public function myFilterMethod($data) {
+ * 
+ *		}
+ * 
+ * }
+ * 
+ * to call that method you have to build your filter to pass at BEAppModel::findObjects() as
+ * 
+ * $filter['ClassNameFilter.myFilterMethod'] = $yourData;
+ * 
+ * $yourData item will be passed to myFilterMethod as first argument
+ * 
+ * methods of your custom filter class should be return an array that can have the following keys:
+ *	- "fields" => string of fields to add to query
+ *	- "fromStart" => string of FROM statement to insert at the begin of the string (LEFT, RIGHT and INNER JOIN statements)
+ *  - "fromEnd" => string of FROM statement to insert at the end of the string (list of tables and aliases)
+ *	- "conditions" => array of conditions to add at WHERE statments
+ *  - "group" => string to add at GROUP statement
+ *  - "order" => string to add at ORDER statement
+ * 
+ * 
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
@@ -38,7 +69,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	private $filter = array();
 	protected $startQuote = ""; // internal use: start quote
 	protected $endQuote = ""; // internal use: end quote
-	private $model = "";
+	protected $model = "";
 	
 	
 	function setup(&$model, $settings=array()) {
@@ -66,7 +97,43 @@ class BuildFilterBehavior extends ModelBehavior {
 		// #CUSTOM QUERY -- all class methods
 		foreach ($this->filter as $key => $val) {
 			
-			if (method_exists($this, $key . "Filter")) {
+			$filterExtension = explode(".", $key);
+			$filterClassName = null;
+			$filterMethodName = null;
+			if (count($filterExtension) > 1) {
+				$filterClassName = $filterExtension[0];
+				$filterMethodName = $filterExtension[1];
+			}
+			if ($filterClassName && App::import('Behavior', $filterClassName) 
+					&& is_subclass_of($filterClassName . 'Behavior', get_class($this))
+					&& method_exists($filterClassName . 'Behavior', $filterMethodName)) {
+				
+				// attach behavior
+				if (!$this->model->Behaviors->attached($filterClassName)) {
+					$this->model->Behaviors->attach($filterClassName);
+				}
+				
+				$items = $this->model->Behaviors->$filterClassName->$filterMethodName($val);
+				if (!empty($items["fields"])) {
+					$this->fields .= ", " . $items["fields"];
+				}
+				if (!empty($items["fromStart"])) {
+					$this->from = $items["fromStart"] . $this->from;
+				}
+				if (!empty($items["fromEnd"])) {
+					$this->from .= ", " . $items["fromEnd"];
+				}
+				if (!empty($items["conditions"])) {
+					$this->conditions = array_merge($this->conditions, $items["conditions"]);
+				}
+				if (!empty($items["group"])) {
+					$this->group .= $items["group"];
+				}
+				if (!empty($items["order"])) {
+					$this->order .= $items["order"];
+				}
+						
+			} elseif (method_exists($this, $key . "Filter")) {
 				$this->{$key . "Filter"}($s, $e, $val);
 			} else {
 			
@@ -144,7 +211,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->filter = $filter;
 	}
 	
-	private function object_userFilter($s, $e, $value = null) {
+	protected function object_userFilter($s, $e, $value = null) {
 		//$this->fields .= ", {$s}UserOU{$e}.{$s}userid{$e} AS obj_userid";
 		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS obj_userid";
 		$from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}";
@@ -157,7 +224,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->group .= ", obj_userid";
 	}
 	
-	private function count_annotationFilter($s, $e, $value) {
+	protected function count_annotationFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = array($value);
 		}
@@ -190,14 +257,14 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 	
-	private function mediatypeFilter($s, $e) {
+	protected function mediatypeFilter($s, $e) {
 		$this->fields .= ", {$s}Category{$e}.{$s}name{$e} AS mediatype";
 		$this->from = " LEFT OUTER JOIN {$s}object_categories{$e} AS {$s}ObjectCategory{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectCategory{$e}.{$s}object_id{$e}
 				LEFT OUTER JOIN {$s}categories{$e} AS {$s}Category{$e} ON {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e} AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL"
 				. $this->from;
 	}
 	
-	private function queryFilter($s, $e, $value) {
+	protected function queryFilter($s, $e, $value) {
 		// #MYSQL
 		App::import('Sanitize');
 		$value = Sanitize::html($value, array('remove' => true));
@@ -207,7 +274,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->order .= "points DESC ";
 	}
 	
-	private function categoryFilter($s, $e, $value) {
+	protected function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$s} AS {$s}Category{$s}, {$s}object_categories{$s} AS {$s}ObjectCategory{$s}";
@@ -217,7 +284,7 @@ class BuildFilterBehavior extends ModelBehavior {
 						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL";
 	}
 	
-	private function tagFilter($s, $e, $value) {
+	protected function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
@@ -227,7 +294,7 @@ class BuildFilterBehavior extends ModelBehavior {
 						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NULL";
 	}
 	
-	private function rel_detailFilter($s, $e, $value) {
+	protected function rel_detailFilter($s, $e, $value) {
 		if (!empty($value)) {
 			if (!isset($this->filter["ObjectRelation.switch"]))
 				$this->filter["ObjectRelation.switch"] = "";
@@ -240,7 +307,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		}		
 	}
 	
-	private function ref_object_detailsFilter($s, $e, $value) {
+	protected function ref_object_detailsFilter($s, $e, $value) {
 		if (!empty($value)) {
 			$refFields = $this->model->fieldsString("BEObject", "ReferenceObject");
 			$this->fields .= ", $refFields";
@@ -250,13 +317,13 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 	
-	private function mail_groupFilter($s, $e, $value) {
+	protected function mail_groupFilter($s, $e, $value) {
 		$this->from .= ", {$s}mail_group_cards{$e} AS {$s}MailGroupCard{$e}";
 		$this->conditions[] = "{$s}MailGroupCard{$e}.{$s}mail_group_id{$e}='" . $value . "' 
 					AND {$s}MailGroupCard{$e}.{$s}card_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 	}
 
-	private function user_createdFilter($s, $e) {
+	protected function user_createdFilter($s, $e) {
 		$locFields = ", {$s}User{$e}.{$s}userid{$e}, {$s}User{$e}.{$s}realname{$e}";
 		$this->fields .= $locFields;
 		$this->from .= ", {$s}users{$e} AS {$s}User{$e}";
@@ -269,7 +336,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 *
 	 * @param mixed $value, if it's integer then count $value permissions
 	 */
-	private function count_permissionFilter($s, $e, $value) {
+	protected function count_permissionFilter($s, $e, $value) {
 		$this->fields .= ", COUNT({$s}Permission{$e}.{$s}id{$e}) AS num_of_permission";
 		$from = " LEFT OUTER JOIN {$s}permissions{$e} as {$s}Permission{$e} ON {$s}Permission{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e}";
 		if (is_numeric($value)) {
@@ -288,7 +355,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param string $e
 	 * @param mixed $value can be a string/number or an array with keys equal to object_properties table field
 	 */
-	private function custom_propertyFilter($s, $e, $value) {
+	protected function custom_propertyFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = (is_numeric($value))? array('property_id' => $value) : array('property_value' => $value);
 		}
@@ -315,7 +382,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param string $e
 	 * @param mixed $value can be a number or an array with keys equal to date_items table field
 	 */
-	private function date_itemFilter($s, $e, $value) {
+	protected function date_itemFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = array('start_date' => $value);
 		}
@@ -339,7 +406,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param string $e
 	 * @param mixed $value relation or array of relations (object_relations.switch field)
 	 */
-	private function count_relationsFilter($s, $e, $value) {
+	protected function count_relationsFilter($s, $e, $value) {
 		if (!is_array($value)) {
 			$value = array($value);
 		}
