@@ -64,6 +64,14 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 /**
  ** ******************************************
+ **  System locales available
+ **  use arrays of locale strings
+ ** ******************************************
+ */
+require_once(BEDITA_CORE_PATH.DS.'config'.DS.'locales.php');
+
+/**
+ ** ******************************************
  **  Statistics settings
  ** ******************************************
  */
