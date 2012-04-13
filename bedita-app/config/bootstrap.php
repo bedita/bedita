@@ -133,7 +133,7 @@ if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
 	$modelPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors')) {
-	$vendorPaths[] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
+	$behaviorPaths[] = BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors';
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
 	$componentPaths[] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
