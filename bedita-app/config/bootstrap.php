@@ -137,6 +137,9 @@ if (!defined("BEDITA_FRONTENDS_PATH")) {
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models')) {
 	$additionalPaths["models"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS;
 }
+if (is_dir(BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors')) {
+	$additionalPaths["behaviors"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors' . DS;
+}
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'components')) {
 	$additionalPaths["components"][] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
 }

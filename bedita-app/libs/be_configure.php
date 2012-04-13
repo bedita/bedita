@@ -157,6 +157,7 @@ class BeConfigure {
 			$additionalPaths["components"] = array();
 			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
 				$additionalPaths["models"][] = $m["pluginPath"] . DS . "models" . DS;
+				$additionalPaths["behaviors"][] = $m["pluginPath"] . DS . "models" . DS . "behaviors" . DS;
 				$additionalPaths["components"][] = $m["pluginPath"] . DS . "components" .DS;
 			}
 			App::build($additionalPaths);
