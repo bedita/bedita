@@ -61,14 +61,61 @@
  */
 class BuildFilterBehavior extends ModelBehavior {
  	
+	/**
+	 * string of query fields
+	 * @var string
+	 */
 	private $fields = "";
+	
+	/**
+	 * sql FROM statement
+	 * it hasn't to contain the "FROM" string
+	 * @var string 
+	 */
 	private $from = "";
+	
+	/**
+	 * sql conditions
+	 * @var array 
+	 */
 	private $conditions = array();
+	
+	/**
+	 * sql GROUP statement
+	 * it hasn't to contain the "GROUP" string
+	 * @var string 
+	 */
 	private $group = "";
+	
+	/**
+	 * sql ORDER BY statement
+	 * it hasn't to contain the "ORDER BY" string
+	 * @var string
+	 */
 	private $order = "";
+	
+	/**
+	 * filter parameters used to build the sql statements
+	 * @var array
+	 */
 	protected $filter = array();
-	protected $startQuote = ""; // internal use: start quote
-	protected $endQuote = ""; // internal use: end quote
+	
+	/**
+	 * sql start quote
+	 * @var string
+	 */
+	protected $startQuote = "";
+	
+	/**
+	 * sql end quote
+	 * @var string 
+	 */
+	protected $endQuote = "";
+	
+	/**
+	 * model
+	 * @var BEAppModel
+	 */
 	protected $model = "";
 	
 	
@@ -322,7 +369,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	protected function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", {$s}categories{$s} AS {$s}Category{$s}, {$s}object_categories{$s} AS {$s}ObjectCategory{$s}";
+			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
 						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
 						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}
