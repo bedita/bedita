@@ -1448,12 +1448,13 @@ abstract class FrontendController extends AppController {
 		
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
 		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND object_path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
-		
+			
 		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
-		
+
 		if($section_id === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
+		
 		$this->action = 'section';
 		$this->section($section_id, $content_id);	
 	}
@@ -1799,7 +1800,7 @@ abstract class FrontendController extends AppController {
 					if(!empty($pathArr[$p]["canonicalPath"])) {
 						$currPath = $pathArr[$p]["canonicalPath"];
 					} else {
-						if(!empty($pathArr[$p]["menu"]) && $pathArr[$p]["menu"] !== '0') {
+						if((!empty($pathArr[$p]["menu"]) && $pathArr[$p]["menu"] !== '0') || !isset($pathArr[$p]["menu"])) {
 							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
 						}
 						$pathArr[$p]["canonicalPath"] = empty($currPath) ? "/" : $currPath;
