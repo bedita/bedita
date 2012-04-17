@@ -834,7 +834,41 @@ class BeditaShell extends BeditaBaseShell {
 		$this->Cleanup->cleanPHPFiles($this->params["f"], $recursive);
 		$this->out("done");
 	}
-    
+	
+	public function exportFilter() {
+		$this->initConfig();
+		$this->readInputArgs();
+		if (!isset($this->params["f"])) {
+			$this->out("Missing -f parameter");
+			return;
+		}
+		$expFile = $this->params['f'];
+    	$this->checkExportFile($expFile);
+		if (!isset($this->params["id"])) {
+			$this->out("Missing -id parameter");
+			return;
+		}
+		$modelType = ClassRegistry::init("BEObject")->getType($this->params["id"]);
+		$model = ClassRegistry::init($modelType);
+		$data = array($model->findbyId($this->params["id"]));
+				
+		if (!isset($this->params["filter"])) {
+			$this->out("Missing -filter parameter");
+			return;
+		}
+		$this->out("Creating file : " . $expFile . " from object: " . $this->params["id"] 
+			. " using filter: " . $this->params["filter"]);
+		
+		$filterClass = Configure::read("filters.export." . $this->params["filter"]);
+		$filterModel = ClassRegistry::init($filterClass);
+		
+		$result = $filterModel->export($data);
+		file_put_contents($expFile, $result["content"]);
+		$this->out("File created: " . $expFile . " - content type: " . $result["contentType"] 
+			. " size: " . $result["size"]);
+	}
+
+	
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
@@ -898,6 +932,14 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("    -f <file-or-directory-path>");
         $this->out("    -r recusrion on directory");
 		$this->out(' ');
+        $this->out('11. exportFilter: export object using an export filter');
+  		$this->out(' ');
+  		$this->out('   Usage: exportFilter -f <filename> -filter <filtername> -id <object-id>');
+		$this->out(' ');
+		$this->out("    -f <filename>\t actual file name to create");
+        $this->out("    -filter <filtername>\t logical name of filter");
+        $this->out("    -id <object-id>\t object id to export");
+        $this->out(' ');
 	}
 }
 
