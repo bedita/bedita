@@ -30,7 +30,12 @@
  */
 class ObjectProperty extends BEAppModel  {
  	
-	var $belongsTo = array("Property", "BEObject");
+	var $belongsTo = array(
+		"Property", 
+		"BEObject" => array(
+			"foreignKey" => "object_id"
+		)
+	);
 	
 }
  
