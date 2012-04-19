@@ -29,7 +29,7 @@ $().ready(function(e){
 <div id="helpcontainer">
 	<div id="helpcontainer2" class="graced">
 		<h2 class="bedita">
-			BEhelp } {$currentModule.label} } {$html->action}
+			BEhelp } {$currentModule.label|default:''} } {$html->action}
 		</h2>
 		<hr />
 	</div>

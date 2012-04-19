@@ -26,7 +26,7 @@
 	</nav>
 
 </div>
-<!--
+{*
 {foreach from=$moduleList key=k item=mod}
 {if ($mod.status == 'on')}
 <ul class="sub_modulesmenu_d shadow {$mod.name}">
@@ -35,4 +35,4 @@
 </ul>
 {/if}
 {/foreach}
--->
+*}
