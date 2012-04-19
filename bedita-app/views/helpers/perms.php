@@ -34,16 +34,41 @@
  */
 class PermsHelper extends AppHelper {
 
+	/**
+	 * check whether user has read perms
+	 * 
+	 * @param string $user
+	 * @param array $groups
+	 * @param array $permissions
+	 * @return boolean
+	 */
 	public function isReadable($user,$groups,$permissions) {
 		$conf = Configure::getInstance();
 		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_READ);
 	}
 
+	/**
+	 * check whether user has write perms
+	 * 
+	 * @param string $user
+	 * @param array $groups
+	 * @param array $permissions
+	 * @return boolean
+	 */
 	public function isWritable($user,$groups,$permissions) {
 		$conf = Configure::getInstance();
 		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_MODIFY);
 	}
 
+	/**
+	 * check user perms with bitwise AND operator.
+	 * perms are defined in bedita-app/config/bedita.ini.php
+	 * 
+	 * @param string $u user
+	 * @param array $g_arr
+	 * @param array $p_arr
+	 * @param number $p
+	 */
 	private function checkPerm($u,$g_arr,$p_arr,$p) {
 		if(empty($p_arr))
 			return true;

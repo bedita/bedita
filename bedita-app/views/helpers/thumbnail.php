@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Thumbnail helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -30,7 +30,13 @@
  */
 class ThumbnailHelper extends AppHelper {  
 
-	function render($image, $params = array())
+	/**
+	 * render image thumbnail
+	 * 
+	 * @param string $image file name
+	 * @param array $params settings (i.e. path, width, height, quality)
+	 */
+	public function render($image, $params = array())
 	{  
 		//Set defaults  
 		$path    = 'thumbs/';  
@@ -55,7 +61,6 @@ class ThumbnailHelper extends AppHelper {
 			$quality = $params['quality'];
 		}
 
-
 		//import phpThumb class
 		app::import ('Vendor', 'phpthumb', array ('file' => 'phpThumb' . DS . 'phpthumb.class.php') );
 
@@ -76,7 +81,6 @@ class ThumbnailHelper extends AppHelper {
 		$cacheFilename = $image;
 
 		$thumbNail->cache_filename = $thumbNail->config_cache_directory.$cacheFilename;
-
 
 		if (!is_file($thumbNail->cache_filename)) {
 			if ($thumbNail->GenerateThumbnail()) {

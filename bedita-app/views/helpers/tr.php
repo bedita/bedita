@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Translation helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -69,30 +69,51 @@ class TrHelper extends AppHelper {
 			"body" => "HTML version"
 		)
 	);
-			
-	function t($s, $return = false) {
-		return __($s, $return);
-	}
-	
+
 	/**
-	* Normal translation using i18n in cake php
-	*/
-	function translate($s, $return = false) {
+	 * translate a string
+	 * 
+	 * @param string $s
+	 * @param boolean $return
+	 * @return string translation
+	 */
+	public function t($s, $return = false) {
 		return __($s, $return);
 	}
 
 	/**
-	* translate html->link url...
-	*/
-	function link($s, $u) {
+	 * normal translation using i18n in cake php
+	 * 
+	 * @param string $s
+	 * @param boolean $return
+	 * @return string translation
+	 */
+	public function translate($s, $return = false) {
+		return __($s, $return);
+	}
+
+	/**
+	 * translate html->link url...
+	 * 
+	 * @param string $s
+	 * @param string $u
+	 * @return string html link
+	 */
+	public function link($s, $u) {
 		$tr = __($s, true);
 		return $this->Html->link($tr, $u);
 	}
-	
+
 	/**
-	* Normal translation using i18n in cake php
-	*/
-	function translatePlural($s, $plural, $count, $return = false) {
+	 * normal translation using i18n in cake php
+	 * 
+	 * @param string $s Text to translate
+	 * @param string $plural
+	 * @param int $count
+	 * @param boolean $return Set to true to return translated string, or false to echo
+	 * @return mixed translated string if $return is false string will be echoed
+	 */
+	public function translatePlural($s, $plural, $count, $return = false) {
 		return __($s, $plural, $count, $return);
 	}
 
@@ -101,8 +122,9 @@ class TrHelper extends AppHelper {
 	 *
 	 * @param string $moduleName
 	 * @param string $dbFieldName
+	 * @return string
 	 */
-	function moduleField($moduleName, $dbFieldName) {
+	public function moduleField($moduleName, $dbFieldName) {
 		$fieldName = $dbFieldName;
 		if (array_key_exists($moduleName, $this->moduleFieldMap) && array_key_exists($dbFieldName, $this->moduleFieldMap[$moduleName])) {
 			$fieldName = $this->moduleFieldMap[$moduleName][$dbFieldName];

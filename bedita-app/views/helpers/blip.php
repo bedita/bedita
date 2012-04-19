@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Blip tv helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -33,7 +33,14 @@ class BlipHelper extends AppHelper {
 	var $helpers = array("Html");
 	private $blipComponent;
 	
-	function thumbnail(&$obj, $htmlAttributes, $URLonly) {
+	/**
+	 * get blip thumbnail for object
+	 * 
+	 * @param array $obj
+	 * @param array $htmlAttributes
+	 * @param boolean $URLonly
+	 */
+	public function thumbnail(&$obj, $htmlAttributes, $URLonly) {
 		$this->initBlipComponent();
 		$this->blipComponent->getInfoVideo($obj['video_uid']);
 		
@@ -48,7 +55,7 @@ class BlipHelper extends AppHelper {
 	 * @param array $attributes
 	 * @return html embed video
 	 */
-	function embed(&$obj, $attributes) {
+	public function embed(&$obj, $attributes) {
 		$this->conf 	= Configure::getInstance() ;
 		if(!isset($this->conf->media_providers["blip"]["params"])) 
 			return "" ;
@@ -81,11 +88,12 @@ class BlipHelper extends AppHelper {
 	}
 	
 	/**
-	 *
-	 * @param unknown_type $obj
-	 * @return unknown
+	 * get url for blip object
+	 * 
+	 * @param array $obj
+	 * @return string
 	 */
-	function sourceEmbed(&$obj) {
+	public function sourceEmbed(&$obj) {
 		$this->initBlipComponent();
 		$info = $this->blipComponent->getInfoVideo($obj['video_uid']);
 		if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.m4v|^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info["mediaUrl"],$matched)) {

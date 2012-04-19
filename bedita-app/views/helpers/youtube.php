@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * youtube helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -43,7 +43,7 @@ class YoutubeHelper extends AppHelper {
 	 *
 	 * @param array $obj
 	 * @param array $attributes
-	 * @return html embed
+	 * @return string html embed
 	 */
 	function embed($obj, $attributes) {
 		$this->conf 	= Configure::getInstance() ;
@@ -68,9 +68,10 @@ class YoutubeHelper extends AppHelper {
 	}
 	
 	/**
-	 *
+	 * return object url
+	 * 
 	 * @param array $obj
-	 * @return youtube url
+	 * @return string youtube url
 	 */
 	function sourceEmbed(array &$obj) {
 		return $obj['uri'] ;

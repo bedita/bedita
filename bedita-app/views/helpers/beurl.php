@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Url helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -37,9 +37,11 @@ class BeurlHelper extends AppHelper {
 	var $helpers = array('Html','Javascript');
 		
 	/**
+	* get current page url
 	* 
+	* @return string url
 	*/
-	function here() {
+	public function here() {
 		$newUrl = str_replace($this->Html->base, "", $this->Html->here) ;
 		if($newUrl != "/") {
 			$pos = strpos($newUrl,"/");
@@ -48,14 +50,14 @@ class BeurlHelper extends AppHelper {
 		}
 		return $newUrl ;
 	}
-	
+
 	/**
-	 * return url to here
+	 * get url to here
 	 * 
-	 * @param $cleanFromFields, field or array of fields passed by name that you want to clean in url
-	 * @return url
+	 * @param mixed string|array $cleanFromFields, field or array of fields passed by name that you want to clean in url
+	 * @return string url
 	 */
-	function getUrl($cleanFromFields=null) {
+	public function getUrl($cleanFromFields=null) {
 		$paramsNamed = $this->params["named"];
 		if (!empty($cleanFromFields)) {
 			$paramsNamed = $this->cleanPassedArgs($cleanFromFields);
@@ -68,6 +70,7 @@ class BeurlHelper extends AppHelper {
 	/**
 	 * add css and js scripts for modules
 	 * 
+	 * @return string html
 	 */
 	public function addModuleScripts() {
 		$view = ClassRegistry::getObject('view');
@@ -118,7 +121,7 @@ class BeurlHelper extends AppHelper {
 	/**
 	 * return array without params passed to the method
 	 * 
-	 * @param $cleanFromFields
+	 * @param array $cleanFromFields
 	 * @return array of params cleaned
 	 */
 	private function cleanPassedArgs($cleanFromFields) {

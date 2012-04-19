@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Vimeo helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -46,7 +46,7 @@ class VimeoHelper extends AppHelper {
 	 * 
 	 * @param array $obj
 	 * @param array $attributes
-	 * @return html embed video
+	 * @return string html embed video
 	 */
 	function embed(&$obj, $attributes) {
 		$conf = Configure::getInstance();
@@ -71,7 +71,7 @@ class VimeoHelper extends AppHelper {
 	 * path to vimeo video (can't get flv from api)
 	 *
 	 * @param array $obj
-	 * @return youtube path
+	 * @return string youtube path
 	 */
 	function sourceEmbed($obj) {
 		return $obj['uri'] ;

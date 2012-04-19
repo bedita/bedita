@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Media provider helper class
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -40,8 +40,13 @@ class MediaProviderHelper extends AppHelper {
 	
 	/**
 	 * get img tag for thumbnail
+	 * 
+	 * @param array $obj
+	 * @param array $htmlAttributes
+	 * @param boolean $URLonly
+	 * @return string html
 	 */
-	function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
+	public function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
 		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"]))
 			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
 		
@@ -53,8 +58,13 @@ class MediaProviderHelper extends AppHelper {
 	
 	/**
 	 * get embed video
+	 * 
+	 * @param array $obj
+	 * @param array $params
+	 * @param array $attributes
+	 * @return string html
 	 */
-	function embed(&$obj, $params = array(), $attributes = array() ) {
+	public function embed(&$obj, $params = array(), $attributes = array() ) {
 		
 		// provider helper to manage video/audio type don't exists
 		if (!$helper = $this->getProviderHelper($obj)){
@@ -80,21 +90,36 @@ class MediaProviderHelper extends AppHelper {
 	
 	/**
 	 * get source url
+	 * 
+	 * @param array $obj
+	 * @return string
 	 */
-	function sourceEmbed(&$obj) {
+	public function sourceEmbed(&$obj) {
 		if (!$helper = $this->getProviderHelper($obj))
 			return "";
 			
 		return $helper->sourceEmbed($obj);
 	}
-	
+
+	/**
+	 * get provider, if set
+	 * 
+	 * @param array $obj
+	 * @return mixed string|boolean
+	 */
 	private function getProviderHelper(&$obj) {
 		if(empty($obj["provider"])) 
 			return false ;
 		$helperName = Inflector::camelize($obj["provider"]);
 		return $this->getHelper($helperName);
 	}
-	
+
+	/**
+	 * check whether url is valid
+	 * 
+	 * @param string $url
+	 * @return boolean
+	 */
 	private function checkURL($url) {
 		foreach (Configure::read('validate_resource.allow') as $reg) {
 			if(preg_match($reg, $url)) 
