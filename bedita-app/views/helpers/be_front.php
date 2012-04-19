@@ -145,7 +145,8 @@ class BeFrontHelper extends AppHelper {
 	 * @return string
 	 */
 	public function metaDc() {
-		$object = (!empty($this->_currentContent)) ? $this->_currentContent : $this->_publication;
+		$contentRequested = !empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1);
+		$object = (!empty($this->_currentContent) && $contentRequested) ? $this->_currentContent : $this->_publication;
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = $this->Html->meta(array(
 			"rel" => "schema.DC",
@@ -281,8 +282,9 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	private function get_description() {
+		$contentRequested = !empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1);
 		$field = "description";
-		$current = $this->_currentContent;
+		$current = ($contentRequested) ? $this->_currentContent : $this->_section;
 		$section = $this->_section;
 		$publish = $this->_publication;
 		if(!empty($current["description"])) {
