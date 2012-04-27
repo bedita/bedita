@@ -268,6 +268,7 @@ $config['mimeTypes'] = array(
   "old" => "application/x-trash",
   "oleo" => "application/x-oleo",
   "orf" => "image/x-dcraw",
+  "otf" => "application/vnd.ms-opentype",
   "otg" => "application/vnd.oasis.opendocument.graphics-template",
   "oth" => "application/vnd.oasis.opendocument.text-web",
   "otp" => "application/vnd.oasis.opendocument.presentation-template",
