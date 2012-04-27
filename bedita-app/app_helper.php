@@ -40,7 +40,7 @@ class AppHelper extends Helper {
 	 * @param $name, helper name without suffix Helper (i.e. BlipHelper => $name=Blip)
 	 * @return $nameHelper instance  
 	 */
-	protected function getHelper($name) {
+	public function getHelper($name) {
 		$helper = $name."Helper";
 		if (!$helperObject = ClassRegistry::getObject($helper)) {
 			if (!class_exists($helper)) {
