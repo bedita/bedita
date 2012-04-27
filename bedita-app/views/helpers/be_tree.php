@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * BEdita tree of contents helper
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -49,7 +49,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $tree, publications tree
 	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
 	 * @param array $parent_ids, array of ids parent
-	 * @return html for simple view tree
+	 * @return string html for simple view tree
 	 */
 	public function view($tree=array(), $inputType=null, $parent_ids=array()) {
 	
@@ -103,7 +103,7 @@ class BeTreeHelper extends AppHelper {
 	 *
 	 * @param array $sections, sections tree
 	 * @param string $public_url, public url of publication
-	 * @return html for sitemap
+	 * @return string html for sitemap
 	 */
 	public function sitemap($sections=array(),$public_url='/') {
 		$output = '<ul id="sitemap">';
@@ -112,6 +112,12 @@ class BeTreeHelper extends AppHelper {
 		return $this->output($output);
 	}
 
+	/**
+	 * get sitemap
+	 * 
+	 * @param array $sections
+	 * @param string $public_url
+	 */
 	private function designsitemap($sections=array(),$public_url='/') {
 		$output = '';
 		if (!empty($sections)) {
@@ -163,7 +169,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param int $numInd number of $indentation repetition foreach branch
 	 * @param string $indentation string to use for indentation
 	 * 
-	 * @return String 	<option value="">...</option>
+	 * @return string 	<option value="">...</option>
 	 * 		   			<option value="">...</option>
 	 * 					....
 	 */
@@ -191,7 +197,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $branch, section
 	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
 	 * @param array $parent_ids, array of ids parent
-	 * @return html for section simple tree
+	 * @return string html for section simple tree
 	 */
 	private function designBranch($branch, $inputType, $parent_ids) {
 		$url = "";
@@ -285,8 +291,7 @@ class BeTreeHelper extends AppHelper {
 		
 		return $res;
 	}
-	
-	
+
 }
 
 ?>

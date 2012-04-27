@@ -1,10 +1,39 @@
 <?php
+/*-----8<--------------------------------------------------------------------
+ * 
+ * BEdita - a semantic content management framework
+ * 
+ * Copyright 2012 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the Affero GNU General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the Affero GNU General Public License for more details.
+ * You should have received a copy of the Affero GNU General Public License 
+ * version 3 along with BEdita (see LICENSE.AGPL).
+ * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
+ */
+
+/**
+ * thumbnail helper class
+ * 
+ * 
+ * @link			http://www.bedita.com
+ * @version			$Revision:$
+ * @modifiedby 		$LastChangedBy:$
+ * @lastmodified	$LastChangedDate:$
+ * 
+ * $Id:$
+ */
 
 class BeThumbHelper extends AppHelper {
 
 	private $_helpername = "BeThumb Helper 2";
-
-
 
 	// supported image types (order is important)
 	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg");
@@ -18,17 +47,13 @@ class BeThumbHelper extends AppHelper {
 	private $_imageInfo   = array ();
 	private $_imageTarget = array ();
 
-
-
 	/**
 	 * Included helpers.
 	 *
 	 * @var array
 	 */
 	// var $helpers = array('Html');
-	
-	
-	
+
 	function __construct() {
 		// get configuration parameters and defaults
 		$this->_conf = Configure::read('media') ;
@@ -37,12 +62,13 @@ class BeThumbHelper extends AppHelper {
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}
-	
 
-	/*
+	/**
 	 * image public method: embed an image after resample and cache
 	 * 
-	 * params: be_obj, required, object, BEdita Multimedia Object
+	 * @param: array $be_obj, required, object, BEdita Multimedia Object
+	 * @param: array $params
+	 * extra info about $params:
 	 *         width, height, longside, at least one required, integer (if longside, w&h are ignored)
 	 *         
 	 *         mode, optional: [crop, croponly, resize] if not specified default bedita.ini.php (['image']['thumbMode']) is used.
@@ -61,10 +87,9 @@ class BeThumbHelper extends AppHelper {
 	 *         
 	 *         NB: optionally the second argument may be the associative array of said parameters
 	 *         
-	 * return: resampled and cached image URI (using $html helper)
+	 * @return: string, resampled and cached image URI (using $html helper)
 	 * 
 	 */
-	
 	public function image ($be_obj, $params = null) { 
 		
 		// defaults?
@@ -245,8 +270,6 @@ class BeThumbHelper extends AppHelper {
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
 		$this->_imageTarget['uri']      = $this->_targetUri ();
 
-
-
 		// Manage cache and resample if caching option is true 
 		// and the image it's not alredy cached
 		$this->_imageTarget['cached']   = $this->_testForCache ();
@@ -263,16 +286,14 @@ class BeThumbHelper extends AppHelper {
 		return $this->_imageTarget['uri'];
 	}
 
-
-
-
 	/**************************************************************************
 	** private methods follow
 	**************************************************************************/
 
-	
-	/*
-	 * call PhpThumb and make all the work
+	/**
+	 * resample image using PhpThumb
+	 * 
+	 * @return boolean
 	 */
 	private function _resample () {
 
@@ -328,11 +349,11 @@ class BeThumbHelper extends AppHelper {
 		
 	}
 	// end _resample
-	
-	
 
-	/*
+	/**
 	 * test source file for existance and correctness
+	 * 
+	 * @return boolean
 	 */
 	private function _testForSource () {
 		if ( !file_exists($this->_imageInfo['filepath']) ) {
@@ -348,12 +369,10 @@ class BeThumbHelper extends AppHelper {
 		else return true;
 	}
 
-
-
-	
-
-	/*
+	/**
 	 * build target filename
+	 * 
+	 * @return string
 	 */
 	private function _targetFileName () {
 		// build hash on file path, modification time and mode
@@ -366,10 +385,10 @@ class BeThumbHelper extends AppHelper {
 							$this->_imageInfo['hash'] . "." . $this->_imageTarget['type'];
 	}
 
-
-
-	/*
+	/**
 	 * build target filepath
+	 * 
+	 * @return string
 	 */
 	private function _targetFilePath () {
 		// cached file is in the same folder as original
@@ -390,20 +409,20 @@ class BeThumbHelper extends AppHelper {
 		}
 	}
 
-
-
-	/*
+	/**
 	 * build target uri
+	 * 
+	 * @return string
 	 */
 	private function _targetUri () {
 		// set target image uri to resampled cached file (also urlencode filename here)
 		return $this->_conf['url'] . $this->_change_file_in_url ($this->_imageInfo['path'], rawurlencode($this->_imageTarget['filename']));
 	}
 
-
-
-	/*
+	/**
 	 * verify existence of cached file, build and set target filename and filepath
+	 * 
+	 * @return boolean
 	 */
 	private function _testForCache () {
 		// if file exist (with same hash it's not been modified)
@@ -413,9 +432,15 @@ class BeThumbHelper extends AppHelper {
 		else return false;
 	}
 
-
-	/*
+	/**
 	 * calculate cropping coordinates (top, left)
+	 * 
+	 * @param int $origW, original width
+	 * @param int $origH, original height
+	 * @param int $targetW, target object width
+	 * @param int $targetH, target object height
+	 * @param string $position: TL (top left), T (top), TR (top right), L (left), R (right), BL (bottom left), B (bottom), BR (bottom right), C (center), default center
+	 * @return array
 	 */
 	private function _getCropCoordinates ( $origW, $origH, $targetW, $targetH, $position ) {
 		$coordinates = array ();
@@ -472,9 +497,7 @@ class BeThumbHelper extends AppHelper {
 		return array ($coordinates['x'], $coordinates['y']);
 	}
 
-
-
-	/*
+	/**
 	 * reset internal objects to empty defaults
 	 */
 	private function _resetObjects() {
@@ -512,23 +535,28 @@ class BeThumbHelper extends AppHelper {
 		$this->_resample = false;
 	}
 
-
-
-	// error reporting
+	/**
+	 * error reporting
+	 * 
+	 * @param string $errorMsg
+	 */ 
 	private function _triggerError ($errorMsg) {
 		// chiamare il dispatcher degli errori? chiedere a alb/ste
 		$this->log($errorMsg);
 		return;
 	}
-	
-	
-	
+
+	/***************************/
+	/* minor private functions */
+	/***************************/
+
 	/**
-	 ** minor private functions
+	 * substitute file part only in a given url
+	 * 
+	 * @param string $url
+	 * @param string $newfile
+	 * @return string uri
 	 */
-
-
-	// substitute file part only in a given url
 	private function _change_file_in_url ($url, $newfile) {
 		$_parsed = parse_url ($url);
 		$_parsedplus = $this->_parseURLplus ($url);
@@ -547,10 +575,14 @@ class BeThumbHelper extends AppHelper {
 	
 	    return $uri;
 	}
-	
-	
-	
-	// improved version of parse_url (returns also 'file' and 'dir')
+
+	// 
+	/**
+	 * improved version of parse_url (returns also 'file' and 'dir')
+	 * 
+	 * @param string $url
+	 * @return array
+	 */
 	private function _parseURLplus ($url) {
 		$URLpcs  = parse_url ($url);
 		$PathPcs = explode ("/", $URLpcs['path']);
@@ -563,10 +595,13 @@ class BeThumbHelper extends AppHelper {
 		}
 		return ($URLpcs);
 	}
-	
-	
-	
-	// case insensitive array search
+
+	/**
+	 * case insensitive array search
+	 * 
+	 * @param string $str
+	 * @param array $array
+	 */
 	private function _array_isearch ($str, $array) {
 		foreach ($array as $k => $v) {
 			if (strcasecmp ($str, $v) == 0) return $k;

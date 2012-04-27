@@ -20,6 +20,7 @@
  */
 
 /**
+ * Flash embed helper
  * 
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -38,11 +39,11 @@ class BeEmbedFlashHelper extends AppHelper {
 	/**
 	 * embed SWF flash object using swfobject
 	 * 
-	 * @param $swfUrl
-	 * @param $attributes
-	 * @param $flashvars
-	 * @param $params
-	 * @return html code
+	 * @param string $swfUrl
+	 * @param array $attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * @return string html code
 	 */
 	public function embedSwf ($swfUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		$width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
@@ -68,24 +69,42 @@ class BeEmbedFlashHelper extends AppHelper {
 		return $output;
 	}
 	
-	
+	/**
+	 * embed flv video
+	 * 
+	 * @param string $flvUrl
+	 * @param array $attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * mixed string|boolean, html code of embed media, or false if file extension is not supported
+	 */
 	public function embedFlv($flvUrl, $attributes = array(), $flashvars = array(), $params = array()) {
 		return $this->embedPlayer($flvUrl, $attributes, $flashvars, $params, "video");	
 	}
-	
+
+	/**
+	 * embed audio
+	 * 
+	 * @param string $audioFile path or url
+	 * @param array $attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * mixed string|boolean, html code of embed media, or false if file extension is not supported
+	 */
 	public function embedAudio($audioFile, $attributes = array(), $flashvars = array(), $params = array()) {
 		return $this->embedPlayer($audioFile, $attributes, $flashvars, $params, "audio");	
 	}
-	
+
 	/**
 	 * generate code to embed video/audio player
+	 * file extension supported: mp3, flv, m4v
 	 * 
-	 * @param $fileToPlay
-	 * @param $attributes
-	 * @param $flashvars
-	 * @param $params
-	 * @param $fileType
-	 * @return unknown_type
+	 * @param string $fileToPlay
+	 * @param array $attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * @param string $fileType
+	 * @return mixed string|boolean, html code of embed media, or false if file extension is not supported
 	 */
 	public function embedPlayer($fileToPlay, $attributes = array(), $flashvars = array(), $params = array(), $fileType=null) {
 		if (empty($fileType)) {
@@ -115,15 +134,15 @@ class BeEmbedFlashHelper extends AppHelper {
 		} 		
 		return $this->embedSwf( $swfUrl , $attributes, $flashvars, $params );
 	}
-	
-	
+
 	/**
 	 * embed generic flash object (video, swf, audio mp3)
+	 * file extension supported: mp3, flv, m4v
 	 * 
-	 * @param $obj BEdita multimedia object
-	 * @param $params contains flashvars, params <param> tag
-	 * @param $htmlAttributes
-	 * @return html code
+	 * @param array $obj BEdita multimedia object
+	 * @param array $params contains flashvars, params <param> tag
+	 * @param array $htmlAttributes
+	 * @return mixed string|boolean, html code of embed media, or false if file extension is not supported
 	 */
 	public function embed($obj , $params, $htmlAttributes ) {
 		if (empty($obj['uri'])) {
@@ -148,7 +167,13 @@ class BeEmbedFlashHelper extends AppHelper {
 		}
 		
 	}
-	
+
+	/**
+	 * get file extension
+	 * 
+	 * @param string $filePath
+	 * @return mixed string|boolean, file extension or false (if extension is not recognized through pathinfo)
+	 */
 	private function getFileExtension($filePath) {
 		$path_parts = pathinfo($filePath);
 		if (empty($path_parts['extension']))
@@ -156,7 +181,7 @@ class BeEmbedFlashHelper extends AppHelper {
 		
 		return strtolower($path_parts['extension']);
 	}
-	
+
 	/**
 	 * generate code for embed Flowplayer
 	 * default behavior: generate <div></div> and flowplayer javascript call
@@ -168,7 +193,7 @@ class BeEmbedFlashHelper extends AppHelper {
 	 * @param array $flashvars
 	 * @param array $params
 	 * @param string $fileType, video/audio
-	 * @return code for views
+	 * @return string html code for views
 	 */
 	public function embedFlowplayer($swfUrl, $mediaUrl, $attributes, $flashvars, $params, $fileType) {
 		$defaultAudioPlayer = array("controls" => array("fullscreen" => false));
@@ -251,12 +276,13 @@ class BeEmbedFlashHelper extends AppHelper {
 	}
 	
 	/**
-	 * generate HTML code for embedding flash object  
-	 * @param $swfUrl
-	 * @param $attributes
-	 * @param $flashvars
-	 * @param $params
-	 * @return HTML code
+	 * generate html code for embedding flash object
+	 * 
+	 * @param string $swfUrl
+	 * @param array $attributes
+	 * @param array $flashvars
+	 * @param array $params
+	 * @return string html code
 	 */
 	public function embedHtml($swfUrl, $attributes, $flashvars=array(), $params=array()) {
 		$flashvars = (is_array($flashvars))? json_encode($flashvars) : $flashvars;

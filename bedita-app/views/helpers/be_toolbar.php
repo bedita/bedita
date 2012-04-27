@@ -20,7 +20,7 @@
  */
 
 /**
- * 
+ * Table toolbar for pagination and search helper
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
@@ -45,12 +45,11 @@ class BeToolbarHelper extends AppHelper {
 	 * initialize toolbar in params['toolbar']
 	 * 
 	 * @param array $toolbar
-	 * @return unknown_type
 	 */
-	function init(&$toolbar) {
+	public function init(&$toolbar) {
 		$this->params['toolbar'] = $toolbar;
 	}
-	
+
 	/**
 	 * Return the link (html anchor tag) for the next page
 	 *
@@ -59,8 +58,9 @@ class BeToolbarHelper extends AppHelper {
 	 * @param string $disabledTitle		Label link disabled
 	 * @param array  $disabledOption	HTML attributes for link disabled
 	 * 									(if present, insert a tag SPAN)
+	 * @return string
 	 */
-	function next($title = ' > ', $options = array(), $disabledTitle = ' > ', $disabledOption = array()) {
+	public function next($title = ' > ', $options = array(), $disabledTitle = ' > ', $disabledOption = array()) {
 		return $this->_scroll('next', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
@@ -72,8 +72,9 @@ class BeToolbarHelper extends AppHelper {
 	 * @param string $disabledTitle		Label link disabled
 	 * @param array  $disabledOption	HTML attributes for link disabled
 	 * 									(if present, insert a tag SPAN)
+	 * @return string
 	 */
-	function prev($title = ' < ', $options = array(), $disabledTitle = ' < ', $disabledOption = array()) {
+	public function prev($title = ' < ', $options = array(), $disabledTitle = ' < ', $disabledOption = array()) {
 		return $this->_scroll('prev', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
@@ -85,8 +86,9 @@ class BeToolbarHelper extends AppHelper {
 	 * @param string $disabledTitle		Label link disabled
 	 * @param array  $disabledOption	HTML attributes for link disabled
 	 * 									(if present, insert a tag SPAN)
+	 * @return string
 	 */
-	function first($title = ' |< ', $options = array(), $disabledTitle = ' |< ', $disabledOption = array()) {
+	public function first($title = ' |< ', $options = array(), $disabledTitle = ' |< ', $disabledOption = array()) {
 		return $this->_scroll('first', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
@@ -98,32 +100,36 @@ class BeToolbarHelper extends AppHelper {
 	 * @param string $disabledTitle		Label link disabled
 	 * @param array  $disabledOption	HTML attributes for link disabled
 	 * 									(if present, insert a tag SPAN)
+	 * @return string
 	 */
-	function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
+	public function last($title = ' >| ', $options = array(), $disabledTitle = ' >| ', $disabledOption = array()) {
 		return $this->_scroll('last', $title, $options, $disabledTitle, $disabledOption) ;
 	}
 
 	/**
 	 * Return number of records found
 	 *
+	 * @return mixed int|string
 	 */
-	function size() {
+	public function size() {
 		return (isset($this->params['toolbar']['size'])?$this->params['toolbar']['size']:"" ) ;
 	}
 
 	/**
 	 * Return current page
 	 *
+	 * @return mixed int|string
 	 */
-	function current() {
+	public function current() {
 		return (isset($this->params['toolbar']['page'])?$this->params['toolbar']['page']:"" ) ;
 	}
 
 	/**
 	 * Return total number of pages
 	 *
+	 * @return mixed int|string
 	 */
-	function pages() {
+	public function pages() {
 		return (isset($this->params['toolbar']['pages'])?$this->params['toolbar']['pages']:"" ) ;
 	}
 
@@ -131,9 +137,10 @@ class BeToolbarHelper extends AppHelper {
 	 * View page size html select tag
 	 *
 	 * @param array $htmlAttributes		associative Array with HTML attributes
-	 * @param arry $options				Array. Default: 1, 5, 10,20, 50, 100
+	 * @param array $options				Array. Default: 1, 5, 10,20, 50, 100
+	 * @return string
 	 */
-	function changeDim($htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
+	public function changeDim($htmlAttributes = array(), $options = array(1, 5, 10, 20, 50, 100)) {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
 		// Define script for page change
@@ -150,7 +157,15 @@ class BeToolbarHelper extends AppHelper {
 		return $this->Form->select("", $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
 	}
 
-	function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1 => 1, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100)) {
+	/**
+	 * return dropdown list with changed dimension
+	 * 
+	 * @param string $selectId
+	 * @param array $htmlAttributes
+	 * @param array $options
+	 * @return string
+	 */
+	public function changeDimSelect($selectId, $htmlAttributes = array(), $options = array(1 => 1, 5 => 5, 10 => 10, 20 => 20, 50 => 50, 100 => 100)) {
 		if(!isset($this->params['toolbar']['dim'])) return "" ;
 
 		// Define script for page change
@@ -170,9 +185,10 @@ class BeToolbarHelper extends AppHelper {
 	 * Change selected page
 	 *
 	 * @param array $htmlAttributes		associative Array with HTML attributes
-	 * @param arry $items				number of available pages, before and after current. Default: 5
+	 * @param array $items				number of available pages, before and after current. Default: 5
+	 * @return string
 	 */
-	function changePage($htmlAttributes = array(),	$items = 5) {
+	public function changePage($htmlAttributes = array(),	$items = 5) {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
 		// Define script for page change
@@ -201,7 +217,15 @@ class BeToolbarHelper extends AppHelper {
 		return $this->Form->select("", $pages, $this->params['toolbar']['page'], $htmlAttributes, false) ;
 	}
 
-	function changePageSelect($selectId, $htmlAttributes = array(),	$items = 5) {
+	/**
+	 * Change page in a dropdown list of results
+	 * 
+	 * @param string $selectId
+	 * @param array $htmlAttributes
+	 * @param array $items
+	 * @return string
+	 */
+	public function changePageSelect($selectId, $htmlAttributes = array(),	$items = 5) {
 		if(!isset($this->params['toolbar']['page'])) return "" ;
 
 		// Define script for page change
@@ -240,8 +264,9 @@ class BeToolbarHelper extends AppHelper {
 	 * @param array $htmlAttributes			associative Array with HTML attributes
 	 * @param boolean $dir				Se presente impone la direzione. 1: ascending, 0: descending
 	 * 									otherwise, !(<current value>)
+	 * @return string
 	 */
-	function order($field, $title="", $image="", $htmlAttributes = array(), $dir=null) {
+	public function order($field, $title="", $image="", $htmlAttributes = array(), $dir=null) {
 		
 		if(!isset($this->params['toolbar'])) return "" ;
 		
@@ -286,6 +311,7 @@ class BeToolbarHelper extends AppHelper {
 	 * @param string $disabledTitle		Label link disabled
 	 * @param array  $disabledOption	HTML attributes for link disabled
 	 * 									(if present, insert a tag SPAN)
+	 * @return string
 	 */
 	private function _scroll($where, $title, $options, $disabledTitle, $disabledOption) {
 		$page = (isset($this->params['toolbar'][$where]))? $this->params['toolbar'][$where] : false ;
@@ -303,6 +329,13 @@ class BeToolbarHelper extends AppHelper {
 		return '<a title="go to '.$where.' page" href="' . $url . '">' . __($title, true) . '</a>';
 	}
 
+	/**
+	 * return output for text
+	 * 
+	 * @param string $text
+	 * @param array $options
+	 * @return string
+	 */
 	private function _output($text, $options) {
 		return $this->output(
 			sprintf(
@@ -311,7 +344,13 @@ class BeToolbarHelper extends AppHelper {
 			)
 		);
 	}
-	
+
+	/**
+	 * get array arguments
+	 * 
+	 * @param array $otherParams
+	 * @return array
+	 */
 	public function getPassedArgs($otherParams=array()) {
 		if (empty($otherParams))
 			return array_merge($this->params["pass"], $this->params["named"]);
@@ -319,6 +358,5 @@ class BeToolbarHelper extends AppHelper {
 			return array_merge($this->params["pass"], $this->params["named"], $otherParams);
 	}
 }
-
 
 ?>

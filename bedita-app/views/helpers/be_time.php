@@ -53,6 +53,15 @@ class BeTimeHelper extends TimeHelper {
 		$this->dateTimePattern = $conf->dateTimePattern;
 	}
 
+	/**
+	 * format date
+	 * 
+	 * @param string $date
+	 * @param string $format
+	 * @param boolean $invalid
+	 * @param int $userOffset
+	 * @return mixed string|boolean
+	 */
 	public function date($date, $format = null, $invalid = false, $userOffset = null) {
 		if (empty($format)) {
 			$format = $this->datePattern;
@@ -60,6 +69,15 @@ class BeTimeHelper extends TimeHelper {
 		return $this->format($format, $date, $invalid, $userOffset);
 	}
 
+	/**
+	 * format date
+	 * 
+	 * @param string $date
+	 * @param string $format
+	 * @param boolean $invalid
+	 * @param int $userOffset
+	 * @return mixed string|boolean
+	 */
 	public function dateTime($date, $format = null, $invalid = false, $userOffset = null) {
 		if (empty($format)) {
 			$format = $this->dateTimePattern;
@@ -67,26 +85,67 @@ class BeTimeHelper extends TimeHelper {
 		return $this->format($format, $date, $invalid, $userOffset);
 	}
 
+	/**
+	 * get day from date
+	 * 
+	 * @param string $date
+	 * @return mixed string|boolean
+	 */
 	public function day($date) {
 		return $this->format("%d", $date);
 	}
 
+	/**
+	 * get day name from date
+	 * 
+	 * @param string $date
+	 * @return mixed string|boolean
+	 */
 	public function dayName($date) {
 		return $this->format("%A", $date);
 	}
 
+	/**
+	 * get month from date
+	 * 
+	 * @param string $date
+	 * @return mixed string|boolean
+	 */
 	public function month($date) {
 		return $this->format("%m", $date);
 	}
 
+	/**
+	 * get month name from date
+	 * 
+	 * @param string $date
+	 * @return mixed string|boolean
+	 */
 	public function monthName($date) {
 		return $this->format("%B", $date);
 	}
 
+	/**
+	 * get year from date
+	 * 
+	 * @param string $date
+	 * @return mixed string|boolean
+	 */
 	public function year($date) {
 		return $this->format("%Y", $date);
 	}
 
+	/**
+	 * format date
+	 * 
+	 * @param string $format
+	 * @param string $date
+	 * @param boolean $invalid
+	 * @param int $userOffset
+	 * @return mixed string|boolean
+	 * 
+	 * @see TimeHelper::format()
+	 */
 	public function format($format = '%d-%m-%Y', $date, $invalid = false, $userOffset = null) {
 		$date = $this->fromString($date, $userOffset);
 		if ($date === false && $invalid !== false) {
@@ -96,13 +155,13 @@ class BeTimeHelper extends TimeHelper {
 	}
 
 	/**
-	 *	calculate the difference between two dates
+	 * calculate the difference between two dates
 	 *
 	 * @param string $dateStart
 	 * @param string $dateEnd
 	 * @param string $period (units, default minutes)
 	 * @param bool $complete true return also $period
-	 * @return mixed
+	 * @return mixed int|string
 	 */
 	public function dateDiff($dateStart, $dateEnd, $period="minutes", $complete=false) {
 		$secondsRatio = array(
