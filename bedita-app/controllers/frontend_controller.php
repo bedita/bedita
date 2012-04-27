@@ -523,10 +523,10 @@ abstract class FrontendController extends AppController {
 	/**
 	* Get tree starting from specified section or area
 	* 
-	* @param integer $parentName		parent nickname or id 
-	* @param bool $loadContents			if it's true load all contents too. Default false
+	* @param string|int $parentName		parent nickname or id 
+	* @param boolean $loadContents			if it's true load all contents too. Default false
 	* @param array $exclude_nicknames	list exclude sections 
-	* @param integer $depth				tree's depth level (default=null => all levels)
+	* @param int $depth				tree's depth level (default=null => all levels)
 	* @return array
 	* */
 	protected function loadSectionsTree($parentName, $loadContents = false, array $exclude_nicknames = array(), $depth = null, $flatMode = false) {
@@ -658,7 +658,7 @@ abstract class FrontendController extends AppController {
 	 * set selected = true in a section if it's an ancestor (parent) of $secName
 	 * 
 	 * @param string $secName					nickname or section id
-	 * @param bool $loadContents		true meaning it loads all contents of each section 
+	 * @param boolean $loadContents		true meaning it loads all contents of each section 
 	 * @param array $exclude_nicknames	list exclude sections 
 	 * 
 	 * @return array of level selected 
@@ -740,7 +740,6 @@ abstract class FrontendController extends AppController {
 	/**
 	 * prepare an XML containing sitemap specification
 	 * view in bedita-app/views/pages/sitemap_xml.tpl
-	 * 
 	 */
 	public function sitemapXml() {
 		$this->sitemap(true);
@@ -752,7 +751,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * build array for sitemap
 	 * 
-	 * @param bool $xml_out
+	 * @param boolean $xml_out
 	 * @return array
 	 */
 	public function sitemap($xml_out = false) {
@@ -904,6 +903,7 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @param array $obj
 	 * @param string $canonicalPath
+	 * @return array
 	 */
 	protected function buildRssItem(array &$obj, $canonicalPath = null) {
 		$description = $obj['description'];
@@ -922,8 +922,7 @@ abstract class FrontendController extends AppController {
 	
 	/**
 	 * output a kml defined by a section
-	 * @param $sectionName
-	 * @return
+	 * @param string $sectionName
 	 */
 	public function kml($sectionName) {
 		$this->section($sectionName);
@@ -932,12 +931,20 @@ abstract class FrontendController extends AppController {
 		header("Content-Disposition: attachment; filename=" . $sectionName . ".kml");
 	}
 
+	/**
+	 * output a georss atom representation of section
+	 * @param string $sectionName
+	 */
 	public function georssatom($sectionName) {
 		$this->section($sectionName);
 		$this->layout = 'ajax';
 		header("Content-type: application/atom+xml; charset=utf-8");
 	}
 
+	/**
+	 * output a georss representation of section
+	 * @param string $sectionName
+	 */
 	public function georss($sectionName) {
 		$gml = (!empty($this->params['named']['gml']));
 		$this->section($sectionName);
@@ -999,8 +1006,8 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * output a json object of returned array by section or content method
-	 * @param $name
-	 * @return string $name, nickname or id
+	 * @param string $name
+	 * @return string|int $name, nickname or id
 	 */
 	public function json($name) {
 		$this->route($name);
@@ -1018,7 +1025,7 @@ abstract class FrontendController extends AppController {
 	 * i.e. http://www.example.com/xml/nickname/format:tags output a tag style xml 
 	 * default is defined by class attribute xmlFormat
 	 * 
-	 * @param string $name, nickname or id
+	 * @param string|int $name, nickname or id
 	 */
 	public function xml($name) {
 		$this->route($name);
@@ -1032,7 +1039,7 @@ abstract class FrontendController extends AppController {
 	 * i.e. http://www.example.com/xmlobject/nickname/format:tags output a tag style xml 
 	 * default is defined by class attribute xmlFormat
 	 * 
-	 * @param string $name, nickname or id
+	 * @param string|int $name, nickname or id
 	 */
 	public function xmlobject($name) {
 		$object = (is_numeric($name))? $this->loadObj($name) : $this->loadObjByNick($name);
@@ -1045,7 +1052,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * prepare to XML output
 	 * 
-	 * @param $data
+	 * @param array $data
 	 */
 	private function outputXML($data) {
 		$this->RequestHandler->setContent("xml", "text/xml");
@@ -1067,7 +1074,7 @@ abstract class FrontendController extends AppController {
 	 * Like loadObj using nickname
 	 *
 	 * @param string $obj_nick
-	 * @param bool $blockAccess see FrontendController::loadObj()
+	 * @param boolean $blockAccess see FrontendController::loadObj()
 	 * @return array
 	 */
 	protected function loadObjByNick($obj_nick, $blockAccess = true) {
@@ -1079,7 +1086,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param string $obj_nick
 	 * @param string $var_name view var name
-	 * @param bool $blockAccess see FrontendController::loadObj()
+	 * @param boolean $blockAccess see FrontendController::loadObj()
 	 * @return array
 	 */
 	protected function loadAndSetObjByNick($obj_nick, $var_name = null, $blockAccess = true) {
@@ -1093,7 +1100,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param int $obj_id
 	 * @param string $var_name view var name
-	 * @param bool $blockAccess see FrontendController::loadObj()
+	 * @param boolean $blockAccess see FrontendController::loadObj()
 	 * @return array
 	 */
 	protected function loadAndSetObj($obj_id, $var_name = null, $blockAccess = true) {
@@ -1135,7 +1142,7 @@ abstract class FrontendController extends AppController {
 	 * Throws Exception on errors
 	 *
 	 * @param int $obj_id
-	 * @param bool $blockAccess
+	 * @param boolean $blockAccess
 	 *				if it's set a "frontend_access_without_block" permission on the object this param is ignored
 	 *					and the object returned (array) will have a key named "authorized" set to true or false
 	 *					depending on whether the user has permission to access at the object
@@ -1437,7 +1444,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * find first section that contain content ($name) then call section method
 	 * 
-	 * @param $name, id or content nickname
+	 * @param string|id $name, id or content nickname
 	 */
 	public function content($name) {
 		if(empty($name))
@@ -1640,7 +1647,7 @@ abstract class FrontendController extends AppController {
 	 *    example: www.example.com/my-nickname => calls PagesController::myNickname() method if it exists
 	 * 5. if first url argument is a valid nickname => calls the appropriate FrontendController::section() or FrontendController::content() method
 	 * 6. throw exception and 404 http error 
-	 *
+	 * @throws BeditaException
 	 */
 	public function route() {
 		$args = func_get_args();
@@ -1723,6 +1730,9 @@ abstract class FrontendController extends AppController {
 
 	}
 	
+	/**
+	 * search inside history
+	 */
 	public function search() {
 		$this->historyItem = null;
 		if(!in_array('BeToolbar', $this->helpers)) {
@@ -1770,6 +1780,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $service_type
 	 * @param string $hash
 	 * @return void
+	 * @throws BeditaRuntimeException
 	 */
 	public function hashjob($service_type=null, $hash=null) {
 		try {
@@ -1965,9 +1976,9 @@ abstract class FrontendController extends AppController {
 	 * load all tag
 	 *
 	 * @param string $tplVar
-	 * @param bool $cloud, if true set 'class' key 
+	 * @param boolean $cloud, if true set 'class' key 
 	 * 			(possible value: smallestTag, largestTag, largeTag, mediumTag, smallTag)
-	 * @param bool $shuffle, if true shuffle the tags else order by label
+	 * @param boolean $shuffle, if true shuffle the tags else order by label
 	 * @param int $tagShowed, define how much tags have to be returned (null = all tags)
 	 */
 	public function loadTags($tplVar=null, $cloud=true, $shuffle=false, $tagShowed=null) {
@@ -2010,7 +2021,7 @@ abstract class FrontendController extends AppController {
 	 * return objects for a specific category
 	 *
 	 * @param string $category category name (friendly url/unique name)
-	 * @params array $options search options
+	 * @param array $options search options
 	 * 				"section" => name or id section
 	 * 				"filter" => particular filter
 	 * 				"order", "dir", "dim", "page" used like pagination parameters,
@@ -2029,6 +2040,7 @@ abstract class FrontendController extends AppController {
 	 * @param array $options search options (see loadObjectsByCategory)
 	 * @param string $type, "tag" (default), or "category"
 	 * @return array
+	 * @throws BeditaException
 	 */
 	private function loadObjectsByTagCategory($name, $options=array(), $type = "tag") {
 		$section_id = null;
@@ -2128,7 +2140,7 @@ abstract class FrontendController extends AppController {
 	 * return objects for a specific tag
 	 *
 	 * @param string $tag tag name (friendly url/unique name)
-	 * @params array $options search options
+	 * @param array $options search options
 	 * 				"section" => name or id section
 	 * 				"filter" => particular filter
 	 * 				"order", "dir", "dim", "page" used like pagination parameters
@@ -2143,7 +2155,7 @@ abstract class FrontendController extends AppController {
 	 * load annotation referenced to some object
 	 * 
 	 * @param string $annotationType, object type of the annotation e.g. "comment"
-	 * @param $objectName, reference object nickname or id 
+	 * @param string $objectName, reference object nickname or id 
 	 * @param array $options, specific options (pagination, filter) that override annotationOptions attribute
 	 * @return array of annotations
 	 */
@@ -2177,6 +2189,7 @@ abstract class FrontendController extends AppController {
 	 * force download of media object
 	 * 
 	 * @param $name id or object nickname
+	 * @throws BeditaException
 	 */
 	public function download($name) {
 		if(empty($name))
@@ -2267,7 +2280,8 @@ abstract class FrontendController extends AppController {
 	 * If it's ajax request and if not empty $this->params["form"]["render"] renders it 
 	 * 
 	 * elseif  it's not ajax request then redirect to referer
-	 *  
+	 * 
+	 * @throws BeditaException
 	 */
 	public function saveComment() {
 		$this->historyItem = null;
@@ -2372,8 +2386,8 @@ abstract class FrontendController extends AppController {
 	 * CakePHP layout: print (if dosen't exists in frontend app use backend print layout)
 	 * use print view if not set a specific $printLayout 
 	 * 
-	 * @param $id
-	 * @param $printLayout, the view template to use
+	 * @param int $id
+	 * @param string $printLayout, the view template to use
 	 */
 	public function printme($id=null, $printLayout=null) {
 		if (!empty($this->params["form"]["id"]))
@@ -2396,9 +2410,9 @@ abstract class FrontendController extends AppController {
 	/**
 	 * save a BEdita object. User has to be logged
 	 * 
-	 * @param $modelName (Document, Event, ....). 
+	 * @param string $modelName (Document, Event, ....). 
 	 * 		  If undefined get object type from $this->data["object_type_id"]
-	 * @return false on error, object_id saved on success
+	 * @return mixed int|boolean, false on error, object_id saved on success
 	 */
 	protected function save($modelName=null) {
 		if (!$this->logged) {
@@ -2466,6 +2480,7 @@ abstract class FrontendController extends AppController {
 	 * if one or more parents haven't status IN $this->status array throw a BeditaException
 	 * 
 	 * @param int $section_id
+	 * @throws BeditaException
 	 */
 	private function checkParentStatus($section_id) {
 		$parent_path = $this->Tree->field("parent_path", array("id" => $section_id));
