@@ -81,7 +81,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * current publication
 	 * 
-	 * @var unknown_type
+	 * @var string
 	 */
 	protected $publication = "";
 	
@@ -223,7 +223,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * show login form or redirect if user is already logged
 	 * 
-	 * @param $backName nickname or id of section to go after login
+	 * @param string $backName nickname or id of section to go after login
 	 */
 	protected function login($backName=null) {
 		$urlToGo = (!empty($backName))? Router::url('/'. $backName, true) : $this->loginRedirect;
@@ -256,6 +256,7 @@ abstract class FrontendController extends AppController {
 	 * 		(i.e. $type="access_denied" render views/pages/access_denied.[tpl|ctp] template)
 	 * 
 	 * @param string $type, which type of access denied 
+	 * @throws BeditaFrontAccessException
 	 */
 	protected function accessDenied($type) {
 		if ($type == self::UNLOGGED && !strstr($this->here,"/login")) {
@@ -281,6 +282,7 @@ abstract class FrontendController extends AppController {
 	 * called before action to initialize
 	 * $uses & $components array don't work... (abstract class ??)
 	 * 
+	 * @throws BeditaPublicationException
 	 * @see bedita-app/AppController#initAttributes()
 	 */
 	final protected function initAttributes() {
@@ -402,7 +404,8 @@ abstract class FrontendController extends AppController {
 	 * 
 	 * @param string $lang
 	 * @param string $forward redirect action after changing language. If it's null redirect to refere
-	 * @return unknown_type
+	 * @return string
+	 * @throws BeditaException
 	 */
 	public function lang($lang, $forward = null) {
 
@@ -440,7 +443,7 @@ abstract class FrontendController extends AppController {
 	 * check if current date is compatible with required pubblication dates (start/end date)
 	 *
 	 * @param array $obj
-	 * @return true if content may be published, false otherwise
+	 * @return boolean, true if content may be published, false otherwise
 	 */
 	protected function checkPubblicationDate(array $obj) {
 		$currDate = strftime("%Y-%m-%d");
@@ -459,7 +462,7 @@ abstract class FrontendController extends AppController {
 	 * handle Exceptions
 	 * 
 	 * @param Exception $ex
-	 * @return unknown_type
+	 * @return AppError
 	 */
 	public static function handleExceptions(Exception $ex) {
 
@@ -507,7 +510,8 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	 * (non-PHPdoc)
+	 * handle error, logging if log level is 'debug'
+	 * 
 	 * @see bedita-app/AppController#handleError()
 	 */
 	public function handleError($eventMsg, $userMsg, $errTrace) {
@@ -523,6 +527,7 @@ abstract class FrontendController extends AppController {
 	* @param bool $loadContents			if it's true load all contents too. Default false
 	* @param array $exclude_nicknames	list exclude sections 
 	* @param integer $depth				tree's depth level (default=null => all levels)
+	* @return array
 	* */
 	protected function loadSectionsTree($parentName, $loadContents = false, array $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
@@ -642,23 +647,22 @@ abstract class FrontendController extends AppController {
 	}
 	
 	/**
-	* Get sections levels
-	* 
-	* Find all ancestors from secName and build an array of levels 
-	* Each key in array returned is a level:
-	* 	0 is the first level
-	* 	1 is the second level
-	* 	etc...
-	* 
-	* set selected = true in a section if it's an ancestor (parent) of $secName
-	* 
-	* @param  $secName					nickname or section id
-	* @param  bool $loadContents		true meaning it loads all contents of each section 
-	* @param array $exclude_nicknames	list exclude sections 
-	* 
-	* @return array of level selected 
-	* 							
-	* */
+	 * Get sections levels
+	 * 
+	 * Find all ancestors from secName and build an array of levels 
+	 * Each key in array returned is a level:
+	 * 	0 is the first level
+	 * 	1 is the second level
+	 * 	etc...
+	 * 
+	 * set selected = true in a section if it's an ancestor (parent) of $secName
+	 * 
+	 * @param string $secName					nickname or section id
+	 * @param bool $loadContents		true meaning it loads all contents of each section 
+	 * @param array $exclude_nicknames	list exclude sections 
+	 * 
+	 * @return array of level selected 
+	 */
 	protected function loadSectionsLevels($secName, $loadContents=false, array $exclude_nicknames=null) {
 		$conf = Configure::getInstance(); 
 		$result = array();
@@ -996,7 +1000,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * output a json object of returned array by section or content method
 	 * @param $name
-	 * @return unknown_type $name, nickname or id
+	 * @return string $name, nickname or id
 	 */
 	public function json($name) {
 		$this->route($name);
@@ -1014,7 +1018,7 @@ abstract class FrontendController extends AppController {
 	 * i.e. http://www.example.com/xml/nickname/format:tags output a tag style xml 
 	 * default is defined by class attribute xmlFormat
 	 * 
-	 * @param unknown_type $name, nickname or id
+	 * @param string $name, nickname or id
 	 */
 	public function xml($name) {
 		$this->route($name);
@@ -1742,7 +1746,6 @@ abstract class FrontendController extends AppController {
 	 * public subscribe page, used for newsletter/frontend subscribe/unsubscribe
 	 * 
 	 * @param string $what
-	 * @return unknown_type
 	 */
 	public function subscribe($what="newsletter") {
 		$this->historyItem = null;
@@ -1886,7 +1889,7 @@ abstract class FrontendController extends AppController {
 	 * 		"ShortNews" => ....
 	 * 		)
 	 * 
-	 * @param unknown_type $secName section id or section nickname
+	 * @param string $secName section id or section nickname
 	 * @return array
 	 */
 	protected function loadArchiveTree($secName, $options=array()) {
