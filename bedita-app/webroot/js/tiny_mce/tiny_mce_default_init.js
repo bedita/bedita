@@ -42,6 +42,18 @@ tinyMCE.init({
     remove_script_host : false,
 	document_base_url : "/",
 	onchange_callback : "onChangeHandler",
+	
+	/*
+	verify_html: false,
+	valid_elements : '*[*]',
+	extended_valid_elements : "*[*]",
+	*/
+	cleanup_callback : function(type, value) {
+		// do not remove empty anchor tags (aka placeholders)
+		value = ''+value;
+		value = value.replace(/>\s*?<\/a>/g,'>&nbsp;</a>');
+		return value;
+	},
 
 	setup : function(ed) {
         // Add a custom button
