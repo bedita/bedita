@@ -13,12 +13,30 @@ debug : false
 });
  
  */
+$(document).ready(function(){
+
+var link_list = "";
+
+$(".multimediaitem .media_nickname").each(function(){
+	link_list += $(this).val()+"="+$(this).val()+",";
+});
+
+$("#relationType_seealso .rel_nickname").each(function(){
+	link_list += $(this).val()+"="+$(this).val()+",";
+});
+
+
 tinyMCE.init({
+
 	// General options
 	mode : "textareas",
 	theme : "advanced",
+
 	editor_selector : "mce",
-	plugins : "safari,paste,fullscreen,xhtmlxtras,inlinepopups",
+	
+	plugins : "syntaxhighlighter,safari,paste,fullscreen,xhtmlxtras,inlinepopups",
+	
+	//plugins : "safari,paste,fullscreen,xhtmlxtras,inlinepopups",
    	dialog_type : "modal",
 	// Theme options
 	theme_advanced_buttons1 : "justifycenter,bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext, | ,removeformat,charmap,code,fullscreen, | ,sub,sup,del,|,formula,dfn,glossary,|,attribs",
@@ -29,12 +47,17 @@ tinyMCE.init({
 	//theme_advanced_statusbar_location : "bottom",
 	//theme_advanced_resizing : true,
 	theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address,dt,dd,code,samp",
-	theme_advanced_link_targets: "modal=Open in modal window",
+	theme_advanced_link_targets: "Open in Modal=modal",
+	theme_advanced_link_list: link_list,
+	
+	//external_link_list_url : "/js/tiny_mce/myexternallist.js",
+	//file_browser_callback : 'myFileBrowser',
+
 	width : "100%",
 
 	remove_redundant_brs : true,
 	entity_encoding : "raw", //All characters will be stored in non-entity form except these XML default entities: &amp; &lt; &gt; &quot;
-	
+
 	// Example content CSS (should be your site CSS)
 	content_css : "/css/htmleditor.css",
     relative_urls : false,
@@ -48,6 +71,8 @@ tinyMCE.init({
 	valid_elements : '*[*]',
 	extended_valid_elements : "*[*]",
 	*/
+	verify_html : false, // per matematica
+	
 	cleanup_callback : function(type, value) {
 		// do not remove empty anchor tags (aka placeholders)
 		value = ''+value;
@@ -56,6 +81,7 @@ tinyMCE.init({
 	},
 
 	setup : function(ed) {
+
         // Add a custom button
         ed.addButton('dfn', {
 			//label : 'dfn',
@@ -91,14 +117,16 @@ tinyMCE.init({
 		
 	// Gets executed after DOM to HTML string serialization
 		ed.onPostProcess.add(function(ed, o) {
+
 			// State get is set when contents is extracted from editor
 			if (o.get) {
 				// Replace empty elements such <dfn></dfn>
 				o.content = o.content.replace('<dfn></dfn>', '');
 			}
+			
+		
 		});	
-		
-		
+			
     }
 
 });
@@ -130,5 +158,7 @@ tinyMCE.init({
     forced_root_block : '', // Needed for 3.x
     onchange_callback : "onChangeHandler"
 	
+
+});
 
 });
