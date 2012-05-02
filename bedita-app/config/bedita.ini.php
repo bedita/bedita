@@ -159,9 +159,15 @@ $config['DS']        = DS;
 /**
  * Modules permissions
  */
-define("BEDITA_PERMS_READ",	0x1) ; // read-only module permission
-define("BEDITA_PERMS_MODIFY",	0x2) ;
-define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ; // read-write module permission
+if (!defined("BEDITA_PERMS_READ")) {
+	define("BEDITA_PERMS_READ",	0x1) ; // read-only module permission
+}
+if (!defined("BEDITA_PERMS_MODIFY")) {
+	define("BEDITA_PERMS_MODIFY",	0x2) ;
+}
+if (!defined("BEDITA_PERMS_READ_MODIFY")) {
+	define("BEDITA_PERMS_READ_MODIFY",	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY) ; // read-write module permission
+}
 
 /**
  * Permission params, for Smarty 
@@ -364,7 +370,7 @@ $config['langsIso'] = array();
 $config['langOptionsIso'] = false;
 
 // media types for objects in multimedia module
-$config['mediaTypes'] = array('image','video','audio','text','spreadsheet','presentation','drawing','chart','formula','application');
+$config['mediaTypes'] = array('image','video','audio','text','archive','spreadsheet','presentation','drawing','chart','formula','application');
 
 
 /**
