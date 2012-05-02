@@ -118,10 +118,14 @@ class EventsController extends ModulesController {
 	 										"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 	 										"ERROR"	=> $this->referer()
 	 									), 
-	 			"saveCategories" 	=> array(
-	 										"OK"	=> "/events/categories",
-	 										"ERROR"	=> "/events/categories"
-	 									),
+				"deleteSelected" =>	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+									),
+				"saveCategories" 	=> array(
+ 										"OK"	=> "/events/categories",
+ 										"ERROR"	=> "/events/categories"
+ 									),
 	 			"deleteCategories" 	=> array(
 	 										"OK"	=> "/events/categories",
 	 										"ERROR"	=> "/events/categories"
