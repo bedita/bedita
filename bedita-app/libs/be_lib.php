@@ -276,7 +276,7 @@ class BeLib {
 	 */
 	public function arrayValues(array $array, $addStringKeys = false) {
 		$values = array();
-		array_walk_recursive($array , array($this, "arrayValuesCallback"), &$values);
+		array_walk_recursive($array , array($this, "arrayValuesCallback"), $values);
 		if ($addStringKeys) {
 			$keys = $this->arrayKeys($array);
 			$values = array_merge($values, $keys);
@@ -291,7 +291,7 @@ class BeLib {
 	 * @param mixed $key
 	 * @param array $values 
 	 */
-	static private function arrayValuesCallback($item, $key, $values) {
+	static private function arrayValuesCallback($item, $key, &$values) {
 		$values[] = $item;
 	}
 	
