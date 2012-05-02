@@ -117,6 +117,10 @@ class NewsController extends ModulesController {
 										"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
 										"ERROR"	=> $this->referer()
 									), 
+				"deleteSelected" =>	array(
+										"OK"	=> $this->referer(),
+										"ERROR"	=> $this->referer() 
+									),
 				"saveCategories" 	=> array(
 										"OK"	=> "/news/categories",
 										"ERROR"	=> "/news/categories"

@@ -255,6 +255,10 @@ class TranslationsController extends ModulesController {
 												"OK"	=> "/translations",
 												"ERROR" => $this->referer()
 											),
+			"deleteSelected" =>				array(
+												"OK"	=> $this->referer(),
+												"ERROR"	=> $this->referer() 
+											),
 			"deleteTranslations"	=> 		array(
 												"OK"	=> $this->referer(),
 												"ERROR" => $this->referer()
