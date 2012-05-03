@@ -35,6 +35,12 @@ if (!class_exists('ClassRegistry')) {
 
 class BeLib {
 	
+	/**
+	 * used to flatten arrays in BeLib::arrayValues()
+	 * @var array 
+	 */
+	private $__arrayFlat = array();
+	
 	public static function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
@@ -275,13 +281,13 @@ class BeLib {
 	 * @return array 
 	 */
 	public function arrayValues(array $array, $addStringKeys = false) {
-		$values = array();
-		array_walk_recursive($array , array($this, "arrayValuesCallback"), $values);
+		$this->__arrayFlat = array();
+		array_walk_recursive($array , array($this, "arrayValuesCallback"), $this);
 		if ($addStringKeys) {
 			$keys = $this->arrayKeys($array);
-			$values = array_merge($values, $keys);
+			$this->__arrayFlat = array_merge($this->__arrayFlat, $keys);
 		}
-		return $values;
+		return $this->__arrayFlat;
 	}
 	
 	/**
@@ -291,8 +297,8 @@ class BeLib {
 	 * @param mixed $key
 	 * @param array $values 
 	 */
-	static private function arrayValuesCallback($item, $key, &$values) {
-		$values[] = $item;
+	static private function arrayValuesCallback(&$item, $key, $obj) {
+		$obj->__arrayFlat[] = $item;
 	}
 	
 	/**
