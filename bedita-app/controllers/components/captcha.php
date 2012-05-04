@@ -41,7 +41,12 @@ class CaptchaComponent extends Object {
 		$this->background = BEDITA_CORE_PATH . DS . "webroot".DS."captcha".DS."img".DS."button.png";
 		$this->fontType = BEDITA_CORE_PATH . DS . "webroot".DS."captcha".DS."fonts".DS."Vera.ttf";
 	}
-	
+
+	/**
+	 * output a PNG image captcha
+	 * 
+	 * @param array $options
+	 */
 	public function image($options=array()) {
 		$length = (!empty($options["length"]))? $options["length"] : 4;
 		if (!empty($options["color"]))
@@ -114,7 +119,13 @@ class CaptchaComponent extends Object {
 		// Output the image as a png
 		imagepng($image);
 	}
-	
+
+	/**
+	 * Check captcha form data
+	 * 
+	 * @return boolean
+	 * @throws BeditaException
+	 */
 	public function checkCaptcha() {
 		if (empty($this->controller->params["form"]["captcha"]))
 			throw new BeditaException(__("Captcha image and text don't match", true));
@@ -124,7 +135,14 @@ class CaptchaComponent extends Object {
 		else
 			throw new BeditaException(__("Text doesn't match image", true));
 	}
-	
+
+	/**
+	 * Set font color
+	 * 
+	 * @param string $red
+	 * @param string $green
+	 * @param string $blue
+	 */
 	public function setFontColor($red, $green, $blue) {
 		$this->fontColor = array("red" => $red, "green" => $green, "blue" => $blue);
 	}

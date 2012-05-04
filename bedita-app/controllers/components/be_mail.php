@@ -60,12 +60,12 @@ class BeMailComponent extends Object {
 			$this->Email->delivery = 'smtp';
 		}
 	}
-	
+
 	/**
 	 * send single mail from mail_messages table
 	 *
 	 * @param int $msg_id
-	 * @param strinf $to, recipient email
+	 * @param string $to, recipient email
 	 * @param bool $html
 	 */
 	public function sendMailById($msg_id, $to, $html=true) {
@@ -87,8 +87,7 @@ class BeMailComponent extends Object {
 		
 		$this->sendMail($data);
 	}
-	
-	
+
 	/**
 	 * Prepare mail body using template
 	 *
@@ -96,7 +95,7 @@ class BeMailComponent extends Object {
 	 * @param bool $html, mail type
 	 * @param int $mail_group_id used to get publication public url and build unsubscribe link
 	 * @param $card_id used to built unsubscribe link
-	 * @return body (html or txt) of the message
+	 * @return string body (html or txt) of the message
 	 */
 	private function prepareMailBody($message, $html=true, $mail_group_id=null, $card_id=null) {
 		$unsubscribeurl = "";
@@ -170,7 +169,6 @@ class BeMailComponent extends Object {
 		return ($html)? $message["abstract"] . $this->boundaryPlaceholder . "<html><body>".$message["body"]."</body></html>" : $message["abstract"];
 	}
 
-	
 	/**
 	 * send single mail from $data array
 	 *
@@ -188,7 +186,16 @@ class BeMailComponent extends Object {
 			$this->mailLog("sent OK", "info", $data["to"], $data["subject"]);		
 		}
 	}
-	
+
+	/**
+	 * save mail log data
+	 * 
+	 * @param string $msg
+	 * @param string $level
+	 * @param array $recipient
+	 * @param string $subj
+	 * @param array $data
+	 */
 	private function mailLog($msg, $level = "info", $recipient = null, 
 			$subj = null, array& $data = array()) {
 
@@ -201,17 +208,15 @@ class BeMailComponent extends Object {
 		}
 		$mailLog->save($logData);
 	}
-	
+
 	/**
 	 * set to "injob" messages with status=pending and start_sending <= now
-	 *
+	 * @return array $msgIds
 	 */
 	public function lockMessages() {
-		
 		$msgIds = array();
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$mailMsgModel->containLevel("mailgroup");
-		
 		$msgToLock = $mailMsgModel->find("all", array(
 									"conditions" => array(
 											"MailMessage.mail_status" => "pending",
@@ -219,28 +224,23 @@ class BeMailComponent extends Object {
 											)
 									)
 								);
-		
 		if (!empty($msgToLock)) {
-			
 			foreach ($msgToLock as $key => $message) {
 				if (!empty($message["MailGroup"])) {
 					$mailMsgModel->id = $message["id"];
 					if (!$mailMsgModel->saveField("mail_status", "injob")) {
 						throw new BeditaException(__("Mail message lock failed: id " . $message["id"]), true);
 					}
-					
 					$msgIds[] = $message["id"];
 				}
 			}
-			
 		}
-		
 		return $msgIds;
-								
 	}
-	
+
 	/**
 	 * create jobs from message with status "injob"
+	 * @param array $msgIds
 	 */
 	public function createJobs(array $msgIds) {
 		
@@ -323,11 +323,9 @@ class BeMailComponent extends Object {
 			false
 		);
 	}
-	
-	
+
 	/**
 	 * execute active jobs
-	 *
 	 */
 	public function sendQueuedJobs(array $msgIds) {
 		
@@ -409,7 +407,10 @@ class BeMailComponent extends Object {
 		$mailMsgModel->Behaviors->enable('ForeignDependenceSave'); 
 		
 	}
-	
+
+	/**
+	 * send mail and save mail job data
+	 */
 	public function notify() {
 
 		$jobModel = ClassRegistry::init("MailJob");
@@ -509,6 +510,7 @@ class BeMailComponent extends Object {
 	 * prepare data for email sending
 	 *
 	 * @param array $data
+	 * @throws BeditaException
 	 */
 	private function prepareData(&$data) {
 		$this->Email->reset();
@@ -555,17 +557,18 @@ class BeMailComponent extends Object {
 			$data["body"] = null;
 		}
 	}
-	
-	
+
+	/**
+	 * send email
+	 * 
+	 * @param array $data
+	 */
 	private function send($data) {
 		$this->prepareData($data);
-		if (!$this->Email->send($data["body"]))
+		if (!$this->Email->send($data["body"])) {
 			return false;
-			
+		}
 		return true;
 	}
-	
 }
-
-
 ?>

@@ -46,7 +46,12 @@ class BeLangTextComponent extends Object {
 		$this->controller = $controller;
 	}
 
-	function setupForSave(&$data) {
+	/**
+	 * setup data for save
+	 * 
+	 * @param array $data
+	 */
+	public function setupForSave(&$data) {
 		if(!@count($data)) return ;
 		$translation = array();
 		foreach($data as $lang => $attributes) {
@@ -63,7 +68,12 @@ class BeLangTextComponent extends Object {
 		$data = $translation ;
 	}
 
-	function setupForView(&$data) {
+	/**
+	 * setup data for view
+	 * 
+	 * @param array $data
+	 */
+	public function setupForView(&$data) {
 		$tmp = array() ;
 		for($i=0; $i < count($data) ; $i++) {
 			$item = &$data[$i] ;
@@ -72,8 +82,13 @@ class BeLangTextComponent extends Object {
 		}
 		$data = $tmp ;
 	}
-	
-	function setupForViewLangText(&$data) {
+
+	/**
+	 * setup LangText data for view
+	 * 
+	 * @param array $data
+	 */
+	public function setupForViewLangText(&$data) {
 		$tmp = array() ;
 		for($i=0; $i < count($data) ; $i++) {
 			$item = &$data[$i]['LangText'] ;
@@ -83,7 +98,7 @@ class BeLangTextComponent extends Object {
 		}
 		$data = $tmp ;
 	}
-	
+
 	/**
 	 * used in frontend_controller
 	 * Maps object available languages 
@@ -92,7 +107,7 @@ class BeLangTextComponent extends Object {
 	 * @param string $lang, current frontend language 
 	 * @param array $status, status for languages showed
 	 */
-	function setObjectLang(&$object, $lang, $status=array('on')) {
+	public function setObjectLang(&$object, $lang, $status=array('on')) {
 		$object["languages"] = array();
 		if (!empty($object["LangText"]["status"])) {
 			

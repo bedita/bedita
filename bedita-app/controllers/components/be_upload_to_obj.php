@@ -38,10 +38,12 @@ class BeUploadToObjComponent extends Object {
 
 	/**
 	 * Uploads a file to location and create stream object.
-	 
-	 * @return object_id if upload was successful, false otherwise.
+	 * 
+	 * @param array $dataStream
+	 * @param string $formFileName
+	 * @return mixed int|boolean, object_id if upload was successful, false otherwise.
 	 */
-	function upload($dataStream=null, $formFileName="Filedata") {
+	public function upload($dataStream=null, $formFileName="Filedata") {
 		$result = false ;
 		if (empty($this->params["form"][$formFileName]["name"])) {
 			throw new BEditaException(__("No file in the form", true));
@@ -88,29 +90,27 @@ class BeUploadToObjComponent extends Object {
 		
 		return $result;
 	}
-	
-	/**
-	 * Create obj stream from URL.
-	 * Form must to have: url, title, lang.
-	 * @return boolean true if upload was successful, int $id otherwise.
-	 */
-	function uploadFromURL($dataURL, $clone=false) {
 
+	/**
+	 * Create obj stream from URL. Form must have: url, title, lang.
+	 * 
+	 * @param string $dataURL
+	 * @param boolean $clone
+	 * @return mixed boolean|int, false if upload was unsuccessful, int $id otherwise
+	 * @throws BEditaMediaProviderException
+	 */
+	public function uploadFromURL($dataURL, $clone=false) {
 		$result = false ;
 		$getInfoURL = false;
-		
 		$mediaProvider = ClassRegistry::init("Stream")->getMediaProvider($dataURL['url']);
-		
 		if(empty($dataURL['title'])) {
 			$link = ClassRegistry::init("Link");
 			$dataURL['title'] = $link->readHtmlTitle($dataURL['url']);
 		}
-		
 		if (!empty($mediaProvider)) {
 			$dataURL['provider'] = $mediaProvider["provider"];
 			$dataURL['video_uid'] = $mediaProvider["video_uid"];
 			$dataURL['uri'] = $mediaProvider["uri"];
-		
 			$componentName = Inflector::camelize("be_" . $mediaProvider["provider"]);
 			if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "setInfoToSave")) {
 				if (!$this->{$componentName}->setInfoToSave($dataURL)) {
@@ -119,30 +119,30 @@ class BeUploadToObjComponent extends Object {
 			} else {
 				throw new BEditaMediaProviderException(__("Multimedia provider is not managed",true)) ;
 			}
-			
 		} else {
 			$dataURL['provider'] = null;
 			$dataURL['video_uid'] = null;
 			$dataURL['uri'] = $dataURL["url"];
 			$getInfoURL = true;
 		}
-		
-		if (empty($dataURL["status"]))
+		if (empty($dataURL["status"])) {
 			$dataURL['status'] = "on";
-		
+		}
 		if (!empty($this->params['form']['mediatype'])) {
 			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
-		
 		unset($dataURL["url"]);
-
 		$id = $this->BeFileHandler->save($dataURL, $clone, $getInfoURL) ;
-		
 		return $id;
-		
 	}
-	
-	function cloneMediaObject($data) {
+
+	/**
+	 * Clone data for media
+	 * 
+	 * @param array $data
+	 * @return mixed boolean|int, false if cloning was unsuccessful, int $id otherwise
+	 */
+	public function cloneMediaObject($data) {
 		if (!empty($data["id"])) {
 			unset($data["id"]);
 		}
@@ -160,9 +160,15 @@ class BeUploadToObjComponent extends Object {
 			return $this->BeFileHandler->save($data, true);
 		}
 	}
-	
-	
-	function getThumbnail($data) {
+
+	/**
+	 * Get thumbnail for media
+	 * 
+	 * @param array $data
+	 * @return array
+	 * @throws BEditaMediaProviderException
+	 */
+	public function getThumbnail($data) {
 		if (!empty($data["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $data["thumbnail"])) {
 			$thumbnail = $data["thumbnail"]; 	
 		} else {
@@ -177,9 +183,7 @@ class BeUploadToObjComponent extends Object {
 				$provider = $data["provider"];
 				$uid = $data["video_uid"];
 			}
-			
 			$thumbnail = null;
-			
 			if (!empty($provider)) {
 				$componentName = Inflector::camelize("be_" . $provider);
 				if (isset($this->{$componentName}) && method_exists($this->{$componentName}, "getThumbnail")) {

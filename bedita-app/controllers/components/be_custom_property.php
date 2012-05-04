@@ -44,9 +44,9 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * unset property with empty property_value field from data form 
+	 * set controller ObjectProperty with property_value from form
 	 */
-	function setupForSave() {
+	public function setupForSave() {
 		if (!empty($this->controller->data["ObjectProperty"])) {
 			$objProp = array();
 			foreach($this->controller->data["ObjectProperty"] as $key => $value) {
@@ -67,9 +67,9 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * unset property with empty property_value field from data form 
+	 * set controller UserProperty with property_value from form
 	 */
-	function setupUserPropertyForSave() {
+	public function setupUserPropertyForSave() {
 		if (!empty($this->controller->data["UserProperty"])) {
 			$objProp = array();
 			foreach($this->controller->data["UserProperty"] as $key => $value) {
@@ -85,16 +85,15 @@ class BeCustomPropertyComponent extends Object {
 			$this->controller->data["UserProperty"] = $objProp;
 		}
 	}
-	
-	
+
 	/**
-	 * set property array of object for view
+	 * set ObjectProperty properties array of object for view
 	 *
 	 * @param array $obj, array of object data 
 	 * @param int $object_type_id
 	 * @return array
 	 */
-	function setupForView(&$obj, $object_type_id=null) {
+	public function setupForView(&$obj, $object_type_id=null) {
 		$property = array();
 		
 		if (!empty($obj) || !empty($object_type_id)) {
@@ -118,13 +117,13 @@ class BeCustomPropertyComponent extends Object {
 	}
 	
 	/**
-	 * set property array for user view
+	 * set UserProperty properties array for user view
 	 *
 	 * @param array $obj, array of object data 
 	 * @param int $object_type_id
 	 * @return array
 	 */
-	function setupUserPropertyForView(&$user) {
+	public function setupUserPropertyForView(&$user) {
 		
 		$property = array();
 		

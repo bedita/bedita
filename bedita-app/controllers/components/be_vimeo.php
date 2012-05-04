@@ -41,7 +41,9 @@ class BeVimeoComponent extends Object {
 	/**
 	 * get vimeo info video
 	 *
-	 * @return unknown
+	 * @param int $id
+	 * @param array $attributes
+	 * @return array
 	 */
 	public function getInfoVideo($id, $attributes=array()) {
 		$conf = Configure::getInstance() ;
@@ -60,11 +62,12 @@ class BeVimeoComponent extends Object {
 		$this->info = $info[0];
 		return $this->info;
 	}
-	
+
 	/**
 	 * get thumbnail
-	 * @param $id
-	 * @return url, false if error occurs
+	 * 
+	 * @param int $id
+	 * @return mixed string|boolean: string url, false if error occurs
 	 */
 	public function getThumbnail($id) {
 		if(!$this->getInfoVideo($id)) {
@@ -75,6 +78,7 @@ class BeVimeoComponent extends Object {
 	
 	/**
 	 * set data to save multimedia object
+	 * 
 	 * @param $id
 	 * @param $data
 	 * @return boolean
@@ -83,19 +87,19 @@ class BeVimeoComponent extends Object {
 		if(!$this->getInfoVideo($data["video_uid"])) {
 			return false;
 		}
-		
 		$data['title'] = (empty($data['title']))? $this->info['title'] : trim($data['title']);
 		$data['description'] = (empty($data['description']))? $this->info['description'] : $data['description'];
 		$data['uri']		= $this->info['url'] ;
-		if (empty($data['thumbnail']))
+		if (empty($data['thumbnail'])) {
 			$data['thumbnail']	= $this->info['thumbnail_medium'];
-		if (empty($data['duration']))
+		}
+		if (empty($data['duration'])) {
 			$data['duration']	= $this->info['duration']/60;
+		}
 		$data['name']		= preg_replace("/[\'\"]/", "", $data['title']);
 		$data['mime_type']	= "video/".$data["provider"];
 		return true;
 	}
-	
 }
 
 ?>

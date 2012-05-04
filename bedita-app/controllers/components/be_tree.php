@@ -47,7 +47,9 @@ class BeTreeComponent extends Object {
 	} 
 
 	/**
-	 * @param object $controller
+	 * set filter parameters for controller
+	 * 
+	 * @param array object $controller
 	 */
 	function startup(&$controller)
 	{
@@ -89,16 +91,20 @@ class BeTreeComponent extends Object {
 			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["query"]));
 		}
 	}
-	
-	function cleanFilter() {
+
+	/**
+	 * clean filter
+	 */
+	public function cleanFilter() {
 		$this->filter = array();
 	}
 
 	/**
 	 * Tree of publications and sections for user connected
-	 *
+	 * 
+	 * @return array
 	 */
-	function getSectionsTree() {
+	public function getSectionsTree() {
 		$conf  = Configure::getInstance() ;
 		
 		// Get connected user
@@ -111,8 +117,14 @@ class BeTreeComponent extends Object {
 		
 		return $tree ;	
 	}
-	
-	function getAreaForSection($section_id) {
+
+	/**
+	 * get publication (area) data for the section $section_id
+	 * 
+	 * @param int $section_id
+	 * @return array
+	 */
+	public function getAreaForSection($section_id) {
 		$area = ClassRegistry::init('Area');
 		$area->containLevel("minimum");
 		$area_id = $this->Tree->getRootForSection($section_id);
@@ -123,58 +135,65 @@ class BeTreeComponent extends Object {
 	 * Get tree with one branch expanded (the branch where object $id is)
 	 *
 	 * @param integer $id
+	 * @return array
 	 */
-	function expandOneBranch($id = null) {
+	public function expandOneBranch($id = null) {
 		$tree = $this->getSectionsTree() ;
-		
 		for($i=0; $i < count($tree) ; $i++) {
 			if(!isset($id) || !$this->_searchRootDeleteOther($tree[$i], $id)) {
 				unset($tree[$i]['children']) ;
 			} 
 		}
-		
 		return $tree ;
 	}
-	
+
 	/**
 	 * Get children for node $id
 	 *
-	 * @param integer $id		node ID
+	 * @param integer $id node ID
+	 * @param string $status
+	 * @param boolean $filter
+	 * @param string $order
+	 * @param boolean $dir
+	 * @param int $page
+	 * @param int $dim
+	 * @return array
 	 */
-	function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
+	public function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
 		$conf  = Configure::getInstance() ;
-		
 		// Get user connected
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
-		
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
-		
 		$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
-		
-		return  $objs ;
+		return $objs ;
 	}
-	
+
 	/**
 	 * Return descendants of a tree node
 	 *
-	 * @param integer $id		node ID
+	 * @param integer $id node ID
+	 * @param string $status
+	 * @param boolean $filter
+	 * @param string $order
+	 * @param boolean $dir
+	 * @param int $page
+	 * @param int $dim
+	 * @return array
 	 */
-	function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
+	public function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
-		
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
-			
 		$objs = &  $this->Tree->getDescendants($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
-		
-		return  $objs ;
+		return $objs ;
 	}
 	
 	/**
 	 * Array of parent objects of $id...
 	 *
 	 * @param integer $id
+	 * @return array parents ids
 	 */
 	public function getParents($id = null, $area_id=null) {
 		$parents_id = array();
@@ -209,7 +228,6 @@ class BeTreeComponent extends Object {
 		foreach ($add as $parent_id) {
 			$this->Tree->appendChild($id, $parent_id) ;
 		}
-
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +237,7 @@ class BeTreeComponent extends Object {
 	 *
 	 * @param array $tree	tree where to perform search
 	 * @param integer $id	object to search
+	 * @return boolean
 	 */
 	private function _searchRootDeleteOther(&$tree, $id) {
 		// If it's the root...
@@ -226,10 +245,8 @@ class BeTreeComponent extends Object {
 			for($i=0; $i < count($tree['children']) ; $i++) {
 				unset($tree['children'][$i]['children']) ;
 			}
-			
 			return true ;
 		}
-		
 		// Search in children trees
 		$found = null ;
 		for($i=0; $i < count($tree['children']) ; $i++) {
@@ -237,17 +254,13 @@ class BeTreeComponent extends Object {
 				$found = $i ;
 			} 
 		}
-		
 		// If branches to exclude were found, delete them
 		if(isset($found)) {
 			$tmp = $tree['children'][$found] ;
-			
 			unset($tree['children']) ;
 			$tree['children'] = array($tmp) ;
-			
 			return true ;
 		}
-		
 		return false ;
 	}
 }

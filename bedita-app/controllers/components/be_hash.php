@@ -72,8 +72,9 @@ class BeHashComponent extends Object {
 	 *
 	 * @param string $service_type
 	 * @param string $hash
-	 *
-	 * @return void
+	 * @return boolean
+	 * @throws BeditaException
+	 * @throws BeditaHashException
 	 */
 	public function handleHash($service_type, $hash=null) {
 		if (empty($service_type)) {
@@ -164,6 +165,8 @@ class BeHashComponent extends Object {
 	 *
 	 * @param array $data
 	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
 	 */
 	protected function userSignUp($data) {
 		if (empty($data['User'])) {
@@ -283,6 +286,14 @@ class BeHashComponent extends Object {
 		return $mailParams;
 	}
 
+	/**
+	 * Signup activation for user
+	 * 
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
+	 */
 	protected function userSignUpActivation($data) {
 		$userModel = ClassRegistry::init("User");
 		$user = $userModel->find("first", array(
@@ -326,6 +337,11 @@ class BeHashComponent extends Object {
 
 	/**
 	 * subscribe to a newsletter
+	 * 
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
 	 */
 	protected function newsletterSubscribe($data) {
 		if(empty($data)) {
@@ -446,6 +462,11 @@ class BeHashComponent extends Object {
 
 	/**
 	 * confirm subscription to a newsletter
+	 * 
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
 	 */
 	protected function newsletterSubscribeConfirm($data) {
 		if ($data["HashJob"]["status"] != "pending")
@@ -507,6 +528,10 @@ class BeHashComponent extends Object {
 
 	/**
 	 * unsubscribe from a newsletter
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
 	 */
 	protected function newsletterUnsubscribe($data) {
 		if (empty($data['mail_group_id']))
@@ -574,9 +599,15 @@ class BeHashComponent extends Object {
 		);
 
 		return $mailParams;
-		
 	}
 
+	/**
+	 * Confirm newsletter unsubscribe
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 * @throws BeditaException
+	 */
 	protected function newsletterUnsubscribeConfirm($data) {
 		if ($data["HashJob"]["status"] != "pending") {
 			throw new BeditaHashException(__("Hash isn't valid.",true));
@@ -628,6 +659,8 @@ class BeHashComponent extends Object {
 	 *
 	 * @param array $data
 	 * @return array mail params
+	 * @throws BeditaHashException
+	 * @throws BeditaException
 	 */
 	protected function recoverPassword($data) {
 		$this->controller->Session->delete("userToChangePwd");
@@ -686,6 +719,13 @@ class BeHashComponent extends Object {
 		
 	}
 
+	/**
+	 * Recover password
+	 * 
+	 * @param array $data
+	 * @return array
+	 * @throws BeditaHashException
+	 */
 	protected function recoverPasswordChange($data) {
 		$userToChangePwd = $this->controller->Session->read("userToChangePwd");
 		if (empty($userToChangePwd) || $userToChangePwd["User"]["id"] != $data["HashJob"]["user_id"]) {
@@ -732,6 +772,11 @@ class BeHashComponent extends Object {
 		}
 	}
 
+	/**
+	 * Send notification email
+	 *
+	 * @param array $mailParams
+	 */
 	protected function sendNotificationMail(array $mailParams) {
 		$mailOptions = Configure::read("mailOptions");
 		$mail_message_data['from'] = $mailOptions["sender"];
@@ -750,7 +795,10 @@ class BeHashComponent extends Object {
 			$this->controller->set("viewMsg", $msg);
 		}
 	}
-	
+
+	/**
+	 * load messages (if present)
+	 */
 	protected function loadMessages() {
 		// load local messages if present
 		$localMsg = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
@@ -762,7 +810,14 @@ class BeHashComponent extends Object {
 		}
 		$this->notifyMsg = &$notify;
 	}
-	
+
+	/**
+	 * get message (in current lang, if present translation)
+	 * 
+	 * @param string $msgType
+	 * @param string $field
+	 * @return string
+	 */
 	protected function getNotifyText($msgType, $field) {
 		if(isset($this->notifyMsg[$msgType][$this->controller->viewVars["currLang"]][$field])) {
 			$text = $this->notifyMsg[$msgType][$this->controller->viewVars["currLang"]][$field];
@@ -771,7 +826,14 @@ class BeHashComponent extends Object {
 		}
 		return $text;
 	}
-	
+
+	/**
+	 * replace place holder
+	 * 
+	 * @param unknown_type $text
+	 * @param array $params
+	 * @return string
+	 */
 	protected function replacePlaceHolder($text, array &$params) {
 		if (isset($params["user"])) {
 			$text = str_replace("[\$user]", $params["user"], $text);
@@ -785,6 +847,5 @@ class BeHashComponent extends Object {
 		//$text = str_replace("[\$beditaUrl]", $params["beditaUrl"], $text);
 		return $text;		
 	}
-	
 }
 ?>

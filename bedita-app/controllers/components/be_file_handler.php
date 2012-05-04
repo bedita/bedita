@@ -85,11 +85,11 @@ class BeFileHandlerComponent extends Object {
 	 * mime_type		MIME type. Empty if path == URL
 	 * file_size		File size. Empty if path == URL
 	 *
-	 * @param array $dati	object data
+	 * @param array $data	object data
 	 *
 	 * @return integer or false (id of the object created or modified)
 	 */
-	function save(&$data, $clone=false, $getInfoUrl=true) {
+	public function save(&$data, $clone=false, $getInfoUrl=true) {
 		if (!empty($data['uri'])) {
 			if ($this->_isURL($data['uri'])) {
 				return $this->_createFromURL($data, $clone, $getInfoUrl);
@@ -102,8 +102,10 @@ class BeFileHandlerComponent extends Object {
 	/**
 	 * Delete object
 	 * @param integer $id	object id
+	 * @return boolean
+	 * @throws BEditaDeleteStreamObjException
 	 */
-	function del($id) {
+	public function del($id) {
 		$path = ClassRegistry::init("Stream")->read("uri", $id);
 		$path = (isset($path['Stream']['uri'])) ? $path['Stream']['uri'] : $path ;
 		if(!empty($path)) {
@@ -123,8 +125,9 @@ class BeFileHandlerComponent extends Object {
 	/**
 	 * Return URL of file object
 	 * @param integer $id	object id
+	 * @return string
 	 */
-	function url($id) {
+	public function url($id) {
 		if(!($ret = ClassRegistry::init("Stream")->read("uri", $id))) return false ;
 		$path = $ret['Stream']['uri'] ;
 		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
@@ -133,8 +136,9 @@ class BeFileHandlerComponent extends Object {
 	/**
 	 * Return object path, URL if remote file
 	 * @param integer $id	object id
+	 * @return string
 	 */
-	function path($id) {
+	public function path($id) {
 		if(!($ret = ClassRegistry::init("Stream")->read("uri", $id))) return false ;
 		$path = $ret['Stream']['uri'] ;
 		return ($this->_isURL($path)) ? $path : (Configure::read("mediaUrl").$path);
@@ -143,9 +147,10 @@ class BeFileHandlerComponent extends Object {
 	/**
 	 * Return object id (object that contains file $path)
 	 * @param string $path	File name or URL
+	 * @return int
 	 * @todo VERIFY
 	 */
-	function isPresent($path, $id = null) {
+	public function isPresent($path, $id = null) {
 		if(!$this->_isURL($path)) {
 			$path = $this->getPathTargetFile($path);
 		}
@@ -160,33 +165,43 @@ class BeFileHandlerComponent extends Object {
 	
 	////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////
-	
+
+	/**
+	 * Create (or clone) data for file identified by url
+	 * 
+	 * @param array $data
+	 * @param boolean $clone
+	 * @param boolean $getInfoUrl
+	 * @return int (int or other type, according to primaryKey type for model)
+	 * @throws BEditaURLException
+	 * @throws BEditaAllowURLException
+	 * @throws BEditaFileExistException
+	 */
 	private function _createFromURL(&$data, $clone, $getInfoUrl) {
 		// check URL
-		if(empty($data['uri']) || !$this->_regularURL($data['uri']))
+		if(empty($data['uri']) || !$this->_regularURL($data['uri'])) {
 			throw new BEditaURLException(__("URL not valid",true)) ;
-
+		}
 		if($getInfoUrl && $this->paranoid) {
 			// Remote file management
-			if(!ini_get('allow_url_fopen')) 
+			if(!ini_get('allow_url_fopen')) {
 				throw new BEditaAllowURLException(__("You can't use remote file",true)) ;
-			
+			}
 			// Get MIME type
 			$this->getInfoURL($data);
-
 		}
-		
 		// check url presence in database
 		if (!$clone) {
 			// new
 			if (empty($data["id"])) {
-				if ($this->isPresent($data['uri']))
+				if ($this->isPresent($data['uri'])) {
 					throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
+				}
 			// modify
 			} elseif (!empty($data["id"])) {
-				if ($this->isPresent($data['uri'], $data['id']))
+				if ($this->isPresent($data['uri'], $data['id'])) {
 					throw new BEditaFileExistException(__("Media already exists in the system",true)) ;
-	
+				}
 				// if present in filesystem delete it
 				$stream = ClassRegistry::init("Stream")->read('uri', $data['id']);
 				if((!empty($stream["Stream"]["uri"]) && !$this->_isURL($stream['Stream']['uri']))) {
@@ -194,41 +209,42 @@ class BeFileHandlerComponent extends Object {
 				}
 			}
 		}
-		
 		return $this->_create($data) ;
 	}
 
+	/**
+	 * Create (or clone) data for file
+	 * 
+	 * @param array $data
+	 * @param boolean $clone
+	 * @return mixed boolean|int (int or other type, according to primaryKey type for model)
+	 * @throws BeditaException
+	 * @throws BEditaFileExistException
+	 */
 	private function _createFromFile(&$data, $clone) {
 		// if it's new object and missing uri
-		if(empty($data['uri']) && empty($data['id']))
+		if(empty($data['uri']) && empty($data['id'])) {
 			throw new BeditaException(__("Missing temporary file in filesystem.", true));
-
-		if (!file_exists($data["uri"]))
+		}
+		if (!file_exists($data["uri"])) {
 			throw new BEditaFileExistException(__("Resource " . $data["uri"] . " not valid", true));
-			
+		}
 		// Create destination path
 		$sourcePath = $data['uri'] ;
-
 		$data["hash_file"] = hash_file("md5", $sourcePath);
-
 		$streamModel = ClassRegistry::init("Stream");
-		
 		// check if hash file exists
 		if (!$clone && ($stream_id = $streamModel->field("id", array("hash_file" => $data["hash_file"]))) ) {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true),array("id"=>$stream_id)) ;
 		}
-		
 		$targetPath	= $this->getPathTargetFile($data['name']);
-		
 		if (!empty($data["id"])) {
 			$ret = $streamModel->read('uri', $data["id"]);
-				
 			// if present a path to a file on filesystem, delete it
 			if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
 				$this->_removeFile($ret['Stream']['uri']) ;
 			}
 		}
-
 		// Create file
 		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
 		$data['uri'] = (DS == "/")? $targetPath : str_replace(DS, "/", $targetPath);
@@ -236,35 +252,36 @@ class BeFileHandlerComponent extends Object {
 		return $this->_create($data) ;
 	}
 
+	/**
+	 * Create object for $data
+	 * 
+	 * @param array $data
+	 * @return int (or other type, according to primaryKey type for model)
+	 * @throws BEditaMIMEException
+	 * @throws BEditaSaveStreamObjException
+	 */
 	private function _create(&$data) {
-	
 		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
 			throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
 		}
-		
 		if (!empty($data["id"])) {
 			$stream = ClassRegistry::init("Stream")->read(array('mime_type','uri'), $data["id"]) ;
 			$object_type_id = ClassRegistry::init("BEObject")->field("object_type_id", array("id" => $data["id"]));
 			$prevModel = Configure::read("objectTypes." . $object_type_id . ".model");
-			
 			// change object type
 			if ($modelType["name"] != $prevModel) {
-				
-				
 				$data["object_type_id"] = Configure::read("objectTypes." . Inflector::underscore($modelType["name"]) . ".id");
 				// delete old data from specific table
 				$prevMediaModel = ClassRegistry::init($prevModel);
 				$prevMediaModel->Behaviors->disable('DeleteObject');
 				$prevMediaModel->delete($data["id"], false);
 				$prevMediaModel->Behaviors->enable('DeleteObject');
-				
 				// delete file on filesystem
 				if(($stream["Stream"]["uri"] && !$this->_isURL($stream["Stream"]["uri"]))) {
 					$this->_removeFile($stream["Stream"]["uri"]) ;
 				}
 			}
 		}
-		
 		if (method_exists($this, "set" . $modelType["name"] . "Data")) {
 			if (!empty($modelType["specificType"])) {
 				$this->{"set" . $modelType["name"] . "Data"}($data, $modelType["specificType"]);
@@ -272,9 +289,7 @@ class BeFileHandlerComponent extends Object {
 				$this->{"set" . $modelType["name"] . "Data"}($data);
 			}
 		}
-		
 		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType["name"])) : $this->getCategoryMediaType($data,$modelType["name"]);
-		
 		$mediaModel = ClassRegistry::init($modelType["name"]);
 		$mediaModel->create();
 		if(!($ret = $mediaModel->save($data))) {
@@ -283,10 +298,21 @@ class BeFileHandlerComponent extends Object {
 		return ($mediaModel->{$mediaModel->primaryKey}) ;
 	}
 
+	/**
+	 * Set image size for $data
+	 * 
+	 * @param $data $data
+	 */
 	private function setImageData(&$data) {
 		$this->getImageSize($data);
 	}
-	
+
+	/**
+	 * Set application data (name, type, label)
+	 * 
+	 * @param array $data
+	 * @param string $application_name
+	 */
 	private function setApplicationData(&$data, $application_name) {
 		$data["application_name"] = $application_name;
 		$app_details = Configure::read("validate_resource.mime.Application");
@@ -296,7 +322,12 @@ class BeFileHandlerComponent extends Object {
 			$this->getImageSize($data);
 		}
 	}
-	
+
+	/**
+	 * get image size for $data
+	 * 
+	 * @param array $data
+	 */
 	private function getImageSize(&$data) {
 		$path = ($this->_isURL($data["uri"]))? $data["uri"] : Configure::read("mediaRoot") . $data['uri'];
 		if ( $imageSize =@ getimagesize($path) )
@@ -307,7 +338,14 @@ class BeFileHandlerComponent extends Object {
 				$data["height"] = $imageSize[1];
 		}
 	}
-	
+
+	/**
+	 * get category data for media $data
+	 * 
+	 * @param array $data
+	 * @param string $modelType
+	 * @return array category
+	 */
 	private function getCategoryMediaType($data, $modelType) {
 		$cat = array();
 		// if empty mediatype try to get it from modelName
@@ -319,7 +357,6 @@ class BeFileHandlerComponent extends Object {
 				$data['mediatype'] = $config["mediaTypeMapping"][$data['mime_type']];
 			}
 		}
-		
 		if (!empty($data['mediatype'])) {
 			$category = ClassRegistry::init("Category");
 			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
@@ -327,43 +364,48 @@ class BeFileHandlerComponent extends Object {
 		}
 		return $cat;
 	}
-	
+
 	/**
 	 * If $path is an URL, return TRUE
 	 *
-	 * @param unknown_type $path
+	 * @param string $path
+	 * @return boolean
 	 */
 	private function _isURL($path) {
 		$conf 		= Configure::getInstance() ;
-		
-		if(preg_match($conf->validate_resource['URL'], $path)) return true ;
-		else return false ;
+		if(preg_match($conf->validate_resource['URL'], $path)) {
+			return true ;
+		} else {
+			return false ;
+		}
 	}
 
 	/**
 	 * If $URL is valid, return TRUE
+	 * 
+	 * @param string $URL
+	 * @return boolean
 	 */
 	private function _regularURL($URL) {
 		$conf 		= Configure::getInstance() ;
-		
 		foreach ($conf->validate_resource['allow'] as $reg) {
 			if(preg_match($reg, $URL)) return true ;
 		}
-
-		return false ;	
+		return false ;
 	}
-			
+
 	/**
 	 * return array with model name and eventually specific type (see $config[validate_resource][mime][Application]) 
 	 * from mime type
 	 *
-	 * @param string $mime	mime type 
+	 * @param string $mime	mime type
+	 * @return mixed array|boolean
 	 */
 	private function _getTypeFromMIME($mime) {
 		$conf 		= Configure::getInstance() ;
-		if(empty($mime))	
+		if(empty($mime)) {
 			return false ;
-		
+		}
 		$models = $conf->validate_resource['mime'] ;
 		foreach ($models as $model => $regs) {
 			foreach ($regs as $key => $reg) {
@@ -377,28 +419,27 @@ class BeFileHandlerComponent extends Object {
 				}	
 			}
 		}
-		
 		return false ;
 	}
 
 	
 	/**
-	 * get mime type
+	 * put mime type checking uri
+	 * 
+	 * @param array $data
+	 * @throws BEditaInfoException
 	 */
-	function getInfoURL(&$data) {
-		
+	public function getInfoURL(&$data) {
 		if(!(isset($data['name']) && !empty($data['name']))) {
 			$data['name']  = basename($data["uri"]) ;
 		}
-		
 		if (empty($data['title'])) {
 			$data['title'] = $data['name'];
 		}
-		
 		// get mime type
-		if (!($headers = @get_headers($data["uri"],1)))
+		if (!($headers = @get_headers($data["uri"],1))) {
 			throw new BEditaInfoException(__("URL unattainable",true));
-
+		}
 		// if redirect response try to reach the redirect location
 		if (stristr($headers[0], "redirect")) {
 			if (empty($headers["Location"])) {
@@ -408,16 +449,15 @@ class BeFileHandlerComponent extends Object {
 				throw new BEditaInfoException(__("URL unattainable",true));
 			}
 		}
-
-		if (!strstr($headers[0], "200"))
+		if (!strstr($headers[0], "200")) {
 			throw new BEditaInfoException(__("URL unattainable",true));
-
+		}
 		$data["mime_type"] = ClassRegistry::init("Stream")->getMimeTypeByExtension($data["uri"]);
 		if (!$data["mime_type"]) {
 			$data["mime_type"] = (!empty($headers["Content-Type"]))? $headers["Content-Type"] : $data["mime_type"] = "beexternalsource";
 		}
 	}
-	
+
 	/**
 	 * get mime type of stream
 	 * 
@@ -426,60 +466,51 @@ class BeFileHandlerComponent extends Object {
 	 */
 	public function getMimeType($data) {
 		$mime_type = ClassRegistry::init("Stream")->getMimeType($data["tmp_name"], $data["name"]);
-		
 		// if not retrieved mime type from file or extension, get mime type passed by browser
 		if (empty($mime_type)) {
 			$mime_type = $data['type'];
 		}
-		
 		return $mime_type;
 	}
-	
-	
+
 	/**
 	 * Create target with source (temporary file), through transactional object
 	 *
 	 * @param string $sourcePath
 	 * @param string $targetPath
+	 * @return mixed boolean|string
 	 */
 	private function _putFile($sourcePath, $targetPath) {
 		if(empty($targetPath)) return false ;
-		
 		// Temporary directories to create
 		$tmp = Configure::read("mediaRoot") . $targetPath ;
 		$stack = array() ;
 		$dir = dirname($tmp) ;
-		
 		while($dir != Configure::read("mediaRoot")) {
 			if(is_dir($dir)) break ;
-			
 			array_push($stack, $dir) ;
-			
 			$dir = dirname($dir) ;
 		} 
 		unset($dir) ;
-		
 		// Creating directories
 		while(($current = array_pop($stack))) {
 			if(!$this->Transaction->mkdir($current)) return false ;
 		}
-		
 		return $this->Transaction->makeFromFile($tmp, $sourcePath) ;
-	}	
+	}
 
 	/**
 	 * Delete a file from file system with transactional object
 	 *
 	 * @param string $path
+	 * @return boolean
 	 */
 	private function _removeFile($path) {
 		if (DS != "/") {
 			$path = str_replace("/", DS, $path);
 		}
 		$path = Configure::read("mediaRoot") . $path ;
-		
 		if (file_exists($path)) {
-		
 			// Remove
 			if(!$this->Transaction->rm($path))
 				return false ;
@@ -497,37 +528,35 @@ class BeFileHandlerComponent extends Object {
 				// Verify that it's empty
 				$vuota = true ;
 				if($handle = opendir($dir)) {
-				    while (false !== ($file = readdir($handle))) {
-	        			if ($file != "." && $file != "..") {
-	        				$vuota = false ;
-			            	break ;
-			        	}
-	    			}
-	    			closedir($handle);				
+					while (false !== ($file = readdir($handle))) {
+						if ($file != "." && $file != "..") {
+							$vuota = false ;
+							break ;
+						}
+					}
+					closedir($handle);
 				}
-				
 				// If empty remove, break otherwise
 				if($vuota) {
 					if(!$this->Transaction->rmdir($dir))
 						return false ;
-				}else {
+				} else {
 					break ;
 				}
-				
 				$dir = dirname($dir) ;
 			} 
 		}
-		
 		return true ;
 	}
 
 
-  	/**
-  	 * Get path where to save uploaded file
-  	 *
-  	 * @param string $name 	Nome del file
-  	 */
-	function getPathTargetFile(&$name)  {
+	/**
+	 * Get path where to save uploaded file
+	 *
+	 * @param string $name, file name
+	 * @return string, path
+	 */
+	public function getPathTargetFile(&$name)  {
 		
 		$md5 = md5($name) ;
 		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
@@ -551,7 +580,13 @@ class BeFileHandlerComponent extends Object {
 		return $path ;
 	}
 
-	function splitFilename($filename) {
+	/**
+	 * Split file name by dot [to separate file name from file extension]
+	 * 
+	 * @param string $filename
+	 * @return array
+	 */
+	public function splitFilename($filename) {
 		$pos = strrpos($filename, '.');
 		if ($pos === false) { // dot is not found in the filename
 			return array($filename, ''); // no extension
@@ -561,7 +596,5 @@ class BeFileHandlerComponent extends Object {
 			return array($basename, $extension);
 		}
 	}
-
-} ;
-
+}
 ?>

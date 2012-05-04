@@ -49,7 +49,7 @@ class BeBlipComponent extends Object {
 	/**
 	 * Get info for a clip video
 	 *
-	 * @return unknown
+	 * @return mixed array|boolean
 	 */
 	public function getInfoVideo($id, $attributes=array()) {
 		$conf = Configure::getInstance() ;
@@ -95,7 +95,7 @@ class BeBlipComponent extends Object {
 	/**
 	 * Get embed code for video
 	 *
-	 * @return unknown
+	 * @return string html
 	 */
 	public function getEmbedVideo($id, $attributes=array()) {
 		$conf = Configure::getInstance() ;
@@ -112,8 +112,8 @@ class BeBlipComponent extends Object {
 	
 	/**
 	 * get thumbnail
-	 * @param $id
-	 * @return url, false if error occurs
+	 * @param int $id
+	 * @return mixed string|boolean: return url, or false if error occurs
 	 */
 	public function getThumbnail($id) {
 		if(!$this->getInfoVideo($id)) {
@@ -124,8 +124,7 @@ class BeBlipComponent extends Object {
 	
 	/**
 	 * set data to save multimediamedia object
-	 * @param $id
-	 * @param $data
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function setInfoToSave(&$data) {

@@ -43,28 +43,45 @@
 	function __construct() {
 	}
 
+	/**
+	 * info for mysql connection
+	 * 
+	 * @param array $db
+	 * @param array $res
+	 */
 	private function mysqlInfo($db, array& $res) {
-	    if ($cid = @mysqli_connect($db->config['host'], $db->config['login'], $db->config['password'])) {
+		if ($cid = @mysqli_connect($db->config['host'], $db->config['login'], $db->config['password'])) {
 			$res['dbServer'] = @mysqli_get_server_info($cid);
 			$res['dbClient'] = @mysqli_get_client_info();
-        	@mysql_close($cid);		
+			@mysql_close($cid);
 		}
 	}
-	
+
+	/**
+	 * info for postgres connection
+	 * 
+	 * @param array $db
+	 * @param array $res
+	 */
 	private function postgresInfo($db, array& $res) {
-	    $connStr = "host=" .$db->config['host'] . " dbname=" . $db->config['database'] . 
-	    	" user=" . $db->config['login'] . " password=" . $db->config['password'];
-	    if(!empty($db->config['port'])) {
-	    	$connStr .= " port=" . $db->config['port'];
-	    }
+		$connStr = "host=" .$db->config['host'] . " dbname=" . $db->config['database'] . 
+			" user=" . $db->config['login'] . " password=" . $db->config['password'];
+		if(!empty($db->config['port'])) {
+			$connStr .= " port=" . $db->config['port'];
+		}
 		if ($cid = @pg_connect($connStr)) {
-	    	$info = @pg_version($cid);
-	    	$res['dbServer'] = $info["server"];
+			$info = @pg_version($cid);
+			$res['dbServer'] = $info["server"];
 			$res['dbClient'] = $info["client"];
-        	@pg_close($cid);		
+			@pg_close($cid);
 		}
 	}
-	
+
+	/**
+	 * info for system (i.e. database data, os version, php version, etc.)
+	 * 
+	 * @return array
+	 */
 	public function systemInfo() {
 		$res = array();
 	    $db = ConnectionManager::getDataSource('default');
@@ -82,6 +99,12 @@
 		return $res;
 	}
 
+	/**
+	 * get system logs
+	 * 
+	 * @param int $maxRows
+	 * @return array
+	 */
 	public function systemLogs($maxRows = 10) {
 		$res = array();
 		$fd = $this->logFiles();
@@ -91,6 +114,12 @@
 		return $res;
 	}
 
+	/**
+	 * open for write or create a file
+	 * 
+	 * @param string $fileName
+	 * @throws SocException
+	 */
 	public function emptyFile($fileName) {
 		$handle = fopen($fileName,"w");
 		if($handle === FALSE) {
@@ -99,6 +128,11 @@
 		fclose($handle);
 	}
 
+	/**
+	 * check whether file is readable
+	 * 
+	 * @param string $fileName
+	 */
 	public function isFileReadable($fileName) {
 		$handle = @fopen($fileName,"r");
 		if($handle === FALSE) {
@@ -108,6 +142,11 @@
 		return true;
 	}
 
+	/**
+	 * get log files for BEdita and frontends (if BEDITA_FRONTENDS_PATH is set)
+	 * 
+	 * @return array
+	 */
 	public function logFiles() {
 		$res = array();
 		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log")) {
@@ -137,6 +176,14 @@
 		return $res;
 	}
 
+	/**
+	 * read tail of log file
+	 * 
+	 * @param string $fileName
+	 * @param int $limit
+	 * @return string
+	 * @throws BeditaException
+	 */
 	private function readLogEntries($fileName,$limit) {
 		$result = array();
 		$handle = fopen($fileName,"r");
@@ -148,8 +195,10 @@
 
 	/**
 	 * Tail of file
-	 * @param unknown_type $file
-	 * @param unknown_type $lines
+	 * 
+	 * @param string $file
+	 * @param int $lines
+	 * @return string
 	 */
 	private function readFileLastLinesReversed($file, $lines) {
 		$handle = fopen($file, "r");

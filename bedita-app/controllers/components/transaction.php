@@ -63,7 +63,7 @@ class TransactionComponent extends Object {
 	/**
 	 * Start a transaction
 	 *
-	 * @return unknown
+	 * @return boolean
 	 */
 	public function begin() {
 		Configure::write("bedita.transaction",1);
@@ -73,7 +73,13 @@ class TransactionComponent extends Object {
 		$this->status = self::START;
 		return true  ;
 	}
-	
+
+	/**
+	 * End a transaction
+	 * 
+	 * @return boolean
+	 * @throws BeditatException
+	 */
 	public function end() {
 		// status should be START, COMMIT or ROLLBACK
 		if($this->status === self::START)
@@ -84,6 +90,11 @@ class TransactionComponent extends Object {
 			throw new BeditatException(__("Bad transaction state",true));
 	}
 
+	/**
+	 * Commit a transaction
+	 * 
+	 * @return boolean
+	 */
 	public function commit() {
 		$this->setupDB() ;
 		
@@ -96,9 +107,16 @@ class TransactionComponent extends Object {
 		return true;
 	}
 
+	/**
+	 * Rollback a transaction
+	 * 
+	 * @return boolean
+	 * @throws BeditaException
+	 * @throws Exception
+	 */
 	public function rollback() {
 
-		$ret = false;		
+		$ret = false;
 		try {
 			$this->setupDB() ;
 			
@@ -126,6 +144,10 @@ class TransactionComponent extends Object {
 	
 	//////////////////////////////////////////
 	//////////////////////////////////////////
+
+	/**
+	 * setup database data
+	 */
 	private function setupDB() {
 		if(isset(self::$db)) return ;
 		
@@ -144,11 +166,10 @@ class TransactionComponent extends Object {
 	 * @param string $arrData	data for file
 	 * @return string
 	 */
-	function makeFromData($path, &$arrData) {
+	public function makeFromData($path, &$arrData) {
 		return self::$transFS->makeFileFromData($path, $arrData) ;
 	}
-	
-	
+
 	/**
 	 * Create a new file, from an old one
 	 *
@@ -156,7 +177,7 @@ class TransactionComponent extends Object {
 	 * @param string $pathFileSource	source file
 	 * @return string
 	 */
-	function makeFromFile($path, $pathFileSource) {
+	public function makeFromFile($path, $pathFileSource) {
 		return self::$transFS->makeFileFromFile($path, $pathFileSource) ;
 	}
 
@@ -167,71 +188,71 @@ class TransactionComponent extends Object {
 	 * @param string $arrDati	data
 	 * @return boolean
 	 */
-	function replaceData($path, &$arrDati) {
+	public function replaceData($path, &$arrDati) {
 		return self::$transFS->replaceFileData($path, $arrDati) ;
-	}	
-	
+	}
+
 	/**
 	 * Remove a file
 	 *
-	 * @param unknown_type $path
-	 * @return unknown
+	 * @param string $path
+	 * @return boolean
 	 */
-	function rm($path) {
+	public function rm($path) {
 		return self::$transFS->rmFile($path) ;
 	}
 
 	/**
 	 * Move a file
 	 *
-	 * @param unknown_type $newPath
-	 * @param unknown_type $pathSource
-	 * @return unknown
+	 * @param string $newPath
+	 * @param string $pathSource
+	 * @return boolean
 	 */
-	function mv($newPath, $pathSource) {
+	public function mv($newPath, $pathSource) {
 		return self::$transFS->mvFile($newPath, $pathSource) ;
 	}
 
 	/**
 	 * Copy a file
 	 *
-	 * @param unknown_type $newPath
-	 * @param unknown_type $pathSource
-	 * @return unknown
+	 * @param string $newPath
+	 * @param string $pathSource
+	 * @return boolean
 	 */
-	function cp($newPath, $pathSource) {
+	public function cp($newPath, $pathSource) {
 		return self::$transFS->cpFile($newPath, $pathSource) ;
 	}
-	
+
 	/**
 	 * Create a directory
 	 *
-	 * @param unknown_type $newDir
-	 * @param unknown_type $mode
-	 * @return unknown
+	 * @param string $newDir
+	 * @param int $mode
+	 * @return boolean
 	 */
-	function mkdir($newDir, $mode = 0775) {
+	public function mkdir($newDir, $mode = 0775) {
 		return self::$transFS->mkdir($newDir, $mode) ;
 	}
 
 	/**
 	 * Remove a directory
 	 *
-	 * @param unknown_type $rmDir
-	 * @return unknown
+	 * @param string $rmDir
+	 * @return boolean
 	 */
-	function rmdir($rmDir) {
+	public function rmdir($rmDir) {
 		return self::$transFS->rmdir($rmDir) ;
 	}
 
 	/**
 	 * Move a directory and its content
 	 *
-	 * @param unknown_type $pathNewParent
-	 * @param unknown_type $oldPath
-	 * @return unknown
+	 * @param string $pathNewParent
+	 * @param string $oldPath
+	 * @return string
 	 */
-	function mvDir($pathNewParent, $oldPath) {
+	public function mvDir($pathNewParent, $oldPath) {
 		return self::$transFS->mvDir($pathNewParent, $oldPath) ;
 	}
 }
@@ -268,11 +289,15 @@ class TransactionFS {
 
 	function begin() {
 		$this->rollback() ;
-		
 		$this->commands = array() ;
 	}
-	
-	function commit() {
+
+	/**
+	 * Transaction commit
+	 * 
+	 * @return boolean
+	 */
+	public function commit() {
 		while(count($this->commands)) {
 			$item = array_pop($this->commands) ;
 			$cmd = $item["cmd"] ;
@@ -281,62 +306,58 @@ class TransactionFS {
 				case 'rmFile': 			@unlink($item["params"]["source"]); break ;
 			}
 		}
-
 		return true ;
 	}
-	
-	function rollback() {
+
+	/**
+	 * Transaction rollback
+	 * 
+	 * @return boolean
+	 */
+	public function rollback() {
 		while(count($this->commands)) {
 			$item = array_pop($this->commands) ;
-
 			call_user_func_array(array(&$this, $item["rollCmd"]), $item["params"]) ;
 		}
-
 		return true ;
 	}
-	
-	
-	
+
 	/**
 	 * Create a file from data
 	 *
 	 * @param string $path		file path
 	 * @param string $arrDati	data
 	 * @return string
+	 * @throws BEditaIOException
 	 */
-	function makeFileFromData($path, &$arrDati) {
-
+	public function makeFileFromData($path, &$arrDati) {
 		if(($fp  = fopen($path, "wb")) === false) {
-            throw new BEditaIOException("Error opening file $path");
+			throw new BEditaIOException("Error opening file $path");
 		}
-		
 		$ret = fwrite(fopen($path, "wb"), $arrDati, strlen($arrDati)) ;
-
 		// Save the operation
 		$item = array("cmd"	=> "makeFile", "rollCmd" => "_rollMakeFile", 	
 		  "params" => array("path" => $path)) ;
 		array_push($this->commands, $item);
-
 		return $path ;
 	}
-	
-	
+
 	/**
 	 * Create a file from another one
 	 *
 	 * @param string $path				file path
 	 * @param string $pathFileSource	source file path
 	 * @return string
+	 * @throws BEditaIOException
 	 */
-	function makeFileFromFile($path, $pathFileSource) {
-		if(!copy($pathFileSource, $path)) 
-		    throw new BEditaIOException("Error in file copy $pathFileSource - $path");
-		
+	public function makeFileFromFile($path, $pathFileSource) {
+		if(!copy($pathFileSource, $path)) {
+			throw new BEditaIOException("Error in file copy $pathFileSource - $path");
+		}
 		// Save the operation
 		$item = array("cmd"	=> "makeFile", "rollCmd" => "_rollMakeFile", 
 		  "params" => array("path" => $path)) ;
 		array_push($this->commands, $item);
-
 		return $path ;
 	}
 
@@ -346,194 +367,199 @@ class TransactionFS {
 	 * @param string path		File path
 	 * @param string $arrDati	Data
 	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function replaceFileData($path, &$arrDati) {
+	public function replaceFileData($path, &$arrDati) {
 		// temporary file
 		$tmpfname = tempnam ($this->tmpPath, "UF");
-		if(!is_string($tmpfname)) 
-            throw new BEditaIOException("Bad temp file $tmpfname");
-
+		if(!is_string($tmpfname)) {
+			throw new BEditaIOException("Bad temp file $tmpfname");
+		}
 		// old data, save and copy
-		if(!copy($path, $tmpfname)) 
-            throw new BEditaIOException("Error in file copy $path - $tmpfname");
-		
-        if(fwrite(fopen($path, "wb"), $arrDati, strlen($arrDati)) == -1) 
-            throw new BEditaIOException("Error opening/writing file $path");
-
+		if(!copy($path, $tmpfname)) {
+			throw new BEditaIOException("Error in file copy $path - $tmpfname");
+		}
+		if(fwrite(fopen($path, "wb"), $arrDati, strlen($arrDati)) == -1) {
+			throw new BEditaIOException("Error opening/writing file $path");
+		}
 		// save the operation
 		$item = array("cmd"	=> "replaceFileData", "rollCmd" => "_rollReplaceFileData", 	
 		  "params" => array("source" => $tmpfname, "dest" => $path)) ;
 		array_push($this->commands, $item);
-
 		return true ;
-	}	
-	
+	}
+
 	/**
 	 * Remove a file
 	 *
-	 * @param unknown_type $path
-	 * @return unknown
+	 * @param string $path
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function rmFile($path) {
+	public function rmFile($path) {
 		$tmpfname = tempnam ($this->tmpPath, "UF");
-		if(!is_string($tmpfname))
-            throw new BEditaIOException("Bad temp file $tmpfname");
-		
+		if(!is_string($tmpfname)) {
+			throw new BEditaIOException("Bad temp file $tmpfname");
+		}
 		// old data, save and copy
-		if(!copy($path, $tmpfname))
-           throw new BEditaIOException("Error in file copy $path - $tmpfname");
-		
-		if(!unlink($path))
-           throw new BEditaIOException("Error in unlink $path");
-		
+		if(!copy($path, $tmpfname)) {
+			throw new BEditaIOException("Error in file copy $path - $tmpfname");
+		}
+		if(!unlink($path)) {
+			throw new BEditaIOException("Error in unlink $path");
+		}
 		// Save the operation
 		$item = array("cmd"	=> "rmFile", "rollCmd" => "_rollRmFile", 	
 		  "params" => array("source" => $tmpfname, "dest" => $path)) ;
 		array_push($this->commands, $item);
-		
 		return true ;
 	}
 
 	/**
 	 * Move a file
 	 *
-	 * @param unknown_type $newPath
-	 * @param unknown_type $pathSource
-	 * @return unknown
+	 * @param string $newPath
+	 * @param string $pathSource
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function mvFile($newPath, $pathSource) {
+	public function mvFile($newPath, $pathSource) {
 		// salva e copia i vecchi dati
-		if(!copy($pathSource, $newPath))
-           throw new BEditaIOException("Error in file copy $pathSource - $newPath");
-		
-		if(!unlink($pathSource))
-          throw new BEditaIOException("Error in unlink $pathSource");
-		
+		if(!copy($pathSource, $newPath)) {
+			throw new BEditaIOException("Error in file copy $pathSource - $newPath");
+		}
+		if(!unlink($pathSource)) {
+			throw new BEditaIOException("Error in unlink $pathSource");
+		}
 		// Save the operation
 		$item = array("cmd"	=> "mvFile", "rollCmd" => "_rollMvFile", 	
 		  "params" => array("source" => $newPath, "dest" => $pathSource)) ;
 		array_push($this->commands, $item);
-
 		return true ;
 	}
 
 	/**
 	 * Copy a file
 	 *
-	 * @param unknown_type $newPath
-	 * @param unknown_type $pathSource
-	 * @return unknown
+	 * @param string $newPath
+	 * @param string $pathSource
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function cpFile($newPath, $pathSource) {
+	public function cpFile($newPath, $pathSource) {
 		// old data, save and copy
-		if(!copy($pathSource, $newPath))
-           throw new BEditaIOException("Error in file copy $pathSource - $newPath");
-		
+		if(!copy($pathSource, $newPath)) {
+			throw new BEditaIOException("Error in file copy $pathSource - $newPath");
+		}
 		// Save the operation
 		$item = array("cmd"	=> "cpFile", "rollCmd" => "_rollCpFile", 	
 		  "params" => array("source" => $newPath)) ;
 		array_push($this->commands, $item);
-
 		return true ;
 	}
-	
+
 	/**
 	 * 
 	 * Change directory
 	 *
 	 * @param string $newDir
-	 * @return unknown
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function chdir($newDir) {
+	public function chdir($newDir) {
 		$oldDir = getcwd() ;
-		if(!chdir($newDir))
-            throw new BEditaIOException("Error changing dir $newDir");
+		if(!chdir($newDir)) {
+			throw new BEditaIOException("Error changing dir $newDir");
+		}
 		$newDir = getcwd() ;
-		
 		// Save the operation
 		$item = array("cmd"	=> "chdir", "rollCmd" => "_rollChdir", 	
 		  "params" => array("path" => $oldDir)) ;
 		array_push($this->commands, $item) ;
-		
 		return true ;
 	}
-	
+
 	/**
 	 * Create a directory
 	 *
-	 * @param unknown_type $newDir
-	 * @param unknown_type $mode
-	 * @return unknown
+	 * @param string $newDir
+	 * @param int $mode
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function mkdir($newDir, $mode = 0777) {
-		if(!mkdir($newDir, $mode)) 
+	public function mkdir($newDir, $mode = 0777) {
+		if(!mkdir($newDir, $mode)) {
 			throw new BEditaIOException("Error creating dir $newDir");
+		}
 		$oldDir = getcwd() ;
-		if(!chdir($newDir)) 
+		if(!chdir($newDir)) {
 			throw new BEditaIOException("Error changing dir $newDir");
+		}
 		$newDir = getcwd() ;
-		if(!chdir($oldDir)) 
+		if(!chdir($oldDir)) {
 			throw new BEditaIOException("Error changing dir $oldDir");
-
+		}
 		// Save the operation
 		$item = array("cmd"	=> "mkdir", "rollCmd" => "_rollMkdir", 	"params" => array("path" => $newDir)) ;
 		array_push($this->commands, $item); 
-		
 		return true ;
 	}
 
 	/**
 	 * Remove a directory
 	 *
-	 * @param unknown_type $rmDir
-	 * @return unknown
+	 * @param string $rmDir
+	 * @return boolean
+	 * @throws BEditaIOException
 	 */
-	function rmdir($rmDir) {
-
+	public function rmdir($rmDir) {
 		$oldDir = getcwd() ;
-		if(!chdir($rmDir)) 
+		if(!chdir($rmDir)) {
 		   throw new BEditaIOException("Error changing dir $rmDir");
+		}
 		$rmDir = getcwd() ;
-		if(!chdir($oldDir))
-            throw new BEditaIOException("Error changing dir $oldDir");
+		if(!chdir($oldDir)) {
+			throw new BEditaIOException("Error changing dir $oldDir");
+		}
 		$rmPerms = fileperms($rmDir);
-		
 		// Delete
-		if(!rmdir($rmDir)) 
-            throw new BEditaIOException("Error removing dir $rmDir");
-		
+		if(!rmdir($rmDir)) {
+			throw new BEditaIOException("Error removing dir $rmDir");
+		}
 		// Save the operation
 		$item = array("cmd"	=> "rmdir", "rollCmd" => "_rollRmdir", 	
 		      "params" => array("path" => $rmDir, "perms" => $rmPerms)) ;
 		array_push($this->commands, $item);
-		
 		return true ;
 	}
 
 	/**
 	 * Move a directory and its content
 	 *
-	 * @param unknown_type $pathNewParent
-	 * @param unknown_type $oldPath
-	 * @return unknown
+	 * @param string $pathNewParent
+	 * @param string $oldPath
+	 * @return string
+	 * @throws BEditaIOException
 	 */
-	function mvDir($pathNewParent, $oldPath) {
+	public function mvDir($pathNewParent, $oldPath) {
 
 		$pathDir = getcwd() ;
-		if(!chdir($oldPath))
-           throw new BEditaIOException("Error changing dir $oldPath");
-		if(!chdir("..")) 
-           throw new BEditaIOException("Error changing dir $oldPath/..");
+		if(!chdir($oldPath)) {
+			throw new BEditaIOException("Error changing dir $oldPath");
+		}
+		if(!chdir("..")) {
+			throw new BEditaIOException("Error changing dir $oldPath/..");
+		}
 		$oldParentPath = getcwd() ;
-		if(!chdir($pathDir)) 
-           throw new BEditaIOException("Error changing dir $pathDir");
-		
+		if(!chdir($pathDir)) {
+			throw new BEditaIOException("Error changing dir $pathDir");
+		}
 		// Move
 		$args = array() ; $ret = 0 ;
 		exec("mv $oldPath $pathNewParent", $args, $ret) ;
-		if($ret) 
-           throw new BEditaIOException("Error in 'mv $oldPath $pathNewParent'");
-		
+		if($ret) {
+			throw new BEditaIOException("Error in 'mv $oldPath $pathNewParent'");
+		}
 		// new path
 		$name = basename($oldPath) ;
 		if(substr($pathNewParent, -1) == "/") $newPath = "$oldParentPath"."$name" ;
@@ -546,7 +572,6 @@ class TransactionFS {
 		
 		return $newPath ;
 	}
-
 
 	//////////////////////////////////////////////////
 	/**
@@ -580,22 +605,22 @@ class TransactionFS {
 		return true ;
 	}
 
-	function _rollChdir($path) {
+	private function _rollChdir($path) {
 		if(!chdir($path)) return false ;
 		return true ;
 	}
 
-	function _rollMkdir($path) {
+	private function _rollMkdir($path) {
 		if(!rmdir($path)) return false ;
 		return true ;
 	}
-	
-	function _rollRmdir($path, $perms) {
+
+	private function _rollRmdir($path, $perms) {
 		if(!mkdir($path, $perms)) return false ;
 		return true ;
 	}
 
-	function _rollMvDir($path, $target) {
+	private function _rollMvDir($path, $target) {
 		// Move
 		$args = array() ; $ret = 0 ;
 		exec("mv $path $target", $args, $ret) ;
@@ -603,5 +628,4 @@ class TransactionFS {
 		return true ;
 	}
 }
-
 ?>

@@ -36,17 +36,23 @@ class BeYoutubeComponent extends Object {
 	function startup(&$controller) {
 		$this->controller 	= $controller;
 	}
-	
+
+	/**
+	 * Get thumbnail
+	 * 
+	 * @param int $uid
+	 * @return array
+	 */
 	public function getThumbnail($uid) {
 		$youtubeParams = Configure::read("media_providers.youtube.params");
 		$thumbnail = sprintf($youtubeParams["urlthumb"], $uid);
 		return $thumbnail;
 	}
-	
+
 	/**
 	 * set data to save multimedia object
-	 * @param $id
-	 * @param $data
+	 * 
+	 * @param array $data
 	 * @return boolean
 	 */
 	public function setInfoToSave(&$data) {
@@ -57,7 +63,5 @@ class BeYoutubeComponent extends Object {
 			$data['thumbnail']	= $this->getThumbnail($data["video_uid"]);
 		return true;
 	}
-	
 }
- 
 ?>
