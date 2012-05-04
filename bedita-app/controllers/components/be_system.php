@@ -100,18 +100,45 @@
 	}
 
 	/**
+	 * get system logs for backend
+	 * 
+	 * @param int $maxRows
+	 * @return array
+	 */
+	public function backendSystemLogs($maxRows = 10) {
+		$res = array();
+		$fd = $this->backendLogFiles();
+		for($i=0;$i<sizeof($fd);$i++) {
+			$res[$fd[$i]] = $this->readLogEntries($fd[$i],$maxRows);
+		}
+		return $res;
+	}
+
+	/**
+	 * get system logs for frontends
+	 * 
+	 * @param int $maxRows
+	 * @return array
+	 */
+	public function frontendSystemLogs($maxRows = 10) {
+		$res = array();
+		$fd = $this->frontendLogFiles();
+		for($i=0;$i<sizeof($fd);$i++) {
+			$res[$fd[$i]] = $this->readLogEntries($fd[$i],$maxRows);
+		}
+		return $res;
+	}
+
+	/**
 	 * get system logs
 	 * 
 	 * @param int $maxRows
 	 * @return array
 	 */
 	public function systemLogs($maxRows = 10) {
-		$res = array();
-		$fd = $this->logFiles();
-		for($i=0;$i<sizeof($fd);$i++) {
-			$res[$fd[$i]] = $this->readLogEntries($fd[$i],$maxRows);
-		}
-		return $res;
+		$res1 = $this->backendSystemLogs($maxRows);
+		$res2 = $this->frontendSystemLogs($maxRows);
+		return $res1+$res2;
 	}
 
 	/**
@@ -143,11 +170,11 @@
 	}
 
 	/**
-	 * get log files for BEdita and frontends (if BEDITA_FRONTENDS_PATH is set)
+	 * get backend log files for BEdita
 	 * 
 	 * @return array
 	 */
-	public function logFiles() {
+	public function backendLogFiles() {
 		$res = array();
 		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log")) {
 			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log";
@@ -155,6 +182,16 @@
 		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
 			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log";
 		}
+		return $res;
+	}
+
+	/**
+	 * get frontend log files for BEdita
+	 * 
+	 * @return array
+	 */
+	public function frontendLogFiles() {
+		$res = array();
 		if(file_exists(BEDITA_FRONTENDS_PATH)) {
 			if (is_dir(BEDITA_FRONTENDS_PATH)) {
 				if ($dh = opendir(BEDITA_FRONTENDS_PATH)) {
@@ -172,8 +209,18 @@
 				}
 			}
 		}
-		
 		return $res;
+	}
+
+	/**
+	 * get log files for BEdita and frontends (if BEDITA_FRONTENDS_PATH is set)
+	 * 
+	 * @return array
+	 */
+	public function logFiles() {
+		$res1 = $this->backendLogFiles();
+		$res2 = $this->frontendLogFiles();
+		return $res1+$res2;
 	}
 
 	/**

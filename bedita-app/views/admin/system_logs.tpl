@@ -3,7 +3,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function() { 
-		var openAtStart ="#system_logs";
+		var openAtStart =".system_logs";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 
 		$("#rowLimit").change(function() { 
@@ -34,6 +34,11 @@
 
 <div class="mainfull">
 
-	{include file="inc/form_logs.tpl"}
+	{if !empty($backendLogs)}
+	{include file="inc/form_logs.tpl" logs=$backendLogs titleTab='Backend Logs'}
+	{/if}
+	{if !empty($frontendLogs)}
+	{include file="inc/form_logs.tpl" logs=$frontendLogs titleTab='Frontend Logs'}
+	{/if}
 
 </div>

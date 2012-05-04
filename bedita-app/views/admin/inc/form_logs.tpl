@@ -19,9 +19,9 @@ var urlEmptyFile = "{$html->url('emptyFile/')}";
 
 <form method="post" action="" id="formObject">
 
-<div class="tab"><h2>{t}System logs{/t}</h2></div>
+<div class="tab"><h2>{t}{$titleTab}{/t}</h2></div>
 
-<fieldset id="system_logs">
+<fieldset class="system_logs">
 <div>
 {if !empty($logs)}
 	<input type="hidden" id="fileToEmpty" name="data[fileToEmpty]" />

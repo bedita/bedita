@@ -109,7 +109,8 @@ class AdminController extends ModulesController {
 	}
 
 	public function systemLogs($maxRows = 10) {
-		$this->set('logs', $this->BeSystem->systemLogs($maxRows));
+		$this->set('backendLogs', $this->BeSystem->backendSystemLogs($maxRows));
+		$this->set('frontendLogs', $this->BeSystem->frontendSystemLogs($maxRows));
 		$this->set('maxRows',$maxRows);
 	}
 
