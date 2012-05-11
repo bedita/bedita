@@ -45,6 +45,9 @@ class Module extends BEAppModel {
 		);
 		
 		$pluginModules = array("plugged" => array(), "unplugged" => array());
+		if(!file_exists(BEDITA_MODULES_PATH)) {
+			throw new BeditaException(__("Missing plugins directory on filesystem", true) . " " . BEDITA_MODULES_PATH);
+		}
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$plugins = $folder->read(true, true);
 		foreach ($plugins[0] as $plugin) {

@@ -52,6 +52,13 @@ $(document).ready(function() {
 
 <div class="mainfull">
 
+{if empty($pluginModules.plugged) && empty($pluginModules.unplugged)}
+
+	<div class="tab stayopen"><h2>{t}No plugins found on filesystem{/t}</h2></div>
+	<h3>{t}Please check{/t}: {$pluginDir}</h3>
+
+{/if}
+
 {if !empty($pluginModules.plugged)}
 	
 	<div class="tab stayopen"><h2>{t}Plugged modules{/t}</h2></div>

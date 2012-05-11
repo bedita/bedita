@@ -314,6 +314,7 @@ class AdminController extends ModulesController {
 	 	$moduleModel = ClassRegistry::init("Module");
 		$pluginModules = $moduleModel->getPluginModules();
 		$this->set("pluginModules", $pluginModules);
+		$this->set("pluginDir", BEDITA_MODULES_PATH);
 	}
 	 
 	/**
