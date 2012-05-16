@@ -1012,6 +1012,7 @@ abstract class ModulesController extends AppController {
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
 		if(isset($id)) {
+			$id = ClassRegistry::init("BEObject")->objectId($id);
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			
@@ -1213,7 +1214,9 @@ abstract class ModulesController extends AppController {
 	 * @param integer $id object id to view
 	 */
 	public function view($id) {
-		$modelName = ClassRegistry::init("BEObject")->getType($id);	
+		$beObj = ClassRegistry::init("BEObject");
+		$id = $beObj->objectId($id);
+		$modelName = $beObj->getType($id);	
 		$method = "view" . $modelName;
 		if (!method_exists($this, $method)) {
 			throw new BeditaException(__("Missing view method", true)." - ".$method);
