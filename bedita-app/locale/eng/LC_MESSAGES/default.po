@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2011-07-28 15:38:40\n"
+"POT-Creation-Date: 2012-05-16 09:56:12\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -85,6 +85,9 @@ msgstr ""
 msgid "Are you sure that you want to delete the tag?"
 msgstr ""
 
+msgid "Are you sure that you want to empty the file?"
+msgstr ""
+
 msgid "Are you sure you want to accept this IP?"
 msgstr ""
 
@@ -94,6 +97,9 @@ msgstr ""
 msgid ""
 "Are you sure you want to cancel and reload this document? All unsaved "
 "changes will be lost"
+msgstr ""
+
+msgid "Are you sure you want to procede? The operation may be slow"
 msgstr ""
 
 msgid "Area deleted"
@@ -135,6 +141,12 @@ msgstr ""
 msgid "BEdita object type model enabled"
 msgstr ""
 
+msgid "BEdita url"
+msgstr ""
+
+msgid "Backend languages"
+msgstr ""
+
 msgid "Bad data"
 msgstr ""
 
@@ -151,9 +163,6 @@ msgid "Browse"
 msgstr ""
 
 msgid "Bulk actions on"
-msgstr ""
-
-msgid "Call to a protected or private method in a wrong context"
 msgstr ""
 
 msgid "Cancel queue"
@@ -228,6 +237,9 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
+msgid "Configuration saved"
+msgstr ""
+
 msgid "Confirm password"
 msgstr ""
 
@@ -250,6 +262,9 @@ msgid "Content not found"
 msgstr ""
 
 msgid "Contents with more comments (first 20)"
+msgstr ""
+
+msgid "Core modules"
 msgstr ""
 
 msgid "Create"
@@ -294,6 +309,12 @@ msgstr ""
 msgid "Custom property saved"
 msgstr ""
 
+msgid "Date Pattern"
+msgstr ""
+
+msgid "Date Time Pattern"
+msgstr ""
+
 msgid "Delete"
 msgstr ""
 
@@ -301,6 +322,9 @@ msgid "Delete selected items"
 msgstr ""
 
 msgid "Description"
+msgstr ""
+
+msgid "Destination"
 msgstr ""
 
 msgid "Details"
@@ -340,7 +364,13 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+msgid "Email log"
+msgstr ""
+
 msgid "Empty data"
+msgstr ""
+
+msgid "Empty file"
 msgstr ""
 
 msgid "Enter"
@@ -368,6 +398,9 @@ msgid "Error deleting note"
 msgstr ""
 
 msgid "Error deleting note, missing id"
+msgstr ""
+
+msgid "Error deleting object: "
 msgstr ""
 
 msgid "Error deleting object: %d"
@@ -421,7 +454,7 @@ msgstr ""
 msgid "Error loading object: %d"
 msgstr ""
 
-msgid "Error loading section: %d"
+msgid "Error loading sections tree. Missing parent"
 msgstr ""
 
 msgid "Error loading tag: "
@@ -455,9 +488,6 @@ msgid "Error removing association mail group card"
 msgstr ""
 
 msgid "Error removing group"
-msgstr ""
-
-msgid "Error saving area"
 msgstr ""
 
 msgid "Error saving card for "
@@ -502,9 +532,6 @@ msgstr ""
 msgid "Error saving options"
 msgstr ""
 
-msgid "Error saving section"
-msgstr ""
-
 msgid "Error saving status for item: "
 msgstr ""
 
@@ -526,6 +553,9 @@ msgstr ""
 msgid "Error saving user."
 msgstr ""
 
+msgid "Error sending notification mail"
+msgstr ""
+
 msgid "Error setting on Card status"
 msgstr ""
 
@@ -538,7 +568,7 @@ msgstr ""
 msgid "Error updating user"
 msgstr ""
 
-msgid "Error: bad permissions"
+msgid "Error: utility operation undefined"
 msgstr ""
 
 msgid "Errors during upload"
@@ -577,10 +607,16 @@ msgstr ""
 msgid "External auth component not found: "
 msgstr ""
 
+msgid "Failed"
+msgstr ""
+
 msgid "File"
 msgstr ""
 
 msgid "File already exists in the filesystem"
+msgstr ""
+
+msgid "File not writable, update properly file permits for"
 msgstr ""
 
 msgid "Find and fill latlong coords"
@@ -595,6 +631,9 @@ msgstr ""
 msgid "Full news at"
 msgstr ""
 
+msgid "GO"
+msgstr ""
+
 msgid "Galleries deleted"
 msgstr ""
 
@@ -602,6 +641,9 @@ msgid "Gallery associated to this document"
 msgstr ""
 
 msgid "Gallery saved"
+msgstr ""
+
+msgid "General configuration"
 msgstr ""
 
 msgid "Generic categories"
@@ -613,6 +655,9 @@ msgstr ""
 msgid "Gmaps LookaT"
 msgstr ""
 
+msgid "Go to"
+msgstr ""
+
 msgid "Go to page"
 msgstr ""
 
@@ -620,6 +665,9 @@ msgid "Google Earth"
 msgstr ""
 
 msgid "Google maps StreetView"
+msgstr ""
+
+msgid "Group"
 msgstr ""
 
 msgid "Group "
@@ -682,13 +730,16 @@ msgstr ""
 msgid "Immutable group"
 msgstr ""
 
-msgid "Immutable group %s"
-msgstr ""
-
 msgid "Import"
 msgstr ""
 
+msgid "Import data"
+msgstr ""
+
 msgid "Incorrect hash command"
+msgstr ""
+
+msgid "Insertion order, oldest contents first"
 msgstr ""
 
 msgid "Invoice"
@@ -706,10 +757,16 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Language configuration"
+msgstr ""
+
 msgid "Last check"
 msgstr ""
 
 msgid "Last result"
+msgstr ""
+
+msgid "Latest/newest contents first"
 msgstr ""
 
 msgid "Link"
@@ -724,6 +781,9 @@ msgstr ""
 msgid "Loading data"
 msgstr ""
 
+msgid "Locales"
+msgstr ""
+
 msgid "Login"
 msgstr ""
 
@@ -734,6 +794,15 @@ msgid "Mail Group deleted"
 msgstr ""
 
 msgid "Mail Group saved"
+msgstr ""
+
+msgid "Mail Jobs"
+msgstr ""
+
+msgid "Mail Logs"
+msgstr ""
+
+msgid "Mail configuration"
 msgstr ""
 
 msgid "Mail delivery failed"
@@ -748,16 +817,37 @@ msgstr ""
 msgid "Mail message saved"
 msgstr ""
 
+msgid "Mail queue summary"
+msgstr ""
+
+msgid "Mail queues"
+msgstr ""
+
 msgid "Mail ready to be sent on "
+msgstr ""
+
+msgid "Mail support"
 msgstr ""
 
 msgid "Mail template saved"
 msgstr ""
 
+msgid "MailJob deleted"
+msgstr ""
+
+msgid "MailLog deleted"
+msgstr ""
+
 msgid "Media already exists in the system"
 msgstr ""
 
+msgid "Media root"
+msgstr ""
+
 msgid "Media type"
+msgstr ""
+
+msgid "Media url"
 msgstr ""
 
 msgid "Message template"
@@ -859,6 +949,12 @@ msgstr ""
 msgid "New card"
 msgstr ""
 
+msgid "New contents default language"
+msgstr ""
+
+msgid "New group"
+msgstr ""
+
 msgid "New item"
 msgstr ""
 
@@ -881,6 +977,9 @@ msgid "News deleted"
 msgstr ""
 
 msgid "News saved"
+msgstr ""
+
+msgid "Newsletter"
 msgstr ""
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
@@ -943,6 +1042,12 @@ msgstr ""
 msgid "No gallery"
 msgstr ""
 
+msgid "No group found with id"
+msgstr ""
+
+msgid "No import filter found for file type"
+msgstr ""
+
 msgid "No invoice selected"
 msgstr ""
 
@@ -956,6 +1061,9 @@ msgid "No items found"
 msgstr ""
 
 msgid "No items selected"
+msgstr ""
+
+msgid "No log file found"
 msgstr ""
 
 msgid "No mail group found"
@@ -976,7 +1084,7 @@ msgstr ""
 msgid "No object id specified"
 msgstr ""
 
-msgid "No publication"
+msgid "No plugins found on filesystem"
 msgstr ""
 
 msgid "No publication set"
@@ -1027,6 +1135,9 @@ msgstr ""
 msgid "No webmarks found"
 msgstr ""
 
+msgid "No, use custom list"
+msgstr ""
+
 msgid "Not Authorized"
 msgstr ""
 
@@ -1040,6 +1151,12 @@ msgid "Notification mail delivery failed"
 msgstr ""
 
 msgid "Number of objects"
+msgstr ""
+
+msgid "Object type"
+msgstr ""
+
+msgid "Objects imported"
 msgstr ""
 
 msgid "Objects production by editor"
@@ -1075,6 +1192,9 @@ msgstr ""
 msgid "PLAIN TEXT version"
 msgstr ""
 
+msgid "Page size"
+msgstr ""
+
 msgid "Password"
 msgstr ""
 
@@ -1090,10 +1210,19 @@ msgstr ""
 msgid "Passwords should be equal"
 msgstr ""
 
+msgid "Path not found"
+msgstr ""
+
+msgid "Pending"
+msgstr ""
+
 msgid "Permissions"
 msgstr ""
 
 msgid "Person"
+msgstr ""
+
+msgid "Please check"
 msgstr ""
 
 msgid "Please enter a valid date in the %1 format"
@@ -1121,6 +1250,9 @@ msgstr ""
 msgid "Print layout"
 msgstr ""
 
+msgid "Project name"
+msgstr ""
+
 msgid "Properties"
 msgstr ""
 
@@ -1133,9 +1265,6 @@ msgstr ""
 msgid "Public sites users statistics"
 msgstr ""
 
-msgid "Publication tree"
-msgstr ""
-
 msgid "Publish"
 msgstr ""
 
@@ -1146,6 +1275,12 @@ msgid "Queue is empty"
 msgstr ""
 
 msgid "Queued"
+msgstr ""
+
+msgid "REDO"
+msgstr ""
+
+msgid "RETRY"
 msgstr ""
 
 msgid "Read and modify"
@@ -1232,10 +1367,19 @@ msgstr ""
 msgid "Select by type"
 msgstr ""
 
+msgid "Select content languages"
+msgstr ""
+
+msgid "Select file(s)"
+msgstr ""
+
 msgid "Send"
 msgstr ""
 
 msgid "Send email to"
+msgstr ""
+
+msgid "Sent"
 msgstr ""
 
 msgid "Sent on"
@@ -1250,10 +1394,16 @@ msgstr ""
 msgid "Show translations in"
 msgstr ""
 
+msgid "Smtp Options"
+msgstr ""
+
 msgid "Software"
 msgstr ""
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
+msgstr ""
+
+msgid "Source data"
 msgstr ""
 
 msgid "Statistics"
@@ -1283,13 +1433,22 @@ msgstr ""
 msgid "Subtitle, description"
 msgstr ""
 
+msgid "System configuration"
+msgstr ""
+
 msgid "System events"
 msgstr ""
 
 msgid "System info"
 msgstr ""
 
+msgid "System logs"
+msgstr ""
+
 msgid "System users"
+msgstr ""
+
+msgid "System utilities"
 msgstr ""
 
 msgid "Tag already present"
@@ -1356,6 +1515,12 @@ msgstr ""
 msgid "To unsubscribe"
 msgstr ""
 
+msgid "Tools"
+msgstr ""
+
+msgid "Total"
+msgstr ""
+
 msgid "Total Subscribers"
 msgstr ""
 
@@ -1393,6 +1558,9 @@ msgid ""
 "Unplugging the module will delete all related items. Do you want continue?"
 msgstr ""
 
+msgid "Unsent"
+msgstr ""
+
 msgid "Unsubscribe selected items"
 msgstr ""
 
@@ -1420,10 +1588,16 @@ msgstr ""
 msgid "Use a valid email"
 msgstr ""
 
+msgid "Use all available languages for contents"
+msgstr ""
+
 msgid "Use the multiple upload"
 msgstr ""
 
 msgid "User"
+msgstr ""
+
+msgid "User Interface default language"
 msgstr ""
 
 msgid "User already created"
@@ -1479,9 +1653,6 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-msgid "Users of this group"
-msgstr ""
-
 msgid "Version"
 msgstr ""
 
@@ -1492,6 +1663,12 @@ msgid "View all"
 msgstr ""
 
 msgid "View invoices"
+msgstr ""
+
+msgid "Visible in menu and canonical paths"
+msgstr ""
+
+msgid "WAIT"
 msgstr ""
 
 msgid "Warning"
@@ -1519,6 +1696,12 @@ msgid "X"
 msgstr ""
 
 msgid "Yes"
+msgstr ""
+
+msgid "You are not allowed to edit this users"
+msgstr ""
+
+msgid "You are not allowed to remove this users"
 msgstr ""
 
 msgid "You aren't authorized to access that item"
@@ -1587,6 +1770,9 @@ msgstr ""
 msgid "all comments"
 msgstr ""
 
+msgid "all contents"
+msgstr ""
+
 msgid "all galleries"
 msgstr ""
 
@@ -1611,9 +1797,6 @@ msgstr ""
 msgid "all webmarks"
 msgstr ""
 
-msgid "asc"
-msgstr ""
-
 msgid "associate"
 msgstr ""
 
@@ -1630,6 +1813,12 @@ msgid "author"
 msgstr ""
 
 msgid "ban this IP!"
+msgstr ""
+
+msgid "bedita url is unreachable"
+msgstr ""
+
+msgid "bedita url not set"
 msgstr ""
 
 msgid "bibliographies"
@@ -1695,6 +1884,15 @@ msgstr ""
 msgid "city and zip code"
 msgstr ""
 
+msgid "cleanup cache"
+msgstr ""
+
+msgid "clear media cache"
+msgstr ""
+
+msgid "clears media cache files/directories"
+msgstr ""
+
 msgid "clone"
 msgstr ""
 
@@ -1714,6 +1912,9 @@ msgid "contact email"
 msgstr ""
 
 msgid "contact the project admin"
+msgstr ""
+
+msgid "content type"
 msgstr ""
 
 msgid "contents"
@@ -1738,6 +1939,12 @@ msgid "create group"
 msgstr ""
 
 msgid "create new"
+msgstr ""
+
+msgid "create new (create new multimedia object and upload file)"
+msgstr ""
+
+msgid "create new document"
 msgstr ""
 
 msgid "create new translation"
@@ -1779,10 +1986,10 @@ msgstr ""
 msgid "delete all"
 msgstr ""
 
-msgid "delete selected items"
+msgid "delete all cached files from BEdita and frontends"
 msgstr ""
 
-msgid "desc"
+msgid "delete selected items"
 msgstr ""
 
 msgid "description"
@@ -1798,6 +2005,9 @@ msgid "district"
 msgstr ""
 
 msgid "documents"
+msgstr ""
+
+msgid "does not affect email newsletter"
 msgstr ""
 
 msgid "download"
@@ -1821,6 +2031,15 @@ msgstr ""
 msgid "email2"
 msgstr ""
 
+msgid "empty all"
+msgstr ""
+
+msgid "empty log files"
+msgstr ""
+
+msgid "empty logs"
+msgstr ""
+
 msgid "end"
 msgstr ""
 
@@ -1828,6 +2047,9 @@ msgid "end has to be a valid date in the following format:"
 msgstr ""
 
 msgid "events"
+msgstr ""
+
+msgid "export"
 msgstr ""
 
 msgid "failed"
@@ -1887,6 +2109,9 @@ msgstr ""
 msgid "go"
 msgstr ""
 
+msgid "group"
+msgstr ""
+
 msgid "group modules access"
 msgstr ""
 
@@ -1902,6 +2127,12 @@ msgstr ""
 msgid "here"
 msgstr ""
 
+msgid "hidden from menu and canonical path"
+msgstr ""
+
+msgid "host"
+msgstr ""
+
 msgid "hybrid"
 msgstr ""
 
@@ -1909,6 +2140,9 @@ msgid "id"
 msgstr ""
 
 msgid "image"
+msgstr ""
+
+msgid "import"
 msgstr ""
 
 msgid "in job"
@@ -1933,6 +2167,9 @@ msgid "items"
 msgstr ""
 
 msgid "jobs"
+msgstr ""
+
+msgid "key"
 msgstr ""
 
 msgid "lang"
@@ -2016,7 +2253,37 @@ msgstr ""
 msgid "master title"
 msgstr ""
 
+msgid "matching the query"
+msgstr ""
+
 msgid "maximum"
+msgstr ""
+
+msgid "media root can't be empty"
+msgstr ""
+
+msgid "media root folder doesn't exist"
+msgstr ""
+
+msgid "media root folder is not writable"
+msgstr ""
+
+msgid "media root folder is not writable: update folder permits properly"
+msgstr ""
+
+msgid "media root folder not found"
+msgstr ""
+
+msgid "media root not set"
+msgstr ""
+
+msgid "media url can't be empty"
+msgstr ""
+
+msgid "media url is unreachable"
+msgstr ""
+
+msgid "media url not set"
 msgstr ""
 
 msgid "message board"
@@ -2214,10 +2481,21 @@ msgstr ""
 msgid "organization"
 msgstr ""
 
+msgid "original filename"
+msgstr ""
+
 msgid "other"
 msgstr ""
 
+msgid ""
+"overwrite (don't create new multimedia object, substitute file for existing "
+"multimedia object)"
+msgstr ""
+
 msgid "page"
+msgstr ""
+
+msgid "password"
 msgstr ""
 
 msgid "pending"
@@ -2242,6 +2520,9 @@ msgid "plug-out"
 msgstr ""
 
 msgid "plugged succesfully"
+msgstr ""
+
+msgid "port"
 msgstr ""
 
 msgid "prev"
@@ -2304,7 +2585,16 @@ msgstr ""
 msgid "questionnaires"
 msgstr ""
 
+msgid "quick item"
+msgstr ""
+
 msgid "realname"
+msgstr ""
+
+msgid "rebuild index"
+msgstr ""
+
+msgid "rebuild search texts index. Caution: may be slow"
 msgstr ""
 
 msgid "reference"
@@ -2359,6 +2649,12 @@ msgid "search string"
 msgstr ""
 
 msgid "sections"
+msgstr ""
+
+msgid "sections only"
+msgstr ""
+
+msgid "see error detail"
 msgstr ""
 
 msgid "seealso"
@@ -2433,6 +2729,9 @@ msgstr ""
 msgid "street name and #"
 msgstr ""
 
+msgid "subject"
+msgstr ""
+
 msgid "subscribers"
 msgstr ""
 
@@ -2455,6 +2754,9 @@ msgid "text"
 msgstr ""
 
 msgid "thumbnail"
+msgstr ""
+
+msgid "timeout"
 msgstr ""
 
 msgid "title"
@@ -2514,6 +2816,14 @@ msgstr ""
 msgid "unsent"
 msgstr ""
 
+msgid ""
+"update name (if empty), mime_type (if empty), size and hash_file fields of "
+"streams table"
+msgstr ""
+
+msgid "update stream fields"
+msgstr ""
+
 msgid "upload new items"
 msgstr ""
 
@@ -2526,10 +2836,16 @@ msgstr ""
 msgid "use template"
 msgstr ""
 
+msgid "user"
+msgstr ""
+
 msgid "username"
 msgstr ""
 
 msgid "users"
+msgstr ""
+
+msgid "users in this group"
 msgstr ""
 
 msgid "valid"
@@ -2545,6 +2861,12 @@ msgid "video"
 msgstr ""
 
 msgid "view"
+msgstr ""
+
+msgid "view all"
+msgstr ""
+
+msgid "visibility"
 msgstr ""
 
 msgid "web site"
