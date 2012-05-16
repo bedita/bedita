@@ -676,6 +676,24 @@ class BEObject extends BEAppModel
 		) ;	
 	}
 		
+	/**
+	 * Get object id from an identifier that could be an id or nickname
+	 * @param mixed $val
+	 */
+	public function objectId($val) {
+		$res = 0;
+		if(is_numeric($val)) {
+			$res = $val;
+		} else {
+			$res = $this->getIdFromNickname(strtolower($val));
+		}
+		return $res; 
+	}
+	
+	/**
+	 * Get object id from unique name 
+	 * @param string $nickname
+	 */
 	function getIdFromNickname($nickname) {
 		$id = $this->field("id", array("nickname" => $nickname));
 		if(empty($id)) { // if nickname not found lookup aliases
@@ -685,6 +703,10 @@ class BEObject extends BEAppModel
 		return $id; 
 	}
 
+	/**
+	 * Get object nickname from id 
+	 * @param integer $id
+	 */
 	function getNicknameFromId($id) {
 		return $this->field("nickname", array("id" => $id));
 	}

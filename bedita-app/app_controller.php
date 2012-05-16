@@ -1032,6 +1032,7 @@ abstract class ModulesController extends AppController {
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
 		if(isset($id)) {
+			$id = ClassRegistry::init("BEObject")->objectId($id);
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			

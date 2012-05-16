@@ -98,6 +98,7 @@ class HomeController extends AppController {
 	public function view($id) {
 		
 		$this->action = "index";
+		$id = $this->BEObject->objectId($id);
 		$typeId = $this->BEObject->findObjectTypeId($id);
 		$conf  = Configure::getInstance();
 		if(!isset($conf->objectTypes[$typeId]["module_name"])) {
