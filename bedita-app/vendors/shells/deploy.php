@@ -211,6 +211,7 @@ class DeployShell extends BeditaBaseShell {
 		$s = split(":", $res[0]);
 		$svnRevision = $s[count($s)-1];
 		$versionFile = APP . 'config' . DS . 'bedita.version.php';
+    	Configure::load("bedita.ini"); // reload new bedita.ini, may be changed by svn up
 		$beditaVersion = Configure::read("majorVersion") . "." . $svnRevision;
 		$handle = fopen($versionFile, 'w');
 		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
