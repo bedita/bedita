@@ -61,6 +61,10 @@ class BeEmbedMediaHelper extends AppHelper {
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}
+	
+	public function getValidImplementations() {
+		return $this->BeThumb->getValidImplementations();
+	}
 
 	/**
 	 * object public method: embed a generic bedita multimedia object
@@ -88,6 +92,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * 
 	 */
 	public function object ( $obj, $params = null, $htmlAttributes=array() ) {
+		
 		// get object type
 		$model = $this->getType ($obj);
 		$params["presentation"] = (!empty($params["presentation"]))? $params["presentation"] : $this->defaultPresentation[$model];

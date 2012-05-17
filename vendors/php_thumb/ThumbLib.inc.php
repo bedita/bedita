@@ -92,6 +92,15 @@ class PhpThumbFactory
 	 */
 	public static $pluginPath = THUMBLIB_PLUGIN_PATH;
 	
+	
+	public static function getValidImplementations() {
+		
+		// grab an instance of PhpThumb
+		$pt = PhpThumb::getInstance();
+		
+		return $pt->_implementations;
+	}
+	
 	/**
 	 * Factory Function
 	 * 
@@ -126,13 +135,15 @@ class PhpThumbFactory
 		
 		if ($options['preferImagemagick']){
 			$implementation = 'imagick';
+			$imageMagickValid =  (bool)exec('which convert 2>&1');
+			
 		}else {
 			$implementation = self::$defaultImplemenation;
 		}
 		
 		
 		// attempt to load the default implementation
-		if ($pt->isValidImplementation($implementation))
+		if ($pt->isValidImplementation($implementation) || $imageMagickValid)
 		{
 			$imp = $implementationMap[$implementation];
 			$toReturn = new $imp($filename, $options, $isDataStream);

@@ -24,11 +24,11 @@
  * 
  * 
  * @link			http://www.bedita.com
- * @version			$Revision:$
- * @modifiedby 		$LastChangedBy:$
- * @lastmodified	$LastChangedDate:$
+ * @version			$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id:$
+ * $Id$
  */
 
 class BeThumbHelper extends AppHelper {
@@ -62,7 +62,13 @@ class BeThumbHelper extends AppHelper {
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
 	}
-
+	
+	public function getValidImplementations() {
+		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
+		return PhpThumbFactory::getValidImplementations();
+	}
+	
+	
 	/**
 	 * image public method: embed an image after resample and cache
 	 * 
@@ -273,7 +279,8 @@ class BeThumbHelper extends AppHelper {
 		// Manage cache and resample if caching option is true 
 		// and the image it's not alredy cached
 		$this->_imageTarget['cached']   = $this->_testForCache ();
-		if ( empty($this->_imageTarget['cached']) || (!$this->_imageTarget['cacheImages']) ) {
+		
+		if ( !$this->_imageTarget['cached'] || (!$this->_imageTarget['cacheImages']) ) {
 			if ( !$this->_resample() ) {
 				return $this->_conf['imgMissingFile'];
 			}
@@ -329,7 +336,7 @@ class BeThumbHelper extends AppHelper {
 					$thumbnail->resize($this->_imageTarget['w'], $this->_imageTarget['h']);
 					
 				}else if ($this->_imageTarget['resizetype'] == 'stretch') {
-					
+
 					$thumbnail->resizeStretch($this->_imageTarget['w'], $this->_imageTarget['h']);
 					
 				} else if ($this->_imageTarget['resizetype'] == 'fill') {

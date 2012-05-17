@@ -69,7 +69,7 @@ class PhpThumb
 	 * 
 	 * @var array
 	 */
-	protected $_implementations;
+	public $_implementations;
 	
 	/**
 	 * Returns an instance of self

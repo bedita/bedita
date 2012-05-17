@@ -222,7 +222,7 @@ class ImagickThumb extends ThumbBase
 	}
 	
     public function resizeFill($width, $height, $background ) {
-
+		
     	// make sure our arguments are valid
 		if (!is_numeric($width) )
 		{
@@ -242,15 +242,11 @@ class ImagickThumb extends ThumbBase
 			$this->maxHeight	= intval($height);
 			$this->maxWidth		= intval($width);
 		}
-		
+	
 		//Correct background hex
 		$background = '#'.$background;
 		
-		// get the new dimensions...
-		$this->calcImageSize($this->currentDimensions['width'], $this->currentDimensions['height']);
-		
-		$this->workingImage->resizeExactlyNoCrop($this->newDimensions['newWidth'], $this->newDimensions['newHeight'], $background); 
-		
+		$this->workingImage->resizeExactlyNoCrop($this->maxWidth, $this->maxHeight, $background); 
 		
 		// update all the variables and resources to be correct
 		$this->oldImage 					= $this->workingImage;
@@ -263,7 +259,8 @@ class ImagickThumb extends ThumbBase
     
 	public function resizeStretch($width, $height) 
 	{
-		    	// make sure our arguments are valid
+		
+	   	// make sure our arguments are valid
 		if (!is_numeric($width) )
 		{
 			throw new InvalidArgumentException('$width must be numeric and greater than zero');
@@ -294,6 +291,8 @@ class ImagickThumb extends ThumbBase
 	
 	public function crop ($startX, $startY, $cropWidth, $cropHeight)
 	{
+		
+		
 		// validate input
 		if (!is_numeric($startX))
 		{

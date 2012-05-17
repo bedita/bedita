@@ -66,4 +66,35 @@
 </ol>
 </div>
 
+<hr/>
+<h3>{t}thumbnails test{/t}:</h3>
+<a href="javascript:void(0)" class="open-close-link">{t}show/hide{/t}</a>
+<div style="display: none">
+
+{if !empty($section.childContents)}
+{foreach from=$section.childContents item="object"}
+<ul>
+	{if $object.object_type == 'Image' }
+	<li>
+	crop: {$beEmbedMedia->object($object, ['width'=>200, 'height'=>200, 'mode'=>'crop'])}
+	</li>
+	<li>
+	croponly: {$beEmbedMedia->object($object, ['width'=>300, 'height'=>300, 'mode'=>'croponly', 'modeparam'=>'BL' ] )}
+	</li>
+	<li>
+	croponly: {$beEmbedMedia->object($object, ['width'=>300, 'height'=>300, 'mode'=>'croponly', 'modeparam'=>'TR'] )}
+	</li>
+	<li>
+	resize stretch: {$beEmbedMedia->object($object, ['width'=>100, 'height'=>300, 'mode'=>'resize', 'modeparam'=>'stretch'] )}
+	</li>
+	<li>
+	resize fill: {$beEmbedMedia->object($object, ['width'=>400, 'height'=>100, 'mode'=>'resize', 'modeparam'=>'fill', 'bgcolor'=>'CCCCCC' ] )}
+	</li>
+	{/if}
+</ul>
+{/foreach}
+{/if}
+</div>
+
+<hr/>
 {$view->element('footer')}
