@@ -27,7 +27,12 @@ function count_check_selected() {
 }
 $(document).ready(function(){
 
-	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
+	// avoid to perform double click
+	$("a:first", ".indexlist .obj").click(function(e){ 
+		e.preventDefault();
+	});
+
+	$(".indexlist .obj TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 

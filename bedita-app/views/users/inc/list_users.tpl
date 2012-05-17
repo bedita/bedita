@@ -1,6 +1,11 @@
 <script type="text/javascript">
 $(document).ready(function(){
-	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
+	// avoid to perform double click
+	$("a:first", ".indexlist .obj").click(function(e){ 
+		e.preventDefault();
+	});
+
+	$(".indexlist .obj TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
 	} );
 	
@@ -31,7 +36,7 @@ $(document).ready(function(){
 		<th>{t}Action{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
-	<tr>
+	<tr class="obj">
 		<td><a href="{$html->url('/users/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>
 		<td>{$u.User.userid}</td>
 		<td>{$u.User.realname}</td>
