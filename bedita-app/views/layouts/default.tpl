@@ -29,6 +29,7 @@
 	{$html->script("jquery/jquery.cookie")}
 	{$html->script("jquery/jquery.autogrow")}
 	{$html->script("jquery/jquery.dimensions")}
+	{$html->script("jquery/jquery.tooltip.min")}
 	{$html->script("beditaUI")}
 
 	{$beurl->addModuleScripts()}

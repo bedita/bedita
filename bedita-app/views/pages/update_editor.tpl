@@ -1,4 +1,4 @@
-{$html->script("jquery/jquery.tooltip.min")}
+
 	
 {if $editors|@count > 1}
 
