@@ -11,7 +11,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 	$(document).ready(function(){
 		$('#checkUrl').click(function () {
-			var postdata = {url:$('#url').val(),id:$('#link_id').val()};
+			var postdata = { url:$('#url').val(),id:$('#link_id').val() };
 			$.post(url, postdata, callback, "json");
 		});
 	});
