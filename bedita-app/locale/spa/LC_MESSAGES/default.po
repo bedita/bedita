@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: BEdita 3\n"
 "POT-Creation-Date: 2012-05-16 09:56:12\n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -12,2907 +12,2894 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "(Un)Select All"
-msgstr ""
+msgstr "Deseleccionar Todos"
 
 msgid "(un)select all"
-msgstr ""
+msgstr "deseleccionar todos"
 
 msgid "Access to Backend"
-msgstr ""
+msgstr "Acceso al Backend"
 
 msgid "Action"
-msgstr ""
+msgstr "Acción"
 
 msgid "Add"
-msgstr ""
+msgstr "Añadir"
 
 msgid "Add association"
-msgstr ""
+msgstr "Añadir associación"
 
 msgid "Add comma separated words"
-msgstr ""
+msgstr "Añadir palabras divididas por comas"
 
 msgid "Add event date"
-msgstr ""
+msgstr "Añadir fecha evento"
 
 msgid "Add multiple items"
-msgstr ""
+msgstr "Añadir elementos múltiplos"
 
 msgid "Add new category"
-msgstr ""
+msgstr "Añadir nueva categoría"
 
 msgid "Add new subscribers"
-msgstr ""
+msgstr "Añadir miembros"
 
 msgid "Add selected items"
-msgstr ""
+msgstr "Añadir elementos seleccionados"
 
 msgid "Addons"
-msgstr ""
+msgstr "Extensiónes"
 
 msgid "Address"
-msgstr ""
+msgstr "Dirección"
 
 msgid "Advanced Properties"
-msgstr ""
+msgstr "Propiedades Avanzadas"
 
 msgid "Alias"
-msgstr ""
+msgstr "Alias"
 
 msgid "All unsaved changes will be lost"
-msgstr ""
+msgstr "Todas las modificaciónes que no han sido guardadas seran perdidas"
 
 msgid "Annotation type or object_id missing"
-msgstr ""
+msgstr "Falta el tipo de annotación u el object_id"
 
 msgid "Are you sure that you want to delete selected items?"
-msgstr ""
+msgstr "¿Estás seguro que quieres borrar los elementos seleccionados?"
 
 msgid "Are you sure that you want to delete selected tags?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres borrar los tags seleccionados?"
 
 msgid "Are you sure that you want to delete the item?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres borrar el elemento?"
 
 msgid "Are you sure that you want to delete the note?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres borrar la nota?"
 
-msgid ""
-"Are you sure that you want to delete the property? this will also delete any "
-"properties data associated"
-msgstr ""
+msgid "Are you sure that you want to delete the property? this will also delete any properties data associated"
+msgstr "¿Estás seguro de que quieres borrar la propiedad? Siguiendo se borrarán también todos los datos asociados"
 
 msgid "Are you sure that you want to delete the tag?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres borrar el tag?"
 
 msgid "Are you sure that you want to empty the file?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres vacíar el file?"
 
 msgid "Are you sure you want to accept this IP?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres aceptar este IP?"
 
 msgid "Are you sure you want to ban this IP?"
-msgstr ""
+msgstr "¿Estás seguro de que quieres el ingreso a este IP?"
 
-msgid ""
-"Are you sure you want to cancel and reload this document? All unsaved "
-"changes will be lost"
-msgstr ""
+msgid "Are you sure you want to cancel and reload this document? All unsaved changes will be lost"
+msgstr "¿Estás seguro de que quieres borrar y recargar este documento? Todas las modificaciónes que no han sido guardadas seran perdidas"
 
 msgid "Are you sure you want to procede? The operation may be slow"
-msgstr ""
+msgstr "¿Estás seguro de que quieres proceder? La operación podría ser lenta"
 
 msgid "Area deleted"
-msgstr ""
+msgstr "Area borrada"
 
 msgid "Area saved"
-msgstr ""
+msgstr "Area guardada"
 
 msgid "Authentication service"
-msgstr ""
+msgstr "Servicio de autenticación"
 
 msgid "Author"
-msgstr ""
+msgstr "Autor"
 
 msgid "Authorized"
-msgstr ""
+msgstr "Autorizado"
 
 msgid "Auto-remove forbidden"
-msgstr ""
+msgstr "Eliminación automática prohibida"
 
 msgid "Autosave disabled"
-msgstr ""
+msgstr "Autosave desactivado"
 
 msgid "Autosave enabled"
-msgstr ""
+msgstr "Autosave activado"
 
 msgid "Autosave turned off"
-msgstr ""
+msgstr "Autosave apagado"
 
 msgid "BEdita contents statistics"
-msgstr ""
+msgstr "Estadísticas contenidos  BEdita"
 
 msgid "BEdita editors activity statistics"
-msgstr ""
+msgstr "Estadísticas actividades redactores BEdita"
 
 msgid "BEdita object type model disabled"
-msgstr ""
+msgstr "Tipo de objeto model de BEdita desactivado"
 
 msgid "BEdita object type model enabled"
-msgstr ""
+msgstr "Tipo de objeto model de BEdita activado"
 
 msgid "BEdita url"
-msgstr ""
+msgstr "BEdita url"
 
 msgid "Backend languages"
-msgstr ""
+msgstr "Lenguas Backend"
 
 msgid "Bad data"
-msgstr ""
+msgstr "Datos inválidos"
 
 msgid "Bad transaction state"
-msgstr ""
+msgstr "Estado de transacción inválido"
 
 msgid "Bedita3 main dashboard"
-msgstr ""
+msgstr "Dashboard de BEdita3"
 
 msgid "Bit depth"
-msgstr ""
+msgstr "Profundidad bit"
 
 msgid "Browse"
-msgstr ""
+msgstr "Navega"
 
 msgid "Bulk actions on"
-msgstr ""
+msgstr "Operaciónes sobre"
 
 msgid "Cancel queue"
-msgstr ""
+msgstr "Borra cola"
 
 msgid "Captcha image and text don't match"
-msgstr ""
+msgstr "Imagen captcha y tiesto no corresponden"
 
 msgid "Card"
-msgstr ""
+msgstr "Tarjeta"
 
 msgid "Card deleted"
-msgstr ""
+msgstr "Tarjeta borrada"
 
 msgid "Card saved"
-msgstr ""
+msgstr "Tarjeta guardada"
 
 msgid "Cards deleted"
-msgstr ""
+msgstr "Tarjetas borradas"
 
 msgid "Categories"
-msgstr ""
+msgstr "Categorías"
 
 msgid "Category deleted"
-msgstr ""
+msgstr "Categoría borrada"
 
 msgid "Category saved"
-msgstr ""
+msgstr "Categoría guardada"
 
 msgid "Change Password"
-msgstr ""
+msgstr "Cambiar Password"
 
 msgid "Change this file with another"
-msgstr ""
+msgstr "Reemplazar file"
 
 msgid "Channels"
-msgstr ""
+msgstr "Canales"
 
 msgid "Check at least one group"
-msgstr ""
+msgstr "Selecciona por lo meno un grupo"
 
 msgid "Check url"
-msgstr ""
+msgstr "Verifica url"
 
 msgid "Code"
-msgstr ""
+msgstr "Codigo"
 
 msgid "Comment saved"
-msgstr ""
+msgstr "Comentario guardado"
 
 msgid "Commented item"
-msgstr ""
+msgstr "Elemento comentado"
 
 msgid "Comments"
-msgstr ""
+msgstr "Comentarios"
 
 msgid "Comments deleted"
-msgstr ""
+msgstr "Comentarios borrados"
 
 msgid "Communication error"
-msgstr ""
+msgstr "Error de comunicación"
 
 msgid "Compile"
-msgstr ""
+msgstr "Compilar"
 
 msgid "Components"
-msgstr ""
+msgstr "Componentes"
 
 msgid "Concurrent editors:"
-msgstr ""
+msgstr "Redactores competidores"
 
 msgid "Configuration"
-msgstr ""
+msgstr "Configuración"
 
 msgid "Configuration saved"
-msgstr ""
+msgstr "Configuración guardada"
 
 msgid "Confirm password"
-msgstr ""
+msgstr "Confirmar password"
 
 msgid "Confirmation-In mail message"
-msgstr ""
+msgstr "Correo de confirmación (en entrada)"
 
 msgid "Confirmation-Out mail message"
-msgstr ""
+msgstr "Correo de confirmación (en salida)"
 
 msgid "Connect to multimedia gallery"
-msgstr ""
+msgstr "Conectar a la galería multimedial"
 
 msgid "Contacts"
-msgstr ""
+msgstr "Contactos"
 
 msgid "Content "
-msgstr ""
+msgstr "Contenido"
 
 msgid "Content not found"
-msgstr ""
+msgstr "El contenido no se puede encontrar"
 
 msgid "Contents with more comments (first 20)"
-msgstr ""
+msgstr "Contenidos más comentados (primeros 20)"
 
 msgid "Core modules"
-msgstr ""
+msgstr "Core modules"
 
 msgid "Create"
-msgstr ""
+msgstr "Crear"
 
 msgid "Create new"
-msgstr ""
+msgstr "Crear nuevo"
 
 msgid "Create new document"
-msgstr ""
+msgstr "Crear nuevo documento"
 
 msgid "Create new event"
-msgstr ""
+msgstr "Crear nuevo evento"
 
 msgid "Create new gallery"
-msgstr ""
+msgstr "Crear nueva galería"
 
 msgid "Create new list"
-msgstr ""
+msgstr "Crear nueva lista"
 
 msgid "Create new publication"
-msgstr ""
+msgstr "Crear nueva publicación"
 
 msgid "Create new section"
-msgstr ""
+msgstr "Crear nueva sección"
 
 msgid "Create new user"
-msgstr ""
+msgstr "Crear nuevo usuario"
 
 msgid "Create news"
-msgstr ""
+msgstr "Crear noticias"
 
 msgid "Creator is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "Campo creador obligatorio (por lo meno %1 caracteres alfanuméricos)"
 
 msgid "Custom Properties"
-msgstr ""
+msgstr "Propiedades personalizadas"
 
 msgid "Custom properties"
-msgstr ""
+msgstr "Propiedades personalizadas"
 
 msgid "Custom property saved"
-msgstr ""
+msgstr "Propiedades personalizadas guardadas"
 
 msgid "Date Pattern"
-msgstr ""
+msgstr "Pattern Fecha"
 
 msgid "Date Time Pattern"
-msgstr ""
+msgstr "Pattern Fecha y Hora"
 
 msgid "Delete"
-msgstr ""
+msgstr "Borrar"
 
 msgid "Delete selected items"
-msgstr ""
+msgstr "Borrar elementos seleccionados"
 
 msgid "Description"
-msgstr ""
+msgstr "Descripción"
 
 msgid "Destination"
-msgstr ""
+msgstr "Destino"
 
 msgid "Details"
-msgstr ""
+msgstr "Detalles"
 
 msgid "Dimensions"
-msgstr ""
+msgstr "Dimensiones"
 
-msgid ""
-"Disable object type will delete all related items. Do you want continue?"
-msgstr ""
+msgid "Disable object type will delete all related items. Do you want continue?"
+msgstr "Desactivando el tipo de objeto serán eliminados todos los elementos relacionados ¿Quieres seguir?"
 
 msgid "Display details in frontend"
-msgstr ""
+msgstr "Mostrar detalles en el frontend"
 
 msgid "Do you really want to remove group"
-msgstr ""
+msgstr "Quieres remover el grupo de verdad?"
 
 msgid "Do you really want to remove user"
-msgstr ""
+msgstr "Quieres remover el usuario de verdad?"
 
 msgid "Do you want unsubscribe selected items?"
-msgstr ""
+msgstr "¿Quieres cancelar la suscripción de los elementos seleccionados?"
 
 msgid "Document Saved on"
-msgstr ""
+msgstr "Documento guardado en"
 
 msgid "Document saved"
-msgstr ""
+msgstr "Documento guardado"
 
 msgid "Documents deleted"
-msgstr ""
+msgstr "Documento borrado"
 
 msgid "Duplicate property name for the same type"
-msgstr ""
+msgstr "Nombre de propiedad duplicado por el mismo tipo"
 
 msgid "Email"
-msgstr ""
+msgstr "Email"
 
 msgid "Email log"
-msgstr ""
+msgstr "Email log"
 
 msgid "Empty data"
-msgstr ""
+msgstr "Datos vacíos"
 
 msgid "Empty file"
-msgstr ""
+msgstr "File vacío"
 
 msgid "Enter"
-msgstr ""
+msgstr "Entrar"
 
 msgid "Error"
-msgstr ""
+msgstr "Error"
 
 msgid "Error adding subscriber "
-msgstr ""
+msgstr "Error inserción miembro"
 
 msgid "Error adding subscribers"
-msgstr ""
+msgstr "Error inserción miembros"
 
 msgid "Error checking url for link: "
-msgstr ""
+msgstr "Error controlo url enlace:"
 
 msgid "Error creating jobs"
-msgstr ""
+msgstr "Error en creación procesos"
 
 msgid "Error deleting custom property "
-msgstr ""
+msgstr "Error en eliminación propiedad custom"
 
 msgid "Error deleting note"
-msgstr ""
+msgstr "Error eliminación nota"
 
 msgid "Error deleting note, missing id"
-msgstr ""
+msgstr "Error eliminación nota, falta id"
 
 msgid "Error deleting object: "
-msgstr ""
+msgstr "Error eliminación objeto:"
 
 msgid "Error deleting object: %d"
-msgstr ""
+msgstr "Error eliminación objeto: %d"
 
 msgid "Error deleting permissions"
-msgstr ""
+msgstr "Error eliminación permisos"
 
 msgid "Error deleting stream object"
-msgstr ""
+msgstr "Error eliminación objeto stream"
 
 msgid "Error deleting translation: "
-msgstr ""
+msgstr "Error eliminación traducción"
 
 msgid "Error during reorder children priority"
-msgstr ""
+msgstr "Error reordinación prioridades hijos"
 
 msgid "Error during upload: missing url"
-msgstr ""
+msgstr "Error upload: falta url"
 
 msgid "Error finding mail message "
-msgstr ""
+msgstr "Error envío correo"
 
 msgid "Error finding object"
-msgstr ""
+msgstr "Error búsqueda objeto"
 
 msgid "Error generating hash confirmation for "
-msgstr ""
+msgstr "Error generación hash de confirmación para"
 
 msgid "Error getting id object: %d"
-msgstr ""
+msgstr "Error lectura objeto id: %d"
 
 msgid "Error getting id object: %s"
-msgstr ""
+msgstr "Error lectura objeto id: %s"
 
 msgid "Error getting object: %d"
-msgstr ""
+msgstr "Error lectura objeto: %d"
 
 msgid "Error invoking online help"
-msgstr ""
+msgstr "Error invocación ayuda online"
 
 msgid "Error loading area: %d"
-msgstr ""
+msgstr "Error cargamiento area: %d"
 
 msgid "Error loading mail group detail: id="
-msgstr ""
+msgstr "Error de carga detalles grupo mail: id="
 
 msgid "Error loading object"
-msgstr ""
+msgstr "Error de carga objeto"
 
 msgid "Error loading object: %d"
-msgstr ""
+msgstr "Error de carga objeto: %d"
 
 msgid "Error loading sections tree. Missing parent"
-msgstr ""
+msgstr "Error de carga secciones árbol. Falta padre"
 
 msgid "Error loading tag: "
-msgstr ""
+msgstr "Error de carga tag:"
 
 msgid "Error modifying permissions"
-msgstr ""
+msgstr "Error en modificación de permisos"
 
 msgid "Error moving section in the tree"
-msgstr ""
+msgstr "Error al mover la sección en el árbol"
 
 msgid "Error on join between card and mail group"
-msgstr ""
+msgstr "Error en la unión entre la tarjeta y el grupo mail"
 
 msgid "Error on sign up: an email is required"
-msgstr ""
+msgstr "Error de autenticación: escriba un e-mail válida"
 
 msgid "Error on sign up: no data"
-msgstr ""
+msgstr "Error de autenticación: no hay valor añadido"
 
 msgid "Error on subscribing: empty 'newsletter_email'"
-msgstr ""
+msgstr "Error en la suscripción: \"newsletter_email 'vacío"
 
 msgid "Error on subscribing: no data"
-msgstr ""
+msgstr "Error en  la suscripción: ningun dato"
 
 msgid "Error on subscribing: no mail_group indicated"
-msgstr ""
+msgstr "Error en la suscripción: no se indica mail_group"
 
 msgid "Error removing association mail group card"
-msgstr ""
+msgstr "Error en la eliminación de asociación entre la tarjeta y el grupo de correo"
 
 msgid "Error removing group"
-msgstr ""
+msgstr "Error en la eliminación del grupo"
 
 msgid "Error saving card for "
-msgstr ""
+msgstr "Error guardando la tarjeta para"
 
 msgid "Error saving comment"
-msgstr ""
+msgstr "Error guardando comentario"
 
 msgid "Error saving custom property"
-msgstr ""
+msgstr "Error guardando propiedad personalizada"
 
 msgid "Error saving data"
-msgstr ""
+msgstr "Error guardando datos"
 
 msgid "Error saving group"
-msgstr ""
+msgstr "Error guardando grupo"
 
 msgid "Error saving hash status"
-msgstr ""
+msgstr "Error guardando hash status"
 
 msgid "Error saving link"
-msgstr ""
+msgstr "Error guardando enlace"
 
 msgid "Error saving mail group"
-msgstr ""
+msgstr "Error guardando grupo de correo"
 
 msgid "Error saving mail group card"
-msgstr ""
+msgstr "Error guardando tarjeta de grupo de correo"
 
 msgid "Error saving module data"
-msgstr ""
+msgstr "Error guardando datos del modulo"
 
 msgid "Error saving multimedia"
-msgstr ""
+msgstr "Error guardando multimedia"
 
 msgid "Error saving note"
-msgstr ""
+msgstr "Error guardando nota"
 
 msgid "Error saving object type"
-msgstr ""
+msgstr "Error guardando tipo de objeto"
 
 msgid "Error saving options"
-msgstr ""
+msgstr "Error guardando opciones"
 
 msgid "Error saving status for item: "
-msgstr ""
+msgstr "Error guardando status para elemento"
 
 msgid "Error saving status for translation: "
-msgstr ""
+msgstr "Error guardando status para traducción"
 
 msgid "Error saving status for translations"
-msgstr ""
+msgstr "Error guardando status para traducciones"
 
 msgid "Error saving stream object"
-msgstr ""
+msgstr "Error guardando objeto stream"
 
 msgid "Error saving tag"
-msgstr ""
+msgstr "Error guardando tag"
 
 msgid "Error saving user"
-msgstr ""
+msgstr "Error guardando usuario"
 
 msgid "Error saving user."
-msgstr ""
+msgstr "Error guardando usuario."
 
 msgid "Error sending notification mail"
-msgstr ""
+msgstr "Error enviando notificación mail"
 
 msgid "Error setting on Card status"
-msgstr ""
+msgstr "Error en el cambio de status de la Tarjeta"
 
 msgid "Error subscribing "
-msgstr ""
+msgstr "Error subscripción"
 
 msgid "Error updating password"
-msgstr ""
+msgstr "Error carga password"
 
 msgid "Error updating user"
-msgstr ""
+msgstr "Error carga usuario"
 
 msgid "Error: utility operation undefined"
-msgstr ""
+msgstr "Error: operación de utility indefinida"
 
 msgid "Errors during upload"
-msgstr ""
+msgstr "Error durante el upload"
 
 msgid "Event Promoter"
-msgstr ""
+msgstr "Promotor Evento"
 
 msgid "Event calendar"
-msgstr ""
+msgstr "Calendario Evento"
 
 msgid "Event saved"
-msgstr ""
+msgstr "Evento guardado"
 
 msgid "Event start"
-msgstr ""
+msgstr "Inicio Evento"
 
 msgid "Events deleted"
-msgstr ""
+msgstr "Evento borrado"
 
 msgid "Evolution of content production, during the time"
-msgstr ""
+msgstr "Evolución en el tiempo de la producción de contenidos"
 
 msgid "Exif - Main Data"
-msgstr ""
+msgstr "Exif - datos principales"
 
 msgid "Existing group"
-msgstr ""
+msgstr "Grupo existente"
 
 msgid "Exit"
-msgstr ""
+msgstr "Salir"
 
 msgid "Export to"
-msgstr ""
+msgstr "Exporta a"
 
 msgid "External auth component not found: "
-msgstr ""
+msgstr "Componente de autenticación externo que no se encuentra"
 
 msgid "Failed"
-msgstr ""
+msgstr "Fracaso"
 
 msgid "File"
-msgstr ""
+msgstr "File"
 
 msgid "File already exists in the filesystem"
-msgstr ""
+msgstr "El file ya existe en el sistema"
 
 msgid "File not writable, update properly file permits for"
-msgstr ""
+msgstr "El File no se puede escribir, actualizar adecuadamente los permisos file para"
 
 msgid "Find and fill latlong coords"
-msgstr ""
+msgstr "Buscar y llenar coordenadas LatLong"
 
 msgid "Find it"
-msgstr ""
+msgstr "Búsqueda"
 
 msgid "Forgotten username or password?"
-msgstr ""
+msgstr "¿Ha olvidado nombre de usuario o contraseña?"
 
 msgid "Full news at"
-msgstr ""
+msgstr "Noticias en"
 
 msgid "GO"
-msgstr ""
+msgstr "IR"
 
 msgid "Galleries deleted"
-msgstr ""
+msgstr "Galerías eliminadas"
 
 msgid "Gallery associated to this document"
-msgstr ""
+msgstr "Galería asociada a este documento"
 
 msgid "Gallery saved"
-msgstr ""
+msgstr "Galería guardada"
 
 msgid "General configuration"
-msgstr ""
+msgstr "Configuración general"
 
 msgid "Generic categories"
-msgstr ""
+msgstr "Categorías genéricas"
 
 msgid "Get contents"
-msgstr ""
+msgstr "Obtener los contenidos"
 
 msgid "Gmaps LookaT"
-msgstr ""
+msgstr "Gmaps LookaT"
 
 msgid "Go to"
-msgstr ""
+msgstr "Ir a"
 
 msgid "Go to page"
-msgstr ""
+msgstr "Ir a la página"
 
 msgid "Google Earth"
-msgstr ""
+msgstr "Google Earth"
 
 msgid "Google maps StreetView"
-msgstr ""
+msgstr "Google maps StreetView"
 
 msgid "Group"
-msgstr ""
+msgstr "Grupo"
 
 msgid "Group "
-msgstr ""
+msgstr "Grupo"
 
 msgid "Group Name"
-msgstr ""
+msgstr "Nombre Grupo"
 
 msgid "Group authorized to Backend"
-msgstr ""
+msgstr "Grupo autorizado al Backend"
 
 msgid "Group deleted"
-msgstr ""
+msgstr "Grupo borrado"
 
 msgid "Groups"
-msgstr ""
+msgstr "Grupos"
 
 msgid "HTML version"
-msgstr ""
+msgstr "versión HTML"
 
 msgid "Hash isn't valid or user doesn't exist."
-msgstr ""
+msgstr "Hash inválido o el usuario no existe."
 
 msgid "Hash isn't valid."
-msgstr ""
+msgstr "Hash inválido"
 
 msgid "Hash not valid or expired."
-msgstr ""
+msgstr "Hash no válido o caducado."
 
 msgid "Height"
-msgstr ""
+msgstr "Altura"
 
 msgid "Helpers"
-msgstr ""
+msgstr "Helpers"
 
 msgid "Hi"
-msgstr ""
+msgstr "Hola"
 
 msgid "Hide system tags"
-msgstr ""
+msgstr "Ocultar tags"
 
 msgid "Home"
-msgstr ""
+msgstr "Home"
 
 msgid "Human readable type"
-msgstr ""
+msgstr "Tipo simplificado"
 
 msgid "IP"
-msgstr ""
+msgstr "IP"
 
 msgid "IP accepted"
-msgstr ""
+msgstr "IP aceptado"
 
 msgid "IP banned"
-msgstr ""
+msgstr "IP prohibido"
 
 msgid "If you have any problems try with browser upload"
-msgstr ""
+msgstr "Si tienes algún problema intenta cargar el navegador"
 
 msgid "Immutable group"
-msgstr ""
+msgstr "Grupo Inmutable"
 
 msgid "Import"
-msgstr ""
+msgstr "Importar"
 
 msgid "Import data"
-msgstr ""
+msgstr "Importar datos"
 
 msgid "Incorrect hash command"
-msgstr ""
+msgstr "Comando hash incorrecto"
 
 msgid "Insertion order, oldest contents first"
-msgstr ""
+msgstr "Orden de inserción, contenidos más antiguos primeros "
 
 msgid "Invoice"
-msgstr ""
+msgstr "Envío"
 
 msgid "Invoices"
-msgstr ""
+msgstr "Envíos"
 
 msgid "Item Type"
-msgstr ""
+msgstr "Tipo elemento"
 
 msgid "Items"
-msgstr ""
+msgstr "Elementos"
 
 msgid "Jobs"
-msgstr ""
+msgstr "Jobs"
 
 msgid "Language configuration"
-msgstr ""
+msgstr "Configuración idiomas"
 
 msgid "Last check"
-msgstr ""
+msgstr "última verificación"
 
 msgid "Last result"
-msgstr ""
+msgstr "último resultado"
 
 msgid "Latest/newest contents first"
-msgstr ""
+msgstr "últimos/nuevos contenidos primeros"
 
 msgid "Link"
-msgstr ""
+msgstr "Enlace"
 
 msgid "Links"
-msgstr ""
+msgstr "Enlaces"
 
 msgid "Lists"
-msgstr ""
+msgstr "Listas"
 
 msgid "Loading data"
-msgstr ""
+msgstr "Carga datos"
 
 msgid "Locales"
-msgstr ""
+msgstr "Locales"
 
 msgid "Login"
-msgstr ""
+msgstr "Acceso"
 
 msgid "MIME type not found"
-msgstr ""
+msgstr "Tipo MIME no encontrado"
 
 msgid "Mail Group deleted"
-msgstr ""
+msgstr "Grupo de Correo borrado"
 
 msgid "Mail Group saved"
-msgstr ""
+msgstr "Grupo de Correo guardado"
 
 msgid "Mail Jobs"
-msgstr ""
+msgstr "Mail Jobs"
 
 msgid "Mail Logs"
-msgstr ""
+msgstr "Mail Logs"
 
 msgid "Mail configuration"
-msgstr ""
+msgstr "Configuración Correo"
 
 msgid "Mail delivery failed"
-msgstr ""
+msgstr "Entrega de Correo fracasada"
 
 msgid "Mail message deleted"
-msgstr ""
+msgstr "Correo borrado"
 
 msgid "Mail message lock failed: id "
-msgstr ""
+msgstr "Bloquear correo fracasado: id"
 
 msgid "Mail message saved"
-msgstr ""
+msgstr "Correo guardado"
 
 msgid "Mail queue summary"
-msgstr ""
+msgstr "Resumen cola correo"
 
 msgid "Mail queues"
-msgstr ""
+msgstr "Colas correo"
 
 msgid "Mail ready to be sent on "
-msgstr ""
+msgstr "Correo listo para ser enviado el"
 
 msgid "Mail support"
-msgstr ""
+msgstr "Ayuda correo"
 
 msgid "Mail template saved"
-msgstr ""
+msgstr "Template de correo guardado"
 
 msgid "MailJob deleted"
-msgstr ""
+msgstr "MailJob borrada"
 
 msgid "MailLog deleted"
-msgstr ""
+msgstr "MailLog borrada"
 
 msgid "Media already exists in the system"
-msgstr ""
+msgstr "Media ya existente en el sistema"
 
 msgid "Media root"
-msgstr ""
+msgstr "Media root"
 
 msgid "Media type"
-msgstr ""
+msgstr "Tipo media"
 
 msgid "Media url"
-msgstr ""
+msgstr "url Media"
 
 msgid "Message template"
-msgstr ""
+msgstr "Template mensaje"
 
 msgid "Missing data"
-msgstr ""
+msgstr "Faltan datos"
 
 msgid "Missing email to send recover instructions"
-msgstr ""
+msgstr "Falta correo  para enviar instrucciones de recuperación"
 
 msgid "Missing form data"
-msgstr ""
+msgstr "Faltan valores del form"
 
 msgid "Missing from field"
-msgstr ""
+msgstr "Falta campo \"desde\""
 
 msgid "Missing invoices"
-msgstr ""
+msgstr "Faltan Invoices"
 
 msgid "Missing list name"
-msgstr ""
+msgstr "Falta lista nombre"
 
 msgid "Missing mail group id"
-msgstr ""
+msgstr "Falta grupo mail id"
 
 msgid "Missing message id or recipient"
-msgstr ""
+msgstr "Falta mensaje id o recibidor"
 
 msgid "Missing options"
-msgstr ""
+msgstr "Faltan opciones"
 
 msgid "Missing parent"
-msgstr ""
+msgstr "Falta padre"
 
 msgid "Missing publication"
-msgstr ""
+msgstr "Falta publicación"
 
 msgid "Missing recipient"
-msgstr ""
+msgstr "Falta recibidor"
 
 msgid "Missing referenced object. Save new item before adding a note"
-msgstr ""
+msgstr "Falta objeto referenciado. Guardar nuevo elemento antes de añadir una nota"
 
 msgid "Missing sending date"
-msgstr ""
+msgstr "Falta fecha de envío"
 
 msgid "Missing subject field"
-msgstr ""
+msgstr "Falta campo asunto"
 
 msgid "Missing temporary file in filesystem."
-msgstr ""
+msgstr "Falta file temporal en el sistema "
 
 msgid "Moderated"
-msgstr ""
+msgstr "Moderado"
 
 msgid "Modify"
-msgstr ""
+msgstr "Modificar"
 
 msgid "Module"
-msgstr ""
+msgstr "Módulo"
 
 msgid "Module access"
-msgstr ""
+msgstr "Acceso Módulo"
 
 msgid "More properties"
-msgstr ""
+msgstr "Más propiedades"
 
 msgid "More users are editing this object. Continue?"
-msgstr ""
+msgstr "Más usuarios están editando este objeto. ¿Continuar?"
 
 msgid "Multimedia Provider not found or error getting thumbnail"
-msgstr ""
+msgstr "Proveedor de Multimedia no encontrado o error al obtener thumbnail"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr ""
+msgstr "Proveedor de Multimedia que no se encuentra o error en la preparación de datos para guardar"
 
 msgid "Multimedia deleted"
-msgstr ""
+msgstr "Multimedia borrado"
 
 msgid "Multimedia items"
-msgstr ""
+msgstr "Elementos Multimedia"
 
 msgid "Multimedia object saved"
-msgstr ""
+msgstr "objeto multimedia guardado"
 
 msgid "Multimedia provider is not managed"
-msgstr ""
+msgstr "proveedor multimedia no admitido"
 
 msgid "Name"
-msgstr ""
+msgstr "Nombre"
 
 msgid "Name is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "Nombre necesario (por lo meno 1% carácteres alfanuméricos)"
 
 msgid "New Translation"
-msgstr ""
+msgstr "Nueva traducción"
 
 msgid "New card"
-msgstr ""
+msgstr "Nueva tarjeta"
 
 msgid "New contents default language"
-msgstr ""
+msgstr "Nuevos contenidos  lengua default"
 
 msgid "New group"
-msgstr ""
+msgstr "Nuevo grupo"
 
 msgid "New item"
-msgstr ""
+msgstr "Nuevo elemento"
 
 msgid "New link"
-msgstr ""
+msgstr "Nuevo enlace"
 
 msgid "New password"
-msgstr ""
+msgstr "Nueva password"
 
 msgid "New tag"
-msgstr ""
+msgstr "Nuevo tag"
 
 msgid "New template"
-msgstr ""
+msgstr "Nuevo template"
 
 msgid "New user"
-msgstr ""
+msgstr "Nuevo usuario"
 
 msgid "News deleted"
-msgstr ""
+msgstr "Noticias borradas"
 
 msgid "News saved"
-msgstr ""
+msgstr "Noticias guardadas"
 
 msgid "Newsletter"
-msgstr ""
+msgstr "Newsletter"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
-msgstr ""
+msgstr "Newsletter enviada. Para programar otro envio, por favor clonar este objeto."
 
 msgid "Newsletter subscriptions"
-msgstr ""
+msgstr "Inscripciónes newsletter"
 
 msgid "Newsletters"
-msgstr ""
+msgstr "Newsletters"
 
 msgid "Newsletters "
-msgstr ""
+msgstr "Newsletters"
 
 msgid "Newsletters sent this month"
-msgstr ""
+msgstr "Newsletters enviadas este mes"
 
 msgid "Newsletters sent this year"
-msgstr ""
+msgstr "Newsletters enviadas este año"
 
 msgid "No"
-msgstr ""
+msgstr "No"
 
 msgid "No access"
-msgstr ""
+msgstr "No accesible"
 
 msgid "No addressbook found"
-msgstr ""
+msgstr "Ningun addressbook encontrado"
 
 msgid "No bibliographies found"
-msgstr ""
+msgstr "Ninguna bibliografía encontrada"
 
 msgid "No books found"
-msgstr ""
+msgstr "Ningun libro encontrado"
 
 msgid "No categories found"
-msgstr ""
+msgstr "Ninguna categoría encontrada"
 
 msgid "No category found"
-msgstr ""
+msgstr "Ninguna categoría encontrada"
 
 msgid "No comments found"
-msgstr ""
+msgstr "Ningun comentario encontrado"
 
 msgid "No data"
-msgstr ""
+msgstr "Ningun dato"
 
 msgid "No documents found"
-msgstr ""
+msgstr "Ningun documento encontrado"
 
 msgid "No file in the form"
-msgstr ""
+msgstr "Ningun file en el form"
 
 msgid "No file to embed"
-msgstr ""
+msgstr "Ningun file para incluir"
 
 msgid "No galleries found"
-msgstr ""
+msgstr "Ninguna galería encontrada"
 
 msgid "No gallery"
-msgstr ""
+msgstr "Ninguna galería"
 
 msgid "No group found with id"
-msgstr ""
+msgstr "Ningun grupo encontrado con id"
 
 msgid "No import filter found for file type"
-msgstr ""
+msgstr "Ningun filtro de importación encontrado para el tipo de file"
 
 msgid "No invoice selected"
-msgstr ""
+msgstr "Ningun invoice seleccionado"
 
 msgid "No invoices"
-msgstr ""
+msgstr "Ningun invoice"
 
 msgid "No item found"
-msgstr ""
+msgstr "Ningun elemento encontrado"
 
 msgid "No items found"
-msgstr ""
+msgstr "Ningun elemento encontrado"
 
 msgid "No items selected"
-msgstr ""
+msgstr "Ningun elemento seleccionado"
 
 msgid "No log file found"
-msgstr ""
+msgstr "Ningun log file encontrado"
 
 msgid "No mail group found"
-msgstr ""
+msgstr "Ningun mail group encontrado"
 
 msgid "No module found for object"
-msgstr ""
+msgstr "Ningun modulo encontrado para el objeto"
 
 msgid "No news found"
-msgstr ""
+msgstr "Ninguna noticia encontrada"
 
 msgid "No newsletter found"
-msgstr ""
+msgstr "Ninguna newsletter encontrada"
 
 msgid "No newsletters found"
-msgstr ""
+msgstr "Ninguna newsletter encontrada"
 
 msgid "No object id specified"
-msgstr ""
+msgstr "Ninguno objeto id especificado"
 
 msgid "No plugins found on filesystem"
-msgstr ""
+msgstr "Ningun plugin encontrado en el sistema"
 
 msgid "No publication set"
-msgstr ""
+msgstr "Publicación no establecido"
 
 msgid "No questionnaires found"
-msgstr ""
+msgstr "Ningun cuestionario encontrado"
 
 msgid "No references"
-msgstr ""
+msgstr "Ninguna referencia"
 
 msgid "No subscribers"
-msgstr ""
+msgstr "Ningun suscriptor"
 
 msgid "No tag found"
-msgstr ""
+msgstr "Ninguna tag encontrada"
 
 msgid "No tag in text area"
-msgstr ""
+msgstr "Ninguna tag en área texto"
 
 msgid "No tag selected"
-msgstr ""
+msgstr "Ninguna tag seleccionada"
 
 msgid "No tags found."
-msgstr ""
+msgstr "Ninguna tag encontrada"
 
 msgid "No template available"
-msgstr ""
+msgstr "Ningun template disponible"
 
 msgid "No templates found"
-msgstr ""
+msgstr "Ningun template encontrado"
 
 msgid "No translations found"
-msgstr ""
+msgstr "Ninguna traducción encontrada"
 
 msgid "No tree found"
-msgstr ""
+msgstr "Ningun árbol encontrado"
 
 msgid "No user data"
-msgstr ""
+msgstr "Ningun dato de usuario"
 
 msgid "No user with access privileges found"
-msgstr ""
+msgstr "Ningún usuario con privilegios de acceso encontrado"
 
 msgid "No versions set"
-msgstr ""
+msgstr "Ninguna versión establecida"
 
 msgid "No webmarks found"
-msgstr ""
+msgstr "Ningun webmark encontrado"
 
 msgid "No, use custom list"
-msgstr ""
+msgstr "No, utiliza lista personalizada"
 
 msgid "Not Authorized"
-msgstr ""
+msgstr "No autorizado"
 
 msgid "Notes"
-msgstr ""
+msgstr "Notas"
 
 msgid "Notice"
-msgstr ""
+msgstr "Nota"
 
 msgid "Notification mail delivery failed"
-msgstr ""
+msgstr "Entrega correo de notificación fracasada"
 
 msgid "Number of objects"
-msgstr ""
+msgstr "Número de objetos"
 
 msgid "Object type"
-msgstr ""
+msgstr "Tipo objeto"
 
 msgid "Objects imported"
-msgstr ""
+msgstr "Objeto importado"
 
 msgid "Objects production by editor"
-msgstr ""
+msgstr "producción de objetos editor"
 
 msgid "Objects with multiple relationships"
-msgstr ""
+msgstr "Objetos con relaciones múltiples"
 
 msgid "Occurrences"
-msgstr ""
+msgstr "Ocurrencias"
 
 msgid "Open Calendar"
-msgstr ""
+msgstr "Calendario abierto"
 
 msgid "Operations on"
-msgstr ""
+msgstr "Operaciones sobre"
 
 msgid "Operations on above records"
-msgstr ""
+msgstr "Operaciones en los records seleccionados"
 
 msgid "Organization"
-msgstr ""
+msgstr "Organización"
 
 msgid "Orientation"
-msgstr ""
+msgstr "Orientación"
 
 msgid "Original Title"
-msgstr ""
+msgstr "Título Original"
 
 msgid "Other Models"
-msgstr ""
+msgstr "Otros modelos"
 
 msgid "PLAIN TEXT version"
-msgstr ""
+msgstr "Versión SOLO TEXTO"
 
 msgid "Page size"
-msgstr ""
+msgstr "Tamaño de la página"
 
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 msgid "Password is required"
-msgstr ""
+msgstr "Se requiere password"
 
 msgid "Password not valid"
-msgstr ""
+msgstr "Password inválida"
 
 msgid "Passwords mismatch"
-msgstr ""
+msgstr "Las passwords no coinciden"
 
 msgid "Passwords should be equal"
-msgstr ""
+msgstr "Las passwords deben ser iguales"
 
 msgid "Path not found"
-msgstr ""
+msgstr "Ruta no encontrada"
 
 msgid "Pending"
-msgstr ""
+msgstr "Pendiente"
 
 msgid "Permissions"
-msgstr ""
+msgstr "Permisos"
 
 msgid "Person"
-msgstr ""
+msgstr "Persona"
 
 msgid "Please check"
-msgstr ""
+msgstr "Por favor comprobar"
 
 msgid "Please enter a valid date in the %1 format"
-msgstr ""
+msgstr "Por favor, introduzca una fecha válida en el formato %1"
 
-msgid ""
-"Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
+msgid "Please enter a valid date in the %1 format and greater than the previous date"
+msgstr "Por favor, introduzca una fecha válida en el formato de 1% y mayor que las fechas anteriores"
 
 msgid "Please enter a valid time in the %1 format"
-msgstr ""
+msgstr "Por favor, introduzca una hora válida en el formato %1"
 
 msgid "Plugged modules"
-msgstr ""
+msgstr "Plugged módulos"
 
 msgid "Post comment disabled"
-msgstr ""
+msgstr "Publicación comentario desactivada"
 
 msgid "Previews"
-msgstr ""
+msgstr "Avances"
 
 msgid "Print"
-msgstr ""
+msgstr "Imprimir"
 
 msgid "Print layout"
-msgstr ""
+msgstr "Imprimir layout"
 
 msgid "Project name"
-msgstr ""
+msgstr "Nombre proyecto"
 
 msgid "Properties"
-msgstr ""
+msgstr "Propiedades"
 
 msgid "Provider"
-msgstr ""
+msgstr "Proveedor"
 
 msgid "Provider URL"
-msgstr ""
+msgstr "Proveedor URL"
 
 msgid "Public sites users statistics"
-msgstr ""
+msgstr "Estadísticas usuarios sitios públicos"
 
 msgid "Publish"
-msgstr ""
+msgstr "Publicar"
 
 msgid "Publisher is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "Publicación obligatoria (por lo meno %1 caracteres alfanuméricos)"
 
 msgid "Queue is empty"
-msgstr ""
+msgstr "Cola vacía"
 
 msgid "Queued"
-msgstr ""
+msgstr "En cola"
 
 msgid "REDO"
-msgstr ""
+msgstr "REDO"
 
 msgid "RETRY"
-msgstr ""
+msgstr "RETRY"
 
 msgid "Read and modify"
-msgstr ""
+msgstr "Leer y modificar"
 
 msgid "Read only"
-msgstr ""
+msgstr "Solo lectura"
 
 msgid "Real name"
-msgstr ""
+msgstr "Nombre real"
 
 msgid "Real name is required (at least %1 alphanumerical chars)"
-msgstr ""
+msgstr "Se requiere nombre real  (por lo menos 1% caracteres alfanuméricos)"
 
 msgid "Referenced in"
-msgstr ""
+msgstr "Referenciado en"
 
 msgid "Relationships"
-msgstr ""
+msgstr "Relaciones"
 
 msgid "Remove"
-msgstr ""
+msgstr "Quitar"
 
 msgid "Remove association"
-msgstr ""
+msgstr "Quitar la asociación"
 
 msgid "Remove selected from"
-msgstr ""
+msgstr "Quitar seleccionado de"
 
 msgid "Remove selected from category"
-msgstr ""
+msgstr "Quitar seleccionado de la categoría"
 
 msgid "Remove selected from section"
-msgstr ""
+msgstr "Quitar seleccionado de la sección"
 
 msgid "Resource "
-msgstr ""
+msgstr "Recurso"
 
 msgid "Rewrite password"
-msgstr ""
+msgstr "Vuelva a escribir password"
 
 msgid "Rights is required (at least %1 alphanumerical char)"
-msgstr ""
+msgstr "El campo derechos es obligatorio (por lo menos 1% caracteres alfanumérico)"
 
 msgid "Save"
-msgstr ""
+msgstr "Guardar"
 
 msgid "Save draft"
-msgstr ""
+msgstr "Guardar borrador"
 
 msgid "Save off"
-msgstr ""
+msgstr "Guardar off"
 
 msgid "Search"
-msgstr ""
+msgstr "Buscar"
 
 msgid "Section deleted"
-msgstr ""
+msgstr "Sección eliminada"
 
 msgid "Section saved"
-msgstr ""
+msgstr "Sección guardada"
 
 msgid "Select a category"
-msgstr ""
+msgstr "Seleccionar una categoría"
 
 msgid "Select a destination to 'copy to'"
-msgstr ""
+msgstr "Seleccionar un destino para 'copiar'"
 
 msgid "Select a mailgroup"
-msgstr ""
+msgstr "Seleccionar un mailgroup"
 
 msgid "Select a status"
-msgstr ""
+msgstr "Seleccionar status"
 
 msgid "Select a user from the list"
-msgstr ""
+msgstr "Seleccionar usuario de la lista"
 
 msgid "Select by category"
-msgstr ""
+msgstr "Seleccionar por categoría"
 
 msgid "Select by template"
-msgstr ""
+msgstr "Seleccionar por template"
 
 msgid "Select by type"
-msgstr ""
+msgstr "Seleccionar por tipo"
 
 msgid "Select content languages"
-msgstr ""
+msgstr "Seleccionar contenido lenguas"
 
 msgid "Select file(s)"
-msgstr ""
+msgstr "Seleccionar file(s)"
 
 msgid "Send"
-msgstr ""
+msgstr "Enviar"
 
 msgid "Send email to"
-msgstr ""
+msgstr "Enviar correo a"
 
 msgid "Sent"
-msgstr ""
+msgstr "Enviado"
 
 msgid "Sent on"
-msgstr ""
+msgstr "Enviado el"
 
 msgid "Show all"
-msgstr ""
+msgstr "Mostrar todo"
 
 msgid "Show system tags"
-msgstr ""
+msgstr "Mostrar tag de sistema"
 
 msgid "Show translations in"
-msgstr ""
+msgstr "Mostrar traducciones en"
 
 msgid "Smtp Options"
-msgstr ""
+msgstr "Opciones Smtp"
 
 msgid "Software"
-msgstr ""
+msgstr "Software"
 
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
-msgstr ""
+msgstr "Algo parece andar mal. No se encuentra bedita_module_setup.php"
 
 msgid "Source data"
-msgstr ""
+msgstr "Data de origen"
 
 msgid "Statistics"
-msgstr ""
+msgstr "Estadísticas"
 
 msgid "Status"
-msgstr ""
+msgstr "Status"
 
 msgid "Subject"
-msgstr ""
+msgstr "Asunto"
 
 msgid "Subscribed this month"
-msgstr ""
+msgstr "Suscrito este mes"
 
 msgid "Subscribed this week"
-msgstr ""
+msgstr "Suscrito esta semana"
 
 msgid "Subscriber lists"
-msgstr ""
+msgstr "lista de suscriptores"
 
 msgid "Subscribers"
-msgstr ""
+msgstr "Suscriptores"
 
 msgid "Subscribers associated to list"
-msgstr ""
+msgstr "Suscriptores asociados a la lista"
 
 msgid "Subtitle, description"
-msgstr ""
+msgstr "Subtítulo, descripción"
 
 msgid "System configuration"
-msgstr ""
+msgstr "Configuración del sistema"
 
 msgid "System events"
-msgstr ""
+msgstr "Eventos del sistema"
 
 msgid "System info"
-msgstr ""
+msgstr "Info sistema"
 
 msgid "System logs"
-msgstr ""
+msgstr "Logs sistema"
 
 msgid "System users"
-msgstr ""
+msgstr "Usuarios sistema"
 
 msgid "System utilities"
-msgstr ""
+msgstr "utilidades del sistema"
 
 msgid "Tag already present"
-msgstr ""
+msgstr "Tag ya presente"
 
 msgid "Tag deleted"
-msgstr ""
+msgstr "Tag borrada"
 
 msgid "Tag details"
-msgstr ""
+msgstr "Detalles tag"
 
 msgid "Tag saved"
-msgstr ""
+msgstr "Tag guardada"
 
 msgid "Tags"
-msgstr ""
+msgstr "Tags"
 
 msgid "Tags saved"
-msgstr ""
+msgstr "Tags guardadas"
 
 msgid "Templates"
-msgstr ""
+msgstr "Templates"
 
 msgid "Test mail sent to "
-msgstr ""
+msgstr "Correo test enviado a"
 
 msgid "Test on GoogleMaps"
-msgstr ""
+msgstr "Test on GoogleMaps"
 
 msgid "Test stuff"
-msgstr ""
+msgstr "Test stuff"
 
 msgid "Text"
-msgstr ""
+msgstr "Texto"
 
 msgid "Text direction"
-msgstr ""
+msgstr "Dirección del texto"
 
 msgid "Text doesn't match image"
-msgstr ""
+msgstr "El texto no coincide con la imagen"
 
 msgid "Text lang"
-msgstr ""
+msgstr "Idioma texto"
 
-msgid ""
-"The content is fixed: it's not possible to change the position in the tree"
-msgstr ""
+msgid "The content is fixed: it's not possible to change the position in the tree"
+msgstr "El contenido es fijo: no es posible cambiar la posición en el árbol"
 
 msgid "This content is not on publication tree. Continue?"
-msgstr ""
+msgstr "Este contenido no está en el árbol de la publicación. ¿Continuar?"
 
 msgid "This help page is under construction: coming soon"
-msgstr ""
+msgstr "Esta página de ayuda está en construcción: próximamente"
 
 msgid "This object is fixed - some data is readonly"
-msgstr ""
+msgstr "Este objeto está fijo - Algunos datos son de sólo lectura"
 
 msgid "Title"
-msgstr ""
+msgstr "Título"
 
 msgid "Title is required"
-msgstr ""
+msgstr "El título es obligatorio"
 
 msgid "To unsubscribe"
-msgstr ""
+msgstr "Para anular su suscripción"
 
 msgid "Tools"
-msgstr ""
+msgstr "Herramientas"
 
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
 msgid "Total Subscribers"
-msgstr ""
+msgstr "Total suscriptores"
 
 msgid "Total newsletters sent"
-msgstr ""
+msgstr "Total newsletters enviadas"
 
 msgid "Translation deleted"
-msgstr ""
+msgstr "Traducción eliminada"
 
 msgid "Translation saved"
-msgstr ""
+msgstr "Traducción guardada"
 
 msgid "Translation updated"
-msgstr ""
+msgstr "Traducción actualizada"
 
 msgid "Translations"
-msgstr ""
+msgstr "Traducciónes"
 
 msgid "URL not valid"
-msgstr ""
+msgstr "URL invalido"
 
 msgid "URL unattainable"
-msgstr ""
+msgstr "URL inalcanzable"
 
 msgid "URLs and paths"
-msgstr ""
+msgstr "URLs y paths"
 
 msgid "Unique name"
-msgstr ""
+msgstr "Nombre único"
 
 msgid "Unplugged modules"
-msgstr ""
+msgstr "módulos desconectados"
 
-msgid ""
-"Unplugging the module will delete all related items. Do you want continue?"
-msgstr ""
+msgid "Unplugging the module will delete all related items. Do you want continue?"
+msgstr "Desconectando el módulo se eliminarán todos los elementos relacionados. ¿Desea continuar?"
 
 msgid "Unsent"
-msgstr ""
+msgstr "No enviado"
 
 msgid "Unsubscribe selected items"
-msgstr ""
+msgstr "Dar de baja los elementos seleccionados"
 
 msgid "Unsupported type"
-msgstr ""
+msgstr "Tipo no compatible"
 
 msgid "Upload"
-msgstr ""
+msgstr "Subir"
 
 msgid "Upload end"
-msgstr ""
+msgstr "Subida terminada"
 
 msgid "Upload new file"
-msgstr ""
+msgstr "Subir nuevo file"
 
 msgid "Upload queue"
-msgstr ""
+msgstr "Cola de subida"
 
 msgid "Uploading file"
-msgstr ""
+msgstr "Subiendo file"
 
 msgid "Url"
-msgstr ""
+msgstr "Url"
 
 msgid "Use a valid email"
-msgstr ""
+msgstr "Utilizar correo valido "
 
 msgid "Use all available languages for contents"
-msgstr ""
+msgstr "Utilizar todos los idiomas disponibles para los contenidos"
 
 msgid "Use the multiple upload"
-msgstr ""
+msgstr "Utilizar subida múltiple"
 
 msgid "User"
-msgstr ""
+msgstr "Usuario"
 
 msgid "User Interface default language"
-msgstr ""
+msgstr "Idioma default interfaz usuario"
 
 msgid "User already created"
-msgstr ""
+msgstr "Usuario ya creado"
 
 msgid "User blocked"
-msgstr ""
+msgstr "Usuario bloqueado"
 
 msgid "User created"
-msgstr ""
+msgstr "Usuario creado"
 
 msgid "User details"
-msgstr ""
+msgstr "Detalles usuario"
 
 msgid "User groups"
-msgstr ""
+msgstr "Grupos de usuarios"
 
 msgid "User is not subscribed to mail group"
-msgstr ""
+msgstr "Usuario no suscrito al mail group"
 
 msgid "User login temporary blocked"
-msgstr ""
+msgstr "Inicio sesión de usuario bloqueado temporalmente"
 
 msgid "User name"
-msgstr ""
+msgstr "Nombre usuario"
 
-msgid ""
-"User name is required (at least %1 chars, without white spaces and special "
-"chars)"
-msgstr ""
+msgid "User name is required (at least %1 chars, without white spaces and special chars)"
+msgstr "Nombre de usuario necesario (por lo meno 1% caracteres, sin espacios y caracteres especiales)"
 
 msgid "User not associated to mailgroup or he is in pending status"
-msgstr ""
+msgstr "Usuario no asociado a mailgroup o en estado pendiente"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
-msgstr ""
+msgstr "Usuario no asociado a mailgroup o no está en estado pendiente"
 
 msgid "User not found"
-msgstr ""
+msgstr "Usuario no encotrado"
 
 msgid "User not present"
-msgstr ""
+msgstr "Usuario no presente"
 
 msgid "User updated"
-msgstr ""
+msgstr "Usuario actualizado"
 
 msgid "Username"
-msgstr ""
+msgstr "Nombre usuario"
 
 msgid "Username is required"
-msgstr ""
+msgstr "Nombre usuario necesario"
 
 msgid "Users"
-msgstr ""
+msgstr "Usuarios"
 
 msgid "Version"
-msgstr ""
+msgstr "Versión"
 
 msgid "Versions"
-msgstr ""
+msgstr "Versiónes"
 
 msgid "View all"
-msgstr ""
+msgstr "Visualiza todo"
 
 msgid "View invoices"
-msgstr ""
+msgstr "Visualiza invoices"
 
 msgid "Visible in menu and canonical paths"
-msgstr ""
+msgstr "Visible en menú y caminos canónicos"
 
 msgid "WAIT"
-msgstr ""
+msgstr "ESPERAR"
 
 msgid "Warning"
-msgstr ""
+msgstr "Advertencia"
 
 msgid "Width"
-msgstr ""
+msgstr "Anchura"
 
 msgid "Write here comma-separated email addresses"
-msgstr ""
+msgstr "Escriba aquí direcciones de correo separados por comas "
 
 msgid "Write your email here"
-msgstr ""
+msgstr "Escribe tu e-mail aquí"
 
 msgid "Wrong old user password"
-msgstr ""
+msgstr "Password de antiguo usuario incorrecta"
 
 msgid "Wrong username/password or no authorization"
-msgstr ""
+msgstr "Usuario/password incorrecto u no autorización "
 
 msgid "Wrong username/password or session expired"
-msgstr ""
+msgstr "Usuario/password incorrecto u sesión finalizada"
 
 msgid "X"
-msgstr ""
+msgstr "X"
 
 msgid "Yes"
-msgstr ""
+msgstr "Sí"
 
 msgid "You are not allowed to edit this users"
-msgstr ""
+msgstr "No tienes permisos para editar estos usuarios"
 
 msgid "You are not allowed to remove this users"
-msgstr ""
+msgstr "No tienes permisos para eliminar estos usuarios"
 
 msgid "You aren't authorized to access that item"
-msgstr ""
+msgstr "No tienes autorización para acceder a este elemento"
 
 msgid "You can't use remote file"
-msgstr ""
+msgstr "No puedes utilizar archivos remoto"
 
 msgid "You have to be logged to access that item"
-msgstr ""
+msgstr "Tienes que entrar para acceder a ese elemento"
 
 msgid "accept this IP!"
-msgstr ""
+msgstr "Aceptar este IP!"
 
 msgid "access "
-msgstr ""
+msgstr "Acceso"
 
 msgid "access server log statistics"
-msgstr ""
+msgstr "Acceder a las estadísticas de registro del servidor"
 
 msgid "add"
-msgstr ""
+msgstr "Añadir"
 
 msgid "add by object ids"
-msgstr ""
+msgstr "Añadir por identificadores de los objetos"
 
 msgid "add by url"
-msgstr ""
+msgstr "Añadir por URL"
 
 msgid "add comma separated words"
-msgstr ""
+msgstr "Añadir palabras separadas por comas"
 
 msgid "add contents"
-msgstr ""
+msgstr "Añadir contenidos"
 
 msgid "add group"
-msgstr ""
+msgstr "añadir grupo"
 
 msgid "add more tags"
-msgstr ""
+msgstr "añadir más tag"
 
 msgid "address"
-msgstr ""
+msgstr "dirección"
 
 msgid "addressbook"
-msgstr ""
+msgstr "addressbook"
 
 msgid "addressbook details"
-msgstr ""
+msgstr "detalles addressbook"
 
 msgid "admin"
-msgstr ""
+msgstr "admin"
 
 msgid "all"
-msgstr ""
+msgstr "todo"
 
 msgid "all bibliographies"
-msgstr ""
+msgstr "todas las bibliografías"
 
 msgid "all books"
-msgstr ""
+msgstr "todos los libros"
 
 msgid "all cards"
-msgstr ""
+msgstr "todas las tarjetas"
 
 msgid "all comments"
-msgstr ""
+msgstr "todos los comentarios"
 
 msgid "all contents"
-msgstr ""
+msgstr "todos los contenidos"
 
 msgid "all galleries"
-msgstr ""
+msgstr "todas las galerías"
 
 msgid "all multimedia"
-msgstr ""
+msgstr "todos los elementos multimedia"
 
 msgid "all news"
-msgstr ""
+msgstr "todas las noticias"
 
 msgid "all newsletter"
-msgstr ""
+msgstr "todas las newsletter"
 
 msgid "all recent items"
-msgstr ""
+msgstr "todos los elementos recientes"
 
 msgid "all tags"
-msgstr ""
+msgstr "todas las tag"
 
 msgid "all translations"
-msgstr ""
+msgstr "todas las traducciones"
 
 msgid "all webmarks"
-msgstr ""
+msgstr "todos los webmarks"
 
 msgid "associate"
-msgstr ""
+msgstr "asociar"
 
 msgid "at"
-msgstr ""
+msgstr "en"
 
 msgid "audio"
-msgstr ""
+msgstr "audio"
 
 msgid "authentication provided by"
-msgstr ""
+msgstr "autenticación proporcionada por"
 
 msgid "author"
-msgstr ""
+msgstr "autor"
 
 msgid "ban this IP!"
-msgstr ""
+msgstr "prohibir este IP!"
 
 msgid "bedita url is unreachable"
-msgstr ""
+msgstr "url de bedita inalcanzable"
 
 msgid "bedita url not set"
-msgstr ""
+msgstr "url de bedita no establecido"
 
 msgid "bibliographies"
-msgstr ""
+msgstr "bibliografías"
 
 msgid "birthdate"
-msgstr ""
+msgstr "fecha de nacimiento"
 
 msgid "blocked"
-msgstr ""
+msgstr "bloqueado"
 
 msgid "books"
-msgstr ""
+msgstr "libros"
 
 msgid "bounce to email"
-msgstr ""
+msgstr "rebotar al correo (bounce)"
 
 msgid "browse your disk"
-msgstr ""
+msgstr "buscar en su disco"
 
 msgid "card(s) associated to mailgroup"
-msgstr ""
+msgstr "tarjeta (s) asociada a mailgroup"
 
 msgid "cards"
-msgstr ""
+msgstr "tarjetas"
 
 msgid "category"
-msgstr ""
+msgstr "categoría"
 
 msgid "change"
-msgstr ""
+msgstr "cambio"
 
 msgid "change status"
-msgstr ""
+msgstr "cambia status"
 
 msgid "change status to"
-msgstr ""
+msgstr "cambia status en"
 
 msgid "change status to:"
-msgstr ""
+msgstr "cambia status en:"
 
 msgid "changes on my contents"
-msgstr ""
+msgstr "cambios en mis contenidos"
 
 msgid "check open"
-msgstr ""
+msgstr "comprobar la apertura"
 
 msgid "check result"
-msgstr ""
+msgstr "comprobar el resultado "
 
 msgid "check selected links"
-msgstr ""
+msgstr "verificar los enlaces seleccionados"
 
 msgid "check urls"
-msgstr ""
+msgstr "comprobar las direcciones URL"
 
 msgid "checkbox single choice"
-msgstr ""
+msgstr "checkbox única opción"
 
 msgid "city"
-msgstr ""
+msgstr "ciudad"
 
 msgid "city and zip code"
-msgstr ""
+msgstr "ciudad y código postal"
 
 msgid "cleanup cache"
-msgstr ""
+msgstr "limpia cache"
 
 msgid "clear media cache"
-msgstr ""
+msgstr "limpia media cache"
 
 msgid "clears media cache files/directories"
-msgstr ""
+msgstr "limpia media cache files/carpetas"
 
 msgid "clone"
-msgstr ""
+msgstr "clonar"
 
 msgid "close"
-msgstr ""
+msgstr "cerrar"
 
 msgid "comments"
-msgstr ""
+msgstr "comentarios"
 
 msgid "connect new items"
-msgstr ""
+msgstr "conectar elementos nuevos"
 
 msgid "connected user"
-msgstr ""
+msgstr "usuarios conectados"
 
 msgid "contact email"
-msgstr ""
+msgstr "contacta email"
 
 msgid "contact the project admin"
-msgstr ""
+msgstr "contacta el administrador del proyecto"
 
 msgid "content type"
-msgstr ""
+msgstr "tipo de contenido"
 
 msgid "contents"
-msgstr ""
+msgstr "contenidos"
 
 msgid "continent"
-msgstr ""
+msgstr "continente"
 
 msgid "copy"
-msgstr ""
+msgstr "copiar"
 
 msgid "country"
-msgstr ""
+msgstr "país"
 
 msgid "create"
-msgstr ""
+msgstr "crear"
 
 msgid "create and associate"
-msgstr ""
+msgstr "crear y asociar"
 
 msgid "create group"
-msgstr ""
+msgstr "crear grupo"
 
 msgid "create new"
-msgstr ""
+msgstr "crear nuevo"
 
 msgid "create new (create new multimedia object and upload file)"
-msgstr ""
+msgstr "crear nuevo (crear un objeto multimedia nuevo y subir file)"
 
 msgid "create new document"
-msgstr ""
+msgstr "crear nuevo documento"
 
 msgid "create new translation"
-msgstr ""
+msgstr "crear nueva traducción"
 
 msgid "created"
-msgstr ""
+msgstr "creado"
 
 msgid "created by"
-msgstr ""
+msgstr "creado por"
 
 msgid "created on"
-msgstr ""
+msgstr "creado el"
 
 msgid "creator"
-msgstr ""
+msgstr "creador"
 
 msgid "data attributes"
-msgstr ""
+msgstr "atributos de datos"
 
 msgid "data type"
-msgstr ""
+msgstr "tipo de datos"
 
 msgid "date"
-msgstr ""
+msgstr "datos"
 
 msgid "deathdate"
-msgstr ""
+msgstr "fecha de muerte"
 
 msgid "default language"
-msgstr ""
+msgstr "idioma default"
 
 msgid "degree"
-msgstr ""
+msgstr "grado"
 
 msgid "delete"
-msgstr ""
+msgstr "borrar"
 
 msgid "delete all"
-msgstr ""
+msgstr "borrar todo"
 
 msgid "delete all cached files from BEdita and frontends"
-msgstr ""
+msgstr "eliminar todos los files de cache de BEdita y frontends"
 
 msgid "delete selected items"
-msgstr ""
+msgstr "eliminar los elementos seleccionados"
 
 msgid "description"
-msgstr ""
+msgstr "descripción"
 
 msgid "details"
-msgstr ""
+msgstr "detalles"
 
 msgid "disable succesfully, all related objects are been deleted"
-msgstr ""
+msgstr "desactivado con éxito, todos los objetos relacionados se han suprimido"
 
 msgid "district"
-msgstr ""
+msgstr "región"
 
 msgid "documents"
-msgstr ""
+msgstr "documentos"
 
 msgid "does not affect email newsletter"
-msgstr ""
+msgstr "no afecta email newsletter"
 
 msgid "download"
-msgstr ""
+msgstr "descargar"
 
 msgid "draft"
-msgstr ""
+msgstr "borrador"
 
 msgid "duration in minutes"
-msgstr ""
+msgstr "duración en minutos"
 
 msgid "edit"
-msgstr ""
+msgstr "editar"
 
 msgid "editor"
-msgstr ""
+msgstr "editor"
 
 msgid "email"
-msgstr ""
+msgstr "email"
 
 msgid "email2"
-msgstr ""
+msgstr "email2"
 
 msgid "empty all"
-msgstr ""
+msgstr "vaciar todo"
 
 msgid "empty log files"
-msgstr ""
+msgstr "vaciar log files"
 
 msgid "empty logs"
-msgstr ""
+msgstr "vaciar logs"
 
 msgid "end"
-msgstr ""
+msgstr "final"
 
 msgid "end has to be a valid date in the following format:"
-msgstr ""
+msgstr "final tiene que ser una fecha válida en el formato siguiente:"
 
 msgid "events"
-msgstr ""
+msgstr "eventos"
 
 msgid "export"
-msgstr ""
+msgstr "exportar"
 
 msgid "failed"
-msgstr ""
+msgstr "fracaso"
 
 msgid "fax"
-msgstr ""
+msgstr "fax"
 
 msgid "female"
-msgstr ""
+msgstr "femenino"
 
 msgid "file"
-msgstr ""
+msgstr "file"
 
 msgid "file is already used, please change it to avoid malfunctioning"
-msgstr ""
+msgstr "el file ya está en uso, debe cambiarla para evitar un mal funcionamiento"
 
 msgid "filename"
-msgstr ""
+msgstr "nombre file"
 
 msgid "files queued"
-msgstr ""
+msgstr "file en cola"
 
 msgid "filesize"
-msgstr ""
+msgstr "tamaño file"
 
 msgid "filter:"
-msgstr ""
+msgstr "filtro:"
 
 msgid "filters"
-msgstr ""
+msgstr "filtros"
 
 msgid "first"
-msgstr ""
+msgstr "primero"
 
 msgid "first page"
-msgstr ""
+msgstr "primera página"
 
 msgid "fixed object"
-msgstr ""
+msgstr "objeto fijo"
 
 msgid "for object type"
-msgstr ""
+msgstr "por tipo de objeto"
 
 msgid "from"
-msgstr ""
+msgstr "de"
 
 msgid "frontend_access_with_block"
-msgstr ""
+msgstr "visible para el grupo, oculto para los otros"
 
 msgid "frontend_access_without_block"
-msgstr ""
+msgstr "visible para el grupo, vista previa para los otros"
 
 msgid "galleries"
-msgstr ""
+msgstr "galerías"
 
 msgid "go"
-msgstr ""
+msgstr "ir"
 
 msgid "group"
-msgstr ""
+msgstr "grupo"
 
 msgid "group modules access"
-msgstr ""
+msgstr "módulos de acceso de grupo"
 
 msgid "group properties "
-msgstr ""
+msgstr "propiedades grupo"
 
 msgid "hashjob for unsubscribe already in use"
-msgstr ""
+msgstr "hashjob para darse de baja ya está en uso"
 
 msgid "help"
-msgstr ""
+msgstr "ayuda"
 
 msgid "here"
-msgstr ""
+msgstr "aquí"
 
 msgid "hidden from menu and canonical path"
-msgstr ""
+msgstr "ocultos en menú y ruta canónica"
 
 msgid "host"
-msgstr ""
+msgstr "host"
 
 msgid "hybrid"
-msgstr ""
+msgstr "híbrido"
 
 msgid "id"
-msgstr ""
+msgstr "id"
 
 msgid "image"
-msgstr ""
+msgstr "imagen"
 
 msgid "import"
-msgstr ""
+msgstr "importar"
 
 msgid "in job"
-msgstr ""
+msgstr "en marcha"
 
 msgid "in recipient groups"
-msgstr ""
+msgstr "en los grupos de beneficiarios"
 
 msgid "info"
-msgstr ""
+msgstr "info"
 
 msgid "inserted on"
-msgstr ""
+msgstr "insertado en"
 
 msgid "is user"
-msgstr ""
+msgstr "es un usuario"
 
 msgid "item(s)"
-msgstr ""
+msgstr "elemento(s)"
 
 msgid "items"
-msgstr ""
+msgstr "elementos"
 
 msgid "jobs"
-msgstr ""
+msgstr "jons"
 
 msgid "key"
-msgstr ""
+msgstr "llave"
 
 msgid "lang"
-msgstr ""
+msgstr "idioma"
 
 msgid "language"
-msgstr ""
+msgstr "idioma"
 
 msgid "last"
-msgstr ""
+msgstr "último"
 
 msgid "last comments"
-msgstr ""
+msgstr "últimos comentarios"
 
 msgid "last invoice"
-msgstr ""
+msgstr "último invoice"
 
 msgid "last login"
-msgstr ""
+msgstr "último acceso"
 
 msgid "last modified"
-msgstr ""
+msgstr "último modificado"
 
 msgid "last modified by"
-msgstr ""
+msgstr "última modifica de"
 
 msgid "last modified on"
-msgstr ""
+msgstr "última modifica el"
 
 msgid "last notes"
-msgstr ""
+msgstr "últimas notas"
 
 msgid "last page"
-msgstr ""
+msgstr "última página"
 
 msgid "latitude"
-msgstr ""
+msgstr "latitud"
 
 msgid "left to right"
-msgstr ""
+msgstr "izquierda a derecha"
 
 msgid "license"
-msgstr ""
+msgstr "licencia"
 
 msgid "list name"
-msgstr ""
+msgstr "nombre lista"
 
 msgid "long text"
-msgstr ""
+msgstr "texto largo"
 
 msgid "longitude"
-msgstr ""
+msgstr "longitud"
 
 msgid "mail address"
-msgstr ""
+msgstr "correo electrónico"
 
 msgid "mailgroups"
-msgstr ""
+msgstr "mailgroups"
 
 msgid "mails / minute"
-msgstr ""
+msgstr "mails / minuto"
 
 msgid "main language"
-msgstr ""
+msgstr "lengua principal"
 
 msgid "male"
-msgstr ""
+msgstr "masculino"
 
 msgid "map"
-msgstr ""
+msgstr "mapa"
 
 msgid "map type"
-msgstr ""
+msgstr "tipo mapa"
 
 msgid "map zoom"
-msgstr ""
+msgstr "zoom mapa"
 
 msgid "master language"
-msgstr ""
+msgstr "lengua master"
 
 msgid "master title"
-msgstr ""
+msgstr "título master"
 
 msgid "matching the query"
-msgstr ""
+msgstr "matching the query"
 
 msgid "maximum"
-msgstr ""
+msgstr "maximo"
 
 msgid "media root can't be empty"
-msgstr ""
+msgstr "media root no puede estar vacío"
 
 msgid "media root folder doesn't exist"
-msgstr ""
+msgstr "la carpeta media root no existe"
 
 msgid "media root folder is not writable"
-msgstr ""
+msgstr "la carpeta media root no se puede escribir"
 
 msgid "media root folder is not writable: update folder permits properly"
-msgstr ""
+msgstr "la carpeta media root no se puede escribir: actualizar adecuadamente los permisos de carpeta"
 
 msgid "media root folder not found"
-msgstr ""
+msgstr "carpeta media root no encontrada"
 
 msgid "media root not set"
-msgstr ""
+msgstr "media root no establecido"
 
 msgid "media url can't be empty"
-msgstr ""
+msgstr "el media url no puede estar vacío"
 
 msgid "media url is unreachable"
-msgstr ""
+msgstr "media url inalcanzable"
 
 msgid "media url not set"
-msgstr ""
+msgstr "media url no establecido"
 
 msgid "message board"
-msgstr ""
+msgstr "message board"
 
 msgid "mime type"
-msgstr ""
+msgstr "tipo mime"
 
 msgid "minutes"
-msgstr ""
+msgstr "minutos"
 
 msgid "missing card id"
-msgstr ""
+msgstr "falta id tarjeta"
 
 msgid "missing mail group id"
-msgstr ""
+msgstr "falta id grupo mail"
 
 msgid "missing method to manage hash case"
-msgstr ""
+msgstr "falta método para gestionar hash case"
 
 msgid "missing service type"
-msgstr ""
+msgstr "falta el tipo de servicio"
 
 msgid "modified"
-msgstr ""
+msgstr "modificado"
 
 msgid "modified on"
-msgstr ""
+msgstr "modificado el"
 
 msgid "more from this IP"
-msgstr ""
+msgstr "más de este IP"
 
 msgid "more from this email"
-msgstr ""
+msgstr "más de esta email"
 
 msgid "more on this content"
-msgstr ""
+msgstr "más de esto contenido"
 
 msgid "more results"
-msgstr ""
+msgstr "más resultados"
 
 msgid "move"
-msgstr ""
+msgstr "mover"
 
 msgid "multimedia"
-msgstr ""
+msgstr "multimedia"
 
 msgid "multimedia descriptions"
-msgstr ""
+msgstr "descripción multimedia"
 
 msgid "multiple choice"
-msgstr ""
+msgstr "opción múltiple"
 
 msgid "name"
-msgstr ""
+msgstr "nombre"
 
 msgid "neighbourhood"
-msgstr ""
+msgstr "barrio"
 
 msgid "new again"
-msgstr ""
+msgstr "nueva otra vez"
 
 msgid "new comments"
-msgstr ""
+msgstr "nuevos comentarios"
 
 msgid "new notes"
-msgstr ""
+msgstr "nuevas notas"
 
 msgid "new psw"
-msgstr ""
+msgstr "nueva password"
 
 msgid "new publication"
-msgstr ""
+msgstr "nueva publicación"
 
 msgid "new section"
-msgstr ""
+msgstr "nueva sección"
 
 msgid "news"
-msgstr ""
+msgstr "noticias"
 
 msgid "newsletter"
-msgstr ""
+msgstr "newsletter"
 
 msgid "next"
-msgstr ""
+msgstr "próximo"
 
 msgid "next invoice"
-msgstr ""
+msgstr "próximo invoice"
 
 msgid "next page"
-msgstr ""
+msgstr "página siguiente"
 
 msgid "nickname"
-msgstr ""
+msgstr "nickname"
 
 msgid "no"
-msgstr ""
+msgstr "no"
 
 msgid "no comments"
-msgstr ""
+msgstr "no comentarios"
 
 msgid "no custom properties defined"
-msgstr ""
+msgstr "no propiedades personalizadas definidas"
 
 msgid "no items"
-msgstr ""
+msgstr "no elementos"
 
 msgid "no notes"
-msgstr ""
+msgstr "no notas"
 
 msgid "no object type defined"
-msgstr ""
+msgstr "ningún tipo de objeto definido"
 
 msgid "no referenced objects"
-msgstr ""
+msgstr "no objetos referenciados"
 
 msgid "no results"
-msgstr ""
+msgstr "no hay resultados"
 
 msgid "no sections"
-msgstr ""
+msgstr "sin secciones"
 
 msgid "no user data"
-msgstr ""
+msgstr "no hay datos de usuario"
 
 msgid "not yet sent"
-msgstr ""
+msgstr "aún no se envió"
 
 msgid "notify me by email"
-msgstr ""
+msgstr "notificarme por correo electrónico"
 
 msgid "number"
-msgstr ""
+msgstr "número"
 
 msgid "object expired"
-msgstr ""
+msgstr "objeto expirado"
 
 msgid "object scheduled in the future"
-msgstr ""
+msgstr "objeto programado en el futuro"
 
 msgid "object scheduled today"
-msgstr ""
+msgstr "objeto previsto para hoy"
 
 msgid "object title"
-msgstr ""
+msgstr "título objeto"
 
 msgid "of"
-msgstr ""
+msgstr "de"
 
 msgid "of master id"
-msgstr ""
+msgstr "de id principal"
 
 msgid "off"
-msgstr ""
+msgstr "off"
 
 msgid "ok"
-msgstr ""
+msgstr "ok"
 
 msgid "old psw"
-msgstr ""
+msgstr "vieja password"
 
 msgid "on"
-msgstr ""
+msgstr "on"
 
 msgid "on my stuff only"
-msgstr ""
+msgstr "solo en cosas mias"
 
 msgid "online from"
-msgstr ""
+msgstr "online desde"
 
 msgid "open answer"
-msgstr ""
+msgstr "respuesta abierta"
 
 msgid "open in new window"
-msgstr ""
+msgstr "abrir en una nueva ventana"
 
 msgid "operations"
-msgstr ""
+msgstr "operaciones"
 
 msgid "option list"
-msgstr ""
+msgstr "opción de la lista"
 
 msgid "options"
-msgstr ""
+msgstr "opciónes"
 
 msgid "or"
-msgstr ""
+msgstr "o"
 
 msgid "order"
-msgstr ""
+msgstr "orden"
 
 msgid "order by"
-msgstr ""
+msgstr "ordenar por"
 
 msgid "organization"
-msgstr ""
+msgstr "organización"
 
 msgid "original filename"
-msgstr ""
+msgstr "nombre original del file"
 
 msgid "other"
-msgstr ""
+msgstr "otro"
 
-msgid ""
-"overwrite (don't create new multimedia object, substitute file for existing "
-"multimedia object)"
-msgstr ""
+msgid "overwrite (don't create new multimedia object, substitute file for existing multimedia object)"
+msgstr "sobrescribir (no crear nuevo objeto multimedia, sustituir por un objeto multimedia que existe)"
 
 msgid "page"
-msgstr ""
+msgstr "página"
 
 msgid "password"
-msgstr ""
+msgstr "password"
 
 msgid "pending"
-msgstr ""
+msgstr "pendiente"
 
 msgid "permission"
-msgstr ""
+msgstr "permisos"
 
 msgid "permissions set"
-msgstr ""
+msgstr "permisos establecidos"
 
 msgid "phone"
-msgstr ""
+msgstr "teléfono"
 
 msgid "phone2"
-msgstr ""
+msgstr "teléfono2"
 
 msgid "plug-in"
-msgstr ""
+msgstr "plug-in"
 
 msgid "plug-out"
-msgstr ""
+msgstr "plug-out"
 
 msgid "plugged succesfully"
-msgstr ""
+msgstr "conectado con éxito"
 
 msgid "port"
-msgstr ""
+msgstr "puerta"
 
 msgid "prev"
-msgstr ""
+msgstr "previo"
 
 msgid "previous page"
-msgstr ""
+msgstr "página anterior"
 
 msgid "print"
-msgstr ""
+msgstr "imprimir"
 
 msgid "print context"
-msgstr ""
+msgstr "imprimir contexto"
 
 msgid "priority"
-msgstr ""
+msgstr "prioridad"
 
 msgid "privacy disclaimer"
-msgstr ""
+msgstr "privacy disclaimer"
 
 msgid "private list "
-msgstr ""
+msgstr "lista privada"
 
 msgid "promote as user"
-msgstr ""
+msgstr "promover como usuario"
 
 msgid "promoter name"
-msgstr ""
+msgstr "nombre promoter"
 
 msgid "properties"
-msgstr ""
+msgstr "propiedades"
 
 msgid "property name"
-msgstr ""
+msgstr "nombre propiedad"
 
 msgid "public list\t"
-msgstr ""
+msgstr "lista pública \ t"
 
 msgid "public name"
-msgstr ""
+msgstr "nombre público"
 
 msgid "public url"
-msgstr ""
+msgstr "url público"
 
 msgid "publication"
-msgstr ""
+msgstr "publicación"
 
 msgid "publications"
-msgstr ""
+msgstr "publicaciónes"
 
 msgid "publisher"
-msgstr ""
+msgstr "editor"
 
 msgid "pulldown single choice"
-msgstr ""
+msgstr "menú única opción "
 
 msgid "quarter"
-msgstr ""
+msgstr "barrio"
 
 msgid "questionnaires"
-msgstr ""
+msgstr "cuestionarios"
 
 msgid "quick item"
-msgstr ""
+msgstr "elemento rápido"
 
 msgid "realname"
-msgstr ""
+msgstr "nombre real"
 
 msgid "rebuild index"
-msgstr ""
+msgstr "reconstruir index"
 
 msgid "rebuild search texts index. Caution: may be slow"
-msgstr ""
+msgstr "reconstrucción index de búsqueda textos. Precaución: puede ser lenta"
 
 msgid "reference"
-msgstr ""
+msgstr "referencia"
 
 msgid "referenced objects list"
-msgstr ""
+msgstr "lista objetos referenciados"
 
 msgid "remove from users"
-msgstr ""
+msgstr "quitar de usuarios"
 
 msgid "reply to"
-msgstr ""
+msgstr "responder a"
 
 msgid "required"
-msgstr ""
+msgstr "necesario"
 
 msgid "reside in"
-msgstr ""
+msgstr "residir en"
 
 msgid "restore all"
-msgstr ""
+msgstr "restaurar todo"
 
 msgid "restore selected"
-msgstr ""
+msgstr "restaurar seleccionado"
 
 msgid "right to left"
-msgstr ""
+msgstr "derecha a izquierda"
 
 msgid "rights"
-msgstr ""
+msgstr "derechos"
 
 msgid "satellite"
-msgstr ""
+msgstr "satellite"
 
 msgid "save"
-msgstr ""
+msgstr "guardar"
 
 msgid "save profile"
-msgstr ""
+msgstr "guardar perfil"
 
 msgid "scheduled"
-msgstr ""
+msgstr "programado"
 
 msgid "scheduled from"
-msgstr ""
+msgstr "programado de"
 
 msgid "search"
-msgstr ""
+msgstr "buscar"
 
 msgid "search string"
-msgstr ""
+msgstr "cadena de búsqueda"
 
 msgid "sections"
-msgstr ""
+msgstr "secciones"
 
 msgid "sections only"
-msgstr ""
+msgstr "sólo secciones "
 
 msgid "see error detail"
-msgstr ""
+msgstr "ver los detalles de error"
 
 msgid "seealso"
-msgstr ""
+msgstr "véase también"
 
 msgid "select an item to associate"
-msgstr ""
+msgstr "seleccionar un elemento para asociar"
 
 msgid "select from archive"
-msgstr ""
+msgstr "seleccionar desde archivo"
 
 msgid "select one"
-msgstr ""
+msgstr "seleccionar uno"
 
 msgid "selected records"
-msgstr ""
+msgstr "registros seleccionados"
 
 msgid "selected subscribers"
-msgstr ""
+msgstr "suscriptores seleccionados"
 
 msgid "send"
-msgstr ""
+msgstr "enviar"
 
 msgid "sender"
-msgstr ""
+msgstr "transmisor"
 
 msgid "sender email"
-msgstr ""
+msgstr "transmisor email"
 
 msgid "sender name"
-msgstr ""
+msgstr "transmisor nombre"
 
 msgid "sent"
-msgstr ""
+msgstr "enviado"
 
 msgid "set OFF"
-msgstr ""
+msgstr "establecer OFF"
 
 msgid "set ON"
-msgstr ""
+msgstr "establecer ON"
 
 msgid "short text"
-msgstr ""
+msgstr "texto breve"
 
 msgid "show"
-msgstr ""
+msgstr "mostrar"
 
 msgid "signature"
-msgstr ""
+msgstr "firma"
 
 msgid "size"
-msgstr ""
+msgstr "tamaño"
 
 msgid "staging url"
-msgstr ""
+msgstr "url staging"
 
 msgid "start"
-msgstr ""
+msgstr "comenzar"
 
 msgid "start has to be a valid date in the following format:"
-msgstr ""
+msgstr "inicio tiene que ser una fecha válida en el siguiente formato:"
 
 msgid "state"
-msgstr ""
+msgstr "estado"
 
 msgid "statistics"
-msgstr ""
+msgstr "estadísticas"
 
 msgid "status"
-msgstr ""
+msgstr "status"
 
 msgid "street name and #"
-msgstr ""
+msgstr "nombre de la calle y #"
 
 msgid "subject"
-msgstr ""
+msgstr "asunto"
 
 msgid "subscribers"
-msgstr ""
+msgstr "suscriptores"
 
 msgid "subscribing method"
-msgstr ""
+msgstr "método de suscripción"
 
 msgid "surname"
-msgstr ""
+msgstr "apellido"
 
 msgid "tags"
-msgstr ""
+msgstr "tags"
 
 msgid "target"
-msgstr ""
+msgstr "objetivo"
 
 msgid "terrain"
-msgstr ""
+msgstr "terreno"
 
 msgid "text"
-msgstr ""
+msgstr "texto"
 
 msgid "thumbnail"
-msgstr ""
+msgstr "thumbnail"
 
 msgid "timeout"
-msgstr ""
+msgstr "tiempo de espera"
 
 msgid "title"
-msgstr ""
+msgstr "título"
 
 msgid "to"
-msgstr ""
+msgstr "a"
 
 msgid "to change your password fill the following form"
-msgstr ""
+msgstr "para cambiar su contraseña rellene el siguiente formulario"
 
 msgid "to recipients"
-msgstr ""
+msgstr "a los destinatarios"
 
 msgid "today"
-msgstr ""
+msgstr "hoy"
 
 msgid "total mails"
-msgstr ""
+msgstr "total mails"
 
 msgid "transgender"
-msgstr ""
+msgstr "transgénero"
 
 msgid "translation of"
-msgstr ""
+msgstr "traducción de"
 
 msgid "translation to"
-msgstr ""
+msgstr "traducción a"
 
 msgid "translations"
-msgstr ""
+msgstr "traducciónes"
 
 msgid "turn off"
-msgstr ""
+msgstr "apagar"
 
 msgid "turn on"
-msgstr ""
+msgstr "encender"
 
 msgid "turned off"
-msgstr ""
+msgstr "apagado"
 
 msgid "turned on"
-msgstr ""
+msgstr "activado"
 
 msgid "type"
-msgstr ""
+msgstr "tipo"
 
 msgid "undo"
-msgstr ""
+msgstr "cancela"
 
 msgid "unique name"
-msgstr ""
+msgstr "nombre unico"
 
 msgid "unplugged succesfully"
-msgstr ""
+msgstr "desconectado con éxito"
 
 msgid "unsent"
-msgstr ""
+msgstr "sin enviar"
 
-msgid ""
-"update name (if empty), mime_type (if empty), size and hash_file fields of "
-"streams table"
-msgstr ""
+msgid "update name (if empty), mime_type (if empty), size and hash_file fields of streams table"
+msgstr "nombre de la actualización (si está vacío), mime_type (si está vacío), tamaño y campos hash_file de stream table"
 
 msgid "update stream fields"
-msgstr ""
+msgstr "actualizar stream fields"
 
 msgid "upload new items"
-msgstr ""
+msgstr "cargar nuevos elementos"
 
 msgid "url"
-msgstr ""
+msgstr "url"
 
 msgid "url name"
-msgstr ""
+msgstr "nombre url"
 
 msgid "use template"
-msgstr ""
+msgstr "utilizar template"
 
 msgid "user"
-msgstr ""
+msgstr "usuario"
 
 msgid "username"
-msgstr ""
+msgstr "nombre de usuario"
 
 msgid "users"
-msgstr ""
+msgstr "usuarios"
 
 msgid "users in this group"
-msgstr ""
+msgstr "usuarios en este grupo"
 
 msgid "valid"
-msgstr ""
+msgstr "valido"
 
 msgid "value"
-msgstr ""
+msgstr "valor"
 
 msgid "version"
-msgstr ""
+msgstr "versión"
 
 msgid "video"
-msgstr ""
+msgstr "video"
 
 msgid "view"
-msgstr ""
+msgstr "ver"
 
 msgid "view all"
-msgstr ""
+msgstr "ver todos"
 
 msgid "visibility"
-msgstr ""
+msgstr "visibilidad"
 
 msgid "web site"
-msgstr ""
+msgstr "sitio web"
 
 msgid "webmark already present"
-msgstr ""
+msgstr "Ya presente webmark"
 
 msgid "webmark saved"
-msgstr ""
+msgstr "webmark guardado"
 
 msgid "webmarks"
-msgstr ""
+msgstr "webmark"
 
 msgid "website"
-msgstr ""
+msgstr "sitio web"
 
 msgid "welcome"
-msgstr ""
+msgstr "bienvenido"
 
 msgid "with email"
-msgstr ""
+msgstr "con email"
 
 msgid "with status"
-msgstr ""
+msgstr "con status"
 
 msgid "word"
-msgstr ""
+msgstr "palabra"
 
 msgid "world"
-msgstr ""
+msgstr "palabra"
 
 msgid "x"
-msgstr ""
+msgstr "x"
 
 msgid "yes"
-msgstr ""
+msgstr "Si"
 
 msgid "you have no recent items"
-msgstr ""
+msgstr "No hay artículos recientes"
 
 msgid "your 5 recent items"
-msgstr ""
+msgstr "los 5 artículos recientes"
 
 msgid "your message"
-msgstr ""
+msgstr "su mensaje"
 
 msgid "your profile and preferences"
-msgstr ""
+msgstr "su mensaje"
+
