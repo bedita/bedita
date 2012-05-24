@@ -52,20 +52,34 @@ sub {
 	top: .5ex;
 }
 
+sup.aligned {
+	left: -1ex;
+}
+
+sup.aligned {
+	left: -1ex;
+}
+
+
 a[rel],a[target='modal'] {
 	color:#ff0000;
 }
 
-a.placeholder {
-	background-color:#ff9966;
+a.placeholder, .placeref {
+	background-color:pink;
 	display:inline-block;
 	min-width:1em;
 	min-height:1em;
-	padding:2px;
+	padding:2px 5px 2px 5px;
+	text-decoration:none;
 }
 
-.placeref {
-	background-color:#ff9966;
+.placeholder:before {
+	content: " ♣ "
+}
+
+.placeref:before {
+	content: " ♠ "
 }
 
 .glossario {
