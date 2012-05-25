@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-05-16 10:08:48\n"
+"POT-Creation-Date: 2012-05-25 12:06:57\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -40,6 +40,9 @@ msgstr "Aggiungi elementi multipli"
 
 msgid "Add new category"
 msgstr "Aggiungi nuova categoria"
+
+msgid "Add new item"
+msgstr "Aggiungi nuovo"
 
 msgid "Add new subscribers"
 msgstr "Aggiungi nuovi iscritti"
@@ -88,7 +91,7 @@ msgid "Are you sure that you want to delete the tag?"
 msgstr "Sicuro di voler eliminare il tag?"
 
 msgid "Are you sure that you want to empty the file?"
-msgstr ""
+msgstr "Sei sicuro di voler svuotare il file?"
 
 msgid "Are you sure you want to accept this IP?"
 msgstr "Sicuro di voler accettare questo IP"
@@ -147,6 +150,9 @@ msgstr "Tipo di oggetto model di BEdita abilitato"
 
 msgid "BEdita url"
 msgstr "BEdita url"
+
+msgid "Backend Logs"
+msgstr "Log di Backend"
 
 msgid "Backend languages"
 msgstr "Lingue del backend"
@@ -268,6 +274,9 @@ msgstr "Contenuto non trovato"
 msgid "Contents with more comments (first 20)"
 msgstr "Contenuti più commentati"
 
+msgid "Core Modules"
+msgstr "Moduli Core"
+
 msgid "Core modules"
 msgstr "Moduli core"
 
@@ -313,11 +322,17 @@ msgstr "Proprietà personalizzate"
 msgid "Custom property saved"
 msgstr "Proprietà personalizzata salvata"
 
+msgid "Custom relations"
+msgstr "Relazioni personalizzate"
+
+msgid "Date"
+msgstr "Data"
+
 msgid "Date Pattern"
-msgstr ""
+msgstr "Pattern Data"
 
 msgid "Date Time Pattern"
-msgstr ""
+msgstr "Pattern Data Ora"
 
 msgid "Delete"
 msgstr "Elimina"
@@ -560,7 +575,7 @@ msgid "Error saving user."
 msgstr "Errore nel salvataggio dell'utente"
 
 msgid "Error sending notification mail"
-msgstr ""
+msgstr "Errore nell'invio della mail di notifica"
 
 msgid "Error setting on Card status"
 msgstr "Errore nel cambiamento di status della Scheda"
@@ -622,6 +637,9 @@ msgstr "File"
 msgid "File already exists in the filesystem"
 msgstr "Il file esiste già nel sistema"
 
+msgid "File is empty"
+msgstr "Il file è vuoto"
+
 msgid "File not writable, update properly file permits for"
 msgstr "Il file non è scrivibile, modifica i permessi sul file per procedere"
 
@@ -634,11 +652,14 @@ msgstr "Trova"
 msgid "Forgotten username or password?"
 msgstr "Hai dimenticato l'utente o la password?"
 
+msgid "Frontend Logs"
+msgstr "Log di Frontend"
+
 msgid "Full news at"
 msgstr "Notizie complete qui"
 
 msgid "GO"
-msgstr ""
+msgstr "VAI"
 
 msgid "Galleries deleted"
 msgstr "Gallerie eliminate"
@@ -674,7 +695,7 @@ msgid "Google maps StreetView"
 msgstr "Google maps StreetView"
 
 msgid "Group"
-msgstr ""
+msgstr "Gruppo"
 
 msgid "Group "
 msgstr "Gruppo"
@@ -739,6 +760,9 @@ msgstr "Gruppo non modificabile"
 msgid "Import"
 msgstr "Importa"
 
+msgid "Import Data"
+msgstr "Importa Dati"
+
 msgid "Import data"
 msgstr "Importa dati"
 
@@ -746,7 +770,7 @@ msgid "Incorrect hash command"
 msgstr "Comando di hash incorretto"
 
 msgid "Insertion order, oldest contents first"
-msgstr ""
+msgstr "Ordine di inserimento, contenuti più vecchi in testa"
 
 msgid "Invoice"
 msgstr "Invio"
@@ -773,7 +797,7 @@ msgid "Last result"
 msgstr "Ultimo risultato"
 
 msgid "Latest/newest contents first"
-msgstr ""
+msgstr "Ultimi/nuovi contenuti in testa"
 
 msgid "Link"
 msgstr "Collegamento"
@@ -808,6 +832,9 @@ msgstr "Mail jobs"
 msgid "Mail Logs"
 msgstr "Mail log"
 
+msgid "Mail Queue"
+msgstr "Coda Mail"
+
 msgid "Mail configuration"
 msgstr "Configurazione email"
 
@@ -839,10 +866,16 @@ msgid "Mail template saved"
 msgstr "Template di posta salvata"
 
 msgid "MailJob deleted"
-msgstr ""
+msgstr "MailJob eliminato"
 
 msgid "MailLog deleted"
-msgstr ""
+msgstr "MailLog eliminato"
+
+msgid "Main author"
+msgstr "Autore principale"
+
+msgid "Maintenance"
+msgstr "Intervento"
 
 msgid "Media already exists in the system"
 msgstr "Media già esiste nel sistema"
@@ -962,10 +995,10 @@ msgid "New card"
 msgstr "Nuova scheda"
 
 msgid "New contents default language"
-msgstr ""
+msgstr "Lingua predefinita per nuovi contenuti"
 
 msgid "New group"
-msgstr ""
+msgstr "Nuovo gruppo"
 
 msgid "New item"
 msgstr "Nuovo elemento"
@@ -1056,10 +1089,10 @@ msgid "No gallery"
 msgstr "Nessuna galleria"
 
 msgid "No group found with id"
-msgstr ""
+msgstr "Nessun gruppo trovato con id"
 
 msgid "No import filter found for file type"
-msgstr ""
+msgstr "Nessun filtro di importazione trovato per il tipo di file"
 
 msgid "No invoice selected"
 msgstr "Nessuna invio selezionata"
@@ -1077,7 +1110,7 @@ msgid "No items selected"
 msgstr "Nessun oggetto selezionato"
 
 msgid "No log file found"
-msgstr ""
+msgstr "Nessun file di log trovato"
 
 msgid "No mail group found"
 msgstr "Nessun gruppo di posta trovato"
@@ -1098,7 +1131,7 @@ msgid "No object id specified"
 msgstr "Nessun id oggetto specificato"
 
 msgid "No plugins found on filesystem"
-msgstr ""
+msgstr "Nessun plugin trovato nel filesystem"
 
 msgid "No publication set"
 msgstr "Pubblicazione non impostata"
@@ -1149,7 +1182,7 @@ msgid "No webmarks found"
 msgstr "Nessun webmark trovato"
 
 msgid "No, use custom list"
-msgstr ""
+msgstr "No, utilizzare lista personalizzata"
 
 msgid "Not Authorized"
 msgstr "Non Autorizzato"
@@ -1167,10 +1200,10 @@ msgid "Number of objects"
 msgstr "Numero di oggetti"
 
 msgid "Object type"
-msgstr ""
+msgstr "Tipo oggetto"
 
 msgid "Objects imported"
-msgstr ""
+msgstr "Oggetti importati"
 
 msgid "Objects production by editor"
 msgstr "Produzione di oggetti per redattore"
@@ -1202,11 +1235,14 @@ msgstr "Titolo Originale"
 msgid "Other Models"
 msgstr "Altri modelli"
 
+msgid "Overview"
+msgstr "Panoramica"
+
 msgid "PLAIN TEXT version"
 msgstr "versione SOLO TESTO"
 
 msgid "Page size"
-msgstr ""
+msgstr "Dimensione pagina"
 
 msgid "Password"
 msgstr "Password"
@@ -1224,10 +1260,10 @@ msgid "Passwords should be equal"
 msgstr "Le password devono essere uguali"
 
 msgid "Path not found"
-msgstr ""
+msgstr "Percorso non trovato"
 
 msgid "Pending"
-msgstr ""
+msgstr "In sospeso"
 
 msgid "Permissions"
 msgstr "Permessi"
@@ -1236,7 +1272,7 @@ msgid "Person"
 msgstr "Persona"
 
 msgid "Please check"
-msgstr ""
+msgstr "Verificare"
 
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
@@ -1253,6 +1289,12 @@ msgstr "Inserire un orario valido nel formato %1"
 msgid "Plugged modules"
 msgstr "Moduli collegati"
 
+msgid "Plugin Modules"
+msgstr "Moduli plugin"
+
+msgid "Position"
+msgstr "Posizione"
+
 msgid "Post comment disabled"
 msgstr "Inserimento commenti disabilitato"
 
@@ -1266,7 +1308,7 @@ msgid "Print layout"
 msgstr "Layout di stampa"
 
 msgid "Project name"
-msgstr ""
+msgstr "Nome progetto"
 
 msgid "Properties"
 msgstr "Proprietà"
@@ -1293,10 +1335,10 @@ msgid "Queued"
 msgstr "In coda"
 
 msgid "REDO"
-msgstr ""
+msgstr "RIFARE"
 
 msgid "RETRY"
-msgstr ""
+msgstr "RIPROVARE"
 
 msgid "Read and modify"
 msgstr "Lettura e modifica"
@@ -1339,6 +1381,9 @@ msgstr "Riscrivere password"
 
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr "Il campo Diritti è obbligatorio (almeno %1 caratteri alfanumerici)"
+
+msgid "Rows to show"
+msgstr "Righe da mostrare"
 
 msgid "Save"
 msgstr "Salva"
@@ -1383,10 +1428,10 @@ msgid "Select by type"
 msgstr "Seleziona per tipo"
 
 msgid "Select content languages"
-msgstr ""
+msgstr "Selezionare lingue contenuti"
 
 msgid "Select file(s)"
-msgstr ""
+msgstr "Selezionare i(l) file"
 
 msgid "Send"
 msgstr "Invia"
@@ -1395,7 +1440,7 @@ msgid "Send email to"
 msgstr "Invia email a"
 
 msgid "Sent"
-msgstr ""
+msgstr "Inviato"
 
 msgid "Sent on"
 msgstr "Inviato su"
@@ -1410,7 +1455,7 @@ msgid "Show translations in"
 msgstr "Mostra traduzioni in"
 
 msgid "Smtp Options"
-msgstr ""
+msgstr "Opzioni Smtp"
 
 msgid "Software"
 msgstr "Software"
@@ -1419,7 +1464,7 @@ msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr "Errore. Impossibile trovare bedita_module_setup.php"
 
 msgid "Source data"
-msgstr ""
+msgstr "Dati sorgente"
 
 msgid "Statistics"
 msgstr "Statistiche"
@@ -1448,8 +1493,17 @@ msgstr "Iscritti associati alla lista"
 msgid "Subtitle, description"
 msgstr "Sottotitolo, descrizione"
 
+msgid "System Events"
+msgstr "Eventi di Sistema"
+
+msgid "System Info"
+msgstr "Info di Sistema"
+
+msgid "System Logs"
+msgstr "Log di Sistema"
+
 msgid "System configuration"
-msgstr ""
+msgstr "Configurazione Sistema"
 
 msgid "System events"
 msgstr "Eventi di sistema"
@@ -1458,13 +1512,13 @@ msgid "System info"
 msgstr "Informazioni di sistema"
 
 msgid "System logs"
-msgstr ""
+msgstr "Log di sistema"
 
 msgid "System users"
 msgstr "Utenti del sistema"
 
 msgid "System utilities"
-msgstr ""
+msgstr "Utilità di sistema"
 
 msgid "Tag already present"
 msgstr "Tag già presente"
@@ -1532,10 +1586,10 @@ msgid "To unsubscribe"
 msgstr "Per disiscriverti"
 
 msgid "Tools"
-msgstr ""
+msgstr "Strumenti"
 
 msgid "Total"
-msgstr ""
+msgstr "Totale"
 
 msgid "Total Subscribers"
 msgstr "Totale iscritti"
@@ -1577,7 +1631,7 @@ msgstr ""
 "continuare?"
 
 msgid "Unsent"
-msgstr ""
+msgstr "Non inviato"
 
 msgid "Unsubscribe selected items"
 msgstr "Disiscrivi gli elementi selezionati"
@@ -1607,7 +1661,7 @@ msgid "Use a valid email"
 msgstr "Utilizza un email valido"
 
 msgid "Use all available languages for contents"
-msgstr ""
+msgstr "Utilizzare tutte le lingue disponibili per i contenuti"
 
 msgid "Use the multiple upload"
 msgstr "Usa upload multiplo"
@@ -1616,7 +1670,7 @@ msgid "User"
 msgstr "Utente"
 
 msgid "User Interface default language"
-msgstr ""
+msgstr "Lingua predefinita per l'interfaccia utente"
 
 msgid "User already created"
 msgstr "Utente già creato"
@@ -1674,6 +1728,9 @@ msgstr "Il campo Username è obbligatorio"
 msgid "Users"
 msgstr "Utenti"
 
+msgid "Utility"
+msgstr "Utilità"
+
 msgid "Version"
 msgstr "Versione"
 
@@ -1687,10 +1744,10 @@ msgid "View invoices"
 msgstr "Vedi invii"
 
 msgid "Visible in menu and canonical paths"
-msgstr ""
+msgstr "Visibile nel menù e nei percorsi canonici [canonical paths]"
 
 msgid "WAIT"
-msgstr ""
+msgstr "ATTENDERE"
 
 msgid "Warning"
 msgstr "Attenzione"
@@ -1719,14 +1776,14 @@ msgstr "X"
 msgid "Yes"
 msgstr "Sì"
 
-msgid "You are not allowed to edit this users"
-msgstr ""
+msgid "You are not allowed to edit this user"
+msgstr "Non sei autorizzato a modificare questo utente"
 
-msgid "You are not allowed to remove this users"
-msgstr ""
+msgid "You are not allowed to remove this user"
+msgstr "Non sei autorizzato a rimuovere questo utente"
 
 msgid "You aren't authorized to access that item"
-msgstr "Non sei autorizzado ad accedere a questo elemento"
+msgstr "Non sei autorizzato ad accedere a questo elemento"
 
 msgid "You can't use remote file"
 msgstr "Non puoi usare file remoti"
@@ -1792,7 +1849,7 @@ msgid "all comments"
 msgstr "tutti i commenti"
 
 msgid "all contents"
-msgstr ""
+msgstr "tutti i contenuti"
 
 msgid "all galleries"
 msgstr "tutte le gallerie"
@@ -1837,10 +1894,10 @@ msgid "ban this IP!"
 msgstr "interdisci IP (ban)"
 
 msgid "bedita url is unreachable"
-msgstr ""
+msgstr "url bedita non è raggiungibile"
 
 msgid "bedita url not set"
-msgstr ""
+msgstr "url bedita non è impostato"
 
 msgid "bibliographies"
 msgstr "bibliografie"
@@ -1906,13 +1963,13 @@ msgid "city and zip code"
 msgstr "città e cap"
 
 msgid "cleanup cache"
-msgstr ""
+msgstr "pulire cache"
 
 msgid "clear media cache"
-msgstr ""
+msgstr "pulire cache media"
 
 msgid "clears media cache files/directories"
-msgstr ""
+msgstr "pulisce file e cartelle di cache media"
 
 msgid "clone"
 msgstr "clona"
@@ -1936,7 +1993,7 @@ msgid "contact the project admin"
 msgstr "contatta l'amministratore del progetto"
 
 msgid "content type"
-msgstr ""
+msgstr "tipo contenuto"
 
 msgid "contents"
 msgstr "contenuti"
@@ -1963,10 +2020,10 @@ msgid "create new"
 msgstr "crea nuovo"
 
 msgid "create new (create new multimedia object and upload file)"
-msgstr ""
+msgstr "creare nuovo (crea nuovo oggetto multimedia e f"
 
 msgid "create new document"
-msgstr ""
+msgstr "creare nuovo documento"
 
 msgid "create new translation"
 msgstr "nuova traduzione"
@@ -2008,7 +2065,7 @@ msgid "delete all"
 msgstr "elimina tutti"
 
 msgid "delete all cached files from BEdita and frontends"
-msgstr ""
+msgstr "eliminare tutti i file in cache da BEdita e frontend"
 
 msgid "delete selected items"
 msgstr "elimina gli elementi selezionati"
@@ -2031,7 +2088,7 @@ msgid "documents"
 msgstr "documenti"
 
 msgid "does not affect email newsletter"
-msgstr ""
+msgstr "non ha effetti su email della newsletter"
 
 msgid "download"
 msgstr "download"
@@ -2055,13 +2112,13 @@ msgid "email2"
 msgstr "email2"
 
 msgid "empty all"
-msgstr ""
+msgstr "svuotare tutto"
 
 msgid "empty log files"
-msgstr ""
+msgstr "svuotare file di log"
 
 msgid "empty logs"
-msgstr ""
+msgstr "svuotare log"
 
 msgid "end"
 msgstr "fine"
@@ -2072,8 +2129,11 @@ msgstr "il campo Fine deve essere una data valida nel seguente formato:"
 msgid "events"
 msgstr "eventi"
 
+msgid "exit"
+msgstr "esci"
+
 msgid "export"
-msgstr ""
+msgstr "esportare"
 
 msgid "failed"
 msgstr "fallito"
@@ -2133,7 +2193,7 @@ msgid "go"
 msgstr "vai"
 
 msgid "group"
-msgstr ""
+msgstr "gruppo"
 
 msgid "group modules access"
 msgstr "accesso gruppo moduli"
@@ -2151,7 +2211,7 @@ msgid "here"
 msgstr "qui"
 
 msgid "hidden from menu and canonical path"
-msgstr ""
+msgstr "nascosto da menu e percorso canonico [canonical path]"
 
 msgid "host"
 msgstr ""
@@ -2166,7 +2226,7 @@ msgid "image"
 msgstr "immagine"
 
 msgid "import"
-msgstr ""
+msgstr "importare"
 
 msgid "in job"
 msgstr "in corso"
@@ -2179,6 +2239,12 @@ msgstr "info"
 
 msgid "inserted on"
 msgstr "inserito il"
+
+msgid "inventory"
+msgstr "inventario"
+
+msgid "invoice id"
+msgstr "id invoice"
 
 msgid "is user"
 msgstr "è un utente"
@@ -2193,7 +2259,7 @@ msgid "jobs"
 msgstr "jobs"
 
 msgid "key"
-msgstr ""
+msgstr "chiave"
 
 msgid "lang"
 msgstr "lingua"
@@ -2240,6 +2306,9 @@ msgstr "licenza"
 msgid "list name"
 msgstr "nome lista"
 
+msgid "log level"
+msgstr "livello di log"
+
 msgid "long text"
 msgstr "testo esteso"
 
@@ -2248,6 +2317,9 @@ msgstr "longitudine"
 
 msgid "mail address"
 msgstr "indirizzo di posta"
+
+msgid "mail body"
+msgstr "testo della mail"
 
 msgid "mailgroups"
 msgstr "mailgroups"
@@ -2277,37 +2349,39 @@ msgid "master title"
 msgstr "titolo principale"
 
 msgid "matching the query"
-msgstr ""
+msgstr "corrisponde a ricerca"
 
 msgid "maximum"
 msgstr "massimo"
 
 msgid "media root can't be empty"
-msgstr ""
+msgstr "media root non può esser vuoto"
 
 msgid "media root folder doesn't exist"
-msgstr ""
+msgstr "la cartella media root non esiste"
 
 msgid "media root folder is not writable"
-msgstr ""
+msgstr "la cartella media root non ha permessi in scrittura"
 
 msgid "media root folder is not writable: update folder permits properly"
 msgstr ""
+"la cartella media root non ha permessi in scrittura: aggiornare i permessi "
+"della cartella opportunamente"
 
 msgid "media root folder not found"
-msgstr ""
+msgstr "cartella media root non trovata"
 
 msgid "media root not set"
-msgstr ""
+msgstr "media root non impostato"
 
 msgid "media url can't be empty"
-msgstr ""
+msgstr "media url non può esser vuoto"
 
 msgid "media url is unreachable"
-msgstr ""
+msgstr "media url non raggiungibile"
 
 msgid "media url not set"
-msgstr ""
+msgstr "media url non impostato"
 
 msgid "message board"
 msgstr "area messaggi"
@@ -2505,7 +2579,7 @@ msgid "organization"
 msgstr "organizzazione"
 
 msgid "original filename"
-msgstr ""
+msgstr "nome originale del file"
 
 msgid "other"
 msgstr "altro"
@@ -2514,6 +2588,8 @@ msgid ""
 "overwrite (don't create new multimedia object, substitute file for existing "
 "multimedia object)"
 msgstr ""
+"sovrascrivi (non crea nuovo oggetto multimedia, sostituisce file per oggetto "
+"multimedia esistente)"
 
 msgid "page"
 msgstr "pagina"
@@ -2546,7 +2622,7 @@ msgid "plugged succesfully"
 msgstr "collegamento avvenuto con successo"
 
 msgid "port"
-msgstr ""
+msgstr "porta"
 
 msgid "prev"
 msgstr "prec"
@@ -2596,6 +2672,9 @@ msgstr "pubblicazione"
 msgid "publications"
 msgstr "pubblicazioni"
 
+msgid "publish"
+msgstr "pubblica"
+
 msgid "publisher"
 msgstr "editore"
 
@@ -2609,16 +2688,21 @@ msgid "questionnaires"
 msgstr "questionari"
 
 msgid "quick item"
-msgstr ""
+msgstr "oggetto veloce"
 
 msgid "realname"
 msgstr "nome reale"
 
 msgid "rebuild index"
-msgstr ""
+msgstr "ricostruire indice"
 
 msgid "rebuild search texts index. Caution: may be slow"
 msgstr ""
+"ricostruire indice per testi ricerca. Attenzione: potrebbe essere "
+"un'operazione lunga"
+
+msgid "recipient"
+msgstr "destinatario/i"
 
 msgid "reference"
 msgstr "riferimento"
@@ -2656,6 +2740,9 @@ msgstr "foto satellitare"
 msgid "save"
 msgstr "salva"
 
+msgid "save draft"
+msgstr "salva bozza"
+
 msgid "save profile"
 msgstr "salva profilo"
 
@@ -2675,10 +2762,10 @@ msgid "sections"
 msgstr "sezioni"
 
 msgid "sections only"
-msgstr ""
+msgstr "solo sezioni"
 
 msgid "see error detail"
-msgstr ""
+msgstr "vedi dettagli errore"
 
 msgid "seealso"
 msgstr "vedi anche"
@@ -2753,7 +2840,7 @@ msgid "street name and #"
 msgstr "nome strada e numero"
 
 msgid "subject"
-msgstr ""
+msgstr "oggetto"
 
 msgid "subscribers"
 msgstr "iscritti"
@@ -2843,9 +2930,11 @@ msgid ""
 "update name (if empty), mime_type (if empty), size and hash_file fields of "
 "streams table"
 msgstr ""
+"aggiornare campi name (se vuoto), mime_type (se vuoto), size e hash_file "
+"della tabella streams"
 
 msgid "update stream fields"
-msgstr ""
+msgstr "aggiornare campi stream"
 
 msgid "upload new items"
 msgstr "carica nuovi elementi"
@@ -2860,7 +2949,7 @@ msgid "use template"
 msgstr "usa template"
 
 msgid "user"
-msgstr ""
+msgstr "utente"
 
 msgid "username"
 msgstr "nome utente"
@@ -2869,7 +2958,7 @@ msgid "users"
 msgstr "utenti"
 
 msgid "users in this group"
-msgstr ""
+msgstr "utenti in questo gruppo"
 
 msgid "valid"
 msgstr "valido"
@@ -2887,10 +2976,10 @@ msgid "view"
 msgstr "visualizza"
 
 msgid "view all"
-msgstr ""
+msgstr "vedi tutto"
 
 msgid "visibility"
-msgstr ""
+msgstr "visibilità"
 
 msgid "web site"
 msgstr "sito web"

@@ -22,8 +22,8 @@
 
 		<table class="graph sortableTable">
 			<thead>
-				<th style="text-align:right"><b>group</b></th>
-				<th><b>users</b></th>
+				<th style="text-align:right"><b>{t}group{/t}</b></th>
+				<th><b>{t}users{/t}</b></th>
 			</thead>
 			<tbody>
 			{foreach from=$groupstats item="item"}

@@ -22,7 +22,7 @@
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
 		<h2>{t}System logs{/t}</h2>
-		<label>Rows to show</label>:
+		<label>{t}Rows to show{/t}</label>:
 		<select id="rowLimit" name="data[rowLimit]">
 			<option value="10"{if $maxRows == '10'} selected="selected"{/if}>10</option>
 			<option value="20"{if $maxRows == '20'} selected="selected"{/if}>20</option>

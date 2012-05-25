@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-05-16 09:56:12\n"
+"POT-Creation-Date: 2012-05-25 12:06:57\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -41,6 +41,9 @@ msgstr "Añadir elementos múltiplos"
 msgid "Add new category"
 msgstr "Añadir nueva categoría"
 
+msgid "Add new item"
+msgstr "Añadir nuevo"
+
 msgid "Add new subscribers"
 msgstr "Añadir miembros"
 
@@ -77,8 +80,12 @@ msgstr "¿Estás seguro de que quieres borrar el elemento?"
 msgid "Are you sure that you want to delete the note?"
 msgstr "¿Estás seguro de que quieres borrar la nota?"
 
-msgid "Are you sure that you want to delete the property? this will also delete any properties data associated"
-msgstr "¿Estás seguro de que quieres borrar la propiedad? Siguiendo se borrarán también todos los datos asociados"
+msgid ""
+"Are you sure that you want to delete the property? this will also delete any "
+"properties data associated"
+msgstr ""
+"¿Estás seguro de que quieres borrar la propiedad? Siguiendo se borrarán "
+"también todos los datos asociados"
 
 msgid "Are you sure that you want to delete the tag?"
 msgstr "¿Estás seguro de que quieres borrar el tag?"
@@ -92,8 +99,12 @@ msgstr "¿Estás seguro de que quieres aceptar este IP?"
 msgid "Are you sure you want to ban this IP?"
 msgstr "¿Estás seguro de que quieres prohibir el ingreso a este IP?"
 
-msgid "Are you sure you want to cancel and reload this document? All unsaved changes will be lost"
-msgstr "¿Estás seguro de que quieres borrar y recargar este documento? Todas las modificaciones que no han sido guardadas serán perdidas"
+msgid ""
+"Are you sure you want to cancel and reload this document? All unsaved "
+"changes will be lost"
+msgstr ""
+"¿Estás seguro de que quieres borrar y recargar este documento? Todas las "
+"modificaciones que no han sido guardadas serán perdidas"
 
 msgid "Are you sure you want to procede? The operation may be slow"
 msgstr "¿Estás seguro de que quieres proceder? La operación podría ser lenta"
@@ -139,6 +150,9 @@ msgstr "Tipo de objeto model de BEdita activado"
 
 msgid "BEdita url"
 msgstr "BEdita url"
+
+msgid "Backend Logs"
+msgstr "Log Backend"
 
 msgid "Backend languages"
 msgstr "Lenguas Backend"
@@ -260,6 +274,9 @@ msgstr "El contenido no se puede encontrar"
 msgid "Contents with more comments (first 20)"
 msgstr "Contenidos más comentados (primeros 20)"
 
+msgid "Core Modules"
+msgstr "Módulos Centrales"
+
 msgid "Core modules"
 msgstr "Módulos centrales"
 
@@ -305,6 +322,12 @@ msgstr "Propiedades personalizadas"
 msgid "Custom property saved"
 msgstr "Propiedades personalizadas guardadas"
 
+msgid "Custom relations"
+msgstr "Relaciones personalizadas"
+
+msgid "Date"
+msgstr "Fecha"
+
 msgid "Date Pattern"
 msgstr "Pattern Fecha"
 
@@ -329,8 +352,11 @@ msgstr "Detalles"
 msgid "Dimensions"
 msgstr "Dimensiones"
 
-msgid "Disable object type will delete all related items. Do you want continue?"
-msgstr "Desactivando el tipo de objeto serán eliminados todos los elementos relacionados ¿Quieres seguir?"
+msgid ""
+"Disable object type will delete all related items. Do you want continue?"
+msgstr ""
+"Desactivando el tipo de objeto serán eliminados todos los elementos "
+"relacionados ¿Quieres seguir?"
 
 msgid "Display details in frontend"
 msgstr "Mostrar detalles en el frontend"
@@ -360,13 +386,13 @@ msgid "Email"
 msgstr "Email"
 
 msgid "Email log"
-msgstr "Email log"
+msgstr "Log e-mail"
 
 msgid "Empty data"
 msgstr "Datos vacíos"
 
 msgid "Empty file"
-msgstr "Archivo vacío"
+msgstr "Vacíar archivo"
 
 msgid "Enter"
 msgstr "Entrar"
@@ -480,7 +506,8 @@ msgid "Error on subscribing: no mail_group indicated"
 msgstr "Error en la suscripción: no se indica mail_group"
 
 msgid "Error removing association mail group card"
-msgstr "Error en la eliminación de asociación entre la tarjeta y el grupo de correo"
+msgstr ""
+"Error en la eliminación de asociación entre la tarjeta y el grupo de correo"
 
 msgid "Error removing group"
 msgstr "Error en la eliminación del grupo"
@@ -611,8 +638,13 @@ msgstr "Archivo"
 msgid "File already exists in the filesystem"
 msgstr "El archivo ya existe en el sistema"
 
+msgid "File is empty"
+msgstr "El archivo está vacío"
+
 msgid "File not writable, update properly file permits for"
-msgstr "El archivo no se puede escribir, actualizar adecuadamente los permisos de archivos para"
+msgstr ""
+"El archivo no se puede escribir, actualizar adecuadamente los permisos de "
+"archivos para"
 
 msgid "Find and fill latlong coords"
 msgstr "Buscar y llenar coordenadas LatLong"
@@ -622,6 +654,9 @@ msgstr "Búsqueda"
 
 msgid "Forgotten username or password?"
 msgstr "¿Has olvidado nombre de usuario o contraseña?"
+
+msgid "Frontend Logs"
+msgstr "Log Frontend"
 
 msgid "Full news at"
 msgstr "Noticias en"
@@ -720,13 +755,18 @@ msgid "IP banned"
 msgstr "IP prohibido"
 
 msgid "If you have any problems try with browser upload"
-msgstr "Si se encuentran problemas, intentar con la subida del navegador [browser upload]"
+msgstr ""
+"Si se encuentran problemas, intentar con la subida del navegador [browser "
+"upload]"
 
 msgid "Immutable group"
 msgstr "Grupo Inmutable"
 
 msgid "Import"
 msgstr "Importar"
+
+msgid "Import Data"
+msgstr "Importar Datos"
 
 msgid "Import data"
 msgstr "Importar datos"
@@ -795,10 +835,13 @@ msgid "Mail Jobs"
 msgstr "Mail Jobs"
 
 msgid "Mail Logs"
-msgstr "Mail Logs"
+msgstr "Log Mail"
+
+msgid "Mail Queue"
+msgstr "Cola Mail"
 
 msgid "Mail configuration"
-msgstr "Configuración Correo"
+msgstr "Configuración Mail"
 
 msgid "Mail delivery failed"
 msgstr "Entrega de Correo fracasada"
@@ -832,6 +875,12 @@ msgstr "MailJob borrada"
 
 msgid "MailLog deleted"
 msgstr "MailLog borrada"
+
+msgid "Main author"
+msgstr "Autor Principal"
+
+msgid "Maintenance"
+msgstr "Mantenimiento"
 
 msgid "Media already exists in the system"
 msgstr "Media ya existente en el sistema"
@@ -885,7 +934,8 @@ msgid "Missing recipient"
 msgstr "Falta recibidor"
 
 msgid "Missing referenced object. Save new item before adding a note"
-msgstr "Falta objeto referenciado. Guardar nuevo elemento antes de añadir una nota"
+msgstr ""
+"Falta objeto referenciado. Guardar nuevo elemento antes de añadir una nota"
 
 msgid "Missing sending date"
 msgstr "Falta fecha de envío"
@@ -918,7 +968,9 @@ msgid "Multimedia Provider not found or error getting thumbnail"
 msgstr "Proveedor de Multimedia no encontrado o error al obtener thumbnail"
 
 msgid "Multimedia Provider not found or error preparing data to save"
-msgstr "Proveedor de Multimedia que no se encuentra o error en la preparación de datos para guardar"
+msgstr ""
+"Proveedor de Multimedia que no se encuentra o error en la preparación de "
+"datos para guardar"
 
 msgid "Multimedia deleted"
 msgstr "Multimedia borrado"
@@ -978,7 +1030,8 @@ msgid "Newsletter"
 msgstr "Newsletter"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
-msgstr "Newsletter enviada. Para programar otro envio, por favor clonar este objeto."
+msgstr ""
+"Newsletter enviada. Para programar otro envio, por favor clonar este objeto."
 
 msgid "Newsletter subscriptions"
 msgstr "Inscripciónes newsletter"
@@ -1184,6 +1237,9 @@ msgstr "Título Original"
 msgid "Other Models"
 msgstr "Otros modelos"
 
+msgid "Overview"
+msgstr "Información general"
+
 msgid "PLAIN TEXT version"
 msgstr "Versión SOLO TEXTO"
 
@@ -1223,14 +1279,23 @@ msgstr "Por favor comprobar"
 msgid "Please enter a valid date in the %1 format"
 msgstr "Por favor, introducir una fecha válida en el formato %1"
 
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr "Por favor, introducir una fecha válida en el formato de 1% y mayor que las fechas anteriores"
+msgid ""
+"Please enter a valid date in the %1 format and greater than the previous date"
+msgstr ""
+"Por favor, introducir una fecha válida en el formato de 1% y mayor que las "
+"fechas anteriores"
 
 msgid "Please enter a valid time in the %1 format"
 msgstr "Por favor, introducir una hora válida en el formato %1"
 
 msgid "Plugged modules"
 msgstr "Módulos conectados"
+
+msgid "Plugin Modules"
+msgstr "Módulos plugin"
+
+msgid "Position"
+msgstr "Posición"
 
 msgid "Post comment disabled"
 msgstr "Publicación comentario desactivada"
@@ -1317,7 +1382,11 @@ msgid "Rewrite password"
 msgstr "Vuelva a escribir la contraseña"
 
 msgid "Rights is required (at least %1 alphanumerical char)"
-msgstr "El campo derechos es obligatorio (por lo menos 1% caracteres alfanumérico)"
+msgstr ""
+"El campo derechos es obligatorio (por lo menos 1% caracteres alfanumérico)"
+
+msgid "Rows to show"
+msgstr "Hilas para mostrar"
 
 msgid "Save"
 msgstr "Guardar"
@@ -1427,6 +1496,15 @@ msgstr "Suscriptores asociados a la lista"
 msgid "Subtitle, description"
 msgstr "Subtítulo, descripción"
 
+msgid "System Events"
+msgstr "Eventos de Sistema"
+
+msgid "System Info"
+msgstr "Info de Sistema"
+
+msgid "System Logs"
+msgstr "Log de Sistema"
+
 msgid "System configuration"
 msgstr "Configuración del sistema"
 
@@ -1487,7 +1565,8 @@ msgstr "El texto no coincide con la imagen"
 msgid "Text lang"
 msgstr "Idioma texto"
 
-msgid "The content is fixed: it's not possible to change the position in the tree"
+msgid ""
+"The content is fixed: it's not possible to change the position in the tree"
 msgstr "El contenido es fijo: no es posible cambiar la posición en el árbol"
 
 msgid "This content is not on publication tree. Continue?"
@@ -1547,8 +1626,11 @@ msgstr "Nombre único"
 msgid "Unplugged modules"
 msgstr "Módulos desconectados"
 
-msgid "Unplugging the module will delete all related items. Do you want continue?"
-msgstr "Desconectando el módulo se eliminarán todos los elementos relacionados. ¿Desea continuar?"
+msgid ""
+"Unplugging the module will delete all related items. Do you want continue?"
+msgstr ""
+"Desconectando el módulo se eliminarán todos los elementos relacionados. "
+"¿Desea continuar?"
 
 msgid "Unsent"
 msgstr "No enviado"
@@ -1616,14 +1698,19 @@ msgstr "Inicio sesión de usuario bloqueado temporalmente"
 msgid "User name"
 msgstr "Nombre usuario"
 
-msgid "User name is required (at least %1 chars, without white spaces and special chars)"
-msgstr "Nombre de usuario necesario (por lo menos 1% caracteres, sin espacios y sin caracteres especiales)"
+msgid ""
+"User name is required (at least %1 chars, without white spaces and special "
+"chars)"
+msgstr ""
+"Nombre de usuario necesario (por lo menos 1% caracteres, sin espacios y sin "
+"caracteres especiales)"
 
 msgid "User not associated to mailgroup or he is in pending status"
 msgstr "Usuario no está asociado al grupo de correo o en estado pendiente"
 
 msgid "User not associated to mailgroup or he isn't in pending status"
-msgstr "Usuario no está asociado al grupo de correo o no está en estado pendiente"
+msgstr ""
+"Usuario no está asociado al grupo de correo o no está en estado pendiente"
 
 msgid "User not found"
 msgstr "Usuario no encotrado"
@@ -1642,6 +1729,9 @@ msgstr "Nombre usuario necesario"
 
 msgid "Users"
 msgstr "Usuarios"
+
+msgid "Utility"
+msgstr "Utilidades"
 
 msgid "Version"
 msgstr "Versión"
@@ -1688,11 +1778,11 @@ msgstr "X"
 msgid "Yes"
 msgstr "Sí"
 
-msgid "You are not allowed to edit this users"
-msgstr "No tienes permisos para editar estos usuarios"
+msgid "You are not allowed to edit this user"
+msgstr "No tienes autorización para modificar este usuario"
 
-msgid "You are not allowed to remove this users"
-msgstr "No tienes permisos para eliminar estos usuarios"
+msgid "You are not allowed to remove this user"
+msgstr "No tienes autorización para eliminar este usuario"
 
 msgid "You aren't authorized to access that item"
 msgstr "No tienes autorización para acceder a este elemento"
@@ -2022,13 +2112,13 @@ msgid "email2"
 msgstr "email2"
 
 msgid "empty all"
-msgstr "vaciar todo"
+msgstr "vacíar todo"
 
 msgid "empty log files"
-msgstr "vaciar archivos de log"
+msgstr "vacíar archivos de log"
 
 msgid "empty logs"
-msgstr "vaciar logs"
+msgstr "vacíar logs"
 
 msgid "end"
 msgstr "final"
@@ -2038,6 +2128,9 @@ msgstr "final tiene que ser una fecha válida en el formato siguiente:"
 
 msgid "events"
 msgstr "eventos"
+
+msgid "exit"
+msgstr "salir"
 
 msgid "export"
 msgstr "exportar"
@@ -2147,6 +2240,12 @@ msgstr "info"
 msgid "inserted on"
 msgstr "insertado en"
 
+msgid "inventory"
+msgstr "inventario"
+
+msgid "invoice id"
+msgstr "id invoice"
+
 msgid "is user"
 msgstr "es un usuario"
 
@@ -2207,6 +2306,9 @@ msgstr "licencia"
 msgid "list name"
 msgstr "nombre lista"
 
+msgid "log level"
+msgstr "nivel de log"
+
 msgid "long text"
 msgstr "texto largo"
 
@@ -2215,6 +2317,9 @@ msgstr "longitud"
 
 msgid "mail address"
 msgstr "correo electrónico"
+
+msgid "mail body"
+msgstr "texto"
 
 msgid "mailgroups"
 msgstr "grupos de correo"
@@ -2259,7 +2364,9 @@ msgid "media root folder is not writable"
 msgstr "la carpeta media root no se puede escribir"
 
 msgid "media root folder is not writable: update folder permits properly"
-msgstr "la carpeta media root no se puede escribir: actualizar adecuadamente los permisos de carpeta"
+msgstr ""
+"la carpeta media root no se puede escribir: actualizar adecuadamente los "
+"permisos de carpeta"
 
 msgid "media root folder not found"
 msgstr "carpeta media root no encontrada"
@@ -2477,8 +2584,12 @@ msgstr "nombre original del archivo"
 msgid "other"
 msgstr "otro"
 
-msgid "overwrite (don't create new multimedia object, substitute file for existing multimedia object)"
-msgstr "sobrescribir (no crear nuevo objeto multimedia, sustituir archivo para el objeto multimedia que existe)"
+msgid ""
+"overwrite (don't create new multimedia object, substitute file for existing "
+"multimedia object)"
+msgstr ""
+"sobrescribir (no crear nuevo objeto multimedia, sustituir archivo para el "
+"objeto multimedia que existe)"
 
 msgid "page"
 msgstr "página"
@@ -2561,6 +2672,9 @@ msgstr "publicación"
 msgid "publications"
 msgstr "publicaciones"
 
+msgid "publish"
+msgstr "publicar"
+
 msgid "publisher"
 msgstr "editor"
 
@@ -2584,6 +2698,9 @@ msgstr "reconstruir índice"
 
 msgid "rebuild search texts index. Caution: may be slow"
 msgstr "reconstrucción índice de búsqueda textos. Precaución: puede ser lenta"
+
+msgid "recipient"
+msgstr "destinatario(s)"
 
 msgid "reference"
 msgstr "referencia"
@@ -2620,6 +2737,9 @@ msgstr "satélite"
 
 msgid "save"
 msgstr "guardar"
+
+msgid "save draft"
+msgstr "guardar borrador"
 
 msgid "save profile"
 msgstr "guardar perfil"
@@ -2804,8 +2924,12 @@ msgstr "desconectado con éxito"
 msgid "unsent"
 msgstr "sin enviar"
 
-msgid "update name (if empty), mime_type (if empty), size and hash_file fields of streams table"
-msgstr "nombre de la actualización (si está vacío), mime_type (si está vacío), tamaño y campos hash_file de stream table"
+msgid ""
+"update name (if empty), mime_type (if empty), size and hash_file fields of "
+"streams table"
+msgstr ""
+"nombre de la actualización (si está vacío), mime_type (si está vacío), "
+"tamaño y campos hash_file de stream table"
 
 msgid "update stream fields"
 msgstr "actualizar campos stream"
@@ -2903,3 +3027,8 @@ msgstr "su mensaje"
 msgid "your profile and preferences"
 msgstr "su perfil y opciones"
 
+#~ msgid "You are not allowed to edit this users"
+#~ msgstr "No tienes permisos para editar estos usuarios"
+
+#~ msgid "You are not allowed to remove this users"
+#~ msgstr "No tienes permisos para eliminar estos usuarios"

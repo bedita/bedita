@@ -71,7 +71,7 @@ $(document).ready(function() {
 		
 	<table class="bordered" style="width:100%">
 		<tr>
-			<td>publication</td>
+			<td>{t}publication{/t}</td>
 			<td>
 				{if !empty($tree)}
 				<select name="data[destination][]" id="changeCss">

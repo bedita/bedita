@@ -37,7 +37,7 @@ var urlEmptyFile = "{$html->url('emptyFile/')}";
 		<span>...</span>
 		<br/><input type="button" value="{t}Empty file{/t}" class="emptyFile" title="{$k}" />
 		{else}
-			<br/>{t}Empty file{/t}
+			<br/>{t}File is empty{/t}
 		{/if}
 	</p>
 	<hr/>

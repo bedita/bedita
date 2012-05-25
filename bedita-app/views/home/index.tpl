@@ -106,12 +106,12 @@ $(document).ready(function() {
 			</select>
 			
 			<br />
-			<label>Position</label>
+			<label>{t}Position{/t}</label>
 			<select style="width:250px">
 				<option>Tree</option>
 			</select>
 			<hr />
-			<input type="submit" value="publish"/> <input type="submit" value="save draft"/>
+			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
 		</form>
 	</div>
 

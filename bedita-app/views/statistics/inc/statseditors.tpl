@@ -5,8 +5,8 @@
 
 		<table class="graph sortableTable">
 			<thead>
-				<th style="text-align:right"><b>editor</b></th>
-				<th><b>contents</b></th>
+				<th style="text-align:right"><b>{t}editor{/t}</b></th>
+				<th><b>{t}contents{/t}</b></th>
 			</thead>
 			<tbody>
 			{foreach from=$objectsForUser key="user_id" item="user"}

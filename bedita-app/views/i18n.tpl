@@ -87,4 +87,16 @@ Strings to translate not present in .tpl/.php files
 {t}terrain{/t}
 {t}Google maps StreetView{/t}
 {t}Google Earth{/t}
+
+{t}Main author{/t}
+{t}inventory{/t}
+{t}Maintenance{/t}
+{t}Date{/t}
+{t}subject{/t}
+{t}invoice id{/t}
+{t}Backend Logs{/t}
+{t}Frontend Logs{/t}
+{t}recipient{/t}
+{t}mail body{/t}
+{t}log level{/t}
 *}

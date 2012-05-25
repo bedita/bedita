@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-05-16 09:56:12\n"
+"POT-Creation-Date: 2012-05-25 12:06:57\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -44,6 +44,9 @@ msgstr "Multiple Elemente hinzufügen"
 
 msgid "Add new category"
 msgstr "Neue Kategorie hinzufügen"
+
+msgid "Add new item"
+msgstr ""
 
 msgid "Add new subscribers"
 msgstr "Neue Abonnenten hinzufügen"
@@ -156,6 +159,9 @@ msgid "BEdita object type model enabled"
 msgstr "BEdita Objekttyp Model aktiviert"
 
 msgid "BEdita url"
+msgstr ""
+
+msgid "Backend Logs"
 msgstr ""
 
 msgid "Backend languages"
@@ -278,6 +284,9 @@ msgstr "Inhalt nicht gefunden"
 msgid "Contents with more comments (first 20)"
 msgstr "Inhalte mit mehr Kommentaren (die ersten 20)"
 
+msgid "Core Modules"
+msgstr ""
+
 msgid "Core modules"
 msgstr ""
 
@@ -322,6 +331,12 @@ msgstr "Individuelle Eigenschaften"
 
 msgid "Custom property saved"
 msgstr "Eigene Eigenschaft gespeichert"
+
+msgid "Custom relations"
+msgstr ""
+
+msgid "Date"
+msgstr ""
 
 msgid "Date Pattern"
 msgstr ""
@@ -636,6 +651,9 @@ msgstr "Datei"
 msgid "File already exists in the filesystem"
 msgstr "Datei existiert bereits im Dateisystem"
 
+msgid "File is empty"
+msgstr ""
+
 msgid "File not writable, update properly file permits for"
 msgstr ""
 
@@ -647,6 +665,9 @@ msgstr "Finden"
 
 msgid "Forgotten username or password?"
 msgstr "Benutzername oder Passwort vergessen`?"
+
+msgid "Frontend Logs"
+msgstr ""
 
 msgid "Full news at"
 msgstr "Vollständige Neuigkeit bei"
@@ -753,6 +774,9 @@ msgstr "Unveränderliche Gruppe"
 msgid "Import"
 msgstr "Importieren"
 
+msgid "Import Data"
+msgstr ""
+
 msgid "Import data"
 msgstr ""
 
@@ -822,6 +846,9 @@ msgstr ""
 msgid "Mail Logs"
 msgstr ""
 
+msgid "Mail Queue"
+msgstr ""
+
 msgid "Mail configuration"
 msgstr ""
 
@@ -856,6 +883,12 @@ msgid "MailJob deleted"
 msgstr ""
 
 msgid "MailLog deleted"
+msgstr ""
+
+msgid "Main author"
+msgstr ""
+
+msgid "Maintenance"
 msgstr ""
 
 msgid "Media already exists in the system"
@@ -1221,6 +1254,9 @@ msgstr "Originaltitel"
 msgid "Other Models"
 msgstr "Andere Modelle"
 
+msgid "Overview"
+msgstr ""
+
 msgid "PLAIN TEXT version"
 msgstr "KLARTEXT Version"
 
@@ -1272,6 +1308,12 @@ msgstr "Bitte gib eine valide Zeit im %1 Format ein"
 
 msgid "Plugged modules"
 msgstr "Angeschlossene Module"
+
+msgid "Plugin Modules"
+msgstr ""
+
+msgid "Position"
+msgstr ""
 
 msgid "Post comment disabled"
 msgstr "Kommentarfunktion abgeschaltet"
@@ -1359,6 +1401,9 @@ msgstr "Passwort wiederholen"
 
 msgid "Rights is required (at least %1 alphanumerical char)"
 msgstr "Berechtigungen werden benötigt (mindestens %1 alphanumerische Zeichen)"
+
+msgid "Rows to show"
+msgstr ""
 
 msgid "Save"
 msgstr "Speichern"
@@ -1470,6 +1515,15 @@ msgstr "Abonennten, die mit dieser Liste verbunden sind"
 
 msgid "Subtitle, description"
 msgstr "Untertitel, Beschreibung"
+
+msgid "System Events"
+msgstr ""
+
+msgid "System Info"
+msgstr ""
+
+msgid "System Logs"
+msgstr ""
 
 msgid "System configuration"
 msgstr ""
@@ -1710,6 +1764,9 @@ msgstr "Benutzername wird benötigt"
 msgid "Users"
 msgstr "Benutzer"
 
+msgid "Utility"
+msgstr ""
+
 msgid "Version"
 msgstr "Version"
 
@@ -1755,10 +1812,10 @@ msgstr "X"
 msgid "Yes"
 msgstr "Ja"
 
-msgid "You are not allowed to edit this users"
+msgid "You are not allowed to edit this user"
 msgstr ""
 
-msgid "You are not allowed to remove this users"
+msgid "You are not allowed to remove this user"
 msgstr ""
 
 msgid "You aren't authorized to access that item"
@@ -2109,6 +2166,9 @@ msgstr "Ende muss ein valides Datum im folgenden Format sein:"
 msgid "events"
 msgstr "Ereignisse"
 
+msgid "exit"
+msgstr ""
+
 msgid "export"
 msgstr ""
 
@@ -2220,6 +2280,12 @@ msgstr "Information"
 msgid "inserted on"
 msgstr "eingefügt am"
 
+msgid "inventory"
+msgstr ""
+
+msgid "invoice id"
+msgstr ""
+
 msgid "is user"
 msgstr "ist Benutzer"
 
@@ -2280,6 +2346,9 @@ msgstr "Lizenz"
 msgid "list name"
 msgstr "Name auflisten"
 
+msgid "log level"
+msgstr ""
+
 msgid "long text"
 msgstr "Textlänge"
 
@@ -2288,6 +2357,9 @@ msgstr "Länge"
 
 msgid "mail address"
 msgstr "Emailadresse"
+
+msgid "mail body"
+msgstr ""
 
 msgid "mailgroups"
 msgstr "Emailgruppen"
@@ -2636,6 +2708,9 @@ msgstr "Veröffentlichung"
 msgid "publications"
 msgstr ""
 
+msgid "publish"
+msgstr ""
+
 msgid "publisher"
 msgstr "Redakteur"
 
@@ -2658,6 +2733,9 @@ msgid "rebuild index"
 msgstr ""
 
 msgid "rebuild search texts index. Caution: may be slow"
+msgstr ""
+
+msgid "recipient"
 msgstr ""
 
 msgid "reference"
@@ -2695,6 +2773,9 @@ msgstr ""
 
 msgid "save"
 msgstr "speichern"
+
+msgid "save draft"
+msgstr ""
 
 msgid "save profile"
 msgstr "Profil speichern"

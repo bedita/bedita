@@ -21,7 +21,7 @@
 
 <div class="head">
 	
-		<h1>Overview</h1>
+		<h1>{t}Overview{/t}</h1>
 
 </div> 
 

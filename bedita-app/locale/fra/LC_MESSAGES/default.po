@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-05-16 09:56:12\n"
+"POT-Creation-Date: 2012-05-25 12:06:57\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -39,6 +39,9 @@ msgid "Add multiple items"
 msgstr ""
 
 msgid "Add new category"
+msgstr ""
+
+msgid "Add new item"
 msgstr ""
 
 msgid "Add new subscribers"
@@ -142,6 +145,9 @@ msgid "BEdita object type model enabled"
 msgstr ""
 
 msgid "BEdita url"
+msgstr ""
+
+msgid "Backend Logs"
 msgstr ""
 
 msgid "Backend languages"
@@ -264,6 +270,9 @@ msgstr ""
 msgid "Contents with more comments (first 20)"
 msgstr ""
 
+msgid "Core Modules"
+msgstr ""
+
 msgid "Core modules"
 msgstr ""
 
@@ -307,6 +316,12 @@ msgid "Custom properties"
 msgstr ""
 
 msgid "Custom property saved"
+msgstr ""
+
+msgid "Custom relations"
+msgstr ""
+
+msgid "Date"
 msgstr ""
 
 msgid "Date Pattern"
@@ -616,6 +631,9 @@ msgstr ""
 msgid "File already exists in the filesystem"
 msgstr ""
 
+msgid "File is empty"
+msgstr ""
+
 msgid "File not writable, update properly file permits for"
 msgstr ""
 
@@ -626,6 +644,9 @@ msgid "Find it"
 msgstr ""
 
 msgid "Forgotten username or password?"
+msgstr ""
+
+msgid "Frontend Logs"
 msgstr ""
 
 msgid "Full news at"
@@ -733,6 +754,9 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Import Data"
+msgstr ""
+
 msgid "Import data"
 msgstr ""
 
@@ -802,6 +826,9 @@ msgstr ""
 msgid "Mail Logs"
 msgstr ""
 
+msgid "Mail Queue"
+msgstr ""
+
 msgid "Mail configuration"
 msgstr ""
 
@@ -836,6 +863,12 @@ msgid "MailJob deleted"
 msgstr ""
 
 msgid "MailLog deleted"
+msgstr ""
+
+msgid "Main author"
+msgstr ""
+
+msgid "Maintenance"
 msgstr ""
 
 msgid "Media already exists in the system"
@@ -1189,6 +1222,9 @@ msgstr ""
 msgid "Other Models"
 msgstr ""
 
+msgid "Overview"
+msgstr ""
+
 msgid "PLAIN TEXT version"
 msgstr ""
 
@@ -1236,6 +1272,12 @@ msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
 msgid "Plugged modules"
+msgstr ""
+
+msgid "Plugin Modules"
+msgstr ""
+
+msgid "Position"
 msgstr ""
 
 msgid "Post comment disabled"
@@ -1323,6 +1365,9 @@ msgid "Rewrite password"
 msgstr ""
 
 msgid "Rights is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Rows to show"
 msgstr ""
 
 msgid "Save"
@@ -1431,6 +1476,15 @@ msgid "Subscribers associated to list"
 msgstr ""
 
 msgid "Subtitle, description"
+msgstr ""
+
+msgid "System Events"
+msgstr ""
+
+msgid "System Info"
+msgstr ""
+
+msgid "System Logs"
 msgstr ""
 
 msgid "System configuration"
@@ -1653,6 +1707,9 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
+msgid "Utility"
+msgstr ""
+
 msgid "Version"
 msgstr ""
 
@@ -1698,10 +1755,10 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-msgid "You are not allowed to edit this users"
+msgid "You are not allowed to edit this user"
 msgstr ""
 
-msgid "You are not allowed to remove this users"
+msgid "You are not allowed to remove this user"
 msgstr ""
 
 msgid "You aren't authorized to access that item"
@@ -2049,6 +2106,9 @@ msgstr ""
 msgid "events"
 msgstr ""
 
+msgid "exit"
+msgstr ""
+
 msgid "export"
 msgstr ""
 
@@ -2157,6 +2217,12 @@ msgstr ""
 msgid "inserted on"
 msgstr ""
 
+msgid "inventory"
+msgstr ""
+
+msgid "invoice id"
+msgstr ""
+
 msgid "is user"
 msgstr ""
 
@@ -2217,6 +2283,9 @@ msgstr ""
 msgid "list name"
 msgstr ""
 
+msgid "log level"
+msgstr ""
+
 msgid "long text"
 msgstr ""
 
@@ -2224,6 +2293,9 @@ msgid "longitude"
 msgstr ""
 
 msgid "mail address"
+msgstr ""
+
+msgid "mail body"
 msgstr ""
 
 msgid "mailgroups"
@@ -2573,6 +2645,9 @@ msgstr ""
 msgid "publications"
 msgstr ""
 
+msgid "publish"
+msgstr ""
+
 msgid "publisher"
 msgstr ""
 
@@ -2595,6 +2670,9 @@ msgid "rebuild index"
 msgstr ""
 
 msgid "rebuild search texts index. Caution: may be slow"
+msgstr ""
+
+msgid "recipient"
 msgstr ""
 
 msgid "reference"
@@ -2631,6 +2709,9 @@ msgid "satellite"
 msgstr ""
 
 msgid "save"
+msgstr ""
+
+msgid "save draft"
 msgstr ""
 
 msgid "save profile"

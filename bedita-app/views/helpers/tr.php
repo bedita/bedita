@@ -95,8 +95,8 @@ class TrHelper extends AppHelper {
 	/**
 	 * translate html->link url...
 	 * 
-	 * @param string $s
-	 * @param string $u
+	 * @param string $s label
+	 * @param string $u url
 	 * @return string html link
 	 */
 	public function link($s, $u) {

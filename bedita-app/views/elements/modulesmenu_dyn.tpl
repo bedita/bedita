@@ -21,7 +21,7 @@
 			{/if}
 		{/foreach}
 		{/if}
-			<li class="index"><a href="{$html->url('/logout')}" title="Exit">exit</a></li>
+			<li class="index"><a href="{$html->url('/logout')}" title="Exit">{t}exit{/t}</a></li>
 		</ul> 
 	</nav>
 

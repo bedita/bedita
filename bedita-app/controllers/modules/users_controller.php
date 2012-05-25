@@ -152,7 +152,7 @@ class UsersController extends ModulesController {
 		if(isset($id)) {
 			$u = $this->isUserEditable($id);
 			if ($u === false) {
-				throw new BeditaException(__("You are not allowed to remove this users", true));
+				throw new BeditaException(__("You are not allowed to remove this user", true));
 			}
 			if(empty($u)) {
 				throw new BeditaException(__("Bad data",true));
@@ -190,7 +190,7 @@ class UsersController extends ModulesController {
 		if(isset($id)) {
 			$userdetail = $this->isUserEditable($id);
 			if ($userdetail === false) {
-				throw new BeditaException(__("You are not allowed to edit this users", true));
+				throw new BeditaException(__("You are not allowed to edit this user", true));
 			}
 			if(empty($userdetail)) {
 				throw new BeditaException(__("Bad data",true));
