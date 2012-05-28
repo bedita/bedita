@@ -91,6 +91,26 @@ a.placeholder, .placeref {
 	color:#ff6600 !important;
 }
 
+
+/*Preview della taggatura immagini*/
+
+div.imageTag {
+	border: 1px solid #f03;
+	padding: 5px;
+	margin: 5px;
+}
+div.imageTag h4.tagTitleHolder {
+	font-size: 1.3em;
+	margin: 0 0 10px 0;
+}
+div.imageTag h4.tagTitleHolder span.tagNumber {
+	color: #ccc;
+}
+div.imageTag div.tagDescription {
+	font-size: 1em;
+}
+
+
 /*
  * qualsiasi classe aggiungerai qui. La ritroverai nelle opzioni di tinyMce! Fico.
  * 
