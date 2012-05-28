@@ -1130,7 +1130,8 @@ abstract class ModulesController extends AppController {
 		$categoryModel->Behaviors->disable('CompactResult');
 		$categories = $categoryModel->find("list", array(
 			"fields" => array("id","label"),
-			"conditions" => array("object_type_id" => $objectTypes)
+			"conditions" => array("object_type_id" => $objectTypes),
+			"order" => "label"
 		));
 		$categoryModel->Behaviors->enable('CompactResult');
 		$this->set("categories",$categories);
