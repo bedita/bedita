@@ -1114,7 +1114,8 @@ abstract class ModulesController extends AppController {
 		$categoryModel->Behaviors->disable('CompactResult');
 		$categories = $categoryModel->find("list", array(
 			"fields" => array("id","label"),
-			"conditions" => array("object_type_id" => $objectTypes)
+			"conditions" => array("object_type_id" => $objectTypes),
+			"order" => "label"
 		));
 		$categoryModel->Behaviors->enable('CompactResult');
 		$this->set("categories",$categories);
@@ -1253,6 +1254,9 @@ abstract class ModulesController extends AppController {
 		} else {
 			$objTypeId = $this->data["object_type_id"];
 			$modelName = Configure::read("objectTypes.$objTypeId.model");	
+		}
+		if (empty($modelName)) {
+			throw new BeditaException(__("Model class not found", true)." - ". $this->data["title"]);
 		}
 		$method = "save" . $modelName;
 		if (!method_exists($this, $method)) {
