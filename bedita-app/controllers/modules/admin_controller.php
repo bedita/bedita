@@ -392,7 +392,8 @@ class AdminController extends ModulesController {
 	}
 	
 	/**
-	 * enable addon BEdita object type
+	 * Enable addon copying the addon file in the related enabled folder.
+	 * If addon is a BEdita object type create also a row on object_types table
 	 * @return void
 	 */
 	public function enableAddon() {
@@ -400,41 +401,75 @@ class AdminController extends ModulesController {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
 	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
+		$enabledPath = $this->params["form"]["path"] . DS . "enabled" .  DS . $this->params["form"]["file"];
 	 	$beLib = BeLib::getInstance();
-	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], "models", array($this->params["form"]["path"] . DS))) {
+	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], $this->params["form"]["type"], array($this->params["form"]["path"] . DS))) {
 	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
 	 	}
-	 	if (!$beLib->isBeditaObjectType($this->params["form"]["model"], $this->params["form"]["path"])) {
-	 		throw new BeditaException(__($this->params["form"]["model"] . " doesn't seem to be a BEdita object. It has to be extend BEAppObjectModel", true));
-	 	}
-	 	$model = $beLib->getObject($this->params["form"]["model"]);
-	 	$data["name"] = $this->params["form"]["type"];
-	 	if (!empty($model->module)) {
-	 		$data["module_name"] = $model->module;
-	 	}
-	 	$objectType = ClassRegistry::init("ObjectType");
-	 	$data["id"] = $objectType->newPluggedId();
-	 	if (!$objectType->save($data)) {
-	 		throw new BeditaException(__("Error saving object type", true));
-	 	}
+		
+		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
+			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
+		}
+		
+		// copy addon file to respective enabled folder
+		$addonFile = new File($filePath);
+		if (!$addonFile->copy($enabledPath)) {
+			throw new BeditaException(__("Error copying addon to enabled folder", true), array("file path" => $filePath, "enabled path" => $enabledPath));
+		}
+		
+		// BEdita object type
+		if (!empty($this->params["form"]["objectType"])) {
+			if (!$beLib->isBeditaObjectType($this->params["form"]["name"], $this->params["form"]["path"])) {
+				throw new BeditaException(__($this->params["form"]["name"] . " doesn't seem to be a BEdita object. It has to be extend BEAppObjectModel", true));
+			}
+			$model = $beLib->getObject($this->params["form"]["name"]);
+			$data["name"] = $this->params["form"]["objectType"];
+			if (!empty($model->module)) {
+				$data["module_name"] = $model->module;
+			}
+			$objectType = ClassRegistry::init("ObjectType");
+			$data["id"] = $objectType->newPluggedId();
+			if (!$objectType->save($data)) {
+				throw new BeditaException(__("Error saving object type", true));
+			}
+		}
 	 	
 	 	BeLib::getObject("BeConfigure")->cacheConfig();
 	}
 	 
 	/**
-	 * disable addon BEdita object type
+	 * Disable addon deleting the addon file from the related enabled folder.
+	 * If addon is a BEdita object type remove also the row on object_types table
 	 * @return void
 	 */
 	public function disableAddon() {
-	 	if (empty($this->params["form"]["type"])) {
+	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
-	 	$otModel = ClassRegistry::init("ObjectType");
-	 	$this->Transaction->begin();
-	 	$otModel->purgeType($this->params["form"]["type"]);
-	 	$this->Transaction->commit($this->params["form"]["type"]);
-	 	$this->eventInfo("addon ". $this->params["form"]["model"]." disable succesfully");
-		$this->userInfoMessage($this->params["form"]["model"] . " " . __("disable succesfully, all related objects are been deleted",true));
+		
+		$enabledPath = $this->params["form"]["path"] . DS . "enabled" .  DS . $this->params["form"]["file"];		
+		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
+			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
+		}
+		
+		// delete addon file to respective enabled folder
+		$addonFile = new File($enabledPath);
+		if (!$addonFile->delete()) {
+			throw new BeditaException(__("Error deleting addon to enabled folder", true), array("file path" => $filePath, "enabled path" => $enabledPath));
+		}
+		
+		// BEdita object type
+		if (!empty($this->params["form"]["objectType"])) {
+			$otModel = ClassRegistry::init("ObjectType");
+			$this->Transaction->begin();
+			$otModel->purgeType($this->params["form"]["objectType"]);
+			$this->Transaction->commit($this->params["form"]["objectType"]);
+			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully, all related objects are been deleted",true));
+		} else {
+			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully", true));
+		}
+		
+		$this->eventInfo("addon ". $this->params["form"]["model"]." disable succesfully");
 		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
 

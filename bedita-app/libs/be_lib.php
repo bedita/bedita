@@ -134,80 +134,99 @@ class BeLib {
 	 * 						"objectTypes" => array(
 	 * 							"on" => array(
 	 * 								0 => array(
-	 * 									"model" => model name,
+	 * 									"name" => class name,
 	 *								 	"file" => file name,
-	 *									"type" => object type name,
-	 *									"path" => path to
+	 *									"objectType" => object type name,
+	 *									"path" => path where to find addon file available,
+	 *									"enabledPath" => path where to find addon file enabled,
+	 *									"type" => "models",
+	 *									"fileNameUsed" => true if file name is already used for model
 	 * 								), 
 	 * 								1 => array()
 	 * 								....
 	 * 							),
 	 * 							"off" => array(
 	 * 								0 => array(
-	 * 									like "on" array,
-	 * 									"fileNameUsed" => true if file name is already used for model
+	 * 									like "on" array
 	 * 								), 1 => array(...)), ...
 	 * 						),
 	 * 						"others" => array(
-	 * 							0 => array(
-	 * 								"file" => file name,
-	 *								"path" => path to,
-	 *								"fileNameUsed" => true if file name is already used for model
-	 * 							)
+	 * 							"on" => array(
+	 * 								0 => array(
+	 * 									"name" => class name,
+	 *								 	"file" => file name,
+	 *									"objectType" => object type name,
+	 *									"path" => path where to find addon file available,
+	 *									"enabledPath" => path where to find addon file enabled,
+	 *									"type" => "models",
+	 *									"fileNameUsed" => true if file name is already used for model
+	 * 								), 
+	 * 								1 => array()
+	 * 								....
+	 * 							),
+	 * 							"off" => array(
+	 * 								0 => array(
+	 * 									like "on" array
+	 * 								), 1 => array(...)), ...
 	 * 						)
 	 * 					),
 	 * 					
 	 * 					"components" => array(like "others" array),
 	 * 					"helpers" => array(like "others" array),
+	 *					"behaviors" => array(like "others" array),
 	 * 				)
 	 */
 	public function getAddons() {
 		$conf = Configure::getInstance();
 		$addons = array();
 		$folder = new Folder();
-		$items = array("models", "components", "helpers");
+		$items = array("models", "components", "helpers", "models" . DS . "behaviors");
 		foreach ($items as $val) {
 			if ($folder->cd(BEDITA_ADDONS_PATH . DS . $val)) {
 				$ls = $folder->read(true, true);
-				if ($val == "models") {
-					foreach ($ls[1] as $modelFile) {
-						$m = new File(BEDITA_ADDONS_PATH . DS . $val . DS . $modelFile);
-						$name = $m->name();
-						$modelName = Inflector::camelize($name);
-						if ($this->isBeditaObjectType($modelName, BEDITA_ADDONS_PATH . DS . $val)) {
-							$ot = array(
-									"model" => $modelName,
-									"file" => $modelFile,
-									"type" => $name,
-									"path" => BEDITA_ADDONS_PATH . DS . $val
-							);
-							$used = $this->isFileNameUsed($modelFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS));
-							if (!empty($conf->objectTypes[$name]) && !$used) {
-								$addons[$val]["objectTypes"]["on"][] = $ot;
+				foreach ($ls[1] as $addonFile) {
+					$m = new File(BEDITA_ADDONS_PATH . DS . $val . DS . $addonFile);
+					$name = $m->name();
+					$addonName = Inflector::camelize($name);
+					$type = (strstr($val, "behaviors"))? "behaviors" : $val;
+					
+					$addonItem = array(
+						"name" => $addonName,
+						"file" => $addonFile,
+						"path" => BEDITA_ADDONS_PATH . DS . $val,
+						"enabledPath" => BEDITA_ADDONS_PATH . DS . $val . DS . "enabled",
+						"type" => $type
+					);
+					
+					$alreadyUsed = $this->isFileNameUsed($addonFile, $type, array(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS));
+					$addonItem["fileNameUsed"] = $alreadyUsed;
+					
+					if ($type == "models") {
+						if ($this->isBeditaObjectType($addonName, BEDITA_ADDONS_PATH . DS . $val)) {
+							$addonItem["objectType"] = $name;
+							if (!empty($conf->objectTypes[$name]) && !$alreadyUsed && file_exists(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFile)) {
+								$addons[$type]["objectTypes"]["on"][] = $addonItem;
 							} else {
-								$ot["fileNameUsed"] = $used;
-								$addons[$val]["objectTypes"]["off"][] = $ot;
+								$addons[$type]["objectTypes"]["off"][] = $addonItem;
 							}
 						} else {
-							$addons[$val]["others"][] = array(
-								"file" => $modelFile,
-								"path" => BEDITA_ADDONS_PATH . DS . $val,
-								"fileNameUsed" => $this->isFileNameUsed($modelFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS))
-							);
+							if (file_exists(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFile)) {
+								$addons[$type]["others"]["on"][] = $addonItem;
+							} else {
+								$addons[$type]["others"]["off"][] = $addonItem;
+							}
+						}
+					} else {
+						if (file_exists(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFile)) {
+							$addons[$type]["on"][] = $addonItem;
+						} else {
+							$addons[$type]["off"][] = $addonItem;
 						}
 					}
-				} else {
-					foreach ($ls[1] as $addonFile) {
-						$addons[$val][] = array(
-							"file" => $addonFile,
-							"path" => BEDITA_ADDONS_PATH . DS . $val,
-							"fileNameUsed" => $this->isFileNameUsed($addonFile, $val, array(BEDITA_ADDONS_PATH . DS . $val . DS))
-						);
-					}
 				}
+				
 			}
 		}
-		
 		return $addons;
 	}
 	

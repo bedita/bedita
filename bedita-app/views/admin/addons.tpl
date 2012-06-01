@@ -1,10 +1,15 @@
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
+
 {literal}
 $(document).ready(function() {
 
 	$("#addonsOn input[type=button]").click(function() {
-		if (confirm(unplugMessage)) {
+		if ($(this).hasClass("js-unplug-objecttype")) {
+			if (confirm(unplugMessage)) {
+				$(this).closest('tr').find('form').submit();
+			}
+		} else {
 			$(this).closest('tr').find('form').submit();
 		}
 	});
@@ -21,7 +26,7 @@ $(document).ready(function() {
 
 <div class="mainfull">
 	
-	<div class="tab stayopen"><h2>{t}Addons{/t}</h2></div>
+	<div class="tab stayopen"><h2>{t}BEdita Object Type{/t}</h2></div>
 	
 	<fieldset>
 	
@@ -35,14 +40,16 @@ $(document).ready(function() {
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
 					<input type="hidden" name="path" value="{$ot.path}">
-					<input type="hidden" name="model" value="{$ot.model}">
+					<input type="hidden" name="enabledPath" value="{$ot.enabledPath}">
+					<input type="hidden" name="name" value="{$ot.name}">
 					<input type="hidden" name="file" value="{$ot.file}">
-					<input type="hidden" name="type" value="{$ot.type}">
-					{$ot.model}
+					<input type="hidden" name="objectType" value="{$ot.objectType}">
+					<input type="hidden" name="type" value="models">
+					{$ot.name}
 					</form>
 					</td>
 					<td>
-					<input type="button" value="{t}set OFF{/t}"/> 
+					<input type="button" class="js-unplug-objecttype" value="{t}set OFF{/t}"/> 
 					</td>
 				</tr>
 			{/foreach}
@@ -65,10 +72,12 @@ $(document).ready(function() {
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
 						<td>
 						<input type="hidden" name="path" value="{$ot.path}">
-						<input type="hidden" name="model" value="{$ot.model}">
+						<input type="hidden" name="enabledPath" value="{$ot.enabledPath}">
+						<input type="hidden" name="name" value="{$ot.name}">
 						<input type="hidden" name="file" value="{$ot.file}">
-						<input type="hidden" name="type" value="{$ot.type}">
-						{$ot.model}
+						<input type="hidden" name="objectType" value="{$ot.objectType}">
+						<input type="hidden" name="type" value="models">
+						{$ot.name}
 						</td>
 						<td>
 						<input type="submit" value="{t}set ON{/t}"/>
@@ -87,69 +96,262 @@ $(document).ready(function() {
 	
 	<div class="tab stayopen"><h2>{t}Other Models{/t}</h2></div>
 	<fieldset>
-	{if !empty($addons.models.others)}
-		<ul>
-		{foreach from=$addons.models.others item="m"}
-			<li>
-			file:
-			{if $m.fileNameUsed}
-				<span style="color: red;">{$m.file}: {t}file is already used, please change it to avoid malfunctioning{/t}</span>
-			{else}
-				{$m.file}
-			{/if}
-			<br/>
-			path: {$m.path}<br/>
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		{t}no items{/t}
-	{/if}
+		
+	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
+		<tr><th colspan=2>{t}Model enabled{/t}</th></tr>
+
+		{if !empty($addons.models.others.on)}
+			<tbody id="addonsOn">
+			{foreach from=$addons.models.others.on item="a"}
+				<tr>
+					<td>
+					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					<input type="hidden" name="path" value="{$a.path}">
+					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+					<input type="hidden" name="name" value="{$a.name}">
+					<input type="hidden" name="file" value="{$a.file}">
+					<input type="hidden" name="type" value="models">
+					{$a.name}
+					</form>
+					</td>
+					<td>
+					<input type="button" value="{t}set OFF{/t}"/> 
+					</td>
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	
+	<table class="indexlist" style="float:left; width:49%">
+		<tr><th colspan=2>{t}Model disabled{/t}</th></tr>
+
+		{if !empty($addons.models.others.off)}
+			<tbody>
+			{foreach from=$addons.models.others.off item="a"}
+				<tr>
+					{if $ot.fileNameUsed}
+						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
+					{else}
+					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						<td>
+						<input type="hidden" name="path" value="{$a.path}">
+						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+						<input type="hidden" name="name" value="{$a.name}">
+						<input type="hidden" name="file" value="{$a.file}">
+						<input type="hidden" name="type" value="models">
+						{$a.name}{*<br/>
+						path: {$a.path}*}
+						</td>
+						<td>
+						<input type="submit" value="{t}set ON{/t}"/>
+						</td>
+					</form>
+					{/if}
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
 	</fieldset>
 
+	
+	<div class="tab stayopen"><h2>{t}Behaviors{/t}</h2></div>
+	<fieldset>
+		
+	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
+		<tr><th colspan=2>{t}Behaviors enabled{/t}</th></tr>
+
+		{if !empty($addons.behaviors.others.on)}
+			<tbody id="addonsOn">
+			{foreach from=$addons.behaviors.others.on item="a"}
+				<tr>
+					<td>
+					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					<input type="hidden" name="path" value="{$a.path}">
+					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+					<input type="hidden" name="name" value="{$a.name}">
+					<input type="hidden" name="file" value="{$a.file}">
+					<input type="hidden" name="type" value="behaviors">
+					{$a.name}
+					</form>
+					</td>
+					<td>
+					<input type="button" value="{t}set OFF{/t}"/> 
+					</td>
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	
+	<table class="indexlist" style="float:left; width:49%">
+		<tr><th colspan=2>{t}Behaviors disabled{/t}</th></tr>
+
+		{if !empty($addons.behaviors.others.off)}
+			<tbody>
+			{foreach from=$addons.behaviors.others.off item="a"}
+				<tr>
+					{if $ot.fileNameUsed}
+						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
+					{else}
+					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						<td>
+						<input type="hidden" name="path" value="{$a.path}">
+						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+						<input type="hidden" name="name" value="{$a.name}">
+						<input type="hidden" name="file" value="{$a.file}">
+						<input type="hidden" name="type" value="behaviors">
+						{$a.name}{*<br/>
+						path: {$a.path}*}
+						</td>
+						<td>
+						<input type="submit" value="{t}set ON{/t}"/>
+						</td>
+					</form>
+					{/if}
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	</fieldset>
 
 	<div class="tab stayopen"><h2>{t}Components{/t}</h2></div>
 	<fieldset>
-		{if !empty($addons.components)}
-		<ul>
-		{foreach from=$addons.components item="c"}
-			<li>
-			file:
-			{if $c.fileNameUsed}
-				<span style="color: red;">{$c.file}: {t}file is already used, please change it to avoid malfunctioning{/t}</span>
-			{else}
-				{$c.file}
-			{/if}
-			<br/>
-			path: {$c.path}<br/>
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		<ul>{t}no items{/t}</ul>
-	{/if}
+		
+	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
+		<tr><th colspan=2>{t}Components enabled{/t}</th></tr>
+
+		{if !empty($addons.components.on)}
+			<tbody id="addonsOn">
+			{foreach from=$addons.components.on item="a"}
+				<tr>
+					<td>
+					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					<input type="hidden" name="path" value="{$a.path}">
+					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+					<input type="hidden" name="name" value="{$a.name}">
+					<input type="hidden" name="file" value="{$a.file}">
+					<input type="hidden" name="type" value="components">
+					{$a.name}
+					</form>
+					</td>
+					<td>
+					<input type="button" value="{t}set OFF{/t}"/> 
+					</td>
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	
+	<table class="indexlist" style="float:left; width:49%">
+		<tr><th colspan=2>{t}Components disabled{/t}</th></tr>
+
+		{if !empty($addons.components.off)}
+			<tbody>
+			{foreach from=$addons.components.off item="a"}
+				<tr>
+					{if $ot.fileNameUsed}
+						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
+					{else}
+					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						<td>
+						<input type="hidden" name="path" value="{$a.path}">
+						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+						<input type="hidden" name="name" value="{$a.name}">
+						<input type="hidden" name="file" value="{$a.file}">
+						<input type="hidden" name="type" value="components">
+						{$a.name}{*<br/>
+						path: {$a.path}*}
+						</td>
+						<td>
+						<input type="submit" value="{t}set ON{/t}"/>
+						</td>
+					</form>
+					{/if}
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
 	</fieldset>
 		
 	<div class="tab stayopen"><h2>{t}Helpers{/t}</h2></div>
 	<fieldset>
-	{if !empty($addons.helpers)}
-		<ul>
-		{foreach from=$addons.components item="h"}
-			<li>
-			file:
-			{if $h.fileNameUsed}
-				<span style="color: red;">{$h.file}: {t}file is already used, please change it to avoid malfunctioning{/t}</span>
-			{else}
-				{$h.file}
-			{/if}
-			<br/>
-			path: {$h.path}<br/>
-			</li>
-		{/foreach}
-		</ul>
-	{else}
-		{t}no items{/t}
-	{/if}
+	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
+		<tr><th colspan=2>{t}Helpers enabled{/t}</th></tr>
+
+		{if !empty($addons.helpers.on)}
+			<tbody id="addonsOn">
+			{foreach from=$addons.helpers.on item="a"}
+				<tr>
+					<td>
+					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					<input type="hidden" name="path" value="{$a.path}">
+					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+					<input type="hidden" name="name" value="{$a.name}">
+					<input type="hidden" name="file" value="{$a.file}">
+					<input type="hidden" name="type" value="helpers">
+					{$a.name}
+					</form>
+					</td>
+					<td>
+					<input type="button" value="{t}set OFF{/t}"/> 
+					</td>
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
+	
+	<table class="indexlist" style="float:left; width:49%">
+		<tr><th colspan=2>{t}Helpers disabled{/t}</th></tr>
+
+		{if !empty($addons.helpers.off)}
+			<tbody>
+			{foreach from=$addons.components.off item="a"}
+				<tr>
+					{if $ot.fileNameUsed}
+						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
+					{else}
+					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						<td>
+						<input type="hidden" name="path" value="{$a.path}">
+						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
+						<input type="hidden" name="name" value="{$a.name}">
+						<input type="hidden" name="file" value="{$a.file}">
+						<input type="hidden" name="type" value="helpers">
+						{$a.name}{*<br/>
+						path: {$a.path}*}
+						</td>
+						<td>
+						<input type="submit" value="{t}set ON{/t}"/>
+						</td>
+					</form>
+					{/if}
+				</tr>
+			{/foreach}
+			</tbody>
+		{else}
+			<tr><td>{t}no items{/t}</td></tr>
+		{/if}
+	</table>
 	</fieldset>
 	
 </div>
