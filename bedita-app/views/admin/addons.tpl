@@ -1,16 +1,23 @@
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
-
+var updateMessage = "{t}A new version of the addon seems to be present. Do you want to update it?{/t}";
+var updateUrl = "{$html->url("/admin/updateAddon")}";
 {literal}
 $(document).ready(function() {
 
 	$("#addonsOn input[type=button]").click(function() {
+		var formItem = $(this).closest('tr').find('form');
 		if ($(this).hasClass("js-unplug-objecttype")) {
 			if (confirm(unplugMessage)) {
-				$(this).closest('tr').find('form').submit();
+				formItem.submit();
+			}
+		} else if ($(this).hasClass("js-update")) {
+			if (confirm(updateMessage)) {
+				formItem.attr("action", updateUrl);
+				formItem.submit();
 			}
 		} else {
-			$(this).closest('tr').find('form').submit();
+			formItem.submit();
 		}
 	});
 	
@@ -50,6 +57,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 					<input type="button" class="js-unplug-objecttype" value="{t}set OFF{/t}"/> 
+					{if $ot.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -116,6 +124,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 					<input type="button" value="{t}set OFF{/t}"/> 
+					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -182,6 +191,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 					<input type="button" value="{t}set OFF{/t}"/> 
+					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -247,6 +257,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 					<input type="button" value="{t}set OFF{/t}"/> 
+					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -311,6 +322,7 @@ $(document).ready(function() {
 					</td>
 					<td>
 					<input type="button" value="{t}set OFF{/t}"/> 
+					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
 					</td>
 				</tr>
 			{/foreach}
