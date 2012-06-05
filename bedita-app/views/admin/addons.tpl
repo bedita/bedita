@@ -1,11 +1,14 @@
+{$html->script('jquery/jquery.form', false)}
+
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
 var updateMessage = "{t}A new version of the addon seems to be present. Do you want to update it?{/t}";
 var updateUrl = "{$html->url("/admin/updateAddon")}";
+var diffUrl = "{$html->url("/admin/showDiff")}";
 {literal}
 $(document).ready(function() {
 
-	$("#addonsOn input[type=button]").click(function() {
+	$("#addonsOn input[type=button]").not(".modalbutton").click(function() {
 		var formItem = $(this).closest('tr').find('form');
 		if ($(this).hasClass("js-unplug-objecttype")) {
 			if (confirm(unplugMessage)) {
@@ -56,8 +59,11 @@ $(document).ready(function() {
 					</form>
 					</td>
 					<td>
-					<input type="button" class="js-unplug-objecttype" value="{t}set OFF{/t}"/> 
-					{if $ot.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
+					<input type="button" class="js-unplug-objecttype" value="{t}DISABLE{/t}"/> 
+					{if $ot.update}
+						<input type="button" class="js-update" value="{t}UPDATE{/t}"/>
+						<input type="button" class="modalbutton" rel="{$html->url('/admin/diffAddon/')}filename:{$ot.file}/type:models" value="{t}DIFF{/t}"/>
+					{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -88,7 +94,7 @@ $(document).ready(function() {
 						{$ot.name}
 						</td>
 						<td>
-						<input type="submit" value="{t}set ON{/t}"/>
+						<input type="submit" value="{t}ENABLE{/t}"/>
 						</td>
 					</form>
 					{/if}
@@ -123,8 +129,11 @@ $(document).ready(function() {
 					</form>
 					</td>
 					<td>
-					<input type="button" value="{t}set OFF{/t}"/> 
-					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
+					<input type="button" value="{t}DISABLE{/t}"/> 
+					{if $a.update}
+						<input type="button" class="js-update" value="{t}UPDATE{/t}"/>
+						<input type="button" class="modalbutton" rel="{$html->url('/admin/diffAddon/')}filename:{$a.file}/type:models" value="{t}DIFF{/t}"/>
+					{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -155,7 +164,7 @@ $(document).ready(function() {
 						path: {$a.path}*}
 						</td>
 						<td>
-						<input type="submit" value="{t}set ON{/t}"/>
+						<input type="submit" value="{t}ENABLE{/t}"/>
 						</td>
 					</form>
 					{/if}
@@ -190,8 +199,11 @@ $(document).ready(function() {
 					</form>
 					</td>
 					<td>
-					<input type="button" value="{t}set OFF{/t}"/> 
-					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
+					<input type="button" value="{t}DISABLE{/t}"/> 
+					{if $a.update}
+						<input type="button" class="js-update" value="{t}UPDATE{/t}"/>
+						<input type="button" class="modalbutton" rel="{$html->url('/admin/diffAddon/')}filename:{$a.file}/type:behaviors" value="{t}DIFF{/t}"/>
+					{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -222,7 +234,7 @@ $(document).ready(function() {
 						path: {$a.path}*}
 						</td>
 						<td>
-						<input type="submit" value="{t}set ON{/t}"/>
+						<input type="submit" value="{t}ENABLE{/t}"/>
 						</td>
 					</form>
 					{/if}
@@ -256,8 +268,11 @@ $(document).ready(function() {
 					</form>
 					</td>
 					<td>
-					<input type="button" value="{t}set OFF{/t}"/> 
-					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
+					<input type="button" value="{t}DISABLE{/t}"/> 
+					{if $a.update}
+						<input type="button" class="js-update" value="{t}UPDATE{/t}"/>
+						<input type="button" class="modalbutton" rel="{$html->url('/admin/diffAddon/')}filename:{$a.file}/type:components" value="{t}DIFF{/t}"/>
+					{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -288,7 +303,7 @@ $(document).ready(function() {
 						path: {$a.path}*}
 						</td>
 						<td>
-						<input type="submit" value="{t}set ON{/t}"/>
+						<input type="submit" value="{t}ENABLE{/t}"/>
 						</td>
 					</form>
 					{/if}
@@ -321,8 +336,11 @@ $(document).ready(function() {
 					</form>
 					</td>
 					<td>
-					<input type="button" value="{t}set OFF{/t}"/> 
-					{if $a.update}<input type="button" class="js-update" value="{t}UPDATE{/t}"/>{/if}
+					<input type="button" value="{t}DISABLE{/t}"/> 
+					{if $a.update}
+						<input type="button" class="js-update" value="{t}UPDATE{/t}"/>
+						<input type="button" class="modalbutton" rel="{$html->url('/admin/diffAddon/')}filename:{$a.file}/type:helpers" value="{t}DIFF{/t}"/>
+					{/if}
 					</td>
 				</tr>
 			{/foreach}
@@ -353,7 +371,7 @@ $(document).ready(function() {
 						path: {$a.path}*}
 						</td>
 						<td>
-						<input type="submit" value="{t}set ON{/t}"/>
+						<input type="submit" value="{t}ENABLE{/t}"/>
 						</td>
 					</form>
 					{/if}

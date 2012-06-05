@@ -459,6 +459,21 @@ class AdminController extends ModulesController {
 		$this->eventInfo("addon ". $this->params["form"]["model"]." updated succesfully");
 	}
 
+	public function diffAddon() {
+		$Addon = ClassRegistry::init("Addon");
+		$addonPath = $Addon->getFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
+		$addonEnabledPath = $Addon->getEnabledFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
+		
+		$addon = file_get_contents($addonPath);
+		$addonEnabled = file_get_contents($addonEnabledPath);
+		
+		App::import("Vendor", "finediff");
+		$opcodes = FineDiff::getDiffOpcodes($addonEnabled, $addon, FineDiff::$paragraphGranularity);
+		$diff = FineDiff::renderDiffToHTMLFromOpcodes($addonEnabled, $opcodes);
+		$this->set("diff", $diff);
+	}
+	
+	
 	public function viewConfig() {
 		include CONFIGS . 'langs.iso.php';
 		$this->set('langs_iso',$config['langsIso']);

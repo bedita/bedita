@@ -83,6 +83,10 @@ UL {list-style:none;}
 
 UL UL {margin-left:20px;}
 
+ins {color: green; background: #DFD; text-decoration: none;}
+
+del {color: red; background: #FDD; text-decoration: none;}
+
 /*...........................................    
 
     General, states
