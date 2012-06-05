@@ -285,6 +285,21 @@ class DeployShell extends BeditaBaseShell {
     	if($svnRes === false) {
 			$this->out("Svn command failed");
     	}
+		
+		// update enabled addons
+		if (strstr($selected, BEDITA_ADDONS_PATH)) {
+			$type = trim(substr($selected, strlen(BEDITA_ADDONS_PATH)), DS);
+			$Addon = ClassRegistry::init("Addon");
+			$enabledFolder = $Addon->getEnabledFolderByType($type);
+			$folder->cd($enabledFolder);
+			$list = $folder->read();
+			if (!empty($list[1])) {
+				foreach ($list[1] as $addonFile) {
+					$Addon->update($addonFile, $type);
+				}
+			}
+		}
+		
     	$this->loadTasks();
     	if($res == 1) {
     		$this->updateVersion();
