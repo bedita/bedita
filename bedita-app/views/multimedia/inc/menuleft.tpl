@@ -15,7 +15,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<ul class="menuleft insidecol">
 			
-			<li><a href="{$html->url('/multimedia/view'}">{t}Add new item{/t}</a></li>	
+			<li><a href="{$html->url('/multimedia/view')}">{t}Add new item{/t}</a></li>	
 					
 		</ul>
 
