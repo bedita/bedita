@@ -184,9 +184,9 @@ $(document).ready(function() {
 	<table class="indexlist" style="float:left; width:49%; margin-right:10px;">
 		<tr><th colspan=2>{t}Behaviors enabled{/t}</th></tr>
 
-		{if !empty($addons.behaviors.others.on)}
+		{if !empty($addons.behaviors.on)}
 			<tbody id="addonsOn">
-			{foreach from=$addons.behaviors.others.on item="a"}
+			{foreach from=$addons.behaviors.on item="a"}
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
@@ -216,9 +216,9 @@ $(document).ready(function() {
 	<table class="indexlist" style="float:left; width:49%">
 		<tr><th colspan=2>{t}Behaviors disabled{/t}</th></tr>
 
-		{if !empty($addons.behaviors.others.off)}
+		{if !empty($addons.behaviors.off)}
 			<tbody>
-			{foreach from=$addons.behaviors.others.off item="a"}
+			{foreach from=$addons.behaviors.off item="a"}
 				<tr>
 					{if $ot.fileNameUsed}
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
@@ -355,7 +355,7 @@ $(document).ready(function() {
 
 		{if !empty($addons.helpers.off)}
 			<tbody>
-			{foreach from=$addons.components.off item="a"}
+			{foreach from=$addons.helpers.off item="a"}
 				<tr>
 					{if $ot.fileNameUsed}
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
