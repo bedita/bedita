@@ -34,6 +34,16 @@ $rel["createDirs"] = array(
 	"bedita-app".DS."tmp".DS."smarty".DS."compile",
 	"modules",
 	"addons",
+	"addons" . DS . "components",
+	"addons" . DS . "components" . DS . "enabled",
+	"addons" . DS . "config",
+	"addons" . DS . "helpers",
+	"addons" . DS . "helpers" . DS . "enabled",
+	"addons" . DS . "models",
+	"addons" . DS . "models" . DS . "enabled",
+	"addons" . DS . "models" . DS . "behaviors",
+	"addons" . DS . "models" . DS . "behaviors" . DS . "enabled",
+	"addons" . DS . "vendors",
 );
 
 $rel["renameFiles"]= array(
