@@ -289,13 +289,15 @@ class DeployShell extends BeditaBaseShell {
 		// update enabled addons
 		if (strstr($selected, BEDITA_ADDONS_PATH)) {
 			$type = trim(substr($selected, strlen(BEDITA_ADDONS_PATH)), DS);
-			$Addon = ClassRegistry::init("Addon");
-			$enabledFolder = $Addon->getEnabledFolderByType($type);
-			$folder->cd($enabledFolder);
-			$list = $folder->read();
-			if (!empty($list[1])) {
-				foreach ($list[1] as $addonFile) {
-					$Addon->update($addonFile, $type);
+			if ($type != "vendors") {
+				$Addon = ClassRegistry::init("Addon");
+				$enabledFolder = $Addon->getEnabledFolderByType($type);
+				$folder->cd($enabledFolder);
+				$list = $folder->read();
+				if (!empty($list[1])) {
+					foreach ($list[1] as $addonFile) {
+						$Addon->update($addonFile, $type);
+					}
 				}
 			}
 		}
