@@ -39,6 +39,7 @@
 
 	{$javascript->link("jquery/ui/jquery-ui-1.8rc3.custom")}
 	{$javascript->link("jquery/ui/jquery.ui.draggable")}
+	{$javascript->link("jquery/jquery.color")}
 
 	
 </head>
