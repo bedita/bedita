@@ -82,6 +82,16 @@ class TrHelper extends AppHelper {
 	}
 
 	/**
+	 * Translate string using domain (i.e. plugin name)
+	 * @param string $d, domain to use
+	 * @param string $s, text to translate
+	 * @param boolean $return
+	 */
+	function td($d, $s, $return = false) {
+		return __d($d, $s, $return);
+	}
+	
+	/**
 	 * normal translation using i18n in cake php
 	 * 
 	 * @param string $s
