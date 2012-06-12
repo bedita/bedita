@@ -73,6 +73,9 @@ function smarty_gettext_strarg($str)
 function smarty_block_t($params, $text, &$smarty)
 {
 	$text = stripslashes($text);
+	if(empty($text)) {
+		return $text;
+	}
 	
 	// set escape mode
 	if (isset($params['escape'])) {
@@ -97,8 +100,19 @@ function smarty_block_t($params, $text, &$smarty)
 	if($trHelper != null) {
 		if (isset($count) && isset($plural)) {
 			$text = $trHelper->translatePlural($text, $plural, $count, true);
-		} else { // use normal
-			$text = $trHelper->translate($text, true);
+		} else { 
+			// on plugins use domain translation with 'plugin-name'
+			$view = $smarty->getTemplateVars('view');
+			if(!empty($view->params["plugin"])) {
+				$textDom = $trHelper->td($view->params["plugin"], $text, true);
+				if($textDom !== $text) {
+					$text = $textDom;
+				} else {
+					$text = $trHelper->translate($text, true);
+				} 
+			} else {
+				$text = $trHelper->translate($text, true);
+			}
 		}
 	}
 

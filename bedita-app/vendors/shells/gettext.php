@@ -23,11 +23,11 @@
  * Gettext shell: methods to parse templates/php files, extract i18n entries and update
  * .po files (gettext files)
  * 
- * @version		$Revision: 2937 $
- * @modifiedby 		$LastChangedBy: ste $
- * @lastmodified	$LastChangedDate: 2010-08-09 16:48:21 +0200 (Mon, 09 Aug 2010) $
+ * @version		$Revision$
+ * @modifiedby 		$LastChangedBy$
+ * @lastmodified	$LastChangedDate$
  * 
- * $Id: gettext.php 2937 2010-08-09 14:48:21Z ste $
+ * $Id$
  */
 class GettextShell extends Shell {
 
@@ -124,12 +124,19 @@ class GettextShell extends Shell {
 		$tplPath = VIEWS;
 		$phpPath = APP."controllers".DS;
 		$localePath = APP."locale".DS;
+		$poName = "default.po";
 		if (isset($this->params['frontend'])) {
 			$f = new Folder($this->params['frontend']);
     		$tplPath = $f->path.DS."views".DS;
     		$localePath = $f->path.DS."locale".DS;
 			$phpPath = $f->path.DS."controllers".DS;
-		}
+		} else if (isset($this->params['plugin'])) {
+			$f = new Folder(BEDITA_MODULES_PATH . DS . $this->params['plugin']);
+    		$tplPath = $f->path.DS."views".DS;
+    		$localePath = $f->path.DS."locale".DS;
+			$phpPath = $f->path.DS."controllers".DS;
+			$poName = $this->params['plugin'] . ".po";
+		}		
         $this->out("Creating master .po file");
         $this->out("Search in: $tplPath");
 		$this->parseDir($tplPath);
@@ -178,7 +185,7 @@ class GettextShell extends Shell {
 		foreach ($ls[0] as $loc) {
 			if($loc[0] != '.') { // only "regular" dirs...
 				$this->out("Language: $loc");
-				$poFile = $localePath. $loc . DS . "LC_MESSAGES" . DS . "default.po";
+				$poFile = $localePath. $loc . DS . "LC_MESSAGES" . DS . $poName;
 				if (!file_exists($poFile)) {
 					$newPoFile = new File($poFile, true);
 					$newPoFile->write($headerPo);
@@ -214,9 +221,11 @@ class GettextShell extends Shell {
 	
 	function help() {
 		$this->out('Available functions:');
-        $this->out('1. update [-frontend <frontend path>]: create master.pot and merge .po files');
+        $this->out('1. update [-frontend <frontend path>] [-plugin <plugin name>]: create master.pot and merge .po files');
   		$this->out(' ');
   		$this->out("    -frontend \t create frontend master.pot looking at <frontend path> [use frontend /app path]");
+  		$this->out(' ');
+  		$this->out("    -plugin \t  create .pot and po files for specific plugin ");
   		$this->out(' ');
 	}
 	
