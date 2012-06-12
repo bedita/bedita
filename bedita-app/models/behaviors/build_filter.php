@@ -340,6 +340,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->from = " LEFT OUTER JOIN {$s}object_categories{$e} AS {$s}ObjectCategory{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectCategory{$e}.{$s}object_id{$e}
 				LEFT OUTER JOIN {$s}categories{$e} AS {$s}Category{$e} ON {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e} AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL"
 				. $this->from;
+		$this->group .= ", {$s}Category{$e}.{$s}name{$e}";
 	}
 	
 	/**
