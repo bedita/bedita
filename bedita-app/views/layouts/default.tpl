@@ -1,6 +1,6 @@
 {agent var="agent"}
 <!DOCTYPE html>
-<html lang="it">
+<html lang="{$currLang2}">
 <head>
 	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action} | {if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{/if}</title>
 
@@ -18,6 +18,8 @@
 	{/if}
 		
 	{include file="inc/meta.tpl"}
+
+	{$view->element('json_meta_config')}
 
 	{$html->css('bedita.css?v=01')}
 	

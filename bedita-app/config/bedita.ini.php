@@ -61,6 +61,8 @@ $config['langsSystem'] = array(
 
 // Default user interface lang (backend) - must be in 'langsSystem'
 $config['defaultUILang'] = "eng";
+// ISO-639-2 default UI lang
+$config['defaultUILang2'] = "en"; 
 
 // Default contents lang - must be in 'langOptions' if 'langOptionsIso' is false
 $config['defaultLang'] = "eng";
@@ -89,7 +91,19 @@ $config['langsSystemMap'] = array(
 	"en_gb"	=> "eng",
 	"es"	=> "spa",
 	"pt"	=> "por",
-	"pt_br"	=> "por"
+	"pt_br"	=> "por",
+	"de"	=> "deu",
+	"fr"	=> "fra",
+) ;
+
+// maps ISO-639-3 codes to ISO-639-2
+$config['langsSystemMapRev'] = array(
+	"ita"	=> "it",
+	"eng"	=> "en",
+	"spa"	=> "es",
+	"por"	=> "pt",
+	"deu"	=> "de",
+	"fra"	=> "fr",
 ) ;
 
 // 'langsIso' empty, overridden if 'langOptionsIso' is true
