@@ -1103,6 +1103,13 @@ abstract class BeditaExportFilter extends BEAppModel {
 		return $this->typeName;
 	}
 	
+	/**
+	 * Validate resource (after export)
+	 */
+	public function validate($resource, array $options = array()){
+		return __("No 'validate' method found");
+	}
+	
 };
 
 ?>

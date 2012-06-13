@@ -866,6 +866,11 @@ class BeditaShell extends BeditaBaseShell {
 		file_put_contents($expFile, $result["content"]);
 		$this->out("File created: " . $expFile . " - content type: " . $result["contentType"] 
 			. " size: " . $result["size"]);
+			
+		if (isset($this->params["validate"])) {
+			$result = $filterModel->validate($expFile);
+			$this->out("Validation result: \n" . $result);	
+		}	
 	}
 
 	
