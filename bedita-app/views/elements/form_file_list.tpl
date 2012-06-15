@@ -101,8 +101,120 @@ $(document).ready(function()
 		distance: 5,
 		opacity:0.7,
 		//handle: $(".multimediaitem").add(".multimediaitem img"), //try to fix IE7 handle on images, but don't work acc!
+		sort: checkDragDropTarget,
+		start: showBodyDropTarget,
+		stop: hideBodyDropTarget,
 		update: $(this).fixItemsPriority
 	}).css("cursor","move");
+
+	/* Drag&drop di elementi multimediali nel testo */
+
+	var targets = {}; //aree di rilascio, definite in form_textbody.tpl
+	var windowTopPosition = '';
+	var editorTopPosition = '';
+	var editorHeight = '';
+	var textToReplace = '';
+
+	function showBodyDropTarget(e) {
+		var $_editor = $('span#cke_data\\[body\\]');
+		var height = parseInt($_editor.outerHeight());
+		var width= parseInt($_editor.outerWidth());
+		editorTopPosition = $_editor.offset().top;
+		editorHeight = height;
+		$('#bodyDropTarget').css({
+			width: width,
+			height: height,
+			marginBottom: -height,
+			display: 'table'
+		})
+		textToReplace = CKEDITOR.instances['data[body]'].getSelection();
+		textToReplace = textToReplace == null ? '' : textToReplace.getSelectedText();
+		if(textToReplace.length>0){
+			$('#bodyDropTarget .allowed')
+				.css('display','table-cell')
+				.each(function(){
+					var $_target = $(this);
+					var targetName = $_target.attr('rel');
+					targets[targetName] = {
+						width: parseInt($_target.width()),
+						height: parseInt($_target.height()),
+						left: $_target.offset().left,
+						top: $_target.offset().top
+					};
+				});
+			windowTopPosition = $(window).scrollTop();
+		}
+	}
+	function hideBodyDropTarget(e,draggedElement){
+		$('#bodyDropTarget').hide().find('div').hide();
+		if(textToReplace.length>0){
+			for(var targetName in targets){
+				if(targets[targetName].hover){
+					var attributesList = $.parseJSON($('.dropSubTarget[rel="'+targetName+'"]').attr('data-options'));
+					var htmlAttributes = '';
+					for(var attributeName in attributesList){
+						htmlAttributes += ' ' + attributeName + '="' + attributesList[attributeName] + '"';
+					}
+					var href = $(draggedElement.item).find('.media_nickname').val();
+					var element = CKEDITOR.dom.element.createFromHtml('<a href="'+href+'"'+htmlAttributes+'>'+textToReplace+'</a>');
+					CKEDITOR.instances['data[body]'].insertElement(element);
+				}
+			}
+			textToReplace = '';
+		}
+	}
+	function checkDragDropTarget(e){
+		var mouseX = e.pageX;
+		var mouseY = e.pageY;
+		if(mouseY>editorTopPosition-50 && mouseY < editorTopPosition+editorHeight + 50){ 
+		// area sensibile dell'editor perché venga visto come target
+			$('#bodyDropTarget').css('display','table');
+
+			if(textToReplace.length>0){
+				$('#bodyDropTarget .allowed').show();//css('display','table-cell');
+				if(windowTopPosition == $(window).scrollTop()){
+					for(var targetName in targets){
+						var $_target = $('.dropSubTarget[rel="'+targetName+'"]')
+						if (mouseX>targets[targetName].left
+							&& mouseX<targets[targetName].left+targets[targetName].width
+							&& mouseY>targets[targetName].top
+							&& mouseY<targets[targetName].top+targets[targetName].height){
+
+							$_target.addClass('hover');
+							targets[targetName].hover = true;
+						} else {
+							$_target.removeClass('hover');
+							targets[targetName].hover = false;
+						}
+					}				
+				} else {
+					windowTopPosition = $(window).scrollTop();
+					for(var targetName in targets){
+						var $_target = $('.dropSubTarget[rel="'+targetName+'"]')
+						var offset =  $_target.offset();
+						targets[targetName].left = offset.left;
+						targets[targetName].top = offset.top;
+						
+						if (mouseX>offset.left
+							&& mouseX<offset.left+targets[targetName].width
+							&& mouseY>offset.top
+							&& mouseY<offset.top+targets[targetName].height){
+
+							$_target.addClass('hover');
+							targets[targetName].hover = true;
+						} else {
+							$_target.removeClass('hover');
+							targets[targetName].hover = false;
+						}
+					}
+				}
+			} else {
+				$('#bodyDropTarget .denied').css('display','table-cell');
+			}
+		} else {
+			$('#bodyDropTarget').hide().find('div').hide();
+		}
+	}
 
 	$("#reposItems").click( function () {
 		$("#loading").show();
@@ -153,7 +265,6 @@ $(document).ready(function()
 	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} XdisableSelection" id="item_{$item.id}">
 			{assign_associative var="params" item=$item}
 			{$view->element('form_file_item',$params)}
-			
 	</div>
 {/foreach}
 

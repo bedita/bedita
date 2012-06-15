@@ -83,10 +83,6 @@ UL {list-style:none;}
 
 UL UL {margin-left:20px;}
 
-ins {color: green; background: #DFD; text-decoration: none;}
-
-del {color: red; background: #FDD; text-decoration: none;}
-
 /*...........................................    
 
     General, states
@@ -2111,6 +2107,51 @@ img.smallicon {
 	}
 	
 	
-	
-	
-	
+/* Drag&drop di elementi multimediali nel testo */
+
+.dropTarget {
+	position: relative;
+	width: 100%;
+	display: none;
+	/*display: table;*/
+}
+.dropSubTarget {
+	/* display: table-cell; */
+	display: none; 
+	position: relative;
+	height: 90%;
+}
+.dropSubTarget.allowed {
+	background: #ffffff;
+	border: 8px solid #000000;
+	border-left: 0px;
+	opacity: 0.5;
+}
+.dropSubTarget.allowed:first-child {
+	border-left: 8px solid #000000;
+}
+.dropSubTarget.allowed.hover { /*pseudo classe aggiunta in js (stiamo trascinando, niente mouseover)*/
+	background-color: #999999;
+	border-color: #666666;
+	opacity: 0.75;
+}
+.dropSubTarget.denied {
+	background: #999999;
+	opacity: 0.75;
+}
+.dropSubTarget.allowed p {
+	text-transform: uppercase;
+	text-align: center;
+	margin-top: 30%; 
+	font-size: 30px;
+	line-height: 40px;
+	color: black;
+}
+.denied p {
+	text-transform: uppercase;
+	text-align: center;
+	margin-top: 20%; 
+	font-size: 30px;
+	line-height: 40px;
+	color: white;
+}
