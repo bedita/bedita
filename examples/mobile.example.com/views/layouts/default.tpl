@@ -25,7 +25,7 @@
 	{$html->css('photoswipe')}
 	{$html->css("common")}
 
-	{$javascript->link("libs/jquery-1.7.1.min")}
+	{$html->script("libs/jquery-1.7.1.min")}
 	
 	<script type="text/javascript">
 	{literal}
@@ -35,11 +35,11 @@
 	{/literal}
 	</script>
 
-	{$javascript->link("libs/jquery.mobile-1.1.0.min")}
+	{$html->script("libs/jquery.mobile-1.1.0.min")}
 
 	{* photoswipe *}
-	{$javascript->link('libs/klass.min')}
-	{$javascript->link('libs/code.photoswipe.jquery-3.0.4.min')}
+	{$html->script('libs/klass.min')}
+	{$html->script('libs/code.photoswipe.jquery-3.0.4.min')}
 	
 	{$beFront->feeds()}
 	{$scripts_for_layout}
@@ -48,6 +48,23 @@
 <body> 
 
 {$content_for_layout}
+
+<div data-role="page" id="menu">
+
+	{$view->element('header')}
+
+	<div data-role="content">		
+		<ul data-role="listview">
+			{foreach $sectionsTree as $branch}
+				<li>
+					<a href="{$html->url($branch.canonicalPath)}"><h1>{$branch.title}</h1></a>
+				</li>
+			{/foreach}
+		</ul>
+	</div>
+	{$view->element('footer')}
+</div>
+
 
 {$beFront->stats()}
 </body>

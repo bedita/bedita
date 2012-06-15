@@ -29,13 +29,8 @@
  * $Id: frontend.ini.php 2061 2009-07-03 14:44:07Z dante $
  */
 
-require_once(BEDITA_CORE_PATH . DS . "config" . DS . "bedita.ini.php") ;
-if (file_exists (BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ) {
-	include(BEDITA_CORE_PATH . DS . "config" . DS . "bedita.cfg.php") ;	
-}
-if (file_exists (APP. "config" . DS . "mapping.cfg.php") ) {
-	include(APP. "config" . DS . "mapping.cfg.php") ;	
-}
+require BEDITA_CORE_PATH . DS . "config" . DS . "bedita.ini.php";
+include APP. "config" . DS . "mapping.cfg.php";
 
 //////////////////////////////////////////////////////
 // EDITABLE STUFF         ///////////////
@@ -45,7 +40,7 @@ if (file_exists (APP. "config" . DS . "mapping.cfg.php") ) {
  * Publication id referenced by frontend, 
  * change if different from id = 1 (default)
  */
-$config['frontendAreaId'] 	= 16858;
+$config['frontendAreaId'] 	= 1;
 
 
 /**

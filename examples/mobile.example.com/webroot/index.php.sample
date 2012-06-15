@@ -93,12 +93,9 @@
 	} else {
 		 $Dispatcher=new Dispatcher();
 		 try {
-		 	$Dispatcher->dispatch($url);
+		 	$Dispatcher->dispatch();
 		} catch (Exception $ex) {
 			FrontendController::handleExceptions($ex);
 		}
-	}
-	if (Configure::read() > 0) {
-		 echo "<!-- " . round(getMicrotime() - $TIME_START, 4) . "s -->";
 	}
 ?>
