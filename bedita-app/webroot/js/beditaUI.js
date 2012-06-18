@@ -127,6 +127,19 @@ jQuery.fn.extend({
 		$_this.find(".messagedetail").click(function() {
 			$(this).next().toggle();
 		});
+	},
+	
+	preBind: function(type, data, fn) {
+		return this.each(function () {
+			var $this = $(this);
+
+			$this.bind(type, data, fn);
+
+			var currentBindings = $this.data('events')[type];
+			if ($.isArray(currentBindings)) {
+				currentBindings.unshift(currentBindings.pop());
+			}
+		});
 	}
 
 

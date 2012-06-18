@@ -15,11 +15,14 @@
 {/if}	
 		<!-- per il drag&drop degli oggetti multimediali-->
 		<div id="bodyDropTarget" class="dropTarget">
-			<div class='dropSubTarget allowed' rel='placeref' data-options='{literal}{"class": "placeref","target":"modal"}{/literal}'>
+			<div class='dropSubTarget allowed' rel='placeref' data-attributes='{literal}{"class": "placeholder placeref","target":"modal"}{/literal}' data-options='{literal}{"type": "append","object": "img"}{/literal}'>
 				<p>Rilascia qui per inserire come placeref</p>
 			</div>
-			<div class='dropSubTarget allowed' rel='placeholder' data-options='{literal}{"class": "placeholder","target":"modal"}{/literal}'>
+			<div class='dropSubTarget allowed' rel='placeholder' data-attributes='{literal}{"class": "placeholder","target":"modal"}{/literal}' data-options='{literal}{"type": "append", "object": "img"}{/literal}'>
 				<p>Rilascia qui per inserire come placeholder</p>
+			</div>
+			<div class='dropSubTarget allowed' rel='simplelink' data-attributes='{literal}{"class": "simplelink","target":"modal"}{/literal}' data-options='{literal}{"type": "wrap","selection":"required", "object": "a"}{/literal}'>
+				<p>Rilascia qui per inserire come link semplice</p>
 			</div>
 			<div class="dropSubTarget denied">
 				<p>Seleziona prima qualcosa nell'editor</p>
