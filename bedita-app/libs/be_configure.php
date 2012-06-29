@@ -34,8 +34,6 @@ class BeConfigure {
 	/**
 	 * initialize BEdita static configuration setting cache and
 	 * add plugged model and component path
-	 * 
-	 * @return unknown_type
 	 */
 	public function initConfig() {
 		if (($cachedConfig = Cache::read('beConfig')) === false) {

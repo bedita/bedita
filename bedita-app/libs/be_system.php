@@ -37,23 +37,53 @@ if (!class_exists('BeditaException')) {
  */
 class BeSystem {
 
+	/**
+	 * Check whether directory $dirPath exists
+	 * 
+	 * @param string $dirPath
+	 * @return boolean
+	 */
 	public function checkAppDirPresence($dirPath) {
 		return (is_dir($dirPath));
 	}
 
+	/**
+	 * Check whether file $filePath exists
+	 * 
+	 * @param string $filePath
+	 * @return boolean
+	 */
 	public function checkAppFilePresence($filePath) {
 		return file_exists($filePath);
 	}
 
+	/**
+	 * Check permissions for directory
+	 * 
+	 * @param string $dirPath
+	 * @param int $mask
+	 * @return string
+	 */
 	public function checkAppDirPerms($dirPath,$mask = 511) {
 		return sprintf("%o",(fileperms($dirPath) & $mask));
 	}
 
+	/**
+	 * Create file $filePath from $filePath.sample
+	 * 
+	 * @param string $filePath
+	 * @return boolean
+	 */
 	public function createFileFromSample($filePath) {
 		$sampleFile = $filePath.'.sample';
 		return @copy($sampleFile, $filePath);
 	}
 
+	/**
+	 * Check whether file $filename is writable
+	 * 
+	 * @param string $filename
+	 */
 	public function checkWritable($filename) {
 		return is_writable($filename);
 	}
@@ -62,6 +92,7 @@ class BeSystem {
 	 * delete log files
 	 * 
 	 * @param string $filename, filename to delete i.e. error.log
+	 * @param string $basePath, path to file (default is logs path)
 	 * @return array, it contains
 	 *				'failed' => array of errors, empty if no errors occured
 	 *				'success'  => array of file deleted
