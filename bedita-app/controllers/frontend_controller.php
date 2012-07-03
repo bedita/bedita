@@ -550,6 +550,8 @@ abstract class FrontendController extends AppController {
 			
 			if ($sectionObject !== self::UNLOGGED && $sectionObject !== self::UNAUTHORIZED) {
 
+				$resultSections = array();
+				$resultObjects = array();
 				$this->setCanonicalPath($sectionObject);
 				if($loadContents) {
 					$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
@@ -557,10 +559,8 @@ abstract class FrontendController extends AppController {
 					$resultObjects = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 				}
 				if ($depth === null || $depth > 1) {
-					if ($depth > 1) {
-						$depth--;
-					}
-					$resultSections = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $depth, $flatMode);
+					$innerDepth = ($depth === null) ? null : $depth-1;
+					$resultSections = $this->loadSectionsTree($s['id'], $loadContents, $exclude_nicknames, $innerDepth, $flatMode);
 				}
 				if(!$flatMode) {
 					if(!empty($resultObjects)) {
