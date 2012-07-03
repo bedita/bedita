@@ -98,7 +98,7 @@ $(document).ready(function() {
 			{assign var=leafs value=$conf->objectTypes.leafs}
 			{foreach from=$conf->objectTypes item=type key=key}	
 				{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
-				<option>	
+				<option {if ($type.name == 'document')}selected="selected"{/if}>	
 					{t}{$type.model}{/t}
 				</option>
 				{/if}
@@ -108,7 +108,7 @@ $(document).ready(function() {
 			<br />
 			<label>{t}Position{/t}</label>
 			<select style="width:250px">
-				<option>Tree</option>
+				{$beTree->option($tree)}
 			</select>
 			<hr />
 			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
