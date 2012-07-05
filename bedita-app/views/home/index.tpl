@@ -24,7 +24,7 @@ $(document).ready(function() {
 });
 
     $(document).ready(function(){	
-		openAtStart("#search");
+		openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
     });
 	
 //-->
