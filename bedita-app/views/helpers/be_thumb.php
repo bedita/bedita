@@ -75,20 +75,35 @@ class BeThumbHelper extends AppHelper {
 	 * @param: array $be_obj, required, object, BEdita Multimedia Object
 	 * @param: array $params
 	 * extra info about $params:
-	 *         width, height, longside, at least one required, integer (if longside, w&h are ignored)
+	 *  
+	 *         width, height, longside, optional: [integer] 
+	 *         if no parameters is set, use default width & height in bedita.ini.php (['image']['thumbWidth'], ['image']['thumbHeight'])
+	 *         if longside is set, width & height are ignored and mode is forced to resize.
+	 *         if only width or only height is specified, the mode and modeparam are ignored and forced to 'resize'.    
+	 *          
+	 *         mode, optional: [crop, croponly, resize, 'fill', 'stretch'] 
+	 *         if not specified default bedita.ini.php (['image']['thumbMode']) is used (but always overrided by the rules above).
+	 *         'fill' is legacy options: it will set mode always to 'resize' but modeparam to 'fill' only if longside is not set. 
+	 *         'stretch' is legacy options: it will set mode always to 'resize' and modeparam to 'stretch'.
 	 *         
-	 *         mode, optional: [crop, croponly, resize] if not specified default bedita.ini.php (['image']['thumbMode']) is used.
+	 *         modeparam, optional: [fill, stretch, 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'] 
+	 *         depends on mode:
+	 *             if resize: 'fill' or 'stretch' and if left empty do simple resize.
+	 *             if crop, a string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR' (default: ['image']['thumbCrop'] )
+	 *              
+	 *         cache, optional: [true, false]		
+	 *         allow the caching of images, default in bedita.ini (['image']['cache'] )
 	 *         
-	 *         modeparam, optional, depends on mode:
-	 *             if resize: 'fill' or 'stretch', if empty do simple resize.
-	 *             if crop, a string describing crop zone 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
-	 *             
-	 *         if only width or only height is specified, the mode and modeparam are ignored and forced to resize.    
-	 *             
-	 *         cache, optional:		allow the caching of images, default in bedita.ini
-	 *         bgcolor, optional: 	string representing hex color, i.e. 'FFFFFF' for the background (show only on resize mode -> fill)
-	 *         upscale, optional: 	bool, allow or not upscale default bedita.ini.php (['image']['thumbUpscale'])
-	 *         type, optional: 		'gif'/'png'/'jpg', force image target type
+	 *         bgcolor, optional: [string]	
+	 *         string representing hex color, i.e. 'FFFFFF' for the background (only on mode=resize and modeparam=fill)
+	 *         default in bedita.ini (['image']['background'] )
+	 *         
+	 *         upscale, optional: [true, false] 	
+	 *         allow or not upscale. default bedita.ini.php (['image']['thumbUpscale'])
+	 *         
+	 *         type, optional: ['gif'/'png'/'jpg'] 
+	 *         force image target type (default the same as original)
+	 *         
 	 *         watermark, optional: watermark?
 	 *         
 	 *         NB: optionally the second argument may be the associative array of said parameters
@@ -101,15 +116,16 @@ class BeThumbHelper extends AppHelper {
 		// defaults?
 		// $width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null, $cache = true
 		// this method is for image only, check bedita object type
-
 		if ( strpos($be_obj['mime_type'], "image") === false ) {
 			$this->_triggerError ( $this->_helpername . ": '" . $be_obj['name'] . "' is not a valid Bedita image object (object type is " . $be_obj['mime_type'] . ")", E_USER_NOTICE ) ;
 			return $this->_conf['imgMissingFile'];
-		}
-		elseif (!in_array($be_obj["mime_type"], $this->_mimeType)) {
+			
+		} elseif (!in_array($be_obj["mime_type"], $this->_mimeType)) {
 			return false;
+			
+		} else {
+			$this->_resetObjects();
 		}
-		else $this->_resetObjects();
 	
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark");
@@ -138,23 +154,33 @@ class BeThumbHelper extends AppHelper {
 
 		//Setting params:
 		//cache
-		if ( isset ($cache) )	$this->_imageTarget['cacheImages'] = $cache;
-		else 					$this->_imageTarget['cacheImages'] = $this->_conf['image']['cache'];
+		if ( isset ($cache) )	{
+			$this->_imageTarget['cacheImages'] = $cache;
+		} else {
+			$this->_imageTarget['cacheImages'] = $this->_conf['image']['cache'];
+		}
 		
 		// upscale
-		if ( isset ($upscale) )	$this->_imageTarget['upscale'] = $upscale;
-		else 					$this->_imageTarget['upscale'] = $this->_conf['image']['thumbUpscale'];
+		if ( isset ($upscale) )	{
+			$this->_imageTarget['upscale'] = $upscale;
+		} else {
+			$this->_imageTarget['upscale'] = $this->_conf['image']['thumbUpscale'];
+		}
 		
 		//background
-		if ( isset ($bgcolor) )	$this->_imageTarget['fillcolor'] = $bgcolor;
-		else					$this->_imageTarget['fillcolor'] = $this->_conf['image']['background'];
+		if ( isset ($bgcolor) ) {
+			$this->_imageTarget['fillcolor'] = $bgcolor;
+		} else {
+			$this->_imageTarget['fillcolor'] = $this->_conf['image']['background'];
+		}
 		
 		// cropmode
 		$this->_imageTarget['cropmode'] = $this->_conf['image']['thumbCrop'];
 
 		// default mode, if not specified
-		if ( !isset ($mode) ) $mode = $this->_conf['image']['thumbMode'];
-		
+		if ( !isset ($mode) ) {
+			$mode = $this->_conf['image']['thumbMode'];
+		}
 		
 		// build _image_info with getimagesize() or available parameters
 		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
@@ -188,7 +214,6 @@ class BeThumbHelper extends AppHelper {
 			$this->_imageInfo['type'] = $this->_imagetype[ $this->_imageInfo['ntype'] ];
 		}
 
-
 		// target image type
 		if ( !@empty($type) ) {
 			$this->_imageTarget['type'] = $type;
@@ -196,14 +221,13 @@ class BeThumbHelper extends AppHelper {
 			$this->_imageTarget['type'] = $this->_imageInfo['type'];
 		}
 
-
-		// target size, _imageTarget['w'] &  _imageTarget['h']   [unused $this->_targetSize ($width, $height)]
-		// target image size
-		if ( empty($width) && empty($height) && !isset($longside) ) {
+		// Target image size: _imageTarget['w'] & _imageTarget['h']   
+		// [unused $this->_targetSize ($width, $height)]
+		if ( empty($width) && empty($height) && !isset($longside) ) { //no parameter set, use default
 			$width  = $this->_conf['image']['thumbWidth'];
 			$height = $this->_conf['image']['thumbHeight'];
 			
-		}else if ( !empty($longside) && is_numeric($longside) ) { // 
+		}else if ( !empty($longside) && is_numeric($longside) ) { // if is set longside, ignore the others parameters 
 			if ($this->_imageInfo["w"] > $this->_imageInfo["h"]) {
 				$width  = $longside; 
 				$height = 0;
@@ -211,28 +235,28 @@ class BeThumbHelper extends AppHelper {
 				$width  = 0;
 				$height = $longside;
 			}
-		}else { // set the one missing
+			//forcing the mode to "resize" if longside
+			$mode = "resize";
+			$modeparam = null;
+		}else if ( empty($width) || empty($height) ) { // case with only one parameter w/h
+			
 			if ( empty($width) ){  
 				$width  = 0;
 			}
-			if ( empty($height) ){ 
+			if ( empty($height) ){
 				$height = 0;
 			}
-		}
-		
-		if ( !is_numeric($width) || !is_numeric($height)) {
 			//forcing the mode to "resize" if one coordinate is empty
 			$mode = "resize";
 			$modeparam = null;
 		}
-		
+
 		$this->_imageTarget['w'] = $width;
 		$this->_imageTarget['h'] = $height;
 		
 		//Set the embed mode
 		switch ($mode) {	
 			case "croponly":  //general crop
-
 				$this->_imageTarget['mode'] = 0;
 				if ( isset ($modeparam) ) {	
 					$this->_imageTarget['cropmode'] = $modeparam; // overwrite crop mode
@@ -247,7 +271,7 @@ class BeThumbHelper extends AppHelper {
 			case "resize":
 			default:
 				$this->_imageTarget['mode'] = 2;
-				if ( isset ($modeparam) ) {	
+				if ( isset ($modeparam) ) {
 					$this->_imageTarget['resizetype'] = $modeparam;
 				}
 				
@@ -259,10 +283,12 @@ class BeThumbHelper extends AppHelper {
 				
 				if (empty($longside)) {
 					$this->_imageTarget['resizetype'] = 'fill';
-					if ( isset ($modeparam) )	$this->_imageTarget['fillcolor'] = $modeparam;
-					else						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
+					if ( isset ($modeparam) )	{
+						$this->_imageTarget['fillcolor'] = $modeparam;
+					}else {
+						$this->_imageTarget['fillcolor'] = $this->_conf['image']['thumbFill'];
+					}
 				}
-				
 				break;
 			
 			case "stretch":
@@ -309,7 +335,7 @@ class BeThumbHelper extends AppHelper {
 		
 		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
 		
-		//set upscale  
+		//set upscale
 		if ($this->_imageTarget['upscale']) {
 			$thumbnail->setOptions(array("resizeUp" => true));
 		}
@@ -330,11 +356,12 @@ class BeThumbHelper extends AppHelper {
 			
 			// resize
 			case 2:
+				
 				//stretch or fill of simple resize
 				if (empty($this->_imageTarget['resizetype'])){
 					
 					$thumbnail->resize($this->_imageTarget['w'], $this->_imageTarget['h']);
-					
+						
 				}else if ($this->_imageTarget['resizetype'] == 'stretch') {
 
 					$thumbnail->resizeStretch($this->_imageTarget['w'], $this->_imageTarget['h']);
