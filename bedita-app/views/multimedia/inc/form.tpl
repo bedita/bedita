@@ -23,7 +23,12 @@
 	{$view->element('form_textbody')}
 {/if}
 
+{if $object.Category == "video"}
+{$view->element('form_external_audiovideo')}
+{/if}
+
 {$view->element('form_file')}
+
 
 {if !empty($object)}
 	{include file="inc/list_relationships.tpl"}
