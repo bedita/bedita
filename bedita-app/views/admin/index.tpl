@@ -5,11 +5,22 @@
 	function viewUser(objectid) {
 		document.location = "{/literal}{$html->url('/admin/viewUser')}{literal}/" + objectid;
 	}
-	function delUserDialog(userid,objectid) {
-		if(!confirm("{/literal}{t}Do you really want to remove user{/t}{literal} " + userid + "?")) {
-			return false ;
+	function delUserDialog(userid,objectid,related,valid) {
+		if (related) {
+			if (!valid) {
+				alert("{/literal}{t}The User cannot be deleted, object related presents. It's alredy blocked{/t}{literal} ");
+				return false;
+			}
+			if(!confirm("{/literal}{t}The User cannot be deleted, object related presents. Do you want to block{/t}{literal} " + userid + "?")) {
+				return false;
+			}
+			document.location = "{/literal}{$html->url('/admin/blockUser')}{literal}/" + objectid;
+		}else {
+			if(!confirm("{/literal}{t}Do you really want to remove user{/t}{literal} " + userid + "?")) {
+				return false ;
+			}
+			document.location = "{/literal}{$html->url('/admin/removeUser')}{literal}/" + objectid;
 		}
-		document.location = "{/literal}{$html->url('/admin/removeUser')}{literal}/" + objectid;
 	}
 {/literal}
 //-->

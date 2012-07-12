@@ -41,8 +41,24 @@ class AdminController extends ModulesController {
 	 ); 
 	 protected $moduleName = 'admin';
 	 
-	 function index() { 	
-		$this->set('users', $this->paginate('User'));
+	 function index() {
+	 	
+	 	$users = $this->paginate('User');
+	 	$beObject = ClassRegistry::init("BEObject");
+		foreach ($users as &$user) {
+			$res = $beObject->find('list', array(
+										"conditions" => "user_created=" . $user["User"]['id']
+										)
+									);
+									
+			if (!empty($res)) {
+				$user['User']['related_obj'] = 1;
+			}else {
+				$user['User']['related_obj'] = 0;
+			}
+		}
+		
+		$this->set('users', $users);
 	}
 	
 	function showUsers() {
@@ -132,7 +148,9 @@ class AdminController extends ModulesController {
 		}
 	}
 	
-	 function removeUser($id) {
+	
+	
+	function removeUser($id) {
 	 	$this->checkWriteModulePermission();
 	 	if(isset($id)) {
 	  		$u = $this->User->findById($id);
@@ -143,6 +161,22 @@ class AdminController extends ModulesController {
 		  		throw new BeditaException(__("Auto-remove forbidden",true));
 		  	$this->BeAuth->removeUser($userid);
 	 		$this->eventInfo("user ".$userid." deleted");
+	 	}
+	  }
+	  
+	function blockUser($id) {
+	 	$this->checkWriteModulePermission();
+	 	if(isset($id)) {
+	  		if($id === $this->BeAuth->user["userid"])
+		  		throw new BeditaException(__("Auto-block forbidden",true));
+		  		
+	 		$u = $this->User->findById($id);
+	  		if(empty($u))
+		  		throw new BeditaException(__("Bad data",true));
+		  		
+			$userModel = ClassRegistry::init("User");
+			$userModel->id = $id;
+			$userModel->saveField('valid',0);
 	 	}
 	  }
 
@@ -508,6 +542,10 @@ class AdminController extends ModulesController {
 	 							"ERROR"	=> $this->referer() 
 	 						),
 				"removeUser" => 	array(
+	 							"OK"	=> "/admin",
+	 							"ERROR"	=> "/admin" 
+	 						),
+	 			"blockUser" => 	array(
 	 							"OK"	=> "/admin",
 	 							"ERROR"	=> "/admin" 
 	 						),

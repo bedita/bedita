@@ -241,5 +241,19 @@ class User extends BEAppModel
 			
 	}
 	
+	function beforeDelete() {
+	
+		$beObject = ClassRegistry::init("BEObject");
+		$res = $beObject->find('list', array(
+										"conditions" => "user_created=" . $this->id
+										)
+									);
+		if (!empty($res)) {
+			throw new BeditaException(__("Error deleting User",true), "Error deleting User, related objects present");
+		}
+				
+		return true;
+	}
+	
 }
 ?>
