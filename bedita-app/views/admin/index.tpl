@@ -8,10 +8,10 @@
 	function delUserDialog(userid,objectid,related,valid) {
 		if (related) {
 			if (!valid) {
-				alert("{/literal}{t}The User cannot be deleted, object related presents. It's alredy blocked{/t}{literal} ");
+				alert("{/literal}{t}User cannot be removed, he/she did create or modify some contents. It's alredy blocked{/t}{literal} ");
 				return false;
 			}
-			if(!confirm("{/literal}{t}The User cannot be deleted, object related presents. Do you want to block{/t}{literal} " + userid + "?")) {
+			if(!confirm("{/literal}{t}User cannot be removed, he/she did create or modify some contents. Do you want to block{/t}{literal} " + userid + "?")) {
 				return false;
 			}
 			document.location = "{/literal}{$html->url('/admin/blockUser')}{literal}/" + objectid;
