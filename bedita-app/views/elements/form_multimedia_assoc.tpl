@@ -2,88 +2,95 @@
 <script type="text/javascript">
 <!--
 
-function addItemsToParent() {
+function addItemsToParent() { 
 	var itemsIds = new Array() ;
-	$(":checkbox").each(function() {
-		try {
-			if(this.checked && this.name == 'chk_bedita_item') { itemsIds[itemsIds.length] = $(this).attr("value") ;}
-		} catch(e) {
-		}
-	}) ;
-	for(i=0;i<itemsIds.length;i++) {
+	$(":checkbox").each(function() { 
+		try { 
+			if (this.checked && this.name == 'chk_bedita_item') { 
+				itemsIds[itemsIds.length] = $(this).attr("value");
+			} 
+		} catch(e) { 
+		} 
+	} ) ;
+	for (i=0;i<itemsIds.length;i++) { 
 		$("#tr_"+itemsIds[i]).remove();
-	}
+	} 
 	commitUploadItem(itemsIds, '{$relation}');
 }
 
-function loadMultimediaAssoc(urlSearch, showAll) {
+function loadMultimediaAssoc(urlSearch, showAll) { 
 	$("#loading").show();
-	$("#ajaxSubcontainer").load(urlSearch, function() {
+	$("#ajaxSubcontainer").load(urlSearch, function() { 
 		$("#loading").hide();
-		if (showAll) 
+		if (showAll) { 
 			$("#searchMultimediaShowAll").show();
-		else
+		} else { 
 			$("#searchMultimediaShowAll").hide();
-	});
-}
+		} 
+	} );
+} 
 
-$(document).ready(function(){
-	$(".selItems").bind("click", function(){
+$(document).ready(function(){ 
+
+	$(".selItems").bind("click", function(){ 
 		var check = $("input:checkbox",$(this).parent().parent()).get(0).checked ;
 		$("input:checkbox",$(this).parent().parent()).get(0).checked = !check ;
-	}) ;
+	} );
 	
-	$("#searchMultimedia").bind("click", function() {
+	$("#searchMultimedia").bind("click", function() { 
 		var textToSearch = escape($("#searchMultimediaText").val());
 		loadMultimediaAssoc(
-			"{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/" + textToSearch,
+			"{$html->url('/streams/showStreams')}/{$object_id|default:'0'}/" + textToSearch,
 			true
 		);
-	});
-	$("#searchMultimediaText").focus(function() {
+	} );
+	$("#searchMultimediaText").focus(function() { 
 		$(this).val("");
-	});
-	$("#searchMultimediaShowAll").click(function() {
+	} );
+	$("#searchMultimediaShowAll").click(function() { 
 		loadMultimediaAssoc(
 			"{$html->url("/streams/showStreams")}/{$object_id|default:'0'}",
 			false
 		);
-	});
+	} );
 	
+	$("#addItems").click(function(){ 
+		addItemsToParent();
+	} );
 	
 	{if $toolbar|default:""}
 	
-		$("#streamPagList").tablesorter({
+		$("#streamPagList").tablesorter({ 
 			headers: {  
-				0: {sorter: false},
-				2: {sorter: false}
-			}
-		});
+				0: { sorter: false },
+				2: { sorter: false } 
+			} 
+		} );
 		 
-		$("#streamNextPage").click(function() {
+		$("#streamNextPage").click(function() { 
 			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.next}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
-		});
-		$("#streamPrevPage").click(function() {
+		} );
+		$("#streamPrevPage").click(function() { 
 			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.prev}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
-		});
-		$("#streamFirstPage").click(function() {
+		} );
+		$("#streamFirstPage").click(function() { 
 			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
-		});
-		$("#streamLastPage").click(function() {
+		} );
+		$("#streamLastPage").click(function() { 
 			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.last}/{$toolbar.dim}";
 			loadMultimediaAssoc(urlReq,	false);
-		});
-		$("#streamPagDim").change(function() {
+		} );
+		$("#streamPagDim").change(function() { 
 			urlReq = "{$html->url("/streams/showStreams")}/{$object_id|default:'0'}/{$streamSearched|default:'0'}/{$toolbar.first}/" + $(this).val();
 			loadMultimediaAssoc(urlReq,	false);
-		});
+		} );
 	
 	{/if}
 	
-});
+} );
 //-->
 
 </script>
@@ -199,7 +206,7 @@ $(document).ready(function(){
 			&nbsp;<input type="checkbox" class="selectAll" id="selectAll" />&nbsp;
 			<label for="selectAll"> {t}(Un)Select All{/t}</label>
 			&nbsp;&nbsp;&nbsp;
-			<input type="button" onclick="javascript:addItemsToParent();" value="{t}Add selected items{/t}"/>
+			<input type="button" id="addItems" value="{t}Add selected items{/t}"/>
 		{/if}
 	</fieldset>
 	

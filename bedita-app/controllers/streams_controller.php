@@ -73,7 +73,7 @@ class StreamsController extends AppController {
 			}
 		}
 		
-		$this->layout = null;
+		$this->layout = "ajax";
 		$this->set("bedita_items",$bedita_items['items']);
 		$this->set('toolbar', 		$bedita_items['toolbar']);
 		$this->set("object_id", $obj_id);
