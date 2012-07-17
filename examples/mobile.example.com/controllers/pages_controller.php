@@ -22,15 +22,14 @@ class PagesController extends FrontendController {
 		}
 	}
 
-	protected function homePageBeforeFilter() {
+	protected function homePageBeforeRender() {
 		$this->set("home", true);
+		$this->action = "homePage";
 	}
 
 	public function tags() {
 		$this->loadTags();
 	}
-
-	public function credits() {}
 
 }
 
