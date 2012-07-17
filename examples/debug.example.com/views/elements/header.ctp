@@ -5,8 +5,19 @@
 	<?php endif; ?>
 <?php endforeach; ?>
 </h3>
-<hr/>
 
+<hr/>
+<h3><?php echo __("current locale", true);?>: <?php echo $currLocale;?></h3>
+<em><?php echo strftime("%A %e %B", time());?></em>
+
+<hr/>
+<h3><?php __("menu", false);?>:</h3>
+<a href="javascript:void(0)" class="open-close-link"><?php echo __("show/hide", true);?></a>
+<div style="display:none;">
+<?php echo $beFront->menu($sectionsTree); ?>
+</div>
+
+<hr/>
 <h3><?php __("section breadcrumb", false);?>:</h3>
 <?php echo $beFront->breadcrumb(); ?>
 <br/>

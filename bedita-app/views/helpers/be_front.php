@@ -398,12 +398,12 @@ class BeFrontHelper extends AppHelper {
 	/**
 	 * return an nested unordered list
 	 * 
-	 *		<ul id="menuItem">
-	 *			<li class="$liClass"><a href="...">item 1</a></li>
-	 *			<li class="$liClass">
+	 *		<ul id="$options['id']" class="$options['menu']">
+	 *			<li class="$options['liClass']"><a href="...">item 1</a></li>
+	 *			<li class="$options['liClass']">
 	 *				<a href="...">item 2</a>
-	 *				<ul class="$ulClass">
-	 *					<li class="$liClass"><a href="...">item 3</a></li>
+	 *				<ul class="$options['ulClass']">
+	 *					<li class="$options['liClass']"><a href="...">item 3</a></li>
 	 *					...
 	 *				</ul>
 	 *			</li>
@@ -411,18 +411,30 @@ class BeFrontHelper extends AppHelper {
 	 *		</ul>
 	 *
 	 * @param array $tree section's tree (structure from FrontendController::loadSectionsTree is aspected)
-	 * @param string $ulClass css class name for <ul> except for the first that has id="menuItem"
-	 * @param string $liClass css class name for all <li>
+	 * @param array $options (defaukt values are visible in $defaultOptions array)
+	 * 					"id" => id of main <ul>
+	 * 					"menuClass" => css class of main <ul>
+	 * 					"ulClass" => css class of nested <ul>
+	 * 					"liClass" => css class of <li>
+	 * 					"activeClass" => css class for <li> selected
 	 * @return string
 	 */
-	public function menu(array $tree, $ulClass="children", $liClass="childItem") {
-		$htmlMenu = "<ul id='menuItem'>";
+	public function menu(array $tree, array $options = array()) {
+		$defaultOptions = array(
+			"id" => "menu-item_" . time(),
+			"menuClass" => "menu",
+			"ulClass" => "children", 
+			"liClass" => "child-item",
+			"activeClass" => "on"
+		);
+		$options = array_merge($defaultOptions, $options);
+		$htmlMenu = "<ul id='" . $options["id"] . "' class='" . $options["menuClass"] . "'>";
 		if (empty($tree)) {
-			return $htmlMenu . "<li class='" .$liClass . "'></li></ul>";
+			return $htmlMenu . "<li class='" .$options["liClass"] . "'></li></ul>";
 		}
 
 		foreach ($tree as $section) {
-			$htmlMenu .= $this->menuBranch($section, $ulClass, $liClass);
+			$htmlMenu .= $this->menuBranch($section, $options);
 		}
 
 		return $htmlMenu;
@@ -432,23 +444,24 @@ class BeFrontHelper extends AppHelper {
 	 * return an html <li></li> menu branch
 	 *
 	 * @param array $section
-	 * @param string $ulClass
-	 * @param string $liClass
+	 * @param array $options
+	 * 					"ulClass" => css class of nested <ul>
+	 * 					"liClass" => css class of <li>
 	 * @return string
 	 */
-	private function menuBranch(array $section, $ulClass, $liClass) {
-		$liClasses = $liClass;
+	private function menuBranch(array $section, array $options) {
+		$liClasses = $options["liClass"];
 		if (!empty($this->_section['nickname']) && 
 				($this->_section["nickname"] == $section["nickname"] || strstr($this->_section["canonicalPath"], '/' . $section["nickname"] . '/'))) {
-			$liClasses .= " " . "on";
+			$liClasses .= " " . $options["activeClass"];
 		}
 		$htmlBranch = "<li class='" . $liClasses . "'>" .
 			"<a href='" . $this->Html->url($section["canonicalPath"]) . "' title='" . $section["title"] . "'>" . $section["title"] . "</a>";
 
 		if (!empty($section["sections"])) {
-			$htmlBranch .= "<ul class='" . $ulClass . "'>";
+			$htmlBranch .= "<ul class='" . $options["ulClass"] . "'>";
 			foreach ($section["sections"] as $subSection) {
-				$htmlBranch .= $this->menuBranch($subSection, $ulClass, $liClass);
+				$htmlBranch .= $this->menuBranch($subSection, $options);
 			}
 			$htmlBranch .= "</ul>";
 		}

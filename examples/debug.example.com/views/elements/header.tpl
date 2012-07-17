@@ -7,8 +7,15 @@
 <hr/>
 <h3>{t}current locale{/t}: {$currLocale}</h3>
 <em>{$smarty.now|date_format:"%A %e %B"}</em>
-<hr/>
 
+<hr/>
+<h3>{t}menu{/t}:</h3>
+<a href="javascript:void(0)" class="open-close-link">{t}show/hide{/t}</a>
+<div style="display: none">
+{$beFront->menu($sectionsTree)}
+</div>
+
+<hr/>
 <h3>{t}section breadcrumb{/t}:  </h3>
 {$beFront->breadcrumb()}
 <br/>
