@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-03-20 13:07:26\n"
+"POT-Creation-Date: 2012-07-18 14:53:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -119,6 +119,9 @@ msgstr "Autor"
 
 msgid "Authorized"
 msgstr "Autorisiert"
+
+msgid "Auto-block forbidden"
+msgstr ""
 
 msgid "Auto-remove forbidden"
 msgstr "Auto-Löschen verboten"
@@ -353,6 +356,9 @@ msgstr "Den Eigenschaftsnamen für denselben Typ duplizieren"
 
 msgid "Email"
 msgstr "Email"
+
+msgid "Embed Code"
+msgstr ""
 
 msgid "Empty data"
 msgstr "Leere Daten"
@@ -1467,6 +1473,16 @@ msgstr "Benutzer bereits erstellt"
 
 msgid "User blocked"
 msgstr "Benutzer blockiert"
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. Do you "
+"want to block"
+msgstr ""
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. It's "
+"alredy blocked"
+msgstr ""
 
 msgid "User created"
 msgstr "Benutzer erstellt"

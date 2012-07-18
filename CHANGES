@@ -1,3 +1,42 @@
+Version 3.1.7 - ulmus
+ User-visible changes:
+	* view longer object titles in relations tab
+	* Admin module bugfix - overload user data loading group details
+	* ui: select category filter more generic not only for /index methods
+	* used $view->action to build url in search form action
+	* TinyMCE fix: do not strip empty anchor tags (aka placeholders)
+	* modules: fix error 500 on "deleteSelected"
+	* #316 use nicknames in backend view URLs
+	* categories: alphabetic order in object list view
+	* browser check update / smarty agent / form upload user agent filter
+	* multimedia: fix object list in postgres, see #287 - already fixed in trunk
+	* added mp4 streaming via flowplayer
+	* thumb and embed code for multimedia video items
+	* #280 - managing user object related remove
+
+ Frontend changes:
+	* FrontendController::rss() - make safe string for display as HTML inside <channel> using Sanitize::html()
+	* #210 - fix section canonicalPath if trees.menu is undefined
+	* #315 - fix meta description if no content selected [merge from trunk]
+	* dummy.example.com - added form for password recovery
+	* add "ObjectProperty" to default baseLevel binding
+
+ Developer-visibile changes:
+ 	* bugfix - adding new item in multimedia module inserted a row in trees table also when no position was selected
+ 	* added robots.txt and meta robots noindex, nofollow for backend interface
+ 	* fix BuildFilter con custom table fields - accept values like 0, or '0' in conditions (i.e. Model.field = 0 should be a valid condition)
+ 	* shell: dbadmin massRemove
+ 	* add custom_property, date_item and count_relations filters to BuildFilter behavior
+ 	* introudced the possibility to extend BuldFilter (used to build custom query) through other Behaviors
+ 	* Added locales.php (back ported from 3.2-populus)
+ 	* bootstrap - added addons/modules/behaviors path to app behaviors paths
+ 	* fix belongsTo association between ObjectType and BEObject models
+ 	* smarty modifier multibyte utf8
+ 	* fixed Call-time pass-by-reference in BeLib::arrayValues() (deprecated)
+ 	* Fix compatibility with PHP 5.4+ http://cakephp.lighthouseapp.com/projects/42648/tickets/2847-missing-compatibility-with-php-54-in-cakephp-12x
+ 	* added jquery.color for handle RGBA transition where supported
+
+
 Version 3.1.6 - ulmus
  User-visible changes:
 	* BE gray logo visible in subdirs

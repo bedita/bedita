@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-03-20 13:07:26\n"
+"POT-Creation-Date: 2012-07-18 14:53:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -114,6 +114,9 @@ msgstr "Autore"
 
 msgid "Authorized"
 msgstr "Autorizzato"
+
+msgid "Auto-block forbidden"
+msgstr ""
 
 msgid "Auto-remove forbidden"
 msgstr "Eliminazione-automatica proibita"
@@ -346,6 +349,9 @@ msgstr "Nome di proprietà duplicato per lo stesso tipo"
 msgid "Email"
 msgstr "Email"
 
+msgid "Embed Code"
+msgstr ""
+
 msgid "Empty data"
 msgstr "Dati vuoti"
 
@@ -431,7 +437,8 @@ msgid "Error loading section: %d"
 msgstr "Errore in caricamento sezione: %d"
 
 msgid "Error loading sections tree. Missing parent"
-msgstr "Si è verificato un errore caricando l'albero delle sezioni. Manca il genitore"
+msgstr ""
+"Si è verificato un errore caricando l'albero delle sezioni. Manca il genitore"
 
 msgid "Error loading tag: "
 msgstr "Errore in caricamento tag: "
@@ -1455,6 +1462,16 @@ msgstr "Utente già creato"
 
 msgid "User blocked"
 msgstr "Utente bloccato"
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. Do you "
+"want to block"
+msgstr ""
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. It's "
+"alredy blocked"
+msgstr ""
 
 msgid "User created"
 msgstr "Utente creato"
