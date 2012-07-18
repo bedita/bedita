@@ -94,51 +94,53 @@ class Addon extends AppModel {
 				$ls = $folder->read(true, true);
 				foreach ($ls[1] as $addonFileName) {
 					$addonFile = new File(BEDITA_ADDONS_PATH . DS . $val . DS . $addonFileName);
-					$name = $addonFile->name();
-					$addonName = Inflector::camelize($name);
-					$type = (strstr($val, "behaviors"))? "behaviors" : $val;
-					
-					$addonItem = array(
-						"name" => $addonName,
-						"file" => $addonFileName,
-						"path" => BEDITA_ADDONS_PATH . DS . $val,
-						"enabledPath" => BEDITA_ADDONS_PATH . DS . $val . DS . "enabled",
-						"type" => $type,
-						"update" => false
-					);
-					
-					$alreadyUsed = $Belib->isFileNameUsed($addonFileName, $type, array(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS));
-					$addonItem["fileNameUsed"] = $alreadyUsed;
-					
-					// check if addon file enabled has to be updated
-					$addonFileEnabled = new File(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFileName);
-					$isEnabled = $addonFileEnabled->exists();
-					if ($isEnabled) {
-						if ($addonFile->lastChange() > $addonFileEnabled->lastChange() && $addonFile->md5() != $addonFileEnabled->md5()) {
-							$addonItem["update"] = true;
+					if ($addonFile->ext() == "php") {
+						$name = $addonFile->name();
+						$addonName = Inflector::camelize($name);
+						$type = (strstr($val, "behaviors"))? "behaviors" : $val;
+						
+						$addonItem = array(
+							"name" => $addonName,
+							"file" => $addonFileName,
+							"path" => BEDITA_ADDONS_PATH . DS . $val,
+							"enabledPath" => BEDITA_ADDONS_PATH . DS . $val . DS . "enabled",
+							"type" => $type,
+							"update" => false
+						);
+						
+						$alreadyUsed = $Belib->isFileNameUsed($addonFileName, $type, array(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS));
+						$addonItem["fileNameUsed"] = $alreadyUsed;
+						
+						// check if addon file enabled has to be updated
+						$addonFileEnabled = new File(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFileName);
+						$isEnabled = $addonFileEnabled->exists();
+						if ($isEnabled) {
+							if ($addonFile->lastChange() > $addonFileEnabled->lastChange() && $addonFile->md5() != $addonFileEnabled->md5()) {
+								$addonItem["update"] = true;
+							}
 						}
-					}
-					
-					if ($type == "models") {
-						if ($Belib->isBeditaObjectType($addonName, BEDITA_ADDONS_PATH . DS . $val)) {
-							$addonItem["objectType"] = $name;
-							if (!empty($conf->objectTypes[$name]) && !$alreadyUsed && $isEnabled) {
-								$addons[$type]["objectTypes"]["on"][] = $addonItem;
+						
+						if ($type == "models") {
+							if ($Belib->isBeditaObjectType($addonName, BEDITA_ADDONS_PATH . DS . $val)) {
+								$addonItem["objectType"] = $name;
+								if (!empty($conf->objectTypes[$name]) && !$alreadyUsed && $isEnabled) {
+									$addons[$type]["objectTypes"]["on"][] = $addonItem;
+								} else {
+									$addons[$type]["objectTypes"]["off"][] = $addonItem;
+								}
 							} else {
-								$addons[$type]["objectTypes"]["off"][] = $addonItem;
+								if ($isEnabled) {
+									$addons[$type]["others"]["on"][] = $addonItem;
+								} else {
+									$addons[$type]["others"]["off"][] = $addonItem;
+								}
 							}
 						} else {
 							if ($isEnabled) {
-								$addons[$type]["others"]["on"][] = $addonItem;
+								$addons[$type]["on"][] = $addonItem;
 							} else {
-								$addons[$type]["others"]["off"][] = $addonItem;
+								$addons[$type]["off"][] = $addonItem;
 							}
-						}
-					} else {
-						if ($isEnabled) {
-							$addons[$type]["on"][] = $addonItem;
-						} else {
-							$addons[$type]["off"][] = $addonItem;
 						}
 					}
 				}
