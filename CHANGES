@@ -1,3 +1,88 @@
+Version 3.2.beta2 - populus
+ User-visible changes:
+	* new text for INSTALL 
+	* ui: don't try to open bad id selectors (js)
+	* #307: inverse relations - use left or right object types when necessary
+	* import / export filter
+	* longer titles in free relations tab
+	* added robots.txt and meta robots noindex, nofollow for backend interface
+	* #252 - fixed table compare in plugin install
+	* Users module bugfix - overload user data loading group details. Refactoring
+	* #117 multimedia: handle existing file/url
+	* ui: select category filter more generic not only for /index methods
+	* modules: fix error 500 on "deleteSelected"
+	* #301 admin: view backend and frontends log files
+	* admin: check plugins presence and modules dir existence
+	* #316 use nicknames in backend view URLs
+	* concurrent access: remove update from viewObject to avoid fake concurrent alerts
+	* avoid multiple click events in list objects
+	* webmark - fix smarty error on json object
+	* added UI spanish translation
+	* categories: alphabetic order in object list view - trunk
+	* #313 - admin module: introduced the way to enable/disable all addons (not only for BEdita object type)
+	* fixed unbalanced brackets in multimedia/inc/menuleft.tpl
+	* #319 
+		- add ckeditor simple style 
+		- new json config BEDITA array
+		- add $currLang2 var for 2 char lang codes (en, de, it,...)
+	* #190 Drag&drop of multimedia elements inside body textarea.
+	* ui: dashboard more tabs default open
+	* fix errors in selection of multimedia already present in the system
+	* #295 - Admin module:
+		- impemented the utility functions 'update stream fields', 'rebuild index', 'cleanup cache', 'empty logs', 'clear media cache'
+		- Added an Utility model class to handle common operations used both in UI and in shell scripts
+
+ Frontend changes:
+	* FrontendController::loadSectionObjects(): return empty array if section is protected
+	* FrontendController::rss() - make safe string for display as HTML inside <channel> using Sanitize::html()
+	* #315 ui: BeFront helper metaAll and metaDc not correct for sections
+	* dummy.example.com/html5.example.com - added form for password recovery
+	* introduced simple mobile frontend (mobile.example.com)
+	* fix loadSectionsTree bug using non null $depth
+	* refactoring of BeFront::menu() in order to increase html flexibility
+
+ Developer-visibile changes:
+	* update to CakePHP 1.3.15
+	* update to Smarty 3.1.11
+	* #265 - use SmartyException
+	* #312 object_relations: add utility methods
+	* soap: add try/catch - on exception function returns "null"
+	* #295
+		- improved handle ajax exceptions adding BEdita html standard message error in json response
+		- add system event message on success
+	* in save operations avoided to delete tree positions of objects if isn't set relative data array (data[destination]). Pass empty data[destination] to delete all tree positions
+	* #283 
+		- import/export filter base classes - refactor
+		- new convention for name and supported mime types
+		- dynamic import/export form
+		- export only selected object/section/content - let filter load other objects
+		- shell: bedita export filter -f ... -filter ...  -id ...
+		- add validation methods
+	* #298 - import/export with Phar module / check plugin existence
+	* supported media types: add application/zip
+	* bugfix - adding new item in multimedia module inserted a row in trees table also when no position was selected
+	* replace folder->ls with folder->read
+	* smarty translations fix: check if TrHelper is available
+	* fix BuildFilter con custom table fields - accept values like 0, or '0' in conditions (i.e. Model.field = 0 should be a valid condition)
+	* shell: dbadmin massRemove
+	* add custom_property, date_item and count_relations filter to BuildFilter behavior
+	* Added locales.php
+	* introudced the possibility to extend BuildFilter (used to build custom query) through other Behaviors (merged from ulmus)
+	* fix belongsTo assoication between ObjectType and BEObject models
+	* #305 apidoc corrections/improvements
+	* AppHelper::getHelper public
+	* added otf supported mimetype
+	* bedita.ini: allow reload
+	* fixed  Call-time pass-by-reference in BeLib::arrayValues() (deprecated)
+	* moved jquery.tooltip from pages/update_editor.tpl to layouts/default.tpl to avoid multiple loading 
+	* #313 
+		- Refactoring, add Addon model to handle operations on addons
+		- added FineDiff vendor library to execute diff between files when an addon enabled doesn't match the related addon available
+	* #318
+		- localization: add support for plugin locales in .po files
+		- TrHelper: add domain translation  - see #318
+
+
 Version 3.2.beta - populus
  User-visible changes:
 	* #137 - installation wizard
