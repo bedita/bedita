@@ -86,6 +86,7 @@ $(document).ready(function() {
 	</ul>
 	{/if}
 	
+	{bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
 	<div id="new" class="bordered smallist">
 		<form>
@@ -114,6 +115,7 @@ $(document).ready(function() {
 			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
 		</form>
 	</div>
+	{/bedev}
 
 	<div class="tab"><h2>{t}last notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
