@@ -125,7 +125,13 @@ class AppController extends Controller
 	
 	final function beforeFilter() {
 		self::$current = $this;
-		$this->view = 'Smarty';
+		if ($this->RequestHandler->isMobile()) {
+			$this->view = 'ThemeSmarty';
+			$this->theme = 'mobile';
+		} else {
+			$this->view = 'Smarty';
+		}
+		
 		$conf = Configure::getInstance();
 		
 		$this->set('conf',  $conf);
@@ -377,7 +383,17 @@ class AppController extends Controller
 			if ($this->RequestHandler->isAjax()) {
 				throw new BeditaAjaxException(__("Session Expired", true), array("output" => "reload"));
 			}
-			echo $this->render(null, null, VIEWS."home".DS."login.tpl") ; 
+			
+			if ($this->view == 'Smarty') {
+				echo $this->render(null, null, VIEWS."home".DS."login.tpl") ;
+			} elseif ($this->view == 'ThemeSmarty'){
+				echo $this->render(null, null, VIEWS."themed".DS.$this->theme.DS."home".DS."login.tpl") ;
+			} elseif ($this->view == 'Theme'){
+				echo $this->render(null, null, VIEWS."themed".DS.$this->theme.DS."home".DS."login.ctp") ;
+			} else {
+				echo $this->render(null, null, VIEWS."home".DS."login.ctp") ;
+			}
+			
 			$_loginRunning = false; 
 			exit;
 		}
@@ -386,7 +402,7 @@ class AppController extends Controller
 		$moduleList = ClassRegistry::init("PermissionModule")->getListModules($this->BeAuth->user["userid"]);
 		$this->set('moduleList', $moduleList) ;			
 		$this->set('moduleListInv', array_reverse($moduleList)) ;	
-		
+
 		// verify basic access
 		if(isset($this->moduleName)) {
 			$moduleStatus = ClassRegistry::init("Module")->field("status", array("name" => $this->moduleName));
