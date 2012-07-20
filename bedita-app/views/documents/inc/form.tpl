@@ -42,6 +42,9 @@
 	{$view->element('form_permissions', $params)}
 	
 	{$view->element('form_versions')}
+	
+	{$view->element('form_notes')}
+	
 
 </form>
 
