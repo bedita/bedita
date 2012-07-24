@@ -1,7 +1,9 @@
 <script type="text/javascript">
 {literal}
 $(document).ready(function(){
-	var myPhotoSwipe = $(".gallery a").photoSwipe();
+	if ($(".gallery a").length > 0) {
+		var myPhotoSwipe = $(".gallery a").photoSwipe();
+	}
 });
 {/literal}
 </script>
