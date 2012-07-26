@@ -1,14 +1,13 @@
 <div data-role="page">
 
 	<div data-role="header">
-		<h1>{t}Documents{/t}</h1>
-		<a href="#" data-rel="back" data-icon="arrow-l" data-iconpos="notext">{t}Back{/t}</a>
+		<h1>Dashboard</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 
   {strip}
-		{$view->element('list_objects')}
+		{$beTree->designBranchMobile($tree)}
   {/strip}
 
 	</div><!-- /content -->

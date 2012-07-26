@@ -1,7 +1,7 @@
 <div data-role="page">
 
 	<div data-role="header">
-		<h1>BEdita - Dashboard</h1>
+		<h1>Dashboard</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
@@ -20,4 +20,5 @@
 	{/strip}
 
 	</div><!-- /content -->
+	{$view->element('footer')}
 </div><!-- /page -->
