@@ -43,7 +43,8 @@ class Section extends BeditaCollectionModel
 										"LangText",
 										"Alias",
 										"Version" => array("User.realname", "User.userid")
-										)
+										),
+									"Tree"
 									),
 
        			"default" => array("BEObject" => array("ObjectProperty", 

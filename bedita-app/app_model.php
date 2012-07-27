@@ -552,6 +552,71 @@ class BEAppObjectModel extends BEAppModel {
 		return $result ;
 	}
 	
+	/**
+	 * Clone a BEdita object. 
+	 * It should be called from a BEdita object model as Document, Section, etc...
+	 * 
+	 * @param int $id, the BEdita object id
+	 * @param array $options, see BEAppObjectModel::arrangeDataForClone
+	 * @return type
+	 */
+	public function cloneObject($id, array $options = array()) {
+		$this->containLevel("detailed");
+		$data = $this->findById($id);
+		$this->arrangeDataForClone($data, $options);
+		$this->create();
+		return $this->save($data);
+	}
+	
+	/**
+	 * Arrange an array to cloning a BEdita object
+	 * 
+	 * @param array $data, should come from a find
+	 * @param array $options, default values are:
+	 *				"nicknameSuffix" => "", suffix to append at the original object nickname
+	 *				"keepTitle" => false, true to keep the original object title
+	 *				"keepUserCreated" => false, true to keep the original user created
+	 */
+	public function arrangeDataForClone(array &$data, array $options = array()) {
+		$defaultOptions = array("nicknameSuffix" => "", "keepTitle" => false, "keepUserCreated" => false);
+		$options = array_merge($defaultOptions, $options);
+		$toUnset = array("id", "ObjectType", "SearchText", "UserCreated", "UserModified", "Version");
+		if (!$options["keepUserCreated"]) {
+			$toUnset[] = "user_created";
+		}
+		foreach ($toUnset as $label) {
+			if (isset($data[$label])) {
+				unset($data[$label]);
+			}
+		}
+		if (isset($data["nickname"])) {
+			$data["nickname"] .= $options["nicknameSuffix"];
+		}
+		if (!$options["keepTitle"]) {
+			$data["title"] .= " - " . __("copy", true);
+		}
+		if (!empty($data["Permission"]) && is_array($data["Permission"])) {
+			foreach ($data["Permission"] as &$perm) {
+				if (isset($perm["object_id"])) {
+					unset($perm["object_id"]);
+				}
+				unset($perm["ugid"]);
+				unset($perm["id"]);
+			}
+		}
+		if (!empty($data["ObjectProperty"])) {
+			$objectProperty = array();
+			foreach ($data["ObjectProperty"] as $op) {
+				$objectProperty[] = array(
+					"property_type" => $op["property_type"],
+					"property_id" => $op["id"],
+					"property_value" => $op["value"]["property_value"]
+				);
+			}
+			$data["ObjectProperty"] = $objectProperty;
+		}
+	}
+	
 	protected function updateHasManyAssoc() {
 		
 		foreach ($this->hasMany as $name => $assoc) {
@@ -994,7 +1059,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 				array(
 					'foreignKey'	=> 'id',
 				)
-	);
+	);	
 
 }
 

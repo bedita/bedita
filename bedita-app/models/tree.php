@@ -468,6 +468,94 @@ class Tree extends BEAppModel
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
 
+	/**
+	 * Clone a tree structure
+	 * Clone Publication and sections and add related contents
+	 * 
+	 * @param int $id, publication/section id
+	 * @param array $options, see BEAppObjectModel::arrangeDataForClone
+	 * @return array, contain couple of original id and cloned id
+	 * @throws BeditaException
+	 */
+	public function cloneStructure($id, array $options = array()) {
+		$idConversion = array();
+		$objectTypeId = ClassRegistry::init("BEObject")->findObjectTypeId($id);
+		// publication
+		if ($objectTypeId == Configure::read("objectTypes.area.id")) {
+			// clone publication
+			$Area = ClassRegistry::init("Area");
+			if (!$Area->cloneObject($id, $options)) {
+				throw new BeditaException(__("Error cloning Publication", true) . ": id =  " . $id, array("id" => $id));
+			}
+			
+			$newPubId = $Area->id;
+			$idConversion[$id] = $newPubId;
+			
+			// clone publication's contents
+			$this->copyContentsToBranch($id, $newPubId);
+			
+			// clone tree: get sections, clone them and build tree structure, get sections' children and clone tree structure
+			$Section = ClassRegistry::init("Section");
+			$Section->containLevel("detailed");
+			$sections = $Section->find("all", array(
+				"conditions" => array(
+					"Tree.area_id" => $id,
+					"BEObject.object_type_id" => Configure::read("objectTypes.section.id")
+				),
+				"order" => "Tree.priority ASC"// . $publication["priority_order"]
+			));
+
+			if (!empty($sections)) {
+				foreach ($sections as $s) {
+					$sectionId = $s["id"];
+					// clone section
+					$s["parent_id"] = $idConversion[$s["parent_id"]];
+					$Section->arrangeDataForClone($s, $options);
+					$Section->create();
+					if (!$Section->save($s)) {
+						throw new BeditaException(__("Error cloning Section", true) . " " . $s["title"], array("id" => $sectionId));
+					}
+					$newSectionId = $Section->id;
+					$idConversion[$sectionId] = $newSectionId;
+
+					// set priority
+					if (!$this->setPriority($newSectionId, $s["priority"], $s["parent_id"])) {
+						throw new BeditaException(__("Error setting Section priority", true), array("id" => $newSectionId, "priority" => $s["priority"]));
+					}
+					
+					$this->copyContentsToBranch($sectionId, $newSectionId);
+				}
+			}
+		} elseif ($objectTypeId == Configure::read("objectTypes.section.id")) {
+			//@todo: a parent_id it has to be defined otherwise the root section will be transformed in a Publication
+		}
+
+		return $idConversion;
+	}
+	
+	/**
+	 * copy contents from a branch to another brnach
+	 * 
+	 * @param int $originalBranchId, branch (publication/section) id where the contents are
+	 * @param int $newBranchId, branch (publication/section) id where the contents have to be copied
+	 * @throws BeditaException
+	 */
+	public function copyContentsToBranch($originalBranchId, $newBranchId) {
+		$children = $this->getChildren($originalBranchId, null, null, array("object_type_id" => "<> " . Configure::read("objectTypes.section.id")));					
+		if (!empty($children["items"])) {
+			foreach ($children["items"] as $item) {
+				if (!$this->appendChild($item["id"], $newBranchId)) {
+					throw new BeditaException(__("Error cloning tree", true), array("child id" => $item["id"]));
+
+				}
+				// set priority
+				if (!$this->setPriority($item["id"], $item["priority"], $newBranchId)) {
+					throw new BeditaException(__("Error setting contents priority", true), array("id" => $item["id"], "parent_id" => $newBranchId, "priority" => $s["priority"]));
+				}
+			}
+		}
+	}
+
 }
 
 
