@@ -875,7 +875,7 @@ class DbadminShell extends BeditaBaseShell {
 			$options["keepTitle"] = true;
 		}
 		$this->out("Start to clone Publication with id " . $this->params["id"]);
-		$this->out("WARNING: the operation could be slow.");
+		$this->out("WARNING: the operation can take several minutes");
 		
 		$dbCfg = "default";
 		$transaction = new TransactionComponent($dbCfg);
