@@ -862,6 +862,54 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("Done.");
 	}
 		
+	function clonePublication() {
+		if (empty($this->params["id"])) {
+			$this->out("ERROR: Missing Publication id.");
+			return;
+		}
+		$options = array("keepUserCreated" => true);
+		if (!empty($this->params["nicknameSuffix"])) {
+			$options["nicknameSuffix"] = "-" . $this->params["nicknameSuffix"];
+		}
+		if (!empty($this->params["keepTitle"])) {
+			$options["keepTitle"] = true;
+		}
+		$this->out("Start to clone Publication with id " . $this->params["id"]);
+		$this->out("WARNING: the operation can take several minutes");
+		
+		$dbCfg = "default";
+		$transaction = new TransactionComponent($dbCfg);
+		$transaction->begin();
+		$Tree = ClassRegistry::init("Tree");
+		$idConversion = $Tree->cloneStructure($this->params["id"], $options);
+		
+		foreach ($idConversion as $originalId => $cloneId) {
+			$objectType = ClassRegistry::init("BEObject")->getType($originalId);
+			$originalChildrenCount = $Tree->find("count", array(
+				"conditions" => array("parent_id" => $originalId)
+			));
+			$cloneChildrenCount = $Tree->find("count", array(
+				"conditions" => array("parent_id" => $cloneId)
+			));
+			$this->out($objectType . " with id = " . $originalId . " (" . $originalChildrenCount . " children) cloned to id = " . $cloneId . " (" . $cloneChildrenCount . " children)");
+			if ($originalChildrenCount != $cloneChildrenCount) {
+				$this->hr();
+				$this->out("Ooops... something seems went wrong. The number of cloned " . $objectType . "'s children doesn't match the original one.");
+				$response = $this->in("Do you want to continue?", array("y", "n"), "n");
+				if ($response == "n") {
+					$transaction->rollback();
+					$this->out("All data are rollbacked");
+					$this->out("Bye");
+					return;
+				}
+			}
+		}
+		
+		$this->out("Publication cloned");
+		
+		$transaction->commit();
+	}
+	
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -958,6 +1006,13 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("18. massRemove: massive removal of object type from system");
         $this->out(' ');
         $this->out('    Usage: massRemove -type <model-type> ');
+        $this->out(' ');
+		$this->out("19. clonePublication: clone a complete tree structure starting from publication id");
+        $this->out(' ');
+        $this->out('    Usage: clonePublication -id <publication-id> [-nicknameSuffix <suffix>] [-keepTitle]');
+        $this->out(' ');
+		$this->out("    -nicknameSuffix <suffix> \t suffix that will be append at original nicknames (nick-<suffix>)");
+        $this->out("    -keepTitle \t the cloned objects keep the original titles");
         $this->out(' ');
 	}
 	
