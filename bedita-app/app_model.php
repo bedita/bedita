@@ -628,13 +628,26 @@ class BEAppObjectModel extends BEAppModel {
 		if (!empty($data["ObjectProperty"])) {
 			$objectProperty = array();
 			foreach ($data["ObjectProperty"] as $op) {
-				$objectProperty[] = array(
-					"property_type" => $op["property_type"],
-					"property_id" => $op["id"],
-					"property_value" => $op["value"]["property_value"]
-				);
+				if (!empty($op["value"]["property_value"])) {
+					$objectProperty[] = array(
+						"property_type" => $op["property_type"],
+						"property_id" => $op["id"],
+						"property_value" => $op["value"]["property_value"]
+					);
+				}
 			}
 			$data["ObjectProperty"] = $objectProperty;
+		}
+		if (!empty($data["RelatedObject"])) {
+			$relatedObject = array();
+			foreach ($data["RelatedObject"] as $key => $value) {
+				$relatedObject[$value["switch"]][] = array(
+					"id" => $value["object_id"],
+					"switch" => $value["switch"],
+					"priority" => $value["priority"]
+				);
+			}
+			$data["RelatedObject"] = $relatedObject;
 		}
 	}
 	

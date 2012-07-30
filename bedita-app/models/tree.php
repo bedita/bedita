@@ -560,7 +560,7 @@ class Tree extends BEAppModel
 	 * Clone Publication and sections and add related contents
 	 * 
 	 * @param int $id, publication/section id
-	 * @param array $options, see BEAppObjectModel::arrangeDataForClone
+	 * @param array $options, see BEAppObjectModel::arrangeDataForClone()
 	 * @return array, contain couple of original id and cloned id
 	 * @throws BeditaException
 	 */
@@ -583,16 +583,32 @@ class Tree extends BEAppModel
 			
 			// clone tree: get sections, clone them and build tree structure, get sections' children and clone tree structure
 			$Section = ClassRegistry::init("Section");
-			$Section->containLevel("detailed");
 			$sections = $Section->find("all", array(
 				"conditions" => array(
 					"Tree.area_id" => $id,
 					"BEObject.object_type_id" => Configure::read("objectTypes.section.id")
 				),
-				"order" => "Tree.priority ASC"// . $publication["priority_order"]
+				"order" => "Tree.object_path ASC",// . $publication["priority_order"]
+				"contain" => array(
+					"BEObject" => array(
+						"Permission",
+						"ObjectProperty",
+						"LangText"
+						),
+					"Tree"
+				)
 			));
 
 			if (!empty($sections)) {
+				// reorder with natural sort of object_path
+				$sectionsTmp = Set::combine($sections, "{n}.object_path", "{n}");
+				$objectPaths = array_keys($sectionsTmp);
+				natsort($objectPaths);
+				$sections = array();
+				foreach ($objectPaths as $path) {
+					$sections[] = $sectionsTmp[$path];
+				}
+
 				foreach ($sections as $s) {
 					$sectionId = $s["id"];
 					// clone section

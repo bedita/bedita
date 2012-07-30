@@ -894,7 +894,13 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out($objectType . " with id = " . $originalId . " (" . $originalChildrenCount . " children) cloned to id = " . $cloneId . " (" . $cloneChildrenCount . " children)");
 			if ($originalChildrenCount != $cloneChildrenCount) {
 				$this->hr();
-				$this->out("Ooops... something seems went wrong. The number of cloned " . $objectType . "'s children doesn't match the original one.");
+				// log errors
+				$Tree->bindModel(array("belongsTo" => array("BEObject" => array("foreignKey" => "id"))));
+				$cloneChildren = $Tree->find("all", array(
+					"conditions" => array("parent_id" => $cloneId)
+				));
+				$this->log("Error: original id = " . $originalId . ", cloned id = " . $cloneId . "\nThe number of cloned " . $objectType . "'s children doesn't match the original one. Cloned children are:\n" . var_export($cloneChildren, true), "clone_publication");
+				$this->out("Ooops... something seems went wrong. The number of cloned " . $objectType . "'s children doesn't match the original one (check clone_publication.log file).");
 				$response = $this->in("Do you want to continue?", array("y", "n"), "n");
 				if ($response == "n") {
 					$transaction->rollback();
