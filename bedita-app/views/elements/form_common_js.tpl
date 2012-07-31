@@ -197,25 +197,6 @@ $(document).ready(function(){
 		
 {/literal}{/if}{literal}
 
-{/literal}{if ($parents|@count > 1)}{literal}
-
-		$("#saveBEObject").before("<div class='subwarning tree ubiquitous'>Take care.<br />Ubiquitous object</div>");
-		
-		$(".subwarning.tree.ubiquitous").css("cursor","pointer").click(function(){
-			$("#whereto").prev(".tab").BEtabsopen();
-		});
-{/literal}{/if}{literal}
-
-{/literal}{if ($currentModule.label == "multimedia" && $object.relations.attach|@count > 1)}{literal}
-
-		$("#saveBEObject").before("<div class='subwarning media ubiquitous'>Take care.<br />Ubiquitous media</div>");
-		$(".subwarning.media.ubiquitous").css("cursor","pointer").click(function(){
-			$("#relationships").prev(".tab").BEtabsopen();
-		});
-		
-{/literal}{/if}{literal}
-
-
 
 {/literal}{if (@$object.mail_status == "sent")}{literal}
 
