@@ -476,6 +476,22 @@ UL.modules {
 	background-position: center;
 }
 
+/*...........................................
+ 
+    Subwarning
+
+...........................................*/
+
+.subwarning {
+	text-align:center;
+	background-color:#333;
+	color:#FFF;
+	margin:-10px -10px 10px -10px; 
+	padding:5px;
+	position:relative;
+	z-index:2000;
+}
+
 
 /*...........................................
  
@@ -1360,7 +1376,6 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover {
 .message LABEL {
 	display:block;
 }
-
 
 /*...........................................    
 
