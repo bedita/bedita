@@ -17,10 +17,18 @@ class SectionTestData extends BeditaTestData {
 			'section' => array(
 				'title' => 'Section title',
 				'syndicate' => 'off',
-				'priority_order' => 'desc'
+				'priority_order' => 'desc',
+				'children' => array(
+					'Document' => array("title" => "doc 1"),
+					'Event' => array("title" => "event 1")
+				)
 			),
 			'subsection' => array(
-				'title' => 'Subsection title'
+				'title' => 'Subsection title',
+				'children' => array(
+					'Gallery' => array("title" => "gallery 1"),
+					'Document' => array("title" => "doc 2")
+				)
 			)
 		)
 	);

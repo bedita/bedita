@@ -129,7 +129,77 @@ class SectionTestCase extends BeditaTestCase {
 		pr("Area removed");
 	} 
  	
-	public   function __construct () {
+	public function testPromoteSectionToArea() {
+		pr("<h4>Building tree structure...</h4>");
+		$this->requiredData(array("tree"));
+		$result = $this->Area->save($this->data['tree']['area']) ;
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Area->validationErrors);
+			return ;
+		}
+		$area_id = $this->Area->id;
+		
+		$this->data['tree']['section']['parent_id'] = $this->Area->id;
+		$result = $this->Section->save($this->data['tree']['section']);
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Section->validationErrors);
+			return ;
+		}
+		$section_id = $this->Section->id;
+		
+		$this->data['tree']['subsection']['parent_id'] = $section_id;
+		$this->Section->create();
+		$result = $this->Section->save($this->data['tree']['subsection']);
+		$this->assertEqual($result,true);		
+		if(!$result) {
+			debug($this->Section->validationErrors);
+			return ;
+		}
+		$subsection_id = $this->Section->id;
+
+		// insert children
+		pr("<h4>Appending children to sections...</h4>");
+		foreach ($this->data['tree']['section']['children'] as $modelName => $d) {
+			$model = ClassRegistry::init($modelName);
+			$model->create();
+			$result = $model->save($d);
+			$this->assertEqual($result,true);
+			$this->Tree->appendChild($model->id, $section_id);
+		}
+		foreach ($this->data['tree']['subsection']['children'] as $modelName => $d) {
+			$model = ClassRegistry::init($modelName);
+			$model->create();
+			$result = $model->save($d);
+			$this->assertEqual($result,true);
+			$this->Tree->appendChild($model->id, $subsection_id);
+		}
+
+		$sectionDescendants = $this->Tree->getDescendants($section_id);
+		$sectionDescendantsId = Set::extract("/items/id", $sectionDescendants);
+
+		// promote section to publication
+		pr("<h4>Promote section " . $this->data['tree']['section']['title'] . " to publication...</h4>");
+		$this->Section->promoteToArea($section_id);
+
+		$this->Area->containLevel("detailed");
+		$a = $this->Area->find("first", array(
+			"conditions" => array("Area.id" => $section_id)
+		));
+		$this->assertEqual($a["object_type_id"],Configure::read("objectTypes.area.id"));
+		pr("<h4>New Publication</h4>");
+		pr($a);
+
+		$pubDescendants = $this->Tree->getDescendants($section_id);
+		$pubDescendantsId = Set::extract("/items/id", $pubDescendants);
+
+		$this->assertEqual(asort($sectionDescendantsId),asort($pubDescendantsId));
+		pr("<h4>New publication's descendants</h4>");
+		pr($pubDescendants["items"]);
+	}
+
+	public function __construct () {
 		parent::__construct('Section', dirname(__FILE__)) ;
 	}	
 }

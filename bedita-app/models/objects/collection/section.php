@@ -91,6 +91,65 @@ class Section extends BeditaCollectionModel
         
         return $feedNames;
     }
+
+    /**
+     * Promote a section to publication (area)
+     * All section's tree structure is maintained 
+     * 
+     * @param int $sectionId, the section id to promote
+     */
+    public function promoteToArea($sectionId) {
+    	// promote section to area (remove any categories and custom properties)
+    	$title = $this->BEObject->field("title", array("id" => $sectionId));
+    	$data = array(
+    		"id" => $sectionId, 
+    		"object_type_id" => Configure::read("objectTypes.area.id"),
+    		"title" => $title,
+    		"Category" => array(),
+    		"ObjectProperty" => array()
+    	);
+    	$Area = ClassRegistry::init("Area");
+    	if (!$Area->save($data)) {
+    		throw new BeditaException(__("Error promoting section to publication", true), array_merge(array("id" => $sectionId), $Area->validationErrors));
+    	}
+
+    	// update tree
+		$treeRow = $this->Tree->find("first", array(
+			"conditions" => array("id" => $sectionId)
+		));
+		// remove old section's row
+		$this->Tree->delete($treeRow["Tree"]["object_path"]);
+		// insert new publication row
+		$sectionObjectPath = $treeRow["Tree"]["object_path"];
+		$treeRow["Tree"]["area_id"] = $sectionId;
+		$treeRow["Tree"]["parent_id"] = null;
+		$treeRow["Tree"]["object_path"] = "/" . $sectionId;
+		$treeRow["Tree"]["parent_path"] = "/";
+		if (!$this->Tree->save($treeRow)) {
+			throw new BeditaException(__("Error promoting section's row relative to trees table", true));
+		}
+		
+		// update children paths
+		$rowsToUpdate = $this->Tree->find("all", array(
+			"conditions" => array("object_path LIKE" => "%/" . $sectionId . "/%")
+		));
+
+		if (!empty($rowsToUpdate)) {
+			$regExpPath = str_replace("/", "\/", $sectionObjectPath);
+			$objectPathPattern = "/(^" . $regExpPath  . ")(\/)(.*)/";
+			$parentPathPattern = "/(^" . $regExpPath  . "$|^" . $regExpPath  . "(\/))(.*)/";
+			$replacement = "/".$sectionId."$2$3";
+			foreach ($rowsToUpdate as $row) {
+				$row["Tree"]["area_id"] = $sectionId;
+				$row["Tree"]["object_path"] = preg_replace($objectPathPattern, $replacement, $row["Tree"]["object_path"]);
+				$row["Tree"]["parent_path"] = preg_replace($parentPathPattern, $replacement, $row["Tree"]["parent_path"]);
+				$this->Tree->create();
+				if (!$this->Tree->save($row)) {
+					throw new BeditaException(__("Error updating tree", true), $row["Tree"]);				
+				}
+			}
+		}
+	}
     
 }
 ?>
