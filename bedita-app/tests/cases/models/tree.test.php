@@ -1,31 +1,31 @@
-<?php 
+<?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
@@ -35,7 +35,7 @@ class TreeTestCase extends BeditaTestCase {
  	var $uses = array('Tree') ;
  	private $savedIds = array();
  	private $countStatus = array("on" => 0, "off" => 0, "draft" => 0);
- 	
+
  	public function testBuildTree() {
  		$this->Tree->cacheQueries = false;
  		pr("Building tree:");
@@ -50,14 +50,14 @@ class TreeTestCase extends BeditaTestCase {
 			pr("Array inserted: " . $this->data['buildTree']);
 			pr("Result: " . $arrToCompare);
 		}
-		
+
 		pr("<hr/>");
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = array($conf->objectTypes['area']["id"], $conf->objectTypes['section']["id"]);
 		$tree = $this->Tree->getAll(null, null, null, $filter) ;
 		pr("<h4>Load only publication and sections tree</h4>") ;
 		echo $this->buildHtmlTree($tree);
-		
+
 		pr("<hr/>");
 		pr("<h4>Load Tree with 'on' objects</h4>") ;
 		$tree = $this->Tree->getAll(null, null, 'on') ;
@@ -68,7 +68,7 @@ class TreeTestCase extends BeditaTestCase {
 		$object_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Event 1"];
 		$parent_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"];
 		$id = $this->savedIds["Event 1"];
-		
+
 		// Saving with empty object_path
 		$data1["Tree"] = array(
 			"id" => $id,
@@ -173,24 +173,24 @@ class TreeTestCase extends BeditaTestCase {
 		$res = $this->Tree->appendChild($idDoc, $idParent);
 		if ($this->assertTrue($res, "Error appending Document 1 (id=". $idDoc .") to Section 1 (id=" .$idParent .")")) {
 			pr("<span style='color: green'>Document 1 (id=". $idDoc .") appended to Section 1 (id=" .$idParent .")</span>");
-		} 
+		}
 		$res = $this->Tree->appendChild($idDoc, $idParent2);
 		if ($this->assertTrue($res, "Error appending Document 1 (id=". $idDoc .") to Section 12 (id=" .$idParent2 .")")) {
 			pr("<span style='color: green'>Document 1 (id=". $idDoc .") appended to Section 12 (id=" .$idParent2 .")</span>");
 		}
-		
+
 		pr("Tree:");
 		$tree = $this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"])));
 		pr($tree);
 	}
-	
+
 	public function testDeleteAppendedChild() {
 		$idDoc = $this->savedIds["Document 1"];
 		$res = ClassRegistry::init("Document")->delete($idDoc);
 		if ($this->assertTrue($res)) {
 			pr("<span style='color: green'>Document 1 deleted</span>");
 		}
-		
+
 		$res = $this->Tree->find("all", array("conditions" => array("id" => $this->savedIds["Document 1"])));
 		if ($this->assertEqual(array(), $res)) {
 			pr("<span style='color: green'>Document 1 deleted from tree</span>");
@@ -338,7 +338,7 @@ class TreeTestCase extends BeditaTestCase {
 		$idSection = $this->savedIds["Section 3"];
 		$descendants = $this->Tree->getDescendants($idSection);
 		$section = ClassRegistry::init("Section");
-			
+
 		$section->delete($idSection);
 
 		$treeRes = $this->Tree->find("all", array("conditions" => array("object_path LIKE '%/".$idSection."/%'")));
@@ -348,16 +348,16 @@ class TreeTestCase extends BeditaTestCase {
 			pr("<span style='color: red'>Tree not cleaned:</span>");
 			pr($treeRes);
 		}
-		
+
 		$res = $section->findById($idSection);
 		if ($this->assertEqual($res, array())) {
 			pr("<span style='color: green'>section Section 3 deleted</span>");
 		} else {
 			pr("<span style='color: red'>section Section 3 not deleted</span>");
 		}
-		
+
 		foreach ($descendants["items"] as $item) {
-			$modelName = Configure::read("objectTypes.".$item["object_type_id"].".model"); 
+			$modelName = Configure::read("objectTypes.".$item["object_type_id"].".model");
 			$res = ClassRegistry::init($modelName)->findById($item["id"]);
 			if ($modelName == "Section") {
 				if ($this->assertEqual($res, array())) {
@@ -371,7 +371,7 @@ class TreeTestCase extends BeditaTestCase {
 				}
 			}
 		}
-		
+
 		// following operations don't work because queries are cached in protected attribute Datasource::_queryCache but no method to delete exists
 		//$tree = $this->Tree->getAll();
 		//echo $this->buildHtmlTree($tree);
@@ -380,7 +380,7 @@ class TreeTestCase extends BeditaTestCase {
 	public function __construct () {
 		parent::__construct('Tree', dirname(__FILE__)) ;
 	}
-	
+
 	private function buildHtmlTree($tree) {
  		$htmlTree = "";
  		foreach ($tree as $root) {
@@ -391,7 +391,7 @@ class TreeTestCase extends BeditaTestCase {
 		}
 		return $htmlTree;
  	}
- 	
+
  	private function buildHtmlBranch($branch) {
  		$htmlBranch = "<ul style='padding-left: 10px;'>";
  		foreach ($branch as $b) {
@@ -403,7 +403,7 @@ class TreeTestCase extends BeditaTestCase {
  		$htmlBranch .= "</ul>";
  		return $htmlBranch;
  	}
- 	
+
  	private function prepareTreeToCompare($tree, $count=false) {
  		if (!$count) {
 	 		$branch = array();
@@ -414,7 +414,7 @@ class TreeTestCase extends BeditaTestCase {
 	 			} elseif ($item["object_type_id"] == Configure::read('objectTypes.area.id') || $item["object_type_id"] == Configure::read('objectTypes.section.id')) {
 	 				$b["children"] = array();
 	 			}
-	 			$modelName = Configure::read('objectTypes.' .$item["object_type_id"] . '.model'); 
+	 			$modelName = Configure::read('objectTypes.' .$item["object_type_id"] . '.model');
 	 			$branch[][$modelName] = $b;
 	 		}
 	 		return $branch;
@@ -427,9 +427,9 @@ class TreeTestCase extends BeditaTestCase {
  				}
  			}
  			return $count;
- 		}	
+ 		}
  	}
- 	
+
  	private function saveObject($arrData, $parent_id=null) {
  		foreach ($arrData as $data) {
 	 		foreach ($data as $modelName => $modeldata) {
@@ -449,6 +449,6 @@ class TreeTestCase extends BeditaTestCase {
 			}
  		}
  	}
-	
+
 }
 ?>

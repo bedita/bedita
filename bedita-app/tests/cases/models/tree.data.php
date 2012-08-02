@@ -1,16 +1,16 @@
-<?php 
+<?php
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class TreeTestData extends BeditaTestData {
 	var $data =  array(
-		
+
 		'buildTree' => array(
 			array('Area' => array(
 						'title' 	=> 'Publication 1',
@@ -58,8 +58,8 @@ class TreeTestData extends BeditaTestData {
 				  )
 			)
 		)
-	
-	); 			
-	
+
+	);
+
 }
 ?>

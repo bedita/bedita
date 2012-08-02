@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2011 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -28,17 +28,17 @@ require_once 'bedita_base.php';
 /**
  * Dbadmin shell: generic methods to check/fix some db data, for example translations, multimedia.
  * Some other methods to insert test objects data.
- * 
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
-		
+
 		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
 		$options['log'] = (!empty($this->params['log']))? true : false;
 		$this->hr();
@@ -48,7 +48,7 @@ class DbadminShell extends BeditaBaseShell {
 		$result = $response['results'];
 		$this->out("");
 		$this->out("");
-		
+
 		if (!empty($result['success'])) {
 			$this->out('Index rebuilt successfully');
 			$this->hr();
@@ -72,7 +72,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("");
 			$this->out("");
 		}
-		
+
 		if (!empty($result['failed'])) {
 			$this->out('ERRORS occured rebuilding index');
 			$this->hr();
@@ -89,7 +89,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("");
 			$this->out("");
 		}
-		
+
 		if (!empty($result['langTextFailed'])) {
 			$this->out('ERRORS occured rebuilding index for lang_texts table (object translations fields)');
 			$this->hr();
@@ -102,7 +102,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("");
 			$this->out("");
 		}
-		
+
 		$this->out($response['message']);
 	}
 
@@ -111,7 +111,7 @@ class DbadminShell extends BeditaBaseShell {
 	 * parameter 'lang' mandatory
 	 */
 	public function checkLangStatus() {
-		
+
 		$lang = $this->params['lang'];
 		if(empty($lang)) {
 			$this->out("Language parameter -lang mandatory");
@@ -119,7 +119,7 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out('Checking language: '.$lang);
 		$langText = ClassRegistry::init("LangText");
-		$objTrans = $langText->find('all', 
+		$objTrans = $langText->find('all',
 			array('conditions'=> array("LangText.lang = '$lang'","LangText.name = 'title'")
 			,'fields'=>array('BEObject.id', 'BEObject.status')));
 		if(empty($objTrans)) {
@@ -128,52 +128,52 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		foreach ($objTrans as $obj) {
 			$objId = $obj['BEObject']['id'];
-			$status = $langText->find(array("LangText.name = 'status'", "LangText.lang = '$lang'", 
+			$status = $langText->find(array("LangText.name = 'status'", "LangText.lang = '$lang'",
 				"LangText.object_id = $objId"));
 			if($status === false) {
 				$newStatus = $obj['BEObject']['status'];
 				$l = array(
 		                'object_id' => $objId,
-		                'lang'      => $lang, 
+		                'lang'      => $lang,
 		                'name'   => 'status',
 						'text' => $newStatus
 	                );
 	            $langText->create();
-	            if(!$langText->save($l)) 
+	            if(!$langText->save($l))
 	                    throw new BeditaException("Error saving lang text");
 				$this->out("Added lang status for obj: $objId - $lang");
 			}
 		}
 		$this->out("Lang texts status updated");
 	}
-	
+
 	/**
 	 * build hash_file for media objects
 	 *
 	 */
 	public function buildHashMedia() {
-		
+
 		$conf = Configure::getInstance() ;
 		$streamModel = ClassRegistry::init("Stream");
 		$conditions = array();
 		$countOperations = 0;
-		
+
 		if (!isset($this->params['all'])) {
-			$conditions[] = "hash_file IS NULL"; 
+			$conditions[] = "hash_file IS NULL";
 		}
-		
+
 		$streams = $streamModel->find("all", array(
 					"conditions" => $conditions
 				)
 			);
-		
+
 		$this->hr();
 		$this->out("Build hash for media file:");
 		$this->hr();
-		
+
 		if (!empty($streams)) {
 			foreach ($streams as $s) {
-				
+
 				// if it's not an url build hash
 				if (!preg_match($conf->validate_resource['URL'], $s["Stream"]["uri"])) {
 					$hash = hash_file("md5", $conf->mediaRoot . $s["Stream"]["uri"]);
@@ -185,34 +185,34 @@ class DbadminShell extends BeditaBaseShell {
 					$this->out("file: " . $conf->mediaRoot . $s["Stream"]["uri"] . ", hash: " . $hash);
 					$countOperations++;
 				}
-				
+
 			}
 		}
 		$this->out($countOperations . " rows on db updated");
 		$this->out("done");
 	}
-	
+
 	public function setImageDimensions() {
-		
+
 		$conf = Configure::getInstance() ;
 		$imageModel = ClassRegistry::init("Image");
 		$conditions = array();
 		$countOperations = 0;
-		
+
 		if (!isset($this->params['all'])) {
-			$conditions[] = "width IS NULL OR height IS NULL"; 
+			$conditions[] = "width IS NULL OR height IS NULL";
 		}
-		
+
 		$images = $imageModel->find("all", array(
 					"conditions" => $conditions,
 					"contain" => array("Stream")
 				)
 			);
-		
+
 		$this->hr();
 		$this->out("Check image size and write in db");
 		$this->hr();
-		
+
 		if (!empty($images)) {
 			foreach ($images as $i) {
 
@@ -221,7 +221,7 @@ class DbadminShell extends BeditaBaseShell {
 						", dimension: " . $i["width"] . "x" . $i["height"] ." pixels");
 					$countOperations++;
 				}
-				
+
 			}
 		}
 		$this->out($countOperations . " rows on db updated");
@@ -243,9 +243,9 @@ class DbadminShell extends BeditaBaseShell {
 		if (!isset($this->params['type'])) {
 			$type = $this->in("Select annotation type: editor[n]ote/[c]omment");
 		} else {
-			$type = $this->params['type'];		
+			$type = $this->params['type'];
 		}
-		
+
 		if(!in_array($type, array("editor_note", "comment"))) {
 			if($type === "c")    {
 				$type = "comment";
@@ -256,17 +256,17 @@ class DbadminShell extends BeditaBaseShell {
 				return;
 			}
 		}
-		
+
 		$inputs = array("comment" => array("title", "description", "author", "email", "url"),
 						"editor_note" => array("title", "description"));
-		
+
 		$this->hr();
 		$this->out("please provide [$type] input data");
 		$this->hr();
 		$data = array("object_id" => $id, "ip_created" => "127.0.0.1", "user_created" => 1, "user_modified" => 1);
 		foreach ($inputs[$type] as $req) {
 			$resp = $this->in("[$req]:");
-			$data[$req]=$resp;			
+			$data[$req]=$resp;
 		}
 		$data["status"] = "on";
 		//$conf = Configure::getInstance() ;
@@ -280,31 +280,31 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out("$type saved. Bye");
 	}
-	
+
 	public function updateVideoThumb() {
-		
+
 		$conf = Configure::getInstance() ;
 		App::import('Component', 'BeBlip');
 		$this->BeBlip = new BeBlipComponent();
-		
+
 		$videoModel = ClassRegistry::init("Video");
 		$conditions = array();
 		$countOperations = 0;
-		
+
 		if (!isset($this->params['all'])) {
-			$conditions[] = "thumbnail IS NULL"; 
+			$conditions[] = "thumbnail IS NULL";
 		}
-		
+
 		$videos = $videoModel->find("all", array(
 					"conditions" => $conditions,
 					"contain" => array("Stream")
 				)
 			);
-		
+
 		$this->hr();
 		$this->out("Update video thumbnail");
 		$this->hr();
-		
+
 		if (!empty($videos)) {
 			foreach ($videos as $v) {
 				if ($v["provider"] == "youtube") {
@@ -315,16 +315,16 @@ class DbadminShell extends BeditaBaseShell {
 					}
 					$thumbnail = $this->BeBlip->info['thumbnailUrl'];
 				}
-				
+
 				if (!empty($v["provider"])) {
 					$videoModel->id = $v["id"];
 					if (!$videoModel->saveField("thumbnail", $thumbnail))
 						throw new BeditaException(__("Error saving thumbnail field", true));
-					
+
 					$this->out("video: " . $v["uri"] . ", thumbnail: " . $thumbnail);
 					$countOperations++;
 				}
-				
+
 			}
 		}
 		$this->out($countOperations . " rows on db updated");
@@ -357,7 +357,7 @@ class DbadminShell extends BeditaBaseShell {
 					$this->out("orphans found");
 					$found = true;
 				}
-				$this->out("orphan id: " . $obj["id"] . " - title: '" . $obj["title"] . 
+				$this->out("orphan id: " . $obj["id"] . " - title: '" . $obj["title"] .
 					"' - nickname: " . $obj["nickname"]);
 				$res = $this->in("delete object? [y/n]");
 				if($res != "y") {
@@ -368,14 +368,14 @@ class DbadminShell extends BeditaBaseShell {
 					}
 					$this->out("$type with id: " . $obj["id"] . " deleted");
 				}
-				
+
 			}
 		}
 		if(!$found) {
 			$this->out("No orphans found of type ". $type);
 		}
 	}
-	
+
 	public function importCsv() {
 		if (!isset($this->params['f'])) {
 			$this->out("file to import is mandatory");
@@ -385,7 +385,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("csv file " . $this->params['f'] . " not found");
 			return;
 		}
-		
+
 		if (!isset($this->params['type'])) {
 			$this->out("object type is mandatory");
 			return;
@@ -398,13 +398,13 @@ class DbadminShell extends BeditaBaseShell {
 		$modelType = Configure::read("objectTypes." . $type . ".model");
 		$model = ClassRegistry::init($modelType);
 
-		$defaults = array( 
+		$defaults = array(
 			"status" => "on",
 			"user_created" => "1",
 			"user_modified" => "1",
 			"ip_created" => "127.0.0.1",
 		);
-		
+
 		$this->out("Importing from " . $this->params['f'] . " objects of type $type");
 		$this->out("........ ");
 		$row = 1;
@@ -416,7 +416,7 @@ class DbadminShell extends BeditaBaseShell {
 		while (($fields = fgetcsv($handle, 1000, ",")) !== FALSE) {
 	    	$row++;
 			for ($c=0; $c < $numKeys; $c++) {
-				$data[$keys[$c]] = empty($fields[$c]) ? null : $fields[$c]; 
+				$data[$keys[$c]] = empty($fields[$c]) ? null : $fields[$c];
 			}
 			$model->create();
 			$d = array_merge($defaults, $data);
@@ -428,7 +428,7 @@ class DbadminShell extends BeditaBaseShell {
 		$nObj = $row-1;
 		$this->out("Done. $nObj objects of type " . $type . " inserted.");
 	}
-	
+
 	public function importXml() {
 		if (!isset($this->params['f'])) {
 			$this->out("file to import is mandatory");
@@ -443,20 +443,20 @@ class DbadminShell extends BeditaBaseShell {
 		if (isset($this->params['s'])) {
 			$secId = $this->params['s'];
 		}
-		$defaults = array( 
+		$defaults = array(
 			"user_created" => "1",
 			"user_modified" => "1",
 			"ip_created" => "127.0.0.1",
 		);
-		
+
 		$this->out("Importing from " . $this->params['f']);
 		$this->hr();
-		
+
 		App::import("Core", "Xml");
 		$xml = new XML(file_get_contents($this->params['f']));
 		$treeModel = ClassRegistry::init("Tree");
-		$nObj = 0;	
-		$parsed = set::reverse($xml);				
+		$nObj = 0;
+		$parsed = set::reverse($xml);
 		$objs = array();
 		if(!empty($parsed["Section"]["ChildContents"])) {
 			$objs = $parsed["Section"]["ChildContents"];
@@ -468,11 +468,11 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		if(!is_int(key($objs))) {
 			$objs = array($objs);
-		} 
+		}
 		foreach ($objs as $data) {
 
-			$objTypeId = isset($data['ObjectType']['name']) ?  
-				Configure::read("objectTypes." . $data['ObjectType']['name'] . ".id") : $data['object_type_id']; 
+			$objTypeId = isset($data['ObjectType']['name']) ?
+				Configure::read("objectTypes." . $data['ObjectType']['name'] . ".id") : $data['object_type_id'];
 			$modelType = Configure::read("objectTypes." . $objTypeId . ".model");
 			$model = ClassRegistry::init($modelType);
 			$data = array_merge($data, $defaults);
@@ -480,18 +480,18 @@ class DbadminShell extends BeditaBaseShell {
 			$data["object_type_id"] = $objTypeId;
 			$model->create();
 			if(!$model->save($data)) {
-				throw new BeditaException("Error saving object - " . print_r($data, true) . 
+				throw new BeditaException("Error saving object - " . print_r($data, true) .
 					" - validation: " . print_r($model->validationErrors, true));
 			}
 			if(!empty($secId)) {
 				$treeModel->appendChild($model->id, $secId);
 			}
 			$this->out($modelType . " created - id " . $model->id . " - title '" . $data["title"] . "'");
-			$nObj++;		
+			$nObj++;
 		}
 		$this->out("Done. $nObj objects inserted.");
-	}	
-	
+	}
+
 	public function exportXml() {
 		if (!isset($this->params['o'])) {
 			$this->out("output file is mandatory");
@@ -521,10 +521,10 @@ class DbadminShell extends BeditaBaseShell {
 		$xmlOut = $xml->toString();
 		file_put_contents($this->params['o'], $xmlOut);
 		$this->out("Done.");
-	}	
-	
-	
-	
+	}
+
+
+
 	public function updateStreamFields() {
 		$response = ClassRegistry::init("Utility")->call('updateStreamFields');
 		$streamsUpdated = $response['results'];
@@ -561,7 +561,7 @@ class DbadminShell extends BeditaBaseShell {
 			}
 		}
 		$this->out("Objects not consistent: $inconsistent; objects deleted: $deleted");
-		// check 
+		// check
 		$this->hr();
 		$this->out("Checking schema");
 		$beSchema = ClassRegistry::init("BeSchema");
@@ -587,30 +587,30 @@ class DbadminShell extends BeditaBaseShell {
 			}
 		}
 	}
-	
+
 	public function checkDbNames() {
 		// load reserved keywords
 		$sqlCfgPath = APP . DS . "config" . DS. "sql";
 		$sqlReservedFile = $sqlCfgPath . DS  . "reserved_words.php";
 		$this->out("Using SQL reserved keywords file: $sqlReservedFile");
 		require_once($sqlReservedFile);
-		
+
 		// load schema data
 		$tables = array();
 		$badNames = array();
-		if(isset($this->params['schema'])) {		
+		if(isset($this->params['schema'])) {
 			$schemaFile = $sqlCfgPath . DS  . "schema.php";
 			$this->out("Using BEdita schema file: $schemaFile");
 			require_once($schemaFile);
 			$schema = new BeditaAppSchema();
-			$tables = $schema->tables;		
+			$tables = $schema->tables;
 		} else {
 			$db = ConnectionManager::getDataSource('default');
-			$this->out("Reading from database: ". $db->config['driver'] . " [host=" . 
+			$this->out("Reading from database: ". $db->config['driver'] . " [host=" .
 				$db->config['host'] .", database=". $db->config['database']."]");
 			$schema = new CakeSchema();
 			$schemaTabs = $schema->read();
-			$tables = $schemaTabs['tables'];		
+			$tables = $schemaTabs['tables'];
 		}
 		$this->hr();
 		foreach ($tables as $tab => $cols) {
@@ -633,22 +633,22 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		if(!empty($badNames)) {
 			sort($badNames);
-			$bad = "";			
+			$bad = "";
 			foreach ($badNames as $b) {
-				$bad .= " " . $b; 
+				$bad .= " " . $b;
 			}
 			$this->hr();
-			$this->out("bad names found: $bad");		
+			$this->out("bad names found: $bad");
 		}
 	}
-	
+
 	public function schemaDoc() {
 
 		$db = ConnectionManager::getDataSource('default');
-		$this->out("Reading from database: ". $db->config['driver'] . " [host=" . 
+		$this->out("Reading from database: ". $db->config['driver'] . " [host=" .
 			$db->config['host'] .", database=". $db->config['database']."]");
 		$beSchema = ClassRegistry::init("BeSchema");
-		$tables = $beSchema->tableList();		
+		$tables = $beSchema->tableList();
 		$dbName = $db->config['database'];
 		$db2 = ConnectionManager::getDataSource('informationSchema');
 		$doc = array();
@@ -660,7 +660,7 @@ class DbadminShell extends BeditaBaseShell {
 					$doc[$t][$colName] = $r["columns"]["column_comment"];
 				}
 			}
-			  	
+
 			$res2 = $db2->query("SELECT table_comment from tables where table_name='$t' and table_schema='$dbName'");
 			$tComm = explode(';', $res2[0]['tables']['table_comment']);
 			$doc["tables"][$t] = $tComm[0];
@@ -673,7 +673,7 @@ class DbadminShell extends BeditaBaseShell {
 			if(strpos($t, "cake_") === false) {
 				fwrite($h, "// table: $t\n");
 				fwrite($h, "\$doc['tables']['$t'] = '" . $doc["tables"][$t]. "';");
-				$colDoc = empty($doc[$t]) ? array() : $doc[$t]; 
+				$colDoc = empty($doc[$t]) ? array() : $doc[$t];
 				fwrite($h, "\n\$doc['$t'] = " . var_export($colDoc, true) . ";");
 				fwrite($h, "\n\n");
 			}
@@ -681,12 +681,12 @@ class DbadminShell extends BeditaBaseShell {
 		fwrite($h, "?>");
 		fclose($h);
 	}
-	
+
 	function schemaComments() {
-		
+
 		$schemaDocPath = APP ."config" . DS . "sql" . DS . "schema_doc.php";
 		include_once ($schemaDocPath);
-		
+
 		$schema = file(APP ."config" . DS . "sql" . DS . "bedita_mysql_test.sql");
 		$currTable = null;
 		foreach ($schema as $line) {
@@ -697,7 +697,7 @@ class DbadminShell extends BeditaBaseShell {
 				$p = strpos($line, $f);
 				if($p !== false) {
 					$t = explode(" ", substr($line, $p+strlen($f)));
-					$currTable = $t[0]; 
+					$currTable = $t[0];
 				}
 			} else {
 				$p = strpos($line, ")");
@@ -707,7 +707,7 @@ class DbadminShell extends BeditaBaseShell {
 					if(!empty($doc["tables"][$currTable])) {
 						$out = $t[0] . " COMMENT='" . $doc["tables"][$currTable] . "';";
 					}
-					$currTable = null; 
+					$currTable = null;
 				} else {
 					$t = explode(" ", trim($line));
 					if(!empty($doc[$currTable][$t[0]])) {
@@ -719,10 +719,10 @@ class DbadminShell extends BeditaBaseShell {
 			}
 			$this->out($out);
 		}
-		
+
 		// POSTGRES
 /*		foreach ($doc["tables"] as $name => $comm) {
-			
+
 			$c = "COMMENT ON TABLE $name IS '$comm';";
 			$this->out($c);
 			foreach($doc[$name] as $col => $colComm) {
@@ -731,10 +731,10 @@ class DbadminShell extends BeditaBaseShell {
 			}
 		}
 */
-	
+
 	}
-	
-	
+
+
 	/**
 	 * Cleanup old items (log/job tables)
 	 */
@@ -744,7 +744,7 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("Parameter -days mandatory");
 			return;
 		}
-		$days = $this->params['days'];		
+		$days = $this->params['days'];
 		$tsLimit = time() - ($days * 24 * 60 * 60);
         $dateLimit = date('Y-m-d', $tsLimit);
 		$this->out("Removing items older than $days days, preserving from $dateLimit");
@@ -771,9 +771,9 @@ class DbadminShell extends BeditaBaseShell {
 			$this->out("Error removing items");
 			return;
 		}
-		
+
 		$this->out("Done");
-		
+
 	}
 
 	/**
@@ -819,16 +819,16 @@ class DbadminShell extends BeditaBaseShell {
 		if($ans != "y") {
 			$this->out("Bye");
 			return;
-		}				
+		}
 		$res = $model->deleteAll("BEObject.object_type_id = '$objTypeId'");
 		if($res == false) {
 			$this->out("Error removing items");
 			return;
 		}
-		$this->out("Done");		
+		$this->out("Done");
 	}
-	
-	
+
+
 	public function updateCategoryName() {
 		$categoryModel = ClassRegistry::init("Category");
 		$categoryModel->Behaviors->disable("CompactResult");
@@ -840,7 +840,7 @@ class DbadminShell extends BeditaBaseShell {
 			"order" => "Category.id ASC",
 			"conditions" => $conditions
 		));
-		
+
 		if (!empty($categories)) {
 			$this->out("Updating category unique name:");
 			$this->hr();
@@ -849,7 +849,7 @@ class DbadminShell extends BeditaBaseShell {
 				$text .= (!empty($cat["Category"]["object_type_id"]))? "category" : "tag";
 				$text .= " id:" . $cat["Category"]["id"] . " label:\"" . $cat["Category"]["label"] . "\"";
 				$categoryModel->create();
-				
+
 				if ($categoryModel->save($cat)) {
 					$this->out($text . " done");
 				} else {
@@ -861,7 +861,7 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out("Done.");
 	}
-		
+
 	function clonePublication() {
 		if (empty($this->params["id"])) {
 			$this->out("ERROR: Missing Publication id.");
@@ -876,13 +876,13 @@ class DbadminShell extends BeditaBaseShell {
 		}
 		$this->out("Start to clone Publication with id " . $this->params["id"]);
 		$this->out("WARNING: the operation can take several minutes");
-		
+
 		$dbCfg = "default";
 		$transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
 		$Tree = ClassRegistry::init("Tree");
 		$idConversion = $Tree->cloneStructure($this->params["id"], $options);
-		
+
 		foreach ($idConversion as $originalId => $cloneId) {
 			$objectType = ClassRegistry::init("BEObject")->getType($originalId);
 			$originalChildrenCount = $Tree->find("count", array(
@@ -910,12 +910,12 @@ class DbadminShell extends BeditaBaseShell {
 				}
 			}
 		}
-		
+
 		$this->out("Publication cloned");
-		
+
 		$transaction->commit();
 	}
-	
+
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -1021,7 +1021,7 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -keepTitle \t the cloned objects keep the original titles");
         $this->out(' ');
 	}
-	
+
 }
 
 ?>

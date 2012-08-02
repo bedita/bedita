@@ -1,32 +1,32 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * Frontend base class (Frontend API)
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 if(defined('BEDITA_CORE_PATH')) {
@@ -36,28 +36,28 @@ if(defined('BEDITA_CORE_PATH')) {
 abstract class FrontendController extends AppController {
 
 	/**
-	 * object status used to filter 
-	 * 
+	 * object status used to filter
+	 *
 	 * @var array
 	 */
 	private $status = array('on');
-	
+
 	/**
 	 * define which publication date has to be checked
 	 * "start" = true to check Content.start_date <= now
 	 * "end" = true to check Content.end_date >= now
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $checkPubDate = array("start" => true, "end" => true);
-	
+
 	/**
 	 * true to load objects in base level mode (BEObject without relations and LangText model are loaded)
-	 * 
+	 *
 	 * @var boolean
 	 */
 	protected $baseLevel = false;
-	
+
 	/**
 	 * default options used to find sections' children
 	 * 		"showAllContents" => true to get all sections' children when a content is selected
@@ -66,96 +66,96 @@ abstract class FrontendController extends AppController {
 	 * 						 false to put all content type children in 'childContents' array and section type children in 'sectionChilds'
 	 * 		"childrenParams" => array to define special filters ('filter' array) and pagination options ("order", "dir", "dim", "page")
 	 * 							detail level ("detailed" => true, default false used only if "showAllContents" => true)
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $sectionOptions = array("showAllContents" => true, "itemsByType" => false, "childrenParams" => array());
-	
+
 	/**
 	 * set the XML format to display, possible values "tags", "attributes"
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $xmlFormat = "attributes";
-	
+
 	/**
 	 * current publication
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $publication = "";
-	
+
 	/**
 	 * default defined in captcha component
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $captchaOptions = array();
-	
+
 	/**
 	 * annotation options
 	 * 		object type => find options (filter and pagination)
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $annotationOptions = array("comment" => array());
-	
+
 	/**
 	 * BE obj internal cache
 	 * id => array(...)
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $objectCache = array();
-	
+
 	/**
 	 * tag and category options
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $tagOptions = array();
-	
+
 	/**
 	 * search options, attribute used on search
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $searchOptions = array("order" => false, "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
-	
+
 	/**
 	 * user logged in or not
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $logged = false;
-	
+
 	/**
 	 * path to redirect after login action
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $loginRedirect = "/";
-	
+
 	/**
 	 * path to redirect after logout action
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $logoutRedirect = "/";
-	
+
 	/**
 	 * if it's true show unauthorized objects for user in list setting "authorized" => false in object array
 	 * else the unauthorized objects aren't in list (default)
-	 * 
+	 *
 	 * main objects requested are always blocked if user is not authorized to see them
-	 * 
+	 *
 	 * @var bool
 	 */
 	protected $showUnauthorized = false;
 
 	const UNLOGGED = "unlogged";
 	const UNAUTHORIZED = "unauthorized";
-	
+
 	/**
 	 * set FrontendController::logged private attribute
 	 *
@@ -201,9 +201,9 @@ abstract class FrontendController extends AppController {
 		} else {
 			$this->logged = true;
 		}
-		
 
-		/* 
+
+		/*
 		 * if user is unlogged and it's a staging site OR
 		 * if user hasn't permissions to access at the publication
 		 * throws exception
@@ -219,10 +219,10 @@ abstract class FrontendController extends AppController {
 	 *	for example you could set FrontendController::skipCheck to true avoiding user session check
 	 */
 	protected function beforeCheckLogin() {}
-	
+
 	/**
 	 * show login form or redirect if user is already logged
-	 * 
+	 *
 	 * @param string $backName nickname or id of section to go after login
 	 */
 	protected function login($backName=null) {
@@ -245,17 +245,17 @@ abstract class FrontendController extends AppController {
 			$this->redirect($this->logoutRedirect);
 		}
 	}
-	
+
 	/**
 	 * manage access denied. If you want another behavior override it in pages_controller
-	 * 
+	 *
 	 * user unlogged: render login view (if user doesn't arrive from login page set info message)
 	 * user unauthorized to access that item: render unauthorized view (set error message)
-	 * 
-	 * for other custom type will try to render a view with $type name 
+	 *
+	 * for other custom type will try to render a view with $type name
 	 * 		(i.e. $type="access_denied" render views/pages/access_denied.[tpl|ctp] template)
-	 * 
-	 * @param string $type, which type of access denied 
+	 *
+	 * @param string $type, which type of access denied
 	 * @throws BeditaFrontAccessException
 	 */
 	protected function accessDenied($type) {
@@ -268,20 +268,20 @@ abstract class FrontendController extends AppController {
 		}
 		throw new BeditaFrontAccessException(null, array("errorType" => $type));
 	}
-	
+
 	/**
 	 * get private logged var
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function isLogged() {
 		return $this->logged;
 	}
-	
+
 	/**
 	 * called before action to initialize
 	 * $uses & $components array don't work... (abstract class ??)
-	 * 
+	 *
 	 * @throws BeditaPublicationException
 	 * @see bedita-app/AppController#initAttributes()
 	 */
@@ -305,23 +305,23 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance() ;
 		if (!empty($conf->draft))
 			$this->status[] = "draft";
-		
-		// check publication status		
+
+		// check publication status
 		$pubStatus = $this->BEObject->field("status", array("id" => Configure::read("frontendAreaId")));
-				
+
 		if ($pubStatus != "on") {
 			$statusSaved = $this->status;
 			$this->status = array('on', 'off', 'draft');
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"), false);
 			$this->status = $statusSaved;
-			$this->set('publication', $this->publication);						
+			$this->set('publication', $this->publication);
 			if (Configure::read("draft") == false or ($pubStatus == "off")) {
 				throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
 			}
 		}
-		
+
 		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
-		
+
 		// set publication data for template
 		$this->set('publication', $this->publication);
 
@@ -336,7 +336,7 @@ abstract class FrontendController extends AppController {
 				$this->checkPubDate = array("start" => false, "end" => false);
 			}
 		}
-		
+
 		$this->historyItem["area_id"] = $this->publication["id"];
 
 		$this->beforeCheckLogin();
@@ -344,7 +344,7 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * override AppController::setupLocale. Used setup specific locale
-	 * 
+	 *
 	 * @see bedita-app/AppController#setupLocale()
 	 */
 	protected function setupLocale() {
@@ -387,7 +387,7 @@ abstract class FrontendController extends AppController {
 			$this->currLocale = setlocale(LC_ALL, '');
 		}
 		$this->set('currLocale', $this->currLocale);
-		
+
 		if(isset( $conf->datePatternLocale[$this->currLang])) {
 			Configure::write('datePattern', $conf->datePatternLocale[$this->currLang]);
 		}
@@ -401,7 +401,7 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * change language
-	 * 
+	 *
 	 * @param string $lang
 	 * @param string $forward redirect action after changing language. If it's null redirect to refere
 	 * @return string
@@ -418,19 +418,19 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException("wrong lang selected: ".$lang);
 		}
 		$this->Session->write('Config.language', $lang);
-		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day'); 
+		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day');
 		$this->currLang = $lang;
 
 		if(!empty($forward)) {
 			if (substr($forward, 0, 5) != "http:") {
 				if (strpos("/", $forward) != 1)
 					$forward = "/" . $forward;
-					
+
 				if (!empty($this->params["pass"][2])) {
 					$forward .= "/" . implode("/", array_slice($this->params["pass"],2));
 				}
 			}
-			
+
 			$this->redirect($forward);
 		} else {
 			$this->redirect($this->referer());
@@ -438,7 +438,7 @@ abstract class FrontendController extends AppController {
 
 	}
 
-	
+
 	/**
 	 * check if current date is compatible with required pubblication dates (start/end date)
 	 *
@@ -457,10 +457,10 @@ abstract class FrontendController extends AppController {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * handle Exceptions
-	 * 
+	 *
 	 * @param Exception $ex
 	 * @return AppError
 	 */
@@ -472,46 +472,46 @@ abstract class FrontendController extends AppController {
 		} elseif ($ex instanceof BeditaFrontAccessException) {
 			$errorType = $ex->getErrorType();
 			$params = array(
-				'details' => $ex->getDetails(), 
-				'msg' => $ex->getMessage(), 
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
 				'result' => $ex->result,
 				'errorType' => $ex->getErrorType()
 			);
-			
+
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontAccess', $params, $ex->errorTrace());
 		} elseif ($ex instanceof BeditaRuntimeException) {
 			include_once (APP . 'app_error.php');
-			return new AppError('handleExceptionRuntime', 
-					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+			return new AppError('handleExceptionRuntime',
+					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
 					'result' => $ex->result), $ex->errorTrace());
 		} elseif ($ex instanceof SmartyException) {
 			include_once (APP . 'app_error.php');
 			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
 			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $trace);
 		} else {
-			
+
 			if($ex instanceof BeditaException) {
 				$errTrace =  $ex->errorTrace();
 				$details = $ex->getDetails();
 				$result = $ex->result;
 			} else {
 				$errTrace =  get_class($ex)." -  ". $ex->getMessage().
-					"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+					"\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
 				$details = "";
 				$result = "";
 			}
 			include_once (APP . 'app_error.php');
-			return new AppError('handleExceptionFrontend', 
-					array('details' => $details, 'msg' => $ex->getMessage(), 
+			return new AppError('handleExceptionFrontend',
+					array('details' => $details, 'msg' => $ex->getMessage(),
 					'result' => $result), $errTrace);
-					
+
 		}
 	}
-	
+
 	/**
 	 * handle error, logging if log level is 'debug'
-	 * 
+	 *
 	 * @see bedita-app/AppController#handleError()
 	 */
 	public function handleError($eventMsg, $userMsg, $errTrace) {
@@ -519,19 +519,19 @@ abstract class FrontendController extends AppController {
 			$this->log($errTrace);
 		}
 	}
-	
+
 	/**
 	* Get tree starting from specified section or area
-	* 
-	* @param string|int $parentName		parent nickname or id 
+	*
+	* @param string|int $parentName		parent nickname or id
 	* @param boolean $loadContents			if it's true load all contents too. Default false
-	* @param array $exclude_nicknames	list exclude sections 
+	* @param array $exclude_nicknames	list exclude sections
 	* @param int $depth				tree's depth level (default=null => all levels)
 	* @return array
 	* */
 	protected function loadSectionsTree($parentName, $loadContents = false, array $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
-		$conf = Configure::getInstance(); 
+		$conf = Configure::getInstance();
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
 		$result = array();
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
@@ -541,13 +541,13 @@ abstract class FrontendController extends AppController {
 		$sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
 
 		foreach ($sections['items'] as $s) {
-			
+
 			if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) {
 				continue;
 			}
-			
+
 			$sectionObject = $this->loadObj($s['id']);
-			
+
 			if ($sectionObject !== self::UNLOGGED && $sectionObject !== self::UNAUTHORIZED) {
 
 				$resultSections = array();
@@ -588,24 +588,24 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * Set canonical path in object data array, check parent authorization
-	 *  - $obj["canonicalPath"] will contain new caclulated canonical path 
+	 *  - $obj["canonicalPath"] will contain new caclulated canonical path
 	 *  - update  $this->objectCache
-	 *  - setup $obj["parentAuthorized"] 
+	 *  - setup $obj["parentAuthorized"]
 	 *  - setup $obj["pathSection"] for sections
-	 * 
+	 *
 	 * @param array $obj, containing at least "id" and "nickname"
 	 */
 	protected function setCanonicalPath(array &$obj) {
 
 		$objectId = $obj["id"];
 
-		if(isset($this->objectCache[$objectId]["canonicalPath"]) && 
+		if(isset($this->objectCache[$objectId]["canonicalPath"]) &&
 			isset($this->objectCache[$objectId]["parentAuthorized"])) {
 			$obj["canonicalPath"] = $this->objectCache[$objectId]["canonicalPath"];
 			$obj["parentAuthorized"] = $this->objectCache[$objectId]["parentAuthorized"];
 			return;
 		}
-		
+
 		if($obj["object_type_id"] == Configure::read("objectTypes.area.id")) {
 			$obj["canonicalPath"] = "/";
 			$obj["parentAuthorized"] = $obj["authorized"];
@@ -615,7 +615,7 @@ abstract class FrontendController extends AppController {
 		if($obj["object_type_id"] == Configure::read("objectTypes.section.id")) {
 			$obj["pathSection"] = $pathSection;
 		}
-		
+
 		$parentAuthorized = true;
 		foreach ($pathSection as $ps) {
 			if ($parentAuthorized && !empty($ps["authorized"]) && !$ps["authorized"]) {
@@ -623,13 +623,13 @@ abstract class FrontendController extends AppController {
 			}
 		}
 		$obj["parentAuthorized"] = $parentAuthorized;
-		
+
 		$canPath = "";
 		if(!empty($pathSection)) {
 			$parentSec = end($pathSection);
 			$canPath = $parentSec["canonicalPath"];
 		}
-		
+
 		$canPath .= (($canPath === "/") ? "" : "/");
 		$menu = true;
 		if($obj["object_type_id"] == Configure::read("objectTypes.section.id")) {
@@ -643,72 +643,72 @@ abstract class FrontendController extends AppController {
 			$this->objectCache[$objectId]["canonicalPath"] = $canPath;
 			$this->objectCache[$objectId]["parentAuthorized"] = $parentAuthorized;
 		}
-		return;		
+		return;
 	}
-	
+
 	/**
 	 * Get sections levels
-	 * 
-	 * Find all ancestors from secName and build an array of levels 
+	 *
+	 * Find all ancestors from secName and build an array of levels
 	 * Each key in array returned is a level:
 	 * 	0 is the first level
 	 * 	1 is the second level
 	 * 	etc...
-	 * 
+	 *
 	 * set selected = true in a section if it's an ancestor (parent) of $secName
-	 * 
+	 *
 	 * @param string $secName					nickname or section id
-	 * @param boolean $loadContents		true meaning it loads all contents of each section 
-	 * @param array $exclude_nicknames	list exclude sections 
-	 * 
-	 * @return array of level selected 
+	 * @param boolean $loadContents		true meaning it loads all contents of each section
+	 * @param array $exclude_nicknames	list exclude sections
+	 *
+	 * @return array of level selected
 	 */
 	protected function loadSectionsLevels($secName, $loadContents=false, array $exclude_nicknames=null) {
-		$conf = Configure::getInstance(); 
+		$conf = Configure::getInstance();
 		$result = array();
-		
+
 		$section_id = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);
-		
+
 		$path = $this->Tree->field("object_path", array("id" => $section_id));
 		$parents = explode("/", trim($path,"/"));
-		
+
 		$level = 0;
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		foreach ($parents as $p_id) {
 			$sections = $this->BeTree->getChildren($p_id, $this->status, $filter, "priority");
 
 			foreach ($sections["items"] as $s) {
-				
-				if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames)) 
+
+				if(!empty($exclude_nicknames) && in_array($s['nickname'], $exclude_nicknames))
 					continue ;
-				
+
 				$sectionObject = $this->loadObj($s['id']);
 				if ($sectionObject !== self::UNLOGGED && $sectionObject !== self::UNAUTHORIZED) {
 					if (in_array($s["id"], $parents)) {
 					 	$sectionObject["selected"] = true;
 					}
-					
+
 					if($loadContents) {
 						$option = array("filter" => array("object_type_id" => Configure::read("objectTypes.leafs.id")));
-						$objs = $this->loadSectionObjects($s['id'], $option);	
+						$objs = $this->loadSectionObjects($s['id'], $option);
 						$sectionObject['objects'] = (!$this->sectionOptions["itemsByType"] && !empty($objs["childContents"]))? $objs["childContents"] : $objs;
 					}
 					$result[$level][] = $sectionObject;
 				}
-				
+
 			}
 
 			$level++;
 		}
 		return $result;
 	}
-	
+
 	/**
 	 * load all publications
-	 * 
-	 * @param string $tplVar, var name for template. 
+	 *
+	 * @param string $tplVar, var name for template.
 	 * 		  If not defined result will be set to "publicationsList" var
-	 * 
+	 *
 	 */
 	protected function loadPublications($tplVar=null) {
 		$publications = array();
@@ -736,7 +736,7 @@ abstract class FrontendController extends AppController {
 		$this->action = 'section';
 		$this->section($homePageSectionId);
 	}
-	
+
 	/**
 	 * prepare an XML containing sitemap specification
 	 * view in bedita-app/views/pages/sitemap_xml.tpl
@@ -750,29 +750,29 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * build array for sitemap
-	 * 
+	 *
 	 * @param boolean $xml_out
 	 * @return array
 	 */
 	public function sitemap($xml_out = false) {
 		$conf = Configure::getInstance() ;
 		$extract_all = (!empty($conf->sitemapAllContent)) ? $conf->sitemapAllContent : false;
-		
+
 		$itemsByType = $this->sectionOptions["itemsByType"];
 		$this->sectionOptions["itemsByType"] = false;
 		$flatMode = $xml_out? true : false;
 		$sectionsTree = $this->loadSectionsTree($conf->frontendAreaId,$extract_all, null, 10000, $flatMode) ;
 		$this->sectionOptions["itemsByType"] = $itemsByType;
-		
+
 		if($xml_out) {
 
 			$pubMap = array();
 			$pubMap['loc'] = $this->publication["public_url"];
 			$pubMap['lastmod'] =  !empty($this->publication['last_modified']) ?
 				substr($this->publication["last_modified"], 0, 10) : substr($this->publication["modified"], 0, 10);
-			$pubMap['priority'] = !empty($this->publication['map_priority']) ? 
+			$pubMap['priority'] = !empty($this->publication['map_priority']) ?
 				$this->publication['map_priority'] : null;
-			$pubMap['changefreq'] = !empty($this->publication['map_changefreq']) ? 
+			$pubMap['changefreq'] = !empty($this->publication['map_changefreq']) ?
 				$this->publication['map_changefreq'] : null;
 			$urlset[] = $pubMap;
 			if($extract_all) {
@@ -783,17 +783,17 @@ abstract class FrontendController extends AppController {
 				if(!empty($resultObjects)) {
 					$sectionsTree = array_merge($resultObjects, $sectionsTree);
 				}
-			}				
+			}
 
 			$i = count($urlset);
 			$sectionModel = ClassRegistry::init("Section");
 			foreach($sectionsTree as $v) {
 				$urlset[$i] = array();
 				$urlset[$i]['loc'] = $this->publication["public_url"]. $v['canonicalPath'];
-				
+
 				if($v['object_type_id'] == $conf->objectTypes["section"]["id"]) {
-					
-					$secFields = $sectionModel->find("first", 
+
+					$secFields = $sectionModel->find("first",
 						array("conditions" => array("id"=>$v["id"]), "contain" => array()));
 					if(!empty($secFields['last_modified'])) {
 						$urlset[$i]['lastmod'] = substr($secFields['last_modified'], 0, 10);
@@ -806,10 +806,10 @@ abstract class FrontendController extends AppController {
 					if(!empty($secFields['map_changefreq'])) {
 						$urlset[$i]['changefreq'] = $secFields['map_changefreq'];
 					}
-					
+
 				} else {
 					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
-					
+
 				}
 				$urlset[$i]['menu'] = $v["menu"];
 				$i++;
@@ -820,17 +820,17 @@ abstract class FrontendController extends AppController {
 				$this->helpers[] = 'BeTree';
 			}
 		}
-		
+
 		$this->set('sections_tree',$sectionsTree);
 	}
 
-	
+
 	/**
 	 * Publish RSS feed with contents inside section $sectionName
 	 * Use callback controller methods (if defined):
 	 * 	- $sectionName."RssChannel" to fetch channel data
 	 *  - $sectionName."RssItems" to fetch rss items
-	 *  
+	 *
 	 * If callbacks methods are not defined (default) load section and object data
 	 * and build rss data with defaults
 	 *
@@ -845,7 +845,7 @@ abstract class FrontendController extends AppController {
 		if (method_exists($this, $methodName)) {
 			$channel = $this->{$methodName}();
 		} else {
-			// build channel data from section		
+			// build channel data from section
 			$s = $this->loadObjByNick($sectionName);
 			if ($s === self::UNLOGGED || $s === self::UNAUTHORIZED) {
 				$this->accessDenied($s);
@@ -853,7 +853,7 @@ abstract class FrontendController extends AppController {
 			if($s['syndicate'] === "off") {
 				throw new BeditaException(__("Content not found", true));
 			}
-	
+
 			$this->setCanonicalPath($s);
 			App::import("Sanitize");
 			$title = Sanitize::html($this->publication["public_name"] . " - " . $s['title']);
@@ -864,8 +864,8 @@ abstract class FrontendController extends AppController {
 			);
 		}
 		$this->set('channelData', $channel);
-		
-		// fetch rss items, use 
+
+		// fetch rss items, use
 		$rssItems = array();
 		$methodName = $sectionName . "RssItems";
 		// check before filter method
@@ -900,7 +900,7 @@ abstract class FrontendController extends AppController {
 	 * Build a single RSS item from a BE object array
 	 * If section "canonicalPath" is set, links are created with it
 	 * If not: use object canonicalPath if present, otherwise object unique name (nickname)
-	 * 
+	 *
 	 * @param array $obj
 	 * @param string $canonicalPath
 	 * @return array
@@ -913,13 +913,13 @@ abstract class FrontendController extends AppController {
 		if (!empty($obj['body'])) {
 			$description .= "<hr/>" .  $obj['body'];
 		}
-		$link = !empty($canonicalPath) ? ($canonicalPath ."/". $obj['nickname']) : 
+		$link = !empty($canonicalPath) ? ($canonicalPath ."/". $obj['nickname']) :
 			(!empty($obj['canonicalPath']) ? $obj['canonicalPath'] : $obj['nickname']);
 		return array( 'title' => $obj['title'], 'description' => $description,
 						'pubDate' => $obj['created'], 'link' => $link);
 	}
-	
-	
+
+
 	/**
 	 * output a kml defined by a section
 	 * @param string $sectionName
@@ -954,7 +954,7 @@ abstract class FrontendController extends AppController {
 			'description' => $s['description'],
 			'language' => $s['lang'],
 		);
-		
+
 		$this->set('channelData', $channel);
 		$rssItems = array();
 		$items = $s['childContents'];
@@ -1017,28 +1017,28 @@ abstract class FrontendController extends AppController {
 		$this->action = "json";
 		$this->set("data", $this->viewVars["section"]);
 	}
-	
+
 	/**
 	 * output an xml of returned array by section or content method
 	 *
 	 * passing a "format" named parameters in the url obtain an xml "attributes" format or an xml "tags" format
-	 * i.e. http://www.example.com/xml/nickname/format:tags output a tag style xml 
+	 * i.e. http://www.example.com/xml/nickname/format:tags output a tag style xml
 	 * default is defined by class attribute xmlFormat
-	 * 
+	 *
 	 * @param string|int $name, nickname or id
 	 */
 	public function xml($name) {
 		$this->route($name);
 		$this->outputXML(array("section" => $this->viewVars["section"]));
 	}
-	
+
 	/**
 	 * output an xml of returned array by loadObj/loadObjByNick method
 	 *
 	 * passing a "format" named parameters in the url obtain an xml "attributes" format or an xml "tags" format
-	 * i.e. http://www.example.com/xmlobject/nickname/format:tags output a tag style xml 
+	 * i.e. http://www.example.com/xmlobject/nickname/format:tags output a tag style xml
 	 * default is defined by class attribute xmlFormat
-	 * 
+	 *
 	 * @param string|int $name, nickname or id
 	 */
 	public function xmlobject($name) {
@@ -1048,10 +1048,10 @@ abstract class FrontendController extends AppController {
 		}
 		$this->outputXML(array("object" => $object));
 	}
-	
+
 	/**
 	 * prepare to XML output
-	 * 
+	 *
 	 * @param array $data
 	 */
 	private function outputXML($data) {
@@ -1069,7 +1069,7 @@ abstract class FrontendController extends AppController {
 		$this->action = "xml";
 		$this->view = 'View';
 	}
-	
+
 	/**
 	 * Like loadObj using nickname
 	 *
@@ -1092,7 +1092,7 @@ abstract class FrontendController extends AppController {
 	protected function loadAndSetObjByNick($obj_nick, $var_name = null, $blockAccess = true) {
 		return $this->loadAndSetObj($this->BEObject->getIdFromNickname($obj_nick) , $var_name, $blockAccess);
 	}
-	
+
 	/**
 	 * Load bedita Object and set view var with $var_name or object type (e.g. "Document", "Event"..)
 	 * Returns object loaded
@@ -1111,15 +1111,15 @@ abstract class FrontendController extends AppController {
 		$this->set((isset($var_name)? $var_name: $obj['object_type']),$obj);
 		return true;
 	}
-	
+
 	/**
 	 * set model bindings for BEdita object
-	 * 
+	 *
 	 * @param string $modelType model name of BE object
 	 * @return array that contains:
 	 *				"bindings_used" => multidimensional array of bindings used,
 	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
-	 *				
+	 *
 	 */
 	protected function setObjectBindings($modelType) {
 		if(!isset($this->{$modelType})) {
@@ -1136,7 +1136,7 @@ abstract class FrontendController extends AppController {
 		natsort($listOfBindings);
 		return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
 	}
-	
+
 	/**
 	 * Returns bedita Object
 	 * Throws Exception on errors
@@ -1173,7 +1173,7 @@ abstract class FrontendController extends AppController {
 				return $this->objectCache[$obj_id];
 			}
 		}
-		
+
 		// check permissions and set $authorized true/false
 		if (!$this->skipCheck) {
 
@@ -1205,7 +1205,7 @@ abstract class FrontendController extends AppController {
 						$permsWithBlock[] = $p;
 					}
 				}
-				
+
 
 				// if user is not logged
 				if (!$this->logged) {
@@ -1234,12 +1234,12 @@ abstract class FrontendController extends AppController {
 		} else {
 			$authorized = true;
 		}
-		
+
 		if (!isset($this->objectCache[$obj_id])) {
 			$modelType = $this->BEObject->getType($obj_id);
 			$bindings = $this->setObjectBindings($modelType);
 		}
-		
+
 		$obj = $this->{$modelType}->find("first", array(
 								"conditions" => array(
 									"BEObject.id" => $obj_id,
@@ -1274,7 +1274,7 @@ abstract class FrontendController extends AppController {
 		if(!$this->checkPubblicationDate($obj)) {
 			throw new BeditaException(__("Content not found", true));
 		}
-		
+
 		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
@@ -1291,7 +1291,7 @@ abstract class FrontendController extends AppController {
 			$this->setupAnnotations($obj, $this->status);
 		}
 		unset($obj['Annotation']);
-		
+
 		if (!empty($obj['ObjectProperty'])) {
 			foreach ($obj['ObjectProperty'] as $prop) {
 				$properties[$prop["name"]] = $prop;
@@ -1300,10 +1300,10 @@ abstract class FrontendController extends AppController {
 		}
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
-		
+
 		// add bindings used
 		$obj['bindings'] = $bindings;
-		
+
 		$this->objectCache[$obj_id] = $obj;
 		return $obj;
 	}
@@ -1337,25 +1337,25 @@ abstract class FrontendController extends AppController {
 			$this->set($key, $objs);
 		}
 	}
-	
+
 	/**
 	 * Load objects in section $parentNick
 	 *
 	 * @param string $parentNick
 	 * @param array $options, filter and pagination options
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function loadSectionObjectsByNick($parentNick, $options=array()) {
 		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick), $options);
-	}	
+	}
 
 	/**
 	 * Load objects in section $parent_id
 	 *
 	 * @param int $parent_id
 	 * @param array $options, filter, pagination and other options
-	 * 
+	 *
 	 * @return array
 	 */
 	protected function loadSectionObjects($parent_id, $options=array()) {
@@ -1363,7 +1363,7 @@ abstract class FrontendController extends AppController {
 		if(empty($parent_id)) {
 			throw new BeditaException("Bad data");
 		}
-		
+
 		$this->checkParentStatus($parent_id);
 		if(isset($this->objectCache[$parent_id]["menu"])){
 			$menu = $this->objectCache[$parent_id]["menu"];
@@ -1381,13 +1381,13 @@ abstract class FrontendController extends AppController {
 			$priorityOrder = "asc";
 		}
 		$sectionItems = array();
-		
+
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
 		$dir = (isset($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
-		
+
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
@@ -1397,9 +1397,9 @@ abstract class FrontendController extends AppController {
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
 				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
-		
+
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
-		
+
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
 				$obj = $this->loadObj($item['id']);
@@ -1414,11 +1414,11 @@ abstract class FrontendController extends AppController {
 									return array();
 								}
 								$this->setCanonicalPath($s);
-								$obj["canonicalPath"] = (($s["canonicalPath"] != "/") ? $s["canonicalPath"] : "") 
+								$obj["canonicalPath"] = (($s["canonicalPath"] != "/") ? $s["canonicalPath"] : "")
 									. "/" . $obj["nickname"];
 							}
 						} else {
-							$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "") 
+							$obj["canonicalPath"] = (($options["sectionPath"] != "/") ? $options["sectionPath"] : "")
 								. "/" . $obj["nickname"];
 						}
 					}
@@ -1438,58 +1438,58 @@ abstract class FrontendController extends AppController {
 			$sectionItems["toolbar"] = $items['toolbar'];
 		}
 		return $sectionItems;
-	
+
 	}
-	
+
 	/**
 	 * find first section that contain content ($name) then call section method
-	 * 
+	 *
 	 * @param string|id $name, id or content nickname
 	 */
 	public function content($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
-		
+
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-		
+
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
 		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND object_path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
-		
+
 		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
-		
+
 		if($section_id === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
 		$this->action = 'section';
-		$this->section($section_id, $content_id);	
+		$this->section($section_id, $content_id);
 	}
 
-		
+
 	/**
 	 * find section and contents from section nick or section id and set template vars
-	 * 
+	 *
 	 * Set section and:
 	 * if $contentName=null set all contents in section
 	 * if $contentName is defined set single content
-	 * if $contentName is defined and $this->showAllContents=true set content and other contents too (default) 
-	 * 
-	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'BeforeRender 
-	 * if they're set in the controller (i.e. pages_controller.php)				
+	 * if $contentName is defined and $this->showAllContents=true set content and other contents too (default)
+	 *
+	 * Execute 'sectionNickname'BeforeFilter and/or 'sectionNickName'BeforeRender
+	 * if they're set in the controller (i.e. pages_controller.php)
 	 *
 	 * @param string/int $secName: section nick or section id
 	 * @param string/int $contentName: content nick or content id
 	 */
 	public function section($secName, $contentName = null) {
-		
+
 		if (is_numeric($secName)) {
 			$sectionId = $secName;
 			$secName = $this->BEObject->getNicknameFromId($sectionId);
 		} else {
 			$sectionId = $this->BEObject->getIdFromNickname($secName);
-		}		
-		
+		}
+
 		$content_id = null;
-		
+
 		if(!empty($contentName)) {
 			if (is_numeric($contentName)) {
 				$content_id = $contentName;
@@ -1503,45 +1503,45 @@ abstract class FrontendController extends AppController {
 				array_shift($args);
 				return call_user_func_array(array($this, "section"), $args);
 			// check that contentName is a child of secName
-			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {	
+			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {
 				throw new BeditaException(__("Content " . $contentName . " doesn't belong to " . $secName, true));
 			}
 			$contentNameFilter = BeLib::getInstance()->variableFromNickname($contentName);
 		}
-		
+
 		$secNameFilter = BeLib::getInstance()->variableFromNickname($secName);
 		// section before filter
 		if (method_exists($this, $secNameFilter . "BeforeFilter")) {
 			$this->{$secNameFilter . "BeforeFilter"}($contentName);
 		}
-		
+
 		// content before filter
 		if ($contentName && method_exists($this, $contentNameFilter . "BeforeFilter")) {
 			$this->{$contentNameFilter . "BeforeFilter"}($secName);
 		}
-		
+
 		$section = $this->loadObj($sectionId);
 		if ($section === self::UNLOGGED || $section === self::UNAUTHORIZED) {
 			$this->accessDenied($section);
 		}
-		
+
 		$this->setCanonicalPath($section);
 		$this->sectionOptions["childrenParams"] = array_merge($this->sectionOptions["childrenParams"], $this->params["named"]);
 		if (!isset($section["menu"]) || $section["menu"] !== "0") {
 			$this->sectionOptions["childrenParams"]["sectionPath"] = $section["canonicalPath"];
 		}
-		
+
 		if (!$section["parentAuthorized"] || !$section["authorized"]) {
 			$section["authorized"] = false;
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
 		}
-		
+
 		if(!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
 			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED) {
 				$this->accessDenied($section['currentContent']);
 			}
-			
+
 			$section["contentRequested"] = true;
 			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : "";
 			if(empty($section['currentContent']['canonicalPath'])) {
@@ -1550,10 +1550,10 @@ abstract class FrontendController extends AppController {
 			$this->historyItem["object_id"] = $content_id;
 			if(!empty($section['currentContent']['title'])) $this->historyItem["title"] = $section['currentContent']['title'];
 			else $this->historyItem["title"] = $section['title'];
-			
-			
+
+
 			if ($this->sectionOptions["showAllContents"]) {
-				if(empty($this->sectionOptions["childrenParams"]["detailed"]) 
+				if(empty($this->sectionOptions["childrenParams"]["detailed"])
 					|| $this->sectionOptions["childrenParams"]["detailed"] === false) {
 					$this->baseLevel = true;
 				}
@@ -1565,13 +1565,13 @@ abstract class FrontendController extends AppController {
 				} else {
 					$section = array_merge($section, array("children" => $tmp));
 				}
-				
+
 				$this->baseLevel = false;
 				$this->checkPubDate = $checkPubDate;
 			}
 		} else {
 			$tmp = $this->loadSectionObjects($sectionId, $this->sectionOptions["childrenParams"]);
-			
+
 			if (!$this->sectionOptions["itemsByType"]) {
 				$tmp['currentContent'] = (!empty($tmp['childContents']))? $tmp['childContents'][0] : array();
 				$section = array_merge($section, $tmp);
@@ -1585,18 +1585,18 @@ abstract class FrontendController extends AppController {
 					$section = array_merge($section, array("currentContent" => $current[0], "children" => $tmp, "toolbar" => $toolbar));
 				}
 			}
-			
+
 			$this->historyItem["object_id"] = $sectionId;
 			$this->historyItem["title"] = $section['title'];
 		}
 
 		$this->set('section', $section);
-		
+
 		// section before render
 		if (method_exists($this, $secNameFilter . "BeforeRender")) {
 			$this->{$secNameFilter . "BeforeRender"}();
 		}
-		
+
 		// content before render
 		if ($contentName && method_exists($this, $contentNameFilter . "BeforeRender")) {
 			$this->{$contentNameFilter . "BeforeRender"}();
@@ -1621,32 +1621,32 @@ abstract class FrontendController extends AppController {
 			}
 		}
 		if($section["object_type_id"] == Configure::read("objectTypes.area.id")) {
-			$currPath = "/"; 
+			$currPath = "/";
 		} else {
 			$currPath = (!empty($section["menu"]) && $section["menu"] === '0') ? "" : "/" . $section["nickname"];
-		}		
+		}
 		$parentPath = "";
 		if(!empty($section["pathSection"])) {
 			$parentSec = end($section["pathSection"]);
-			$parentPath = !empty($parentSec['canonicalPath']) ? $parentSec['canonicalPath'] : ""; 
+			$parentPath = !empty($parentSec['canonicalPath']) ? $parentSec['canonicalPath'] : "";
 		}
 		$section["canonicalPath"] = $parentPath . $currPath;
 		return $parentAuthorized;
 	}
-*/	
-	
+*/
+
 	/**
 	 * route to section, content or another method following the below rules
-	 * 
+	 *
 	 * 1. if there aren't url arguments (i.e. /) => uses homePage reserved word
 	 * 2. if first url argument is a reserved words defined in configuration var 'defaultReservedWords'
 	 *	  and 'cfgReservedWords' => try to call the method itself
 	 * 3. if first url argument is a method of current controller => try to call the method itself
-	 * 4. if first url argugment is a valid nickname 
+	 * 4. if first url argugment is a valid nickname
 	 *    and there is a method of current Controller with the name defined in BeLib::variableFromNickname => try to call the method itself
 	 *    example: www.example.com/my-nickname => calls PagesController::myNickname() method if it exists
 	 * 5. if first url argument is a valid nickname => calls the appropriate FrontendController::section() or FrontendController::content() method
-	 * 6. throw exception and 404 http error 
+	 * 6. throw exception and 404 http error
 	 * @throws BeditaException
 	 */
 	public function route() {
@@ -1656,13 +1656,13 @@ abstract class FrontendController extends AppController {
 		}
 
 		$name = $args[0];
-		
+
 		// generic methodName
 		$methodName = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
 		$methodName = BeLib::getInstance()->variableFromNickname($methodName);
-		
+
 		$reflectionClass = new ReflectionClass($this);
-		
+
 		$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name);
 
 		// setup args: look if $name is reserved
@@ -1672,7 +1672,7 @@ abstract class FrontendController extends AppController {
 				$this->loadAndSetObj($id, "object");
 			}
 			array_shift($args);
-		} else {		
+		} else {
 			$currentClassName = $reflectionClass->getName();
 			$methods = array($name, $methodName);
 
@@ -1697,7 +1697,7 @@ abstract class FrontendController extends AppController {
 				 	$methodName = null;
 				}
 			}
-					
+
 			// try to use self::section or self::content methods
 			if ($methodName === null && is_string($name) && !empty($id)) {
 				$object_type_id = $this->BEObject->findObjectTypeId($id);
@@ -1706,11 +1706,11 @@ abstract class FrontendController extends AppController {
 				} else {
 					$methodName = "content";
 				}
-			}	
+			}
 		}
-		
+
 		$this->action = $methodName;
-		
+
 		try {
 			// check before filter method
 			if ($reflectionClass->hasMethod($methodName . "BeforeFilter")) {
@@ -1729,7 +1729,7 @@ abstract class FrontendController extends AppController {
 		}
 
 	}
-	
+
 	/**
 	 * search inside history
 	 */
@@ -1749,12 +1749,12 @@ abstract class FrontendController extends AppController {
 				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
-		$this->set("searchResult", $result); 
+		$this->set("searchResult", $result);
 	}
-	
+
 	/**
 	 * public subscribe page, used for newsletter/frontend subscribe/unsubscribe
-	 * 
+	 *
 	 * @param string $what
 	 */
 	public function subscribe($what="newsletter") {
@@ -1773,10 +1773,10 @@ abstract class FrontendController extends AppController {
 		}
 		$this->set("what", $what);
 	}
-	
+
 	/**
 	 * manage hash request like newsletter/frontend subscribe/unsubscribe
-	 * 
+	 *
 	 * @param string $service_type
 	 * @param string $hash
 	 * @return void
@@ -1796,7 +1796,7 @@ abstract class FrontendController extends AppController {
 			throw new BeditaRuntimeException($ex->getMessage(), $ex->getDetails());
 		}
 	}
-	
+
 	/**
 	 * find parent path of $object_id (excluded publication)
 	 *
@@ -1811,7 +1811,7 @@ abstract class FrontendController extends AppController {
 		} else {
 			$row = $this->Tree->find("first", array(
 				"conditions" => array("id" => $object_id, "area_id" => $this->publication["id"]),
-				"limit" => 1, 
+				"limit" => 1,
 				"order" => array("menu" => "desc", "parent_path" => "desc")
 			));
 			if (!empty($row["Tree"]["parent_path"])) {
@@ -1837,9 +1837,9 @@ abstract class FrontendController extends AppController {
 				if ($p != $this->publication["id"]) {
 					if(isset($this->objectCache[$p])) {
 						$pathArr[$p] = $this->objectCache[$p];
-					} else { 
+					} else {
 						$pathArr[$p] = $this->loadObj($p);
-					}	
+					}
 					if(!empty($pathArr[$p]["canonicalPath"])) {
 						$currPath = $pathArr[$p]["canonicalPath"];
 					} else {
@@ -1863,10 +1863,10 @@ abstract class FrontendController extends AppController {
 		}
 		return $pathArr;
 	}
-	
+
 	/**
 	 * get array of parents that contain the object specified by $object_id
-	 *  
+	 *
 	 * @param integer $object_id
 	 * @return array
 	 */
@@ -1878,7 +1878,7 @@ abstract class FrontendController extends AppController {
 		}
 		return $parents;
 	}
-	
+
 	/**
 	 * build archive tree
 	 *
@@ -1899,63 +1899,63 @@ abstract class FrontendController extends AppController {
 	 * 				"2007" => Array(...),
 	 * 		"ShortNews" => ....
 	 * 		)
-	 * 
+	 *
 	 * @param string $secName section id or section nickname
 	 * @return array
 	 */
 	protected function loadArchiveTree($secName, $options=array()) {
-		
+
 		$section_id = (is_numeric($secName))? $secName : $this->BEObject->getIdFromNickname($secName);
-		
+
 		$monthName = array("01" => "January", "02" => "February", "03" => "March", "04" => "April", "05" => "May",
 						   "06" => "June", "07" => "July", "08" => "August", "09" => "September", "10" => "October",
 						   "11" => "November", "12" => "December");
-	
+
 		$this->modelBindings['Document'] = array("BEObject" => array("LangText"));
 		$this->modelBindings['ShortNews'] = array("BEObject" => array("LangText"));
 		$this->modelBindings['Event'] = array("BEObject" => array("LangText"),"DateItem");
-		
+
 		$oldItemsByType = $this->sectionOptions['itemsByType'];
 		$this->sectionOptions['itemsByType'] = true;
 		$items = $this->loadSectionObjects($section_id,$options);
 		unset($this->modelBindings);
 		$this->sectionOptions['itemsByType'] = $oldItemsByType;
-		
+
 		$archive = array();
-		
+
 		foreach ($items as $type => $itemGroup) {
-		
+
 			if($type != "toolbar") {
-			
+
 				foreach ($itemGroup as $item) {
-					
+
 					// DateItem, pubblication or creation date
 					if(!empty($item["DateItem"][0]["start_date"]))
 						$refDate = $item["DateItem"][0]["start_date"];
 					else
 						$refDate = isset($item["start_date"])? $item["start_date"] : $item["created"];
-					 
+
 					$data = explode("-", $refDate);
 					$year = $data[0];
 					$id = $item["id"];
 					$item["title"] = (!empty($item["LangText"]["title"][$this->currLang]))? $item["LangText"]["title"][$this->currLang] : $item["title"];
 					$archive[$type][$year][$data[1]][] = $item;
 				}
-				
+
 				// sort archive
 				$sortFunction = "ksort";
 				if (!empty($options["archiveSort"]) && $options["archiveSort"] == "desc")
 					$sortFunction = "krsort";
-				
+
 				$sortFunction($archive[$type]);
 				foreach ($archive[$type] as $year => $month) {
 					$sortFunction($archive[$type][$year]);
 				}
-				
+
 				// add number of items for month and year
 				$countYear = 0;
 				foreach ($archive[$type] as $year => $month) {
-					
+
 					$countYear = 0;
 					foreach ($month as $key => $i) {
 						$countItem = count($i);
@@ -1970,13 +1970,13 @@ abstract class FrontendController extends AppController {
 
 		return $archive;
 	}
-	
-	
+
+
 	/**
 	 * load all tag
 	 *
 	 * @param string $tplVar
-	 * @param boolean $cloud, if true set 'class' key 
+	 * @param boolean $cloud, if true set 'class' key
 	 * 			(possible value: smallestTag, largestTag, largeTag, mediumTag, smallTag)
 	 * @param boolean $shuffle, if true shuffle the tags else order by label
 	 * @param int $tagShowed, define how much tags have to be returned (null = all tags)
@@ -1998,25 +1998,25 @@ abstract class FrontendController extends AppController {
 		}
 		$this->set($tplVar, $tags);
 	}
-	
+
 	/**
 	 * find all objects tagged by $name and set results for view
-	 * 
+	 *
 	 * @param string $name
 	 */
 	public function tag($name) {
 		$this->set("tag",$this->loadObjectsByTag($name));
 	}
-	
+
 	/**
 	 * find all objects for category $name and set results for view
-	 * 
+	 *
 	 * @param string $name
 	 */
 	public function category($name) {
 		$this->set("category",$this->loadObjectsByCategory($name));
 	}
-	
+
 	/**
 	 * return objects for a specific category
 	 *
@@ -2031,11 +2031,11 @@ abstract class FrontendController extends AppController {
 	protected function loadObjectsByCategory($categoryName, $options=array()) {
 		return $this->loadObjectsByTagCategory($categoryName, $options, "category");
 	}
-	
-	
+
+
 	/**
 	 * Internal method for loadObjectsByCategory loadObjectsByTag
-	 * 
+	 *
 	 * @param string $name category/tag name (friendly url/unique name)
 	 * @param array $options search options (see loadObjectsByCategory)
 	 * @param string $type, "tag" (default), or "category"
@@ -2052,37 +2052,37 @@ abstract class FrontendController extends AppController {
 			$section_id = $this->publication["id"];
 			$searchMethod = "getDescendants";
 		}
-		
+
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
 		if($type === "tag") {
 			$detail = ClassRegistry::init("Category")->find("first", array(
 						"conditions" => array("name" => $name, "object_type_id IS NULL", "status" => $this->status)
 					)
 				);
-			
+
 			if (empty($detail))
 				throw new BeditaException(__("No tag found", true). " - $name");
-		
+
 			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["tag"] = $name;
-		
+
 		} else if ($type === "category"){
-			
+
 			$detail = ClassRegistry::init("Category")->find("first", array(
 						"conditions" => array("name" => $name, "object_type_id IS NOT NULL", "status" => $this->status)
 					)
 				);
-			
+
 			if (empty($detail))
 				throw new BeditaException(__("No category found", true) . " - $name");
-		
+
 			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["category"] = $name;
-			
+
 		} else {
 			throw new BeditaException(__("Unsupported type", true). " - $type");
 		}
-		
+
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		$order = "";
@@ -2094,7 +2094,7 @@ abstract class FrontendController extends AppController {
 		$dir = (isset($options["dir"]))? $options["dir"] : 1;
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
-		
+
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
 				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
@@ -2102,9 +2102,9 @@ abstract class FrontendController extends AppController {
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
 				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
-		
+
 		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
-		
+
 		$result = $detail;
 
 		if (!empty($options['baseLevel'])) {
@@ -2132,10 +2132,10 @@ abstract class FrontendController extends AppController {
 		if (!empty($options['baseLevel'])) {
 			$this->baseLevel = $oldBaseLevel;
 		}
-		
+
 		return array_merge($result, array("toolbar" => $contents["toolbar"]));
 	}
-	
+
 	/**
 	 * return objects for a specific tag
 	 *
@@ -2150,22 +2150,22 @@ abstract class FrontendController extends AppController {
 	protected function loadObjectsByTag($tag, $options=array()) {
 		return $this->loadObjectsByTagCategory($tag, $options, "tag");
 	}
-	
+
 	/**
 	 * load annotation referenced to some object
-	 * 
+	 *
 	 * @param string $annotationType, object type of the annotation e.g. "comment"
-	 * @param string $objectName, reference object nickname or id 
+	 * @param string $objectName, reference object nickname or id
 	 * @param array $options, specific options (pagination, filter) that override annotationOptions attribute
 	 * @return array of annotations
 	 */
 	protected function loadAnnotations($annotationType, $objectName, $options=array()) {
-		
+
 		if (empty($annotationType) || empty($objectName))
 			throw new BeditaException(__("Annotation type or object_id missing", true));
-		
+
 		$object_id = (is_numeric($objectName))? $objectName : $this->BEObject->getIdFromNickname($objectName);
-		
+
 		$options = array_merge($this->annotationOptions[$annotationType], $options, $this->params["named"]);
 		$filter = (!empty($options["filter"]))? $options["filter"] : array();
 		$filter["object_type_id"] = Configure::read("objectTypes." . $annotationType . ".id");
@@ -2174,7 +2174,7 @@ abstract class FrontendController extends AppController {
 		$dir = (isset($options["dir"]))? $options["dir"] : 1;
 		$page = (!empty($options["page"]))? $options["page"] : 1;
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
-		
+
 		$annotations = $this->BeTree->getChildren(null, $this->status, $filter, $order, $dir, $page, $dim);
 		$result = array();
 		foreach ($annotations["items"] as $a) {
@@ -2184,17 +2184,17 @@ abstract class FrontendController extends AppController {
 		}
 		return array_merge($result, array("toolbar" => $annotations["toolbar"]));
 	}
-	
+
 	/**
 	 * force download of media object
-	 * 
+	 *
 	 * @param $name id or object nickname
 	 * @throws BeditaException
 	 */
 	public function download($name) {
 		if(empty($name))
 			throw new BeditaException(__("Content not found", true));
-		
+
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		// verify type
@@ -2206,7 +2206,7 @@ abstract class FrontendController extends AppController {
 		if ($obj === self::UNLOGGED || $obj === self::UNAUTHORIZED) {
 			$this->accessDenied($obj);
 		}
-		
+
 		// check 'download' or 'attach' relation
 		// TODO: check relatedObject status and position on tree????
 		$objRel = ClassRegistry::init("ObjectRelation");
@@ -2222,28 +2222,28 @@ abstract class FrontendController extends AppController {
 			throw new BeditaException(__("Content not found", true));
 		}
 
-		// media with provider or file on filesystem? TODO: use DS?? 
+		// media with provider or file on filesystem? TODO: use DS??
 		if(!empty($obj['provider']) || $obj['uri'][0] !== "/") {
 			$this->redirect($obj['uri']);
 		}
 
 		// TODO: for some extensions or mime-types redirect to media URL
-		if(isset($conf->redirectMimeTypesDownload) && 
+		if(isset($conf->redirectMimeTypesDownload) &&
 			in_array($obj['mime_type'], $conf->redirectMimeTypesDownload)) {
 			$this->redirect($conf->mediaUrl.$obj['uri']);
 		}
-			
+
 		$path = ($conf->mediaRoot).$obj['uri'];
 		$f = new File($path);
 		$info = $f->info();
-		if(isset($conf->redirectExtensionsDownload) && 
+		if(isset($conf->redirectExtensionsDownload) &&
 				in_array($info['extension'], $conf->redirectExtensionsDownload)) {
 			$this->redirect($conf->mediaUrl.$obj['uri']);
-		}	
+		}
 
 		Configure::write('debug', 0);
 		// use readfile
-		// TODO: optimizations! use X-Sendfile ? 
+		// TODO: optimizations! use X-Sendfile ?
 		header('Content-Description: File Transfer');
 		header('Content-Type: '.$obj['mime_type']);
 		header('Content-Disposition: attachment; filename='.$obj['name']);
@@ -2257,13 +2257,13 @@ abstract class FrontendController extends AppController {
 		readfile($path);
 		exit();
 	}
-	
+
 	/**
 	 * show image for captcha
 	 *
 	 */
 	public function captchaImage() {
-		$this->historyItem = null;	
+		$this->historyItem = null;
 		if(!isset($this->Captcha)) {
 			App::import('Component', 'Captcha');
 			$this->Captcha = new CaptchaComponent();
@@ -2272,29 +2272,29 @@ abstract class FrontendController extends AppController {
 		$this->autoRender = false;
 		$this->Captcha->image($this->captchaOptions);
 	}
-	
+
 	/**
-	 * save comment relative to an object, set 'info' flash message 
+	 * save comment relative to an object, set 'info' flash message
 	 * throw Exception in case of error and set 'error' flash message
-	 * 
-	 * If it's ajax request and if not empty $this->params["form"]["render"] renders it 
-	 * 
+	 *
+	 * If it's ajax request and if not empty $this->params["form"]["render"] renders it
+	 *
 	 * elseif  it's not ajax request then redirect to referer
-	 * 
+	 *
 	 * @throws BeditaException
 	 */
 	public function saveComment() {
 		$this->historyItem = null;
 		if (!empty($this->data)) {
-			
+
 			// sanitize from scripts
 			$this->data = BeLib::getInstance()->stripData($this->data);
-			
+
 			if(!isset($this->Comment)) {
 				$this->Comment = $this->loadModelByType("Comment");
 			}
 			$this->data["title"] = substr($this->data["description"],0,30) . "...";
-			// for comment status check contents.comments 
+			// for comment status check contents.comments
 			$beObject = ClassRegistry::init("BEObject");
 			$commentsFlag = $beObject->field("comments", array("id" => $this->data['object_id']));
 			if($commentsFlag == 'moderated') {
@@ -2313,9 +2313,9 @@ abstract class FrontendController extends AppController {
         		if($bannedIP->isBanned($_SERVER['REMOTE_ADDR'])) {
 					throw new BeditaException(__("Error saving comment", true));
         		}
-				
+
 				// check captcha if not logged
-				if (!$this->logged) {			
+				if (!$this->logged) {
 					if(!isset($this->Captcha)) {
 						App::import('Component', 'Captcha');
 						$this->Captcha = new CaptchaComponent();
@@ -2332,7 +2332,7 @@ abstract class FrontendController extends AppController {
 						$this->data["email"] = $userdata["email"];
 					}
 				}
-				
+
 				// build thread path
 				if (!empty($this->params["form"]["thread_parent_id"])) {
 					$thread_path = $this->Comment->field("thread_path", array("id" => $this->params["form"]["thread_parent_id"]));
@@ -2356,11 +2356,11 @@ abstract class FrontendController extends AppController {
 				$this->userErrorMessage($ex->getMessage());
 				$error = true;
 			}
-	
+
 		}
 
 		// if it's ajax call no redirect by referer
-		if($this->RequestHandler->isAjax()) { 
+		if($this->RequestHandler->isAjax()) {
 			$this->layout = "ajax";
 			$this->set('comment',$this->loadObj($this->Comment->id));
 			if (!empty($this->params["form"]["render"])) {
@@ -2375,17 +2375,17 @@ abstract class FrontendController extends AppController {
 			if (!empty($error))
 				$urlToRedirect .= "/#error";
 			elseif ($commentsFlag == 'on')
-				$urlToRedirect .= "/#comment-".$this->Comment->id; 
+				$urlToRedirect .= "/#comment-".$this->Comment->id;
 			$this->redirect($urlToRedirect);
 		}
 
 	}
-	
+
 	/**
 	 * show an object in print mode with specific layout and view
 	 * CakePHP layout: print (if dosen't exists in frontend app use backend print layout)
-	 * use print view if not set a specific $printLayout 
-	 * 
+	 * use print view if not set a specific $printLayout
+	 *
 	 * @param int $id
 	 * @param string $printLayout, the view template to use
 	 */
@@ -2404,13 +2404,13 @@ abstract class FrontendController extends AppController {
 		if (file_exists(APP."views".DS."pages".DS.$printLayout.".tpl"))
 			$this->render($printLayout);
 		else
-			$this->render("print");		
+			$this->render("print");
 	}
-	
+
 	/**
 	 * save a BEdita object. User has to be logged
-	 * 
-	 * @param string $modelName (Document, Event, ....). 
+	 *
+	 * @param string $modelName (Document, Event, ....).
 	 * 		  If undefined get object type from $this->data["object_type_id"]
 	 * @return mixed int|boolean, false on error, object_id saved on success
 	 */
@@ -2430,7 +2430,7 @@ abstract class FrontendController extends AppController {
 			}
 			// sanitize from scripts
 			$this->data = BeLib::getInstance()->stripData($this->data);
-			
+
 			$this->Transaction->begin();
 			$this->saveObject($objectModel);
 			$this->Transaction->commit();
@@ -2444,10 +2444,10 @@ abstract class FrontendController extends AppController {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * delete a BEdita object. User has to be logged
-	 * 
+	 *
 	 * @return boolean
 	 */
 	protected function delete() {
@@ -2473,12 +2473,12 @@ abstract class FrontendController extends AppController {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * check parents status of $section_id
-	 *	
+	 *
 	 * if one or more parents haven't status IN $this->status array throw a BeditaException
-	 * 
+	 *
 	 * @param int $section_id
 	 * @throws BeditaException
 	 */
@@ -2495,22 +2495,22 @@ abstract class FrontendController extends AppController {
 					"contain" => array()
 				)
 			);
-			
+
 			if ($countParent != $countParentStatus)
 				throw new BeditaException(__("Content not found", true));
 		}
 	}
-	
+
 	/**
-	 * add "draft" status to class attribute $status 
+	 * add "draft" status to class attribute $status
 	 */
 	protected function showDraft() {
 		$this->status[] = "draft";
 	}
-	
+
 	/**
 	 * return class attribute $status
-	 * @return array 
+	 * @return array
 	 */
 	public function getStatus() {
 		return $this->status;

@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,7 +25,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Tree extends BEAppModel
@@ -35,7 +35,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * check object_path and parent_path, avoid object is parent or ancestor of itself
-	 * 
+	 *
 	 * @return boolean
 	 */
 	public function beforeSave() {
@@ -44,7 +44,7 @@ class Tree extends BEAppModel
 		$pathToCheck = array("object_path", "parent_path");
 		foreach ($pathToCheck as $path) {
 			if (isset($this->data["Tree"][$path])) {
-				
+
 				// no empty path permitted
 				if (empty($this->data["Tree"][$path])) {
 					return false;
@@ -89,7 +89,7 @@ class Tree extends BEAppModel
 	 *
 	 * @param integer $id
 	 * @param integer $area_id, publication id: if defined search parent only inside the publication
-	 * 
+	 *
 	 * @return mixed	integer, if only one parent founded
 	 * 					array, if two or more parents founded
 	 * 					false, error or none parent founded
@@ -102,13 +102,13 @@ class Tree extends BEAppModel
 		if (!empty($area_id)) {
 			$conditions["area_id"] = $area_id;
 		}
-		
+
 		$ret = $this->find("all", array(
 				"conditions" => $conditions,
 				"fields" => array("parent_id")
 			)
 		);
-		
+
 		if(!$ret) {
 			return false;
 		}
@@ -129,7 +129,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * Return id of publication that contains the section, by id
-	 * 
+	 *
 	 * @param int $id
 	 * @return int
 	 */
@@ -183,7 +183,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * Return id of publication by path
-	 * 
+	 *
 	 * @param string $path
 	 * @return int
 	 */
@@ -224,7 +224,7 @@ class Tree extends BEAppModel
 			"limit" => 1,
 			"order" => "priority " . $dir
 		));
-		
+
 		if (empty($otherRow["Tree"]["priority"])) {
 			return false;
 		}
@@ -245,7 +245,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * move up a leaf tree inside a branch
-	 * 
+	 *
 	 * @param int $id to move
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
@@ -256,7 +256,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * move down a leaf tree inside a branch
-	 * 
+	 *
 	 * @param int $id to move
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
@@ -267,7 +267,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * remove a leaf tree from a branch
-	 * 
+	 *
 	 * @param int $id to remove
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
@@ -279,7 +279,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * set position for a leaf tree in a branch
-	 * 
+	 *
 	 * @param int $id to move
 	 * @param int $idParent parent object (branch)
 	 * @return boolean
@@ -377,7 +377,7 @@ class Tree extends BEAppModel
 	 * Get Tree where 'id' is root.
 	 * @param integer $id		root id.
 	 * @param string $userid	user. if null: no permission check (default); if '': guest user
-	 * @param string $status	only objs with this status 
+	 * @param string $status	only objs with this status
 	 * @param array $filter		see BEAppModel::findObjects
 	 * @return array
 	 */
@@ -386,7 +386,7 @@ class Tree extends BEAppModel
 		// build tree
 		$roots 	= array() ;
 		$tree 	= array() ;
-		
+
 		if (empty($id)) {
 			$filter["Tree.*"] = "";
 		}
@@ -398,7 +398,7 @@ class Tree extends BEAppModel
 
 	/**
 	 * Return a tree build for the items passed
-	 * 
+	 *
 	 * @param array $items
 	 * @return array
 	 */
@@ -424,9 +424,9 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * search where have to stay $branch in $tree and put in  
+	 * search where have to stay $branch in $tree and put in
 	 * @param array $tree
-	 * @param array $branch to put in tree 
+	 * @param array $branch to put in tree
 	 */
 	private function putBranchInTree(&$tree, $branch) {
 		foreach ($tree as $k => $t) {
@@ -521,16 +521,16 @@ class Tree extends BEAppModel
 	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
 		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
 	}
-	
+
 	/**
 	 * save Tree.menu field to set menu and canonical path visibility
-	 * 
+	 *
 	 * @param mixed $ids, id or array of ids on which save menu field.
 	 *			if it's an array cycles on ids and save $menu value foreach of them
 	 * @param int $parent_id
-	 * @param mixed $menu, can be 1, 0 or null 
+	 * @param mixed $menu, can be 1, 0 or null
 	 *			if it's null the default value for every object is used (section = 1, other objects = 0)
-	 * @throws BeditaException 
+	 * @throws BeditaException
 	 */
 	public function saveMenuVisibility($ids, $parent_id, $menu = null) {
 		if (empty($ids) || empty($parent_id)) {
@@ -551,14 +551,14 @@ class Tree extends BEAppModel
 			}
 			if (!$this->saveField('menu', $menu)) {
 				throw new BeditaException( __("Error saving visibility in menu and canonical paths", true), "Error saving Tree.menu field " . $menu . " for object " . $id);
-			}			
+			}
 		}
 	}
-	
+
 	/**
 	 * Clone a tree structure
 	 * Clone Publication and sections and add related contents
-	 * 
+	 *
 	 * @param int $id, publication/section id
 	 * @param array $options, see BEAppObjectModel::arrangeDataForClone()
 	 * @return array, contain couple of original id and cloned id
@@ -574,13 +574,13 @@ class Tree extends BEAppModel
 			if (!$Area->cloneObject($id, $options)) {
 				throw new BeditaException(__("Error cloning Publication", true) . ": id =  " . $id, array("id" => $id));
 			}
-			
+
 			$newPubId = $Area->id;
 			$idConversion[$id] = $newPubId;
-			
+
 			// clone publication's contents
 			$this->copyContentsToBranch($id, $newPubId);
-			
+
 			// clone tree: get sections, clone them and build tree structure, get sections' children and clone tree structure
 			$Section = ClassRegistry::init("Section");
 			$sections = $Section->find("all", array(
@@ -625,7 +625,7 @@ class Tree extends BEAppModel
 					if (!$this->setPriority($newSectionId, $s["priority"], $s["parent_id"])) {
 						throw new BeditaException(__("Error setting Section priority", true), array("id" => $newSectionId, "priority" => $s["priority"]));
 					}
-					
+
 					$this->copyContentsToBranch($sectionId, $newSectionId);
 				}
 			}
@@ -635,16 +635,16 @@ class Tree extends BEAppModel
 
 		return $idConversion;
 	}
-	
+
 	/**
 	 * copy contents from a branch to another brnach
-	 * 
+	 *
 	 * @param int $originalBranchId, branch (publication/section) id where the contents are
 	 * @param int $newBranchId, branch (publication/section) id where the contents have to be copied
 	 * @throws BeditaException
 	 */
 	public function copyContentsToBranch($originalBranchId, $newBranchId) {
-		$children = $this->getChildren($originalBranchId, null, null, array("object_type_id" => "<> " . Configure::read("objectTypes.section.id")));					
+		$children = $this->getChildren($originalBranchId, null, null, array("object_type_id" => "<> " . Configure::read("objectTypes.section.id")));
 		if (!empty($children["items"])) {
 			foreach ($children["items"] as $item) {
 				if (!$this->appendChild($item["id"], $newBranchId)) {

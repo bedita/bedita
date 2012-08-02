@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2009 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,7 +25,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 
@@ -43,10 +43,10 @@ class BEAppModel extends AppModel {
 	protected $sQ = ""; // internal use: start quote
 	protected $eQ = ""; // internal use: end quote
 	protected $driver = ""; // internal use: database driver
-	
+
 	/**
 	 * Merge record result in one array
-	 * 
+	 *
 	 * @param array record	record data
 	 * @return array		record merged to single array
 	 */
@@ -56,7 +56,7 @@ class BEAppModel extends AppModel {
 			if(is_array($val)) $tmp = array_merge($tmp, $val) ;
 			else $tmp[$key] = $val ;
 		}
-		
+
 		return $tmp ;
 	}
 
@@ -68,7 +68,7 @@ class BEAppModel extends AppModel {
 			$this->eQ = $db->endQuote;
     	}
 	}
-	
+
 	public function getStartQuote() {
 		$this->setupDbParams();
 		return $this->sQ;
@@ -83,7 +83,7 @@ class BEAppModel extends AppModel {
 		$this->setupDbParams();
 		return $this->driver;
 	}
-	
+
 	/**
 	 * Get SQL date format
 	 *
@@ -97,7 +97,7 @@ class BEAppModel extends AppModel {
 
 		$result = null;
 		if(is_string($value) && !empty($value)) {
-			$conf = Configure::getInstance() ;			
+			$conf = Configure::getInstance() ;
 			$d_pos = strpos($conf->dateFormatValidation,'dd');
 			$m_pos = strpos($conf->dateFormatValidation,'mm');
 			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
@@ -114,14 +114,14 @@ class BEAppModel extends AppModel {
 				if($throwOnError) {
 					throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
 				} else {
-					$this->log("Date not recognized: " . $value . " - field left blank");				
+					$this->log("Date not recognized: " . $value . " - field left blank");
 				}
 			}
 		}
-		
+
 		return $result ;
 	}
-	
+
 	/**
 	 * Check date field in $this->data[ModelName][$key] -> set to null if empty or call getDefaultDateFormat
 	 *
@@ -160,7 +160,7 @@ class BEAppModel extends AppModel {
 			$data[$key] = null;
 		}
 	}
-	
+
 	protected function checkDuration($key) {
 		$data = &$this->data[$this->name];
 		if(empty($data[$key]) || !is_numeric($data[$key])) {
@@ -169,14 +169,14 @@ class BEAppModel extends AppModel {
 			$data[$key] = $data[$key]*60;
 		}
 	}
-		
+
 	/**
 	 * Object search Toolbar
 	 *
 	 * @param integer $page
 	 * @param integer $dimPage page dimension (limit sql)
 	 * @param integer $size	count of all records
-	 * 
+	 *
 	 * @return array for pagination
 	 *			"first" => first page; if there is only one page its value is 0 else 1
 	 *			"prev" => previous page; 0 if there isn't previous page
@@ -188,16 +188,16 @@ class BEAppModel extends AppModel {
 	 *			"dim" => number of records per page
 	 *			"start" => number of the record with which the page begins counting from the first page
 	 *			"end" => number of the record with which the page ends counting from the first page
-	 *			
+	 *
 	 */
 	function toolbar($page, $dimPage, $size) {
-						
+
 		$toolbar = array("first" => 0, "prev" => 0, "next" => 0, "last" => 0, "size" => 0, "pages" => 0, "page" => 0, "dim" => 0, "start" => 0, "end" => 0) ;
-		
+
 		if (empty($size)) {
 			$size = 0;
 		}
-		
+
 		if (empty($dimPage)) {
 			$dimPage = 0;
 			$pageCount = 1;
@@ -208,17 +208,17 @@ class BEAppModel extends AppModel {
 				$pageCount++;
 			}
 		}
-		
+
 		$toolbar["pages"] 	= $pageCount;
 		$toolbar["page"]  	= $page;
 		$toolbar["dim"]  	= $dimPage;
-		
+
 		if ($page == 1) {
 			if($page < $pageCount) {
 				// first page
 				$toolbar["next"] = $page + 1;
 				$toolbar["last"] = $pageCount;
-			} 
+			}
 		} else {
 			if ($page >= $pageCount) {
 				// last page
@@ -241,8 +241,8 @@ class BEAppModel extends AppModel {
 			}
 		}
 		$toolbar["size"] = $size;
-		
-		return $toolbar;	
+
+		return $toolbar;
 	}
 
 	/**
@@ -269,7 +269,7 @@ class BEAppModel extends AppModel {
 		$this->contain($this->modelBindings[$level]);
 		return $this->modelBindings[$level];
 	}
-	
+
 	public function fieldsString($modelName, $alias = null, $excludeFields = array()) {
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
@@ -280,16 +280,16 @@ class BEAppModel extends AppModel {
 			$alias = $modelName;
 		}
 		$res = $s . $alias . $e ."." . $s . implode("{$e},{$s}$alias{$e}.{$s}", $k) . $e;
-		return $res;		
+		return $res;
 	}
-	
+
 	/**
 	 * perform an objects search
-	 * 
+	 *
 	 * @param integer $id		root id, if it's set perform search on the tree
 	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
 	 * @param string $status	object status
-	 * @param array  $filter	example of filter: 
+	 * @param array  $filter	example of filter:
 	 * 							"object_type_id" => array(21,22,...),
 	 *							"ModelName.fieldname => "value",
 	 * 							"query" => "text to search"
@@ -310,38 +310,38 @@ class BEAppModel extends AppModel {
 	 * @param array $excludeIds Array of id's to exclude
 	 */
 	public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
-		
+
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
-		
+
 		$beObjFields = $this->fieldsString("BEObject");
 		$contentFields = $this->fieldsString("Content", null, array("id"));
-		
+
 		$fields  = "DISTINCT {$beObjFields}, {$contentFields}" ;
 		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
 		$conditions = array();
 		$groupClausole = "GROUP BY {$beObjFields}, {$contentFields}";
-		
+
 		if (!empty($status))
 			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
-		
+
 		if(!empty($excludeIds))
 			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
-		
+
 		// get specific query elements
 		if (!$this->Behaviors->attached('BuildFilter')) {
 			$this->Behaviors->attach('BuildFilter');
 		}
-		
+
 		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
 
 		if (!empty($otherFields))
 			$fields = $fields . $otherFields;
-			
+
 		$conditions = array_merge($conditions, $otherConditions);
 		$from .= $otherFrom;
-		$groupClausole .= $otherGroup; 
-		
+		$groupClausole .= $otherGroup;
+
 		if (!empty($id)) {
 			$treeFields = $this->fieldsString("Tree");
 			$fields .= "," . $treeFields;
@@ -356,7 +356,7 @@ class BEAppModel extends AppModel {
 			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
 //			if (!empty($userid))
 //				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
-			
+
 			if($all) {
 				$cond = "";
 				if($this->getDriver() == 'mysql') {
@@ -378,18 +378,18 @@ class BEAppModel extends AppModel {
 					$priorityOrder = "asc";
 				$dir = ($priorityOrder == "asc");
 			}
-				
+
 		} else {
 //			if (!empty($userid))
 //				$conditions[] 	= " prmsUserByID ('{$userid}', BEObject.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
-		
+
 		// if $order is empty and not performing search then set a default order
 		if (empty($order) && empty($filter["query"])) {
 			$order = "{$s}BEObject{$e}.{$s}id{$e}";
 			$dir = false;
 		}
-	
+
 		// build sql conditions
 		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
@@ -408,54 +408,54 @@ class BEAppModel extends AppModel {
 		} elseif (!empty($otherOrder)) {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
-		
+
 		$limit 	= (!empty($dim))? $this->getLimitClausole($dim, $page) : '';
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
-		
+
 		// #CUSTOM QUERY
 		$tmp  	= $this->query($query) ;
-		
+
 		if ($tmp === false)
 			throw new BeditaException(__("Error finding objects", true));
-		
+
 		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
 
 		// #CUSTOM QUERY
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting objects", true));
-		
+
 		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
-		
+
 		$recordset = array(
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 		for ($i =0; $i < count($tmp); $i++) {
 			$tmpToAdd = array();
-				
+
 			if (!empty($tmp[$i]["RelatedObject"])) {
 				$tmpToAdd["RelatedObject"] = $tmp[$i]["RelatedObject"];
 				unset($tmp[$i]["RelatedObject"]);
 			}
-			
+
 			if (!empty($tmp[$i]["ReferenceObject"])) {
 				$tmpToAdd["ReferenceObject"] = $tmp[$i]["ReferenceObject"];
 				unset($tmp[$i]["ReferenceObject"]);
 			}
-			
+
 			if (!empty($tmp[$i]["DateItem"])) {
 				$tmpToAdd["DateItem"] = $tmp[$i]["DateItem"];
 				unset($tmp[$i]["DateItem"]);
 			}
-			
+
 			if (!empty($tmp[$i]["ObjectProperty"])) {
 				$tmpToAdd["ObjectProperty"] = $tmp[$i]["ObjectProperty"];
 				unset($tmp[$i]["ObjectProperty"]);
 			}
-			
+
 			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
-		
+
 		return $recordset ;
 	}
 
@@ -474,7 +474,7 @@ class _emptyAfterFindView {
  */
 class BEAppObjectModel extends BEAppModel {
 	var $recursive 	= 2 ;
-	
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
@@ -483,7 +483,7 @@ class BEAppObjectModel extends BEAppModel {
 			'DeleteObject' 			=> 'objects',
 			'Notify'
 	);
-	
+
 	var $hasOne= array(
 			'BEObject' =>
 			array(
@@ -495,7 +495,7 @@ class BEAppObjectModel extends BEAppModel {
 		);
 
 	public $objectTypesGroups = array();
-	
+
 	/**
 	 * Overrides field, don't use CompactResult in field()
 	 *
@@ -504,18 +504,18 @@ class BEAppObjectModel extends BEAppModel {
 	 * @param string $order
 	 */
 	public function field($name, $conditions = null, $order = null) {
-	
+
 		$compactEnabled = $this->Behaviors->enabled('CompactResult');
-		if ($compactEnabled) { 
-			$this->Behaviors->disable('CompactResult'); 
+		if ($compactEnabled) {
+			$this->Behaviors->disable('CompactResult');
 		}
 		$res = parent::field($name, $conditions, $order);
-		if ($compactEnabled) { 
-			$this->Behaviors->enable('CompactResult'); 
+		if ($compactEnabled) {
+			$this->Behaviors->enable('CompactResult');
 		}
 		return $res;
 	}
-	
+
 	/**
 	 * Overrides saveField, don't use CompactResult in saveField()
 	 *
@@ -524,21 +524,21 @@ class BEAppObjectModel extends BEAppModel {
 	 * @param string $order
 	 */
 	public function saveField($name, $value, $validate = false) {
-	
+
 		$dependanceEnabled = $this->Behaviors->enabled('ForeignDependenceSave');
 		if ($dependanceEnabled) {
-			$this->Behaviors->disable('ForeignDependenceSave'); 
+			$this->Behaviors->disable('ForeignDependenceSave');
 		}
 		$res = parent::saveField($name, $value, $validate);
-		if ($dependanceEnabled) { 
-			$this->Behaviors->enable('ForeignDependenceSave'); 
+		if ($dependanceEnabled) {
+			$this->Behaviors->enable('ForeignDependenceSave');
 		}
 		return $res;
 	}
-		
+
 	function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;
-		
+
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
 			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
@@ -549,8 +549,8 @@ class BEAppObjectModel extends BEAppModel {
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
 			unset($data[$this->primaryKey]) ;
 		}
-		
-		$data = (!empty($data[$this->alias]))? $data : array($this->alias => $data);	
+
+		$data = (!empty($data[$this->alias]))? $data : array($this->alias => $data);
 
 		// format data array for HABTM relations in cake way
 		if (!empty($this->hasAndBelongsToMany)) {
@@ -561,7 +561,7 @@ class BEAppObjectModel extends BEAppModel {
 				} elseif (!empty($data[$this->alias][$key])) {
 					$data[$key][$key] = $data[$this->alias][$key];
 					unset($data[$this->alias][$key]);
-				} elseif ( (isset($data[$this->alias][$key]) && is_array($data[$this->alias][$key])) 
+				} elseif ( (isset($data[$this->alias][$key]) && is_array($data[$this->alias][$key]))
 							|| (isset($data[$this->alias][$key][$key]) && is_array($data[$this->alias][$key][$key])) ) {
 					$data[$key][$key] = array();
 				}
@@ -569,14 +569,14 @@ class BEAppObjectModel extends BEAppModel {
 		}
 
 		$result = parent::save($data, $validate, $fieldList) ;
-		
+
 		return $result ;
 	}
-	
+
 	/**
-	 * Clone a BEdita object. 
+	 * Clone a BEdita object.
 	 * It should be called from a BEdita object model as Document, Section, etc...
-	 * 
+	 *
 	 * @param int $id, the BEdita object id
 	 * @param array $options, see BEAppObjectModel::arrangeDataForClone
 	 * @return type
@@ -588,10 +588,10 @@ class BEAppObjectModel extends BEAppModel {
 		$this->create();
 		return $this->save($data);
 	}
-	
+
 	/**
 	 * Arrange an array to cloning a BEdita object
-	 * 
+	 *
 	 * @param array $data, should come from a find
 	 * @param array $options, default values are:
 	 *				"nicknameSuffix" => "", suffix to append at the original object nickname
@@ -650,43 +650,43 @@ class BEAppObjectModel extends BEAppModel {
 			$data["RelatedObject"] = $relatedObject;
 		}
 	}
-	
+
 	protected function updateHasManyAssoc() {
-		
+
 		foreach ($this->hasMany as $name => $assoc) {
-				
+
 			if (isset($this->data[$this->name][$name])) {
-				$model 		= ClassRegistry::init($assoc['className']) ; 
-				
+				$model 		= ClassRegistry::init($assoc['className']) ;
+
 				// delete previous associations
-				$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
+				$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;
 				$foreignK	= $assoc['foreignKey'] ;
-				
+
 				$model->deleteAll(array($foreignK => $id));
-				
+
 				// if there isn't data to save then exit
-				if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) 
+				if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name])))
 					continue ;
-				
+
 				// save new associations
 				$size = count($this->data[$this->name][$name]) ;
 				for ($i=0; $i < $size ; $i++) {
-					$model->create(); 
+					$model->create();
 					$data 			 = &$this->data[$this->name][$name][$i] ;
-					$data[$foreignK] = $id ; 
+					$data[$foreignK] = $id ;
 					if(!$model->save($data)) {
 						throw new BeditaException(__("Error saving associated data", true), $data);
 					}
 				}
 			}
 		}
-		
+
 		return true ;
 	}
-	
+
     /**
      * default values for Contents
-     */     
+     */
     protected function validateContent() {
     	$this->checkDate('start_date');
     	$this->checkDate('end_date');
@@ -697,7 +697,7 @@ class BEAppObjectModel extends BEAppModel {
     public function checkType($objTypeId) {
     	return ($objTypeId == Configure::read("objectTypes.".Inflector::underscore($this->name).".id"));
     }
-    
+
     public function getTypeId() {
         return Configure::read("objectTypes.".Inflector::underscore($this->name).".id");
     }
@@ -710,7 +710,7 @@ class BEAppObjectModel extends BEAppModel {
 
 class BeditaSimpleObjectModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6);		
+	public $searchFields = array("title" => 10 , "description" => 6);
 	public $useTable = 'objects';
 
 	public $actsAs 	= array(
@@ -718,19 +718,19 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 			'SearchTextSave',
 			'Notify'
 	);
-	
+
 	public $hasOne= array();
 }
 
-class BeditaObjectModel extends BeditaSimpleObjectModel {	
-	
+class BeditaObjectModel extends BeditaSimpleObjectModel {
+
 	public $actsAs = array(
 		'CompactResult' => array(),
 		'SearchTextSave',
 		'DeleteObject' => 'objects',
 		'Notify'
 	);
-	
+
 	public $hasOne = array(
 		'BEObject' =>
 			array(
@@ -738,11 +738,11 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 				'foreignKey'	=> 'id'
 			)
 	);
-	
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
+
+	protected $modelBindings = array(
+				"detailed" =>  array("BEObject" => array("ObjectType",
+															"UserCreated",
+															"UserModified",
 															"Permission",
 															"ObjectProperty",
 															"LangText",
@@ -750,24 +750,24 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 															"Annotation",
 															"Category"
 															)),
-				"default" => array("BEObject" => array("ObjectProperty", 
+				"default" => array("BEObject" => array("ObjectProperty",
 									"LangText", "ObjectType", "Annotation",
 									"Category", "RelatedObject" )),
 
-				"minimum" => array("BEObject" => array("ObjectType"))		
+				"minimum" => array("BEObject" => array("ObjectType"))
 	);
-	
+
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$conf = Configure::getInstance() ;
-		
+
 		$data2 = $data;
-		
+
 		foreach($data2 as $key => $value) {
 			if (!is_array($value)){
 				unset($data2[$key]);
 			}
 		}
-		
+
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
 			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
@@ -777,11 +777,11 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
 			unset($data[$this->primaryKey]) ;
 		}
-		
+
 		$data = (!empty($data[$this->alias]))? array("BEObject" => $data[$this->alias]) : array("BEObject" => $data);
-		
+
 		$beObject = ClassRegistry::init("BEObject");
-		
+
 		// format data array for HABTM relations in cake way
 		if (!empty($beObject->hasAndBelongsToMany)) {
 			foreach ($beObject->hasAndBelongsToMany as $key => $val) {
@@ -791,23 +791,23 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 				} elseif (!empty($data[$beObject->alias][$key])) {
 					$data[$key][$key] = $data[$beObject->alias][$key];
 					unset($data[$beObject->alias][$key]);
-				} elseif ( (isset($data[$beObject->alias][$key]) && is_array($data[$beObject->alias][$key])) 
+				} elseif ( (isset($data[$beObject->alias][$key]) && is_array($data[$beObject->alias][$key]))
 							|| (isset($data[$beObject->alias][$key][$key]) && is_array($data[$beObject->alias][$key][$key])) ) {
 					$data[$key][$key] = array();
 				}
 			}
 		}
-		
+
 		$beObject->create();
 		if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
-		
+
 		$data2["id"] = $beObject->id;
 		$res = parent::save($data2, $validate, $fieldList);
 		//$res = Model::save($data, $validate, $fieldList) ;
 		//$res = ClassRegistry::init("Model")->save($data2, $validate, $fieldList);
-		
+
 		return $res;
 	}
 
@@ -818,14 +818,14 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 **/
 
 class BeditaContentModel extends BEAppObjectModel {
-	
-	public $searchFields = array("title" => 10 , "creator" => 6, "description" => 6, 
-		"subject" => 4, "abstract" => 4, "body" => 4);	
-	
+
+	public $searchFields = array("title" => 10 , "creator" => 6, "description" => 6,
+		"subject" => 4, "abstract" => 4, "body" => 4);
+
 	function beforeValidate() {
     	return $this->validateContent();
     }
-		
+
 }
 
 /**
@@ -833,9 +833,9 @@ class BeditaContentModel extends BEAppObjectModel {
 **/
 
 class BeditaAnnotationModel extends BEAppObjectModel {
-	
-	public $searchFields = array("title" => 10 , "description" => 6, 
-		"body" => 4, "author" => 3);	
+
+	public $searchFields = array("title" => 10 , "description" => 6,
+		"body" => 4, "author" => 3);
 
 	var $belongsTo = array(
 		"ReferenceObject" =>
@@ -844,16 +844,16 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 				'foreignKey'	=> 'object_id',
 			),
 	);
-	
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array("ReferenceObject"),
 			'SearchTextSave',
 			'ForeignDependenceSave' => array('BEObject'),
 			'DeleteObject' 			=> 'objects',
 			'Notify'
-	); 
-	
-	protected $modelBindings = array( 
+	);
+
+	protected $modelBindings = array(
 		"detailed" =>  array("BEObject" => array(
 									"ObjectType",
 									"UserCreated",
@@ -862,7 +862,7 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 		"default" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
 		"minimum" => array("BEObject" => array("ObjectType"))
 	);
-	
+
 }
 
 
@@ -871,34 +871,34 @@ class BeditaAnnotationModel extends BEAppObjectModel {
  */
 class BeditaSimpleStreamModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6, 
-		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);	
+	public $searchFields = array("title" => 10 , "description" => 6,
+		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);
 
-	protected $modelBindings = array( 
+	protected $modelBindings = array(
 				"detailed" => array("BEObject" => array("ObjectType",
 														"Permission",
-														"UserCreated", 
+														"UserCreated",
 														"UserModified",
 														"RelatedObject",
 														"Annotation",
 														"Category",
-														"LangText", 
+														"LangText",
 														"ObjectProperty",
 														"Alias",
 														"Version" => array("User.realname", "User.userid")
 													),
 									"Content"),
-				"default" => array("BEObject" => array(	"ObjectProperty", 
-														"LangText", 
+				"default" => array("BEObject" => array(	"ObjectProperty",
+														"LangText",
 														"ObjectType",
 														"Annotation",
-														"Category"), 
+														"Category"),
 									"Content"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content"),
-		
+
 				"frontend" => array("BEObject" => array("LangText"), "Content")
 	);
-	
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
@@ -906,7 +906,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 			'ForeignDependenceSave' => array('BEObject', 'Content'),
 			'DeleteObject' 			=> 'objects',
 			'Notify'
-	); 
+	);
 
 	var $hasOne= array(
 			'BEObject' =>
@@ -928,7 +928,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
     function beforeValidate() {
         return $this->validateContent();
     }
-	
+
 }
 
 /**
@@ -936,35 +936,35 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
  */
 class BeditaStreamModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6, 
-		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);	
-	
-	protected $modelBindings = array( 
+	public $searchFields = array("title" => 10 , "description" => 6,
+		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);
+
+	protected $modelBindings = array(
 				"detailed" => array("BEObject" => array("ObjectType",
 														"Permission",
-														"UserCreated", 
+														"UserCreated",
 														"UserModified",
 														"RelatedObject",
 														"Category",
 														"ObjectProperty",
-														"LangText", 
+														"LangText",
 														"Annotation",
 														"Alias",
 														"Version" => array("User.realname", "User.userid")
 														),
 									"Content", "Stream"),
-				"default" => array("BEObject" => array(	"ObjectProperty", 
-														"LangText", 
+				"default" => array("BEObject" => array(	"ObjectProperty",
+														"LangText",
 														"ObjectType",
 														"Category",
-														"Annotation"), 
+														"Annotation"),
 									"Content", "Stream"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
-		
+
 				"frontend" => array("BEObject" => array("LangText"), "Content", "Stream")
 	);
-	
-	
+
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
@@ -972,7 +972,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 			'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
 			'DeleteObject' 			=> 'objects',
 			'Notify'
-	); 
+	);
 
 	var $hasOne= array(
 			'BEObject' =>
@@ -997,11 +997,11 @@ class BeditaStreamModel extends BEAppObjectModel {
 					'dependent'		=> true
 				),
 	);
-	
+
     function beforeValidate() {
         return $this->validateContent();
     }
-	
+
 }
 
 /**
@@ -1009,39 +1009,39 @@ class BeditaStreamModel extends BEAppObjectModel {
  *
  */
 class BeditaProductModel extends BEAppObjectModel {
-	
-	public $searchFields = array("title" => 10 , "description" => 6, 
-		"abstract" => 4, "body" => 4);	
-	
-		protected $modelBindings = array( 
+
+	public $searchFields = array("title" => 10 , "description" => 6,
+		"abstract" => 4, "body" => 4);
+
+		protected $modelBindings = array(
 				"detailed" => array("BEObject" => array("ObjectType",
 														"Permission",
-														"UserCreated", 
+														"UserCreated",
 														"UserModified",
 														"RelatedObject",
-														"ObjectProperty", 
-														"LangText", 
+														"ObjectProperty",
+														"LangText",
 														"Category",
 														"Annotation",
 														"Alias",
 														"Version" => array("User.realname", "User.userid")
 													),
 									"Product"),
-				"default" => array("BEObject" => array(	"ObjectProperty", 
-														"LangText", 
-														"ObjectType"), 
+				"default" => array("BEObject" => array(	"ObjectProperty",
+														"LangText",
+														"ObjectType"),
 									"Product"),
-				"minimum" => array("BEObject" => array("ObjectType"),"Product")		
+				"minimum" => array("BEObject" => array("ObjectType"),"Product")
 	);
-	
-	
+
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array(),
 			'SearchTextSave'		=> array(),
 			'ForeignDependenceSave' => array('BEObject', 'Product'),
 			'DeleteObject' 			=> 'objects',
 			'Notify'
-	); 
+	);
 
 	var $hasOne= array(
 			'BEObject' =>
@@ -1058,7 +1058,7 @@ class BeditaProductModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 					'dependent'		=> true
 				)
-	);	
+	);
 }
 
 
@@ -1076,7 +1076,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 			'DeleteDependentObject'	=> array('section'),
 			'DeleteObject' 			=> 'objects',
 			'Notify'
-	); 
+	);
 	var $recursive 	= 2;
 
 	var $hasOne = array(
@@ -1092,25 +1092,25 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 				)
 	);
-	
+
 }
 
 /**
  * Base model for import filters.
  */
 abstract class BeditaImportFilter extends BEAppModel {
-	
+
 	public $useTable = false;
 
 	protected $typeName = "";
 	protected $mimeTypes = array();
-	
+
 	/**
 	 * Import BE objects from XML source string
-	 * 
+	 *
 	 * @param string $sourcePath, path to source to import, e.g. path to local files, urls...
-	 * @param array $options, import options: "sectionId" => import objects in this section 
-	 * @return array , result array containing 
+	 * @param array $options, import options: "sectionId" => import objects in this section
+	 * @return array , result array containing
 	 * 	"objects" => number of imported objects
 	 *  "message" => generic message (optional)
 	 *  "error" => error message (optional)
@@ -1119,24 +1119,24 @@ abstract class BeditaImportFilter extends BEAppModel {
 	public function import($sourcePath, array $options = array())  {
 		throw new BeditaException(__("Missing method", true));
 	}
-	
+
 	/**
 	 * Supported mime types
-	 * 
+	 *
 	 * @return array , array of supported mime types like
 	 * 	"text/xml", "application/xml"
 	 */
 	public function mimeTypes() {
 		return $this->mimeTypes;
 	}
-	
+
 	/**
 	 * Filter logical name
 	 */
 	public function name() {
 		return $this->typeName;
 	}
-	
+
 };
 
 /**
@@ -1148,10 +1148,10 @@ abstract class BeditaExportFilter extends BEAppModel {
 
 	protected $typeName = "";
 	protected $mimeTypes = array();
-	
+
 	/**
 	 * Export objects in XML format
-	 * 
+	 *
 	 * @param array $objects, object to export array
 	 * @param array $options, export options
 	 * @return array containing
@@ -1163,10 +1163,10 @@ abstract class BeditaExportFilter extends BEAppModel {
 	public function export(array &$objects, array $options = array()) {
 		throw new BeditaException(__("Missing method", true));
 	}
-	
+
 	/**
 	 * Supported mime types
-	 * 
+	 *
 	 * @return array , result array containing supported mime types in the form
 	 * 	"xml" => "text/xml", "zip" => "application/zip",....
 	 */
@@ -1180,14 +1180,14 @@ abstract class BeditaExportFilter extends BEAppModel {
 	public function name() {
 		return $this->typeName;
 	}
-	
+
 	/**
 	 * Validate resource (after export)
 	 */
 	public function validate($resource, array $options = array()){
 		return __("No 'validate' method found");
 	}
-	
+
 };
 
 ?>

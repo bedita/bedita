@@ -1,11 +1,11 @@
-<?php 
+<?php
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class SectionTestData extends BeditaTestData {

@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,19 +25,19 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Section extends BeditaCollectionModel
 {
 	var $actsAs = array();
-	
+
 	public $searchFields = array("title" => 10 , "description" => 6);
 
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-										"UserCreated", 
-										"UserModified", 
+	protected $modelBindings = array(
+				"detailed" =>  array("BEObject" => array("ObjectType",
+										"UserCreated",
+										"UserModified",
 										"Permission",
 										"ObjectProperty",
 										"LangText",
@@ -49,14 +49,14 @@ class Section extends BeditaCollectionModel
 										), "Tree"
 									),
 
-       			"default" => array("BEObject" => array("ObjectProperty", 
+       			"default" => array("BEObject" => array("ObjectProperty",
 									"LangText", "ObjectType", "Category", "GeoTag"), "Tree"),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
-		
+
 				"frontend" => array("BEObject" => array("LangText", "Category"), "Tree")
 		);
-	
+
 	var $validate = array(
 		'title'	=> array(
 			'rule' => 'notEmpty',
@@ -66,18 +66,18 @@ class Section extends BeditaCollectionModel
 			'rule' => 'notEmpty'
 		)
 	) ;
-	
+
 
 	function afterSave($created) {
-		if (!$created) 
+		if (!$created)
 			return ;
-		
+
 		$tree = ClassRegistry::init('Tree');
 		if($tree->appendChild($this->id, $this->data[$this->name]['parent_id'])===false)
 			return false;
 		return true;
 	}
-    
+
 	public function feedsAvailable($areaId) {
         $feeds = $this->find('all', array(
                 'conditions' => array('Section.syndicate' => 'on', 'BEObject.status' => 'on', "Tree.object_path LIKE '/$areaId/%'"),
@@ -86,23 +86,23 @@ class Section extends BeditaCollectionModel
         );
         $feedNames = array();
         foreach ($feeds as $f) {
-        	$feedNames[] = $f['BEObject'];	
+        	$feedNames[] = $f['BEObject'];
         }
-        
+
         return $feedNames;
     }
 
     /**
      * Promote a section to publication (area)
-     * All section's tree structure is maintained 
-     * 
+     * All section's tree structure is maintained
+     *
      * @param int $sectionId, the section id to promote
      */
     public function promoteToArea($sectionId) {
     	// promote section to area (remove any categories and custom properties)
     	$title = $this->BEObject->field("title", array("id" => $sectionId));
     	$data = array(
-    		"id" => $sectionId, 
+    		"id" => $sectionId,
     		"object_type_id" => Configure::read("objectTypes.area.id"),
     		"title" => $title,
     		"Category" => array(),
@@ -128,7 +128,7 @@ class Section extends BeditaCollectionModel
 		if (!$this->Tree->save($treeRow)) {
 			throw new BeditaException(__("Error promoting section's row relative to trees table", true));
 		}
-		
+
 		// update children paths
 		$rowsToUpdate = $this->Tree->find("all", array(
 			"conditions" => array("object_path LIKE" => "%/" . $sectionId . "/%")
@@ -145,11 +145,11 @@ class Section extends BeditaCollectionModel
 				$row["Tree"]["parent_path"] = preg_replace($parentPathPattern, $replacement, $row["Tree"]["parent_path"]);
 				$this->Tree->create();
 				if (!$this->Tree->save($row)) {
-					throw new BeditaException(__("Error updating tree", true), $row["Tree"]);				
+					throw new BeditaException(__("Error updating tree", true), $row["Tree"]);
 				}
 			}
 		}
 	}
-    
+
 }
 ?>
