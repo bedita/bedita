@@ -1,35 +1,35 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class FilesController extends AppController {
-	
+
 	var $helpers 	= array('Html');
 	var $uses		= array('Stream','BEObject') ;
 	var $components = array('Transaction', 'BeUploadToObj', 'RequestHandler');
@@ -47,13 +47,13 @@ class FilesController extends AppController {
 			$response = array("fileId" => $id, "fileUploaded" => true);
 			$this->set("response", $id);
 		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			$this->set("response", $ex->getMessage());
 		}
 	}
-	
+
 	function uploadAjax ($uploadSuffix=null) {
 		$this->layout = "ajax";
 		try {
@@ -71,7 +71,7 @@ class FilesController extends AppController {
 			$this->set("fileId", $id);
 			$this->set("fileUploaded", true);
 		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			$this->set("errorMsg", $ex->getMessage());
@@ -84,22 +84,22 @@ class FilesController extends AppController {
 		try {
 			if (!isset($this->params['form']['uploadByUrl']['url']))
 				throw new BEditaException(__("Error during upload: missing url",true)) ;
-		
+
 			$this->params['form']['uploadByUrl']['lang'] = $this->data["lang"];
-			
+
 			$this->Transaction->begin() ;
 			$id = $this->BeUploadToObj->uploadFromURL($this->params['form']['uploadByUrl']) ;
 			$this->Transaction->commit();
 			$this->set("fileId", $id);
-			
+
 		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();   
+			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
 			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
 			$this->setResult(self::ERROR);
 			$this->set("errorMsg", $ex->getMessage());
 		}
 	}
-	
+
 	/**
 	 * Delete a Stream object (using _POST filename to find stream)
 	 */
@@ -131,7 +131,7 @@ class FilesController extends AppController {
 			$this->Transaction->rollback();
 		}
 	}
-	
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"upload" =>	array(
@@ -147,7 +147,7 @@ class FilesController extends AppController {
 		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
 		 	)
        );
-       if(isset($REDIRECT[$action][$esito])) 
+       if(isset($REDIRECT[$action][$esito]))
           return $REDIRECT[$action][$esito] ;
        return false;
      }

@@ -1,33 +1,33 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * helper class for frontends
- * 
- * 
+ *
+ *
  * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class BeFrontHelper extends AppHelper {
@@ -56,18 +56,18 @@ class BeFrontHelper extends AppHelper {
 	/**
 	 * show 639-1 code, two letters, for html lang
 	 * value should be in "frontendLangs" config array
-	 * 
+	 *
 	 * 	"eng"	=> array("en", "english"),
 	 *	"spa"	=> array("es", "espa&ntilde;ol"),
 	 * 	"ita"	=> array("it", "italiano"),
 	 *  .....
-	 * 
+	 *
 	 * @return 639-1 code if found, empty string otherwise
 	 */
 	public function lang() {
 		$res = "";
 		if(!empty($this->_currLang)) {
-			if(!empty($this->_conf->frontendLangs[$this->_currLang]) 
+			if(!empty($this->_conf->frontendLangs[$this->_currLang])
 					&& is_array($this->_conf->frontendLangs[$this->_currLang])) {
 				$res = $this->_conf->frontendLangs[$this->_currLang][0];
 			}
@@ -80,7 +80,7 @@ class BeFrontHelper extends AppHelper {
 	 * if page is publication root => return <publication title> (if 'contentRequested' return <publication title> - <content title>)
 	 * if page is a section => return <publication title> - <section title> [$order 'desc'] or <section title> - <publication title> [$order 'asc' default]
 	 *  (if 'contentRequested' return <section title> - <content title> [$order 'desc'] or <content title> - <section title> [$order 'asc' default])
-	 * 
+	 *
 	 * @param string $order can be 'asc' or 'desc'
 	 * @return string
 	 */
@@ -113,7 +113,7 @@ class BeFrontHelper extends AppHelper {
 	 *  _currentContent ('description' or 'abstract' or 'body')
 	 *  _section['description']
 	 *  _publication['description']
-	 * 
+	 *
 	 * @see HtmlHelper
 	 * @return string
 	 */
@@ -127,9 +127,9 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return html meta of dublin core meta data for current content (if present) or publication
-	 * 
+	 *
 	 * DC fields:
-	 * 
+	 *
 	 *    DC.description
 	 *    DC.format
 	 *    DC.language
@@ -140,7 +140,7 @@ class BeFrontHelper extends AppHelper {
 	 *    DC.identifier
 	 *    DC.rights
 	 *    DC.license
-	 * 
+	 *
 	 * @see HtmlHelper
 	 * @return string
 	 */
@@ -190,14 +190,14 @@ class BeFrontHelper extends AppHelper {
 				));
 			}
 		}
-		
+
 		return $html;
 	}
 
 	/**
 	 * return all html meta
 	 * all meta = description, author, content, generator
-	 * 
+	 *
 	 * @see HtmlHelper
 	 * @return string
 	 */
@@ -223,7 +223,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return html meta for rss feeds
-	 * 
+	 *
 	 * @see HtmlHelper
 	 * @return string
 	 */
@@ -239,7 +239,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return currentContent seealso relation, if present.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function seealso()  {
@@ -248,12 +248,12 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * build <link rel="canonical"/> canonical path tag of content/section selected
-	 * 
+	 *
 	 * @return string
 	 */
 	public function canonicalPath() {
 		$canonical_path = (empty($this->_section["contentRequested"]))? $this->_section["canonicalPath"] : $this->_section["currentContent"]["canonicalPath"];
-		
+
 		if(empty($canonical_path)) {
 			return "";
 		}
@@ -319,7 +319,7 @@ class BeFrontHelper extends AppHelper {
 	public function chooseTemplate($default="generic_section") {
 
 		$pagesPath = VIEWS . "pages" . DS;
-		
+
 		$tplFile = null;
 		$cNick = null;
 		$cId = null;
@@ -342,7 +342,7 @@ class BeFrontHelper extends AppHelper {
 				}
 			}
 		}
-		
+
 		// 2. check frontendMap section nickname
 		$sNick = $this->_section["nickname"];
 		if (!empty($this->_conf->frontendMap[$sNick])) {
@@ -358,7 +358,7 @@ class BeFrontHelper extends AppHelper {
 				return $tplFile;
 			}
 		}
-		
+
 		// 3. template with same name as currentContent nickname
 		if (isset($cNick)) {
 			$tplFile =  $pagesPath . $this->_section["currentContent"]["nickname"] . $this->_viewExt;
@@ -366,13 +366,13 @@ class BeFrontHelper extends AppHelper {
 				return $tplFile;
 			}
 		}
-		
+
 		// 4. template with same name as section nickname
 		$tplFile = $pagesPath . $sNick . $this->_viewExt;
 		if (file_exists($tplFile)) {
 			return $tplFile;
 		}
-		
+
 		// 5. parent sections nickname
 		if (!empty($this->_section["pathSection"])) {
 			$parentFiles = array_reverse(Set::format($this->_section["pathSection"], $pagesPath . "{0}" . $this->_viewExt, array("{n}.nickname")));
@@ -397,7 +397,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return an nested unordered list
-	 * 
+	 *
 	 *		<ul id="$options['id']" class="$options['menu']">
 	 *			<li class="$options['liClass']"><a href="...">item 1</a></li>
 	 *			<li class="$options['liClass']">
@@ -423,7 +423,7 @@ class BeFrontHelper extends AppHelper {
 		$defaultOptions = array(
 			"id" => "menu-item_" . time(),
 			"menuClass" => "menu",
-			"ulClass" => "children", 
+			"ulClass" => "children",
 			"liClass" => "child-item",
 			"activeClass" => "on"
 		);
@@ -451,7 +451,7 @@ class BeFrontHelper extends AppHelper {
 	 */
 	private function menuBranch(array $section, array $options) {
 		$liClasses = $options["liClass"];
-		if (!empty($this->_section['nickname']) && 
+		if (!empty($this->_section['nickname']) &&
 				($this->_section["nickname"] == $section["nickname"] || strstr($this->_section["canonicalPath"], '/' . $section["nickname"] . '/'))) {
 			$liClasses .= " " . $options["activeClass"];
 		}
@@ -472,7 +472,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * return publication stats code only if frontend app isn't staging site
-	 * 
+	 *
 	 * @return stats code or nothing
 	 */
 	public function stats() {
@@ -500,7 +500,7 @@ class BeFrontHelper extends AppHelper {
 		);
 
 		$breadcrumb = $this->Html->getCrumbs($options["separator"], $options["startText"]);
-		
+
 		if (empty($breadcrumb)) {
 
 			if ($options["showPublication"]) {
@@ -529,7 +529,7 @@ class BeFrontHelper extends AppHelper {
 
 	/**
 	 * if frontend is a staging app then it shows a toolbar on the top of the page
-	 * 
+	 *
 	 * @return void
 	 */
 	public function stagingToolbar() {
@@ -541,35 +541,35 @@ class BeFrontHelper extends AppHelper {
 	/**
 	 * helper beforeRender.
 	 * include js that staging toolbar needs, include css (backend and eventually frontend override), override css
-	 * 
+	 *
 	 * @return void
 	 */
 	public function beforeRender() {
-		/* if staging load js e css for staging toolbar. 
+		/* if staging load js e css for staging toolbar.
 		 * Their are loaded here because in layout view doesn't work inline=false option.
 		 * In fact for the design of cakePHP layouts are simply parsed by PHP interpeter
 		 */
 		if ($this->_conf->staging) {
-			
+
 			// include js that staging toolbar needs
 			echo $this->Html->script(
 				array(
-					$this->_conf->beditaUrl . "/js/jquery/jquery.cookie.js", 
+					$this->_conf->beditaUrl . "/js/jquery/jquery.cookie.js",
 					$this->_conf->beditaUrl . "/js/staging_toolbar.js"
 				),
 				array("inline" => false)
 			);
-			
+
 			// include css (backend and eventually frontend override)
 			$css = $this->_conf->beditaUrl . "/css/staging_toolbar.css";
 			echo $this->Html->css($css, null, array("inline" => false));
-			
+
 			// override css
 			if (file_exists(APP . "webroot" . DS . "css" . DS . "staging_toolbar.css")) {
 				echo $this->Html->css("staging_toolbar", null, array("inline" => false));
 			}
 		}
-		
+
 	}
 }
 ?>

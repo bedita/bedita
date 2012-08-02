@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,12 +25,12 @@ BeLib::getObject("BeConfigure")->initConfig();
 
 /**
  * Controller base class for backends+frontends
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class AppController extends Controller
@@ -38,7 +38,7 @@ class AppController extends Controller
 	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "MediaProvider", "Perms", 'BeEmbedMedia', 'BeThumb');
 	var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
 	var $uses = array('EventLog') ;
-	
+
 	protected $moduleName = NULL;
 	protected $modulePerms = NULL;
 	/**
@@ -46,51 +46,51 @@ class AppController extends Controller
 	 */
 	const OK 		= 'OK' ;
 	const ERROR 	= 'ERROR' ;
-	const VIEW_FWD = 'view://'; // 
-	
+	const VIEW_FWD = 'view://'; //
+
 	public $result 		= 'OK' ;
 	protected $skipCheck = false;
-	
+
 	protected static $current = NULL;
 
 	protected $currLang = NULL; // selected UI lang
-	protected $currLocale = NULL; // selected UI locale 
-	
+	protected $currLocale = NULL; // selected UI locale
+
 	/**
 	 * Specific per-controller model bindings
 	 *
 	 * @var array
 	 */
 	protected $modelBindings = array();
-	
+
 	/**
 	 * Full url prefix
-	 * 
+	 *
 	 * @var string
 	 */
 	protected $fullBaseUrl = "";
-	
+
 	/**
 	 * fields to save in history table
-	 * 
+	 *
 	 * @var array, set to null to avoid history insert also with history configure var setted
 	 */
 	protected $historyItem = array();
-			
+
 	public static function currentController() {
 		return self::$current;
 	}
-	
+
 	public static function handleExceptions(BeditaException $ex) {
 		include_once (APP . 'app_error.php');
 		if ($ex instanceof BeditaAjaxException) {
-			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
 				'result' => $ex->result, 'output' => $ex->getOutputType()), $ex->errorTrace());
 		} elseif (self::currentController()->RequestHandler->isAjax()) {
 			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
 				'result' => $ex->result, 'output' => 'beditaMsg'), $ex->errorTrace());
 		}
-		return new AppError("handleException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(), 
+		return new AppError("handleException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
 				'result' => $ex->result), $ex->errorTrace());
 	}
 
@@ -102,7 +102,7 @@ class AppController extends Controller
 		$handleMethod = ($ex instanceof SmartyException)? 'handleSmartyException' : 'handleException';
 		return new AppError($handleMethod, $messages, $errTrace);
 	}
-	
+
 	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
 		$this->log($errTrace);
 		// end transactions if necessary
@@ -116,13 +116,13 @@ class AppController extends Controller
 		$params['detail'] = $eventMsg;
 		$this->userErrorMessage($userMsg, $layout, $params);
 	}
-	
+
 	public function setResult($r) {
 		$this->result=$r;
 	}
 
-	protected function initAttributes() {}	
-	
+	protected function initAttributes() {}
+
 	final function beforeFilter() {
 		self::$current = $this;
 		if (BACKEND_APP && $this->RequestHandler->isMobile()) {
@@ -131,36 +131,36 @@ class AppController extends Controller
 		} else {
 			$this->view = 'Smarty';
 		}
-		
+
 		$conf = Configure::getInstance();
-		
+
 		$this->set('conf',  $conf);
-		
+
 		// convienience methods for frontends or backend to init attibutes before any other operations
 		$this->initAttributes();
-	 	
+
 	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
 			return;
 		}
-				
+
 		// check/setup localization
 		$this->setupLocale();
-		
+
 		// only backend
 		if (BACKEND_APP) {
 			// don't check if user is logged on login/logout operations
 			if (isset($this->data["login"]) || $this->name === 'Authentications') {
 				return;
 			}
-			
+
 			// load publications public url
 			$publications = ClassRegistry::init("Area")->find("all", array(
 				"contain" => array("BEObject")
 			));
-			
+
 			$this->set("publications", $publications);
 		}
-		
+
 		$this->checkLogin();
 		$this->beditaBeforeFilter();
 	}
@@ -178,7 +178,7 @@ class AppController extends Controller
 			} else {
 				// HTTP autodetect
 				$l10n = new L10n();
-				$l10n->get();		
+				$l10n->get();
 				$this->currLang = $l10n->lang;
 				if(!isset($this->currLang)) {
 					$this->currLang = $conf->defaultUILang;
@@ -199,14 +199,14 @@ class AppController extends Controller
 		} else {
 			$this->set('currLang2', $conf->defaultUILang2);
 		}
-		
+
 		if(isset( $conf->locales[$this->currLang])) {
 			$this->currLocale = setlocale(LC_ALL, $conf->locales[$this->currLang]);
 		} else {
 			$this->currLocale = setlocale(LC_ALL, '');
 		}
 		$this->set('currLocale', $this->currLocale);
-		
+
 		if(isset( $conf->datePatternLocale[$this->currLang])) {
 			Configure::write('datePattern', $conf->datePatternLocale[$this->currLang]);
 		}
@@ -217,37 +217,37 @@ class AppController extends Controller
 		$dateFormatValidation = preg_replace(array("/%d/", "/%m/", "/%Y/"), array("dd","mm","yyyy"), $dateFormatValidation);
 		Configure::write('dateFormatValidation', $dateFormatValidation);
 	}
-	
+
 	/**
 	 * Redirect and class method result.
 	 * If form contains:
 	 * 		$this->data['OK'] or $this->data['ERROR']
 	 * redirect to thes values (on OK, on ERROR)
-	 * 
+	 *
 	 * If the class defines:
 	 * 		$this->REDIRECT[<method_name>]['OK'] or $this->REDIRECT[<method_name>]['ERROR']
 	 * redirect to thes values (on OK, on ERROR)
-	 * 
+	 *
 	 * Otherwise no redirect
 	 */
 	final function beforeRender() {
-		
+
 		// convienience methods for frontends [like beforeRender]
         $this->beditaBeforeRender();
-		
+
 		if (defined('FULL_BASE_URL')) {
 			$this->fullBaseUrl = FULL_BASE_URL;
 		}
 		if(isset($this->data[$this->result])) {
 			$this->redirUrl($this->data[$this->result]);
-		
+
 		} elseif ($URL = $this->forward($this->action, $this->result)) {
 			$this->redirUrl($URL);
-		
+
 		}
-		
+
 	}
-	
+
 	private function redirUrl($url) {
 		if(strpos($url, self::VIEW_FWD) === 0) {
 			$this->action=substr($url, strlen(self::VIEW_FWD));
@@ -255,13 +255,13 @@ class AppController extends Controller
 			$this->redirect($url);
 		}
 	}
-	
+
 	final function afterFilter() {
 		// convienience methods for frontends [like afterFilter]
 		$this->beditaAfterFilter();
 		$this->updateHistory();
 	}
-	
+
 	protected function updateHistory() {
 		// save history if configured
 		if ($this->params["url"]["url"] != "/") {
@@ -280,13 +280,13 @@ class AppController extends Controller
 				} elseif (!empty($historyConf["trackNotLogged"])) {
 					$historyModel->save($this->historyItem);
 				}
-				
+
 			}
 		}
 	}
-	
+
 	protected function forward($action, $outcome) {	return false ; }
-	
+
 	/**
 	 *  local 'beforeFilter' (for backend or frontend)
 	 */
@@ -298,21 +298,21 @@ class AppController extends Controller
      */
     protected function beditaBeforeRender() {
     }
-    
+
 	/**
 	 *  local 'afterFilter' (for backend or frontend)
 	 */
 	protected function beditaAfterFilter() {
 	}
-	
+
     protected function eventLog($level, $msg) {
 		$u = isset($this->BeAuth->user["userid"])? $this->BeAuth->user["userid"] : "-";
-		$event = array('EventLog'=>array("log_level"=>$level, 
+		$event = array('EventLog'=>array("log_level"=>$level,
 			"userid"=>$u, "msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->create();
 		$this->EventLog->save($event);
 	}
-	
+
 	/**
 	 * User error message (will appear in messages div)
 	 * @param string $msg
@@ -336,7 +336,7 @@ class AppController extends Controller
 	protected function userInfoMessage($msg, $layout="message", $params=array("class" => "info")) {
 		$this->Session->setFlash($msg, $layout, $params, 'info');
 	}
-	
+
 	/**
 	 * Info message in system event logs
 	 * @param string $msg
@@ -344,7 +344,7 @@ class AppController extends Controller
 	protected function eventInfo($msg) {
 		return $this->eventLog('info', $msg);
 	}
-	
+
 	/**
 	 * Warning message in system event logs
 	 *
@@ -362,11 +362,11 @@ class AppController extends Controller
 	protected function eventError($msg) {
 		return $this->eventLog('err', $msg);
 	}
-	
+
 	/**
 	 * Modules access: verify user permits.
 	 * Uses BeAuth Component.
-	 * 
+	 *
 	 * Load the list of the modules availables for the user.
 	 */
 	protected function checkLogin() {
@@ -383,7 +383,7 @@ class AppController extends Controller
 			if ($this->RequestHandler->isAjax()) {
 				throw new BeditaAjaxException(__("Session Expired", true), array("output" => "reload"));
 			}
-			
+
 			if ($this->view == 'Smarty') {
 				echo $this->render(null, null, VIEWS."home".DS."login.tpl") ;
 			} elseif ($this->view == 'ThemeSmarty'){
@@ -393,15 +393,15 @@ class AppController extends Controller
 			} else {
 				echo $this->render(null, null, VIEWS."home".DS."login.ctp") ;
 			}
-			
-			$_loginRunning = false; 
+
+			$_loginRunning = false;
 			exit;
 		}
-		
+
 		// module list
 		$moduleList = ClassRegistry::init("PermissionModule")->getListModules($this->BeAuth->user["userid"]);
-		$this->set('moduleList', $moduleList) ;			
-		$this->set('moduleListInv', array_reverse($moduleList)) ;	
+		$this->set('moduleList', $moduleList) ;
+		$this->set('moduleListInv', array_reverse($moduleList)) ;
 
 		// verify basic access
 		if(isset($this->moduleName)) {
@@ -415,7 +415,7 @@ class AppController extends Controller
 				$this->redirect($this->referer());
 			}
 			foreach ($moduleList as $mod) {
-			 	if($this->moduleName == $mod['name']) { 
+			 	if($this->moduleName == $mod['name']) {
 			 		$this->modulePerms = $mod['flag'];
 				}
 			}
@@ -431,15 +431,15 @@ class AppController extends Controller
 			$this->set('moduleName', $this->moduleName);
 			if (!empty($this->moduleName))
 				$this->set('currentModule', $moduleList[$this->moduleName]);
-				
-		
+
+
 		}
-		
+
 		$_loginRunning = false ;
 
 		return true ;
 	}
-	
+
 	/**
 	 * Function arguments setup.
 	 * If variable is null, use $this->params[url].
@@ -453,13 +453,13 @@ class AppController extends Controller
 	protected function setup_args() {
 		$size = func_num_args() ;
 		$args = func_get_args() ;
-		
+
 		for($i=0; $i < $size ; $i++) {
 			// If parameter is in 'params' or in 'pass', load it
 			if(isset($this->params["url"][$args[$i][0]]) && !empty($this->params["url"][$args[$i][0]])) {
 				$args[$i][2] = $this->params["url"][$args[$i][0]] ;
 				$this->passedArgs[$args[$i][0]] = $this->params["url"][$args[$i][0]] ;
-				
+
 			} elseif(isset($this->params["named"][$args[$i][0]]) && !empty($this->params["named"][$args[$i][0]])) {
 				$args[$i][2] = $this->params["named"][$args[$i][0]] ;
 				$this->passedArgs[$args[$i][0]] = $this->params["named"][$args[$i][0]] ;
@@ -467,19 +467,19 @@ class AppController extends Controller
 			} elseif(isset($this->passedArgs[$args[$i][0]])) {
 				$args[$i][2] = $this->passedArgs[$args[$i][0]] ;
 			}
-			
+
 			// If value is not null, define type and insert in 'namedArgs'
 			if(!is_null($args[$i][2])) {
 				settype($args[$i][2], $args[$i][1]) ;
 				$this->params["url"][$args[$i][0]] = $args[$i][2] ;
-				
+
 				$this->namedArgs[$args[$i][0]] = $args[$i][2] ;
 			}
 		}
-		
+
 	}
-	
-	
+
+
 	protected function loadModelByObjectTypeId($obj_type_id) {
 		$conf  = Configure::getInstance();
 		if (isset($conf->objectTypes[$obj_type_id])) {
@@ -493,17 +493,17 @@ class AppController extends Controller
 	protected function loadModelByType($modelClass) {
 		$model = ClassRegistry::init($modelClass);
 		if($model === false) {
-			throw new BeditaException(__("Object type not found - ", true).$modelClass);			
+			throw new BeditaException(__("Object type not found - ", true).$modelClass);
 		}
 		return $model;
 	}
-	
+
 	/**
 	 * set model bindings and return the array used
-	 * 
+	 *
 	 * @param Model $modelObj
 	 * @param string $level binding level as defined in Model::modelBindings array
-	 * @return array 
+	 * @return array
 	 */
 	protected function modelBindings(Model $modelObj, $level = 'default') {
 		$conf = Configure::getInstance();
@@ -519,8 +519,8 @@ class AppController extends Controller
 			$bindings = $modelObj->containLevel($level);
 		}
 		return $bindings;
-	}	
-		
+	}
+
 	/**
 	 * Reorder content objects relations in array where keys are relation names
 	 *
@@ -531,14 +531,14 @@ class AppController extends Controller
 	protected function objectRelationArray($objectArray, $status=array(), $options=array()) {
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
-		
+
 		$beObject = ClassRegistry::init("BEObject");
-		foreach ($objectArray as $obj) {	
+		foreach ($objectArray as $obj) {
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
 			$this->modelBindings($this->{$modelClass});
-	
+
 			if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
 				continue ;
 			}
@@ -546,7 +546,7 @@ class AppController extends Controller
 				$objDetail['priority'] = $obj['priority'];
 				if(isset($objDetail['url']))
 					$objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
-				
+
 				// set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
 				if (!empty($options["mainLanguage"])) {
 					if(!isset($this->BeLangText)) {
@@ -556,8 +556,8 @@ class AppController extends Controller
 					$this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
 				}
 				$relationArray[$rel][] = $objDetail;
-			}	
-		}		
+			}
+		}
 		return $relationArray;
 	}
 
@@ -572,7 +572,7 @@ class AppController extends Controller
 		$typesCount = array();
 		$beObject = ClassRegistry::init("BEObject");
 		$annotationModel = ClassRegistry::init("Annotation");
-		foreach ($objectArray['Annotation'] as $obj) {	
+		foreach ($objectArray['Annotation'] as $obj) {
 			$modelClass = $beObject->getType($obj['id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
 			$this->modelBindings($this->{$modelClass});
@@ -587,7 +587,7 @@ class AppController extends Controller
 				} else {
 					$typesCount[$modelClass] = $typesCount[$modelClass] + 1;
 				}
-			}	
+			}
 		}
 		foreach ($typesCount as $k => $v) {
 			$objectArray['num_of_'.Inflector::underscore($k)] = $v;
@@ -599,10 +599,10 @@ class AppController extends Controller
 		if(!$permission->isWritable($objectId, $this->BeAuth->user))
 			throw new BeditaException(__("No write permissions on object", true));
 	}
-	
+
 	protected function saveObject(BEAppModel $beModel) {
 
-		if(empty($this->data)) 
+		if(empty($this->data))
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 
@@ -614,25 +614,25 @@ class AppController extends Controller
 		$this->BeCustomProperty->setupForSave() ;
 
 		$name = Inflector::underscore($beModel->name);
-		
+
 		$categoryModel = ClassRegistry::init("Category");
 		$tagList = array();
 		if (!empty($this->params["form"]["tags"]))
 			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
 		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
-		
+
 		$fixed = false;
 		if(!$new) {
 			$fixed = ClassRegistry::init("BEObject")->isFixed($this->data['id']);
-			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set! 
+			if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set!
 				unset($this->data['start_date']);
 				unset($this->data['end_date']);
 			}
 		}
-			
-		if(!isset($this->data['Permission'])) 
+
+		if(!isset($this->data['Permission']))
 			$this->data['Permission'] = array() ;
-		
+
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
@@ -642,21 +642,21 @@ class AppController extends Controller
 			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
 		}
 	}
-	
+
 	/**
 	 * Delete objects
 	 *
-	 * @param model name 
+	 * @param model name
 	 * @return string of objects'ids deleted
 	 */
 	protected function deleteObjects($model) {
 		$objectsToDel = array();
 		$objectsListDesc = "";
-		
+
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objectsToDel = $this->params['form']['objects_selected'];
 		} else {
-			if(empty($this->data['id'])) 
+			if(empty($this->data['id']))
 				throw new BeditaException(__("No data", true));
 			$objectsToDel = array($this->data['id']);
 		}
@@ -664,10 +664,10 @@ class AppController extends Controller
 		$this->Transaction->begin() ;
 
 		$beObject = ClassRegistry::init("BEObject");
-		
+
 		foreach ($objectsToDel as $id) {
 			$this->checkObjectWritePermission($id);
-			
+
 			if ($beObject->isFixed($id)) {
 				throw new BeditaException(__("Error, trying to delete fixed object!", true));
 			}
@@ -684,7 +684,7 @@ class AppController extends Controller
 		$this->Transaction->commit() ;
 		return trim($objectsListDesc, ",");
 	}
-	
+
 	/**
 	 * View revision data for a specific object and revision number:
 	 *  * all data as in revision in $revision array
@@ -708,7 +708,7 @@ class AppController extends Controller
 		$this->set('totRevision',	$nRev);
 		$this->set('revision',	$revisionData);
 		$this->set('diff',	$diffData);
-		$versionRow = $versionModel->find("all", array("conditions" => 
+		$versionRow = $versionModel->find("all", array("conditions" =>
 			array("Version.object_id" => $id, "Version.revision" => $rev)));
 		$this->set('version',	$versionRow[0]["Version"]);
 		$this->set('user',	$versionRow[0]["User"]);
@@ -716,8 +716,8 @@ class AppController extends Controller
 		$moduleName = $conf->objectTypes[Inflector::underscore($beModel->alias)]["module_name"];
 		$this->set('moduleName', $moduleName);
 	}
-	
-	
+
+
 }
 
 /**
@@ -730,8 +730,8 @@ abstract class ModulesController extends AppController {
 		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
 				throw new BeditaException(__("No write permissions in module", true));
 		}
-	}	
-	
+	}
+
 	/**
 	 * Method for paginated objects, used in ModuleController::index()...
 	 *
@@ -761,35 +761,35 @@ abstract class ModulesController extends AppController {
 			$sectionSel = $section->findById($id);
 			$pubSel = $this->BeTree->getAreaForSection($id);
 		}
-		
+
 		$filter["count_permission"] = true;
 
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
-		$this->params['toolbar'] = &$objects['toolbar'] ;	
+		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
 		$this->set('objects', $objects['items']);
-		
+
 		// set prevNext array to session
 		$this->setSessionForObjectDetail($objects['items']);
 	}
-	
-	
+
+
 	public function changeStatusObjects($modelName=null) {
 		$objectsToModify = array();
 		$objectsListDesc = "";
 		$beObject = ClassRegistry::init("BEObject");
-		
+
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objectsToModify = $this->params['form']['objects_selected'];
-		
+
 			$this->Transaction->begin() ;
 
 			if (empty($modelName))
 				$modelName = "BEObject";
-			
+
 			foreach ($objectsToModify as $id) {
 				$this->checkObjectWritePermission($id);
 				$model = $this->loadModelByType($modelName);
@@ -801,7 +801,7 @@ abstract class ModulesController extends AppController {
 					throw new BeditaException(__("Error saving status for item: ", true) . $id);
 				$objectsListDesc .= $id . ",";
 			}
-			
+
 			$this->Transaction->commit() ;
 		}
 		return trim($objectsListDesc, ",");
@@ -906,11 +906,11 @@ abstract class ModulesController extends AppController {
 				}
 				$parents = $this->BeTree->getParents($objects_to_assoc[$i]);
 				$is_already_present = in_array($area_section_id, $parents);
-				if ($op=='add' && !$is_already_present) { 
+				if ($op=='add' && !$is_already_present) {
 					if(!$modelTree->appendChild($objects_to_assoc[$i],$area_section_id)) {
 						throw new BeditaException( __("Error during append child", true));
 					}
-				} else if ($op=='del' && $is_already_present) { 
+				} else if ($op=='del' && $is_already_present) {
 					if(!$modelTree->removeChild($objects_to_assoc[$i],$area_section_id)) {
 						throw new BeditaException( __("Error during remove child", true));
 					}
@@ -924,7 +924,7 @@ abstract class ModulesController extends AppController {
 			$this->eventInfo("items $op_str area/section " . $area_section_id);
 		}
 	}
-	
+
 	/**
 	 * Return preview links for $obj_nick in publications
 	 *
@@ -962,7 +962,7 @@ abstract class ModulesController extends AppController {
 			}
 
 			$nickPath .= "/" . $obj_nick;
-			
+
 			if (empty($previews[$area_id])) {
 				$previews[$area_id] = $areaModel->find("first", array(
 					"conditions" => array("Area.id" => $area_id),
@@ -982,10 +982,10 @@ abstract class ModulesController extends AppController {
 
 			$previews[$area_id]["object_url"][] = $obj_url;
 		}
-		
+
 		return $previews;
 	}
-	
+
 	public function cloneObject() {
 		unset($this->data['id']);
 		$this->data['status']='draft';
@@ -1002,33 +1002,33 @@ abstract class ModulesController extends AppController {
 			if($status == "on") {
 				throw new BeditaException(__("Autosave: bad status", true));
 			}
-			
+
 			// check perms on object/module
 		 	$user = $this->Session->read("BEAuthUser");
 			$permission = ClassRegistry::init('Permission');
 			if(!$permission->isWritable($objectId, $user)) {
 				throw new BeditaException(__("Autosave: no write permission", true));
 			}
-			
+
 			// check editors
-			$objectEditor = ClassRegistry::init("ObjectEditor"); 
+			$objectEditor = ClassRegistry::init("ObjectEditor");
 			$objectEditor->cleanup($objectId);
 			$res = $objectEditor->loadEditors($objectId);
 			if(count($res) > 1) {
 				throw new BeditaException(__("Autosave: other editors present", true));
 			}
 		}
-		
+
 		if(!($this->modulePerms & BEDITA_PERMS_MODIFY)) {
 			throw new BeditaException(__("Autosave: no module permission", true));
 		}
 	}
-	
+
 	public function autoSaveObject(BEAppObjectModel $model) {
 		$this->checkAutoSave();
 		// disable behaviors
 		$disableBhv = array("RevisionObject", "Notify");
-		$disabled = array();		
+		$disabled = array();
 		foreach ($disableBhv as $dis) {
 			if($model->Behaviors->enabled($dis)) {
 				$model->Behaviors->disable($dis);
@@ -1057,7 +1057,7 @@ abstract class ModulesController extends AppController {
 			$id = ClassRegistry::init("BEObject")->objectId($id);
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
-			
+
 			$beModel->containLevel("detailed");
 			if(!($obj = $beModel->findById($id))) {
 				throw new BeditaException(__("Error loading $name: ", true).$id);
@@ -1070,7 +1070,7 @@ abstract class ModulesController extends AppController {
 			}
 			foreach ($relations as $k=>$v) {
 				$relationsCount[$k] = count($v);
-			}	
+			}
 			if (!empty($obj['Annotation'])) {
 				$this->setupAnnotations($obj);
 			}
@@ -1083,19 +1083,19 @@ abstract class ModulesController extends AppController {
 					$objCat[] = $oc["id"];
 				}
 				$obj["assocCategory"] = $objCat;
-			}			
+			}
 			$treeModel = ClassRegistry::init("Tree");
 			$parents_id = $treeModel->getParent($id) ;
-			if($parents_id === false) 
+			if($parents_id === false)
 				$parents_id = array() ;
 			elseif(!is_array($parents_id))
 				$parents_id = array($parents_id);
-		
+
 			$previews = $this->previewsForObject($parents_id, $obj["nickname"]);
-			
+
 			$this->historyItem["object_id"] = $id;
 		}
-		
+
 		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $name . ".id"));
 
 		$this->set('object',	$obj);
@@ -1104,7 +1104,7 @@ abstract class ModulesController extends AppController {
 		$this->set('relationsCount', $relationsCount);
 		$this->set('objectProperty', $property);
 		$this->set('availabeRelations', $this->getAvailableRelations($name));
-		
+
 		$this->set('parents',	$parents_id);
 		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('previews',	$previews);
@@ -1113,8 +1113,8 @@ abstract class ModulesController extends AppController {
 		$this->set("areaCategory", $areaCategory);
 		$this->setSessionForObjectDetail();
 	}
-	
-	
+
+
 	/**
 	 * set session vars to use in objects detail:
 	 * 		- backFromView
@@ -1124,7 +1124,7 @@ abstract class ModulesController extends AppController {
 	 */
 	protected function setSessionForObjectDetail($objects=null) {
 		$modulePath = $this->viewVars["currentModule"]["url"];
-		
+
 		// set array of previous and next objects
 		if (!empty($objects) && strstr($this->here, $modulePath)) {
 			foreach ($objects as $k => $o) {
@@ -1135,9 +1135,9 @@ abstract class ModulesController extends AppController {
 		}
 
 		$backURL = $this->Session->read('backFromView');
-		
+
 		$baseModuleUrl = rtrim($this->base,"/") . "/" . $modulePath;
-		// set backFromView session vars and reset prevNext if necessary		
+		// set backFromView session vars and reset prevNext if necessary
 		if (!empty($this->here) && (strstr($this->here, $modulePath . "/index") || $this->here === $baseModuleUrl)) {
 			$backURL = (empty($this->params["form"]["searchstring"]))? $this->here : rtrim($this->here,"/") . "/query:" . urlencode($this->params["form"]["searchstring"]);
 			$this->Session->write('backFromView', $backURL);
@@ -1168,20 +1168,20 @@ abstract class ModulesController extends AppController {
 		)));
 		$this->set("object_type_id", $type);
 		$this->set("areasList", ClassRegistry::init("BEObject")->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"),
+										"order" => "title",
 										"fields" => "BEObject.title"
 										)
 									)
-								);	
+								);
 	}
-	
+
 	/**
 	 * Returns array of available relations for an $objectType
 	 * relations with "hidden" => true are excluded
 	 * If "inverse" relation is defined ("inverse" => "inverseName"), then types on "right" side
 	 *  will have "inverseName" relation
-	 * 
+	 *
 	 * @param string $objectType
 	 * @return array
 	 */
@@ -1220,11 +1220,11 @@ abstract class ModulesController extends AppController {
 		}
 		return array_unique($availableRelations);
 	}
-	
-	
+
+
 	/**
-	 * return array of object types belong to module 
-	 * 
+	 * return array of object types belong to module
+	 *
 	 * @param string $moduleName
 	 * @return array
 	 */
@@ -1244,32 +1244,32 @@ abstract class ModulesController extends AppController {
 		}
 		return $objectTypes;
 	}
-	
+
 	/**
-	 * Generic view method: to override in real modules or create specific view methods 
+	 * Generic view method: to override in real modules or create specific view methods
 	 * if more types are handled by this module, like view[ModelName] (e.g. viewDocument, viewEvent...)
 	 * This methods will be called automagically....
-	 * 
+	 *
 	 * @param integer $id object id to view
 	 */
 	public function view($id) {
-		$modelName = ClassRegistry::init("BEObject")->getType($id);	
+		$modelName = ClassRegistry::init("BEObject")->getType($id);
 		$method = "view" . $modelName;
 		if (!method_exists($this, $method)) {
 			throw new BeditaException(__("Missing view method", true)." - ".$method);
 		}
 		$this->action = $method;
 		$this->{$method}($id);
-	}	
-	
+	}
+
 	/**
 	 * Generic delete method: to override in real modules.
-	 * If more types are handled by this module create specific delete methods 
+	 * If more types are handled by this module create specific delete methods
 	 * like delete[ModelName] (e.g. deleteDocument, deleteEvent...)
 	 * This methods will be called automagically....
 	 */
 	public function delete() {
-		$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);	
+		$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);
 		$method = "delete" . $modelName;
 		if (!method_exists($this, $method)) {
 			throw new BeditaException(__("Missing delete method", true)." - ".$method);
@@ -1277,19 +1277,19 @@ abstract class ModulesController extends AppController {
 		$this->action = $method;
 		$this->{$method}();
 	}
-	
+
 	/**
 	 * Generic save method: to override in real modules.
-	 * If more types are handled by this module create specific 'save' methods 
+	 * If more types are handled by this module create specific 'save' methods
 	 * like save[ModelName] (e.g. saveDocument, saveEvent...)
 	 * This methods will be called automagically....
 	 */
 	public function save() {
 		if(!empty($this->data["id"])) {
-			$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);	
+			$modelName = ClassRegistry::init("BEObject")->getType($this->data["id"]);
 		} else {
 			$objTypeId = $this->data["object_type_id"];
-			$modelName = Configure::read("objectTypes.$objTypeId.model");	
+			$modelName = Configure::read("objectTypes.$objTypeId.model");
 		}
 		$method = "save" . $modelName;
 		if (!method_exists($this, $method)) {
@@ -1298,6 +1298,6 @@ abstract class ModulesController extends AppController {
 		$this->action = $method;
 		$this->{$method}();
 	}
-	
+
 }
 ?>
