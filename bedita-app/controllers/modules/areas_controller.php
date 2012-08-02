@@ -86,6 +86,7 @@ class AreasController extends ModulesController {
 		} else {
 			$filter["object_type_id"] = Configure::read("objectTypes.leafs.id");
 		}
+		$filter["count_annotation"] = array("EditorNote");
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 
