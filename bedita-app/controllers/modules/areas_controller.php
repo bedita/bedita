@@ -1,32 +1,32 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * Controller module Publications: managing of publications, sections and sessions
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class AreasController extends ModulesController {
@@ -37,7 +37,7 @@ class AreasController extends ModulesController {
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
 	protected $moduleName = 'areas';
-	 
+
 	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
 		if ($id == null && !empty($this->params["named"]["id"])) {
 			$id = $this->params["named"]["id"];
@@ -50,11 +50,11 @@ class AreasController extends ModulesController {
 			));
 			$this->params["named"]["id"] = $id = $publication["id"];
 		}
-		
+
 		if (!empty($id)) {
 			$this->view($id);
 		}
-		
+
 	}
 
 	public function view($id) {
@@ -67,19 +67,19 @@ class AreasController extends ModulesController {
 		$this->set("objectType", Configure::read("objectTypes.".$objectTypeId.".name"));
 		$this->set('parent_id', $this->Tree->getParent($id));
 	}
-	
+
 	/**
 	 * load paginated contents and no paginated sections of $id publication/section
-	 * 
+	 *
 	 * @param int $id
 	 * @param string $order
 	 * @param bool $dir
 	 * @param int $page
-	 * @param int $dim 
+	 * @param int $dim
 	 */
 	protected function loadChildren($id, $order = "priority", $dir = true, $page = 1, $dim = 20) {
 		// get paginated children content (leaf objectTypes) if no other is passed
-		if (!empty($this->params["named"]["object_type_id"]) 
+		if (!empty($this->params["named"]["object_type_id"])
 				&& $this->params["named"]["object_type_id"] != Configure::read("objectTypes.area.id")
 				&& $this->params["named"]["object_type_id"] != Configure::read("objectTypes.section.id")) {
 			$filter["object_type_id"] = $this->params["named"]["object_type_id"];
@@ -88,13 +88,14 @@ class AreasController extends ModulesController {
 		}
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
-		
+
 		// get no paginated children sections
 		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
+		$filter["count_permission"] = true;
 		$sections = $this->BeTree->getChildren($id, null, $filter, "priority", $dir);
 		$this->set("sections", $sections["items"]);
 	}
-	
+
 	function viewArea($id = null) {
 		// Get selected area
 		$area = null ;
@@ -104,9 +105,9 @@ class AreasController extends ModulesController {
 				 throw new BeditaException(sprintf(__("Error loading area: %d", true), $id));
 			}
 		}
-		
+
 		$property = $this->BeCustomProperty->setupForView($area, Configure::read("objectTypes.area.id"));
-		
+
 		// Data for template
 		$this->set('area',$area);
 		$this->set('objectProperty', $property);
@@ -121,8 +122,8 @@ class AreasController extends ModulesController {
 		$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
 		$this->set('tree',$this->BeTree->getSectionsTree());
 	}
-	
-	 
+
+
 	 /**
 	  * Add or modify area
 	  */
@@ -134,10 +135,10 @@ class AreasController extends ModulesController {
 			$this->data["syndicate"] = 'off';
 		}
 		$this->saveObject($this->Area);
-		
+
 		$id = $this->Area->id;
 		if(!$new) {
-			
+
 			// remove children
 			if (!empty($this->params["form"]["contentsToRemove"])) {
 				$childrenToRemove = explode(",", trim($this->params["form"]["contentsToRemove"],","));
@@ -147,7 +148,7 @@ class AreasController extends ModulesController {
 			}
 
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			
+
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
 			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
@@ -158,7 +159,7 @@ class AreasController extends ModulesController {
 				}
 			}
 		}
-		
+
 	 	$this->Transaction->commit() ;
  		$this->userInfoMessage(__("Area saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("area ". $this->data["title"]."saved");
@@ -168,7 +169,7 @@ class AreasController extends ModulesController {
 	 * Save/modify section.
 	 */
 	function saveSection() {
-		
+
 		$this->checkWriteModulePermission();
 		$new = (empty($this->data['id'])) ? true : false;
 		$this->Transaction->begin();
@@ -178,13 +179,13 @@ class AreasController extends ModulesController {
 		if(empty($this->data["parent_id"])) {
 			throw new BeditaException( __("Missing parent", true));
 		}
-	
+
 		$this->saveObject($this->Section);
 		$id = $this->Section->id;
-		
+
 		// Move section in the right tree position, if necessary
 		if(!$new) {
-			
+
 			if (!$this->BEObject->isFixed($id)) {
 				$oldParent = $this->Tree->getParent($id);
 				if($oldParent != $this->data["parent_id"]) {
@@ -193,11 +194,11 @@ class AreasController extends ModulesController {
 					}
 				}
 			}
-			
+
 			// save Tree.menu
 			$menu = (!empty($this->data['menu']))? 1 : 0;
 			$this->Tree->saveMenuVisibility($id, $this->data["parent_id"], $menu);
-			
+
 			// remove children
 			if (!empty($this->params["form"]["contentsToRemove"])) {
 				$childrenToRemove = explode(",", trim($this->params["form"]["contentsToRemove"],","));
@@ -207,7 +208,7 @@ class AreasController extends ModulesController {
 			}
 
 			$reorder = (!empty($this->params["form"]['reorder'])) ? $this->params["form"]['reorder'] : array();
-			
+
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
 			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
@@ -218,7 +219,7 @@ class AreasController extends ModulesController {
 				}
 			}
 		}
-		
+
 	 	$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Section saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("section [". $this->data["title"]."] saved");
@@ -233,13 +234,13 @@ class AreasController extends ModulesController {
 			case Configure::read("objectTypes.area.id"):
 				$this->deleteArea();
 				break;
-				
+
 			case Configure::read("objectTypes.section.id"):
 				$this->deleteSection();
 				break;
 		}
 	}
-	
+
 	/**
 	 * Export section objects to a specific file format
 	 */
@@ -283,14 +284,14 @@ class AreasController extends ModulesController {
 		}
 		$stream = ClassRegistry::init("Stream");
 		$path = $stream->field("uri", array("id" => $streamId));
-		
+
 		if($this->data["type"] !== "auto") {
 			$filterClass = Configure::read("filters.import." . $this->data["type"]);
 		} else { // search matching mime types
 			$mimeType = $stream->field("mime_type", array("id" => $streamId));
 			$filterClass = Configure::read("filters.mime." . $mimeType . ".import");
 		}
-		
+
 		$this->Section->id = $this->data['sectionId'];
 		if(!empty($filterClass)) {
 			$filterModel = ClassRegistry::init($filterClass);
@@ -301,16 +302,16 @@ class AreasController extends ModulesController {
 		} else {
 			$this->userErrorMessage(__("No import filter found for file type", true). " : ". $mimeType);
 			$this->eventError("Import filter not found for type " . $mimeType);
-			
+
 		}
 		if(!$this->BeFileHandler->del($streamId)) {
 			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
 		}
 	 	$this->Transaction->commit() ;
 	}
-	
-	
-	
+
+
+
 	private function deleteArea() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("Area");
@@ -324,7 +325,7 @@ class AreasController extends ModulesController {
 		$this->userInfoMessage(__("Section deleted", true)." - ".$objectsListDeleted);
 		$this->eventInfo("section [". $objectsListDeleted."] deleted");
 	}
-		
+
 	 /**
 	  * Return associative array representing publications/sections tree
 	  *
@@ -341,7 +342,7 @@ class AreasController extends ModulesController {
 			$tmp = split(" ", $arr[$i] ) ;
 			foreach($tmp as $val) {
 				$t  = split("=", $val) ;
-				$item[$t[0]] = ($t[1] == "null") ? null : ((integer)$t[1]) ; 
+				$item[$t[0]] = ($t[1] == "null") ? null : ((integer)$t[1]) ;
 			}
 			$IDs[$item["id"]] 				= $item ;
 			$IDs[$item["id"]]["children"] 	= array() ;
@@ -360,33 +361,33 @@ class AreasController extends ModulesController {
 		unset($IDs) ;
 	}
 
-	
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"saveArea"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Area->id}",
 									"ERROR"	=> $this->referer()
-								), 
+								),
 			"saveSection"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Section->id}",
 									"ERROR"	=> $this->referer()
-								), 
+								),
 			"delete"	=> 	array(
 									"OK"	=> "./",
 									"ERROR"	=> "/areas/view/" . @$this->data["id"]
-								), 
+								),
 			"deleteSection"	=> 	array(
 									"OK"	=> "./",
-									"ERROR"	=> $this->referer() 
+									"ERROR"	=> $this->referer()
 								),
 			"import"	=> 	array(
 									"OK"	=> "/areas/view/{$this->Section->id}",
 									"ERROR"	=> $this->referer()
-								), 
+								),
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
 	}
-}	
+}
 
 ?>
