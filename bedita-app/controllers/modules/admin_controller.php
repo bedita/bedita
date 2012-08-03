@@ -1,32 +1,32 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the Affero GNU General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License 
+ * You should have received a copy of the Affero GNU General Public License
  * version 3 along with BEdita (see LICENSE.AGPL).
  * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * Administration: system info, eventlogs, plug/unplug module, addons, utility....
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class AdminController extends ModulesController {
@@ -37,23 +37,23 @@ class AdminController extends ModulesController {
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
 		'MailJob' => array('limit' => 10, 'page' => 1, 'order'=>array('created'=>'desc'))
-	); 
+	);
 	protected $moduleName = 'admin';
-	
+
 	public function index() {
 		$this->action = "systemEvents";
 		$this->systemEvents();
 	}
 
-	public function importData() { 	
+	public function importData() {
 		// TODO
 	}
 
 	/**
 	 * http request load utility page
 	 * ajax request try to execute the utility operation defined in $this->params["form"]["operation"]
-	 * 
-	 * @throws BeditaAjaxException 
+	 *
+	 * @throws BeditaAjaxException
 	 */
 	public function utility() {
 		if ($this->params["isAjax"]) {
@@ -81,7 +81,7 @@ class AdminController extends ModulesController {
 				$details["output"] = "json";
 				throw new BeditaAjaxException($ex->getMessage(), $details);
 			}
-			
+
 			$this->view = "View";
 			header("Content-Type: application/json");
 			$this->set("data", $data);
@@ -89,7 +89,12 @@ class AdminController extends ModulesController {
 			$this->render(null, "ajax", VIEWS . "/pages/json.ctp");
 		}
 	}
-	
+
+	/**
+	 * list core modules to choose which switch on/off
+	 *
+	 * @return void
+	 */
 	public function coreModules() {
 		$modules = ClassRegistry::init("Module")->find("all", array(
 			"conditions" => array("module_type" => "core"),
@@ -98,13 +103,42 @@ class AdminController extends ModulesController {
 		$modules = Set::classicExtract($modules,'{n}.Module');
 		$this->set("moduleList", $modules);
 	}
-	
-	public function systemInfo() { 	
+
+	/**
+	 * list all modules and allow to sort them
+	 *
+	 * @return void
+	 */
+	public function sortModules() {
+		$this->checkWriteModulePermission();
+		if (!empty($this->data["Modules"])) {
+			$Module = ClassRegistry::init("Module");
+			$this->Transaction->begin();
+			foreach ($this->data["Modules"] as $id => $priority) {
+				$Module->id = $id;
+				if (!$Module->saveField("priority", $priority)) {
+					$name = $Module->findField("name", array("id" => $id));
+					$details = array_merge($Module->validationErrors, array("id" => $id));
+					throw new BeditaException(__("Error sorting module", true) . " " . $name, $Module->validationErrors);
+				}
+			}
+			$this->Transaction->commit();
+			$this->userInfoMessage(__("Modules sorted succesfully", true));
+		}
+		$modules = ClassRegistry::init("Module")->find("all", array(
+			"conditions" => array("status" => "on"),
+			"order" => "priority ASC"
+		));
+		$modules = Set::classicExtract($modules,'{n}.Module');
+		$this->set("moduleList", $modules);
+	}
+
+	public function systemInfo() {
 		$this->beditaVersion();
 		$this->set('sys', $this->BeSystem->systemInfo());
 	}
 
-	public function systemEvents() { 	
+	public function systemEvents() {
 		$this->set('events', $this->paginate('EventLog'));
 	}
 
@@ -222,7 +256,7 @@ class AdminController extends ModulesController {
 		}
 	}
 
-	public function deleteEventLog() { 	
+	public function deleteEventLog() {
 		$this->checkWriteModulePermission();
 		$this->beditaVersion();
 		$this->EventLog->deleteAll("id > 0");
@@ -230,38 +264,38 @@ class AdminController extends ModulesController {
 		$this->set('sys', $this->BeSystem->systemInfo());
 	}
 
-	public function customproperties() { 	
+	public function customproperties() {
 		$properties = ClassRegistry::init("Property")->find("all", array(
 			"contain" => "PropertyOption"
 		));
 		$this->set("properties", $properties);
 	}
-	 
+
 	public function saveCustomProperties() {
 		$this->checkWriteModulePermission();
 		if (empty($this->data["Property"]))
 	 		throw new BeditaException(__("Empty data",true));
-	 		
+
 	 	$propertyModel = ClassRegistry::init("Property");
-	 	
+
 	 	$objTypeId = $this->data["Property"]["object_type_id"];
 	 	if(empty($objTypeId)){
 	 		$objTypeId = null;
 	 	}
-	 	
+
 	 	$conditions = array(
  					"name" => $this->data["Property"]["name"],
 	 				"object_type_id" => $this->data["Property"]["object_type_id"]
  				);
- 				
+
  		if (!empty($this->data["Property"]["id"])) {
  			$conditions[] = "id <> '" . $this->data["Property"]["id"] . "'";
 		}
-	 	
+
 	 	$countProperties = $propertyModel->find("count", array(
  				"conditions" => $conditions
  		));
-		
+
  		if ($countProperties > 0) {
  			throw new BeditaException(__("Duplicate property name for the same type",true));
 		}
@@ -269,19 +303,19 @@ class AdminController extends ModulesController {
 	 	if (empty($this->data["Property"]["multiple_choice"]) || $this->data["Property"]["property_type"] != "options") {
 	 		$this->data["Property"]["multiple_choice"] = 0;
 		}
-	 	
+
 	 	$this->Transaction->begin();
 	 	if (!$propertyModel->save($this->data)) {
 	 		throw new BeditaException(__("Error saving custom property",true), $propertyModel->validationErrors);
 	 	}
-		
+
 	 	// save options
 	 	$propertyModel->PropertyOption->deleteAll("property_id='" . $propertyModel->id . "'");
 	 	if ($this->data["Property"]["property_type"] == "options") {
 	 		if (empty($this->data["options"])) {
 	 			throw new BeditaException(__("Missing options",true));
 			}
-	 			
+
 	 		$optionArr = explode(",", trim($this->data["options"],","));
 	 		foreach ($optionArr as $opt) {
 	 			$propOpt[] = array("property_id" => $propertyModel->id, "property_option" => trim($opt));
@@ -290,11 +324,11 @@ class AdminController extends ModulesController {
 	 			throw new BeditaException(__("Error saving options",true));
 	 		}
 	 	}
-	 	
+
 	 	$this->Transaction->commit();
-	 	
+
 	 	$this->eventInfo("property ".$this->data['Property']['name']." saved");
-		$this->userInfoMessage(__("Custom property saved",true));	 	
+		$this->userInfoMessage(__("Custom property saved",true));
 	}
 
 	function deleteCustomProperties() {
@@ -316,10 +350,10 @@ class AdminController extends ModulesController {
 		$this->set("pluginModules", $pluginModules);
 		$this->set("pluginDir", BEDITA_MODULES_PATH);
 	}
-	 
+
 	/**
-	 * plug in a module 
-	 * 
+	 * plug in a module
+	 *
 	 * @return void
 	 */
 	public function plugModule() {
@@ -337,7 +371,7 @@ class AdminController extends ModulesController {
 	 	$this->eventInfo("module ".$pluginName." plugged succesfully");
 		$this->userInfoMessage($pluginName . " " . __("plugged succesfully",true));
 	}
-	
+
 	/**
 	 * switch off => on and back a plugin module
 	 * @return void
@@ -355,10 +389,10 @@ class AdminController extends ModulesController {
 		$this->Transaction->commit();
 		BeLib::getObject("BeConfigure")->cacheConfig();
 		$this->eventInfo("module ".$this->params["form"]["pluginName"]." turned " . $this->data["status"]);
-		$msg = ($this->data["status"] == "on")? __("turned on", true) : __("turned off", true);; 
+		$msg = ($this->data["status"] == "on")? __("turned on", true) : __("turned off", true);;
 		$this->userInfoMessage($this->params["form"]["pluginName"]." " .$msg);
 	}
-	 
+
 	/**
 	 * plug out a module
 	 * @return void
@@ -381,7 +415,7 @@ class AdminController extends ModulesController {
 	 	$this->eventInfo("module ".$this->params["form"]["pluginName"]." unplugged succesfully");
 		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("unplugged succesfully",true));
 	}
-	
+
 	/**
 	 * list all available addons
 	 * @return void
@@ -389,7 +423,7 @@ class AdminController extends ModulesController {
 	public function addons() {
 		$this->set("addons", ClassRegistry::init("Addon")->getAddons());
 	}
-	
+
 	/**
 	 * Enable addon copying the addon file in the related enabled folder.
 	 * If addon is a BEdita object type create also a row on object_types table
@@ -404,20 +438,20 @@ class AdminController extends ModulesController {
 	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], $this->params["form"]["type"], array($this->params["form"]["path"] . DS))) {
 	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
 	 	}
-		
+
 		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
 			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
 		}
-		
+
 		$this->Transaction->begin();
 		ClassRegistry::init("Addon")->enable($this->params["form"]["file"],  $this->params["form"]["type"]);
 		$this->Transaction->commit();
-		
+
 		$msg = $this->params["form"]["name"] . " " . __("addon plugged succesfully", true);
 		$this->userInfoMessage($msg);
 		$this->eventInfo($msg);
 	}
-	 
+
 	/**
 	 * Disable addon deleting the addon file from the related enabled folder.
 	 * If addon is a BEdita object type remove also the row on object_types table
@@ -426,34 +460,34 @@ class AdminController extends ModulesController {
 	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
-		
+
 		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
 			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
 		}
-		
+
 		$this->Transaction->begin();
 		ClassRegistry::init("Addon")->disable($this->params["form"]["file"], $this->params["form"]["type"]);
 		$this->Transaction->commit();
-		
+
 		// BEdita object type
 		if (!empty($this->params["form"]["objectType"])) {
 			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully, all related objects are been deleted",true));
 		} else {
 			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully", true));
 		}
-		
+
 		$this->eventInfo("addon ". $this->params["form"]["model"]." disable succesfully");
 	}
-	
+
 	public function updateAddon() {
 		if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
-		
+
 		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
 			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
 		}
-		
+
 		ClassRegistry::init("Addon")->update($this->params["form"]["file"], $this->params["form"]["type"]);
 		$this->userInfoMessage($this->params["form"]["name"] . " " . __("updated succesfully", true));
 		$this->eventInfo("addon ". $this->params["form"]["model"]." updated succesfully");
@@ -463,17 +497,17 @@ class AdminController extends ModulesController {
 		$Addon = ClassRegistry::init("Addon");
 		$addonPath = $Addon->getFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
 		$addonEnabledPath = $Addon->getEnabledFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
-		
+
 		$addon = file_get_contents($addonPath);
 		$addonEnabled = file_get_contents($addonEnabledPath);
-		
+
 		App::import("Vendor", "finediff");
 		$opcodes = FineDiff::getDiffOpcodes($addonEnabled, $addon, FineDiff::$paragraphGranularity);
 		$diff = FineDiff::renderDiffToHTMLFromOpcodes($addonEnabled, $opcodes);
 		$this->set("diff", $diff);
 	}
-	
-	
+
+
 	public function viewConfig() {
 		include CONFIGS . 'langs.iso.php';
 		$this->set('langs_iso',$config['langsIso']);
@@ -539,7 +573,7 @@ class AdminController extends ModulesController {
 		// sys and cfg array
 		$sys = $this->params["form"]["sys"];
 
-		$warnMsg = array();		
+		$warnMsg = array();
 		if (empty($sys["mediaRoot"])) {
 			$warnMsg[] = __("media root can't be empty", true);
 		}
@@ -582,13 +616,13 @@ class AdminController extends ModulesController {
 		if(!empty($conf->smtpOptions['password']) && !empty($sys['smtpOptions']) && empty($sys['smtpOptions']['password'])) {
 			$sys['smtpOptions']['password'] = $conf->smtpOptions['password'];
 		}
-		
+
 		// prepare cfg array
 		$cfg = array_merge($this->params["form"]["cfg"], $sys);
 
 		// from string to boolean - $cfg["langOptionsIso"]
-		$cfg["langOptionsIso"] = ($cfg["langOptionsIso"] === "true") ? true : false; 
-		
+		$cfg["langOptionsIso"] = ($cfg["langOptionsIso"] === "true") ? true : false;
+
 		if($cfg["langOptionsIso"]) {
 			$cfg["langOptions"] = $conf->langOptionsDefault;
 		}
@@ -604,11 +638,11 @@ class AdminController extends ModulesController {
 				unset($cfg[$k]);
 			}
 		}
-		
+
 		// write bedita.cfg.php
 		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
 		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
-		
+
 		foreach ($warnMsg as $w) {
 			$this->userWarnMessage($w);
 			$this->eventWarn($w);
@@ -694,7 +728,7 @@ class AdminController extends ModulesController {
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 	 	return false;
 	}
-	 
+
 }
 
 ?>

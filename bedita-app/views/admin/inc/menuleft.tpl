@@ -31,6 +31,7 @@ Menu a SX valido per tutte le pagine del controller.
 	<ul class="menuleft insidecol">
 		<li {if $view->action eq 'coreModules'}class="on"{/if}><a href="{$html->url('/admin/coreModules')}">{t}Core Modules{/t}</a></li>
 		<li {if $view->action eq 'pluginModules'}class="on"{/if}><a href="{$html->url('/admin/pluginModules')}">{t}Plugin Modules{/t}</a></li>
+		<li {if $view->action eq 'sortModules'}class="on"{/if}><a href="{$html->url('/admin/sortModules')}">{t}Sort Modules{/t}</a></li>
 		<li {if $view->action eq 'addons'}class="on"{/if}><a href="{$html->url('/admin/addons')}">{t}Addons{/t}</a></li>
 	</ul>
 
