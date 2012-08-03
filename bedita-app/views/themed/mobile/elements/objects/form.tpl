@@ -1,4 +1,4 @@
-  {strip}
+	{strip}
 	<form action="{$html->url('/')}{$submiturl}/save" method="post" name="updateForm" id="updateForm" class="cmxform">
 		<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
@@ -33,6 +33,18 @@
 				<textarea id="data[body]" name="data[body]" rows="10">{$object.body|default:''}</textarea>
 			</li>
 			
+			{* Position *}
+	
+			<li data-role="list-divider">{t}Position{/t}</li>
+			<li data-role="fieldcontain">
+				<label for="data[destination][]">{t}select position{/t}:</label>
+				<select id="data[destination][]" name="data[destination][]" multiple="multiple" data-native-menu="false">
+					{assign_associative var="params" parentIds=$parents}
+					{$beTree->optionsMobile($tree, $params)}
+				</select>
+			</li>
+			
+				
 			{* Properties *}
 			<li data-role="list-divider">{t}Properties{/t}</li>
 			{if in_array('administrator',$BEAuthUser.groups)}
@@ -59,8 +71,17 @@
 					{/if}
 				</fieldset>
 			</li>
-			
+
+			{* Buttons *}
+			<li class="ui-body ui-body-b">
+				<fieldset class="ui-grid-a">
+					<div class="ui-block-a"><button id="deleteButton" type="submit" data-theme="f" value="{if !empty($delparam)}{$html->url($delparam)}{else}{$html->url('delete/')}{/if}">{t}Delete{/t}</button></div>
+					<div class="ui-block-b"><button id="saveButton" type="submit" data-theme="a" value="{$html->url('/')}{$submiturl}/save">{t}Save{/t}</button></div>
+				</fieldset>
+			</li>
+
 			{* Actions *}
+			{*
 			<li data-role="list-divider">{t}Actions{/t}</li>
 			<li data-role="fieldcontain">
 			    <fieldset data-role="controlgroup">
@@ -78,9 +99,30 @@
 			<li data-role="fieldcontain" data-theme="b">
 				<button type="submit" data-theme="a">{t}Submit{/t}</button>
 			</li>
+			*}
 		</ul>
+
 	</form>
 	{/strip}
+	<script>
+		$(document).bind('pageinit',function(e,ui){
+			// Manage form submission based on action
+			
+			$('#deleteButton').click(function(e){
+				if (confirm("{t}Are you sure you want to delete{/t}")) {
+					$('#updateForm').attr('action',$(this).val()).submit();
+				} else {
+					e.preventDefault();
+				}
+			});
+			
+			$('#saveButton').click(function(e){
+				$('#updateForm').attr('action',$(this).val()).submit();
+			});
+
+		});
+	</script>
+	{*
 	<script>
 		$(document).bind('pageinit',function(e,ui){
 			// Manage form submission based on action
@@ -97,3 +139,4 @@
 			});
 		});
 	</script>
+	*}

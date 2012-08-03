@@ -39,10 +39,165 @@ class BeTreeHelper extends AppHelper {
 	var $tags = array(
 		'option'	=> "<option value=\"%s\"%s>%s</option>",
 		'checkbox'	=> "<input type=\"checkbox\" name=\"data[destination][]\" value=\"%s\" %s/>",
-		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>"
+		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>",
 	) ;
 
+		/**
+	 * build option for select
+	 *
+	 * @param array $tree
+	 * @param int $numInd number of $indentation repetition foreach branch
+	 * @param string $indentation string to use for indentation
+	 * 
+	 * @return string 	<option value="">...</option>
+	 * 		   			<option value="">...</option>
+	 * 					....
+	 */
+	public function optionsMobile($tree, $options = array() ) {
+		$default_options = array(
+			'parentIds' => array(),
+			'selId' => null,
+			'numInd' => 3,
+			'level' => 0,
+			'indentation' => "&nbsp;"
+		);
+		$options = array_merge($default_options, $options);
+		extract($options);
 		
+		$output = "<option value=\"\"> -- </option>";
+		
+		if (!empty($tree)) {
+			foreach ($tree as $publication) {
+				$selected = (in_array($publication['id'],$parentIds)) ? " selected" : "";
+				$output .= sprintf($this->tags['option'], $publication["id"], $selected, mb_strtoupper($publication["title"])) ;
+				if (!empty($publication["children"])) {
+					$options2 = array_merge( // Aumenta livello
+						$options,
+						array('level' => $level + 1)
+					);
+					$output .= $this->optionMobileBranch($publication["children"], $options2);
+				}
+			}
+		}
+		
+		return $this->output($output);
+		
+	}
+	/**
+	 * build branch
+	 *
+	 * @param $branch
+	 * @param int $numInd number of repetition on $indentation string foreach branch
+	 * @param string $indentation string to use for indentation
+	 * 
+	 * @return string of option
+	 */
+	private function optionMobileBranch($branch, $options = array() ) {
+		$default_options = array(
+			'parentIds' => array(),
+			'selId' => null,
+			'numInd' => 3,
+			'level' => 0,
+			'indentation' => "&nbsp;"
+		);
+		$options = array_merge($default_options, $options);
+		extract($options);
+		
+		if (!isset($this->numInd)) {
+			$this->numInd = $numInd;
+		}
+		
+		if (empty($space)) {
+			$space = "";
+		}
+		
+		if (empty($res)) {
+			$res = "";
+		}
+		
+		for ($i = 1; $i <= $numInd * $level; $i++) {
+			$space .= $indentation;
+		}
+		
+		foreach ($branch as $section) {
+			$selected = (in_array($section['id'],$parentIds)) ? " selected" : "";
+			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
+			if (!empty($section["children"])) {
+				$options2 = array_merge( // Aumenta livello
+					$options,
+					array('level' => $level + 1)
+				);
+				$res .= $this->optionMobileBranch($section["children"], $options2);
+			}
+			
+		}
+		
+		return $res;
+	}
+
+	/**
+	 * get html section
+	 *
+	 * @param array $branch, section
+	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
+	 * @param array $parent_ids, array of ids parent
+	 * @return string html for section simple tree
+	 */
+	public function designBranchMobile($branch, $inputType = null, $parent_ids = array()) {
+		$url = "";
+		$class = "";
+		$res = '<ul data-role="listview" data-split-icon="gear" data-split-theme="d" data-inset="true">';
+		
+		foreach ($branch as $section) {
+			
+			if (empty($inputType)) {
+				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
+				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
+						|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
+					$class = " class='on'";
+				} else {
+					$class = "";
+				}
+			}
+			
+			$liClass = "sec_" . $section['status'];
+			// check if it's a protecetd section
+			if (!empty($section["num_of_permission"])) {
+				$liClass .= " protected";
+			}
+			
+			// check it's a hidden section (from menu and canonical path)
+			if ($section["menu"] == 0) {
+				$liClass .= " menuhidden";
+			}
+			
+			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";			
+			$res .= "<a " . $class . " rel='" . $url . "'>";
+			
+			if (!empty($inputType) && !empty($this->tags[$inputType])) {
+				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
+				$checked .= ' class="ui-li-thumb"';
+				$res .= sprintf($this->tags[$inputType], $section["id"], $checked);
+			} else {
+				
+			}
+			
+			$res .= $section["title"] . "</a>";
+			/*
+			if (!empty($inputType) && !empty($this->tags[$inputType])) {
+				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
+			}
+			*/
+			if (!empty($section["children"])) {
+				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
+			}
+			
+			$res .= "</li>";
+		}
+		$res .= "</ul>";
+		return $res;
+	}
+
 	/**
 	 * output a tree
 	 *

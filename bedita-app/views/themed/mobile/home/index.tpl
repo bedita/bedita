@@ -11,7 +11,7 @@
 
 	{strip}
 		{if !empty($moduleList)}
-		<ul data-role="listview" data-inset="true" data-filter="true">
+		<ul data-role="listview" data-filter="true"{*data-inset="true"*}>
 		{foreach from=$moduleList key=k item=mod}
 		{if (in_array($mod.name,$mobileModuleList)) && ($mod.status == 'on')}
 			{assign_concat var='link' 1=$html->url('/') 2=$mod.url}

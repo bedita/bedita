@@ -1,13 +1,13 @@
 <div data-role="page">
 
 	<div data-role="header">
-		<h1>Dashboard</h1>
+		<h1>{t}Publications{/t}</h1>
 	</div><!-- /header -->
 
 	<div data-role="content">
 
   {strip}
-		{$beTree->designBranchMobile($tree)}
+		{$beTree->designBranchMobile($tree,'checkbox')}
   {/strip}
 
 	</div><!-- /content -->
