@@ -2,7 +2,7 @@
 	var loadingtext = "{t}WAIT{/t}";
 	var doneText = "{t}REDO{/t}";
 	var retryText = "{t}RETRY{/t}";
-	var confirmMsg = "{t}Are you sure you want to procede? The operation may be slow{/t}";
+	var confirmMsg = "{t}Are you sure you want to procede? The operation can take several time{/t}";
     $(document).ready(function() {
 		openAtStart("#utilities");
 			
@@ -29,13 +29,13 @@
 					success: function(data, textStatus, jqXHR) {
 						$("#messagesDiv").empty();
 						if (data.errorMsg != undefined) {
-							alert(data.errorMsg);
+							//alert(data.errorMsg);
 							if (data.htmlMsg != undefined && data.htmlMsg != "") {
 								$("#messagesDiv").html(data.htmlMsg).triggerMessage("error");
 							}
 							$_this.text(retryText).removeClass("loading").addClass("execute");
 						} else {
-							alert(data.message);
+							//alert(data.message);
 							if (data.htmlMsg != undefined && data.htmlMsg != "") {
 								$("#messagesDiv").html(data.htmlMsg).triggerMessage(data.msgType);
 							}
