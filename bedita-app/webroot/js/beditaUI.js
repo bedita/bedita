@@ -745,3 +745,43 @@ function getFlashVersion(){
   	return false; 
 } 
 
+
+
+
+
+var Unity;
+
+function unityReady() {
+	//Unity.Notification.showNotification("BEdita integrate in Unity", "Congratultions! BEdita is now a Unity WebApp!", "");
+
+	// add shortcuts to launcher
+	Unity.Launcher.addAction("Publications", function() {
+		location.href = "http://localhost/bedita/bedita-app/publications"
+	});
+	Unity.Launcher.addAction("Documents", function() {
+		location.href = "http://localhost/bedita/bedita-app/documents"
+	});
+	Unity.Launcher.addAction("Events", function() {
+		location.href = "http://localhost/bedita/bedita-app/events"
+	});
+
+	// add actions to HUD
+	Unity.addAction("/Documents/new", function () {
+		location.href = "http://localhost/bedita/bedita-app/documents/view"
+	});
+	Unity.addAction("/Documents/categories", function () {
+		location.href = "http://localhost/bedita/bedita-app/documents/categories"
+	});
+}
+
+
+function unityWebApp() {
+	Unity = external.getUnityObject(1.0); 
+	Unity.init({
+		name: "BEdita 3.2",
+		iconUrl: "http://localhost/bedita/bedita-app/webroot/img/BElogo_iphone.png",
+		onInit: unityReady
+	});
+}
+
+setTimeout(unityWebApp, 2000);
