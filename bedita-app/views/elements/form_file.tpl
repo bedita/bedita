@@ -14,7 +14,7 @@
 {if ($object.ObjectType.name == "image")}
 
 	{if strpos($object.uri,'/') === 0}
-		{assign_concat var="fileUrl"  1=$conf->mediaUrl  2=$object.uri}
+		{assign_concat var="fileUrl"  1=$conf->mediaRoot  2=$object.uri}
 	{else}
 		{assign var="fileUrl"  value=$object.uri}
 	{/if}
