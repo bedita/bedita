@@ -6,15 +6,15 @@
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the Affero GNU General Public License as published
+ * it under the terms of the GNU Lesser General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the Affero GNU General Public License for more details.
- * You should have received a copy of the Affero GNU General Public License
- * version 3 along with BEdita (see LICENSE.AGPL).
- * If not, see <http://gnu.org/licenses/agpl-3.0.html>.
+ * See the GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * version 3 along with BEdita (see LICENSE.LGPL).
+ * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
  *
  *------------------------------------------------------------------->8-----
  */
@@ -61,6 +61,9 @@ class AreasController extends ModulesController {
 		$this->action = "index";
 		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
 		$modelName = Configure::read("objectTypes.".$objectTypeId.".model");
+		if(empty($modelName)) {
+			throw new BeditaException(sprintf(__("Object id not found: %d", true), $id));
+		}
 		$this->viewObject($this->{$modelName}, $id);
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->loadChildren($id, "priority", $dir);
@@ -249,6 +252,10 @@ class AreasController extends ModulesController {
 		$this->autoRender = false;
 		$modelType = $this->BEObject->getType($this->data["id"]);
 		$this->viewObject($this->{$modelType}, $this->data["id"]);
+		if(empty($this->data["type"])) {
+			throw new BeditaException(__("No valid export filter has been selected", true));
+		}
+		
 		$filterClass = Configure::read("filters.export." . $this->data["type"]);
 		$filterModel = ClassRegistry::init($filterClass);
 		$objects = array($this->viewVars["object"]);
