@@ -14,7 +14,7 @@
 {if ($object.ObjectType.name == "image")}
 
 	{if strpos($object.uri,'/') === 0}
-		{assign_concat var="fileUrl"  0=$conf->mediaUrl  1=$object.uri}
+		{assign_concat var="fileUrl"  0=$conf->mediaRoot  1=$object.uri}
 	{else}
 		{assign var="fileUrl"  value=$object.uri}
 	{/if}
@@ -98,7 +98,8 @@
 
 
 {if ($object.ObjectType.name == "image")}
-	
+
+
 	<tr>
 		<th nowrap>{t}Human readable type{/t}:</th>
 		<td>{$imageInfo.hrtype}</td>
