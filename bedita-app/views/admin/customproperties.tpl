@@ -71,18 +71,13 @@ $(document).ready(function(){
 					<input type="text" name="data[Property][name]" value="{$p.name}" />
 				</td>
 				<td>
-					<select name="data[Property][object_type_id]">
-					
+					<input type="hidden" name="data[Property][object_type_id]" value="{$p.object_type_id}"/>
 					{if $p.object_type_id == null}
-						<option value="" class="admin" style="padding-left:5px" selected="selected"> user</option>
-					{else}	
-						{foreach from=$conf->objectTypes key="key" item="objectTypes"}
-						{if !empty($objectTypes.model) && is_numeric($key)}
-							<option value="{$objectTypes.id}" class="{$objectTypes.module_name}" style="padding-left:5px"{if $p.object_type_id ==$objectTypes.id} selected="selected"{/if}> {$objectTypes.name}</option>
-						{/if}
-						{/foreach}
+						user
+					{else}
+						{$conf->objectTypes[$p.object_type_id].name}
 					{/if}
-					</select>
+					
 				</td>
 				<td>
 					<select class="optionlist" name="data[Property][property_type]">
