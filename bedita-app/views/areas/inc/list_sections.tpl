@@ -125,8 +125,9 @@ $(document).ready(function() {
 	
 	{include file="inc/tools_commands.tpl" type="section"}
 	
+	{bedev}
 	{include file="inc/bulk_actions.tpl" type="section"}	
-		
+	{/bedev}
 </div>
 
 
