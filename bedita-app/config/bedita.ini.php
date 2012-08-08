@@ -605,6 +605,13 @@ $config["geoTagOptions"] = array(
 	)
 );
 
+/**
+ ** ******************************************
+ **  System locales available
+ **  use arrays of locale strings
+ ** ******************************************
+ */
+require_once(BEDITA_CORE_PATH.DS.'config'.DS.'locales.php');
 
 /**
  * User configurations - handled in admin/config

@@ -13,7 +13,7 @@ $config["locales"] = array(
 		'en_US.UTF8','en_US.UTF-8','en_US',
 		'en_GB.UTF8','en_GB.UTF-8','en_GB',
 	),
-	'fre' => array(
+	'fra' => array(
 		'fr_FR.UTF8','fr_FR.UTF-8','fr_FR',
 		'fr_CH.UTF8','fr_CH.UTF-8','fr_CH',
 		'fr_BE.UTF8','fr_BE.UTF-8','fr_BE',

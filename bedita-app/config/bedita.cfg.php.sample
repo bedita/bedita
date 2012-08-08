@@ -76,11 +76,14 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 /**
  ** ******************************************
- **  System locales available
- **  use arrays of locale strings
+ **  Override system locales
+ **  defaults are in config/locales.php
  ** ******************************************
  */
-require_once(BEDITA_CORE_PATH.DS.'config'.DS.'locales.php');
+
+//$config["locales"] = array(
+//	'eng' => array('en_US.UTF8','en_US.UTF-8'),
+//	);
 
 
 /**
