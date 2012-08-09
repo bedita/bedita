@@ -4,16 +4,16 @@
 	<div style="clear: both">
 	{if $obj.object_type_id == $conf->objectTypes.image.id}
 		{assign_associative var="params" presentation="thumb" width=96 height=96 mode="crop" upscale=false URLonly=1}
-		{assign_concat var="src" 0='src="' 1=$beEmbedMedia->object($obj,$params,$htmlAttr) 2='"'}
+		{assign_concat var="src" 1='src="' 2=$beEmbedMedia->object($obj,$params) 3='"'}
 		{assign var="content" value=$contentTemplate|regex_replace:'/src="[\S]*?"/':$src}
 	{elseif $obj.object_type_id == $conf->objectTypes.video.id}
 		{assign_associative var="params" presentation="thumb" height=96 URLonly=1}
 		{assign_associative var="htmlAttr" height=96}
-		{assign_concat var="src" 0='src="' 1=$beEmbedMedia->object($obj,$params,$htmlAttr) 2='"'}
+		{assign_concat var="src" 1='src="' 2=$beEmbedMedia->object($obj,$params,$htmlAttr) 3='"'}
 		{assign var="content" value=$contentTemplate|regex_replace:'/src="[\S]*?"/':$src}
 	{elseif !empty($obj.relations.attach)}
 		{assign_associative var="params" presentation="thumb" width=96 height=96 mode="crop" upscale=false URLonly=1}
-		{assign_concat var="src" 0='src="' 1=$beEmbedMedia->object($obj.relations.attach.0,$params) 2='"'}
+		{assign_concat var="src" 1='src="' 2=$beEmbedMedia->object($obj.relations.attach.0,$params) 3='"'}
 		{assign var="content" value=$contentTemplate|regex_replace:'/src="[\S]*?"/':$src}
 	{else}
 		{assign var="content" value=$contentTemplate|regex_replace:"/\<img.[\S\s]*?\>/":""}

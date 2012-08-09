@@ -21,10 +21,9 @@
 {$html->script("jquery/jquery.validate")}
 
 <script type="text/javascript">
-	$(document).ready( function ()
-	{
+	$(document).ready(function () {
 		openAtStart("#contents, #invoice");
-		$("#timeStart, #timeEnd").timePicker({startTime: "00:00", endTime: "23:30"});
+		$("#timeStart, #timeEnd").timePicker({ startTime: "00:00", endTime: "23:30" });
 		$("#updateForm").validate();
 	});
 </script>

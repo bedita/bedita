@@ -8,57 +8,89 @@
 	{assign var="templateCSS" value=$html->url('/css/newsletter.css')}
 {/if}
 
-{if ($conf->mce|default:true)}
+
+{if ($conf->mce|default:false)}
 	{$html->script("tiny_mce/tiny_mce")}
 
-<script language="javascript" type="text/javascript">
+	<script language="javascript" type="text/javascript">
 
-function initializeTinyMCE(cssPath) {
-	tinyMCE.init({
-		// General options
-		mode : "textareas",
-		theme : "advanced",
-		editor_selector : "mce",
-		plugins : "safari,pagebreak,paste,fullscreen,bedita",
-	
-		// Theme options
-		theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
-		theme_advanced_buttons2 : "be_content",
-		theme_advanced_buttons3 : "", 
-		theme_advanced_toolbar_location : "top",
-		theme_advanced_toolbar_align : "left",
-		//theme_advanced_statusbar_location : "bottom",
-		//theme_advanced_resizing : true,
-		theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
-		width : "450",
-		// Example content CSS (should be your site CSS)
-		//content_css : "http://beditafront.lcl:8081/css/htmleditor.css",
-	    content_css : cssPath,
-		relative_urls : false,
-		convert_urls : false,
-	    remove_script_host : false,
-		document_base_url : "/"
+	function initializeTinyMCE(cssPath) {
+		tinyMCE.init({
+			// General options
+			mode : "textareas",
+			theme : "advanced",
+			editor_selector : "richtextNewsletterTemplate",
+			plugins : "safari,pagebreak,paste,fullscreen,bedita",
 		
+			// Theme options
+			theme_advanced_buttons1 : "bold,italic,underline,strikethrough, | ,formatselect,bullist,numlist, hr, | ,link,unlink,pastetext,pasteword, | ,removeformat,charmap,code,fullscreen",
+			theme_advanced_buttons2 : "be_content",
+			theme_advanced_buttons3 : "", 
+			theme_advanced_toolbar_location : "top",
+			theme_advanced_toolbar_align : "left",
+			//theme_advanced_statusbar_location : "bottom",
+			//theme_advanced_resizing : true,
+			theme_advanced_blockformats : "p,h1,h2,h3,h4,blockquote,address",
+			width : "450",
+			// Example content CSS (should be your site CSS)
+			//content_css : "http://beditafront.lcl:8081/css/htmleditor.css",
+		    content_css : cssPath,
+			relative_urls : false,
+			convert_urls : false,
+		    remove_script_host : false,
+			document_base_url : "/"
+			
+		});
+	}
+
+	initializeTinyMCE("{$templateCSS}");
+
+	$(document).ready(function() {
+		$("#changeCss").change(function() {
+			mce = tinyMCE.get("htmltextarea");
+			mce.remove();
+			cssBaseUrl = $(this).find("option:selected").attr("rel");
+			if (cssBaseUrl === undefined)
+				cssPath = "{$html->url('/css/newsletter.css')}";
+			else
+				cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+
+			initializeTinyMCE(cssPath);	
+		});
 	});
-}
 
-initializeTinyMCE("{$templateCSS}");
+	</script>
 
-$(document).ready(function() {
-	$("#changeCss").change(function() {
-		mce = tinyMCE.get("htmltextarea");
-		mce.remove();
-		cssBaseUrl = $(this).find("option:selected").attr("rel");
-		if (cssBaseUrl === undefined)
-			cssPath = "{$html->url('/css/newsletter.css')}";
-		else
-			cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+{else}
 
-		initializeTinyMCE(cssPath);	
+	{$view->element('texteditor')}
+
+	<script language="javascript" type="text/javascript">
+
+	function changeCKeditorCss(csshref) {
+		var editor = $('.richtextNewsletterTemplate').ckeditorGet();
+		var linkElement = $(editor.document.$).find('link');
+		linkElement.attr('href', csshref);
+	}
+
+	$(document).ready(function() {
+		$('.richtextNewsletterTemplate').ckeditorGet().on('instanceReady', function(event) {
+			changeCKeditorCss("{$templateCSS}");
+		});
+
+		$("#changeCss").change(function() {
+			var	cssBaseUrl = $(this).find("option:selected").attr("rel");
+			var cssPath;
+			if (cssBaseUrl === undefined || cssBaseUrl == '') {
+				cssPath = "{$html->url('/css/newsletter.css')}";
+			} else {
+				cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+			}
+			changeCKeditorCss(cssPath);
+		});
 	});
-});
-	
-</script>
+
+	</script>
 
 {/if}
 
@@ -133,7 +165,7 @@ $(document).ready(function() {
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="mce">
+			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="richtextNewsletterTemplate">
 			{strip}
 			{if !empty($object.body)}
 				{$object.body}

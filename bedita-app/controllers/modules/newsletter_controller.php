@@ -1,31 +1,31 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class NewsletterController extends ModulesController {
@@ -45,7 +45,7 @@ class NewsletterController extends ModulesController {
     );
 
 	protected $moduleName = 'newsletter';
-	
+
     public function index() {
     	$firstDayOfmonth = date("Y") . "-" . date("m") . "-01 00:00:00";
 		$this->MailMessage->recursive = -1;
@@ -56,7 +56,7 @@ class NewsletterController extends ModulesController {
 				)
 			)
 		);
-		
+
 		$sentThisYear = $this->MailMessage->find("count", array(
 				"conditions" => array(
 					"mail_status" => "sent",
@@ -64,17 +64,17 @@ class NewsletterController extends ModulesController {
 				)
 			)
 		);
-		
+
 		$queued = $this->MailMessage->find("count", array(
 				"conditions" => array( "mail_status" => array("pending", "injob") )
 			)
 		);
-		
+
 		$sentTotal = $this->MailMessage->find("count", array(
 				"conditions" => array( "mail_status" => "sent" )
 			)
 		);
-		
+
 		$this->MailTemplate->BEObject->recursive = -1;
 		$templates = $this->MailTemplate->BEObject->find("all", array(
 				"conditions" => array("object_type_id" => Configure::read("objectTypes.mail_template.id")),
@@ -82,7 +82,7 @@ class NewsletterController extends ModulesController {
 				"order" => "title ASC"
 			)
 		);
-		
+
 		$this->MailMessage->containLevel("minimum");
 		$recentMsg = $this->MailMessage->find("all", array(
 				"conditions" => array("BEObject.object_type_id" => Configure::read("objectTypes.mail_message.id")),
@@ -90,7 +90,7 @@ class NewsletterController extends ModulesController {
 				"limit"	=> 5
 			)
 		);
-		
+
 		$subscribedWeek = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
 					"created >= '" . date("Y-m-d", mktime(0,0,0,date("m"),  date('d')-7,  date("Y"))) . " 00:00:00'",
@@ -100,7 +100,7 @@ class NewsletterController extends ModulesController {
 				"contain" => array("Card")
 			)
 		);
-		
+
 		$subscribedMonth = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
 					"created >= '" . $firstDayOfmonth ."'",
@@ -110,7 +110,7 @@ class NewsletterController extends ModulesController {
 				"contain" => array("Card")
 			)
 		);
-		
+
 		$subscribedTotal = $this->MailGroupCard->find("count", array(
 				"conditions" => array(
 					"status" => "confirmed",
@@ -141,8 +141,8 @@ class NewsletterController extends ModulesController {
 	function viewMailMessage($id = null) {
 		$this->viewObject($this->MailMessage, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, null, $id));
-		
-		$areaModel = ClassRegistry::init("Area");				
+
+		$areaModel = ClassRegistry::init("Area");
 		$pub = $areaModel->find("all", array("contain" => array("BEObject")));
 		$filter["object_type_id"] = Configure::read("objectTypes.mail_template.id");
 		foreach ($pub as $key => $p) {
@@ -151,10 +151,10 @@ class NewsletterController extends ModulesController {
 			// set cssUrl to use with template
 			if (!empty($this->viewVars["relObjects"]["template"])) {
 				foreach ($temp["items"] as $t) {
-					if ($t["id"] == $this->viewVars["relObjects"]["template"][0]["id"])	
+					if ($t["id"] == $this->viewVars["relObjects"]["template"][0]["id"])
 						$this->set("cssUrl", $p["public_url"] . "/css/" . Configure::read("newsletterCss"));
 				}
-			} 
+			}
 		}
 		$this->set("templateByArea", $pub);
 	 }
@@ -233,15 +233,15 @@ class NewsletterController extends ModulesController {
 			}
 
 			$this->viewVars["objects"][$key] = $msg;
-		}		
+		}
 	 }
-	
+
 	function save() {
 		$this->saveMessage();
  		$this->userInfoMessage(__("Mail message saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("mail message [". $this->data["title"]."] saved");
 	}
-	
+
 	public function delete() {
 		$this->checkWriteModulePermission();
 		$objectsListDeleted = $this->deleteObjects("MailMessage");
@@ -263,15 +263,15 @@ class NewsletterController extends ModulesController {
 			$v["MailGroup"]["publishing"] = $v["Area"]["BEObject"]["title"];
 			$result[]=$v['MailGroup'];
 		}
-		
+
 		$this->set("mailGroups", $result);
 		$this->set("areasList", $this->BEObject->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"),
+										"order" => "title",
 										"fields" => "BEObject.title"
 										)
 									)
-								);	
+								);
 	}
 
 
@@ -287,7 +287,7 @@ class NewsletterController extends ModulesController {
 							array("conditions" => "MailGroup.id=" . $id)
 						);
 			$item = $o['MailGroup'];
-			
+
 			// get paginated subscribers
 			$filter = array(
 				"object_type_id" => Configure::read("objectTypes.card.id"),
@@ -297,12 +297,12 @@ class NewsletterController extends ModulesController {
 			$card = $this->BeTree->getChildren(null, null, $filter, null, true, 1, 10) ;
 			$this->set("subscribers", $card["items"]);
 			$this->params['toolbar'] = &$card['toolbar'] ;
-			
+
 		}
 		$this->set('item',	$item);
 		$this->set("areasList", $this->BEObject->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"),
+										"order" => "title",
 										"fields" => "BEObject.title"
 										)
 									)
@@ -325,17 +325,17 @@ class NewsletterController extends ModulesController {
 
 	public function saveMailGroups() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data["MailGroup"]["group_name"])) 
+		if(empty($this->data["MailGroup"]["group_name"]))
 			throw new BeditaException( __("Missing list name", true));
-		if(empty($this->data["MailGroup"]["area_id"])) 
+		if(empty($this->data["MailGroup"]["area_id"]))
  			throw new BeditaException( __("Missing publication", true));
 		$this->Transaction->begin() ;
 		if(!$this->MailGroup->save($this->data)) {
 			throw new BeditaException(__("Error saving mail group", true), $this->MailGroup->validationErrors);
 		}
-		
+
 		$mail_group_id = $this->MailGroup->id;
-		
+
 		// add subscribers
 		if (!empty($this->params["form"]["addsubscribers"])) {
 			$subscribers = explode(",", $this->params["form"]["addsubscribers"]);
@@ -349,19 +349,19 @@ class NewsletterController extends ModulesController {
 					$this->Card->create();
 					if (!$this->Card->save($dataCard))
 						throw new BeditaException(__("Error adding subscribers", true), $this->Card->validationErrors . "Email: " . $sub);
-				
+
 				// join group, if not already joined
 				} elseif (!$this->MailGroupCard->field("id", array("mail_group_id" => $mail_group_id, "card_id" => $card_id)) ) {
 					$dataJoin["MailGroupCard"]["mail_group_id"] = $mail_group_id;
 					$dataJoin["MailGroupCard"]["card_id"] = $card_id;
 					$dataJoin["MailGroupCard"]["status"] = "confirmed";
 					$dataJoin["MailGroupCard"]["hash"] = md5($card_id . microtime() . $this->data["MailGroup"]["group_name"]);
-						
+
 					$this->MailGroupCard->create();
 					if (!$this->MailGroupCard->save($dataJoin))
 						throw new BeditaException(__("Error on join between card and mail group", true), $this->MailGroupCard->validationErrors);
 				}
-				
+
 			}
 		}
 		$this->Transaction->commit();
@@ -371,7 +371,7 @@ class NewsletterController extends ModulesController {
 
 	public function deleteMailGroups() {
 		$this->checkWriteModulePermission();
-		if(empty($this->data["MailGroup"]["id"])) 
+		if(empty($this->data["MailGroup"]["id"]))
  	 	    throw new BeditaException( __("No data", true));
  	 	$this->Transaction->begin() ;
 		if(!$this->MailGroup->delete($this->data["MailGroup"]["id"])) {
@@ -387,13 +387,13 @@ class NewsletterController extends ModulesController {
 			throw new BeditaException(__("Missing invoices", true));
 		if (empty($this->data["start_sending"]))
 			throw new BeditaException(__("Missing sending date", true));
-		
-		$this->data["mail_status"] = "pending";	
+
+		$this->data["mail_status"] = "pending";
 		$this->saveMessage();
 		$this->userInfoMessage(__("Mail ready to be sent on ", true) . $this->data["start_sending"]);
 		$this->eventInfo("mail [". $this->data["title"]."] prepared for sending");
 	}
-	
+
 	public function testNewsletter($to) {
 		$this->saveMessage();
 		// send html test
@@ -403,7 +403,7 @@ class NewsletterController extends ModulesController {
 		$this->userInfoMessage(__("Test mail sent to ", true) . $to);
 		$this->eventInfo("test mail [". $this->data["title"]."] sent");
 	}
-	
+
 	private function saveMessage() {
 		$this->checkWriteModulePermission();
 		if (empty($this->data["MailGroup"]))
@@ -411,12 +411,12 @@ class NewsletterController extends ModulesController {
 		if (empty($this->data["subject"])) {
 			$this->data["subject"] = $this->data["title"];
 		}
-		
+
 		$this->Transaction->begin();
 		$this->saveObject($this->MailMessage);
 	 	$this->Transaction->commit() ;
-	}	
-	
+	}
+
 	public function templates() {
 		$this->MailTemplate->containLevel("minimum");
 		$templates = $this->MailTemplate->find("all", array(
@@ -433,7 +433,7 @@ class NewsletterController extends ModulesController {
 												)
 			);
 		}
-		
+
 		$this->set("objects", $templates);
 	 }
 
@@ -446,7 +446,7 @@ class NewsletterController extends ModulesController {
 				$this->viewVars["tree"][$k]["public_url"] = $areaModel->field("public_url", array("Area.id" => $p["id"]));
 			}
 		}
-		
+
 		if (!empty($id)) {
 			$treeModel = ClassRegistry::init("Tree");
 			$pub_id = $treeModel->getParent($id);
@@ -459,7 +459,7 @@ class NewsletterController extends ModulesController {
 											);
 		}
 	 }
-	
+
 	public function saveTemplate() {
 		$this->checkWriteModulePermission();
 		if(empty($this->data["destination"]))
@@ -470,7 +470,7 @@ class NewsletterController extends ModulesController {
  		$this->userInfoMessage(__("Mail template saved", true)." - ".$this->data["title"]);
 		$this->eventInfo("mail template [". $this->data["title"]."] saved");
 	}
-	
+
 	public function cloneObject() {
 		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($this->data['id']);
 		unset($this->data['id']);
@@ -490,7 +490,7 @@ class NewsletterController extends ModulesController {
 			$this->action = "cloneTemplate";
 		}
 	}
-	
+
 	public function invoices($id = null, $order = "MailMessage.start_sending", $dir = false, $page = 1, $dim = 20) {
 		$msg = array();
 
@@ -509,7 +509,7 @@ class NewsletterController extends ModulesController {
 
 			$this->viewVars["objects"][$k]["MailGroup"] = $mg["MailGroup"];
 		}
-		
+
 		$inJob = $this->MailMessage->find("count", array(
 			"conditions" => array("MailMessage.mail_status" => array("injob"))
 			)
@@ -524,16 +524,16 @@ class NewsletterController extends ModulesController {
 			"conditions" => array("MailMessage.mail_status" => array("pending"))
 			)
 		);
-		
+
 		$nextInvoice = $this->MailMessage->field("start_sending", array("mail_status" => "pending"), "start_sending ASC");
-		
+
 		$this->set("scheduled", $scheduled);
 		$this->set("inJob", $inJob);
 		$this->set("sent", $sent);
 		$this->set("nextInvoiceDate", $nextInvoice);
 
 	}
-	 
+
 	 /** AJAX CALLS **/
 	function showTemplateDetailsAjax($id) {
 		$this->layout = null;
@@ -546,7 +546,7 @@ class NewsletterController extends ModulesController {
 		$this->set("object", $temp);
 		$this->render(null, null, VIEWS . "newsletter/inc/form_message_details.tpl");
 	}
-	
+
 	function loadContentToNewsletter($template_id=null) {
 		$objects = array();
 		$contents_id = explode( ",", trim($this->params["form"]["object_selected"],","));
@@ -570,16 +570,16 @@ class NewsletterController extends ModulesController {
 				$obj["abstract"] = "";
 			if (empty($obj["body"]))
 				$obj["body"] = "";
-			
+
 			if (!empty($this->params["form"]["txt"])) {
 				$obj["description"] = html_entity_decode($obj["description"], ENT_QUOTES, "UTF-8");
 				$obj["abstract"] = html_entity_decode($obj["abstract"], ENT_QUOTES, "UTF-8");
 				$obj["body"] = html_entity_decode($obj["body"], ENT_QUOTES, "UTF-8");
 			}
 			$objects[] = $obj;
-			
+
 		}
-		
+
 		// get template
 		if (!empty($template_id)) {
 			$field = (!empty($this->params["form"]["txt"]))? "abstract" : "body";
@@ -589,7 +589,7 @@ class NewsletterController extends ModulesController {
 			if (preg_match("/<!--bedita content block-->([\s\S]*)<!--bedita content block-->/", $bodyTemplate, $matches)) {
 				// delete other <!--bedita content block-->
 				$contentTemplate = str_replace("<!--bedita content block-->","",$matches[1]);
- 
+
 				// get truncate number of chars
 				if (preg_match("/\[" . preg_quote("$") ."body\|truncate:(\d*)\]/", $contentTemplate, $bodyMatches)) {
 					$bodyTruncateNumber = $bodyMatches[1];
@@ -601,11 +601,11 @@ class NewsletterController extends ModulesController {
 					$descriptionTruncateNumber = $bodyMatches[1];
 				}
 			}
-			
+
 			$publication_id = ClassRegistry::init("Tree")->field("parent_id", array("id" => $template_id));
 			$public_url = ClassRegistry::init("Area")->field("public_url", array("id" => $publication_id));
 		}
-		
+
 		$this->layout = null;
 		$this->set("objects", $objects);
 		$this->set("contentTemplate", (!empty($contentTemplate))? $contentTemplate : "" );
@@ -616,7 +616,7 @@ class NewsletterController extends ModulesController {
 		$tpl = (empty($this->params["form"]["txt"]))? "contents_to_newsletter_ajax.tpl" : "contents_to_newsletter_txt_ajax.tpl";
 		$this->render(null, null, VIEWS . "newsletter/inc/" . $tpl);
 	}
-	
+
 	/**
 	 * load paginated list of list's subscribers
 	 *
@@ -629,12 +629,12 @@ class NewsletterController extends ModulesController {
 			"Card.*" => "",
 			"mail_group" => $mail_group_id
 		);
-		
+
 		$page = (!empty($this->passedArgs["page"]))? $this->passedArgs["page"] : 1;
 		$dir = (isset($this->passedArgs["dir"]))? $this->passedArgs["dir"] : true;
 		$dim = (!empty($this->passedArgs["dim"]))? $this->passedArgs["dim"] : 10;
 		$order = (!empty($this->passedArgs["order"]))? $this->passedArgs["order"] : "newsletter_email";
-		
+
 		$card = $this->BeTree->getChildren(null, null, $filter, $order, $dir, $page, $dim) ;
 		$this->set("subscribers", $card["items"]);
 		$this->set("object", true);
@@ -642,7 +642,7 @@ class NewsletterController extends ModulesController {
 		$this->layout = null;
 		$this->render(null, null, VIEWS . "newsletter/inc/list_subscribers.tpl");
 	}
-	
+
 	/**
 	 * copy or move a list of subscribers
 	 *
@@ -651,28 +651,28 @@ class NewsletterController extends ModulesController {
 	public function addCardToGroup($old_group_id=null) {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_selected'])) {
-			
+
 			$this->Transaction->begin();
-			
+
 			$groupname = $this->MailGroup->field("group_name", array("id" => $this->params["form"]["destination"]));
-			
+
 			$data["MailGroupCard"]["mail_group_id"] = $this->params["form"]["destination"];
 			$data["MailGroupCard"]["status"] = "confirmed";
-			
+
 			foreach ($this->params['form']['objects_selected'] as $card_id) {
-				
+
 				// move to group => delete from previous group
 				if ($this->params["form"]["operation"] == "move" && !empty($old_group_id)) {
 					$this->MailGroupCard->deleteAll(array(
-														"card_id" => $card_id, 
-														"mail_group_id" => $old_group_id	
+														"card_id" => $card_id,
+														"mail_group_id" => $old_group_id
 														)
 													);
 				}
-				
+
 				// save if not already exists
 				$join_id = $this->MailGroupCard->field("id", "card_id=".$card_id." AND mail_group_id=".$this->params["form"]["destination"] );
-				
+
 				if (!$join_id) {
 					$data["MailGroupCard"]["card_id"] = $card_id;
 					$data["MailGroupCard"]["hash"] = md5($card_id . microtime() . $groupname);
@@ -680,9 +680,9 @@ class NewsletterController extends ModulesController {
 					if (!$this->MailGroupCard->save($data))
 						throw new BeditaException(__("Error adding subscriber " . $card_id . " in group " . $data["MailGroupCard"]["mail_group_id"], true));
 				}
-				
+
 			}
-			
+
 			$this->Transaction->commit();
 			//$this->userInfoMessage(__("Subscribers associated to list", true) . " - " . $groupname);
 			$this->eventInfo("Subscribers associated to list " . $this->params["form"]["destination"]);
@@ -690,11 +690,11 @@ class NewsletterController extends ModulesController {
 		// set to forward callback
 		$this->MailGroup->id = $old_group_id;
 	}
-	
+
 	public function changeCardStatus($mail_group_id=null) {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_selected'])) {
-		
+
 			$this->Transaction->begin() ;
 			foreach ($this->params['form']['objects_selected'] as $id) {
 				$this->checkObjectWritePermission($id);
@@ -703,12 +703,12 @@ class NewsletterController extends ModulesController {
 					throw new BeditaException(__("Error saving status for item: ", true) . $id);
 			}
 			$this->Transaction->commit() ;
-			
+
 			$this->eventInfo("Change mail_status to " . $this->params['form']["newStatus"] . " at subscribers  " . implode(",",$this->params["form"]["objects_selected"]));
 		}
 		$this->MailGroup->id = $mail_group_id;
 	}
-	
+
 	public function unlinkCard($mail_group_id) {
 		$this->checkWriteModulePermission();
 		if(!empty($this->params['form']['objects_selected'])) {
@@ -720,28 +720,28 @@ class NewsletterController extends ModulesController {
 		}
 		$this->MailGroup->id = $mail_group_id;
 	}
-	 
+
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"cloneObject"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer() 
+							"ERROR"	=> $this->referer()
 							),
 			"cloneTemplate"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,
-							"ERROR"	=> $this->referer() 
+							"ERROR"	=> $this->referer()
 							),
 			"save"	=> 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer() 
+							"ERROR"	=> $this->referer()
 							),
 			"sendNewsletter" => 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer() 
+							"ERROR"	=> $this->referer()
 							),
 			"testNewsletter" => 	array(
 							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer() 
+							"ERROR"	=> $this->referer()
 							),
 			"delete" =>	array(
 							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
@@ -778,7 +778,7 @@ class NewsletterController extends ModulesController {
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;
 	}
-	
-}	
+
+}
 
 ?>
