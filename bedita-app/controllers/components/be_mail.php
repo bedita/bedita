@@ -1,46 +1,46 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * General BEdita mail component
- * 
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class BeMailComponent extends Object {
 
 	var $components = array("Email");
-	
+
 	private $layoutNewsletter = "newsletter";
-	
+
 	private $templateNewsletter = "newsletter";
-	
+
 	private $boundaryPlaceholder = "[[[--BOUNDARY--]]]";
-	
+
 	/**
 	 * startup component
-	 * set smtp options if it's in configuration (bedita.sys.php)	
+	 * set smtp options if it's in configuration (bedita.sys.php)
 	 * @param unknown_type $controller
 	 */
 	function startup(&$controller=null) {
@@ -52,12 +52,6 @@ class BeMailComponent extends Object {
 				$this->{$comp} = new $componentName($this->Controller) ;
 				$this->{$comp}->initialize($this->Controller);
 			}
-		}
-		
-		$smtpOptions = Configure::read("smtpOptions");
-		if (!empty($smtpOptions) && is_array($smtpOptions)) {
-			$this->Email->smtpOptions = $smtpOptions;
-			$this->Email->delivery = 'smtp';
 		}
 	}
 
@@ -71,27 +65,27 @@ class BeMailComponent extends Object {
 	public function sendMailById($msg_id, $to, $html=true) {
 		if (empty($msg_id) || empty($to))
 			throw new BeditaException(__("Missing message id or recipient", true));
-		
+
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$mailMsgModel->containLevel("default");
 		if (!$res = $mailMsgModel->findById($msg_id))
 			throw new BeditaException(__("Error finding mail message " . $msg_id, true));
-		
+
 		$data["to"] = $to;
 		$data["from"] = (!empty($res["sender_name"]))? $mailMsgModel->getCompleteSender(null, $res["sender"], $res["sender_name"]) : $res["sender"];
 		$data["subject"] = $res["subject"];
 		$data["replyTo"] = $res["reply_to"];
 		$data["mailType"] = ($html)? "both" : "txt";
-		
+
 		$data["body"] = $this->prepareMailBody($res, $html);
-		
+
 		$this->sendMail($data);
 	}
 
 	/**
 	 * Prepare mail body using template
 	 *
-	 * @param array $message, mail_message array from a find on MailMessage 
+	 * @param array $message, mail_message array from a find on MailMessage
 	 * @param bool $html, mail type
 	 * @param int $mail_group_id used to get publication public url and build unsubscribe link
 	 * @param $card_id used to built unsubscribe link
@@ -115,7 +109,7 @@ class BeMailComponent extends Object {
 					"contain" => array("Content")
 				)
 			);
-			
+
 			$treeModel = ClassRegistry::init("Tree");
 			$pub_id = $treeModel->getParent($template["id"]);
 			$areaModel = ClassRegistry::init("Area");
@@ -125,7 +119,7 @@ class BeMailComponent extends Object {
 			if (strstr($txtBody,"[\$subscriber]") && !empty($card_id)) {
 				$card = ClassRegistry::init("Card")->find("first", array(
 						"conditions" => array("id" => $card_id),
-						"contain" => array()	
+						"contain" => array()
 					)
 				);
 				if (!empty($card["company"]) && $card["company"] == 1) {
@@ -136,7 +130,7 @@ class BeMailComponent extends Object {
 					}
 					if (!empty($card["surname"])) {
 						$subscriberName .= " " . $card["surname"];
-					} 
+					}
 				}
 			}
 			$txtBody = str_replace("[\$subscriber]",  $subscriberName, $txtBody);
@@ -144,7 +138,7 @@ class BeMailComponent extends Object {
 			$txtBody = str_replace("[\$signature]", $message["signature"], $txtBody);
 			$txtBody = str_replace("[\$signoutlink]", $unsubscribeurl, $txtBody);
 			$body = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $txtBody);
-			
+
 			if ($html) {
 				// get css
 				$css = (!empty($templatePublicationUrl))? $templatePublicationUrl . "/css/" . Configure::read("newsletterCss") : "";
@@ -161,11 +155,11 @@ class BeMailComponent extends Object {
 				$htmlBody = str_replace("[\$privacydisclaimer]", $message["privacy_disclaimer"], $htmlBody);
 				$body .= $this->boundaryPlaceholder . sprintf($htmlMsg, $style, $htmlBody);
 			}
-			
+
 			return $body;
-			
+
 		}
-		
+
 		return ($html)? $message["abstract"] . $this->boundaryPlaceholder . "<html><body>".$message["body"]."</body></html>" : $message["abstract"];
 	}
 
@@ -183,24 +177,24 @@ class BeMailComponent extends Object {
 			throw new BeditaMailException(__("Mail delivery failed", true), $this->Email->smtpError);
 		}
 		if($createLog) {
-			$this->mailLog("sent OK", "info", $data["to"], $data["subject"]);		
+			$this->mailLog("sent OK", "info", $data["to"], $data["subject"]);
 		}
 	}
 
 	/**
 	 * save mail log data
-	 * 
+	 *
 	 * @param string $msg
 	 * @param string $level
 	 * @param array $recipient
 	 * @param string $subj
 	 * @param array $data
 	 */
-	private function mailLog($msg, $level = "info", $recipient = null, 
+	private function mailLog($msg, $level = "info", $recipient = null,
 			$subj = null, array& $data = array()) {
 
 		$mailLog = ClassRegistry::init("MailLog");
-		$logData = array("MailLog"=>array("msg"=>$msg, 
+		$logData = array("MailLog"=>array("msg"=>$msg,
 			"recipient" => $recipient, "log_level" => $level,
 			"subject" => $subj));
 		if(!empty($data)) {
@@ -243,11 +237,11 @@ class BeMailComponent extends Object {
 	 * @param array $msgIds
 	 */
 	public function createJobs(array $msgIds) {
-		
+
 		if (empty($msgIds)) {
 			return ;
 		}
-		
+
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		$msgToSend = $mailMsgModel->find("all", array(
 									"conditions" => array(
@@ -268,20 +262,20 @@ class BeMailComponent extends Object {
 				)
 			), false);
 		$groupCardModel->contain("Card", "BEObject");
-		
+
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("default");
 
 		$data["status"] = "unsent";
 		$data["process_info"] = getmypid();
-		
+
 		foreach ($msgToSend as $message) {
-					
+
 			$data["mail_message_id"] = $message["id"];
-			
+
 			if (!empty($message["MailGroup"])) {
 				foreach ($message["MailGroup"] as $group) {
-				
+
 					$res = $groupCardModel->find("all", array(
 						"conditions" => array(
 							"mail_group_id" => $group["id"],
@@ -303,17 +297,17 @@ class BeMailComponent extends Object {
 														)
 											) == 0) {
 							$data["card_id"] = $groupCard["MailGroupCard"]["card_id"];
-							
+
 							// prepare mail body using template
 							$data["mail_body"] = $this->prepareMailBody($message, $groupCard["Card"]["mail_html"], $group["id"], $data["card_id"]);
-							
+
 							$jobModel->create();
 							if (!$jobModel->save($data)) {
 								throw new BeditaException(__("Error creating jobs"),true);
 							}
 						}
 					}
-					
+
 				}
 			}
 		}
@@ -328,7 +322,7 @@ class BeMailComponent extends Object {
 	 * execute active jobs
 	 */
 	public function sendQueuedJobs(array $msgIds) {
-		
+
 		if (empty($msgIds)) {
 			return ;
 		}
@@ -343,26 +337,26 @@ class BeMailComponent extends Object {
 								)
 							)
 						);
-						
+
 		$messagesSent = array();
 		$mailMsgModel = ClassRegistry::init("MailMessage");
-		
+
 		foreach ($jobsToDo as $job) {
-			
+
 			if (!in_array($job["MailMessage"]["id"], $messagesSent)) {
 				$messagesSent[] = $job["MailMessage"]["id"];
 			}
-			
+
 			if ($job["Card"]["mail_status"] == "valid") {
 				$data["to"] = $job["Card"]["newsletter_email"];
 				$data["from"] = (!empty($job["MailMessage"]["sender_name"]))? $mailMsgModel->getCompleteSender(null, $job["MailMessage"]["sender"], $job["MailMessage"]["sender_name"]) : $job["MailMessage"]["sender"];
 				$data["replyTo"] = $job["MailMessage"]["reply_to"];
 				$data["subject"] = $job["MailMessage"]["Content"]["subject"];
-				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "both" : "txt";			
+				$data["mailType"] = (!empty($job["Card"]["mail_html"]))? "both" : "txt";
 				$data["body"] = $job["MailJob"]["mail_body"];
 				unset($job["MailMessage"]);
 				unset($job["Card"]);
-				
+
 				$count = $jobModel->find("count", array(
 								"conditions" => array(
 									"MailJob.status" => "unsent",
@@ -371,7 +365,7 @@ class BeMailComponent extends Object {
 								)
 							)
 						);
-				
+
 				if ($count == 0) {
 					$this->log("MailJob " . $job["MailJob"]["id"] . " handled by another process");
 				} else {
@@ -392,20 +386,20 @@ class BeMailComponent extends Object {
 					}
 				}
 			}
-			
+
 		}
 
 		// set messages mail_status to sent
 		$mailMsgModel = ClassRegistry::init("MailMessage");
-		$mailMsgModel->Behaviors->disable('ForeignDependenceSave'); 		
+		$mailMsgModel->Behaviors->disable('ForeignDependenceSave');
 		foreach ($messagesSent as $id) {
 			$dataMsg["id"] = $id;
 			$dataMsg["mail_status"] = "sent";
 			$dataMsg["end_sending"] = date("Y-m-d H:i:s");
 			$mailMsgModel->save($dataMsg, false);
 		}
-		$mailMsgModel->Behaviors->enable('ForeignDependenceSave'); 
-		
+		$mailMsgModel->Behaviors->enable('ForeignDependenceSave');
+
 	}
 
 	/**
@@ -415,16 +409,16 @@ class BeMailComponent extends Object {
 
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("minimum");
-		$conditions = array("mail_message_id is NULL" , 
+		$conditions = array("mail_message_id is NULL" ,
 			"status" => "unsent");
 
 		$jobsToSend = $jobModel->find('all', array("conditions" => $conditions));
-		
+
 		foreach ($jobsToSend as $job) {
 			$jobModel->id = $job['MailJob']['id'];
 			$jobModel->saveField("status", "pending");
 		}
-		
+
 		$data = array();
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		foreach ($jobsToSend as $job) {
@@ -450,11 +444,11 @@ class BeMailComponent extends Object {
 			}
 		}
 	}
-	
+
 	/**
 	 * return array of messages that result blocked and
 	 * update pid of mail jobs blocked
-	 *  
+	 *
 	 * @param int $timeout, time in minute for check when a message is considered blocked
 	 * @return array of message ids
 	 */
@@ -473,11 +467,11 @@ class BeMailComponent extends Object {
 				"contain" => array()
 			)
 		);
-		
+
 		if (!empty($messageInJob)) {
 			$jobModel = ClassRegistry::init("MailJob");
-			foreach ($messageInJob as $m) {  
-				
+			foreach ($messageInJob as $m) {
+
 				$lastSendingDate = $jobModel->field("sending_date", array("mail_message_id" => $m["id"]), "sending_date DESC");
 
 				if ($lastSendingDate < $timeoutDate) {
@@ -490,7 +484,7 @@ class BeMailComponent extends Object {
 							"contain" => array()
 						)
 					);
-					
+
 					if (!empty($jobsBlocked)) {
 						foreach ($jobsBlocked as $job) {
 							$data["id"] = $job["MailJob"]["id"];
@@ -502,10 +496,21 @@ class BeMailComponent extends Object {
 				}
 			}
 		}
-		
+
 		return $msgBlocked;
 	}
-	
+
+	/**
+	 * if available set smtp options to EmailComponent
+	 */
+	protected function setSmtpOptions() {
+		$smtpOptions = Configure::read("smtpOptions");
+		if (!empty($smtpOptions) && is_array($smtpOptions)) {
+			$this->Email->smtpOptions = $smtpOptions;
+			$this->Email->delivery = 'smtp';
+		}
+	}
+
 	/**
 	 * prepare data for email sending
 	 *
@@ -514,19 +519,23 @@ class BeMailComponent extends Object {
 	 */
 	private function prepareData(&$data) {
 		$this->Email->reset();
-		
+
 		// check required fields
-		if (empty($data["to"]))
+		if (empty($data["to"])) {
 			throw new BeditaException(__("Missing recipient", true));
-		
-		if (empty($data["from"]))
+		}
+
+		if (empty($data["from"])) {
 			throw new BeditaException(__("Missing from field", true));
-			
-		if (empty($data["subject"]))
+		}
+
+		if (empty($data["subject"])) {
 			throw new BeditaException(__("Missing subject field", true));
-		
+		}
+
+		$this->setSmtpOptions();
 		$this->Email->to = $data["to"];
-		$this->Email->from = $data["from"]; 
+		$this->Email->from = $data["from"];
 		$this->Email->subject = $data["subject"];
 		$this->Email->replyTo = (!empty($data["replyTo"]))? $data["replyTo"] : "";
 		$this->Email->sendAs = (!empty($data["mailType"]))? $data["mailType"] : "txt";
@@ -536,17 +545,17 @@ class BeMailComponent extends Object {
 		if (!empty($data["bcc"]) && is_array($data["bcc"])) {
 			$this->Email->bcc = $data["bcc"];
 		}
-		
+
 		// force the default line length (70) to avoid breakline in url
 		$this->Email->lineLength = "500";
-		
+
 		if (!empty($data["layout"])) {
 			$this->Email->layout = $data["layout"];
 		}
 		if (!empty($data["template"])) {
 			$this->Email->template = $data["template"];
 		}
-		
+
 		// set template vars for html mail
 		if ($this->Email->sendAs == "both" && strstr($data["body"], $this->boundaryPlaceholder)) {
 			$bodyParts = explode($this->boundaryPlaceholder, $data["body"]);
@@ -560,7 +569,7 @@ class BeMailComponent extends Object {
 
 	/**
 	 * send email
-	 * 
+	 *
 	 * @param array $data
 	 */
 	private function send($data) {
