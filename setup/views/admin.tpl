@@ -20,7 +20,7 @@
 <fieldset>
 
 <h3>Administrator</h3>
-
+<p>Please insert username and password for the administrator user </p> 
 <table>
 <tr>
 	<td><label>Admin user</label>*:</td>
@@ -44,8 +44,6 @@
 {if !empty($usercreationerr)}
 <p><span class="ERROR">Error saving user data</span></p>
 {/if}
-
-{*
 
 <h3>Web settings</h3>
 
@@ -80,11 +78,10 @@
 	<p><span>Please check your webserver configuration and set properly the following preference.</span></p>
 	<p><label>mod_rewrite</label> is: <input type="radio" value="enabled" name="mod_rewrite_enabled" />enabled <input type="radio" value="disabled" name="mod_rewrite_enabled" />disabled </p>
 	{else}
-	<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePhp to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+	<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePHP 'mod revrite' to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
 	{/if}
 {/if}
 
-*}
 
 <input type="hidden" name="p_from" value="2"/>
 <input type="hidden" id="p" name="page" value="3"/>

@@ -54,7 +54,7 @@
 		var $steps = array(
 			'Filesystem',
 			'Database',
-			'Admin User',
+			'Admin',
 			'Finish'
 		);
 
@@ -198,6 +198,7 @@
 		private function page_dbconn() {
 			$this->initSmarty();
 			$filename = ROOT . DS . APP_DIR . DS ."config" . DS . "database.php";
+			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			if(!empty($_POST['dbconfig_modify']) && ($_POST['dbconfig_modify']=="y")) {
 				if($this->besys->checkWritable($filename)) {
 					if($_POST['data']['database']['password'] !== $_POST['data']['database']['cpassword']) {
@@ -210,24 +211,30 @@
 				}
 			}
 			$this->smarty->assign('steps',$this->steps);
-			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			Configure::write('debug', 0);
 			App::import('ConnectionManager');
 			$db = ConnectionManager::getDataSource('default');
 			$db->cacheSources = false;
+			
 			if(!empty($_POST['action']) && ($_POST['action'] == 'initdb')) {
 				$this->check_arr['dbinit'] = array();
 				if(!$this->_initdb($db)) {
 					$this->check_arr['dbinit'][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_ERR, 'description' => 'error launching init db script');
 				} else {
 					$this->check_arr['dbinit'][] = array('label' => $label, 'result' => $result, 'severity' => WIZ_INFO, 'description' => 'db init successfull');
+					$dbInitOk = true;
 				}
 				$this->smarty->assign('initdb_results',$this->check_arr['dbinit']);
 			}
 			if(!empty($db)) {
-				$this->smarty->assign('database_sources',$db->listSources());
-				$this->smarty->assign('database_config',$db->config);
-				$this->smarty->assign('is_connected',$db->isConnected() ? "y" : "n");
+				$database_config = $db->config;
+				if(empty($_POST['dbconfig_modify']) && empty($_POST['action'])) {
+					unset($database_config["port"]);
+					unset($database_config["connect"]);
+				}
+				$this->smarty->assign('database_config',$database_config);
+				$this->smarty->assign('is_connected', $db->isConnected() ? "y" : "n");
+				$this->smarty->assign('database_sources', $db->listSources());
 			}
 			$this->smarty->assign('dbfile',$filename);
 			$this->smarty->assign('dbfile_writable',$this->besys->checkWritable($filename) ? "y" : "n");
@@ -256,6 +263,11 @@
 					$admin_data_ok = false;
 					$this->smarty->assign('cpassworderr',true);
 				}
+				
+				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
+					$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
+					$baseUrl = $config->read('App.baseUrl');
+				}
 				if($admin_data_ok) {
 					$userdata = array(
 						'id' => '1',
@@ -270,14 +282,6 @@
 						$this->smarty->assign('usercreationok',true);
 						$this->start(self::PAGE_FINISH);
 						return;
-					}
-				}
-				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
-					if($check_mod_rewrite == "askuser") {
-						
-					} else {
-						$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
-						$baseUrl = $config->read('App.baseUrl');
 					}
 				}
 			}
@@ -445,7 +449,7 @@
 			$filearr = file($filename);
 			$line_start = 0;
 			foreach($filearr as $line_num => $line) {
-				if(($line_start == 0) && (stripos($line,"Configure::write('App.baseUrl'")>0) ) {
+				if(($line_start == 0) && (stripos($line,"Configure::write('App.baseUrl'") !== false) ) {
 					$line_start = $line_num;
 				}
 				if($line_start > 0 && !$done) {
@@ -461,36 +465,37 @@
 			return (file_put_contents($filename,$filedata) !== FALSE);
 		}
 
-		private function applyDatabaseConfiguration($filename,$db = array()) {
+		private function applyDatabaseConfiguration($filename, $db) {
 			$c = 1;
-			$dbsize = sizeof($db);
+			$dbLoc = $db;
+			unset($dbLoc["cpassword"]);
+			foreach($dbLoc as $k => &$v) {
+				if ($k == 'persistent') {
+					$v = (!empty($v) && $v == 'true')? true : false;
+				} elseif ($k === 'schema') {
+					if(empty($v) && $dbLoc['driver'] === 'postgres') {
+						$v = 'public'; // default "public" schema for postgres if not set
+					}
+				}
+				if(empty($v) && $k !== 'persistent') {
+					unset($dbLoc[$k]);
+				}
+			}		
+			$dbsize = sizeof($dbLoc);
 			$done = false;
 			$filedata = array();
 			$filearr = file($filename);
 			$line_start = 0;
 			foreach($filearr as $line_num => $line) {
-				if(($line_start == 0) && (stripos($line,'var $default')>0) ) {
+				if(($line_start == 0) && (stripos($line,'var $default') !== false) ) {
 					$line_start = $line_num;
 				}
 				if($line_start > 0 && !$done) {
-					if(stripos($line,');')>0) {
+					if(stripos($line,');') !== false) {
 						$line_end = $line_num;
 						$line_start = -1;
 						$done = true;
-						$filedata[]= ' var $default = array(';
-						foreach($db as $k => $v) {
-							if ($k == 'persistent') {
-								$v = (!empty($v) && $v == 'true')? true : false;
-							}
-							$l = "'$k' => " . var_export($v, true);
-							if($c<$dbsize) {
-								$l.= "," . PHP_EOL;
-							}
-							$c++;
-							$filedata[]=$l;
-						}
-						$filedata[]= ');' . PHP_EOL . PHP_EOL;
-						$done = true;
+						$filedata[]= '   var $default = ' . var_export($dbLoc, true) . ';' . PHP_EOL;
 					}
 				} else {
 					$filedata[]=$line;
