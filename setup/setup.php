@@ -298,6 +298,7 @@
 		}
 
 		private function page_finish() {
+			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			$this->initSmarty();
 			
 			$confDir = BE_APP . 'config';
@@ -322,7 +323,7 @@
 			$r = array();
 			$result = @get_headers($url);
 			if(empty($result) || !$result) {
-				$r['severity'] = WIZ_ERR;
+				$r['severity'] = WIZ_WARN;
 				$r['status'] = 'Invalid url';
 				return $r;
 			}
@@ -331,7 +332,7 @@
 			$error_400 = stristr($status,'HTTP/1.1 4');
 			$error_500 = stristr($status,'HTTP/1.1 5');
 			if(!empty($error_400) || !empty($error_500)) {
-				$r['severity'] = WIZ_ERR;
+				$r['severity'] = WIZ_WARN;
 			} else {
 				$r['severity'] = WIZ_INFO;
 			}
@@ -344,7 +345,7 @@
 				$r['severity'] = WIZ_INFO;
 				$r['status'] = 'found';
 			} else {
-				$r['severity'] = WIZ_ERR;
+				$r['severity'] = WIZ_WARN;
 				$r['status'] = 'not found';
 			}
 			return $r;

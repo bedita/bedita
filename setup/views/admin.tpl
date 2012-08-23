@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>BEdita installation wizard | Admin</title>
 	<style>
 	{include file="../css/setup.css"}
@@ -24,18 +25,18 @@
 <table>
 <tr>
 	<td><label>Admin user</label>*:</td>
-	<td><input type="text" name="data[admin][user]" /></td>
+	<td><input tabindex="1" type="text" name="data[admin][user]" /></td>
 	{if !empty($admin_user_empty)}<td><span class="ERROR">User cannot be empty</span></td>{/if}
 </tr>
 {if empty($usercreationok)}
 <tr>
 	<td><label>Password</label>*:</td>
-	<td><input type="password" name="data[admin][password]"/></td>
+	<td><input tabindex="2" type="password" name="data[admin][password]"/></td>
 	{if !empty($admin_pass_empty)}<td><span class="ERROR">Password cannot be empty</span></td>{/if}
 </tr>
 <tr>
 	<td><label>Confirm password</label>*:</td>
-	<td><input type="password" name="data[admin][cpassword]"/></td>
+	<td><input tabindex="3" type="password" name="data[admin][cpassword]"/></td>
 	{if !empty($cpassworderr)}<td><span class="ERROR">Password and Confirm password must match</span></td>{/if}
 </tr>
 {/if}
@@ -45,7 +46,7 @@
 <p><span class="ERROR">Error saving user data</span></p>
 {/if}
 
-<h3>Web settings</h3>
+<h3>Web settings (you can always change the urls later in BEdita admin->configuration)</h3>
 
 <table>
 <tr>
@@ -85,8 +86,11 @@
 
 <input type="hidden" name="p_from" value="2"/>
 <input type="hidden" id="p" name="page" value="3"/>
-<input type="submit" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
-<input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
+<div id="buttons">
+    <input tabindex="4" type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 4;" />
+    <input tabindex="5" type="submit" style="float:right;" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
+    <div style="clear:both"></div>
+</div>
 
 </fieldset>
 </form>

@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>BEdita installation wizard | Database</title>
 	<style>
 	{include file="../css/setup.css"}
@@ -37,9 +38,9 @@
 	
 	<input type="hidden" id="p" name="page" value="2" />
 	{if empty($database_sources)}
-		<input type="submit" value="Next >" disabled="disabled" />
+		<input type="submit" style="float:right;" value="Next >" disabled="disabled" />
 	{else}
-		<input type="submit" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
+		<input type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
 	{/if}
 
 {else}
@@ -84,7 +85,7 @@
 	<input type="hidden" name="dbconfig_modify" value="{$dbfile_writable}"/>
 	<input type="submit" value="Save and Check again" onclick="javascript:document.getElementById('p').value=2;" />
 	<hr/>
-	<input type="button" value="Next >" disabled="disabled" />
+	<input type="button" style="float:right;" value="Next >" disabled="disabled" />
 {/if}
 
 </fieldset>

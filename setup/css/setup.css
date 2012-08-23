@@ -58,9 +58,9 @@ UL {list-style:none;}
 UL UL {margin-left:20px;}
 
 .on, LI.on {font-weight:bold;}
-.info {color:green}
-.warn {color:yellow}
-.err  {color:red}
+.INFO {color:green}
+.WARN {color:yellow}
+.ERROR  {color:red}
 
 		ul { list-style: none; }
 
