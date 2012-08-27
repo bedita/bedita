@@ -460,7 +460,9 @@ $config['media_providers'] = array(
 	"vimeo"	=> array(
 		"regexp" => array(
 			'/^http:\/\/\w{3}\.vimeo\.com\/(\d+)/',
-			'/^http:\/\/vimeo\.com\/(\d+)/'
+			'/^https:\/\/\w{3}\.vimeo\.com\/(\d+)/',
+			'/^http:\/\/vimeo\.com\/(\d+)/',
+			'/^https:\/\/vimeo\.com\/(\d+)/'
 		),
 		"params" => array(
 			"width"		=> 300,
