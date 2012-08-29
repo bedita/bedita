@@ -117,30 +117,13 @@ $config['frontendLangsMap'] = array(
 $config['sitemapAllContent'] = true;
 
 /**
- * custom model bindings for BEdita objects
+ * custom model bindings for BEdita objects (defaults defined in Model of BEdita object)
  */
-$config['modelBindings'] = array(
-
-	'Area' => array("BEObject" => array("LangText","ObjectProperty")),
-	'Section' => array("BEObject" => array("LangText","ObjectProperty")),
- 	'Document' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category", "Alias", "ObjectProperty")),
-	'Event' => array("BEObject" => array("LangText","RelatedObject", "Category"), "DateItem"),
-	'Image' => array("BEObject" => array("LangText", "Category", "Alias", "ObjectProperty"), "Content", "Stream"),
-	'Audio' => array("BEObject" => array("LangText", "Category", "Alias", "ObjectProperty"), "Content"),
-	'Video' => array("BEObject" => array("LangText", "Category", "Alias", "ObjectProperty"), "Content", "Stream"),
-	'BEFile' => array("BEObject" => array("LangText", "Category", "Alias", "ObjectProperty"), "Content"),
-	'Application' => array("BEObject" => array("LangText", "Category", "Alias", "ObjectProperty"), "Content", "Stream"),
-	'Gallery' => array("BEObject" => array("LangText", "RelatedObject", "Category","ObjectProperty")),
-	'Comment' => array("BEObject" => array("RelatedObject")),
-	'ShortNews' => array("BEObject" => array("LangText","RelatedObject", "Category")),
-	'Book' => array("BEObject" => array("LangText","RelatedObject", "Alias","ObjectProperty"), "Product"),
-	'Questionnaire' => array("BEObject" => array("LangText", "RelatedObject","Annotation","Alias","ObjectProperty")),
-	'Question' => array("BEObject" => array("LangText", "RelatedObject", "Category"), "QuestionAnswer"),
-	'QuestionnaireResult' => array("BEObject" => array("LangText"), "Answer", "DateItem"),
-	'Card' => array("BEObject" => array("LangText", "UserCreated","RelatedObject", "Category", "ObjectProperty")),
-	'Classroom' => array("BEObject" => array("LangText", "RelatedObject","Annotation","ObjectProperty"), "GeoTag", "DateItem")
-
-) ;
+//$config['modelBindings'] = array(
+	//'Document' => array("BEObject" => array("LangText","RelatedObject"), "GeoTag"),
+	//'Event' => ...
+	//...
+//);
 
 /**
  * frontend cookie names 
@@ -161,32 +144,5 @@ $config["cookieName"] = array(
 //	"showDuplicates" => false,
 //	"trackNotLogged" => false
 //);
-
-$config["flowPlayerParams"] = array(
-	"flashvars" => array(
-		"clip" => array("autoPlay" => true, "autoBuffering" => false),
-		"canvas" => array("backgroundColor" => "#000000"),
-		"params" => array("wmode" => "opaque"),
-		"plugins" => array(
-			"controls" => array(
-				"backgroundColor" => '#FFFFFF',
-				"backgroundGradient" => 'none',	
-				"timeColor" => '#0099cc',
-				"buttonColor" => '#999999',
-				"buttonOverColor" => '#ee7f00',
-				"all" => false,
-				"time" => false,
-				"play" => true,
-				"scrubber" => true,
-				"mute" => true,
-				"height" => 30,
-				"autoHide" => 'always',
-				"progressColor" => '#333333',
-				"bufferColor" => '#DEDEDE'
-				
-			)
-		)
-	)
-);
 
 ?>

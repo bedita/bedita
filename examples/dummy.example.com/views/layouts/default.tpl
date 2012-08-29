@@ -1,5 +1,5 @@
-<!doctype html>
-<html lang="it">
+{$html->docType('xhtml-trans')}
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{$currLang}" dir="ltr">
 <head>
 	{$html->charset()}
 	<title>{$beFront->title()}</title>
@@ -12,28 +12,15 @@
 	{$beFront->feeds()}
 
 	{$scripts_for_layout}
-	
-	{$html->css('base')}
-	
-	{$javascript->link('jquery')}
-	{$javascript->link('frontend')}
-	{$javascript->link('flowplayer-3.2.6.min')}
-	{$javascript->link('flowplayer.ipad-3.2.2.min')}	
-	{$javascript->link('modernizr-2.6.1.js')}
-	
 </head>
 
 <body>
-	<div id="wrapper">
-		<div style="float:left; background-color:white; width:890px;">
-	
-	
-	{$content_for_layout}
-	
-	
-	
-	{$beFront->stats()}
-	</div>
-	</div>
+{$view->element('header')}
+
+{$content_for_layout}
+
+{$view->element('footer')}
+
+{$beFront->stats()}
 </body>
 </html>
