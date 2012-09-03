@@ -50,17 +50,13 @@ class BeCustomPropertyComponent extends Object {
 		if (!empty($this->controller->data["ObjectProperty"])) {
 			$objProp = array();
 			foreach($this->controller->data["ObjectProperty"] as $key => $value) {
-				
-				if (!empty($value["property_value"])) {
+				if (isset($value["property_value"])) {
 					$value["property_value"] = trim($value["property_value"]);
-					
-					if (!empty($value["property_value"])) {
+					if (strlen($value["property_value"]) !== 0) {
 						$objProp[] = $value;
 					}
-					
 				} 
 			}
-			
 			$this->controller->data["ObjectProperty"] = $objProp;
 		}
 		
