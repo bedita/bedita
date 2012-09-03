@@ -1123,6 +1123,9 @@ abstract class FrontendController extends AppController {
 			$bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
 		} else {
 			$bindingsUsed = array("BEObject" => array("LangText", "ObjectProperty"));
+			if ($modelType == "Section") {
+				$bindingsUsed[] = "Tree";
+			}
 			$this->{$modelType}->contain($bindingsUsed);
 		}
 		$listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
@@ -1787,7 +1790,7 @@ abstract class FrontendController extends AppController {
 			if(!empty($this->modelBindings["Section"])) {
 				$oldSectionBindings = $this->modelBindings["Section"];
 			}
-			$this->modelBindings["Section"] = array("BEObject" => array("LangText"), "Tree");
+			$this->modelBindings["Section"] = array("BEObject" => array("LangText", "ObjectProperty"), "Tree");
 			$currPath = "";
 			$parentPath = "";
 			foreach ($parents as $p) {
