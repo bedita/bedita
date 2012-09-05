@@ -2,8 +2,6 @@
                BEdita, a semantic content management framework 
                ===============================================
 
-$Id$
-
 
       For an overview of BEdita please visit
 
@@ -11,7 +9,5 @@ $Id$
 
       Developer documentation can be found here
       
-         http://www.bedita.com/beopen
-         
-      Other documentations will be available in a dedicated folder 
-      inside the source distribution package on a future relase.
+         http://docs.bedita.com
+         http://www.bedita.com/documentation
