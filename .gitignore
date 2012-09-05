@@ -151,36 +151,6 @@
 # /examples/html5.example.com/tmp/tests/
 /examples/html5.example.com/tmp/tests/*
 
-# /examples/mobile.example.com/config/
-/examples/mobile.example.com/config/core.php
-
-# /examples/mobile.example.com/tmp/cache/
-/examples/mobile.example.com/tmp/cache/cake_*
-
-# /examples/mobile.example.com/tmp/cache/models/
-/examples/mobile.example.com/tmp/cache/models/*
-
-# /examples/mobile.example.com/tmp/cache/persistent/
-/examples/mobile.example.com/tmp/cache/persistent/*
-
-# /examples/mobile.example.com/tmp/cache/views/
-/examples/mobile.example.com/tmp/cache/views/*
-
-# /examples/mobile.example.com/tmp/logs/
-/examples/mobile.example.com/tmp/logs/*
-
-# /examples/mobile.example.com/tmp/sessions/
-/examples/mobile.example.com/tmp/sessions/*
-
-# /examples/mobile.example.com/tmp/smarty/compile/
-/examples/mobile.example.com/tmp/smarty/compile/*
-
-# /examples/mobile.example.com/tmp/tests/
-/examples/mobile.example.com/tmp/tests/*
-
-# /examples/mobile.example.com/webroot/
-/examples/mobile.example.com/webroot/index.php
-
 # /examples/site.example.com/config/
 /examples/site.example.com/config/core.php
 
