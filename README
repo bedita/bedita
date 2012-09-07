@@ -3,6 +3,27 @@
                ===============================================
 
 
+      Overview
+      ========
+
+      BEdita is a software to create, manage content and organize it with semantic rules.
+
+      BEdita is a modular framework that features a back-end Content Management System out-of-the-box.
+
+      It is an integrated environment that inherits all the features of the libraries and tools it includes,
+      like CakePHP, JQuery and Smarty.
+
+      BEdita is flexible and may fit many projects thanks to its MVC / Object Oriented design,
+      its multi-tier architecture and through the abstraction of semantic relations.
+
+      Licensing
+      =========
+
+      BEdita employs a licensing scheme LGPL, Lesser General Public License.
+
+      More info
+      =========
+
       For an overview of BEdita please visit
 
          http://www.bedita.com/
@@ -11,3 +32,7 @@
       
          http://docs.bedita.com
          http://www.bedita.com/documentation
+
+      BEdita at github:
+
+         https://github.com/bedita/bedita
