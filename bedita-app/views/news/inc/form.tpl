@@ -18,8 +18,7 @@
 	
 	{$view->element('form_textbody')}
 	
-	{assign_associative var="params" containerId='attachContainer' collection="true" relation='attach' title='Attachments'}
-	{$view->element('form_file_list', $params)}
+	{$view->element('form_file_list', ['relation' => 'attach'])}
 
 	{$view->element('form_tags')}
 	

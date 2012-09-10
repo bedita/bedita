@@ -16,8 +16,7 @@
 	
 	{$view->element('form_tree')}
 	
-	{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
-	{$view->element('form_file_list', $params)}
+	{$view->element('form_file_list', ['relation' => 'attach'])}
 
 	{$view->element('form_tags')}
 	

@@ -340,11 +340,6 @@ $(document).ready(function()
 });
 </script>
 
-{$view->set('containerId',$containerId)}
-{$view->set('collection',$collection)}
-{$view->set('relation',$relation)}
-{$view->set('title',$title)}
-
 <div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
 
 <div id="multimedia">
@@ -359,8 +354,7 @@ $(document).ready(function()
 
 {foreach from=$attach item="item"}
 	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} XdisableSelection" id="item_{$item.id}">
-			{assign_associative var="params" item=$item}
-			{$view->element('form_file_item',$params)}
+			{$view->element('form_file_item', ['item' => $item, 'relation' => $relation])}
 	</div>
 {/foreach}
 

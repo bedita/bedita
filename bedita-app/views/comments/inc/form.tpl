@@ -110,8 +110,7 @@
 
 {$view->element('form_geotag')}
 
-{assign_associative var="params" containerId='multimediaContainer' collection="true" relation='attach' title='Multimedia'}
-{$view->element('form_file_list', $params)}
+{$view->element('form_file_list', ['relation' => 'attach'])}
 
 	{assign_associative var="params" object_type_id=$conf->objectTypes.document.id}
 	{$view->element('form_assoc_objects', $params)}
