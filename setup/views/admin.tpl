@@ -87,7 +87,7 @@
 <input type="hidden" name="p_from" value="2"/>
 <input type="hidden" id="p" name="page" value="3"/>
 <div id="buttons">
-    <input tabindex="4" type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 4;" />
+    <input tabindex="4" type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
     <input tabindex="5" type="submit" style="float:right;" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
     <div style="clear:both"></div>
 </div>
