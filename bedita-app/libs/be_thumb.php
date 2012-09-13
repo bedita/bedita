@@ -31,9 +31,8 @@
  * $Id$
  */
 
-class BeThumbHelper extends AppHelper {
+class BeThumb {
 
-	private $_helpername = "BeThumb Helper 2";
 
 	// supported image types (order is important)
 	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg");
@@ -111,8 +110,8 @@ class BeThumbHelper extends AppHelper {
 	 * @return: string, resampled and cached image URI (using $html helper)
 	 * 
 	 */
-	public function image ($be_obj, $params = null) { 
-		
+	public function image ($be_obj, $params = null) {
+
 		// defaults?
 		// $width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null, $cache = true
 		// this method is for image only, check bedita object type
@@ -181,10 +180,12 @@ class BeThumbHelper extends AppHelper {
 		if ( !isset ($mode) ) {
 			$mode = $this->_conf['image']['thumbMode'];
 		}
-		
+
+
+
 		// build _image_info with getimagesize() or available parameters
 		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
-			
+
 			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath']) ) {
 				$this->_triggerError ( $this->_helpername . ": '" . $this->_imageInfo['path'] . "' is not a valid image file", E_USER_NOTICE ) ;
 				return $this->_conf['imgMissingFile'];
@@ -196,23 +197,26 @@ class BeThumbHelper extends AppHelper {
 			$this->_imageInfo['type']	= $this->_imagetype[$_image_data [2]]; // 1=GIF, 2=JPG, 3=PNG
 			unset ($_image_data);
 		} else {
-			
+
 			$this->_imageInfo["w"] = $be_obj['width'];
 			$this->_imageInfo["h"] = $be_obj['height'];
 	
 			// since not using getimagesize(), try to get image type from object or extension
-			if ( !($this->_imageInfo['ntype'] =@ $this->array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) ) {
-				if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) ) {
+			if ( !($this->_imageInfo['ntype'] =@ $this->_array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) ) {
+
+                if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) ) {
 					$this->_imageInfo['ntype'] = $this->_defaultimagetype; // defaults to 2 [= JPG]
 				}
+
 			}
-			
+
 			if ($this->_imageInfo['ntype'] == 4) {
 				$this->_imageInfo['ntype'] = 2; // JPEG == JPG
 			}
 			// set string type
 			$this->_imageInfo['type'] = $this->_imagetype[ $this->_imageInfo['ntype'] ];
 		}
+
 
 		// target image type
 		if ( !@empty($type) ) {
@@ -296,7 +300,9 @@ class BeThumbHelper extends AppHelper {
 				$this->_imageTarget['resizetype'] = 'stretch';
 				break;
 		}
-		
+
+
+
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();

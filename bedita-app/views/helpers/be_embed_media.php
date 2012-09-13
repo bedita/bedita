@@ -19,6 +19,7 @@
  *------------------------------------------------------------------->8-----
  */
 
+
 /**
  * Helper class to embed media contents
  *
@@ -45,25 +46,27 @@ class BeEmbedMediaHelper extends AppHelper {
 		"BEFile" => "link"
 	);
 
+    private $beThumb = null;
+
 	/**
 	 * Included helpers.
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html', 'BeThumb', 'MediaProvider', 'BeEmbedFlash');
+	var $helpers = array('Html', 'MediaProvider', 'BeEmbedFlash');
 
-	function __construct()
-	{
+	function __construct() {
 		// get configuration parameters
 		$this->_conf = Configure::read('media') ;
 		$this->_conf['root']  = Configure::read('mediaRoot');
 		$this->_conf['url']   = Configure::read('mediaUrl');
 		$this->_conf['tmp']   = Configure::read('tmp');
 		$this->_conf['imgMissingFile'] = Configure::read('imgMissingFile');
+        $this->beThumb = BeLib::getObject("BeThumb");
 	}
 	
 	public function getValidImplementations() {
-		return $this->BeThumb->getValidImplementations();
+		return $this->beThumb->getValidImplementations();
 	}
 
 	/**
@@ -71,7 +74,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * return html for object $obj with options $params and html attributes $htmlAttributes
 	 * 
 	 * @param array obj, BEdita Multimedia Object
-	 * @param array params, optional, parameters used by external helpers such as BeThumb->image
+	 * @param array params, optional, parameters used by external libraries such as BeThumb->image
 	 * 		   possible value for params:
 	 * 			"presentation" => "thumb", "full", "link" (default defined by $defaultPresentation attribute)
 	 * 			"URLonly" => if setted return only url
@@ -138,6 +141,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string
 	 */
 	private function showImage ($obj, $params, $htmlAttributes) {
+
 		$src = $this->getImageSrc($obj, $params);
 		if (!$src) {
 			$src = $this->getMediaTypeImage($obj);
@@ -157,7 +161,7 @@ class BeEmbedMediaHelper extends AppHelper {
 
 	/**
 	 * return image $obj uri
-	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumbHelper)
+	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumb Lib)
 	 * 
 	 * @param array $obj, object
 	 * @param array $params, specific parameters
@@ -169,7 +173,7 @@ class BeEmbedMediaHelper extends AppHelper {
 			$src = $obj['uri'];
 		//local file
 		} else {
-			$src = ($params["presentation"] == "thumb")? $this->BeThumb->image ($obj, $params) : $this->_conf['url'] . $obj['uri'];
+			$src = ($params["presentation"] == "thumb") ? $this->beThumb->image ($obj, $params) : $this->_conf['url'] . $obj['uri'];
 		}
 		return $src;
 	}
