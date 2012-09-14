@@ -24,11 +24,11 @@
 		openAtStart("#card,#address,#properties");
 		
 		$('textarea.autogrowarea').css("line-height", "1.2em").autogrow();
-		
-		// prendiamolo da remoto, facciamo n file php con tutti gli array helpers per gli autocomplete?
+		{/literal}{bedev}
+		// remote search, n php files with all array helpers for autocompletes?
 		var data = "Sig Sigra Satrap SoS sarallapappa Mr Mrs Dott Prof Ing SA srl Spa sagl etc".split(" ");
 		$("#vtitle").autocomplete(data);
-
+		{/bedev}{literal}
 	});
 	{/literal}
 </script>
