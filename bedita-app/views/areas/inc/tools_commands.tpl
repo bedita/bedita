@@ -1,6 +1,6 @@
 <div class="tab"><h2>{t}Tools{/t}</h2></div>
 
-<div>
+<div class="ignore">
 
 {if $type=="section"}
 

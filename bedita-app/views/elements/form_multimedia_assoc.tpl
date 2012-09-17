@@ -95,7 +95,7 @@ $(document).ready(function(){
 
 </script>
 
-<div id="formMultimediaAssoc">
+<div id="formMultimediaAssoc" class="ignore">
 	<fieldset>
 		{if !empty($items)}
 			{if $toolbar|default:""}

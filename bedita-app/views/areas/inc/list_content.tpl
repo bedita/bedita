@@ -107,7 +107,7 @@ $(document).ready(function() {
 	</div>
 
 			
-	<div id="contents_nav_leafs" style="margin-top:10px; padding:10px 0px 10px 0px; overflow:hidden; border-bottom:1px solid gray">	
+	<div id="contents_nav_leafs" style="margin-top:10px; padding:10px 0px 10px 0px; overflow:hidden; border-bottom:1px solid gray" class="ignore">	
 		<div style="padding-left:0px; float:left;">
 		{t}show{/t}
 		{assign var="allLabel" value=$tr->t("all", true)}

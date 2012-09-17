@@ -1,6 +1,6 @@
 
 <div class="tab"><h2>{t}Bulk actions on{/t}&nbsp;<span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
+<div class="ignore">
 	
 	
 		<label for="selectAll" style="padding-right:20px; float:left;">

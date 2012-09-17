@@ -117,7 +117,7 @@ function loadUserGroupAjax(url) {
 	<th>&nbsp;</th>
 </tr>
 
-<tr id="addPermGroupTR">
+<tr id="addPermGroupTR" class="ignore">
 	<td style="white-space:nowrap">
 		<select id="inputAddPermGroup" name="name"></select>
 	</td>
