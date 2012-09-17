@@ -10,6 +10,12 @@
 
 		{else}
 
+			{if empty($section.childSections) && !empty($section.childContents) && count($section.childContents) == 1}
+
+				{$view->element('content')}
+			
+			{/if}
+
 			{if !empty($section.childSections)}
 
 				<ul data-role="listview" data-theme="a" data-divider-theme="d" data-inset="true">
