@@ -19,6 +19,13 @@
 
 $(document).ready(function(){
 	
+	/**
+	 * serialized form data used on change page to check if any not saved data is present
+	 * get all form fields without class ignore
+	 * and/or without parent with class ignore
+	 */
+	var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not(.ignore :input)";
+	var formFieldToCheckData = $(formFieldToCheckSelector).serialize();
 	
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
@@ -69,6 +76,9 @@ $(document).ready(function(){
 	
 
 	window.onbeforeunload = function () {
+		if (!$(".secondacolonna .modules label").hasClass("save") && formFieldToCheckData !== $(formFieldToCheckSelector).serialize()) {
+			$(".secondacolonna .modules label").addClass("save");
+		}
 		if ( !$(".secondacolonna .modules label").hasClass("submitForm") && $(".secondacolonna .modules label").hasClass("save")) {
 			return "{t}All unsaved changes will be lost{/t}";
 		}
@@ -234,9 +244,9 @@ $(document).ready(function(){
 
 
 /*
-	check sulle modifiche non salvate e variabile sul submit
+	check on not saved modify
 */
-	$("#updateForm *").not(".ignore").change(function () {
+	$(formFieldToCheckSelector).change(function () {
 		
 		
 		
