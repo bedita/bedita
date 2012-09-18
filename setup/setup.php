@@ -286,12 +286,12 @@
 				}
 			}
 			
-			$this->smarty->assign('bedita_url',$config->read('beditaUrl'));
-			$this->smarty->assign('bedita_url_check',$this->_checkurl($config->read('beditaUrl')));
-			$this->smarty->assign('media_root',$config->read('mediaRoot'));
-			$this->smarty->assign('media_root_check',$this->_checkmediaroot($config->read('mediaRoot')));
-			$this->smarty->assign('media_url',$config->read('mediaUrl'));
-			$this->smarty->assign('media_url_check',$this->_checkurl($config->read('mediaUrl')));
+//			$this->smarty->assign('bedita_url',$config->read('beditaUrl'));
+//			$this->smarty->assign('bedita_url_check',$this->_checkurl($config->read('beditaUrl')));
+//			$this->smarty->assign('media_root',$config->read('mediaRoot'));
+//			$this->smarty->assign('media_root_check',$this->_checkmediaroot($config->read('mediaRoot')));
+//			$this->smarty->assign('media_url',$config->read('mediaUrl'));
+//			$this->smarty->assign('media_url_check',$this->_checkurl($config->read('mediaUrl')));
 			$this->smarty->assign('mod_rewrite_php',$check_mod_rewrite);
 			$this->smarty->assign('mod_rewrite_cakephp',$this->_checkmodrewritecakephp($baseUrl));
 			$this->smarty->display('admin.tpl');

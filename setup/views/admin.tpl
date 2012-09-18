@@ -46,6 +46,8 @@
 <p><span class="ERROR">Error saving user data</span></p>
 {/if}
 
+{* all this settings are calculated on next step
+
 <h3>Web settings (you can always change the urls later in BEdita admin->configuration)</h3>
 
 <table>
@@ -69,10 +71,11 @@
 </tr>
 </table>
 
+*}
+
+
+{if $mod_rewrite_php !== $mod_rewrite_cakephp}
 <h3>Mod rewrite</h3>
-{if $mod_rewrite_php == $mod_rewrite_cakephp}
-<p><span class="INFO">[INFO]</span>: <span>Mod Rewrite for PHP and CakePhp</span>: <span class="INFO">{$mod_rewrite_php}</span></p>
-{else}
 <p><span class="ERROR">[ERROR]</span>: <span>Mod Rewrite is</span> <span class="ERROR">{if $mod_rewrite_php == "askuser"}?{else}{$mod_rewrite_php}{/if}</span> for PHP and <span class="ERROR">{$mod_rewrite_cakephp}</span> for CakePhp</p>
 	{if $mod_rewrite_php == "askuser"}
 	<p><span class="WARN">[WARN]</span>: <span>Not able to say if mod_rewrite is enabled.</span></p>
