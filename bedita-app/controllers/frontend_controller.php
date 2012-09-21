@@ -612,7 +612,7 @@ abstract class FrontendController extends AppController {
 		
 		$parentAuthorized = true;
 		foreach ($pathSection as $ps) {
-			if ($parentAuthorized && !empty($ps["authorized"]) && !$ps["authorized"]) {
+			if ($parentAuthorized && isset($ps["authorized"]) && !$ps["authorized"]) {
 				$parentAuthorized = false;
 			}
 		}
