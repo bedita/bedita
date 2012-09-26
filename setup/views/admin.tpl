@@ -83,6 +83,8 @@
 	<p><label>mod_rewrite</label> is: <input type="radio" value="enabled" name="mod_rewrite_enabled" />enabled <input type="radio" value="disabled" name="mod_rewrite_enabled" />disabled </p>
 	{else}
 	<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePHP 'mod revrite' to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+	<p><span>Read the article <a href="http://docs.bedita.com/setup/handling-mod_rewrite-in-bedita-and-cakephp" target="_blank">Handling mod_rewrite in BEdita and CakePhp</a> 
+		on <a href="http://docs.bedita.com" target="_blank">docs.bedita.com</a> for more information on this topic</span></p>
 	{/if}
 {/if}
 
