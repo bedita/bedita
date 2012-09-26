@@ -49,7 +49,7 @@ a img {border:0px;}
 
 a:focus, a:active {outline:0px;}
 
-a:link, a:visited, a:active {text-decoration: none; }
+a:link, a:visited, a:active {text-decoration: none; color: blue;}
 
 a:hover {text-decoration: none;}
 
