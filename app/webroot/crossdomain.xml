@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!-- http://www.mydomain.tld/crossdomain.xml -->
+<cross-domain-policy>
+  <allow-access-from domain="*.youtube.com"/>
+  <allow-access-from domain="*.ytimg.com"/>
+  <allow-access-from domain="*.google.com"/>
+</cross-domain-policy>

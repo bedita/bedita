@@ -1,0 +1,91 @@
+.swfuploadbtn {
+	display: block;
+	width: 100px;
+	padding: 0 0 0 20px;
+	border: 5px solid blue
+}
+
+.browsebtn { /*background: url(../img/swfupload/add.png) no-repeat 0 4px; */ }
+
+.uploadbtn {
+	display: none;
+	/*background: url(../img/swfupload/accept.png) no-repeat 0 4px;*/
+}
+
+.cancelbtn {
+	display: block;
+	/*background: url(../img/swfupload/cancel.png) no-repeat;*/
+}
+
+#cancelqueuebtn {
+	display: block;
+	display: none;
+	/*background: url(../img/swfupload/cancel.png) no-repeat 0 4px;*/
+	margin: 10px 0;
+}
+
+#SWFUploadFileListingFiles ul {
+
+}
+
+.SWFUploadFileItem {
+
+}
+
+.fileUploading { background: #fee727; }
+.uploadCompleted { background: #d2fa7c; }
+.uploadCancelled { background: #f77c7c; }
+
+.uploadCompleted .cancelbtn, .uploadCancelled .cancelbtn {
+	display: none;
+}
+
+span.progressBar {
+	width: 100px;
+	height: 4px;
+	background-color: red;
+}
+
+/* SWFUpload CSS */
+
+#filesDisplay {
+	padding: 10px;
+	margin-top: 20px;
+	background: #f9f9f9;
+	border: 1px solid #f3f3f3;
+	display: none;
+}
+
+#SWFUpload {
+	margin-left: 20px;
+}
+
+#mmUploadFileListing {
+	margin: 0;
+	padding: 0;
+}
+
+
+a.SWFUploadLink {
+	width: 300px;
+	height: 100px;
+	background: url(../img/swfupload/custom_button.png) no-repeat;
+	display: block;
+}
+
+a.SWFUploadLink:hover {
+	background: url(../img/swfupload/custom_button_over.png) no-repeat;
+}
+
+.disabled {
+	text-decoration: line-through !important;
+}
+
+.newitem {
+	background: #caff4d;
+}
+
+a.whatsnew {
+	font-size: 11px !important;
+	color: #000;
+}

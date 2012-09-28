@@ -1,0 +1,110 @@
+@charset "utf-8";
+
+/**
+ * staging toolbar css 
+ * if you want change styles for a frontend app override classes in specific staging_toolbar.css file located in frontend_app/webroot/css/
+ */
+
+
+#BEdita_staging_toolbar {
+	font-size:11px !important;
+	font-family: 'Lucida grande', 'Segoe UI', Verdana, Arial, Helvetica, sans-serif !important; 
+	/*
+	font: normal 11px "Arial",sans-serif !important
+	*/
+}
+
+.stagingmenu {	
+	top:0px;
+	padding:5px 5px 5px 5px !important; 
+	margin:5px 5px 5px 5px !important; 
+	text-align:center;
+	border-radius : 7px; 
+	-moz-border-radius : 7px; /* Mozilla */
+	-webkit-border-radius : 7px; /* Webkit */
+}
+
+.stagingmenu, .stagingsubmenu {
+	background-color: #333;
+	position:absolute;
+	z-index:500;
+	/*
+opacity:0.8
+*/
+
+}
+
+.stagingsubmenu {
+
+}
+
+
+#BEdita_staging_toolbar UL {
+	margin:0px 0px 0px 0px !important;
+	padding:0px 0px 0px 0px !important;
+}
+
+
+.stagingmenu LI {
+	color: silver;
+	float:left;
+	margin-top:0px;
+	margin-left:20px;
+	padding:0px 20px 0px 0px;
+	border-right:0px solid silver;
+	white-space:nowrap;
+}
+
+.stagingmenu LI A {
+	color: silver  !important;
+	text-decoration:none;
+	cursor:pointer;
+}
+
+.stagingmenu LI A:Hover {
+	color: #FFF  !important;
+}
+
+.stagingsubmenu {
+	/*
+width:250px;
+*/
+
+	/*
+border-radius : 7px; 
+	-moz-border-radius : 7px; 
+	-webkit-border-radius : 7px; 
+*/
+	display:none;
+	top:38px;
+}
+
+.stagingsubmenu table {
+	border-collapse:collapse;
+	margin:10px;
+}
+
+.stagingsubmenu table * {
+	text-align:left;
+	font-size: 11px;
+	color:white !important;
+	padding:4px;
+	vertical-align:top;
+}
+
+.stagingsubmenu table TH {
+	text-align:right;
+	border-right:1px solid gray;
+	white-space:nowrap;
+}
+
+
+	
+
+.stagingmenu ::selection {
+	background: none; /* Safari */
+	}
+.stagingmenu ::-moz-selection {
+	background: none; /* Firefox */
+}
+

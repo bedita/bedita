@@ -1,0 +1,31 @@
+@charset "utf-8";
+/*
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+CSS Created by Chialab.it
+
+http://www.chialab.it 2009
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+*/
+
+/*...........................................    
+
+    Print, elements
+
+...........................................*/
+
+@page {size:297mm 210mm!important; margin:0mm;}
+
+.standardreport  {
+	/* controllo delle colonne */
+	column-count: 3;
+	-moz-column-count: 3;
+	-webkit-column-count: 3;
+	
+	column-gap: 10mm;
+	-moz-column-gap: 10mm;
+	-webkit-column-gap: 10mm;
+}

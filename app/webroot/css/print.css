@@ -1,0 +1,104 @@
+BODY {
+	font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;
+}
+
+BODY {margin:0%!important; padding:0mm!important;}
+
+HTML {margin:0mm!important;}
+
+.noprint {display:none; visibility:hidden;}
+
+.standardreport {
+	margin:5mm; border:0pt solid gray;
+}
+
+H1 {line-height:1em}
+
+H2 { line-height:1em}
+
+UL, LI {padding:0px; margin:0px;}
+
+LI UL LI {padding-left:2em;}
+
+label {font-weight:bold; color:#000; padding-right:5px}
+
+LI {padding:2px; list-style:none; border-top:1px solid silver;}
+
+P {margin:0px; padding:0px; }
+
+TABLE {
+	border-collapse:collapse;
+	
+}
+TD, TH {padding:5px; border:1px solid silver; vertical-align:top}
+
+TD {width:100%;}
+TH {text-align:left; white-space:nowrap; padding-right:10px;}
+
+
+/*...........................................
+ 
+    Modules
+
+...........................................*/
+
+.modules {
+	width:140px;
+	height:140px;
+
+}
+
+
+.modules label {
+	display:block;
+	font-size: 1.5em ;
+	width:120px; height:120px; 
+	padding:10px;
+	margin: 0px;
+	background-color:#CCCCCC; 
+	color:#FFF;
+	float:left;
+	font-weight:normal;
+	border:1px solid silver;
+}
+
+/*...........................................
+ 
+    Each Modules appearence
+
+...........................................*/
+
+.areas, .area, .section 	{background-color:#626151 !important;}
+.documents, .document		{background-color:#ff6600 !important;}
+.galleries, .gallery 		{background-color:#FFBF00 !important;}
+.events, .event				{background-color:#0099CC !important;}
+.newsletter 				{background-color:#99cc33 !important;}
+.multimedia, .image, .audio, .video	{background-color:#ff0033 !important;}
+.admin 						{background-color:#333333 !important;}
+.tags 						{background-color:#336666 !important;}
+.comments, .comment			{background-color:#F08080 !important;}
+.translations				{background-color:#FF00FF !important;}
+.addressbook, .card			{background-color:#009933 !important;}
+.attachments 				{background-color:gray !important;}
+.news, .short_news 			{background-color:#003366 !important;}
+.newsletter 				{background-color:#6666FF !important;}
+.bibliographies, .bibliography {background-color:#999966 !important;}
+.ecommerce 					{background-color:#771717 !important;}
+.webmark, .webmarks 		{background-color:#6600cc !important;}
+.questionnaires, .questions, .question	{background-color:#801f2b !important;}
+.bookings, .booking 		{background-color:#99CC33 !important;}
+.faq, .faqs 				{background-color:#CC3333 !important;}
+.print 						{background-color:#CC9900 !important;}
+.topography, .topographies 	{background-color:#993300 !important;}
+.statistics, .stats 	{background-color:#788279 !important;}
+
+
+.bedita 	{background-color:#FFFFFF !important; 
+			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
+			line-height:1em !important;
+			color:#996600  !important;
+			}
+
+
+.default 		{background-color:#CCCCCC !important; color:#000000 !important}
+

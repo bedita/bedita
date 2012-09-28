@@ -1,0 +1,1 @@
+{$view->element('objects/index')}

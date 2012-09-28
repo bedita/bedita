@@ -1,0 +1,282 @@
+2012-09-10 17:39:22 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars['containerId']@unset}"  - Unexpected "@", expected one of: "}" , " " , ATTR
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3139): Smarty_Internal_TemplateCompilerBase->trigger_template_error()
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3204): Smarty_Internal_Templateparser->yy_syntax_error(62, '@')
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(62, '@')
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#6 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#7 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#8 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#11 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#15 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#16 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#17 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#18 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#19 {main}
+2012-09-10 17:39:48 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars.containerId@unset}"  - Unexpected "@", expected one of: "}" , " " , ATTR
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3139): Smarty_Internal_TemplateCompilerBase->trigger_template_error()
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3204): Smarty_Internal_Templateparser->yy_syntax_error(62, '@')
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(62, '@')
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#6 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#7 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#8 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#11 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#15 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#16 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#17 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#18 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#19 {main}
+2012-09-10 17:44:44 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars.containerId|unset}" unknown modifier "unset"
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_modifier.php(132): Smarty_Internal_TemplateCompilerBase->trigger_template_error('unknown modifie...', 450)
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Modifier->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_modifie...', Array, Array)
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_print_expression.php(65): Smarty_Internal_TemplateCompilerBase->compileTag('private_modifie...', Array, Array)
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Print_Expression->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_print_e...', Array, Array)
+#6 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(2363): Smarty_Internal_TemplateCompilerBase->compileTag('private_print_e...', Array, Array)
+#7 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3096): Smarty_Internal_Templateparser->yy_r28()
+#8 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3196): Smarty_Internal_Templateparser->yy_reduce(28)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(10, '?')
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#11 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#15 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#16 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#17 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#18 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#19 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#20 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#21 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#22 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#23 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#24 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#25 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#26 {main}
+2012-09-10 17:45:12 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars.containerId@unset}"  - Unexpected "@", expected one of: "}" , " " , ATTR
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3139): Smarty_Internal_TemplateCompilerBase->trigger_template_error()
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3204): Smarty_Internal_Templateparser->yy_syntax_error(62, '@')
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(62, '@')
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#6 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#7 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#8 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#11 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#15 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#16 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#17 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#18 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#19 {main}
+2012-09-10 17:50:03 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars.containerId|unset}" unknown modifier "unset"
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_modifier.php(132): Smarty_Internal_TemplateCompilerBase->trigger_template_error('unknown modifie...', 450)
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Modifier->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_modifie...', Array, Array)
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_print_expression.php(65): Smarty_Internal_TemplateCompilerBase->compileTag('private_modifie...', Array, Array)
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Print_Expression->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_print_e...', Array, Array)
+#6 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(2363): Smarty_Internal_TemplateCompilerBase->compileTag('private_print_e...', Array, Array)
+#7 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3096): Smarty_Internal_Templateparser->yy_r28()
+#8 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3196): Smarty_Internal_Templateparser->yy_reduce(28)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(10, '?')
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#11 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#15 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#16 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#17 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#18 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#19 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#20 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#21 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#22 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#23 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#24 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#25 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#26 {main}
+2012-09-10 17:50:37 Error: SmartyCompilerException -  Syntax Error in template "/home/bato/workspace/github/bedita/bedita-app/views/elements/form_file_list.tpl"  on line 450 "{$view-&gt;viewVars|unset}" unknown modifier "unset"
+File: /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php - line: 656
+Trace:
+#0 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_modifier.php(132): Smarty_Internal_TemplateCompilerBase->trigger_template_error('unknown modifie...', 450)
+#1 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Modifier->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#2 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_modifie...', Array, Array)
+#3 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_compile_private_print_expression.php(65): Smarty_Internal_TemplateCompilerBase->compileTag('private_modifie...', Array, Array)
+#4 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(463): Smarty_Internal_Compile_Private_Print_Expression->compile(Array, Object(Smarty_Internal_SmartyTemplateCompiler), Array, NULL, NULL)
+#5 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(247): Smarty_Internal_TemplateCompilerBase->callTagCompiler('private_print_e...', Array, Array)
+#6 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(2363): Smarty_Internal_TemplateCompilerBase->compileTag('private_print_e...', Array, Array)
+#7 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3096): Smarty_Internal_Templateparser->yy_r28()
+#8 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templateparser.php(3196): Smarty_Internal_Templateparser->yy_reduce(28)
+#9 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_smartytemplatecompiler.php(105): Smarty_Internal_Templateparser->doParse(10, '?')
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatecompilerbase.php(192): Smarty_Internal_SmartyTemplateCompiler->doCompile('{$html->script(...')
+#11 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(187): Smarty_Internal_TemplateCompilerBase->compileTemplate(Object(Smarty_Internal_Template))
+#12 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(164): Smarty_Internal_Template->compileTemplateSource()
+#13 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#14 /home/bato/workspace/github/bedita/cake/libs/view/view.php(400): SmartyView->_render('/home/bato/work...', Array, false)
+#15 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^bc076e8934831b9d2f31e84269ef248298cd99da.file.form.tpl.php(45): View->element('form_file_list', Array)
+#16 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd989c2956_80115102(Object(Smarty_Internal_Template))
+#17 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#18 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Documents^5f23aa1d3fa5f60ed7bffb11fa1c6110b24b2035.file.view.tpl.php(83): Smarty_Internal_Template->getSubTemplate('inc/form.tpl', NULL, 'Documents', NULL, NULL, Array, 0)
+#19 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504dfd97bb7824_72174158(Object(Smarty_Internal_Template))
+#20 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(127): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#21 /home/bato/workspace/github/bedita/cake/libs/view/view.php(434): SmartyView->_render('/home/bato/work...', Array)
+#22 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#23 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#24 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(DocumentsController), Array)
+#25 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#26 {main}
+2012-09-10 18:07:17 Warning: Warning (2): mkdir() [http://php.net/function.mkdir]: File exists in [/home/bato/workspace/github/bedita/bedita-app/views/helpers/be_thumb.php, line 431]
+2012-09-10 18:07:17 Error: RuntimeException -  File not writeable: 
+File: /home/bato/workspace/github/bedita/vendors/php_thumb/ImagickThumb.inc.php - line: 481
+Trace:
+#0 /home/bato/workspace/github/bedita/bedita-app/views/helpers/be_thumb.php(377): ImagickThumb->save(false, 'jpg')
+#1 /home/bato/workspace/github/bedita/bedita-app/views/helpers/be_thumb.php(310): BeThumbHelper->_resample()
+#2 /home/bato/workspace/github/bedita/bedita-app/views/helpers/be_embed_media.php(172): BeThumbHelper->image(Array, Array)
+#3 /home/bato/workspace/github/bedita/bedita-app/views/helpers/be_embed_media.php(141): BeEmbedMediaHelper->getImageSrc(Array, Array)
+#4 /home/bato/workspace/github/bedita/bedita-app/views/helpers/be_embed_media.php(104): BeEmbedMediaHelper->showImage(Array, Array, Array)
+#5 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Multimedia^265a493319650d5a9a9a92b3ba5bd8f4dae42d3a.file.file_item.tpl.php(54): BeEmbedMediaHelper->object(Array, Array, Array)
+#6 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504e10342b69a2_37501107(Object(Smarty_Internal_Template))
+#7 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(124): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#8 /home/bato/workspace/github/bedita/cake/libs/view/view.php(397): SmartyView->_render('/home/bato/work...', Array, false)
+#9 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Multimedia^39b2134a19d30eab66a89eb617103aeee14ea00d.file.list_streams.tpl.php(159): View->element('file_item', Array)
+#10 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504e1033e767e4_48834737(Object(Smarty_Internal_Template))
+#11 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_template.php(286): Smarty_Internal_TemplateBase->fetch(NULL, NULL, NULL, NULL, false, false, true)
+#12 /home/bato/workspace/github/bedita/bedita-app/tmp/smarty/compile/Multimedia^b3e711b4eb5d643efd8a97e226967c5d1426209a.file.index.tpl.php(115): Smarty_Internal_Template->getSubTemplate('./inc/list_stre...', NULL, 'Multimedia', NULL, NULL, Array, 0)
+#13 /home/bato/workspace/github/bedita/vendors/smarty/libs/sysplugins/smarty_internal_templatebase.php(180): content_504e1032ecfd46_91406758(Object(Smarty_Internal_Template))
+#14 /home/bato/workspace/github/bedita/bedita-app/views/smarty.php(124): Smarty_Internal_TemplateBase->fetch('/home/bato/work...')
+#15 /home/bato/workspace/github/bedita/cake/libs/view/view.php(431): SmartyView->_render('/home/bato/work...', Array)
+#16 /home/bato/workspace/github/bedita/cake/libs/controller/controller.php(909): View->render(NULL, NULL, NULL)
+#17 /home/bato/workspace/github/bedita/cake/dispatcher.php(207): Controller->render()
+#18 /home/bato/workspace/github/bedita/cake/dispatcher.php(171): Dispatcher->_invoke(Object(MultimediaController), Array)
+#19 /home/bato/workspace/github/bedita/bedita-app/webroot/index.php(99): Dispatcher->dispatch()
+#20 {main}
+2012-09-17 12:34:14 Error:  500 Internal Error - missingHelperFile: array (
+  'url' => 'pages/updateEditor/23',
+  'helperClass' => 'BeThumbHelper',
+  'file' => 'be_thumb.php',
+  'title' => 'Missing Helper File',
+  'BEAuthUser' => 
+  array (
+    'id' => '1',
+    'userid' => 'bedita',
+    'realname' => 'BEdita',
+    'passwd' => '0350986918ea1ddfcb9fdd21affc6ccc',
+    'email' => NULL,
+    'valid' => '1',
+    'last_login' => '2012-09-14 16:23:15',
+    'last_login_err' => '2012-08-08 16:36:39',
+    'num_login_err' => '0',
+    'created' => NULL,
+    'modified' => '2011-12-06 11:38:42',
+    'user_level' => '0',
+    'auth_type' => NULL,
+    'auth_params' => NULL,
+    'lang' => NULL,
+    'time_zone' => NULL,
+    'comments' => NULL,
+    'notes' => NULL,
+    'notify_changes' => NULL,
+    'reports' => NULL,
+    'groups' => 
+    array (
+      0 => 'administrator',
+    ),
+  ),
+)
+2012-09-17 12:34:14 Error:  500 Internal Error - missingHelperFile: array (
+  'url' => 'pages/updateEditor/23',
+  'helperClass' => 'BeThumbHelper',
+  'file' => 'be_thumb.php',
+  'title' => 'Missing Helper File',
+)
+2012-09-17 12:48:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:48:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:49:14 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:49:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:49:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:50:14 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:50:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:50:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:51:14 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:51:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:51:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:52:14 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:52:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:52:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:53:14 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:53:34 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:53:54 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-17 12:54:00 Warning: Warning (512):  in [CORE/cake/libs/session.php, line 478]
+2012-09-19 11:58:11 Error:  404 Not Found - missingController: array (
+  'url' => 'PhpStorm-e58abe35-5672-46d8-a6ba-3df1a4e162c7.php',
+  'controller' => 'PhpStorm-e58abe35-5672-46d8-a6ba-3df1a4e162c7.phpController',
+)
+2012-09-19 12:07:29 Error:  404 Not Found - missingController: array (
+  'url' => 'PhpStorm-9e2743cc-7ea5-4296-8f42-4d7ec5728ee2.php',
+  'controller' => 'PhpStorm-9e2743cc-7ea5-4296-8f42-4d7ec5728ee2.phpController',
+)
+2012-09-19 12:24:19 Error:  404 Not Found - missingController: array (
+  'url' => '_intellij_phpunit_launcher.php',
+  'controller' => 'IntellijPhpunitLauncher.phpController',
+)
+2012-09-19 12:25:08 Error:  404 Not Found - missingController: array (
+  'url' => '_intellij_phpunit_launcher.php',
+  'controller' => 'IntellijPhpunitLauncher.phpController',
+)
+2012-09-19 12:34:43 Error:  404 Not Found - missingController: array (
+  'url' => '_intellij_phpunit_launcher.php',
+  'controller' => 'IntellijPhpunitLauncher.phpController',
+)
+2012-09-19 15:29:26 Error: Session not valid!
+2012-09-19 15:29:26 Error: Session not valid!
+2012-09-19 16:37:09 Error: BeThumb: 'skull_wallpaper_by_lordzoltan.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'test.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'me_square.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'cop_introduzionepianeta.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'avatar-film-07.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'darkwood_1366x768.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'august-12-raindrop__45-calendar-1920x1080.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'adriatica-1.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'vector_wallpaper_by_seppoftw.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'vector_wallpaper_by_seppoftw-1.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-19 16:37:09 Error: BeThumb: 'unity_shortcut.png' is not a valid Bedita image object (object type is image/png)
+2012-09-19 16:37:09 Error: BeThumb: 'retro-wooden-wall-1920x1200.jpg' is not a valid Bedita image object (object type is image/jpeg)
+2012-09-26 16:36:03 Error: Session not valid!
+2012-09-26 16:36:03 Error: Session not valid!
+2012-09-26 16:36:26 Error:  404 Not Found - missingController: array (
+  'url' => 'js/jquery/jquery.treeview.js',
+  'userid' => 'bedita',
+  'controller' => 'JsController',
+)
