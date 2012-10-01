@@ -25,7 +25,7 @@ $(document).ready(function(){
 	 * and/or without parent with class ignore
 	 */
 	var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not(.ignore :input)";
-	var formFieldToCheckData = $(formFieldToCheckSelector).serialize();
+	var formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
 	
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
@@ -76,7 +76,8 @@ $(document).ready(function(){
 	
 
 	window.onbeforeunload = function () {
-		if (!$(".secondacolonna .modules label").hasClass("save") && formFieldToCheckData !== $(formFieldToCheckSelector).serialize()) {
+		var submitFormFieldSerialized = jQuery.trim($(formFieldToCheckSelector).serialize());
+		if (!$(".secondacolonna .modules label").hasClass("save") && formFieldToCheckData !== submitFormFieldSerialized) {
 			$(".secondacolonna .modules label").addClass("save");
 		}
 		if ( !$(".secondacolonna .modules label").hasClass("submitForm") && $(".secondacolonna .modules label").hasClass("save")) {
