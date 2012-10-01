@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Hash asynchronous job object
@@ -25,24 +27,24 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class HashJob extends BEAppModel {
 
 	private $hashString = "abcdefghijklmnopqrstuvwxyz";
-	
+
 	public function beforeSave() {
 		if (empty($this->data["HashJob"]) && empty($this->data)) {
 			return false;
 		} elseif (empty($this->data["HashJob"]) && !empty($this->data)) {
 			$this->data["HashJob"] = $this->data;
 		}
-		
+
 		if (empty($this->data["HashJob"]["hash"])) {
 			$this->data["HashJob"]["hash"] = $this->generateHash();
 		}
-		
+
 		if (empty($this->data["HashJob"]["params"])) {
 			$columnTypes = $this->getColumnTypes();
 			// set params
@@ -54,10 +56,10 @@ class HashJob extends BEAppModel {
 			}
 			$this->data["HashJob"]["params"] = serialize($params);
 		}
-		
+
 		return true;
-	} 
-	
+	}
+
 	public function afterFind($results) {
 		if (!empty($results)) {
 			foreach ($results as $key => $val) {
@@ -73,7 +75,7 @@ class HashJob extends BEAppModel {
 		}
 		return $results;
 	}
-	
+
 	public function generateHash() {
 		return md5(str_shuffle($this->hashString) . microtime());
 	}
@@ -90,6 +92,6 @@ class HashJob extends BEAppModel {
 		}
 		return date("Y-m-d H:i:s", time() + $hashExpiredTime);
 	}
-	
+
 }
 ?>

@@ -1,36 +1,39 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
+
+App::uses("BEAppModel", "Model");
+
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Permission extends BEAppModel
 {
-	
+
 	var $belongsTo = array(
 		'User' =>
 			array(
@@ -64,13 +67,13 @@ class Permission extends BEAppModel
 				$d["ugid"] = $user->field('id', array('userid'=>$d["name"]));
 			}
 			if(!$this->save($d)) {
-				throw new BeditaException(__("Error saving permissions"), 
+				throw new BeditaException(__("Error saving permissions"),
 					"obj: $objectId - permissions: ". var_export($perms, true));
 				;
 			}
 		}
 	}
-	
+
 	/**
 	 * Remove all object permissions.
 	 *
@@ -79,8 +82,8 @@ class Permission extends BEAppModel
 	public function removeAll($objectId) {
 		if(!$this->deleteAll(array("object_id" => $objectId), false))
 			throw new BeditaException(__("Error removing permissions"), "object id: $objectId");
-	}	
-	
+	}
+
 	/**
 	 * Updates/replaces object permissions
 	 *
@@ -90,8 +93,8 @@ class Permission extends BEAppModel
 	public function replace($objectId, $perms) {
 		$this->removeAll($objectId);
 		$this->add($objectId, $perms);
-	}	
-	
+	}
+
 	/**
 	 * Is object ($objectId) writable by user?
 	 *
@@ -104,17 +107,17 @@ class Permission extends BEAppModel
 	public function isWritable($objectId, array &$userData, $perms=array()) {
 		// administrator can always write....
 		if(!empty($userData['groups']) && in_array("administrator",$userData['groups'])) {
-			return true;		
+			return true;
 		}
 		if (empty($perms)) {
 			$perms = $this->isPermissionSetted($objectId, Configure::read("objectPermissions.write"));
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}
-	
+
 	/**
 	 * Is object ($objectId) accessible by user in frontend?
-	 * 
+	 *
 	 * @param $objectId
 	 * @param $userData  user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
 	 * @param $perms permission array defined like in checkPermissionByUser() call
@@ -130,10 +133,10 @@ class Permission extends BEAppModel
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}
-	
+
 	/**
 	 * check if user or user groups are in $perms array
-	 * 
+	 *
 	 * @param $perms permission array like return from find("all)
 	 * 						array(
 	 * 							0 => array("Permission" => array(...), "User" => array(...), "Group" => array(...)),
@@ -156,10 +159,10 @@ class Permission extends BEAppModel
 		}
 		return false;
 	}
-	
+
 	/**
-	 * check if a permission over an object is set 
-	 * 
+	 * check if a permission over an object is set
+	 *
 	 * @param $objectId
 	 * @param $flag permission
 	 * @return array of perms with users and groups or false if no permission is setted
@@ -171,10 +174,10 @@ class Permission extends BEAppModel
 		);
 
 		$ret = (!empty($result))? $result : false;
-		
+
 		return $ret;
 	}
-	
+
 	/**
 	 * Delete a permit for an object
 	 *
@@ -198,7 +201,7 @@ class Permission extends BEAppModel
 			if(!$this->deleteAll($conditions, false))
 				throw new BeditaException(__("Error removing permissions"), "object id: $objectId");
 		}
-	}	
+	}
 
 
 	/**

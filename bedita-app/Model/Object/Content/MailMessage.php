@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BeditaContentModel", "Model/Object/Base");
 
 /**
  * Mail message content
@@ -25,7 +27,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class MailMessage extends BeditaContentModel
@@ -34,8 +36,8 @@ class MailMessage extends BeditaContentModel
 			'CompactResult' 		=> array("MailGroup"),
 			'ForeignDependenceSave' => array('Content'),
 			'DeleteObject' 			=> 'objects',
-	); 
-	
+	);
+
 	var $hasOne= array(
 			'BEObject' => array(
 					'className'		=> 'BEObject',
@@ -50,17 +52,17 @@ class MailMessage extends BeditaContentModel
 					'dependent'		=> true
 				)
 		);
-	
+
 	var $hasAndBelongsToMany = array(
 			'MailGroup' =>	array (
 					'joinTable' => 'mail_group_messages'
 				)
 	);
-		
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
+
+	protected $modelBindings = array(
+				"detailed" =>  array("BEObject" => array("ObjectType",
+															"UserCreated",
+															"UserModified",
 															"Permission",
 															"RelatedObject",
 															"Annotation",
@@ -69,19 +71,19 @@ class MailMessage extends BeditaContentModel
 									 "Content", "MailGroup"
 									),
 				"default" => array("BEObject" => array("ObjectType", "RelatedObject"), "Content"),
-									
+
 				"mailgroup" => array("MailGroup"),
 
 				"minimum" => array("BEObject" => array("ObjectType"), "Content")
 	);
-	
+
 	var $validate = array(
 		"subject" => array(
 			"rule" 			=> array('custom', '/.+/') ,
 			"required" 		=> true,
 			"message" 		=> "Subject required"
 		),
-		
+
 		"sender" => array(
 			"rule"	=> "email",
 			"required" => true,
@@ -98,8 +100,8 @@ class MailMessage extends BeditaContentModel
 			"message"	=> "Please supply a valid email address."
 		)
 	);
-	
-	
+
+
 	function beforeValidate() {
 
         $this->checkDate('start_date');

@@ -1,41 +1,42 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2010 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
+App::uses("BEAppModel", "Model");
 
 /**
  * Module Model class
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Module extends BEAppModel {
-	
+
 	/**
 	 * get a list of module plugin available (plugged and unplugged)
-	 * 
-	 * @return array ("plugged" => array(), "unplugged" => array() )  
+	 *
+	 * @return array ("plugged" => array(), "unplugged" => array() )
 	 */
 	public function getPluginModules() {
 		$pluggedModulesList = $this->find("list", array(
@@ -43,7 +44,7 @@ class Module extends BEAppModel {
 				"conditions" => array("module_type" => "plugin")
 			)
 		);
-		
+
 		$pluginModules = array("plugged" => array(), "unplugged" => array());
 		if(!file_exists(BEDITA_MODULES_PATH)) {
 			throw new BeditaException(__("Missing plugins directory on filesystem") . " " . BEDITA_MODULES_PATH);
@@ -66,14 +67,14 @@ class Module extends BEAppModel {
 				}
 			}
 		}
-		
+
 		return $pluginModules;
 	}
-	
+
 	/**
-	 * plug a module 
+	 * plug a module
 	 * insert module, eventually insert new object types, set modify permission at administrator group
-	 * 
+	 *
 	 * @param string $pluginName
 	 * @param array $setup
 	 * @return bool
@@ -103,7 +104,7 @@ class Module extends BEAppModel {
 		if ($c > 0) {
 			throw new BeditaException(__("A module with name " . $pluginName . " already exist"));
 		}
-		
+
 		$data["Module"]["name"] = $pluginName;
 		$data["Module"]["label"] = (!empty($setup["publicName"]))? $setup["publicName"] : $pluginName;
 		$data["Module"]["url"] = $pluginName;
@@ -114,7 +115,7 @@ class Module extends BEAppModel {
 			throw new BeditaException(__("error saving module data"));
 		}
 		$newModuleId = $this->id;
-		
+
 		if (!empty($setup["BEditaObjects"])) {
 			if (!is_array($setup["BEditaObjects"])) {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
@@ -124,29 +125,29 @@ class Module extends BEAppModel {
 			if (!in_array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "model" . DS, $modelPaths)){
 				App::build(array("models" => BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS));
 			}
-			
+
 			// check db schema, create tables if needed
 			$this->handlePluginSchema($pluginName, $setup, BEDITA_MODULES_PATH);
-			
+
 			$dirPath = BEDITA_MODULES_PATH . DS . $pluginName . DS . "models" . DS;
-			
+
 			$otModel = ClassRegistry::init("ObjectType");
-			$ot_id = $otModel->newPluggedId();  
+			$ot_id = $otModel->newPluggedId();
 			foreach ($setup["BEditaObjects"] as $modelName) {
 				$objectType = Inflector::underscore($modelName);
 				$filename = $objectType . ".php";
 				if (!file_exists($dirPath . $filename)) {
 					throw new BeditaException(__("File " . $filename . " doesn't find."));
 				}
-				
+
 				if ($beLib->isFileNameUsed($filename, "models", array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS))) {
 					throw new BeditaException(__($filename . " is already used. Please change your file and model name"));
 				}
-				
+
 				if (!$beLib->isBeditaObjectType($modelName, $dirPath)) {
 					throw new BeditaException(__($modelName . " doesn't seem to be a BEdita object. It has to extend BEAppObjectModel"));
 				}
-				
+
 				$obj = $otModel->find("count", array(
 						"conditions" => array("name" => $objectType),
 						"contain" => array()
@@ -176,7 +177,7 @@ class Module extends BEAppModel {
 				}
 			}
 		}
-		
+
 		// set admin permission
 		$group_id = ClassRegistry::init("Group")->field("id", array("name" => "administrator"));
 		$permMod = ClassRegistry::init("PermissionModule");
@@ -187,16 +188,16 @@ class Module extends BEAppModel {
 		if (!$permMod->save($dataPM)) {
 			throw new BeditaException(__("Error saving admin permission"));
 		}
-		
+
 		clearCache(null, 'models');
 		clearCache(null, 'persistent');
-		
+
 		// recaching configuration
 		BeLib::getObject("BeConfigure")->cacheConfig();
-		
+
 		return true;
 	}
-	
+
 	private function createPluginSchema($pluginName, $pluginPath) {
 		// load and check schema
 		$schemaClass = Inflector::camelize($pluginName). "Schema";
@@ -209,21 +210,21 @@ class Module extends BEAppModel {
 		include($schemaFile);
 		return new $schemaClass();
 	}
-	
+
 	protected function handlePluginSchema($pluginName, array& $setup, $pluginPath) {
 		if(empty($setup["tables"])) {
 			return;
 		}
 		$schemaPath = $pluginPath . DS  . $pluginName . DS . "config". DS. "sql" . DS;
-		
+
 		$pluginSchema = $this->createPluginSchema($pluginName, $pluginPath);
 		$pluginTables = $pluginSchema->tables;
-		
+
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$currentTables = $db->listSources();
-		
+
 		$beSchema = ClassRegistry::init("BeSchema");
-		
+
 		$found = false;
 		$numTablesFound = 0;
 		$tabsNotFound = "";
@@ -231,12 +232,12 @@ class Module extends BEAppModel {
 			if(in_array($tabName, $currentTables)) {
 				$found = true;
 				$numTablesFound++;
-				
+
 				$modelName = Inflector::camelize($tabName);
 				$model = ClassRegistry::init($modelName);
-				
+
 				$tableMeta = $beSchema->tableMetaData($model, $db);
-				
+
 				// if fields do not match, error
 				ksort($tabData);
 				ksort($tableMeta);
@@ -246,7 +247,7 @@ class Module extends BEAppModel {
 					throw new BeditaException(__("Database schema conflict, table has different schema") . ": " . $tabName);
 				}
 				ClassRegistry::removeObject($modelName);
-				
+
 			} else {
 				$tabsNotFound .= " '" . $tabName . "'";
 			}
@@ -254,7 +255,7 @@ class Module extends BEAppModel {
 		if($found && $numTablesFound < count($pluginTables)) {
 			throw new BeditaException(__("Some plugin tables are missing") . $tabsNotFound);
 		}
-		
+
 		if(!$found) {
 			// find sql schema for current driver
 			$sqlSchema = $schemaPath . $db->config["driver"] . "_schema.sql";
@@ -262,12 +263,12 @@ class Module extends BEAppModel {
 				throw new BeditaException(__("Database schema for current driver not found") . " [".$db->config["driver"]."]");
 			}
 			// execute script
-			$beSchema->executeQuery($db, $sqlSchema);	
+			$beSchema->executeQuery($db, $sqlSchema);
 			$db->cacheSources = false;
 		}
 	}
-	
-	
+
+
 	/**
 	 * unplug module
 	 * delete row on modules table, all module objects and object type
@@ -280,7 +281,7 @@ class Module extends BEAppModel {
 		if (!$this->delete($id)) {
 			throw new BeditaException(__("Error deleting module " . $setup["publicName"]));
 		}
-		
+
 		if (!empty($setup["BEditaObjects"])) {
 			if (!is_array($setup["BEditaObjects"])) {
 				$setup["BEditaObjects"] = array($setup["BEditaObjects"]);
@@ -292,7 +293,7 @@ class Module extends BEAppModel {
 				$otModel->purgeType($objectType);
 			}
 		}
-		
+
 		// drop tables
 		if (!empty($setup["tables"])) {
 			$pluginTables = $setup["tables"];
@@ -302,10 +303,10 @@ class Module extends BEAppModel {
 				$this->query($q);
 			}
 		}
-		
+
 		clearCache(null, 'models');
 		clearCache(null, 'persistent');
-		
+
 		$pluginPath = BEDITA_MODULES_PATH . DS . $name . DS . "models" . DS;
 		$appPaths = App::path('models');
 		$res = array_search($pluginPath, $appPaths);
@@ -313,11 +314,11 @@ class Module extends BEAppModel {
 			unset($appPaths[$res]);
 			App::build(array("models" => $appPaths), true);
 		}
-		
+
 		// recaching configuration
 		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
-	
+
 }
 
 

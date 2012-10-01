@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2011 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Basic Stream
@@ -25,7 +27,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Stream extends BEAppModel
@@ -35,7 +37,7 @@ class Stream extends BEAppModel
 	 * @var array of mime types
 	 */
 	private $mimeTypes = array();
-	
+
 	/**
 	 * Get id from filename
 	 * @param string $filename
@@ -49,37 +51,37 @@ class Stream extends BEAppModel
 		if(!isset($ret['Stream']['id'])) return false ;
 		return $ret['Stream']['id'] ;
 	}
-	
+
 	/**
 	 * update fields in streams table
-	 * 
+	 *
 	 * @param int $id, if empty update all streams
 	 * @return array of updated streams (empty array if no array updated)
 	 */
 	public function updateStreamFields($id = null) {
-		
+
 		$conditions = array();
 		if (!empty($id)) {
 			$conditions = array("id" => $id);
 		}
-		
+
 		$conf = Configure::getInstance();
-		
+
 		$streams = $this->find("all", array(
 			"conditions" => $conditions
 		));
-		
+
 		$streamsUpdated = array();
-		
+
 		if (!empty($streams)) {
 			foreach ($streams as $stream) {
 				if (!empty($stream["Stream"]["uri"])) {
 					$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
 					$uri = $stream["Stream"]["uri"];
 					$hasFile = file_exists($conf->mediaRoot . $uri);
-					
+
 					if ($isURL || $hasFile) {
-						
+
 						if($hasFile) {
 							// check & correct file name
 							$oldName = $stream["Stream"]["name"];
@@ -88,11 +90,11 @@ class Stream extends BEAppModel
 								$newName = BeLib::getInstance()->friendlyUrlString($oldName);
 							} else {
 								$newName = BeLib::getInstance()->friendlyUrlString(substr($oldName, 0, $p));
-								$newName .=  "." . BeLib::getInstance()->friendlyUrlString(substr($oldName, $p+1)); 
+								$newName .=  "." . BeLib::getInstance()->friendlyUrlString(substr($oldName, $p+1));
 							}
 							if($newName !== $oldName) {
 								$stream["Stream"]["name"] = $newName;
-								$slash = strrpos($uri, "/"); 
+								$slash = strrpos($uri, "/");
 								$newUri = substr($uri, 0, $slash+1) . $newName;
 								if(rename($conf->mediaRoot . $uri, $conf->mediaRoot . $newUri) === false) {
 									throw new BeditaException(__("Error renaming stream") . " id: " . $id . " file: " . $fileName);
@@ -131,20 +133,20 @@ class Stream extends BEAppModel
 							throw new BeditaException(__("Error updating stream " . $id));
 						}
 
-						$streamsUpdated[] = $stream;						
-					}					
+						$streamsUpdated[] = $stream;
+					}
 				}
 			}
 		}
 		return $streamsUpdated;
 	}
-	
-	
+
+
 	/**
 	 * Clears media cache
-	 * 
+	 *
 	 * @param int $id, object id of which clear cache
-	 * 
+	 *
 	 * @return mixed, false if no stream was found
 	 *				  empty array if cleaning operation proceeds without errors
 	 *				  array with errors if something goes wrong. Itcontains:
@@ -186,10 +188,10 @@ class Stream extends BEAppModel
 		}
 		return $results;
 	}
-	
+
 	/**
 	 * return media provider array or false if $uri it's not managed
-	 * 
+	 *
 	 * @param $uri
 	 * @return mixed array("provider" => "", "uri" => "", "video_uid" => "") or false if not found
 	 */
@@ -200,15 +202,15 @@ class Stream extends BEAppModel
 				if(preg_match($expression, $uri, $matched)) {
 					$mediaProvider = array("provider" => $provider, "uri" => $matched[0], "video_uid" => $matched[1]);
 					return $mediaProvider;
-				}	
+				}
 			}
 		}
 		return false ;
 	}
-	
+
 	/**
-	 * get mime type by finfo_open (if function exist) or by file extension 
-	 * 
+	 * get mime type by finfo_open (if function exist) or by file extension
+	 *
 	 * @param $path full path of file
 	 * @param $filename
 	 * @return string or false if mime_type not found
@@ -229,10 +231,10 @@ class Stream extends BEAppModel
 		}
 		return $mime_type;
 	}
-	
+
 	/**
 	 * get mime type by file extension
-	 * 
+	 *
 	 * @param $filename
 	 * @return string or false if mime_type not found
 	 */
@@ -240,14 +242,14 @@ class Stream extends BEAppModel
 		$mime_type = false;
 		if (empty($this->mimeTypes)) {
 			$this->setMimeTypes();
-		}		
+		}
 		$extension = strtolower( pathinfo($filename, PATHINFO_EXTENSION) );
 		if (!empty($extension) && array_key_exists($extension,$this->mimeTypes)) {
 			$mime_type = $this->mimeTypes[$extension];
 		}
 		return $mime_type;
 	}
-	
+
 	/**
 	 * set Stream::mimeTypes array using bedita-app/config/mimi.types.php file
 	 * @return void
@@ -256,7 +258,7 @@ class Stream extends BEAppModel
 		include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
 		$this->mimeTypes = $config["mimeTypes"];
 	}
-	
+
 	/**
 	 * get Stream::mimeTypes
 	 * @return array of mime type
@@ -264,7 +266,7 @@ class Stream extends BEAppModel
 	public function getMimeTypes() {
 		return $this->mimeTypes;
 	}
-	
-	
+
+
 }
 ?>

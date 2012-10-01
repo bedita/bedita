@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Search text object
@@ -25,7 +27,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class SearchText extends BEAppModel
@@ -40,13 +42,13 @@ class SearchText extends BEAppModel
 
 	/**
 	 * Save search data for a model
-	 * 
+	 *
 	 * @param object $model
 	 * @throws BeditaException
 	 * @return boolean
 	 */
 	public function createSearchText($model) {
-		
+
 		$bviorCompactResults = null;
 		if (isset($model->bviorCompactResults)) {
 			$bviorCompactResults = $model->bviorCompactResults ;
@@ -57,7 +59,7 @@ class SearchText extends BEAppModel
 			throw new BeditaException("Error loading {$model->name}");
 		}
 		$model->bviorCompactResults = $bviorCompactResults ;
-		
+
 		$searchFields = $this->getSearchFields($model);
 		if (empty($data["id"])) {
 			$data["id"] = $model->{$model->primaryKey};
@@ -65,7 +67,7 @@ class SearchText extends BEAppModel
 		$this->saveSearchTexts($searchFields, $data);
 		return true ;
 	}
-	
+
 	private function getSearchFields(BEAppModel $model) {
 		$searchFields = array();
 		$conf = Configure::getInstance();
@@ -79,7 +81,7 @@ class SearchText extends BEAppModel
 
 	/**
 	 * Save search data multilang
-	 * 
+	 *
 	 * @param array $dataLangText
 	 * @throws BeditaException
 	 */
@@ -101,14 +103,14 @@ class SearchText extends BEAppModel
 		}
 		$this->saveSearchTexts($searchFields, $data);
 	}
-	
+
 	/**
 	 * Rebuild indexes for text search
-	 * 
-	 * @param boolean $returnOnlyFailed, 
+	 *
+	 * @param boolean $returnOnlyFailed,
 	 *					true (default) return only 'failed' and 'langTextFailed' array
 	 *					false return also 'success' and 'langTextSuccess' array
-	 * 
+	 *
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
 	 *						'id' => object id indexed
@@ -131,12 +133,12 @@ class SearchText extends BEAppModel
 		$res = $beObj->find('list',array(
 			"fields" => array('id')
 		));
-		
+
 		$results = array('failed' => array(), 'langTextFailed' => array());
 		if (!$returnOnlyFailed) {
 			$results = array_merge($results, array('success' => array(), 'failed' => array()));
 		}
-		
+
 		foreach ($res as $id) {
 			$type = $beObj->getType($id);
 			if(empty($type)) {
@@ -159,11 +161,11 @@ class SearchText extends BEAppModel
 		}
 		// lang texts
 		$langText = ClassRegistry::init("LangText");
-		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
+		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));
 		foreach ($res as $r) {
-			
-			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'], 
-												"LangText.lang" => $r['LangText']['lang'])));	
+
+			$lt = $langText->find('all',array("conditions"=>array("LangText.object_id"=>$r['LangText']['object_id'],
+												"LangText.lang" => $r['LangText']['lang'])));
 			$dataLang = array();
 			foreach ($lt as $item) {
 				$dataLang[] = $item['LangText'];
@@ -188,13 +190,13 @@ class SearchText extends BEAppModel
 
 		return $results;
 	}
-			
+
 	private function saveSearchTexts(array &$searchFields, array &$data) {
-		
+
 		if (!empty($searchFields)) {
 			$indexFields = array_keys($searchFields);
 	        $lang = !empty($data['lang'])? $data["lang"] : Configure::read("defaultLang");
-			
+
 			// clean search text before save
 			$deleteRes = $this->deleteAll(array("object_id" => $data['id'], "SearchText.lang" => $lang), false);
 			if (!$deleteRes) {
@@ -206,13 +208,13 @@ class SearchText extends BEAppModel
 	                if (!empty($v)) {
 						$sText = array(
 			                'object_id' => $data['id'],
-			                'lang'      => $lang, 
+			                'lang'      => $lang,
 			                'content'   => $v,
 			                'relevance' => $searchFields[$k]
 		                );
-	
+
 		                $this->create();
-		                if (!$this->save($sText)) 
+		                if (!$this->save($sText))
 		                    throw new BeditaException(__("Error saving search text {$model}: $k => $v"));
 	                }
 				}

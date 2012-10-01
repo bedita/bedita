@@ -19,6 +19,8 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::uses("BEAppObjectModel", "Model/Object/Base");
+
 /**
  * Addressbook card object
  *

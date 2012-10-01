@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008, 2010 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Lang text object for translation
@@ -25,7 +27,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class LangText extends BEAppModel
@@ -42,7 +44,7 @@ class LangText extends BEAppModel
 
 	/**
 	 * Return translations of fields for an object
-	 * 
+	 *
 	 * @param int $object_id
 	 * @return array
 	 */
@@ -62,7 +64,7 @@ class LangText extends BEAppModel
 
 	/**
 	 * Return object translations performing a search by $filter, including paginating data.
-	 * 
+	 *
 	 * @param array $filter
 	 * @param string $order
 	 * @param boolean $dir
@@ -76,25 +78,25 @@ class LangText extends BEAppModel
 
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
-		
+
 		// build sql conditions
 		$db =& ConnectionManager::getDataSource($this->useDbConfig);
 		$beObject = ClassRegistry::init("BEObject");
 		$beObjFields = $db->fields($beObject);
 		$beObjFields = implode(",", $beObjFields);
-		
+
 		$langTextFields = $db->fields($this);
 		$langTextFields = implode(",", $langTextFields);
-		
+
 		$fields  = "DISTINCT {$beObjFields}, {$langTextFields}" ;
-		$from = "{$s}lang_texts{$e} as {$s}LangText{$e} LEFT OUTER JOIN {$s}objects{$e} 
+		$from = "{$s}lang_texts{$e} as {$s}LangText{$e} LEFT OUTER JOIN {$s}objects{$e}
 			as {$s}BEObject{$e} ON {$s}LangText{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
 		$conditions = array();
-		
+
 		$beObjGroupBy = $this->fieldsString("BEObject");
 		$langTextGroupBy = $this->fieldsString("LangText");
 		$groupClausole = "GROUP BY {$beObjGroupBy}, {$langTextGroupBy}";
-		
+
 		$conditions = array("LangText.name = 'status'");
 
 		if( !empty($filter['lang']) && ($filter['lang']!=null) ) {
@@ -109,7 +111,7 @@ class LangText extends BEAppModel
 		if( !empty($filter['object_type_id'])  && ($filter['object_type_id']!=null) ) {
 			$conditions[]="BEObject.object_type_id = '" . $filter['object_type_id'] . "'";
 		}
-		
+
 		if( !empty($order) && $order == "object_type_id")  {
 			$fields .= ", {$s}ObjectType.name{$e}";
 			$from .= ", {$s}object_types{$e} AS {$s}ObjectType{$e}";
@@ -128,9 +130,9 @@ class LangText extends BEAppModel
 			$from .= ", search_texts AS SearchText";
 			$conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = LangText.lang AND MATCH (SearchText.content) AGAINST ('".$filter["query"]."')";
 			$otherOrder = "points DESC ";
-			unset($filter["query"]);	
+			unset($filter["query"]);
 		}
-		
+
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$ordClausole = "";
@@ -148,7 +150,7 @@ class LangText extends BEAppModel
 		} elseif (!empty($otherOrder)) {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
-		
+
 		$limit 	= $this->getLimitClausole($dim, $page) ;
 		// #CUSTOM QUERY
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
@@ -161,12 +163,12 @@ class LangText extends BEAppModel
 		foreach($tmp as $tr) {
 			$object_id = $tr['LangText']['object_id'];
 			$lang = $tr['LangText']['lang'];
-			$translationTitle = $this->field("text", 
+			$translationTitle = $this->field("text",
 				array("object_id"=>$object_id, "lang"=>$lang, "name"=>"title"));
 
 			$objects[] = array("LangText" => array(
 				"id" => $tr['LangText']["id"], "object_id" => $object_id, "lang" => $tr['LangText']["lang"],
-				"status" => $tr['LangText']["text"], "title" => $translationTitle), 
+				"status" => $tr['LangText']["text"], "title" => $translationTitle),
 				"BEObject" => $tr['BEObject']);
 		}
 
@@ -175,16 +177,16 @@ class LangText extends BEAppModel
 		$tmpCount = $this->query($queryCount);
 		if ($tmpCount === false)
 			throw new BeditaException(__("Error counting translations"));
-	
+
 		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
-		
+
 		// reorder by LangText fields
 		if (!empty($langTextOrder)) {
 			LangText::$paginationOrder = $langTextOrder;
 			LangText::$paginationDir = $dir;
 			usort($objects, array('LangText', 'reorderPagination'));
 		}
-		
+
 		$recordset = array(
 			"translations"	=> $objects,
 			"toolbar"		=> $this->toolbar($page, $dim, $size)
@@ -192,12 +194,12 @@ class LangText extends BEAppModel
 
 		return $recordset ;
 	}
-	
+
 	/**
-	 * compare two array elements defined by $paginationOrder var and return -1,0,1 
+	 * compare two array elements defined by $paginationOrder var and return -1,0,1
 	 * $paginationDir is used for define LangText order of comparison
 	 * if LangText comparison item are equals, order by BEObject.modified DESC
-	 * 
+	 *
 	 * @param array $e1
 	 * @param array $e2
 	 * @return int (-1,0,1)

@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008-2012 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,16 +25,16 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Addon extends AppModel {
-    
+
 	public $useTable = false;
-	
+
 	/**
 	 * return an array of available addons
-	 * 
+	 *
 	 * @return array in this form
 	 * 				array(
 	 * 					"models" => array(
@@ -48,7 +48,7 @@ class Addon extends AppModel {
 	 *									"enabledPath" => path where to find addon file enabled,
 	 *									"type" => "models",
 	 *									"fileNameUsed" => true if file name is already used for model
-	 * 								), 
+	 * 								),
 	 * 								1 => array()
 	 * 								....
 	 * 							),
@@ -67,7 +67,7 @@ class Addon extends AppModel {
 	 *									"enabledPath" => path where to find addon file enabled,
 	 *									"type" => "models",
 	 *									"fileNameUsed" => true if file name is already used for model
-	 * 								), 
+	 * 								),
 	 * 								1 => array()
 	 * 								....
 	 * 							),
@@ -77,7 +77,7 @@ class Addon extends AppModel {
 	 * 								), 1 => array(...)), ...
 	 * 						)
 	 * 					),
-	 * 					
+	 *
 	 * 					"components" => array(like "others" array),
 	 * 					"helpers" => array(like "others" array),
 	 *					"behaviors" => array(like "others" array),
@@ -98,7 +98,7 @@ class Addon extends AppModel {
 						$name = $addonFile->name();
 						$addonName = Inflector::camelize($name);
 						$type = (strstr($val, "behaviors"))? "behaviors" : $val;
-						
+
 						$addonItem = array(
 							"name" => $addonName,
 							"file" => $addonFileName,
@@ -107,10 +107,10 @@ class Addon extends AppModel {
 							"type" => $type,
 							"update" => false
 						);
-						
+
 						$alreadyUsed = $Belib->isFileNameUsed($addonFileName, $type, array(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS));
 						$addonItem["fileNameUsed"] = $alreadyUsed;
-						
+
 						// check if addon file enabled has to be updated
 						$addonFileEnabled = new File(BEDITA_ADDONS_PATH . DS . $val . DS . "enabled" . DS . $addonFileName);
 						$isEnabled = $addonFileEnabled->exists();
@@ -119,7 +119,7 @@ class Addon extends AppModel {
 								$addonItem["update"] = true;
 							}
 						}
-						
+
 						if ($type == "models") {
 							if ($Belib->isBeditaObjectType($addonName, BEDITA_ADDONS_PATH . DS . $val)) {
 								$addonItem["objectType"] = $name;
@@ -144,39 +144,39 @@ class Addon extends AppModel {
 						}
 					}
 				}
-				
+
 			}
 		}
 		return $addons;
 	}
-	
+
 	/**
 	 * enable addon copying the addon file in the related enabled folder.
 	 * If addon is a BEdita object type a row on object_types table is created
-	 * 
+	 *
 	 * @param string $fileName, addon file name
-	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ... 
-	 * @throws BeditaException 
+	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ...
+	 * @throws BeditaException
 	 */
 	public function enable($fileName, $addonType) {
 		if (empty($fileName) || empty($addonType)) {
 			throw new BeditaException(__("Missing mandatory data"), "file name and/or addon type");
 		}
-		
+
 		$filePath = $this->getFolderByType($addonType);
 		if (empty($filePath)) {
 			throw new BeditaException($addonType . " " . __("addon folder doesn't found"));
 		}
 		$filePath .= DS . $fileName;
-		
+
 		$addonFile = new File($filePath);
 		if (!$addonFile->exists()) {
 			throw new BeditaException($filePath . " " . __("doesn't found"));
 		}
-		$addonFolder = $addonFile->Folder()->path;		
+		$addonFolder = $addonFile->Folder()->path;
 		$addonClassName = Inflector::camelize($addonFile->name());
 		$BeLib = BeLib::getInstance();
-		
+
 		// BEdita object type
 		if ($BeLib->isBeditaObjectType($addonClassName, $addonFolder)) {
 			$model = $BeLib->getObject($addonClassName, $addonFolder);
@@ -190,7 +190,7 @@ class Addon extends AppModel {
 				throw new BeditaException(__("Error saving object type"));
 			}
 		}
-	 	
+
 		$enabledPath =  $this->getEnabledFolderByType($addonType) . DS . $addonFile->name;
 		if (!$addonFile->copy($enabledPath)) {
 			if (!empty($data["id"])) {
@@ -198,65 +198,65 @@ class Addon extends AppModel {
 			}
 			throw new BeditaException(__("Error copying addon to enabled folder"), array("file path" => $filePath, "enabled path" => $enabledPath));
 		}
-		
+
 	 	BeLib::getObject("BeConfigure")->cacheConfig();
 	}
-	
+
 	/**
 	 * disable addon deleting the addon file from the related enabled folder.
 	 * If addon is a BEdita object the row on object_types table and all objects of that type are removed
-	 * 
+	 *
 	 * @param string $fileName, addon file name
-	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ... 
-	 * @throws BeditaException 
+	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ...
+	 * @throws BeditaException
 	 */
 	public function disable($fileName, $addonType) {
 		if (empty($fileName) || empty($addonType)) {
 			throw new BeditaException(__("Missing mandatory data"), "file name and/or addon type");
 		}
-		$enabledPath = $this->getEnabledFolderByType($addonType) .  DS . $fileName;		
-		
+		$enabledPath = $this->getEnabledFolderByType($addonType) .  DS . $fileName;
+
 		$addonFile = new File($enabledPath);
 		$addonClassName = Inflector::camelize($addonFile->name());
 		$BeLib = BeLib::getInstance();
-		
+
 		// BEdita object type
 		if ($BeLib->isBeditaObjectType($addonClassName, $addonFile->Folder()->path)) {
 			$ObjectType = ClassRegistry::init("ObjectType");
 			$ObjectType->purgeType($addonFile->name());
 		}
-		
+
 		// delete addon file to respective enabled folder
 		if (!$addonFile->delete()) {
 			throw new BeditaException(__("Error deleting addon to enabled folder"), array("file path" => $filePath, "enabled path" => $enabledPath));
 		}
-		
+
 		BeLib::getObject("BeConfigure")->cacheConfig();
 	}
-	
+
 	/**
 	 * update addon overriding the enabled addon file
-	 * 
+	 *
 	 * @param string $fileName, addon file name
-	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ... 
-	 * @throws BeditaException 
+	 * @param string $addonType, the type of addon, i.e. models, helpers, components, ...
+	 * @throws BeditaException
 	 */
 	public function update($fileName, $addonType) {
 		if (empty($fileName) || empty($addonType)) {
 			throw new BeditaException(__("Missing mandatory data"), "file name and/or addon type");
 		}
-		
+
 		$filePath = $this->getFolderByType($addonType);
 		if (empty($filePath)) {
 			throw new BeditaException($addonType . " " . __("addon folder doesn't found"));
 		}
 		$filePath .= DS . $fileName;
-		
+
 		$addonFile = new File($filePath);
 		if (!$addonFile->exists()) {
 			throw new BeditaException($filePath . " " . __("doesn't found"));
 		}
-		
+
 		$enabledPath =  $this->getEnabledFolderByType($addonType) . DS . $addonFile->name;
 		if (!$addonFile->copy($enabledPath)) {
 			throw new BeditaException(__("Error copying addon to enabled folder"), array("file path" => $filePath, "enabled path" => $enabledPath));
@@ -266,20 +266,20 @@ class Addon extends AppModel {
 
 	/**
 	 * get an array with folders on which $fileName is found starting from BEDITA_ADDONS_PATH
-	 * 
+	 *
 	 * @param string $fileName, the file name
-	 * @return array 
+	 * @return array
 	 */
 	public function getFolderByFile($fileName) {
 		$Folder = new Folder(BEDITA_ADDONS_PATH);
 		return $Folder->findRecursive($fileName);
 	}
-	
+
 	/**
 	 * get the folder relative to an addon
-	 * 
-	 * @param string $addonType, the addon type i.e. model, helper, component,... 
-	 * @return mixed, the folder string or false if folder doesn't found 
+	 *
+	 * @param string $addonType, the addon type i.e. model, helper, component,...
+	 * @return mixed, the folder string or false if folder doesn't found
 	 */
 	public function getFolderByType($addonType) {
 		$path = BEDITA_ADDONS_PATH . DS . Inflector::pluralize($addonType);
@@ -288,12 +288,12 @@ class Addon extends AppModel {
 		}
 		return $path;
 	}
-	
+
 	/**
 	 * get the "enabled" folder relative to an addon
-	 * 
-	 * @param string $addonType, the addon type i.e. model, helper, component,... 
-	 * @return mixed, the folder string or false if folder doesn't found 
+	 *
+	 * @param string $addonType, the addon type i.e. model, helper, component,...
+	 * @return mixed, the folder string or false if folder doesn't found
 	 */
 	public function getEnabledFolderByType($addonType) {
 		$addonPath = $this->getFolderByType($addonType);
@@ -306,6 +306,6 @@ class Addon extends AppModel {
 		}
 		return $enabledPath;
 	}
-	
+
 }
 ?>

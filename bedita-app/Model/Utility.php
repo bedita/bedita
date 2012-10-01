@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008-2011 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -26,31 +26,31 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Utility extends AppModel {
-    
+
 	public $useTable = false;
-	
+
 	/**
 	 * response of Utility::call()
-	 * @var array, it contains 
+	 * @var array, it contains
 	 *				'results' => the results of the operation, it can be an array and depends from operation,
 	 *				'message' => message to display at user,
 	 *				'log' => log message
 	 */
 	protected $response = array('results' => null, 'message' => null, 'log' => null);
-	
+
 	/**
 	 * call a specific utility operation and eventually log errors
-	 * 
-	 * @param string $operation, the name of the operation. 
+	 *
+	 * @param string $operation, the name of the operation.
 	 *				It is also the name of the method called and the name of log file written
 	 * @param array $options, default 'log' => false, no file log written
 	 *				other options can be seen in the relative utility operation
 	 * @return array of response (Utility::response)
-	 * @throws BeditaException 
+	 * @throws BeditaException
 	 */
 	public function call($operation, $options = array()) {
 		if (!method_exists($this, $operation)) {
@@ -71,21 +71,21 @@ class Utility extends AppModel {
 		}
 		return $this->response;
 	}
-	
+
 	/**
 	 * utility operation
 	 * update stream fields according to Stream::updateStreamFields
-	 * 
-	 * @param array $options 
+	 *
+	 * @param array $options
 	 */
 	protected function updateStreamFields($options) {
 		$this->response['results'] = ClassRegistry::init("Stream")->updateStreamFields();
 	}
-	
+
 	/**
 	 * utility operation
 	 * rebuild index for search text according to SearchText::rebuildIndex()
-	 * 
+	 *
 	 * @param array $options
 	 *				'returnOnlyFailed' => true (default) to return only failed results
 	 *				'log' => true to log errors
@@ -111,12 +111,12 @@ class Utility extends AppModel {
 			}
 		}
 	}
-	
+
 	/**
 	 * utility operation
 	 * clear media cache, remove image thumbs according to Stream::clearMediaCache()
-	 * 
-	 * @param array $options 
+	 *
+	 * @param array $options
 	 *				'log' => true to log errors
 	 */
 	protected function clearMediaCache($options) {
@@ -132,11 +132,11 @@ class Utility extends AppModel {
 			$this->response['message'] = "clearMediaCache " . __("operation done") . ".\n" . $msg;
 		}
 	}
-	
+
 	/**
 	 * utility operation
 	 * delete log files according to BeSystem::emptyLogs()
-	 * 
+	 *
 	 * @param array $options
 	 *				'filename' => null (default delete all log files) the log file to delete,
 	 *				'basePath' => LOGS (default) the log directory path
@@ -149,12 +149,12 @@ class Utility extends AppModel {
 			$this->response['log'] = $this->buildLogItems($this->response['results']['failed']);
 		}
 	}
-	
+
 	/**
 	 * utility operation
 	 * cleanup cached files according to BeSystem::cleanupCache()
-	 * 
-	 * @param array $options 
+	 *
+	 * @param array $options
 	 *				'basePath' => TMP (default) the path on which search and clear cache
 	 *				'frontendsToo' => true (default) to clean also frontends cache
 	 */
@@ -167,15 +167,15 @@ class Utility extends AppModel {
 	}
 
 
-	
+
 	/**
 	 * build an array of log items
 	 * loop the $data array and build an array of string built with all key => value pairs
-	 * 
+	 *
 	 * @param array $data, multidimensional array as
 	 *				0 => array('id' => 1, '.....'fieldname' => 'value_1', ...),
 	 *				1 => array('id' => 2, '.....'fieldname' => 'value_2', ...)
-	 * @return string 
+	 * @return string
 	 */
 	private function buildLogItems(array $data = array()) {
 		$log = array();
@@ -188,7 +188,7 @@ class Utility extends AppModel {
 		}
 		return $log;
 	}
-	
+
 	/**
 	 * clear Utility::response
 	 */

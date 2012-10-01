@@ -19,6 +19,8 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::uses("BeditaCollectionModel", "Model/Object/Base");
+
 /**
  * Publication data
  *

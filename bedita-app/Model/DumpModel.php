@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -29,7 +29,7 @@ App::import('Model', 'Document');
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class DumpModel extends AppModel {
@@ -41,10 +41,10 @@ class DumpModel extends AppModel {
  *
  */
 abstract class MigrationBase {
-	
+
 	protected $model;
 	private $handle;
-	
+
 	protected function createInsert($data, $t) {
 		$fields = "";
 		$values = "";
@@ -62,25 +62,25 @@ abstract class MigrationBase {
 		}
     	return "INSERT INTO $t (".$fields.") VALUES ($values);\n";
     }
-    
+
     public function setModel(Model $m) {
     	$this->model = $m;
     }
 
     public function setFile($f) {
     	$this->handle = fopen($f, "w");
-		if($this->handle === FALSE) 
+		if($this->handle === FALSE)
 			throw new Exception("Error opening file: ".$f);
     }
-    
+
     protected function write($s) {
     	fwrite($this->handle, $s);
     }
-    
+
     protected function close() {
     	fclose($this->handle);
     }
-    
+
     protected function copyTable($t) {
 		$res = $this->model->query("SELECT * from $t");
 		foreach ($res as $r) {
@@ -105,13 +105,13 @@ abstract class MigrationBase {
 			}
 		}
 	}
-    
+
     abstract public function createExport();
 };
 
 /**
  * Migration shell: shell script to migrate BEdita instances from previous versions.
- * You have to create a specific 'migration' script (defining a Migration class that extends MigrationBase), 
+ * You have to create a specific 'migration' script (defining a Migration class that extends MigrationBase),
  * like:
  * class Migration extends MigrationBase {
  * }
@@ -119,13 +119,13 @@ abstract class MigrationBase {
 class MigrateShell extends Shell {
 
 	const DEFAULT_MIGRATION_DUMP = 'bedita-migration.sql' ;
-	
+
 	public function main() {
 		$this->migrate();
 	}
-	
+
 	public function migrate() {
-		
+
         $dbCfg = 'default';
     	if (isset($this->params['db'])) {
             $dbCfg = $this->params['db'];
@@ -135,7 +135,7 @@ class MigrateShell extends Shell {
 		$this->out("Importing data from db config: $dbCfg - database=".$dbName);
 		$model = new DumpModel();
 		$model->setDataSource($dbCfg);
-		
+
 		$scr = $this->params['script'];
 		if (empty($scr)) {
 	        $this->out("script file is mandatory, use -script ");
@@ -143,7 +143,7 @@ class MigrateShell extends Shell {
 		}
 		$this->out("Using script: $scr");
 		include_once($scr);
-		
+
 		$migration = new Migration();
 		$migration->setModel($model);
 		$expFile = self::DEFAULT_MIGRATION_DUMP;
@@ -161,20 +161,20 @@ class MigrateShell extends Shell {
 				return;
 			}
 		}
-    	
+
 		$migration->setFile($expFile);
 		$migration->createExport();
 	}
-	
+
 	function help() {
- 	
+
 		$this->out('Available functions:');
         $this->out('1. migrate: migrate db data');
   		$this->out(' ');
   		$this->out('   Usage: migrate -script <migration-script.php> [-db <dbname>] [-f <sql-dump-filename>]');
   		$this->out(' ');
 	}
-	
+
 }
 
 ?>

@@ -1,31 +1,33 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
+App::uses("BEAppModel", "Model");
+
 /**
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class PermissionModule extends BEAppModel
@@ -85,7 +87,7 @@ class PermissionModule extends BEAppModel
 			),
 			"contain" => array()
 		));
-		
+
 		if (empty($permModules)) {
 			$permModules["PermissionModule"]["module_id"] = $module_id;
 			$permModules["PermissionModule"]["ugid"] = $ugid;
@@ -99,8 +101,8 @@ class PermissionModule extends BEAppModel
 		}
 
 		return true;
-	}	
-	
+	}
+
 	/**
 	 * Delete a permit for a module
 	 *
@@ -122,7 +124,7 @@ class PermissionModule extends BEAppModel
 			"switch" => $switch
 		));
 		return $result;
-	}	
+	}
 
 	/**
 	 * Delete all permits of a module or an array of modules
@@ -168,7 +170,7 @@ class PermissionModule extends BEAppModel
 			"ugid" => $user["User"]["id"],
 			"switch" => "user"
 		));
-		
+
 		if (empty($userModulePerms)) {
 			$userModulePerms = 0;
 		}
@@ -210,13 +212,13 @@ class PermissionModule extends BEAppModel
 			$groupid = $this->Group->field("id", array("name" => $groupid));
 		}
 		$module_id = $this->Module->field("id", array("name" => $module));
-		
+
 		$groupModulePerms = $this->field("flag", array(
 			"module_id" => $module_id,
 			"ugid" => $groupid,
 			"switch" => "group"
 		));
-		
+
 		if (empty($groupModulePerms)) {
 			$groupModulePerms = 0;
 		}
@@ -247,8 +249,8 @@ class PermissionModule extends BEAppModel
 			"fields" => array("module_id", "flag"),
 			"contain" => array()
 		));
-		
-		
+
+
 		$gPerms = array();
 		if(!empty($groups)) {
 			$gPerms = $this->find("all", array(
@@ -266,17 +268,17 @@ class PermissionModule extends BEAppModel
 			$idMod = $up["PermissionModule"]["module_id"];
 			$flag = $up["PermissionModule"]["flag"];
 			if($flag & BEDITA_PERMS_READ_MODIFY) {
-				$perms[$idMod] = $flag; 				
+				$perms[$idMod] = $flag;
 			}
 		}
 		foreach ($gPerms as $gp) {
 			$idMod = $gp["PermissionModule"]["module_id"];
 			$flag = $gp["PermissionModule"]["flag"];
 			if(empty($perms[$idMod]) && ($flag & BEDITA_PERMS_READ_MODIFY)) {
-				$perms[$idMod] = $flag; 				
+				$perms[$idMod] = $flag;
 			}
 		}
-		
+
 		$modules = $this->Module->find("all", array(
 			"conditions" => array("status" => "on"),
 			"order" => "priority ASC"

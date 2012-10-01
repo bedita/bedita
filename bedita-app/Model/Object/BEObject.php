@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Basical object
@@ -25,16 +27,16 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class BEObject extends BEAppModel
 {
 	var $actsAs = array();
-	
+
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
-	
+
 	var $validate = array(
 //		'title' => array(
 //			'rule' => 'notEmpty'
@@ -73,8 +75,8 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'user_modified',
 			),
 	) ;
-	
-	var $hasMany = array(	
+
+	var $hasMany = array(
 		'Permission',
 
 		'Version' =>
@@ -83,13 +85,13 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			),
-			
+
 		'ObjectProperty' =>
 			array(
 				'className'		=> 'ObjectProperty',
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
-			),			
+			),
 		'SearchText' =>
 			array(
 				'foreignKey'	=> 'object_id',
@@ -120,9 +122,9 @@ class BEObject extends BEAppModel
 				'foreignKey'	=> 'object_id',
 				'dependent'		=> true
 			)
-			
+
 		);
-	
+
 	var $hasAndBelongsToMany = array(
 		'Category' =>
 			array(
@@ -141,13 +143,13 @@ class BEObject extends BEAppModel
 			    'unique'    			=> true,
 			   	'with' 					=> 'ObjectUser'
 			   )
-	);	
+	);
 
 	/**
 	 * Format object data (ObjectProperty, Tag, Category, LangText, Permission)
-	 */	
+	 */
 	function afterFind($result) {
-		
+
 		// format object properties
 		if(!empty($result['ObjectProperty'])) {
 			$propertyModel = ClassRegistry::init("Property");
@@ -156,17 +158,17 @@ class BEObject extends BEAppModel
 								"contain" => array("PropertyOption")
 							)
 						);
-			
+
 			foreach ($property as $keyProp => $prop) {
-				
+
 				foreach ($result["ObjectProperty"] as $k => $value) {
 					if ($value["property_id"] == $prop["id"]) {
 						if ($prop["multiple_choice"] != 0) {
 							$property[$keyProp]["value"][] = $value;
-						} else { 
+						} else {
 							$property[$keyProp]["value"] = $value;
 						}
-						
+
 						// set selected to true in PropertyOption array
 						if (!empty($prop["PropertyOption"])) {
 							foreach ($prop["PropertyOption"] as $n => $option) {
@@ -175,17 +177,17 @@ class BEObject extends BEAppModel
 								}
 							}
 						}
-						
+
 						unset($result["ObjectProperty"][$k]);
 					}
 				}
-				
+
 			}
 			$result["ObjectProperty"] = $property;
 //			pr($property);
 			unset($property);
 		}
-		
+
 		// set up LangText for view
 		if (!empty($result['LangText'])) {
 			$langText = array();
@@ -197,13 +199,13 @@ class BEObject extends BEAppModel
 			}
 			$result['LangText'] = $langText;
 		}
-		
+
 		// divide tags from categories
 		if (!empty($result["Category"])) {
-			
+
 			$tag = array();
 			$category = array();
-			
+
 			foreach ($result["Category"] as $ot) {
 				if (!empty($ot["object_type_id"])) {
 					$category[] = $ot;
@@ -211,7 +213,7 @@ class BEObject extends BEAppModel
 					$tag[] = $ot;
 				}
 			}
-			
+
 			$result["Category"] = $category;
 			$result["Tag"] = $tag;
 		}
@@ -225,7 +227,7 @@ class BEObject extends BEAppModel
 				}
 			}
 		}
-		
+
 		return $result ;
 	}
 
@@ -233,9 +235,9 @@ class BEObject extends BEAppModel
 		// format custom properties and searchable text fields
 		$labels = array('SearchText');
 		foreach ($labels as $label) {
-		  if(!isset($this->data[$this->name][$label])) 
+		  if(!isset($this->data[$this->name][$label]))
 			continue ;
-			
+
 		  if(is_array($this->data[$this->name][$label]) && count($this->data[$this->name][$label])) {
 		      $tmps = array() ;
 		      foreach($this->data[$this->name][$label]  as $k => $v) {
@@ -250,12 +252,12 @@ class BEObject extends BEAppModel
 		$this->unbindModel(array("hasAndBelongsToMany"=>array("User")));
 		return true ;
 	}
-	
+
 	/**
 	 * Save hasMany relations data
 	 */
 	function afterSave() {
-		
+
 		// hasMany relations
 		foreach ($this->hasMany as $name => $assoc) {
 			// skip specific manage
@@ -267,33 +269,33 @@ class BEObject extends BEAppModel
 			if(!isset($this->data[$this->name][$name])) {
 				continue ;
 			}
-			
+
 			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
-			$model 		= new $assoc['className']() ; 
-			
+			$model 		= new $assoc['className']() ;
+
 			// delete previous associations
 			$table 		= (isset($model->useTable)) ? $model->useTable : ($db->name($db->fullTableName($assoc->className))) ;
-			$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
+			$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;
 			$foreignK	= $assoc['foreignKey'] ;
 			// #CUSTOM QUERY
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
-			
+
 			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) {
 				continue ;
 			}
-			
+
 			// save associations
 			$size = count($this->data[$this->name][$name]) ;
 			for ($i=0; $i < $size ; $i++) {
-				$modelTmp	 	 = new $assoc['className']() ; 
+				$modelTmp	 	 = new $assoc['className']() ;
 				$data 			 = &$this->data[$this->name][$name][$i] ;
-				$data[$foreignK] = $id ; 
+				$data[$foreignK] = $id ;
 				if(!$modelTmp->save($data))
 					throw new BeditaException(__("Error saving object"), "Error saving hasMany relation in BEObject for model " . $assoc['className']);
-				
+
 				unset($modelTmp);
 			}
-						
+
 		}
 
 		// build ObjectUser Relation
@@ -326,29 +328,29 @@ class BEObject extends BEAppModel
 				}
 			}
 		}
-				
+
 		$permissions = false;
 		if(isset($this->data["Permission"]))
 			$permissions = $this->data["Permission"] ;
 		else if(isset($this->data[$this->name]["Permission"]))
 			$permissions = $this->data[$this->name]["Permission"] ;
-		
+
 		if(is_array($permissions)) {
 			$this->Permission->replace($this->{$this->primaryKey}, $permissions);
 		}
 		// save relations between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
-			
-			
+
+
 			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 			$queriesDelete 	= array() ;
 			$queriesInsert 	= array() ;
 			$queriesModified 	= array() ;
 			$lang			= (isset($this->data['BEObject']['lang'])) ? $this->data['BEObject']['lang']: null ;
-			
+
 			// set one-way relation
 			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
-			
+
 			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
 			$inverseRelations = array();
 			foreach ($allRelations as $n => $r) {
@@ -356,21 +358,21 @@ class BEObject extends BEAppModel
 					$inverseRelations[$r["inverse"]] = $n;
 				}
 			}
-			
+
 			$assoc 	= $this->hasMany['RelatedObject'] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
 			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
 
 			foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
-				
+
 				foreach($values as $key => $val) {
 					$obj_id		= isset($val['id'])? $val['id'] : false;
 					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
-					
+
 					// Delete old associations
 					// #CUSTOM QUERY
 					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
-						
+
 					if(!in_array($switch,$oneWayRelation)) {
 						$inverseSwitch = $switch;
 						if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
@@ -381,30 +383,30 @@ class BEObject extends BEAppModel
 
 						$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
 											AND switch = '{$inverseSwitch}' ";
-					
+
 						if (!empty($obj_id)) {
 							// #CUSTOM QUERY
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
-						
+
 							// find priority of inverse relation
 							// #CUSTOM QUERY
-							$inverseRel = $this->query("SELECT priority 
-														  FROM {$table} 
-														  WHERE id={$obj_id} 
-														  AND object_id={$this->id} 
+							$inverseRel = $this->query("SELECT priority
+														  FROM {$table}
+														  WHERE id={$obj_id}
+														  AND object_id={$this->id}
 														  AND switch='{$inverseSwitch}'");
-							
+
 							if (empty($inverseRel[0]["content_objects"]["priority"])) {
 								// #CUSTOM QUERY
 								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
 								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
 							} else {
 								$inversePriority = $inverseRel[0]["content_objects"]["priority"];
-							}						
+							}
 							// #CUSTOM QUERY
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
 						}
-						
+
 						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
 						if($modified && $obj_id) {
 							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
@@ -438,19 +440,19 @@ class BEObject extends BEAppModel
 					throw new BeditaException(__("Error modifying title and description"), $qMod);
 			}
 		}
-		
+
 		return true ;
 	}
-	
+
 	/**
 	 * Define default values.
-	 */		
+	 */
 	function beforeValidate() {
-		if(isset($this->data[$this->name])) 
+		if(isset($this->data[$this->name]))
 			$data = &$this->data[$this->name] ;
-		else 
+		else
 			$data = &$this->data ;
-	
+
 		if(isset($data['title'])) {
 			$data['title'] = trim($data['title']);
 		}
@@ -471,11 +473,11 @@ class BEObject extends BEAppModel
 		if(!isset($data['user_modified'])) {
 			$data['user_modified'] = $this->_getIDCurrentUser();
 		}
-		
+
 		// nickname: verify nick and status change, object not fixed
 		if(isset($data['id'])) {
 			$currObj = $this->find("first", array(
-											"conditions"=>array("BEObject.id" => $data['id']), 
+											"conditions"=>array("BEObject.id" => $data['id']),
 											"fields" =>array("status", "nickname", "fixed"),
 											"contain" => ("")
 											));
@@ -498,9 +500,9 @@ class BEObject extends BEAppModel
 			$tmpName = !empty($data['nickname']) ? $data['nickname'] : $title;
 			$data['nickname'] = $this->_getDefaultNickname($tmpName);
 		}
-		
+
 		if(empty($data["user_created"])) unset($data["user_created"]) ;
-		
+
 		// format custom properties data type
 		if (!empty($data["ObjectProperty"])) {
 			foreach ($data["ObjectProperty"] as $key => $val) {
@@ -508,11 +510,11 @@ class BEObject extends BEAppModel
 					$data["ObjectProperty"][$key]["property_value"] = $this->getDefaultDateFormat($val["property_value"]);
 			}
 		}
-		
+
 		// Se c'e' la chiave primaria vuota la toglie
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))
 			unset($data[$this->primaryKey]) ;
-			
+
 		return true ;
 	}
 
@@ -530,8 +532,8 @@ class BEObject extends BEAppModel
 	public function isFixed($id) {
 		$fixed = $this->field("fixed", array("BEObject.id" => $id));
 		return ($fixed == 1);
-	}	
-	
+	}
+
 	/**
 	 * Model name/type from id
 	 *
@@ -544,28 +546,28 @@ class BEObject extends BEAppModel
 		}
 		return Configure::getInstance()->objectTypes[$type_id]["model"] ;
 	}
-	
+
 	/**
 	* update title e description only.
 	**/
 	public function updateTitleDescription($id, $title, $description) {
 		if(@empty($id) || @empty($title)) return false ;
-		
+
 		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
 		// #CUSTOM QUERY
 		$db->query("UPDATE objects  SET title =  '".addslashes($title)."', description = '".addslashes($description)."' WHERE id = {$id} " ) ;
-		
+
 		return true ;
-	}	
-	
+	}
+
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	/**
 	 * build object unique name
-	 * 
+	 *
 	 * @param string $value
-	 * @return string 
+	 * @return string
 	 */
 	private function _getDefaultNickname($value) {
 		$nickname = $nickname_base = BeLib::getInstance()->friendlyUrlString($value);
@@ -580,15 +582,15 @@ class BEObject extends BEAppModel
 		};
 
 
-		$aliasModel = ClassRegistry::init("Alias");		
+		$aliasModel = ClassRegistry::init("Alias");
 		while (!$nickOk) {
-			
+
 			$cond = "WHERE BEObject.nickname = '{$nickname}'";
 			if ($this->id) {
 				$cond .= " AND BEObject.id<>".$this->id;
 			}
 			$numNickDb = $this->find("count", array("conditions" => $cond, "contain" => array()));
-			
+
 			// check nickname in db and in reservedWords
 			if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {
 				// check aliases
@@ -601,69 +603,69 @@ class BEObject extends BEAppModel
 				$nickname = $nickname_base . "-" . $countNick++;
 			}
 		}
-		
+
 		return $nickname ;
 	}
-	
+
 	private function _getDefaultLang() {
 		$conf = Configure::getInstance() ;
 		return ((isset($conf->defaultLang))?$conf->defaultLang:'') ;
 	}
-	
+
 //	private function _getDefaultPermission($value, $object_type_id) {
 //		if(isset($value) && is_array($value)) return $value ;
-//		
+//
 //		$conf = Configure::getInstance() ;
 //		$permissions = &$conf->permissions ;
-//		
+//
 //		// Aggiunge i permessi di default solo se sta creando un nuovo oggetto
 //		if(isset($this->data[$this->name][$this->primaryKey])) return null ;
-//		
+//
 //		// Seleziona i permessi in base al tipo di oggetti
 //		if(isset($permissions[$object_type_id])) 	return $permissions[$object_type_id] ;
 //		else if (isset($permissions['all']))		return $permissions['all'] ;
-//		
+//
 //		return null ;
 //	}
-	
+
 	private function _getDefaultIP() {
 		$IP = $_SERVER['REMOTE_ADDR'] ;
 		return $IP ;
 	}
-	
+
 	private function _getIDCurrentUser() {
 		// read user data from session or from configure
 		$conf = Configure::getInstance();
-		$userId=0; 
+		$userId=0;
 
 		if(isset($conf->beditaTestUserId)) {
 			$userId = $conf->beditaTestUserId; // unit tests
 		} else {
-		
+
 			$session = @(new CakeSession()) ;
-			
+
 			if($session->valid() === false)
 				return null;
-			$user = $session->read($conf->session["sessionUserKey"]) ; 
-			if(!isset($user["id"])) 
+			$user = $session->read($conf->session["sessionUserKey"]) ;
+			if(!isset($user["id"]))
 				return null ;
-			$userId = $user["id"];	
+			$userId = $user["id"];
 		}
-		
+
 		return $userId;
 	}
-	
+
 	/**
 	 * torna un array con la variabile archiviata in un array
 	 */
 	private function _value2array($name, &$val, &$arr) {
-		$type = null ; 
+		$type = null ;
 		switch(gettype($val)) {
 			case "integer" : 	{ $type = "integer" ; } break ;
 			case "boolean" : 	{ $type = "bool" ; } break ;
 			case "double" : 	{ $type = "float" ; } break ;
 			case "string" :		{ $type = "string" ; } break ;
-					
+
 			default: {
 				$type = "stream" ;
 				$val = serialize($val) ;
@@ -673,9 +675,9 @@ class BEObject extends BEAppModel
 			'name'		=> $name,
 			'type'		=> $type,
 			$type		=> $val
-		) ;	
+		) ;
 	}
-		
+
 	/**
 	 * Get object id from an identifier that could be an id or nickname
 	 * @param mixed $val
@@ -687,11 +689,11 @@ class BEObject extends BEAppModel
 		} else {
 			$res = $this->getIdFromNickname(strtolower($val));
 		}
-		return $res; 
+		return $res;
 	}
-	
+
 	/**
-	 * Get object id from unique name 
+	 * Get object id from unique name
 	 * @param string $nickname
 	 */
 	function getIdFromNickname($nickname) {
@@ -700,16 +702,16 @@ class BEObject extends BEAppModel
 			$aliasModel = ClassRegistry::init("Alias");
 			$id = $aliasModel->field("object_id", array("nickname_alias" => $nickname));
 		}
-		return $id; 
+		return $id;
 	}
 
 	/**
-	 * Get object nickname from id 
+	 * Get object nickname from id
 	 * @param integer $id
 	 */
 	function getNicknameFromId($id) {
 		return $this->field("nickname", array("id" => $id));
 	}
-		
+
 }
 ?>

@@ -1,23 +1,25 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
+
+App::uses("BEAppModel", "Model");
 
 /**
  * Generic category
@@ -25,14 +27,14 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class Category extends BEAppModel {
 	var $actsAs = array(
 			'CompactResult' 		=> array()
 	);
-	
+
 	var $validate = array(
 		'label' => array(
 			'rule' => 'notEmpty'
@@ -47,50 +49,50 @@ class Category extends BEAppModel {
 
 	// static vars used by reorderTag static function
 	static $dirTag, $orderTag;
-	
+
 	function afterFind($result) {
 		foreach ($result as &$res) {
 			if(isset($res['name']))
 				$res['url_label'] = $res['name'];
 		}
-		return $result;			
+		return $result;
 	}
 
 	public function tagLabelPresent($label, $exclude_id=null) {
-		$tagDB = $this->find("first", 
+		$tagDB = $this->find("first",
 			array("conditions" => "object_type_id IS NULL AND name='".addslashes($label)."' " . $this->collateStatment() ) );
-		
+
 		if (!empty($exclude_id) && $exclude_id == $tagDB["id"])
 			return false;
-		
+
 		return !empty($tagDB);
 	}
 
 	/**
 	 * Get tag label from unique name
-	 * 
+	 *
 	 * @param string $name
 	 */
 	public function tagLabelFromName($name) {
-		$tagDB = $this->find("first", 
+		$tagDB = $this->find("first",
 			array("conditions" => "object_type_id IS NULL AND name='$name'"));
 		return !empty($tagDB) ? $tagDB['label'] : "";
 	}
-	
-	
+
+
 	/**
 	 * Define a unique name from label: lowercase, trimmed, etc...
-	 * 
+	 *
 	 * @param string $label
 	 */
 	public function uniqueLabelName($label) {
 		$baseName = $name = BeLib::getInstance()->friendlyUrlString($label);
 
 		// search for already used label
-		
+
 		// suffix counter
 		$i = 1;
-		
+
 		// if it's a category
 		if (!empty($this->data[$this->alias]["object_type_id"])) {
 
@@ -107,7 +109,7 @@ class Category extends BEAppModel {
 			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
 			$conditions[] = "object_type_id IS NOT NULL";
 
-			
+
 		// if it's a tag
 		} else {
 			$conditions[] = "object_type_id IS NULL";
@@ -120,7 +122,7 @@ class Category extends BEAppModel {
 		}
 
 		$count = $this->find("count", array("conditions" => $conditions));
-		
+
 		if ($count > 0) {
 			$freeName = false;
 			while (!$freeName) {
@@ -135,16 +137,16 @@ class Category extends BEAppModel {
 
 		return $name;
 	}
-	
+
 	/**
 	 * Define default values
-	 */		
+	 */
 	function beforeValidate() {
 		$data = &$this->data[$this->name] ;
 		$data['name'] = $this->uniqueLabelName($data["label"]);
 		return true;
 	}
-	
+
 	/**
 	 * Get all categories of some object type and order them by area
 	 *
@@ -156,33 +158,33 @@ class Category extends BEAppModel {
 	 * 				)
 	 */
 	public function getCategoriesByArea($objectType) {
-		
+
 		$categories = $this->find("all", array(
 			"conditions" => array("Category.object_type_id" => $objectType), "order" => "label"
 		));
-		
+
 		$objModel = ClassRegistry::init("BEObject");
 		$areaList = $objModel->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"), 
-										"order" => "title", 
+										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"),
+										"order" => "title",
 										"fields" => "BEObject.title"
 										)
 									);
-		
+
 		$areaCategory = array();
-		
+
 		foreach ($categories as $cat) {
 			if (array_key_exists($cat["area_id"],$areaList)) {
-				$areaCategory["area"][$areaList[$cat["area_id"]]][] = $cat; 
+				$areaCategory["area"][$areaList[$cat["area_id"]]][] = $cat;
 			} else {
 				$areaCategory["noarea"][] = $cat;
 			}
 		}
-		
+
 		return $areaCategory;
 	}
-	
-	
+
+
 	private function collateStatment() {
 		$res = "";
 		// #MYSQL
@@ -191,23 +193,23 @@ class Category extends BEAppModel {
 		}
 		return $res;
 	}
-	
+
 	/**
 	 * save a list of comma separated tag
 	 *
-	 * @param comma separated string $tagList 
+	 * @param comma separated string $tagList
 	 * @return array of tags' id
 	 */
 	public function saveTagList($tagList) {
 		$arrIdTag = array();
 		if (!empty($tagList)) {
 			$tags = explode(",", $tagList);
-			
+
 			foreach ($tags as $tag) {
 				$tag = trim($tag);
-				
+
 				if (!empty($tag))  {
-					
+
 					$tagDB = $this->find("first", array(
 													"conditions" => "object_type_id IS NULL AND label='".addslashes($tag)."' " .
 														$this->collateStatment()
@@ -225,12 +227,12 @@ class Category extends BEAppModel {
 					if (!in_array($id_tag,$arrIdTag)) {
 						$arrIdTag[$id_tag] = $id_tag;
 					}
-				}  
+				}
 			}
 		}
 		return $arrIdTag;
 	}
-	
+
 	/**
 	 * return list of tags with their weight
 	 *
@@ -242,23 +244,23 @@ class Category extends BEAppModel {
 	 *				"order" => "label",		order by field
 	 *				"dir" => 1,				asc(1), desc(0)
 	 *				"area_id"=> null		get tags only associated to objects that are in "area_id" publication
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getTags(array $options = array()) {
 
 		$options = array_merge(
-			array("showOrphans" => true, "status" => null, "cloud" => false, 
+			array("showOrphans" => true, "status" => null, "cloud" => false,
 				"coeff" => 12, "order" => "label", "dir" => 1, "area_id"=> null, "section_id" => null),
 			(array)$options
 		);
-		
+
 		$conditions = array();
 		$conditions[] = "Category.object_type_id IS NULL";
 		if(!empty($options["status"])) {
 			$conditions["Category.status"] = $options["status"];
 		}
-		
+
 		$orderSql = ($options["order"] != "weight")? $options["order"] : "label";
 		$dirSql = ($options["dir"])? "ASC" : "DESC";
 
@@ -285,7 +287,7 @@ class Category extends BEAppModel {
 			} else {
 				$treeCondition['Tree.area_id'] = $options["area_id"];
 			}
-			
+
 			$joinsTree = array(
 				'table' => 'trees',
 				'alias' => 'Tree',
@@ -311,14 +313,14 @@ class Category extends BEAppModel {
 			'group' => $this->fieldsString("Category"),
 			'joins' => $joins
 		));
-		
+
 		$tags = array();
 		foreach ($allTags as $t) {
 			$tags[$t['id']] = $t;
 		}
 
 		$category_ids = Set::extract('/id', $allTags);
-		
+
 		$objCatModel = ClassRegistry::init("ObjectCategory");
 		$joins = (empty($joinsBEObject))? array() : array($joinsBEObject, $joinsTree);
 		$res = $objCatModel->find("all", array(
@@ -326,7 +328,7 @@ class Category extends BEAppModel {
 			'conditions' => array("ObjectCategory.category_id" => $category_ids),
 			'joins' => $joins
 		));
-		
+
 		// calculate weights
 		$weights = array(0);
 		foreach ($res as $val) {
@@ -336,13 +338,13 @@ class Category extends BEAppModel {
 				$weights[$val["ObjectCategory"]["category_id"]]++;
 			}
 		}
-		
+
 		if ($options["cloud"]) {
 			$max = max($weights);
 			$min = min($weights);
 			$distribution = ($max - $min) / $options["coeff"];
 		}
-		
+
 		foreach ($res as $r) {
 			$key = !empty($r['ObjectCategory']['category_id']) ? $r['ObjectCategory']['category_id'] : $r[0]['category_id'] ;
 			$w = $weights[$r["ObjectCategory"]["category_id"]];
@@ -360,23 +362,23 @@ class Category extends BEAppModel {
 					$tags[$key]['class']  = "smallTag";
 			}
 		}
-		
+
 		// remove orphans or set weight = 0, create the non-associative array
 		$tagsArray = array();
 		foreach ($tags as $k => $t) {
 			$tags[$k]['url_label'] = $t['name'];
 			if(!isset($t['weight'])) {
 				if($options["showOrphans"] === false) {
-					unset($tags[$k]);		
+					unset($tags[$k]);
 				} else {
-					$tags[$k]['weight'] = 0;		
+					$tags[$k]['weight'] = 0;
 					$tagsArray[]= $tags[$k];
 				}
 			} else {
 				$tagsArray[]= $tags[$k];
 			}
 		}
-		
+
 		// if order by weight reorder tags
 		if ($options["order"] == "weight") {
 			Category::$orderTag = $options["order"];
@@ -386,8 +388,8 @@ class Category extends BEAppModel {
 //		pr($tagsArray);exit;
 		return $tagsArray;
 	}
-	
-	
+
+
 	public function getContentsByTag($name) {
 		// bind association on the fly
 		$hasAndBelongsToMany = array(
@@ -400,24 +402,24 @@ class Category extends BEAppModel {
 					'unique'				=> true
 						)
 				);
-				
+
 		$this->bindModel( array(
 				'hasAndBelongsToMany' 	=> $hasAndBelongsToMany
-				) 
+				)
 			);
-		
+
 		// don't compact find result
 		$this->bviorCompactResults = false;
 		$tag = $this->find("first", array(
-										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' ". 
-												$this->collateStatment(), 
+										"conditions" => "object_type_id IS NULL AND name='".addslashes($name)."' ".
+												$this->collateStatment(),
 										"contain" => array("BEObject" => array("ObjectType"))
 									)
 						);
-		
+
 		// reset to default compact result
 		$this->bviorCompactResults = true;
-		
+
 		return empty($tag["BEObject"]) ? array() : $tag["BEObject"];
 	}
 
@@ -429,15 +431,15 @@ class Category extends BEAppModel {
 	 * @return mixed, false if not mediatype in the form else return array of Category
 	 */
 	public function checkMediaType($object_type_id, $mediatype) {
-		
+
 		if (empty($mediatype)) {
 			return false;
 		}
-		
+
 		$category = $this->find("first",
 			array(
 				"conditions" => array(
-					"name" => $mediatype, 
+					"name" => $mediatype,
 					"object_type_id" => $object_type_id
 				)
 			)
@@ -458,11 +460,11 @@ class Category extends BEAppModel {
 		$categoryArr = array($category['id']=>$category['id']);
 		return $categoryArr;
 	}
-	
+
 	/**
-	 * compare two array elements defined by $orderTag var and return -1,0,1 
-	 *	$dirTag is used for define order of comparison 
-	 * 
+	 * compare two array elements defined by $orderTag var and return -1,0,1
+	 *	$dirTag is used for define order of comparison
+	 *
 	 * @param array $e1
 	 * @param array $e2
 	 * @return int (-1,0,1)
@@ -472,8 +474,8 @@ class Category extends BEAppModel {
 		$d2 = $e2[Category::$orderTag];
 		return (Category::$dirTag)? strcmp($d1,$d2) : strcmp($d2,$d1);
 	}
-	
-	
+
+
 	/**
 	 * Search for category names, create if not already present, and
 	 * return array of corresponding id
@@ -501,7 +503,7 @@ class Category extends BEAppModel {
 			}
 			$res[] = $idCat;
 		}
-		return $res;		
+		return $res;
 	}
 }
 ?>
