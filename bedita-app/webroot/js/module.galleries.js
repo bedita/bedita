@@ -1,3 +1,0 @@
-/*
-** galleries custom js
-*/
