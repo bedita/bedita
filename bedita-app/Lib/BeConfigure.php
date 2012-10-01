@@ -1,36 +1,36 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 App::import('Model', 'ConnectionManager');
 /**
- * BeConfigure class handle BEdita configuration 
+ * BeConfigure class handle BEdita configuration
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 
 class BeConfigure {
-	
+
 	/**
 	 * initialize BEdita static configuration setting cache and
 	 * add plugged model and component path
@@ -42,20 +42,19 @@ class BeConfigure {
 			$this->addModulesPaths($cachedConfig);
 		}
 	}
-	
+
 	/**
 	 * cache object types array and module plugged configuration
-	 * 
-	 * @return array configuration cached 
+	 *
+	 * @return array configuration cached
 	 */
 	public function cacheConfig() {
 		$requiredTables = array("modules", "object_types");
 		if (!$this->tableExists($requiredTables)) {
 			return;
 		}
-		$conf = Configure::getInstance();
 		$configurations = array();
-				
+
 		if (file_exists(BEDITA_ADDONS_PATH . DS . 'config' . DS . 'config.php')) {
 			include BEDITA_ADDONS_PATH . DS . 'config' . DS . 'config.php';
 		}
@@ -65,8 +64,8 @@ class BeConfigure {
 				"conditions" => array("module_type" => "plugin")
 			)
 		);
+		$pluginConfig = array();
 		if (!empty($modules)) {
-			$pluginConfig = array();
 			foreach ($modules as $m) {
 				$modulePath = BEDITA_MODULES_PATH . DS . $m["Module"]["name"];
 				if (is_dir($modulePath)) {
@@ -84,14 +83,11 @@ class BeConfigure {
 				}
 			}
 		}
-		
-		$conf->plugged = array();
-		if (!empty($pluginConfig)) {
-			$conf->plugged = $pluginConfig;
-		}
-		$configurations["plugged"] = $conf->plugged;
+
+		Configure::write("plugged", $pluginConfig);
+		$configurations["plugged"] = $pluginConfig;
 		$this->addModulesPaths($configurations);
-		
+
 		$objectTypeModel = ClassRegistry::init("ObjectType");
 		$ot = $objectTypeModel->find("all");
 		if (!empty($ot)) {
@@ -110,10 +106,10 @@ class BeConfigure {
 						$configurations["objectTypes"][$group]["id"][] = $type["ObjectType"]["id"];
 					}
 				}
-			}			
-			$conf->objectTypes = $configurations["objectTypes"];
+			}
+			Configure::write("objectTypes", $configurations["objectTypes"]);
 		}
-		
+
 		// read import / export filters
 		$filters = array();
 		$models = App::objects('model', null, false);
@@ -138,15 +134,15 @@ class BeConfigure {
 			$filters["export"] = array();
 		}
 		$configurations["filters"] = $filters;
-		
+
 		Cache::write('beConfig', $configurations);
-		
+
 		return $configurations;
 	}
-	
+
 	/**
 	 * add models and components module plugin paths to BEdita core paths
-	 * 
+	 *
 	 * @param array $cachedConfig configuration cached
 	 */
 	public function addModulesPaths(array $cachedConfig) {
@@ -210,11 +206,11 @@ class BeConfigure {
 		$intersect = array_intersect($tableName, $tables);
 		return ($tableName === $intersect)? true : false;
 	}
-	
+
 	/**
 	 * load local configuration of module plugged
 	 * file has to be named config_local.php and has to be in config folder of plugin
-	 * 
+	 *
 	 * @param string $pluginName
 	 */
 	public function loadPluginLocalConfig($pluginName) {
@@ -227,10 +223,10 @@ class BeConfigure {
 		}
 	}
 
-	
+
 	/**
 	 * Returns array with all relations, merging defaultObjRelationType, objRelationType, plugged.objRelationType
-	 * 
+	 *
 	 * @return array
 	 */
 	public function mergeAllRelations() {

@@ -1,44 +1,44 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2009 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
-App::import('Core', 'Helper');
+App::uses('Helper', 'View');
 
 /**
  * Helper base class
  * contains common helpers methods
- * 
+ *
  *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class AppHelper extends Helper {
- 	
+
 	/**
 	 * try to get from the registry the helper instance. Eventually instance a new helper object ant put
 	 * it in the registry
 	 * @param $name, helper name without suffix Helper (i.e. BlipHelper => $name=Blip)
-	 * @return $nameHelper instance  
+	 * @return $nameHelper instance
 	 */
 	public function getHelper($name) {
 		$helper = $name."Helper";
@@ -49,7 +49,7 @@ class AppHelper extends Helper {
 				}
 			}
 			$helperObject = new $helper();
-			
+
 			/* copy class attributes to new helper instance
 			 * see file cake/libs/view/view.php
 			 * class View
@@ -61,7 +61,7 @@ class AppHelper extends Helper {
 			for ($j = 0; $j < $c; $j++) {
 				$helperObject->{$vars[$j]} = $this->{$vars[$j]};
 			}
-			
+
 			ClassRegistry::addObject($helper, $helperObject);
 			if (!empty($helperObject->helpers)) {
 				foreach ($helperObject->helpers as $subHelper) {
@@ -69,16 +69,16 @@ class AppHelper extends Helper {
 				}
 			}
 		}
-		
+
 		return $helperObject;
 	}
-	
+
 	/**
 	 * return oEmbed format (see http://www.oembed.com)
-	 * 
+	 *
 	 * @param $url, URL on third party sites
 	 * @param $arrayFrom, specify which format is expected (json, xml) to build array in the right way
-	 * 					if != "json" and != "xml" return original oEmbed format (i.e. JSON object or XML) 
+	 * 					if != "json" and != "xml" return original oEmbed format (i.e. JSON object or XML)
 	 * @return array
 	 */
 	protected function oEmbedInfo($url, $arrayFrom="json") {
@@ -95,7 +95,7 @@ class AppHelper extends Helper {
 		}
 		return $oEmbedInfo;
 	}
-	
+
 }
- 
+
 ?>
