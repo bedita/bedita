@@ -231,7 +231,7 @@ class AppController extends Controller
 	 * Otherwise no redirect
 	 */
 	final function beforeRender() {
-
+		parent::beforeRender();
 		// convienience methods for frontends [like beforeRender]
         $this->beditaBeforeRender();
 

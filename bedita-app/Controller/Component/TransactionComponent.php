@@ -40,8 +40,11 @@ class TransactionComponent extends Component {
 	const COMMIT=30;
 	private $status = NULL;
 	
-	function __construct($dbConfigName = 'default', $pathTmp = '/tmp') {
-		$this->init($dbConfigName, $pathTmp) ;
+	function __construct(ComponentCollection $collection, $settings = array()) {
+	//function __construct($dbConfigName = 'default', $pathTmp = '/tmp') {
+		$settings = array_merge(array("dbConfigName" => "default", "pathTmp" => "/tmp"), $settings);
+		parent::__construct($collection, $settings);
+		$this->init($settings["dbConfigName"], $settings["pathTmp"]) ;
 	} 
 	
 	function init($dbConfigName = 'default', $pathTmp = '/tmp') {
@@ -152,7 +155,7 @@ class TransactionComponent extends Component {
 		if(isset(self::$db)) return ;
 		
 		if(!class_exists('ConnectionManager')) {
-			App::import('Model', 'ConnectionManger') ;
+			App::uses('ConnectionManger', 'Model');
 		}
 		
 		if(isset(self::$dbConfig))

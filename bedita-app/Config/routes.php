@@ -30,7 +30,7 @@
 	Router::connect('/logout', array('controller' => 'authentications', 'action' => 'logout'));
 	// generic view
 	Router::connect('/view/*', array('controller' => 'home', 'action' => 'view'));
-	
+
 /**
  * route to switch locale
  */
@@ -44,6 +44,7 @@
  */
 	$confCached = Cache::read('beConfig');
 	if (empty($confCached["plugged"]["modules"])) {
+		App::uses('Folder', 'Utility');
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$list = $folder->read();
 		$listModules = $list[0];
@@ -56,4 +57,16 @@
 			'/' . $moduleName . '/:action/*', array('plugin' => $moduleName, 'controller' => $moduleName)
 		);
 	}
+
+/**
+ * Load all plugin routes.  See the CakePlugin documentation on 
+ * how to customize the loading of plugin routes.
+ */
+	CakePlugin::routes();
+
+/**
+ * Load the CakePHP default routes. Remove this if you do not want to use
+ * the built-in default routes.
+ */
+	require CAKE . 'Config' . DS . 'routes.php';
 ?>

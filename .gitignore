@@ -21,22 +21,22 @@
 /bedita-app/.settings
 /bedita-app/.project
 
-# /bedita-app/config/
-/bedita-app/config/database.php
-/bedita-app/config/core.php
-/bedita-app/config/bedita.cfg.php
-/bedita-app/config/bedita.version.php
-/bedita-app/config/bedita.sys.php
-/bedita-app/config/bedita.sys
-/bedita-app/config/local
-/bedita-app/config/.directory
-/bedita-app/config/*.copy
+# /bedita-app/Config/
+/bedita-app/Config/database.php
+/bedita-app/Config/core.php
+/bedita-app/Config/bedita.cfg.php
+/bedita-app/Config/bedita.version.php
+/bedita-app/Config/bedita.sys.php
+/bedita-app/Config/bedita.sys
+/bedita-app/Config/local
+/bedita-app/Config/.directory
+/bedita-app/Config/*.copy
 
-# /bedita-app/config/local/
-/bedita-app/config/local/*
+# /bedita-app/Config/local/
+/bedita-app/Config/local/*
 
-# /bedita-app/config/notify/
-/bedita-app/config/notify/local.msg.php
+# /bedita-app/Config/notify/
+/bedita-app/Config/notify/local.msg.php
 
 # /bedita-app/tests/cases/components/
 /bedita-app/tests/cases/components/*.localdata.php
