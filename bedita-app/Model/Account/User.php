@@ -190,16 +190,18 @@ class User extends BEAppModel
 	}
 
 	function beforeSave() {
-		if (empty($this->data["User"]["email"])) {
-			$this->data["User"]["email"] = null;
-		} else {
-			$conditions = array("email" => $this->data["User"]["email"]);
-			if(!empty($this->data["User"]["id"])) {
-				$conditions[] = "id <> " . $this->data["User"]["id"];
-			}
-			$email = $this->field("email", $conditions);
-			if(!empty($email)) {
-				throw new BeditaException(__("Email already in use") . ": " . $email);
+		if (isset($this->data["User"]["email"])) {
+			if (empty($this->data["User"]["email"])) {
+				$this->data["User"]["email"] = null;
+			} else {
+				$conditions = array("email" => $this->data["User"]["email"]);
+				if(!empty($this->data["User"]["id"])) {
+					$conditions[] = "id <> " . $this->data["User"]["id"];
+				}
+				$email = $this->field("email", $conditions);
+				if(!empty($email)) {
+					throw new BeditaException(__("Email already in use", true) . ": " . $email);
+				}
 			}
 		}
 
