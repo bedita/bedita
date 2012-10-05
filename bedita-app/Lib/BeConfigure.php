@@ -18,7 +18,7 @@
  *
  *------------------------------------------------------------------->8-----
  */
-App::import('Model', 'ConnectionManager');
+App::uses('ConnectionManager', 'Model');
 /**
  * BeConfigure class handle BEdita configuration
  *

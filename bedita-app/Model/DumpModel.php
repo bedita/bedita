@@ -19,11 +19,13 @@
  *------------------------------------------------------------------->8-----
  */
 
-App::import('Core', 'String');
-App::import('Core', 'Controller');
-App::import('Core', 'Model');
-App::import('Controller', 'App'); // BeditaException
-App::import('Model', 'Document');
+
+App::uses('String', 'Utility');
+App::uses('Controller', 'Controller');
+App::uses('Model', 'Model');
+App::uses('AppController', 'Controller'); // BeditaException
+App::uses('Document', 'Model/Object/Content');
+App::uses('Shell', 'Console');
 
 /**
  * @version			$Revision$

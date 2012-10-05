@@ -19,8 +19,8 @@
  *------------------------------------------------------------------->8-----
  */
 
-App::import('Core', 'l10n');
-App::import('Lib', 'BeLib');
+App::uses('L10n', 'I18n');
+App::uses('BeLib', 'Lib');
 BeLib::getObject("BeConfigure")->initConfig();
 
 /**
