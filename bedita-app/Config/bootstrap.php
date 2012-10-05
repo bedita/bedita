@@ -58,7 +58,7 @@ $additionalPaths =  array(
 	'Plugin' => array()
 );
 
-$excludedDirs = array("Behavior", "Datasource", "Component");
+$excludedDirs = array("Behavior", "Datasource", "Component", "Base");
 
 function enableSubFoldersOn($baseDir, &$var, &$exclude) {
 	$cwd =getcwd();
@@ -80,11 +80,11 @@ if (!defined("BEDITA_CORE_PATH")) {
 	define("BEDITA_CORE_PATH", ROOT . DS . APP_DIR);
 	define("BACKEND_APP", true);
 	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'Config' . DS . 'local');
-	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'Controller', $additionalPaths["controllers"], $excludedDirs);
+	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'Controller', $additionalPaths["Controller"], $excludedDirs);
 
 	function shutdownTransation() {
 		if(Configure::read("bedita.transaction") != null) {
-			App::import('Component','Transaction');
+			App::uses('TransactionComponent', 'Component');
 			$Transaction = new TransactionComponent();
 			$Transaction->init() ;
 			$Transaction->rollback() ;
