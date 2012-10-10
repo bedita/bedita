@@ -181,9 +181,11 @@ class BeditaBaseShell extends Shell {
 		}
         foreach ($list[1] as $f) {
         	$file = new File($folder->path.DS.$f);
-        	if(!$file->delete()) {
-                throw new Exception("Error deleting file $f");
-            }
+        	if ($file->name != "empty") {
+	        	if(!$file->delete()) {
+	                throw new Exception("Error deleting file $f");
+	            }
+	        }
         }
         return ;
     }    
