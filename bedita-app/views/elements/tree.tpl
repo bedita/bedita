@@ -17,6 +17,10 @@ $(".menutree input:checked").parent().css("background-color","#dedede").parents(
 });
 </script>
 
+{if isset($treeParams) && is_array($treeParams)}
+	{$beTree->setTreeParams($treeParams)}	
+{/if}
+
 {if !empty($checkbox)}			
 	
 	{* this hidden input field has to be empty to empty tree associations when no checkbox selected *}
@@ -24,7 +28,11 @@ $(".menutree input:checked").parent().css("background-color","#dedede").parents(
 	{$beTree->view($tree, "checkbox", $parents)}
 	
 {else}
-		
+
 	{$beTree->view($tree)}
 	
+{/if}
+
+{if isset($treeParams)}
+	{$beTree->resetTreeParams()}
 {/if}

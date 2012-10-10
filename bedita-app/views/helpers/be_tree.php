@@ -40,9 +40,39 @@ class BeTreeHelper extends AppHelper {
 		'option'	=> "<option value=\"%s\"%s>%s</option>",
 		'checkbox'	=> "<input type=\"checkbox\" name=\"data[destination][]\" value=\"%s\" %s/>",
 		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>",
-	) ;
+	);
 
-		/**
+	protected $treeParams = array();
+
+	/**
+	 * beforeRender callback
+	 * initialize BeTree::treeParams to $this->params
+	 */
+	public function beforeRender() {
+		$this->resetTreeParams();
+	}
+
+	/**
+	 * Merge BeTree::treeParams with array of params
+	 * you can use it to override some params used to build url in the rel attribute inside tree items.
+	 * For example: 
+	 * 		url is build using $treeParams['controller'] and treeParams['action'].
+	 *   	If you want tree items go to another controller you have to call BeTree::setTreeParams() before building the tree.
+	 *    	From view file call {$beTree->setTreeParams(['controller' => 'myController'])}
+	 * @param array $params 
+	 */
+	public function setTreeParams(array $params) {
+		$this->treeParams = array_merge($this->treeParams, $params);
+	}
+
+	/**
+	 * set BeTree::treeParams to $this->params
+	 */
+	public function resetTreeParams() {
+		$this->treeParams = $this->params;
+	}
+
+	/**
 	 * build option for select
 	 *
 	 * @param array $tree
@@ -151,9 +181,9 @@ class BeTreeHelper extends AppHelper {
 		foreach ($branch as $section) {
 			
 			if (empty($inputType)) {
-				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
-				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
-						|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
+				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
+				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"]) 
+						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
 					$class = " class='on'";
 				} else {
 					$class = "";
@@ -217,9 +247,9 @@ class BeTreeHelper extends AppHelper {
 			foreach ($tree as $publication) {
 								
 				if (empty($inputType)) {
-					$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $publication["id"];
-					if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $publication["id"]) 
-							|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $publication["id"]) {
+					$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $publication["id"];
+					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"]) 
+							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]) {
 						$class = " class='on'";
 					} else {
 						$class = "";
@@ -362,9 +392,9 @@ class BeTreeHelper extends AppHelper {
 		foreach ($branch as $section) {
 			
 			if (empty($inputType)) {
-				$url = $this->Html->url('/') . $this->params["controller"] . "/" . $this->params["action"] . "/id:" . $section["id"];
-				if ( (!empty($this->params["named"]["id"]) && $this->params["named"]["id"] == $section["id"]) 
-						|| !empty($this->params["pass"][0]) && $this->params["pass"][0] == $section["id"]) {
+				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
+				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"]) 
+						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
 					$class = " class='on'";
 				} else {
 					$class = "";
