@@ -39,7 +39,7 @@ $(document).ready(function() {
 <div class="dashboard">
 
 	<div class="hometree" style="clear:both;">
-	{assign_associative var="options" home=true}
+	{assign_associative var="options" treeParams=['controller' => 'areas']}
 	{$view->element('tree',$options)}
 	</div>
 
