@@ -1,4 +1,4 @@
-<?php
+z<?php
 /*-----8<--------------------------------------------------------------------
  * 
  * BEdita - a semantic content management framework
@@ -171,10 +171,12 @@ class BeSystem {
 		// delete files
 		foreach ($list[1] as $file) {
 			$f = new File($file);
-			if (!$f->delete()) {
-				$results['failed'][] = array('error' => __("Error deleting file") . " " . $file);
-			} else {
-				$results['success'][] = $file . " " . __('deleted');
+			if ($f->name != "empty") {
+				if (!$f->delete()) {
+					$results['failed'][] = array('error' => __("Error deleting file") . " " . $file);
+				} else {
+					$results['success'][] = $file . " " . __('deleted');
+				}
 			}
 		}
 		// delete dirs
