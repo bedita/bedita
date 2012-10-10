@@ -99,6 +99,7 @@ $(document).ready(function() {
 
 <div class="dashboard right">
 
+	{bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
 	<div id="new" class="bordered smallist">
 		<form>
@@ -127,7 +128,7 @@ $(document).ready(function() {
 			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
 		</form>
 	</div>
-
+	{/bedev}
 
 <script type="text/javascript">
 <!--
