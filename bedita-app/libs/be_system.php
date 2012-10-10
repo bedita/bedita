@@ -171,10 +171,12 @@ class BeSystem {
 		// delete files
 		foreach ($list[1] as $file) {
 			$f = new File($file);
-			if (!$f->delete()) {
-				$results['failed'][] = array('error' => __("Error deleting file", true) . " " . $file);
-			} else {
-				$results['success'][] = $file . " " . __('deleted', true);
+			if ($f->name != "empty") {
+				if (!$f->delete()) {
+					$results['failed'][] = array('error' => __("Error deleting file", true) . " " . $file);
+				} else {
+					$results['success'][] = $file . " " . __('deleted', true);
+				}
 			}
 		}
 		// delete dirs
