@@ -71,12 +71,14 @@ tinyMCE.init({
 	valid_elements : '*[*]',
 	extended_valid_elements : "*[*]",
 	*/
-	verify_html : false, // per matematica
+	verify_html : false, // avoiding to remove math tags and some html5 tags
 	
 	cleanup_callback : function(type, value) {
 		// do not remove empty anchor tags (aka placeholders)
 		value = ''+value;
 		value = value.replace(/>\s*?<\/a>/g,'>&nbsp;</a>');
+		// replace empty <p> with <p>&nbsp;</p>
+		value = value.replace(/<p><\/p>/g,'<p>&nbsp;</p>');
 		return value;
 	},
 
