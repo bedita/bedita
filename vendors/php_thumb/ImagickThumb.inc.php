@@ -445,7 +445,40 @@ class ImagickThumb extends ThumbBase
 				$this->triggerError('Image format not supported: ' . $mimeType);
 		}
 	}
-	
+
+
+
+    public function wmark ($fileName, $params) {
+
+        $p = new phMagick('', 'test.png');
+
+        //Text watermark
+        if (!empty($params['text'])) {
+            $format = new phMagickTextObject();
+            $format->fontSize($params['fontSize'])
+                ->font($params['font'])
+                ->color($params['textColor'])
+                ->background($params['background']);
+
+            $p->fromString(html_entity_decode($params['text'] ,null, 'utf-8'), $format);
+        }
+
+        //watermark images on else{}
+        //
+        //if (!empty($params['file'])) {
+        //    $p->watermark( $params['file'], "SouthWest", 90);
+        //}
+
+        $p->setSource($this->workingImage->getDestination());
+        $p->setDestination($this->workingImage->getDestination());
+
+        $p->watermark( 'test.png', $params['align'], $params['opacity']);
+        $this->oldImage = $this->workingImage;
+        return $this;
+
+    }
+
+
 	/**
 	 * Saves an image
 	 * for imagemagick is useless?

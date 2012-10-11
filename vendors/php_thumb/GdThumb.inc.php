@@ -92,8 +92,7 @@ class GdThumb extends ThumbBase
 	 * @return GdThumb 
 	 * @param string $fileName
 	 */
-	public function __construct ($fileName, $options = array(), $isDataStream = false)
-	{
+	public function __construct ($fileName, $options = array(), $isDataStream = false) {
 		parent::__construct($fileName, $isDataStream);
 		
 		$this->determineFormat();
@@ -134,8 +133,7 @@ class GdThumb extends ThumbBase
 	 * Class Destructor
 	 * 
 	 */
-	public function __destruct ()
-	{
+	public function __destruct () {
 		if (is_resource($this->oldImage))
 		{
 			imagedestroy($this->oldImage);
@@ -162,16 +160,13 @@ class GdThumb extends ThumbBase
 	 * @param int $maxHeight The maximum height of the image in pixels
 	 * @return GdThumb
 	 */
-	public function resize ($maxWidth = 0, $maxHeight = 0)
-	{
+	public function resize ($maxWidth = 0, $maxHeight = 0) {
 		// make sure our arguments are valid
-		if (!is_numeric($maxWidth))
-		{
+		if (!is_numeric($maxWidth)) {
 			throw new InvalidArgumentException('$maxWidth must be numeric');
 		}
 		
-		if (!is_numeric($maxHeight))
-		{
+		if (!is_numeric($maxHeight)) {
 			throw new InvalidArgumentException('$maxHeight must be numeric');
 		}
 		
@@ -188,20 +183,18 @@ class GdThumb extends ThumbBase
 		$this->calcImageSize($this->currentDimensions['width'], $this->currentDimensions['height']);
 		
 		// create the working image
-		if (function_exists('imagecreatetruecolor'))
-		{
+		if (function_exists('imagecreatetruecolor')) {
 			$this->workingImage = imagecreatetruecolor($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
-		}
-		else
-		{
+
+        } else {
 			$this->workingImage = imagecreate($this->newDimensions['newWidth'], $this->newDimensions['newHeight']);
-		}
+
+        }
 		
 		$this->preserveAlpha();		
 		
 		// and create the newly sized image
-		imagecopyresampled
-		(
+		imagecopyresampled (
 			$this->workingImage,
 			$this->oldImage,
 			0,
@@ -238,8 +231,7 @@ class GdThumb extends ThumbBase
 	 * @param int $maxHeight
 	 * @return GdThumb
 	 */
-	public function adaptiveResize ($width, $height)
-	{
+	public function adaptiveResize ($width, $height){
 		// make sure our arguments are valid
 		if (!is_numeric($width) || $width  == 0)
 		{
@@ -337,8 +329,7 @@ class GdThumb extends ThumbBase
 	 * @param int $percent
 	 * @return GdThumb
 	 */
-	public function resizePercent ($percent = 0)
-	{
+	public function resizePercent ($percent = 0){
 		if (!is_numeric($percent))
 		{
 			throw new InvalidArgumentException ('$percent must be numeric');
@@ -388,8 +379,7 @@ class GdThumb extends ThumbBase
 	 * @param int $cropHeight
 	 * @return GdThumb
 	 */
-	public function cropFromCenter ($cropWidth, $cropHeight = null)
-	{
+	public function cropFromCenter ($cropWidth, $cropHeight = null){
 		if (!is_numeric($cropWidth))
 		{
 			throw new InvalidArgumentException('$cropWidth must be numeric');
@@ -425,8 +415,7 @@ class GdThumb extends ThumbBase
 	 * @param int $cropHeight
 	 * @return GdThumb
 	 */
-	public function crop ($startX, $startY, $cropWidth, $cropHeight)
-	{
+	public function crop ($startX, $startY, $cropWidth, $cropHeight) {
 		// validate input
 		if (!is_numeric($startX))
 		{
@@ -506,7 +495,91 @@ class GdThumb extends ThumbBase
 		
 		return $this;
 	}
-	
+
+
+    public function wmark ($fileName, $params) {
+
+        //render_text_on_gd_image($source_gd_image, $text, $font, $size, $color, $opacity, $rotation, $align);
+
+        $source_width = imagesx($this->oldImage);
+        $source_height = imagesy($this->oldImage);
+
+        /* create the working image
+        if (function_exists('imagecreatetruecolor')) {
+            $this->workingImage = imagecreatetruecolor($source_width, $source_height);
+
+        } else {
+            $this->workingImage = imagecreate($source_width, $this->$source_height);
+
+        }*/
+
+        //TODO change the 'font' path with the BEdita fonts default path when added. for now captcha font are used.
+        $bb = imagettfbbox($params['fontSize'], 0 ,  getcwd().'/captcha/fonts/'.$params['font'], $params['text']);
+
+        $x0 = min($bb[0], $bb[2], $bb[4], $bb[6]) - 5;
+        $x1 = max($bb[0], $bb[2], $bb[4], $bb[6]) + 5;
+        $y0 = min($bb[1], $bb[3], $bb[5], $bb[7]) - 5;
+        $y1 = max($bb[1], $bb[3], $bb[5], $bb[7]) + 5;
+
+        $bb_width = abs($x1 - $x0);
+        $bb_height = abs($y1 - $y0);
+
+        switch ($params['align']) {
+            case 'NorthWest':
+                $bpy = -$y0;
+                $bpx = -$x0;
+                break;
+            case 'NorthCenter':
+                $bpy = -$y0;
+                $bpx = $source_width / 2 - $bb_width / 2 - $x0;
+                break;
+            case 'NorthEast':
+                $bpy = -$y0;
+                $bpx = $source_width - $x1;
+                break;
+            case 'CenterWest':
+                $bpy = $source_height / 2 - $bb_height / 2 - $y0;
+                $bpx = -$x0;
+                break;
+            case 'Center':
+                $bpy = $source_height / 2 - $bb_height / 2 - $y0;
+                $bpx = $source_width / 2 - $bb_width / 2 - $x0;
+                break;
+            case 'CenterEast':
+                $bpy = $source_height / 2 - $bb_height / 2 - $y0;
+                $bpx = $source_width - $x1;
+                break;
+            case 'SouthWest':
+                $bpy = $source_height - $y1;
+                $bpx = -$x0;
+                break;
+            case 'SouthCenter':
+                $bpy = $source_height - $y1;
+                $bpx = $source_width / 2 - $bb_width / 2 - $x0;
+                break;
+            case 'SouthEast';
+                $bpy = $source_height - $y1;
+                $bpx = $source_width - $x1;
+                break;
+        }
+
+        $alpha_color = imagecolorallocatealpha(
+            $this->oldImage,
+            hexdec(substr($params['textColor'], 0, 2)),
+            hexdec(substr($params['textColor'], 2, 2)),
+            hexdec(substr($params['textColor'], 4, 2)),
+            127 * (100 - $params['opacity']) / 100
+        );
+
+
+        imagettftext($this->oldImage, $params['fontSize'], 0, $bpx, $bpy, $alpha_color, getcwd().'/captcha/fonts/'.$params['font'], $params['text']);
+
+        return $this;
+        //
+
+    }
+
+
 	/**
 	 * Rotates image either 90 degrees clockwise or counter-clockwise
 	 * 

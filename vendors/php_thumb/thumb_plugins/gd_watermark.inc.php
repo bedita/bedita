@@ -31,7 +31,7 @@ class GdAddLogo {
     public function addLogo($logoFileName, $positionX, $positionY, $alpha, &$that) {
         $logo_size                  = getimagesize($logoFileName);
         
-	// bring stuff from the parent class into this class...
+	    // bring stuff from the parent class into this class...
         $this->parentInstance       = $that;
         $this->oldImage             = $this->parentInstance->getOldImage();
         $this->parentInstance->setWorkingImage($this->oldImage);
@@ -54,7 +54,7 @@ class GdAddLogo {
         $logo_positionX["center"]    = $center["x"];
         $logo_positionX["right"]     = $src_dimension["x"] - $logo_dimension["x"];
         
-	$logo_positionY["top"]       = 0;
+	    $logo_positionY["top"]       = 0;
         $logo_positionY["center"]    = $center["y"];
         $logo_positionY["bottom"]    = $src_dimension["y"] - $logo_dimension["y"];
 	

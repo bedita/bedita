@@ -108,9 +108,9 @@ class BeThumb {
 	 *         type, optional: ['gif'/'png'/'jpg']
 	 *         force image target type (default the same as original)
 	 *
-	 *         watermark, optional: watermark?
+	 *         watermark, optional: [array: 'text', 'font', 'fontSize', 'textColor', 'background', 'file', 'align', 'opacity' ]
+     *         add simple watermark to image, the missing parameters are replaced with the defaults in bedita.ini (['image']['wmi']* )
 	 *
-	 *         NB: optionally the second argument may be the associative array of said parameters
 	 *
 	 * @return: string, resampled and cached image URI (using $html helper)
 	 *
@@ -129,7 +129,7 @@ class BeThumb {
 		}
 
 		// read params as an associative array or multiple variable
-		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark");
+		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark", );
 		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) ) {
 			extract ($params);
 		}
@@ -182,8 +182,6 @@ class BeThumb {
 		if ( !isset ($mode) ) {
 			$mode = $this->_conf['image']['thumbMode'];
 		}
-
-
 
 		// build _image_info with getimagesize() or available parameters
 		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
@@ -303,8 +301,6 @@ class BeThumb {
 				break;
 		}
 
-
-
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
@@ -340,7 +336,6 @@ class BeThumb {
 
 		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
 		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath'], $this->_conf['image']);
-
 		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
 
 		//set upscale
@@ -381,6 +376,15 @@ class BeThumb {
 				break;
 
 		}
+
+        //Add Watermark
+        if (isset($watermark)) {
+            if (!is_array($watermark)){
+                $watermark = array();
+            }
+            $thumbnail->wmark($this->_imageTarget['filepath'], array_merge($this->_conf['image']['wmi'], $watermark));
+        }
+
 
 		if ($thumbnail->save($this->_imageTarget['filepath'], $this->_imageTarget['type'])) {
 			return true;
