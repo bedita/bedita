@@ -5,13 +5,13 @@
 
 {if !empty($BEAuthUser.userid)}
 	<li style="padding:5px">
-		<a href="{$html->url('/profile/')}">{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></a>
+		<a href="{$html->url('/home/profile/')}">{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></a>
 	</li>
 {/if}
 
 	<li style="padding:5px"><a href="{$html->url('/')}">{t}Home{/t}</a></li>
 	{if !empty($BEAuthUser.userid)}
-		<li style="padding:5px"><a href="{$html->url('/profile/')}">{t}Profile{/t}</a></li>
+		<li style="padding:5px"><a href="{$html->url('/home/profile/')}">{t}Profile{/t}</a></li>
 		<li style="padding:5px"><a href="{$html->url('/authentications/logout')}">{t}Exit{/t}</a></li>
 	{/if}
 

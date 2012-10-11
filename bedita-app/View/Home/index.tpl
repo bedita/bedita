@@ -185,13 +185,6 @@ $(document).ready(function(){
 		{/foreach}
 	</ul>
 
-{*			
-	<div class="tab"><h2>{t}your profile and preferences{/t}</h2></div>
-	
-	<div id="userpreferences">	
-		{include file="inc/userpreferences.tpl"}
-	</div>
-*}
 	<div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">
 	{section name="i" loop=$connectedUser}

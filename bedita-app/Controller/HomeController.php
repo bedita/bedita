@@ -36,7 +36,7 @@ class HomeController extends AppController {
 	var $components = array('BeTree', 'BeUploadToObj');
 
 
-	 function index() {
+	function index() {
 	 	$conf  = Configure::getInstance();
 
 	 	$user = $this->Session->read("BEAuthUser");
@@ -129,6 +129,10 @@ class HomeController extends AppController {
 		}
 	}
 
+
+	public function profile() {
+	}
+
 	public function editProfile() {
 		if (empty($this->request->data['User']['id']))
 	 		throw new BeditaException(__("No user data"));
@@ -151,11 +155,13 @@ class HomeController extends AppController {
 		 		)
 		 	);
 
-		 	if (!$user)
+		 	if (!$user) {
 		 		throw new BeditaException(__("Wrong old user password"));
+			}
 
-			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd))
+			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd)) {
 				throw new BeditaException(__("Passwords mismatch"));
+			}
 		}
 
 		if (empty($this->request->data["User"]["notify_changes"])) {
@@ -187,8 +193,8 @@ class HomeController extends AppController {
 	protected function forward($action, $esito) {
  	 	$REDIRECT = array(
 			"editProfile" => array(
- 							"OK"	=> "/home/index",
- 							"ERROR"	=> "/home/index"
+ 							"OK"	=> "/home/profile",
+ 							"ERROR"	=> "/home/profile"
  						),
 			"view" => array(
  							"ERROR"	=> "/home/index"
