@@ -108,7 +108,8 @@ class BeThumb {
 	 *         type, optional: ['gif'/'png'/'jpg']
 	 *         force image target type (default the same as original)
 	 *
-	 *         watermark, optional: watermark?
+	 *         watermark, optional: [true, false]
+     *         add simple watermark to image, default in bedita.ini (['image']['wmi']* )
 	 *
 	 *         NB: optionally the second argument may be the associative array of said parameters
 	 *
@@ -183,6 +184,12 @@ class BeThumb {
 			$mode = $this->_conf['image']['thumbMode'];
 		}
 
+        //watermaks
+        if ( !isset ($watermark) ) {
+            $this->_imageTarget['watermark'] = $this->_conf['image']['wmi']['enable'];
+        }else {
+            $this->_imageTarget['watermark'] = $watermark;
+        }
 
 
 		// build _image_info with getimagesize() or available parameters
@@ -303,8 +310,6 @@ class BeThumb {
 				break;
 		}
 
-
-
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
@@ -340,7 +345,6 @@ class BeThumb {
 
 		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
 		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath'], $this->_conf['image']);
-
 		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
 
 		//set upscale
@@ -381,6 +385,12 @@ class BeThumb {
 				break;
 
 		}
+
+        //Add Watermark
+        if ($this->_imageTarget['watermark']) {
+            $thumbnail->wmark($this->_imageTarget['filepath'], $this->_conf['image']['wmi']);
+        }
+
 
 		if ($thumbnail->save($this->_imageTarget['filepath'], $this->_imageTarget['type'])) {
 			return true;
