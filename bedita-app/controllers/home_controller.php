@@ -23,11 +23,11 @@
  * BEdita main page
  *
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * @version			$Revision: 3903 $
+ * @modifiedby 		$LastChangedBy: ste $
+ * @lastmodified	$LastChangedDate: 2012-08-08 18:17:49 +0200 (Wed, 08 Aug 2012) $
  *
- * $Id$
+ * $Id: home_controller.php 3903 2012-08-08 16:17:49Z ste $
  *  */
 class HomeController extends AppController {
 
@@ -36,7 +36,7 @@ class HomeController extends AppController {
 	var $components = array('BeTree', 'BeUploadToObj');
 
 
-	 function index() {
+	function index() {
 	 	$conf  = Configure::getInstance();
 
 	 	$user = $this->Session->read("BEAuthUser");
@@ -129,6 +129,11 @@ class HomeController extends AppController {
 		}
 	}
 
+	
+	public function profile() {
+	
+	}
+	
 	public function editProfile() {
 		if (empty($this->data['User']['id']))
 	 		throw new BeditaException(__("No user data", true));
