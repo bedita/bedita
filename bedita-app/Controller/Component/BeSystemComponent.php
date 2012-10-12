@@ -176,11 +176,11 @@
 	 */
 	public function backendLogFiles() {
 		$res = array();
-		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log")) {
-			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "error.log";
+		if($this->isFileReadable(BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "error.log")) {
+			$res[] = BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "error.log";
 		}
-		if($this->isFileReadable(APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
-			$res[] = APP_DIR . DS . "tmp" . DS . "logs" . DS . "debug.log";
+		if($this->isFileReadable(BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
+			$res[] = BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "debug.log";
 		}
 		return $res;
 	}
@@ -237,41 +237,27 @@
 		if($handle === FALSE) {
 			throw new BeditaException("Error opening file: ".$fileName);
 		}
-		return $this->readFileLastLinesReversed($fileName,$limit);
+		return $this->readFileLastLines($handle,$limit);
 	}
 
 	/**
 	 * Tail of file
 	 * 
-	 * @param string $file
-	 * @param int $lines
-	 * @return string
+	 * @param array $fp handle
+	 * @param int $limit max lines to log
+	 * @return array
 	 */
-	private function readFileLastLinesReversed($file, $lines) {
-		$handle = fopen($file, "r");
-		$linecounter = $lines;
-		$pos = -2;
-		$beginning = false;
-		$text = array();
-		while ($linecounter > 0) {
-			$t = " ";
-			while ($t != PHP_EOL) {
-				if(fseek($handle, $pos, SEEK_END) == -1) {
-					$beginning = true; 
-					break; 
-				}
-				$t = fgetc($handle);
-				$pos --;
-			}
-			$linecounter --;
-			if ($beginning) {
-				rewind($handle);
-			}
-			$text[$lines-$linecounter-1] = fgets($handle);
-			if ($beginning) break;
+	private function readFileLastLines($fp, $limit) {
+		$lines=array();
+		while(!feof($fp))
+		{
+			$line = fgets($fp, 4096);
+			array_push($lines, $line);
+			if (count($lines)>$limit)
+				array_shift($lines);
 		}
-		fclose ($handle);
-		return $text;
+		fclose($fp);
+		return $lines;
 	}
 
 /*	
