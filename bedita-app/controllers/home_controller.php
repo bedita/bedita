@@ -129,14 +129,14 @@ class HomeController extends AppController {
 		}
 	}
 
-	
+
 	public function profile() {
-	
 	}
-	
+
 	public function editProfile() {
-		if (empty($this->data['User']['id']))
+		if (empty($this->data['User']['id'])) {
 	 		throw new BeditaException(__("No user data", true));
+	 	}
 
 	 	$oldPwd = trim($this->params['form']['oldpwd']);
 	 	$pwd = trim($this->data['User']['passwd']);
@@ -156,11 +156,13 @@ class HomeController extends AppController {
 		 		)
 		 	);
 
-		 	if (!$user)
+		 	if (!$user) {
 		 		throw new BeditaException(__("Wrong old user password", true));
+		 	}
 
-			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd))
+			if (!$this->BeAuth->checkConfirmPassword($pwd, $confirmPwd)) {
 				throw new BeditaException(__("Passwords mismatch",true));
+			}
 		}
 
 		if (empty($this->data["User"]["notify_changes"])) {
@@ -182,8 +184,9 @@ class HomeController extends AppController {
 	 	$user = $userModel->findById($this->data["User"]["id"]);
 	 	$userModel->compact($user);
 	 	$this->Session->write($this->BeAuth->sessionKey, $user);
-	 	if (!empty($user["lang"]))
+	 	if (!empty($user["lang"])) {
 	 		$this->Session->write('Config.language',$user["lang"]);
+	 	}
 		$this->eventInfo("user ".$this->data['User']['userid']." updated");
 		$this->userInfoMessage(__("User updated",true));
 	}
@@ -192,8 +195,8 @@ class HomeController extends AppController {
 	protected function forward($action, $esito) {
  	 	$REDIRECT = array(
 			"editProfile" => array(
- 							"OK"	=> "/home/index",
- 							"ERROR"	=> "/home/index"
+ 							"OK"	=> "/home/profile",
+ 							"ERROR"	=> "/home/profile"
  						),
 			"view" => array(
  							"ERROR"	=> "/home/index"
