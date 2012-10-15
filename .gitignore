@@ -21,6 +21,9 @@
 /bedita-app/.settings
 /bedita-app/.project
 
+# /bedita-app/config/ old config configuration dir
+/bedita-app/config/
+
 # /bedita-app/Config/
 /bedita-app/Config/database.php
 /bedita-app/Config/core.php
