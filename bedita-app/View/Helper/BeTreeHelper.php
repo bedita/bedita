@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2009 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -25,7 +25,7 @@
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class BeTreeHelper extends AppHelper {
@@ -55,11 +55,11 @@ class BeTreeHelper extends AppHelper {
 	/**
 	 * Merge BeTree::treeParams with array of params
 	 * you can use it to override some params used to build url in the rel attribute inside tree items.
-	 * For example: 
+	 * For example:
 	 * 		url is build using $treeParams['controller'] and treeParams['action'].
 	 *   	If you want tree items go to another controller you have to call BeTree::setTreeParams() before building the tree.
 	 *    	From view file call {$beTree->setTreeParams(['controller' => 'myController'])}
-	 * @param array $params 
+	 * @param array $params
 	 */
 	public function setTreeParams(array $params) {
 		$this->treeParams = array_merge($this->treeParams, $params);
@@ -78,7 +78,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $tree
 	 * @param int $numInd number of $indentation repetition foreach branch
 	 * @param string $indentation string to use for indentation
-	 * 
+	 *
 	 * @return string 	<option value="">...</option>
 	 * 		   			<option value="">...</option>
 	 * 					....
@@ -93,9 +93,9 @@ class BeTreeHelper extends AppHelper {
 		);
 		$options = array_merge($default_options, $options);
 		extract($options);
-		
+
 		$output = "<option value=\"\"> -- </option>";
-		
+
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
 				$selected = (in_array($publication['id'],$parentIds)) ? " selected" : "";
@@ -109,9 +109,9 @@ class BeTreeHelper extends AppHelper {
 				}
 			}
 		}
-		
+
 		return $this->output($output);
-		
+
 	}
 	/**
 	 * build branch
@@ -119,7 +119,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param $branch
 	 * @param int $numInd number of repetition on $indentation string foreach branch
 	 * @param string $indentation string to use for indentation
-	 * 
+	 *
 	 * @return string of option
 	 */
 	private function optionMobileBranch($branch, $options = array() ) {
@@ -132,23 +132,23 @@ class BeTreeHelper extends AppHelper {
 		);
 		$options = array_merge($default_options, $options);
 		extract($options);
-		
+
 		if (!isset($this->numInd)) {
 			$this->numInd = $numInd;
 		}
-		
+
 		if (empty($space)) {
 			$space = "";
 		}
-		
+
 		if (empty($res)) {
 			$res = "";
 		}
-		
+
 		for ($i = 1; $i <= $numInd * $level; $i++) {
 			$space .= $indentation;
 		}
-		
+
 		foreach ($branch as $section) {
 			$selected = (in_array($section['id'],$parentIds)) ? " selected" : "";
 			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
@@ -159,9 +159,9 @@ class BeTreeHelper extends AppHelper {
 				);
 				$res .= $this->optionMobileBranch($section["children"], $options2);
 			}
-			
+
 		}
-		
+
 		return $res;
 	}
 
@@ -177,41 +177,41 @@ class BeTreeHelper extends AppHelper {
 		$url = "";
 		$class = "";
 		$res = '<ul data-role="listview" data-split-icon="gear" data-split-theme="d" data-inset="true">';
-		
+
 		foreach ($branch as $section) {
-			
+
 			if (empty($inputType)) {
 				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
-				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"]) 
+				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"])
 						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
 					$class = " class='on'";
 				} else {
 					$class = "";
 				}
 			}
-			
+
 			$liClass = "sec_" . $section['status'];
 			// check if it's a protecetd section
 			if (!empty($section["num_of_permission"])) {
 				$liClass .= " protected";
 			}
-			
+
 			// check it's a hidden section (from menu and canonical path)
 			if ($section["menu"] == 0) {
 				$liClass .= " menuhidden";
 			}
-			
-			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";			
+
+			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";
 			$res .= "<a " . $class . " rel='" . $url . "'>";
-			
+
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
 				$checked .= ' class="ui-li-thumb"';
 				$res .= sprintf($this->tags[$inputType], $section["id"], $checked);
 			} else {
-				
+
 			}
-			
+
 			$res .= $section["title"] . "</a>";
 			/*
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
@@ -221,7 +221,7 @@ class BeTreeHelper extends AppHelper {
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
 			}
-			
+
 			$res .= "</li>";
 		}
 		$res .= "</ul>";
@@ -237,25 +237,25 @@ class BeTreeHelper extends AppHelper {
 	 * @return string html for simple view tree
 	 */
 	public function view($tree=array(), $inputType=null, $parent_ids=array()) {
-	
+
 		$output = "";
 		$class = "";
 		$url = "";
-		
+
 		if (!empty($tree)) {
-				
+
 			foreach ($tree as $publication) {
-								
+
 				if (empty($inputType)) {
 					$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $publication["id"];
-					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"]) 
+					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
 							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]) {
 						$class = " class='on'";
 					} else {
 						$class = "";
 					}
 				}
-				
+
 				$output .= "<div class='pub'><h2 id='pub_" . $publication['id'] . "'";
 				// add publication's permission icon
 				if (!empty($publication["num_of_permission"])) {
@@ -263,24 +263,24 @@ class BeTreeHelper extends AppHelper {
 				}
 				$output .= ">";
 				$output .= "<a ".$class." rel='" . $url . "'>";
-				
+
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
 					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
 					$output .= sprintf($this->tags[$inputType], $publication["id"], $checked) ;
 				}
-				
+
 				$output .= $publication["title"] . "</a>";
 				$output .= "</h2>";
-				
+
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids);
 				}
 				$output .= "</div>";
 			}
-			
+
 		}
 		return $this->output($output);
-		
+
 	}
 
 	/**
@@ -299,14 +299,14 @@ class BeTreeHelper extends AppHelper {
 
 	/**
 	 * get sitemap
-	 * 
+	 *
 	 * @param array $sections
 	 * @param string $public_url
 	 */
 	private function designsitemap($sections=array(),$public_url='/') {
 		$output = '';
 		if (!empty($sections)) {
-			foreach($sections as $section) {			
+			foreach($sections as $section) {
 				$show = !isset($section["menu"]) ? true : (($section["menu"] === '0') ? false : true);
 				if($show) {
 					$output .= '<li class="Section">';
@@ -353,15 +353,15 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $tree
 	 * @param int $numInd number of $indentation repetition foreach branch
 	 * @param string $indentation string to use for indentation
-	 * 
+	 *
 	 * @return string 	<option value="">...</option>
 	 * 		   			<option value="">...</option>
 	 * 					....
 	 */
 	public function option($tree, $selId=null, $numInd=3, $indentation="&nbsp;") {
-		
+
 		$output = "<option value=\"\"> -- </option>";
-		
+
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
 				$selected = ($selId == $publication["id"])? " selected" : "";
@@ -371,11 +371,11 @@ class BeTreeHelper extends AppHelper {
 				}
 			}
 		}
-		
+
 		return $this->output($output);
-		
+
 	}
-	
+
 	/**
 	 * get html section
 	 *
@@ -388,92 +388,92 @@ class BeTreeHelper extends AppHelper {
 		$url = "";
 		$class = "";
 		$res = "<ul class='menutree'>";
-		
+
 		foreach ($branch as $section) {
-			
+
 			if (empty($inputType)) {
 				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
-				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"]) 
+				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"])
 						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
 					$class = " class='on'";
 				} else {
 					$class = "";
 				}
 			}
-			
+
 			$liClass = "sec_" . $section['status'];
 			// check if it's a protecetd section
 			if (!empty($section["num_of_permission"])) {
 				$liClass .= " protected";
 			}
-			
+
 			// check it's a hidden section (from menu and canonical path)
 			if ($section["menu"] == 0) {
 				$liClass .= " menuhidden";
 			}
-			
-			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";			
+
+			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";
 			$res .= "<a " . $class . " rel='" . $url . "'>";
-			
+
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$checked = (in_array($section["id"], $parent_ids))? "checked='checked'" : "";
 				$res .= sprintf($this->tags[$inputType], $section["id"], $checked);
-				
+
 			}
-			
+
 			$res .= $section["title"] . "</a>";
-			
+
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
 			}
-			
+
 			if (!empty($section["children"])) {
 				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
 			}
-			
+
 			$res .= "</li>";
 		}
 		$res .= "</ul>";
 		return $res;
 	}
-	
-	
+
+
 	/**
 	 * build branch
 	 *
 	 * @param $branch
 	 * @param int $numInd number of repetition on $indentation string foreach branch
 	 * @param string $indentation string to use for indentation
-	 * 
+	 *
 	 * @return string of option
 	 */
 	private function optionBranch($branch, $selId, $numInd, $indentation) {
-		
+
 		if (!isset($this->numInd)) {
 			$this->numInd = $numInd;
 		}
-		
+
 		if (empty($space)) {
 			$space = "";
 		}
-		
+
 		if (empty($res)) {
 			$res = "";
 		}
-		
+
 		for ($i = 1; $i <= $numInd; $i++) {
 			$space .= $indentation;
 		}
-		
+
 		foreach ($branch as $section) {
 			$selected = ($selId == $section["id"])? " selected" : "";
 			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
 			if (!empty($section["children"])) {
 				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation);
 			}
-			
+
 		}
-		
+
 		return $res;
 	}
 
