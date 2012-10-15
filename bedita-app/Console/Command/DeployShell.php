@@ -201,31 +201,34 @@ class DeployShell extends BeditaBaseShell {
     
     
     public function updateVersion() {
-    	
+    	// git repository
+    	if (file_exists(ROOT . DS . ".git")) {
+    		$revision = system("git log -1 --pretty=format:'%h'");
+    		if ($revision === false) {
+    			$this->out("Failed to update version number");
+    			return;
+    		}
+    	// svn repository
+    	} else {
+    		exec("svnversion", $res, $retval);
+	    	if($retval !== 0) {
+				$this->out("Error executing 'svnversion', bye.");
+				return;
+			}
+			$s = split(":", $res[0]);
+			$revision = $s[count($s)-1];
+    	}
     	chdir(APP);
-    	exec("svnversion", $res, $retval);
-    	if($retval !== 0) {
-			$this->out("Error executing 'svnversion', bye.");
-			return;
-		}
-		$s = split(":", $res[0]);
-		$svnRevision = $s[count($s)-1];
 		$versionFile = APP . 'config' . DS . 'bedita.version.php';
     	Configure::load("bedita.ini"); // reload new bedita.ini, may be changed by svn up
-		$beditaVersion = Configure::read("majorVersion") . "." . $svnRevision;
+		$beditaVersion = Configure::read("majorVersion") . "." . $revision;
 		$handle = fopen($versionFile, 'w');
 		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
 		fclose($handle);
 		$this->out("Updated to: $beditaVersion");
-		
     }
 
-    public function strtoupper() {
-		$this->svnUpdate();
-    }
-    
-    public function svnUpdate() {
-    	
+    public function up() {
 		$sel = array();
 		$this->out("1. BEdita core/backend");
 		$sel[1] = ROOT;
@@ -279,13 +282,24 @@ class DeployShell extends BeditaBaseShell {
 				return;
 			}
 		}
-		$svnCmd = "svn update $selected";
-		$this->out("Svn command: $svnCmd");
-    	$svnRes = system($svnCmd);
-    	if($svnRes === false) {
-			$this->out("Svn command failed");
+		// git repository
+		if (file_exists($selected . DS . ".git")) {
+			$currentBranch = system("git rev-parse --abbrev-ref HEAD");
+			if ($currentBranch === false) {
+				$this->out("Failed retrieve current git branch");
+			}
+			$updateCmd = "cd $selected; git pull origin $currentBranch";
+		// svn repository
+		} else {
+			$updateCmd = "svn update $selected";
+		}
+
+		$this->out("Update command: $updateCmd");
+    	$updateRes = system($updateCmd);
+    	if($updateRes === false) {
+			$this->out("Update command failed");
     	}
-		
+
 		// update enabled addons
 		if (strstr($selected, BEDITA_ADDONS_PATH)) {
 			$type = trim(substr($selected, strlen(BEDITA_ADDONS_PATH)), DS);
@@ -310,7 +324,14 @@ class DeployShell extends BeditaBaseShell {
     	}
     	$this->Cleanup->execute();
 		$this->out("Done");
-		$this->svnUpdate();
+		$this->up();
+    }
+    
+    /**
+     * @deprecated
+     */
+    public function svnUpdate() {
+    	$this->up();
     }
 
     public function upgradeDb() {
@@ -369,7 +390,7 @@ class DeployShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
-        $this->out('3. svnUpdate/up: updates from svn backend or frontends, with cleanup, version update...');
+        $this->out('3. up: updates from git/svn backend or frontends, with cleanup, version update...');
   		$this->out(' ');
         $this->out('4. upgradeDb: upgrade bedita database to newest version');
   		$this->out(' ');
