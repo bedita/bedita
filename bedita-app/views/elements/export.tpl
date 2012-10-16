@@ -1,3 +1,4 @@
+{bedev}
 {if !empty($object)}
 
 <ul class="menuleft insidecol">
@@ -14,3 +15,4 @@
 </ul>
 
 {/if}
+{/bedev}

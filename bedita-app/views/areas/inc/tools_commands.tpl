@@ -29,9 +29,8 @@
 		<input type="button" class="newcontenthere" value="GO" />
 	</div>
 {/if}
-	{bedev}
+
 	<input style="width:140px" type="button" rel="{$html->url('/pages/export/')}{$object.id|default:''}" class="modalbutton" value=" {t}export{/t} " />
 	<input style="width:140px" type="button" rel="{$html->url('/pages/import/')}{$object.id|default:''}" class="modalbutton" value=" {t}import{/t} " />
-	{/bedev}
 
 </div>
