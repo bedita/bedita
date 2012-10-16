@@ -23,8 +23,9 @@ $(document).ready(function(){
 	 * serialized form data used on change page to check if any not saved data is present
 	 * get all form fields without class ignore
 	 * and/or without parent with class ignore
+	 * and exclude also richtext items (check done calling onChangeHandler() function)
 	 */
-	var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not(.ignore :input)";
+	var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not('[class^=mce]'):not('[class^=richtext]'):not(.ignore :input)";
 	var formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
 	
 	{if !empty($branch)}
@@ -271,7 +272,7 @@ $(document).ready(function(){
 	
 });
 
-function onChangeHandler(inst) {
+function onChangeHandler() {
 	$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 	$("#cancelBEObject").show();
 	{if $autosave|default:false}

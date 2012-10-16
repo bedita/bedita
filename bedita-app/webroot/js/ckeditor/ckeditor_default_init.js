@@ -5,7 +5,7 @@ $(function()
 	var configFull = {
 			language: BEDITA.currLang2,
 		    uiColor: '#dedede',
-			extraPlugins: 'stylesheetparser',
+			extraPlugins: 'stylesheetparser,onchange',
 			contentsCss: BEDITA.webroot + 'css/htmleditor.css',
 			toolbar: 'BEToolbarFull',
 			toolbar_BEToolbarFull: [
@@ -28,7 +28,7 @@ $(function()
 	var configSimple = {
 			language: BEDITA.currLang2,
 		    uiColor: '#dedede',
-			extraPlugins: 'stylesheetparser',
+			extraPlugins: 'stylesheetparser,onchange',
 			contentsCss: BEDITA.webroot + 'css/htmleditor.css',
 			toolbar: 'BEToolbarSimple',
 			toolbar_BEToolbarSimple: [
@@ -42,7 +42,7 @@ $(function()
 	var configNewsletterTemplate = {
 			language: BEDITA.currLang2,
 		    uiColor: '#dedede',
-			extraPlugins: 'stylesheetparser,beditacontentblock',
+			extraPlugins: 'stylesheetparser,onchange,beditacontentblock',
 			contentsCss: BEDITA.webroot + 'css/htmleditor.css',
 			toolbar: 'BEToolbarNewsletterTemplate',
 			toolbar_BEToolbarNewsletterTemplate: [
@@ -71,4 +71,21 @@ $(function()
 	$( '.richtext' ).ckeditor(configFull);
 	$( '.richtextSimple' ).ckeditor(configSimple);
 	$( '.richtextNewsletterTemplate' ).ckeditor(configNewsletterTemplate);
+
+	// detects text changes, fire onChangeHandler() to set form content is changed then remove all 'change' event
+	var onChangeListener = function () {
+		onChangeHandler();
+		removeOnChangeListener();
+	}
+
+	var removeOnChangeListener = function () {
+		for (i in CKEDITOR.instances) {
+			CKEDITOR.instances[i].removeListener('change', onChangeListener);
+		}
+	}
+
+	// set listener on text changes (use the onchange plugin)
+	for (i in CKEDITOR.instances) {
+		CKEDITOR.instances[i].on('change', onChangeListener);
+	}
 });
