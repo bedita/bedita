@@ -156,13 +156,24 @@ $(document).ready(function(){
 
 ...........................................*/
 
-	$(".pub H2",".hometree").wrap("<div class='tab' />"); 
+	//$(".pub H2",".hometree").wrap("<div class='tab' />"); 
 
 	$("LI A[rel]",".hometree").css("cursor","pointer").click(function () {
 		window.location = $(this).attr("rel");
 	});
 	
 	//$(".publishingtree LI A.on",".home").parents("DIV:first").find("UL").show();
+
+/*...........................................    
+
+   primacolonna
+
+...........................................*/
+
+	$(".primacolonna").click(function () {
+		$("BODY").toggleClass("leftmenuopen");
+	});
+
 	
 /*...........................................    
 
@@ -333,19 +344,21 @@ $(document).ready(function(){
 
 	//$(".publishingtree DIV UL").hide();
 
-	$(".publishingtree h2").before("<div class='plusminus'></div>");
-
+	$(".publishingtree h2 A").before("<a class='plusminus'></a>");
 	
-	$(".publishingtree .plusminus").click(function () {
-			$(this).toggleClass("on").parent("div").find("ul").toggle('slow');
+	$(".publishingtree h2").click(function () {
+		var who = $(this);
+		$(who).next("ul").slideToggle(800,function(){
+			$(who).toggleClass("on");
+		});
 	});
-
+/*
 	$(".publishingtree h2 A").click(function () {
-			if ($(this).attr("rel")) {
-				window.location = $(this).attr("rel");
-			}	
+		if ($(this).attr("rel")) {
+			window.location = $(this).attr("rel");
+		}	
 	});
-
+*/
 	$(".publishingtree LI A").click(function () {
 			if ($(this).attr("rel")) {
 				window.location = $(this).attr("rel");
