@@ -654,6 +654,11 @@ class AdminController extends ModulesController {
 		}
 	}
 
+	
+	public function customRelations() {
+		//
+	}
+	
 	protected function forward($action, $esito) {
 			$REDIRECT = array(
 				"deleteAllMailUnsent" => 	array(
