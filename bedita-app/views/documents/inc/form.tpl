@@ -6,9 +6,11 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	{$view->element('form_title_subtitle')}
-	
+
+	{$view->element('form_tree')}
+		
 	{$view->element('form_textbody',[
-		'addshorttext'=>{$conf->addshorttext|default:true},
+		'addshorttext'=>{$conf->addshorttext|default:false},
 		'height'=>500
 	])}
 
@@ -17,8 +19,6 @@
 	{$view->element('form_previews')}
 
 	{$view->element('form_properties',['comments' => true])}
-	
-	{$view->element('form_tree')}
 	
 	{$view->element('form_categories')}
 	

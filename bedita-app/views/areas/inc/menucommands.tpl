@@ -18,7 +18,7 @@ Menu comandi a SX valido per tutte le pagine del controller.
 	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
-		<input class="bemaincommands" style="display:inline" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
+		<input class="bemaincommands" type="button" value="{t}delete{/t}" name="delete" id="delBEObject" />
 	</div>
 	
 	{/if}

@@ -35,7 +35,5 @@ a seconda del metodo
 	</div>
 	
 	{/if}
-	{if !empty($view->action) && $view->action == "index"}
-		{$view->element('select_categories')}
-	{/if}
+
 </div>
