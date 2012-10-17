@@ -17,13 +17,15 @@
 {include file="inc/menuleft.tpl"}
 
 <div class="head">
-    <h1>{$BEAuthUser.realname}</h1>
+
+	<div class="toolbar" style="padding-top:20px">
 	
-	<div class="toolbar" style="padding-top:10px">
+		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname}</h1>
 		{t}Created on{/t} <a>{$BEAuthUser.created|date_format:$conf->dateTimePattern}</a>
 		/
 		{t}Last access on:{/t} <a>{$BEAuthUser.last_login|date_format:$conf->dateTimePattern}</a>
 	 </div>
+	 
 </div>
 
 {include file="inc/menucommands.tpl" method="profile" fixed=true}

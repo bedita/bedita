@@ -38,20 +38,9 @@ $(document).ready(function() {
 
 <div class="dashboard">
 
-	<div class="hometree" style="clear:both;">
+	<div class="publishingtree">
 	{assign_associative var="options" treeParams=['controller' => 'areas']}
 	{$view->element('tree',$options)}
-	</div>
-
-	<div class="tab"><h2>{t}search{/t}</h2></div>
-	<div id="search">
-		<form action="">
-			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
-			<input type="text" style="width:210px" name="searchstring" id="searchstring" value=""/>
-			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
-			<hr />
-		</form>
-		<div id="searchResult"></div>	
 	</div>
 
 	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
@@ -99,6 +88,17 @@ $(document).ready(function() {
 
 <div class="dashboard right">
 
+	<div class="tab"><h2>{t}search{/t}</h2></div>
+	<div id="search">
+		<form action="">
+			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
+			<input type="text" style="width:210px" name="searchstring" id="searchstring" value=""/>
+			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
+			<hr />
+		</form>
+		<div id="searchResult"></div>	
+	</div>
+	
 	{bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
 	<div id="new" class="bordered smallist">

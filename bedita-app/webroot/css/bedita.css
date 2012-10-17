@@ -61,7 +61,7 @@ article, aside, figure, footer, header, hgroup, nav, section {display: block;}
 
 
 BODY, .bodybg, .catselector {
-	background-color:#b1b1b1;
+	background-color:#B6B6B6;
 }
 
 
@@ -110,20 +110,26 @@ UL UL {margin-left:20px;}
 
 
 .head {
+	z-index:80;
 	top:50px;
-	height:110px;
-	padding-left:20px; width: 660px;
+	height:80px;
+	/*
+	width: 660px;
+	*/
+	padding-left:20px;
 }
 
+.modulesmenu {
+	z-index:280;
+}
 
 .primacolonna {
 	position:absolute; 
 	top:20px;
 	left:20px;
-	z-index:100;
+	z-index:102;
 	width:140px;
 }
-
 
 .secondacolonna {
 	position:absolute;
@@ -131,7 +137,7 @@ UL UL {margin-left:20px;}
 	left:160px;
 	z-index:100;
 	width:140px;
-	}
+}
 
 
 .insidecol {
@@ -142,7 +148,7 @@ UL UL {margin-left:20px;}
 	position:absolute;
 	width:180px;
 	left:280px;
-	}
+}
 	
 
 .fixed {
@@ -156,17 +162,17 @@ UL UL {margin-left:20px;}
 	position:absolute; 
 	left:970px;
 	width:180px;
-	top:160px;
+	top:130px;
 	min-height:400px;
 }
 
 .main {
-	top:160px;
+	top:130px;
 	width: 660px; 
 }
 
 .mainfull, .main.full {
-	top:160px;
+	top:130px;
 	min-width: 660px;
 	padding-right:20px;
 }
@@ -237,6 +243,10 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 	font-family: "Arial", "Helvetica", sans-serif;
 	font-size:1em; font-weight:normal; 
 }
+.pub H2 {
+	font-family: "Arial", "Helvetica", sans-serif;
+	font-size:0.8rem; font-weight:normal; 
+}
 
 .toolbar {
 	font:normal 1.2em "Georgia", "Times New Roman", Times, serif;
@@ -261,7 +271,7 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 .modules {
 	/*background:transparent url(../img/shadowpattern160.png);*/
 	width:auto;
-	height:140px;
+	height:110px;
 }
 
 UL.modules {
@@ -271,7 +281,8 @@ UL.modules {
 .modules.block LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:120px; height:120px; 
+	width:120px; 
+	height:90px; 
 	padding:10px;
 	margin: 0px;
 	background-color:#CCCCCC; 
@@ -304,7 +315,13 @@ UL.modules {
 
 .listrecent {
 	display:block; height:15px; width:15px; margin-left:-10px; margin-right:5px; float:left;
+	border-radius:10px;
 }
+
+#objtable .listrecent {
+	margin:5px -15px 5px 10px;
+}
+
 
 .smallist .on {
 	font-weight: normal;
@@ -353,11 +370,11 @@ UL.modules {
 			background-image: url(../img/BElogogray.gif) !important;
 			background-repeat:no-repeat !important;
 			background-position: left bottom;
+			background-size: 50%;
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
 			line-height:1em !important;
 			color:#996600  !important;
 			}
-
 
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
@@ -483,9 +500,8 @@ UL.modules {
 ...........................................*/
 
 NAV.modulesmenu {
-	left:300px;
-	top:0px;
-	padding:20px 0px 10px 0px;
+	/*left:300px;*/
+	top:20px;
 	text-align:right;
 	min-width:700px;
 }
@@ -507,6 +523,7 @@ NAV.modulesmenu {
 
 .modulesmenu .searchtrigger {
 	background: #ccc url(../img/iconSearch.png) center no-repeat;
+		margin-right:20px;
 }
 
 .searchobjects {
@@ -554,11 +571,23 @@ NAV.modulesmenu {
 
 ...........................................*/
 
+.modules + UL.menuleft {
+	border-top:0px solid gray;
+}
+
 UL.menuleft {
 	padding-bottom:5px;
 	border-bottom:5px solid gray;
 	margin-bottom:10px !important;
+	border-top:5px solid gray;
+	padding-top:5px;
 }
+
+UL.menuleft + UL.menuleft {
+	border-top:0px solid gray;
+	padding-top:0px;
+}
+
 
 .menuleft  LI {
 	line-height:1.2em;
@@ -615,7 +644,7 @@ UL.menuleft {
 ...........................................*/
 
 
-.head H1 {margin-top:25px;}
+.head H1 {margin-top:35px;}
 
 
 
@@ -729,10 +758,20 @@ UL.menuleft {
 ...........................................*/
 
 .publishingtree {
-	width:285px;
+	min-width:275px;
 	margin-left:-5px;
 }
 
+.insidecol.publishingtree {
+	overflow-x:hidden;
+}
+
+/*
+.insidecol.publishingtree:hover {
+	width:275px;
+	background-color:#b6b6b6;
+}
+*/
 /*
 .publishingtree LI  {
 	padding:2px; margin:0px;
@@ -753,23 +792,36 @@ UL.menuleft {
 	word-wrap: break-word; /* or "normal" */
 }
 
-.publishingtree H2 A {
-	display:block;
-	padding:2px 0px 5px 5px;
-	margin-left:10px;
+.pub H2 {
+	margin:0px 0px 10px 5px;
+	background-color:#FFF;
+	padding:5px 5px 5px 10px;
 }
 
-.publishingtree H2 A.on {
+.pub H2 A {
+	color:#663300;
+	text-transform:uppercase;
+}
+
+.publishingtree H2.on A {
 	font-weight:normal;
 	background-color: white;
 	border-bottom:0px;
 }
 
-.publishingtree H2 A:Hover {
-	color: gray;
+.publishingtree H2:Hover {
+	/*background-color:#d8d8d8;*/
 }
 
+.publishingtree H2 A.plusminus:before {
+	content: "− ";
+}
 
+.publishingtree H2.on A.plusminus:before {
+	content: "+ ";
+}
+
+/*
 .publishingtree .plusminus {
 	float:left;
 	cursor:pointer;
@@ -785,14 +837,20 @@ UL.menuleft {
 	background-position: right 0px !important;
 	background-color: transparent;
 }
-
+*/
 
 .publishingtree *[rel] {
 	cursor:pointer;
 }
 
 .publishingtree UL {
+	min-width:275px;
 	margin-left:10px;
+
+}
+
+.publishingtree LI {
+	min-width:275px;
 }
 
 .publishingtree LI A {
@@ -800,15 +858,16 @@ UL.menuleft {
 }
 
 .publishingtree A {
-		cursor:pointer;	
+	cursor:pointer;	
+	white-space:nowrap;
 }
 
 .publishingtree A:Hover {
-	background-color:#d8d8d8;
+	/*background-color:#d8d8d8;*/
 }
 
-.publishingtree .on {
-	background-color:white;
+.publishingtree A.on {
+	background-color:#FFF !important;
 	font-weight:normal;
 }
 
@@ -868,7 +927,7 @@ UL.menuleft {
 
 .toolbar TD {
 	border-right:1px solid gray;
-	padding:15px;
+	padding:5px 15px 5px 15px;
 	vertical-align:middle;
 }
 
@@ -914,7 +973,7 @@ TABLE {empty-cells:show; border-spacing:0px;  border-collapse:collapse; }
 
 TD, TH {padding:5px; text-align:left}
 
-TH {text-transform:lowercase}
+TH {text-transform:lowercase; padding:2px 5px 2px 5px;}
 
 TD.center, TH.center {
 	text-align:center;
@@ -1317,12 +1376,6 @@ input#titleBEObject {
 	padding:5px 0px 5px 5px; font-size:1.25em;
 }
 
-
-.insidecol input {
-	width:100px;
-	margin:2px 5px 2px 5px;
-}
-
 INPUT.priority {
 	text-align:center; 
 	margin-left: 0px; 
@@ -1371,11 +1424,10 @@ A.BEbutton  {
 .bemaincommands {
 	width:100px !important;
 	display:block; 
-	margin:5px 0px 0px 0px !important;
+	margin:5px auto;
 }
 
 .bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button], button {
-
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
 	background-color:#F2F2F2;
 	line-height:1.2em;
@@ -1580,7 +1632,7 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	/*min-height:525px;*/
 	/*overflow-y:auto;*/
 	/*overflow-x:hidden;*/
-	background: transparent url(../img/shadowsimple.png) repeat-x;
+	/*background: transparent url(../img/shadowsimple.png) repeat-x;*/
 	margin-bottom:30px;
 }
 
@@ -1630,7 +1682,6 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 .home UL.modules LI {
 	padding:0px; 
 	width:140px; 
-	height:110px; 
 	display:block; 
 	float:left;
 }
@@ -1643,7 +1694,6 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 }
 
 .home UL.modules LI.bedita {
-	height:120px;
 	width:120px;
 }
 
@@ -1675,7 +1725,7 @@ LI.welcome {
 }
 
 .dashboard .modules LI {
-	max-height:70px;
+	height:95px;
 }
 /*	
 @media only screen and (min-width: 768px) {	
@@ -1691,7 +1741,6 @@ LI.welcome {
 }
 */
 @media only screen and (min-width: 960px) {
-	.dashboard .modules LI {min-height:100px;}
 	.dashboard { width:240px }
 	.dashboard.center {
 		width:280px;
@@ -1701,7 +1750,6 @@ LI.welcome {
 }
 
 @media only screen and (min-width: 1200px) {
-	.dashboard .modules LI {min-height:100px;}
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:420px;
@@ -1712,7 +1760,6 @@ LI.welcome {
 
 
 @media only screen and (min-width: 1500px) {
-	.dashboard .modules LI {min-height:120px;}
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:700px;
@@ -1720,11 +1767,6 @@ LI.welcome {
 	}
 	.dashboard.right { left:1190px; }
 }
-
-
-
-
-
 
 
 
@@ -1738,15 +1780,6 @@ LI.welcome {
 
 .dashboard .bordered {
  margin-bottom:10px;
-}
-
-.hometree .tab H2 A {
-	text-transform:uppercase;
-}
-
-.hometree .tab H2.open, .hometree .tab H2.open A {
-	background-color:#FFF;
-	color:#000;
 }
 
 .hometree div > UL.menutree {
@@ -1949,8 +1982,13 @@ P.editornotes {
 }
 
 .catselector {
-	/*background-color: #B6B6B6 !important;	*/
+	background-color: #B6B6B6 !important;
 }
+
+.catselector {
+	background-color: #B6B6B6 !important;
+}
+
 	
 .bedev {
 	background-color:pink;
@@ -2136,6 +2174,7 @@ img.smallicon {
 		display:block;
 		border-top:0px solid #CCC;
 		padding:5px 0px 5px 25px;
+		border-left:0px solid transparent;
 		border-right:25px solid transparent;
 	}
 	
@@ -2161,7 +2200,7 @@ img.smallicon {
 	}
 	
 	.modulesmenu_d LI.index {
-	border-right:0px; padding-right:10px;
+		border-right:0px; padding-right:10px;
 	}
 	
 	.sub_modulesmenu_d {
