@@ -11,7 +11,7 @@ $(document).ready(function(){
 });
 </script>
 
-<div class="belinks" style="padding:5px">
+<div class="belinks" style="padding:0px 10px">
 <a href="http://www.bedita.com/who-are-we" title="Chialab&Channelweb" target="besite">BEdita {$conf->majorVersion} © </a>
 	<strong id="ch"><a href="http://www.chialab.it" target="_blank">Chialab</a></strong> and <strong id="cw"><a href="http://www.channelweb.it" target="_blank"">ChannelWeb</a></strong> 
 	2006-{$smarty.now|date_format:"%Y"}

@@ -39,7 +39,7 @@ $(document).ready(function() {
 			</td>
 			<td>{$objToAss.title|default:'<i>[no title]</i>'}</td>
 			<td style="padding:0px; width:10px;">
-				<span class="listrecent {$objToAss.moduleName}" style="margin:0px 0px 0px 10px">&nbsp;</span>
+				<span class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>
 			<td style="text-align:center">{$objToAss.status}</td>
 			<td style="text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>

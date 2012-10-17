@@ -1,5 +1,5 @@
 <div class="modules modulesmenu_d shadow">	
-	<div style="position:absolute; width:10px; top:0px; left:-10px; height:140px; background-color:white;"></div>
+	<div style="position:absolute; width:10px; top:0px; left:-10px; height:110px; background-color:white;"></div>
 	<nav>
 		<ul>
 			<li class="index"><a href="{$html->url('/')}" title="BEdita home">home</a></li>

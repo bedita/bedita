@@ -37,7 +37,7 @@
 		<table>
 		<tr>
 			
-			<td style="padding-top:20px;">
+			<td>
 				{if $view->viewVars.module_modify eq '1'}
 					<a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new{/t} &nbsp;
 					{assign var=leafs value=$conf->objectTypes.leafs}

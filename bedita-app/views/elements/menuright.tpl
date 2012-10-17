@@ -78,6 +78,8 @@ function refreshNoteList(delButton) {
 
 <div class="quartacolonna">	
 
+<!-- ///// notes ////// -->
+
 {if !empty($object)}
 
 	<div class="tab"><h2>{t}Notes{/t}</h2></div>
@@ -115,11 +117,34 @@ function refreshNoteList(delButton) {
 
 {/if}
 
+<!-- ///// related tickets ////// -->
+
+{if !empty($relObjects.ticketRelated)}
+	<div class="tab"><h2>{t}Related tickets{/t}</h2></div>
+	<div id="ticketsrel">
+		<ul class="bordered">
+		{foreach from=$relObjects.ticketRelated item=item}
+			<li style="padding-left:5px;">
+				<a href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.id}">
+				<span title="{$item.ObjectType.name}" class="listrecent {$item.ObjectType.module_name}" style="margin:0px">&nbsp;</span>
+				&nbsp;&nbsp;{$item.title|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
+			</li>
+		{/foreach}
+			<li style="padding-left:5px;">
+				<a href="{$html->url('/')}{$item.ObjectType.module_name}/view/">
+				<span class="listrecent {$item.ObjectType.module_name}" style="margin:0px">&nbsp;</span>
+				&nbsp;&nbsp;{t}create new{/t} ticket</a>
+			</li>			
+		</ul>
+	</div>
+{/if}	
+	
 	{bedev}
 		<div class="tab"><h2>{t}Test stuff{/t}</h2></div>
 		<div id="test" style="padding:10px; background-color:white;">
 		{$view->element('BEiconstest')}
 		</div>
 	{/bedev}
+
 
 </div>

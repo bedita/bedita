@@ -4,7 +4,6 @@
 	
 		<a title="{t}search{/t}" class="searchtrigger"></a>
 		
-		<!-- <a title="{t}help{/t}" class="helptrigger">?</a> -->
 {strip}
 {if !empty($moduleListInv)}
 {foreach from=$moduleListInv key=k item=mod}
