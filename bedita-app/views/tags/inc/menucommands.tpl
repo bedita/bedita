@@ -16,8 +16,8 @@ Menu a SX valido per tutte le pagine del controller.
 	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
 	<div class="insidecol">
 
-		<input type="submit" value=" {t}Save{/t} " id="saveBEObject"name="save" />	
-		<input type="button" name="delete" id="delBEObject" value="{t}Delete{/t}"  {if !($tag.id|default:false)}disabled="1"{/if}/>
+		<input class="bemaincommands" type="submit" value=" {t}Save{/t} " id="saveBEObject"name="save" />	
+		<input class="bemaincommands" type="button" name="delete" id="delBEObject" value="{t}Delete{/t}"  {if !($tag.id|default:false)}disabled="1"{/if}/>
 	
 	</div>
 	

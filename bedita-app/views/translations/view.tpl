@@ -38,9 +38,10 @@ $(document).ready(function(){
 {include file="inc/menuleft.tpl"}
 
 <div class="head">
-	{if !empty($object_translation.title)}<h1>{$object_translation.title|default:'<i>[no title]</i>'}</h1>{/if}
+	{if !empty($object_translation.title)}
+	<h2 style="margin:5px 0 5px 0">{$object_translation.title|default:'<i>[no title]</i>'}</h2>{/if}
 	{t}translation of{/t}
-	<h1 style="margin-top:0px">{$object_master.title|default:'<i>[no title]</i>'}</h1>
+	<h2 style="margin:5px 0 0 0">{$object_master.title|default:'<i>[no title]</i>'}</h2>
 
 </div>
 

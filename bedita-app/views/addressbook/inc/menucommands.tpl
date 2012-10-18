@@ -55,13 +55,6 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{$view->element('prevnext')}
 	
-	{elseif $view->action == "index"}
-
-	{$view->element('select_categories')}
-
 	{/if}
-
-
-
 </div>
 

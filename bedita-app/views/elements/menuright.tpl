@@ -121,13 +121,13 @@ function refreshNoteList(delButton) {
 
 {if !empty($relObjects.ticketRelated)}
 	<div class="tab"><h2>{t}Related tickets{/t}</h2></div>
-	<div id="ticketsrel">
+	<div id="ticketRelated">
 		<ul class="bordered">
 		{foreach from=$relObjects.ticketRelated item=item}
-			<li style="padding-left:5px;">
+			<li style="padding-left:5px;" class="{$item.status} {$item.ticket_status}">
 				<a href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.id}">
-				<span title="{$item.ObjectType.name}" class="listrecent {$item.ObjectType.module_name}" style="margin:0px">&nbsp;</span>
-				&nbsp;&nbsp;{$item.title|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
+				<span title="{$item.ObjectType.name}" class="listrecent {$item.ObjectType.module_name}" style="margin:0 10px 0 0">&nbsp;</span>
+				{$item.title|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
 			</li>
 		{/foreach}
 			<li style="padding-left:5px;">

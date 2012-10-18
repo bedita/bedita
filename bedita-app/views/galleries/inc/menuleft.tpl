@@ -7,23 +7,22 @@ Menu a SX valido per tutte le pagine del controller.
 
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
 
-	
+{assign var="moduleurl" value=$currentModule.url}
 
-	<ul class="menuleft insidecol">
-	{if $module_modify eq '1'}
-
-		<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new gallery{/t}</a></li>
-
-	{/if}
+	<ul class="menuleft insidecol bordered">
+		{if $view->viewVars.module_modify eq '1'}
+		<li><a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new{/t}</a></li>
+		{/if}
+		<li {if $view->action eq 'index'}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.url}/">{t}List {$currentModule.name}{/t}</a>
+		</li>
+		{$view->element('export')}	
 	</ul>
 
-{$view->element('export')}
 
-	{if (!empty($view->action)) && $view->action eq "index"}
+	{if !empty($view->action) && $view->action == "index"}
 	<div class="insidecol publishingtree">
-		
 		{$view->element('tree')}
-	
 	</div>
 	{/if}
 

@@ -15,7 +15,6 @@ Menu a SX valido per tutte le pagine del controller.
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div>
 	
-	
 	{if !empty($method) && $method == "view"}
 	
 	<div class="insidecol">
@@ -26,11 +25,5 @@ Menu a SX valido per tutte le pagine del controller.
 		{$view->element('prevnext')}
 		
 	</div>
-	
-	{elseif $method == "index"}
-
-	{$view->element('select_categories')}
-
 	{/if}
-
 </div>

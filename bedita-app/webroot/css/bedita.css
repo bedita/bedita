@@ -2284,4 +2284,8 @@ img.smallicon {
 	color: white;
 }
 	
+#ticketRelated .resolved {
+	text-decoration:line-through;
+	opacity:0.35;
+}
 	

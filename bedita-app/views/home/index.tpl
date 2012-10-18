@@ -91,15 +91,13 @@ $(document).ready(function() {
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form action="">
-			{*<label class="block" for="searchstring">{t}search string{/t}:</label>*}
-			<input type="text" style="width:210px" name="searchstring" id="searchstring" value=""/>
-			&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
-			<hr />
+			<input type="text" style="width:190px; margin-bottom:5px; padding:5px; " name="searchstring" id="searchstring" value=""/>
+			<input id="searchButton" type="button" value="{t}go{/t}" />
 		</form>
 		<div id="searchResult"></div>	
 	</div>
 	
-	{bedev}
+	{*bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
 	<div id="new" class="bordered smallist">
 		<form>
@@ -128,7 +126,7 @@ $(document).ready(function() {
 			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
 		</form>
 	</div>
-	{/bedev}
+	{/bedev*}
 
 <script type="text/javascript">
 <!--

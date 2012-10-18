@@ -21,10 +21,10 @@ $(document).ready(function() {
 //-->
 </script>
 
-<ul class="bordered smallist">
+<ul class="bordered smallist" style="overflow:hidden;">
 {if !empty($objects.items)}
 	{foreach from=$objects.items item="o"}
-		<li><span class="listrecent {$o.module_name}">&nbsp;&nbsp;</span>&nbsp;<a class="{$o.status}" title="{$o.module_name} | {t}modified on{/t} {$o.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$o.module_name}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
+		<li style="white-space:nowrap"><span class="listrecent {$o.module_name}">&nbsp;&nbsp;</span>&nbsp;<a class="{$o.status}" title="{$o.module_name} | {t}modified on{/t} {$o.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$o.module_name}/view/{$o.id}">{$o.title|default:'<i>[no title]</i>'}</a></li>
 	{/foreach}
 {else}
 	{t}no results{/t}

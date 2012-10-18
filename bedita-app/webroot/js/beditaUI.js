@@ -346,23 +346,23 @@ $(document).ready(function(){
 
 	$(".publishingtree h2 A").before("<a class='plusminus'></a>");
 	
-	$(".publishingtree h2").click(function () {
-		var who = $(this);
+	$(".publishingtree h2 .plusminus").click(function () {
+		var who = $(this).parent("H2");
 		$(who).next("ul").slideToggle(800,function(){
 			$(who).toggleClass("on");
 		});
 	});
-/*
+
 	$(".publishingtree h2 A").click(function () {
 		if ($(this).attr("rel")) {
 			window.location = $(this).attr("rel");
 		}	
 	});
-*/
+
 	$(".publishingtree LI A").click(function () {
-			if ($(this).attr("rel")) {
-				window.location = $(this).attr("rel");
-			}
+		if ($(this).attr("rel")) {
+			window.location = $(this).attr("rel");
+		}
 	});
 	
 	$(".publishingtree LI A.on").parents("DIV:first").find("UL").show();
