@@ -349,7 +349,7 @@ $(document).ready(function(){
 	$(".publishingtree h2 .plusminus").click(function () {
 		var who = $(this).parent("H2");
 		$(who).next("ul").slideToggle(800,function(){
-			$(who).toggleClass("on");
+			$(who).toggleClass("open");
 		});
 	});
 
@@ -366,7 +366,9 @@ $(document).ready(function(){
 	});
 	
 	$(".publishingtree LI A.on").parents("DIV:first").find("UL").show();
+	$(".publishingtree h2 A.on").closest("H2").addClass("on");
 
+	$(".publishingtree .on").addClass(currentclassmodule);
 
 /*...........................................    
 

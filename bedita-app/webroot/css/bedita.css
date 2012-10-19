@@ -794,7 +794,7 @@ UL.menuleft + UL.menuleft {
 
 .pub H2 {
 	margin:0px 0px 10px 5px;
-	background-color:#FFF;
+	background-color:#dedede;
 	padding:5px 5px 5px 10px;
 }
 
@@ -803,9 +803,8 @@ UL.menuleft + UL.menuleft {
 	text-transform:uppercase;
 }
 
-.publishingtree H2.on A {
+.publishingtree H2 A {
 	font-weight:normal;
-	background-color: white;
 	border-bottom:0px;
 }
 
@@ -814,11 +813,11 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree H2 A.plusminus:before {
-	content: "− ";
+	content: "+ ";
 }
 
-.publishingtree H2.on A.plusminus:before {
-	content: "+ ";
+.publishingtree H2.open A.plusminus:before {
+	content: "− ";
 }
 
 /*
@@ -846,7 +845,7 @@ UL.menuleft + UL.menuleft {
 .publishingtree UL {
 	min-width:275px;
 	margin-left:10px;
-
+	display:none;
 }
 
 .publishingtree LI {
@@ -866,8 +865,8 @@ UL.menuleft + UL.menuleft {
 	/*background-color:#d8d8d8;*/
 }
 
-.publishingtree A.on {
-	background-color:#FFF !important;
+.publishingtree .on {
+	color:#FFF;
 	font-weight:normal;
 }
 
