@@ -381,6 +381,12 @@ abstract class FrontendController extends AppController {
 			Configure::write('Config.language', $this->currLang);
 		}
 		$this->set('currLang', $this->currLang);
+		if(isset($conf->langsSystemMapRev[$this->currLang])) {
+			$this->set('currLang2', $conf->langsSystemMapRev[$this->currLang]);
+		} else {
+			$this->set('currLang2', $conf->defaultUILang2);
+		}
+
 		if(isset( $conf->locales[$this->currLang])) {
 			$this->currLocale = setlocale(LC_ALL, $conf->locales[$this->currLang]);
 		} else {
