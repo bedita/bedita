@@ -69,12 +69,16 @@ class Section extends BeditaCollectionModel
 
 
 	function afterSave($created) {
-		if (!$created)
-			return ;
-
+		if (!$created) {
+			return;
+		}
 		$tree = ClassRegistry::init('Tree');
-		if($tree->appendChild($this->id, $this->data[$this->name]['parent_id'])===false)
+		if ($tree->appendChild($this->id, $this->data[$this->name]['parent_id']) === false) {
 			return false;
+		}
+		// save Tree.menu
+		$menu = (!empty($this->data[$this->name]['menu']))? 1 : 0;
+		$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]["parent_id"], $menu);
 		return true;
 	}
 
