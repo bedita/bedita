@@ -3,12 +3,6 @@
                           A Quick Howto
                ======================================
 
-@version			$Revision$
-@modifiedby 		$LastChangedBy$
-@lastmodified		$LastChangedDate$
-
-$Id$
-
 
 BEdita 3.2 comes with a new web wizard install procedure.
 If you have access to a command line shell, you can still use the classic procedure (see
