@@ -269,7 +269,7 @@ class DeployShell extends BeditaBaseShell {
 		}
 		// git repository
 		if (file_exists($selected . DS . ".git")) {
-			$currentBranch = system("git rev-parse --abbrev-ref HEAD");
+			$currentBranch = system("cd $selected; git rev-parse --abbrev-ref HEAD");
 			if ($currentBranch === false) {
 				$this->out("Failed retrieve current git branch");
 			}
