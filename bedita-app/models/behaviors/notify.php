@@ -232,14 +232,30 @@ class NotifyBehavior extends ModelBehavior {
 		$this->notifyMsg = &$notify;
 	}
 
+	/**
+	 * Return well formatted notification text replacing markplace with related text
+	 *
+	 * @param  string $msgType the name (key) of notification message array (self::notifyMsg)
+	 * @param  string $field   the field of notification message array (self::notifyMsg)
+	 * @param  array  $params  array of fields to replace in notification text.
+	 *                         The key is the markplace and the value is the text that replace the markplace
+	 *                         "title" => "my title", replace markplace [$title] with "my title"
+	 * @param  string $lang    language of notification
+	 * @return string          well formatted text ready to notify
+	 */
 	protected function getNotifyText($msgType, $field ,array &$params, $lang) {
-
 		if(isset($this->notifyMsg[$msgType][$lang][$field])) {
 			$text = $this->notifyMsg[$msgType][$lang][$field];
 		} else {
 			$text = $this->notifyMsg[$msgType]["eng"][$field]; // default fallback
 		}
-
+		// replace [BEdita] with projectName in subject field
+		if ($field == "subject") {
+			$projectName = Configure::read('projectName');
+			if (!empty($projectName)) {
+				$text = str_replace("[BEdita]", "[$projectName]", $text);
+			}
+		}
 		// replace markplace as [$user], [$title], etc... with $params["user"], $params["title"], etc...
 		if (preg_match_all("/\[\\\$(.+?)\]/", $text, $matches)) {
 			foreach($matches[1] as $key => $m) {
@@ -248,8 +264,7 @@ class NotifyBehavior extends ModelBehavior {
 				}
 			}
 		}
-		
-		return $text;		
+		return $text;
 	}
 
 	/**
