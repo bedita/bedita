@@ -1,58 +1,58 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2009 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
- * Behavior class to send email notification to users. 
+ * Behavior class to send email notification to users.
  * Currenly handles this scenarios:
  * 	- new notes or comments added to an object
  *  - object has been modified
  *  - user profile created or modified
- * Notifications events are triggered accordingo to user preferences 
- * (on comments/notes and objects created) 
- * 
+ * Notifications events are triggered accordingo to user preferences
+ * (on comments/notes and objects created)
+ *
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 class NotifyBehavior extends ModelBehavior {
- 
+
 	private $modelNameToUserField = array("Comment" => "comments", "EditorNote" => "notes");
 	private $notifyMsg = null;
-	
+
 	function setup(&$model, $settings=array()) {
 	}
-	
+
 	function afterSave($model, $created) {
-		
+
 		$data =& $model->data[$model->alias];
 		$users = array();
 		$creator = array();
-		
+
 		if ($model->name == "Comment" || $model->name == "EditorNote") {
 
 			$userField = $this->modelNameToUserField[$model->name];
 			// exit if comment has been modified (not created)
-			if(!$created && $userField == "comments") { 
+			if(!$created && $userField == "comments") {
 				return;
 			}
 
@@ -63,9 +63,9 @@ class NotifyBehavior extends ModelBehavior {
 					"contain" => array("ReferenceObject")
 				)
 			);
-			
+
 			$userModel = ClassRegistry::init("User");
-			$conditions = array("(" .$userField . "='all' 
+			$conditions = array("(" .$userField . "='all'
 								OR (" .$userField . "='mine' AND id='". $c["ReferenceObject"]["user_created"] ."'
 								))");
 			if($userField == "notes") { // don't send mail to editor itself
@@ -84,64 +84,64 @@ class NotifyBehavior extends ModelBehavior {
 					}
 				}
 			}
-			
+
 			if(empty($data['author'])) {
 				$data['author'] = $userModel->field("userid",
 					array("id" => $data["user_modified"]));
 			}
 			$data['object_title'] = $c["ReferenceObject"]["title"];
-			
+
 			$this->prepareAnnotationMail($model, $users);
 		} else if($model->name == "User") {
-			
+
 			$this->prepareUserSettingsMail($model, $created);
-			
-		} else if (!$created && !empty($data["user_modified"]) 
+
+		} else if (!$created && !empty($data["user_modified"])
 				&& !empty($data["user_created"])) {
 			$userModel = ClassRegistry::init("User");
 			$data['author'] = $userModel->field("userid",array("id" => $data["user_modified"]));
-			$creator = $userModel->getUsersToNotify(array("notify_changes" => "1", 
+			$creator = $userModel->getUsersToNotify(array("notify_changes" => "1",
 				"id = " . $data["user_created"], "id <> " . $data["user_modified"]));
 			if(!empty($creator)) {
 				$this->prepareObjectChangeMail($model, $creator);
 			}
 		}
 	}
-	
+
 	public function prepareUserSettingsMail($userModel, $created) {
 		$modData =& $userModel->data[$userModel->alias];
 		if(!empty($modData["email"])) { // send only if email field is present...
 
 			$this->loadMessages();
 			$msgType = $created ? "newUser" : "updateUser";
-			$detailMsg = (!empty($modData["passwd"]) && !$created) ? "Your password was changed!" : ""; 
+			$detailMsg = (!empty($modData["passwd"]) && !$created) ? "Your password was changed!" : "";
 			$detailMsg .= ($modData["valid"] == 0) ? "\nYour account is blocked!" : "";
-			
+
 			$params = array("author" => "",
 				"title" => "",
 				"url" => Configure::read("beditaUrl"),
 				"beditaUrl" => Configure::read("beditaUrl"),
-				"text" => "Real Name: ". $modData["realname"] . "\nUserid: " .  
+				"text" => "Real Name: ". $modData["realname"] . "\nUserid: " .
 					$modData["userid"] . "\n" . $detailMsg . "\n",
 			);
-			
+
 			$users = array(0=>array("User" => $modData));
 			$this->createMailJob($users, $msgType, $params);
 		}
 	}
-	
+
 	public function prepareAnnotationMail($model, array &$users) {
-		
+
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
 		debug($modData);
-		$msgType = Inflector::underscore($model->alias); // note or comment 
+		$msgType = Inflector::underscore($model->alias); // note or comment
 		if($msgType == "comment") {
 			$modData["url_id"] = $modData["id"]; // if comment, point to comment detail
 		} else {
 			$modData["url_id"] = $modData["object_id"]; // if note, point to annotated obj
 		}
-		
+
 		$params = array("author" => $modData["author"],
 			"title" => $modData["object_title"],
 			"url" => $this->getContentUrl($modData),
@@ -149,12 +149,12 @@ class NotifyBehavior extends ModelBehavior {
 			"text" => $modData["description"],
 		);
 
-		
+
 		$this->createMailJob($users, $msgType, $params);
 	}
-	
+
 	public function prepareObjectChangeMail($model, array &$users) {
-		
+
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
 		$modData["url_id"] =  $modData["id"];
@@ -189,21 +189,21 @@ class NotifyBehavior extends ModelBehavior {
 		$data["status"] = "unsent";
 		$conf = Configure::getInstance();
 		foreach ($users as $u) {
-			
+
 			$data["recipient"] = $u['User']['email'];
 			$params["user"] = $u['User']['userid'];
-			$lang = isset($u['User']['lang']) ? $u['User']['lang'] : "eng"; 
+			$lang = isset($u['User']['lang']) ? $u['User']['lang'] : "eng";
 			$subject = $this->getNotifyText($msgType, "subject", $params, $lang);
 
-			$data["mail_params"] = serialize(array("reply_to" => $conf->mailOptions["reply_to"], 
-						"sender" => $conf->mailOptions["sender"], 
+			$data["mail_params"] = serialize(array("reply_to" => $conf->mailOptions["reply_to"],
+						"sender" => $conf->mailOptions["sender"],
 						"subject" => $subject,
 						"signature" => $conf->mailOptions["signature"]
 			));
-			$data["mail_body"] = $this->getNotifyText($msgType, "mail_body", $params, $lang);			
+			$data["mail_body"] = $this->getNotifyText($msgType, "mail_body", $params, $lang);
 			// skip creation if a duplicate mail is already present
 			$res = $jobModel->find("all", array(
-				"conditions" => array("recipient" => $data["recipient"], "status" => $data["status"], 
+				"conditions" => array("recipient" => $data["recipient"], "status" => $data["status"],
 				"mail_body" => $data["mail_body"])));
 			if(!empty($res)) {
 				$this->log("duplicate job for " . $data["recipient"], LOG_DEBUG);
@@ -214,9 +214,9 @@ class NotifyBehavior extends ModelBehavior {
 				}
 			}
 		}
-		
+
 	}
-	
+
 	protected function loadMessages() {
 		// merge default, backend local and frontend messages if present
 		$notify = array();
@@ -225,7 +225,7 @@ class NotifyBehavior extends ModelBehavior {
 		if (file_exists(BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php")) {
 			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php");
 		}
-		
+
 		if (!BACKEND_APP && file_exists(APP . "config" . DS . "notify" . DS . "frontend.msg.php")) {
 			require(APP . "config" . DS . "notify" . DS . "frontend.msg.php");
 		}
@@ -283,5 +283,5 @@ class NotifyBehavior extends ModelBehavior {
 	}
 
 }
- 
+
 ?>
