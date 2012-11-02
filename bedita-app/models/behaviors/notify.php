@@ -36,8 +36,8 @@
  */
 class NotifyBehavior extends ModelBehavior {
 
-	private $modelNameToUserField = array("Comment" => "comments", "EditorNote" => "notes");
-	private $notifyMsg = null;
+	protected $modelNameToUserField = array("Comment" => "comments", "EditorNote" => "notes");
+	protected $notifyMsg = null;
 
 	function setup(&$model, $settings=array()) {
 	}
