@@ -134,7 +134,6 @@ class NotifyBehavior extends ModelBehavior {
 
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
-		debug($modData);
 		$msgType = Inflector::underscore($model->alias); // note or comment
 		if($msgType == "comment") {
 			$modData["url_id"] = $modData["id"]; // if comment, point to comment detail
