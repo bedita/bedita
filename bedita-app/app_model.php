@@ -1031,7 +1031,16 @@ class BeditaProductModel extends BEAppObjectModel {
 														"LangText",
 														"ObjectType"),
 									"Product"),
-				"minimum" => array("BEObject" => array("ObjectType"),"Product")
+				"minimum" => array("BEObject" => array("ObjectType"),"Product"),
+
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"RelatedObject",
+														"Category",
+														"Annotation",
+														"GeoTag"
+														)
+													)
 	);
 
 
