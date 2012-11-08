@@ -20,7 +20,7 @@ $(document).ready(function(){
 		}
 	});
 
-	if ($("#permissionsTab h2").attr("class") == "open documents") {
+	if ($("#permissionsTab h2").hasClass("open")) {
 		loadUserGroupAjax(urlLoad);
 	}
 	
