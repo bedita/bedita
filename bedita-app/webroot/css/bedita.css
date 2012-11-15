@@ -812,12 +812,17 @@ UL.menuleft + UL.menuleft {
 	/*background-color:#d8d8d8;*/
 }
 
+.publishingtree H2 A.plusminus {
+	display:inline-block;
+	padding-right:10px;
+}
+
 .publishingtree H2 A.plusminus:before {
-	content: "+ ";
+	content: "+";
 }
 
 .publishingtree H2.open A.plusminus:before {
-	content: "− ";
+	content: "−";
 }
 
 /*
