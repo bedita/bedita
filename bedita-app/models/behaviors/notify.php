@@ -36,8 +36,8 @@
  */
 class NotifyBehavior extends ModelBehavior {
  
-	private $modelNameToUserField = array("Comment" => "comments", "EditorNote" => "notes");
-	private $notifyMsg = null;
+	protected $modelNameToUserField = array("Comment" => "comments", "EditorNote" => "notes");
+	protected $notifyMsg = null;
 	
 	function setup(&$model, $settings=array()) {
 	}
@@ -91,7 +91,7 @@ class NotifyBehavior extends ModelBehavior {
 			}
 			$data['object_title'] = $c["ReferenceObject"]["title"];
 			
-			$this->prepareAnnotationMail($users, $model);
+			$this->prepareAnnotationMail($model, $users);
 		} else if($model->name == "User") {
 			
 			$this->prepareUserSettingsMail($model, $created);
@@ -103,7 +103,7 @@ class NotifyBehavior extends ModelBehavior {
 			$creator = $userModel->getUsersToNotify(array("notify_changes" => "1", 
 				"id = " . $data["user_created"], "id <> " . $data["user_modified"]));
 			if(!empty($creator)) {
-				$this->prepareObjectChangeMail($creator, $model);
+				$this->prepareObjectChangeMail($model, $creator);
 			}
 		}
 	}
@@ -130,7 +130,7 @@ class NotifyBehavior extends ModelBehavior {
 		}
 	}
 	
-	public function prepareAnnotationMail(array &$users, $model) {
+	public function prepareAnnotationMail($model, array &$users) {
 		
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
@@ -153,7 +153,7 @@ class NotifyBehavior extends ModelBehavior {
 		$this->createMailJob($users, $msgType, $params);
 	}
 	
-	public function prepareObjectChangeMail(array &$users, $model) {
+	public function prepareObjectChangeMail($model, array &$users) {
 		
 		$this->loadMessages();
 		$modData =& $model->data[$model->alias];
@@ -239,7 +239,13 @@ class NotifyBehavior extends ModelBehavior {
 		} else {
 			$text = $this->notifyMsg[$msgType]["eng"][$field]; // default fallback
 		}
-
+		// replace [BEdita] with projectName in subject field
+		if ($field == "subject") {
+			$projectName = Configure::read('projectName');
+			if (!empty($projectName)) {
+				$text = str_replace("[BEdita]", "[$projectName]", $text);
+			}
+		}
 		// replace markplace as [$user], [$title], etc... with $params["user"], $params["title"], etc...
 		if (preg_match_all("/\[\\\$(.+?)\]/", $text, $matches)) {
 			foreach($matches[1] as $key => $m) {
