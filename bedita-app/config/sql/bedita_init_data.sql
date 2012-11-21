@@ -18,7 +18,6 @@ INSERT INTO object_types (id, name, module_name) VALUES (33, 'link', 'webmarks')
 INSERT INTO object_types (id, name, module_name) VALUES (34, 'card', 'addressbook');
 INSERT INTO object_types (id, name, module_name) VALUES (35, 'mail_message', 'newsletter');
 INSERT INTO object_types (id, name, module_name) VALUES (36, 'mail_template', 'newsletter');
-INSERT INTO object_types (id, name, module_name) VALUES (37, 'author', NULL);
 INSERT INTO object_types (id, name, module_name) VALUES (39, 'editor_note', NULL);
 
 -- ----------------------------------
