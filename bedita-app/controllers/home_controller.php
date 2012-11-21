@@ -42,16 +42,16 @@ class HomeController extends AppController {
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
-	 	$excludedObjectTypes = array($conf->objectTypes["editor_note"]["id"], $conf->objectTypes["comment"]["id"]);
-	 	if (!empty($conf->objectTypes["questionnaireresult"]["id"]))
-	 		$excludedObjectTypes[] = $conf->objectTypes["questionnaireresult"]["id"];
-
+	 	$excludedObjectTypes = $conf->objectTypes["nodashboard"]["id"];
+	 	$userObjectTypes = ClassRegistry::init("ObjectType")->typesIdFromModules(array_keys($this->moduleList));
+	 	$userObjectTypes = array_diff($userObjectTypes, $excludedObjectTypes);
+	 	
 	 	$lastModBYUser = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
 		 														"user_modified = '" . $user["id"] . "'",
-	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
+		 														'object_type_id' => $userObjectTypes
 	 														),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 5
@@ -62,7 +62,7 @@ class HomeController extends AppController {
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
-	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
+		 														'object_type_id' => $userObjectTypes,
 	 														),
 	 									"order"			=> array("modified DESC"),
 		 								"limit"			=> 10

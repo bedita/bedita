@@ -41,6 +41,7 @@ class EditorNote extends BeditaAnnotationModel
     	)
     );
 	
+	public $objectTypesGroups = array("nodashboard");
 	
 }
 ?>

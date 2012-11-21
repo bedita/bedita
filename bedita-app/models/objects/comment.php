@@ -33,6 +33,8 @@ class Comment extends BeditaAnnotationModel
 	var $useTable = 'annotations';
 
 //	var $actsAs = array(); 
+
+	public $objectTypesGroups = array("nodashboard");
 	
 	protected $modelBindings = array( 
 		"detailed" =>  array("BEObject" => array(
