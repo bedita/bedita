@@ -73,7 +73,7 @@
 	Defaults are generally ok.</p>
 	<table>
 	<tr><td><label>Host</label>:</td><td><input type="text" name="data[database][host]" value="{$database_config.host|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
-	<tr><td><label>Port</label>:</td><td><input type="text" name="data[database][port]" value="{$database_config.port|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/> - dabase server port (i.e. 3306 for mysql)</td></tr>
+	<tr><td><label>Port</label>:</td><td><input type="text" name="data[database][port]" value="{$database_config.port|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/> - database server port (i.e. 3306 for mysql)</td></tr>
 	<tr><td><label>Persistent</label>:</td><td><input type="text" name="data[database][persistent]" value="{$database_config.persistent|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
 	<tr><td><label>Schema</label>:</td><td><input type="text" name="data[database][schema]" value="{$database_config.schema|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
 	<tr><td><label>Prefix</label>:</td><td><input type="text" name="data[database][prefix]" value="{$database_config.prefix|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>

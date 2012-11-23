@@ -64,5 +64,23 @@ class ObjectType extends BEAppModel
 		}
 	} 
 	
+	/**
+	 * Get list of object types id given a module names list
+	 *
+	 * @param array $modules
+	 * @return array, object types id
+	 */
+	function typesIdFromModules(array &$modules) {
+		$res = array();
+		$types = $this->find("all", array(
+				"conditions" =>	array("module_name" => $modules),
+				"fields" => array("id"),
+		));
+		foreach ($types as $t) {
+			$res[] = $t["ObjectType"]["id"];
+		}
+		return $res;		
+	}
+
 }
 ?>

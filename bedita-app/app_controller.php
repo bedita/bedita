@@ -40,6 +40,7 @@ class AppController extends Controller
 	var $uses = array('EventLog') ;
 
 	protected $moduleName = NULL;
+	protected $moduleList = NULL;
 	protected $modulePerms = NULL;
 	/**
 	 * Result types for methods
@@ -399,9 +400,9 @@ class AppController extends Controller
 		}
 
 		// module list
-		$moduleList = ClassRegistry::init("PermissionModule")->getListModules($this->BeAuth->user["userid"]);
-		$this->set('moduleList', $moduleList) ;
-		$this->set('moduleListInv', array_reverse($moduleList)) ;
+		$this->moduleList = ClassRegistry::init("PermissionModule")->getListModules($this->BeAuth->user["userid"]);
+		$this->set('moduleList', $this->moduleList) ;
+		$this->set('moduleListInv', array_reverse($this->moduleList)) ;
 
 		// verify basic access
 		if(isset($this->moduleName)) {
@@ -414,7 +415,7 @@ class AppController extends Controller
 				$this->handleError($logMsg, __("Module not available",true), $logMsg);
 				$this->redirect($this->referer());
 			}
-			foreach ($moduleList as $mod) {
+			foreach ($this->moduleList as $mod) {
 			 	if($this->moduleName == $mod['name']) {
 			 		$this->modulePerms = $mod['flag'];
 				}
@@ -430,7 +431,7 @@ class AppController extends Controller
 			}
 			$this->set('moduleName', $this->moduleName);
 			if (!empty($this->moduleName))
-				$this->set('currentModule', $moduleList[$this->moduleName]);
+				$this->set('currentModule', $this->moduleList[$this->moduleName]);
 
 
 		}

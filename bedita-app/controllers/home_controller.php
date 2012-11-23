@@ -36,22 +36,20 @@ class HomeController extends AppController {
 	var $components = array('BeTree', 'BeUploadToObj');
 
 
-	function index() {
+	public function index() {
 	 	$conf  = Configure::getInstance();
 
 	 	$user = $this->Session->read("BEAuthUser");
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
-	 	$excludedObjectTypes = array($conf->objectTypes["editor_note"]["id"], $conf->objectTypes["comment"]["id"]);
-	 	if (!empty($conf->objectTypes["questionnaireresult"]["id"]))
-	 		$excludedObjectTypes[] = $conf->objectTypes["questionnaireresult"]["id"];
-
+	 	$userObjectTypes = $this->userObjectTypeIds();
+	 	
 	 	$lastModBYUser = $this->BEObject->find("all", array(
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
 		 														"user_modified = '" . $user["id"] . "'",
-	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
+		 														'object_type_id' => $userObjectTypes
 	 														),
 		 								"order"			=> array("modified DESC"),
 		 								"limit"			=> 5
@@ -62,7 +60,7 @@ class HomeController extends AppController {
 		 								"contain" 		=> array("ObjectType"),
 		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
 		 								"conditions" 	=> array(
-	 															'NOT' => array('object_type_id' => $excludedObjectTypes)
+		 														'object_type_id' => $userObjectTypes,
 	 														),
 	 									"order"			=> array("modified DESC"),
 		 								"limit"			=> 10
@@ -91,6 +89,15 @@ class HomeController extends AppController {
 	 }
 
 	/**
+	 * Get object type ids that current user can view
+	 */
+	private function userObjectTypeIds() {
+		$excludedObjectTypes = Configure::read("objectTypes.nodashboard.id");
+		$userObjectTypes = ClassRegistry::init("ObjectType")->typesIdFromModules(array_keys($this->moduleList));
+		return array_diff($userObjectTypes, $excludedObjectTypes);
+	} 
+	 
+	/**
 	 * Generic view methods redirects to specific module controller checking object type
 	 *
 	 * @param integer $id - object id to view
@@ -116,7 +123,8 @@ class HomeController extends AppController {
 		if (!empty($this->params["form"]["searchstring"])) {
 			$conf  = Configure::getInstance();
 			$filter["query"] = addslashes($this->params["form"]["searchstring"]);
-
+			$filter["object_type_id"] = $this->userObjectTypeIds();
+				
 			$user = $this->Session->read("BEAuthUser");
 
 			$objects = $this->BEObject->findObjects(null, $user["id"], null, $filter, null, true, $page, $dim);

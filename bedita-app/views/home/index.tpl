@@ -156,12 +156,14 @@ $(document).ready(function(){
 //-->
 </script>
 
-	
+
+	{if isset($moduleList.tags)}	
 	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
 	<div id="tags">
 		<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
 		<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
 	</div>
+	{/if}
 	
 	<div class="tab"><h2>{t}last notes{/t}</h2></div>
 	<ul id="lastnotes" class="bordered">
@@ -173,6 +175,7 @@ $(document).ready(function(){
 		{/foreach}
 	</ul>
 
+	{if isset($moduleList.comments)}	
 	<div class="tab"><h2>{t}last comments{/t}</h2></div>
 	<ul id="lastcomments" class="bordered">
 		{foreach from=$lastComments item="cmt"}
@@ -182,6 +185,7 @@ $(document).ready(function(){
 			<li>{t}no comments{/t}</li>
 		{/foreach}
 	</ul>
+	{/if}
 
 	<div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">
