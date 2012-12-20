@@ -35,6 +35,9 @@ class BEObject extends BEAppModel
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
+	private $defaultIp = "::1"; // default IP addr for saved objects
+	private $defaultUserId = 1; // default user id, e.g.: objects created by shell scripts don't have proper user
+	
 	var $validate = array(
 //		'title' => array(
 //			'rule' => 'notEmpty'
@@ -627,27 +630,32 @@ class BEObject extends BEAppModel
 //	}
 	
 	private function _getDefaultIP() {
-		$IP = $_SERVER['REMOTE_ADDR'] ;
+		if(!empty($_SERVER['REMOTE_ADDR'])) {
+			$IP = $_SERVER['REMOTE_ADDR'];
+		} else {
+			$IP = $this->defaultIp;
+		}
 		return $IP ;
 	}
 	
 	private function _getIDCurrentUser() {
 		// read user data from session or from configure
 		$conf = Configure::getInstance();
-		$userId=0; 
+		$userId=$this->defaultUserId; 
 
 		if(isset($conf->beditaTestUserId)) {
 			$userId = $conf->beditaTestUserId; // unit tests
 		} else {
-		
-			$session = @(new CakeSession()) ;
 			
-			if($session->valid() === false)
-				return null;
-			$user = $session->read($conf->session["sessionUserKey"]) ; 
-			if(!isset($user["id"])) 
-				return null ;
-			$userId = $user["id"];	
+			if(class_exists("CakeSession")) {
+				$session = new CakeSession() ;
+				if($session->valid() === false)
+					return null;
+				$user = $session->read($conf->session["sessionUserKey"]) ; 
+				if(!isset($user["id"])) 
+					return null ;
+				$userId = $user["id"];
+			}
 		}
 		
 		return $userId;
