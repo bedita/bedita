@@ -409,7 +409,6 @@ class BeMailComponent extends Object {
 	 * @param $timeout, time in minute for check when a message is considered blocked (it has to resend)
 	 */
 	public function notify($timeout = 20) {
-		$process_info = getmypid();
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("minimum");
 		// get unset notifications
@@ -431,9 +430,8 @@ class BeMailComponent extends Object {
 		// merge jobs and update them
 		$jobsToSend = array_merge($jobsToSend, $jobsBlocked);
 		foreach ($jobsToSend as $job) {
-			$job['MailJob']['status'] = 'pending';
-			$job['MailJob']['process_info'] = $process_info;
-			$jobModel->save($job);
+			$jobModel->id = $job['MailJob']['id'];
+			$jobModel->saveField("status", "pending");
 		}
 
 		$data = array();
