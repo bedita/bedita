@@ -403,20 +403,37 @@ class BeMailComponent extends Object {
 	}
 
 	/**
-	 * send mail and save mail job data
+	 * Send notification mail and save mail job data
+	 * Try to send all "unsent" notifications and all "pending" notifications stayed in queue too much time (see $timeout param)
+	 *
+	 * @param $timeout, time in minute for check when a message is considered blocked (it has to resend)
 	 */
-	public function notify() {
-
+	public function notify($timeout = 20) {
+		$process_info = getmypid();
 		$jobModel = ClassRegistry::init("MailJob");
 		$jobModel->containLevel("minimum");
-		$conditions = array("mail_message_id is NULL" ,
-			"status" => "unsent");
+		// get unset notifications
+		$jobsToSend = $jobModel->find('all', array(
+			"conditions" => array("mail_message_id is NULL", "status" => "unsent")
+		));
 
-		$jobsToSend = $jobModel->find('all', array("conditions" => $conditions));
+		// get blocked notifications
+		$timeoutTS = mktime(date("H"), date("i")-$timeout, date("s"), date("n"), date("j"), date("Y"));
+		$timeoutDate = date("Y-m-d H:i:s", $timeoutTS);
+		$jobsBlocked = $jobModel->find('all', array(
+			"conditions" => array(
+				"mail_message_id is NULL",
+				"status" => "pending",
+				"modified < '" . $timeoutDate . "'"
+			)
+		));
 
+		// merge jobs and update them
+		$jobsToSend = array_merge($jobsToSend, $jobsBlocked);
 		foreach ($jobsToSend as $job) {
-			$jobModel->id = $job['MailJob']['id'];
-			$jobModel->saveField("status", "pending");
+			$job['MailJob']['status'] = 'pending';
+			$job['MailJob']['process_info'] = $process_info;
+			$jobModel->save($job);
 		}
 
 		$data = array();

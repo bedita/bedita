@@ -61,13 +61,13 @@ class MailShell extends BeditaBaseShell {
 
 	
 	function main() {
+		$timeout = (!empty($this->params["timeout"]))? $this->params["timeout"] : Configure::read("newsletterTimeout");
 		try {
-			$this->BeMail->notify();
+			$this->BeMail->notify($timeout);
 		} catch (BeditaException $ex) {
 			$this->log("Error: " . $ex->errorTrace());
 		}
 		
-		$timeout = (!empty($this->params["timeout"]))? $this->params["timeout"] : Configure::read("newsletterTimeout");
 		$msgIdsBlocked = $this->BeMail->getMessagesBlocked($timeout);
 		
 		try {
