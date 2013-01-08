@@ -72,8 +72,6 @@
 	</tr>
 {foreachelse}
 
-	<tr>
-		<td><i>no items</i></td>
-	</tr>
+	
 
 {/foreach}

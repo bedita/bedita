@@ -21,8 +21,9 @@ function addObjToAssoc(url, postdata) {
 			startPriority = startPriority + (afterInsert - beforeInsert);
 		}
 
-		if ($("#noContents"))
-			$("#noContents").remove();
+		if ($("#noContents")) {
+			$("#noContents").hide();
+		}
 		$("#areacontent").fixItemsPriority(startPriority);
 		$("#areacontent").sortable("refresh");
 		$("#areacontent table").find("tbody").sortable("refresh");
@@ -42,7 +43,9 @@ function setRemoveActions() {
 		
 		$(this).parents().parents("tr").remove();
 		
-
+		if ($("#areacontent tr:visible").not('#noContents').length == 0) {
+			$("#noContents").show();
+		}
 		$("#areacontent").fixItemsPriority(startPriority);
 	});
 }
@@ -100,6 +103,9 @@ $(document).ready(function() {
 	<table class="indexlist" style="width:100%; margin-bottom:10px;">
 		<tbody class="disableSelection">
 			<input type="hidden" name="contentsToRemove" id="contentsToRemove" value=""/>
+			<tr id="noContents"{if !empty($objects)} style="display: none;"{/if}>
+				<td><i>no items</i></td>
+			</tr>
 			{include file="../inc/list_contents_for_section.tpl" objsRelated=$objects}
 		</tbody>
 	</table>
