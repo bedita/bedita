@@ -17,11 +17,12 @@ below).
 
 MINIMUM REQUIREMENTS
 
-Minimum requirements must be satisfied. 
+Minimum requirements must be satisfied.
 Your server should have at least have:
 
+    * 20 Megabytes of disk space for the base installation.
     * Apache 2
-    * PHP 5.2 or newer and modules GD, Mbstring (Multibyte string), Gettext (recommended)
+    * PHP 5.3 or newer and modules GD, Mbstring (Multibyte string), Gettext (recommended)
     * MySQL 5.0.26 or newer
 
 
@@ -41,12 +42,14 @@ You can download the latest release (stable or development) from:
 
 INSIDE THE PACKAGE
 
-The expanded package contains a root folder called "bedita" containing all files and folders. 
+The expanded package contains a root folder called "bedita" containing all files and folders.
 A few files are just inside this folder:
 
 - INSTALL - this setup guide
-- LICENSE.AGPL - the AGPL license
+- README.md - contains a brief BEdita explanation and some useful links
+- LICENSE.LGPL - the LGPL license
 - CHANGES - is a log of latest changes
+- CONTRIBUTING.md - explains how you can contribute to improve BEdita
 
 
 The root directory also contains the following:
@@ -114,32 +117,7 @@ Usually a few basic values are needed for host, login, password and database.
 
 
 
-2. Configure MediaRoot and MediaURL
-
-This parameters will tell BEdita where multimedia files are stored and how to reach them.
-You may enter proper values editing the file "bedita.cfg.php" which is located in the same
-"config" folder (see 1.)
-
-$config['mediaRoot'] indicates a directory on your filesystem where BEdita will put any file
-    uploaded. Verify that the webserver has permissions to read and write in side this
-    directory.
-
-$config['mediaUrl'] indicates the base URL to reach the same folder in a web context
-
-
-The simplest scenario is to create this directory inside bedita-app/webroot.
-Suppose you have created a directory called "media" here, than the following example values
-should be used:
-
-$config['mediaRoot'] = [system path to bedita] . DS . "bedita-app" . DS . "webroot" . DS . "media";
-$config['mediaUrl']  = "[http://www.example.com/bedita]/media";
-
-Just substitute the values inside the [ ]. 
-DS is used by CakePHP (and BEdita) to define a generic directory separator.
-
-
-
-3. Verify filesystem permissions
+2. Verify filesystem permissions
 
 The directory defined in $config['mediaRoot'] must be writable by the web server.
 Verify also that the bedita-app/tmp directory is recursively writable by the web server (this
@@ -163,10 +141,16 @@ At the end of the script you will be asked to command a new system status check.
 4. Access the system
 
 Point your browser to the location of your BEdita install.
-You will redirected to the login page! Use the following credentials for the very first access:
+You will redirected to the login page!
+If you see a page displayed without styles or blank you could have issues with apache mod_rewrite settings. See the documentation at http://docs.bedita.com/setup/handling-mod_rewrite-in-bedita-and-cakephp for more details.
+
+Use the following credentials for the very first access:
 username: bedita
 password: bedita
 
 Just change your password in the Admin module.
 
 That's it.
+
+
+If something goes wrong you can get help on official documentation http://docs.bedita.com/setup/if-something-goes-wrong-in-bedita and on official Google Groups at https://groups.google.com/forum/?fromgroups#!forum/bedita
