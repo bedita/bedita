@@ -34,7 +34,7 @@ class BeurlHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html','Javascript');
+	var $helpers = array('Html','Javascript','Tr');
 		
 	/**
 	* get current page url
@@ -139,7 +139,42 @@ class BeurlHelper extends AppHelper {
 		}
 		return $paramsNamed;
 	}
-	
+
+	/**
+	 * build backend page title following this schema:
+	 *
+	 * 		1. dashboard => project-name | BEdita
+	 *   	2. module index => module-name | project-name | BEdita
+	 *    	3. module object detail (view* action) => object-title (or new item) | module-name | project-name | BEdita
+	 *     	4. other module pages => controller-action | module-name | project-name | BEdita
+	 *
+	 * Publications module (areas) is an exception and also in index action it behaves as in view* action
+	 *
+	 * @return string
+	 */
+	public function pageTitle() {
+		$title = "";
+		$view = ClassRegistry::getObject('view');
+		$object = $view->getVar("object");
+		$currentModule = $view->getVar("currentModule");
+		$projectName = Configure::read("projectName");
+		if (!empty($currentModule)) {
+			// if it's in object details (view* action) or current module is area, add title object or "new item"
+			if (strpos($view->action, "view") !== false || $currentModule["name"] == "areas") {
+				if (!empty($object["title"])) {
+					$title .= $object["title"] . " | ";
+				} else {
+					$title .= $this->Tr->t("New item", true) . " | ";
+				}
+			} elseif ($view->action != "index") {
+				$title .= $view->action . " | ";
+			}
+			$title .= ucfirst($this->Tr->t($currentModule["label"], true)) . " | ";
+		}
+		$title .= $projectName . " | BEdita";
+		return $title;
+	}
+
 }
 
 ?>

@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html lang="{$currLang2}">
 <head>
-	<title>BEdita | {$currentModule.label|default:'home'} | {$html->action} | {if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{/if}</title>
+	<title>{$beurl->pageTitle()}</title>
 
 	<meta name="robots" content="noindex,nofollow"/>
 	
