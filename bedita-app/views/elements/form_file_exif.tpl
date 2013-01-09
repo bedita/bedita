@@ -10,33 +10,33 @@
 		{else}
 			{assign var="fileUrl"  value=$object.uri}
 		{/if}
-		{image_info var="imageInfo" file=$fileUrl}
+		{$imgInfo = $imageInfo->get($fileUrl)}
 		
-{if isset($imageInfo)}
-	{if $imageInfo.hrtype eq "JPG"}
+{if isset($imgInfo)}
+	{if $imgInfo.hrtype eq "JPG"}
 <div class="tab"><h2>{t}Exif - Main Data{/t}</h2></div>
 
 <fieldset id="exifdata">
 
 	<div style="line-height: 1.4em;">
-	{if $imageInfo.exif.main}
-		{foreach from=$imageInfo.exif.main item="value" key="key"}
+	{if $imgInfo.exif.main}
+		{foreach from=$imgInfo.exif.main item="value" key="key"}
 		<span class="label">{$key}</span>: {$value}<br />
 		{/foreach}
 	{/if}
 
-	{if $imageInfo.exif.XMP}
+	{if $imgInfo.exif.XMP}
 		<h2 style="margin-top: 10px;">XMP (Adobe) data</h2>
-		{section name=XMP loop=$imageInfo.exif.XMP}
-		{if $imageInfo.exif.XMP[XMP].value}
-		<span class="label">{$imageInfo.exif.XMP[XMP].item}</span>: {$imageInfo.exif.XMP[XMP].value}<br />
+		{section name=XMP loop=$imgInfo.exif.XMP}
+		{if $imgInfo.exif.XMP[XMP].value}
+		<span class="label">{$imgInfo.exif.XMP[XMP].item}</span>: {$imgInfo.exif.XMP[XMP].value}<br />
 		{/if}
 		{/section}
 	{/if}
 
-	{if $imageInfo.exif.GPS}
+	{if $imgInfo.exif.GPS|default:false}
 		<h2 style="margin-top: 10px;">GPS data</h2>
-		{dump var=$imageInfo.exif.GPS}
+		{dump var=$imgInfo.exif.GPS}
 	{/if}
 	
 {*
@@ -70,7 +70,7 @@
         )
 *}
 
-	{if !$imageInfo.exif.main && !$imageInfo.exif.XMP && !$imageInfo.exif.GPS}
+	{if !$imgInfo.exif.main && !$imgInfo.exif.XMP && !$imgInfo.exif.GPS|default:false}
 	EXIF records are empty.
 	{/if}
 	</div>

@@ -18,7 +18,7 @@
 	{else}
 		{assign var="fileUrl"  value=$object.uri}
 	{/if}
-	{image_info var="imageInfo" file=$fileUrl}
+	{$imgInfo = $imageInfo->get($fileUrl)}
 
 	{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
 
@@ -105,19 +105,19 @@
 	
 	<tr>
 		<th nowrap>{t}Human readable type{/t}:</th>
-		<td>{$imageInfo.hrtype}</td>
+		<td>{$imgInfo.hrtype}</td>
 		<th>{t}Orientation{/t}:</th>
-		<td>{$imageInfo.orientation}</td>
+		<td>{$imgInfo.orientation}</td>
 	</tr>
 	<tr>
 		<th>{t}Width{/t}:</th>
-		<td>{$imageInfo.w}</td>
+		<td>{$imgInfo.w}</td>
 		<th>{t}Height{/t}:</th>
-		<td>{$imageInfo.h}</td>
+		<td>{$imgInfo.h}</td>
 	</tr>
 	<tr>
-		<th>{t}Bit depth{/t}:</th><td>{$imageInfo.bits}</td>
-		<th>{t}Channels{/t}:</th><td>{$imageInfo.channels}</td>
+		<th>{t}Bit depth{/t}:</th><td>{$imgInfo.bits}</td>
+		<th>{t}Channels{/t}:</th><td>{$imgInfo.channels}</td>
 	</tr>
 
 {/if}
