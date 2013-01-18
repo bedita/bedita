@@ -21,12 +21,7 @@
 
 
 /**
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * BEdita base model classes
  */
 
 class AppModel extends Model{
@@ -753,8 +748,13 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 				"default" => array("BEObject" => array("ObjectProperty",
 									"LangText", "ObjectType", "Annotation",
 									"Category", "RelatedObject" )),
-
-				"minimum" => array("BEObject" => array("ObjectType"))
+						
+				"minimum" => array("BEObject" => array("ObjectType")),
+			
+				"frontend" => array("BEObject" => array("ObjectProperty",
+					"LangText", "ObjectType", "Annotation",
+					"Category", "RelatedObject" )),
+						
 	);
 
 	public function save($data = null, $validate = true, $fieldList = array()) {
