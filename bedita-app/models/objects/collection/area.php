@@ -56,7 +56,7 @@ class Area extends BeditaCollectionModel
 
 			"minimum" => array("BEObject" => array("ObjectType")),
 
-			"frontend" => array("BEObject" => array("LangText"))
+			"frontend" => array("BEObject" => array("LangText", "ObjectProperty"))
 	);
 
 	var $hasOne = array(

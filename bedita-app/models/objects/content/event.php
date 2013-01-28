@@ -58,7 +58,8 @@ class Event extends BeditaContentModel
 														"RelatedObject", 
 														"Category", 
 														"Annotation",
-														"GeoTag"), 
+														"GeoTag",
+														"ObjectProperty"), 
 									"DateItem")
 	);
     

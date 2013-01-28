@@ -59,7 +59,8 @@ class Document extends BeditaContentModel
 														"RelatedObject", 
 														"Category", 
 														"Annotation",
-														"GeoTag"
+														"GeoTag",
+														"ObjectProperty"
 														)
 									)
 	);
