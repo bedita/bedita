@@ -95,6 +95,19 @@ class BelibTestCase extends BeditaTestCase {
 			$this->assertEqual($varName, $expectedVarName);
 		}
 	}
-		
+	
+	function testUrlfriendly() {
+		$name = "Test A.jpg";
+		$expected = "test-a-jpg";
+		$result = BeLib::getInstance()->friendlyUrlString($name);
+		$this->assertEqual($result, $expected);
+	
+		// preserve .
+		$expected = "test-a.jpg";
+		$result = BeLib::getInstance()->friendlyUrlString($name, "\.");
+		$this->assertEqual($result, $expected);
+	}
+	
+	
 }
 ?>
