@@ -48,7 +48,7 @@ Menu a SX valido per tutte le pagine del controller.
 </script>
 {/if}
 
-<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}" style="position:relative; z-index:200;">
 	
 	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
@@ -76,7 +76,7 @@ Menu a SX valido per tutte le pagine del controller.
 	{if $view->action == "index"}
 		<ul class="menuleft insidecol catselector">
 			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
-				<ul id="mediatypes" {if empty($categorySearched)}style="display:none"{/if}>
+				<ul id="mediatypes" style="padding-left:10px; {if empty($categorySearched)}display:none{/if}">
 					
 					{foreach from=$conf->mediaTypes item="media_type"}
 					<li class="ico_{$media_type} {if $cat==$media_type}on{/if}" rel="{$html->url('/multimedia')}/index/category:{$media_type}">
