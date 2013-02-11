@@ -147,7 +147,7 @@ class BeToolbarHelper extends AppHelper {
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		unset($data["dim"]);
-		$url = Router::url($data) ;
+		$url = $this->getUrl($data);
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value +'/page:1'" ;
 
 		$tmp = array() ;
@@ -172,7 +172,7 @@ class BeToolbarHelper extends AppHelper {
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
 		unset($data["dim"]);
-		$url = Router::url($data) ;
+		$url = $this->getUrl($data);
 		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url )) {
 			$url .= "/".$this->params["action"];
 		}
@@ -194,7 +194,7 @@ class BeToolbarHelper extends AppHelper {
 		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
-		$url = Router::url($data) ;
+		$url = $this->getUrl($data);
 		
 		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/page:'+ this[this.selectedIndex].value" ;
 
@@ -231,7 +231,7 @@ class BeToolbarHelper extends AppHelper {
 		// Define script for page change
 		$data = $this->getPassedArgs();
 		unset($data["page"]);
-		$url = Router::url($data) ;
+		$url = $this->getUrl($data);
 		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url)) {
 			$url .= "/".$this->params["action"];
 		}
@@ -288,8 +288,8 @@ class BeToolbarHelper extends AppHelper {
 		// Crea l'url
 		$data['order'] 	= $field ;
 		$data['dir'] 	= (integer)$dir ;
-		
-		$url = Router::url($data) ;
+
+		$url = $this->getUrl($data);
 		
 		if (!empty($image)) {
 			$htmlAttributes["alt"] = __($htmlAttributes["alt"], true);
@@ -325,7 +325,7 @@ class BeToolbarHelper extends AppHelper {
 		$data = $this->getPassedArgs();
 		$data['page'] = $page ;
 
-		$url = Router::url($data) ;
+		$url = $this->getUrl($data);
 		return '<a title="go to '.$where.' page" href="' . $url . '">' . __($title, true) . '</a>';
 	}
 
@@ -357,6 +357,21 @@ class BeToolbarHelper extends AppHelper {
 		else
 			return array_merge($this->params["pass"], $this->params["named"], $otherParams);
 	}
+	
+	/**
+	 * 
+	 * Fix the parameter $data to correct work with plugin modules. 
+	 * It must be manually removed from the data array 
+	 * 
+	 * Enter description here ...
+	 * @param unknown_type $data
+	 */
+	
+	private function getUrl ($data) {
+		$data['plugin'] = "";
+		return Router::url($data) ;
+	}
+	
 }
 
 ?>
