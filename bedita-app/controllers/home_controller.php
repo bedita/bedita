@@ -70,11 +70,13 @@ class HomeController extends AppController {
 	 	$filter = array();
 	 	$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
 		$filter["ref_object_details"] = "Comment";
-	 	$lastComments = $this->BEObject->findObjects(null, null, null, $filter, "modified", false, 1, 10);
+		$filter["ref_object_types"] = $userObjectTypes;
+		$lastComments = $this->BEObject->findObjects(null, null, null, $filter, "modified", false, 1, 10);
 
 	 	$filter["object_type_id"] = $conf->objectTypes['editor_note']["id"];
-		$filter["ref_object_details"] = "EditorNote";
+	 	$filter["ref_object_details"] = "EditorNote";
 		$filter["user_created"] = "";
+		$filter["ref_object_types"] = $userObjectTypes;
 		$lastNotes = $this->BEObject->findObjects(null, null, null, $filter,  "modified", false, 1, 10);
 
 	 	$connectedUser = $this->BeAuth->connectedUser();

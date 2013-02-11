@@ -461,6 +461,32 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	/**
+	 * Filter Reference object types (used with ref_object_details filter for Annotations)
+	 * 
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param string $value, id or array id of of reference object types   
+	 */
+	protected function ref_object_typesFilter($s, $e, $value) {
+		if (!empty($value)) {
+			if(!is_array($value)) {
+				$value = array($value);
+			}
+			$first = true;
+			$in = "";
+			foreach ($value as $v) {
+				if(!$first) {
+					$in .= ", ";
+				}
+				$in .= $v;
+				$first = false; 
+			}
+			$this->conditions[] = "{$s}ReferenceObject{$e}.{$s}object_type_id{$e} IN ($in)";
+		}
+	}
+	
+	
+	/**
 	 * filter the cards joined at a mail group (used in Newsletter module)
 	 * 
 	 * @param string $s, start quote sql
