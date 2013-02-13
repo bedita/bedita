@@ -572,8 +572,8 @@ class BEObject extends BEAppModel
 		$reservedWords = array_merge ( $conf->defaultReservedWords, $conf->cfgReservedWords );
 		if(empty($nickname)) {
 			$objTypeId = $this->data['BEObject']['object_type_id'];
-			$nickname_base = $conf->objectTypes[$objTypeId]["name"]; // default name - model type name
-			$nickname = $nickname_base . "-0";
+			$nickname_base = $conf->objectTypes[$objTypeId]["name"] . "-" . time(); // default name - model type name - timestamp
+			$nickname = $nickname_base ;
 		};
 
 
