@@ -22,9 +22,14 @@ Menu a SX valido per tutte le pagine del controller.
 				{t}new section{/t}
 			</a>
 		</li>
+		
+		<li {if $view->action eq 'categories'}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.url}/categories">{t}Manage categories{/t}</a>
+		</li>
 	</ul>
 	{/if}
-	
+
+		
 	{if ($method != "viewArea" && $method != "viewSection")}
 	<div class="insidecol publishingtree">	
 			{if !empty($tree)}

@@ -35,10 +35,15 @@ class AreasController extends ModulesController {
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler');
 
-	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType') ;
+	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';
 
 	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
+		
+		$conf  = Configure::getInstance() ;
+		$filter["object_type_id"] = array($conf->objectTypes['section']["id"]);
+		$this->loadCategories($filter["object_type_id"]);
+		
 		if ($id == null && !empty($this->params["named"]["id"])) {
 			$id = $this->params["named"]["id"];
 		}
@@ -369,7 +374,36 @@ class AreasController extends ModulesController {
 		unset($IDs) ;
 	}
 
+	public function categories() {
+		$this->showCategories($this->Section);
+	}
 
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["label"]))
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->save($this->data)) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
+		$this->eventInfo("category [" .$this->data["label"] . "] saved");
+	}
+
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+		if(empty($this->data["id"]))
+			throw new BeditaException( __("No data", true));
+		$this->Transaction->begin() ;
+		if(!$this->Category->delete($this->data["id"])) {
+			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
+		}
+		$this->Transaction->commit();
+		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
+		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
+	}
+	
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
 			"saveArea"	=> 	array(
@@ -392,6 +426,22 @@ class AreasController extends ModulesController {
 									"OK"	=> "/areas/view/{$this->Section->id}",
 									"ERROR"	=> $this->referer()
 								),
+			"saveCategories" 	=> array(
+							"OK"	=> "/areas/categories",
+							"ERROR"	=> "/areas/categories"
+							),
+			"deleteCategories" 	=> array(
+							"OK"	=> "/areas/categories",
+							"ERROR"	=> "/areas/categories"
+							),
+			"assocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer()
+							),
+			"disassocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer()
+							)
 		) ;
 		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
 		return false ;

@@ -1,8 +1,8 @@
-{$html->script("jquery/jquery.disable.text.select", true)}
+{*$html->script("jquery/jquery.disable.text.select", true)*}
 
 <script type="text/javascript">
     $(function() {
-        $('.disableSelection').disableTextSelect();
+       // $('.disableSelection').disableTextSelect();
     });	
 	
 var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;

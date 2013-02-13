@@ -2,10 +2,10 @@
 	{include file="inc/form_properties.tpl" fixed=false}
 	
 	{assign_associative var="params" object=$object|default:null}
-	{$view->element('form_tags', $params)}
-
-	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_categories')}
+	
+	{assign_associative var="params" object=$object|default:null}
+	{$view->element('form_tags', $params)}
 
 	{$view->element('form_geotag')}
 
@@ -21,4 +21,3 @@
 	{$view->element('form_permissions', $params)}
 
 	{$view->element('form_versions')}
-

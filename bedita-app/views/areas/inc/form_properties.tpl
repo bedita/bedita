@@ -1,3 +1,5 @@
+<div class="tab"><h2>{t}{$title|default:'Title and properties'}{/t}</h2></div>
+
 <fieldset id="properties">
 
 {$html->script("jquery/ui/jquery.ui.datepicker", false)}
@@ -16,6 +18,22 @@
 			<tr>
 				<th>{t}title{/t}:</th>
 				<td><input type="text" id="titleBEObject" style="width:100%" name="data[title]" value="{$object.title|default:""}"/></td>
+			</tr>
+			<tr>
+				<th>{t}status{/t}:</th>
+				<td id="status">
+				{if $object.fixed|default:'' == 1}
+					{t}This object is fixed - some data is readonly{/t}
+					<input type="hidden" name="data[status]" value="{$object.status}" />
+				{else}
+					{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
+				{/if}	
+				{if in_array('administrator',$BEAuthUser.groups)}
+					&nbsp;&nbsp;&nbsp; <b>fixed</b>:&nbsp;&nbsp;<input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
+				{else}
+					<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}" />
+				{/if}				
+				</td>
 			</tr>
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
@@ -42,22 +60,6 @@
 				<th>{t}unique name{/t}<br />({t}url name{/t}):</th>
 				<td>
 					<input id="nicknameBEObject" type="text" name="data[nickname]" value="{$object.nickname|default:null}" />
-				</td>
-			</tr>
-			<tr>
-				<th>{t}status{/t}:</th>
-				<td id="status">
-				{if $object.fixed|default:'' == 1}
-					{t}This object is fixed - some data is readonly{/t}
-					<input type="hidden" name="data[status]" value="{$object.status}" />
-				{else}
-					{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
-				{/if}	
-				{if in_array('administrator',$BEAuthUser.groups)}
-					&nbsp;&nbsp;&nbsp; <b>fixed</b>:&nbsp;&nbsp;<input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
-				{else}
-					<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}" />
-				{/if}				
 				</td>
 			</tr>
 			<tr>
