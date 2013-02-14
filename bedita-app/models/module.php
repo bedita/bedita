@@ -121,10 +121,17 @@ class Module extends BEAppModel {
 			}
 			$beLib = BeLib::getInstance();
 			$modelPaths = App::path('models');
-			if (!in_array(BEDITA_MODULES_PATH . DS  . $pluginName . DS . "model" . DS, $modelPaths)){
-				App::build(array("models" => BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS));
+			$pluginModelsPath = BEDITA_MODULES_PATH . DS  . $pluginName . DS . "models" . DS;
+			if (!in_array($pluginModelsPath, $modelPaths)){
+				App::build(array("models" => $pluginModelsPath));
 			}
 			
+			$behaviorPaths = App::path('behaviors');
+			$pluginBehaviorsPath = $pluginModelsPath ."behaviors";
+			if (!in_array($pluginBehaviorsPath, $behaviorPaths)){
+				App::build(array("behaviors" => $pluginBehaviorsPath));
+			}
+				
 			// check db schema, create tables if needed
 			$this->handlePluginSchema($pluginName, $setup, BEDITA_MODULES_PATH);
 			
