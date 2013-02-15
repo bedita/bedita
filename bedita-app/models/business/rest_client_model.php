@@ -131,11 +131,11 @@ class RestClientModel extends BEAppModel {
 	 *			false leave array keys equal to xml items
 	 */
 	public function post($uri, $params = array(), $outType = null, $camelize = true) {
-		if(Configure::read('debug') > 0) {
-			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
-		}
 		if(!$this->useCurl) {
 			$out = $this->client->post($uri, $params);
+			if(Configure::read('debug') > 0) {
+				$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
+			}
 		} else {
 			curl_setopt($this->client, CURLOPT_POST, true);
 			if(is_array($params)) {
