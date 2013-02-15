@@ -123,14 +123,14 @@ class RestClientModel extends BEAppModel {
 	 * Output may be parsed (only xml/json) using $outType argument ("xml" or "json").
 	 * 
 	 * @param string $uri, HTTP POST URL
-	 * @param array $params, POST query parameters
+	 * @param mixed $params, POST query parameters, if array is encoded with http_build_query
 	 * @param string $outType, can be "xml" or "json", if present output will be parsed 
 	 * 	if "xml" => php array, if "json" => json_decode is called
 	 * @param boolean $camelize, used if $outType = 'xml'
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
 	 */
-	public function post($uri, array $params = array(), $outType = null, $camelize = true) {
+	public function post($uri, $params = array(), $outType = null, $camelize = true) {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
@@ -138,12 +138,28 @@ class RestClientModel extends BEAppModel {
 			$out = $this->client->post($uri, $params);
 		} else {
 			curl_setopt($this->client, CURLOPT_POST, true);
-			curl_setopt($this->client, CURLOPT_POSTFIELDS, http_build_query($params));
+			if(is_array($params)) {
+				$httpQuery = http_build_query($params);
+			} else {
+				$httpQuery = $params;
+			}
+			curl_setopt($this->client, CURLOPT_POSTFIELDS, $httpQuery);
+			curl_setopt($this->client, CURLOPT_HTTPHEADER , array(
+			     'Content-Type: application/x-www-form-urlencoded; charset=utf-8',
+			));			
 			curl_setopt($this->client, CURLOPT_URL, $uri);
+					if(Configure::read('debug') > 0) {
+				curl_setopt($this->client, CURLINFO_HEADER_OUT, true);
+			}
 			$out = curl_exec($this->client);
 			if(curl_errno($this->client)) {
 				$err = curl_error($this->client);
 				$this->log("Error: " . $err);
+			}
+			if(Configure::read('debug') > 0) {
+ 				$info = curl_getinfo($this->client);
+ 				$this->log("HTTP REQUEST HEADER:\n" . $info["request_header"], LOG_DEBUG);
+ 				$this->log("HTTP POST QUERY:\n" . $httpQuery . "\n", LOG_DEBUG);
 			}
 		}
 
