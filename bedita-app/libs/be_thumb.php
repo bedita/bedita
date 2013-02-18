@@ -35,10 +35,10 @@ class BeThumb {
 
 
 	// supported image types (order is important)
-	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg");
+	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg", "svg");
 	private $_defaultimagetype = 2; // defaults to 2 [= JPG]
 
-	private $_mimeType = array("image/gif", "image/jpeg", "image/pjpeg", "image/png");
+	private $_mimeType = array("image/gif", "image/jpeg", "image/pjpeg", "image/png", "image/svg+xml");
 
 	// empties (see private method _resetObjects)
 	private $_resample    = false;
@@ -116,6 +116,7 @@ class BeThumb {
 	 *
 	 */
 	public function image ($be_obj, $params = null) {
+		
 		// defaults?
 		// $width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null, $cache = true
 		// this method is for image only, check bedita object type
@@ -127,7 +128,8 @@ class BeThumb {
 		} else {
 			$this->_resetObjects();
 		}
-
+		
+		
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark", );
 		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) ) {
@@ -147,12 +149,13 @@ class BeThumb {
 		$this->_imageInfo['cacheDirectory'] = dirname($this->_imageInfo['filepath']) . DS .
 											  substr($this->_imageInfo['filenameBase'],0,5) . "_" .
 											  $this->_imageInfo['filenameMD5'];
-
+		
+		
 		// test source file
 		if (!$this->_testForSource()) {
 			return $this->_conf['imgMissingFile'];
 		}
-
+		
 		//Setting params:
 		//cache
 		if (isset($cache))	{
@@ -182,15 +185,21 @@ class BeThumb {
 		if ( !isset ($mode) ) {
 			$mode = $this->_conf['image']['thumbMode'];
 		}
+				
 
-		// build _image_info with getimagesize() or available parameters
-		if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
-
-			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath']) ) {
+		
+		if ($be_obj['mime_type'] === 'image/svg+xml') { //If svg skip all and return the image without any resize
+			$this->_imageInfo['type']	= $this->_imagetype[5]; // 5=svg
+			return $this->_imageTarget['uri']      = $this->_conf['url'].$this->_imageInfo['path']; 
+			
+		// build _image_info with getimagesize() or available parameters						
+		}else if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
+			
+			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath'])) {
 				$this->_triggerError("'" . $this->_imageInfo['path'] . "' is not a valid image file");
 				return $this->_conf['imgMissingFile'];
 			}
-
+			
 			// set up the rest of image info array
 			$this->_imageInfo["w"]		= $_image_data [0];
 			$this->_imageInfo["h"]		= $_image_data [1];
@@ -216,8 +225,7 @@ class BeThumb {
 			// set string type
 			$this->_imageInfo['type'] = $this->_imagetype[ $this->_imageInfo['ntype'] ];
 		}
-
-
+		
 		// target image type
 		if ( !@empty($type) ) {
 			$this->_imageTarget['type'] = $type;
@@ -300,17 +308,20 @@ class BeThumb {
 				$this->_imageTarget['resizetype'] = 'stretch';
 				break;
 		}
-
+		
+		
+		
 		// target filename, filepath, uri
 		$this->_imageTarget['filename'] = $this->_targetFileName ();
 		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
-		$this->_imageTarget['uri']      = $this->_targetUri ();
-
+		$this->_imageTarget['uri']      = $this->_targetUri();
+		
 		// Manage cache and resample if caching option is true
 		// and the image it's not alredy cached
 		$this->_imageTarget['cached']   = $this->_testForCache ();
-
-		if ( !$this->_imageTarget['cached'] || (!$this->_imageTarget['cacheImages']) ) {
+		
+		
+		if ((!$this->_imageTarget['cached'] || (!$this->_imageTarget['cacheImages'])) && $this->_imageTarget['type'] != 'svg' ) {
 			if ( !$this->_resample() ) {
 				return $this->_conf['imgMissingFile'];
 			}
@@ -333,11 +344,11 @@ class BeThumb {
 	 * @return boolean
 	 */
 	private function _resample () {
-
+		
 		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
 		$thumbnail = PhpThumbFactory::create($this->_imageInfo['filepath'], $this->_conf['image']);
 		$thumbnail->setDestination ( $this->_imageTarget['filepath'], $this->_imageTarget['type'] );
-
+		
 		//set upscale
 		if ($this->_imageTarget['upscale']) {
 			$thumbnail->setOptions(array("resizeUp" => true));
