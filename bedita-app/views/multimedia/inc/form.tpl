@@ -19,7 +19,7 @@
 
 {include file="inc/form_mediatype.tpl"}
 
-{if $object.Category == "spreadsheet" or $object.Category == "text"}
+{if $object.Category == "spreadsheet" or $object.Category == "text" or $object.Category == "application"}
 	{$view->element('form_textbody')}
 {/if}
 
