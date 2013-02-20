@@ -40,7 +40,7 @@ class History extends BEAppModel {
 	 * @param int $user_id
 	 * @param int $limit
 	 * @param array $group contains fields to group by
-	 * @param int $areaId publication area id
+	 * @param int $areaId publication area id, all publications if not set
 	 * 
 	 * @return array of history in the form 
 	 * 		   array(
@@ -50,8 +50,12 @@ class History extends BEAppModel {
 	 * 				) 
 	 */
 	public function getUserHistory($user_id, $limit=null, $group=array(), $areaId=null) {
+		$conditions["user_id"] = $user_id;
+		if($areaId) {
+			$conditions["area_id"] = $areaId;
+		}
 		$history = $this->find("all", array(
-				"conditions" => array("user_id" => $user_id),
+				"conditions" => $conditions,
 				"limit" => $limit,
 				"group" => $group,
 				"order" => "History.created DESC",
