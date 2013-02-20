@@ -20,14 +20,9 @@
  */
 
 /** 
- *
- * @version			$Revision$
- * @modifiedby 	$LastChangedBy $
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * User access history to contents
+ * Model is not a proper BEdita object, model data in history table
  */
- 
 class History extends BEAppModel {
 
 	public $useTable = "history";
@@ -45,6 +40,8 @@ class History extends BEAppModel {
 	 * @param int $user_id
 	 * @param int $limit
 	 * @param array $group contains fields to group by
+	 * @param int $areaId publication area id
+	 * 
 	 * @return array of history in the form 
 	 * 		   array(
 	 * 				0 => array(id => , user_id => , ...),
@@ -52,7 +49,7 @@ class History extends BEAppModel {
 	 * 				...
 	 * 				) 
 	 */
-	public function getUserHistory($user_id, $limit=null, $group=array()) {
+	public function getUserHistory($user_id, $limit=null, $group=array(), $areaId=null) {
 		$history = $this->find("all", array(
 				"conditions" => array("user_id" => $user_id),
 				"limit" => $limit,
