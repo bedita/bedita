@@ -61,7 +61,7 @@ class Card extends BEAppObjectModel {
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
-				"frontend" => array("BEObject" => array("LangText","RelatedObject", "GeoTag", "ObjectProperty"))
+				"frontend" => array("BEObject" => array("LangText","RelatedObject", "GeoTag", "ObjectProperty", "Category"))
 		);
 		
 	public $objectTypesGroups = array("leafs", "related");
