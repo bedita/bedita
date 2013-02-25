@@ -18,7 +18,7 @@ tinyMCE.init({
 	mode : "textareas",
 	theme : "advanced",
 	editor_selector : "mce",
-	plugins : "syntaxhighlighter,|,safari,paste,fullscreen,xhtmlxtras,inlinepopups",
+	plugins : "syntaxhighlighter,safari,paste,fullscreen,xhtmlxtras,inlinepopups",
    	dialog_type : "modal",
 	extended_valid_elements: "iframe[src|style|width|height|scrolling|marginwidth|marginheight|frameborder]",
 	// Theme options
