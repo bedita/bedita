@@ -435,9 +435,6 @@ class AdminController extends ModulesController {
 	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
 		$enabledPath = $this->params["form"]["path"] . DS . "enabled" .  DS . $this->params["form"]["file"];
 	 	$beLib = BeLib::getInstance();
-	 	if ($beLib->isFileNameUsed($this->params["form"]["file"], $this->params["form"]["type"], array($this->params["form"]["path"] . DS))) {
-	 		throw new BeditaException(__($this->params["form"]["file"] . " model is already present in the system. Can't create a new object type", true));
-	 	}
 
 		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
 			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
