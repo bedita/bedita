@@ -40,5 +40,6 @@ $config["mediaTypeMapping"] = array(
 	"application/xml"								=>	"text",
 	"text/plain"									=>	"text",
 	"application/zip"								=>	"archive",
+	"image/svg+xml" 								=>  "drawing",		
 );
 ?>

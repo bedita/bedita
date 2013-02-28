@@ -348,15 +348,17 @@ class BeFileHandlerComponent extends Object {
 	 */
 	private function getCategoryMediaType($data, $modelType) {
 		$cat = array();
-		// if empty mediatype try to get it from modelName
+		// if empty mediatype get it from mime type or model name
 		if (empty($data['mediatype'])) {
-			if($modelType != "BEFile") {
-				$data['mediatype'] = Inflector::underscore($modelType);
-			} else {
-				include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
+			include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
+			if(!empty($config["mediaTypeMapping"][$data['mime_type']])) {
 				$data['mediatype'] = $config["mediaTypeMapping"][$data['mime_type']];
+			} else if($modelType != "BEFile") {
+				$data['mediatype'] = Inflector::underscore($modelType);
 			}
 		}
+
+		//check and assign category		
 		if (!empty($data['mediatype'])) {
 			$category = ClassRegistry::init("Category");
 			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
