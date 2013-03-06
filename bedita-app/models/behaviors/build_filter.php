@@ -351,7 +351,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	}
 	
 	/**
-	 * search text filter
+	 * search text filter using fulltext or sql-like
 	 * 
 	 * @param string $s, start quote sql
 	 * @param string $e, end quote sql
@@ -361,28 +361,41 @@ class BuildFilterBehavior extends ModelBehavior {
 		// #MYSQL
 		App::import('Sanitize');
 		$value = Sanitize::html($value, array('remove' => true));
-		if($this->driver === "mysql") {
-			// #MYSQL
-			$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
-			$this->from .= ", search_texts AS SearchText";
-			$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
-			$this->order .= "points DESC ";
-		} else if ($this->driver === "postgres"){
-			$expr = explode(" ", $value);
-			$ts = "";
-			for($i = 0; $i < count($expr); $i++) {
-				if(!empty($expr[$i])) {
-					$ts .= (empty($ts) ? "" : " | ") . trim($expr[$i]);
+		$sType = Configure::read("searchType");
+		if($sType == "fulltext" ) {
+			if($this->driver === "mysql") {
+				// #MYSQL
+				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
+				$this->from .= ", search_texts AS SearchText";
+				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
+				$this->order .= "points DESC ";
+			} else if ($this->driver === "postgres"){
+				$expr = explode(" ", $value);
+				$ts = "";
+				for($i = 0; $i < count($expr); $i++) {
+					if(!empty($expr[$i])) {
+						$ts .= (empty($ts) ? "" : " | ") . trim($expr[$i]);
+					}
 				}
+				// #POSTGRES
+				$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
+				$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
+				$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
+				$this->order .= "points DESC ";
+				$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
 			}
-			// #POSTGRES
-			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
-			$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
-			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
-			$this->order .= "points DESC ";
-			$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
+		
+		} else if($sType == "like" ) {
+	
+			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, {$s}SearchText{$e}.{$s}relevance{$e}";
+			$this->from .= ", {$s}search_texts{$e} AS {$s}SearchText{$e}";
+			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
+				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
+				"{$s}SearchText{$e}.{$s}content{$e} LIKE '%". $value ."%' AND {$s}SearchText{$e}.{$s}relevance{$e} > 6";
+			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 	}
+		
 	
 	/**
 	 * filter objects by category

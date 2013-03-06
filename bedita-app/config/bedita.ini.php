@@ -222,6 +222,13 @@ $config['loginPolicy'] = array (
  */
 
 /**
+ * Type of search used in BEdita - possible values:
+ * "fulltext" (default) - fulltext search
+ * "like"  - SQL Like %% search
+ */
+$config["searchType"] = "fulltext";
+
+/**
  ** Import PHP constants for smarty templates 
  */
 $config['DS']        = DS;
