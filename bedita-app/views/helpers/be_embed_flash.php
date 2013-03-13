@@ -155,7 +155,7 @@ class BeEmbedFlashHelper extends AppHelper {
 			
 		if ($obj["object_type_id"] == Configure::read("objectTypes.audio.id") && $extension == 'mp3') {
 			return $this->embedAudio($obj['uri'], $htmlAttributes, $flashvars, $flashParams);
-		} elseif ($extension == 'flv' || $extension == 'm4v') {
+		} elseif ($extension == 'flv' || $extension == 'm4v' || $extension == 'mp4') {
 			if (!empty($obj['thumbnail'])) {
 				$flashvars['thumbnail'] = $obj['thumbnail']; 
 			}			
