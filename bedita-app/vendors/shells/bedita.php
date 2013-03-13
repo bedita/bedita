@@ -449,7 +449,12 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("checkMedia - checking database");
 		$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
-		$this->streamsCheck($mediaRoot, 0, 2, $mediaNotPresent);
+		$maxDepthLevel = 2;
+		if (isset($this->params["level"])) {
+			$maxDepthLevel = $this->params["level"];
+			$this->out("Using max depth level: " . $maxDepthLevel);
+		}
+		$this->streamsCheck($mediaRoot, 0, $maxDepthLevel, $mediaNotPresent);
 		$this->out("Media files not in BEdita - " . count($mediaNotPresent));
 		$stream = ClassRegistry::init("Stream");
 		if (isset($this->params["create"])) {
@@ -948,9 +953,10 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');
-        $this->out('    Usage: checkMedia [-create]');
+        $this->out('    Usage: checkMedia [-create] [-level <max-depth-level>]');
         $this->out(' ');
         $this->out("    -create \t create media objects from files in media root not in DB");
+        $this->out("    -level <max-depth-level> \t max depth level checking filesystem, default 2");
         $this->out(' ');
         $this->out('4. export: export media files and data dump');
   		$this->out(' ');
