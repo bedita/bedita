@@ -445,37 +445,42 @@ class BeditaShell extends BeditaBaseShell {
     
 	public function checkMedia() {
 
-		$stream = ClassRegistry::init("Stream");
-        // FIXME: check filesystem, file layout has changed 
-        // files may not be present on db not in /imgcache/ dir - rewrite!!
-/*		$this->out("checkMedia - checking filesystem");
+    	$this->initConfig();
+		$this->out("checkMedia - checking database");
+		$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
-		$folder = new Folder($mediaRoot);
-        $tree= $folder->tree($mediaRoot, false);
-		$mediaOk = true;
-        foreach ($tree as $files) {
-            foreach ($files as $file) {
-                if (!is_dir($file)) {
-                    $file = new File($file);
-					$p = substr($file->pwd(), strlen($mediaRoot));
-					if(stripos($p, "/imgcache/") !== 0) {
-						$f = $stream->findByUri($p);
-						if($f === false) {
-							$this->out("File $p not found on db!!");
-							$mediaOk = false;
-						}
-					}
-                }
-            }
-        }
-        if($mediaOk) {
-			$this->out("checkMedia - filesystem OK");
-        }
-*/        
-        // check db
+		$this->streamsCheck($mediaRoot, 0, 2, $mediaNotPresent);
+		$this->out("Media files not in BEdita - " . count($mediaNotPresent));
+		$stream = ClassRegistry::init("Stream");
+		if (isset($this->params["create"])) {
+			foreach ($mediaNotPresent as $m) {
+				$mimeType = $stream->getMimeType($mediaRoot . DS . $m);
+				$modelType = BeLib::getTypeFromMIME($mimeType);
+				$model = ClassRegistry::init($modelType["name"]);
+				$p1 = strrpos($m, "/") + 1;
+				$p2 = strrpos($m, ".");
+				if(!$p2 || $p2 <= $p1){
+					$p2 = strlen($m);
+				} 
+				$data = array("status" => "on", 
+						"title" => substr($m, $p1, $p2-$p1), 
+						"uri" => $m, 
+						"name" => substr($m, $p1),
+						"original_name" => substr($m, $p1),
+						"mime_type" => $mimeType);
+				$data['Category'] = $this->getCategoryMediaType($mimeType, $modelType["name"]);
+				$model->create();
+				if(!$model->save($data)) {
+					throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $model->validationErrors) ;
+				}
+				$id = $model->id;
+				$stream->updateStreamFields($id);
+			}
+		}
+		
+		// check db
 		$this->out("checkMedia - checking database");
         $allStream = $stream->find("all");
-		$mediaRoot = Configure::read("mediaRoot");
 		$mediaOk = true;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];
@@ -489,7 +494,52 @@ class BeditaShell extends BeditaBaseShell {
 			$this->out("checkMedia - database OK");
         }
 	}    
-    
+
+	private function getCategoryMediaType($mimeType, $modelType) {
+		$cat = array();
+		// if empty mediatype get it from mime type or model name
+		include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
+		if(!empty($config["mediaTypeMapping"][$mimeType])) {
+			$mediatype = $config["mediaTypeMapping"][$mimeType];
+		} else if($modelType != "BEFile") {
+			$mediatype = Inflector::underscore($modelType);
+		}
+	
+		//check and assign category
+		if (!empty($mediatype)) {
+			$category = ClassRegistry::init("Category");
+			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
+			$cat = $category->checkMediaType($objetc_type_id, $mediatype);
+		}
+		return $cat;
+	}
+	
+	
+	
+	private function streamsCheck($mediaPath, $level, $maxLevel, array &$mediaFiles) {
+		if($level > $maxLevel) {
+			return;
+		}
+		$stream = ClassRegistry::init("Stream");
+		$mediaRoot = Configure::read("mediaRoot");
+		$folder = new Folder($mediaPath);
+		$ls = $folder->read();
+		foreach ($ls[1] as $f) {
+			$p = substr($mediaPath . DS . $f, strlen($mediaRoot));
+			$s = $stream->findByUri($p);
+			if($s === false) {
+				$this->out("File $p not found on db!!");
+				$mediaFiles[] = $p;
+			}
+		}
+		
+		foreach ($ls[0] as $dir) {
+			if($dir[0] !== '.') {
+				$this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, $mediaFiles);				
+			}
+		}
+	}
+	
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);
@@ -897,6 +947,10 @@ class BeditaShell extends BeditaBaseShell {
         $this->out("    -media  \t clean media files in 'mediaRoot' (default no)");
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
+        $this->out(' ');
+        $this->out('    Usage: checkMedia [-create]');
+        $this->out(' ');
+        $this->out("    -create \t create media objects from files in media root not in DB");
         $this->out(' ');
         $this->out('4. export: export media files and data dump');
   		$this->out(' ');
