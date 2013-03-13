@@ -530,11 +530,13 @@ class BeditaShell extends BeditaBaseShell {
 		$folder = new Folder($mediaPath);
 		$ls = $folder->read();
 		foreach ($ls[1] as $f) {
-			$p = substr($mediaPath . DS . $f, strlen($mediaRoot));
-			$s = $stream->findByUri($p);
-			if($s === false) {
-				$this->out("File $p not found on db!!");
-				$mediaFiles[] = $p;
+			if($f[0] !== '.') {
+				$p = substr($mediaPath . DS . $f, strlen($mediaRoot));
+				$s = $stream->findByUri($p);
+				if($s === false) {
+					$this->out("File $p not found on db!!");
+					$mediaFiles[] = $p;
+				}
 			}
 		}
 		
