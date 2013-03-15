@@ -33,7 +33,7 @@ function addObjToAssoc(url, postdata) {
 
 function setRemoveActions() {
 	$("#areacontent").find("input[name='remove']").click(function() {
-		var contentField = $("#contentsToRemove").val() + $(this).parents().parents().find("input[name*='[id]']").val() + ",";
+		var contentField = $("#contentsToRemove").val() + $(this).parents("tr:first").find("input[name*='[id]']").val() + ",";
 		$("#contentsToRemove").val(contentField);
 		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
 		
@@ -41,7 +41,7 @@ function setRemoveActions() {
 			startPriority--;
 		}
 		
-		$(this).parents().parents("tr").remove();
+		$(this).parents("tr:first").remove();
 		
 		if ($("#areacontent tr:visible").not('#noContents').length == 0) {
 			$("#noContents").show();
