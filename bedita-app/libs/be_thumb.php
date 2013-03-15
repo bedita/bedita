@@ -20,17 +20,8 @@
  */
 
 /**
- * thumbnail helper class
- *
- *
- * @link			http://www.bedita.com
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * Thumbnail utilities class
  */
-
 class BeThumb {
 
 
@@ -145,10 +136,12 @@ class BeThumb {
 			$this->_imageInfo['filepath'] = str_replace("/", DS, $this->_imageInfo['filepath']);
 		}
 		$this->_imageInfo['filenameBase'] = pathinfo($this->_imageInfo['filepath'], PATHINFO_FILENAME);
-		$this->_imageInfo['filenameMD5'] = md5($this->_imageInfo['filename']);
-		$this->_imageInfo['cacheDirectory'] = dirname($this->_imageInfo['filepath']) . DS .
-											  substr($this->_imageInfo['filenameBase'],0,5) . "_" .
-											  $this->_imageInfo['filenameMD5'];
+//		$this->_imageInfo['filenameMD5'] = md5($this->_imageInfo['filename']);
+
+		// relative cachePath
+		$this->_imageInfo['cachePath'] = DS ."cache" . $this->_imageInfo['path'];
+		// absolute cache dir path
+		$this->_imageInfo['cacheDirectory'] = $this->_conf['root'] . $this->_imageInfo['cachePath'];
 		
 		
 		// test source file
@@ -451,7 +444,7 @@ class BeThumb {
 		// cached file is in the same folder as original
 		if ( $this->_imageTarget['filename']) {
 			if (!file_exists($this->_imageInfo['cacheDirectory'])) {
-				if (!mkdir($this->_imageInfo['cacheDirectory'])) {
+				if (!mkdir($this->_imageInfo['cacheDirectory'], 0777, true)) {
 					return false;
 				}
 			}
@@ -647,7 +640,7 @@ class BeThumb {
 		$URLpcs['dir'] = implode ("/", $PathPcs);
 		if (file_exists($this->_imageInfo['cacheDirectory']) && is_dir($this->_imageInfo['cacheDirectory']))
 		{
-			$URLpcs['dir'] .= "/" . substr($this->_imageInfo['filenameBase'],0,5) . "_" . $this->_imageInfo['filenameMD5'];;
+			$URLpcs['dir'] = $this->_imageInfo['cachePath'];
 		}
 		return ($URLpcs);
 	}

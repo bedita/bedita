@@ -141,7 +141,8 @@ class Stream extends BEAppModel
 	
 	
 	/**
-	 * Clears media cache
+	 * Clears media cache, using both new cache structure ($mediaRoot/cache) and old structure.
+	 * See: https://github.com/bedita/bedita/issues/352
 	 * 
 	 * @param int $id, object id of which clear cache
 	 * 
@@ -154,9 +155,18 @@ class Stream extends BEAppModel
 	 */
 	public function clearMediaCache($id = null) {
 		$conditions = array();
+		$beSystem = BeLib::getObject("BeSystem");
+		$cachePath = Configure::read("mediaRoot") . DS . "cache";
 		if (!empty($id)) {
 			$conditions['Stream.id'] = $id;
+			$mediaPath = $this->field("path", array('id' => $id));
+			$cachePath .= $mediaPath;
 		}
+		if(file_exists($cachePath)) {
+			$beSystem->cleanUpDir($cachePath, true, true);
+		}
+		
+		// check and remove old cache format
 		$streams = $this->find("all", array('conditions' => $conditions));
 		if (empty($streams)) {
 			return false;
