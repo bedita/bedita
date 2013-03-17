@@ -473,7 +473,7 @@ class BeditaShell extends BeditaBaseShell {
 						"name" => substr($m, $p1),
 						"original_name" => substr($m, $p1),
 						"mime_type" => $mimeType);
-				$data['Category'] = $this->getCategoryMediaType($mimeType, $modelType["name"]);
+				$data['Category'] = $stream->getCategoryMediaType($mimeType, $modelType["name"]);
 				$model->create();
 				if(!$model->save($data)) {
 					throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $model->validationErrors) ;
@@ -499,26 +499,6 @@ class BeditaShell extends BeditaBaseShell {
 			$this->out("checkMedia - database OK");
         }
 	}    
-
-	private function getCategoryMediaType($mimeType, $modelType) {
-		$cat = array();
-		// if empty mediatype get it from mime type or model name
-		include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
-		if(!empty($config["mediaTypeMapping"][$mimeType])) {
-			$mediatype = $config["mediaTypeMapping"][$mimeType];
-		} else if($modelType != "BEFile") {
-			$mediatype = Inflector::underscore($modelType);
-		}
-	
-		//check and assign category
-		if (!empty($mediatype)) {
-			$category = ClassRegistry::init("Category");
-			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
-			$cat = $category->checkMediaType($objetc_type_id, $mediatype);
-		}
-		return $cat;
-	}
-	
 	
 	
 	private function streamsCheck($mediaPath, $level, $maxLevel, array &$mediaFiles) {

@@ -51,6 +51,31 @@ class Stream extends BEAppModel
 	}
 	
 	/**
+	 * Get default category media type from mime and model
+	 * @param string $mimeType, stream mime type
+	 * @param string $modelType, model type: "Image", "Video",...
+	 */
+	public function getCategoryMediaType($mimeType, $modelType) {
+		$cat = array();
+		// if empty mediatype get it from mime type or model name
+		include(BEDITA_CORE_PATH . DS . "config" . DS . "mediatype.ini.php");
+		if(!empty($config["mediaTypeMapping"][$mimeType])) {
+			$mediatype = $config["mediaTypeMapping"][$mimeType];
+		} else if($modelType != "BEFile") {
+			$mediatype = Inflector::underscore($modelType);
+		}
+	
+		//check and assign category
+		if (!empty($mediatype)) {
+			$category = ClassRegistry::init("Category");
+			$objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($modelType) . ".id");
+			$cat = $category->checkMediaType($objetc_type_id, $mediatype);
+		}
+		return $cat;
+	}
+	
+	
+	/**
 	 * update fields in streams table
 	 * 
 	 * @param int $id, if empty update all streams
