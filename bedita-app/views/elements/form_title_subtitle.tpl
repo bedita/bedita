@@ -16,6 +16,11 @@
 	<label>{t}unique name{/t} ({t}url name{/t}):</label>
 	<br />
 	<input type="text" id="nicknameBEObject" name="data[nickname]" style="font-style:italic; width:100%" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
-
+	
 
 </fieldset>
+
+<script>
+	CKEDITOR.replace( 'data[description]' );
+	CKEDITOR.add
+</script>
