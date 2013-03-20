@@ -143,8 +143,9 @@ $config['defaultStatus'] = "draft" ;
 
 // Rich Text Editor ['true' to enable]
 $config['mce'] = false;
-$config['ckeditor'] = true;
+$config['ckeditor'] = false;
 $config['wymeditor'] = false;
+$config['ckeditor4'] = true;
 
 // Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds
