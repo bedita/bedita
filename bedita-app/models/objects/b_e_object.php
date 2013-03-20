@@ -148,26 +148,36 @@ class BEObject extends BEAppModel
 
 	/**
 	 * Format object data (ObjectProperty, Tag, Category, LangText, Permission)
+	 *
+	 * If ObjectProperty is populated a simplified customProperties array (useful in frontend apps) is built as
+	 *
+	 * 	"customProperties" => array(
+	 *  	"prop_name" => "prop_val",
+	 *   	"prop_name_multiple_choice" => array("prop_val_1", "prop_val_2")
+	 *  )
 	 */	
 	function afterFind($result) {
 		
 		// format object properties
 		if(!empty($result['ObjectProperty'])) {
+			$result["customProperties"] = array();
 			$propertyModel = ClassRegistry::init("Property");
 			$property = $propertyModel->find("all", array(
 								"conditions" => array("object_type_id" => $result["object_type_id"]),
 								"contain" => array("PropertyOption")
 							)
 						);
-			
+
 			foreach ($property as $keyProp => $prop) {
 				
 				foreach ($result["ObjectProperty"] as $k => $value) {
 					if ($value["property_id"] == $prop["id"]) {
 						if ($prop["multiple_choice"] != 0) {
 							$property[$keyProp]["value"][] = $value;
+							$result["customProperties"][$prop["name"]][] = $value["property_value"];
 						} else { 
 							$property[$keyProp]["value"] = $value;
+							$result["customProperties"][$prop["name"]] = $value["property_value"];
 						}
 						
 						// set selected to true in PropertyOption array
@@ -185,7 +195,6 @@ class BEObject extends BEAppModel
 				
 			}
 			$result["ObjectProperty"] = $property;
-//			pr($property);
 			unset($property);
 		}
 		
