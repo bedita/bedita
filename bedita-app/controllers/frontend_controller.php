@@ -535,7 +535,7 @@ abstract class FrontendController extends AppController {
 	* @param int $depth				tree's depth level (default=null => all levels)
 	* @return array
 	* */
-	protected function loadSectionsTree($parentName, $loadContents = false, array $exclude_nicknames = array(), $depth = null, $flatMode = false) {
+	protected function loadSectionsTree($parentName, $loadContents = false, $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
 		$conf = Configure::getInstance();
 		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
@@ -1663,7 +1663,10 @@ abstract class FrontendController extends AppController {
 		if(count($args) === 0 || empty($args[0])) {
 			 $args[0] = "homePage";
 		}
-
+		if($args[0] === "pages") {
+			array_shift($args);
+		}
+		
 		$name = $args[0];
 
 		// generic methodName
