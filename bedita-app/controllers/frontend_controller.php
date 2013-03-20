@@ -1301,12 +1301,20 @@ abstract class FrontendController extends AppController {
 		}
 		unset($obj['Annotation']);
 
+		/**
+		 * @deprecated block. Kept for backward compatibility with 3.1 version
+		 * use "customProperties" for a more readable array of custom properties
+		 **/
 		if (!empty($obj['ObjectProperty'])) {
 			foreach ($obj['ObjectProperty'] as $prop) {
 				$properties[$prop["name"]] = $prop;
 			}
 			$obj['ObjectProperty'] = $properties;
 		}
+		/**
+		 * end @deprecated block
+		 **/
+
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
 
