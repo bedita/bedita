@@ -61,7 +61,10 @@ class SmartyView extends View {
 		$this->_smarty->compile_id	= $controller->name ;
 
 		// add smarty plugins dir
-		$this->_smarty->addPluginsDir(BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins');
+		$this->_smarty->addPluginsDir(APP . 'vendors' . DS . '_smartyPlugins');
+		if(!BACKEND_APP) {
+			$this->_smarty->addPluginsDir(BEDITA_CORE_PATH . DS . 'vendors' . DS . '_smartyPlugins');
+		}
 	}
 
 	// Add by BEdita team - Giangi
