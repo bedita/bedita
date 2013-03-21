@@ -696,7 +696,7 @@ document.onkeydown = function(e){
 
 function openAtStart(defaultOpen) {
 
-	var cookieTitle = document.title;
+	var cookieTitle = "TABS|" + BEDITA.currentModule.name + "/" + BEDITA.action;
 	var openAtStart = $.cookie(cookieTitle);
 	
 	if (openAtStart == null) {
@@ -721,7 +721,12 @@ function openAtStart(defaultOpen) {
 				}
 			}
 		});
-		$.cookie(cookieTitle, openAtStart);
+		// add path to cookie (base + module url)
+		var pathCookie = BEDITA.base;
+		if (BEDITA.currentModule.url) {
+			pathCookie += BEDITA.currentModule.url;
+		}
+		$.cookie(cookieTitle, openAtStart, {path: pathCookie});
 	});
 
 

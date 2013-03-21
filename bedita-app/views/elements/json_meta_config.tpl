@@ -11,7 +11,9 @@
 		'currLang': '{$currLang}',
 		'currLang2': '{$currLang2}',
 		'webroot': '{$session->webroot}',
-		'base': '{$html->url("/")}'
+		'base': '{$html->url("/")}',
+		'currentModule': {if !empty($currentModule)} {$currentModule|json_encode} {else}{ name: 'home' }{/if},
+		'action': '{$view->action|default:"index"}'
 	};
 	
 </script>
