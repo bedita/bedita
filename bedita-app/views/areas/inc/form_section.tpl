@@ -8,7 +8,9 @@
 	{$view->element('form_tags', $params)}
 
 	{$view->element('form_geotag')}
-
+	
+	{$view->element('form_file_list',['relation' => 'attach'])}
+	
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
 

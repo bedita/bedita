@@ -41,6 +41,7 @@ class Section extends BeditaCollectionModel
 										"Permission",
 										"ObjectProperty",
 										"LangText",
+										"RelatedObject",
 										"Alias",
 										"Annotation",
 										"Category",
@@ -50,11 +51,11 @@ class Section extends BeditaCollectionModel
 									),
 
        			"default" => array("BEObject" => array("ObjectProperty",
-									"LangText", "ObjectType", "Category", "GeoTag"), "Tree"),
+									"LangText", "ObjectType", "Category", "RelatedObject", "GeoTag"), "Tree"),
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 
-				"frontend" => array("BEObject" => array("LangText", "Category", "ObjectProperty"), "Tree")
+				"frontend" => array("BEObject" => array("LangText", "Category", "RelatedObject", "ObjectProperty"), "Tree")
 		);
 
 	var $validate = array(

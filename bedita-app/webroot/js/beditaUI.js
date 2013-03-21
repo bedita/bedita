@@ -285,7 +285,7 @@ $(document).ready(function(){
 		var containermenu 	  = $(this).parents(".htab");
 		var containercontents = $("#"+trigged+"").parent().attr("id");
 
-		$("#"+containercontents+" .htabcontent").hide();
+		$("#"+containercontents).children().hide();
 		$("#"+trigged+"").show();
 
 		$("TD,LI",containermenu).removeClass("on");
