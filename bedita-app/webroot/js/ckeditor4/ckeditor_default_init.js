@@ -18,8 +18,9 @@ $(window).load(function() {
 			{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
 		],
 		resize_enabled: true,
-		extraPlugins: 'onchange',
-		language: BEDITA.currLang2
+		extraPlugins: 'codemirror,attributes,beButtons,onchange,onchange',
+		language: BEDITA.currLang2,
+		codemirror: { theme: 'lesser-dark' }
 	};
 	
 	var configSimple = {
@@ -32,8 +33,9 @@ $(window).load(function() {
 		],
 		removePlugins: 'elementspath',
 		resize_enabled: true,
-		extraPlugins: 'onchange',
-		language: BEDITA.currLang2
+		extraPlugins: 'codemirror,attributes,beButtons,onchange,onchange',
+		language: BEDITA.currLang2,
+		codemirror: { theme: 'lesser-dark' }
 	}
 	
 	
