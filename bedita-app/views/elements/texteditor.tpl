@@ -17,7 +17,7 @@
 {elseif ($conf->ckeditor4|default:false)}
 
 	{$html->script("ckeditor4/ckeditor", false)}
-	{*$html->script("ckeditor4/adapters/jquery", false)*}
-	{*$html->script("ckeditor4/ckeditor_default_init", false)*}
+	{$html->script("ckeditor4/adapters/jquery", false)}
+	{$html->script("ckeditor4/ckeditor_default_init", false)}
 	
 {/if}

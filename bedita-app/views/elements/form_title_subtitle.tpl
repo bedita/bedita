@@ -19,8 +19,3 @@
 	
 
 </fieldset>
-
-<script>
-	CKEDITOR.replace( 'data[description]' );
-	CKEDITOR.add
-</script>

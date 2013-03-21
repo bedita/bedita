@@ -11,10 +11,6 @@
 		<textarea name="data[abstract]" style="height:200px" class="mce abstract">{$object.abstract|default:''}</textarea>
 		
 		<label for="body">{t}long text{/t}:</label>
-		<script>
-		  	CKEDITOR.replace( 'data[abstract]' );
-		  	CKEDITOR.add
-		</script>
 {/if}	
 		<!-- per il drag&drop degli oggetti multimediali-->
 		<div id="bodyDropTarget" class="dropTarget">
@@ -33,8 +29,4 @@
 		</div>
 
 		<textarea name="data[body]" style="height:{$height|default:500}px" class="mce body">{$object.body|default:''}</textarea>
-		<script>
-		  	CKEDITOR.replace( 'data[body]' );
-		  	CKEDITOR.add
-		</script>
 </fieldset>

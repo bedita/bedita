@@ -74,8 +74,30 @@
 	}
 
 	$(document).ready(function() {
-		$('.richtextNewsletterTemplate').ckeditorGet().on('instanceReady', function(event) {
-			changeCKeditorCss("{$templateCSS}");
+		
+		$('.richtextNewsletterTemplate').ckeditor(function(){},{
+			toolbar: [
+				{ name: 'document', groups: [ 'mode' ], items: [ 'Source'] },
+				{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+				{ name: 'paragraph', groups: [ 'list','blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
+				'/',
+				{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+				{ name: 'editAttributes', items: [ 'Attr' ] },
+				{ name: 'editing', groups: [ 'find'], items: [ 'Find', 'Replace' ] },
+				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
+				{ name: 'beditacontentblock', items: [ 'BEditaContentBlock' ] },
+				{ name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
+				
+				'/',
+				{ name: 'styles', items: [ 'Format' , 'Styles'] },
+				{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
+			],
+			resize_enabled: true,
+			extraPlugins: 'beditacontentblock',
+			startupOutlineBlocks: false
+		}).live('instanceReady.ckeditor', function(event,editor) {
+			var linkElement = $(editor.document.$).find('link');
+			linkElement.attr('href', "{$templateCSS}");
 		});
 
 		$("#changeCss").change(function() {
