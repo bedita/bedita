@@ -97,3 +97,129 @@ pre
 	white-space: pre-wrap; /* CSS 2.1 */
 	word-wrap: break-word; /* IE7 */
 }
+
+dfn {
+	color:#009933;
+}
+
+dfn.glossario {
+	text-decoration:underline;
+}
+
+A.placeholder {
+	/*padding:0 10px 0 10px;
+	background-color:red;*/
+	text-decoration:none;
+}
+
+.placeholder img {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-webkit-user-drag: none;
+	height: 2em;
+	border: solid 2px red;
+}
+
+.placeholder img:hover {
+	-moz-transform: scale(4);
+	-o-transform: scale(4);
+	-ms-transform: scale(4);
+	-webkit-transform: scale(4);
+	transform: scale(4);
+}
+
+.placeref img {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	height: 2em;
+	border: solid 2px orange;
+}
+
+.placeref img:hover {
+	-moz-transform: scale(4);
+	-o-transform: scale(4);
+	-ms-transform: scale(4);
+	-webkit-transform: scale(4);
+	transform: scale(4);
+}
+
+.modalLink img {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	height: 2em;
+	border: solid 2px blue;
+}
+
+.modalLink img:hover {
+	-moz-transform: scale(4);
+	-o-transform: scale(4);
+	-ms-transform: scale(4);
+	-webkit-transform: scale(4);
+	transform: scale(4);
+}
+
+A.placeholder:after {
+	content: ' ⌘';
+	color:red;
+}
+
+dl, dt, dd {
+	padding:0;
+	margin:0;
+}
+
+dl dt {
+	font-weight:bold
+}
+
+dd {
+	padding-left:20px;
+}
+
+samp, code {
+	color:orange;
+}
+
+P.dittico {
+	-moz-column-count: 2;
+	-webkit-column-count: 2;
+	column-count: 2;
+}
+
+P.trittico {
+	-moz-column-count: 3;
+	-webkit-column-count: 3;
+	column-count: 3;
+}
+
+P.dittico, P.trittico {
+	-moz-column-gap: 20px;
+	-moz-column-rule-color:  #666;
+	-moz-column-rule-style:  solid;
+	-moz-column-rule-width:  1px;
+	-webkit-column-gap : 20px;
+	-webkit-column-rule-color:  #666;
+	-webkit-column-rule-style: dotted ;
+	-webkit-column-rule-width:  1px;
+	column-gap : 20px;
+	column-rule-color:  #666;
+	column-rule-style: dotted ;
+	column-rule-width:  1px;
+}
+
+.column-break {	
+	display:block;
+	-webkit-column-break-after:always;	
+	-moz-column-break-after:always;	
+	column-break-after:always;
+	border-bottom:1px dotted red;
+}

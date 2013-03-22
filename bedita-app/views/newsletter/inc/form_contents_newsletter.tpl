@@ -117,25 +117,7 @@
 	}
 
 	$(document).ready(function() {
-		$('#htmltextarea').ckeditor(function(){},{
-			toolbar: [
-				{ name: 'document', groups: [ 'mode' ], items: [ 'Source'] },
-				{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-				{ name: 'paragraph', groups: [ 'list','blocks', 'align' ], items: [ 'NumberedList', 'BulletedList', '-', 'Blockquote', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock' ] },
-				'/',
-				{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-				{ name: 'editAttributes', items: [ 'Attr' ] },
-				{ name: 'editing', groups: [ 'find'], items: [ 'Find', 'Replace' ] },
-				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
-				{ name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
-				
-				'/',
-				{ name: 'styles', items: [ 'Format' , 'Styles'] },
-				{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
-			],
-			resize_enabled: true,
-			startupOutlineBlocks: false
-		}).live('instanceReady.ckeditor', function(event,editor) {
+		$('#htmltextarea').live('instanceReady.ckeditor', function(event,editor) {
 			var linkElement = $(editor.document.$).find('link');
 			linkElement.attr('href', "{$templateCSS}");
 		});
@@ -217,7 +199,7 @@
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" name="data[body]" style="height:350px;  width:610px">{$object.body|default:null}</textarea>
+			<textarea id="htmltextarea" class="mceFull" name="data[body]" style="height:350px;  width:610px">{$object.body|default:null}</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
