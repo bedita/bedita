@@ -711,8 +711,13 @@ class BEObject extends BEAppModel
 	 * Get object id from unique name 
 	 * @param string $nickname
 	 */
-	function getIdFromNickname($nickname) {
-		$id = $this->field("id", array("nickname" => $nickname));
+	function getIdFromNickname($nickname, $status = null) {
+		$id = null;
+		if($status != null) {
+			$id = $this->field("id", array("nickname" => $nickname, "status" => $status));
+		} else {
+			$id = $this->field("id", array("nickname" => $nickname));
+		}
 		if(empty($id)) { // if nickname not found lookup aliases
 			$aliasModel = ClassRegistry::init("Alias");
 			$id = $aliasModel->field("object_id", array("nickname_alias" => $nickname));

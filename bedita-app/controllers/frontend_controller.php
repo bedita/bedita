@@ -1683,7 +1683,7 @@ abstract class FrontendController extends AppController {
 
 		$reflectionClass = new ReflectionClass($this);
 
-		$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name);
+		$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name,$this->status);
 
 		// setup args: look if $name is reserved
 		if (in_array($name, Configure::read("defaultReservedWords")) || in_array($name, Configure::read("cfgReservedWords"))) {
