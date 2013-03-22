@@ -43,7 +43,7 @@ CKEDITOR.plugins.add('beditacontentblock', {
 		
 		var checkButtonState = function() {
 			data = editor.getData();
-			var i = data.match(pathImage);
+			var i = data.match(pathImage) || [];
 			if (i.length>=2) {
 				editor.getCommand('insertBEditaContentBlock').setState(CKEDITOR.TRISTATE_DISABLED);
 			} else {
