@@ -736,7 +736,6 @@ UL.menuleft + UL.menuleft {
 
 .htabcontent {
 	clear:left;
-	display:none;
 	background:transparent url(../img/sfohtabscontent.png) repeat-x;
 	padding:2%;
 	width:96%;
