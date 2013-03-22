@@ -1998,6 +1998,14 @@ P.editornotes {
 	background-color:pink;
 }
 
+code del {
+	color:red
+}
+
+code ins {
+	color:green
+}
+
 /*...........................................    
 
    Print Layout
