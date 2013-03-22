@@ -97,7 +97,10 @@ class StreamsController extends AppController {
 	 * @param integer $id	Id dell'oggetto da linkare
 	 */
 	public function get_item_form_by_id($id =null) {
-		$this->_get_item_form($this->params['form']['id']) ;
+		$this->_get_item_form($this->params['form']['id']);
+		if (!empty($this->params['form']['relation'])) {
+			$this->set("relation", $this->params['form']['relation']);
+		}
 		if (!empty($this->params['form']['template'])) {
 			$this->render($this->params['form']['template']);
 		}
