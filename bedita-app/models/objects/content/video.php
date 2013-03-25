@@ -21,16 +21,11 @@
 
 /**
  * Video stream
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Video extends BeditaStreamModel
 {
-	var $actsAs = array();
+    var $useTable   = "videos" ;
+ 	var $actsAs = array();
 	public $objectTypesGroups = array("multimedia", "leafs", "related");
 }
 ?>
