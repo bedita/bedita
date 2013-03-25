@@ -239,25 +239,33 @@ $(document).ready(function()
 	var data ='';
 	
 	function listenMode(editor) {
-		$('#saveBEObject').bind('mousedown',function(){
+		editor.on('change',function(){
 			data = editor.getData();
 			if (editor.mode == "wysiwyg") {
 				var match = data.match(pathPlaceHolder) || [];
 				for (var i=0; i<match.length; i++) {
-					var img = match[i].match(pathImg)[0] || '';
+					var m = match[i].match(pathImg);
+					if (m==null) m=[];
+					var img = m[0] || '';
 					data = data.replace(img,'');
 				}
 			}
-			editor.setData(data);
-			$('textarea[name="data[body]"]').val(data);
-		})
+			$('textarea[name="data[body]"]').data('rightVal',data);
+		});
+		
+		$('#saveBEObject').bind('mousedown touchstart', function() {
+			var data = $('textarea[name="data[body]"]').data('rightVal');
+			$('textarea[name="data[body]"]').val(data)
+		});
 		
 		editor.on('beforeSetMode', function(event) {
 			data = this.getData();
 			if (this.mode == "wysiwyg") {
 				var match = data.match(pathPlaceHolder) || [];
 				for (var i=0; i<match.length; i++) {
-					var img = match[i].match(pathImg)[0] || '';
+					var m = match[i].match(pathImg);
+					if (m==null) m=[];
+					var img = m[0] || '';
 					data = data.replace(img,'');
 				}
 				editor.setData(data);
