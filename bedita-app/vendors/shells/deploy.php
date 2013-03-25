@@ -288,7 +288,7 @@ class DeployShell extends BeditaBaseShell {
 			if ($currentBranch === false) {
 				$this->out("Failed retrieve current git branch");
 			}
-			$updateCmd = "cd $selected; git pull origin $currentBranch";
+			$updateCmd = "cd $selected; git fetch origin; git merge origin/$currentBranch;";
 		// svn repository
 		} else {
 			$updateCmd = "svn update $selected";
