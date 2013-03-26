@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2012 ChannelWeb Srl, Chialab Srl
+ * Copyright 2013 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,8 @@
  */
 class BeThumb {
 
-
+	private $mimeTypes = array();
+	
 	// supported image types (order is important)
 	private $_imagetype = array ("", "gif", "jpg", "png", "jpeg", "svg");
 	private $_defaultimagetype = 2; // defaults to 2 [= JPG]
@@ -32,7 +33,6 @@ class BeThumb {
 	private $_mimeType = array("image/gif", "image/jpeg", "image/pjpeg", "image/png", "image/svg+xml");
 
 	// empties (see private method _resetObjects)
-	private $_resample    = false;
 	private $_conf        = array ();
 	private $_imageInfo   = array ();
 	private $_imageTarget = array ();
@@ -67,7 +67,7 @@ class BeThumb {
 	/**
 	 * image public method: embed an image after resample and cache
 	 *
-	 * @param: array $be_obj, required, object, BEdita Multimedia Object
+	 * @param: array $data, required, source image data (may be BE media object or other source) - required "uri"
 	 * @param: array $params
 	 * extra info about $params:
 	 *
@@ -106,46 +106,71 @@ class BeThumb {
 	 * @return: string, resampled and cached image URI (using $html helper)
 	 *
 	 */
-	public function image ($be_obj, $params = null) {
+	public function image($data, $params = null) {
 		
-		// defaults?
-		// $width = false, $height = false, $longside = null, $mode = null, $modeparam = null, $type = null, $upscale = null, $cache = true
-		// this method is for image only, check bedita object type
-		if ( strpos($be_obj['mime_type'], "image") === false ) {
-			$this->_triggerError("'" . $be_obj['name'] . "' is not a valid image object (object type is " . $be_obj['mime_type'] . ")");
-			return $this->_conf['imgMissingFile'];
-		} elseif (!in_array($be_obj["mime_type"], $this->_mimeType)) {
+		$this->_resetObjects();
+		
+		// check uri
+		if(empty($data['uri'])) {
+			$this->_triggerError("Missing image 'uri'");
 			return false;
-		} else {
-			$this->_resetObjects();
 		}
 		
+		// "uri" could have "/" seaparator on a system with "\" as separator
+		$remoteUri = ($data['uri'][0] !== "/" && $data['uri'][0] !== DS);
+		if($remoteUri) {
+			$uriParts = parse_url($data['uri']);
+			if(!$uriParts || !in_array($uriParts["scheme"], array("http", "https"))) {
+				$this->_triggerError("'" . $data['uri'] . "' uri protocol not supported (only http or https)");
+				return false;
+			}
+			if(empty($data['path'])) {
+				$data['path'] = $uriParts["path"];
+			}
+		} else {
+			$data['path'] = $data['uri'];
+		}
+
+		$this->_imageInfo['path'] = $data['path'];
 		
+		$pathParts =  pathinfo($data['path']);
+		$this->_imageInfo['filename']		= $pathParts['basename'];
+		$this->_imageInfo['filenameBase']	= $pathParts['filename'];
+		$this->_imageInfo['ext']			= $pathParts['extension'];
+		$this->_imageInfo['dirname']		= $pathParts['dirname'];
+		
+		if(!$remoteUri) {
+			$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
+			if (DS != "/") {
+				$this->_imageInfo['filepath'] = str_replace("/", DS, $this->_imageInfo['filepath']);
+			}
+		} else {
+			$this->_imageInfo['filepath'] = $data['uri'];
+		}
+		
+		// relative cachePath
+		$cachePrefix = DS . "cache" . ($remoteUri? DS . "ext" : "");
+		$this->_imageInfo['cachePath'] = $cachePrefix . $this->_imageInfo['path'];
+		// absolute cache dir path
+		$this->_imageInfo['cacheDirectory'] = $this->_conf['root'] . $this->_imageInfo['cachePath'];
+		
+		// check mime type and uri
+		if(empty($data['mime_type'])) {
+			$data['mime_type'] = $this->mimeTypeByExtension($this->_imageInfo['ext']);
+		}
+		if (!in_array($data["mime_type"], $this->_mimeType)) {
+			$this->_triggerError("'" . $data['uri'] . "' mime type not supported: " . $data['mime_type']);
+			return false;
+		}
+
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale', 'cache', "watermark", );
 		if ( func_num_args() == 2 && is_array( func_get_arg(1) ) ) {
 			extract ($params);
 		}
-
-		// filepath & name
-		$this->_imageInfo['path']		= $be_obj['uri'];
-		$this->_imageInfo['filename']	= $be_obj['name'];
-		$this->_imageInfo['ext']		= end ( explode ( '.', $this->_imageInfo['filename'] ) );
-		$this->_imageInfo['filepath']	= $this->_conf['root'] . $this->_imageInfo['path'];  // absolute
-		if (DS != "/") {
-			$this->_imageInfo['filepath'] = str_replace("/", DS, $this->_imageInfo['filepath']);
-		}
-		$this->_imageInfo['filenameBase'] = pathinfo($this->_imageInfo['filepath'], PATHINFO_FILENAME);
-//		$this->_imageInfo['filenameMD5'] = md5($this->_imageInfo['filename']);
-
-		// relative cachePath
-		$this->_imageInfo['cachePath'] = DS ."cache" . $this->_imageInfo['path'];
-		// absolute cache dir path
-		$this->_imageInfo['cacheDirectory'] = $this->_conf['root'] . $this->_imageInfo['cachePath'];
-		
 		
 		// test source file
-		if (!$this->_testForSource()) {
+		if (!$remoteUri && !$this->_testForSource()) {
 			return $this->_conf['imgMissingFile'];
 		}
 		
@@ -157,6 +182,10 @@ class BeThumb {
 			$this->_imageTarget['cacheImages'] = $this->_conf['image']['cache'];
 		}
 
+		if (isset($watermark))	{
+			$this->_imageTarget['watermark'] = array_merge($this->_conf['image']["wmi"], $watermark);
+		}
+		
 		// upscale
 		if (isset($upscale))	{
 			$this->_imageTarget['upscale'] = $upscale;
@@ -178,15 +207,13 @@ class BeThumb {
 		if ( !isset ($mode) ) {
 			$mode = $this->_conf['image']['thumbMode'];
 		}
-				
-
 		
-		if ($be_obj['mime_type'] === 'image/svg+xml') { //If svg skip all and return the image without any resize
+		if ($data['mime_type'] === 'image/svg+xml') { //If svg skip all and return the image without any resize
 			$this->_imageInfo['type']	= $this->_imagetype[5]; // 5=svg
 			return $this->_imageTarget['uri']      = $this->_conf['url'].$this->_imageInfo['path']; 
 			
 		// build _image_info with getimagesize() or available parameters						
-		}else if ( empty($be_obj['width']) || empty($be_obj['height']) ) {
+		} else if ( empty($data['width']) || empty($data['height']) ) {
 			
 			if ( !$_image_data =@ getimagesize($this->_imageInfo['filepath'])) {
 				$this->_triggerError("'" . $this->_imageInfo['path'] . "' is not a valid image file");
@@ -200,11 +227,11 @@ class BeThumb {
 			unset ($_image_data);
 		} else {
 
-			$this->_imageInfo["w"] = $be_obj['width'];
-			$this->_imageInfo["h"] = $be_obj['height'];
+			$this->_imageInfo["w"] = $data['width'];
+			$this->_imageInfo["h"] = $data['height'];
 
 			// since not using getimagesize(), try to get image type from object or extension
-			if ( !($this->_imageInfo['ntype'] =@ $this->_array_isearch ( substr (strrchr ($be_obj['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) ) {
+			if ( !($this->_imageInfo['ntype'] =@ $this->_array_isearch ( substr (strrchr ($data['mime_type'], "/"), 1), $this->_imageInfo['ext'] ) ) ) {
 
                 if ( !( $this->_imageInfo['ntype'] =@ $this->_array_isearch ($this->_imageInfo['ext'], $this->_imagetype) ) ) {
 					$this->_imageInfo['ntype'] = $this->_defaultimagetype; // defaults to 2 [= JPG]
@@ -301,18 +328,15 @@ class BeThumb {
 				$this->_imageTarget['resizetype'] = 'stretch';
 				break;
 		}
-		
-		
-		
+
 		// target filename, filepath, uri
-		$this->_imageTarget['filename'] = $this->_targetFileName ();
-		$this->_imageTarget['filepath'] = $this->_targetFilePath ();
+		$this->_imageTarget['filename'] = $this->_targetFileName($remoteUri);
+		$this->_imageTarget['filepath'] = $this->_targetFilePath();
 		$this->_imageTarget['uri']      = $this->_targetUri();
 		
 		// Manage cache and resample if caching option is true
 		// and the image it's not alredy cached
 		$this->_imageTarget['cached']   = $this->_testForCache ();
-		
 		
 		if ((!$this->_imageTarget['cached'] || (!$this->_imageTarget['cacheImages'])) && $this->_imageTarget['type'] != 'svg' ) {
 			if ( !$this->_resample() ) {
@@ -382,11 +406,8 @@ class BeThumb {
 		}
 
         //Add Watermark
-        if (isset($watermark)) {
-            if (!is_array($watermark)){
-                $watermark = array();
-            }
-            $thumbnail->wmark($this->_imageTarget['filepath'], array_merge($this->_conf['image']['wmi'], $watermark));
+        if (isset($this->_imageTarget['watermark'])) {
+            $thumbnail->wmark($this->_imageTarget['filepath'], $this->_imageTarget['watermark']);
         }
 
 
@@ -420,14 +441,31 @@ class BeThumb {
 	}
 
 	/**
-	 * build target filename
+	 * Build target filename
 	 *
 	 * @return string
 	 */
-	private function _targetFileName () {
+	private function _targetFileName ($remote = false) {
 		// build hash on file path, modification time and mode
-		$this->_imageInfo['modified'] = filemtime ($this->_imageInfo['filepath']);
-		$this->_imageInfo['hash']     = md5 ( $this->_imageInfo['filename'] . $this->_imageInfo['modified'] . join($this->_imageTarget) );
+		if($remote) {
+			$this->_imageInfo['modified'] = 0;
+		} else {
+			$this->_imageInfo['modified'] = filemtime ($this->_imageInfo['filepath']);
+		}
+		
+		$wmString = "";
+		$wm = null;
+		if(isset($this->_imageTarget["watermark"])) {
+			$wm = $this->_imageTarget["watermark"];
+			$wmString = implode($wm);
+			unset($this->_imageTarget["watermark"]);
+		}
+		$targetStr = implode($this->_imageTarget) . $wmString;
+		if(!empty($wmString)) {
+			$this->_imageTarget["watermark"] = $wm;
+		}
+		
+		$this->_imageInfo['hash']  = md5 ( $this->_imageInfo['filename'] . $this->_imageInfo['modified'] . $targetStr);
 
 		// destination filename = orig_filename + "_" + w + "x" + h + "_" + hash + "." + ext
 		return $this->_imageInfo['filenameBase'] . "_" .
@@ -441,7 +479,6 @@ class BeThumb {
 	 * @return string
 	 */
 	private function _targetFilePath () {
-		// cached file is in the same folder as original
 		if ( $this->_imageTarget['filename']) {
 			if (!file_exists($this->_imageInfo['cacheDirectory'])) {
 				if (!mkdir($this->_imageInfo['cacheDirectory'], 0777, true)) {
@@ -582,7 +619,6 @@ class BeThumb {
 									"cached"		=> false
 								);
 
-		$this->_resample = false;
 	}
 
 	/**
@@ -658,6 +694,24 @@ class BeThumb {
 		return false;
 	}
 
+	/**
+	 * Mime type by file extension
+	 *
+	 * @param $ext, extension
+	 * @return string or false if mime_type not found
+	 */
+	public function mimeTypeByExtension($ext) {
+		$mime_type = false;
+		if (empty($this->mimeTypes)) {
+			include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
+			$this->mimeTypes = $config["mimeTypes"];
+		}
+		if (!empty($ext) && array_key_exists($ext, $this->mimeTypes)) {
+				$mime_type = $this->mimeTypes[$ext];
+		}
+		return $mime_type;
+	}
+		
 }
 
 ?>
