@@ -34,11 +34,7 @@ CKEDITOR.plugins.add('beditacontentblock', {
 			var countContentBlockItems = null;
 			data = data.replace(pathComment, htmlContentBlockPlaceHolder);
 			editor.setData(data);
-			if (i.length>=2) {
-				editor.getCommand('insertBEditaContentBlock').setState(CKEDITOR.TRISTATE_DISABLED);
-			} else {
-				editor.getCommand('insertBEditaContentBlock').setState(CKEDITOR.TRISTATE_OFF);
-			}
+			checkButtonState();
 		};
 		
 		var checkButtonState = function() {
