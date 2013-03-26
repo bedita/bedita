@@ -30,7 +30,7 @@
 				// General options
 				mode : "textareas",
 				theme : "advanced",
-				editor_selector : "mce",
+				editor_selector : "richtextNewsletterMessage",
 				plugins : "safari,pagebreak,paste,fullscreen",
 			
 				// Theme options
@@ -199,7 +199,7 @@
 	<div class="htabcontainer" id="templatebody">
 		
 		<div class="htabcontent" id="html">
-			<textarea id="htmltextarea" class="mceFull" name="data[body]" style="height:350px;  width:610px">{$object.body|default:null}</textarea>
+			<textarea id="htmltextarea" class="richtextNewsletterMessage" name="data[body]" style="height:350px;  width:610px">{$object.body|default:null}</textarea>
 		</div>
 		
 		<div class="htabcontent" id="txt">
