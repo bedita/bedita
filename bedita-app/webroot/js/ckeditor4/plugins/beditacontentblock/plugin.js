@@ -31,7 +31,6 @@ CKEDITOR.plugins.add('beditacontentblock', {
 		 */
 		var initTextArea = function() {
 			data = editor.getData();
-			var countContentBlockItems = null;
 			data = data.replace(pathComment, htmlContentBlockPlaceHolder);
 			editor.setData(data);
 			checkButtonState();
