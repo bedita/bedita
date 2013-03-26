@@ -391,7 +391,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->from .= ", {$s}search_texts{$e} AS {$s}SearchText{$e}";
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
 				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
-				"{$s}SearchText{$e}.{$s}content{$e} LIKE '%". $value ."%' AND {$s}SearchText{$e}.{$s}relevance{$e} > 6";
+				"{$s}SearchText{$e}.{$s}content{$e} LIKE '%". $value ."%' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 	}
