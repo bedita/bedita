@@ -119,7 +119,7 @@
 	$(document).ready(function() {
 		$('#htmltextarea').live('instanceReady.ckeditor', function(event,editor) {
 			var linkElement = $(editor.document.$).find('link');
-			linkElement.attr('href', "{$templateCSS}");
+			linkElement.attr('href', "{$cssUrl|default:$html->url('/css/newsletter.css')}");
 		});
 		
 		$("#changeTemplate").change(function() {
