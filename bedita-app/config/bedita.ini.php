@@ -178,16 +178,16 @@ $config['media']['image']['thumbUpscale']       = true;     // bool, allow thumb
 $config['media']['image']['preferImagemagick']  = false;    // bool, use image_magick or not (even if available)
 $config['media']['image']['imagemagick']        = "";       // string, path to image_magick executable
 $config['media']['image']['over']               = "";       // string, path to overlay image
-#$config['media']['image']['wmi']['enable']      = true;    // enable image watermaks on all images
-$config['media']['image']['wmi']['text']        = "&copy; channelweb s.r.l.";       // default watermark text
-$config['media']['image']['wmi']['font']        = "Vera.ttf";   // default watermark font (system)
-$config['media']['image']['wmi']['fontSize']    = "12";         // default watermark font size
-$config['media']['image']['wmi']['textColor']   = "#000000";    // default watermark color
-$config['media']['image']['wmi']['background']  = "";           // default watermark background
-$config['media']['image']['wmi']['file']        = "";           // string, path to watermark image file
-$config['media']['image']['wmi']['align']       = "SouthEast";  // string, wm alignment: 'Center', 'East', 'Forget', 'NorthEast','North','NorthWest'.'SouthEast','South','SouthWest','West'
-$config['media']['image']['wmi']['opacity']     = 50;           // int, wm opacity 0 (transparent) to 100 (opaque)
-$config['media']['image']['cache']  	        = true;         // image caching
+$config['media']['image']['wmi']['text']        = "powered by BEdita";   // default watermark text
+$config['media']['image']['wmi']['font']        = BEDITA_CORE_PATH . DS . "webroot" . DS . "fonts" . DS . "Vera.ttf"; // default watermark font (system) -- searched in 
+$config['media']['image']['wmi']['fontSize']    = "16";      // default watermark font size
+$config['media']['image']['wmi']['textColor']   = "FFFFFF";  // default watermark color -- hex digits
+$config['media']['image']['wmi']['background']  = "";        // default watermark background
+$config['media']['image']['wmi']['angle'] 		= 0;       // default watermark angle
+$config['media']['image']['wmi']['file']        = "";        // string, path to watermark image file
+$config['media']['image']['wmi']['align']       = "Center";  // string, wm alignment: 'Center', 'East', 'Forget', 'NorthEast','North','NorthWest'.'SouthEast','South','SouthWest','West'
+$config['media']['image']['wmi']['opacity']     = 50;        // int, wm opacity 0 (transparent) to 100 (opaque)
+$config['media']['image']['cache']  	        = true;      // image caching
 
  
 $config['media']['video']['width']       = 300;      // px video player width

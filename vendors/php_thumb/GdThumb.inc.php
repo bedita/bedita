@@ -513,8 +513,7 @@ class GdThumb extends ThumbBase
 
         }*/
 
-        //TODO change the 'font' path with the BEdita fonts default path when added. for now captcha font are used.
-        $bb = imagettfbbox($params['fontSize'], 0 ,  getcwd().'/captcha/fonts/'.$params['font'], $params['text']);
+        $bb = imagettfbbox($params['fontSize'], $params['angle'] , $params['font'], $params['text']);
 
         $x0 = min($bb[0], $bb[2], $bb[4], $bb[6]) - 5;
         $x1 = max($bb[0], $bb[2], $bb[4], $bb[6]) + 5;
@@ -572,7 +571,7 @@ class GdThumb extends ThumbBase
         );
 
 
-        imagettftext($this->oldImage, $params['fontSize'], 0, $bpx, $bpy, $alpha_color, getcwd().'/captcha/fonts/'.$params['font'], $params['text']);
+        imagettftext($this->oldImage, $params['fontSize'], $params['angle'], $bpx, $bpy, $alpha_color, $params['font'], $params['text']);
 
         return $this;
         //
