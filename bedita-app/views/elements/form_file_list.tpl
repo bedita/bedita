@@ -238,19 +238,23 @@ $(document).ready(function()
 	var pathImg = /<img.*?\/>/g;
 	var data ='';
 	
-	function listenMode(editor) {
-		editor.on('change',function(){
-			data = editor.getData();
-			if (editor.mode == "wysiwyg") {
-				var match = data.match(pathPlaceHolder) || [];
-				for (var i=0; i<match.length; i++) {
-					var m = match[i].match(pathImg);
-					if (m==null) m=[];
-					var img = m[0] || '';
-					data = data.replace(img,'');
-				}
+	function saveRight(editor) {
+		data = editor.getData();
+		if (editor.mode == "wysiwyg") {
+			var match = data.match(pathPlaceHolder) || [];
+			for (var i=0; i<match.length; i++) {
+				var m = match[i].match(pathImg);
+				if (m==null) m=[];
+				var img = m[0] || '';
+				data = data.replace(img,'');
 			}
-			$('textarea[name="data[body]"]').data('rightVal',data);
+		}
+		$('textarea[name="data[body]"]').data('rightVal',data);
+	};
+	
+	function listenMode(editor) {		
+		editor.on('change',function(){
+			saveRight(editor);
 		});
 		
 		$('#saveBEObject').bind('mousedown touchstart', function() {
@@ -269,12 +273,7 @@ $(document).ready(function()
 					data = data.replace(img,'');
 				}
 				editor.setData(data);
-			}			
-		});
-		
-		editor.on('beforeSetMode', function(event) {
-			data = this.getData();
-			if (this.mode == "source") {
+			} else {
 				var match = data.match(pathPlaceHolder) || [];
 				for (var i=0; i<match.length; i++) {
 					var img = match[i];
@@ -292,6 +291,7 @@ $(document).ready(function()
 		
 		editor.on('mode', function(event) {
 			editor.setData(data);
+			saveRight(editor);
 		});
 		
 		data = editor.getData();
@@ -310,6 +310,10 @@ $(document).ready(function()
 			}
 		}
 		editor.setData(data);
+		
+		$('*',editor.document.$).live('keyup', function() {
+			saveRight(editor);
+		});
 	}
 	
 	function checkDragDropTarget(e){
