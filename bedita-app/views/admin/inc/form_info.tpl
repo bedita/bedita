@@ -50,10 +50,10 @@ $(document).ready(function(){
 		<td><label>JQuery</label></td>
 		<td><p id="jquery-version"></p></td>
 	</tr>
-{if ($conf->mce|default:true)}
+{if ($conf->richtexteditor|default:false)}
 	<tr>
-		<td><label>TinyMCE</label></td>
-		<td><p id="tinymce-version"></p></td>
+		<td><label>{$conf->richtexteditor.name|ucfirst}</label></td>
+		<td><p id="richtexteditor-version"></p></td>
 	</tr>
 {/if}	
 	<tr>

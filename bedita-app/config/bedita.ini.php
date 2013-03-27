@@ -1,37 +1,37 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2011 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
 /**
  * bedita.ini.php - settings, constants, variables for BEdita local installation
- * 
+ *
  * @link			http://www.bedita.com
  * @version			$Revision$
  * @modifiedby 		$LastChangedBy$
  * @lastmodified	$LastChangedDate$
- * 
+ *
  * $Id$
  */
 
 $config = array() ;
- 
+
 $config["projectName"] = "BEdita 3.2"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.2 beta2"; // don't override
@@ -62,7 +62,7 @@ $config['langsSystem'] = array(
 // Default user interface lang (backend) - must be in 'langsSystem'
 $config['defaultUILang'] = "eng";
 // ISO-639-2 default UI lang
-$config['defaultUILang2'] = "en"; 
+$config['defaultUILang2'] = "en";
 
 // Default contents lang - must be in 'langOptions' if 'langOptionsIso' is false
 $config['defaultLang'] = "eng";
@@ -108,7 +108,7 @@ $config['langsSystemMapRev'] = array(
 
 // 'langsIso' empty, overridden if 'langOptionsIso' is true
 $config['langsIso'] = array();
-// add langs.iso.php to language options for content 
+// add langs.iso.php to language options for content
 $config['langOptionsIso'] = false;
 
 
@@ -128,7 +128,7 @@ $config['datePatternLocale'] = array(
 $config['dateTimePattern'] 	= "%m-%d-%Y  %H:%M";  //
 
 $config['dateTimePatternLocale'] = array(
-	"ita"	=> "%d/%m/%Y %H:%M" 
+	"ita"	=> "%d/%m/%Y %H:%M"
 );
 
 /**
@@ -141,9 +141,18 @@ $config['dateTimePatternLocale'] = array(
 // Default status of new objects
 $config['defaultStatus'] = "draft" ;
 
-// Rich Text Editor ['true' to enable]
-$config['mce'] = false;
-$config['ckeditor'] = true;
+/**
+ * Rich Text Editor
+ * configuration array is composed by
+ * name => name of editor
+ * conf => path to configuration file (path is relative to webroot/js folder)
+ *
+ * To use another conf file or use tinyMCE override var in bedita.cfg.php
+ */
+$config['richtexteditor'] = array(
+	'name' => 'ckeditor',
+	'conf' => 'ckeditor/ckeditor_default_init.js'
+);
 
 // Application messages - temporary messages duration
 $config['msgPause'] = 3000;		// milliseconds
@@ -177,7 +186,7 @@ $config['media']['image']['preferImagemagick']  = false;    // bool, use image_m
 $config['media']['image']['imagemagick']        = "";       // string, path to image_magick executable
 $config['media']['image']['over']               = "";       // string, path to overlay image
 $config['media']['image']['wmi']['text']        = "powered by BEdita";   // default watermark text
-$config['media']['image']['wmi']['font']        = BEDITA_CORE_PATH . DS . "webroot" . DS . "fonts" . DS . "Vera.ttf"; // default watermark font (system) -- searched in 
+$config['media']['image']['wmi']['font']        = BEDITA_CORE_PATH . DS . "webroot" . DS . "fonts" . DS . "Vera.ttf"; // default watermark font (system) -- searched in
 $config['media']['image']['wmi']['fontSize']    = "16";      // default watermark font size
 $config['media']['image']['wmi']['textColor']   = "FFFFFF";  // default watermark color -- hex digits
 $config['media']['image']['wmi']['background']  = "";        // default watermark background
@@ -187,7 +196,7 @@ $config['media']['image']['wmi']['align']       = "Center";  // string, wm align
 $config['media']['image']['wmi']['opacity']     = 50;        // int, wm opacity 0 (transparent) to 100 (opaque)
 $config['media']['image']['cache']  	        = true;      // image caching
 
- 
+
 $config['media']['video']['width']       = 300;      // px video player width
 $config['media']['video']['height']      = 250;      // px video player height
 $config['media']['video']['thumbWidth']  = 130;      // px thumb height
@@ -228,7 +237,7 @@ $config['loginPolicy'] = array (
 $config["searchType"] = "fulltext";
 
 /**
- ** Import PHP constants for smarty templates 
+ ** Import PHP constants for smarty templates
  */
 $config['DS']        = DS;
 
@@ -246,7 +255,7 @@ if (!defined("BEDITA_PERMS_READ_MODIFY")) {
 }
 
 /**
- * Permission params, for Smarty 
+ * Permission params, for Smarty
  */
 $config['BEDITA_PERMS_READ'] 	= BEDITA_PERMS_READ ;
 $config['BEDITA_PERMS_MODIFY'] 	= BEDITA_PERMS_MODIFY ;
@@ -286,39 +295,39 @@ $config['modules'] = array(
 
 /*
  * Relations - default objects' relation types
- * 
- * Array("defaultObjRelationType" => 
+ *
+ * Array("defaultObjRelationType" =>
  * 		array(
  * 			"hidden" => define if relation is hidden. Used in object's view in relationship tab,
- * 			"left" => array of object_type_id related to right object_type_id (empty array means all object_type_id) 
+ * 			"left" => array of object_type_id related to right object_type_id (empty array means all object_type_id)
  * 			"right => array of object_type_id related to left object_type_id (empty array means all object_type_id)
- * 			
+ *
  * OPTIONAL "objectType" => array of object_type_id related to objectType. If defined it's used instead of 'left', 'right'
  * 		)
  *	)
- * 
+ *
  */
 $config["defaultObjRelationType"] = array(
 
 	"language" => array(
 		"hidden" => true,
 		"left" 		=> array(),
-		"right" 		=> array()	
+		"right" 		=> array()
 	),
 	"seealso" => array(
 		"hidden" => false,
 		"left" 		=> array(),
-		"right" 		=> array()	
+		"right" 		=> array()
 	),
 	"download" => array(
 		"hidden" => false,
 		"left" 		=> array("b_e_file","image","application","audio","video"),
-		"right" 		=> array()	
+		"right" 		=> array()
 	),
 	"gallery" => array(
 		"hidden" => true,
 		"left" 		=> array("gallery"),
-		"right" 		=> array()	
+		"right" 		=> array()
 	),
 	"attach" => array(
 		"hidden" => true,
@@ -343,7 +352,7 @@ $config["objRelationType"] = array ();
 /**
  * One-way relation
  * array of relations' label that define one-way relations
- */ 
+ */
 $config["defaultOneWayRelation"] = array();
 
 // Cfg One-way relation (override in bedita.cfg)
@@ -373,9 +382,9 @@ $config['session'] = array (
 
 
 /**
- * 
+ *
  * Options status select
- * 
+ *
  */
 $config['statusOptions'] = array(
 	"on"	=> "ON",
@@ -388,23 +397,23 @@ $config['mediaTypes'] = array('image','video','audio','archive','text','spreadsh
 
 
 /**
- * variables used for accepting remote URL and for identifying a BEdita object type from mime  
+ * variables used for accepting remote URL and for identifying a BEdita object type from mime
  */
 $config['validate_resource'] = array(
 	'paranoid'	=> true,	// if true and 'allow_url_fopen'=false doesn't accept remte URL
 
 	// generic URL
 	'URL'	=> '/^\s*[a-z\d\+\-\.]+\:\/\//i',
-	
+
 	 // URL allowed
-	'allow'	=> array( 
+	'allow'	=> array(
 				'/^\s*http:\/\/(.*)\.(html|htm)$/',
 				'/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/'
 			   ),
 	/**
 	 * Accepted MIME types for different object types
 	 * The structure is:
-	 * 		ModelName => array(mime type regular expressions) 
+	 * 		ModelName => array(mime type regular expressions)
 	 * or
 	 * 		ModelName => array(
 	 * 			"specific type" => array(
@@ -436,8 +445,8 @@ $config['validate_resource'] = array(
 
 /**
  *  Supported media providers
- *  
- *  for any providers supported are defined an array of regexp to identify provider and media id 
+ *
+ *  for any providers supported are defined an array of regexp to identify provider and media id
  *  and an array of params
  */
 $config['media_providers'] = array(
@@ -485,21 +494,21 @@ $config['media_providers'] = array(
 ) ;
 
 /**
- *  Default model bindings for Containable Behaviour 
+ *  Default model bindings for Containable Behaviour
  */
 $config['modelBindings'] = array() ;
 
 
 // default email fields -- override in bedita.cfg or bedita.sys
 $config['mailOptions'] = array(
-	"sender" => "noreply@bedita.com", 
-	"reply_to" => "noreply@bedita.com", 
+	"sender" => "noreply@bedita.com",
+	"reply_to" => "noreply@bedita.com",
 	"signature" => "powered by BEdita - http://www.bedita.com",
 );
 
 
 /**
- *  default values for fulltext search. Override in bedita.cfg  
+ *  default values for fulltext search. Override in bedita.cfg
  */
 $config['searchFields'] = array() ;
 
@@ -583,7 +592,7 @@ $config["defaultLicenses"] = array(
 	"CC-BY-NC-ND" => array("title" => "Creative Commons Attribution Non-Commercial No Derivatives", "url" => "http://creativecommons.org/licenses/by-nc-nd/3.0"),
 	"RES" => array("title" => "All rights reserved", "url" => ""),
 );
-				
+
 /**
  * Specific licenses, to add in bedita.cfg
  */
@@ -591,11 +600,11 @@ $config["cfgLicenses"] = array();
 
 /**
  * GeoTag options
- * 
+ *
  * zoom: keys are google maps zoom level
- * 
+ *
  * mapType: keys are google maps standard url parameters plus "s" for street view layer
- * 
+ *
  */
 $config["geoTagOptions"] = array(
 	"zoom" => array(
@@ -631,13 +640,13 @@ require_once(BEDITA_CORE_PATH.DS.'config'.DS.'locales.php');
  * ignore during install
  */
 if(!defined('BEDITA_IGNORE_CFG')) {
-	require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";	
+	require BEDITA_CORE_PATH. DS ."config".DS."bedita.cfg.php";
 }
 
 /**
- * @deprecated system/server file specific settings 
+ * @deprecated system/server file specific settings
  */
 if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php")) {
-	include BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";	
+	include BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";
 }
 ?>

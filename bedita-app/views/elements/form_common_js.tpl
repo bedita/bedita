@@ -308,7 +308,7 @@ function autoSave() {
 	} else if (newStatus != 'on') {
 		if (autoSaveTimer != undefined) {
 			optionsForm.url = submitUrl; // override form action
-			{if $conf->mce|default:false}
+			{if !empty($conf->richtexteditor.name) && $conf->richtexteditor.name == "tinymce"}
 				tinyMCE.triggerSave(true, true);
 			{/if}
 			$('#updateForm').ajaxSubmit(optionsForm);

@@ -8,7 +8,7 @@
 
 /**
  * bedita.cfg.php - local installation specific settings,
- 					overrides settings in bedita.ini
+ *					overrides settings in bedita.ini
  */
 
 // BEdita instance name 
@@ -140,8 +140,17 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 // Status of new objects
 //$config['defaultStatus'] = "draft" ;
 
-// TinyMCE Rich Text Editor for long_text ['false' to disable - defaults true]
-// $config['mce'] = true;
+/**
+ * Rich Text Editor conf (default ckeditor conf is defined in bedita.ini.php)
+ *
+ * Example to use tinyMCE
+ * name => 'tinymce'
+ * conf => tiny_mce/tiny_mce_default_init.js
+ */
+// $config['richtexteditor'] = array(
+// 	'name' => 'ckeditor',
+// 	'conf' => 'ckeditor/ckeditor_default_init.js'
+// );
 
 
 /**
@@ -202,7 +211,7 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 /**
  * save history navigation
- 
+ *
  * "sessionEntry" => number of history items in session
  * "showDuplicates" => false to not show duplicates in history session 
  * "trackNotLogged" => true save history for all users (not logged too)
