@@ -10,7 +10,7 @@
 
 
 {if !empty($conf->richtexteditor.name) && $conf->richtexteditor.name == "tinymce"}
-	{$html->script("tiny_mce/tiny_mce")}
+	{$html->script("libs/richtexteditors/tiny_mce/tiny_mce")}
 
 	<script language="javascript" type="text/javascript">
 
