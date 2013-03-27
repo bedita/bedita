@@ -15,16 +15,16 @@
 		<!-- per il drag&drop degli oggetti multimediali-->
 		<div id="bodyDropTarget" class="dropTarget">
 			<div class='dropSubTarget allowed' rel='placeref' data-attributes='{literal}{"class": "placeref"}{/literal}' data-options='{literal}{"type": "append","object": "img"}{/literal}'>
-				<p>Rilascia qui per inserire come placeref</p>
+				<p>{t}Drop here as placeref{/t}</p>
 			</div>
 			<div class='dropSubTarget allowed' rel='placeholder' data-attributes='{literal}{"class": "placeholder"}{/literal}' data-options='{literal}{"type": "append", "object": "img"}{/literal}'>
-				<p>Rilascia qui per inserire come placeholder</p>
+				<p>{t}Drop here as placeholder{/t}</p>
 			</div>
 			<div class='dropSubTarget allowed' rel='simplelink' data-attributes='{literal}{"class": "modalLink", "target": "modal"}{/literal}' data-options='{literal}{"type": "wrap","selection":"required", "object": "a"}{/literal}'>
-				<p>Rilascia qui per inserire come richiamo nel testo</p>
+				<p>{t}Drop here as an anchor{/t}</p>
 			</div>
 			<div class="dropSubTarget denied">
-				<p>Seleziona prima qualcosa nell'editor</p>
+				<p>{t}Select something in the editor{/t}</p>
 			</div>
 		</div>
 
