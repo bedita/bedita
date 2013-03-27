@@ -308,7 +308,9 @@ function autoSave() {
 	} else if (newStatus != 'on') {
 		if (autoSaveTimer != undefined) {
 			optionsForm.url = submitUrl; // override form action
-			tinyMCE.triggerSave(true, true);
+			{if $conf->mce|default:false}
+				tinyMCE.triggerSave(true, true);
+			{/if}
 			$('#updateForm').ajaxSubmit(optionsForm);
 		}
 		switchAutosave('enable', false);
