@@ -145,13 +145,13 @@ $config['defaultStatus'] = "draft" ;
  * Rich Text Editor
  * configuration array is composed by
  * name => name of editor
- * conf => path to configuration file (path is relative to webroot/js folder)
+ * conf => path to configuration file (path is relative to webroot/js/libs/richtexteditors folder)
  *
  * To use another conf file or use tinyMCE override var in bedita.cfg.php
  */
 $config['richtexteditor'] = array(
 	'name' => 'ckeditor',
-	'conf' => 'ckeditor/ckeditor_default_init.js'
+	'conf' => 'conf/ckeditor_default_init.js'
 );
 
 // Application messages - temporary messages duration
