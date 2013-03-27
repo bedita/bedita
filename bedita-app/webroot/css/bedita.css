@@ -135,8 +135,9 @@ UL UL {margin-left:20px;}
 	position:absolute;
 	top:20px;
 	left:160px;
-	z-index:100;
+	z-index:130;
 	width:140px;
+	background-color:#B6B6B6;
 }
 
 
