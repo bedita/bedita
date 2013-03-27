@@ -62,7 +62,18 @@ class BeurlHelper extends AppHelper {
 		if (!empty($cleanFromFields)) {
 			$paramsNamed = $this->cleanPassedArgs($cleanFromFields);
 		}
-		$data = array_merge($this->params["pass"], $paramsNamed);
+		$pass = $this->params["pass"];
+		$action = $this->params["action"];
+		if(isset($pass[1]) && $pass[1] === $action) {
+			unset($pass[1]);		
+		}
+		$controller = $this->params["controller"];
+		if(isset($pass[0]) && $pass[0] === $controller) {
+			unset($pass[0]);
+		}
+		$pass["action"] = $action;
+		$pass["controller"] = $controller;
+		$data = array_merge($pass, $paramsNamed);
 		$url = Router::url($data);
 		return $this->output($url);
 	}
