@@ -79,8 +79,8 @@
 # /bedita-app/webroot/img/
 /bedita-app/webroot/img/.directory
 
-# /bedita-app/webroot/js/libs/richtexteditors/conf_local
-/bedita-app/webroot/js/libs/richtexteditors/conf_local/*
+# /bedita-app/webroot/js/libs/richtexteditors/conf/local
+/bedita-app/webroot/js/libs/richtexteditors/conf/local/*
 
 # /bedita-doc/api/
 /bedita-doc/api/html
