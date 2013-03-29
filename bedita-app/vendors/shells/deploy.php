@@ -34,11 +34,16 @@ require_once 'bedita_base.php';
 class DeployShell extends BeditaBaseShell {
 	
 	const DEFAULT_RELEASE_FILE 	= 'release.cfg.php' ;
-	const DEFAULT_SVN_URL 	= 'https://svn.channelweb.it/bedita/trunk' ;
+	const DEFAULT_GIT_URL 	= 'https://github.com/bedita/bedita.git';
 	
 	var $tasks = array('Cleanup');
 	
     public function release() {
+    	$this->out();
+    	$this->out("##############################################");
+    	$this->out("CREATE RELEASE PACKAGE");
+    	$this->out("##############################################");
+    	$this->out();
     	$this->readInputArgs();
     	$scr = self::DEFAULT_RELEASE_FILE;
     	if(!empty($this->params['script'])) {
@@ -53,54 +58,105 @@ class DeployShell extends BeditaBaseShell {
     	$this->check_sys_get_temp_dir();
 		$tmpBasePath = $this->setupTempDir();
        	$this->out("Using temp dir: $tmpBasePath");
-		$exportPath = $tmpBasePath . "bedita";
+		$gitClonePath = $tmpBasePath . "bedita-clone";
+		$exportPath = $tmpBasePath . "bedita/"; // IMPORTANT: don't remove trailing "/""
 		
-    	if(!empty($this->params['svnUrl'])) {
-    		$svnUrl = $this->params['svnUrl'];
+    	if(!empty($this->params['gitUrl'])) {
+    		$gitUrl = $this->params['gitUrl'];
     	} else {
-			$svnUrl = $this->in("SVN url, [" . self::DEFAULT_SVN_URL . "]");
-			if(empty($svnUrl)) {
-				$svnUrl = self::DEFAULT_SVN_URL;
+			$gitUrl = $this->in("GIT url, [" . self::DEFAULT_GIT_URL . "]");
+			if(empty($gitUrl)) {
+				$gitUrl = self::DEFAULT_GIT_URL;
 			}
     	}
-       	$this->out("Using SVN url: $svnUrl");
-    	if(!empty($this->params['svnUser'])) {
-    		$svnUser = $this->params['svnUser'];
-    	} else {
-       		$svnUser = $this->in("SVN username: ");
-    	}
+       	$this->out("Using GIT url: $gitUrl");
 
-    	if(!empty($this->params['svnPassword'])) {
-    		$svnPassword = $this->params['svnPassword'];
-    	} else {
-       		$svnPassword = $this->in("SVN password: ");
-    	}
-
-    	if(!empty($this->params['releaseDir'])) {
+       	if(!empty($this->params['releaseDir'])) {
     		$releaseDir = $this->params['releaseDir'];
     	} else {
-       		$releaseDir = $this->in("release dir: ");
+       		$releaseDir = $this->in("\nrelease dir: ");
     	}
-    	
-		if(!file_exists($releaseDir)) {
+
+    	if(!file_exists($releaseDir)) {
 	        $this->out("release dir not found: $releaseDir");
 			return;
 		}
-		
-    	$svnExport = "svn export --non-interactive --username ". 
-    			$svnUser . " --password " . $svnPassword . 
-    			" " . $svnUrl . " " . $exportPath;
-		$this->out("Svn command: $svnExport");
-    	$res = system($svnExport);
+
+    	// list remote branch
+    	exec("git branch -r", $remoteBranchesList);
+    	$remoteBranchesList = array_map('trim',$remoteBranchesList);
+    	if (empty($remoteBranchesList)) {
+    		$this->out("Failed to get remote branches list. Abort. Bye.");
+    		return;
+    	}
+    	$this->out();
+    	$this->hr();
+    	$this->out("Choose the remote branch on which build the release:");
+    	foreach ($remoteBranchesList as $key => $branch) {
+    		$this->out($key . ". " . $branch);
+    	}
+    	$this->hr();
+    	$branchKey = $this->in("Select remote branch:", array_keys($remoteBranchesList));
+
+    	if (empty($remoteBranchesList[$branchKey])) {
+    		$this->out("No remote branch choosed. Abort. Bye.");
+    		return;
+    	}
+
+    	$remoteBranch = $remoteBranchesList[$branchKey];
+    	$this->hr();
+    	$this->out("Remote branch " . $remoteBranch . " choosed, proceed.");
+
+    	// local current branch
+    	$gitBranch = $this->getGitBranch();
+    	$this->out("\nLocal git branch: " . $gitBranch);
+
+    	$remoteBranchAbbrev = str_replace("origin/", "", $remoteBranch);
+
+    	if ($gitBranch !== $remoteBranchAbbrev) {
+    		$this->out("\nWARNING!!!");
+    		$res = $this->in("You are about to create a release package based on $remoteBranch branch but you are in $gitBranch branch.
+    			\nDo you want to continue?", array("y", "n"), "n"
+    		);
+    		if ($res == "n") {
+    			$this->out("\nPackage creation aborted. Bye.");
+    			return;
+    		}
+    	}
+
+    	$this->out();
+    	$this->out("##############################################");
+    	$this->out("CREATION BEGIN");
+    	$this->out("##############################################");
+    	$this->out();
+
+		// git clone branch
+		$gitClone = "git clone https://github.com/bedita/bedita.git -b $remoteBranchAbbrev $gitClonePath";
+
+		$this->out("Git clone command:\n> $gitClone");
+    	$res = system($gitClone);
 		if(empty($res)) {
-	        $this->out("Error in svn export. Bye.");
+	        $this->out("Error in git clone. Bye.");
 			return;
 		}
-    	$this->out("Result: $res");
-		$s = split(" ", $res);
-		$svnRelease = $s[count($s)-1];
-		$this->out("Svn release: $svnRelease");
-		
+
+		$gitRelease = $this->getGitRevision();
+		if ($gitRelease === false) {
+			$this->out("Failed to get revision number. Bye.");
+			return;
+		}
+    	
+		$this->out("\nLast git revision: $gitRelease");
+
+		$gitExport = "git checkout-index -f -a --prefix=$exportPath";
+		$this->out("Export command: $gitExport");
+
+		$res = system($gitExport);
+		if (!empty($res)) {
+			$this->out("Failed to export git code. Bye.");
+			return;
+		}
+
 		foreach ($rel["removeFiles"] as $f) {
 			$fp = $exportPath.DS.$f;
 			$this->out("remove: $fp");
@@ -159,7 +215,7 @@ class DeployShell extends BeditaBaseShell {
 		// create version file
 		// release name is : base name + majorversione (like 3.0.beta1) + svn revision
 		$codeName = empty($rel["releaseCodeName"]) ? "" : $rel["releaseCodeName"];
-		$releaseName = Configure::read("majorVersion") . "." . $svnRelease . $codeName;
+		$releaseName = Configure::read("majorVersion") . "." . $gitRelease . "." . $codeName;
 		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $releaseName . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
 		fwrite($handle, $versionFileContent);
@@ -199,11 +255,27 @@ class DeployShell extends BeditaBaseShell {
         $this->out("$releaseFile created");
     }
     
+    public function getGitRevision() {
+    	exec("git log -1 --pretty=format:'%h'", $revision);
+    	$revision = (!empty($revision[0]))? $revision[0] : false;
+		return $revision;
+    }
     
+    public function getGitBranch($folder = null) {
+    	$cmd = "";
+    	if ($folder) {
+    		$cmd .= "cd $folder; ";
+    	}
+    	$cmd .= "git rev-parse --abbrev-ref HEAD";
+    	exec($cmd, $branch);
+    	$branch = (!empty($branch[0]))? $branch[0] : false;
+    	return $branch;
+    }
+
     public function updateVersion() {
     	// git repository
     	if (file_exists(ROOT . DS . ".git")) {
-    		$revision = system("git log -1 --pretty=format:'%h'");
+    		$revision = $this->getGitRevision();
     		if ($revision === false) {
     			$this->out("Failed to update version number");
     			return;
@@ -284,7 +356,7 @@ class DeployShell extends BeditaBaseShell {
 		}
 		// git repository
 		if (file_exists($selected . DS . ".git")) {
-			$currentBranch = system("cd $selected; git rev-parse --abbrev-ref HEAD");
+			$currentBranch = $this->getGitBranch($selected);
 			if ($currentBranch === false) {
 				$this->out("Failed retrieve current git branch");
 			}
