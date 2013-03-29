@@ -46,17 +46,18 @@ class Area extends BeditaCollectionModel
 									"Permission",
 									"ObjectProperty",
 									"LangText",
+									"RelatedObject",
 									"Annotation",
 									"Version" => array("User.realname", "User.userid")
 								),
 								"SectionDummy"),
 
        		"default" => array("BEObject" => array("ObjectProperty",
-								"LangText", "ObjectType"), "SectionDummy"),
+								"LangText", "RelatedObject", "ObjectType"), "SectionDummy"),
 
 			"minimum" => array("BEObject" => array("ObjectType")),
 
-			"frontend" => array("BEObject" => array("LangText", "ObjectProperty"))
+			"frontend" => array("BEObject" => array("LangText", "RelatedObject", "ObjectProperty"))
 	);
 
 	var $hasOne = array(
