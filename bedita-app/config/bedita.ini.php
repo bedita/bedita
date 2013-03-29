@@ -174,39 +174,46 @@ $config["autoSaveTime"] = 120000;
  **  Image, Video and Audio defaults
  ** ******************************************
  */
-$config['media']['image']['thumbWidth']         = 130;      // px thumb width
-$config['media']['image']['thumbHeight']        = 85;       // px thumb height
-$config['media']['image']['thumbMode']          = "crop";   // crop, fill, croponly, stretch - thumb mode
-$config['media']['image']['thumbFill']          = "FFFFFF"; // hex - fill color when thumb mode is fill
-$config['media']['image']['background']         = "FFFFFF"; // hex - background color
-$config['media']['image']['thumbCrop']          = "C";      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
-$config['media']['image']['thumbQ']             = 75;       // int, JPEG thumbnail image quality [1-100]
-$config['media']['image']['thumbUpscale']       = true;     // bool, allow thumbnail upscale
-$config['media']['image']['preferImagemagick']  = false;    // bool, use image_magick or not (even if available)
-$config['media']['image']['imagemagick']        = "";       // string, path to image_magick executable
-$config['media']['image']['over']               = "";       // string, path to overlay image
-$config['media']['image']['wmi']['text']        = "powered by BEdita";   // default watermark text
-$config['media']['image']['wmi']['font']        = BEDITA_CORE_PATH . DS . "webroot" . DS . "fonts" . DS . "Vera.ttf"; // default watermark font (system) -- searched in
-$config['media']['image']['wmi']['fontSize']    = "16";      // default watermark font size
-$config['media']['image']['wmi']['textColor']   = "FFFFFF";  // default watermark color -- hex digits
-$config['media']['image']['wmi']['background']  = "";        // default watermark background
-$config['media']['image']['wmi']['angle'] 		= 0;       // default watermark angle
-$config['media']['image']['wmi']['file']        = "";        // string, path to watermark image file
-$config['media']['image']['wmi']['align']       = "Center";  // string, wm alignment: 'Center', 'East', 'Forget', 'NorthEast','North','NorthWest'.'SouthEast','South','SouthWest','West'
-$config['media']['image']['wmi']['opacity']     = 50;        // int, wm opacity 0 (transparent) to 100 (opaque)
-$config['media']['image']['cache']  	        = true;      // image caching
-
-
-$config['media']['video']['width']       = 300;      // px video player width
-$config['media']['video']['height']      = 250;      // px video player height
-$config['media']['video']['thumbWidth']  = 130;      // px thumb height
-$config['media']['video']['thumbHeight'] = 85;       // px thumb height
-$config['media']['video']['player'] 	 = "flowplayer.swf"; // flash player file (it has to stay in webroot/swf directory)
-
-$config['media']['audio']['width']       = 300;      // px - audio player width
-$config['media']['audio']['height']      = 24;       // px - audio player height
-$config['media']['audio']['player'] 	 = "flowplayer.swf"; // flash player file (it has to stay in webroot/swf directory)
-
+$config['media'] = array(
+	'image' => array (
+		'thumbWidth' => 130,      // px thumb width
+		'thumbHeight' =>  85,     // px thumb height
+		'thumbMode' => "crop",    // crop, fill, croponly, stretch - thumb mode
+		'thumbFill' => "FFFFFF",  // hex - fill color when thumb mode is fill
+		'background' => "FFFFFF", // hex - background color
+		'thumbCrop' => "C",      // string, crop mode when thumb mode is crop/croponly 'C', 'T', 'B', 'L', 'R', 'TL', 'TR', 'BL', 'BR'
+		'thumbQ' => 75,       // int, JPEG thumbnail image quality [1-100]
+		'thumbUpscale' => true,     // bool, allow thumbnail upscale
+		'preferImagemagick' => false,    // bool, use image_magick or not (even if available)
+		'imagemagick' =>  "",       // string, path to image_magick executable
+		'over' => "",      // string, path to overlay image
+		'watermark' => array(
+			'text' =>  "powered by BEdita",   // default watermark text
+			'font' =>  BEDITA_CORE_PATH . DS . "webroot" . DS . "fonts" . DS . "Vera.ttf", // default watermark font (system) -- searched in 
+			'fontSize' => "16",      // default watermark font size
+			'textColor' => "FFFFFF",  // default watermark color -- hex
+			'background' => "", 	// default watermark background
+			'angle' => 0,       // default watermark angle
+			'file' =>  "",      // string, path to watermark image file
+			'align' => "Center",  // string, wm alignment: 'Center', 'East', 'Forget', 'NorthEast','North','NorthWest'.'SouthEast','South','SouthWest','West'
+			'opacity' => 40,    // int, wm opacity 0 (transparent) to 100 (opaque)
+		),      
+	),
+	
+	'video' => array (
+		'width' => 300,      // px video player width
+		'height' => 250,      // px video player height
+		'thumbWidth' => 130,  // px thumb height
+		'thumbHeight' => 85,  // px thumb height
+		'player' => "flowplayer.swf", // flash player file (it has to stay in webroot/swf directory)
+	),
+	
+	'audio' => array (
+		'width' => 300,      // px - audio player width
+		'height' => 24,     // px - audio player height
+		'player' => "flowplayer.swf", // flash player file (it has to stay in webroot/swf directory)
+	),
+);	
 
 /**
  ** ******************************************
