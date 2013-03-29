@@ -1,4 +1,3 @@
-
 # /
 /apache
 /media*
@@ -15,6 +14,8 @@
 /modules
 /frontends
 /.idea
+
+.DS_Store
 
 # /bedita-app/
 /bedita-app/.cache
