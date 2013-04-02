@@ -1,6 +1,5 @@
 {*
-Template incluso.
-Menu a SX valido per tutte le pagine del controller.
+	left menu - on every page
 *}
 
 {$view->set("method", $method)}

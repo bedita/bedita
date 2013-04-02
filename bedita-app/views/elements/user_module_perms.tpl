@@ -1,4 +1,6 @@
 
+{$view->element('publications')}
+
 <ul class="menuleft insidecol bordered">
 
 {if !empty($BEAuthUser.userid)}
