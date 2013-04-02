@@ -59,7 +59,7 @@ class DeployShell extends BeditaBaseShell {
 		$tmpBasePath = $this->setupTempDir();
        	$this->out("Using temp dir: $tmpBasePath");
 		$gitClonePath = $tmpBasePath . "bedita-clone";
-		$exportPath = $tmpBasePath . "bedita/"; // IMPORTANT: don't remove trailing "/""
+		$exportPath = $tmpBasePath . "bedita";
 		
     	if(!empty($this->params['gitUrl'])) {
     		$gitUrl = $this->params['gitUrl'];
@@ -148,7 +148,7 @@ class DeployShell extends BeditaBaseShell {
     	
 		$this->out("\nLast git revision: $gitRelease");
 
-		$gitExport = "git checkout-index -f -a --prefix=$exportPath";
+		$gitExport = "git checkout-index -f -a --prefix=$exportPath/";
 		$this->out("Export command: $gitExport");
 
 		$res = system($gitExport);
