@@ -32,7 +32,7 @@ class Comment extends BeditaAnnotationModel
 {
 	var $useTable = 'annotations';
 
-//	var $actsAs = array(); 
+	var $actsAs = array(); 
 
 	public $objectTypesGroups = array("nodashboard");
 	
@@ -71,7 +71,6 @@ class Comment extends BeditaAnnotationModel
 	   		)
 	   );
 
-//	var $hasMany = array() ;
 	   
 	function beforeValidate() {
        	$data = &$this->data[$this->name] ;

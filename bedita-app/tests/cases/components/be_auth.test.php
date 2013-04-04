@@ -34,7 +34,7 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 class BeAuthTestCase extends BeditaTestCase {
 	var $components = array('BeAuth');
 	var $uses = array('User', 'Group');
-    var $dataSource = 'default' ;
+    var $dataSource = 'test' ;
 
 	////////////////////////////////////////////////////////////////////
 
@@ -98,10 +98,11 @@ class BeAuthTestCase extends BeditaTestCase {
 		$this->assertTrue(!empty($id));
 		// write test policy
 		Configure::write("loginPolicy", $this->data["policy"]);
-		$this->assertTrue($beAuth->createUser($this->data['new.user.good.passwd'], $this->data['new.group']));
+		$groups = Set::extract("/Group/name", $this->data['new.group']);
+		$this->assertTrue($beAuth->createUser($this->data['new.user.good.passwd'], $groups, false));
 		$this->assertTrue($beAuth->removeUser($this->data['new.user.good.passwd']['User']['userid']));
 		try {
-			$beAuth->createUser($this->data['new.user.bad.passwd'], $this->data['new.group']);
+			$beAuth->createUser($this->data['new.user.bad.passwd'], $groups, false);
 			$this->fail("Failed: bad password accepted");
 		} catch(BeditaException $be) {
 			$this->pass("Ok: bad password not accepted");

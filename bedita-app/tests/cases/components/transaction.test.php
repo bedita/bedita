@@ -36,10 +36,15 @@ class TransactionTestCase extends BeditaTestCase {
  	var $components	= array('Transaction') ;
     var $dataSource	= 'test' ;
 
+    /**
+     * table myisam to exclude on count rows because not working transactions
+     */
+    protected $myIsamTable = array("search_texts");
+
     ////////////////////////////////////////////////////////////////////
 
 	function testRollback() {	
-		$numRecordBegin = $this->_getNumRecordsTable() ; 
+		$numRecordBegin = $this->_getNumRecordsForTable() ; 
 		
 		$this->Transaction->begin() ;
 		
@@ -48,8 +53,7 @@ class TransactionTestCase extends BeditaTestCase {
 		$this->Transaction->rollback() ;
 		pr('Rollback, check DB rows') ;
 		
-		$numRecordEnd = $this->_getNumRecordsTable() ; 
-		
+		$numRecordEnd = $this->_getNumRecordsForTable() ; 
 		$this->assertEqual($numRecordBegin,$numRecordEnd);
 		
 		$this->Area->containLevel('minimum');
@@ -193,22 +197,24 @@ class TransactionTestCase extends BeditaTestCase {
 	 * Returns an array with row count for every table
 	 */
 	private function _getNumRecordsTable() {
-		$recs = array() ;
-		
+		$recForTable = $this->_getNumRecordsForTable();
+		return array_sum($recForTable);
+	}
+
+	private function _getNumRecordsForTable() {
 		$model = ClassRegistry::init("BEObject");
 		$tables = $model->query("SHOW TABLES") ;
-		
-		$count = 0;
+		$countForTable = array();
 		for($i = 0 ; $i < count($tables) ; $i++) {
 			$ret = array_values($tables[$i]['TABLE_NAMES']) ;
-			
-			$q = "SELECT count(*) AS num FROM {$ret[0]} ";
-			$nums = $model->query($q, false);
-			
-			$count += $nums[0][0]['num'] ;
+			// only InnoDB tables
+			if (!in_array($ret[0], $this->myIsamTable)) {
+				$q = "SELECT count(*) AS num FROM {$ret[0]} ";
+				$nums = $model->query($q, false);
+				$countForTable[$ret[0]] = $nums[0][0]["num"];
+			}
 		}
-		
-		return $count ;
+		return $countForTable;
 	}
 	
 	public   function __construct () {

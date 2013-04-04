@@ -65,11 +65,10 @@ class Document extends BeditaContentModel
 									)
 	);
 	
-	//var $actsAs = array();
+	var $actsAs = array();
 
 	public $objectTypesGroups = array("leafs", "related", "tree");
 
-	//var $hasMany = array() ;
 }
 
 

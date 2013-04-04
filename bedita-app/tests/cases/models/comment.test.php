@@ -34,6 +34,10 @@ class CommentTestCase extends BeditaTestCase {
 	
 	var $uses = array("Comment", "Document", "EditorNote");
 	
+	function testActsAs() {
+ 		$this->checkDuplicateBehavior($this->Comment);
+ 	}
+
 	function testCommentAndNote() {
 		$this->requiredData(array("document", "comment", "editor_note"));
 		$result = $this->Document->save($this->data['document']) ;

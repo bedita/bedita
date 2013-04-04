@@ -34,7 +34,7 @@ require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 class BeSystemTestCase extends BeditaTestCase {
 	var $components = array('BeSystem');
 	var $uses = array();
-    var $dataSource = 'default' ;
+    var $dataSource = 'test' ;
 	
 	function testInfo() {
 

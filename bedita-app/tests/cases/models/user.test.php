@@ -43,6 +43,7 @@ class UserTestCase extends BeditaTestCase {
     /////////////////////////////////////////////////
  	
  	function testInsert() {
+ 		$this->Transaction->begin();
 		$this->requiredData(array("insert"));
 		$this->data['insert']['User']['passwd'] = md5($this->data['insert']['User']['passwd']);
 		$result = $this->User->save($this->data['insert']) ;
@@ -56,8 +57,9 @@ class UserTestCase extends BeditaTestCase {
 		pr("User created:");
 		pr($result);
 		$this->inserted[] = $this->User->id;
+		$this->Transaction->commit();
 		
-	} 
+	}
 	
  	function testDelete() {
         pr("Removing inserted users:");

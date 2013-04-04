@@ -36,7 +36,7 @@
 
 		"googlesearch" => array (
 			'useLib' => 'nusoap',
-		    'wsdl' => "http://www.ecubicle.net/gsearch_rss.asmx?WSDL",
+		    'wsdl' => "http://www.soapclient.com/xml/googleSearch.wsdl",
 			'debugLevel' => 9,
 		),
 		
@@ -46,7 +46,7 @@
 		
 		"googlesearch2" => array (
 			'useLib' => 'soap',
-		    'wsdl' => "http://www.ecubicle.net/gsearch_rss.asmx?WSDL",
+		    'wsdl' => "http://www.soapclient.com/xml/googleSearch.wsdl",
 			'debugLevel' => 9,
 		),
 		
