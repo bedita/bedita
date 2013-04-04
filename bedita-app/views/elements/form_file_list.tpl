@@ -104,9 +104,10 @@ $(document).ready(function()
 		sort: checkDragDropTarget,
 		start: showBodyDropTarget,
 		stop: hideBodyDropTarget,
+		items: '.multimediaitem',
 		update: $(this).fixItemsPriority
 	}).css("cursor","move");
-
+	
 	/* Drag&drop di elementi multimediali nel testo */
 
 	var targets = {}; //aree di rilascio, definite in form_textbody.tpl
@@ -115,29 +116,6 @@ $(document).ready(function()
 	var editorHeight = '';
 	var textToReplace = '';
 	
-	/*$(document).bind('instanceReady.ckeditor', function(e){
-		if(e.target.name == 'data[body]'){
-			var $_div = $('<div>');
-			$_div.html($("textarea[name='data[body]']").val())
-				.find('.placeref')
-				.each(function(){
-					var $_placerefLink = $(this);
-					var nickname = $_placerefLink.attr('href');
-					var imageUrl = $('.media_nickname[value='+nickname+']').siblings('.imagebox').find('img').attr('src');
-					$_placerefLink.append('<img src="'+imageUrl+'" class="removeme" />')
-				});
-
-			$("textarea[name='data[body]']").val($_div.html());
-		}
-	});
-	$("div.insidecol input[name='save']").preBind('click', function() {
-		//if (CKEDITOR.instances['data[body]']!=='undefined'){ CKEDITOR.instances['data[body]'].destroy(true);};
-		var $_div = $('<div>');
-		$_div.html($("textarea[name='data[body]']").val())
-			.find('.removeme')
-			.remove();
-		$("textarea[name='data[body]']").val($_div.html());
-	});*/
 	$(document).bind('instanceReady.ckeditor', function(e,editor){
 		if (editor.name=='data[body]') listenMode(editor);
 		$(".cke_button_image").attr('onclick','');
@@ -218,11 +196,12 @@ $(document).ready(function()
 				
 				if (textToReplace=='') textToReplace='&#8203;';
 				
-				element = ' <a href="'+nickname+'" '+htmlAttributes+'>' + textToReplace + '<img src="'+imageUrl+'" /></a>';
+				element = ' <a href="'+nickname+'" '+htmlAttributes+'>' + textToReplace + '</a>';
 
 				var editorElement = document.createElement('a');
 				editorElement.innerHTML = element;
 				CKEDITOR.instances['data[body]'].insertHtml(element);
+				setPlaceCss(CKEDITOR.instances['data[body]']);
 			}
 		}
 		textToReplace = '';
@@ -230,90 +209,37 @@ $(document).ready(function()
 		//}
 	};
 	
-	var path = this.path;
-	var pathSrc = /src.*"/g;
-	var pathHref = /href=".*?"/g;
-	var pathPlaceHolder = /<a.? class="(placeholder|placeref|modalLink)".*?>.*?<\/a>/g;
-	var pathPlaceHolderImage = /<img.? class="(placeholder|placeref)".*?\/>/g;
-	var pathImg = /<img.*?\/>/g;
-	var data ='';
-	
-	function saveRight(editor) {
-		data = editor.getData();
-		if (editor.mode == "wysiwyg") {
-			var match = data.match(pathPlaceHolder) || [];
-			for (var i=0; i<match.length; i++) {
-				var m = match[i].match(pathImg);
-				if (m==null) m=[];
-				var img = m[0] || '';
-				data = data.replace(img,'');
-			}
-		}
-		$('textarea[name="data[body]"]').data('rightVal',data);
-	};
-	
 	function listenMode(editor) {		
 		editor.on('change',function(){
-			saveRight(editor);
-		});
-		
-		$('#saveBEObject').bind('mousedown touchstart', function() {
-			var data = $('textarea[name="data[body]"]').data('rightVal');
-			$('textarea[name="data[body]"]').val(data)
-		});
-		
-		editor.on('beforeSetMode', function(event) {
-			data = this.getData();
-			if (this.mode == "wysiwyg") {
-				var match = data.match(pathPlaceHolder) || [];
-				for (var i=0; i<match.length; i++) {
-					var m = match[i].match(pathImg);
-					if (m==null) m=[];
-					var img = m[0] || '';
-					data = data.replace(img,'');
-				}
-				editor.setData(data);
-			} else {
-				var match = data.match(pathPlaceHolder) || [];
-				for (var i=0; i<match.length; i++) {
-					var img = match[i];
-					var id = img.match(pathHref)[0];
-					id = id.replace('href="','');
-					id = id.replace('"','');
-					id = id.replace(' ','');
-					var src = $('.multimediaitem input[value="'+id+'"]').siblings('.imagebox').children('img').attr('src');			
-					var nimg = '<img src="'+src+'" />';
-					img = img.replace('</a>',nimg+'</a>');
-					data = data.replace(match[i],img);
-				}
-			}
+			setPlaceCss(this);
 		});
 		
 		editor.on('mode', function(event) {
-			editor.setData(data);
-			saveRight(editor);
+			if (editor.mode == "wysiwyg") {
+				setPlaceCss(this);
+			}
 		});
 		
-		data = editor.getData();
-		if (editor.mode == "wysiwyg") {
-			var match = data.match(pathPlaceHolder) || [];
-			for (var i=0; i<match.length; i++) {
-				var img = match[i];
-				var id = img.match(pathHref)[0];
-				id = id.replace('href="','');
-				id = id.replace('"','');
-				id = id.replace(' ','');
-				var src = $('.multimediaitem input[value="'+id+'"]').siblings('.imagebox').children('img').attr('src');			
-				var nimg = '<img src="'+src+'" />';
-				img = img.replace('</a>',nimg+'</a>');
-				data = data.replace(match[i],img);
-			}
-		}
-		editor.setData(data);
+		setPlaceCss(editor);
 		
 		$('*',editor.document.$).live('keyup', function() {
-			saveRight(editor);
+			setPlaceCss(editor);
 		});
+	}
+	
+	function setPlaceCss(editor) {
+		var jph = $('iframe.cke_wysiwyg_frame').contents().find('A.placeholder, A.plaref, A[target=modal]');
+		var style = '<style id="placeholderCss">';
+		if (editor.mode == "wysiwyg") {
+			jph.each(function() {
+				var href = $(this).attr('href');
+				var src = $('.multimediaitem input[value="'+href+'"]').siblings('.imagebox').children('img').attr('src');	
+				style+=' A[href='+href+']:after{ background-image: url("'+src+'") } ';
+			});
+		}
+		style+='</style>';
+		$('iframe.cke_wysiwyg_frame').contents().find('head').find('#placeholderCss').remove();
+		$('iframe.cke_wysiwyg_frame').contents().find('head').append(style);
 	}
 	
 	function checkDragDropTarget(e){

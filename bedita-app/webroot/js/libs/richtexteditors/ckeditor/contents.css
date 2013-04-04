@@ -106,70 +106,33 @@ dfn.glossario {
 	text-decoration:underline;
 }
 
-A.placeholder {
-	/*padding:0 10px 0 10px;
-	background-color:red;*/
+A.placeholder, A.placeref, A[target=modal] {
 	text-decoration:none;
 }
 
-.placeholder img {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	-webkit-user-drag: none;
-	height: 2em;
-	border: solid 2px red;
-}
-
-.placeholder img:hover {
-	-moz-transform: scale(4);
-	-o-transform: scale(4);
-	-ms-transform: scale(4);
-	-webkit-transform: scale(4);
-	transform: scale(4);
-}
-
-.placeref img {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	height: 2em;
-	border: solid 2px orange;
-}
-
-.placeref img:hover {
-	-moz-transform: scale(4);
-	-o-transform: scale(4);
-	-ms-transform: scale(4);
-	-webkit-transform: scale(4);
-	transform: scale(4);
-}
-
-.modalLink img {
-	box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	-o-box-sizing: border-box;
-	-ms-box-sizing: border-box;
-	height: 2em;
-	border: solid 2px blue;
-}
-
-.modalLink img:hover {
-	-moz-transform: scale(4);
-	-o-transform: scale(4);
-	-ms-transform: scale(4);
-	-webkit-transform: scale(4);
-	transform: scale(4);
-}
-
-A.placeholder:after {
+A.placeholder:before {
 	content: ' ⌘';
 	color:red;
+}
+
+A.placeref:before {
+	content: ' ⌘';
+	color:orange;
+}
+
+A[target=modal]:before {
+	content: ' ⌘';
+	color:blue;
+}
+
+A.placeholder:after, A.placeref:after, A[target=modal]:after {
+	background-size: contain;
+	content: ' ⌘';
+	color:transparent;
+	background-repeat: no-repeat;
+	font-size: 1.5em;
+	margin-left: 5px;
+	text-decoration: none;
 }
 
 dl, dt, dd {
