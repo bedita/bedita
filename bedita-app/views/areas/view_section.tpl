@@ -45,9 +45,13 @@
 <div class="main">
 	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	
-	<div class="tab"><h2>{t}Properties{/t}</h2></div>
+	{if (!empty($object))}
+
+		<div class="tab"><h2>{t}Properties{/t}</h2></div>
+
+	{/if}
 		
-		{include file="inc/form_section.tpl"  method="viewSection"}
+	{include file="inc/form_section.tpl"  method="viewSection"}
 	
 	</form>
 </div>
