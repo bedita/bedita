@@ -97,17 +97,19 @@ $(document).ready(function()
 		return false;
 	});
 
-	$(containerItem).sortable ({
-		distance: 5,
-		opacity:0.7,
-		//handle: $(".multimediaitem").add(".multimediaitem img"), //try to fix IE7 handle on images, but don't work acc!
-		sort: checkDragDropTarget,
-		start: showBodyDropTarget,
-		stop: hideBodyDropTarget,
-		items: '.multimediaitem',
-		update: $(this).fixItemsPriority
-	}).css("cursor","move");
-	
+	var sortableOptions = {
+		distance: 	5, 
+		opacity: 	0.7, 
+		update: 	$(this).fixItemsPriority
+	};
+	if ($('textarea[name="data\[body\]"]').length > 0) {
+		sortableOptions.sort = checkDragDropTarget;
+		sortableOptions.start = showBodyDropTarget;
+		sortableOptions.stop = hideBodyDropTarget;
+	}
+
+	$(containerItem).sortable(sortableOptions).css("cursor","move");
+
 	/* Drag&drop di elementi multimediali nel testo */
 
 	var targets = {}; //aree di rilascio, definite in form_textbody.tpl
@@ -123,6 +125,7 @@ $(document).ready(function()
 			openModal();
 		});
 	});
+
 	function openModal(){
 		if($('#multimediaModal').size()==0){
 
@@ -336,7 +339,7 @@ $(document).ready(function()
 <hr />
 <input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$relation}][0][switch]" value="{$relation}" />
 
-{foreach from=$attach item="item"}
+{foreach from=$relObjects[$relation]|default:[] item="item"}
 	<div class="multimediaitem itemBox {if $item.status != "on"} off{/if} XdisableSelection" id="item_{$item.id}">
 			{$view->element('form_file_item', ['item' => $item, 'relation' => $relation])}
 	</div>
