@@ -53,7 +53,23 @@ class UsersController extends ModulesController {
 			);
 			$this->set("stringSearched", $this->params["form"]["searchstring"]);
 		}
-		$this->set('users', $this->paginate('User', $conditions));
+
+		$users = $this->paginate('User', $conditions);
+
+		$beObject = ClassRegistry::init("BEObject");
+		foreach ($users as &$user) {
+			$res = $beObject->find('list', array(
+				"conditions" => "user_created=" . $user["User"]['id']
+			));
+
+			if (!empty($res)) {
+				$user['User']['related_obj'] = 1;
+			}else {
+				$user['User']['related_obj'] = 0;
+			}
+		}
+
+		$this->set('users', $users);
 	}
 	
 	function showUsers() {
@@ -166,6 +182,32 @@ class UsersController extends ModulesController {
 		}
 	}
 
+	function blockUser($id) {
+		$this->checkWriteModulePermission();
+		if (isset($id)) {
+			if ($id === $this->BeAuth->user["userid"]) {
+				throw new BeditaException(__("Auto-block forbidden",true));
+			}
+
+			$u = $this->User->findById($id);
+			if (empty($u)) {
+				throw new BeditaException(__("Bad data",true));
+			}
+
+			$data = array(
+				"id" => $id,
+				"valid" => 0,
+				"userid" => "deleted-user-$id",
+				"realname" => null,
+				"email" => null
+			);
+
+			if (!$this->User->save($data)) {
+				throw new BeditaException(__("Error blocking user", true));
+			}
+		}
+	}
+
 	/**
 	 * return user data if user in session can edit him
 	 * 
@@ -208,6 +250,10 @@ class UsersController extends ModulesController {
 		if(isset($userdetail)) {
 			foreach ($userdetail['Group'] as $g) {
 				array_push($userGroups, $g['name']);
+			}
+
+			if ($userdetail['User']['userid'] == "deleted-user-" . $userdetail['User']['id']) {
+				$this->set("userDeleted", true);
 			}
 		}
 		
@@ -359,6 +405,10 @@ class UsersController extends ModulesController {
 				"ERROR"	=> $this->referer() 
 			),
 			"removeUser" => 	array(
+				"OK"	=> "/users",
+				"ERROR"	=> "/users" 
+			),
+			"blockUser" => 	array(
 				"OK"	=> "/users",
 				"ERROR"	=> "/users" 
 			),

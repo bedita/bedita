@@ -20,7 +20,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 	{if $module_modify eq '1'}
 	<div class="insidecol">
 
-		{if $view->action == "viewUser"}
+		{if $view->action == "viewUser" && !$userDeleted|default:false}
 		
 			<input class="bemaincommands" type="button" name="save" onClick="$('#userForm').submit()" 
 			value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
