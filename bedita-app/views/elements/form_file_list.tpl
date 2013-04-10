@@ -100,6 +100,7 @@ $(document).ready(function()
 	var sortableOptions = {
 		distance: 	5, 
 		opacity: 	0.7, 
+		items:      '.multimediaitem',
 		update: 	$(this).fixItemsPriority
 	};
 	if ($('textarea[name="data\[body\]"]').length > 0) {
