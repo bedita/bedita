@@ -46,7 +46,7 @@ $(document).ready(function(){
 		<td>{$u.User.last_login|date_format:$conf->dateTimePattern}</td>
 		<td class="go">
 			{if $module_modify eq '1' && $BEAuthUser.userid ne $u.User.userid}
-			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id});"/>
+			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id},{$u.User.related_obj|default:0},{$u.User.valid});"/>
 			{/if}
 		</td>
 	{/foreach}
