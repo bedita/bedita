@@ -406,12 +406,12 @@ class BEObject extends BEAppModel
 														  AND object_id={$this->id} 
 														  AND switch='{$inverseSwitch}'");
 							
-							if (empty($inverseRel[0]["content_objects"]["priority"])) {
+							if (empty($inverseRel[0]["object_relations"]["priority"])) {
 								// #CUSTOM QUERY
 								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
 								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
 							} else {
-								$inversePriority = $inverseRel[0]["content_objects"]["priority"];
+								$inversePriority = $inverseRel[0]["object_relations"]["priority"];
 							}						
 							// #CUSTOM QUERY
 							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
