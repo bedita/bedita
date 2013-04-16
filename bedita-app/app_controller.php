@@ -126,12 +126,14 @@ class AppController extends Controller
 
 	final function beforeFilter() {
 		self::$current = $this;
-		if (BACKEND_APP && $this->RequestHandler->isMobile()) {
-			$this->view = 'ThemeSmarty';
-			$this->theme = 'mobile';
-		} else {
-			$this->view = 'Smarty';
-		}
+		$this->view = 'Smarty';
+		
+// 		if (BACKEND_APP && $this->RequestHandler->isMobile()) {
+// 			$this->view = 'ThemeSmarty';
+// 			$this->theme = 'mobile';
+// 		} else {
+// 			$this->view = 'Smarty';
+// 		}
 
 		$conf = Configure::getInstance();
 
