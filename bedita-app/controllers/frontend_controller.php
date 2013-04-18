@@ -2562,8 +2562,6 @@ abstract class FrontendController extends AppController {
             natsort($assets);
             $manifestAppcache["assets"] = $assets;
             Cache::write('manifestAppcache',$manifestAppcache);
-        } else {
-            $manifestAppcache = Cache::read('manifestAppcache');
         }
         Configure::write('debug',0);
         header('Content-Type: text/cache-manifest');
