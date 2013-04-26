@@ -96,9 +96,10 @@
           out += cur;
           atSol = false;
         }
-        if (!atSol && inner.mode.newlineAfterToken &&
+        /*** Hack of the original formatting.js to resolve an indentetion of inline elements issue ***/
+        /*if (!atSol && inner.mode.newlineAfterToken &&
             inner.mode.newlineAfterToken(style, cur, stream.string.slice(stream.pos) || text[i+1] || "", inner.state))
-          newline();
+          newline();*/
       }
       if (!stream.pos && outer.blankLine) outer.blankLine(state);
       if (!atSol && i < text.length - 1) newline();
