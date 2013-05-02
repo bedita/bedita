@@ -37,7 +37,7 @@ function removeUserFromCard() {
 		<td>
 			<span id="user_name">
 				{if !empty($object.User)}
-					<a href="{$html->url('/admin/viewUser/')}{$object.User.0.id}">{$object.User.0.userid|default:''}</a>
+					<a href="{$html->url('/users/viewUser/')}{$object.User.0.id}">{$object.User.0.userid|default:''}</a>
 				{else}
 					{t}no user data{/t}
 				{/if}
@@ -48,7 +48,7 @@ function removeUserFromCard() {
 			&nbsp;&nbsp;&nbsp;
 			{if empty($object.User)}
 			<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
-				rel="{$html->url('/admin/showUsers')}"
+				rel="{$html->url('/users/showUsers')}"
 				title="USERS : select an item to associate" />
 			{else}
 			<input id="remove_user" type="button" value="  {t}remove from users{/t}  "/>
