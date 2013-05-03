@@ -2538,35 +2538,40 @@ abstract class FrontendController extends AppController {
 
 	/**
 	 * dynamic manifest
+	 * if Configure::read("debug") === 0 (production env) the manifest is cached by CakePHP
+	 * else  (development env) the manifest is generated every time
 	 */
 	public function manifestAppcache(){
-        $manifestAppcache = Cache::read('manifestAppcache');
-        if (!$manifestAppcache) {
-            App::Import('Core','Folder');
-            $folder = new Folder();
-            $exceptions = (Configure::read("appcacheExceptions")) ? Configure::read("appcacheExceptions") : array();
-            $assets = $folder->tree(WWW_ROOT, $exceptions, 'file');
-            // hash: MD5 of a string containing ordered file paths and last modified time of those files
-            $treeStr = "";
-            foreach($assets as $file) {
-                $treeStr .= $file . "-" . filemtime($file);
-            }
-            $manifestAppcache["hash"] = md5($treeStr);
-            // rewrite all paths to be relative to index.php
-            $assets = array_map(
-              function($file){
-               return str_replace(WWW_ROOT, '', $file);
-              },
-              $assets
-            );
-            natsort($assets);
-            $manifestAppcache["assets"] = $assets;
-            Cache::write('manifestAppcache',$manifestAppcache);
-        }
-        Configure::write('debug',0);
-        header('Content-Type: text/cache-manifest');
-        $this->layout = 'ajax';
-        $this->set("hash",$manifestAppcache["hash"]);
-        $this->set("assets",$manifestAppcache["assets"]);
-    }
+		$debugLevel = Configure::read("debug");
+		$manifestAppcache = ($debugLevel === 0)? Cache::read('manifestAppcache') : false;
+		if (!$manifestAppcache) {
+			App::Import('Core','Folder');
+			$folder = new Folder();
+			$exceptions = (Configure::read("appcacheExceptions")) ? Configure::read("appcacheExceptions") : array();
+			$assets = $folder->tree(WWW_ROOT, $exceptions, 'file');
+			// hash: MD5 of a string containing ordered file paths and last modified time of those files
+			$treeStr = "";
+			foreach($assets as $file) {
+				$treeStr .= $file . "-" . filemtime($file);
+			}
+			$manifestAppcache["hash"] = md5($treeStr);
+			// rewrite all paths to be relative to index.php
+			$assets = array_map(
+				function($file){
+					return str_replace(WWW_ROOT, '', $file);
+				},
+				$assets
+			);
+			natsort($assets);
+			$manifestAppcache["assets"] = $assets;
+			if ($debugLevel !== 0) {
+				Cache::write('manifestAppcache', $manifestAppcache);
+			}
+		}
+		Configure::write('debug',0);
+		header('Content-Type: text/cache-manifest');
+		$this->layout = 'ajax';
+		$this->set("hash",$manifestAppcache["hash"]);
+		$this->set("assets",$manifestAppcache["assets"]);
+	}
 }
