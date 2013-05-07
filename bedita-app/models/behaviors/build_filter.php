@@ -206,8 +206,18 @@ class BuildFilterBehavior extends ModelBehavior {
 				}
 				
 				$this->fields .= ", " . $key;
+
+				// if $val is array then it build 'IN' or 'NOT IN' condition
 				if (is_array($val)) {
-					$this->conditions[] = $key . " IN ('" . implode("','", $val) . "')";
+					$firstKey = strtolower(key($val));
+					if ($firstKey == "not") {
+						$operator = "NOT IN";
+						$listValue = (is_array($val["NOT"]))? "('" . implode("','", $val["NOT"]) . "')" : "('" . $val["NOT"] . "')";
+					} else {
+						$operator = "IN";
+						$listValue = "('" . implode("','", $val) . "')";
+					}
+					$this->conditions[] = $key . " " . $operator . " " . $listValue;
 				} elseif ($val !== "" && $val !== null) {
 					$this->conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
 				}

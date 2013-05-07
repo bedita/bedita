@@ -201,26 +201,35 @@ class PagesController extends AppController {
 			$filter["query"] = addslashes($this->params["form"]["search"]);
 		
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
+
+		// set id to exclude: $main_object_id and already related objects
+		if (!empty($main_object_id)) {
+			$res = ClassRegistry::init("ObjectRelation")->find("all", array(
+				"conditions" => array(
+					"id" => $main_object_id,
+					"switch" => $usedRelation
+				)
+			));
+			$excludeIds = Set::extract("/ObjectRelation/object_id", $res);
+			$excludeIds[] = $main_object_id;
+			$filter["BEObject.id"] = array("NOT" => $excludeIds);
+		}
 		
 		$relationRulesClass = Inflector::camelize($relation)."RelationRules";
 		if (App::import("model", $relationRulesClass) ) {
 			$model = ClassRegistry::init($relationRulesClass);	
 			$params = array("object_type_id" => $main_object_type_id , "object_id" => $main_object_id );
-			$model->connectFilter($params ,$filter);
+			$model->connectFilter($params, $filter);
 		}
 		
 		if ($filter !== null) {
 			$objects = $this->BeTree->getChildren($id, null, $filter, "modified", false, $page, $dim=20) ;
-		}else  {
+		} else  {
 			$objects["items"] = array();
 		}
-		
-		
+
 		foreach ($objects["items"] as $key => $obj) {
-			if ($obj["id"] != $main_object_id)
-				$objects["items"][$key]["moduleName"] = ClassRegistry::init("ObjectType")->field("module_name", array("id" => $obj["object_type_id"]));
-			else
-				unset($objects["items"][$key]);
+			$objects["items"][$key]["moduleName"] = ClassRegistry::init("ObjectType")->field("module_name", array("id" => $obj["object_type_id"]));
 		}
 		$this->set("objectsToAssoc", $objects);
 		
