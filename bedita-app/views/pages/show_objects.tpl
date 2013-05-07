@@ -41,11 +41,6 @@ $(document).ready(function() {
 		loadObjToAssoc(1);
 	});
 	
-	
-	$("#searchButton").click(function() {
-		loadObjToAssoc(1);
-	});
-	
 	$("#addButton").click(function() {
 		obj_sel = { relation: relType};
 		obj_sel.object_selected = "";
