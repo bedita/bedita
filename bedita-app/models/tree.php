@@ -494,10 +494,11 @@ class Tree extends BEAppModel
 	 * @param boolean $dir		true (default), ascending, otherwiese descending.
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
+	 * @param array $excludeIds array of ids to exclude
 	 * @return array
 	 */
-	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
-		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false) ;
+	function getChildren($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
+		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, false, $excludeIds) ;
 	}
 
 	/**
@@ -516,10 +517,11 @@ class Tree extends BEAppModel
 	 * @param boolean $dir		true (default), ascending, otherwiese descending.
 	 * @param integer $page		Page number (for pagination)
 	 * @param integer $dim		Page dim (for pagination)
+	 * @param array $excludeIds array of ids to exclude
 	 * @return array
 	 */
-	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null) {
-		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true) ;
+	function getDescendants($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
+		return $this->findObjects($id, $userid, $status, $filter, $order, $dir, $page, $dim, true, $excludeIds) ;
 	}
 
 	/**

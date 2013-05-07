@@ -151,20 +151,21 @@ class BeTreeComponent extends Object {
 	 * Get children for node $id
 	 *
 	 * @param integer $id node ID
-	 * @param string $status
-	 * @param boolean $filter
-	 * @param string $order
+	 * @param mixed $status
+	 * @param mixed $filter
+	 * @param mixed $order
 	 * @param boolean $dir
 	 * @param int $page
 	 * @param int $dim
+	 * @param array $excludeIds
 	 * @return array
 	 */
-	public function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
+	public function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
 		$conf  = Configure::getInstance() ;
 		// Get user connected
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
-		$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
+		$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $excludeIds) ;
 		return $objs ;
 	}
 
@@ -172,20 +173,21 @@ class BeTreeComponent extends Object {
 	 * Return descendants of a tree node
 	 *
 	 * @param integer $id node ID
-	 * @param string $status
-	 * @param boolean $filter
-	 * @param string $order
+	 * @param mixed $status
+	 * @param mixed $filter
+	 * @param mixed $order
 	 * @param boolean $dir
 	 * @param int $page
 	 * @param int $dim
+	 * @param array $excludeIds
 	 * @return array
 	 */
-	public function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null) {
+	public function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
 		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
-		$objs = &  $this->Tree->getDescendants($id, $userid, $status, $filter, $order, $dir, $page, $dim) ;
+		$objs = &  $this->Tree->getDescendants($id, $userid, $status, $filter, $order, $dir, $page, $dim, $excludeIds) ;
 		return $objs ;
 	}
 	
