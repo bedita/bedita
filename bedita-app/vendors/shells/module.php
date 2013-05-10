@@ -138,11 +138,10 @@ class ModuleShell extends BeditaBaseShell {
 	
 	private function findPluginPath($pluginName) {
 		$res = null;
-		$pluginPaths = Configure::getInstance()->pluginPaths;
-		foreach ($pluginPaths as $p) {
-			if(file_exists($p . DS . $pluginName . DS . "config")) {
-				$res = $p;
-			}
+		$pluginPaths = App::pluginPath($pluginName);
+
+        if(file_exists($pluginPaths . DS . "config")) {
+			$res = $pluginPaths;
 		}
 		return $res;
 	}	
@@ -162,7 +161,7 @@ class ModuleShell extends BeditaBaseShell {
 			return;
 		}
 
-		$configPath = $pluginPath . DS  . $pluginName . DS . "config" . DS;
+		$configPath = $pluginPath . DS . "config" . DS;
 		$setupFile =  $configPath . "bedita_module_setup.php";
 		if(!file_exists($setupFile)) {
 			$this->out("Plugin setup file for $pluginName not found");
@@ -181,8 +180,8 @@ class ModuleShell extends BeditaBaseShell {
 		$conf = Configure::getInstance();
 		
 		$modelPaths = App::path('models');
-		if (!in_array($pluginPath . DS  . $pluginName . DS . "model" . DS, $modelPaths)){
-			App::build(array("models" => $pluginPath . DS  . $pluginName . DS . "model" . DS));
+		if (!in_array($pluginPath . DS . "model" . DS, $modelPaths)){
+			App::build(array("models" => $pluginPath . DS . "model" . DS));
 		}
 		
 		foreach ($tables as $t) {
