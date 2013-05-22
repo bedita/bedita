@@ -1450,14 +1450,18 @@ abstract class FrontendController extends AppController {
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
-		$conditions = (!empty($this->publication["id"]))? "id = $content_id AND object_path LIKE '/" . $this->publication["id"] . "/%'" : "id = $content_id" ;
-			
-		$section_id = $this->Tree->field('parent_id',$conditions, "priority");
+		$publicationId = (!empty($this->publication["id"]))? $this->publication['id'] : null;
+		$section_id = $this->Tree->getParent($content_id, $publicationId, $this->status);
 
-		if($section_id === false) {
+		if ($section_id === false) {
 			throw new BeditaException(__("Content not found", true));
 		}
-		
+
+		// if content has more parent get the first one found
+		if (is_array($section_id)) {
+			$section_id = array_shift($section_id);
+		}
+
 		$this->action = 'section';
 		$this->section($section_id, $content_id);	
 	}
@@ -1831,7 +1835,7 @@ abstract class FrontendController extends AppController {
 	 * @return array
 	 */
 	protected function getParentsObject($object_id) {
-		$parents_id = $this->BeTree->getParents($object_id, $this->publication["id"]);
+		$parents_id = $this->BeTree->getParents($object_id, $this->publication["id"], $this->status);
 		$parents = array();
 		foreach ($parents_id as $id) {
 			$parents[] = $this->loadObj($id, false);
