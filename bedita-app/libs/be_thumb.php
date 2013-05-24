@@ -232,7 +232,7 @@ class BeThumb {
 		// file name without extension
 		$this->imageInfo['filenameBase'] = $pathParts['filename'];
 		// file extension
-		$this->imageInfo['ext']	 = $pathParts['extension'];
+		$this->imageInfo['ext']	= (!empty($pathParts['extension']))? $pathParts['extension'] : "";
 		$this->imageInfo['dirname']	= $pathParts['dirname'];
 		$mediaRoot  = Configure::read('mediaRoot');
 		if(!$remoteUri) {
