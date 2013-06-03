@@ -910,6 +910,41 @@ class BeditaShell extends BeditaBaseShell {
 		}	
 	}
 
+	public function importFilter() {
+	    $this->initConfig();
+	    $this->readInputArgs();
+	    if (!isset($this->params["f"])) {
+	        $this->out("Missing -f parameter");
+	        return;
+	    }
+	    $impFile = $this->params['f'];
+	    if (!file_exists($impFile) ) {
+	        $this->out("Import file not found: " . $impFile);
+	        return;
+	    }
+		if (!isset($this->params["filter"])) {
+	        $this->out("Missing -filter parameter");
+	        return;
+	    }
+	
+	    $options = array();
+	    if (isset($this->params["id"])) {
+	        $options["sectionId"] = $this->params["id"];
+	    }
+	     
+	    $this->out("Importing file : " . $impFile . (empty($options) ? "":  " into section: " . $options["sectionId"])
+	            . " using filter: " . $this->params["filter"]);
+	
+	    $filterClass = Configure::read("filters.import." . $this->params["filter"]);
+        if (empty($filterClass)) {
+            $this->out("No import filter found for: " . $this->params["filter"]);
+            return;
+        }
+	    
+	    $filterModel = ClassRegistry::init($filterClass);
+	    $result = $filterModel->import($impFile, $options);
+	    $this->out($result["objects"] . " objects created in import ");
+	}
 	
 	function help() {
         $this->out('Available functions:');
@@ -986,6 +1021,14 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("    -f <filename>\t actual file name to create");
         $this->out("    -filter <filtername>\t logical name of filter");
         $this->out("    -id <object-id>\t object id to export");
+        $this->out(' ');
+        $this->out('12. importFilter: import objects using an import filter');
+  		$this->out(' ');
+  		$this->out('   Usage: importFilter -f <file-to-import-path> -filter <filtername> [-id <dest-section-id>]');
+		$this->out(' ');
+		$this->out("    -f <file-to-import-path>\t import file path");
+        $this->out("    -filter <filtername>\t logical name of filter");
+        $this->out("    -id <dest-section-id>\t optional section/area id destination of imported objects");
         $this->out(' ');
 	}
 }
