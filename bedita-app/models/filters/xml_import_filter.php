@@ -32,7 +32,7 @@
 class XmlImportFilter extends BeditaImportFilter 
 {
 
-	protected $typeName = "BE Xml";
+	protected $typeName = "BE-Xml";
 	protected $mimeTypes = array("text/xml", "application/xml");
 	
 	/**

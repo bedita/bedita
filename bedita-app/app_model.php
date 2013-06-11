@@ -646,6 +646,14 @@ class BEAppObjectModel extends BEAppModel {
 		}
 	}
 
+	/**
+	 * Updates hasMany model rows:
+	 *   * delete all rows of hasMany models except ones with "id" set in $data array
+	 *   * saves/updates all hasMany data rows from $data array
+	 * 
+	 * @throws BeditaException
+	 * @return boolean
+	 */
 	protected function updateHasManyAssoc() {
 
 		foreach ($this->hasMany as $name => $assoc) {
@@ -654,10 +662,17 @@ class BEAppObjectModel extends BEAppModel {
 				$model 		= ClassRegistry::init($assoc['className']) ;
 
 				// delete previous associations
-				$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;
-				$foreignK	= $assoc['foreignKey'] ;
-
-				$model->deleteAll(array($foreignK => $id));
+				$id = (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;
+				$foreignK = $assoc['foreignKey'] ;
+				
+				$exclude = array();
+				foreach ($this->data[$this->name][$name] as $hasManyObj){
+				    if(!empty($hasManyObj["id"])){
+				        $exclude[] = $hasManyObj["id"];
+				    }
+				}
+				$conditions = array($foreignK => $id, "NOT" => array("id" => $exclude));
+				$model->deleteAll($conditions);
 
 				// if there isn't data to save then exit
 				if (!isset($this->data[$this->name][$name]) || !(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name])))

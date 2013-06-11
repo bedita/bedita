@@ -197,14 +197,15 @@ class BeTreeComponent extends Object {
 	 * @param integer $id
 	 * @return array parents ids
 	 */
-	public function getParents($id = null, $area_id=null) {
+	public function getParents($id = null, $area_id=null, $status = array()) {
 		$parents_id = array();
-		if(isset($id)) {
-			$parents_id = $this->Tree->getParent($id,$area_id) ;
-			if($parents_id === false) 
-				$parents_id = array(); // ???
-			elseif(!is_array($parents_id))
+		if (isset($id)) {
+			$parents_id = $this->Tree->getParent($id, $area_id, $status) ;
+			if ($parents_id === false) {
+				$parents_id = array();
+			} elseif (!is_array($parents_id)) {
 				$parents_id = array($parents_id);
+			}
 		}
 		return $parents_id;
 	}

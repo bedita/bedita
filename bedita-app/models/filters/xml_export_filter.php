@@ -31,7 +31,7 @@
  */
 class XmlExportFilter extends BeditaExportFilter 
 {
-	protected $typeName = "BE Xml";
+	protected $typeName = "BE-Xml";
 	protected $mimeTypes = array("text/xml", "application/xml");
 	
 	/**

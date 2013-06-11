@@ -354,16 +354,16 @@ class DeployShell extends BeditaBaseShell {
 				return;
 			}
 		}
+		// svn repository
+		if (file_exists($selected . DS . ".svn")) {
+			$updateCmd = "svn update $selected";
 		// git repository
-		if (file_exists($selected . DS . ".git")) {
+		} else {
 			$currentBranch = $this->getGitBranch($selected);
 			if ($currentBranch === false) {
 				$this->out("Failed retrieve current git branch");
 			}
 			$updateCmd = "cd $selected; git fetch origin; git merge origin/$currentBranch;";
-		// svn repository
-		} else {
-			$updateCmd = "svn update $selected";
 		}
 
 		$this->out("Update command: $updateCmd");

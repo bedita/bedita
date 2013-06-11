@@ -94,13 +94,26 @@ class Tree extends BEAppModel
 	 * 					array, if two or more parents founded
 	 * 					false, error or none parent founded
 	 */
-	public function getParent($id, $area_id=null) {
+	public function getParent($id, $area_id=null, $status = array()) {
 		if (empty($id)) {
 			return false;
 		}
-		$conditions["id"] = $id;
+		$conditions["Tree.id"] = $id;
 		if (!empty($area_id)) {
-			$conditions["area_id"] = $area_id;
+			$conditions["Tree.area_id"] = $area_id;
+		}
+
+		if (!empty($status)) {
+			// bind BEObject to get only parents with status in $status
+			$this->bindModel(array(
+				'belongsTo' => array(
+					'BEObject'=> array(
+						'foreignKey' => 'parent_id'
+					)
+				)
+			));
+
+			$conditions['BEObject.status'] = $status;
 		}
 
 		$ret = $this->find("all", array(
