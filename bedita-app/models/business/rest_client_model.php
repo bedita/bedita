@@ -214,7 +214,7 @@ class RestClientModel extends BEAppModel {
 				$xml = new Xml($out);
 				$out = $xml->toArray($camelize);
 			} else if ($outType === "json") {
-				$out = json_decode($out);
+				$out = json_decode($out, true);
 			}
 		}
 		return $out;
