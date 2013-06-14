@@ -80,7 +80,7 @@ class RestClientModel extends BEAppModel {
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
 	 */
-	public function get($uri, array $params = array(), $outType = null, $camelize = true) {
+	public function get($uri, $params = array(), $outType = null, $camelize = true) {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
@@ -89,7 +89,12 @@ class RestClientModel extends BEAppModel {
 			$out = $this->client->get($uri, $params);
 		} else {
 			curl_setopt($this->client, CURLOPT_HTTPGET, true);
-			$queryParms = (empty($params)) ? "" : "?" . http_build_query($params);
+			if(is_array($params)) {
+				$httpQuery = http_build_query($params);
+			} else {
+				$httpQuery = $params;
+			}
+			$queryParms = (empty($httpQuery)) ? "" : "?" . $httpQuery;
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
 			if(curl_errno($this->client)) {
