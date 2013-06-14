@@ -42,10 +42,12 @@ class SearchText extends BEAppModel
 	 * Save search data for a model
 	 * 
 	 * @param object $model
+	 * @param object $indexModel, 
+	 * 		model for alternative search/index engine (example: elasticsearch, sphinx) 
 	 * @throws BeditaException
 	 * @return boolean
 	 */
-	public function createSearchText($model) {
+	public function createSearchText($model, $indexModel = null) {
 		
 		$bviorCompactResults = null;
 		if (isset($model->bviorCompactResults)) {
@@ -62,7 +64,13 @@ class SearchText extends BEAppModel
 		if (empty($data["id"])) {
 			$data["id"] = $model->{$model->primaryKey};
 		}
-		$this->saveSearchTexts($searchFields, $data);
+		
+		if($indexModel) {
+			$indexModel->indexObject($searchFields, $data);
+		} else {
+			$this->saveSearchTexts($searchFields, $data);
+		}
+		
 		return true ;
 	}
 	
@@ -108,6 +116,8 @@ class SearchText extends BEAppModel
 	 * @param boolean $returnOnlyFailed, 
 	 *					true (default) return only 'failed' and 'langTextFailed' array
 	 *					false return also 'success' and 'langTextSuccess' array
+	 * @param model $indexModel, 
+	 * 					model for alternative search/index engine (example: elasticsearch, sphinx) 
 	 * 
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
@@ -125,38 +135,51 @@ class SearchText extends BEAppModel
 	 *						"error" => message error,
 	 *						"detail" => error detail
 	 */
-	public function rebuildIndex($returnOnlyFailed = true) {
+	public function rebuildIndex($returnOnlyFailed = true, $indexModel = null) {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
-		$res = $beObj->find('list',array(
-			"fields" => array('id')
-		));
+		$nObj = $beObj->find('count');
+		$pageSize = 1000;
+		$pageNum = 0;
 		
 		$results = array('failed' => array(), 'langTextFailed' => array());
 		if (!$returnOnlyFailed) {
 			$results = array_merge($results, array('success' => array(), 'failed' => array()));
 		}
 		
-		foreach ($res as $id) {
-			$type = $beObj->getType($id);
-			if(empty($type)) {
-				$results['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
-			} else {
-				$model = ClassRegistry::init($type);
-				$model->{$model->primaryKey} = $id;
-				try {
-					if (!$this->deleteAll("object_id=".$id)) {
-						throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
+		while( ($pageSize * $pageNum) < $nObj ) {
+			$res = $beObj->find('list',array(
+					"fields" => array('id'),
+					"limit" => $pageSize,
+					"offset" => $pageNum * $pageSize,
+			));
+			$pageNum++;
+			foreach ($res as $id) {
+				$type = $beObj->getType($id);
+				if(empty($type)) {
+					$results['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
+				} else {
+					$model = ClassRegistry::init($type);
+					$model->{$model->primaryKey} = $id;
+					try {
+						
+						if(!$indexModel) {
+							if (!$this->deleteAll("object_id=".$id)) {
+								throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
+							}
+						}
+						$this->createSearchText($model, $indexModel);
+						if (!$returnOnlyFailed) {
+							$results['success'][] = array("id" => $id);
+						}
+					} catch (BeditaException $ex) {
+						$results['failed'][] = array("id" => $id, "error" => $ex->getMessage(), 'detail' => $ex->getDetails());
 					}
-					$this->createSearchText($model);
-					if (!$returnOnlyFailed) {
-						$results['success'][] = array("id" => $id);
-					}
-				} catch (BeditaException $ex) {
-					$results['failed'][] = array("id" => $id, "error" => $ex->getMessage(), 'detail' => $ex->getDetails());
 				}
 			}
+				
 		}
+		
 		// lang texts
 		$langText = ClassRegistry::init("LangText");
 		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
