@@ -39,6 +39,17 @@ class DbadminShell extends BeditaBaseShell {
 
 	public function rebuildIndex() {
 
+		$options = array();
+		$engine = $this->params['engine'];
+		if(!empty($engine)) {
+			$indexModel = ClassRegistry::init($engine);
+			if(!$indexModel) {
+				$this->out("Engine not found: " . $engine);
+				return;
+			} else {
+				$options['indexModel'] = $indexModel;
+			}
+		}
 		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
 		$options['log'] = (!empty($this->params['log']))? true : false;
 		$this->hr();
@@ -920,9 +931,10 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
 		$this->out(' ');
-		$this->out('    Usage: rebuildIndex [-verbose] [-log]');
+		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-verbose] [-log]');
 		$this->out(' ');
-        $this->out("    -verbose \t show also successfully results");
+        $this->out("    -engine \t search engine to use, e.g. ElasticSearch");
+		$this->out("    -verbose \t show also successfully results");
 		$this->out("    -log \t write errors on rebuildIndex.log file");
   		$this->out(' ');
  		$this->out("2. checkLangStatus: update lang texts 'status' using master object status");

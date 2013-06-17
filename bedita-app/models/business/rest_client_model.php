@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008-2011 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2013 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,14 +20,8 @@
  */
 
 /**
- * simple REST client model
+ * REST client model
  * uses internally "curl" or cake HttpSocket if "curl" module not available
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class RestClientModel extends BEAppModel {
     
@@ -86,7 +80,7 @@ class RestClientModel extends BEAppModel {
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
 	 */
-	public function get($uri, array $params = array(), $outType = null, $camelize = true) {
+	public function get($uri, $params = array(), $outType = null, $camelize = true) {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
@@ -95,7 +89,12 @@ class RestClientModel extends BEAppModel {
 			$out = $this->client->get($uri, $params);
 		} else {
 			curl_setopt($this->client, CURLOPT_HTTPGET, true);
-			$queryParms = (empty($params)) ? "" : "?" . http_build_query($params);
+			if(is_array($params)) {
+				$httpQuery = http_build_query($params);
+			} else {
+				$httpQuery = $params;
+			}
+			$queryParms = (empty($httpQuery)) ? "" : "?" . $httpQuery;
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
 			if(curl_errno($this->client)) {
@@ -107,15 +106,7 @@ class RestClientModel extends BEAppModel {
 			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
 		}
 		
-		if($outType != null) {
-			if($outType === "xml") {
-				$xml = new Xml($out);
-				$out = $xml->toArray($camelize);	
-			} else if ($outType === "json") {
-				$out = json_decode($out);
-			}
-		}		
-		return $out;
+		return $this->output($out, $outType, $camelize);
 	}
 	
 	/**
@@ -166,14 +157,71 @@ class RestClientModel extends BEAppModel {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
 		}
+		return $this->output($out, $outType, $camelize);
+	}
+
+	/**
+	 * Do a generic HTTP request using custom $method and returns output response.
+	 * Output may be parsed (only xml/json) using $outType argument ("xml" or "json").
+	 *
+	 * @param string $uri URL to request
+	 * @param string $methot HTTP request method, default "GET"
+	 * @param array $params, URL query parameters
+	 * @param string $outType, can be "xml" or "json", if present output will be parsed
+	 *			if "xml" => php array, if "json" => json_decode is called
+	 * @param boolean $camelize, used if $outType = 'xml'
+	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
+	 *			false leave array keys equal to xml items
+	 */
+	public function request($uri, $method="GET", array $params = array(), $outType = null, $camelize = true) {
+		$method = strtoupper($method);
+		if(Configure::read('debug') > 0) {
+			$this->log("HTTP REQUEST:\nuri " . $uri . "\nmethod " . $uri .
+					"\nparams " . print_r($params, true), LOG_DEBUG);
+		}
+	
+		if(!$this->useCurl) {
+			$classMethod = strtolower($method);
+			if(method_exists($this->client, $classMethod)) {
+				$out = $this->client->{$classMethod}($uri, $params);
+			} else {
+				throw new BeditaException("Bad HTTP method: " . $method);
+			}
+		} else {
+			
+			$queryParms = (empty($params)) ? "" : "?" . http_build_query($params);
+			curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, $method);
+			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
+			$out = curl_exec($this->client);
+			if(curl_errno($this->client)) {
+				$err = curl_error($this->client);
+				$this->log("Error: " . $err);
+			}
+		}
+		if(Configure::read('debug') > 0) {
+			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
+		}
+	
+		return $this->output($out, $outType, $camelize);
+	}
+	
+	/**
+	 * Format response
+	 * 
+	 * @param string $out
+	 * @param string $outType, "xml" or "json"
+	 * @param boolean $camelize
+	 * @return string
+	 */
+	private function output($out, $outType, $camelize) {
 		if($outType != null) {
 			if($outType === "xml") {
 				$xml = new Xml($out);
-				$out = $xml->toArray($camelize);	
+				$out = $xml->toArray($camelize);
 			} else if ($outType === "json") {
-				$out = json_decode($out);
+				$out = json_decode($out, true);
 			}
-		}		
+		}
 		return $out;
 	}
 }
