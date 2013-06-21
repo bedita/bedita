@@ -53,8 +53,7 @@ class Event extends BeditaContentModel
 								"DateItem"),
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
-				"frontend" => array("BEObject" => array("LangText",
-														"ObjectType",
+				"frontend" => array("BEObject" => array("LangText", 
 														"UserCreated", 
 														"RelatedObject", 
 														"Category", 

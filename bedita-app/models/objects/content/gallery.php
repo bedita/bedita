@@ -55,7 +55,7 @@ class Gallery extends BeditaContentModel
 		
 		"minimum" => array("BEObject" => array("ObjectType")),
 		
-		"frontend" => array("BEObject" => array("LangText", "ObjectType", "UserCreated", "RelatedObject", "Category", "Annotation", "ObjectProperty"))
+		"frontend" => array("BEObject" => array("LangText", "UserCreated", "RelatedObject", "Category", "Annotation", "ObjectProperty"))
 	);
 	
 	public $objectTypesGroups = array("leafs", "related");

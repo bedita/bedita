@@ -49,13 +49,13 @@ class ShortNews extends BeditaContentModel
 												)
 											),
 		
-		"default" => array("BEObject" => array("ObjectProperty", 
+		       "default" => array("BEObject" => array("ObjectProperty", 
 							"LangText", "ObjectType", 
 							"Category", "RelatedObject", "Annotation" )),
 		
 		"minimum" => array("BEObject" => array("ObjectType")),
 		
-		"frontend" => array("BEObject" => array("LangText", "ObjectType", "UserCreated", "RelatedObject", "Category", "ObjectProperty"))
+		"frontend" => array("BEObject" => array("LangText", "UserCreated", "RelatedObject", "Category", "ObjectProperty"))
 	);
 	
 	public $objectTypesGroups = array("leafs", "related", "tree");

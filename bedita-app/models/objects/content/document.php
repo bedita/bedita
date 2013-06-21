@@ -55,7 +55,6 @@ class Document extends BeditaContentModel
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
 				"frontend" => array("BEObject" => array("LangText", 
-														"ObjectType",
 														"UserCreated",
 														"RelatedObject", 
 														"Category", 
