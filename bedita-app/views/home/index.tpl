@@ -38,11 +38,13 @@ $(document).ready(function() {
 
 <div class="dashboard">
 
+    {if isset($moduleList.areas)}    
 	<div class="publishingtree">
 	{assign_associative var="options" treeParams=['controller' => 'areas']}
 	{$view->element('tree',$options)}
 	</div>
-
+    {/if}
+    
 	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
 	<ul id="recent" class="bordered smallist">
 	{foreach from=$lastModBYUser item=item}
