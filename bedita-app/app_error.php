@@ -103,11 +103,26 @@ class AppError extends ErrorHandler {
 	 *									}
 	 *							'beditaMsg' output the BEdita html standard error message and trigger it
 	 *							'reload' javascript: location.reload(); used for example when the session expired in a ajax call
+	 *       		'headers' => server headers (usually header error): if it's not set or === null no headers error will be sent
+	 *         															if it's set and empty use "HTTP/1.1 500 Internal Server Error"
 	 */
 	public function handleAjaxException(array $messages) {
 		if (empty($messages['output'])) {
 			$messages['output'] = "html";
 		}
+
+		if (isset($messages['headers']) && $messages['headers'] !== null) {
+			if (empty($messages['headers'])) {
+				$messages['headers'] = array("HTTP/1.1 500 Internal Server Error");
+			} elseif (is_string($messages['headers'])) {
+				$messages['headers'] = array($messages['headers']);
+			}
+			// output headers
+			foreach ($messages['headers'] as $header) {
+				header($header);
+			}
+		}
+
 		$this->controller->set("output", $messages['output']);
 		// html (default fallback)
 		$usrMsgParams = array("layout" => "", "params" => array());

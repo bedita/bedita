@@ -86,7 +86,7 @@ class AppController extends Controller
 		include_once (APP . 'app_error.php');
 		if ($ex instanceof BeditaAjaxException) {
 			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-				'result' => $ex->result, 'output' => $ex->getOutputType()), $ex->errorTrace());
+				'result' => $ex->result, 'output' => $ex->getOutputType(),'headers' => $ex->getHeaders()), $ex->errorTrace());
 		} elseif (self::currentController()->RequestHandler->isAjax()) {
 			return new AppError("handleAjaxException", array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
 				'result' => $ex->result, 'output' => 'beditaMsg'), $ex->errorTrace());

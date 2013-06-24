@@ -495,6 +495,20 @@ abstract class FrontendController extends AppController {
 			include_once (APP . 'app_error.php');
 			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
 			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $trace);
+		} elseif ($ex instanceof BeditaAjaxException) {
+			include_once (APP . 'app_error.php');
+			$params = array(
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
+				'result' => $ex->result,
+				'output' => $ex->getOutputType(),
+				'headers' => $ex->getHeaders()
+			);
+			// set error 500 as default
+			if ($params['headers'] === null) {
+				$params['headers'] = array("HTTP/1.1 500 Internal Server Error");
+			}
+			return new AppError("handleAjaxException", $params, $ex->errorTrace());
 		} else {
 
 			if($ex instanceof BeditaException) {

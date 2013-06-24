@@ -73,16 +73,25 @@ class BeditaRuntimeException extends BeditaException
 class BeditaAjaxException extends BeditaException
 {
 	private $outputType = "html";
+
+	private $headers = null;
 	
 	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["output"])) {
 			$this->outputType = $details["output"];
+		}
+		if (!empty($details["headers"])) {
+			$this->headers = $details["headers"];
 		}
 		parent::__construct($message,$details,$res,$code);
 	}
 	
 	public function getOutputType() {
 		return $this->outputType;
+	}
+
+	public function getHeaders() {
+		return $this->headers;
 	}
 }
 
