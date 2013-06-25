@@ -875,7 +875,8 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 									"Version" => array("User.realname", "User.userid")
 								), "ReferenceObject"),
 		"default" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
-		"minimum" => array("BEObject" => array("ObjectType"))
+		"minimum" => array("BEObject" => array("ObjectType")),
+		"frontend" => array("BEObject", "ReferenceObject")
 	);
 
 }
