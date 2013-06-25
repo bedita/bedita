@@ -138,13 +138,13 @@ if (is_dir(BEDITA_ADDONS_PATH . DS . 'models' . DS . 'enabled')) {
 	$additionalPaths["models"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS . 'enabled' . DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors' . DS . 'enabled')) {
-	$additionalPaths["behaviors"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors' . DS;
+	$additionalPaths["behaviors"][] = BEDITA_ADDONS_PATH . DS . 'models' . DS . 'behaviors' . DS . 'enabled'. DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'components' . DS . 'enabled')) {
-	$additionalPaths["components"][] = BEDITA_ADDONS_PATH . DS . 'components' . DS;
+	$additionalPaths["components"][] = BEDITA_ADDONS_PATH . DS . 'components' . DS . 'enabled'. DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'helpers' . DS . 'enabled')) {
-	$additionalPaths["helpers"][] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS;
+	$additionalPaths["helpers"][] = BEDITA_ADDONS_PATH . DS . 'helpers' . DS . 'enabled'. DS;
 }
 if (is_dir(BEDITA_ADDONS_PATH . DS . 'vendors')) {
 	$additionalPaths["vendors"][] = BEDITA_ADDONS_PATH . DS . 'vendors' . DS;
