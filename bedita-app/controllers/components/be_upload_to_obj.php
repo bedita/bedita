@@ -150,10 +150,12 @@ class BeUploadToObjComponent extends Object {
 			$data["url"] = $data["uri"];
 			return $this->uploadFromURL($data, true);
 		} else {
-			$data['uri'] = Configure::read("mediaRoot") . $data["uri"];
-			if (empty($data["file_size"])) {
-				$data["file_size"] = filesize($data["uri"]);
-			}
+		    if (!empty($data['uri'])) {
+    			$data['uri'] = Configure::read("mediaRoot") . $data["uri"];
+    			if (empty($data["file_size"])) {
+    				$data["file_size"] = filesize($data["uri"]);
+    			}
+		    }
 			if (!empty($this->params['form']['mediatype'])) {
 				$data['mediatype'] = $this->params['form']['mediatype'];
 			}

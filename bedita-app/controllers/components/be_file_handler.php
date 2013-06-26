@@ -96,6 +96,8 @@ class BeFileHandlerComponent extends Object {
 			} else {
 				return $this->_createFromFile($data, $clone);
 			}
+		} else {
+		    return $this->_create($data);
 		}
 	}	
 
@@ -262,7 +264,11 @@ class BeFileHandlerComponent extends Object {
 	 */
 	private function _create(&$data) {
 		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
-			throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
+		    if (!empty($data["object_type_id"])) {
+		        $modelType["name"] = Configure::read("objectTypes." . $data["object_type_id"] . ".model");
+		    } else {
+			    throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
+		    }
 		}
 		if (!empty($data["id"])) {
 			$stream = ClassRegistry::init("Stream")->read(array('mime_type','uri'), $data["id"]) ;
