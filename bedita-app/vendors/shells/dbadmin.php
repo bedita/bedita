@@ -40,14 +40,18 @@ class DbadminShell extends BeditaBaseShell {
 	public function rebuildIndex() {
 
 		$options = array();
-		$engine = $this->params['engine'];
-		if(!empty($engine)) {
-			$indexModel = ClassRegistry::init($engine);
+		$engine = Configure::read("searchEngine");
+		if (!empty($this->params['engine'])) {
+		    $engine = $this->params['engine'];
+		}
+        if (!empty($engine)) {
+		    $indexModel = ClassRegistry::init($engine);
 			if(!$indexModel) {
 				$this->out("Engine not found: " . $engine);
 				return;
 			} else {
 				$options['indexModel'] = $indexModel;
+				$this->out("Using search engine: " . $engine);
 			}
 		}
 		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
