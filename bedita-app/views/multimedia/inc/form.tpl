@@ -23,6 +23,8 @@
 	{$view->element('form_textbody')}
 {/if}
 
+{$view->element('form_external_audiovideo')}
+
 {$view->element('form_file')}
 
 {if !empty($object)}
