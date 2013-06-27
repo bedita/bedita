@@ -287,7 +287,7 @@ class PermissionModule extends BEAppModel
 			$idMod = $mod["Module"]["id"];
 			if(!empty($perms[$idMod])) {
 				$resModules[$mod["Module"]["name"]] = $mod["Module"];
-				$resModules[$mod["Module"]["name"]]["flag"] = BEDITA_PERMS_READ_MODIFY;
+				$resModules[$mod["Module"]["name"]]["flag"] = $perms[$idMod];
 			}
 		}
 		return $resModules;
