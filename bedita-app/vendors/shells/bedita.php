@@ -931,8 +931,17 @@ class BeditaShell extends BeditaBaseShell {
 	    if (isset($this->params["id"])) {
 	        $options["sectionId"] = $this->params["id"];
 	    }
-	     
-	    $this->out("Importing file : " . $impFile . (empty($options) ? "":  " into section: " . $options["sectionId"])
+	    
+	    // pass other options to filter
+	    foreach ($this->params as $k => $v) {
+	        if(!in_array($k, array("f", "id", "filter", "working", 
+	                "app", "root", "webroot"))) {
+	             $options[$k] = $v;
+	        }
+	    }
+	    
+	    $this->out("Importing file : " . $impFile . (empty($options["sectionId"]) ? 
+	            "":  " into section: " . $options["sectionId"])
 	            . " using filter: " . $this->params["filter"]);
 	
 	    $filterClass = Configure::read("filters.import." . $this->params["filter"]);
@@ -1024,11 +1033,12 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('12. importFilter: import objects using an import filter');
   		$this->out(' ');
-  		$this->out('   Usage: importFilter -f <file-to-import-path> -filter <filtername> [-id <dest-section-id>]');
+  		$this->out('   Usage: importFilter -f <file-to-import-path> -filter <filtername> [-id <dest-section-id>] [....]');
 		$this->out(' ');
 		$this->out("    -f <file-to-import-path>\t import file path");
         $this->out("    -filter <filtername>\t logical name of filter");
         $this->out("    -id <dest-section-id>\t optional section/area id destination of imported objects");
+        $this->out("    - ... - specific filter params may be passed to filter");
         $this->out(' ');
 	}
 }
