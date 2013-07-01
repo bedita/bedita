@@ -320,6 +320,27 @@ class BEAppModel extends AppModel {
 		if (!empty($status))
 			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
 
+        $rankOrder = array();
+        $searchCount = null;
+        if (!empty($filter["query"])) {
+            $engine = Configure::read("searchEngine");
+            if (!empty($engine)) {
+                $options = array("id" => $id, "userid" => $userid,
+                        "status" => $status, "filter" => $filter, "page" => $page,
+                        "dim" => $dim, "all" => $all);
+                $searchEngine = ClassRegistry::init($engine);
+                $result = $searchEngine->searchObjects($options);
+                $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $result["ids"]);
+                if(empty($order)) { // user rank order on empty $order
+                    $rank = 1;
+                    foreach ($result["ids"] as $idFound) {
+                        $rankOrder[$idFound] = $rank++;
+                    }
+                }
+                $searchCount = $result["total"];
+                unset($filter["query"]);
+            }
+        }
 		if(!empty($excludeIds))
 			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
 
@@ -332,7 +353,7 @@ class BEAppModel extends AppModel {
 
 		if (!empty($otherFields))
 			$fields = $fields . $otherFields;
-
+		
 		$conditions = array_merge($conditions, $otherConditions);
 		$from .= $otherFrom;
 		$groupClausole .= $otherGroup;
@@ -386,7 +407,7 @@ class BEAppModel extends AppModel {
 		}
 
 		// build sql conditions
-		$db 		 =& ConnectionManager::getDataSource($this->useDbConfig);
+		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$ordClausole = "";
@@ -413,18 +434,35 @@ class BEAppModel extends AppModel {
 		if ($tmp === false)
 			throw new BeditaException(__("Error finding objects", true));
 
-		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
-
-		// #CUSTOM QUERY
-		$tmpCount = $this->query($queryCount);
-		if ($tmpCount === false)
-			throw new BeditaException(__("Error counting objects", true));
-
-		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
+        if($searchCount === null) {
+    		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
+    
+    		// #CUSTOM QUERY
+    		$tmpCount = $this->query($queryCount);
+    		if ($tmpCount === false)
+    			throw new BeditaException(__("Error counting objects", true));
+    
+    		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
+        } else {
+            $size = $searchCount;
+        }
 
 		$recordset = array(
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
+
+		// reorder array using search engine rank 
+        if(!empty($rankOrder)) {
+            $tmpOrder = array();
+            foreach ($tmp as $item) {
+                $obj = $this->am($item);
+                $id = $obj["id"];
+                $tmpOrder[$rankOrder[$id]] = $obj;
+            }
+            ksort($tmpOrder);
+            $tmp = array_values($tmpOrder);
+        }
+		
 		for ($i =0; $i < count($tmp); $i++) {
 			$tmpToAdd = array();
 

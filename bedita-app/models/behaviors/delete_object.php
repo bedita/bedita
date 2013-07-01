@@ -95,7 +95,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 		}
 
 		$st = ClassRegistry::init('SearchText');
-		$st->deleteAll("object_id=".$model->id) ;
+		$st->removeObject($model->id) ;
 
 		$this->deleteAnnotations($model->id);
 		

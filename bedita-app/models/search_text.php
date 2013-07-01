@@ -20,16 +20,17 @@
  */
 
 /**
- * Search text object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * Search text model: index object texts
  * 
- * $Id$
  */
 class SearchText extends BEAppModel
 {
+    /**
+     * External search engine model (e.g. "ElasticSearch", "Sphinx")
+     * @var BEAppModel
+     */
+    private $indexModel = null;
+    
 	var $belongsTo = array(
 		'BEObject' =>
 			array(
@@ -37,17 +38,17 @@ class SearchText extends BEAppModel
 				'foreignKey'	=> 'object_id'
 			)
 	);
+	
+	
 
 	/**
 	 * Save search data for a model
 	 * 
 	 * @param object $model
-	 * @param object $indexModel, 
-	 * 		model for alternative search/index engine (example: elasticsearch, sphinx) 
 	 * @throws BeditaException
 	 * @return boolean
 	 */
-	public function createSearchText($model, $indexModel = null) {
+	public function createSearchText($model) {
 		
 		$bviorCompactResults = null;
 		if (isset($model->bviorCompactResults)) {
@@ -65,14 +66,39 @@ class SearchText extends BEAppModel
 			$data["id"] = $model->{$model->primaryKey};
 		}
 		
-		if($indexModel) {
-			$indexModel->indexObject($searchFields, $data);
+		$this->checkIndexModel();
+		if($this->indexModel) {
+			$this->indexModel->indexObject($searchFields, $data);
 		} else {
 			$this->saveSearchTexts($searchFields, $data);
 		}
 		
 		return true ;
 	}
+	
+    private function checkIndexModel() {
+        if ($this->indexModel === null) {
+            $engine = Configure::read("searchEngine");
+            if (empty($engine)) {
+                $this->indexModel = false;
+            } else {
+                $this->indexModel = ClassRegistry::init($engine);
+            }
+        }
+    }
+	
+	/**
+	 * Remove index data for object id
+	 * @param unknown $id
+	 */
+    public function removeObject($id) {
+        $this->checkIndexModel();
+        if ($this->indexModel) {
+            return $indexModel->removeObject($id);
+        } else {
+            return $this->deleteAll("object_id=".$id) ;
+        }
+    }
 	
 	private function getSearchFields(BEAppModel $model) {
 		$searchFields = array();
@@ -116,8 +142,6 @@ class SearchText extends BEAppModel
 	 * @param boolean $returnOnlyFailed, 
 	 *					true (default) return only 'failed' and 'langTextFailed' array
 	 *					false return also 'success' and 'langTextSuccess' array
-	 * @param model $indexModel, 
-	 * 					model for alternative search/index engine (example: elasticsearch, sphinx) 
 	 * 
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
@@ -135,7 +159,7 @@ class SearchText extends BEAppModel
 	 *						"error" => message error,
 	 *						"detail" => error detail
 	 */
-	public function rebuildIndex($returnOnlyFailed = true, $indexModel = null) {
+	public function rebuildIndex($returnOnlyFailed = true) {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$nObj = $beObj->find('count');
@@ -163,12 +187,10 @@ class SearchText extends BEAppModel
 					$model->{$model->primaryKey} = $id;
 					try {
 						
-						if(!$indexModel) {
-							if (!$this->deleteAll("object_id=".$id)) {
-								throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
-							}
+						if (!$this->deleteAll("object_id=".$id)) {
+							throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
 						}
-						$this->createSearchText($model, $indexModel);
+						$this->createSearchText($model);
 						if (!$returnOnlyFailed) {
 							$results['success'][] = array("id" => $id);
 						}

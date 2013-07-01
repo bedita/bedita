@@ -92,8 +92,7 @@ class Utility extends AppModel {
 	 */
 	protected function rebuildIndex($options) {
 		$returnOnlyFailed = (isset($options['returnOnlyFailed']))? $options['returnOnlyFailed'] : true;
-		$indexModel = (isset($options['indexModel']))? $options['indexModel'] : null;
-		$this->response['results'] = ClassRegistry::init("SearchText")->rebuildIndex($returnOnlyFailed, $indexModel);
+		$this->response['results'] = ClassRegistry::init("SearchText")->rebuildIndex($returnOnlyFailed);
 		if (!empty($options['log'])) {
 			$msg = "";
 			$this->response['log'] = array();
