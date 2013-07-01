@@ -186,3 +186,7 @@ P.dittico, P.trittico {
 	column-break-after:always;
 	border-bottom:1px dotted red;
 }
+
+.formula {
+	background-color: #ffffcc;
+}

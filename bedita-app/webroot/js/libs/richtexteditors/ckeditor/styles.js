@@ -28,6 +28,12 @@ CKEDITOR.stylesSet.add( 'default', [
 		element: 'P',
 		attributes: { 'class': 'trittico' }
 	},
+	
+	{		
+		name: 'Formula',
+		element: 'P',
+		attributes: { 'class': 'formula' }
+	},
 
 	/* Inline Styles */
 
@@ -54,8 +60,12 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'column break',	
 		element: 'span', 
 		attributes: { 'class': 'column-break' }
-	}
+	},
 
+	{ name: 'inline formula',	
+		element: 'span', 
+		attributes: { 'class': 'formula' }
+	}
 	/* Object Styles */
 
 
