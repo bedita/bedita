@@ -149,7 +149,8 @@ class RestClientModel extends BEAppModel {
 			}
 			if(Configure::read('debug') > 0) {
  				$info = curl_getinfo($this->client);
- 				$this->log("HTTP REQUEST HEADER:\n" . $info["request_header"], LOG_DEBUG);
+ 				$i = (!empty($info["request_header"]))? $info["request_header"] : "Missing Request Header";
+ 				$this->log("HTTP REQUEST HEADER:\n" . $i, LOG_DEBUG);
  				$this->log("HTTP POST QUERY:\n" . $httpQuery . "\n", LOG_DEBUG);
 			}
 		}
