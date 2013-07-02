@@ -19,11 +19,15 @@
 
 {include file="inc/form_mediatype.tpl"}
 
-{if $object.Category == "spreadsheet" or $object.Category == "text" or $object.Category == "application"}
-	{$view->element('form_textbody')}
-{/if}
+{if $object.Category == "spreadsheet" or $object.Category == "text"}
 
-{$view->element('form_external_audiovideo')}
+	{$view->element('form_textbody')}
+
+{elseif $object.Category == "application" or $object.Category == "video" or $object.Category == "audio"}
+
+	{$view->element('form_external_audiovideo')}
+
+{/if}
 
 {$view->element('form_file')}
 
@@ -44,7 +48,6 @@
 {$view->element('form_file_exif')}
 
 {$view->element('form_notes')}
-
 
 </form>
 	{$view->element('form_versions')}
