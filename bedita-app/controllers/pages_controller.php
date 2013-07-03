@@ -33,7 +33,7 @@ class PagesController extends AppController {
 	var $uses = array();
 	var $helpers = array('BeTree');
 
-	protected function initAttributes() {
+	protected function beforeCheckLogin() {
 		if($this->action === 'changeLang') { // skip auth check, on lang change
 			$this->skipCheck = true;
 		}

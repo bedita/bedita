@@ -203,22 +203,7 @@ abstract class FrontendController extends AppController {
 		}
 
 
-		/*
-		 * if user is unlogged and it's a staging site OR
-		 * if user hasn't permissions to access at the publication
-		 * throws exception
-		 */
-		if ( (!$this->logged && Configure::read("staging") === true) || ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") && !$this->publication["authorized"])) {
-			$errorType = (!$this->logged)? self::UNLOGGED : self::UNAUTHORIZED;
-			$this->accessDenied($errorType);
-		}
 	}
-
-	/**
-	 *  convienience method to do operations before login check
-	 *	for example you could set FrontendController::skipCheck to true avoiding user session check
-	 */
-	protected function beforeCheckLogin() {}
 
 	/**
 	 * show login form or redirect if user is already logged
@@ -339,9 +324,23 @@ abstract class FrontendController extends AppController {
 
 		$this->historyItem["area_id"] = $this->publication["id"];
 
-		$this->beforeCheckLogin();
+		$this->checkPublicationPermissions();
 	}
 
+    protected function checkPublicationPermissions() {
+        /*
+         * if user is unlogged and it's a staging site OR
+        * if user hasn't permissions to access at the publication
+        * throws exception
+        */
+        if ( (!$this->logged && Configure::read("staging") === true) || 
+            ((empty($this->params["pass"][0]) || $this->params["pass"][0] != "logout") 
+                    && !$this->publication["authorized"])) {
+            $errorType = (!$this->logged)? self::UNLOGGED : self::UNAUTHORIZED;
+            $this->accessDenied($errorType);
+         }
+    }
+	
 	/**
 	 * override AppController::setupLocale. Used setup specific locale
 	 *

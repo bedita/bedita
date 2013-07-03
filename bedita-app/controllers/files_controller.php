@@ -114,7 +114,7 @@ class FilesController extends AppController {
 	 	$this->layout = "empty" ;
 	}
 
-	protected function initAttributes() {
+	protected function beforeCheckLogin() {
 		// multiple upload
 		if ($this->RequestHandler->isFlash()) {
 			$this->skipCheck = true;

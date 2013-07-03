@@ -124,47 +124,38 @@ class AppController extends Controller
 
 	protected function initAttributes() {}
 
+	/**
+	 *  convienience method to do operations before login check
+	 *	for example you could set AppController::skipCheck to true avoiding user session check
+	 */
+	protected function beforeCheckLogin() {}
+	
+	
 	final function beforeFilter() {
 		self::$current = $this;
 		$this->view = 'Smarty';
-		
-// 		if (BACKEND_APP && $this->RequestHandler->isMobile()) {
-// 			$this->view = 'ThemeSmarty';
-// 			$this->theme = 'mobile';
-// 		} else {
-// 			$this->view = 'Smarty';
-// 		}
-
 		$conf = Configure::getInstance();
-
 		$this->set('conf',  $conf);
-
-		// convienience methods for frontends or backend to init attibutes before any other operations
-		$this->initAttributes();
-
-	 	if(isset($this->data["login"]) || $this->name === 'Authentications') {
-			return;
-		}
 
 		// check/setup localization
 		$this->setupLocale();
 
 		// only backend
 		if (BACKEND_APP) {
-			// don't check if user is logged on login/logout operations
-			if (isset($this->data["login"]) || $this->name === 'Authentications') {
-				return;
-			}
-
-			// load publications public url
+			if(isset($this->data["login"]) || $this->name === 'Authentications') {
+			    return;
+		    }
+		    // load publications public url
 			$publications = ClassRegistry::init("Area")->find("all", array(
 				"contain" => array("BEObject")
 			));
-
 			$this->set("publications", $publications);
 		}
 
+		$this->beforeCheckLogin();
 		$this->checkLogin();
+		// convienience methods for frontends or backend to init attibutes before any other operations
+		$this->initAttributes();
 		$this->beditaBeforeFilter();
 	}
 
