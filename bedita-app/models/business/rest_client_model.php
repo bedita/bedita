@@ -67,7 +67,8 @@ class RestClientModel extends BEAppModel {
 			$this->httpReady = true;
 		}
 	}
-	
+
+
 	/**
 	 * Do a HTTP GET request and returns output response. 
 	 * Output may be parsed (only xml/json) using $outType argument ("xml" or "json").
@@ -88,6 +89,7 @@ class RestClientModel extends BEAppModel {
 		if(!$this->useCurl) {
 			$out = $this->client->get($uri, $params);
 		} else {
+		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "GET");
 			curl_setopt($this->client, CURLOPT_HTTPGET, true);
 			if(is_array($params)) {
 				$httpQuery = http_build_query($params);
@@ -128,7 +130,8 @@ class RestClientModel extends BEAppModel {
 				$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 			}
 		} else {
-			curl_setopt($this->client, CURLOPT_POST, true);
+		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "POST");
+		    curl_setopt($this->client, CURLOPT_POST, true);
 			if(is_array($params)) {
 				$httpQuery = http_build_query($params);
 			} else {
@@ -174,7 +177,7 @@ class RestClientModel extends BEAppModel {
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
 	 */
-	public function request($uri, $method="GET", array $params = array(), $outType = null, $camelize = true) {
+	public function request($uri, $method="GET", $params = array(), $outType = null, $camelize = true) {
 		$method = strtoupper($method);
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nmethod " . $uri .
@@ -189,8 +192,12 @@ class RestClientModel extends BEAppModel {
 				throw new BeditaException("Bad HTTP method: " . $method);
 			}
 		} else {
-			
-			$queryParms = (empty($params)) ? "" : "?" . http_build_query($params);
+			if(is_array($params)) {
+				$httpQuery = http_build_query($params);
+			} else {
+				$httpQuery = $params;
+			}
+			$queryParms = (empty($httpQuery)) ? "" : "?" . $httpQuery;
 			curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, $method);
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
