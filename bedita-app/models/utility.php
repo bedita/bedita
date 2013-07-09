@@ -88,11 +88,14 @@ class Utility extends AppModel {
 	 * 
 	 * @param array $options
 	 *				'returnOnlyFailed' => true (default) to return only failed results
+	 *				'delete' => delete index first (default false)
 	 *				'log' => true to log errors
 	 */
 	protected function rebuildIndex($options) {
 		$returnOnlyFailed = (isset($options['returnOnlyFailed']))? $options['returnOnlyFailed'] : true;
-		$this->response['results'] = ClassRegistry::init("SearchText")->rebuildIndex($returnOnlyFailed);
+		$deleteIndex = (isset($options['delete']))? $options['delete'] : false;
+		$searchText = ClassRegistry::init("SearchText");
+		$this->response['results'] = $searchText->rebuildIndex($returnOnlyFailed, $deleteIndex);
 		if (!empty($options['log'])) {
 			$msg = "";
 			$this->response['log'] = array();

@@ -54,6 +54,9 @@ class DbadminShell extends BeditaBaseShell {
 				$this->out("Using search engine: " . $engine);
 			}
 		}
+		if (!empty($this->params['delete'])) {
+		    $options['delete'] = true;
+		}
 		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
 		$options['log'] = (!empty($this->params['log']))? true : false;
 		$this->hr();

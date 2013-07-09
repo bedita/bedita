@@ -68,7 +68,11 @@ class SearchText extends BEAppModel
 		
 		$this->checkIndexModel();
 		if($this->indexModel) {
-			$this->indexModel->indexObject($searchFields, $data);
+			$res = $this->indexModel->indexObject($searchFields, $data);
+			if(!empty($res["error"])) {
+			    throw new BeditaException("crete object index error: " . 
+			            $res["error"]);
+			}
 		} else {
 			$this->saveSearchTexts($searchFields, $data);
 		}
@@ -142,6 +146,8 @@ class SearchText extends BEAppModel
 	 * @param boolean $returnOnlyFailed, 
 	 *					true (default) return only 'failed' and 'langTextFailed' array
 	 *					false return also 'success' and 'langTextSuccess' array
+	 * @param boolean $delete, 
+	 *					delete current index first, default false
 	 * 
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
@@ -159,13 +165,14 @@ class SearchText extends BEAppModel
 	 *						"error" => message error,
 	 *						"detail" => error detail
 	 */
-	public function rebuildIndex($returnOnlyFailed = true) {
+	public function rebuildIndex($returnOnlyFailed = true, $delete = false) {
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$nObj = $beObj->find('count');
 		$pageSize = 1000;
 		$pageNum = 0;
 		
+		$this->initIndex($delete);
 		$results = array('failed' => array(), 'langTextFailed' => array());
 		if (!$returnOnlyFailed) {
 			$results = array_merge($results, array('success' => array(), 'failed' => array()));
@@ -233,7 +240,22 @@ class SearchText extends BEAppModel
 
 		return $results;
 	}
-			
+
+    /**
+     * Init new index before rebuild
+     * @param boolean $delete
+     */
+    private function initIndex($delete) {
+        $this->checkIndexModel();
+        if($delete && !$this->indexModel) {
+            $this->deleteAll();
+        }
+
+        if($this->indexModel) {
+            $this->indexModel->createIndex($delete);
+        }
+	}
+	
 	private function saveSearchTexts(array &$searchFields, array &$data) {
 		
 		if (!empty($searchFields)) {
