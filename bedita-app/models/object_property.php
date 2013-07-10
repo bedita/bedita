@@ -37,6 +37,16 @@ class ObjectProperty extends BEAppModel  {
 		)
 	);
 	
+	public function getObjectCustomProperties($objectId) {
+	    $res = $this->find("all", array(
+	            "conditions" => array(
+	                    "object_id" => $objectId
+	            ),
+	            "contain" => array('Property')
+	    ));
+	    $res = Set::combine($res, "{n}.Property.name", "{n}.ObjectProperty");
+	    return $res;
+	}
 }
  
 ?>
