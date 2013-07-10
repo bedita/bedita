@@ -98,7 +98,7 @@ class SearchText extends BEAppModel
     public function removeObject($id) {
         $this->checkIndexModel();
         if ($this->indexModel) {
-            return $indexModel->removeObject($id);
+            return $this->indexModel->removeObject($id);
         } else {
             return $this->deleteAll("object_id=".$id) ;
         }
