@@ -1010,6 +1010,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 				"default" => array("BEObject" => array(	"ObjectProperty",
 														"LangText",
 														"ObjectType",
+				                                        "RelatedObject",
 														"Category",
 														"Annotation"),
 									"Content", "Stream"),
