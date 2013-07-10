@@ -54,6 +54,22 @@ class DbadminShell extends BeditaBaseShell {
 				$this->out("Using search engine: " . $engine);
 			}
 		}
+        // if single id is selected, index only this id
+        if (!empty($this->params['id'])) {
+            $id = $this->params['id'];
+            $this->out("Indexing object $id");
+            $type = ClassRegistry::init("BEObject")->getType($id);
+            $model = ClassRegistry::init($type);
+            $model->{$model->primaryKey} = $id;
+            $searchText = ClassRegistry::init("SearchText");
+            if (!$searchText->deleteAll("object_id=".$id)) {
+                throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
+            }
+            $searchText->createSearchText($model);
+            $this->out("Index for object '$id' created.");
+            return;
+        }
+
 		if (!empty($this->params['delete'])) {
 		    $options['delete'] = true;
 		}
@@ -938,9 +954,11 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
 		$this->out(' ');
-		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-verbose] [-log]');
+		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-delete] [-id <obj-id>] [-verbose] [-log]');
 		$this->out(' ');
         $this->out("    -engine \t search engine to use, e.g. ElasticSearch");
+		$this->out("    -delete \t delete index before rebuild");
+        $this->out("    -id \t rebuild index for single object only");
 		$this->out("    -verbose \t show also successfully results");
 		$this->out("    -log \t write errors on rebuildIndex.log file");
   		$this->out(' ');
