@@ -446,7 +446,7 @@ class BeditaShell extends BeditaBaseShell {
 	public function checkMedia() {
 
     	$this->initConfig();
-		$this->out("checkMedia - checking database");
+		$this->out("checkMedia - checking filesystem");
 		$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
 		$maxDepthLevel = 2;
@@ -505,6 +505,7 @@ class BeditaShell extends BeditaBaseShell {
 		if($level > $maxLevel) {
 			return;
 		}
+		
 		$stream = ClassRegistry::init("Stream");
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder = new Folder($mediaPath);
@@ -520,8 +521,12 @@ class BeditaShell extends BeditaBaseShell {
 			}
 		}
 		
+		$exlude = array();
+		if($level == 0) {
+		    $exlude[] = "cache"; // exclude cache in check
+		}
 		foreach ($ls[0] as $dir) {
-			if($dir[0] !== '.') {
+			if($dir[0] !== '.' && !in_array($dir, $exlude) ) {
 				$this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, $mediaFiles);				
 			}
 		}
