@@ -806,28 +806,13 @@ abstract class ModulesController extends AppController {
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$category_id = $this->data['category'];
-			$beObject = ClassRegistry::init("BEObject");
-			$categories = array();
+			$category = ClassRegistry::init("Category");
 			$this->Transaction->begin() ;
 			foreach($objects_to_assoc as $k => $id) {
-				$object_type_id = $beObject->findObjectTypeId($id);
-				$modelLoaded = $this->loadModelByObjectTypeId($object_type_id);
-				$modelLoaded->contain(array("BEObject"=>array("Category")));
-				$obj = $modelLoaded->findById($id);
-				$category_present = false;
-				foreach($obj['Category'] as $key => $cat) {
-					if($cat['id'] == $category_id) {
-						$category_present = true;
-					}
-					$categories[$cat['id']] = $cat['id'];
-				}
-				if(!$category_present) {
-					$categories[$category_id] = $category_id;
-					unset($obj['Category']);
-					$obj['Category'] = $categories;
-					$modelLoaded->create();
-					$modelLoaded->save($obj);
-				}
+			    if(!$category->addObjectCategory($category_id, $id)) {
+			        throw new BeditaException(__("Error saving object category", true) .
+			                  " category: " . $category_id, " object: " . $id);
+			    }
 			}
 			$this->Transaction->commit() ;
 			$this->userInfoMessage(__("Added items association to category", true) . " - " . $category_id);

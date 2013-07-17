@@ -503,5 +503,28 @@ class Category extends BEAppModel {
 		}
 		return $res;		
 	}
+	
+	/**
+	 * Add category to object usgin both category and object id
+	 * 
+	 * @return true on success, false on failure
+	 */
+	public function addObjectCategory($categoryId, $objectId) {
+	    $res = true;
+	    $objCatModel = ClassRegistry::init("ObjectCategory");
+	    $data = $objCatModel->find("all", array(
+	            'fields' => array("DISTINCT ObjectCategory.category_id", "ObjectCategory.object_id"),
+	            'conditions' => array(
+	                "ObjectCategory.category_id" => $categoryId, 
+	                "ObjectCategory.object_id" => $objectId)
+	    ));
+	    if(empty($data)) {
+	        // #CUSTOM QUERY
+	        $q = "INSERT INTO object_categories (category_id, object_id)" .
+	            " VALUES ({$categoryId}, {$objectId})";
+	        $res = $this->query($q);
+	    }
+	    return $res;
+	}
 }
 ?>
