@@ -55,7 +55,7 @@ class BeHashComponent extends Object {
 	 *
 	 * @var boolean
 	 */
-	protected $closeHashJob = true;
+	public $closeHashJob = true;
 	
 	/**
 	 * startup component
@@ -112,11 +112,15 @@ class BeHashComponent extends Object {
 			$this->closeHashJob = false;
 		}
 
-		if (!method_exists($this, $method)) {
-			throw new BeditaException(__("missing method to manage hash case", true));
+		$mailParams = array();
+		if (method_exists($this->controller, $method)) {
+		    $mailParams = $this->controller->{$method}();
+		} else 	if (!method_exists($this, $method)) {
+		    $mailParams = $this->{$method}($this->controller->data);
+		} else {
+		    throw new BeditaException(__("missing method to manage hash case", true));
 		}
 
-		$mailParams = $this->{$method}($this->controller->data);
 		if ($this->closeHashJob && !empty($hashRow["status"]) && $hashRow["status"] == "pending") {
 			$hashModel = ClassRegistry::init("HashJob");
 			$hashModel->id = $hashRow["id"];
