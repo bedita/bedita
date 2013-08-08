@@ -45,6 +45,11 @@
 
 {$view->element('form_custom_properties')}
 
+{$view->element('form_permissions',[
+	'el'=>$object,
+	'recursion'=>true
+])}
+
 {$view->element('form_file_exif')}
 
 {$view->element('form_notes')}
