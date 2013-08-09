@@ -1303,6 +1303,21 @@ abstract class FrontendController extends AppController {
 
 		if(!empty($obj["RelatedObject"])) {
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, array("mainLanguage" => $this->currLang));
+			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
+			$rr = array();
+			$permissionModel = ClassRegistry::init("Permission");
+			foreach($obj['relations'] as $relationName => $relationObjects) {
+				$ro = array();
+				foreach($relationObjects as $relation) {
+					$frontendAccess = $permissionModel->frontendAccess($relation['id'],$userdata);
+					if($frontendAccess != "denied") {
+					    $relation["authorized"] = ($frontendAccess == "full") ? 1 : 0;
+					    $ro[] = $relation;
+					}
+				}
+				$rr[$relationName] = $ro;
+			}
+			$obj["relations"] = $rr;
 			unset($obj["RelatedObject"]);
 			$obj['relations_count'] = array();
 			foreach ($obj["relations"] as $k=>$v) {

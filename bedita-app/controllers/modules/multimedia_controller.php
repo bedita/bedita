@@ -219,15 +219,15 @@ class MultimediaController extends ModulesController {
 				$this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
 			}
 
+			if(!isset($this->data['Permission']))
+				$this->data['Permission'] = array() ;
+			
 			if(!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
 			$this->Stream->id = $this->{$model}->id;
 		}
 
-		// update permissions
-		if(!isset($this->data['Permission'])) 
-			$this->data['Permission'] = array() ;
 //		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permission'], 
 //				!empty($this->data['recursiveApplyPermissions']), 'document');
 		if(isset($this->data['destination'])) {
