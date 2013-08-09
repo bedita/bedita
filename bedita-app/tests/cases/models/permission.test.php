@@ -288,6 +288,45 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->_delete($this->Area) ;
 		$this->Transaction->rollback() ;
 	} 
+
+
+	function testFrontendAccess() {
+		$this->_insert($this->Section, $this->data['min']) ;
+		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck']) ;
+	
+		$user = ClassRegistry::init("User");
+		$userData = array();
+		$userData["id"]= $user->field('id', array('userid'=>"bedita"));
+		$userData["groups"] = array("frontend");
+
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"denied");
+
+		$userData["groups"] = array("reader");
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"full");
+		
+		$userData["groups"] = array("editor");
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"full");
+		
+		$this->Section->create();
+		$this->_insert($this->Section, $this->data['min']) ;
+		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck2']) ;
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"full");
+		
+		$userData["groups"] = array("frontend");
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"partial");
+		
+		$this->Section->create();
+		$this->_insert($this->Section, $this->data['min']) ;
+		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck3']) ;
+		$userData["groups"] = array("frontend");
+		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->assertEqual($result,"denied");
+	}
 	
 	/////////////////////////////////////////////////
 	private function perms2array($modelData) {

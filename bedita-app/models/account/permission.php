@@ -131,6 +131,25 @@ class Permission extends BEAppModel
 		return $this->checkPermissionByUser($perms, $userData);
 	}
 	
+	public function frontendAccess($objectId, array &$userData) {
+		$perms = $this->isPermissionSetted($objectId, array(
+			Configure::read("objectPermissions.frontend_access_with_block"),
+			Configure::read("objectPermissions.frontend_access_without_block")
+		));
+		// A) full access => perms vuoto o perms contiene un permesso per il gruppo dell'utente
+		if(empty($perms) || $this->checkPermissionByUser($perms,$userData)) {
+		    return "full";
+		}
+		$perms = $this->isPermissionSetted($objectId, array(
+			Configure::read("objectPermissions.frontend_access_with_block")
+		));
+		// B) access denied => perms contiene permessi per gruppi di cui lo user non fa parte, e almeno uno di tipo frontend_access_with_block
+		if(!empty($perms)) {
+		    return "denied";
+		}
+		// C) access partial => perms contiene permessi per gruppi di cui lo user non fa parte, tutti di tipo frontend_access_without_block
+		return "partial";
+	}
 	/**
 	 * check if user or user groups are in $perms array
 	 * 
