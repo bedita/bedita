@@ -461,8 +461,8 @@ jQuery.fn.BEmodal = function(){
 	$("#modal").toggle().css("top",myTop);
 
 	if ($(this).attr("rel")) {
-		$("#modalmain").empty().addClass("modaloader").load(destination).ajaxStop(function(){
-			$(this).removeClass("modaloader")
+		$("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
+			$(this).removeClass("modaloader");
 		});
 	};
 
