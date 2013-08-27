@@ -575,6 +575,9 @@ class AppController extends Controller
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
 				//$objectArray[$modelClass][] = $objDetail;
+				if (!isset($objectArray[$modelClass])) {
+					$objectArray[$modelClass] = array();
+				}
 				$annotationModel->putAnnotationInThread($objectArray[$modelClass], $objDetail);
 				if(!array_key_exists($modelClass, $typesCount)) {
 					$typesCount[$modelClass] = 1;
