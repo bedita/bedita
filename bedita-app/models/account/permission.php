@@ -186,7 +186,7 @@ class Permission extends BEAppModel
 			if(!empty($p['User']['id']) && $userData['id'] == $p['User']['id']) {
 				return true;
 			}
-			if(!empty($p['Group']['name']) && in_array($p['Group']['name'], $userData['groups'])) {
+			if(!empty($p['Group']['name']) && !empty($userData['groups']) && in_array($p['Group']['name'], $userData['groups'])) {
 				return true;
 			}
 		}
