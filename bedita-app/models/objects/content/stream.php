@@ -141,7 +141,8 @@ class Stream extends BEAppModel
 							}
 
 							if (empty($stream["Stream"]["mime_type"])) {
-								$stream["Stream"]["mime_type"] = $this->getMimeType($conf->mediaRoot . $stream["Stream"]["uri"], $stream["Stream"]["name"]);
+							    $path = $hasFile ? $conf->mediaRoot . $stream["Stream"]["uri"] : $stream["Stream"]["uri"];
+								$stream["Stream"]["mime_type"] = $this->getMimeType($path, $stream["Stream"]["name"]);
 							}
 
 							if (!$isURL) {
