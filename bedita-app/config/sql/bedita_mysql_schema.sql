@@ -489,7 +489,7 @@ CREATE TABLE objects (
   `status` VARCHAR(10) DEFAULT 'draft' COMMENT '(on, off, draft)',
   created DATETIME NULL,
   modified DATETIME NULL,
-  title VARCHAR(255) NULL COMMENT '???',
+  title MEDIUMTEXT NULL COMMENT '???',
   nickname VARCHAR(255) NULL COMMENT '???',
   description MEDIUMTEXT NULL COMMENT '???',
   valid BOOL NULL DEFAULT '1' COMMENT '???',
