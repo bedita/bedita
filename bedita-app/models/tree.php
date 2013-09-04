@@ -140,6 +140,50 @@ class Tree extends BEAppModel
 		}
 	}
 
+	
+	/**
+	 * Array of objcet $id tree parents objects
+	 *
+	 * @param integer $id
+	 * @return array, parent ids (may be empty)
+	 */
+	public function getParents($id = null, $area_id=null, $status = array()) {
+		$parents_id = array();
+		if (isset($id)) {
+			$parents_id = $this->getParent($id, $area_id, $status) ;
+			if ($parents_id === false) {
+				$parents_id = array();
+			} elseif (!is_array($parents_id)) {
+				$parents_id = array($parents_id);
+			}
+		}
+		return $parents_id;
+	}
+		
+
+	/**
+	 * Update tree position of object $id with new $destination array
+	 *
+	 * @param integer $id
+	 * @param array $destination
+	 */
+	public function updateTree($id, $destination) {
+	    if (!is_array($destination)) {
+	        $destination = (empty($destination))? array() : array($destination);
+	    }
+	    $currParents = $this->getParents($id);
+	    // remove
+	    $remove = array_diff($currParents, $destination) ;
+	    foreach ($remove as $parent_id) {
+	        $this->removeChild($id, $parent_id) ;
+	    }
+	    // insert
+	    $add = array_diff($destination, $currParents) ;
+	    foreach ($add as $parent_id) {
+	        $this->appendChild($id, $parent_id) ;
+	    }
+	}
+	
 	/**
 	 * Return id of publication that contains the section, by id
 	 *

@@ -192,45 +192,25 @@ class BeTreeComponent extends Object {
 	}
 	
 	/**
+	 * TODO: remove this method
 	 * Array of parent objects of $id...
 	 *
 	 * @param integer $id
 	 * @return array parents ids
 	 */
 	public function getParents($id = null, $area_id=null, $status = array()) {
-		$parents_id = array();
-		if (isset($id)) {
-			$parents_id = $this->Tree->getParent($id, $area_id, $status) ;
-			if ($parents_id === false) {
-				$parents_id = array();
-			} elseif (!is_array($parents_id)) {
-				$parents_id = array($parents_id);
-			}
-		}
-		return $parents_id;
+		return $this->Tree->getParents($id, $area_id, $status);
 	}
 
 	/**
+	 * TODO: remove this method
 	 * update tree position of object $id with new $destination array
 	 *
 	 * @param integer $id
 	 * @param array $destination
 	 */
 	public function updateTree($id, $destination) {
-		if (!is_array($destination)) {
-			$destination = (empty($destination))? array() : array($destination);
-		}
-		$currParents = $this->getParents($id);
-		// remove
-		$remove = array_diff($currParents, $destination) ;
-		foreach ($remove as $parent_id) {
-			$this->Tree->removeChild($id, $parent_id) ;
-		}
-		// insert
-		$add = array_diff($destination, $currParents) ;
-		foreach ($add as $parent_id) {
-			$this->Tree->appendChild($id, $parent_id) ;
-		}
+		return $this->Tree->updateTree($id, $destination);
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////

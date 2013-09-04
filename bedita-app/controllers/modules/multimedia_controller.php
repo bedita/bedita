@@ -110,11 +110,7 @@ class MultimediaController extends ModulesController {
 			$imageURL 	= $this->BeFileHandler->url($id) ;
 
 			$treeModel = ClassRegistry::init("Tree");
-			$parents_id = $treeModel->getParent($id) ;
-			if($parents_id === false)
-				$parents_id = array() ;
-			elseif(!is_array($parents_id))
-				$parents_id = array($parents_id);
+			$parents_id = $treeModel->getParents($id) ;
 
 			$previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 
