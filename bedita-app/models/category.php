@@ -182,6 +182,22 @@ class Category extends BEAppModel {
 		return $areaCategory;
 	}
 	
+	/**
+	 * Get all categories defined for object type id
+	 *
+	 * @param int $objectType
+	 * @return array of (
+	 * 				"area" => array(
+	 * 								nomearea => array(categories in that area)),
+	 * 				 "noarea" => array(categories aren't in any area)
+	 * 				)
+	 */
+	public function objectCategories($objectTypeId) {
+	    $categories = $this->find("all", array(
+	        "conditions" => array("Category.object_type_id" => $objectTypeId),
+	        "order" => "label"));
+	    return $categories;
+	}
 	
 	private function collateStatment() {
 		$res = "";
