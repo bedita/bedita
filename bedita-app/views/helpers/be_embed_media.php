@@ -160,7 +160,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	}
 
 	/**
-	 * return image $obj uri
+	 * Return image $obj uri
 	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumb Lib)
 	 * 
 	 * @param array $obj, object
@@ -168,12 +168,11 @@ class BeEmbedMediaHelper extends AppHelper {
 	 * @return string
 	 */
 	private function getImageSrc($obj, $params) {
-		// not local file
-		if(preg_match(Configure::read("validate_resource.URL"), $obj["uri"])) {
-			$src = $obj['uri'];
-		//local file
+
+		if ($params["presentation"] == "thumb") {
+		    $src = $this->beThumb->image($obj, $params);
 		} else {
-			$src = ($params["presentation"] == "thumb") ? $this->beThumb->image ($obj, $params) : $this->_conf['url'] . $obj['uri'];
+			$src = $this->_conf['url'] . $obj['uri'];
 		}
 		return $src;
 	}
