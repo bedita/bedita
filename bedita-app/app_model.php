@@ -92,26 +92,40 @@ class BEAppModel extends AppModel {
 
 		$result = null;
 		if(is_string($value) && !empty($value)) {
-			$conf = Configure::getInstance() ;
-			$d_pos = strpos($conf->dateFormatValidation,'dd');
-			$m_pos = strpos($conf->dateFormatValidation,'mm');
-			$y_pos = strpos($conf->dateFormatValidation,'yyyy');
-
-			$dateType = "little-endian"; // default dd/mm/yyyy
-			if($y_pos < $m_pos && $y_pos < $d_pos) {
-				$dateType = "big-endian"; // yyyy/mm/dd
-			} elseif ($m_pos < $d_pos) {
-				$dateType = "middle-endian"; // mm/dd/yyyy
-			}
-			try {
-				$result = BeLib::sqlDateFormat($value, $dateType);
-			} catch (Exception $ex) {
-				if($throwOnError) {
-					throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
-				} else {
-					$this->log("Date not recognized: " . $value . " - field left blank");
-				}
-			}
+            $dateFormatValidation = Configure::read("dateFormatValidation");
+            if(!$dateFormatValidation) {
+                // if config "dateFormatValidation" not set, expect valid SQL date format
+                $pattern = "/^[0-9]{4}-[0-9]{2}-[0-9]{2}$|^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$/";
+                if (preg_match($pattern, $value)) {
+                    $result = $value;
+                } else {
+                    if($throwOnError) {
+                        throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+                    } else {
+                        $this->log("Date not recognized: " . $value . " - field left blank");
+                    }
+                }
+            } else {
+    			$d_pos = strpos($dateFormatValidation,'dd');
+    			$m_pos = strpos($dateFormatValidation,'mm');
+    			$y_pos = strpos($dateFormatValidation,'yyyy');
+    
+    			$dateType = "little-endian"; // default dd/mm/yyyy
+    			if($y_pos < $m_pos && $y_pos < $d_pos) {
+    				$dateType = "big-endian"; // yyyy/mm/dd
+    			} elseif ($m_pos < $d_pos) {
+    				$dateType = "middle-endian"; // mm/dd/yyyy
+    			}
+    			try {
+    				$result = BeLib::sqlDateFormat($value, $dateType);
+    			} catch (Exception $ex) {
+    				if($throwOnError) {
+    					throw new BeditaException(__("Error parsing date. Wrong format", true), array("date" => $value));
+    				} else {
+    					$this->log("Date not recognized: " . $value . " - field left blank");
+    				}
+    			}
+            }
 		}
 
 		return $result ;
