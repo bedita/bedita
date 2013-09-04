@@ -253,7 +253,7 @@ class Stream extends BEAppModel
 		if (empty($filename)) {
 			$filename = basename($path);
 		}
-		if (function_exists("finfo_open")) {
+		if (function_exists("finfo_open") && file_exists($path)) {
 			if(PHP_VERSION < 5.3) {
 				$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
 			} else {
