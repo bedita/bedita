@@ -531,8 +531,8 @@ class AppController extends Controller
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
-			$this->modelBindings($this->{$modelClass});
-
+			$level = (BACKEND_APP)? 'default' : 'frontend';
+			$this->modelBindings($this->{$modelClass}, $level);
 			if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
 				continue ;
 			}
@@ -549,6 +549,12 @@ class AppController extends Controller
 					}
 					$this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
 				}
+
+				// if frontend app add object_type
+				if (!BACKEND_APP) {
+					$objDetail['object_type'] = $modelClass;
+				}
+
 				$relationArray[$rel][] = $objDetail;
 			}
 		}
@@ -569,12 +575,16 @@ class AppController extends Controller
 		foreach ($objectArray['Annotation'] as $obj) {
 			$modelClass = $beObject->getType($obj['id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
-			$this->modelBindings($this->{$modelClass});
+			$level = (BACKEND_APP)? 'default' : 'frontend';
+			$this->modelBindings($this->{$modelClass}, $level);
 			if(!($objDetail = $this->{$modelClass}->findById($obj['id']))) {
 				continue ;
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
-				//$objectArray[$modelClass][] = $objDetail;
+				// if frontend app add object_type
+				if (!BACKEND_APP) {
+					$objDetail['object_type'] = $modelClass;
+				}
 				if (!isset($objectArray[$modelClass])) {
 					$objectArray[$modelClass] = array();
 				}
