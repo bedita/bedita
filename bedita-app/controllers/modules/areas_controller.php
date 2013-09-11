@@ -264,7 +264,8 @@ class AreasController extends ModulesController {
 		$filterClass = Configure::read("filters.export." . $this->data["type"]);
 		$filterModel = ClassRegistry::init($filterClass);
 		$objects = array($this->viewVars["object"]);
-		$result = $filterModel->export($objects);
+		$options["filename"] = $this->data["filename"];
+		$result = $filterModel->export($objects, $options);
 
 		Configure::write('debug', 0);
 		// TODO: optimizations!!! use cake tools
@@ -439,6 +440,10 @@ class AreasController extends ModulesController {
 							"ERROR"	=> $this->referer()
 							),
 			"disassocCategory"	=> 	array(
+							"OK"	=> $this->referer(),
+							"ERROR"	=> $this->referer()
+							),
+			"export"	=> 	array(
 							"OK"	=> $this->referer(),
 							"ERROR"	=> $this->referer()
 							)
