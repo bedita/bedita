@@ -560,7 +560,11 @@ class DbadminShell extends BeditaBaseShell {
 
 
 	public function updateStreamFields() {
-		$response = ClassRegistry::init("Utility")->call('updateStreamFields');
+		$options = array();
+		if (!empty($this->params['id'])) {
+			$options['id'] = $this->params['id'];
+		}
+		$response = ClassRegistry::init("Utility")->call('updateStreamFields', $options);
 		$streamsUpdated = $response['results'];
 		foreach ($streamsUpdated as $s) {
 			$this->out("stream ".$s["Stream"]["id"]. " updated");
@@ -1005,6 +1009,10 @@ class DbadminShell extends BeditaBaseShell {
         $this->out("    -type \t model type like 'document' or 'event' to import");
         $this->out(' ');
 		$this->out('9. updateStreamFields: update name (if empty), mime_type (if empty), size and hash_file fields of streams table');
+		$this->out(' ');
+        $this->out('    Usage: updateStreamFields [-id <object-id>]');
+        $this->out(' ');
+        $this->out("    -id \t update data only for object with that id");
   		$this->out(' ');
   		$this->out("10. checkConsistency: check objects for consistency on database");
   		$this->out(' ');

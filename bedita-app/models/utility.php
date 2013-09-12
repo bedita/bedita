@@ -79,7 +79,8 @@ class Utility extends AppModel {
 	 * @param array $options 
 	 */
 	protected function updateStreamFields($options) {
-		$this->response['results'] = ClassRegistry::init("Stream")->updateStreamFields();
+		$id = (!empty($options['id']))? $options['id'] : null;
+		$this->response['results'] = ClassRegistry::init("Stream")->updateStreamFields($id);
 	}
 	
 	/**
