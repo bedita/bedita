@@ -22,7 +22,7 @@ $(document).ready(function(){
 <div class="tab"><h2>{t}Event calendar{/t}</h2></div>
 <fieldset id="eventDates">
 
-{foreach name=dd from=$object.DateItem item=d}
+{foreach name=dd from=$object.DateItem|sortby:'start_date' item=d}
 <div class="daterow">
 	{assign var=idx value=$smarty.foreach.dd.index}
 
@@ -42,9 +42,9 @@ $(document).ready(function(){
 	<hr />
 	{/bedev}
 </div>
-{foreachelse}
+{/foreach}
 
-<div class="newdaterow">
+<div class="newdaterow" style="display:block">
 	{assign var=idx value=$smarty.foreach.dd.index+1}
 	<label>{t}start{/t}:</label>
 	<input size=10 type="text" id="eventStart{$idx}" class="dateinput" name="data[DateItem][{$idx}][start_date]" value=""/>
@@ -56,7 +56,7 @@ $(document).ready(function(){
 	{/strip}
 	<input size=5 type="text"  id="timeEnd{$idx}"  class="timeEnd" name="data[DateItem][{$idx}][timeEnd]" value="" />
 </div>
-{/foreach}
+
 
 
 </fieldset>
