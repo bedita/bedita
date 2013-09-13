@@ -916,6 +916,7 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out("WARNING: the operation can take several minutes");
 
 		$dbCfg = "default";
+		App::import('Component', 'Transaction');
 		$transaction = new TransactionComponent($dbCfg);
 		$transaction->begin();
 		$Tree = ClassRegistry::init("Tree");
