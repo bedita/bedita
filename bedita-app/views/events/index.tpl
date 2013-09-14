@@ -1,5 +1,3 @@
-
-
 </head>
 
 <body>
@@ -19,5 +17,3 @@
 	{$view->element('list_objects')}
 	
 </div>
-
-

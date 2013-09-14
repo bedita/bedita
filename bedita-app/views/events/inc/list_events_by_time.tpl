@@ -1,3 +1,7 @@
+<!-- https://github.com/bedita/bedita/issues/213?source=cc -->
+
+
+
 <ul style="border-top:0px solid #666; overflow:auto">
 {foreach from=$objects item=object key=key}
 	{$dateprev = $date|default:''}
