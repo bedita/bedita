@@ -262,9 +262,10 @@ CREATE TABLE groups (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'generic groups';
 
 CREATE TABLE groups_users (
-  user_id INTEGER UNSIGNED NOT NULL,
+  id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
   group_id INTEGER UNSIGNED NOT NULL,
-  PRIMARY KEY(user_id, group_id),
+  user_id INTEGER UNSIGNED NOT NULL,
+  PRIMARY KEY(id),
   INDEX groups_users_FKIndex1(user_id),
   INDEX groups_users_FKIndex2(group_id),
   FOREIGN KEY(user_id)

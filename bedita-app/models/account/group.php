@@ -40,6 +40,17 @@ class Group extends BEAppModel
 	
 	public $hasAndBelongsToMany = array("User");
 
+	public function beforeDelete() {
+	    #379 - temporary fix, not necessary ig groups_users.id is defined
+	    $this->unbindModel( array('hasAndBelongsToMany' => array('User')), false);
+	    return true;
+	}
+	
+	public function afterDelete() {
+	    #379 - temporary fix, not necessary ig groups_users.id is defined
+	    $this->bindModel(array('hasAndBelongsToMany' => array('User')), false);
+	    return true;
+	}
 	
 	function getList($conditions=array()) {
 		$groups = $this->find("list", array(
