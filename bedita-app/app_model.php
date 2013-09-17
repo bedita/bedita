@@ -1108,9 +1108,8 @@ class BeditaProductModel extends BEAppObjectModel {
 														"Category",
 														"Annotation",
 														"GeoTag"
-														)
 													),
-									"Product"
+									"Product"),
 	);
 
 
