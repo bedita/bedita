@@ -640,6 +640,11 @@ class AppController extends Controller
 		if(!isset($this->data['Permission']))
 			$this->data['Permission'] = array() ;
 
+		if(isset($this->data['DateItem'])) {
+		    // reorder array index from 0 to avoid removal
+		    $this->data['DateItem'] = array_values($this->data['DateItem']); 
+		}
+		
 		if(!$beModel->save($this->data)) {
 			throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
 		}
