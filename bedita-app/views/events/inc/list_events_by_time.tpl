@@ -1,7 +1,5 @@
 <!-- https://github.com/bedita/bedita/issues/213?source=cc -->
 
-
-
 <ul style="border-top:0px solid #666; overflow:auto">
 {foreach from=$objects item=object key=key}
 	{$dateprev = $date|default:''}
@@ -28,56 +26,7 @@
 		</h3>
 		
 	</li>
-		{* <!--}
-		<tr class="obj {$objects[i].status}">
-			<td class="checklist">
-			{if !empty($objects[i].start_date) && ($objects[i].start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
-			
-				<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
-			
-			{elseif !empty($objects[i].end_date) && ($objects[i].end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
-			
-				<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
-			
-			{elseif (!empty($objects[i].start_date) && (($objects[i].start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objects[i].end_date) && (($objects[i].end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
-			
-				<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
-
-			{/if}
-			
-			{if !empty($objects[i].num_of_permission)}
-				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
-			{/if}
-			
-			{if (empty($objects[i].fixed))}
-				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
-			{else}
-				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
-			{/if}
-
-
-			</td>
-			<td style="min-width:300px">
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
-				<div class="description" id="desc_{$objects[i].id}">
-					nickname:{$objects[i].nickname}<br />
-					{$objects[i].description}
-				</div>
-			</td>
-			<td class="checklist detail" style="text-align:left; padding-top:4px;">
-				<a href="javascript:void(0)" onclick="$('#desc_{$objects[i].id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
-				<span class="plusminus">+</span>			
-				&nbsp;
-				{$objects[i].id}
-				</a>	
-			</td>
-			<td style="text-align:center">{$objects[i].status}</td>
-			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
-			<td style="text-align:center">{$objects[i].num_of_comment|default:0}</td>
-			<td>{$objects[i].lang}</td>
-			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
-		</tr>
-		--> *} 
-		
 {/foreach}
 </ul>
+
+{dump var=$dateItems}

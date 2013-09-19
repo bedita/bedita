@@ -32,7 +32,7 @@ class EventsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('BEObject','Event','Category','Area','Tree') ;
+	var $uses = array('BEObject','Event','Category','Area','Tree','DateItems') ;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -42,6 +42,22 @@ class EventsController extends ModulesController {
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		$this->loadCategories($filter["object_type_id"]);
 	 }
+
+	public function calendar($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+		$conf  = Configure::getInstance() ;
+		$filter["object_type_id"] = $conf->objectTypes['event']["id"];
+
+		$dateItems = $this->DateItems->find("all", array(
+			"conditions" => array("start_date > 0"),
+			"order" => "start_date ASC",
+			//"contain" => array("DateItems")
+		));
+		$this->set("dateItems", $dateItems);
+
+		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+		$this->loadCategories($filter["object_type_id"]);
+	 }
+
 
 	public function view($id = null) {
 		$this->viewObject($this->Event, $id);

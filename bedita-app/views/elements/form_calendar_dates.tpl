@@ -25,10 +25,9 @@ $(document).ready(function(){
 
 		$(".dateadd").click(function (){
 			var row = $(this).parent(".daterow");
-			$(row).clone(true).insertBefore(row).addClass("newdaterow");
+			$(row).clone(true).insertAfter(row).addClass("newdaterow");
 			$(".newdaterow input").attr("value","");
 		});
-
 });
 
 </script>
@@ -53,5 +52,22 @@ $(document).ready(function(){
 	<a href="javascript:void(0)" class="BEbutton dateremove">X</a>
 	<a href="javascript:void(0)" class="BEbutton dateadd">+</a>
 </div>
+{foreachelse}
+
+<div class="daterow">
+	<label>{t}start{/t}:</label>
+	<input size=10 type="text" id="eventStart_0" class="dateinput eventStart" name="data[DateItem][0][start_date]" value=""/>
+	<input size=5 type="text"  id="timeStart_0"  class="timeStart" name="data[DateItem][0][timeStart]" value="" />
+	
+	<label>{t}end{/t}:</label>
+	<input size=10 type="text" id="eventEnd_0" class="dateinput eventEnd" name="data[DateItem][0][end_date]" value=""/>
+	<input size=5 type="text"  id="timeEnd_0"  class="timeEnd" name="data[DateItem][0][timeEnd]" value="" />
+
+	<a href="javascript:void(0)" class="BEbutton dateremove">X</a>
+	<a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+</div>
+
 {/foreach}
+
+
 </fieldset>

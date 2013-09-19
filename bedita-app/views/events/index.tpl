@@ -12,8 +12,6 @@
 
 <div class="mainfull">
 
-	{include file="inc/list_events_by_time.tpl"}
-
 	{$view->element('list_objects')}
 	
 </div>

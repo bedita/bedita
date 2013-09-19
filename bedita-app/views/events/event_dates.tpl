@@ -15,7 +15,7 @@ $(document).ready(function(){
 <div class="blockForm" id="eventDates">
 <fieldset>
 {assign var=idx value=0}
-{*
+
 {foreach key="name" item="d" from=$object.DateItem}
 	<span style="font-weight:bold;">{t}Event start{/t}:</span>
 	<input type="text" class="{ checkDate:true}" title="{t}start has to be a valid date in the following format:{/t} {$conf->dateFormatValidation}" 
@@ -25,7 +25,7 @@ $(document).ready(function(){
 		name="data[DateItem][{$name}][end_date]" id="eventEnd{$name}" value="{if !empty($d.end_date)}{$d.end_date|date_format:$conf->datePattern}{/if}"/>
 	<hr/>
 {/foreach}
-*}
+
 {assign var=d value=$object.DateItem.0}
 	<span style="font-weight:bold;">{t}Add event date{/t}</span>
 	<br/>
