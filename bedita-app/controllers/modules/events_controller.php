@@ -20,19 +20,17 @@
  */
 
 /**
- * 
+ * Events module controller
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class EventsController extends ModulesController {
 
-	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
-	var $uses = array('BEObject','Event','Category','Area','Tree','DateItems') ;
+	public $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
+	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	public $uses = array('BEObject','Event','Category','Area','Tree', 'DateItem');
+	// calendar pagination
+	public $paginate = array("DateItem" => array('limit' => 20, 'page' => 1, 
+		        'order'=> array('start_date'=>'desc')));
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -43,19 +41,25 @@ class EventsController extends ModulesController {
 		$this->loadCategories($filter["object_type_id"]);
 	 }
 
-	public function calendar($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-		$conf  = Configure::getInstance() ;
-		$filter["object_type_id"] = $conf->objectTypes['event']["id"];
-
-		$dateItems = $this->DateItems->find("all", array(
-			"conditions" => array("start_date > 0"),
-			"order" => "start_date ASC",
-			//"contain" => array("DateItems")
+	public function calendar() {
+		$conditions = array("DateItem.start_date > 0");
+		$dateItems = $this->paginate('DateItem', $conditions);
+		$objIds = array();
+		foreach ($dateItems as $di) {
+		    $objIds[] = $di["DateItem"]["object_id"];
+		}
+		$events = $this->Event->find("all", array(
+		        "conditions" => array("Event.id IN (" . implode(",", $objIds) . ")",
+		           "BEObject.object_type_id" => Configure::read("objectTypes.event.id")),
 		));
+        $eventsOrdered = array();
+		foreach ($events as $evt) {
+		    $eventsOrdered[$evt["id"]] = $evt;
+		}
+		foreach ($dateItems as &$di) {
+		    $di["DateItem"]["Event"] = $eventsOrdered[$di["DateItem"]["object_id"]];
+		}
 		$this->set("dateItems", $dateItems);
-
-		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
-		$this->loadCategories($filter["object_type_id"]);
 	 }
 
 
