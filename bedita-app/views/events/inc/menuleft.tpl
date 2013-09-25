@@ -16,7 +16,12 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'index'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.url}/">{t}List {$currentModule.name}{/t}</a>
 		</li>
-		{if !empty($view->action) && $view->action == "index"}
+		{bedev}
+		<li {if $view->action eq 'calendar'}class="on"{/if}>
+			<a href="{$html->url('/')}{$currentModule.url}/calendar">{t}Calendar view{/t}</a>
+		</li>
+		{/bedev}
+		{if !empty($view->action) && ($view->action == "index")}
 			{$view->element('select_categories')}
 		{/if}
 		<li {if $view->action eq 'categories'}class="on"{/if}>
@@ -26,7 +31,7 @@ Menu a SX valido per tutte le pagine del controller.
 	</ul>
 
 
-	{if !empty($view->action) && $view->action == "index"}
+	{if !empty($view->action) && ($view->action == "index" or $view->action == "calendar")}
 	<div class="insidecol publishingtree">
 		{$view->element('tree')}
 	</div>
