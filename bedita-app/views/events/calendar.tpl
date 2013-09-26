@@ -1,14 +1,15 @@
 <style scoped>
 	.datelabel {
-		clear:left; 
-		background-color:#999; 
-		color:#FFF; font-size:2em; 
-		line-height:1.175em; 
+		clear:left;
+		background-color:#0099CC;
+		color:#FFF; 
+		font-size:1.275em; 
+		line-height:1.8em; 
 		padding:5px; border:0px solid gray; 
 		margin:0 10px 10px 0; 
 		display:block; width:118px; 
 		height:118px; 
-		float:left
+		float:left;
 	}
 
 	.datelabel.on {
@@ -35,6 +36,12 @@
 		background-color:#CCC;
 		font-weight: normal;
 	}
+
+	.datelabel .day {
+		font-size:2em;
+		display:blocK;
+	}
+
 </style>
 
 </head>

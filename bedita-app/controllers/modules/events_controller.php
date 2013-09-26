@@ -29,8 +29,8 @@ class EventsController extends ModulesController {
 	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
 	public $uses = array('BEObject','Event','Category','Area','Tree', 'DateItem');
 	// calendar pagination
-	public $paginate = array("DateItem" => array('limit' => 20, 'page' => 1, 
-		        'order'=> array('start_date'=>'desc')));
+	public $paginate = array("DateItem" => array('limit' => 100, 'page' => 1, 
+		        'order'=> array('start_date'=>'asc')));
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
