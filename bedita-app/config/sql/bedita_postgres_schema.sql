@@ -273,7 +273,7 @@ CREATE TABLE geo_tags (
     latitude double precision,
     longitude double precision,
     address text,
-    title text
+    title text,
     gmaps_lookat text
 );
 
