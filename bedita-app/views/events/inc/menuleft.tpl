@@ -31,7 +31,7 @@ Menu a SX valido per tutte le pagine del controller.
 	</ul>
 
 
-	{if !empty($view->action) && ($view->action == "index" or $view->action == "calendar")}
+	{if !empty($view->action) && ($view->action == "index")}
 	<div class="insidecol publishingtree">
 		{$view->element('tree')}
 	</div>
