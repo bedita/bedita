@@ -358,6 +358,19 @@ class Tree extends BEAppModel
 
 
 	/**
+	 * object position in a tree branch 
+	 *
+	 * @param int $id object id
+	 * @param int $idParent parent object (branch) id
+	 * @return int
+	 */
+	public function getPriority($id, $idParent) {
+	    return $this->field("priority", 
+	            array("id" => $id, "parent_id" => $idParent));
+	}
+	
+	
+	/**
 	 * move branch to another parent
 	 *
 	 * @param int $idNewParent
