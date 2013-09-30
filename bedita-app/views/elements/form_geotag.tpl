@@ -59,6 +59,10 @@ $(document).ready(function(){
 
 <table>
 <tr>
+    <th>{t}title{/t}:</th>
+    <td colspan=3><input type="text" style="width:100%;" name="data[GeoTag][0][title]" value="{if !empty($d.title)}{$d.title}{/if}"></td>
+</tr>
+<tr>
 	<th>{t}address{/t}:</th>
 	<td colspan=3><input type="text" class="geoaddress" style="width:100%;" name="data[GeoTag][0][address]" value="{if !empty($d.address)}{$d.address}{/if}"></td>
 </tr>

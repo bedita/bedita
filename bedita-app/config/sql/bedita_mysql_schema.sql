@@ -241,7 +241,8 @@ CREATE TABLE geo_tags (
   object_id INTEGER UNSIGNED NOT NULL,
   latitude FLOAT(9,6) NULL COMMENT 'latitude, can be NULL',
   longitude FLOAT(9,6) NULL COMMENT 'longitude, can be NULL',
-  address VARCHAR(255) NULL COMMENT 'address, can be NULL',
+  address MEDIUMTEXT NULL COMMENT 'address, can be NULL',
+  title MEDIUMTEXT NULL COMMENT 'geotag name/title',
   gmaps_lookat MEDIUMTEXT NULL COMMENT 'google maps code, can be NULL',
   PRIMARY KEY(id),
   FOREIGN KEY(object_id)

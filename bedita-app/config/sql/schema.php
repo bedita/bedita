@@ -149,7 +149,8 @@ class BeditaAppSchema extends CakeSchema {
 		'latitude' => array('type' => 'float', 'null' => true, 'default' => NULL, 'length' => '9,6', 'comment' => 'latitude, can be NULL'),
 		'longitude' => array('type' => 'float', 'null' => true, 'default' => NULL, 'length' => '9,6', 'comment' => 'longitude, can be NULL'),
 		'address' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'address, can be NULL', 'charset' => 'utf8'),
-		'gmaps_lookat' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'google maps code, can be NULL', 'charset' => 'utf8'),
+		'titke' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'geotag title/name, can be NULL', 'charset' => 'utf8'),
+	    'gmaps_lookat' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'google maps code, can be NULL', 'charset' => 'utf8'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
