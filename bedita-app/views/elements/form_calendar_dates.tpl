@@ -20,21 +20,29 @@ $(document).ready(function(){
 	
 	$(".timeStart, .timeEnd", ".daterow").timePicker({ startTime: "00:00", endTime: "23:30"});
 
-	$(".dateremove").click(function (){
+    var numDates = {$numDates};
+
+    $(".dateremove").click(function (){
 		var row = $(this).parent(".daterow");
-		$(row).remove();
+		if ($(".daterow").size() > 1) {
+	        $(row).remove();			
+		} else {
+			row.find(".eventStart").val("");
+            row.find(".timeStart").val("");			
+            row.find(".eventEnd").val("");
+            row.find(".timeEnd").val("");
+		}
 	});
 
-	var numDates = {$numDates};
 	$(".dateadd").click(function (){
-		var row = $(this).parent(".daterow");
-		var newRow = $(".dummydaterow").clone(true);
-		newRow.insertAfter(row);
-		newRow.removeClass("dummydaterow").addClass("newdaterow");
-		var evtStart = newRow.find(".eventStart")
-		evtStart.addClass("dateinput");
+        var row = $(this).parent(".daterow");
+        var newRow = $(".dummydaterow").clone(true);
+        newRow.insertAfter(row);
+        newRow.removeClass("dummydaterow").addClass("newdaterow");
+        var evtStart = newRow.find(".eventStart")
+        evtStart.addClass("dateinput");
         evtStart.attr("id","eventStart_" + numDates);
-		evtStart.attr("name","data[DateItem][" + numDates + "][start_date]");
+        evtStart.attr("name","data[DateItem][" + numDates + "][start_date]");
         var timeStart = newRow.find(".timeStart")
         timeStart.attr("id","timeStart_" + numDates);
         timeStart.attr("name","data[DateItem][" + numDates + "][timeStart]");
@@ -70,6 +78,7 @@ $(document).ready(function(){
     <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
 </div>
 
+{if !empty($object.DateItem)}
 {foreach name=dd from=$object.DateItem|@sortby:'start_date' item=d key=key}
 <div class="daterow">
 	<label>{t}start{/t}:</label>
@@ -88,4 +97,23 @@ $(document).ready(function(){
 	<a href="javascript:void(0)" class="BEbutton dateadd">+</a>
 </div>
 {/foreach}
+{else}
+<div class="daterow">
+    <label>{t}start{/t}:</label>
+    <input size=10 type="text" id="eventStart_0" class="dateinput eventStart" name="data[DateItem][0][start_date]" 
+    value=""/>
+    <input size=5 type="text"  id="timeStart_0"  class="timeStart" name="data[DateItem][0][timeStart]" 
+    value="" />
+    
+    <label>{t}end{/t}:</label>
+    <input size=10 type="text" id="eventEnd_0" class="dateinput eventEnd" name="data[DateItem][0][end_date]" 
+    value=""/>
+    <input size=5 type="text"  id="timeEnd_0"  class="timeEnd" name="data[DateItem][0][timeEnd]" 
+    value="" />
+
+    <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
+    <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+</div>
+{/if}
+
 </fieldset>
