@@ -36,6 +36,9 @@ $(document).ready(function(){
 
 	$(".dateadd").click(function (){
         var row = $(this).parent(".daterow");
+        if (row.length == 0) {
+        	row = $(this).parent(".newdaterow");
+        }
         var newRow = $(".dummydaterow").clone(true);
         newRow.insertAfter(row);
         newRow.removeClass("dummydaterow").addClass("newdaterow");
