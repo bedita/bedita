@@ -65,6 +65,18 @@ class EventsController extends ModulesController {
 
 	public function view($id = null) {
 		$this->viewObject($this->Event, $id);
+		// check date items
+		$dateItems = $this->viewVars["object"]["DateItem"];
+		foreach ($dateItems as $di) {
+		    if (!empty($di["start_date"]) && !empty($di["end_date"])) {
+		        if($di["start_date"] > $di["end_date"]) {
+		            $sDate = strftime(Configure::read("dateTimePattern"), strtotime($di["start_date"]));
+		            $eDate = strftime(Configure::read("dateTimePattern"), strtotime($di["end_date"]));
+		            $this->userWarnMessage(__("Calendar start date after end date", true) . 
+		                    ": " . $sDate . " -" . $eDate);
+		        }
+		    }
+		}
 	}
 
 	public function save() {
