@@ -330,6 +330,42 @@ class TranslateBehavior extends ModelBehavior {
  * @access public
  */
 	function beforeValidate(&$model) {
+		unset($this->runtime[$model->alias]['beforeSave']);
+		$this->_setRuntimeData($model);
+		return true;
+	}
+
+/**
+ * beforeSave callback.
+ *
+ * Copies data into the runtime property when `$options['validate']` is
+ * disabled.  Or the runtime data hasn't been set yet.
+ *
+ * @param Model $model Model save was called on.
+ * @return boolean true.
+ */
+	function beforeSave($model, $options = array()) {
+		if (isset($options['validate']) && $options['validate'] == false) {
+			unset($this->runtime[$model->alias]['beforeSave']);
+		}
+		if (isset($this->runtime[$model->alias]['beforeSave'])) {
+			return true;
+		}
+		$this->_setRuntimeData($model);
+		return true;
+	}
+
+/**
+ * Sets the runtime data.
+ *
+ * Used from beforeValidate() and beforeSave() for compatibility issues,
+ * and to allow translations to be persisted even when validation
+ * is disabled.
+ *
+ * @param Model $model
+ * @return void
+ */
+	function _setRuntimeData(Model $model) {
 		$locale = $this->_getLocale($model);
 		if (empty($locale)) {
 			return true;
@@ -353,7 +389,6 @@ class TranslateBehavior extends ModelBehavior {
 			}
 		}
 		$this->runtime[$model->alias]['beforeSave'] = $tempData;
-		return true;
 	}
 
 /**
@@ -365,12 +400,17 @@ class TranslateBehavior extends ModelBehavior {
  * @access public
  */
 	function afterSave(&$model, $created) {
-		if (!isset($this->runtime[$model->alias]['beforeSave'])) {
+		if (!isset($this->runtime[$model->alias]['beforeValidate']) && !isset($this->runtime[$model->alias]['beforeSave'])) {
 			return true;
 		}
 		$locale = $this->_getLocale($model);
-		$tempData = $this->runtime[$model->alias]['beforeSave'];
-		unset($this->runtime[$model->alias]['beforeSave']);
+		if (isset($this->runtime[$model->alias]['beforeValidate'])) {
+			$tempData = $this->runtime[$model->alias]['beforeValidate'];
+		} else {
+			$tempData = $this->runtime[$model->alias]['beforeSave'];
+		}
+
+		unset($this->runtime[$model->alias]['beforeValidate'], $this->runtime[$model->alias]['beforeSave']);
 		$conditions = array('model' => $model->alias, 'foreign_key' => $model->id);
 		$RuntimeModel =& $this->translateModel($model);
 
