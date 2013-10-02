@@ -173,9 +173,9 @@ class DboOracle extends DboSource {
 		$config['charset'] = !empty($config['charset']) ? $config['charset'] : null;
 
 		if (!$config['persistent']) {
-			$this->connection = @ocilogon($config['login'], $config['password'], $config['database'], $config['charset']);
+			$this->connection = ocilogon($config['login'], $config['password'], $config['database'], $config['charset']);
 		} else {
-			$this->connection = @ociplogon($config['login'], $config['password'], $config['database'], $config['charset']);
+			$this->connection = ociplogon($config['login'], $config['password'], $config['database'], $config['charset']);
 		}
 
 		if ($this->connection) {
@@ -467,7 +467,7 @@ class DboOracle extends DboSource {
 		if ($cache != null) {
 			return $cache;
 		}
-		$sql = 'SELECT view_name AS name FROM all_views UNION SELECT table_name AS name FROM all_tables';
+		$sql = 'SELECT view_name AS name FROM user_views UNION SELECT table_name AS name FROM user_tables';
 
 		if (!$this->execute($sql)) {
 			return false;
@@ -503,7 +503,7 @@ class DboOracle extends DboSource {
 			return $cache;
 		}
 
-		$sql = 'SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH FROM all_tab_columns WHERE table_name = \'';
+		$sql = 'SELECT COLUMN_NAME, DATA_TYPE, DATA_LENGTH FROM user_tab_columns WHERE table_name = \'';
 		$sql .= strtoupper($this->fullTableName($model)) . '\'';
 
 		if (!$this->execute($sql)) {

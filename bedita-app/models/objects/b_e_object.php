@@ -489,7 +489,7 @@ class BEObject extends BEAppModel
 			$currObj = $this->find("first", array(
 											"conditions"=>array("BEObject.id" => $data['id']), 
 											"fields" =>array("status", "nickname", "fixed"),
-											"contain" => ("")
+											"contain" => array()
 											));
 			if($currObj['BEObject']['fixed'] == 1) {  // don't change nickname & status
 				// throws exceptions if status/nicknames are changed
