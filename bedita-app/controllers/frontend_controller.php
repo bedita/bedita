@@ -869,7 +869,7 @@ abstract class FrontendController extends AppController {
 			if ($s === self::UNLOGGED || $s === self::UNAUTHORIZED) {
 				$this->accessDenied($s);
 			}
-			if($s['syndicate'] === "off") {
+			if ($s['syndicate'] === "off") {
 				throw new BeditaException(__("Content not found", true));
 			}
 
@@ -891,13 +891,17 @@ abstract class FrontendController extends AppController {
 		if (method_exists($this, $methodName)) {
 			$rssItems = $this->{$methodName}();
 		} else {
-			if(empty($s)) { // if channel data has been redefined
+			if (empty($s)) { // if channel data has been redefined
 				$s = $this->loadObjByNick($sectionName);
+				if ($s === self::UNLOGGED || $s === self::UNAUTHORIZED) {
+					$this->accessDenied($s);
+				}
 				$this->setCanonicalPath($s);
 			}
-			$items = $this->BeTree->getChildren($s['id'], $this->status, false, "priority", ($s['priority_order']=="asc"), 1, 40);
-			if(!empty($items) && !empty($items['items'])) {
-				foreach($items['items'] as $index => $item) {
+			$options = array('dim' => 40);
+			$items = $this->loadSectionObjects($s['id'], $options);
+			if (!empty($items['childContents'])) {
+				foreach ($items['childContents'] as $index => $item) {
 					$obj = $this->loadObj($item['id']);
 					if ($obj !== self::UNLOGGED && $obj !== self::UNAUTHORIZED) {
 						$rssItems[] = $this->buildRssItem($obj, $s['canonicalPath']);
@@ -908,7 +912,7 @@ abstract class FrontendController extends AppController {
 		$this->set('items', $rssItems);
 		$this->view = 'View';
 		// add RSS helper if not present
-		if(!in_array('Rss', $this->helpers)) {
+		if (!in_array('Rss', $this->helpers)) {
 			$this->helpers[] = 'Rss';
 		}
 		$this->layout = NULL;

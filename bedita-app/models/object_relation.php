@@ -132,8 +132,7 @@ class ObjectRelation extends BEAppModel
     public function updateRelationPriority($id, $objectId, $switch, $priority){
         $q = "  UPDATE object_relations
                 SET priority={$priority}
-                WHERE id={$id} AND object_id={$objectId} AND switch={$switch}";
-
+                WHERE id={$id} AND object_id={$objectId} AND switch='{$switch}'";
         $res = $this->query($q);
         if ($res === false) {
             return $res;
