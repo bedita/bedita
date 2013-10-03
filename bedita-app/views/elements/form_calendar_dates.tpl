@@ -44,6 +44,10 @@ $(document).ready(function(){
         newRow.removeClass("dummydaterow").addClass("newdaterow");
         var evtStart = newRow.find(".eventStart")
         evtStart.addClass("dateinput");
+        // for newly created objs numDates may be 0
+        if (numDates == 0) {
+        	numDates = 1;
+        }
         evtStart.attr("id","eventStart_" + numDates);
         evtStart.attr("name","data[DateItem][" + numDates + "][start_date]");
         var timeStart = newRow.find(".timeStart")
