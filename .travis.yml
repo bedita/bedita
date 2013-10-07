@@ -4,6 +4,11 @@ php:
     - 5.3
     - 5.4
 
+# whitelist
+branches:
+    only:
+        - master
+
 before_script:
     - mysql -e 'CREATE DATABASE bedita;'
     - mysql -e 'CREATE DATABASE bedita_test;'
@@ -46,6 +51,6 @@ script:
     - ./cake.sh testsuite app all
     - ./cake.sh testsuite core case xml2
 
-notification:
+notifications:
     email:
         - bedita-commits@channelweb.it
