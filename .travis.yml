@@ -4,11 +4,6 @@ php:
     - 5.3
     - 5.4
 
-# whitelist
-branches:
-    only:
-        - master
-
 before_script:
     - mysql -e 'CREATE DATABASE bedita;'
     - mysql -e 'CREATE DATABASE bedita_test;'
