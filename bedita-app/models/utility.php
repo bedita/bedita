@@ -136,7 +136,7 @@ class Utility extends AppModel {
 			$this->response['message'] = "clearMediaCache " . __("operation done", true) . ".\n" . $msg;
 		}
 	}
-	
+
 	/**
 	 * utility operation
 	 * delete log files according to BeSystem::emptyLogs()
@@ -162,9 +162,13 @@ class Utility extends AppModel {
 	 *				'basePath' => TMP (default) the path on which search and clear cache
 	 *				'frontendsToo' => true (default) to clean also frontends cache
 	 */
-	protected function cleanupCache($options) {
-		$options = array_merge(array('basePath' => TMP, 'frontendsToo' => true), $options);
-		$this->response['results'] = BeLib::getObject("BeSystem")->cleanupCache($options['basePath']);
+	protected function cleanupCache($options = array()) {
+	    $defaults = array(
+	            'basePath' => BEDITA_CORE_PATH . DS .'tmp' . DS, 
+	            'frontendsToo' => true);
+		$options = array_merge($defaults, $options);
+		$this->response['results'] = BeLib::getObject("BeSystem")->cleanupCache($options['basePath'], 
+		        $options['frontendsToo']);
 		if (!empty($this->response['results']['failed']) && !empty($options['log'])) {
 			$this->response['log'] = $this->buildLogItems($this->response['results']['failed']);
 		}
