@@ -589,6 +589,24 @@ class BeFileHandlerComponent extends Object {
 	}
 
 	/**
+	 * build friendly url name from filename
+	 * nameFile.ext become name-file.jpg
+	 * nameFile become name-file
+	 *
+	 * @param  string $filename
+	 * @return string
+	 */
+	public function buildNameFromFile($filename) {
+		$tmp = $this->splitFilename($filename);
+		if(!empty($tmp[1])) {
+			$name = BeLib::getInstance()->friendlyUrlString($tmp[0]) . '.' . $tmp[1];
+		} else {
+			$name = BeLib::getInstance()->friendlyUrlString($tmp[0]);
+		}
+		return $name;
+	}
+
+	/**
 	 * Split file name by dot [to separate file name from file extension]
 	 * 
 	 * @param string $filename
