@@ -48,7 +48,7 @@ Menu a SX valido per tutte le pagine del controller.
 </script>
 {/if}
 
-<div class="secondacolonna {if !empty($fixed)}fixed{/if}" style="position:relative; z-index:200;">
+<div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	{if !empty($view->action) && $view->action != "index"}
 		{assign var="back" value=$session->read("backFromView")}
