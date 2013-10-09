@@ -1,5 +1,7 @@
 # BEdita, a semantic content management framework
 
+[![Build Status](https://travis-ci.org/bedita/bedita.png?branch=master)](https://travis-ci.org/bedita/bedita)
+
 BEdita is a software to create, manage content and organize it with semantic rules.
 BEdita is a modular framework that features a back-end Content Management System out-of-the-box.
 It is an integrated environment that inherits all the features of the libraries and tools it includes,
