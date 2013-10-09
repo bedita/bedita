@@ -444,12 +444,13 @@ class Tree extends BEAppModel
 	}
 
 	/**
-	 * Get Tree where 'id' is root.
-	 * @param integer $id		root id.
+	 * Get Tree where 'id' (if it passed) has to be tree root
+	 * If it's a section id then an empty array is returned
+	 * @param integer $id		publication id. If null get all trees, one for every publication
 	 * @param string $userid	user. if null: no permission check (default); if '': guest user
 	 * @param string $status	only objs with this status
 	 * @param array $filter		see BEAppModel::findObjects
-	 * @return array
+	 * @return array every first level key is a publication
 	 */
 	public function getAll($id = null, $userid = null, $status = null, $filter = array()) {
 
@@ -457,11 +458,13 @@ class Tree extends BEAppModel
 		$roots 	= array() ;
 		$tree 	= array() ;
 
-		if (empty($id)) {
-			$filter["Tree.*"] = "";
+		$filter["Tree.*"] = "";
+		if (!empty($id)) {
+			$filter["Tree.area_id"] = $id;
 		}
 
-		$res = $this->findObjects($id, $userid, $status, $filter, "parent_path, priority, title", true, 1, null, true);
+		$res = $this->findObjects(null, $userid, $status, $filter, "parent_path, priority, title", true, 1, null, true);
+
 		$tree = $this->buildTree($res["items"]);
 		return $tree ;
 	}
@@ -483,8 +486,7 @@ class Tree extends BEAppModel
 				$roots[$root['parent_id']]['children'][] = &$root ;
 			} elseif (!empty($root['parent_id'])) {
 				$this->putBranchInTree($tree, $root);
-			} elseif ( (empty($id) && $root["object_type_id"] == Configure::read("objectTypes.area.id"))
-					|| ($id == $root["id"]) ) {
+			} elseif ($root["object_type_id"] == Configure::read("objectTypes.area.id")) {
 				$tree[] = &$root;
 			}
 
