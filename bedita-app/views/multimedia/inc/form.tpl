@@ -9,6 +9,9 @@
 <input  type="hidden" name="data[uri]" value="{$object.uri}" />
 <input  type="hidden" name="data[name]" value="{$object.name}" />
 <input  type="hidden" name="data[mime_type]" value="{$object.mime_type}" />
+{if !empty($object.original_name)}
+    <input  type="hidden" name="data[original_name]" value="{$object.original_name}" />
+{/if}
 
 {assign_associative var="params" publication=false comments=true}
 {$view->element('form_properties', $params)}
