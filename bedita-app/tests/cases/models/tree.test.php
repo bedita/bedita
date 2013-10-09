@@ -64,6 +64,21 @@ class TreeTestCase extends BeditaTestCase {
 		echo $this->buildHtmlTree($tree);
  	}
 
+ 	public function testCloneStructure() {
+ 		$this->requiredData(array("buildTree"));
+ 		$pubId = $this->savedIds['Publication 1'];
+ 		$idConversion = $this->Tree->cloneStructure($pubId, array('keepTitle' => true));
+ 		$clonedPubId = $idConversion[$pubId];
+ 		$clonedTree = $this->Tree->getAll($clonedPubId);
+ 		$arrToCompare = $this->prepareTreeToCompare($clonedTree);
+ 		if (!$this->assertEqual($arrToCompare[0], $this->data['buildTree'][0])) {
+			pr("Original structure:");
+			pr($this->data['buildTree'][0]);
+			pr("Cloned strucuture:");
+			pr($arrToCompare[0]);
+		}
+ 	}
+
 	function testSave() {
 		$object_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Event 1"];
 		$parent_path = "/" . $this->savedIds["Section 7"] . "/" . $this->savedIds["Section 9"] . "/" . $this->savedIds["Section 7"];
