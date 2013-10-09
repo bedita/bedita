@@ -474,7 +474,8 @@ class NewsletterController extends ModulesController {
 	public function cloneObject() {
 		$object_type_id = ClassRegistry::init("BEObject")->findObjectTypeId($this->data['id']);
 		unset($this->data['id']);
-		$this->data['status']='draft';
+		unset($this->data['nickname']);
+		$this->data['status'] = 'draft';
 		$this->data['fixed'] = 0;
 		if ($object_type_id == Configure::read("objectTypes.mail_message.id")) {
 			if (!empty($this->data['start_sending']) && !empty($this->data['MailGroup'])) {

@@ -146,6 +146,9 @@ class BeUploadToObjComponent extends Object {
 		if (!empty($data["id"])) {
 			unset($data["id"]);
 		}
+		if (!empty($data["nickname"])) {
+			unset($data["nickname"]);
+		}
 		if(preg_match(Configure::read("validate_resource.URL"), $data["uri"])) {
 			$data["url"] = $data["uri"];
 			return $this->uploadFromURL($data, true);

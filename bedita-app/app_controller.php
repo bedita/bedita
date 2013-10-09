@@ -985,7 +985,8 @@ abstract class ModulesController extends AppController {
 
 	public function cloneObject() {
 		unset($this->data['id']);
-		$this->data['status']='draft';
+		unset($this->data['nickname']);
+		$this->data['status'] = 'draft';
 		$this->data['fixed'] = 0;
 		$this->save();
 	}

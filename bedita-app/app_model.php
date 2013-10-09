@@ -621,7 +621,7 @@ class BEAppObjectModel extends BEAppModel {
 	}
 
 	/**
-	 * Clone a BEdita object.
+	 * Clone a BEdita object starting from object id
 	 * It should be called from a BEdita object model as Document, Section, etc...
 	 *
 	 * @param int $id, the BEdita object id
@@ -646,9 +646,16 @@ class BEAppObjectModel extends BEAppModel {
 	 *				"keepUserCreated" => false, true to keep the original user created
 	 */
 	public function arrangeDataForClone(array &$data, array $options = array()) {
-		$defaultOptions = array("nicknameSuffix" => "", "keepTitle" => false, "keepUserCreated" => false);
+		$defaultOptions = array("nicknameSuffix" => false, "keepTitle" => false, "keepUserCreated" => false);
 		$options = array_merge($defaultOptions, $options);
 		$toUnset = array("id", "ObjectType", "SearchText", "UserCreated", "UserModified", "Version");
+		if (isset($data["nickname"])) {
+			if ($options["nicknameSuffix"]) {
+				$data["nickname"] .= $options["nicknameSuffix"];
+			} else {
+				$toUnset[] = "nickname";
+			}
+		}
 		if (!$options["keepUserCreated"]) {
 			$toUnset[] = "user_created";
 		}
@@ -656,9 +663,6 @@ class BEAppObjectModel extends BEAppModel {
 			if (isset($data[$label])) {
 				unset($data[$label]);
 			}
-		}
-		if (isset($data["nickname"])) {
-			$data["nickname"] .= $options["nicknameSuffix"];
 		}
 		if (!$options["keepTitle"]) {
 			$data["title"] .= " - " . __("copy", true);

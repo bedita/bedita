@@ -235,7 +235,7 @@ class MultimediaController extends ModulesController {
 	}
 	
 	public function cloneObject() {
-		$this->data['status']='draft';
+		$this->data['status'] = 'draft';
 		$this->data['fixed'] = 0;
 		$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
 	}
