@@ -6,7 +6,7 @@
 	{$session->flash('error')}
 {elseif $output == "beditaMsg"}
 	<script type="text/javascript">
-	var flashMsg = escape('{$session->flash('error')}');
+	var flashMsg = escape('{$session->flash("error")|replace:"'":"\'"}');
 	$(document).ready(function() {
 		$("#messagesDiv").empty().html(unescape(flashMsg)).triggerMessage("error");
 	});
