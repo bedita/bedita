@@ -13,9 +13,9 @@ Menu a SX valido per tutte le pagine del controller.
 
 		$("#collision").hide();
 		var optionsForm = { 
-			error:		showResponse,  // post-submit callback  
-			success:		showResponse,  // post-submit callback  
-			dataType:		'html',        // 'xml', 'script', or 'json' (expected server response type)
+			error: showResponse,  // post-submit callback  
+			success: showResponse,  // post-submit callback  
+			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
 			url: "{$html->url('/multimedia/saveAjax')}"
 		} ;
 	
@@ -36,15 +36,54 @@ Menu a SX valido per tutte le pagine del controller.
 		    	$(".secondacolonna .modules label").addClass("submitForm");
 				$('#updateForm').ajaxSubmit(optionsForm);
 			} 
-    		return false;  
-		} );
+    		return false;
+		});
 
-	} );
+		// save behavior when modal is opened for file exists error
+		$("#modalmain div[data-file-exists] input.uploadChoice").live('click', function() {
+			var serilizedFormArr = $("#modalmain div[data-file-exists] :input").serializeArray();
+			var d = {
+				upload_choice: $(this).attr('data-value')
+			};
+			for (var i in serilizedFormArr) {
+				d[serilizedFormArr[i].name] = serilizedFormArr[i].value;
+			}
+			optionsForm.data = d;
+			// empty input form to avoid useless upload (file is already uploaded)
+			$("input[name=Filedata]").val('');
+			$("div.insidecol input[name='saveMedia']").click();
+			$("#modalheader .close").click();
+		});
 
-	function showResponse(data) { 
-		$("#collision").html(data);
-		$("#collision").show();
-	} 
+		$("#modalmain div[data-file-exists] input#fileExistsCancel").live('click', function() {
+			$("input[name=Filedata]").val('');
+			$("#modalheader .close").click();
+		});
+
+		$("#modalmain div[data-file-exists] input#goto").live('click', function() {
+			var href = $(this).attr('data-href');
+			location.href = href;
+		});
+
+		function showResponse(data) {
+			// reset post data passed if save is performed in modal
+			optionsForm.data = {};
+			// file already exists
+			if ($(data).attr('data-file-exists')) {
+				$("#collision").BEmodal();
+				$("#modalmain").empty().append(data);
+			// redirect after saveAjax
+			} else if ($(data).attr('data-redirect-url')) {
+				location.href = $(data).attr('data-redirect-url');
+			// trigger error
+			} else {
+				$("#collision").empty().append(data);
+				$("#collision").show();
+			}
+		}
+
+	});
+
 </script>
 {/if}
 

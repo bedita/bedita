@@ -126,6 +126,10 @@ class BeUploadToObjComponent extends Object {
 		if (!empty($this->params['form']['mediatype'])) {
 			$dataURL['mediatype'] = $this->params['form']['mediatype'];
 		}
+
+		$dataURL['hash_file'] = null;
+		$dataURL['original_name'] = null;
+
 		unset($dataURL["url"]);
 		$id = $this->BeFileHandler->save($dataURL, $clone, $getInfoURL) ;
 		return $id;
@@ -133,18 +137,28 @@ class BeUploadToObjComponent extends Object {
 
 	/**
 	 * Clone data for media
-	 * 
+	 * This method is not intended to upload file!
+	 *
+	 * Its purpose is to clone $data into another multimedia object (or in the same if $cloneOnlyFile = true)
+	 * If $cloneOnlyFile = true file data and file on filesystem will be cloned and $data will be saved on the same multimedia object
+	 *
+	 * If $data['uri'] is filled and it's not an url
+	 * the original file located in Configure::read("mediaRoot") . $data["uri"] will be duplicate with different name and attached to cloned object
+	 *
 	 * @param array $data
+	 * @param bool $cloneOnlyFile, true to clone only file (no new multimedia object will be created if $data['id'] is populated)
 	 * @return mixed boolean|int, false if cloning was unsuccessful, int $id otherwise
 	 */
-	public function cloneMediaObject($data) {
-		if (!empty($data["id"])) {
-			unset($data["id"]);
+	public function cloneMediaObject($data, $cloneOnlyFile = false) {
+		if (!$cloneOnlyFile) {
+			if (!empty($data["id"])) {
+				unset($data["id"]);
+			}
+			if (!empty($data["nickname"])) {
+				unset($data["nickname"]);
+			}
 		}
-		if (!empty($data["nickname"])) {
-			unset($data["nickname"]);
-		}
-		if(preg_match(Configure::read("validate_resource.URL"), $data["uri"])) {
+		if (preg_match(Configure::read("validate_resource.URL"), $data["uri"])) {
 			$data["url"] = $data["uri"];
 			return $this->uploadFromURL($data, true);
 		} else {
@@ -157,7 +171,9 @@ class BeUploadToObjComponent extends Object {
 			if (!empty($this->params['form']['mediatype'])) {
 				$data['mediatype'] = $this->params['form']['mediatype'];
 			}
-			$data['name'] = $this->BeFileHandler->buildNameFromFile($data['original_name']);
+			if (!empty($data['original_name'])) {
+				$data['name'] = $this->BeFileHandler->buildNameFromFile($data['original_name']);
+			}
 			return $this->BeFileHandler->save($data, true);
 		}
 	}

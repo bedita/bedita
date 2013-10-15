@@ -141,65 +141,78 @@ class MultimediaController extends ModulesController {
 	function saveAjax() {
 		$this->layout = "ajax";
 		try {
-			if(!empty($this->data['upload_choice'])) {
-				if($this->data['upload_choice'] == 'new_file_new_obj') {
-					$this->data['uri'] = $this->Stream->field('uri',array('id'=>$this->data['upload_other_obj_id']));
-					$this->data['name'] = $this->params['form']['Filedata']['name'];
-					$this->data['mime_type'] = $this->Stream->field('mime_type',array('id'=>$this->data['upload_other_obj_id']));
-					$id = $this->BeUploadToObj->cloneMediaObject($this->data);
-					$this->set("redirUrl","/multimedia/view/".$id);
+			if (!empty($this->params['form']['upload_choice'])) {
+				$streamData = $this->Stream->find('first', array(
+					'conditions' => array('id' => $this->params['form']['upload_other_obj_id'])
+				));
+
+				$this->data['uri'] = $streamData['Stream']['uri'];
+				$this->data['name'] = $streamData['Stream']['name'];
+				$this->data['original_name'] = $streamData['Stream']['original_name'];
+				$this->data['mime_type'] = $streamData['Stream']['mime_type'];
+
+				if ($this->params['form']['upload_choice'] == 'new_file_new_obj') {
+					// if it's not a new object then clone original object
+					if (!empty($this->data['id'])) {
+						$this->cloneObject();
+					// else it it's new, save object cloning media attached
+					} else {
+						$this->save(true);
+					}
 				} else { // new_file_old_obj
-					$id = $this->data['upload_other_obj_id'];
-					$this->data['id'] = $id;
-					$this->data['name'] = $this->params['form']['Filedata']['name'];
-					$this->params['form']['forceupload'] = true;
+					$this->BeUploadToObj->cloneMediaObject($this->data, true);
 					$this->save();
-					$this->set("redirUrl","/multimedia/view/".$id);
 				}
 			} else {
+				$this->set('newObject', empty($this->data['id']));
 				$this->save();
-				$this->set("redirUrl","/multimedia/view/".$this->Stream->id);
 			}
-		} catch(BEditaFileExistException $ex) {
+
+			$this->set("redirUrl","/multimedia/view/".$this->Stream->id);
+
+		} catch (BEditaFileExistException $ex) {
 			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
 			$this->setResult(self::ERROR);
-			$this->set("errorFileExist","true");
+			$this->set("errorFileExist", true);
 			$this->set("errorMsg", $ex->getMessage());
 			$this->set("objectId", $ex->getObjectId());
 			$this->set("objectTitle", $this->BEObject->field("title", array("id" => $ex->getObjectId())));
 		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
-			$this->setResult(self::ERROR);
-			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
-			$this->set("errorMsg", $ex->getMessage());
+			throw new BeditaAjaxException($ex->getMessage(), array('output' => 'beditaMsg'));
 		}
 	}
 
-	function save() {
+	function save($cloneMedia = false) {
 		$this->checkWriteModulePermission();
-		if(empty($this->data)) 
+		if(empty($this->data)) {
 			throw new BeditaException( __("No data", true));
-			
+		}
+
 		$new = (empty($this->data['id'])) ? true : false ;
-		
-		// Verify object permits
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
-//			throw new BeditaException(__("Error modifying permissions", true));
-		
+
+		if (!$new) {
+			$this->checkObjectWritePermission($this->data['id']);
+		}
+
 		// Format custom properties
 		$this->BeCustomProperty->setupForSave() ;	
 		
 		$this->Transaction->begin() ;
 		// save data
 		$this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
-	
+
 		if (!empty($this->params['form']['Filedata']['name'])) {
 			if(!empty($this->data['url'])) {
 				unset($this->data['url']);
 			}
-			$this->Stream->id = $this->BeUploadToObj->upload($this->data) ;
+			if ($cloneMedia) {
+				$this->params['form']['forceupload'] = true;
+			}
+			$this->Stream->id = $this->BeUploadToObj->upload($this->data);
 		} elseif (!empty($this->data['url'])) {
-			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data) ;
+			$this->Stream->id = $this->BeUploadToObj->uploadFromURL($this->data, $cloneMedia);
+		} elseif ($cloneMedia) {
+			$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
 		} else {
 			if(!empty($this->data['url'])) {
 				unset($this->data['url']);
@@ -215,17 +228,16 @@ class MultimediaController extends ModulesController {
 				$this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
 			}
 
-			if(!isset($this->data['Permission']))
-				$this->data['Permission'] = array() ;
+			if (!isset($this->data['Permission'])) {
+				$this->data['Permission'] = array();
+			}
 			
-			if(!$this->{$model}->save($this->data)) {
+			if (!$this->{$model}->save($this->data)) {
 				throw new BeditaException(__("Error saving multimedia", true), $this->{$model}->validationErrors);
 			}
 			$this->Stream->id = $this->{$model}->id;
 		}
 
-//		$this->Permission->saveFromPOST($this->Stream->id, $this->data['Permission'], 
-//				!empty($this->data['recursiveApplyPermissions']), 'document');
 		if(isset($this->data['destination'])) {
 			$this->BeTree->updateTree($this->Stream->id, $this->data['destination']);
 		}
@@ -235,9 +247,11 @@ class MultimediaController extends ModulesController {
 	}
 	
 	public function cloneObject() {
+		unset($this->data['id']);
+		unset($this->data['nickname']);
 		$this->data['status'] = 'draft';
 		$this->data['fixed'] = 0;
-		$this->Stream->id = $this->BeUploadToObj->cloneMediaObject($this->data);
+		$this->save(true);
 	}
 
 	function delete() {
