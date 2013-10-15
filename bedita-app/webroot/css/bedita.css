@@ -1490,7 +1490,7 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	/*background:transparent url(../img/shadowpattern160.png);*/
 	top:20px; 
 	left:20px;
-	position:absolute !important;
+	position: fixed !important;
 	z-index:9999;
 	line-height:1.2em;
 }
