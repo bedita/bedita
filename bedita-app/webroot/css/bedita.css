@@ -1493,6 +1493,7 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	position: fixed !important;
 	z-index:9999;
 	line-height:1.2em;
+	height: 90%;
 }
 			
 .message {
@@ -1512,9 +1513,11 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	padding:10px;
 	background-color:#FFF;
 	color:#000;
-	position:absolute !important;
-	left:140px;
-	top:0px
+	position: absolute !important;
+	max-height: 100%;
+	overflow-y: auto;
+	left: 140px;
+	top: 0px;
 }
 
 
