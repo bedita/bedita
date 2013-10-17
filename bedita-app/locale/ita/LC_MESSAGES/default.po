@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2012-05-25 12:06:57\n"
+"POT-Creation-Date: 2013-10-17 12:24:43\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -17,11 +17,19 @@ msgstr "(De)Seleziona tutto"
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
 
+msgid ""
+"A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+"E' presente una nuova versione dell'addon. Vuoi aggiornarlo?"
+
 msgid "Access to Backend"
 msgstr "Accesso al Backend"
 
 msgid "Action"
 msgstr "Azione"
+
+msgid "Actions"
+msgstr "Azioni"
 
 msgid "Add"
 msgstr "Aggiungi"
@@ -62,11 +70,17 @@ msgstr "Proprietà avanzate"
 msgid "Alias"
 msgstr "Alias"
 
+msgid "All modules"
+msgstr "Tutti i moduli"
+
 msgid "All unsaved changes will be lost"
 msgstr "Tutte le modifiche non salvate andranno perdute"
 
 msgid "Annotation type or object_id missing"
 msgstr "Tipo di annotazione o object_id mancanti"
+
+msgid "Another multimedia object named"
+msgstr "Un altro oggetto multimediale chiamato"
 
 msgid "Are you sure that you want to delete selected items?"
 msgstr "Sicuro di voler eliminare gli elementi selezionati?"
@@ -106,8 +120,11 @@ msgstr ""
 "Sei sicuro che vuoi annullare e ricaricare il documento? Tutti i cambiamenti "
 "non salvati saranno persi"
 
-msgid "Are you sure you want to procede? The operation may be slow"
-msgstr "Sei sicuro di voler procedere? L'operazione potrebbe essere lenta"
+msgid "Are you sure you want to delete"
+msgstr "Sei sicuro che vuoi eliminarlo"
+
+msgid "Are you sure you want to procede? The operation can take several time"
+msgstr "Sei sicuro che vuoi procedere? L'operazione può impiegare parecchio tempo"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -124,6 +141,9 @@ msgstr "Autore"
 msgid "Authorized"
 msgstr "Autorizzato"
 
+msgid "Auto-block forbidden"
+msgstr "Blocco-automatico proibito"
+
 msgid "Auto-remove forbidden"
 msgstr "Eliminazione-automatica proibita"
 
@@ -135,6 +155,9 @@ msgstr "Autosave abilitato"
 
 msgid "Autosave turned off"
 msgstr "Autosave spento"
+
+msgid "BEdita Object Type"
+msgstr "Tipo di oggetto di BEdita"
 
 msgid "BEdita contents statistics"
 msgstr "Statistiche contenuti BEdita"
@@ -151,6 +174,9 @@ msgstr "Tipo di oggetto model di BEdita abilitato"
 msgid "BEdita url"
 msgstr "BEdita url"
 
+msgid "Back"
+msgstr "Indietro"
+
 msgid "Backend Logs"
 msgstr "Log di Backend"
 
@@ -166,6 +192,15 @@ msgstr "Stato transazione non valido"
 msgid "Bedita3 main dashboard"
 msgstr "Dashboard di Bedita3"
 
+msgid "Behaviors"
+msgstr "Behaviors"
+
+msgid "Behaviors disabled"
+msgstr "Behaviors disabilitati"
+
+msgid "Behaviors enabled"
+msgstr "Behaviors abilitati"
+
 msgid "Bit depth"
 msgstr "Profondità in bit"
 
@@ -174,6 +209,15 @@ msgstr "Sfoglia"
 
 msgid "Bulk actions on"
 msgstr "Operazioni su"
+
+msgid "Calendar start date after end date"
+msgstr "Nel calendario la data d'inizio è dopo la data di fine"
+
+msgid "Calendar view"
+msgstr "Vista a Calendario"
+
+msgid "Cancel"
+msgstr "Annulla"
 
 msgid "Cancel queue"
 msgstr "Cancella coda"
@@ -217,6 +261,12 @@ msgstr "Seleziona almeno un gruppo"
 msgid "Check url"
 msgstr "Verifica url"
 
+msgid "Choose one of the following operations"
+msgstr "Scegli una delle seguenti operazioni"
+
+msgid "Clone"
+msgstr "Clona"
+
 msgid "Code"
 msgstr "Codice"
 
@@ -239,7 +289,13 @@ msgid "Compile"
 msgstr "Compila"
 
 msgid "Components"
-msgstr "Componenti"
+msgstr "Components"
+
+msgid "Components disabled"
+msgstr "Components disabilitati"
+
+msgid "Components enabled"
+msgstr "Components abilitati"
 
 msgid "Concurrent editors:"
 msgstr "Redattori concorrenti:"
@@ -286,15 +342,6 @@ msgstr "Crea"
 msgid "Create new"
 msgstr "Crea nuovo"
 
-msgid "Create new document"
-msgstr "Nuovo documento"
-
-msgid "Create new event"
-msgstr "Nuovo evento"
-
-msgid "Create new gallery"
-msgstr "Nuova galleria"
-
 msgid "Create new list"
 msgstr "Crea nuova lista"
 
@@ -307,8 +354,8 @@ msgstr "Nuova sezione"
 msgid "Create new user"
 msgstr "Crea un nuovo utente"
 
-msgid "Create news"
-msgstr "Crea una news"
+msgid "Created on"
+msgstr "Creato il"
 
 msgid "Creator is required (at least %1 alphanumerical char)"
 msgstr "Campo creatore obbligatorio (almeno %1 caratteri alfanumerici)"
@@ -324,6 +371,15 @@ msgstr "Proprietà personalizzata salvata"
 
 msgid "Custom relations"
 msgstr "Relazioni personalizzate"
+
+msgid "DIFF"
+msgstr "DIFF"
+
+msgid "DISABLE"
+msgstr "DISABILITA"
+
+msgid "Dashboard"
+msgstr "Dashboard"
 
 msgid "Date"
 msgstr "Data"
@@ -379,14 +435,32 @@ msgstr "Documento salvato"
 msgid "Documents deleted"
 msgstr "Documento eliminato"
 
+msgid "Drop here as an anchor"
+msgstr "Lascia qui come ancora"
+
+msgid "Drop here as placeholder"
+msgstr "Lascia qui come placeholder"
+
+msgid "Drop here as placeref"
+msgstr "Lascia qui come placeref"
+
 msgid "Duplicate property name for the same type"
 msgstr "Nome di proprietà duplicato per lo stesso tipo"
+
+msgid "ENABLE"
+msgstr "ABILITA"
 
 msgid "Email"
 msgstr "Email"
 
 msgid "Email log"
 msgstr "Email log"
+
+msgid "Email notifications"
+msgstr "Notifiche Email"
+
+msgid "Embed Code"
+msgstr "Embed Code"
 
 msgid "Empty data"
 msgstr "Dati vuoti"
@@ -405,6 +479,9 @@ msgstr "Errore in inserimento iscritto "
 
 msgid "Error adding subscribers"
 msgstr "Errore in inserimento iscritti"
+
+msgid "Error blocking user"
+msgstr "Errore bloccando l'utente"
 
 msgid "Error checking url for link: "
 msgstr "Errore in controllo url per collegamento:"
@@ -547,9 +624,6 @@ msgstr "Errore in salvataggio dati multimedia"
 msgid "Error saving note"
 msgstr "Errore in salvataggio dati nota"
 
-msgid "Error saving object type"
-msgstr "Errore nel salvataggio del tipo di oggetto"
-
 msgid "Error saving options"
 msgstr "Errore in salvataggio opzioni"
 
@@ -579,6 +653,9 @@ msgstr "Errore nell'invio della mail di notifica"
 
 msgid "Error setting on Card status"
 msgstr "Errore nel cambiamento di status della Scheda"
+
+msgid "Error sorting module"
+msgstr "Errore ordinando i moduli"
 
 msgid "Error subscribing "
 msgstr "Errore in iscrizione "
@@ -648,6 +725,9 @@ msgstr "Trova e inserisci latitudine e longitudine"
 
 msgid "Find it"
 msgstr "Trova"
+
+msgid "Fixed"
+msgstr "Fixed"
 
 msgid "Forgotten username or password?"
 msgstr "Hai dimenticato l'utente o la password?"
@@ -730,6 +810,12 @@ msgstr "Altezza"
 msgid "Helpers"
 msgstr "Helpers"
 
+msgid "Helpers disabled"
+msgstr "Helpers disabilitati"
+
+msgid "Helpers enabled"
+msgstr "Helpers abilitati"
+
 msgid "Hi"
 msgstr "Ciao"
 
@@ -789,6 +875,9 @@ msgstr "Jobs"
 
 msgid "Language configuration"
 msgstr "Configurazione della lingua"
+
+msgid "Last access on:"
+msgstr "Ultimo accesso il:"
 
 msgid "Last check"
 msgstr "Ultima verifica"
@@ -877,17 +966,23 @@ msgstr "Autore principale"
 msgid "Maintenance"
 msgstr "Intervento"
 
+msgid "Manage categories"
+msgstr "Gestisci le categorie"
+
+msgid "Manage relations"
+msgstr "Gestisci le relazioni"
+
 msgid "Media already exists in the system"
 msgstr "Media già esiste nel sistema"
 
 msgid "Media root"
-msgstr ""
+msgstr "Media root"
 
 msgid "Media type"
 msgstr "Tipo Media"
 
 msgid "Media url"
-msgstr ""
+msgstr "Media url"
 
 msgid "Message template"
 msgstr "Template messaggio"
@@ -942,17 +1037,26 @@ msgstr "Manca il campo soggetto"
 msgid "Missing temporary file in filesystem."
 msgstr "Manca file temporaneo nel sistema"
 
+msgid "Model disabled"
+msgstr "Model disabilitati"
+
+msgid "Model enabled"
+msgstr "Model abilitati"
+
 msgid "Moderated"
 msgstr "Moderati"
-
-msgid "Modify"
-msgstr "Modifica"
 
 msgid "Module"
 msgstr "Modulo"
 
 msgid "Module access"
 msgstr "Accesso al modulo"
+
+msgid "Modules sorted succesfully"
+msgstr "Moduli riordinati con successo"
+
+msgid "More"
+msgstr "Altro"
 
 msgid "More properties"
 msgstr "Altre proprietà"
@@ -982,6 +1086,9 @@ msgstr "Oggetto multimedia salvato"
 msgid "Multimedia provider is not managed"
 msgstr "Il multimedia provider non è supportato"
 
+msgid "My permissions groups"
+msgstr "I miei gruppi"
+
 msgid "Name"
 msgstr "Nome"
 
@@ -991,9 +1098,6 @@ msgstr "Il campo Nome è obbligatorio (almeno %1 caratteri alfanumerici)"
 msgid "New Translation"
 msgstr "Nuova traduzione"
 
-msgid "New card"
-msgstr "Nuova scheda"
-
 msgid "New contents default language"
 msgstr "Lingua predefinita per nuovi contenuti"
 
@@ -1002,9 +1106,6 @@ msgstr "Nuovo gruppo"
 
 msgid "New item"
 msgstr "Nuovo elemento"
-
-msgid "New link"
-msgstr "Nuovo collegamento"
 
 msgid "New password"
 msgstr "Nuova password"
@@ -1025,7 +1126,7 @@ msgid "News saved"
 msgstr "News salvata"
 
 msgid "Newsletter"
-msgstr ""
+msgstr "Newsletter"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
 msgstr ""
@@ -1038,7 +1139,7 @@ msgid "Newsletters"
 msgstr "Newsletter"
 
 msgid "Newsletters "
-msgstr "Newsletters"
+msgstr "Newsletters "
 
 msgid "Newsletters sent this month"
 msgstr "Newsletter inviate questo mese"
@@ -1175,6 +1276,9 @@ msgstr "Nessun dato utente"
 msgid "No user with access privileges found"
 msgstr "Nessun utente con privilegi di accesso trovato"
 
+msgid "No valid export filter has been selected"
+msgstr "Nessun filtro di esportazione è stato selezionato"
+
 msgid "No versions set"
 msgstr "Nessuna versione presente"
 
@@ -1198,6 +1302,9 @@ msgstr "Consegna mail di notifica fallita"
 
 msgid "Number of objects"
 msgstr "Numero di oggetti"
+
+msgid "Object id not found: %d"
+msgstr "L'oggetto con id %d non è stato trovato"
 
 msgid "Object type"
 msgstr "Tipo oggetto"
@@ -1271,6 +1378,9 @@ msgstr "Permessi"
 msgid "Person"
 msgstr "Persona"
 
+msgid "Personal data"
+msgstr "Dati personali"
+
 msgid "Please check"
 msgstr "Verificare"
 
@@ -1307,6 +1417,9 @@ msgstr "Stampa"
 msgid "Print layout"
 msgstr "Layout di stampa"
 
+msgid "Profile"
+msgstr "Profilo"
+
 msgid "Project name"
 msgstr "Nome progetto"
 
@@ -1321,6 +1434,9 @@ msgstr "URL del Provider"
 
 msgid "Public sites users statistics"
 msgstr "Statistiche degli utenti ai siti pubblici"
+
+msgid "Publications"
+msgstr "Pubblicazioni"
 
 msgid "Publish"
 msgstr "Pubblica"
@@ -1354,6 +1470,9 @@ msgstr "Il nome reale e obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Referenced in"
 msgstr "Referenziato in"
+
+msgid "Related tickets"
+msgstr "Ticket collegati"
 
 msgid "Relationships"
 msgstr "Relazioni"
@@ -1421,9 +1540,6 @@ msgstr "Seleziona un utente dalla lista"
 msgid "Select by category"
 msgstr "Seleziona per categoria"
 
-msgid "Select by template"
-msgstr "Seleziona per template"
-
 msgid "Select by type"
 msgstr "Seleziona per tipo"
 
@@ -1432,6 +1548,9 @@ msgstr "Selezionare lingue contenuti"
 
 msgid "Select file(s)"
 msgstr "Selezionare i(l) file"
+
+msgid "Select something in the editor"
+msgstr "Seleziona qualcosa nell'editor"
 
 msgid "Send"
 msgstr "Invia"
@@ -1463,6 +1582,9 @@ msgstr "Software"
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr "Errore. Impossibile trovare bedita_module_setup.php"
 
+msgid "Sort Modules"
+msgstr "Ordina i moduli"
+
 msgid "Source data"
 msgstr "Dati sorgente"
 
@@ -1474,6 +1596,9 @@ msgstr "Status"
 
 msgid "Subject"
 msgstr "Soggetto"
+
+msgid "Submit"
+msgstr "Submit"
 
 msgid "Subscribed this month"
 msgstr "Iscritti questo mese"
@@ -1609,6 +1734,9 @@ msgstr "Traduzione aggiornata"
 msgid "Translations"
 msgstr "Traduzioni"
 
+msgid "UPDATE"
+msgstr "AGGIORNA"
+
 msgid "URL not valid"
 msgstr "URL non valido"
 
@@ -1677,6 +1805,20 @@ msgstr "Utente già creato"
 
 msgid "User blocked"
 msgstr "Utente bloccato"
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. Do you "
+"want to block"
+msgstr ""
+"L'utente non può essere eliminato perchè ha creato o modificato dei contenuti. Vuoi "
+"bloccarlo"
+
+msgid ""
+"User cannot be removed, he/she did create or modify some contents. It's "
+"alredy blocked"
+msgstr ""
+"L'utente non può essere eliminato perchè ha creato o modificato dei contenuti. L'utente "
+"è già bloccato"
 
 msgid "User created"
 msgstr "Utente creato"
@@ -1821,6 +1963,9 @@ msgstr "aggiungi gruppo"
 msgid "add more tags"
 msgstr "aggiungi più tag"
 
+msgid "addon plugged succesfully"
+msgstr "addon abilitato con successo"
+
 msgid "address"
 msgstr "indirizzo"
 
@@ -1863,9 +2008,6 @@ msgstr "tutte le news"
 msgid "all newsletter"
 msgstr "tutte le newsletter"
 
-msgid "all recent items"
-msgstr "elementi recenti"
-
 msgid "all tags"
 msgstr "tutti i tag"
 
@@ -1874,6 +2016,9 @@ msgstr "tutte le traduzioni"
 
 msgid "all webmarks"
 msgstr "tutti i webmark"
+
+msgid "already contains the file uploaded"
+msgstr "contiene già il file caricato"
 
 msgid "associate"
 msgstr "associa"
@@ -2019,11 +2164,11 @@ msgstr "crea gruppo"
 msgid "create new"
 msgstr "crea nuovo"
 
-msgid "create new (create new multimedia object and upload file)"
-msgstr "creare nuovo (crea nuovo oggetto multimedia e f"
-
 msgid "create new document"
 msgstr "creare nuovo documento"
+
+msgid "create new multimedia object containing the uploaded file"
+msgstr "creare un nuovo oggetto multimediale contenente il file caricato"
 
 msgid "create new translation"
 msgstr "nuova traduzione"
@@ -2076,6 +2221,9 @@ msgstr "descrizione"
 msgid "details"
 msgstr "dettagli"
 
+msgid "disable succesfully"
+msgstr "disabilitato con successo"
+
 msgid "disable succesfully, all related objects are been deleted"
 msgstr ""
 "disabilitazione avvenuta con successo, tutti gli oggetti correlati sono "
@@ -2119,6 +2267,9 @@ msgstr "svuotare file di log"
 
 msgid "empty logs"
 msgstr "svuotare log"
+
+msgid "enabled folder isn't writable"
+msgstr "la cartella 'enabled' non è scrivibile"
 
 msgid "end"
 msgstr "fine"
@@ -2204,9 +2355,6 @@ msgstr "proprietà gruppo"
 msgid "hashjob for unsubscribe already in use"
 msgstr "hashjob per eliminare sottoscrizione già in uso"
 
-msgid "help"
-msgstr "aiuto"
-
 msgid "here"
 msgstr "qui"
 
@@ -2214,7 +2362,7 @@ msgid "hidden from menu and canonical path"
 msgstr "nascosto da menu e percorso canonico [canonical path]"
 
 msgid "host"
-msgstr ""
+msgstr "host"
 
 msgid "hybrid"
 msgstr "ibrido"
@@ -2243,6 +2391,9 @@ msgstr "inserito il"
 msgid "inventory"
 msgstr "inventario"
 
+msgid "inverse name"
+msgstr "nome inverso"
+
 msgid "invoice id"
 msgstr "id invoice"
 
@@ -2260,6 +2411,9 @@ msgstr "jobs"
 
 msgid "key"
 msgstr "chiave"
+
+msgid "label"
+msgstr "etichetta"
 
 msgid "lang"
 msgstr "lingua"
@@ -2584,18 +2738,14 @@ msgstr "nome originale del file"
 msgid "other"
 msgstr "altro"
 
-msgid ""
-"overwrite (don't create new multimedia object, substitute file for existing "
-"multimedia object)"
-msgstr ""
-"sovrascrivi (non crea nuovo oggetto multimedia, sostituisce file per oggetto "
-"multimedia esistente)"
+msgid "override"
+msgstr "sovrascrivere"
 
 msgid "page"
 msgstr "pagina"
 
 msgid "password"
-msgstr ""
+msgstr "password"
 
 msgid "pending"
 msgstr "in attesa"
@@ -2644,6 +2794,9 @@ msgstr "disclaimer per la privacy"
 
 msgid "private list "
 msgstr "lista privata "
+
+msgid "profile"
+msgstr "profilo"
 
 msgid "promote as user"
 msgstr "promuovi a utente"
@@ -2701,6 +2854,9 @@ msgstr ""
 "ricostruire indice per testi ricerca. Attenzione: potrebbe essere "
 "un'operazione lunga"
 
+msgid "recent items"
+msgstr "elementi recenti"
+
 msgid "recipient"
 msgstr "destinatario/i"
 
@@ -2712,6 +2868,9 @@ msgstr "Inserito in"
 
 msgid "remove from users"
 msgstr "rimuovi dagli utenti"
+
+msgid "replace old file with uploaded file in current multimedia object"
+msgstr "nell'oggetto multimediale corrente sostituisci il vecchio file con quello caricato"
 
 msgid "reply to"
 msgstr "rispondi a"
@@ -2755,9 +2914,6 @@ msgstr "previsto dal"
 msgid "search"
 msgstr "cerca"
 
-msgid "search string"
-msgstr "stringa di ricerca"
-
 msgid "sections"
 msgstr "sezioni"
 
@@ -2779,6 +2935,9 @@ msgstr "seleziona dall'archivio"
 msgid "select one"
 msgstr "seleziona uno"
 
+msgid "select position"
+msgstr "seleziona la posizione"
+
 msgid "selected records"
 msgstr "elementi selezionati"
 
@@ -2799,12 +2958,6 @@ msgstr "nome mittente"
 
 msgid "sent"
 msgstr "spedito"
-
-msgid "set OFF"
-msgstr "imposta OFF"
-
-msgid "set ON"
-msgstr "imposta ON"
 
 msgid "short text"
 msgstr "testo breve"
@@ -2867,7 +3020,7 @@ msgid "thumbnail"
 msgstr "miniatura"
 
 msgid "timeout"
-msgstr ""
+msgstr "timeout"
 
 msgid "title"
 msgstr "titolo"
@@ -2936,6 +3089,9 @@ msgstr ""
 msgid "update stream fields"
 msgstr "aggiornare campi stream"
 
+msgid "updated succesfully"
+msgstr "aggiornato con successo"
+
 msgid "upload new items"
 msgstr "carica nuovi elementi"
 
@@ -2996,9 +3152,6 @@ msgstr "webmark"
 msgid "website"
 msgstr "sito web"
 
-msgid "welcome"
-msgstr "benvenuto"
-
 msgid "with email"
 msgstr "con email"
 
@@ -3026,8 +3179,66 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr "il tuo messaggio"
 
-msgid "your profile and preferences"
-msgstr "il tuo profilo e le tue preferenze"
+#~ msgid "Are you sure you want to procede? The operation may be slow"
+#~ msgstr "Sei sicuro di voler procedere? L'operazione potrebbe essere lenta"
+
+#~ msgid "Create new document"
+#~ msgstr "Nuovo documento"
+
+#~ msgid "Create new event"
+#~ msgstr "Nuovo evento"
+
+#~ msgid "Create new gallery"
+#~ msgstr "Nuova galleria"
+
+#~ msgid "Create news"
+#~ msgstr "Crea una news"
+
+#~ msgid "Error saving object type"
+#~ msgstr "Errore nel salvataggio del tipo di oggetto"
+
+#~ msgid "Modify"
+#~ msgstr "Modifica"
+
+#~ msgid "New card"
+#~ msgstr "Nuova scheda"
+
+#~ msgid "New link"
+#~ msgstr "Nuovo collegamento"
+
+#~ msgid "Select by template"
+#~ msgstr "Seleziona per template"
+
+#~ msgid "all recent items"
+#~ msgstr "elementi recenti"
+
+#~ msgid "create new (create new multimedia object and upload file)"
+#~ msgstr "creare nuovo (crea nuovo oggetto multimedia e f"
+
+#~ msgid "help"
+#~ msgstr "aiuto"
+
+#~ msgid ""
+#~ "overwrite (don't create new multimedia object, substitute file for "
+#~ "existing multimedia object)"
+#~ msgstr ""
+#~ "sovrascrivi (non crea nuovo oggetto multimedia, sostituisce file per "
+#~ "oggetto multimedia esistente)"
+
+#~ msgid "search string"
+#~ msgstr "stringa di ricerca"
+
+#~ msgid "set OFF"
+#~ msgstr "imposta OFF"
+
+#~ msgid "set ON"
+#~ msgstr "imposta ON"
+
+#~ msgid "welcome"
+#~ msgstr "benvenuto"
+
+#~ msgid "your profile and preferences"
+#~ msgstr "il tuo profilo e le tue preferenze"
 
 #~ msgid "Call to a protected or private method in a wrong context"
 #~ msgstr "Chiamata a un metodo privato o protetto in un contesto errato"

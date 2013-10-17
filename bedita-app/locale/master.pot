@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2012-05-25 12:37:59\n"
+"POT-Creation-Date: 2013-10-17 13:01:53\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -15,10 +15,16 @@ msgstr ""
 msgid "(un)select all"
 msgstr ""
 
+msgid "A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+
 msgid "Access to Backend"
 msgstr ""
 
 msgid "Action"
+msgstr ""
+
+msgid "Actions"
 msgstr ""
 
 msgid "Add"
@@ -60,10 +66,16 @@ msgstr ""
 msgid "Alias"
 msgstr ""
 
+msgid "All modules"
+msgstr ""
+
 msgid "All unsaved changes will be lost"
 msgstr ""
 
 msgid "Annotation type or object_id missing"
+msgstr ""
+
+msgid "Another multimedia object named"
 msgstr ""
 
 msgid "Are you sure that you want to delete selected items?"
@@ -96,7 +108,10 @@ msgstr ""
 msgid "Are you sure you want to cancel and reload this document? All unsaved changes will be lost"
 msgstr ""
 
-msgid "Are you sure you want to procede? The operation may be slow"
+msgid "Are you sure you want to delete"
+msgstr ""
+
+msgid "Are you sure you want to procede? The operation can take several time"
 msgstr ""
 
 msgid "Area deleted"
@@ -114,6 +129,9 @@ msgstr ""
 msgid "Authorized"
 msgstr ""
 
+msgid "Auto-block forbidden"
+msgstr ""
+
 msgid "Auto-remove forbidden"
 msgstr ""
 
@@ -124,6 +142,9 @@ msgid "Autosave enabled"
 msgstr ""
 
 msgid "Autosave turned off"
+msgstr ""
+
+msgid "BEdita Object Type"
 msgstr ""
 
 msgid "BEdita contents statistics"
@@ -141,6 +162,9 @@ msgstr ""
 msgid "BEdita url"
 msgstr ""
 
+msgid "Back"
+msgstr ""
+
 msgid "Backend Logs"
 msgstr ""
 
@@ -156,6 +180,15 @@ msgstr ""
 msgid "Bedita3 main dashboard"
 msgstr ""
 
+msgid "Behaviors"
+msgstr ""
+
+msgid "Behaviors disabled"
+msgstr ""
+
+msgid "Behaviors enabled"
+msgstr ""
+
 msgid "Bit depth"
 msgstr ""
 
@@ -163,6 +196,15 @@ msgid "Browse"
 msgstr ""
 
 msgid "Bulk actions on"
+msgstr ""
+
+msgid "Calendar start date after end date"
+msgstr ""
+
+msgid "Calendar view"
+msgstr ""
+
+msgid "Cancel"
 msgstr ""
 
 msgid "Cancel queue"
@@ -207,6 +249,12 @@ msgstr ""
 msgid "Check url"
 msgstr ""
 
+msgid "Choose one of the following operations"
+msgstr ""
+
+msgid "Clone"
+msgstr ""
+
 msgid "Code"
 msgstr ""
 
@@ -229,6 +277,12 @@ msgid "Compile"
 msgstr ""
 
 msgid "Components"
+msgstr ""
+
+msgid "Components disabled"
+msgstr ""
+
+msgid "Components enabled"
 msgstr ""
 
 msgid "Concurrent editors:"
@@ -276,15 +330,6 @@ msgstr ""
 msgid "Create new"
 msgstr ""
 
-msgid "Create new document"
-msgstr ""
-
-msgid "Create new event"
-msgstr ""
-
-msgid "Create new gallery"
-msgstr ""
-
 msgid "Create new list"
 msgstr ""
 
@@ -297,7 +342,7 @@ msgstr ""
 msgid "Create new user"
 msgstr ""
 
-msgid "Create news"
+msgid "Created on"
 msgstr ""
 
 msgid "Creator is required (at least %1 alphanumerical char)"
@@ -313,6 +358,15 @@ msgid "Custom property saved"
 msgstr ""
 
 msgid "Custom relations"
+msgstr ""
+
+msgid "DIFF"
+msgstr ""
+
+msgid "DISABLE"
+msgstr ""
+
+msgid "Dashboard"
 msgstr ""
 
 msgid "Date"
@@ -366,13 +420,31 @@ msgstr ""
 msgid "Documents deleted"
 msgstr ""
 
+msgid "Drop here as an anchor"
+msgstr ""
+
+msgid "Drop here as placeholder"
+msgstr ""
+
+msgid "Drop here as placeref"
+msgstr ""
+
 msgid "Duplicate property name for the same type"
+msgstr ""
+
+msgid "ENABLE"
 msgstr ""
 
 msgid "Email"
 msgstr ""
 
 msgid "Email log"
+msgstr ""
+
+msgid "Email notifications"
+msgstr ""
+
+msgid "Embed Code"
 msgstr ""
 
 msgid "Empty data"
@@ -391,6 +463,9 @@ msgid "Error adding subscriber "
 msgstr ""
 
 msgid "Error adding subscribers"
+msgstr ""
+
+msgid "Error blocking user"
 msgstr ""
 
 msgid "Error checking url for link: "
@@ -534,9 +609,6 @@ msgstr ""
 msgid "Error saving note"
 msgstr ""
 
-msgid "Error saving object type"
-msgstr ""
-
 msgid "Error saving options"
 msgstr ""
 
@@ -565,6 +637,9 @@ msgid "Error sending notification mail"
 msgstr ""
 
 msgid "Error setting on Card status"
+msgstr ""
+
+msgid "Error sorting module"
 msgstr ""
 
 msgid "Error subscribing "
@@ -634,6 +709,9 @@ msgid "Find and fill latlong coords"
 msgstr ""
 
 msgid "Find it"
+msgstr ""
+
+msgid "Fixed"
 msgstr ""
 
 msgid "Forgotten username or password?"
@@ -717,6 +795,12 @@ msgstr ""
 msgid "Helpers"
 msgstr ""
 
+msgid "Helpers disabled"
+msgstr ""
+
+msgid "Helpers enabled"
+msgstr ""
+
 msgid "Hi"
 msgstr ""
 
@@ -775,6 +859,9 @@ msgid "Jobs"
 msgstr ""
 
 msgid "Language configuration"
+msgstr ""
+
+msgid "Last access on:"
 msgstr ""
 
 msgid "Last check"
@@ -864,6 +951,12 @@ msgstr ""
 msgid "Maintenance"
 msgstr ""
 
+msgid "Manage categories"
+msgstr ""
+
+msgid "Manage relations"
+msgstr ""
+
 msgid "Media already exists in the system"
 msgstr ""
 
@@ -927,16 +1020,25 @@ msgstr ""
 msgid "Missing temporary file in filesystem."
 msgstr ""
 
-msgid "Moderated"
+msgid "Model disabled"
 msgstr ""
 
-msgid "Modify"
+msgid "Model enabled"
+msgstr ""
+
+msgid "Moderated"
 msgstr ""
 
 msgid "Module"
 msgstr ""
 
 msgid "Module access"
+msgstr ""
+
+msgid "Modules sorted succesfully"
+msgstr ""
+
+msgid "More"
 msgstr ""
 
 msgid "More properties"
@@ -963,6 +1065,9 @@ msgstr ""
 msgid "Multimedia provider is not managed"
 msgstr ""
 
+msgid "My permissions groups"
+msgstr ""
+
 msgid "Name"
 msgstr ""
 
@@ -972,9 +1077,6 @@ msgstr ""
 msgid "New Translation"
 msgstr ""
 
-msgid "New card"
-msgstr ""
-
 msgid "New contents default language"
 msgstr ""
 
@@ -982,9 +1084,6 @@ msgid "New group"
 msgstr ""
 
 msgid "New item"
-msgstr ""
-
-msgid "New link"
 msgstr ""
 
 msgid "New password"
@@ -1155,6 +1254,9 @@ msgstr ""
 msgid "No user with access privileges found"
 msgstr ""
 
+msgid "No valid export filter has been selected"
+msgstr ""
+
 msgid "No versions set"
 msgstr ""
 
@@ -1177,6 +1279,9 @@ msgid "Notification mail delivery failed"
 msgstr ""
 
 msgid "Number of objects"
+msgstr ""
+
+msgid "Object id not found: %d"
 msgstr ""
 
 msgid "Object type"
@@ -1251,6 +1356,9 @@ msgstr ""
 msgid "Person"
 msgstr ""
 
+msgid "Personal data"
+msgstr ""
+
 msgid "Please check"
 msgstr ""
 
@@ -1284,6 +1392,9 @@ msgstr ""
 msgid "Print layout"
 msgstr ""
 
+msgid "Profile"
+msgstr ""
+
 msgid "Project name"
 msgstr ""
 
@@ -1297,6 +1408,9 @@ msgid "Provider URL"
 msgstr ""
 
 msgid "Public sites users statistics"
+msgstr ""
+
+msgid "Publications"
 msgstr ""
 
 msgid "Publish"
@@ -1330,6 +1444,9 @@ msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr ""
 
 msgid "Referenced in"
+msgstr ""
+
+msgid "Related tickets"
 msgstr ""
 
 msgid "Relationships"
@@ -1398,9 +1515,6 @@ msgstr ""
 msgid "Select by category"
 msgstr ""
 
-msgid "Select by template"
-msgstr ""
-
 msgid "Select by type"
 msgstr ""
 
@@ -1408,6 +1522,9 @@ msgid "Select content languages"
 msgstr ""
 
 msgid "Select file(s)"
+msgstr ""
+
+msgid "Select something in the editor"
 msgstr ""
 
 msgid "Send"
@@ -1440,6 +1557,9 @@ msgstr ""
 msgid "Something seems wrong. bedita_module_setup.php didn't found"
 msgstr ""
 
+msgid "Sort Modules"
+msgstr ""
+
 msgid "Source data"
 msgstr ""
 
@@ -1450,6 +1570,9 @@ msgid "Status"
 msgstr ""
 
 msgid "Subject"
+msgstr ""
+
+msgid "Submit"
 msgstr ""
 
 msgid "Subscribed this month"
@@ -1584,6 +1707,9 @@ msgstr ""
 msgid "Translations"
 msgstr ""
 
+msgid "UPDATE"
+msgstr ""
+
 msgid "URL not valid"
 msgstr ""
 
@@ -1648,6 +1774,12 @@ msgid "User already created"
 msgstr ""
 
 msgid "User blocked"
+msgstr ""
+
+msgid "User cannot be removed, he/she did create or modify some contents. Do you want to block"
+msgstr ""
+
+msgid "User cannot be removed, he/she did create or modify some contents. It's alredy blocked"
 msgstr ""
 
 msgid "User created"
@@ -1788,6 +1920,9 @@ msgstr ""
 msgid "add more tags"
 msgstr ""
 
+msgid "addon plugged succesfully"
+msgstr ""
+
 msgid "address"
 msgstr ""
 
@@ -1830,9 +1965,6 @@ msgstr ""
 msgid "all newsletter"
 msgstr ""
 
-msgid "all recent items"
-msgstr ""
-
 msgid "all tags"
 msgstr ""
 
@@ -1840,6 +1972,9 @@ msgid "all translations"
 msgstr ""
 
 msgid "all webmarks"
+msgstr ""
+
+msgid "already contains the file uploaded"
 msgstr ""
 
 msgid "associate"
@@ -1986,10 +2121,10 @@ msgstr ""
 msgid "create new"
 msgstr ""
 
-msgid "create new (create new multimedia object and upload file)"
+msgid "create new document"
 msgstr ""
 
-msgid "create new document"
+msgid "create new multimedia object containing the uploaded file"
 msgstr ""
 
 msgid "create new translation"
@@ -2043,6 +2178,9 @@ msgstr ""
 msgid "details"
 msgstr ""
 
+msgid "disable succesfully"
+msgstr ""
+
 msgid "disable succesfully, all related objects are been deleted"
 msgstr ""
 
@@ -2083,6 +2221,9 @@ msgid "empty log files"
 msgstr ""
 
 msgid "empty logs"
+msgstr ""
+
+msgid "enabled folder isn't writable"
 msgstr ""
 
 msgid "end"
@@ -2169,9 +2310,6 @@ msgstr ""
 msgid "hashjob for unsubscribe already in use"
 msgstr ""
 
-msgid "help"
-msgstr ""
-
 msgid "here"
 msgstr ""
 
@@ -2208,6 +2346,9 @@ msgstr ""
 msgid "inventory"
 msgstr ""
 
+msgid "inverse name"
+msgstr ""
+
 msgid "invoice id"
 msgstr ""
 
@@ -2224,6 +2365,9 @@ msgid "jobs"
 msgstr ""
 
 msgid "key"
+msgstr ""
+
+msgid "label"
 msgstr ""
 
 msgid "lang"
@@ -2547,7 +2691,7 @@ msgstr ""
 msgid "other"
 msgstr ""
 
-msgid "overwrite (don't create new multimedia object, substitute file for existing multimedia object)"
+msgid "override"
 msgstr ""
 
 msgid "page"
@@ -2604,6 +2748,9 @@ msgstr ""
 msgid "private list "
 msgstr ""
 
+msgid "profile"
+msgstr ""
+
 msgid "promote as user"
 msgstr ""
 
@@ -2658,6 +2805,9 @@ msgstr ""
 msgid "rebuild search texts index. Caution: may be slow"
 msgstr ""
 
+msgid "recent items"
+msgstr ""
+
 msgid "recipient"
 msgstr ""
 
@@ -2668,6 +2818,9 @@ msgid "referenced objects list"
 msgstr ""
 
 msgid "remove from users"
+msgstr ""
+
+msgid "replace old file with uploaded file in current multimedia object"
 msgstr ""
 
 msgid "reply to"
@@ -2712,9 +2865,6 @@ msgstr ""
 msgid "search"
 msgstr ""
 
-msgid "search string"
-msgstr ""
-
 msgid "sections"
 msgstr ""
 
@@ -2736,6 +2886,9 @@ msgstr ""
 msgid "select one"
 msgstr ""
 
+msgid "select position"
+msgstr ""
+
 msgid "selected records"
 msgstr ""
 
@@ -2755,12 +2908,6 @@ msgid "sender name"
 msgstr ""
 
 msgid "sent"
-msgstr ""
-
-msgid "set OFF"
-msgstr ""
-
-msgid "set ON"
 msgstr ""
 
 msgid "short text"
@@ -2889,6 +3036,9 @@ msgstr ""
 msgid "update stream fields"
 msgstr ""
 
+msgid "updated succesfully"
+msgstr ""
+
 msgid "upload new items"
 msgstr ""
 
@@ -2949,9 +3099,6 @@ msgstr ""
 msgid "website"
 msgstr ""
 
-msgid "welcome"
-msgstr ""
-
 msgid "with email"
 msgstr ""
 
@@ -2977,7 +3124,4 @@ msgid "your 5 recent items"
 msgstr ""
 
 msgid "your message"
-msgstr ""
-
-msgid "your profile and preferences"
 msgstr ""
