@@ -11,7 +11,7 @@
 
 <h1>BEdita 3.2 setup</h1>
 
-{assign var="page" value=$smarty.post.page|default:4}
+{assign var="page" value=4}
 
 {include file="inc/menu.tpl" page=$page}
 
