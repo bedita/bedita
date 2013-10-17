@@ -1,15 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita installation wizard | Admin</title>
+	<title>BEdita 3.2 setup | Admin</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>
 </head>
 <body>
 
-<h1>BEdita installation wizard</h1>
+<h1>BEdita 3.2 setup</h1>
 
 {assign var="page" value=$smarty.post.page|default:3}
 

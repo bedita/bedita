@@ -1,6 +1,7 @@
-// {literal}
+/* CSS - BEdita 3.2 setup */
+/* {literal} */
 
-body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { 
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td {
 	margin:0;
 	padding:0;
 	outline:0
@@ -53,10 +54,6 @@ a:link, a:visited, a:active {text-decoration: none; color: blue;}
 
 a:hover {text-decoration: none;}
 
-UL {list-style:none;}
-
-UL UL {margin-left:20px;}
-
 .on, LI.on {font-weight:bold;}
 .INFO {color:green}
 .WARN {color:yellow}
@@ -64,15 +61,16 @@ UL UL {margin-left:20px;}
 
 		ul { list-style: none; }
 
-		li.done { color: green; }
-		li.curr { color: blue; }
-		li.todo { color: orange; }
+		li.done { color: #383; }
+		li.curr { color: #34b; }
+		li.todo { color: #777; }
+		li.curr:before { content: "\203A\0020"; }
 
 		
 
-BODY {font-size:12px; font-family: "Arial", "Helvetica", sans-serif; line-height:1.5em;}
+BODY { font-size: 0.825em; font-family: "Arial", "Helvetica", sans-serif; line-height:1.42em; padding: 1em}
 
-H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em}
+H1 {font:normal 2em "Georgia", "Times New Roman", Times, serif; line-height:1em;}
 
 H2 {
 	font:normal 1.5em "Georgia", "Times New Roman", Times, serif; line-height:1em;
@@ -83,9 +81,10 @@ H2 {
 
 H3 {font:normal 1.35em "Georgia", "Times New Roman", Times, serif; line-height:1em}
 
-.graced {font-family: "Georgia", "Times New Roman", Times, serif;}
+H1, H2, H3, p, TABLE { margin-bottom: 1em;}
 
-.monospaced {font-family: monospace;}
+
+UL {list-style: square; list-style-position: inside; margin: 1em auto;}
 
 INPUT[type=text],INPUT[type=password], TEXTAREA {
 
@@ -95,6 +94,18 @@ INPUT[type=submit] {
 	margin:20px 0px 10px 0px; padding:5px;
 }
 
+fieldset {
+	margin:0px 0px 20px 0px;
+	padding:0px;
+}
+
+
+
+.graced {font-family: "Georgia", "Times New Roman", Times, serif;}
+
+.monospaced {font-family: monospace;}
+
+
 #map {
 	border-right:1px solid gray;
 	float:left;
@@ -102,10 +113,8 @@ INPUT[type=submit] {
 	min-height:800px;
 }
 
-fieldset {
-	margin:0px 0px 20px 0px;
-	padding:0px;
-}
+#map ul { list-style: none; margin: 0;}
+#map li { margin-bottom: 1em; }
 
-// {/literal}
+/* {/literal} */
 		

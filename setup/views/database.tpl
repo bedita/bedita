@@ -1,23 +1,23 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<!DOCTYPE html>
+<html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita installation wizard | Database</title>
+	<title>BEdita 3.2 setup | Database</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>
 </head>
 <body>
 
-<h1>BEdita installation wizard</h1>
+<h1>BEdita 3.2 setup</h1>
 
 {assign var="page" value=$smarty.post.page|default:2}
 
 {include file="inc/menu.tpl" page=$page}
 
 <div style="float:left">
-<p>Permissions on filesystem seem OK!</p>
-<p>Now we are going to setup your database.</p>
+<p>Write permissions on filesystem are OK.</p>
+<p>Now you need to setup a database for BEdita.</p>
 
 <h2>Database</h2>
 
@@ -51,7 +51,7 @@
 		<p><span class="ERROR">[ERROR]</span>: <span>Password</span>: <span class="ERROR">Confirm Password does not match Password. Retry!</span></p>
 	{/if}
 	<p><span>Database connection</span>: <span class="ERROR">BEdita is NOT able to connect to database</span></p>
-	<p>Create a new database with specific user and password, if you haven&#39;t done already, and fill in Database settings properly.</p>
+	<p>Please create a new database on your RDBMS. Than fill the following form fields with proper settings.</p>
 	<p><span class="{if ($dbfile_writable == "n")}ERROR{else}INFO{/if}">[{if ($dbfile_writable == "n")}ERROR{else}INFO{/if}]</span>: File <code>{$dbfile}</code> {if ($dbfile_writable == "n")}<span class="ERROR">IS NOT</span>{else}<span class="INFO">IS</span> {/if} writable</p>
 	{if ($dbfile_writable == "n")}
 		<p>If you want to apply changes, file 'database.php' must be 'writable' by webserver user.</p>
@@ -69,7 +69,7 @@
 										 </select></td></tr>
 	</table>
 	<h3>Advanced settings</h3>
-	<p>Don't modify these fields unless you are shure of what you're doing. 
+	<p>Please modify the following fields only if you know what you're doing. 
 	Defaults are generally ok.</p>
 	<table>
 	<tr><td><label>Host</label>:</td><td><input type="text" name="data[database][host]" value="{$database_config.host|default:''}" {if ($dbfile_writable == "n")}readonly="readonly"{/if}/></td></tr>
