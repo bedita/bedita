@@ -12,7 +12,7 @@
  */
 
 // BEdita instance name 
-$config["projectName"] = "BEdita";
+// $config["projectName"] = "BEdita";
 
 
 //////////////////////////////////
