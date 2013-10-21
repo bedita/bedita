@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller.components
@@ -525,6 +525,25 @@ DIGEST;
 		);
 		$this->assertTrue($this->Controller->Security->validatePost($this->Controller));
 	}
+/**
+ * Test that validatePost fails if you are missing the session information.
+ *
+ * @return void
+ */
+	function testValidatePostNoSession() {
+		$this->Controller->Security->startup($this->Controller);
+		$this->Controller->Session->delete('_Token');
+
+		$key = $this->Controller->params['_Token']['key'];
+		$fields = 'a5475372b40f6e3ccbf9f8af191f20e1642fd877%3AModel.valid';
+
+		$this->Controller->data = array(
+			'Model' => array('username' => 'nate', 'password' => 'foo', 'valid' => '0'),
+			'_Token' => compact('key', 'fields')
+		);
+		$this->assertFalse($this->Controller->Security->validatePost($this->Controller));
+	}
+
 /**
  * test that validatePost fails if any of its required fields are missing.
  *

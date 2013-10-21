@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake
@@ -33,6 +33,26 @@
 	define('WEEK', 7 * DAY);
 	define('MONTH', 30 * DAY);
 	define('YEAR', 365 * DAY);
+/**
+ * Patch old versions of PHP4.
+ */
+if (!defined('PHP_EOL')) {
+	switch (strtoupper(substr(PHP_OS, 0, 3))) {
+		case 'WIN':
+			define('PHP_EOL', "\r\n");
+			break;
+		default:
+			define('PHP_EOL', "\n");
+	}
+}
+
+/**
+ * Patch PHP4 and PHP5.0
+ */
+if (!defined('DATE_RFC2822')) {
+	define('DATE_RFC2822', 'D, d M Y H:i:s O');
+}
+
 /**
  * Patch for PHP < 5.0
  */

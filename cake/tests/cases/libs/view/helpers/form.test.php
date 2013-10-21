@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2006-2010, Cake Software Foundation, Inc.
+ * Copyright 2005-2012, Cake Software Foundation, Inc.
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2006-2010, Cake Software Foundation, Inc.
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc.
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
@@ -3634,13 +3634,14 @@ class FormHelperTest extends CakeTestCase {
 		);
 		$this->assertTags($result, $expected);
 
-		$selected = strtotime('2008-10-26 10:33:00');
+		$selected = strtotime('2008-10-26 12:33:00');
 		$result = $this->Form->dateTime('Model.field', 'DMY', '12', $selected);
 		$this->assertPattern('/<option[^<>]+value="2008"[^<>]+selected="selected"[^>]*>2008<\/option>/', $result);
-		$this->assertPattern('/<option[^<>]+value="10"[^<>]+selected="selected"[^>]*>10<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="10"[^<>]+selected="selected"[^>]*>October<\/option>/', $result);
 		$this->assertPattern('/<option[^<>]+value="26"[^<>]+selected="selected"[^>]*>26<\/option>/', $result);
-		$this->assertPattern('/<option[^<>]+value="10"[^<>]+selected="selected"[^>]*>10<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="12"[^<>]+selected="selected"[^>]*>12<\/option>/', $result);
 		$this->assertPattern('/<option[^<>]+value="33"[^<>]+selected="selected"[^>]*>33<\/option>/', $result);
+		$this->assertPattern('/<option[^<>]+value="pm"[^<>]+selected="selected"[^>]*>pm<\/option>/', $result);
 
 		$this->Form->create('Contact');
 		$result = $this->Form->input('published');

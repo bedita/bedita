@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.controller
@@ -1188,5 +1188,23 @@ class ControllerTest extends CakeTestCase {
 		$this->assertEqual($Controller->RequestHandler->prefers(), 'rss');
 		unset($Controller);
 	}
+
+/**
+ * Tests that the correct alias is selected
+ *
+ * @return void
+ */
+	function testValidateSortAlias() {
+		$Controller =& new Controller();
+		$Controller->uses = array('ControllerPost', 'ControllerComment');
+		$Controller->passedArgs[] = '1';
+		$Controller->params['url'] = array();
+		$Controller->constructClasses();
+		$Controller->passedArgs = array('sort' => 'Derp.id', 'direction' => 'asc');
+		$results = Set::extract($Controller->paginate('ControllerPost'), '{n}.ControllerPost.id');
+		$this->assertEqual($Controller->params['paging']['ControllerPost']['page'], 1);
+		$this->assertEqual($results, array(1, 2, 3));
+	}
+
 }
 ?>

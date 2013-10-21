@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources.dbo
@@ -82,8 +82,6 @@ class DboMysqlBase extends DboSource {
 		'time' => array('name' => 'time', 'format' => 'H:i:s', 'formatter' => 'date'),
 		'date' => array('name' => 'date', 'format' => 'Y-m-d', 'formatter' => 'date'),
 		'binary' => array('name' => 'blob'),
-		'enum' => array('name' => 'enum'),
-		'set' => array('name' => 'set'),
 		'boolean' => array('name' => 'tinyint', 'limit' => '1')
 	);
 /**
@@ -111,7 +109,6 @@ class DboMysqlBase extends DboSource {
 					'null' => ($column[0]['Null'] == 'YES' ? true : false),
 					'default' => $column[0]['Default'],
 					'length' => $this->length($column[0]['Type']),
-					'values'	=> $this->values($column[0]['Type']),
 				);
 				if (!empty($column[0]['Key']) && isset($this->index[$column[0]['Key']])) {
 					$fields[$column[0]['Field']]['key'] = $this->index[$column[0]['Key']];
@@ -408,10 +405,7 @@ class DboMysqlBase extends DboSource {
 			return 'float';
 		}
 		if (strpos($col, 'enum') !== false) {
-			return "enum";
-		}
-		if (strpos($col, 'set') !== false) {
-			return "set";
+			return "enum($vals)";
 		}
 		return 'text';
 	}

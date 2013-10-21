@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.model.datasources
@@ -2108,7 +2108,7 @@ class DboSource extends DataSource {
 		$keys = preg_replace('/ORDER\\x20BY/i', '', $keys);
 
 		if (strpos($keys, '.')) {
-			preg_match_all('/([a-zA-Z0-9_]{1,})\\.([a-zA-Z0-9_]{1,})/', $keys, $result, PREG_PATTERN_ORDER);
+			preg_match_all('/([a-zA-Z0-9_-]{1,})\\.([a-zA-Z0-9_-]{1,})/', $keys, $result, PREG_PATTERN_ORDER);
 			$pregCount = count($result[0]);
 
 			for ($i = 0; $i < $pregCount; $i++) {
@@ -2230,23 +2230,6 @@ class DboSource extends DataSource {
 			}
 		}
 		return intval($length);
-	}
-
-/**
- * Gets values for columns types like 'enum' or 'set'
- *
- * @param  string $real Real database-layer column type (i.e. "enum('on','off')")
- * @return string Comma separated enum/set values
- */
-	function values($real) {
-		$col = str_replace(')', '', $real);
-		if (strpos($col, '(') !== false) {
-			list($col, $val) = explode('(', $col);
-			if(in_array($col, array('enum', 'set'))) {
-				return $val;
-			}
-		}
-		return null;
 	}
 /**
  * Translates between PHP boolean values and Database (faked) boolean values
@@ -2394,9 +2377,7 @@ class DboSource extends DataSource {
 		$real = $this->columns[$type];
 		$out = $this->name($name) . ' ' . $real['name'];
 
-		if ($column['type'] == 'enum' || $column['type'] == 'set') {
-			$out .= '(' . $column['values'] . ')';
-		} elseif (isset($real['limit']) || isset($real['length']) || isset($column['limit']) || isset($column['length'])) {
+		if (isset($real['limit']) || isset($real['length']) || isset($column['limit']) || isset($column['length'])) {
 			if (isset($column['length'])) {
 				$length = $column['length'];
 			} elseif (isset($column['limit'])) {

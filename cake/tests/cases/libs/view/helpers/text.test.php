@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *  Licensed under The Open Group Test Suite License
  *  Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.view.helpers
@@ -124,6 +124,11 @@ class TextHelperTest extends CakeTestCase {
 		$phrases = null;
 		$result = $this->Text->highlight($text, $phrases, '<b>\1</b>');
 		$this->assertEqual($result, $text);
+
+		$text = 'This is a (test) text';
+		$phrases = '(test';
+		$result = $this->Text->highlight($text, $phrases, '<b>\1</b>');
+		$this->assertEqual('This is a <b>(test</b>) text', $result);
 
 		$text = 'Ich saß in einem Café am Übergang';
 		$expected = 'Ich <b>saß</b> in einem <b>Café</b> am <b>Übergang</b>';
@@ -299,6 +304,17 @@ class TextHelperTest extends CakeTestCase {
 		$result = $this->Text->autoLinkEmails($text, array('class' => 'link'));
 		$this->assertPattern('#^' . $expected . '$#', $result);
 	}
+/**
+ * test invalid email addresses.
+ *
+ * @return void
+ */
+	function testAutoLinkEmailInvalid() {
+		$result = $this->Text->autoLinkEmails('this is a myaddress@gmx-de test');
+		$expected = 'this is a myaddress@gmx-de test';
+		$this->assertEqual($expected, $result);
+	}
+
 /**
  * testHighlightCaseInsensitivity method
  *

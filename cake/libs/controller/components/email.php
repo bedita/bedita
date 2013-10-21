@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       cake
  * @subpackage    cake.cake.libs.controller.components
@@ -335,7 +335,7 @@ class EmailComponent extends Object{
 			$this->__attachFiles();
 		}
 
-		if (!is_null($this->__boundary)) {
+		if (!empty($this->attachments)) {
 			$this->__message[] = '';
 			$this->__message[] = '--' . $this->__boundary . '--';
 			$this->__message[] = '';
@@ -424,6 +424,7 @@ class EmailComponent extends Object{
 			$View->layoutPath = 'email' . DS . 'html';
 			$htmlContent = explode("\n", str_replace(array("\r\n", "\r"), "\n", $View->renderLayout($htmlContent)));
 			$msg = array_merge($msg, $htmlContent);
+
 			$msg[] = '';
 			$msg[] = '--alt-' . $this->__boundary . '--';
 			$msg[] = '';
@@ -510,8 +511,11 @@ class EmailComponent extends Object{
 			}
 		}
 
-		if (!empty($this->attachments)) {
+		if (!empty($this->attachments) || $this->sendAs === 'both') {
 			$this->__createBoundary();
+		}
+
+		if (!empty($this->attachments)) {
 			$this->__header[] = 'MIME-Version: 1.0';
 			$this->__header[] = 'Content-Type: multipart/mixed; boundary="' . $this->__boundary . '"';
 			$this->__header[] = 'This part of the E-mail should never be seen. If';
@@ -522,7 +526,6 @@ class EmailComponent extends Object{
 		} elseif ($this->sendAs === 'html') {
 			$this->__header[] = 'Content-Type: text/html; charset=' . $this->charset;
 		} elseif ($this->sendAs === 'both') {
-			$this->__createBoundary();
 			$this->__header[] = 'Content-Type: multipart/alternative; boundary="alt-' . $this->__boundary . '"';
 		}
 
@@ -650,14 +653,15 @@ class EmailComponent extends Object{
  * @access private
  */
 	function __formatAddress($string, $smtp = false) {
-		$hasAlias = preg_match('/((.*)\s)?<(.+)>/', $string, $matches);
+		$hasAlias = preg_match('/((.*))?\s?<(.+)>/', $string, $matches);
 		if ($smtp && $hasAlias) {
 			return $this->__strip('<' .  $matches[3] . '>');
 		} elseif ($smtp) {
 			return $this->__strip('<' . $string . '>');
 		}
+
 		if ($hasAlias && !empty($matches[2])) {
-			return $this->__strip($matches[2] . ' <' . $matches[3] . '>');
+			return $this->__encode($matches[2]) . $this->__strip(' <' . $matches[3] . '>');
 		}
 		return $this->__strip($string);
 	}

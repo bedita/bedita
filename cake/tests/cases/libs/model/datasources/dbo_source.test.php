@@ -8,12 +8,12 @@
  * PHP versions 4 and 5
  *
  * CakePHP(tm) Tests <https://trac.cakephp.org/wiki/Developement/TestSuite>
- * Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  *	Licensed under The Open Group Test Suite License
  *	Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2010, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          https://trac.cakephp.org/wiki/Developement/TestSuite CakePHP(tm) Tests
  * @package       cake
  * @subpackage    cake.tests.cases.libs.model.datasources
@@ -3325,6 +3325,10 @@ class DboSourceTest extends CakeTestCase {
 		$result = $this->testDb->order(array('Property.sale_price IS NULL'));
 		$expected = ' ORDER BY `Property`.`sale_price` IS NULL ASC';
 		$this->assertEqual($result, $expected);
+
+		$result = $this->testDb->order(array('Export.column-name' => 'ASC'));
+		$expected = ' ORDER BY `Export`.`column-name`  ASC';
+		$this->assertEqual($result, $expected, 'Columns with -s are not working with order() %s');
 	}
 /**
  * testComplexSortExpression method
