@@ -1,36 +1,31 @@
 {$view->element('texteditor')}
 
 <script type="text/javascript">
-{literal}
+
 $(document).ready(function(){
 
-$("#fototessera").click(function () {
-	$('.main .tab').BEtabsclose();
-	$('#multimedia').prev('.tab').BEtabstoggle();
+	$("#fototessera").click(function () {
+		$('.main .tab').BEtabsclose();
+		$('#multimedia').prev('.tab').BEtabstoggle();
+	});
+	
+	$(".htab TD").click(function () {
+		$("input",this).attr({ checked:"checked" });
+	});
+	
+	{if (!empty($object) && !empty($object.country))}
+	   $("#country").selectOptions("{$object.country}",true);
+	{/if}
+	
+	{if (!empty($object.id) && ($object.company==1))}
+	   $(".htab TD[rel=company]").click();
+	{/if}
+
 });
 
-$(".htab TD").click(function () {
-	$("input",this).attr({checked:"checked"});
-});
-
-{/literal}{if (!empty($object) && !empty($object.country))}{literal}
-
-$("#country").selectOptions("{/literal}{$object.country}{literal}",true);{/literal}
-
-{/if}{literal}
-
-{/literal}{if (!empty($object.id)&&($object.company==1))}{literal}
-
-$(".htab TD[rel:company]").click();
-
-{/literal}{/if}{literal}
-
-})
-{/literal}
 
 </script>
 
-</script>
 
 <div class="tab"><h2>{t}Card{/t}</h2></div>
 
