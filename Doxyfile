@@ -814,7 +814,7 @@ HTML_FOOTER            = bedita-doc/api/footer.html
 # the style sheet file to the HTML output directory, so don't put your own
 # stylesheet in the HTML output directory as well, or it will be erased!
 
-HTML_STYLESHEET        = bedita-doc/api/customdoxygen.css
+HTML_STYLESHEET        =
 
 # The HTML_COLORSTYLE_HUE tag controls the color of the HTML output.
 # Doxygen will adjust the colors in the stylesheet and background images
