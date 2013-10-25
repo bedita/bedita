@@ -244,14 +244,17 @@ abstract class FrontendController extends AppController {
 	 * @throws BeditaFrontAccessException
 	 */
 	protected function accessDenied($type) {
-		if ($type == self::UNLOGGED && !strstr($this->here,"/login")) {
+		$headers = array();
+		if ($type == self::UNLOGGED && !strstr($this->here,"/login")) { // 401
 			$message = __("You have to be logged to access that item",true);
 			$this->userInfoMessage($message);
-		} elseif ($type == self::UNAUTHORIZED) {
+			$headers = array("HTTP/1.1 401 Unauthorized");
+		} elseif ($type == self::UNAUTHORIZED) { // 403
 			$message = __("You aren't authorized to access that item",true);
 			$this->userErrorMessage($message);
+			$headers = array("HTTP/1.1 403 Forbidden");
 		}
-		throw new BeditaFrontAccessException(null, array("errorType" => $type));
+		throw new BeditaFrontAccessException(null, array("errorType" => $type,"headers" => $headers));
 	}
 
 	/**
@@ -480,7 +483,8 @@ abstract class FrontendController extends AppController {
 				'details' => $ex->getDetails(),
 				'msg' => $ex->getMessage(),
 				'result' => $ex->result,
-				'errorType' => $ex->getErrorType()
+				'errorType' => $ex->getErrorType(),
+				'headers' => $ex->getHeaders()
 			);
 
 			include_once (APP . 'app_error.php');

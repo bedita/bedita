@@ -137,7 +137,58 @@ class BeAuthComponent extends Object {
 		
 		return true ;
 	}
-	
+
+	/**
+	 * Http code response for login attempt
+	 * 
+	 * @param string $userid
+	 * @param string $password
+	 * @param array $policy (could contain parameters like maxLoginAttempts,maxNumDaysInactivity,maxNumDaysValidity)
+	 * @param array $auth_group_name
+	 * @return number (can be 200 'ok' 401 'unauthorized' 403 'forbidden'
+	 */
+	public function responseLogin($userid, $password, $policy=null, $auth_group_name=array()) {
+		$userModel = ClassRegistry::init('User');
+		$conditions = array(
+			"User.userid" 	=> $userid,
+			"User.passwd" 	=> md5($password),
+		);
+		$userModel->containLevel("default");
+		$u = $userModel->find($conditions);
+		if(empty($u["User"])) {
+			return 401; // unauthorized
+		}
+		if($policy == null) {
+			$policy = array(); // load backend defaults
+			$config = Configure::getInstance() ;
+			$policy['maxLoginAttempts'] = $config->loginPolicy['maxLoginAttempts'];
+			$policy['maxNumDaysInactivity'] = $config->loginPolicy['maxNumDaysInactivity'];
+			$policy['maxNumDaysValidity'] = $config->loginPolicy['maxNumDaysValidity'];
+		}
+		if(!isset($u["User"]["last_login"])) {
+			$u["User"]["last_login"] = date('Y-m-d H:i:s');
+		}
+		$daysFromLastLogin = (time() - strtotime($u["User"]["last_login"]))/(86400000);
+		if($u["User"]["num_login_err"] >= $policy['maxLoginAttempts']) {
+			return 401; // unauthorized
+		} else if($daysFromLastLogin > $policy['maxNumDaysInactivity']) {
+			return 401; // unauthorized
+		}
+		// check group auth
+		$groups = array();
+		$authorized = false;
+		foreach ($u['Group'] as $g) {
+			array_push($groups, $g['name']) ;
+			if( $g['backend_auth'] == 1 || in_array($g['name'], $auth_group_name) ) {
+				$authorized = true;
+			}
+		}
+		if($authorized === false) {
+			return 403; // forbidden
+		}
+		return 200; // ok
+	}
+
 	/**
 	 * Check policy using $policy array or config if null
 	 * 

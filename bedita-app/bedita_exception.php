@@ -232,12 +232,15 @@ class BeditaPublicationException extends BeditaException {
 class BeditaFrontAccessException extends BeditaException {
 	
 	private $errorType;
+	private $headers = null;
 	
 	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["errorType"])) {
 			$this->errorType = $details["errorType"];
 		}
-		
+		if (!empty($details["headers"])) {
+			$this->headers = $details["headers"];
+		}
 		if (empty($message)) {
 			if ($this->errorType == "unlogged")
 				$messages = __("You have to be logged to access to this item",true);
@@ -251,6 +254,9 @@ class BeditaFrontAccessException extends BeditaException {
 	public function getErrorType() {
 		return $this->errorType;
 	}
-	
+
+	public function getHeaders() {
+		return $this->headers;
+	}
 }
 ?>

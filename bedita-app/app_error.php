@@ -169,6 +169,17 @@ class AppError extends ErrorHandler {
 	}
 	
 	public function handleExceptionFrontAccess(array $messages) {
+		if (isset($messages['headers']) && $messages['headers'] !== null) {
+			if (empty($messages['headers'])) {
+				$messages['headers'] = array("HTTP/1.1 401 Unauthorized");
+			} elseif (is_string($messages['headers'])) {
+				$messages['headers'] = array($messages['headers']);
+			}
+			// output headers
+			foreach ($messages['headers'] as $header) {
+				header($header);
+			}
+		}
 		$currentController = AppController::currentController();
 		$currentController->set($messages);
 		$this->restoreDebugLevel();
