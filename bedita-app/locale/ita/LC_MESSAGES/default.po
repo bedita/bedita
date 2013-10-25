@@ -466,7 +466,7 @@ msgid "Empty data"
 msgstr "Dati vuoti"
 
 msgid "Empty file"
-msgstr "File vuoto"
+msgstr "Svuota file"
 
 msgid "Enter"
 msgstr "Accedi"
