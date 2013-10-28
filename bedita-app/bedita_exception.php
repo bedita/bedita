@@ -43,7 +43,11 @@ class BeditaException extends Exception
    		if(!empty($details)) {
    			if(is_array($details)) {
    				foreach ($details as $k => $v) {
-					$this->errorDetails .= "; [$k] => $v";
+   					if (is_array($v)) {
+   						$this->errorDetails .= "; [$k] => array(" . implode(", ", $v) . ")";
+   					} else {
+						$this->errorDetails .= "; [$k] => $v";
+					}
 				}
    			} else {
    				$this->errorDetails = $this->errorDetails . ": ".$details; 
