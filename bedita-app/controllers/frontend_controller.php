@@ -210,7 +210,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param string $backName nickname or id of section to go after login
 	 */
-	protected function login($backName=null) {
+	public function login($backName=null) {
 		$urlToGo = (!empty($backName))? Router::url('/'. $backName, true) : $this->loginRedirect;
 		if ($this->isLogged()) {
 			$this->redirect($urlToGo);
@@ -223,7 +223,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @param boolean $autoRedirect
 	 */
-	protected function logout($autoRedirect=true) {
+	public function logout($autoRedirect=true) {
 		$this->BeAuth->logout();
 		$this->eventInfo("FRONTEND logged out: publication " . $this->publication["title"]);
 		if ($autoRedirect) {
