@@ -80,14 +80,14 @@
 	<fieldset id="tlong_desc_langs_container" rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="data[LangText][4][text]" style="height:200px" class="mcet">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
+		<textarea name="data[LangText][4][text]" style="height:200px" class="mce">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
 		<input type="hidden" name="data[LangText][4][name]" value="abstract"/>
 		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.abstract}"/>{/if}
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="data[LangText][5][text]" style="height:400px" class="mcet">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
+		<textarea name="data[LangText][5][text]" style="height:400px" class="mce">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
 		<input type="hidden" name="data[LangText][5][name]" value="body"/>
 		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.body}"/>{/if}
 		{/if}
@@ -237,12 +237,12 @@
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="" style="height:200px" class="mcet">{$object_master.abstract}</textarea>
+		<textarea name="" style="height:200px" class="mce">{$object_master.abstract}</textarea>
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="" style="height:400px" class="mcet">{$object_master.body}</textarea>
+		<textarea name="" style="height:400px" class="mce">{$object_master.body}</textarea>
 		{/if}
 	</fieldset>
 	{/if}
