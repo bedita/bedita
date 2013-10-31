@@ -328,7 +328,7 @@ $(document).ready(function()
 });
 </script>
 
-<div class="tab"><h2>{t}Multimedia items{/t}</h2></div>	
+<div class="tab"><h2>{t}{$tabTitle|default:"Multimedia items"}{/t}</h2></div>	
 
 <div id="multimedia">
 	
@@ -355,8 +355,10 @@ $(document).ready(function()
 
 	<table class="htab">
 	<tr>
-		<td rel="uploadItems">{t}upload new items{/t}</td>
+		<td class="on" rel="uploadItems">{t}upload new items{/t}</td>
+		{if empty($disableRemote)}
 		<td rel="urlItems">{t}add by url{/t}</td>
+		{/if}
 		<td rel="repositoryItems" id="reposItems">{t}select from archive{/t}</td>
 	</tr>
 	</table>
@@ -367,7 +369,7 @@ $(document).ready(function()
 		{$view->element('form_upload_multi')}
 	</div>
 
-	
+    {if empty($disableRemote)}
 	<div class="htabcontent" id="urlItems">
 		{*<table>
 			<tr>
@@ -416,7 +418,7 @@ $(document).ready(function()
 		</tr>
 		</table>
 	</div>
-
+    {/if}
 
 	<div class="htabcontent" id="repositoryItems">
 		<div id="ajaxSubcontainer"></div>
