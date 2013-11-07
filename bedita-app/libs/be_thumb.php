@@ -203,7 +203,7 @@ class BeThumb {
 		$cacheExists = file_exists($this->imageTarget['filepath']);
 		
 		if (!$cacheExists && $this->imageTarget['type'] != 'svg' ) {
-			if ( !$this->resample() ) {
+			if ( !$this->resample($remoteUri) ) {
 				return $this->imgMissingFile;
 			}
 		}
@@ -269,12 +269,12 @@ class BeThumb {
 		$this->imageInfo['type'] = $this->supportedTypes[$data['mime_type']];		
 
 		if (empty($data['width']) || empty($data['height']) ) {
-		
-			// build _image_info with getimagesize() or available parameters
-			if ( !$imageData = @getimagesize($this->imageInfo['filepath'])) {
-				$this->triggerError("'" . $this->imageInfo['filepath'] . "' is not a valid image file");
-				return false;
-			}
+
+		    $imageData = $this->readImageSize($remoteUri);
+            if (!$imageData) {
+                $this->triggerError("'" . $this->imageInfo['filepath'] . "' is not a valid image file");
+                return false;
+            }
 			// set up the rest of image info array
 			$this->imageInfo["w"] = $imageData[0];
 			$this->imageInfo["h"] = $imageData[1];
@@ -305,6 +305,49 @@ class BeThumb {
 	private function cacheImageInfoFilePath() {
 		return $this->imageInfo['cacheDirectory'] . DS . ".imginfo";
 	}
+	
+	/**
+	 * Read image size
+	 */
+	private function readImageSize($remoteUri) {
+	    $imageFilePath = $this->imageInfo['filepath'];
+	    if($remoteUri && Configure::read("proxyOptions") != null) {
+	        $imageFilePath = $this->remoteImageCachePathProxy();
+	    } 
+        return @getimagesize($imageFilePath);
+	}
+
+	/**
+	 * Read cached image (i.e. if under proxy)
+	 */
+    private function remoteImageCachePathProxy() {
+        $path =  $this->imageInfo['cacheDirectory'] . DS . ".source";
+        if (!file_exists($path)) {
+            if (!mkdir($path, 0777, true)) {
+                $this->triggerError("Error creating cache directory: " . $path);
+                return false;
+            }
+        }
+        $path =  $path . DS . $this->imageInfo['filename'];
+        if (!file_exists($path)) {
+            $proxyOpts = Configure::read("proxyOptions");
+            $aContext = array(
+                'http' => array(
+                  'proxy' => $proxyOpts["host"],
+                  'request_fulluri' => true,
+                  ),
+            );
+            if (!empty($proxyOpts["auth"])) {
+                $aContext['http']['header'] = "Proxy-Authorization: Basic " . base64_encode($proxyOpts["auth"]);
+            }
+            $cxContext = stream_context_create($aContext);
+            $cont = file_get_contents($this->imageInfo['filepath'], false, $cxContext);
+            if($cont) {
+                file_put_contents($path, $cont);
+            }
+        }
+        return $path;
+    }
 	
 	/**
 	 * Read cached img info, if present 
@@ -469,10 +512,14 @@ class BeThumb {
 	 *
 	 * @return boolean
 	 */
-	private function resample() {
+	private function resample($remoteUri) {
 		
-		App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
-		$thumbnail = PhpThumbFactory::create($this->imageInfo['filepath'], Configure::read('media.image'));
+	    $imageFilePath = $this->imageInfo['filepath'];
+	    if($remoteUri && Configure::read("proxyOptions") != null) {
+	        $imageFilePath = $this->remoteImageCachePathProxy();
+	    }
+	    App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
+		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
 		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
 		
 		//set upscale

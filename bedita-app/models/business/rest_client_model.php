@@ -52,9 +52,12 @@ class RestClientModel extends BEAppModel {
 				if(Configure::read("proxyOptions") != null) {
 					$proxyOpts = Configure::read("proxyOptions");
 					$this->curlOptions[CURLOPT_PROXY] = $proxyOpts["host"];
-					if($proxyOpts["type"] === "socks5") {
+					if(!empty($proxyOpts["type"]) && ($proxyOpts["type"] === "socks5") ) {
 						$this->curlOptions[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
 					}
+					if(!empty($proxyOpts["auth"])) {
+					    $this->curlOptions[CURLOPT_PROXYUSERPWD] = $proxyOpts["auth"];
+					}	
 				}
 				curl_setopt_array($this->client, $this->curlOptions);
 				$this->useCurl = true;			
