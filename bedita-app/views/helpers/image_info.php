@@ -76,10 +76,14 @@ class ImageInfoHelper extends AppHelper {
 		$_image_path = str_replace(' ','%20', $file); ; // rawurlencode( $file );
 
 		$beThumb = BeLib::getObject("BeThumb");
+		
+		$originalPath = $_image_path;
+		$_image_path = $beThumb->imagePathCached($_image_path);
+		
 		/*
 		 *  Get data or trigger errors
 		 */
-		if (!$_image_data = $beThumb->getImageSize($_image_path)) {
+		if (!$_image_data = @getimagesize($_image_path)) {
 			if (!file_exists($_image_path)) {
 				CakeLog::write('error', $this->name . ": unable to find '$_image_path'");
 				return $imageInfo;
@@ -112,7 +116,7 @@ class ImageInfoHelper extends AppHelper {
 		/*
 		 * build up array
 		 */
-		$_path = parse_url($_image_path, PHP_URL_PATH);
+		$_path = parse_url($originalPath, PHP_URL_PATH);
 		$imageInfo['filename'] = end(explode('/', $_path));
 		$imageInfo["filesize"] = ($_image_path_type == "filesystem")? $this->_getHumanReadableFileSize($_image_path) : '';
 		$imageInfo["w"]	= $_image_data[0];

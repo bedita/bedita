@@ -266,7 +266,8 @@ class BeThumb {
 
 		if (empty($data['width']) || empty($data['height']) ) {
 
-		    $imageData = $this->getImageSize();
+		    $imageFilePath = $this->imagePathCached();
+		    $imageData = @getimagesize($imageFilePath);
             if (!$imageData) {
                 $this->triggerError("'" . $this->imageInfo['filepath'] . "' is not a valid image file");
                 return false;
@@ -295,10 +296,11 @@ class BeThumb {
 		return true;
 	}
 
+	
 	/**
-	 * Read image size
+	 * Get image file path, get cached local copy behind a proxy 
 	 */
-	public function getImageSize($imageFilePath = null) {
+	public function imagePathCached($imageFilePath) {
 	    if ($imageFilePath !== null) {
 	        $data["uri"] = $imageFilePath;
 	        $this->setupImageInfo($data);
@@ -308,8 +310,9 @@ class BeThumb {
 	    } else {
 	        $imageFilePath = $this->imageInfo["filepath"];
 	    }
-	    return @getimagesize($imageFilePath);
+	    return $imageFilePath;
 	}
+	
 	
 	/**************************************************************************
 	** private methods follow
