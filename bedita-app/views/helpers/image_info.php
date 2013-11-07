@@ -75,10 +75,11 @@ class ImageInfoHelper extends AppHelper {
 		// sanitize file path & name (why does not work?)
 		$_image_path = str_replace(' ','%20', $file); ; // rawurlencode( $file );
 
+		$beThumb = BeLib::getObject("BeThumb");
 		/*
 		 *  Get data or trigger errors
 		 */
-		if (!$_image_data = @getimagesize($_image_path)) {
+		if (!$_image_data = $beThumb->getImageSize($_image_path)) {
 			if (!file_exists($_image_path)) {
 				CakeLog::write('error', $this->name . ": unable to find '$_image_path'");
 				return $imageInfo;

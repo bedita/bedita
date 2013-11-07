@@ -159,29 +159,8 @@ class BeThumb {
 		
 		$this->reset();
 		
-		// check uri
-		if(empty($data['uri'])) {
-			$this->triggerError("Missing image 'uri'");
-			return false;
-		}
-		
-		// "uri" could have "/" seaparator on a system with "\" as separator
-		$remoteUri = ($data['uri'][0] !== "/" && $data['uri'][0] !== DS);
-		if($remoteUri) {
-			$uriParts = parse_url($data['uri']);
-			if(!$uriParts || !in_array($uriParts["scheme"], array("http", "https"))) {
-				$this->triggerError("'" . $data['uri'] . "' unsupported uri protocol (only http/https)");
-				return false;
-			}
-			if(empty($data['path'])) {
-				$data['path'] = $uriParts["path"];
-			}
-		} else {
-			$data['path'] = $data['uri'];
-		}
-
 		// setup internal imageInfo array
-		if (!$this->setupImageInfo($data, $remoteUri)) {
+		if (!$this->setupImageInfo($data)) {
 			return $this->imgMissingFile;
 		}
 		
@@ -191,19 +170,19 @@ class BeThumb {
 		}
 		
 		// test source file available
-		if (!$remoteUri && !$this->checkSourceFile()) {
+		if (!$this->imageInfo["remote"] && !$this->checkSourceFile()) {
 			return $this->imgMissingFile;
 		}
 		
 		// setup internal image target array
-		$this->setupImageTarget($params, $remoteUri);
+		$this->setupImageTarget($params);
 
 		// Manage cache and resample if caching option is true
 		// and the image it's not alredy cached
 		$cacheExists = file_exists($this->imageTarget['filepath']);
 		
 		if (!$cacheExists && $this->imageTarget['type'] != 'svg' ) {
-			if ( !$this->resample($remoteUri) ) {
+			if ( !$this->resample() ) {
 				return $this->imgMissingFile;
 			}
 		}
@@ -212,17 +191,34 @@ class BeThumb {
 		return $this->imageTarget['uri'];
 	}
 
-	/**************************************************************************
-	** private methods follow
-	**************************************************************************/
-
 	/**
 	 * Setup internal imageInfo data array
 	 * 
 	 * @param array $data
 	 */
-	private function setupImageInfo(array &$data, $remoteUri) {
+	public function setupImageInfo(array &$data) {
 
+	    // check uri
+	    if(empty($data['uri'])) {
+	        $this->triggerError("Missing image 'uri'");
+	        return false;
+	    }
+	    
+	    // "uri" could have "/" seaparator on a system with "\" as separator
+	    $this->imageInfo["remote"] = ($data['uri'][0] !== "/" && $data['uri'][0] !== DS);
+	    if ($this->imageInfo["remote"]) {
+	        $uriParts = parse_url($data['uri']);
+	        if (!$uriParts || !in_array($uriParts["scheme"], array("http", "https"))) {
+	            $this->triggerError("'" . $data['uri'] . "' unsupported uri protocol (only http/https)");
+	            return false;
+	        }
+	        if (empty($data['path'])) {
+	            $data['path'] = $uriParts["path"];
+	        }
+	    } else {
+	        $data['path'] = $data['uri'];
+	    }
+	     
 		// relative path (local files and remote uri)
 		$this->imageInfo['path'] = $data['path'];
 		
@@ -235,7 +231,7 @@ class BeThumb {
 		$this->imageInfo['ext']	= (!empty($pathParts['extension']))? $pathParts['extension'] : "";
 		$this->imageInfo['dirname']	= $pathParts['dirname'];
 		$mediaRoot  = Configure::read('mediaRoot');
-		if(!$remoteUri) {
+	    if (!$this->imageInfo["remote"]) {
 			$this->imageInfo['filepath'] = $mediaRoot . $this->imageInfo['path'];  // absolute
 			if (DS != "/") {
 				$this->imageInfo['filepath'] = str_replace("/", DS, $this->imageInfo['filepath']);
@@ -244,7 +240,7 @@ class BeThumb {
 			$this->imageInfo['filepath'] = $data['uri'];
 		}
 		// relative cachePath
-		$cachePrefix = DS . "cache" . ($remoteUri? DS . "ext" : "");
+		$cachePrefix = DS . "cache" . ($this->imageInfo["remote"] ? DS . "ext" : "");
 		$this->imageInfo['cachePath'] = $cachePrefix . 
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
@@ -270,7 +266,7 @@ class BeThumb {
 
 		if (empty($data['width']) || empty($data['height']) ) {
 
-		    $imageData = $this->readImageSize($remoteUri);
+		    $imageData = $this->getImageSize();
             if (!$imageData) {
                 $this->triggerError("'" . $this->imageInfo['filepath'] . "' is not a valid image file");
                 return false;
@@ -300,23 +296,32 @@ class BeThumb {
 	}
 
 	/**
+	 * Read image size
+	 */
+	public function getImageSize($imageFilePath = null) {
+	    if ($imageFilePath !== null) {
+	        $data["uri"] = $imageFilePath;
+	        $this->setupImageInfo($data);
+	    }
+	    if ($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
+	        $imageFilePath = $this->remoteImageCachePathProxy();
+	    } else {
+	        $imageFilePath = $this->imageInfo["filepath"];
+	    }
+	    return @getimagesize($imageFilePath);
+	}
+	
+	/**************************************************************************
+	** private methods follow
+	**************************************************************************/
+
+	/**
 	 * Get internal img info cache file name
 	 */
 	private function cacheImageInfoFilePath() {
 		return $this->imageInfo['cacheDirectory'] . DS . ".imginfo";
 	}
 	
-	/**
-	 * Read image size
-	 */
-	private function readImageSize($remoteUri) {
-	    $imageFilePath = $this->imageInfo['filepath'];
-	    if($remoteUri && Configure::read("proxyOptions") != null) {
-	        $imageFilePath = $this->remoteImageCachePathProxy();
-	    } 
-        return @getimagesize($imageFilePath);
-	}
-
 	/**
 	 * Read cached image (i.e. if under proxy)
 	 */
@@ -383,7 +388,8 @@ class BeThumb {
 	 * Setup internal imageInfo data array
 	 * 
 	 */
-	private function setupImageTarget(array $params, $remoteUri) {
+	private function setupImageTarget(array $params) {
+	    
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
 				'cache', "watermark", );
@@ -501,7 +507,7 @@ class BeThumb {
 		}
 		
 		// target filename, filepath, uri
-		$this->imageTarget['filename'] = $this->targetFileName($remoteUri);
+		$this->imageTarget['filename'] = $this->targetFileName();
 		$this->imageTarget['filepath'] =  $this->imageInfo['cacheDirectory'] . DS . $this->imageTarget['filename'];
 		$this->imageTarget['uri'] = Configure::read('mediaUrl') . 
 				$this->imageInfo['cachePath'] . "/" . $this->imageTarget['filename'];
@@ -512,10 +518,10 @@ class BeThumb {
 	 *
 	 * @return boolean
 	 */
-	private function resample($remoteUri) {
+	private function resample() {
 		
 	    $imageFilePath = $this->imageInfo['filepath'];
-	    if($remoteUri && Configure::read("proxyOptions") != null) {
+	    if($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
 	        $imageFilePath = $this->remoteImageCachePathProxy();
 	    }
 	    App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
@@ -600,9 +606,9 @@ class BeThumb {
 	 *
 	 * @return string
 	 */
-	private function targetFileName($remote = false) {
+	private function targetFileName() {
 		// build hash on file path, modification time and mode
-		if($remote) {
+		if($this->imageInfo["remote"]) {
 			$modified = 0;
 		} else {
 			$modified = filemtime ($this->imageInfo['filepath']);
