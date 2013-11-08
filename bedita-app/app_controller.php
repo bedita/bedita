@@ -522,7 +522,7 @@ class AppController extends Controller
 	 * @param array $status, default get all objects
 	 * @return array
 	 */
-	protected function objectRelationArray($objectArray, $status=array(), $options=array()) {
+	public function objectRelationArray($objectArray, $status=array(), $options=array()) {
 		$conf  = Configure::getInstance() ;
 		$relationArray = array();
 
