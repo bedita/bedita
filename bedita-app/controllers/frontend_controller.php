@@ -1104,7 +1104,7 @@ abstract class FrontendController extends AppController {
 	 * @param boolean $blockAccess see FrontendController::loadObj()
 	 * @return array
 	 */
-	protected function loadObjByNick($obj_nick, $blockAccess = true) {
+	public function loadObjByNick($obj_nick, $blockAccess = true) {
 		return $this->loadObj($this->BEObject->getIdFromNickname($obj_nick), $blockAccess);
 	}
 
@@ -1188,7 +1188,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @return array object detail
 	 */
-	protected function loadObj($obj_id, $blockAccess=true) {
+	public function loadObj($obj_id, $blockAccess=true) {
 		if($obj_id === null) {
 			throw new BeditaException(__("Content not found", true));
 		}
@@ -1399,7 +1399,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @return array
 	 */
-	protected function loadSectionObjectsByNick($parentNick, $options=array()) {
+	public function loadSectionObjectsByNick($parentNick, $options=array()) {
 		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick), $options);
 	}
 
@@ -1411,7 +1411,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @return array
 	 */
-	protected function loadSectionObjects($parent_id, $options=array()) {
+	public function loadSectionObjects($parent_id, $options=array()) {
 
 		if(empty($parent_id)) {
 			throw new BeditaException("Bad data");
@@ -1722,6 +1722,10 @@ abstract class FrontendController extends AppController {
 		// generic methodName
 		$methodName = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
 		$methodName = BeLib::getInstance()->variableFromNickname($methodName);
+		// #396 controller protected methods -> make them public, avoid direct call from url
+		if(in_array($methodName, Configure::read("defaultReservedMethods"))) {
+		    throw new BeditaException(__("Reserved method called from url", true));
+		}
 
 		$reflectionClass = new ReflectionClass($this);
 

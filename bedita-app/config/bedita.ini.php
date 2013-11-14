@@ -375,6 +375,9 @@ $config["defaultReservedWords"] = array("captchaImage", "category", "content",
 // Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();
 
+// Default reserved methods [not callable from url]
+$config["defaultReservedMethods"] = array("loadObj","loadObjByNick","loadSectionObjects","loadSectionObjectsByNick","objectRelationArray");
+
 // download - redirect extensions to mediaURL [FrontenController::download]
 $config["redirectExtensionsDownload"] = array ("gz", "tar", "zip");
 // download - redirect mimetypes to mediaURL [FrontenController::download]
