@@ -338,18 +338,7 @@ class BeThumb {
         }
         $path =  $path . DS . $this->imageInfo['filename'];
         if (!file_exists($path)) {
-            $proxyOpts = Configure::read("proxyOptions");
-            $aContext = array(
-                'http' => array(
-                  'proxy' => $proxyOpts["host"],
-                  'request_fulluri' => true,
-                  ),
-            );
-            if (!empty($proxyOpts["auth"])) {
-                $aContext['http']['header'] = "Proxy-Authorization: Basic " . base64_encode($proxyOpts["auth"]);
-            }
-            $cxContext = stream_context_create($aContext);
-            $cont = file_get_contents($this->imageInfo['filepath'], false, $cxContext);
+            $cont = file_get_contents($this->imageInfo['filepath'], false);
             if($cont) {
                 file_put_contents($path, $cont);
             }
