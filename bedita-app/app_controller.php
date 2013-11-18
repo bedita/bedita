@@ -137,6 +137,9 @@ class AppController extends Controller
 		$conf = Configure::getInstance();
 		$this->set('conf',  $conf);
 
+        // check proxy configuration
+        BeLib::getObject("BeLib")->checkProxy();
+
 		// check/setup localization
 		$this->setupLocale();
 
