@@ -95,7 +95,7 @@ if (!defined("BEDITA_CORE_PATH")) {
 	register_shutdown_function('shutdownTransation');
 	
 	// load BEdita configuration
-	// bedita.ini.php, bedita.cfg.php, bedita.sys.php
+	// bedita.ini.php, bedita.cfg.php
 	require_once(CONFIGS . 'bedita.ini.php');	
 
 // frontends specific bootstrap
@@ -170,6 +170,22 @@ App::build($additionalPaths);
 
 // common exceptions definitions
 require_once BEDITA_CORE_PATH . DS . "bedita_exception.php";
+
+// #398 - check proxy options
+$proxyOpts = Configure::read("proxyOptions");
+if (!empty($proxyOpts)) {
+    $aContext = array(
+        'http' => array(
+            'proxy' => $proxyOpts["host"],
+            'request_fulluri' => true,
+        ),
+    );
+    if (!empty($proxyOpts["auth"])) {
+        $aContext['http']['header'] = "Proxy-Authorization: Basic " .
+            base64_encode($proxyOpts["auth"]);
+    }
+    stream_context_set_default($aContext);
+}
 
 //EOF
 ?>
