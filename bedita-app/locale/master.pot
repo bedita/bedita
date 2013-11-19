@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2013-10-17 13:01:53\n"
+"POT-Creation-Date: 2013-11-19 18:23:58\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1056,9 +1056,6 @@ msgstr ""
 msgid "Multimedia deleted"
 msgstr ""
 
-msgid "Multimedia items"
-msgstr ""
-
 msgid "Multimedia object saved"
 msgstr ""
 
@@ -1465,6 +1462,9 @@ msgid "Remove selected from category"
 msgstr ""
 
 msgid "Remove selected from section"
+msgstr ""
+
+msgid "Reserved method called from url"
 msgstr ""
 
 msgid "Resource "
@@ -1977,6 +1977,9 @@ msgstr ""
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "always"
+msgstr ""
+
 msgid "associate"
 msgstr ""
 
@@ -2151,6 +2154,9 @@ msgstr ""
 msgid "date"
 msgstr ""
 
+msgid "days"
+msgstr ""
+
 msgid "deathdate"
 msgstr ""
 
@@ -2281,6 +2287,9 @@ msgid "fixed object"
 msgstr ""
 
 msgid "for object type"
+msgstr ""
+
+msgid "friday"
 msgstr ""
 
 msgid "from"
@@ -2515,6 +2524,9 @@ msgid "modified"
 msgstr ""
 
 msgid "modified on"
+msgstr ""
+
+msgid "monday"
 msgstr ""
 
 msgid "more from this IP"
@@ -2847,6 +2859,9 @@ msgstr ""
 msgid "satellite"
 msgstr ""
 
+msgid "saturday"
+msgstr ""
+
 msgid "save"
 msgstr ""
 
@@ -2952,6 +2967,9 @@ msgstr ""
 msgid "subscribing method"
 msgstr ""
 
+msgid "sunday"
+msgstr ""
+
 msgid "surname"
 msgstr ""
 
@@ -2968,6 +2986,9 @@ msgid "text"
 msgstr ""
 
 msgid "thumbnail"
+msgstr ""
+
+msgid "thursday"
 msgstr ""
 
 msgid "timeout"
@@ -3001,6 +3022,9 @@ msgid "translation to"
 msgstr ""
 
 msgid "translations"
+msgstr ""
+
+msgid "tuesday"
 msgstr ""
 
 msgid "turn off"
@@ -3097,6 +3121,9 @@ msgid "webmarks"
 msgstr ""
 
 msgid "website"
+msgstr ""
+
+msgid "wednesday"
 msgstr ""
 
 msgid "with email"
