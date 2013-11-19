@@ -217,6 +217,7 @@ CREATE TABLE date_items (
   object_id INTEGER UNSIGNED NOT NULL,
   `start_date` DATETIME NULL COMMENT 'start time, can be NULL',
   `end_date` DATETIME NULL COMMENT 'end time, can be NULL',
+  `params` TEXT NULL COMMENT 'calendar params: e.g. days of week',
   PRIMARY KEY(id),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)

@@ -65,12 +65,24 @@ $(document).ready(function(){
         newRow.find("input.dateinput").datepicker();
 	});
 
+    $(".radioAlways").click(function (){
+    	var always = $(this).val();
+        if (always == "true") {
+        	$(this).parent().find("input[type=checkbox]").attr("disabled", "disabled");
+            $(this).parent().find("input[type=checkbox]").removeAttr("checked");
+        } else {
+            $(this).parent().find("input[type=checkbox]").removeAttr("disabled");
+        }
+    });
+
+	
 });
 
 </script>
 
 <div class="tab"><h2>{t}Event calendar{/t}</h2></div>
 <fieldset id="eventDates">
+
 
 <div class="dummydaterow">
     <label>{t}start{/t}:</label>
@@ -83,26 +95,67 @@ $(document).ready(function(){
 
     <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
     <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+    
 </div>
+
+{$days=["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]}
 
 {if !empty($object.DateItem)}
 {foreach name=dd from=$object.DateItem|@sortby:'start_date' item=d key=key}
+
+{$dayStart = ""}
+{$dayEnd = ""}
+{if !empty($d.start_date)}
+    {$dayStart = $d.start_date|date_format:$conf->datePattern}
+{/if}
+{if !empty($d.start_date)}
+    {$dayEnd = $d.end_date|date_format:$conf->datePattern}
+{/if}
+
 <div class="daterow">
 	<label>{t}start{/t}:</label>
 	<input size=10 type="text" id="eventStart_{$key}" class="dateinput eventStart" name="data[DateItem][{$key}][start_date]" 
-	value="{if !empty($d.start_date)}{$d.start_date|date_format:$conf->datePattern}{/if}"/>
+	value="{$dayStart}"/>
 	<input size=5 type="text"  id="timeStart_{$key}"  class="timeStart" name="data[DateItem][{$key}][timeStart]" 
 	value="{if !empty($d.start_date)}{$d.start_date|date_format:'%H:%M'}{/if}" />
 	
 	<label>{t}end{/t}:</label>
 	<input size=10 type="text" id="eventEnd_{$key}" class="dateinput eventEnd" name="data[DateItem][{$key}][end_date]" 
-	value="{if !empty($d.end_date)}{$d.end_date|date_format:$conf->datePattern}{/if}"/>
+	value="{$dayEnd}"/>
 	<input size=5 type="text"  id="timeEnd_{$key}"  class="timeEnd" name="data[DateItem][{$key}][timeEnd]" 
 	value="{if !empty($d.end_date)}{$d.end_date|date_format:'%H:%M'}{/if}" />
 
 	<a href="javascript:void(0)" class="BEbutton dateremove">X</a>
 	<a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+	{if !empty($conf->dateItemParams) && !empty($d.start_date) && !empty($d.end_date) 
+	    && $dayStart != $dayEnd}
+	<div>    
+	    <label>{t}always{/t}:</label>
+	    <input type="radio" id="everyY_{$key}" name="data[DateItem][{$key}][always]" 
+	       class="radioAlways" value="true" 
+	       {if empty($d.days)}checked="checked"{/if} />{t}yes{/t}
+	    <input type="radio" id="everyN_{$key}" name="data[DateItem][{$key}][always]" 
+           class="radioAlways" value="false" 
+           {if !empty($d.days)}checked="checked"{/if}/>{t}no{/t}
+	
+	    <label>{t}days{/t}:</label>
+	    {if empty($d.days)}
+	        {$dd = []}
+	    {else}
+	        {$dd = $d.days}
+	    {/if}
+	   {foreach $days as $num => $d}
+	        <input type="checkbox" id="dayChk_{$key}_{$num}" 
+	            name="data[DateItem][{$key}][days][]" value="{$num}" 
+	            {if in_array($num, $dd)}checked="checked"{/if}
+	            {if empty($dd)}disabled="disabled"{/if}/>{t}{$d}{/t}
+	   {/foreach}
+	</div>
+	{/if}    
+
 </div>
+
+
 {/foreach}
 {else}
 <div class="daterow">

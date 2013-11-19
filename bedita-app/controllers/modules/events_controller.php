@@ -66,9 +66,8 @@ class EventsController extends ModulesController {
 	public function view($id = null) {
 		$this->viewObject($this->Event, $id);
 		// check date items
-		$dateItems = $this->viewVars["object"]["DateItem"];
-		if (!empty($dateItems)) {
-    		foreach ($dateItems as $di) {
+		if (!empty($this->viewVars["object"]["DateItem"])) {
+    		foreach ($this->viewVars["object"]["DateItem"] as &$di) {
     		    if (!empty($di["start_date"]) && !empty($di["end_date"])) {
     		        if($di["start_date"] > $di["end_date"]) {
     		            $sDate = strftime(Configure::read("dateTimePattern"), strtotime($di["start_date"]));
@@ -77,6 +76,13 @@ class EventsController extends ModulesController {
     		                    ": " . $sDate . " -" . $eDate);
     		        }
     		    }
+    		    if (Configure::read("dateItemParams") && !empty($di["params"])) {
+    		        $params = @unserialize($di["params"]);
+    		        if (!empty($params["days"])) {
+    		            $di["days"] = $params["days"];
+    		        }
+    		    }
+    		    
     		}
 		}
 	}

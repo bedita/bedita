@@ -48,8 +48,10 @@ class DateItem extends BEAppModel
         if (!empty($data['end_date']) && !empty($data['timeEnd'])) {
             $data['end_date'] .= " " . $data['timeEnd'];
         }
-        
+        if (!empty($data['days'])) {
+            $data['params'] = serialize(array("days" => $data['days']));
+        }
         return true;
-	}
+	}	
 }
 ?>

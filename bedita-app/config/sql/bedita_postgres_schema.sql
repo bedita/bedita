@@ -242,12 +242,14 @@ CREATE TABLE date_items (
     id serial,
     object_id integer NOT NULL,
     start_date timestamp without time zone,
-    end_date timestamp without time zone
+    end_date timestamp without time zone,
+    params text
 );
 
 
 COMMENT ON COLUMN date_items.start_date IS 'start time, can be NULL';
 COMMENT ON COLUMN date_items.end_date IS 'end time, can be NULL';
+COMMENT ON COLUMN date_items.params IS 'calendar params: e.g. days of week';
 
 
 CREATE TABLE event_logs (
