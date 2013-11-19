@@ -380,28 +380,7 @@ class BeLib {
 		$variableName = Inflector::variable($variableName); // example => sitemapXml, myNickname
 		return $variableName;
 	}
-	
-	/**
-	 * check proxy configuration and set default stream context (for file_get_contents, get_headers...)
-	 *
-	 */
-    public function checkProxy() {
-        $proxyOpts = Configure::read("proxyOptions");
-        if (!empty($proxyOpts)) {
-            $aContext = array(
-                'http' => array(
-                    'proxy' => $proxyOpts["host"],
-                    'request_fulluri' => true,
-                ),
-            );
-            if (!empty($proxyOpts["auth"])) {
-                $aContext['http']['header'] = "Proxy-Authorization: Basic " . 
-                    base64_encode($proxyOpts["auth"]);
-            }
-            stream_context_set_default($aContext);
-        }
-    }
-	
+		
 }
 
 ?>
