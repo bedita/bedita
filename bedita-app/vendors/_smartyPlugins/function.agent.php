@@ -44,8 +44,9 @@ function smarty_function_agent($params, &$smarty)
     }
 	
 	$agent = array(
-					"IE" => false,"IE5" => false,"IE6" => false,"IE7" => false,"IE8" => false,"MOZ" => false,"OP" => false,"OP5" => false,
-					"OP6" => false,"NS" => false,"NS3" => false,"NS4" => false,"MAC" => false, "SAFARI" => false, "iPAD" => false, "iPHONE" => false
+					"IE" => false,"IE5" => false,"IE6" => false,"IE7" => false,"IE8" => false,"IE9" => false,"IE10" => false,"MOZ" => false,"OP" => false,"OP5" => false,
+					"OP6" => false,"NS" => false,"NS3" => false,"NS4" => false,"MAC" => false, "SAFARI" => false, "iPAD" => false, "iPHONE" => false,
+					"FIREFOX" => false,"UNKNOW" => false,"GOOGLEBOT" => false
 	) ;
 	
 	$agent["IE"] = (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE")) ? true : false ;
@@ -56,12 +57,15 @@ function smarty_function_agent($params, &$smarty)
 		$agent["IE7"] = (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE 7")) ? true : false ;
 		$agent["IE8"] = (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE 8")) ? true : false ;
 		$agent["IE9"] = (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE 9")) ? true : false ;
+		$agent["IE10"] = (stristr($_SERVER["HTTP_USER_AGENT"], "MSIE 10")) ? true : false ;
 	} 
 	
 	$agent["MOZ"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Gecko")) ? true : false ;
 	if($agent["MOZ"]) {
 		$agent["FF3"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Firefox 3") || stristr($_SERVER["HTTP_USER_AGENT"], "Firefox/3")) ? true : false ;
-		$agent["SAFARI"] = (stristr($_SERVER["HTTP_USER_AGENT"], "AppleWebKit")) ? true : false ;
+		$agent["SAFARI"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Safari")) ? true : false ;
+		$agent["CHROME"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Chrome")) ? true : false ;
+		$agent["FIREFOX"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Firefox")) ? true : false ;
 	} 
 
 	$agent["OP"] = (stristr($_SERVER["HTTP_USER_AGENT"], "opera")) ? true : false ;
@@ -72,21 +76,21 @@ function smarty_function_agent($params, &$smarty)
 		$agent["OP8"] = (stristr($_SERVER["HTTP_USER_AGENT"], "opera 8") || stristr($_SERVER["HTTP_USER_AGENT"], "opera/8")) ? true : false ;
 		$agent["OP9"] = (stristr($_SERVER["HTTP_USER_AGENT"], "opera 9") || stristr($_SERVER["HTTP_USER_AGENT"], "opera/9")) ? true : false ;
 		$agent["OP10"] = (stristr($_SERVER["HTTP_USER_AGENT"], "opera 10") || stristr($_SERVER["HTTP_USER_AGENT"], "opera/10")) ? true : false ;
-
 	} 
-	
-	if(!$agent["IE"] && !$agent["OP"] && !$agent["MOZ"]) {
-		$agent["NS"] = true ;
-		$agent["NS3"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla/3")) ? true : false ;
-		$agent["NS4"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla/4")) ? true : false ;
-	}
 	
 	$agent["MAC"] = (stristr($_SERVER["HTTP_USER_AGENT"], "mac")) ? true : false ;
 	if($agent["MAC"]) {
 		$agent["iPAD"] = (stristr($_SERVER["HTTP_USER_AGENT"], "iPad")) ? true : false ;
 		$agent["iPHONE"] = (stristr($_SERVER["HTTP_USER_AGENT"], "iPhone")) ? true : false ;
 	}
-	
+
+	if(!$agent["IE"] && !$agent["OP"] && !$agent["MOZ"] && !$agent["MAC"]) {
+		$agent["UNKNOW"] = true ;
+		$agent["GOOGLEBOT"] = (stristr($_SERVER["HTTP_USER_AGENT"], "googlebot")) ? true : false ;
+		$agent["NS3"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla/3")) ? true : false ;
+		$agent["NS4"] = (stristr($_SERVER["HTTP_USER_AGENT"], "Mozilla/4")) ? true : false ;
+	}
+
 	$smarty->assign($var, $agent);
 }
 
