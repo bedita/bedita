@@ -52,6 +52,22 @@ class DateItem extends BEAppModel
             $data['params'] = serialize(array("days" => $data['days']));
         }
         return true;
-	}	
+	}
+
+	
+    function afterFind($results) {
+        if (!empty($results[0]["DateItem"])) {
+            foreach ($results as &$r) {
+                if (!empty($r["DateItem"]["params"])) {
+                    $params = @unserialize($r["DateItem"]["params"]);
+                    if (!empty($params["days"])) {
+                        $r["DateItem"]["days"] = $params["days"];
+                    }
+                }
+            }
+        }
+        return $results;
+    }
+
 }
 ?>

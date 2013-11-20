@@ -76,13 +76,6 @@ class EventsController extends ModulesController {
     		                    ": " . $sDate . " -" . $eDate);
     		        }
     		    }
-    		    if (Configure::read("dateItemParams") && !empty($di["params"])) {
-    		        $params = @unserialize($di["params"]);
-    		        if (!empty($params["days"])) {
-    		            $di["days"] = $params["days"];
-    		        }
-    		    }
-    		    
     		}
 		}
 	}
