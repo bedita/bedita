@@ -248,7 +248,8 @@ class SearchText extends BEAppModel
     private function initIndex($delete) {
         $this->checkIndexModel();
         if($delete && !$this->indexModel) {
-            $this->deleteAll();
+            $conditions = array("SearchText.id > 0");
+            $this->deleteAll($conditions);
         }
 
         if($this->indexModel) {
