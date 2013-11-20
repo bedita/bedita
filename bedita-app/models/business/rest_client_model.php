@@ -30,7 +30,12 @@ class RestClientModel extends BEAppModel {
 	public $httpReady = false;
 	public $client;
 	public $useCurl = false;
-	public $curlOptions = array();
+
+	/**
+	 * options used when a request (get/post) is done
+	 * @var array
+	 */
+	protected $requestOptions = array();
 	
 	/**
 	 * setup rest client
@@ -38,28 +43,28 @@ class RestClientModel extends BEAppModel {
 	 * else setup RestClientModel to use CakePHP HttpSocket class
 	 */
 	public function setup() {
-		if(!$this->httpReady) {	
+		if (!$this->httpReady) {	
 			
-			if(function_exists("curl_init")) {
+			if (function_exists("curl_init")) {
 				$this->client = curl_init();
-				$this->curlOptions = array(
+				$setupCurlOptions = array(
 					CURLOPT_HEADER => false,
 					CURLOPT_RETURNTRANSFER => true,
 					CURLOPT_USERAGENT => "BEdita agent",
 					CURLOPT_FOLLOWLOCATION => true,
 					CURLOPT_MAXREDIRS => 100,
 				);
-				if(Configure::read("proxyOptions") != null) {
+				if (Configure::read("proxyOptions") != null) {
 					$proxyOpts = Configure::read("proxyOptions");
-					$this->curlOptions[CURLOPT_PROXY] = $proxyOpts["host"];
+					$setupCurlOptions[CURLOPT_PROXY] = $proxyOpts["host"];
 					if(!empty($proxyOpts["type"]) && ($proxyOpts["type"] === "socks5") ) {
-						$this->curlOptions[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
+						$setupCurlOptions[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
 					}
 					if(!empty($proxyOpts["auth"])) {
-					    $this->curlOptions[CURLOPT_PROXYUSERPWD] = $proxyOpts["auth"];
+					    $setupCurlOptions[CURLOPT_PROXYUSERPWD] = $proxyOpts["auth"];
 					}	
 				}
-				curl_setopt_array($this->client, $this->curlOptions);
+				curl_setopt_array($this->client, $setupCurlOptions);
 				$this->useCurl = true;			
 			} else {
 				App::import('Core', 'HttpSocket');
@@ -68,6 +73,20 @@ class RestClientModel extends BEAppModel {
 			}
 			App::import('Core', 'Xml');
 			$this->httpReady = true;
+		}
+	}
+
+	/**
+	 * set self::requestOptions
+	 *
+	 * @param array   $options
+	 * @param boolean $merge   true if $options has to be merged with self::requestOptions. Default false
+	 */
+	public function setOptions(array $options = array(), $merge = false) {
+		if ($merge) {
+			$this->requestOptions = array_merge($this->requestOptions, $options);
+		} else {
+			$this->requestOptions = $options;
 		}
 	}
 
@@ -90,10 +109,19 @@ class RestClientModel extends BEAppModel {
 		}
 		
 		if(!$this->useCurl) {
+			// @todo: handle self::requestOptions
 			$out = $this->client->get($uri, $params);
 		} else {
 		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "GET");
 			curl_setopt($this->client, CURLOPT_HTTPGET, true);
+
+			// set self::requestOptions
+			if (!empty($this->requestOptions)) {
+				if (!curl_setopt_array($this->client, $this->requestOptions)) {
+					$this->log("curl_setopt_array error: fail to set curl options.\nOptions passed:" . print_r($this->requestOptions, true));
+				}
+			}
+
 			if(is_array($params)) {
 				$httpQuery = http_build_query($params);
 			} else {
@@ -128,6 +156,7 @@ class RestClientModel extends BEAppModel {
 	 */
 	public function post($uri, $params = array(), $outType = null, $camelize = true) {
 		if(!$this->useCurl) {
+			// @todo: handle self::requestOptions
 			$out = $this->client->post($uri, $params);
 			if(Configure::read('debug') > 0) {
 				$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
@@ -135,6 +164,14 @@ class RestClientModel extends BEAppModel {
 		} else {
 		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "POST");
 		    curl_setopt($this->client, CURLOPT_POST, true);
+
+			// set self::requestOptions
+			if (!empty($this->requestOptions)) {
+				if (!curl_setopt_array($this->client, $this->requestOptions)) {
+					$this->log("curl_setopt_array error: fail to set curl options.\nOptions passed:" . print_r($this->requestOptions, true));
+				}
+			}
+
 			if(is_array($params)) {
 				$httpQuery = http_build_query($params);
 			} else {
