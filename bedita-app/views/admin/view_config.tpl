@@ -270,9 +270,9 @@
 				</tr>
 				<tr>
 					<th>{t}username{/t}:</th>
-					<td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" /></td>
+					<td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" autocomplete="off"/></td>
 					<th>{t}password{/t}:</th>
-					<td><input type="password" name="sys[smtpOptions][password]" /></td>
+					<td><input type="password" name="sys[smtpOptions][password]" autocomplete="off"/></td>
 				</tr>
 				<tr>
 					<td colspan="4">
