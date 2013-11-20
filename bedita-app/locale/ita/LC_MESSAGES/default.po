@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-10-17 12:24:43\n"
+"POT-Creation-Date: 2013-11-19 18:23:58\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -19,8 +19,7 @@ msgstr "(de)seleziona tutti"
 
 msgid ""
 "A new version of the addon seems to be present. Do you want to update it?"
-msgstr ""
-"E' presente una nuova versione dell'addon. Vuoi aggiornarlo?"
+msgstr "E' presente una nuova versione dell'addon. Vuoi aggiornarlo?"
 
 msgid "Access to Backend"
 msgstr "Accesso al Backend"
@@ -124,7 +123,8 @@ msgid "Are you sure you want to delete"
 msgstr "Sei sicuro che vuoi eliminarlo"
 
 msgid "Are you sure you want to procede? The operation can take several time"
-msgstr "Sei sicuro che vuoi procedere? L'operazione può impiegare parecchio tempo"
+msgstr ""
+"Sei sicuro che vuoi procedere? L'operazione può impiegare parecchio tempo"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -1077,9 +1077,6 @@ msgstr ""
 msgid "Multimedia deleted"
 msgstr "Multimedia eliminato"
 
-msgid "Multimedia items"
-msgstr "Elementi multimediali"
-
 msgid "Multimedia object saved"
 msgstr "Oggetto multimedia salvato"
 
@@ -1492,6 +1489,9 @@ msgstr "Rimuovi selezione da categoria"
 msgid "Remove selected from section"
 msgstr "Rimuovi selezione dalla sezione"
 
+msgid "Reserved method called from url"
+msgstr "Metodo protetto richiamato da url"
+
 msgid "Resource "
 msgstr "Risorsa "
 
@@ -1810,15 +1810,15 @@ msgid ""
 "User cannot be removed, he/she did create or modify some contents. Do you "
 "want to block"
 msgstr ""
-"L'utente non può essere eliminato perchè ha creato o modificato dei contenuti. Vuoi "
-"bloccarlo"
+"L'utente non può essere eliminato perchè ha creato o modificato dei "
+"contenuti. Vuoi bloccarlo"
 
 msgid ""
 "User cannot be removed, he/she did create or modify some contents. It's "
 "alredy blocked"
 msgstr ""
-"L'utente non può essere eliminato perchè ha creato o modificato dei contenuti. L'utente "
-"è già bloccato"
+"L'utente non può essere eliminato perchè ha creato o modificato dei "
+"contenuti. L'utente è già bloccato"
 
 msgid "User created"
 msgstr "Utente creato"
@@ -2020,6 +2020,9 @@ msgstr "tutti i webmark"
 msgid "already contains the file uploaded"
 msgstr "contiene già il file caricato"
 
+msgid "always"
+msgstr "sempre"
+
 msgid "associate"
 msgstr "associa"
 
@@ -2194,6 +2197,9 @@ msgstr "tipo dati"
 msgid "date"
 msgstr "data"
 
+msgid "days"
+msgstr "giorni"
+
 msgid "deathdate"
 msgstr "data di decesso"
 
@@ -2327,6 +2333,9 @@ msgstr "oggetto fixed"
 
 msgid "for object type"
 msgstr "per tipo oggetto"
+
+msgid "friday"
+msgstr "venerdì"
 
 msgid "from"
 msgstr "da"
@@ -2563,6 +2572,9 @@ msgstr "modificato"
 
 msgid "modified on"
 msgstr "modificato il"
+
+msgid "monday"
+msgstr "lunedì"
 
 msgid "more from this IP"
 msgstr "di più da questo IP"
@@ -2870,7 +2882,9 @@ msgid "remove from users"
 msgstr "rimuovi dagli utenti"
 
 msgid "replace old file with uploaded file in current multimedia object"
-msgstr "nell'oggetto multimediale corrente sostituisci il vecchio file con quello caricato"
+msgstr ""
+"nell'oggetto multimediale corrente sostituisci il vecchio file con quello "
+"caricato"
 
 msgid "reply to"
 msgstr "rispondi a"
@@ -2895,6 +2909,9 @@ msgstr "diritti"
 
 msgid "satellite"
 msgstr "foto satellitare"
+
+msgid "saturday"
+msgstr "sabato"
 
 msgid "save"
 msgstr "salva"
@@ -3001,6 +3018,9 @@ msgstr "iscritti"
 msgid "subscribing method"
 msgstr "metodo di iscrizione"
 
+msgid "sunday"
+msgstr "domenica"
+
 msgid "surname"
 msgstr "cognome"
 
@@ -3018,6 +3038,9 @@ msgstr "testo"
 
 msgid "thumbnail"
 msgstr "miniatura"
+
+msgid "thursday"
+msgstr "giovedì"
 
 msgid "timeout"
 msgstr "timeout"
@@ -3051,6 +3074,9 @@ msgstr "traduzione al"
 
 msgid "translations"
 msgstr "traduzioni"
+
+msgid "tuesday"
+msgstr "martedì"
 
 msgid "turn off"
 msgstr "disattiva"
@@ -3152,6 +3178,9 @@ msgstr "webmark"
 msgid "website"
 msgstr "sito web"
 
+msgid "wednesday"
+msgstr "mercoledì"
+
 msgid "with email"
 msgstr "con email"
 
@@ -3178,6 +3207,9 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+#~ msgid "Multimedia items"
+#~ msgstr "Elementi multimediali"
 
 #~ msgid "Are you sure you want to procede? The operation may be slow"
 #~ msgstr "Sei sicuro di voler procedere? L'operazione potrebbe essere lenta"

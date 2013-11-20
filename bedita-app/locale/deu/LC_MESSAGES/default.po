@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-10-17 12:24:43\n"
+"POT-Creation-Date: 2013-11-19 18:23:58\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1093,9 +1093,6 @@ msgstr ""
 msgid "Multimedia deleted"
 msgstr "Multimedia gelöscht"
 
-msgid "Multimedia items"
-msgstr "Multimedia Elemente"
-
 msgid "Multimedia object saved"
 msgstr "Multimediaobjekt gespeichert"
 
@@ -1510,6 +1507,9 @@ msgstr "Gewählte aus Kategorie löschen"
 
 msgid "Remove selected from section"
 msgstr "Gewählte aus Sektion löschen"
+
+msgid "Reserved method called from url"
+msgstr ""
 
 msgid "Resource "
 msgstr "Resource"
@@ -2054,6 +2054,9 @@ msgstr "alle Lesezeichen"
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "always"
+msgstr ""
+
 msgid "associate"
 msgstr "verknüpfen"
 
@@ -2228,6 +2231,9 @@ msgstr "Datentyp"
 msgid "date"
 msgstr "Datum"
 
+msgid "days"
+msgstr ""
+
 msgid "deathdate"
 msgstr "Todestag"
 
@@ -2362,6 +2368,9 @@ msgstr "fixiertes Objekt"
 
 msgid "for object type"
 msgstr "für Objekttyp"
+
+msgid "friday"
+msgstr ""
 
 msgid "from"
 msgstr "von"
@@ -2596,6 +2605,9 @@ msgstr "geändert"
 
 msgid "modified on"
 msgstr "geändert am"
+
+msgid "monday"
+msgstr ""
 
 msgid "more from this IP"
 msgstr "mehr über diese IP"
@@ -2927,6 +2939,9 @@ msgstr "Rechte"
 msgid "satellite"
 msgstr ""
 
+msgid "saturday"
+msgstr ""
+
 msgid "save"
 msgstr "speichern"
 
@@ -3032,6 +3047,9 @@ msgstr "Abonnenten"
 msgid "subscribing method"
 msgstr "Abonnementmethode"
 
+msgid "sunday"
+msgstr ""
+
 msgid "surname"
 msgstr "Familienname"
 
@@ -3049,6 +3067,9 @@ msgstr "Text"
 
 msgid "thumbnail"
 msgstr "Vorschaubild"
+
+msgid "thursday"
+msgstr ""
 
 msgid "timeout"
 msgstr ""
@@ -3082,6 +3103,9 @@ msgstr "Übersetzung in"
 
 msgid "translations"
 msgstr "Übersetzungen"
+
+msgid "tuesday"
+msgstr ""
 
 msgid "turn off"
 msgstr "ausschalten"
@@ -3181,6 +3205,9 @@ msgstr "Lesezeichen"
 msgid "website"
 msgstr "Webseite"
 
+msgid "wednesday"
+msgstr ""
+
 msgid "with email"
 msgstr "mit Email"
 
@@ -3207,6 +3234,9 @@ msgstr "deine 5 letzten Elemente"
 
 msgid "your message"
 msgstr "deine Nachricht"
+
+#~ msgid "Multimedia items"
+#~ msgstr "Multimedia Elemente"
 
 #~ msgid "Create new document"
 #~ msgstr "Neues Dokument erstellen"

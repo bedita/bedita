@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-10-17 12:24:43\n"
+"POT-Creation-Date: 2013-11-19 18:23:58\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1078,9 +1078,6 @@ msgstr ""
 msgid "Multimedia deleted"
 msgstr "Multimedia borrado"
 
-msgid "Multimedia items"
-msgstr "Elementos Multimedia"
-
 msgid "Multimedia object saved"
 msgstr "Objeto multimedia guardado"
 
@@ -1492,6 +1489,9 @@ msgstr "Quitar seleccionado(s) de la categoría"
 
 msgid "Remove selected from section"
 msgstr "Quitar seleccionado(s) de la sección"
+
+msgid "Reserved method called from url"
+msgstr ""
 
 msgid "Resource "
 msgstr "Recurso"
@@ -2017,6 +2017,9 @@ msgstr "todos los webmarks"
 msgid "already contains the file uploaded"
 msgstr ""
 
+msgid "always"
+msgstr ""
+
 msgid "associate"
 msgstr "asociar"
 
@@ -2191,6 +2194,9 @@ msgstr "tipo de datos"
 msgid "date"
 msgstr "fecha"
 
+msgid "days"
+msgstr ""
+
 msgid "deathdate"
 msgstr "fecha de muerte"
 
@@ -2322,6 +2328,9 @@ msgstr "objeto fijo"
 
 msgid "for object type"
 msgstr "por tipo de objeto"
+
+msgid "friday"
+msgstr ""
 
 msgid "from"
 msgstr "de"
@@ -2558,6 +2567,9 @@ msgstr "modificado"
 
 msgid "modified on"
 msgstr "modificado el"
+
+msgid "monday"
+msgstr ""
 
 msgid "more from this IP"
 msgstr "más de este IP"
@@ -2889,6 +2901,9 @@ msgstr "derechos"
 msgid "satellite"
 msgstr "satélite"
 
+msgid "saturday"
+msgstr ""
+
 msgid "save"
 msgstr "guardar"
 
@@ -2994,6 +3009,9 @@ msgstr "suscriptores"
 msgid "subscribing method"
 msgstr "método de suscripción"
 
+msgid "sunday"
+msgstr ""
+
 msgid "surname"
 msgstr "apellido"
 
@@ -3011,6 +3029,9 @@ msgstr "texto"
 
 msgid "thumbnail"
 msgstr "thumbnail"
+
+msgid "thursday"
+msgstr ""
 
 msgid "timeout"
 msgstr "tiempo de espera"
@@ -3044,6 +3065,9 @@ msgstr "traducción a"
 
 msgid "translations"
 msgstr "traducciones"
+
+msgid "tuesday"
+msgstr ""
 
 msgid "turn off"
 msgstr "apagar"
@@ -3145,6 +3169,9 @@ msgstr "webmark"
 msgid "website"
 msgstr "sitio web"
 
+msgid "wednesday"
+msgstr ""
+
 msgid "with email"
 msgstr "con email"
 
@@ -3171,6 +3198,9 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "Multimedia items"
+#~ msgstr "Elementos Multimedia"
 
 #~ msgid "Are you sure you want to procede? The operation may be slow"
 #~ msgstr ""
