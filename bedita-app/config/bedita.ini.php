@@ -38,6 +38,8 @@ $config["userVersion"] = "BEdita 3.2"; // don't override
 
 $config["majorVersion"] = "3.2"; // don't override -- admin/system
 
+$config["codenameVersion"] = "Populus"; // don't override -- admin/system
+
 $config["helpBaseUrl"] = "http://docs.bedita.com/behelp/v32"; // don't override --
 
 // Multimedia - image file substituting missing content (as now used in BeThumb helper)

@@ -453,6 +453,305 @@ class DeployShell extends BeditaBaseShell {
     	$this->Cleanup->execute();
     }
     
+    /**
+     * generate changelog file with markdown syntax
+     * file is placed in tmp/logs dir
+     */
+    public function changelog() {
+        $this->out();
+        $this->out("##############################################");
+        $this->out("CHANGELOG FILE BUILDER");
+        $this->out("##############################################");
+        $this->out();
+
+        $changes = array('user' => array(), 'frontend' => array(), 'developer' => array(), 'other' => array());
+        $labelsMap = array('topic - ui' => 'user', 'topic - frontend' => 'frontend');
+
+        $githubUser = $this->in('Github user: ');
+        if (empty($githubUser)) {
+            $this->out('Missing Github user. Exit... bye');
+            return false;
+        }
+
+        $githubPassword = $this->in('Github password: ');
+        if (empty($githubPassword)) {
+            $this->out('Missing Github password. Exit... bye');
+            return false;
+        }
+
+        $restClient = ClassRegistry::init('RestClientModel');
+        $restClient->setup();
+        if (!$restClient->useCurl) {
+            $this->out('Sorry, Github api are handled with curl. Install curl and retry. Exit... bye');
+            return false;
+        }
+        $options = array(
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_USERPWD => "$githubUser:$githubPassword",
+            CURLOPT_HEADER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30
+        );
+
+        $restClient->setOptions($options);
+        $response = $restClient->get('https://api.github.com/rate_limit');
+
+        $rateLimitResponse = $this->githubResponse($response);
+
+        // if it's finished rate limit (60 call for hour) skip unit test
+        if (empty($rateLimitResponse['headers']) || $rateLimitResponse['headers']['Status'] != '200 OK') {
+            $this->out("Github connection refused.\nPlease retry. Bye");
+            return false;
+        }
+        if (empty($rateLimitResponse['headers']['X-RateLimit-Remaining'])) {
+            $this->out("Your're requests for hour are terminated.\nRetry later. Bye");
+            return false;
+        }
+
+        $this->out("Connection to Github done");
+
+        $tagList = $this->getGitTags();
+        if (empty($tagList)) {
+            $this->out('No tags found. Exit... bye');
+            return false;
+        }
+        $lastTagName = $this->lastTagName();
+
+        $this->out($this->nl(1) . 'TAGS:');
+        foreach ($tagList as $key => $tagName) {
+            $this->out($key + 1 . ". " . $tagName);
+             if ($tagName == $lastTagName) {
+                $defaultTagNumber = $key + 1;
+            }
+        }
+        $res = $this->in("Choose the tag from which to start (default last tag named '$lastTagName')", null, $defaultTagNumber);
+        if (empty($tagList[$res-1])) {
+            $this->out('No tag selected. Exit... bye');
+            return false;
+        }
+
+        $tag = $tagList[$res-1];
+        $this->out($this->nl(1) . 'Tag ' . $tag . ' selected, proceed...' . $this->nl(2));
+
+        $currentBranch = $this->getGitBranch(ROOT);
+        $branchesList = $this->getGitBranches();
+        $this->out('BRANCHES:');
+        foreach ($branchesList as $key => $branchName) {
+            $this->out($key + 1 . ". " . $branchName);
+            if ($branchName == $currentBranch) {
+                $defaultNumber = $key + 1;
+            }
+        }
+        $res = $this->in("Choose the branch on which build changelog (default is current '$currentBranch' branch)", null, $defaultNumber);
+        if (empty($branchesList[$res-1])) {
+            $this->out('No branch selected. Exit... bye');
+            return false;
+        }
+
+        $branch = $branchesList[$res-1];
+        $this->out($this->nl(1) . 'Branch ' . $branch . ' selected, proceed...' . $this->nl(2));
+
+        $startDelimiter = '<####';
+        $endDelimiter = '####>';
+        $cmd = "git log $tag..$branch --pretty=format:\"$startDelimiter%B$endDelimiter\"";
+        $this->out('Execute ' . $cmd . ' and prepare data');
+        exec($cmd, $log);
+        // pr($log);
+        if (empty($log)) {
+            $this->out('No log entry found. Exit... bye');
+            return false;
+        }
+
+        $mapIssues = array();
+        $startAndEndCommitRow = "/^" . $startDelimiter . "(.*)" . $endDelimiter . "$/";
+        $startCommitRow = "/^" . $startDelimiter . "(.*)/";
+        $endCommitRow = "/(.*)" . $endDelimiter . "$/";
+        $patternIssueNumber = "/.*#(\d+).*/";
+        $commitMessage = '';
+        $commitMessageBuilt = false;
+
+        foreach ($log as $key => $row) {
+            $this->out('.', 0);
+            // first row of a commit contain start and end delimiter
+            if (preg_match($startAndEndCommitRow , $row, $matches)) {
+                $commitMessage = trim($matches[1]);
+                $commitMessageBuilt = true;
+            // first row of a commit message
+            } elseif (preg_match($startCommitRow , $row, $matches)) {
+                $commitMessage = trim($matches[1]);
+            // last row of a commit message
+            } elseif (preg_match($endCommitRow , $row, $matches)) {
+                $m = trim($matches[1]);
+                if (strlen($m) > 0) {
+                    $commitMessage .= "\n" . $m;
+                }
+                $commitMessageBuilt = true;
+            // generic row of a commit message
+            } else {
+                $row = trim($row);
+                if (strlen($row) > 0) {
+                    $commitMessage .= "\n" . preg_replace("/^\s?[-|*]/", " * ", $row);
+                }
+            }
+
+            if ($commitMessageBuilt == true) {
+                // $this->out('> ' . $commitMessage);
+                // check issue number
+                $issue = false;
+                if (preg_match($patternIssueNumber, $commitMessage, $matches)) {
+                    // $this->out('issue: ' . $issue);
+                    $issue = $matches[1];
+                    if (empty($mapIssues[$issue])) {
+                        // get issue data from github
+                        $response = $restClient->get('https://api.github.com/repos/bedita/bedita/issues/' . $issue);
+                        $issueResponse = $this->githubResponse($response);
+                        if (empty($issueResponse['headers']) || $issueResponse['headers']['Status'] != '200 OK' || empty($issueResponse['headers']['X-RateLimit-Remaining'])) {
+                            $this->out('Something goes wrong reading issue data from github :(');
+                            $this->out('This is github response:');
+                            $this->out($response);
+                            $this->out('Changelog aborted... bye');
+                            return false;
+                        }
+                        $mapIssues[$issue] = $issueResponse['content'];
+                    }
+
+                    $issueDetail = $mapIssues[$issue];
+                    $markdownIssue = "[#$issue](" . $issueDetail['html_url'] . ")";
+                    // if issue closed put issue title in the changelog
+                    if ($issueDetail['state'] == 'closed') {
+                        $commitMessage = $markdownIssue . " " . $issueDetail['title'];
+                    // replace #issue with markdown issue url
+                    } else {
+                        $commitMessage = str_replace("#$issue", $markdownIssue, $commitMessage);
+                    }
+                    $issueLabels = Set::extract('/labels/name', $issueDetail);
+
+                    // user changelog
+                    if (empty($changes['user']["#$issue"]) && in_array('Topic - UI', $issueLabels)) {
+                        $changes['user']["#$issue"] = $commitMessage;
+                    // frontend changelog
+                    } elseif (empty($changes['frontend']["#$issue"]) && in_array('Topic - Frontend', $issueLabels)) {
+                        $changes['frontend']["#$issue"] = $commitMessage;
+                    // developer changelog
+                    } elseif (empty($changes['developer']["#$issue"])) {
+                        $changes['developer']["#$issue"] = $commitMessage;
+                    }
+
+                // if not issue number is found in $commitMessage then add message to 'other' changelog section
+                } else {
+                    $changes['other'][] = $commitMessage;
+                }
+
+                $commitMessage = '';
+                // restart building commitMessage
+                $commitMessageBuilt = false;
+            }
+        }
+
+        // pr($changes);
+
+        // write to file
+        $beLib = BeLib::getInstance();
+        $fileName = 'changelog-tag_' . $beLib->friendlyUrlString($tag) . '-branch_' . $beLib->friendlyUrlString($branch) . '.md';
+        $filePath = ROOT . DS . 'bedita-app' . DS . 'tmp' . DS . 'logs' . DS . $fileName;
+        $this->out($this->nl(1) . 'Change log will be placed in ' . $filePath);
+
+        $file = new File($filePath, true);
+        $version = '## Version ' . Configure::read('majorVersion') . ' - ' . Configure::read('codenameVersion') . "\n";
+        $file->write($version);
+        foreach ($changes as $group => $changesGroup) {
+            switch ($group) {
+                case 'user':
+                    $intro = "\n### User-visible changes\n\n";
+                    break;
+
+                case 'frontend':
+                    $intro = "\n### Frontend changes\n\n";
+                    break;
+
+                case 'developer':
+                    $intro = "\n### Developer-visible changes\n\n";
+                    break;
+
+                default:
+                    $intro = "\n### Uncategorized changes\n\n";
+                    break;
+            }
+
+            $file->append($intro);
+
+            foreach ($changesGroup as $key => $message) {
+                $file->append('* ' . $message . "\n");
+            }
+        }
+        $file->close();
+        $this->out('File ' . $filePath . ' written.');
+        $this->out('Check and correct it, then prepend content to ' . ROOT . DS . 'CHANGES.md');
+        $this->out('Bye');
+    }
+
+    /**
+     * return array of git tags
+     * @return array
+     */
+    protected function getGitTags() {
+        $cmd = "git tag -l";
+        exec($cmd, $tags);
+        return $tags;
+    }
+
+    /**
+     * return array of git branches
+     * @return array
+     */
+    protected function getGitBranches() {
+        $cmd = "git branch";
+        exec($cmd, $branches);
+        if (!empty($branches)) {
+            foreach($branches as &$b) {
+                $b = preg_replace('/\s?\*?\s+/', '', $b);
+            }
+        }
+        return $branches;
+    }
+
+    /**
+     * Show the most recent tag that is reachable from last commit of current branch
+     * @return string the tag name
+     */
+    protected function lastTagName() {
+        $tagName = "";
+        $cmd = "git describe --abbrev=0";
+        exec($cmd, $tagName);
+        if (!empty($tagName)) {
+            $tagName = $tagName[0];
+        }
+        return $tagName;
+    }
+
+    private function githubResponse($originalResponse) {
+        $response = array('headers' => array(), 'jsonContent' => '', 'content' => '');
+        $res = explode("\r\n", $originalResponse);
+        if (count($res) > 1) {
+            $response['headers']['httpHeader'] = array_shift($res);
+            $response['jsonContent'] = array_pop($res);
+            if (!empty($res)) {
+                foreach ($res as $row) {
+                    $matches = array();
+                    if (preg_match("/(.+):\s(.+)/", $row, $matches)) {
+                        $response['headers'][$matches[1]] = $matches[2];
+                    }
+                }
+            }
+        } else {
+            $response['jsonContent'] = $res[0];
+        }
+        $response['content'] = json_decode($response['jsonContent'], true);
+        return $response;
+    }
     
     function help() {
         $this->out('Available functions:');
@@ -466,6 +765,9 @@ class DeployShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('4. upgradeDb: upgrade bedita database to newest version');
   		$this->out(' ');
+        $this->out(' ');
+        $this->out('5. changelog: generate markdown changelog file');
+        $this->out(' ');
     }
 }
 
