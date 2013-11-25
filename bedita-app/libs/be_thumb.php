@@ -300,9 +300,9 @@ class BeThumb {
 	/**
 	 * Get image file path, get cached local copy behind a proxy 
 	 */
-	public function imagePathCached($imageFilePath) {
-	    if ($imageFilePath !== null) {
-	        $data["uri"] = $imageFilePath;
+	public function imagePathCached($imageFilePath = null) {
+	    if (!empty($imageFilePath)) {
+	        $data["uri"] = str_replace(Configure::read('mediaRoot'), "", $imageFilePath);
 	        $this->setupImageInfo($data);
 	    }
 	    if ($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
