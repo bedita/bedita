@@ -878,11 +878,12 @@ abstract class FrontendController extends AppController {
 			}
 
 			$this->setCanonicalPath($s);
-			App::import("Sanitize");
-			$title = Sanitize::html($this->publication["public_name"] . " - " . $s['title']);
+			//App::import("Sanitize");
+			$title = h($this->publication["public_name"] . " | " . $s['title']);
 			$channel = array( 'title' => $title,
 				'link' => $s["canonicalPath"],
-				'description' => Sanitize::html($s['description']),
+				//'description' => Sanitize::html($s['description']),
+				'description' => h($s['description']),
 				'language' => $s['lang'],
 			);
 		}
@@ -914,6 +915,9 @@ abstract class FrontendController extends AppController {
 			}
 		}
 		$this->set('items', $rssItems);
+		
+		//pr($rssItems); exit;
+
 		$this->view = 'View';
 		// add RSS helper if not present
 		if (!in_array('Rss', $this->helpers)) {
