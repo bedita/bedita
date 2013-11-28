@@ -62,18 +62,39 @@
 		
 </fieldset>
 
-{if !empty($group)}
-<div class="tab"><h2>{$group.User|@count|default:''} {t}users in this group{/t}</h2></div>
+{if !empty($group.Objects)}
+	<div class="tab"><h2>{$group.Objects|@count|default:''} {t}objects for this group{/t}</h2></div>
+	<table class="bordered">
+	{foreach from=$group.Objects item=ob}
+		<tr>
+			<td>
+				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.title|default:$ob.object_id}</a>
+			</td>
+			<td>
+				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.object_type_name}</a>
+			</td>
+			<td>
+				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.object_status}</a>
+			</td>
+			<td>
+				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.permissions_flag}</a>
+			</td>
+		</tr>
+	{/foreach}
+	</table>
+{/if}	
 
-<table class="bordered">
-{foreach from=$group.User item=u}
-	<tr>
-		<td>
-			<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid}</a>
-		</td>
-	</tr>
-{/foreach}
-</table>
+{if !empty($group)}
+	<div class="tab"><h2>{$group.User|@count|default:''} {t}users in this group{/t}</h2></div>
+	<table class="bordered">
+	{foreach from=$group.User item=u}
+		<tr>
+			<td>
+				<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid}</a>
+			</td>
+		</tr>
+	{/foreach}
+	</table>
 {/if}		
 
 </form>
