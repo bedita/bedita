@@ -140,8 +140,14 @@ class Category extends BEAppModel {
 	 * Define default values
 	 */		
 	function beforeValidate() {
-		$data = &$this->data[$this->name] ;
-		$data['name'] = $this->uniqueLabelName($data["label"]);
+		$data = &$this->data[$this->name];
+		// if new tag/category
+		if (empty($data['id']) && !empty($data['label'])) {
+			$data['name'] = $this->uniqueLabelName($data["label"]);
+		// if it's an existing tag/category
+		} elseif (!empty($data['name'])) {
+			$data['name'] = $this->uniqueLabelName($data["name"]);
+		}
 		return true;
 	}
 	
