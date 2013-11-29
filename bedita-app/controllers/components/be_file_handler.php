@@ -228,8 +228,16 @@ class BeFileHandlerComponent extends Object {
 		if(empty($data['uri']) && empty($data['id'])) {
 			throw new BeditaException(__("Missing temporary file in filesystem.", true));
 		}
+		
 		if (!file_exists($data["uri"])) {
 			throw new BEditaFileExistException(__("Resource " . $data["uri"] . " not valid", true));
+		}
+		$conf = Configure::getInstance() ;
+		if(in_array($data['mime_type'],$conf->file_mime_type_no_upload)) {
+			throw new BeditaException(__("Mime type '" . $data['mime_type'] . "' not allowed for upload.", true));
+		}
+		if(preg_match($conf->file_extension_no_upload,$data['name'])) {
+			throw new BeditaException(__("File extension not allowed for upload.", true));
 		}
 		// Create destination path
 		$sourcePath = $data['uri'] ;

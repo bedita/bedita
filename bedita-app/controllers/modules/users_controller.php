@@ -320,8 +320,8 @@ class UsersController extends ModulesController {
 			}
 			// find objects with permissions set for group
 			$beObject = ClassRegistry::init('BEObject');
-			$objects = $beObject->find('all', array(
-				'fields' => array('BEObject.id, BEObject.title, BEObject.nickname, BEObject.object_type_id, BEObject.status, Permission.flag'),
+			$res = $beObject->find('all', array(
+				'fields' => array('BEObject.id, BEObject.title, BEObject.nickname, BEObject.object_type_id, BEObject.status, Permission.id, Permission.flag'),
 				'contain' => array(),
 				'joins' => array(
 					array(
@@ -336,7 +336,18 @@ class UsersController extends ModulesController {
 					)
 				)
 			));
-			$g['objects'] = $objects;
+
+			// group permission by object
+			$objects = array();
+			foreach ($res as $key => $obj) {
+				$objId = $obj['BEObject']['id'];
+				if (empty($objects[$objId])) {
+					$objects[$objId]['BEObject'] = $obj['BEObject'];
+				}
+				$objects[$objId]['Permission'][] = $obj['Permission'];
+			}
+
+			$g['objects'] = array_values($objects);
 			$this->set('group', $g);
 		}
 		$modules = $this->allModulesWithFlag();

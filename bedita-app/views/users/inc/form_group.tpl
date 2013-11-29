@@ -6,7 +6,7 @@ table.group_objects {
 }
 table.group_objects TR > TD:first-child {
 	padding-left:30px;
-	background: url("{$html->url('/')}img/iconLocked.png") top left no-repeat;
+	background: url("{$html->url('/')}img/iconLocked.png") center left no-repeat;
 	background-size: 28px;
 }
 </style>
@@ -74,7 +74,7 @@ table.group_objects TR > TD:first-child {
 			<th>{t}title{/t}</th>
 			<th>{t}object type{/t}</th>
 			<th>{t}status{/t}</th>
-			<th>{t}permission flag{/t}</th>
+			<th>{t}permission type{/t}</th>
 		</tr>
 		{foreach $group.objects as $ob}
 			<tr>
@@ -89,7 +89,13 @@ table.group_objects TR > TD:first-child {
 					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.status}</a>
 				</td>
 				<td>
-					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{t}{$objPermReverse[$ob.Permission.flag]}{/t}</a>
+					<a href="{$html->url('/view/')}{$ob.BEObject.id}">
+					<ul>
+					{foreach $ob.Permission as $perm}
+						<li>{t}{$objPermReverse[$perm.flag]}{/t}</li>
+					{/foreach}
+					</ul>
+					</a>
 				</td>
 			</tr>
 		{/foreach}
