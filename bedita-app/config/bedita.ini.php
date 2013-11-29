@@ -171,6 +171,9 @@ $config["concurrentCheckTime"] = 20000;
 // Autosave time check - time interval, duration in milliseconds
 $config["autoSaveTime"] = 120000;
 
+// upload limits
+$config["file_mime_type_no_upload"] = array("application/x-cgi","application/x-php","text/x-php","application/x-perl","text/x-perl","text/x-python");
+$config["file_extension_no_upload"] = "/^.*\.(cgi|php|perl|py)$/i";
 /**
  ** ******************************************
  **  Image, Video and Audio defaults
