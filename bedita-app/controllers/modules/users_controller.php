@@ -318,6 +318,25 @@ class UsersController extends ModulesController {
 			if (empty($g)) {
 				throw new BeditaException(__("No group found with id", true) . " " . $id);
 			}
+			// find objects with permissions set for group
+			$beObject = ClassRegistry::init('BEObject');
+			$objects = $beObject->find('all', array(
+				'fields' => array('BEObject.id, BEObject.title, BEObject.nickname, BEObject.object_type_id, BEObject.status, Permission.flag'),
+				'contain' => array(),
+				'joins' => array(
+					array(
+						'table' => 'permissions',
+						'alias' => 'Permission',
+						'type' => 'inner',
+						'conditions'=> array(
+							'BEObject.id = Permission.object_id',
+							'Permission.ugid' => $g['Group']['id'],
+							'Permission.switch' => 'group'
+						)
+					)
+				)
+			));
+			$g['objects'] = $objects;
 			$this->set('group', $g);
 		}
 		$modules = $this->allModulesWithFlag();

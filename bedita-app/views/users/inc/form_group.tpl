@@ -62,32 +62,38 @@
 		
 </fieldset>
 
-{if !empty($group.Objects)}
-	<div class="tab"><h2>{$group.Objects|@count|default:''} {t}objects for this group{/t}</h2></div>
+{if !empty($group.objects)}
+	<div class="tab"><h2>{$group.objects|@count|default:''} {t}objects for this group{/t}</h2></div>
 	<table class="bordered">
-	{foreach from=$group.Objects item=ob}
 		<tr>
-			<td>
-				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.title|default:$ob.object_id}</a>
-			</td>
-			<td>
-				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.object_type_name}</a>
-			</td>
-			<td>
-				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.object_status}</a>
-			</td>
-			<td>
-				<a href="{$html->url('/view/')}{$o.object_id}">{$ob.permissions_flag}</a>
-			</td>
+			<th>{t}title{/t}</th>
+			<th>{t}object type{/t}</th>
+			<th>{t}status{/t}</th>
+			<th>{t}permission flag{/t}</th>
 		</tr>
-	{/foreach}
+		{foreach $group.objects as $ob}
+			<tr>
+				<td>
+					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.title|default:$ob.BEObject.id}</a>
+				</td>
+				<td>
+					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$conf->objectTypes[$ob.BEObject.object_type_id].name}</a>
+				</td>
+				<td>
+					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.status}</a>
+				</td>
+				<td>
+					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.Permission.flag}</a>
+				</td>
+			</tr>
+		{/foreach}
 	</table>
 {/if}	
 
 {if !empty($group)}
 	<div class="tab"><h2>{$group.User|@count|default:''} {t}users in this group{/t}</h2></div>
 	<table class="bordered">
-	{foreach from=$group.User item=u}
+	{foreach $group.User as $u}
 		<tr>
 			<td>
 				<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid}</a>
