@@ -9,7 +9,7 @@ $(document).ready(function(){
 		return false;
 	});
 
-	$("input[type=text]").bind("keyup", function(){
+	$("input.js-label[type=text]").bind("keyup", function(){
 		var text = $(this).val();
 		if (jQuery.trim(text) == "") {
 	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "disabled");
@@ -24,7 +24,8 @@ $(document).ready(function(){
 	<table class="indexlist">
 
 		<tr>
-			<th>{t}name{/t}</th>
+			<th>{t}label{/t}</th>
+			<th>{t}unique name{/t}</th>
 			<th>{t}status{/t}</th>
 			<th>{t}publication{/t}</th>
 			<th>Id</th>
@@ -36,8 +37,17 @@ $(document).ready(function(){
 
 			<tr>
 				<td>
-					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="{ required:true }"/>
+					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="js-label"/>
 				</td>
+
+				<td>
+					{if in_array('administrator', $BEAuthUser.groups)}
+						<input type="text" style="width:220px" name="data[name]" value="{$cat.name}"/>
+					{else}
+						{$cat.name}
+					{/if}
+				</td>
+
 				<td style="white-space:nowrap;">
 				
 					<input type="radio" name="data[status]" value="on" {if $cat.status == "on"}checked="true"{/if}/>on
@@ -82,13 +92,13 @@ $(document).ready(function(){
 		
 		<table class="indexlist">
 			<tr>
-			<th>{t}name{/t}</th>
+			<th>{t}label{/t}</th>
 			<th>{t}status{/t}</th>
 			<th>{t}publication{/t}</th>
 			<th>&nbsp;</th>
 			</tr>
 			<tr>
-				<td><input type="text" style="width:220px" name="data[label]" value="" /></td>
+				<td><input type="text" style="width:220px" name="data[label]" value="" class="js-label" /></td>
 				<td style="white-space:nowrap; ">
 					<input type="radio" name="data[status]" value="on" checked="true"/>on
 					&nbsp;

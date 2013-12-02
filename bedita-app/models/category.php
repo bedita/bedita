@@ -104,7 +104,6 @@ class Category extends BEAppModel {
 				}
 			}
 
-			$conditions["NOT"] = array("object_type_id" => $this->data[$this->alias]["object_type_id"]);
 			$conditions[] = "object_type_id IS NOT NULL";
 
 			
@@ -141,13 +140,28 @@ class Category extends BEAppModel {
 	 */		
 	function beforeValidate() {
 		$data = &$this->data[$this->name];
+		$name = '';
 		// if new tag/category
-		if (empty($data['id']) && !empty($data['label'])) {
-			$data['name'] = $this->uniqueLabelName($data["label"]);
+		if (empty($data['id'])) {
+			if (!empty($data['label'])) {
+				$name = $this->uniqueLabelName($data["label"]);
+			}
 		// if it's an existing tag/category
-		} elseif (!empty($data['name'])) {
-			$data['name'] = $this->uniqueLabelName($data["name"]);
+		} else {
+			if (isset($data['name'])) {
+				$data['name'] = trim($data['name']);
+				if (!empty($data['name'])) {
+					$name = $data['name'];
+				} elseif (!empty($data['label'])) {
+					$name = $data['label'];
+				}
+			}
 		}
+
+		if (!empty($name)) {
+			$data['name'] = $this->uniqueLabelName($name);
+		}
+
 		return true;
 	}
 	
