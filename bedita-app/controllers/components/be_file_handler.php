@@ -465,7 +465,7 @@ class BeFileHandlerComponent extends Object {
 				throw new BEditaInfoException(__("URL unattainable",true));
 			}
 		}
-		if (!strstr($headers[0], "200")) {
+		if (!strstr($headers[0], "200") && !strstr($headers[0], "302")) {
 			throw new BEditaInfoException(__("URL unattainable",true));
 		}
 		$data["mime_type"] = ClassRegistry::init("Stream")->getMimeTypeByExtension($data["uri"]);
