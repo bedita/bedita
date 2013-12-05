@@ -150,8 +150,14 @@ class AdminController extends ModulesController {
 
 	public function emptyFile() {
 		$this->BeSystem->emptyFile($this->data["fileToEmpty"]);
-		$this->set('logs', $this->BeSystem->systemLogs(10));
-		$this->set('maxRows',10);
+		$this->systemLogs(10);
+	}
+
+	public function refreshFile() {
+		$this->layout = "ajax";
+		$rowLimit = $this->params['form']['rowLimit'];
+		$fileToRefresh = $this->params['form']['fileToRefresh'];
+		$this->set('log',$this->BeSystem->readLogEntries($fileToRefresh,$rowLimit));
 	}
 
 	public function emptySystemLog() {

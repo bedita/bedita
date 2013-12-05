@@ -1,23 +1,27 @@
 <script type="text/javascript">
 <!--
-var message = "{t}Are you sure that you want to empty the file?{/t}" ;
-var urlEmptyFile = "{$html->url('emptyFile/')}";
 
-	$(document).ready(function() { 
-		$(".emptyFile").bind("click", function() { 
-			if(!confirm(message)) { 
-				return false ;
-			} 
-			var fileToEmpty = $(this).attr("title");
-			$("#fileToEmpty").attr("value",fileToEmpty);
-			$("#formObject").attr("action", urlEmptyFile) ;
-			$("#formObject").submit() ;
-		} );
+	$(document).ready(function() {
+		$("#{$idForm} .emptyFile").each(function(){
+			$(this).bind("click", function() {
+				emptyFile(this);
+			});
+		});
+		$("#{$idForm} .refreshFile").each(function(){
+			$(this).bind("click", function() {
+				refreshFile(this);
+			});
+		});
+		$("#{$idForm} .refreshFileAuto").each(function(){
+			$(this).bind("click", function() {
+				updateInterval(this);
+			});
+		});
 	} );
 //-->
 </script>
 
-<form method="post" action="" id="formObject">
+<form method="post" action="" id="{$idForm}">
 
 <div class="tab"><h2>{t}{$titleTab}{/t}</h2></div>
 
@@ -25,20 +29,18 @@ var urlEmptyFile = "{$html->url('emptyFile/')}";
 <div>
 {if !empty($logs)}
 	<input type="hidden" id="fileToEmpty" name="data[fileToEmpty]" />
-	{foreach from=$logs item='log' key='k'}
+	<input type="hidden" id="fileToRefresh" name="data[fileToRefresh]" />
+	{foreach from=$logs item='log' key='k' name='l'}
 	<p>
 		<b>{$k}</b>:
-		{if !empty($log) && !empty($log[0])}
-		<ul>
-		{foreach from=$log item='logrow' key='kk'}
-			<li>{$logrow}</li>
-		{/foreach}
-		</ul>
-		<span>...</span>
-		<br/><input type="button" value="{t}Empty file{/t}" class="emptyFile" title="{$k}" />
-		{else}
-			<br/>{t}File is empty{/t}
-		{/if}
+		<br/><span>...</span>
+		<div id="log_{$type}_{$smarty.foreach.l.index}">
+		{include file="../refresh_file.tpl" log=$log}
+		</div>
+		<hr/>
+		<input type="button" value="{t}Empty file{/t}" class="emptyFile" title="{$k}" />
+		<input type="button" value="{t}Refresh file{/t}" class="refreshFile" title="{$k}" index="log_{$type}_{$smarty.foreach.l.index}" id="{$type}_{$smarty.foreach.l.index}" />
+		<input type="checkbox" id="autoupdate_{$type}_{$smarty.foreach.l.index}" class="refreshFileAuto" index="{$type}_{$smarty.foreach.l.index}" /> {t}Autoupdate{/t}
 	</p>
 	<hr/>
 	{/foreach}

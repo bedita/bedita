@@ -1,7 +1,38 @@
-{$html->script("jquery/jquery.treeview", false)}
 {$html->script("form", false)}
 
 <script type="text/javascript">
+
+	var message = "{t}Are you sure that you want to empty the file?{/t}" ;
+	var urlEmptyFile = "{$html->url('emptyFile/')}";
+	var urlRefreshFile = "{$html->url('refreshFile/')}";
+	var intervalsAutoupdate = new Array();
+
+	function emptyFile(elem) {
+		if(!confirm(message)) { 
+			return false ;
+		} 
+		var fileToEmpty = $(elem).attr("title");
+		$("#fileToEmpty").attr("value",fileToEmpty);
+		$("#" + idForm).attr("action", urlEmptyFile) ;
+		$("#" + idForm).submit() ;
+	}
+
+	function refreshFile(elem) {
+		var fileToRefresh = $(elem).attr("title");
+		var ajaxResultId = $(elem).attr("index");
+		var rowLimit = $("#rowLimit").attr("value");
+		$("#" + ajaxResultId).load(urlRefreshFile,{ 'fileToRefresh':fileToRefresh, 'rowLimit': rowLimit });
+	}
+
+	function updateInterval(elem) {
+		var index = $(elem).attr("index");
+		if($(elem).attr("checked")) {
+			intervalsAutoupdate[index] = setInterval(function(){ $("#"+index).click(); },3000);
+		} else {
+			clearInterval(intervalsAutoupdate[index]);
+		}
+	}
+
 	$(document).ready(function() { 
 		var openAtStart =".system_logs";
 		$(openAtStart).prev(".tab").BEtabstoggle();
@@ -35,10 +66,10 @@
 <div class="mainfull">
 
 	{if !empty($backendLogs)}
-	{include file="inc/form_logs.tpl" logs=$backendLogs titleTab='Backend Logs'}
+	{include file="inc/form_logs.tpl" logs=$backendLogs titleTab='Backend Logs' type='backend' idForm='backendForm'}
 	{/if}
 	{if !empty($frontendLogs)}
-	{include file="inc/form_logs.tpl" logs=$frontendLogs titleTab='Frontend Logs'}
+	{include file="inc/form_logs.tpl" logs=$frontendLogs titleTab='Frontend Logs' type='frontend' idForm='frontendForm'}
 	{/if}
 
 </div>

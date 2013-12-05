@@ -176,11 +176,15 @@
 	 */
 	public function backendLogFiles() {
 		$res = array();
-		if($this->isFileReadable(BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "error.log")) {
-			$res[] = BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "error.log";
-		}
-		if($this->isFileReadable(BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
-			$res[] = BEDITA_CORE_PATH . DS . "tmp" . DS . "logs" . DS . "debug.log";
+		$dir = BEDITA_CORE_PATH . DS . "tmp" . DS . "logs";
+		$files = scandir($dir);
+		foreach ($files as $file) {
+			if (substr($file,-4) == '.log') {
+				$f = $dir . DS . $file;
+				if($this->isFileReadable($f)) {
+					$res[] = $f;
+				}
+			}
 		}
 		return $res;
 	}
@@ -196,12 +200,16 @@
 			if (is_dir(BEDITA_FRONTENDS_PATH)) {
 				if ($dh = opendir(BEDITA_FRONTENDS_PATH)) {
 					while (($file = readdir($dh)) !== false) {
-						if(is_dir(BEDITA_FRONTENDS_PATH . DS . $file)) {
-							if($this->isFileReadable(BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "error.log")) {
-								$res[] = BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "error.log";
-							}
-							if($this->isFileReadable(BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "debug.log")) {
-								$res[] = BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs" . DS . "debug.log";
+						$dir = BEDITA_FRONTENDS_PATH . DS . $file . DS . "tmp" . DS . "logs";
+						if(is_dir($dir)) {
+							$files = scandir($dir);
+							foreach ($files as $file) {
+								if (substr($file,-4) == '.log') {
+									$f = $dir . DS . $file;
+									if($this->isFileReadable($f)) {
+										$res[] = $f;
+									}
+								}
 							}
 						}
 					}
@@ -231,7 +239,7 @@
 	 * @return string
 	 * @throws BeditaException
 	 */
-	private function readLogEntries($fileName,$limit) {
+	public function readLogEntries($fileName,$limit) {
 		$result = array();
 		$handle = fopen($fileName,"r");
 		if($handle === FALSE) {
