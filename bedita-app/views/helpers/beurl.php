@@ -169,10 +169,13 @@ class BeurlHelper extends AppHelper {
 		$object = $view->getVar("object");
 		$currentModule = $view->getVar("currentModule");
 		$projectName = Configure::read("projectName");
+		
 		if (!empty($currentModule)) {
 			// if it's in object details (view* action) or current module is area, add title object or "new item"
 			if (strpos($view->action, "view") !== false || $currentModule["name"] == "areas") {
-				if (!empty($object["title"])) {
+				if ($currentModule["name"] == "users") {
+					$title .= " Detail | ";
+				} else if (!empty($object["title"])) {
 					$title .= $object["title"] . " | ";
 				} else {
 					$title .= $this->Tr->t("New item", true) . " | ";

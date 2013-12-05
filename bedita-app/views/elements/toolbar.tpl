@@ -36,20 +36,22 @@
 		
 		<table>
 		<tr>
-			
+			{if ($view->viewVars.module_modify eq '1') && empty($noitem)} 
 			<td>
-				{if $view->viewVars.module_modify eq '1'}
-					<a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new{/t} &nbsp;
+				<a href="{$html->url('/')}{$currentModule.url}/view">{t}Create new{/t} &nbsp;
+				{if !empty($itemName)}
+					{t}{$itemName}{/t}
+				{else}
 					{assign var=leafs value=$conf->objectTypes.leafs}
 					{foreach from=$conf->objectTypes item=type key=key}	
 						{if ( in_array($type.id,$leafs.id) && is_numeric($key) && $type.module_name == $currentModule.name )}
-							{t}{$type.model|lower}{/t}
+							{t}{$type.model|lower}{/t} 
 						{/if}
 					{/foreach}
-					</a>
 				{/if}
+				</a>
 			</td>
-		
+			{/if}
 			<td>
 			<span class="evidence">{$beToolbar->size()} &nbsp;</span> {t}{$itemName|default:$moduleName}{/t}
 			</td>

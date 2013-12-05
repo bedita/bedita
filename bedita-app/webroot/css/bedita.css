@@ -116,7 +116,7 @@ UL UL {margin-left:20px;}
 	/*
 	width: 660px;
 	*/
-	padding-left:20px;
+	padding-left:10px;
 }
 
 .modulesmenu {
@@ -529,6 +529,10 @@ NAV.modulesmenu {
 
 .searchobjects {
 	display:none; z-index:100; position:absolute; left:835px; top:50px;
+}
+
+.searchobjects input[type=text]{
+	padding:5px 10px 5px 10px;
 }
 
 .modulesmenu form {
