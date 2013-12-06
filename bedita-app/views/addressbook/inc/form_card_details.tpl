@@ -44,15 +44,15 @@ $(document).ready(function(){
 <div class="htabcontainer" id="companyperson">
 	
 	<div class="htabcontent" id="person">
-		<table>
+		<table style="width:100%">
 			<tr>
 			{if !empty($attach[0])}
-				<td id="fototessera" style="padding-right:10px;" rowspan="4">
+				<td id="fototessera" style="width:100px; padding-right:10px;" rowspan="4">
 					{assign_associative var="params" width=100 height=125 longside=false mode="crop"}
 					{$beEmbedMedia->object($attach[0],$params)}
 				</td>
 			{/if}
-				<th>{t}title{/t}:</th>
+				<th style="width:70px;">{t}title{/t}:</th>
 				<td>
 					<input type="text" style="width:45px" id="vtitle" name="data[person][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
 				</td>
@@ -67,7 +67,7 @@ $(document).ready(function(){
 			</tr>	
 			<tr>
 				<th>{t}organization{/t}:</th>
-				<td><input type="text" name="data[person][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
+				<td><input type="text" style="width:100%" name="data[person][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
 			</tr>
 			<tr>
 				<td colspan="3">
@@ -90,27 +90,41 @@ $(document).ready(function(){
 
 
 	<div class="htabcontent" id="company" >
-		<table>
+		<table style="width:100%">
 			<tr>
-				<th>{t}name{/t}:</th>
-				<td><input type="text" style="width:400px" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
+			{if !empty($attach[0])}
+				<td id="fototessera" style="width:100px; padding-right:10px;" rowspan="14">
+					{assign_associative var="params" width=100 height=125 longside=false mode="crop"}
+					{$beEmbedMedia->object($attach[0],$params)}
+				</td>
+			{/if}
+				<th nowrap style="width:100px;">{t}company name{/t}:</th>
+				<td colspan="3"><input type="text" style="width:400px" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
-		</table>
-		<table>
 			<tr>
-				<th colspan=2>{t}reference{/t}</th>
+				<th nowrap>{t}business name{/t}:</th>
+				<td colspan="3">
+					<input type="text" style="width:75px" id="vtitle" name="data[cmp][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
+				</td>
+			</tr>
+
+			<tr>
+				<th>{t}active{/t}:</th>
+				<td colspan="3">
+					{t}from{/t}:
+				<input type="text" style="width:75px" class="dateinput" name="data[cmp][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/>
+					{t}to{/t}:
+				<input type="text" style="width:75px" class="dateinput" name="data[cmp][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
+			</tr>
+
+			<tr>
+				<th colspan="4"><b>{t}Person of reference{/t}</b></th>
 			</tr>
 			<tr>
-				<th>{t}name{/t}:</th>
+				<th nowrap>{t}name{/t}:</th>
 				<td><input type="text" name="data[cmp][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>			
 				<th>{t}surname{/t}:</th>
 				<td><input type="text" name="data[cmp][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
-			</tr>
-			<tr>
-				<th>{t}title{/t}:</th>
-				<td>
-					<input type="text" style="width:45px" id="vtitle" name="data[cmp][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
-				</td>
 			</tr>
 		</table>
 	</div>
