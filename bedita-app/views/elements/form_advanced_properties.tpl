@@ -48,6 +48,12 @@
 			<th style="white-space:nowrap">{t}last modified by{/t}:</th>
 			<td>{$object.UserModified.realname|default:''} [ {$object.UserModified.userid|default:''} ]</td>
 		</tr>
+		<tr>
+			<th>{t}object type{/t}:</th>
+			<td>
+				{$object.ObjectType.name}
+			</td>
+		</tr>
 		
 	{/if}
 
