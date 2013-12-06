@@ -38,7 +38,7 @@ class MultimediaController extends ModulesController {
 	// This controller does not use a model
 	var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
 	protected $moduleName = 'multimedia';
-	
+
 	 function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(
@@ -56,6 +56,9 @@ class MultimediaController extends ModulesController {
 			$conf->objectTypes['application']["id"]
 		);
 		$filter["mediatype"] = 1;
+		
+		$filter["count_annotation"] = array("Comment","EditorNote");
+
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		
 	 	foreach($bedita_items['items'] as $key => $value) {
@@ -71,6 +74,7 @@ class MultimediaController extends ModulesController {
 		$this->set('tree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $bedita_items['items']);
 		$this->setSessionForObjectDetail($bedita_items['items']);
+
 	 }
 
 	function view($id = null) {
