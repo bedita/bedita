@@ -160,8 +160,10 @@
 		</td>
 	</tr>
 	{/if}
-
 	</table>
+	{if !empty($uri)}
+		<button>{t}delete this file or reference{/t}</button>
+	{/if}
 		
 </div>
 
