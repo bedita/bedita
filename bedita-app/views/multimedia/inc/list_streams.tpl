@@ -96,20 +96,32 @@ $(document).ready(function(){
 				{$view->element('file_item',$params)}
 				
 				<table border=0 padding="0" spacing="0" style="width:100%">
-					<tr>
-					<td colspan=2 class="vlist">{$item.id}</td>
-					<td colspan=2 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
-					<td colspan=2 class="vlist">{$item.name}</td>
-					<td colspan=2 class="vlist">{$item.mediatype}</td>
-					<td colspan=2 class="vlist">{math equation="x/y" x=$item.file_size|default:0 y=1024 format="%d"|default:""} KB</td>
-					<td colspan=2 class="vlist">{$item.status}</td>
-					<td colspan=2 class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
+				<tr>
+					<td colspan=4 class="vlist">{$item.id}</td>
+					<td colspan=4 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
+					<td colspan=4 class="vlist">{$item.name}</td>
+					<td colspan=4 class="vlist">{$item.mediatype}</td>
+					<td colspan=4 class="vlist">{math equation="x/y" x=$item.file_size|default:0 y=1024 format="%d"|default:""} KB</td>
+					<td colspan=4 class="vlist">{$item.status}</td>
+					<td colspan=4 class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
+				</tr>
+				<tr>	
 					{if (empty($item.fixed))}	
 					<td style="text-align:left;">
-					<input type="checkbox" style="width:15px" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
+						<input type="checkbox" style="width:15px" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
 					</td>
-					{/if}			
-					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">+</a></td>
+					{/if}
+					<td style="text-align:right;">
+						{if !empty($item.num_of_permission)}
+							<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:30px; vertical-align:middle;">
+						{/if}
+						{if !empty($item.num_of_editor_note)}
+							<img title="{$item.num_of_editor_note} {t}notes{/t}" src="/img/iconNotes.gif" style="height:16px; vertical-align:middle;">
+						{/if}
+					</td>		
+					<td style="width:30px; text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">…</a></td>
+
+					
 				</tr>	
 				</table>
 				
@@ -118,6 +130,7 @@ $(document).ready(function(){
 	</div>
 	
 	{/strip}
+
 	<br style="margin:0px; line-height:0px; clear:both" />
 
 
