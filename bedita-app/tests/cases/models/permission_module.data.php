@@ -31,7 +31,7 @@ class PermissionModuleTestData extends BeditaTestData {
 				)
 		),
 		'updateGroupName' => 'translator',
-		'updateGroupModules' => array('areas' => 3, 'documents' => 1, 'galleries' => 15)
+		'updateGroupModules' => array('areas' => BEDITA_PERMS_MODIFY, 'documents' => BEDITA_PERMS_READ, 'galleries' => BEDITA_PERMS_MODIFY)
 	);
 }
 
