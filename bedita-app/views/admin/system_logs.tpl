@@ -20,8 +20,13 @@
 	function refreshFile(elem) {
 		var fileToRefresh = $(elem).attr("title");
 		var ajaxResultId = $(elem).attr("index");
+		$("#" + ajaxResultId).empty();
+		$("#" + ajaxResultId).addClass('loader');
+		$("#" + ajaxResultId).show();
 		var rowLimit = $("#rowLimit").attr("value");
-		$("#" + ajaxResultId).load(urlRefreshFile,{ 'fileToRefresh':fileToRefresh, 'rowLimit': rowLimit });
+		$("#" + ajaxResultId).load(urlRefreshFile,{ 'fileToRefresh':fileToRefresh, 'rowLimit': rowLimit }, function() {
+			$("#" + ajaxResultId).removeClass('loader');
+		});
 	}
 
 	function updateInterval(elem) {
