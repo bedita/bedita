@@ -71,10 +71,10 @@ class MultimediaController extends ModulesController {
 				$details['filename'] = substr($details['uri'],strripos($details['uri'],"/")+1);
 				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
 			}
-			$ubiquity = "false";
+			$ubiquity = 0;
 			$parents_id = $treeModel->getParents($value['id']) ;
-			if(is_array($parents_id) && count($parents_id) > 1) {
-				$ubiquity = "true";
+			if(is_array($parents_id)) {
+				$ubiquity = count($parents_id);
 			}
 			$bedita_items['items'][$key]['ubiquity'] = $ubiquity;
 		}

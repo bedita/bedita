@@ -780,10 +780,10 @@ abstract class ModulesController extends AppController {
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		$treeModel = ClassRegistry::init("Tree");
 		foreach($objects['items'] as $obj) {
-			$ubiquity = "false";
+			$ubiquity = 0;
 			$parents_id = $treeModel->getParents($obj['id']) ;
-			if(is_array($parents_id) && count($parents_id) > 1) {
-				$ubiquity = "true";
+			if(is_array($parents_id)) {
+				$ubiquity = count($parents_id);
 			}
 			$obj['ubiquity'] = $ubiquity;
 		}
