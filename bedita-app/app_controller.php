@@ -775,8 +775,18 @@ abstract class ModulesController extends AppController {
 		}
 
 		$filter["count_permission"] = true;
+		$filter['count_relations'] = array("attach", "seealso");
 
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
+		$treeModel = ClassRegistry::init("Tree");
+		foreach($objects['items'] as $obj) {
+			$ubiquity = "false";
+			$parents_id = $treeModel->getParents($obj['id']) ;
+			if(is_array($parents_id) && count($parents_id) > 1) {
+				$ubiquity = "true";
+			}
+			$obj['ubiquity'] = $ubiquity;
+		}
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 		// template data
 		$this->set('tree', $this->BeTree->getSectionsTree());

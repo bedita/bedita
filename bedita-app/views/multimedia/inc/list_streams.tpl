@@ -87,7 +87,7 @@ $(document).ready(function(){
 		{$smarty.capture.theader}
 
 	</table>
-
+{*dump var=$objects*}
 	<br style="clear:both" />
 	{strip}	
 		{foreach from=$objects item="item"}
