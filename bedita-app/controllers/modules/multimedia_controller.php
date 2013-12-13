@@ -59,7 +59,7 @@ class MultimediaController extends ModulesController {
 		
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$filter["count_permission"] = true;
-		$filter['count_relations'] = array("attach", "seealso");
+		$filter['count_relations'] = array("attach", "seealso", "download");
 		$treeModel = ClassRegistry::init("Tree");
 
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
