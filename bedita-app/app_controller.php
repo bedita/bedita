@@ -775,7 +775,7 @@ abstract class ModulesController extends AppController {
 		}
 
 		$filter["count_permission"] = true;
-		$filter['count_relations'] = array("attach", "seealso");
+		$filter['count_relations'] = array("attach", "seealso", "download");
 
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		$treeModel = ClassRegistry::init("Tree");
