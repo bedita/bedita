@@ -87,8 +87,9 @@ $(document).ready(function(){
 		{$smarty.capture.theader}
 
 	</table>
-{*dump var=$objects*}
+
 	<br style="clear:both" />
+
 	{strip}	
 		{foreach from=$objects item="item"}
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
@@ -107,19 +108,28 @@ $(document).ready(function(){
 				</tr>
 				<tr>	
 					{if (empty($item.fixed))}	
-					<td style="text-align:left;">
+					<td style="text-align:left; padding:0px">
 						<input type="checkbox" style="width:15px" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
 					</td>
 					{/if}
-					<td style="text-align:right;">
+					<td style="text-align:center; width:24px; padding:0px">
 						{if !empty($item.num_of_permission)}
-							<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:30px; vertical-align:middle;">
+							<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="margin:0; width:24px; vertical-align:middle;">
 						{/if}
+					</td>
+					<td style="text-align:center; width:24px; padding:0px">
 						{if !empty($item.num_of_editor_note)}
-							<img title="{$item.num_of_editor_note} {t}notes{/t}" src="/img/iconNotes.gif" style="height:16px; vertical-align:middle;">
+							<img title="{$item.num_of_editor_note} {t}notes{/t}" src="/img/iconNotes.gif" style="margin:0; width:16px; vertical-align:middle;">
 						{/if}
-					</td>		
-					<td style="width:30px; text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">…</a></td>
+					</td>
+					<td style="text-align:center; width:24px; padding:0px">
+						{$media_ubiquity = ($item.num_of_relations_attach|default:0)+($item.num_of_relations_see_also|default:0)+($item.num_of_relations_download|default:0)+($item.ubiquity)}
+						{if $media_ubiquity > 1}
+							<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:0; width:18px; vertical-align:middle;">
+						{/if}
+					</td>
+	
+					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">…</a></td>
 
 					
 				</tr>	
@@ -128,11 +138,9 @@ $(document).ready(function(){
 			</div>
 		{/foreach}
 	</div>
-	
 	{/strip}
 
 	<br style="margin:0px; line-height:0px; clear:both" />
-
 
 {if !empty($objects)}
 
