@@ -358,9 +358,6 @@ class BEObject extends BEAppModel
 			$queriesModified 	= array() ;
 			$lang			= (isset($this->data['BEObject']['lang'])) ? $this->data['BEObject']['lang']: null ;
 			
-			// set one-way relation
-			$oneWayRelation = array_merge( Configure::read("defaultOneWayRelation"), Configure::read("cfgOneWayRelation") );
-			
 			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
 			$inverseRelations = array();
 			foreach ($allRelations as $n => $r) {
@@ -382,55 +379,53 @@ class BEObject extends BEAppModel
 					// Delete old associations
 					// #CUSTOM QUERY
 					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
-						
-					if(!in_array($switch,$oneWayRelation)) {
-						$inverseSwitch = $switch;
-						if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
-							$inverseSwitch = $allRelations[$switch]["inverse"];
-						} else if(!empty($inverseRelations[$switch])) {
-							$inverseSwitch = $inverseRelations[$switch];
-						}
 
-						$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
-											AND switch = '{$inverseSwitch}' ";
+					$inverseSwitch = $switch;
+					if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
+						$inverseSwitch = $allRelations[$switch]["inverse"];
+					} else if(!empty($inverseRelations[$switch])) {
+						$inverseSwitch = $inverseRelations[$switch];
+					}
+
+					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['associationForeignKey']} = '{$this->id}'
+										AND switch = '{$inverseSwitch}' ";
+				
+					if (!empty($obj_id)) {
+						// #CUSTOM QUERY
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
 					
-						if (!empty($obj_id)) {
-							// #CUSTOM QUERY
-							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+						// find priority of inverse relation
+						// #CUSTOM QUERY
+						$inverseRel = $this->query("SELECT priority 
+													  FROM {$table} 
+													  WHERE id={$obj_id} 
+													  AND object_id={$this->id} 
+													  AND switch='{$inverseSwitch}'");
 						
-							// find priority of inverse relation
+						if (empty($inverseRel[0]["object_relations"]["priority"])) {
 							// #CUSTOM QUERY
-							$inverseRel = $this->query("SELECT priority 
-														  FROM {$table} 
-														  WHERE id={$obj_id} 
-														  AND object_id={$this->id} 
-														  AND switch='{$inverseSwitch}'");
-							
-							if (empty($inverseRel[0]["object_relations"]["priority"])) {
-								// #CUSTOM QUERY
-								$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
-								$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
-							} else {
-								$inversePriority = $inverseRel[0]["object_relations"]["priority"];
-							}						
+							$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM {$table} WHERE id={$obj_id} AND switch='{$inverseSwitch}'");
+							$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
+						} else {
+							$inversePriority = $inverseRel[0]["object_relations"]["priority"];
+						}						
+						// #CUSTOM QUERY
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
+					}
+					
+					$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
+					if($modified && $obj_id) {
+						$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
+						if($switch == 'link') {
 							// #CUSTOM QUERY
-							$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
-						}
-						
-						$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
-						if($modified && $obj_id) {
-							$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
-							if($switch == 'link') {
-								// #CUSTOM QUERY
-								$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} " ;
-								$link = ClassRegistry::init('Link');
-								$link->id = $obj_id;
-								$link->saveField('url',$val['url']);
-							} else {
-								$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
-								// #CUSTOM QUERY
-								$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
-							}
+							$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} " ;
+							$link = ClassRegistry::init('Link');
+							$link->id = $obj_id;
+							$link->saveField('url',$val['url']);
+						} else {
+							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+							// #CUSTOM QUERY
+							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
 						}
 					}
 				}

@@ -194,9 +194,6 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 // 		"language" => array()
 // );
 
-// One-way relation, array of objRelationType keys
-// $config["cfgOneWayRelation"] = array();
-
 // Reserved words [avoided in nickname creation]
 // $config["cfgReservedWords"] = array();
 

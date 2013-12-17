@@ -363,15 +363,6 @@ $config["defaultObjRelationType"] = array(
 // Relations - local objects' relation types (override in bedita.cfg)
 $config["objRelationType"] = array ();
 
-/**
- * One-way relation
- * array of relations' label that define one-way relations
- */
-$config["defaultOneWayRelation"] = array();
-
-// Cfg One-way relation (override in bedita.cfg)
-$config["cfgOneWayRelation"] = array();
-
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("captchaImage", "category", "content",
   "css", "download", "favicon.gif", "favicon.ico", "feed", "files", "georss",
