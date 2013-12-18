@@ -81,9 +81,11 @@ $(document).ready(function(){
 			<tr>
 				<th>{t}birthdate{/t}:</th>
 				<td><input type="text" style="width:75px" class="dateinput" name="data[person][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
-				<th>{t}deathdate{/t}:</th>
-				<td><input type="text" style="width:75px" class="dateinput" name="data[person][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
-			</tr>
+                {if isset($conf->hideFields.addressbook.deathdate)}
+                    <th>{t}deathdate{/t}:</th>
+                    <td><input type="text" style="width:75px" class="dateinput" name="data[person][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
+                {/if}
+            </tr>
 		</table>
 	</div>
 
