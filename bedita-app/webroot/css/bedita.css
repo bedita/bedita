@@ -2307,4 +2307,7 @@ img.smallicon {
 	text-decoration:line-through;
 	opacity:0.35;
 }
-	
+
+span.highlight {
+	color: red;
+}
