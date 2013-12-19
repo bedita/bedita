@@ -77,7 +77,8 @@ Menu a SX valido per tutte le pagine del controller.
 				location.href = $(data).attr('data-redirect-url');
 			// trigger error
 			} else {
-				$("#collision").empty().append(data);
+				var html = $(data).text();
+				$("#collision").empty().append(html);
 				$("#collision").show();
 			}
 		}

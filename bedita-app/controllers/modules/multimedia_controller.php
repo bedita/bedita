@@ -191,7 +191,14 @@ class MultimediaController extends ModulesController {
 			$this->set("objectId", $ex->getObjectId());
 			$this->set("objectTitle", $this->BEObject->field("title", array("id" => $ex->getObjectId())));
 		} catch(BeditaException $ex) {
-			throw new BeditaAjaxException($ex->getMessage(), array('output' => 'beditaMsg'));
+			// force header text/plain to haven't javascript error (jQuery undefined) when a file was uploaded
+			throw new BeditaAjaxException(
+				$ex->getMessage(),
+				array(
+					'output' => 'beditaMsg',
+					'headers' => array('Content-Type: text/plain', 'HTTP/1.1 500 Internal Server Error')
+				)
+			);
 		}
 	}
 
