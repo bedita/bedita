@@ -173,8 +173,21 @@ $config["autoSaveTime"] = 120000;
 
 // upload limits
 $config['forbiddenUploadFiles'] = array(
-	'mimeTypes' => array("application/x-cgi","application/x-php","text/x-php","application/x-perl","text/x-perl","text/x-python"),
-	'extensions' => "/^.*\.(cgi|php|perl|py)$/i"
+	'mimeTypes' => array(
+		"application/x-cgi",
+		"application/x-php",
+		"text/x-php",
+		"application/x-perl",
+		"text/x-perl",
+		"text/x-python",
+		"application/javascript",
+		"text/javascript",
+		"application/x-ruby",
+		"text/x-ruby",
+		"application/x-shellscript",
+		"text/x-shellscript"
+	),
+	'extensions' => "/^.*\.(cgi|php|perl|py|js|rb|sh)$/i"
 );
 /**
  ** ******************************************
