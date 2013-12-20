@@ -12,9 +12,10 @@
 			return false ;
 		} 
 		var fileToEmpty = $(elem).attr("title");
+		var form = $(elem).parents('form:first');
 		$("#fileToEmpty").attr("value",fileToEmpty);
-		$("#" + idForm).attr("action", urlEmptyFile) ;
-		$("#" + idForm).submit() ;
+		form.attr("action", urlEmptyFile) ;
+		form.submit() ;
 	}
 
 	function refreshFile(elem) {
