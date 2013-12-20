@@ -1,5 +1,56 @@
 # ChangeLog
 
+## Version 3.2.1 - Populus
+
+### User-visible changes
+
+* [#390](https://github.com/bedita/bedita/issues/390) Improve admin view of log files
+* [#417](https://github.com/bedita/bedita/issues/417) hide specific field from module
+* [#409](https://github.com/bedita/bedita/issues/409) ubiquity int - paginatedList
+* [#412](https://github.com/bedita/bedita/issues/412) Relation list: change link objects from <input> to <a href>
+* [#410](https://github.com/bedita/bedita/issues/410) "Add by url" fails if server responds with HTTP Status Code "302 Found"
+* [#406](https://github.com/bedita/bedita/issues/406) Bug. Search field in upper menu point to a new object page
+* [#405](https://github.com/bedita/bedita/issues/405) User Group view: add a list of protected objects
+* [#393](https://github.com/bedita/bedita/issues/393) Rich Text Editor is not initialized for body and abstract fields in Translations module
+* added count annotation in multimedia list
+* Display the real database object type name in advanced properties
+* automplete off on smtp user/passwd
+  avoid login user/passwd autocomplete con Chrome that may be unintentionally saved
+* multimedia elements: custom tab title + disable remote url option
+
+### Frontend changes
+
+* [#401](https://github.com/bedita/bedita/issues/401) log session invalid, backend only
+* [#404](https://github.com/bedita/bedita/issues/404) Rss frontend function: sanitizer corrupt XML output
+* [#392](https://github.com/bedita/bedita/issues/392) Logout doesn't work in frontend apps
+* [#389](https://github.com/bedita/bedita/issues/389) http response 401 and 403
+* [#376](https://github.com/bedita/bedita/issues/376) befront->metaOg - open graph
+
+### Developer-visible changes
+
+* [#418](https://github.com/bedita/bedita/issues/418) Update Smarty to 3.1.16
+* [#397](https://github.com/bedita/bedita/issues/397) security: avoid upload of script files
+* [#390](https://github.com/bedita/bedita/issues/390) Improve admin view of log files
+* [#351](https://github.com/bedita/bedita/issues/351) cfgOneWayRelation doesn't work [drop it]
+* [#409](https://github.com/bedita/bedita/issues/409) Multimedia list: adding permission and notes flag. View, with ubiquity also
+* [#399](https://github.com/bedita/bedita/issues/399) groups/modules: error mixing readonly and read-write permissions
+* [#413](https://github.com/bedita/bedita/issues/413) button for deleting a media file or reference
+* [#403](https://github.com/bedita/bedita/issues/403) Bug. Category name change when changing category label
+* [#405](https://github.com/bedita/bedita/issues/405) User Group view: add a list of protected objects
+* [#385](https://github.com/bedita/bedita/issues/385) Shell script to build change log
+* [#400](https://github.com/bedita/bedita/issues/400) Improve RestClientModel to accept custom request options
+* [#394](https://github.com/bedita/bedita/issues/394) - unserialize moved in DateItem::afterFind
+* [#395](https://github.com/bedita/bedita/issues/395) Thumbnail on remote images behind proxy
+* [#398](https://github.com/bedita/bedita/issues/398) webmarks: url check fails behind proxy
+* [#396](https://github.com/bedita/bedita/issues/396) public methods in frontend_controller, denied from url
+* [#389](https://github.com/bedita/bedita/issues/389) http response 401 and 403
+* [#387](https://github.com/bedita/bedita/issues/387) Update Doxyfile, custom css and custom html for API doc
+* [#386](https://github.com/bedita/bedita/issues/386) addressbook relations: can't view details or delete related objects
+* smarty array of user agent updated
+* update files used by doxygen to work with v1.7.1
+  version 1.7.1 is present on server that host api
+
+
 ## Version 3.2 - populus
 
 ### User-visible changes

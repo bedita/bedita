@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-11-19 18:23:58\n"
+"POT-Creation-Date: 2013-12-20 11:54:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -164,6 +164,9 @@ msgstr "Autospeichern eingeschaltet"
 
 msgid "Autosave turned off"
 msgstr "Autospeichern ausgeschaltet"
+
+msgid "Autoupdate"
+msgstr ""
 
 msgid "BEdita Object Type"
 msgstr ""
@@ -727,6 +730,9 @@ msgstr "Datei"
 msgid "File already exists in the filesystem"
 msgstr "Datei existiert bereits im Dateisystem"
 
+msgid "File extension not allowed for upload."
+msgstr ""
+
 msgid "File is empty"
 msgstr ""
 
@@ -885,6 +891,9 @@ msgstr "Elemente"
 
 msgid "Jobs"
 msgstr "Aufträge"
+
+msgid "Label"
+msgstr ""
 
 msgid "Language configuration"
 msgstr ""
@@ -1393,6 +1402,9 @@ msgstr "Berechtigungen"
 msgid "Person"
 msgstr "Person"
 
+msgid "Person of reference"
+msgstr ""
+
 msgid "Personal data"
 msgstr ""
 
@@ -1486,6 +1498,9 @@ msgstr "Wirklicher Name wird benötigt (mindestens %1 alphanumerische Zeichen)"
 
 msgid "Referenced in"
 msgstr "Referenziert in"
+
+msgid "Refresh file"
+msgstr ""
 
 msgid "Related tickets"
 msgstr ""
@@ -1976,6 +1991,9 @@ msgstr "zugreifen"
 msgid "access server log statistics"
 msgstr "auf serverlog statistiken zugreifen"
 
+msgid "active"
+msgstr ""
+
 msgid "add"
 msgstr "hinzufügen"
 
@@ -2099,6 +2117,9 @@ msgstr "zu Email springen"
 msgid "browse your disk"
 msgstr "deine Festplatte durchsuchen"
 
+msgid "business name"
+msgstr ""
+
 msgid "card(s) associated to mailgroup"
 msgstr "Karte(n), die mit der Mailgruppe verbunden sind"
 
@@ -2161,6 +2182,9 @@ msgstr "schließen"
 
 msgid "comments"
 msgstr "Kommentare"
+
+msgid "company name"
+msgstr ""
 
 msgid "connect new items"
 msgstr "neue Elemente verbinden"
@@ -2254,6 +2278,9 @@ msgstr ""
 
 msgid "delete selected items"
 msgstr "gewählte Elemente löschen"
+
+msgid "delete this file or reference"
+msgstr ""
 
 msgid "description"
 msgstr "Beschreibung"
@@ -2368,9 +2395,6 @@ msgstr "fixiertes Objekt"
 
 msgid "for object type"
 msgstr "für Objekttyp"
-
-msgid "friday"
-msgstr ""
 
 msgid "from"
 msgstr "von"
@@ -2585,6 +2609,9 @@ msgstr "Nachrichtenboard"
 msgid "mime type"
 msgstr "MIME Typ"
 
+msgid "mime type not allowed for upload"
+msgstr ""
+
 msgid "minutes"
 msgstr "Minuten"
 
@@ -2605,9 +2632,6 @@ msgstr "geändert"
 
 msgid "modified on"
 msgstr "geändert am"
-
-msgid "monday"
-msgstr ""
 
 msgid "more from this IP"
 msgstr "mehr über diese IP"
@@ -2708,6 +2732,9 @@ msgstr "keine Benutzerdaten"
 msgid "not yet sent"
 msgstr "noch nicht gesendet"
 
+msgid "notes"
+msgstr ""
+
 msgid "notify me by email"
 msgstr "Benachrichtigung per Email"
 
@@ -2725,6 +2752,12 @@ msgstr "Objekt für heute vorgemerkt"
 
 msgid "object title"
 msgstr "Objekttitel"
+
+msgid "object type"
+msgstr ""
+
+msgid "objects for this group"
+msgstr ""
 
 msgid "of"
 msgstr "von"
@@ -2797,6 +2830,9 @@ msgstr "wartenden Emails"
 
 msgid "permission"
 msgstr "Erlaubnis"
+
+msgid "permission type"
+msgstr ""
 
 msgid "permissions set"
 msgstr "Erlaubnis gesetzt"
@@ -2903,9 +2939,6 @@ msgstr ""
 msgid "recipient"
 msgstr ""
 
-msgid "reference"
-msgstr "Referenz"
-
 msgid "referenced objects list"
 msgstr "referenzierte Objektliste"
 
@@ -2937,9 +2970,6 @@ msgid "rights"
 msgstr "Rechte"
 
 msgid "satellite"
-msgstr ""
-
-msgid "saturday"
 msgstr ""
 
 msgid "save"
@@ -3047,9 +3077,6 @@ msgstr "Abonnenten"
 msgid "subscribing method"
 msgstr "Abonnementmethode"
 
-msgid "sunday"
-msgstr ""
-
 msgid "surname"
 msgstr "Familienname"
 
@@ -3067,9 +3094,6 @@ msgstr "Text"
 
 msgid "thumbnail"
 msgstr "Vorschaubild"
-
-msgid "thursday"
-msgstr ""
 
 msgid "timeout"
 msgstr ""
@@ -3104,9 +3128,6 @@ msgstr "Übersetzung in"
 msgid "translations"
 msgstr "Übersetzungen"
 
-msgid "tuesday"
-msgstr ""
-
 msgid "turn off"
 msgstr "ausschalten"
 
@@ -3121,6 +3142,9 @@ msgstr "eingeschaltet"
 
 msgid "type"
 msgstr "Typ"
+
+msgid "ubiquous object"
+msgstr ""
 
 msgid "undo"
 msgstr "rückgängig"
@@ -3205,9 +3229,6 @@ msgstr "Lesezeichen"
 msgid "website"
 msgstr "Webseite"
 
-msgid "wednesday"
-msgstr ""
-
 msgid "with email"
 msgstr "mit Email"
 
@@ -3234,6 +3255,9 @@ msgstr "deine 5 letzten Elemente"
 
 msgid "your message"
 msgstr "deine Nachricht"
+
+#~ msgid "reference"
+#~ msgstr "Referenz"
 
 #~ msgid "Multimedia items"
 #~ msgstr "Multimedia Elemente"

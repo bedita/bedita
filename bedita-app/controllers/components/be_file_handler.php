@@ -233,10 +233,10 @@ class BeFileHandlerComponent extends Object {
 			throw new BEditaFileExistException(__("Resource " . $data["uri"] . " not valid", true));
 		}
 		$conf = Configure::getInstance() ;
-		if(in_array($data['mime_type'],$conf->file_mime_type_no_upload)) {
-			throw new BeditaException(__("Mime type '" . $data['mime_type'] . "' not allowed for upload.", true));
+		if(in_array($data['mime_type'],$conf->forbiddenUploadFiles["mimeTypes"])) {
+			throw new BeditaException($data['mime_type'] . " " . __("mime type not allowed for upload", true));
 		}
-		if(preg_match($conf->file_extension_no_upload,$data['name'])) {
+		if(preg_match($conf->forbiddenUploadFiles["extensions"],$data['name'])) {
 			throw new BeditaException(__("File extension not allowed for upload.", true));
 		}
 		// Create destination path

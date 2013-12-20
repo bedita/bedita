@@ -118,7 +118,7 @@ class DbadminShell extends BeditaBaseShell {
 			if($res == "y") {
 				$this->hr();
 				$this->out("CHECKING CONSISTENCY...");
-				$this->checkConsistency($f["id"]);
+				$this->checkConsistency();
 			}
 			$this->out("");
 			$this->out("");

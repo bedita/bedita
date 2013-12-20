@@ -36,7 +36,7 @@ $config["projectName"] = "BEdita 3.2"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.2"; // don't override
 
-$config["majorVersion"] = "3.2"; // don't override -- admin/system
+$config["majorVersion"] = "3.2.1"; // don't override -- admin/system
 
 $config["codenameVersion"] = "Populus"; // don't override -- admin/system
 
@@ -172,8 +172,23 @@ $config["concurrentCheckTime"] = 20000;
 $config["autoSaveTime"] = 120000;
 
 // upload limits
-$config["file_mime_type_no_upload"] = array("application/x-cgi","application/x-php","text/x-php","application/x-perl","text/x-perl","text/x-python");
-$config["file_extension_no_upload"] = "/^.*\.(cgi|php|perl|py)$/i";
+$config['forbiddenUploadFiles'] = array(
+	'mimeTypes' => array(
+		"application/x-cgi",
+		"application/x-php",
+		"text/x-php",
+		"application/x-perl",
+		"text/x-perl",
+		"text/x-python",
+		"application/javascript",
+		"text/javascript",
+		"application/x-ruby",
+		"text/x-ruby",
+		"application/x-shellscript",
+		"text/x-shellscript"
+	),
+	'extensions' => "/^.*\.(cgi|php|perl|py|js|rb|sh)$/i"
+);
 /**
  ** ******************************************
  **  Image, Video and Audio defaults
@@ -360,15 +375,6 @@ $config["defaultObjRelationType"] = array(
 
 // Relations - local objects' relation types (override in bedita.cfg)
 $config["objRelationType"] = array ();
-
-/**
- * One-way relation
- * array of relations' label that define one-way relations
- */
-$config["defaultOneWayRelation"] = array();
-
-// Cfg One-way relation (override in bedita.cfg)
-$config["cfgOneWayRelation"] = array();
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("captchaImage", "category", "content",
