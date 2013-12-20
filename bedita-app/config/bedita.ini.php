@@ -36,7 +36,7 @@ $config["projectName"] = "BEdita 3.2"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.2"; // don't override
 
-$config["majorVersion"] = "3.2"; // don't override -- admin/system
+$config["majorVersion"] = "3.2.1"; // don't override -- admin/system
 
 $config["codenameVersion"] = "Populus"; // don't override -- admin/system
 
