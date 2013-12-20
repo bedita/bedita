@@ -6,6 +6,7 @@
 
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
+	{$beFront->metaOg()}
 
 	<link rel="icon" href="{$html->webroot}favicon.png" type="image/png" />
 

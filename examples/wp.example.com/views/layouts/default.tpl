@@ -8,6 +8,7 @@
 
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
+	{$beFront->metaOg()}
 
 	{$beFront->feeds()}
 

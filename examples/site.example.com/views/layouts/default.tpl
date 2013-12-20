@@ -12,6 +12,10 @@
 	{$beFront->metaDc()}
 	<!-- end -->
 
+	<!-- Object Graph metadata -->
+	{$beFront->metaOg()}
+	<!-- end -->
+
 	{$beFront->feeds()}
 	
 	{$html->css('beditaBase')}

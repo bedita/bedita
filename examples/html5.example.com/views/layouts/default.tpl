@@ -9,6 +9,7 @@
 
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
+	{$beFront->metaOg()}
 
 	{* WebApp Specific *}
 	{*
