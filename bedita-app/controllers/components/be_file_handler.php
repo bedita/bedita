@@ -234,7 +234,7 @@ class BeFileHandlerComponent extends Object {
 		}
 		$conf = Configure::getInstance() ;
 		if(in_array($data['mime_type'],$conf->forbiddenUploadFiles["mimeTypes"])) {
-			throw new BeditaException(__("Mime type '" . $data['mime_type'] . "' not allowed for upload.", true));
+			throw new BeditaException($data['mime_type'] . " " . __("mime type not allowed for upload", true));
 		}
 		if(preg_match($conf->forbiddenUploadFiles["extensions"],$data['name'])) {
 			throw new BeditaException(__("File extension not allowed for upload.", true));

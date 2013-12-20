@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-11-19 18:23:58\n"
+"POT-Creation-Date: 2013-12-20 11:54:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -154,6 +154,9 @@ msgstr "Autosave activado"
 
 msgid "Autosave turned off"
 msgstr "Autosave apagado"
+
+msgid "Autoupdate"
+msgstr ""
 
 msgid "BEdita Object Type"
 msgstr ""
@@ -714,6 +717,9 @@ msgstr "Archivo"
 msgid "File already exists in the filesystem"
 msgstr "El archivo ya existe en el sistema"
 
+msgid "File extension not allowed for upload."
+msgstr ""
+
 msgid "File is empty"
 msgstr "El archivo está vacío"
 
@@ -876,6 +882,9 @@ msgstr "Elementos"
 
 msgid "Jobs"
 msgstr "Jobs"
+
+msgid "Label"
+msgstr ""
 
 msgid "Language configuration"
 msgstr "Configuración idiomas"
@@ -1376,6 +1385,9 @@ msgstr "Permisos"
 msgid "Person"
 msgstr "Persona"
 
+msgid "Person of reference"
+msgstr ""
+
 msgid "Personal data"
 msgstr ""
 
@@ -1468,6 +1480,9 @@ msgstr "Se requiere nombre real  (por lo menos 1% caracteres alfanuméricos)"
 
 msgid "Referenced in"
 msgstr "Referenciado en"
+
+msgid "Refresh file"
+msgstr ""
 
 msgid "Related tickets"
 msgstr ""
@@ -1939,6 +1954,9 @@ msgstr "Acceso"
 msgid "access server log statistics"
 msgstr "Acceder a las estadísticas de registro del servidor"
 
+msgid "active"
+msgstr ""
+
 msgid "add"
 msgstr "Añadir"
 
@@ -2062,6 +2080,9 @@ msgstr "rebotar al correo (bounce)"
 msgid "browse your disk"
 msgstr "buscar en su disco"
 
+msgid "business name"
+msgstr ""
+
 msgid "card(s) associated to mailgroup"
 msgstr "tarjeta(s) asociada a grupo de correo"
 
@@ -2124,6 +2145,9 @@ msgstr "cerrar"
 
 msgid "comments"
 msgstr "comentarios"
+
+msgid "company name"
+msgstr ""
 
 msgid "connect new items"
 msgstr "conectar elementos nuevos"
@@ -2217,6 +2241,9 @@ msgstr "eliminar todos los archivos de cache de BEdita y frontends"
 
 msgid "delete selected items"
 msgstr "eliminar los elementos seleccionados"
+
+msgid "delete this file or reference"
+msgstr ""
 
 msgid "description"
 msgstr "descripción"
@@ -2328,9 +2355,6 @@ msgstr "objeto fijo"
 
 msgid "for object type"
 msgstr "por tipo de objeto"
-
-msgid "friday"
-msgstr ""
 
 msgid "from"
 msgstr "de"
@@ -2547,6 +2571,9 @@ msgstr "tablero de mensajes"
 msgid "mime type"
 msgstr "tipo mime"
 
+msgid "mime type not allowed for upload"
+msgstr ""
+
 msgid "minutes"
 msgstr "minutos"
 
@@ -2567,9 +2594,6 @@ msgstr "modificado"
 
 msgid "modified on"
 msgstr "modificado el"
-
-msgid "monday"
-msgstr ""
 
 msgid "more from this IP"
 msgstr "más de este IP"
@@ -2670,6 +2694,9 @@ msgstr "no hay datos de usuario"
 msgid "not yet sent"
 msgstr "aún no se envió"
 
+msgid "notes"
+msgstr ""
+
 msgid "notify me by email"
 msgstr "notificarme por correo electrónico"
 
@@ -2687,6 +2714,12 @@ msgstr "objeto previsto para hoy"
 
 msgid "object title"
 msgstr "título objeto"
+
+msgid "object type"
+msgstr ""
+
+msgid "objects for this group"
+msgstr ""
 
 msgid "of"
 msgstr "de"
@@ -2759,6 +2792,9 @@ msgstr "pendiente"
 
 msgid "permission"
 msgstr "permisos"
+
+msgid "permission type"
+msgstr ""
 
 msgid "permissions set"
 msgstr "permisos establecidos"
@@ -2865,9 +2901,6 @@ msgstr ""
 msgid "recipient"
 msgstr "destinatario(s)"
 
-msgid "reference"
-msgstr "referencia"
-
 msgid "referenced objects list"
 msgstr "lista objetos referenciados"
 
@@ -2900,9 +2933,6 @@ msgstr "derechos"
 
 msgid "satellite"
 msgstr "satélite"
-
-msgid "saturday"
-msgstr ""
 
 msgid "save"
 msgstr "guardar"
@@ -3009,9 +3039,6 @@ msgstr "suscriptores"
 msgid "subscribing method"
 msgstr "método de suscripción"
 
-msgid "sunday"
-msgstr ""
-
 msgid "surname"
 msgstr "apellido"
 
@@ -3029,9 +3056,6 @@ msgstr "texto"
 
 msgid "thumbnail"
 msgstr "thumbnail"
-
-msgid "thursday"
-msgstr ""
 
 msgid "timeout"
 msgstr "tiempo de espera"
@@ -3066,9 +3090,6 @@ msgstr "traducción a"
 msgid "translations"
 msgstr "traducciones"
 
-msgid "tuesday"
-msgstr ""
-
 msgid "turn off"
 msgstr "apagar"
 
@@ -3083,6 +3104,9 @@ msgstr "activado"
 
 msgid "type"
 msgstr "tipo"
+
+msgid "ubiquous object"
+msgstr ""
 
 msgid "undo"
 msgstr "cancela"
@@ -3169,9 +3193,6 @@ msgstr "webmark"
 msgid "website"
 msgstr "sitio web"
 
-msgid "wednesday"
-msgstr ""
-
 msgid "with email"
 msgstr "con email"
 
@@ -3198,6 +3219,9 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "reference"
+#~ msgstr "referencia"
 
 #~ msgid "Multimedia items"
 #~ msgstr "Elementos Multimedia"
