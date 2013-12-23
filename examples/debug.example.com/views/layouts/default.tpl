@@ -5,6 +5,7 @@
 	<title>{$beFront->title()}</title>
 	{$beFront->metaAll()}
 	{$beFront->metaDc()}
+	{$beFront->metaOg()}
 
 	<link rel="icon" href="{$html->webroot}favicon.ico" type="image/x-icon" />
 

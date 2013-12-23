@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-11-19 18:23:58\n"
+"POT-Creation-Date: 2013-12-20 11:54:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -149,6 +149,9 @@ msgid "Autosave enabled"
 msgstr ""
 
 msgid "Autosave turned off"
+msgstr ""
+
+msgid "Autoupdate"
 msgstr ""
 
 msgid "BEdita Object Type"
@@ -707,6 +710,9 @@ msgstr ""
 msgid "File already exists in the filesystem"
 msgstr ""
 
+msgid "File extension not allowed for upload."
+msgstr ""
+
 msgid "File is empty"
 msgstr ""
 
@@ -864,6 +870,9 @@ msgid "Items"
 msgstr ""
 
 msgid "Jobs"
+msgstr ""
+
+msgid "Label"
 msgstr ""
 
 msgid "Language configuration"
@@ -1361,6 +1370,9 @@ msgstr ""
 msgid "Person"
 msgstr ""
 
+msgid "Person of reference"
+msgstr ""
+
 msgid "Personal data"
 msgstr ""
 
@@ -1450,6 +1462,9 @@ msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr ""
 
 msgid "Referenced in"
+msgstr ""
+
+msgid "Refresh file"
 msgstr ""
 
 msgid "Related tickets"
@@ -1916,6 +1931,9 @@ msgstr ""
 msgid "access server log statistics"
 msgstr ""
 
+msgid "active"
+msgstr ""
+
 msgid "add"
 msgstr ""
 
@@ -2039,6 +2057,9 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
+msgid "business name"
+msgstr ""
+
 msgid "card(s) associated to mailgroup"
 msgstr ""
 
@@ -2100,6 +2121,9 @@ msgid "close"
 msgstr ""
 
 msgid "comments"
+msgstr ""
+
+msgid "company name"
 msgstr ""
 
 msgid "connect new items"
@@ -2193,6 +2217,9 @@ msgid "delete all cached files from BEdita and frontends"
 msgstr ""
 
 msgid "delete selected items"
+msgstr ""
+
+msgid "delete this file or reference"
 msgstr ""
 
 msgid "description"
@@ -2304,9 +2331,6 @@ msgid "fixed object"
 msgstr ""
 
 msgid "for object type"
-msgstr ""
-
-msgid "friday"
 msgstr ""
 
 msgid "from"
@@ -2522,6 +2546,9 @@ msgstr ""
 msgid "mime type"
 msgstr ""
 
+msgid "mime type not allowed for upload"
+msgstr ""
+
 msgid "minutes"
 msgstr ""
 
@@ -2541,9 +2568,6 @@ msgid "modified"
 msgstr ""
 
 msgid "modified on"
-msgstr ""
-
-msgid "monday"
 msgstr ""
 
 msgid "more from this IP"
@@ -2645,6 +2669,9 @@ msgstr ""
 msgid "not yet sent"
 msgstr ""
 
+msgid "notes"
+msgstr ""
+
 msgid "notify me by email"
 msgstr ""
 
@@ -2661,6 +2688,12 @@ msgid "object scheduled today"
 msgstr ""
 
 msgid "object title"
+msgstr ""
+
+msgid "object type"
+msgstr ""
+
+msgid "objects for this group"
 msgstr ""
 
 msgid "of"
@@ -2733,6 +2766,9 @@ msgid "pending"
 msgstr ""
 
 msgid "permission"
+msgstr ""
+
+msgid "permission type"
 msgstr ""
 
 msgid "permissions set"
@@ -2840,9 +2876,6 @@ msgstr ""
 msgid "recipient"
 msgstr ""
 
-msgid "reference"
-msgstr ""
-
 msgid "referenced objects list"
 msgstr ""
 
@@ -2874,9 +2907,6 @@ msgid "rights"
 msgstr ""
 
 msgid "satellite"
-msgstr ""
-
-msgid "saturday"
 msgstr ""
 
 msgid "save"
@@ -2984,9 +3014,6 @@ msgstr ""
 msgid "subscribing method"
 msgstr ""
 
-msgid "sunday"
-msgstr ""
-
 msgid "surname"
 msgstr ""
 
@@ -3003,9 +3030,6 @@ msgid "text"
 msgstr ""
 
 msgid "thumbnail"
-msgstr ""
-
-msgid "thursday"
 msgstr ""
 
 msgid "timeout"
@@ -3041,9 +3065,6 @@ msgstr ""
 msgid "translations"
 msgstr ""
 
-msgid "tuesday"
-msgstr ""
-
 msgid "turn off"
 msgstr ""
 
@@ -3057,6 +3078,9 @@ msgid "turned on"
 msgstr ""
 
 msgid "type"
+msgstr ""
+
+msgid "ubiquous object"
 msgstr ""
 
 msgid "undo"
@@ -3140,9 +3164,6 @@ msgid "webmarks"
 msgstr ""
 
 msgid "website"
-msgstr ""
-
-msgid "wednesday"
 msgstr ""
 
 msgid "with email"

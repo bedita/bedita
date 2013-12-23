@@ -231,7 +231,6 @@ class PermissionModule extends BEAppModel
 	 * @return array
 	 */
 	function getListModules($userid) {
-
 		$user = $this->User->find("first", array(
 			"conditions" => array("User.userid" => $userid),
 			"contain" => array("Group")
@@ -247,8 +246,7 @@ class PermissionModule extends BEAppModel
 			"fields" => array("module_id", "flag"),
 			"contain" => array()
 		));
-		
-		
+
 		$gPerms = array();
 		if(!empty($groups)) {
 			$gPerms = $this->find("all", array(
@@ -262,21 +260,29 @@ class PermissionModule extends BEAppModel
 		}
 
 		$perms = array();
+		// check groups' permissions
+		// restructure $gPerms array to group by module_id
+		$gPerms = Set::combine($gPerms, '{n}.PermissionModule.flag', '{n}.PermissionModule', '{n}.PermissionModule.module_id');
+		foreach ($gPerms as $idMod => $modulePerms) {
+			$moduleP = 0x0;
+			// $allmodulePerms = Set::extract('/flag', $gp);
+			foreach ($modulePerms as $flag => $p) {
+				$moduleP = $moduleP | $flag;
+			}
+			$perms[$idMod] = $moduleP;
+		}
+
+		// check user's permissions
 		foreach ($uPerms as $up) {
 			$idMod = $up["PermissionModule"]["module_id"];
 			$flag = $up["PermissionModule"]["flag"];
-			if($flag & BEDITA_PERMS_READ_MODIFY) {
-				$perms[$idMod] = $flag; 				
+			if (!empty($perms[$idMod])) {
+				$perms[$idMod] = $perms[$idMod] & $flag;
+			} else {
+				$perms[$idMod] = $flag;
 			}
 		}
-		foreach ($gPerms as $gp) {
-			$idMod = $gp["PermissionModule"]["module_id"];
-			$flag = $gp["PermissionModule"]["flag"];
-			if(empty($perms[$idMod]) && ($flag & BEDITA_PERMS_READ_MODIFY)) {
-				$perms[$idMod] = $flag; 				
-			}
-		}
-		
+
 		$modules = $this->Module->find("all", array(
 			"conditions" => array("status" => "on"),
 			"order" => "priority ASC"
@@ -290,8 +296,8 @@ class PermissionModule extends BEAppModel
 				$resModules[$mod["Module"]["name"]]["flag"] = $perms[$idMod];
 			}
 		}
-		return $resModules;
 
+		return $resModules;
 	}
 
 	public function getPermissionModulesForGroup($groupId) {

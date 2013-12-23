@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-11-19 18:23:58\n"
+"POT-Creation-Date: 2013-12-20 11:54:28\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -155,6 +155,9 @@ msgstr "Autosave abilitato"
 
 msgid "Autosave turned off"
 msgstr "Autosave spento"
+
+msgid "Autoupdate"
+msgstr "Aggiornamento automatico"
 
 msgid "BEdita Object Type"
 msgstr "Tipo di oggetto di BEdita"
@@ -714,6 +717,9 @@ msgstr "File"
 msgid "File already exists in the filesystem"
 msgstr "Il file esiste già nel sistema"
 
+msgid "File extension not allowed for upload."
+msgstr "Upload di file con questa estensione negato"
+
 msgid "File is empty"
 msgstr "Il file è vuoto"
 
@@ -872,6 +878,9 @@ msgstr "Elementi"
 
 msgid "Jobs"
 msgstr "Jobs"
+
+msgid "Label"
+msgstr "Etichetta"
 
 msgid "Language configuration"
 msgstr "Configurazione della lingua"
@@ -1375,6 +1384,9 @@ msgstr "Permessi"
 msgid "Person"
 msgstr "Persona"
 
+msgid "Person of reference"
+msgstr "Persona di riferimento"
+
 msgid "Personal data"
 msgstr "Dati personali"
 
@@ -1467,6 +1479,9 @@ msgstr "Il nome reale e obbligatorio (almeno %1 caratteri alfanumerici)"
 
 msgid "Referenced in"
 msgstr "Referenziato in"
+
+msgid "Refresh file"
+msgstr "Aggiorna file"
 
 msgid "Related tickets"
 msgstr "Ticket collegati"
@@ -1942,6 +1957,9 @@ msgstr "accesso "
 msgid "access server log statistics"
 msgstr "accedi al log delle statistiche del server"
 
+msgid "active"
+msgstr "attivo"
+
 msgid "add"
 msgstr "aggiungi"
 
@@ -2065,6 +2083,9 @@ msgstr "rimanda all'email (bounce)"
 msgid "browse your disk"
 msgstr "sfoglia, cerca nel disco"
 
+msgid "business name"
+msgstr "ragione sociale"
+
 msgid "card(s) associated to mailgroup"
 msgstr "schede associate a mailgroup"
 
@@ -2127,6 +2148,9 @@ msgstr "chiudi"
 
 msgid "comments"
 msgstr "commenti"
+
+msgid "company name"
+msgstr "nome azienda"
 
 msgid "connect new items"
 msgstr "collega nuovi elementi"
@@ -2220,6 +2244,9 @@ msgstr "eliminare tutti i file in cache da BEdita e frontend"
 
 msgid "delete selected items"
 msgstr "elimina gli elementi selezionati"
+
+msgid "delete this file or reference"
+msgstr "rimuovi questo file o collegamento"
 
 msgid "description"
 msgstr "descrizione"
@@ -2333,9 +2360,6 @@ msgstr "oggetto fixed"
 
 msgid "for object type"
 msgstr "per tipo oggetto"
-
-msgid "friday"
-msgstr "venerdì"
 
 msgid "from"
 msgstr "da"
@@ -2552,6 +2576,9 @@ msgstr "area messaggi"
 msgid "mime type"
 msgstr "mime type"
 
+msgid "mime type not allowed for upload"
+msgstr "mime type non permesso"
+
 msgid "minutes"
 msgstr "minuti"
 
@@ -2572,9 +2599,6 @@ msgstr "modificato"
 
 msgid "modified on"
 msgstr "modificato il"
-
-msgid "monday"
-msgstr "lunedì"
 
 msgid "more from this IP"
 msgstr "di più da questo IP"
@@ -2675,6 +2699,9 @@ msgstr "nessun dato utente"
 msgid "not yet sent"
 msgstr "non ancora inviata"
 
+msgid "notes"
+msgstr "note"
+
 msgid "notify me by email"
 msgstr "inviami notifica per email"
 
@@ -2692,6 +2719,12 @@ msgstr "oggetto programmato oggi"
 
 msgid "object title"
 msgstr "titolo oggetto"
+
+msgid "object type"
+msgstr "tipo di oggetto"
+
+msgid "objects for this group"
+msgstr "oggetti per questo gruppo"
 
 msgid "of"
 msgstr "di"
@@ -2764,6 +2797,9 @@ msgstr "in attesa"
 
 msgid "permission"
 msgstr "permesso"
+
+msgid "permission type"
+msgstr "tipo di permesso"
 
 msgid "permissions set"
 msgstr "permessi impostati"
@@ -2872,9 +2908,6 @@ msgstr "elementi recenti"
 msgid "recipient"
 msgstr "destinatario/i"
 
-msgid "reference"
-msgstr "riferimento"
-
 msgid "referenced objects list"
 msgstr "Inserito in"
 
@@ -2909,9 +2942,6 @@ msgstr "diritti"
 
 msgid "satellite"
 msgstr "foto satellitare"
-
-msgid "saturday"
-msgstr "sabato"
 
 msgid "save"
 msgstr "salva"
@@ -3018,9 +3048,6 @@ msgstr "iscritti"
 msgid "subscribing method"
 msgstr "metodo di iscrizione"
 
-msgid "sunday"
-msgstr "domenica"
-
 msgid "surname"
 msgstr "cognome"
 
@@ -3038,9 +3065,6 @@ msgstr "testo"
 
 msgid "thumbnail"
 msgstr "miniatura"
-
-msgid "thursday"
-msgstr "giovedì"
 
 msgid "timeout"
 msgstr "timeout"
@@ -3075,9 +3099,6 @@ msgstr "traduzione al"
 msgid "translations"
 msgstr "traduzioni"
 
-msgid "tuesday"
-msgstr "martedì"
-
 msgid "turn off"
 msgstr "disattiva"
 
@@ -3092,6 +3113,9 @@ msgstr "attivato"
 
 msgid "type"
 msgstr "tipo"
+
+msgid "ubiquous object"
+msgstr "oggetti ubiqui"
 
 msgid "undo"
 msgstr "annulla"
@@ -3178,9 +3202,6 @@ msgstr "webmark"
 msgid "website"
 msgstr "sito web"
 
-msgid "wednesday"
-msgstr "mercoledì"
-
 msgid "with email"
 msgstr "con email"
 
@@ -3207,6 +3228,30 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+#~ msgid "friday"
+#~ msgstr "venerdì"
+
+#~ msgid "monday"
+#~ msgstr "lunedì"
+
+#~ msgid "reference"
+#~ msgstr "riferimento"
+
+#~ msgid "saturday"
+#~ msgstr "sabato"
+
+#~ msgid "sunday"
+#~ msgstr "domenica"
+
+#~ msgid "thursday"
+#~ msgstr "giovedì"
+
+#~ msgid "tuesday"
+#~ msgstr "martedì"
+
+#~ msgid "wednesday"
+#~ msgstr "mercoledì"
 
 #~ msgid "Multimedia items"
 #~ msgstr "Elementi multimediali"

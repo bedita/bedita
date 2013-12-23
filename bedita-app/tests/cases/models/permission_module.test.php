@@ -146,7 +146,7 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		// Verify permits
 		$ret = $this->PermissionModule->permsByUserid($userid, "areas", BEDITA_PERMS_READ);
 		if ($this->assertEqual($ret, true)) {
-			pr("Read permits are setted on areas module - $ret");
+			pr("Read permits are set on areas module - $ret");
 		}
 		$ret = $this->PermissionModule->permsByUserid($userid, 'areas', BEDITA_PERMS_MODIFY) ;
 		if ($this->assertEqual($ret, false)) {
@@ -193,7 +193,7 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		}
 	} 
 		
-	function testGetListModuleReadableByUserid() {
+	public function testGetListModuleReadableByUserid() {
 		$userid = $this->data['user.test']['User']['userid'];
 		$countUser = $this->PermissionModule->User->find("count", array(
 			"conditions" => array("userid" => $userid)
@@ -203,21 +203,48 @@ class PermissionModuleTestCase extends BeditaTestCase {
 		}
 		// create user
 		pr("Create user") ;
-		$this->assertTrue($this->BeAuth->createUser($this->data['user.test'], array("translator")));
+		$userGroups = array("translator", "reader");
+		$this->assertTrue($this->BeAuth->createUser($this->data['user.test'], $userGroups));
 
 		// Verify permits
-		$ret = $this->PermissionModule->getListModules($userid) ;
-		pr("Permits for user $userid with group translator");
+		$ret = $this->PermissionModule->getListModules($userid);
+		$modulesAccessible = count($ret);
+		pr("Permits for user $userid with groups translator and reader");
 		pr($ret);
+		$groupIds = ClassRegistry::init('Group')->find('list', array(
+			'fields' => array('name', 'id'),
+			'conditions' => array('name' => $userGroups)
+		));
 
-		$ret = $this->PermissionModule->remove('documents', "translator", "group");
-		if ($this->assertEqual($ret,true)) {
+		foreach ($ret as $moduleName => $moduleData) {
+			$groupPerms = $this->PermissionModule->find('all', array(
+				'conditions' => array(
+					'module_id' => $moduleData['id'],
+					'switch' => 'group',
+					'ugid' => $groupIds
+				),
+				'contain' => array()
+			));
+
+			$flag = 0x0;
+			foreach ($groupPerms as $p) {
+				$flag = $flag | $p['PermissionModule']['flag'];
+			}
+
+			$this->assertEqual($moduleData['flag'], $flag);
+		}
+
+		$ret_translator = $this->PermissionModule->remove('documents', "translator", "group");
+		$ret_reader = $this->PermissionModule->remove('documents', "reader", "group");
+		if ($this->assertEqual($ret_translator, true) && $this->assertEqual($ret_reader, true)) {
 			pr("Permission on module documents removed for group translator");
 		}
 
-		$ret = $this->PermissionModule->getListModules($userid) ;
+		$ret = $this->PermissionModule->getListModules($userid);
 		pr($ret);
-	} 
+
+		$this->assertIdentical(array_key_exists('documents', $ret), false);
+	}
 
 	/////////////////////////////////////////////////
 	/////////////////////////////////////////////////
