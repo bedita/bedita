@@ -253,8 +253,7 @@ class BeFrontHelper extends AppHelper {
 			));
 		}
 
-
-		// TODO: og:site_name
+		// og:site_name
 		$html .= "\n" . $this->Html->meta(array(
 			"property" => "og:site_name",
 			"content" => $this->_publication['public_name']
