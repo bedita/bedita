@@ -1186,7 +1186,10 @@ abstract class ModulesController extends AppController {
 	 * Returns array of available relations for an $objectType
 	 * relations with "hidden" => true are excluded
 	 * If "inverse" relation is defined ("inverse" => "inverseName"), then types on "right" side
-	 *  will have "inverseName" relation
+	 * will have "inverseName" relation
+	 *
+	 * array returned is like
+	 * array("relation_name" => "relation label", ...)
 	 *
 	 * @param string $objectType
 	 * @return array
@@ -1196,28 +1199,35 @@ abstract class ModulesController extends AppController {
 		$availableRelations = array();
 		foreach ($allRelations as $relation => $rule) {
 			if (empty($rule["hidden"])) {
+				$relLabel = (!empty($rule["label"]))? $rule["label"] : $relation;
 				// no rule defined
 				if (empty($rule[$objectType]) && empty($rule["left"]) && empty($rule["right"])) {
-					$availableRelations[] = $relation;
+					$availableRelations[$relation] = $relLabel;
 				// rule on objectType
 				} elseif (!empty($rule[$objectType])) {
-					$availableRelations[] = $relation;
+					$availableRelations[$relation] = $relLabel;
 				// rule on sideA / sideB
 				} else {
 					$addRelation = array();
 					if (key_exists("left", $rule)) {
 						if(is_array($rule["left"]) && (in_array($objectType, $rule["left"]) || (empty($rule["left"])))) {
-							$addRelation[] = $relation;
+							$addRelation[$relation] = $relLabel;
 						} else if($rule["left"] === $objectType) {
-							$addRelation[] = $relation;
+							$addRelation[$relation] = $relLabel;
 						}
 					}
 					if (key_exists("right", $rule)) {
-						$rightRel = !empty($rule["inverse"]) ? $rule["inverse"] : $relation;
+						if (!empty($rule["inverse"])) {
+							$rightRel = $rule["inverse"];
+							$rightRelLabel = (!empty($rule["inverseLabel"]))? $rule["inverseLabel"] : $rule["inverse"];
+						} else {
+							$rightRel = $relation;
+							$rightRelLabel = (!empty($rule["label"]))? $rule["label"] : $relation;
+						}
 						if(is_array($rule["right"]) && (in_array($objectType, $rule["right"]) || (empty($rule["right"])))) {
-							$addRelation[] = $rightRel;
+							$addRelation[$rightRel] = $rightRelLabel;
 						} else if($rule["right"] === $objectType) {
-							$addRelation[] = $rightRel;
+							$addRelation[$rightRel] = $rightRelLabel;
 						}
 					}
 					$availableRelations= array_merge($availableRelations, $addRelation);
