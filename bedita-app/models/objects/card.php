@@ -30,9 +30,18 @@
  */
 class Card extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 8 , "description" => 4, 
-		"website" => 6, "email" => 6, "email2" => 5,  
-		"street_address" => 3,"company_name" => 3, "city" => 4);
+	public $searchFields = array(
+		"title" => 8,
+		"nickname" => 10,
+		"description" => 4,
+		"website" => 6,
+		"email" => 6,
+		"email2" => 5,
+		"street_address" => 3,
+		"company_name" => 3,
+		"city" => 4,
+		"note" => 2
+	);
 
 	var $actsAs 	= array(
 			'CompactResult' 		=> array("MailGroup", "GeoTag")

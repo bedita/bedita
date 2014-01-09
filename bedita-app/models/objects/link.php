@@ -32,7 +32,13 @@ class Link extends BEAppObjectModel {
 
 	var $actsAs = array();
 
-	public $searchFields = array("title" => 8 , "description" => 5, "url" => 8); 
+	public $searchFields = array(
+		"title" => 8,
+		"nickname" => 10,
+		"description" => 5,
+		"url" => 8,
+		"note" => 2
+	);
 	
 	protected $modelBindings = array( 
 				"detailed" =>  array("BEObject" => array("ObjectType", 

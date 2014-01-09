@@ -36,8 +36,14 @@ class Area extends BeditaCollectionModel
 		'RemoveDummyName'
 	);
 
-	public $searchFields = array("title" => 10 , "description" => 6,
-		"public_name" => 10, "public_url" => 8);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"public_name" => 10,
+		"public_url" => 8,
+		"note" => 2
+	);
 
 	protected $modelBindings = array(
 			"detailed" =>  array("BEObject" => array("ObjectType",
