@@ -72,6 +72,15 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  ** ******************************************
  */
  
+// default email fields -- override in bedita.cfg or bedita.sys
+//$config['mailOptions'] = array(
+//    "sender" => "noreply@bedita.com",
+//    "reply_to" => "noreply@bedita.com",
+//    "signature" => "powered by BEdita - http://www.bedita.com",
+//);
+
+ 
+ 
 /** 
  ** smtp server configuration used for any kind of mail (notifications, newsletters, etc...)
  */

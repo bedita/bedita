@@ -32,7 +32,12 @@ class Section extends BeditaCollectionModel
 {
 	var $actsAs = array();
 
-	public $searchFields = array("title" => 10 , "description" => 6);
+	public $searchFields = array(
+        "title" => 10,
+        "nickname" => 10,
+        "description" => 6,
+        "note" => 2
+    );
 
 	protected $modelBindings = array(
 				"detailed" =>  array("BEObject" => array("ObjectType",

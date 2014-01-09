@@ -776,7 +776,13 @@ class BEAppObjectModel extends BEAppModel {
 
 class BeditaSimpleObjectModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"note" => 2
+	);
+
 	public $useTable = 'objects';
 
 	public $actsAs 	= array(
@@ -890,8 +896,16 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 
 class BeditaContentModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "creator" => 6, "description" => 6,
-		"subject" => 4, "abstract" => 4, "body" => 4);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"creator" => 6,
+		"description" => 6,
+		"subject" => 4,
+		"abstract" => 4,
+		"body" => 4,
+		"note" => 2
+	);
 
 	function beforeValidate() {
     	return $this->validateContent();
@@ -905,8 +919,14 @@ class BeditaContentModel extends BEAppObjectModel {
 
 class BeditaAnnotationModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6,
-		"body" => 4, "author" => 3);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"body" => 4,
+		"author" => 3,
+		"note" => 2
+	);
 
 	var $belongsTo = array(
 		"ReferenceObject" =>
@@ -943,8 +963,17 @@ class BeditaAnnotationModel extends BEAppObjectModel {
  */
 class BeditaSimpleStreamModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6,
-		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"subject" => 4,
+		"abstract" => 4,
+		"body" => 4,
+		"name" => 6,
+		"original_name" => 8,
+		"note" => 2
+	);
 
 	protected $modelBindings = array(
 				"detailed" => array("BEObject" => array("ObjectType",
@@ -1008,8 +1037,17 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
  */
 class BeditaStreamModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6,
-		"subject" => 4, "abstract" => 4, "body" => 4, "name" => 6);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"subject" => 4,
+		"abstract" => 4,
+		"body" => 4,
+		"name" => 6,
+		"original_name" => 8,
+		"note" => 2
+	);
 
 	protected $modelBindings = array(
 				"detailed" => array("BEObject" => array("ObjectType",
@@ -1083,37 +1121,43 @@ class BeditaStreamModel extends BEAppObjectModel {
  */
 class BeditaProductModel extends BEAppObjectModel {
 
-	public $searchFields = array("title" => 10 , "description" => 6,
-		"abstract" => 4, "body" => 4);
+	public $searchFields = array(
+		"title" => 10,
+		"nickname" => 10,
+		"description" => 6,
+		"abstract" => 4,
+		"body" => 4,
+		"note" => 2
+	);
 
-		protected $modelBindings = array(
-				"detailed" => array("BEObject" => array("ObjectType",
-														"Permission",
-														"UserCreated",
-														"UserModified",
-														"RelatedObject",
-														"ObjectProperty",
-														"LangText",
-														"Category",
-														"Annotation",
-														"Alias",
-														"Version" => array("User.realname", "User.userid")
-													),
-									"Product"),
-				"default" => array("BEObject" => array(	"ObjectProperty",
-														"LangText",
-														"ObjectType"),
-									"Product"),
-				"minimum" => array("BEObject" => array("ObjectType"),"Product"),
+	protected $modelBindings = array(
+			"detailed" => array("BEObject" => array("ObjectType",
+													"Permission",
+													"UserCreated",
+													"UserModified",
+													"RelatedObject",
+													"ObjectProperty",
+													"LangText",
+													"Category",
+													"Annotation",
+													"Alias",
+													"Version" => array("User.realname", "User.userid")
+												),
+								"Product"),
+			"default" => array("BEObject" => array(	"ObjectProperty",
+													"LangText",
+													"ObjectType"),
+								"Product"),
+			"minimum" => array("BEObject" => array("ObjectType"),"Product"),
 
-				"frontend" => array("BEObject" => array("LangText",
-														"ObjectProperty",
-														"RelatedObject",
-														"Category",
-														"Annotation",
-														"GeoTag"
-													),
-									"Product"),
+			"frontend" => array("BEObject" => array("LangText",
+													"ObjectProperty",
+													"RelatedObject",
+													"Category",
+													"Annotation",
+													"GeoTag"
+												),
+								"Product"),
 	);
 
 
