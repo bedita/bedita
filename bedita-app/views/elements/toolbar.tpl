@@ -27,7 +27,17 @@
 			
 			{if !empty($stringSearched)}
 			
-				&nbsp; {t}matching the query{/t}: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
+				{if preg_match('/^\*.+\*$/', $stringSearched)}
+					&nbsp; {t}matching the query containing{/t}
+				{elseif preg_match('/^\*/', $stringSearched)}
+					&nbsp; {t}matching the query ending by{/t}
+				{elseif preg_match('/\*$/', $stringSearched)}
+					&nbsp; {t}matching the query beginning by{/t}
+				{else}
+					&nbsp; {t}matching the query{/t}
+				{/if}
+
+				: “ <span style="color:white" class="evidence">{$stringSearched|regex_replace:['/^\*/', '/\*$/']:''}</span> ”
 				
 			{/if}
 			

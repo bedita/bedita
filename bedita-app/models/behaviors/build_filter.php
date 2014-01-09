@@ -377,15 +377,19 @@ class BuildFilterBehavior extends ModelBehavior {
 		// #MYSQL
 		App::import('Sanitize');
 		$value = Sanitize::html($value, array('remove' => true));
-		$sType = Configure::read("searchType");
-		if($sType == "fulltext" ) {
-			if($this->driver === "mysql") {
+
+		// match if $value starts or ends with * (wildcard set)
+		$wildcard = preg_match('/(^\*.+|.+\*$)/', $value);
+		$sType = ($wildcard)? 'like' : Configure::read("searchType");
+
+		if ($sType == "fulltext") {
+			if ($this->driver === "mysql") {
 				// #MYSQL
 				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
 				$this->from .= ", search_texts AS SearchText";
 				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
 				$this->order .= "points DESC ";
-			} else if ($this->driver === "postgres"){
+			} elseif ($this->driver === "postgres") {
 				$expr = explode(" ", $value);
 				$ts = "";
 				for($i = 0; $i < count($expr); $i++) {
@@ -401,13 +405,19 @@ class BuildFilterBehavior extends ModelBehavior {
 				$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
 			}
 		
-		} else if($sType == "like" ) {
-	
+		} elseif ($sType == "like") {
+			if ($wildcard) {
+				// replace start and/or end '*' with '%'
+				$wildcardPatterns = array('/^\*/', '/\*$/');
+				$value = preg_replace($wildcardPatterns, '%', $value);
+			} else {
+				$value = '%' . $value . '%';
+			}
 			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, {$s}SearchText{$e}.{$s}relevance{$e}";
 			$this->from .= ", {$s}search_texts{$e} AS {$s}SearchText{$e}";
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
 				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
-				"{$s}SearchText{$e}.{$s}content{$e} LIKE '%". $value ."%' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
+				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $value ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 	}
