@@ -351,11 +351,6 @@ $config["defaultObjRelationType"] = array(
 		"left" 		=> array("b_e_file","image","application","audio","video"),
 		"right" 		=> array()
 	),
-	"gallery" => array(
-		"hidden" => true,
-		"left" 		=> array("gallery"),
-		"right" 		=> array()
-	),
 	"attach" => array(
 		"hidden" => true,
 		"left" => array("b_e_file","image","application","audio","video"),
@@ -365,11 +360,6 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array("link"),
 		"right" => array()
-	),
-	"author" => array(
-		"hidden" => true,
-		"left" => array("book"),
-		"right" => array("author")
 	)
 );
 
