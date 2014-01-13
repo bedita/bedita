@@ -576,6 +576,7 @@ CREATE TABLE object_relations (
   id INTEGER UNSIGNED NOT NULL,
   switch varchar(63) NOT NULL default 'attach' COMMENT '???',
   priority int(11) default NULL COMMENT '???',
+  params TEXT NULL COMMENT 'relation properties values',
   PRIMARY KEY  (`object_id`,`id`,`switch`),
   INDEX `related_objects_FKIndex1` (`id`),
   INDEX `related_objects_FKIndex2` (`object_id`),

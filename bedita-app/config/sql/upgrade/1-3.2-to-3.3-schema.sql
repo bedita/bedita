@@ -1,0 +1,1 @@
+ALTER TABLE `object_relations` ADD  `params` TEXT NULL COMMENT 'relation properties values';

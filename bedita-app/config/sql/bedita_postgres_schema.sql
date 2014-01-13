@@ -585,13 +585,15 @@ CREATE TABLE object_relations (
     object_id integer NOT NULL,
     id integer NOT NULL,
     switch character varying(63) DEFAULT 'attach'::character varying NOT NULL,
-    priority integer
+    priority integer,
+    params text
 );
 
 
 
 COMMENT ON COLUMN object_relations.switch IS '???';
 COMMENT ON COLUMN object_relations.priority IS '???';
+COMMENT ON COLUMN object_relations.params IS 'relation properties values';
 
 
 CREATE TABLE object_types (
