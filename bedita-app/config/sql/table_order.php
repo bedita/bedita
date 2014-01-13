@@ -60,7 +60,6 @@ $table_order = array(
   "videos",
 
   "annotations",
-  "authors",
   "cards",
 
   

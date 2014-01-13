@@ -1,5 +1,5 @@
 <?php 
-/* BeditaApp schema generated on: 2012-01-13 10:45:46 : 1326447946*/
+/* BeditaApp schema generated on: 2014-01-13 12:41:29 : 1389613289*/
 class BeditaAppSchema extends CakeSchema {
 	var $name = 'BeditaApp';
 
@@ -51,13 +51,6 @@ class BeditaAppSchema extends CakeSchema {
 		'stats_code' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'statistics code, for example google stats code. can be NULL', 'charset' => 'utf8'),
 		'stats_provider' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'statistics provider, for example google. can be NULL', 'charset' => 'utf8'),
 		'stats_provider_url' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'statistics provider url', 'charset' => 'utf8'),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
-	);
-	var $authors = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
-		'name' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 60, 'collate' => 'utf8_general_ci', 'comment' => 'author name, can be NULL', 'charset' => 'utf8'),
-		'surname' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 60, 'collate' => 'utf8_general_ci', 'comment' => 'author surname, can be NULL', 'charset' => 'utf8'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
@@ -130,6 +123,7 @@ class BeditaAppSchema extends CakeSchema {
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'index'),
 		'start_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'comment' => 'start time, can be NULL'),
 		'end_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL, 'comment' => 'end time, can be NULL'),
+		'params' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'calendar params: e.g. days of week', 'charset' => 'utf8'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
@@ -148,9 +142,9 @@ class BeditaAppSchema extends CakeSchema {
 		'object_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'index'),
 		'latitude' => array('type' => 'float', 'null' => true, 'default' => NULL, 'length' => '9,6', 'comment' => 'latitude, can be NULL'),
 		'longitude' => array('type' => 'float', 'null' => true, 'default' => NULL, 'length' => '9,6', 'comment' => 'longitude, can be NULL'),
-		'address' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'address, can be NULL', 'charset' => 'utf8'),
-		'titke' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'geotag title/name, can be NULL', 'charset' => 'utf8'),
-	    'gmaps_lookat' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'google maps code, can be NULL', 'charset' => 'utf8'),
+		'address' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'address, can be NULL', 'charset' => 'utf8'),
+		'title' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'geotag name/title', 'charset' => 'utf8'),
+		'gmaps_lookat' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'google maps code, can be NULL', 'charset' => 'utf8'),
 		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'object_id' => array('column' => 'object_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
@@ -165,9 +159,10 @@ class BeditaAppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 	var $groups_users = array(
-		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
-		'group_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
-		'indexes' => array('PRIMARY' => array('column' => array('user_id', 'group_id'), 'unique' => 1), 'groups_users_FKIndex1' => array('column' => 'user_id', 'unique' => 0), 'groups_users_FKIndex2' => array('column' => 'group_id', 'unique' => 0)),
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
+		'group_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'index'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'index'),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'groups_users_FKIndex1' => array('column' => 'user_id', 'unique' => 0), 'groups_users_FKIndex2' => array('column' => 'group_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 	var $hash_jobs = array(
@@ -328,6 +323,7 @@ class BeditaAppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 10, 'key' => 'primary'),
 		'switch' => array('type' => 'string', 'null' => false, 'default' => 'attach', 'length' => 63, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'comment' => '???'),
+		'params' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => 'relation properties values', 'charset' => 'utf8'),
 		'indexes' => array('PRIMARY' => array('column' => array('object_id', 'id', 'switch'), 'unique' => 1), 'related_objects_FKIndex1' => array('column' => 'id', 'unique' => 0), 'related_objects_FKIndex2' => array('column' => 'object_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
@@ -354,8 +350,8 @@ class BeditaAppSchema extends CakeSchema {
 		'status' => array('type' => 'string', 'null' => true, 'default' => 'draft', 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => '(on, off, draft)', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
-		'title' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
-		'nickname' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
+		'title' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
+		'nickname' => array('type' => 'string', 'null' => true, 'default' => NULL, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'description' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'valid' => array('type' => 'boolean', 'null' => true, 'default' => '1', 'comment' => '???'),
 		'lang' => array('type' => 'string', 'null' => true, 'default' => NULL, 'length' => 3, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
@@ -369,7 +365,7 @@ class BeditaAppSchema extends CakeSchema {
 		'note' => array('type' => 'text', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'fixed' => array('type' => 'boolean', 'null' => true, 'default' => '0', 'comment' => '???'),
 		'comments' => array('type' => 'string', 'null' => true, 'default' => 'off', 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => 'define if an object is commentable (on, off, moderated)', 'charset' => 'utf8'),
-		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'objects_FKIndex1' => array('column' => 'object_type_id', 'unique' => 0), 'user_created' => array('column' => 'user_created', 'unique' => 0), 'user_modified' => array('column' => 'user_modified', 'unique' => 0)),
+		'indexes' => array('PRIMARY' => array('column' => 'id', 'unique' => 1), 'nickname_idx' => array('column' => 'nickname', 'unique' => 1), 'objects_FKIndex1' => array('column' => 'object_type_id', 'unique' => 0), 'user_created' => array('column' => 'user_created', 'unique' => 0), 'user_modified' => array('column' => 'user_modified', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 	var $permission_modules = array(
@@ -462,7 +458,7 @@ class BeditaAppSchema extends CakeSchema {
 		'object_path' => array('type' => 'string', 'null' => false, 'default' => NULL, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'parent_path' => array('type' => 'string', 'null' => true, 'default' => NULL, 'collate' => 'utf8_general_ci', 'comment' => '???', 'charset' => 'utf8'),
 		'priority' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'comment' => '???'),
-		'menu' => array('type' => 'integer', 'null' => true, 'default' => NULL, 'length' => 10, 'comment' => '???'),
+		'menu' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 10),
 		'indexes' => array('object_path' => array('column' => 'object_path', 'unique' => 1), 'id_idx' => array('column' => 'id', 'unique' => 0), 'parent_idx' => array('column' => 'parent_id', 'unique' => 0), 'area_idx' => array('column' => 'area_id', 'unique' => 0)),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);

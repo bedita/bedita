@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS aliases CASCADE;
 DROP TABLE IF EXISTS annotations CASCADE;
 DROP TABLE IF EXISTS applications CASCADE;
 DROP TABLE IF EXISTS areas CASCADE;
-DROP TABLE IF EXISTS authors CASCADE;
 DROP TABLE IF EXISTS banned_ips;
 DROP TABLE IF EXISTS cake_sessions;
 DROP TABLE IF EXISTS cards CASCADE;
@@ -118,14 +117,6 @@ COMMENT ON COLUMN areas.stats_provider IS 'statistics provider, for example goog
 COMMENT ON COLUMN areas.stats_provider_url IS 'statistics provider url';
 
 
-CREATE TABLE authors (
-    id integer NOT NULL,
-    name character varying(60),
-    surname character varying(60)
-);
-
-COMMENT ON COLUMN authors.name IS 'author name, can be NULL';
-COMMENT ON COLUMN authors.surname IS 'author surname, can be NULL';
 CREATE TABLE banned_ips (
     id serial,
     ip_address character varying(15) NOT NULL,
@@ -1056,9 +1047,6 @@ ALTER TABLE ONLY applications
 ALTER TABLE ONLY areas
     ADD CONSTRAINT areas_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY authors
-    ADD CONSTRAINT authors_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY banned_ips
     ADD CONSTRAINT banned_ips_pkey PRIMARY KEY (id);
 
@@ -1593,11 +1581,6 @@ ALTER TABLE ONLY applications
 
 ALTER TABLE ONLY areas
     ADD CONSTRAINT areas_ibfk_1 FOREIGN KEY (id) REFERENCES objects(id) MATCH FULL ON DELETE CASCADE;
-
-
-
-ALTER TABLE ONLY authors
-    ADD CONSTRAINT authors_ibfk_1 FOREIGN KEY (id) REFERENCES objects(id) MATCH FULL ON DELETE CASCADE;
 
 
 

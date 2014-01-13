@@ -44,13 +44,6 @@ $doc['areas'] = array (
   'stats_provider_url' => 'statistics provider url',
 );
 
-// table: authors
-$doc['tables']['authors'] = 'authors';
-$doc['authors'] = array (
-  'name' => 'author name',
-  'surname' => 'author surname',
-);
-
 // table: banned_ips
 $doc['tables']['banned_ips'] = 'banned ips (mainly for comments)';
 $doc['banned_ips'] = array (

@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS `aliases`;
 DROP TABLE IF EXISTS `annotations`;
 DROP TABLE IF EXISTS `applications`;
 DROP TABLE IF EXISTS `areas`;
-DROP TABLE IF EXISTS `authors`;
 DROP TABLE IF EXISTS `banned_ips`;
 DROP TABLE IF EXISTS `cake_sessions`;
 DROP TABLE IF EXISTS `cards`;
@@ -115,17 +114,6 @@ CREATE TABLE areas (
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'publications (web sites, etc.)' ;
-
-CREATE TABLE authors (
-  id INTEGER UNSIGNED NOT NULL,
-  name VARCHAR(60) NULL COMMENT 'author name, can be NULL',
-  surname VARCHAR(60) NULL COMMENT 'author surname, can be NULL',
-  PRIMARY KEY(id),
-  FOREIGN KEY(id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'contents authors' ;
 
 CREATE TABLE `banned_ips` (
   id INTEGER UNSIGNED NOT NULL AUTO_INCREMENT,
