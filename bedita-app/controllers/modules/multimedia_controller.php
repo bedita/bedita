@@ -93,6 +93,12 @@ class MultimediaController extends ModulesController {
 		$obj = null ;
 		$parents_id = array();
 		if($id) {
+			// check if object is forbidden for user
+			$user = $this->Session->read("BEAuthUser");
+			$permission = ClassRegistry::init("Permission");
+			if ($permission->isForbidden($id, $user)) {
+				throw new BeditaException(__("Access forbidden to object", true) . " $id");
+			}
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			$model = ClassRegistry::init($this->BEObject->getType($id));
