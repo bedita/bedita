@@ -686,46 +686,78 @@ class BuildFilterBehavior extends ModelBehavior {
 		$userGroups = Set::combine($user, 'Group.{n}.name', 'Group.{n}.id');
 
 		if (!empty($userGroups) && !in_array('administrator', array_keys($userGroups))) {
-			// forbidden publications on which user can't access
-			$forbiddenObjects = ClassRegistry::init('Permission')->find('list', array(
-				'fields' => array('object_id'),
+			// forbidden objects on which user can't access
+			$permission = ClassRegistry::init('Permission');
+			$permission->bindModel(array(
+				'belongsTo' => array('BEObject' => array('className' => 'BEObject', 'foreignKey' => 'object_id'))
+			));
+			$forbiddenObjects = $permission->find('all', array(
+				'fields' => array('object_id', 'BEObject.object_type_id'),
 				'conditions' => array(
-					'switch' => 'group',
-					'flag' => Configure::read('objectPermissions.backend_private'),
-					'NOT' => array('ugid' => $userGroups)
-				)
+					'Permission.switch' => 'group',
+					'Permission.flag' => Configure::read('objectPermissions.backend_private'),
+					'NOT' => array('Permission.ugid' => $userGroups)
+				),
+				'contain' => array('BEObject')
 			));
 
 			if (!empty($forbiddenObjects)) {
-				$forbiddenObjectsList = implode(',', $forbiddenObjects);
+				$forbiddenObjectsIds = array();
+				$forbiddenPub = array();
+				$forbiddenSection = array();
+				$sectionTypeId = Configure::read('objectTypes.section.id');
+				$pubTypeId = Configure::read('objectTypes.area.id');
+				foreach ($forbiddenObjects as $item) {
+					$forbiddenObjectsIds[] = $item['BEObject']['id'];
+					if ($item['BEObject']['object_type_id'] == $sectionTypeId) {
+						$forbiddenSection[] = $item['BEObject']['id'];
+					} elseif ($item['BEObject']['object_type_id'] == $pubTypeId) {
+						$forbiddenPub[] = $item['BEObject']['id'];
+					}
+				}
 
-				// get only objects not in tree
-				// or objects inside no private publication and/or inside no private section
-				$this->conditions[] = "(
-					(
-						NOT EXISTS (
-							SELECT {$s}Tree{$e}.{$s}id{$e}
-							FROM {$s}trees{$e} AS {$s}Tree{$e}
-							WHERE {$s}Tree{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}
-						)
-					)
-					OR
-					(
-						EXISTS (
-							SELECT {$s}Tree{$e}.{$s}id{$e}
-							FROM {$s}trees{$e} AS {$s}Tree{$e}
-							WHERE {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}
-							AND {$s}Tree{$e}.{$s}area_id{$e} NOT IN (" . $forbiddenObjectsList .")
-							AND (
-								{$s}Tree{$e}.{$s}parent_id{$e} NOT IN (" . $forbiddenObjectsList .")
-								OR
-								{$s}Tree{$e}.{$s}parent_id{$e} IS NULL
+				if (!empty($forbiddenPub) || !empty($forbiddenSection)) {
+
+					$query = "SELECT {$s}Tree{$e}.{$s}id{$e}
+						     FROM {$s}trees{$e} AS {$s}Tree{$e}
+						     WHERE {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}";
+
+					if (!empty($forbiddenPub)) {
+						$forbiddenPubList = implode(',', $forbiddenPub);
+						$query .= " AND {$s}Tree{$e}.{$s}area_id{$e} NOT IN (" . $forbiddenPubList .")";
+					}
+
+					if (!empty($forbiddenSection)) {
+						$forbiddenSectionCondition = "";
+						foreach ($forbiddenSection as $key => $forbiddenId) {
+							if ($key > 0) {
+								$forbiddenSectionCondition .= " AND ";
+							}
+							$forbiddenSectionCondition .= "{$s}Tree{$e}.{$s}object_path{$e} NOT LIKE '%/$forbiddenId/%'";
+						}
+						$query .= " AND (" . $forbiddenSectionCondition . ")";
+					}
+
+					// get only objects not in tree
+					// or objects inside no private publication and/or inside no private section
+					$this->conditions[] = "(
+						(
+							NOT EXISTS (
+								SELECT {$s}Tree{$e}.{$s}id{$e}
+								FROM {$s}trees{$e} AS {$s}Tree{$e}
+								WHERE {$s}Tree{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}
 							)
 						)
-					)
-				)";
+						OR
+						(
+							EXISTS (" . $query . ")
+						)
+					)";
+
+				}
 
 				// get only objects not forbidden
+				$forbiddenObjectsList = implode(',', $forbiddenObjectsIds);
 				$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} NOT IN (" . $forbiddenObjectsList .")";
 			}
 		}
