@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-12-20 11:54:28\n"
+"POT-Creation-Date: 2014-01-15 16:00:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -23,6 +23,9 @@ msgstr "alles (ab)wählen"
 
 msgid ""
 "A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+
+msgid "Access forbidden to object"
 msgstr ""
 
 msgid "Access to Backend"
@@ -2090,6 +2093,9 @@ msgstr "Authentifizierung angeboten von"
 msgid "author"
 msgstr "Autor"
 
+msgid "backend_private"
+msgstr ""
+
 msgid "ban this IP!"
 msgstr "diese IP verbannen!"
 
@@ -2571,6 +2577,15 @@ msgid "master title"
 msgstr "Vorlagentitel"
 
 msgid "matching the query"
+msgstr ""
+
+msgid "matching the query beginning by"
+msgstr ""
+
+msgid "matching the query containing"
+msgstr ""
+
+msgid "matching the query ending by"
 msgstr ""
 
 msgid "maximum"

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-12-20 11:54:28\n"
+"POT-Creation-Date: 2014-01-15 16:00:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -19,6 +19,9 @@ msgstr "deseleccionar todos"
 
 msgid ""
 "A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+
+msgid "Access forbidden to object"
 msgstr ""
 
 msgid "Access to Backend"
@@ -2053,6 +2056,9 @@ msgstr "autenticación proporcionada por"
 msgid "author"
 msgstr "autor"
 
+msgid "backend_private"
+msgstr ""
+
 msgid "ban this IP!"
 msgstr "prohibir este IP!"
 
@@ -2532,6 +2538,15 @@ msgstr "título principal"
 
 msgid "matching the query"
 msgstr "corresponde a la búsqueda"
+
+msgid "matching the query beginning by"
+msgstr ""
+
+msgid "matching the query containing"
+msgstr ""
+
+msgid "matching the query ending by"
+msgstr ""
 
 msgid "maximum"
 msgstr "máximo"

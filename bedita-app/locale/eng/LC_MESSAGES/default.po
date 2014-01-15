@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2013-12-20 11:54:28\n"
+"POT-Creation-Date: 2014-01-15 16:00:44\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -19,6 +19,9 @@ msgstr ""
 
 msgid ""
 "A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+
+msgid "Access forbidden to object"
 msgstr ""
 
 msgid "Access to Backend"
@@ -2030,6 +2033,9 @@ msgstr ""
 msgid "author"
 msgstr ""
 
+msgid "backend_private"
+msgstr "private (backend only)"
+
 msgid "ban this IP!"
 msgstr ""
 
@@ -2508,6 +2514,15 @@ msgid "master title"
 msgstr ""
 
 msgid "matching the query"
+msgstr ""
+
+msgid "matching the query beginning by"
+msgstr ""
+
+msgid "matching the query containing"
+msgstr ""
+
+msgid "matching the query ending by"
 msgstr ""
 
 msgid "maximum"

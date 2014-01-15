@@ -70,6 +70,7 @@ Strings to translate not present in .tpl/.php files
 // object permissions labels
 {t}frontend_access_with_block{/t}
 {t}frontend_access_without_block{/t}
+{t}backend_private{/t}
 
 // geo tag options
 {t}maximum{/t}
