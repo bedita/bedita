@@ -670,6 +670,66 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->from = $from . $this->from;
 		}
 	}
+
+	/**
+	 * filter objects allowed to user
+	 *
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param  string $userid userid (users.userid field)
+	 */
+	protected function allowed_to_userFilter($s, $e, $userid) {
+		$user = ClassRegistry::init('User')->find('first', array(
+			'conditions' => array('User.userid' => $userid),
+			'contain' => array('Group')
+		));
+		$userGroups = Set::combine($user, 'Group.{n}.name', 'Group.{n}.id');
+
+		if (!empty($userGroups) && !in_array('administrator', array_keys($userGroups))) {
+			// forbidden publications on which user can't access
+			$forbiddenObjects = ClassRegistry::init('Permission')->find('list', array(
+				'fields' => array('object_id'),
+				'conditions' => array(
+					'switch' => 'group',
+					'flag' => Configure::read('objectPermissions.backend_private'),
+					'NOT' => array('ugid' => $userGroups)
+				)
+			));
+
+			if (!empty($forbiddenObjects)) {
+				$forbiddenObjectsList = implode(',', $forbiddenObjects);
+
+				// get only objects not in tree
+				// or objects inside no private publication and/or inside no private section
+				$this->conditions[] = "(
+					(
+						NOT EXISTS (
+							SELECT {$s}Tree{$e}.{$s}id{$e}
+							FROM {$s}trees{$e} AS {$s}Tree{$e}
+							WHERE {$s}Tree{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}
+						)
+					)
+					OR
+					(
+						EXISTS (
+							SELECT {$s}Tree{$e}.{$s}id{$e}
+							FROM {$s}trees{$e} AS {$s}Tree{$e}
+							WHERE {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}
+							AND {$s}Tree{$e}.{$s}area_id{$e} NOT IN (" . $forbiddenObjectsList .")
+							AND (
+								{$s}Tree{$e}.{$s}parent_id{$e} NOT IN (" . $forbiddenObjectsList .")
+								OR
+								{$s}Tree{$e}.{$s}parent_id{$e} IS NULL
+							)
+						)
+					)
+				)";
+
+				// get only objects not forbidden
+				$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} NOT IN (" . $forbiddenObjectsList .")";
+			}
+		}
+	}
 }
  
 ?>

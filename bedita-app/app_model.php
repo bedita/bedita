@@ -355,8 +355,15 @@ class BEAppModel extends AppModel {
                 unset($filter["query"]);
             }
         }
-		if(!empty($excludeIds))
+		if(!empty($excludeIds)) {
 			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
+		}
+
+		// setup filter to get only allowed objects
+		// exclude backend private objects and object that stay only in private publication/section
+		if (BACKEND_APP && $userid) {
+			$filter["allowed_to_user"] = $userid;
+		}
 
 		// get specific query elements
 		if (!$this->Behaviors->attached('BuildFilter')) {
