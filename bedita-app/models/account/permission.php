@@ -107,7 +107,7 @@ class Permission extends BEAppModel
 			return true;		
 		}
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, Configure::read("objectPermissions.write"));
+			$perms = $this->isPermissionSet($objectId, Configure::read("objectPermissions.write"));
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}
@@ -123,7 +123,7 @@ class Permission extends BEAppModel
 	 */
 	public function isAccessibleByFrontend($objectId, array &$userData, $perms=array()) {
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_with_block"),
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
@@ -133,13 +133,13 @@ class Permission extends BEAppModel
 	
 	public function frontendAccess($objectId, array &$userData) {
 		if(empty($userData)) { // not logged
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_with_block")
 			));
 			if(!empty($perms)) { // A) access denied => object has at least one perm 'frontend_access_with_block'
 				return "denied";
 			}
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
 			if(!empty($perms)) { // B) partial access => object has at least one perm 'frontend_access_without_block'
@@ -149,7 +149,7 @@ class Permission extends BEAppModel
 			return "full";
 		}
 		// logged
-		$perms = $this->isPermissionSetted($objectId, array(
+		$perms = $this->isPermissionSet($objectId, array(
 			Configure::read("objectPermissions.frontend_access_with_block"),
 			Configure::read("objectPermissions.frontend_access_without_block")
 		));
@@ -157,7 +157,7 @@ class Permission extends BEAppModel
 		if(empty($perms) || $this->checkPermissionByUser($perms,$userData)) {
 		    return "full";
 		}
-		$perms = $this->isPermissionSetted($objectId, array(
+		$perms = $this->isPermissionSet($objectId, array(
 			Configure::read("objectPermissions.frontend_access_with_block")
 		));
 		// B) access denied => perms for groups [others than user's groups], at least one frontend_access_with_block perm
@@ -200,7 +200,7 @@ class Permission extends BEAppModel
 	 * @param $flag permission
 	 * @return array of perms with users and groups or false if no permission is setted
 	 */
-	public function isPermissionSetted($objectId, $flag) {
+	public function isPermissionSet($objectId, $flag) {
 		$result = $this->find('all', array(
 				"conditions" => array("object_id" => $objectId, "flag" => $flag)
 			)

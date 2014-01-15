@@ -1213,7 +1213,7 @@ abstract class FrontendController extends AppController {
 
 			// get permissions set on this object
 			$permissionModel = ClassRegistry::init("Permission");
-			$perms = $permissionModel->isPermissionSetted($obj_id, array(
+			$perms = $permissionModel->isPermissionSet($obj_id, array(
 				Configure::read("objectPermissions.frontend_access_with_block"),
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
