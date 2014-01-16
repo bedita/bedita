@@ -53,7 +53,13 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 			<input class="bemaincommands" type="button" name="save" onClick="$('#sortModules').submit()" 
 			value="{t}save{/t}" />
 
+		{elseif $view->action == "customRelations"}
+
+			<input class="bemaincommands" type="button" name="save" onClick="$('#customRelations').submit()" 
+			value="{t}save all{/t}" />
+
 		{/if}
+
 	</div>
 	{/if}
 
