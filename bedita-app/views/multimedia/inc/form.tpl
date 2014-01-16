@@ -34,6 +34,8 @@
 
 {$view->element('form_file')}
 
+{$view->element('form_multimedia_advanced_editor')}
+
 {if !empty($object)}
 	{include file="inc/list_relationships.tpl"}
 {/if}
