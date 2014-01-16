@@ -538,6 +538,7 @@ class AppController extends Controller
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
 				$objDetail['priority'] = $obj['priority'];
+				$objDetail['params'] = !empty($obj['params']) ? $obj['params'] : array();
 				if(isset($objDetail['url']))
 					$objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
 
