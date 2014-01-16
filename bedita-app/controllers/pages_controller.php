@@ -243,8 +243,9 @@ class PagesController extends AppController {
 		$this->set("objectType", $objectType);
 		$this->set("objectTypeIds", (is_array($objectTypeIds))? $objectTypeIds : array($objectTypeIds) );
 				
-		if (!empty($this->params["form"]))
+		if (!empty($this->params["form"])) {
 			$this->render("list_contents_to_assoc");
+		}
 	} 
 	
 	/**
