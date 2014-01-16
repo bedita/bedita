@@ -389,7 +389,7 @@ Multimedia custom css
     display: inline-block;
 }
 .toolbarItem {
-    margin: 0 10px;
+    margin: 0;
     padding: 6px;
     height: 16px;
     cursor: pointer;

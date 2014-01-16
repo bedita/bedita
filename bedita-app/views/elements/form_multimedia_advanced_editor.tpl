@@ -13,10 +13,10 @@
 
             <div class="toolbarToTag">
                 <ul class="toolbarItems">
-                    <li class="toolbarItem newAreas" action="drawAreas">definisci nuove aree</li>
-                    <li class="toolbarItem newPoints" action="drawPoints">definisci nuovi tiranti</li>
-                    <li class="toolbarItem modifyAll active" action="modify">modifica aree e tiranti</li>
-                    <li class="toolbarItem viewAll" action="view">visualizza anteprima</li>
+                    <li class="toolbarItem newAreas" action="drawAreas">{t}define interactive areas{/t}</li>
+                    <li class="toolbarItem newPoints" action="drawPoints">{t}define interactive points{/t}</li>
+                    <li class="toolbarItem modifyAll active" action="modify">{t}edit interactive elements{/t}</li>
+                    <li class="toolbarItem viewAll" action="view">{t}preview interactive image{/t}</li>
                 </ul>
             </div>
 
@@ -34,44 +34,44 @@
 
                 <div class="contextMenu" id="elementsMenu">
                     <ul class="toolbarMenu">
-                        <li class="menuItem" action="none">posizione del testo<span class="subMenuIcon">></span>
+                        <li class="menuItem" action="none">{t}interactive pop-up positon{/t}<span class="subMenuIcon">></span>
                             <ul class="toolbarSubMenu">
-                                <li class="menuItem" action="switchType" rel="tooltip">relativa all'area</li>
-                                <li class="menuItem" action="switchType" rel="modal">relativa all'immagine</li>
-                                <li class="menuItem" action="switchType" rel="postit">post-it</li>
+                                <li class="menuItem" action="switchType" rel="tooltip">{t}relative to area{/t}</li>
+                                <li class="menuItem" action="switchType" rel="modal">{t}relative to image{/t}</li>
+                                <li class="menuItem" action="switchType" rel="postit">{t}post-it{/t}</li>
                             </ul>
                         </li>
-                        <li class="menuItem" action="none">stile<span class="subMenuIcon">></span>
+                        <li class="menuItem" action="none">{t}style{/t}<span class="subMenuIcon">></span>
                             <ul class="toolbarSubMenu">
-                                <li class="menuItem" action="switchStyle" rel="dotted">icona</li>
-                                <li class="menuItem" action="switchStyle" rel="bordered">area con bordo</li>
-                                <li class="menuItem" action="switchStyle" rel="filled">area piena</li>
-                                <li class="menuItem" action="switchStyle" rel="hidden">nascosto</li>
+                                <li class="menuItem" action="switchStyle" rel="dotted">{t}icon{/t}</li>
+                                <li class="menuItem" action="switchStyle" rel="bordered">{t}bordered area{/t}</li>
+                                <li class="menuItem" action="switchStyle" rel="filled">{t}filled area{/t}</li>
+                                <li class="menuItem" action="switchStyle" rel="hidden">{t}hidden area{/t}</li>
                             </ul>
                         </li>
-                        <li class="menuItem" action="none">situazione iniziale<span class="subMenuIcon">></span>
+                        <li class="menuItem" action="none">{t}initial situation{/t}<span class="subMenuIcon">></span>
                             <ul class="toolbarSubMenu">
-                                <li class="menuItem" action="switchView" rel="true">visibile</li>
-                                <li class="menuItem" action="switchView" rel="false">invisibile</li>
+                                <li class="menuItem" action="switchView" rel="true">{t}visible{/t}</li>
+                                <li class="menuItem" action="switchView" rel="false">{t}hidden{/t}</li>
                             </ul>
                         </li>
-                        <li class="menuItem" action="none">modifica<span class="subMenuIcon">></span>
+                        <li class="menuItem" action="none">{t}Modify{/t}<span class="subMenuIcon">></span>
                             <ul class="toolbarSubMenu">
-                                <li class="menuItem" action="modifyTitle">titolo</li>
-                                <li class="menuItem" action="modifyDescription">descrizione</li>
+                                <li class="menuItem" action="modifyTitle">{t}title{/t}</li>
+                                <li class="menuItem" action="modifyDescription">{t}description{/t}</li>
                             </ul>
                         </li>
-                        <li class="menuItem" action="clone">duplica</li>
-                        <li class="menuItem" action="remove">elimina</li>
+                        <li class="menuItem" action="clone">{t}Clone{/t}</li>
+                        <li class="menuItem" action="remove">{t}Delete{/t}</li>
                         <li class="menuItem break"></li>
-                        <li class="menuItem" action="lockUnlock">blocca/sblocca</li>
-                        <li class="menuItem" action="hide">nascondi</li>
-                        <li class="menuItem" action="none">disponi<span class="subMenuIcon">></span>
+                        <li class="menuItem" action="lockUnlock">{t}lock{/t}/{t}unlock{/t}</li>
+                        <li class="menuItem" action="hide">{t}hide{/t}</li>
+                        <li class="menuItem" action="none">{t}arrange layers{/t}<span class="subMenuIcon">></span>
                             <ul class="toolbarSubMenu">
-                                <li class="menuItem" action="first">porta in primo piano</li>
-                                <li class="menuItem" action="last">porta in ultimo piano</li>
-                                <li class="menuItem" action="forward">porta avanti</li>
-                                <li class="menuItem" action="backward">porta indietro</li>
+                                <li class="menuItem" action="first">{t}bring to front{/t}</li>
+                                <li class="menuItem" action="last">{t}send to back{/t}</li>
+                                <li class="menuItem" action="forward">{t}bring forward{/t}</li>
+                                <li class="menuItem" action="backward">{t}send backward{/t}</li>
                             </ul>
                         </li>
                     </ul>
@@ -79,13 +79,13 @@
 
                 <div class="contextMenu" id="mediaMenu">
                     <ul class="toolbarMenu">
-                        <li class="menuItem" action="create">nuova area</li>
-                        <li class="menuItem" action="removeAll">elimina tutti</li>
+                        <li class="menuItem" action="create">{t}new interactive area{/t}</li>
+                        <li class="menuItem" action="removeAll">{t}delete all{/t}</li>
                         <li class="menuItem break"></li>
-                        <li class="menuItem" action="lockAll">blocca tutti</li>
-                        <li class="menuItem" action="unlockAll">sblocca tutti</li>
-                        <li class="menuItem" action="hideAll">nascondi tutti</li>
-                        <li class="menuItem" action="showAll">visualizza tutti</li>
+                        <li class="menuItem" action="lockAll">{t}lock all{/t}</li>
+                        <li class="menuItem" action="unlockAll">{t}unlock all{/t}</li>
+                        <li class="menuItem" action="hideAll">{t}hide all{/t}</li>
+                        <li class="menuItem" action="showAll">{t}Show all{/t}</li>
                     </ul>
                 </div>
 
@@ -94,13 +94,12 @@
         </div>
 
 
-        <div style="margin: 20px 0 10px;"><h2>{t}Tag media{/t}</h2></div>
+        <div style="margin: 20px 0 10px;"><h2>{t}contents{/t}</h2></div>
 
         <table class="htab" style="display:none;">
-            <td rel="modifyContent">{t}modifica contenuto{/t}</td>
-            <td rel="modifyCode">{t}modifica codice{/t}</td>
+            <td rel="modifyContent"></td>
+            <td rel="modifyCode"></td>
         </table>
-
 
         <div class="htabcontainer" id="manageTags">
 
