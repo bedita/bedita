@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,17 +20,27 @@
  */
 
 /**
- * Relation object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * Object relations model
  * 
- * $Id$
  */
 class ObjectRelation extends BEAppModel
 {
-	/**
+
+    public function afterFind($results) {
+        if (!empty($results[0]["RelatedObject"])) {
+            foreach ($results as &$r) {
+                if (!empty($r["RelatedObject"]["params"])) {
+                    $params = json_decode($r["RelatedObject"]["params"], true);
+                    if(!empty($params) && is_array($params)) {
+                        $r["RelatedObject"]["params"] = $params;
+                    }
+                }
+            }
+        }
+        return $results;
+    }
+    
+    /**
 	 * Create relation between objects
 	 *
 	 * TODO: sql query, not working with cake ->save() .. why??
@@ -43,9 +53,10 @@ class ObjectRelation extends BEAppModel
 	 * @param int $priority
 	 * @return unknown, $this->query() output - false on error
 	 */
-	public function createRelation ($id, $objectId, $switch, $priority, $bidirectional = true) {
+	public function createRelation($id, $objectId, $switch, $priority, $bidirectional = true, $params = array()) {
 		// #CUSTOM QUERY - TODO: use cake, how??
-		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$id}, {$objectId}, '{$switch}', {$priority})";
+		$jParams = json_encode($params);
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
 		$res = $this->query($q);
 		if($res === false) {
 			return $res;
@@ -53,7 +64,7 @@ class ObjectRelation extends BEAppModel
 		if(!$bidirectional) {
 			return $res;
 		}
-		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$switch}', {$priority})";
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$switch}', {$priority}, '{$jParams}')";
 		return $this->query($q);
 	}
 
@@ -66,23 +77,24 @@ class ObjectRelation extends BEAppModel
 	 * @param int $priority
 	 * @param string $inverseSwitch, inverse name
 	 */
-	public function createRelationAndInverse ($id, $objectId, $switch, $inverseSwitch = null, $priority = null) {
+	public function createRelationAndInverse($id, $objectId, $switch, $inverseSwitch = null, $priority = null, $params = array()) {
 
 		if($priority == null) {
 			$rel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$id} AND switch='{$switch}'");
 			$priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
 		}
 		// #CUSTOM QUERY 
-		$q = "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$id}, {$objectId}, '{$switch}', {$priority})";
+		$jParams = json_encode($params);
+		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
 		$res = $this->query($q);
 		if($res === false) {
 			return $res;
 		}
-		
+
 		if($inverseSwitch == null) {
 			$inverseSwitch = $switch;
 		}
-		
+
 		$inverseRel = $this->query("SELECT priority FROM object_relations WHERE id={$objectId}
 									AND object_id={$id} AND switch='{$inverseSwitch}'");
 							
@@ -94,7 +106,7 @@ class ObjectRelation extends BEAppModel
 			$inversePriority = $inverseRel[0]["object_relations"]["priority"];
 		}						
 		// #CUSTOM QUERY
-		$q= "INSERT INTO object_relations (id, object_id, switch, priority) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority})" ;
+		$q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority}, '{$jParams}')" ;
 		return $this->query($q);	
 	}
 

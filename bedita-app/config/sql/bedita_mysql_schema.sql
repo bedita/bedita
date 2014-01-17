@@ -616,6 +616,7 @@ CREATE TABLE permissions (
   PRIMARY KEY(`id`),
   INDEX permissions_obj_inkdex(object_id),
   INDEX permissions_ugid_switch(`ugid`, `switch`),
+  UNIQUE permissions_obj_ug_sw_fl(`object_id`, `ugid`, `switch`,`flag`),
   FOREIGN KEY(object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE

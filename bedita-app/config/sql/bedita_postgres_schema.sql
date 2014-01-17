@@ -1250,6 +1250,9 @@ ALTER TABLE ONLY permissions
     ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
 
 
+ALTER TABLE ONLY permissions
+    ADD CONSTRAINT permissions_obj_ug_sw_fl UNIQUE (object_id, ugid, switch, flag);
+
 
 ALTER TABLE ONLY products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
