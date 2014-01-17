@@ -675,7 +675,7 @@ class AdminController extends ModulesController {
 			throw new BeditaException("'" . $relName . "' " . __("is a core relation, you can't override them", true), $formData);
 		}
 
-		if (empty($formData['left']) || $formData['right']) {
+		if (empty($formData['left']) || empty($formData['right'])) {
 			throw new BeditaException(__("source and/or target objects group can't be empty", true), $formData);
 		}
 
