@@ -661,6 +661,44 @@ class AdminController extends ModulesController {
 	public function customRelations() {
 		//
 	}
+
+	public function saveCustomRelation() {
+		//debug($this->params['form']);exit;
+		$formData = $this->params['form'];
+		if (empty($formData['name'])) {
+			throw new BeditaException(__('Relation name is mandatory', true), $formData);
+		}
+
+		$relName = $formData['name'];
+		$coreRelations = Configure::read('defaultObjRelationType');
+		if (!empty($coreRelations[$relName])) {
+			throw new BeditaException("'" . $relName . "'" . __("is a core relation, you can't override them", true), $formData);
+		}
+
+		unset($formData['name']);
+		if ($formData['left'] == 'related') {
+			$formData['left'] = array();
+		}
+		if ($formData['right'] == 'related') {
+			$formData['right'] = array();
+		}
+		$relToSave[$relName] = $formData;
+		$relToSave[$relName]['hidden'] = false;
+
+		$relations = Configure::read('objRelationType');
+		if (empty($relations)) {
+			$relations = array();
+		}
+		$relations = array_merge($relations, $relToSave);
+
+		$cfg = array('objRelationType' => $relations);
+
+		// write bedita.cfg.php
+		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
+		$besys = BeLib::getObject("BeSystem");
+		$besys->writeConfigFile($beditaCfgPath, $cfg, true);
+		$this->userInfoMessage(__("Relation saved", true));
+	}
 	
 	protected function forward($action, $esito) {
 			$REDIRECT = array(
@@ -731,6 +769,10 @@ class AdminController extends ModulesController {
 	 			"testSmtp" => 	array(
 	 							"OK"	=> "/admin/viewConfig",
 	 							"ERROR"	=> "/admin/viewConfig"
+	 						),
+	 			"saveCustomRelation" => 	array(
+	 							"OK"	=> "/admin/customRelations",
+	 							"ERROR"	=> "/admin/customRelations"
 	 						)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;

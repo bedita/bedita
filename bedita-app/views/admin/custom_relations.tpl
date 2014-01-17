@@ -21,20 +21,18 @@
 
 	<div class="tab"><h2>{t}Create a new custom relation{/t}</h2></div>
 
-	<form>
+	<form method="post" action="{$html->url('/admin/saveCustomRelation')}">
 		<table class="bordered">
 			<tr>
 				<th><label>source</label></th>
 				<td>
-					<select multiple>
-						<option>all</option>
+					<select multiple name="left[]">
+						<option value="related">all</option>
 						<optgroup label="-----------"></optgroup>
-					{foreach from=$conf->objectTypes item=type key=key}	
-						{if ( is_numeric($key) )}
-						<option>	
-							{t}{$type.model}{/t}
+					{foreach $conf->objectTypes.related.id as $id}	
+						<option value="{$conf->objectTypes[$id].name}">	
+							{t}{$conf->objectTypes[$id].name}{/t}
 						</option>
-						{/if}
 					{/foreach}
 					</select>
 
@@ -45,37 +43,35 @@
 					<label>target</label>
 				</th>
 				<td>
-					<select multiple>
-						<option>all</option>
+					<select multiple name="right[]">
+						<option value="related">all</option>
 						<optgroup label="-----------"></optgroup>
-					{foreach from=$conf->objectTypes item=type key=key}	
-						{if ( is_numeric($key) )}
-						<option>	
-							{t}{$type.model}{/t}
+					{foreach $conf->objectTypes.related.id as $id}	
+						<option value="{$conf->objectTypes[$id].name}">	
+							{t}{$conf->objectTypes[$id].name}{/t}
 						</option>
-						{/if}
 					{/foreach}
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<th><label>{t}name{/t}</label></th>
-				<td><input type="text"></td>
+				<td><input type="text" name="name"></td>
 				<th><label>{t}inverse name{/t}</label></th>
-				<td><input type="text"></td>
+				<td><input type="text" name="inverse"></td>
 				<td></td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
-				<td><input type="text" /></td>
+				<td><input type="text"  name="label"/></td>
 				<th><label>inverse label</label></th>
-				<td><input type="text"></td>
+				<td><input type="text" name="inverseLabel"></td>
 			</tr>
 			<tr>
 				<th><label>{t}params{/t}</label></th>
 				<td colspan="5">
 					<ol style="list-style:decimal;">
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="newparam" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="params[]" /></li>
 					</ol>
 				</td>
 			</tr>
@@ -88,20 +84,18 @@
 
 	<div class="tab"><h2>{$keyname}</h2></div>
 	
-	<form id="{$keyname}">		
+	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">		
 		<table class="bordered">
 			<tr>
 				<th><label>source</label></th>
 				<td>
-					<select multiple>
-						<option>all</option>
+					<select multiple name="left[]">
+						<option value="related">all</option>
 						<optgroup label="-----------"></optgroup>
-					{foreach from=$conf->objectTypes item=type key=key}	
-						{if ( is_numeric($key) )}
-						<option {if (in_array($type.name, $item.left))}selected=1{/if}>	
-							{t}{$type.model}{/t}
+					{foreach $conf->objectTypes.related.id as $id}
+						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.left)}selected=1{/if}>	
+							{t}{$conf->objectTypes[$id].name}{/t}
 						</option>
-						{/if}
 					{/foreach}
 					</select>
 
@@ -112,31 +106,29 @@
 					<label>target</label>
 				</th>
 				<td>
-					<select multiple>
-						<option>all</option>
+					<select multiple name="right[]">
+						<option value="related">all</option>
 						<optgroup label="-----------"></optgroup>
-					{foreach from=$conf->objectTypes item=type key=key}	
-						{if ( is_numeric($key) )}
-						<option {if (in_array($type.name, $item.right))}selected=1{/if}>	
-							{t}{$type.model}{/t}
+					{foreach $conf->objectTypes.related.id as $id}
+						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>	
+							{t}{$conf->objectTypes[$id].name}{/t}
 						</option>
-						{/if}
 					{/foreach}
 					</select>
 				</td>
 			</tr>
 			<tr>
 				<th><label>{t}name{/t}</label></th>
-				<td><input type="text" value="{$keyname}"></td>
+				<td><input type="text" name="name" value="{$keyname}"></td>
 				<th><label>{t}inverse name{/t}</label></th>
-				<td><input type="text" value="{$item.inverse|default:''}"></td>
+				<td><input type="text" name="inverse" value="{$item.inverse|default:''}"></td>
 				<td></td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
-				<td><input type="text" value="{$item.name|default:''}" /></td>
-				<th><label>inverse label</label></th>
-				<td><input type="text" value="{$item.inverselabel|default:''}"></td>
+				<td><input type="text" name="label" value="{$item.label|default:''}" /></td>
+				<th><label>{t}inverse label{/t}</label></th>
+				<td><input type="text" name="inverseLabel" value="{$item.inverseLabel|default:''}"></td>
 			</tr>
 			<tr>
 				<th><label>{t}params{/t}</label></th>
@@ -144,10 +136,10 @@
 					<ol style="list-style:decimal;">
 				{if !empty($item.params)}
 					{foreach name=p from=$item.params item=param key=k}
-						<li style="margin:0 0 2px 20px; float:left"><input type="text" name="param" value="{$param}" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input type="text" name="params[]" value="{$param}" /></li>
 					{/foreach}
 				{/if}
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="newparam" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="params[]" /></li>
 					</ol>
 				</td>
 			</tr>
