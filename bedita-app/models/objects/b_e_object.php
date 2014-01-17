@@ -368,14 +368,14 @@ class BEObject extends BEAppModel
 			
 			$assoc 	= $this->hasMany['RelatedObject'] ;
 			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority"  ;
+			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority, params"  ;
 
 			foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 				
 				foreach($values as $key => $val) {
 					$obj_id		= isset($val['id'])? $val['id'] : false;
 					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
-					
+					$params    = isset($val['params']) ? "'" . json_encode($val['params']) . "'" : 'NULL' ;
 					// Delete old associations
 					// #CUSTOM QUERY
 					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
@@ -392,7 +392,7 @@ class BEObject extends BEAppModel
 				
 					if (!empty($obj_id)) {
 						// #CUSTOM QUERY
-						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority})" ;
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$this->id}, {$obj_id}, '{$switch}', {$priority}, {$params})" ;
 					
 						// find priority of inverse relation
 						// #CUSTOM QUERY
@@ -410,7 +410,7 @@ class BEObject extends BEAppModel
 							$inversePriority = $inverseRel[0]["object_relations"]["priority"];
 						}						
 						// #CUSTOM QUERY
-						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .")" ;
+						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .", {$params})" ;
 					}
 					
 					$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
@@ -445,7 +445,7 @@ class BEObject extends BEAppModel
 					throw new BeditaException(__("Error modifying title and description", true), $qMod);
 			}
 		}
-		
+
 		return true ;
 	}
 	

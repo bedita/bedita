@@ -3,6 +3,11 @@
 	<td style="padding:0px; width:20px;">
 	<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
+        {if !empty($objRelated.params)}
+        {foreach $objRelated.params as $k => $v}
+            <input type="hidden" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$k}]" value="{$v|default:''}" />
+        {/foreach}
+        {/if}
 		<input type="text" class="priority" 
 				style="margin:0px; width:20px; text-align:right; background-color:transparent"
 				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 

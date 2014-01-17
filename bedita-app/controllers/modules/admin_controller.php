@@ -661,6 +661,82 @@ class AdminController extends ModulesController {
 	public function customRelations() {
 		//
 	}
+
+	public function saveCustomRelation() {
+		$formData = $this->params['form'];
+		$beLib = BeLib::getInstance();
+		$relName = $beLib->friendlyUrlString($formData['name']);
+		if (empty($relName)) {
+			throw new BeditaException(__('Relation name is mandatory', true), $formData);
+		}
+		// check name that not match core relation name
+		$coreRelations = Configure::read('defaultObjRelationType');
+		if (!empty($coreRelations[$relName])) {
+			throw new BeditaException("'" . $relName . "' " . __("is a core relation, you can't override them", true), $formData);
+		}
+
+		if (empty($formData['left']) || empty($formData['right'])) {
+			throw new BeditaException(__("source and/or target objects group can't be empty", true), $formData);
+		}
+
+		unset($formData['name']);
+		if (!empty($formData['inverse'])) {
+			$formData['inverse'] = $beLib->friendlyUrlString($formData['inverse']);
+		}
+		if (in_array('related', $formData['left'])) {
+			$formData['left'] = array();
+		}
+		if (in_array('related', $formData['right'])) {
+			$formData['right'] = array();
+		}
+		// remove empty params
+		foreach ($formData['params'] as $key => $p) {
+			$p = trim($p);
+			if (empty($p)) {
+				unset($formData['params'][$key]);
+			}
+		}
+		$formData['params'] = array_values($formData['params']);
+		$relToSave[$relName] = $formData;
+		$relToSave[$relName]['hidden'] = (empty($relToSave[$relName]['hidden']))? false : true;
+
+		$relations = Configure::read('objRelationType');
+		if (empty($relations)) {
+			$relations = array();
+		}
+		$relations = array_merge($relations, $relToSave);
+
+		$cfg = array('objRelationType' => $relations);
+
+		// write bedita.cfg.php
+		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
+		BeLib::getObject("BeSystem")->writeConfigFile($beditaCfgPath, $cfg, true);
+		// recaching configuration
+		BeLib::getObject("BeConfigure")->cacheConfig();
+		$this->userInfoMessage(__("Relation saved", true));
+	}
+
+	public function deleteCustomRelation() {
+		if (empty($this->params['form']['name'])) {
+			throw new BeditaException(__('Missing relation name to delete', true));
+		}
+
+		$name = $this->params['form']['name'];
+		$relations = Configure::read('objRelationType');
+		if (empty($relations[$name])) {
+			throw new BeditaException(__('Missing relation to delete', true));
+		}
+
+		unset($relations[$name]);
+		$cfg = array('objRelationType' => $relations);
+
+		// write bedita.cfg.php
+		$beditaCfgPath = CONFIGS . "bedita.cfg.php";
+		BeLib::getObject("BeSystem")->writeConfigFile($beditaCfgPath, $cfg, true);
+		// recaching configuration
+		BeLib::getObject("BeConfigure")->cacheConfig();
+		$this->userInfoMessage(__("Relation deleted", true));
+	}
 	
 	protected function forward($action, $esito) {
 			$REDIRECT = array(
@@ -731,6 +807,14 @@ class AdminController extends ModulesController {
 	 			"testSmtp" => 	array(
 	 							"OK"	=> "/admin/viewConfig",
 	 							"ERROR"	=> "/admin/viewConfig"
+	 						),
+	 			"saveCustomRelation" => 	array(
+	 							"OK"	=> "/admin/customRelations",
+	 							"ERROR"	=> "/admin/customRelations"
+	 						),
+	 			"deleteCustomRelation" => 	array(
+	 							"OK"	=> "/admin/customRelations",
+	 							"ERROR"	=> "/admin/customRelations"
 	 						)
 	 			);
 	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
