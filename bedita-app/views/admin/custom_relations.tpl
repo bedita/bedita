@@ -1,10 +1,19 @@
-{literal}
 <script type="text/javascript">
-    $(document).ready(function(){
+	var messageDel = "{t}Do you want to remove the relation? Relation already created between objects will be maintained.{/t}"
+	var urlDelete = "{$html->url('/admin/deleteCustomRelation')}";
+    $(document).ready(function() {
 		openAtStart("table[id]");
+
+		$("input.js-del-relation").click(function() {
+			if (!confirm(messageDel)) {
+				return false ;
+			}
+			var customId = $(this).attr("title");
+			$(this).parents("form:first").attr("action", urlDelete).submit();
+			return false;
+		});
     });
 </script>
-{/literal}
 
 {$view->element('modulesmenu')}
 
@@ -27,7 +36,7 @@
 				<th><label>source</label></th>
 				<td>
 					<select multiple name="left[]">
-						<option value="related">all</option>
+						<option value="related" selected="selected">all</option>
 						<optgroup label="-----------"></optgroup>
 					{foreach $conf->objectTypes.related.id as $id}	
 						<option value="{$conf->objectTypes[$id].name}">	
@@ -44,7 +53,7 @@
 				</th>
 				<td>
 					<select multiple name="right[]">
-						<option value="related">all</option>
+						<option value="related" selected="selected">all</option>
 						<optgroup label="-----------"></optgroup>
 					{foreach $conf->objectTypes.related.id as $id}	
 						<option value="{$conf->objectTypes[$id].name}">	
@@ -75,22 +84,28 @@
 					</ol>
 				</td>
 			</tr>
+			<tr>
+				<th><label>{t}hidden{/t}</label></th>
+				<td colspan="5">
+					<input type="checkbox" name="hidden" />
+				</td>
+			</tr>
 		</table>
 
 		<input type="submit" style="margin:10px 10px 10px 70px;" value="{t}save this new relation{/t}" />
 	</form>
 
-{foreach from=$conf->objRelationType item=item key=keyname}
+{foreach $conf->objRelationType as $keyname => $item}
 
 	<div class="tab"><h2>{$keyname}</h2></div>
 	
-	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">		
+	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">
 		<table class="bordered">
 			<tr>
 				<th><label>source</label></th>
 				<td>
 					<select multiple name="left[]">
-						<option value="related">all</option>
+						<option value="related" {if empty($item.left) && is_array($item.left)}selected=1{/if}>all</option>
 						<optgroup label="-----------"></optgroup>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.left)}selected=1{/if}>	
@@ -107,7 +122,7 @@
 				</th>
 				<td>
 					<select multiple name="right[]">
-						<option value="related">all</option>
+						<option value="related" {if empty($item.right) && is_array($item.right)}selected=1{/if}>all</option>
 						<optgroup label="-----------"></optgroup>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>	
@@ -119,9 +134,15 @@
 			</tr>
 			<tr>
 				<th><label>{t}name{/t}</label></th>
-				<td><input type="text" name="name" value="{$keyname}"></td>
+				<td>
+					{$keyname}
+					<input type="hidden" name="name" value="{$keyname}">
+				</td>
 				<th><label>{t}inverse name{/t}</label></th>
-				<td><input type="text" name="inverse" value="{$item.inverse|default:''}"></td>
+				<td>
+					{$item.inverse|default:'-'}
+					<input type="hidden" name="inverse" value="{$item.inverse|default:''}">
+				</td>
 				<td></td>
 			</tr>
 			<tr>
@@ -143,9 +164,16 @@
 					</ol>
 				</td>
 			</tr>
+			<tr>
+				<th><label>{t}hidden{/t}</label></th>
+				<td colspan="5">
+					<input type="checkbox" name="hidden" {if $item.hidden}checked="checked"{/if}/>
+				</td>
+			</tr>
 		</table>
 
 		<input type="submit" style="margin:10px 10px 10px 70px;" value="{t}save '{$keyname}' relation{/t}" />
+		<input type="button" class="js-del-relation" style="margin:10px 10px 10px 70px;" value="{t}delete{/t}" />
 	</form>
 {/foreach}
 
