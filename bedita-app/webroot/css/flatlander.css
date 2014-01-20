@@ -158,7 +158,6 @@
 
 .flatlanderEditor {
   display: block;
-  z-index: 1000;
   width: 300px; 
   margin-left: 20px;
   position: absolute;
@@ -205,7 +204,7 @@
 .flatlanderEditor button[rel="deleteArea"],
 .flatlanderEditor button[rel="deleteFocusPoint"],
 .flatlanderEditor button[rel="deleteBackground"] {
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   background: rgb(255, 163, 163);
   outline: none;
   cursor: pointer;
@@ -318,7 +317,7 @@
   padding: 0;
   list-style: none;
   background: #DBDBDB;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   border-bottom: solid 3px #999;
   overflow: hidden;
 }

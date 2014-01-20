@@ -40,6 +40,8 @@
 	{include file="inc/list_relationships.tpl"}
 {/if}
 
+{$view->element('form_assoc_objects')}
+
 {$view->element('form_tags')}
 
 {$view->element('form_geotag')}

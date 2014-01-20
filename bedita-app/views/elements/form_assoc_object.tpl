@@ -3,11 +3,6 @@
 	<td style="padding:0px; width:20px;">
 	<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
-        {if !empty($objRelated.params)}
-        {foreach $objRelated.params as $k => $v}
-            <input type="hidden" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$k}]" value="{$v|default:''}" />
-        {/foreach}
-        {/if}
 		<input type="text" class="priority" 
 				style="margin:0px; width:20px; text-align:right; background-color:transparent"
 				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 
@@ -33,6 +28,20 @@
 	<td>{$objRelated.status|default:''}</td>
 	
 	<td>{$objRelated.lang|default:''}</td>
+
+	{if !empty($conf->objRelationType[$rel]['params'][0])}
+	<td style="width: 40%"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $conf->objRelationType[$rel]['params'] as $name => $val}
+		<tr>
+			<td>
+				<label for="ata[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]">{$val}:</label>
+			</td>
+			<td>
+				<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]" value="{$objRelated.params[$val]|default:""}" />
+			</td>
+		</tr>
+	{/foreach}</table>
+	</td>
+	{/if}
 	
 	<td style="text-align:right; white-space:nowrap">
 		<a class="BEbutton golink" 

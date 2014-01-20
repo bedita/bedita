@@ -12,6 +12,7 @@ Flatlander = function (options) {
 			'error': [],
 			'loaded': [],
 			'change': [],
+			'areacreated': [],
 		},
 		dev: false,
 		logprefix: 'FLATLANDER:',
@@ -153,6 +154,7 @@ Flatlander = function (options) {
 					});
 					obj.FlatlanderEditorInstance.appendArea(areaObj);
 					obj.areas[areaObj.get('id')] = areaObj;
+					obj.trigger('areacreated', areaObj);
 					obj.numberOfElements++;
 					$(this).unbind('mouseup.betag').unbind('mousemove.betag');
 				}
@@ -231,6 +233,8 @@ Flatlander = function (options) {
 	this.start();
 	window["FlatlanderWorkspaceInstances"].push(this);
 	this.trigger('loaded');
+
+	return this;
 }
 
 FlatlanderArea = function(el, workspace) {
@@ -252,8 +256,8 @@ FlatlanderArea = function(el, workspace) {
 		y: 0,
 		width: 0,
 		height: 0,
-		hotspotX: null,
-		hotspotY: null,
+		hotspotX: 50,
+		hotspotY: 50,
 		deleted: false,
 		direction: 'auto',
 	}
@@ -287,8 +291,8 @@ FlatlanderArea = function(el, workspace) {
 			var pWidth = 100*width/cwidth;
 			var pHeight = 100*height/cheight;
 			obj.set({
-				width: pWidth+'%',
-				height: pHeight+'%',
+				width: pWidth,
+				height: pHeight,
 			});
 		},
 		onDblClickArea: function() {
@@ -308,8 +312,8 @@ FlatlanderArea = function(el, workspace) {
 			var pLeft = 100*left/width;
 			var pTop = 100*top/height;
 			obj.set({
-				hotspotX: pLeft+'%',
-				hotspotY: pTop+'%',
+				hotspotX: pLeft,
+				hotspotY: pTop,
 			});
 		}
 	}
@@ -330,18 +334,18 @@ FlatlanderArea = function(el, workspace) {
 
 		var bkg = obj.get('background');
 		this.$el.css({
-			left: obj.get('x'),
-			top: obj.get('y'),
-			width: obj.get('width'),
-			height: obj.get('height'),
+			left: obj.get('x')+'%',
+			top: obj.get('y')+'%',
+			width: obj.get('width')+'%',
+			height: obj.get('height')+'%',
 			'z-index': obj.get('priority'),
 			'background-image': (bkg=='none') ? 'none' : 'url('+bkg+')'
 		})
 
 		if (this.hasFocusPoint()) {
 			this.$hotspot.css({
-				left: obj.get('hotspotX'),
-				top: obj.get('hotspotY')
+				left: obj.get('hotspotX')+'%',
+				top: obj.get('hotspotY')+'%'
 			})
 		}
 
@@ -377,10 +381,10 @@ FlatlanderArea = function(el, workspace) {
 
 	this.addFocusPoint = function() {
 		var obj = this;
-		obj.set({
-			hotspotX: '50%',
-			hotspotY: '50%',
-		});
+		this.$hotspot.css({
+			left: '50%',
+			top: '50%'
+		})
 		this.$el.append(this.$hotspot);
 		this.$hotspot.draggable({ containment: 'parent', stop: function() { obj.behaviors.onDragHotspotStop() } });
 	}
@@ -426,6 +430,7 @@ FlatlanderArea = function(el, workspace) {
 		obj.behaviors.onMousedown();
 	});
 
+	this.addFocusPoint();
 	this.onLoad();
 }
 
@@ -443,7 +448,16 @@ FlatlanderEditor = function(el, workspace) {
 
 	this.altPressed = false;
 
-	this.el.innerHTML = '<div class="fl-editorContainer"><ul class="fl-layers"></ul><button rel="deleteArea">Delete Area</button><button rel="addFocusPoint">Add a Focus Point</button><button rel="deleteFocusPoint">Delete Focus Point</button><hr /><label for="number">Number:</label><textarea rows="1" type="text" name="number" /></textarea><label for="title">Title:</label><textarea name="title" rows="1"></textarea><label for="background">Background-image:</label><form id="inputFileForm"><input type="file" name="background" /></form><button rel="deleteBackground">Remove background image</button><label for="style">Style:</label><select name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select><label for="behaviour">behaviour:</label><select name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select><label for="direction">Popup direction:</label><form name="fl-radioform"><div><input type="radio" name="direction" value="nw"></input></div><div><input type="radio" name="direction" value="n"></input></div><div><input type="radio" name="direction" value="ne"></input></div><div><input type="radio" name="direction" value="w"></input></div><div>Dir</div><div><input type="radio" name="direction" value="e"></input></div><div><input type="radio" name="direction" value="sw"></input></div><div><input type="radio" name="direction" value="s"></input></div><div><input type="radio" name="direction" value="se"></input></div></form><label for="body">Content:</label><textarea rows="8" name="body"></textarea></div>';
+	this.inputs = null;
+	this.inputsCallbacks = {};
+
+	var html = '';
+	html += '<div class="fl-editorContainer">';
+	html += '<ul class="fl-layers"></ul><button rel="deleteArea">Delete Area</button><hr />';
+	//html += '<label for="number">Number:</label><textarea rows="1" type="text" name="number" /></textarea><label for="title">Title:</label><textarea name="title" rows="1"></textarea><label for="background">Background-image:</label><form id="inputFileForm"><input type="file" name="background" /></form><button rel="deleteBackground">Remove background image</button><label for="style">Style:</label><select name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select><label for="behaviour">Behaviour:</label><select name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select><label for="direction">Popup direction:</label><select name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select><label for="body">Content:</label><textarea rows="8" name="body"></textarea>';
+	html += '</div>';
+
+	this.el.innerHTML = html;
 
 	this.toggle = function() {
 		if (this.isOpen) this.close()
@@ -452,12 +466,12 @@ FlatlanderEditor = function(el, workspace) {
 
 	this.open = function() {
 		this.isOpen = true;
-		this.$el.slideDown().addClass('open');
+		this.$el.addClass('open');
 	}
 
 	this.close = function() {
 		this.isOpen = false;
-		this.$el.slideUp().removeClass('open');
+		this.$el.removeClass('open');
 	}
 
 	this.appendArea = function(area) {
@@ -486,7 +500,7 @@ FlatlanderEditor = function(el, workspace) {
 	}
 
 	this.emptyForms = function() {
-		this.$el.find('[name="direction"]').attr('checked', false);
+		
 	}
 
 	this.fillForms = function(area) {
@@ -501,14 +515,6 @@ FlatlanderEditor = function(el, workspace) {
 
 		var attrs = area.attr;
 
-		if (area.hasFocusPoint()) {
-			eC.find('[rel="addFocusPoint"]').hide();
-			eC.find('[rel="deleteFocusPoint"]').show();
-		} else {
-			eC.find('[rel="addFocusPoint"]').show();
-			eC.find('[rel="deleteFocusPoint"]').hide();
-		}
-
 		if (area.hasBackground()) {
 			eC.find('[rel="deleteBackground"]').show();
 		} else {
@@ -520,8 +526,7 @@ FlatlanderEditor = function(el, workspace) {
 		eC.find('[name="title"]').val( attrs.title );
 		eC.find('[name="body"]').val( attrs.body );
 		eC.find('[name="background"]').val(null);
-		eC.find('[name="direction"]').attr('checked', false);
-		eC.find('[name="direction"][value="'+(area.get('direction') || "")+'"]').attr('checked', true);
+		eC.find('[name="direction"]').val(area.get('direction'));
 		eC.find('[name="link"]').val( attrs.link );
 		eC.find('[name="style"]').val( attrs.style );
 		eC.find('[name="behaviour"]').val( attrs.behaviour );
@@ -531,32 +536,13 @@ FlatlanderEditor = function(el, workspace) {
 	this.bindEvents = function() {
 		var obj = this;
 
-		this.$el.find('.fl-closeEditor span').bind('click', function() {
-			obj.close();
-		});
-
-		this.$el.find('[rel="deleteArea"]').bind('click', function() {
+		this.$el.find('[rel="deleteArea"]').bind('click', function(ev) {
+			ev.stopPropagation();
+			ev.preventDefault();
 			if (confirm('Do you want remove this area ('+obj.currentArea.get('id')+')?')) {
 				obj.currentArea.delete();				
 			}
-		});
-
-		this.$el.find('[rel="addFocusPoint"]').bind('click', function() {
-			obj.currentArea.addFocusPoint();
-			obj.$el.find('[rel="addFocusPoint"]').hide();
-			obj.$el.find('[rel="deleteFocusPoint"]').show();
-		});
-
-		this.$el.find('[rel="deleteFocusPoint"]').bind('click', function() {
-			obj.currentArea.removeFocusPoint();
-			obj.$el.find('[rel="addFocusPoint"]').show();
-			obj.$el.find('[rel="deleteFocusPoint"]').hide();
-		});
-
-		this.$el.find('[rel="deleteBackground"]').bind('click', function() {
-			obj.currentArea.removeBackground();
-			obj.$el.find('#inputFileForm')[0].reset();
-			obj.$el.find('[rel="deleteBackground"]').hide();
+			return false;
 		});
 
 		this.$el.find('input[type="file"]').bind('change', function(ev) {
@@ -575,20 +561,6 @@ FlatlanderEditor = function(el, workspace) {
 			}
 		});
 
-		this.$el.find('select, input[type="radio"]').bind('change keyup', function(ev) {
-			var $t = $(this);
-			var name = $t.attr('name');
-			var value = $t.val();
-			obj.currentArea.set(name, value);
-		})
-
-		this.$el.find('textarea').bind('change keyup', function(ev) {
-			var $t = $(this);
-			var name = $t.attr('name');
-			var value = $t.val();
-			obj.currentArea.set(name, value, true);
-		})
-
 		$(window).bind('keydown', function(ev) {
 			var bind = [37,38,39,40,46,107,109];
 			if (ev.keyCode == 18) obj.altPressed = true;
@@ -605,18 +577,18 @@ FlatlanderEditor = function(el, workspace) {
 						}
 						if (obj.altPressed && obj.currentArea.get('hotspotX')!=null) {
 							var v = parseFloat(obj.currentArea.$hotspot.css('left'));
-							var p = 100*v/obj.currentArea.$el.width() + add;
+							var p = v*obj.currentArea.$el.width()/100 + add;
 							p = p*100/obj.currentArea.$el.width();
 							p = Math.max(0, p);
 							p = Math.min(100, p);
-							obj.currentArea.set('hotspotX',p+'%');
+							obj.currentArea.set('hotspotX',p);
 						} else {
 							var v = parseFloat(obj.currentArea.$el.css('left'));
 							var p = v*obj.workspace.$workspace.width()/100 + add;
 							p = p*100/obj.workspace.$workspace.width();
 							p = Math.max(0, p);
 							p = Math.min(100-parseFloat(obj.currentArea.el.style.width), p);
-							obj.currentArea.set('x',p+'%');
+							obj.currentArea.set('x',p);
 						}
 						break;
 					case 38:
@@ -627,18 +599,18 @@ FlatlanderEditor = function(el, workspace) {
 						}
 						if (obj.altPressed && obj.currentArea.get('hotspotX')!=null) {
 							var v = parseFloat(obj.currentArea.$hotspot.css('top'));
-							var p = 100*v/obj.currentArea.$el.height() + add;
+							var p = v*obj.currentArea.$el.height()/100 + add;
 							p = p*100/obj.currentArea.$el.height();
 							p = Math.max(0, p);
 							p = Math.min(100, p);
-							obj.currentArea.set('hotspotY',p+'%');
+							obj.currentArea.set('hotspotY',p);
 						} else {
 							var v = parseFloat(obj.currentArea.$el.css('top'));
 							var p = v*obj.workspace.$workspace.height()/100 + add;
 							p = p*100/obj.workspace.$workspace.height();
 							p = Math.max(0, p);
 							p = Math.min(100-parseFloat(obj.currentArea.el.style.height), p);
-							obj.currentArea.set('y',p+'%');
+							obj.currentArea.set('y',p);
 						}
 						break;
 					case 46:
@@ -673,6 +645,50 @@ FlatlanderEditor = function(el, workspace) {
 		});
 	}
 
+	this.onInputChange = function(el) {
+		var $t = $(el);
+		var name = $t.attr('name');
+		var value = $t.val();
+		obj.currentArea.set(name, value, true);
+	}
+
+	this.appendInput = function(prop) {
+		var obj = this;
+		var $el = $(prop.el);
+
+		if (obj.inputs==null) {
+			$el.attr('data-flatlander-inputid', 0);
+			obj.inputs = $el;
+		} else {
+			$el.attr('data-flatlander-inputid', obj.inputs.length);
+			obj.inputs = obj.inputs.add($el);
+		}
+
+		obj.inputsCallbacks[$el.attr('data-flatlander-inputid')] = {
+			onClick: [obj.onInputChange, prop.onClick || function() {}],
+			onChange: [obj.onInputChange, prop.onChange || function() {}],
+		}
+		
+		var name = $el.attr('name');
+		var label = '<label for="'+name+'">'+name+':</label>';
+		obj.$el.find('.fl-editorContainer').append(label);
+		obj.$el.find('.fl-editorContainer').append($el);
+
+		obj.inputs.unbind('click.flatlandereditor change.flatlandereditor keyup.flatlandereditor').bind('click.flatlandereditor', function() {
+			var el = this;
+			var id = $(this).attr('data-flatlander-inputid');
+			for (var i=0; i<obj.inputsCallbacks[id]['onClick'].length; i++) {
+				obj.inputsCallbacks[id]['onClick'][i](el);
+			}
+		}).bind('change.flatlandereditor keyup.flatlandereditor', function() {
+			var el = this;
+			var id = $(this).attr('data-flatlander-inputid');
+			for (var i=0; i<obj.inputsCallbacks[id]['onChange'].length; i++) {
+				obj.inputsCallbacks[id]['onChange'][i](el);
+			}
+		})
+	}
+
 	this.bindEvents();
 	/*this.$el.draggable({
 		handle: '.fl-closeEditor'
@@ -684,9 +700,3 @@ FlatlanderEditor = function(el, workspace) {
 		}
 	});
 }
-
-$(window).load(function() {
-	$('.js-flatlander').each(function() {
-		new Flatlander({ el: this, dev: false });
-	});
-});

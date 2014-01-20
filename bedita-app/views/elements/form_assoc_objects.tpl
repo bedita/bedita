@@ -107,7 +107,7 @@ $(document).ready(function() {
 });
 
 $(function() {
-    $('.disableSelection').disableTextSelect();
+   //$('.disableSelection').disableTextSelect();
 });
 
 //-->
@@ -139,6 +139,7 @@ $(function() {
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
 			<tbody class="disableSelection">
 			{if !empty($relObjects.$rel)}
+				{dump var=$relObjects}
 				{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
 				{$view->element('form_assoc_object', $params)}
 			{else}
