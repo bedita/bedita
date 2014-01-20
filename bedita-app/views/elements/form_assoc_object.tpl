@@ -29,11 +29,17 @@
 	
 	<td>{$objRelated.lang|default:''}</td>
 
-	{if !empty($conf->objRelationType[$rel]['params'][0])}
-	<td style="width: 40%"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $conf->objRelationType[$rel]['params'] as $name => $val}
+	{if !empty($conf->defaultObjRelationType[$rel])}
+		{assign var=relationParamsArray value=$conf->defaultObjRelationType[$rel]['params']}
+	{else}
+		{assign var=relationParamsArray value=$conf->objRelationType[$rel]['params']}
+	{/if}
+
+	{if !empty($relationParamsArray[0])}
+	<td style="width: 40%"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $relationParamsArray as $name => $val}
 		<tr>
 			<td>
-				<label for="ata[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]">{$val}:</label>
+				<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]">{$val}:</label>
 			</td>
 			<td>
 				<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]" value="{$objRelated.params[$val]|default:""}" />
