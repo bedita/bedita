@@ -763,11 +763,10 @@ abstract class ModulesController extends AppController {
 			array("dir", "boolean", &$dir)
 		) ;
 
-
 		// get selected section
 		$sectionSel = null;
 		$pubSel = null;
-		if(isset($id)) {
+		if (isset($id)) {
 			$section = $this->loadModelByType("section");
 			$section->containLevel("minimum");
 			$sectionSel = $section->findById($id);
@@ -775,18 +774,24 @@ abstract class ModulesController extends AppController {
 		}
 
 		$filter["count_permission"] = true;
-		$filter['count_relations'] = array("attach", "seealso", "download");
 
-		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
+		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
 		$treeModel = ClassRegistry::init("Tree");
+		$relToCount =  array("attach", "seealso", "download");
+		$objectRelation = ClassRegistry::init('ObjectRelation');
 		$items = array();
-		foreach($objects['items'] as $obj) {
-			$ubiquity = 0;
-			$parents_id = $treeModel->getParents($obj['id']) ;
-			if(is_array($parents_id)) {
-				$ubiquity = count($parents_id);
+		foreach ($objects['items'] as $obj) {
+			$obj['ubiquity'] = $treeModel->find('count', array(
+				'conditions' => array('id' => $obj['id'])
+			));
+
+			// get relations count
+			foreach ($relToCount as $rel) {
+				$obj['num_of_relations_' . $rel] = $objectRelation->find('count', array(
+					'conditions' => array('id' => $obj['id'], 'switch' => $rel)
+				));
 			}
-			$obj['ubiquity'] = $ubiquity;
+
 			$items[] = $obj;
 		}
 		$this->params['toolbar'] = &$objects['toolbar'] ;
