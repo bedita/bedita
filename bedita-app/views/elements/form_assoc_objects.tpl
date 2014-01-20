@@ -129,17 +129,14 @@ $(function() {
 	</tr>
 	</table>
 
-
 	<div class="htabcontainer" id="relationContainer">
 	{foreach $availabeRelations as $rel => $relLabel}
 	<div class="htabcontent" id="relationType_{$rel}">
-
 		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
 		
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
 			<tbody class="disableSelection">
 			{if !empty($relObjects.$rel)}
-				{dump var=$relObjects}
 				{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
 				{$view->element('form_assoc_object', $params)}
 			{else}
