@@ -9,7 +9,7 @@ $(window).load(function() {
         number: '<textarea rows="1" type="text" data-name="number" /></textarea>',
         title: '<textarea data-name="title" readonly rows="1"></textarea>',
         link: '<textarea data-name="link" readonly style="cursor: pointer" rows="1"></textarea>',
-        //backgroundup: '<input type="file" name="background-upload" />',
+        backgroundup: '<input type="file" data-name="background-upload" />',
         background: '<input type="hidden" data-name="background" />',
         style: '<select data-name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select>',
         behaviour: '<select data-name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
@@ -34,7 +34,7 @@ $(window).load(function() {
         }
     }
 
-    FlatLanderEditor.FlatlanderEditorInstance.$el.find('[name="background-upload"]').bind('change', function() {
+    FlatLanderEditor.FlatlanderEditorInstance.$el.find('[data-name="background-upload"]').bind('change', function() {
         if (this.files.length==0) {
             $('.activeArea').attr('data-backgroundimage','').css('background-image','none');
         } else {
