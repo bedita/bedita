@@ -5,23 +5,33 @@ $(window).load(function() {
         el: $('#advanced-multimedia-editor img')[0]
     });
 
-    var editorInputs = [
-        '<textarea rows="1" type="text" data-name="number" /></textarea>',
-        '<textarea data-name="title" rows="1"></textarea>',
-        '<textarea data-name="link" rows="1"></textarea>',
-        //'<input type="file" name="background-upload" />',
-        '<input type="hidden" data-name="background" />',
-        '<select data-name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select>',
-        '<select data-name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
-        '<select data-name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select>',
-        //'<textarea rows="8" name="body"></textarea>'
-    ];
+    var editorInputs = {
+        number: '<textarea rows="1" type="text" data-name="number" /></textarea>',
+        title: '<textarea data-name="title" readonly rows="1"></textarea>',
+        link: '<textarea data-name="link" readonly style="cursor: pointer" rows="1"></textarea>',
+        //backgroundup: '<input type="file" name="background-upload" />',
+        background: '<input type="hidden" data-name="background" />',
+        style: '<select data-name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select>',
+        behaviour: '<select data-name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
+        direction: '<select data-name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select>',
+        //body: '<textarea rows="8" name="body"></textarea>'
+    };
 
-    for (var i=0; i<editorInputs.length; i++) {
-        var o = editorInputs[i];
-        FlatLanderEditor.FlatlanderEditorInstance.appendInput({
-            el: $(o)[0],
-        });
+    for (var k in editorInputs) {
+        var o = editorInputs[k];
+        if (k=="link") {
+            FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+                el: $(o)[0],
+                onClick: function(el) {
+                    var id = $(el).val();
+                    window.open( window.location.origin+BEDITA.base+'view/'+id, '_blank');
+                }
+            });
+        } else {
+            FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+                el: $(o)[0],
+            });
+        }
     }
 
     FlatLanderEditor.FlatlanderEditorInstance.$el.find('[name="background-upload"]').bind('change', function() {
