@@ -98,33 +98,33 @@
 }
 
 @keyframes selected {
-  0%    { border-color: rgba(71, 71, 71, 0.2); }
-  50%   { border-color: rgba(71, 71, 71, 0.1); }
-  100%  { border-color: rgba(71, 71, 71, 0.2); }
+  0%    { border-color: rgba(240, 255, 163, 0.2); }
+  50%   { border-color: rgba(240, 255, 163, 0.1); }
+  100%  { border-color: rgba(240, 255, 163, 0.2); }
 }
 
 @-webkit-keyframes selected {
-  0%    { border-color: rgba(71, 71, 71, 0.2); }
-  50%   { border-color: rgba(71, 71, 71, 0.1); }
-  100%  { border-color: rgba(71, 71, 71, 0.2); }
+  0%    { border-color: rgba(240, 255, 163, 0.2); }
+  50%   { border-color: rgba(240, 255, 163, 0.1); }
+  100%  { border-color: rgba(240, 255, 163, 0.2); }
 }
 
 @-moz-keyframes selected {
-  0%    { border-color: rgba(71, 71, 71, 0.2); }
-  50%   { border-color: rgba(71, 71, 71, 0.1); }
-  100%  { border-color: rgba(71, 71, 71, 0.2); }
+  0%    { border-color: rgba(240, 255, 163, 0.2); }
+  50%   { border-color: rgba(240, 255, 163, 0.1); }
+  100%  { border-color: rgba(240, 255, 163, 0.2); }
 }
 
 @-o-keyframes selected {
-  0%    { border-color: rgba(71, 71, 71, 0.2); }
-  50%   { border-color: rgba(71, 71, 71, 0.1); }
-  100%  { border-color: rgba(71, 71, 71, 0.2); }
+  0%    { border-color: rgba(240, 255, 163, 0.2); }
+  50%   { border-color: rgba(240, 255, 163, 0.1); }
+  100%  { border-color: rgba(240, 255, 163, 0.2); }
 }
 
 @-ms-keyframes selected {
-  0%    { border-color: rgba(71, 71, 71, 0.2); }
-  50%   { border-color: rgba(71, 71, 71, 0.1); }
-  100%  { border-color: rgba(71, 71, 71, 0.2); }
+  0%    { border-color: rgba(240, 255, 163, 0.2); }
+  50%   { border-color: rgba(240, 255, 163, 0.1); }
+  100%  { border-color: rgba(240, 255, 163, 0.2); }
 }
 
 .flatlanderEditable .flatlanderArea .hotspot_point {
@@ -141,17 +141,27 @@
 }
 
 .flatlanderEditable .flatlanderArea:before {
-  background: white;
+  background: rgba(255,255,255,0.5);
   padding: 0 10px;
   border-radius: 2px;
-  content: attr(id);
+  content: attr(data-title);
   font-family: Helvetica, Arial, Verdana, sans-serif;
   display: inline-block;
-  text-align: center;
+  text-align: left;
   position: absolute;
   left: 10px;
+  right:10px;
   top: 10px;
   line-height: 20px;
+  white-space: nowrap;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.flatlanderEditable .flatlanderArea:hover:before {
+  width: auto;
+  white-space: normal;
 }
 
 /*** editor ***/

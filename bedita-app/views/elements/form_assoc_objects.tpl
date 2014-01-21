@@ -20,9 +20,11 @@ function addObjToAssoc(url, postdata) {
 	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
-		$("#relationType_" + postdata.relation + " table:first").find("tr:first").parent().children('tr:last').after(html);
+		var tr = $(html);
+		$("#relationType_" + postdata.relation + " table:first").find("tr:first").parent().children('tr:last').after(tr);
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$("#relationContainer table").find("tbody").sortable("refresh");
+		$(document).trigger('relation:added', tr);
 		relatedRefreshButton();
 	});
 }

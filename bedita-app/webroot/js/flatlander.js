@@ -107,8 +107,8 @@ Flatlander = function (options) {
 			coX = obj.support.toPerc(oX - offLeft, obj.$workspace.width());
 			coY = obj.support.toPerc(oY - offTop, obj.$workspace.height());
 			var div = $('<div></div>');
-			div.data('x',coX);
-			div.data('y',coY);
+			div.data('left',coX);
+			div.data('top',coY);
 			div.addClass(obj.classList.area);
 			div.css({
 				left: coX+'%',
@@ -140,17 +140,17 @@ Flatlander = function (options) {
 				});
 			});
 			$(document).bind('mouseup.betag', function(ev) {
-				var n = obj.numberOfElements;
+				var n = obj.numberOfElements+1;
 				areaOrigin = false;
 				if (divAppended) {
 					var areaObj = new FlatlanderArea(div, obj);
 					areaObj.set({
 						id: 'area_'+n,
 						priority: n,
-						x: div[0].style.left,
-						y: div[0].style.top,
-						width: div[0].style.width,
-						height: div[0].style.height,
+						left: parseFloat(div[0].style.left),
+						top: parseFloat(div[0].style.top),
+						width: parseFloat(div[0].style.width),
+						height: parseFloat(div[0].style.height),
 					});
 					obj.FlatlanderEditorInstance.appendArea(areaObj);
 					obj.areas[areaObj.get('id')] = areaObj;
@@ -208,7 +208,7 @@ Flatlander = function (options) {
 	this.sortFromArray = function(matrix) {
 		var obj = this;
 		for (var k in matrix) {
-			obj.areas[matrix[k]].setZindex(k);
+			obj.areas[matrix[k]].set('priority', k);
 		}
 	}
 
@@ -244,7 +244,7 @@ FlatlanderArea = function(el, workspace) {
 
 	this.attr = {
 		id: 'area_',
-		priority: 0,
+		priority: 1,
 		title: '',
 		body: '',
 		link: '',
@@ -252,15 +252,21 @@ FlatlanderArea = function(el, workspace) {
 		style: 'fill',
 		behaviour: 'popup',
 		background: 'none',
-		x: 0,
-		y: 0,
-		width: 0,
-		height: 0,
+		left: 0,
+		top: 0,
+		width: 10,
+		height: 10,
 		hotspotX: 50,
 		hotspotY: 50,
 		deleted: false,
 		direction: 'auto',
 	}
+
+	this.callbacks = {
+		'change': [],
+		'created': [],
+		'deleted': []
+	};
 
 	this.hotspotHtml = '<div class="hotspot_point"></div>';
 	this.$hotspot = $(this.hotspotHtml);
@@ -278,8 +284,8 @@ FlatlanderArea = function(el, workspace) {
 			var pLeft = 100*left/width;
 			var pTop = 100*top/height;
 			obj.set({
-				x: pLeft+'%',
-				y: pTop+'%',
+				left: pLeft,
+				top: pTop,
 			});
 		},
 		onResizeAreaStop: function() {
@@ -331,39 +337,27 @@ FlatlanderArea = function(el, workspace) {
 		}
 
 		this.$el.attr('id', obj.get('id'));
+		this.$el.attr('data-title', obj.get('title')+' - '+obj.get('link')+' - '+obj.get('id'));
 
 		var bkg = obj.get('background');
 		this.$el.css({
-			left: obj.get('x')+'%',
-			top: obj.get('y')+'%',
+			left: obj.get('left')+'%',
+			top: obj.get('top')+'%',
 			width: obj.get('width')+'%',
 			height: obj.get('height')+'%',
-			'z-index': obj.get('priority'),
+			'z-index': 1000 - parseInt(obj.get('priority')+''),
 			'background-image': (bkg=='none') ? 'none' : 'url('+bkg+')'
 		})
 
-		if (this.hasFocusPoint()) {
-			this.$hotspot.css({
-				left: obj.get('hotspotX')+'%',
-				top: obj.get('hotspotY')+'%'
-			})
-		}
-
-		obj.workspace.trigger('change', this);
-
-		if (preventUpload) return;
 		this.onLoad();
+		if (preventUpload) return;
+
+		obj.trigger('change');
+		obj.workspace.trigger('change', this);
 	}
 
 	this.get = function(k) {
 		return this.attr[k];
-	}
-
-	this.setZindex = function(n) {
-		this.attr.priority = n;
-		this.$el.css({
-			'z-index': obj.get('priority'),
-		})
 	}
 
 	this.onLoad = function() {
@@ -373,7 +367,9 @@ FlatlanderArea = function(el, workspace) {
 	}
 
 	this.delete = function() {
+		if (this.get('deleted') == true) return;
 		this.set('deleted', true);
+		this.trigger('deleted', this);
 		this.$el.remove();
 		delete obj.workspace.areas[this.id];
 		obj.workspace.FlatlanderEditorInstance.removeArea(obj);
@@ -414,6 +410,29 @@ FlatlanderArea = function(el, workspace) {
 		return this.get('background')!='none';
 	}
 
+	this.bind = function(evtName, callback) {
+		var obj = this;
+		var clls = obj.callbacks[evtName];
+		if (clls) {
+			if (obj.workspace.support.isFunction(callback)) clls.push(callback);
+		}
+	}
+
+	this.trigger = function(evt, attrs) {
+		var obj = this;
+		var clls = obj.callbacks[evt];
+		if (clls) {
+			for (var i = 0; i<clls.length; i++) {
+				var cll = clls[i];
+				if (obj.workspace.support.isFunction(cll)) cll(attrs);
+			}
+		}
+	}
+
+	this.toJSON = function() {
+		return this.attr;
+	}
+
 	this.$el.draggable({ 
 		containment: '.'+obj.workspace.classList.workspace, 
 		stop: function() {
@@ -432,6 +451,8 @@ FlatlanderArea = function(el, workspace) {
 
 	this.addFocusPoint();
 	this.onLoad();
+	this.trigger('created');
+	this.trigger('change');
 }
 
 FlatlanderEditor = function(el, workspace) {
@@ -475,8 +496,8 @@ FlatlanderEditor = function(el, workspace) {
 	}
 
 	this.appendArea = function(area) {
-		var newLi = $('<li data-id="'+area.get('id')+'" data-z="'+area.get('priority')+'">'+area.get('id')+'</li>');
-		this.$el.find('.fl-layers').prepend(newLi);
+		var newLi = $('<li data-id="'+area.get('id')+'" data-z="'+area.get('priority')+'">'+area.get('title')+'</li>');
+		this.$el.find('.fl-layers').append(newLi);
 		newLi.bind('click', function() {
 			var id = $(this).attr('data-id');
 			obj.workspace.areas[id].set();
@@ -494,7 +515,7 @@ FlatlanderEditor = function(el, workspace) {
 		var reorder = {};
 		var length = this.$el.find('.fl-layers li').length;
 		this.$el.find('.fl-layers li').each(function(index){
-			reorder[length-index-1] = $(this).attr('data-id');
+			reorder[index+1] = $(this).attr('data-id');
 		})
 		obj.workspace.sortFromArray(reorder);
 	}
@@ -504,6 +525,7 @@ FlatlanderEditor = function(el, workspace) {
 	}
 
 	this.fillForms = function(area) {
+		var obj = this;
 		var eC = this.$el;
 		var $area = area.$el;
 
@@ -515,22 +537,43 @@ FlatlanderEditor = function(el, workspace) {
 
 		var attrs = area.attr;
 
-		if (area.hasBackground()) {
-			eC.find('[rel="deleteBackground"]').show();
-		} else {
-			eC.find('[rel="deleteBackground"]').hide();
+		var list = eC.find('.fl-layers li');
+		list.removeClass('fl-active');
+		list.filter('[data-id="'+attrs.id+'"]').addClass('fl-active');
+		list.each(function() {
+			var $t = $(this);
+			var id = $t.attr('data-id');
+			var a = obj.workspace.areas[id];
+			if (a) {
+				var title = a.get('title')+' - '+a.get('link')+' - '+a.get('id');
+				if (title.length>50) {
+					title = title.substring(0,45) + '...';
+				}
+				$t.text(title);
+			}
+		})
+		
+		var listparent = list.parent();
+		var order = [];
+		for (var k in obj.workspace.areas) {
+			var a = obj.workspace.areas[k];
+			order[parseInt(a.get('priority'))] = a;
+		}
+		for (var i=1; i<=order.length; i++) {
+			var a = order[i];
+			if (a) {
+				var el = list.filter('[data-id="'+a.get('id')+'"]');
+				if (length>0) listparent.append( el );
+			}
 		}
 
-		eC.find('.fl-layers li').removeClass('fl-active');
-		eC.find('.fl-layers li[data-id="'+attrs.id+'"]').addClass('fl-active');
-		eC.find('[name="title"]').val( attrs.title );
-		eC.find('[name="body"]').val( attrs.body );
-		eC.find('[name="background"]').val(null);
-		eC.find('[name="direction"]').val(area.get('direction'));
-		eC.find('[name="link"]').val( attrs.link );
-		eC.find('[name="style"]').val( attrs.style );
-		eC.find('[name="behaviour"]').val( attrs.behaviour );
-		eC.find('[name="number"]').val( attrs.number );
+		for (var k in attrs) {
+			try {
+				eC.find('[data-name="'+k+'"]').val( attrs[k] );
+			} catch(e){
+				if (obj.workspace.options.dev) console.log('cannot set property',k);
+			}
+		}
 	}
 
 	this.bindEvents = function() {
@@ -545,7 +588,7 @@ FlatlanderEditor = function(el, workspace) {
 			return false;
 		});
 
-		this.$el.find('input[type="file"]').bind('change', function(ev) {
+		/*this.$el.find('input[type="file"]').bind('change', function(ev) {
 			if (this.files.length==0) {
 				$('.activeArea').attr('data-backgroundimage','').css('background-image','none');
 			} else {
@@ -559,7 +602,7 @@ FlatlanderEditor = function(el, workspace) {
 				};
 				reader.readAsDataURL(img);
 			}
-		});
+		});*/
 
 		$(window).bind('keydown', function(ev) {
 			var bind = [37,38,39,40,46,107,109];
@@ -588,7 +631,7 @@ FlatlanderEditor = function(el, workspace) {
 							p = p*100/obj.workspace.$workspace.width();
 							p = Math.max(0, p);
 							p = Math.min(100-parseFloat(obj.currentArea.el.style.width), p);
-							obj.currentArea.set('x',p);
+							obj.currentArea.set('left',p);
 						}
 						break;
 					case 38:
@@ -610,7 +653,7 @@ FlatlanderEditor = function(el, workspace) {
 							p = p*100/obj.workspace.$workspace.height();
 							p = Math.max(0, p);
 							p = Math.min(100-parseFloat(obj.currentArea.el.style.height), p);
-							obj.currentArea.set('y',p);
+							obj.currentArea.set('top',p);
 						}
 						break;
 					case 46:
@@ -627,13 +670,13 @@ FlatlanderEditor = function(el, workspace) {
 							var p = v*obj.workspace.$workspace.height()/100 + add;
 							p = p*100/obj.workspace.$workspace.height();
 							p = Math.min(100-parseFloat(obj.currentArea.el.style.top), p);
-							obj.currentArea.set('height',p+'%');
+							obj.currentArea.set('height',p);
 						} else {
 							var v = parseFloat(obj.currentArea.$el.css('width'));
 							var p = v*obj.workspace.$workspace.width()/100 + add;
 							p = p*100/obj.workspace.$workspace.width();
 							p = Math.max(0, p);
-							obj.currentArea.set('width',p+'%');
+							obj.currentArea.set('width',p);
 						}
 						break;
 				}
@@ -647,9 +690,9 @@ FlatlanderEditor = function(el, workspace) {
 
 	this.onInputChange = function(el) {
 		var $t = $(el);
-		var name = $t.attr('name');
+		var name = $t.attr('data-name');
 		var value = $t.val();
-		obj.currentArea.set(name, value, true);
+		obj.currentArea.set(name, value);
 	}
 
 	this.appendInput = function(prop) {
@@ -669,9 +712,12 @@ FlatlanderEditor = function(el, workspace) {
 			onChange: [obj.onInputChange, prop.onChange || function() {}],
 		}
 		
-		var name = $el.attr('name');
-		var label = '<label for="'+name+'">'+name+':</label>';
-		obj.$el.find('.fl-editorContainer').append(label);
+		if ($el.attr('type')!='hidden') {
+			var name = $el.attr('data-name');
+			var label = '<label for="'+name+'">'+name+':</label>';
+			obj.$el.find('.fl-editorContainer').append(label);
+		}
+		
 		obj.$el.find('.fl-editorContainer').append($el);
 
 		obj.inputs.unbind('click.flatlandereditor change.flatlandereditor keyup.flatlandereditor').bind('click.flatlandereditor', function() {
@@ -695,7 +741,7 @@ FlatlanderEditor = function(el, workspace) {
 	}).resizable();*/
 	this.$el.find('.fl-layers').sortable({
 		update: function(ev) {
-			obj.sort()
+			obj.sort();
 			$(ev.toElement).click();
 		}
 	});

@@ -89,7 +89,7 @@ jQuery.fn.extend({
 			
 			$(this).find("input[name*='[priority]']:enabled").each(function(index)
 			{
-				$(this).val(priority--)								// update priority
+				$(this).val(priority--).trigger('change')							// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');
 			});
 			
@@ -98,7 +98,7 @@ jQuery.fn.extend({
 			
 			$(this).find("input[name*='[priority]']:enabled").each(function(index)
 			{
-				$(this).val(priority++)								// update priority
+				$(this).val(priority++).trigger('change')			// update priority
 				.hide().fadeIn(100).fadeOut(100).fadeIn('fast');	// pulse effect
 			});
 		}

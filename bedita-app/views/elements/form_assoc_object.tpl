@@ -1,5 +1,5 @@
 {foreach from=$objsRelated item="objRelated" name="assocForeach"}
-<tr class="obj {$objRelated.status|default:''}">
+<tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
 	<td style="padding:0px; width:20px;">
 	<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
@@ -13,9 +13,7 @@
 		<span title="{$objRelated.ObjectType.name}" class="listrecent {$objRelated.ObjectType.module_name|default:''}" style="margin:0px">&nbsp;</span>
 	</td>
 	
-	<td>
-		{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}
-	</td>
+	<td class="assoc_obj_title">{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</td>
 
 {if $rel == "download"}
 
@@ -36,7 +34,7 @@
 	{/if}
 
 	{if !empty($relationParamsArray[0])}
-	<td style="width: 40%"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $relationParamsArray as $name => $val}
+	<td style="width: 40%" class="relparams"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $relationParamsArray as $name => $val}
 		<tr>
 			<td>
 				<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]">{$val}:</label>
