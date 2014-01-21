@@ -345,9 +345,14 @@ FlatlanderArea = function(el, workspace) {
 			top: obj.get('top')+'%',
 			width: obj.get('width')+'%',
 			height: obj.get('height')+'%',
-			'z-index': 1000 - parseInt(obj.get('priority')+''),
+			'z-index': 100 - parseInt(obj.get('priority')+''),
 			'background-image': (bkg=='none') ? 'none' : 'url('+bkg+')'
 		})
+
+		this.$hotspot.css({
+			left: obj.get('hotspotX')+'%',
+			top: obj.get('hotspotY')+'%',
+		});
 
 		this.onLoad();
 		if (preventUpload) return;
