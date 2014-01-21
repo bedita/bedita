@@ -663,7 +663,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function saveCustomRelation() {
-		$formData = $this->params['form'];
+		$formData = $this->data;
 		$beLib = BeLib::getInstance();
 		$relName = $beLib->friendlyUrlString($formData['name']);
 		if (empty($relName)) {
@@ -717,11 +717,11 @@ class AdminController extends ModulesController {
 	}
 
 	public function deleteCustomRelation() {
-		if (empty($this->params['form']['name'])) {
+		if (empty($this->data['name'])) {
 			throw new BeditaException(__('Missing relation name to delete', true));
 		}
 
-		$name = $this->params['form']['name'];
+		$name = $this->data['name'];
 		$relations = Configure::read('objRelationType');
 		if (empty($relations[$name])) {
 			throw new BeditaException(__('Missing relation to delete', true));
