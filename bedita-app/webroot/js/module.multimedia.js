@@ -149,7 +149,7 @@ $(window).load(function() {
             $(args).find('.assoc_obj_title').click(onRelationInputClick);
 
             $(args).find('[name="remove"]').click(function() {
-                var id = $el.attr('data-flatlanderarea-id');
+                var id = $(this).closest('.obj').attr('data-flatlanderarea-id');
                 FlatLanderEditor.areas[id].delete();
             })
         });
