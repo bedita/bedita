@@ -475,6 +475,7 @@ jQuery.fn.BEmodal = function(){
 	$("#modalheader .close").click(function () {
 		$("#modal").hide();
 		$("#modaloverlay").hide();
+		$(document).trigger('operation:cancel');
 	});
 /*
 	$("#modalheader .full").click(function () {

@@ -9,13 +9,12 @@ $(window).load(function() {
         number: '<textarea rows="1" type="text" data-name="number" /></textarea>',
         title: '<textarea data-name="title" readonly rows="1"></textarea>',
         link: '<textarea data-name="link" readonly style="cursor: pointer" rows="1"></textarea>',
-        backgroundup: '<input type="file" data-name="background-upload" />',
-        background: '<input type="hidden" data-name="background" />',
         style: '<select data-name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select>',
-        behaviour: '<select data-name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
+        behaviour: '<select data-name="behaviour"><option>skin</option><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
         direction: '<select data-name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select>',
-        //body: '<textarea rows="8" name="body"></textarea>'
     };
+
+    var newArea;
 
     for (var k in editorInputs) {
         var o = editorInputs[k];
@@ -120,6 +119,8 @@ $(window).load(function() {
 
         areaObj.set('title', $el.find('.assoc_obj_title').html());
         areaObj.set('link', $el.attr('data-beid'));
+        areaObj.set('background', $el.find('.rel_uri').val());
+
         FlatLanderEditor.FlatlanderEditorInstance.appendArea(areaObj);
         FlatLanderEditor.areas[areaObj.get('id')] = areaObj;
         FlatLanderEditor.trigger('areacreated', areaObj);
@@ -139,6 +140,26 @@ $(window).load(function() {
         })
     }).find('.assoc_obj_title').click(onRelationInputClick);
 
+    $(document).bind('relation:added', function(ev, args) {
+        var area = newArea;
+        console.log(area);
+        $(args).attr('data-flatlanderarea-id', area.get('id')).find('.relparams input').bind('change.fl keyup.fl', onRelationInputChange);
+        area.set('title', $(args).find('.assoc_obj_title').html());
+        area.set('link', $(args).attr('data-beid'));
+        area.set('background', $(args).find('.rel_uri').val());
+        area.trigger('change');
+
+        $(args).find('.assoc_obj_title').click(onRelationInputClick);
+
+        $(args).find('[name="remove"]').click(function() {
+            var id = $(this).closest('.obj').attr('data-flatlanderarea-id');
+            FlatLanderEditor.areas[id].delete();
+        })
+        
+        newArea = null;
+        $(document).unbind('operation:cancel');
+    });
+
     FlatLanderEditor.bind('areacreated', function(area) {
         $('[rel="relationType_mediamap"]').click();
 
@@ -150,19 +171,14 @@ $(window).load(function() {
             onAreaDelete(area);
         });
 
-        $(document).bind('relation:added', function(ev, args) {
-            $(args).attr('data-flatlanderarea-id', id).find('.relparams input').bind('change.fl keyup.fl', onRelationInputChange);
-            area.set('title', $(args).find('.assoc_obj_title').html());
-            area.set('link', $(args).attr('data-beid'));
-            area.trigger('change');
+        newArea = area;
 
-            $(args).find('.assoc_obj_title').click(onRelationInputClick);
-
-            $(args).find('[name="remove"]').click(function() {
-                var id = $(this).closest('.obj').attr('data-flatlanderarea-id');
-                FlatLanderEditor.areas[id].delete();
-            })
+        $(document).bind('operation:cancel', function() {
+            area.delete();
+            $(document).unbind('operation:cancel');
         });
+
+
 
         $('#relationType_mediamap .modalbutton').BEmodal();
     });

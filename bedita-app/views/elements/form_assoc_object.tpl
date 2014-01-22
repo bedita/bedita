@@ -1,7 +1,11 @@
 {foreach from=$objsRelated item="objRelated" name="assocForeach"}
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
 	<td style="padding:0px; width:20px;">
-	<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
+		<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
+		{if !empty($objRelated.uri) && $objRelated.ObjectType.name=="image"}
+		{assign_associative var="bkgparams" URLonly=true}
+		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{/if}
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
 		<input type="text" class="priority" 
 				style="margin:0px; width:20px; text-align:right; background-color:transparent"

@@ -367,7 +367,7 @@ $config["defaultObjRelationType"] = array(
 		'inverse' => 'mediamapped',
 		'label' => 'mediamap',
 		'inverseLabel' => 'mediamapped_by',
-		'params' => array('number','top','left','width','height','hotspotX','hotspotY','style','direction','behaviour','background'),
+		'params' => array('number','top','left','width','height','hotspotX','hotspotY','style','direction','behaviour'),
 		'hidden' => false,
   ),
 );

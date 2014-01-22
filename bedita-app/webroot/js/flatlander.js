@@ -254,8 +254,8 @@ FlatlanderArea = function(el, workspace) {
 		background: 'none',
 		left: 0,
 		top: 0,
-		width: 10,
-		height: 10,
+		width: 0,
+		height: 0,
 		hotspotX: 50,
 		hotspotY: 50,
 		deleted: false,
@@ -346,7 +346,7 @@ FlatlanderArea = function(el, workspace) {
 			width: obj.get('width')+'%',
 			height: obj.get('height')+'%',
 			'z-index': 100 - parseInt(obj.get('priority')+''),
-			'background-image': (bkg=='none') ? 'none' : 'url('+bkg+')'
+			'background-image': (bkg=='none' || obj.get('behaviour')!='skin') ? 'none' : 'url('+bkg+')'
 		})
 
 		this.$hotspot.css({
@@ -501,6 +501,7 @@ FlatlanderEditor = function(el, workspace) {
 	}
 
 	this.appendArea = function(area) {
+		this.currentArea = area;
 		var newLi = $('<li data-id="'+area.get('id')+'" data-z="'+area.get('priority')+'">'+area.get('title')+'</li>');
 		this.$el.find('.fl-layers').append(newLi);
 		newLi.bind('click', function() {
