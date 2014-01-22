@@ -16,13 +16,26 @@
 			target.val(content).css("backgroundColor",bgColor).parents("fieldset").prev(".tab").BEtabsopen();
 			
 			if (target.hasClass("mce") || target.hasClass("mceSimple")) {
-				var tinyMceInstance = tinyMCE.get("data["+fieldid+"]");
-				if (tinyMceInstance == undefined) {
-					tinyMceInstance = tinyMCE.get(fieldid);
-				}
-				if (tinyMceInstance != undefined) {
-					tinyMceInstance.setContent(content);
-					tinyMceInstance.getBody().style.backgroundColor = bgColor;
+				if (window['tinyMCE']) {
+					var tinyMceInstance = tinyMCE.get("data["+fieldid+"]");
+					if (tinyMceInstance == undefined) {
+						tinyMceInstance = tinyMCE.get(fieldid);
+					}
+					if (tinyMceInstance != undefined) {
+						tinyMceInstance.setContent(content);
+						tinyMceInstance.getBody().style.backgroundColor = bgColor;
+					}
+				} else {
+					if (window['CKEDITOR']) {
+						var ckeditorInstance = CKEDITOR.instances["data["+fieldid+"]"];
+						if (ckeditorInstance == undefined) {
+							ckeditorInstance = CKEDITOR.instances[fieldid];
+						}
+						if (ckeditorInstance != undefined) {
+							ckeditorInstance.setData(content);
+							$(ckeditorInstance.container.$).find('iframe')[0].contentDocument.body.style.backgroundColor = bgColor;
+						}
+					}
 				}
 			}
 			
