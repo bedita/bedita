@@ -230,6 +230,16 @@ class PagesController extends AppController {
 
 		foreach ($objects["items"] as $key => $obj) {
 			$objects["items"][$key]["moduleName"] = ClassRegistry::init("ObjectType")->field("module_name", array("id" => $obj["object_type_id"]));
+
+			// get image and video details
+			if ($obj['object_type_id'] == Configure::read("objectTypes.image.id") || $obj['object_type_id'] == Configure::read("objectTypes.video.id")) {
+				$mediaModelName = Configure::read("objectTypes." . $obj['object_type_id'] . ".model");
+				$mediaData = ClassRegistry::init($mediaModelName)->find('first', array(
+					'conditions' => array('Stream.id' => $obj['id']),
+					'contain' => array('Stream')
+				));
+				$objects["items"][$key] = array_merge($objects["items"][$key], $mediaData);
+			}
 		}
 		$this->set("objectsToAssoc", $objects);
 		
