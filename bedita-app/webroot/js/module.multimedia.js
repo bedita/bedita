@@ -142,7 +142,14 @@ $(window).load(function() {
 
     $(document).bind('relation:added', function(ev, args) {
         var area = newArea;
-        console.log(area);
+        if (area == null) {
+            var div = $('<div>');
+            div.addClass(FlatLanderEditor.classList.area);
+            FlatLanderEditor.$workspace.append(div);
+            area = new FlatlanderArea(div, FlatLanderEditor);
+            FlatLanderEditor.FlatlanderEditorInstance.appendArea(area);
+        }
+
         $(args).attr('data-flatlanderarea-id', area.get('id')).find('.relparams input').bind('change.fl keyup.fl', onRelationInputChange);
         area.set('title', $(args).find('.assoc_obj_title').html());
         area.set('link', $(args).attr('data-beid'));
@@ -155,7 +162,7 @@ $(window).load(function() {
             var id = $(this).closest('.obj').attr('data-flatlanderarea-id');
             FlatLanderEditor.areas[id].delete();
         })
-        
+
         newArea = null;
         $(document).unbind('operation:cancel');
     });
