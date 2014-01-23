@@ -9,6 +9,8 @@
 
 <div class="mainfull">
 
+	{$view->element("filters")}
+
 	{$view->element('list_objects')}
 	
 </div>

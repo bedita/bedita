@@ -327,10 +327,10 @@ UL.modules {
 .smallist .on {
 	font-weight: normal;
 }
-.smallist .off {
+.smallist .off, .smallist .off * {
 	color: gray;
 }
-.smallist .draft {
+.smallist .draft, .smallist .draft * {
 	color: gray;
 }
 
