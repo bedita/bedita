@@ -5,6 +5,11 @@
 		{if !empty($objRelated.uri) && $objRelated.ObjectType.name=="image"}
 		{assign_associative var="bkgparams" URLonly=true}
 		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{else}
+			{if !empty($objRelated.thumbnail) && $objRelated.ObjectType.name=="video"}
+			{assign_associative var="bkgparams" URLonly=true}
+			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+			{/if}
 		{/if}
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
 		<input type="text" class="priority" 
