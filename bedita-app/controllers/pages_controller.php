@@ -286,22 +286,28 @@ class PagesController extends AppController {
 		foreach ($objects as $key => $obj) {
 			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id) {
 				$obj["BEObject"]["module_name"] = $obj["ObjectType"]["module_name"];
-				// for media file get mime_type and size too
-				if ($this->params["form"]["relation"] == "download") {
+
+				// get image and video details
+				if ($obj["BEObject"]['object_type_id'] == Configure::read("objectTypes.image.id") || $obj["BEObject"]['object_type_id'] == Configure::read("objectTypes.video.id")) {
+					$mediaModelName = Configure::read("objectTypes." . $obj["BEObject"]['object_type_id'] . ".model");
+					$mediaData = ClassRegistry::init($mediaModelName)->find('first', array(
+						'conditions' => array('Stream.id' => $obj["BEObject"]['id']),
+						'contain' => array('Stream')
+					));
+					$obj["BEObject"] = array_merge($obj["BEObject"], $mediaData);
+				// for other media file get streams.*
+				} elseif (in_array($obj["BEObject"]['object_type_id'], Configure::read("objectTypes.multimedia.id"))) {
 					$streamFields = ClassRegistry::init("Stream")->find("first", array(
 							"conditions" => array(
 								"id" => $obj["BEObject"]["id"]
-							),
-							"fields" => array("mime_type", "file_size")
+							)
 						)
 					);
-					$obj["BEObject"]["mime_type"] = $streamFields["Stream"]["mime_type"];
-					$obj["BEObject"]["file_size"] = $streamFields["Stream"]["file_size"];
+					$obj["BEObject"] = array_merge($obj["BEObject"], $streamFields["Stream"]);
 				}
 				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
 			}
 		}
-		
 		$this->set("objsRelated", $objRelated);
 		$this->set("rel", $this->params["form"]["relation"]);
 		$tplname = (empty($tplname))? "elements/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
