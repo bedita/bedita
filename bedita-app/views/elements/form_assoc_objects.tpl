@@ -117,7 +117,7 @@ $(function() {
 
 
 {$view->set("object_type_id",$object_type_id)}
-<div class="tab"><h2>{t}Relationships{/t}</h2></div>
+<div class="tab"><h2>{t}Relations{/t}</h2></div>
 
 <fieldset id="frmAssocObject">
 	
