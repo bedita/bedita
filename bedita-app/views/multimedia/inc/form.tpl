@@ -38,9 +38,8 @@
 
 {if !empty($object)}
 	{include file="inc/list_relationships.tpl"}
+    {$view->element('form_assoc_objects', ['object_type_id' => $object.object_type_id])}
 {/if}
-
-{$view->element('form_assoc_objects')}
 
 {$view->element('form_tags')}
 
