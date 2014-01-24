@@ -37,9 +37,9 @@
 	<td>{$objRelated.lang|default:''}</td>
 
 	{if !empty($conf->defaultObjRelationType[$rel])}
-		{$relationParamsArray = $conf->defaultObjRelationType[$rel].params}
+		{$relationParamsArray = $conf->defaultObjRelationType[$rel].params|default:[]}
 	{else}
-		{$relationParamsArray = $conf->objRelationType[$rel].params}
+		{$relationParamsArray = $conf->objRelationType[$rel].params|default:[]}
 	{/if}
 
 	{if !empty($relationParamsArray[0])}
