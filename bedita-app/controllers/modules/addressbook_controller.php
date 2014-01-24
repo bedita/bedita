@@ -61,14 +61,18 @@ class AddressbookController extends ModulesController {
 	function save() {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
-		$kind = ($this->data['company']==0) ? 'person' : 'cmp';
+        $conf  = Configure::getInstance() ;
+        $kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
 			if(!empty($this->data['person']['name']) || !empty($this->data['person']['surname'])) {
 				$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
 			}
 			$this->data['birthdate'] = $this->data['person']['birthdate'];
-			$this->data['deathdate'] = $this->data['person']['deathdate'];
-		} else {
+            if(!in_array("deathdate", $conf->hideFields['addressbook'])){
+                $this->data['deathdate'] = $this->data['person']['deathdate'];
+            }
+
+        } else {
 			if(!empty($this->data['cmp']['company_name'])) {
 				$this->data['title'] = $this->data['cmp']['company_name'];
 			}
