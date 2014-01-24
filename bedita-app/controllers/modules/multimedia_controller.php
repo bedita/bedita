@@ -56,28 +56,29 @@ class MultimediaController extends ModulesController {
 			$conf->objectTypes['application']["id"]
 		);
 		$filter["mediatype"] = 1;
+		$filter["Stream.*"] = "";
 		
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$filter["count_permission"] = true;
-		$filter['count_relations'] = array("attach", "seealso", "download");
-		$treeModel = ClassRegistry::init("Tree");
-
+		
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 		
-	 	foreach($bedita_items['items'] as $key => $value) {
-	 		$model = $this->loadModelByObjectTypeId($value['object_type_id']);
-			$model->containLevel("minimum");
-			if(($details = $model->findById($value['id']))) {
-				$details['filename'] = substr($details['uri'],strripos($details['uri'],"/")+1);
-				$bedita_items['items'][$key] = array_merge($bedita_items['items'][$key], $details);	
+		$relToCount =  array("attach", "seealso", "download");
+		$objectRelation = ClassRegistry::init('ObjectRelation');
+		$treeModel = ClassRegistry::init("Tree");
+	 	foreach ($bedita_items['items'] as $key => $value) {
+			$bedita_items['items'][$key]['ubiquity'] = $treeModel->find('count', array(
+				'conditions' => array('id' => $value['id'])
+			));
+
+			// get relations count
+			foreach ($relToCount as $rel) {
+				$bedita_items['items'][$key]['num_of_relations_' . $rel] = $objectRelation->find('count', array(
+					'conditions' => array('id' => $value['id'], 'switch' => $rel)
+				));
 			}
-			$ubiquity = 0;
-			$parents_id = $treeModel->getParents($value['id']) ;
-			if(is_array($parents_id)) {
-				$ubiquity = count($parents_id);
-			}
-			$bedita_items['items'][$key]['ubiquity'] = $ubiquity;
 		}
+
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
 		// template data
 		$this->set('tree',$this->BeTree->getSectionsTree());

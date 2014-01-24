@@ -167,6 +167,13 @@ $(document).ready(function(){
 	
 {/if}
 
+{if !empty($parents.1) or ($object.relations.attach|@count > 1)}
+
+		$(".secondacolonna .modules").after("<div class='subwarning ubiquity'>{t}Ubiquitous object{/t}</div>");
+	
+{/if}
+
+
 {*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}
 		//$("#delBEObject").attr("disabled",true);
 		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
@@ -364,4 +371,3 @@ function updateEditors() {
 
 
 </script>
-

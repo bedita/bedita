@@ -42,7 +42,7 @@ $(document).ready(function() {
 				<span class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>
 			<td style="text-align:center">{$objToAss.status}</td>
-			<td style="text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
+			<td style="white-space:nowrap; text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
 			<td style="text-align:center">{$objToAss.lang}</td>
 			<td style="text-align:center">{$objToAss.id}</td>
 		</tr>

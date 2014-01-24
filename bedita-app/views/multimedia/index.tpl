@@ -75,6 +75,8 @@ function resetError() {
 
 <div class="mainfull">
 
+	{$view->element("filters")}
+	
 	{include file="./inc/list_streams.tpl" streamTitle="multimedia"}
 	
 	{bedev}

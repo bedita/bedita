@@ -42,7 +42,7 @@
 			<tr>
 				<th style="vertical-align:top"><label>source</label></th>
 				<td style="vertical-align:top">
-					<select multiple name="left[]">
+					<select multiple name="data[left][]">
 						<option value="related" selected="selected">all</option>
 					{foreach $conf->objectTypes.related.id as $id}	
 						<option value="{$conf->objectTypes[$id].name}">	
@@ -55,7 +55,7 @@
 					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
 				</th>
 				<td style="vertical-align:top">
-					<select multiple name="right[]">
+					<select multiple name="data[right][]">
 						<option value="related" selected="selected">all</option>
 					{foreach $conf->objectTypes.related.id as $id}	
 						<option value="{$conf->objectTypes[$id].name}">	
@@ -67,29 +67,29 @@
 			</tr>
 			<tr>
 				<th><label>{t}name{/t}</label></th>
-				<td><input type="text" name="name"></td>
+				<td><input type="text" name="data[name]"></td>
 				<th><label>{t}inverse name{/t}</label></th>
-				<td><input type="text" name="inverse"></td>
+				<td><input type="text" name="data[inverse]"></td>
 				<td></td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
-				<td><input type="text"  name="label"/></td>
+				<td><input type="text"  name="data[label]"/></td>
 				<th><label>inverse label</label></th>
-				<td><input type="text" name="inverseLabel"></td>
+				<td><input type="text" name="data[inverseLabel]"></td>
 			</tr>
 			<tr>
 				<th><label>{t}params{/t}</label></th>
 				<td colspan="5">
 					<ol style="list-style:decimal;">
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="params[]" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" /></li>
 					</ol>
 				</td>
 			</tr>
 			<tr>
 				<th><label>{t}hidden{/t}</label></th>
 				<td colspan="5">
-					<input type="checkbox" name="hidden" />
+					<input type="checkbox" name="data[hidden]" />
 				</td>
 			</tr>
 		</table>
@@ -106,7 +106,7 @@
 			<tr>
 				<th style="vertical-align:top"><label>source</label></th>
 				<td style="vertical-align:top">
-					<select multiple name="left[]">
+					<select multiple name="data[left][]">
 						<option value="related" {if empty($item.left) && is_array($item.left)}selected=1{/if}>all</option>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.left)}selected=1{/if}>	
@@ -119,7 +119,7 @@
 					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
 				</th>
 				<td style="vertical-align:top">
-					<select multiple name="right[]">
+					<select multiple name="data[right][]">
 						<option value="related" {if empty($item.right) && is_array($item.right)}selected=1{/if}>all</option>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>	
@@ -133,20 +133,20 @@
 				<th><label>{t}name{/t}</label></th>
 				<td>
 					{$keyname}
-					<input type="hidden" name="name" value="{$keyname}">
+					<input type="hidden" name="data[name]" value="{$keyname}">
 				</td>
 				<th><label>{t}inverse name{/t}</label></th>
 				<td>
 					{$item.inverse|default:'-'}
-					<input type="hidden" name="inverse" value="{$item.inverse|default:''}">
+					<input type="hidden" name="data[inverse]" value="{$item.inverse|default:''}">
 				</td>
 				<td></td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
-				<td><input type="text" name="label" value="{$item.label|default:''}" /></td>
+				<td><input type="text" name="data[label]" value="{$item.label|default:''}" /></td>
 				<th><label>{t}inverse label{/t}</label></th>
-				<td><input type="text" name="inverseLabel" value="{$item.inverseLabel|default:''}"></td>
+				<td><input type="text" name="data[inverseLabel]" value="{$item.inverseLabel|default:''}"></td>
 			</tr>
 			<tr>
 				<th><label>{t}params{/t}</label></th>
@@ -154,17 +154,17 @@
 					<ol style="list-style:decimal;">
 				{if !empty($item.params)}
 					{foreach name=p from=$item.params item=param key=k}
-						<li style="margin:0 0 2px 20px; float:left"><input type="text" name="params[]" value="{$param}" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input type="text" name="data[params][]" value="{$param}" /></li>
 					{/foreach}
 				{/if}
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="params[]" /></li>
+						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" /></li>
 					</ol>
 				</td>
 			</tr>
 			<tr>
 				<th><label>{t}hidden{/t}</label></th>
 				<td colspan="5">
-					<input type="checkbox" name="hidden" {if $item.hidden}checked="checked"{/if}/>
+					<input type="checkbox" name="data[hidden]" {if $item.hidden}checked="checked"{/if}/>
 				</td>
 			</tr>
 		</table>
