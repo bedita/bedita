@@ -240,6 +240,12 @@ class AppController extends Controller
 
 		}
 
+		// set up for view and BEDITA js object
+		if (BACKEND_APP) {
+			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
+			$this->set('allObjectsRelations', $allRelations);
+		}
+
 	}
 
 	private function redirUrl($url) {

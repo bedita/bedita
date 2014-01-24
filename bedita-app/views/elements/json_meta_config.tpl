@@ -16,4 +16,8 @@
 		'action': '{$view->action|default:"index"}'
 	};
 	
+	{if !empty($allObjectsRelations)}
+		BEDITA.relations = {$allObjectsRelations|json_encode};
+	{/if}
+
 </script>

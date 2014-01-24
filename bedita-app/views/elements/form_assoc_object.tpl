@@ -37,22 +37,40 @@
 	<td>{$objRelated.lang|default:''}</td>
 
 	{if !empty($conf->defaultObjRelationType[$rel])}
-		{assign var=relationParamsArray value=$conf->defaultObjRelationType[$rel]['params']}
+		{$relationParamsArray = $conf->defaultObjRelationType[$rel].params}
 	{else}
-		{assign var=relationParamsArray value=$conf->objRelationType[$rel]['params']}
+		{$relationParamsArray = $conf->objRelationType[$rel].params}
 	{/if}
 
 	{if !empty($relationParamsArray[0])}
-	<td style="width: 40%" class="relparams"><input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" /><br /><table style="display: none">{foreach $relationParamsArray as $name => $val}
-		<tr>
-			<td>
-				<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]">{$val}:</label>
-			</td>
-			<td>
-				<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$val}]" value="{$objRelated.params[$val]|default:""}" />
-			</td>
-		</tr>
-	{/foreach}</table>
+	<td style="width: 40%" class="relparams">
+		<input class="BEbutton" type="button" value="show/hide params" onclick="$(event.target).parent().find('table').toggle()" />
+		<br />
+		<table style="display: none">
+		{foreach $relationParamsArray as $paramKey => $paramVal}
+			{if is_array($paramVal)}
+				{$paramName = $paramKey}
+			{else}
+				{$paramName = $paramVal}
+			{/if}
+			<tr>
+				<td>
+					<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">{$paramName}</label>
+				</td>
+				<td>
+					{if is_array($paramVal)}
+						<select name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">
+							{foreach $paramVal as $paramOpt}
+								<option value="{$paramOpt}" {if $objRelated.params[$paramName]|default:"" == $paramOpt}selected{/if}>{$paramOpt}</option>
+							{/foreach}
+						</select>
+					{else}
+						<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
+					{/if}
+				</td>
+			</tr>
+		{/foreach}
+		</table>
 	</td>
 	{/if}
 	
