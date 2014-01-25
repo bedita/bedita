@@ -6,31 +6,35 @@ $(window).load(function() {
             el: $('#advanced-multimedia-editor img')[0]
         });
 
-        var editorInputs = {
-            number: '<textarea rows="1" type="text" data-name="number" /></textarea>',
-            title: '<textarea data-name="title" readonly rows="1"></textarea>',
-            link: '<textarea data-name="link" readonly style="cursor: pointer" rows="1"></textarea>',
-            style: '<select data-name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select>',
-            behaviour: '<select data-name="behaviour"><option>skin</option><option>popup</option><option>popup & zoom</option><option>modal</option></select>',
-            direction: '<select data-name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select>',
-        };
-
         var newArea;
 
-        for (var k in editorInputs) {
-            var o = editorInputs[k];
-            if (k=="link") {
-                FlatLanderEditor.FlatlanderEditorInstance.appendInput({
-                    el: $(o)[0],
-                    onClick: function(el) {
-                        var id = $(el).val();
-                        window.open( window.location.origin+BEDITA.base+'view/'+id, '_blank');
-                    }
-                });
-            } else {
-                FlatLanderEditor.FlatlanderEditorInstance.appendInput({
-                    el: $(o)[0],
-                });
+        FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+            type: 'textarea',
+            name: 'title',
+            editable: false,
+        });
+
+        FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+            type: 'textarea',
+            name: 'link',
+            editable: false,
+        });
+
+        if (BEDITA && BEDITA.relations && BEDITA.relations.mediamap && BEDITA.relations.mediamap.params) {
+            for (var k in BEDITA.relations.mediamap.params) {
+                var r = BEDITA.relations.mediamap.params[k];
+                if (r instanceof Array) {
+                    FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+                        type: 'select',
+                        name: k,
+                        options: r
+                    });
+                } else {
+                    FlatLanderEditor.FlatlanderEditorInstance.appendInput({
+                        type: 'textarea',
+                        name: r
+                    });
+                }
             }
         }
 
@@ -68,7 +72,7 @@ $(window).load(function() {
             var tr = $('[data-flatlanderarea-id="'+a.id+'"]');
             for (var k in a) {
                 if (k!='id') {
-                    var f = tr.find('input').filter(function() {
+                    var f = tr.find('input, select').filter(function() {
                         var name = this.getAttribute('name') || '';
                         return name.indexOf('['+k+']')!=-1;
                     });
@@ -107,10 +111,9 @@ $(window).load(function() {
             var areaObj = new FlatlanderArea(div, FlatLanderEditor);
 
             areaObj.set({
-                id: 'area_'+$el.find('.priority').val(),
                 priority: $el.find('.priority').val(),
             });
-            $el.find('.relparams table input').each(function() {
+            $el.find('.relparams table input, .relparams table select').each(function() {
                 var val = $(this).val();
                 var label = $(this).attr('name').split('[').pop().replace(']','');
                 areaObj.set(label, val);
@@ -123,9 +126,7 @@ $(window).load(function() {
             areaObj.set('background', $el.find('.rel_uri').val());
 
             FlatLanderEditor.FlatlanderEditorInstance.appendArea(areaObj);
-            FlatLanderEditor.areas[areaObj.get('id')] = areaObj;
             FlatLanderEditor.trigger('areacreated', areaObj);
-            FlatLanderEditor.numberOfElements++;
             
             areaObj.bind('change', function() {
                 onAreaChange(areaObj);
@@ -148,6 +149,7 @@ $(window).load(function() {
                 div.addClass(FlatLanderEditor.classList.area);
                 FlatLanderEditor.$workspace.append(div);
                 area = new FlatlanderArea(div, FlatLanderEditor);
+
                 FlatLanderEditor.FlatlanderEditorInstance.appendArea(area);
             }
 
@@ -155,6 +157,11 @@ $(window).load(function() {
             area.set('title', $(args).find('.assoc_obj_title').html());
             area.set('link', $(args).attr('data-beid'));
             area.set('background', $(args).find('.rel_uri').val());
+
+            area.bind('change', function() {
+                onAreaChange(area);
+            });
+
             area.trigger('change');
 
             $(args).find('.assoc_obj_title').click(onRelationInputClick);
