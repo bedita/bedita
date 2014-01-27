@@ -123,15 +123,15 @@ $(function() {
 	
 	<table class="htab">
 	<tr>
-	{foreach $availabeRelations as $rel => $relLabel}
-		<td rel="relationType_{$rel}">{t}{$relLabel}{/t}</td>
+	{foreach from=$availabeRelations item="rel"}
+		<td rel="relationType_{$rel}">{t}{$rel}{/t}</td>
 	{/foreach}
 	</tr>
 	</table>
 
 
 	<div class="htabcontainer" id="relationContainer">
-	{foreach $availabeRelations as $rel => $relLabel}
+	{foreach from=$availabeRelations item="rel"}
 	<div class="htabcontent" id="relationType_{$rel}">
 
 		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
