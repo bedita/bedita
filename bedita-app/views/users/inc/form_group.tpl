@@ -64,23 +64,24 @@ table.group_objects TR > TD:first-child {
 		{/foreach}
 	</table>
 </fieldset>
+{if !empty($group)}
 
-{$objPermReverse = $conf->objectPermissions|@array_flip}
+	{$objPermReverse = $conf->objectPermissions|@array_flip}
 	<div class="tab"><h2>{$group.objects|@count|default:''} {t}objects for this group{/t}</h2></div>
 	<fieldset>
 	<table class="smallist group_objects bordered">
 		<tr>
 			<th>{t}title{/t}</th>
-			<th nowrap>{t}object type{/t}</th>
+			<th nowrap>{t}type{/t}</th>
 			<th>{t}status{/t}</th>
 			<th colspan="2">{t}permission type{/t}</th>
 		</tr>
 		{foreach $group.objects as $ob}
 			<tr class="{$ob.BEObject.status}">
 				<td>
-					<a title="{$ob.BEObject.title|default:$ob.BEObject.nickname}" href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.title|default:$ob.BEObject.nickname|truncate:48:'…':true}</a>
+					<a title="{$ob.BEObject.title|default:$ob.BEObject.nickname}" href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.title|default:$ob.BEObject.nickname|truncate:38:'…':true}</a>
 				</td>
-				<td>
+				<td nowrap>
 					<span class="listrecent {$conf->objectTypes[$ob.BEObject.object_type_id].name}" style="vertical-align:middle; margin:0px 5px 0 0"></span>
 					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$conf->objectTypes[$ob.BEObject.object_type_id].name}</a>
 				</td>
@@ -88,13 +89,12 @@ table.group_objects TR > TD:first-child {
 					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.status}</a>
 				</td>
 				<td>
-					<a href="{$html->url('/view/')}{$ob.BEObject.id}">
-					<ul>
-					{foreach $ob.Permission as $perm}
-						<li>{t}{$objPermReverse[$perm.flag]}{/t}</li>
-					{/foreach}
-					</ul>
-					</a>
+					{$permissionset = $ob.Permission|sortby:flag|reset}
+					<select id="selectGroupPermission" name="groupPermission">
+						{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
+						<option {if ($permVal==$permissionset.flag|default:'')}selected{/if} value="{$permVal}">{t}{$permLabel}{/t}</option>
+						{/foreach}
+					</select>
 				</td>
 				<td>
 					<input class="BEbutton" name="remove" type="button" value="x">
@@ -104,12 +104,12 @@ table.group_objects TR > TD:first-child {
 	</table>
 	<br />
 
-	<input type="button" title="{t}Select objects for group '{$group.Group.name|default:''}'{/t}" rel="/pages/showObjects" class="modalbutton" 
+	<input type="button" title="{t}Select objects for group '{$group.Group.name|default:''}'{/t}" rel="/pages/showObjects/group:{$group.Group.id}" class="modalbutton" 
 	value="{t}{if !empty($group.objects)}protect more objects{else}add objects to group{/if}{/t}" />
 	<!-- {* TODO adding preview objects or hidden or simple, uff *} -->
 	</fieldset>
 
-{if !empty($group)}
+
 	<div class="tab"><h2>{$group.User|@count|default:''} {t}users in this group{/t}</h2></div>
 	<table class="bordered">
 	{foreach $group.User as $u}
@@ -120,6 +120,7 @@ table.group_objects TR > TD:first-child {
 		</tr>
 	{/foreach}
 	</table>
+
 {/if}		
 
 </form>

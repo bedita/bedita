@@ -93,10 +93,12 @@ class MultimediaController extends ModulesController {
 		// Get object by $id
 		$obj = null ;
 		$parents_id = array();
+		$name = '';
 		if($id) {
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			$model = ClassRegistry::init($this->BEObject->getType($id));
+			$name = Inflector::underscore($model->name);
 			if (!in_array("multimedia", $model->objectTypesGroups)) {
 				throw new BeditaException(__("Error loading object", true));
 			}
@@ -139,6 +141,9 @@ class MultimediaController extends ModulesController {
 			Configure::write("defaultStatus", "on"); // set default ON for new objects
 		}
 
+		$availableRelations = $this->getAvailableRelations($name);
+		$availableRelations = array_merge(array('attach' => 'attach'), $availableRelations);
+
 		// data for template
 		$this->set('object',	@$obj);
 		$this->set('imagePath',	@$imagePath);
@@ -147,6 +152,8 @@ class MultimediaController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		$this->set('availabeRelations', $availableRelations);
+		$this->set('relObjects', $obj["relations"]);
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parents',	$parents_id);
 		$this->setSessionForObjectDetail();

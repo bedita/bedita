@@ -1,4 +1,722 @@
 /**
 Multimedia custom css
-@author		bato@channelweb.it
 */
+
+/**
+Multimedia custom css
+@author     bato@channelweb.it
+*/
+
+/* Stili per modalità (draw,view,modify) e azioni (isDrawing) */
+
+.isDrawing,
+.isDrawing .imageArea,
+.isDrawing .imageArea .resizeAngle {
+    /* isDrawing è attiva dopo il click, draw è attiva in modalità "nuova area"*/
+}
+.drawAreas,
+.drawPoints,
+.drawAreas .imageArea,
+.drawAreas .imageArea .resizeAngle {
+    cursor: crosshair;
+    background: none;
+}
+
+.drawAreas .imageArea .removeArea,
+.drawAreas .imageArea .areaType,
+.drawAreas .imageArea .areaStyle,
+.drawAreas .imagePoint .removePoint,
+.drawAreas .imagePoint .pointHotspot,
+.drawAreas .imagePoint .pointLineConnection,
+.drawAreas .imagePoint .pointSize,
+.drawPoints .imageArea .removeArea,
+.drawPoints .imageArea .areaType,
+.drawPoints .imageArea .areaStyle,
+.drawPoints .imagePoint .removePoint,
+.drawPoints .imagePoint .pointHotspot,
+.drawPoints .imagePoint .pointLineConnection,
+.drawPoints .imagePoint .pointSize {
+    cursor: crosshair;
+}
+.view {
+    cursor: auto;
+}
+.view .imageArea,
+.view .imageArea:hover,
+.view .imagePoint,
+.view .imagePoint:hover {
+    display: none;
+}
+
+/* Stili per le aree */
+
+.imageArea {
+    position: absolute;
+    z-index: 1;
+    border: 3px solid #f00;
+    background: rgba(255,255,255,0);
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    cursor: move;
+}
+.imageArea:hover,
+.imageArea:active {
+    background-color: rgba(0,0,0,0.2);
+}
+/*elementi bloccati*/
+.imageArea.locked,
+.imageArea.locked .resizeAngle {
+    cursor: auto;
+}
+.imageArea.locked:hover .removeArea {
+    display: none;
+}
+.imageArea.hide {
+    display: none;
+}
+
+.imageArea:hover .areaTitle,
+.imageArea:hover .areaNumber,
+.imageArea:hover .areaType,
+.imageArea:hover .areaStyle,
+.imageArea:hover .removeArea,
+.imageArea:hover .resizeAngle {
+    display: block;
+}
+.areaTitle {
+    position: absolute;
+    top: -20px;
+    left: -3px;
+    padding: 0 3px;
+    background-color: #f00;
+    color: white;
+    display: none;
+}
+.areaDescription {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    padding: 5px;
+    min-height: 100%;
+    min-width: 100%;
+    background-color: #f00;
+    background-color: rgba(255,255,255,0.8);
+    color: black;
+    display: none;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.areaNumber {
+    position: absolute;
+    bottom: -20px;
+    left: -3px;
+    padding: 0 3px;
+    background-color: #f00;
+    color: white;
+    display: none;
+}
+.areaType {
+    position: absolute;
+    bottom: -20px;
+    right: 17px;
+    cursor: pointer;
+    display: none;
+    width: 20px;
+    height: 20px;
+    background: #f00 url(../img/imageToolbar.areaTypes.png) no-repeat;
+}
+.areaType.tooltip {
+    background-position: 0px 0px;
+}
+.areaType.modal {
+    background-position: -20px 0px;
+}
+.areaType.postit {
+    background-position: -40px 0px;
+}
+.areaStyle {
+    position: absolute;
+    bottom: -20px;
+    right: -3px;
+    cursor: pointer;
+    display: none;
+    width: 20px;
+    height: 20px;
+    background: #f00 url(../img/imageToolbar.areaStyles.png) no-repeat;
+}
+.areaStyle.dotted {
+    background-position: 0px 0px;
+}
+.areaStyle.bordered {
+    background-position: -20px 0px;
+}
+.areaStyle.filled {
+    background-position: -40px 0px;
+}
+.areaStyle.hidden {
+    background-position: -60px 0px;
+}
+.removeArea {
+    font-family: monospace;
+    position: absolute;
+    top: -20px;
+    right: -3px;
+    padding: 0 6px;
+    background-color: #f00;
+    color: white;
+    cursor: pointer;
+    display: none;
+}
+.resizeAngle {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: transparent url(../img/imageToolbar.resizeAngles.png) no-repeat;
+    display: none;
+}
+.angleNE{
+    top: -3px;
+    right: -3px;
+    cursor: ne-resize;
+    background-position: 0 0;
+}
+.angleSE{
+    bottom: -3px;
+    right: -3px;
+    cursor: se-resize;
+    background-position: -12px 0;
+}
+.angleSW{
+    bottom: -3px;
+    left: -3px;
+    cursor: sw-resize;
+    background-position: -24px 0;
+}
+.angleNW{
+    top: -3px;
+    left: -3px;
+    cursor: nw-resize;
+    background-position: -36px 0;
+}
+
+/* Point (tiranti) */
+
+.point {
+    position: absolute;
+    height: 40px;
+    top: 50%;
+    left: 50%;
+    margin-top: -20px;
+    background: rgba(0,0,0,0.2);
+}
+
+.imagePoint:hover .pointTitle,
+.imagePoint:hover .pointNumber,
+.imagePoint:hover .pointSize,
+.imagePoint:hover .pointLineNode,
+.imagePoint:hover .removePoint {
+    display: block;
+}
+.point.xsmall { width: 10%; margin-left: -5%; }
+.point.small { width: 15%; margin-left: -7.5%; }
+.point.medium { width: 20%; margin-left: -10%; }
+.point.large { width: 25%; margin-left: -12.5%; }
+.point.xlarge { width: 30%; margin-left: -15%; }
+.pointLineNode {
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    display: none;
+}
+.pointLineNode::after {
+    content:'';
+    display: block;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+    margin-left: -4px;
+    border-radius: 4px;
+    background-color: #ccc;
+}
+.pointLineNode.lockedNode::after {
+    background-color: #ff0000;
+    width: 10px;
+    height: 10px;
+    margin-top: -5px;
+    margin-left: -5px;
+    border-radius: 5px;
+}
+.pointLineNode.n { top: 0; left: 50%; }
+.pointLineNode.ne { top: 0; left: 100%; }
+.pointLineNode.e { top: 50%; right: 0; }
+.pointLineNode.se { bottom: 0; left: 100%; }
+.pointLineNode.s { bottom: 0; left: 50%; }
+.pointLineNode.sw { top: 100%; left: 0; }
+.pointLineNode.w { top: 50%; left: 0; }
+.pointLineNode.nw { top: 0; left: 0; }
+.pointLineNode.c { top: 50%; left: 50%; }
+
+.removePoint {
+    font-family: monospace;
+    position: absolute;
+    top: -18px;
+    right: 0px;
+    padding: 0 6px;
+    background-color: #f00;
+    color: white;
+    cursor: pointer;
+    display: none;
+}
+.pointTitle {
+    position: absolute;
+    top: -18px;
+    left: 0px;
+    padding: 0 3px;
+    background-color: #f00;
+    color: white;
+    display: none;
+}
+.pointDescription {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    padding: 5px;
+    min-height: 100%;
+    min-width: 100%;
+    background-color: #f00;
+    background-color: rgba(255,255,255,0.8);
+    color: black;
+    display: none;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.pointNumber {
+    position: absolute;
+    bottom: -18px;
+    left: 0px;
+    padding: 0 3px;
+    background-color: #f00;
+    color: white;
+    display: none;
+}
+.pointSize {
+    position: absolute;
+    bottom: -18px;
+    right: 0px;
+    padding: 0 3px;
+    background-color: #f00;
+    color: white;
+    display: none;
+}
+.pointLine {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    top: 0px;
+    left: 0px;
+    border: 0px solid black;
+};
+.pointLine::before {
+}
+.pointLine::before { 
+    content: '';
+    background-color: black; 
+    position: absolute;
+    top: -3px; /* - 1/2 larghezza + 1/2 (altezza linea + spessore bordo)*/
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 5px;
+}
+.pointLine::after {
+    content: '';
+    background-color: black; 
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+
+/*  Freccia:
+    content: '';
+    position: absolute;
+    width: 0px;
+    height: 0px;
+    right: 0px;
+    top: -13px;
+    transform: translate(0px,5px) rotate(45deg);
+    -webkit-transform: translate(0px,5px) rotate(45deg);
+    -moz-transform: translate(0px,5px) rotate(45deg);
+    -o-transform: translate(0px,5px) rotate(45deg);
+    -ms-transform: translate(0px,5px) rotate(45deg);
+    border-right: 3px solid #000000;
+    border-top: 3px solid #000000;
+    border-bottom: 15px solid transparent;
+    border-left: 15px solid transparent;*/
+}
+.pointHotspot, .pointLineConnection {
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    position: absolute;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.2);
+    top: 20%;
+    left: 30%;
+    cursor: pointer;
+}
+.pointLineConnection {
+    background-color: rgba(0,0,0,0);
+}
+
+/* Toolbar */
+
+.toolbarToTag {
+    height: 20px;
+    margin-bottom: 16px;
+}
+.toolbarItems {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    /*border: 1px solid #666;*/
+    display: inline-block;
+}
+.toolbarItem {
+    margin: 0;
+    padding: 6px;
+    height: 16px;
+    cursor: pointer;
+    display: inline-block;
+}
+.toolbarItem:hover {
+    background-color: #fff;
+}
+.toolbarItem.active {
+    background-color: #666;
+    color:white;
+}
+
+/* Messaggi */
+
+.toolbarMessage {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    padding: 10px;
+    margin-left: -25%;
+    background-color: rgba(0,0,0,0.75);
+    color: #fff;
+    display:none;
+    width: 50%;
+    min-height: 20px;
+    z-index: 1000;
+    cursor: auto;
+}
+.toolbarMessage .messageInput,
+.toolbarMessage .messageTextarea {
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.messageButtons {
+    margin: 10px;
+    background-color: #fff;
+    color: #000;
+    background-color: #F2F2F2;
+    border-color: #BBB;
+    color: #333;
+    -moz-border-radius: 9px;
+    border-radius: 9px;
+    -webkit-border-radius: 9px;
+    -khtml-border-radius: 9px;
+    -moz-box-sizing: content-box;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    line-height: 16px;
+    padding: 2px 5px;
+    text-decoration: none;
+}
+
+/* Menu contestuali */
+
+.contextMenu {
+    width: 130px;
+    position: absolute;
+    z-index: 1001;
+    color: #fff;
+    font-size: 0.85em;
+    display: none;
+}
+.toolbarMenu {
+    list-style-type: none;
+    background-color: rgba(0,0,0,0.75);
+    margin: 0;
+    padding: 0;
+}
+.toolbarMenu .toolbarSubMenu {
+    list-style-type: none;
+    background-color: rgba(0,0,0,0.75);
+    margin: 0;
+    padding: 0;
+    display: none;
+    width: 130px;
+    margin-left:120px;
+    margin-top:-20px;
+    color: #fff;
+}
+.toolbarMenu li.menuItem:hover .toolbarSubMenu {
+    display: block;
+}
+.toolbarMenu li.menuItem {
+    height: 20px;
+    padding: 2px 10px;
+    cursor: pointer;
+    
+}
+.toolbarMenu li.menuItem.selected {
+    background-color: #fff;
+    color: #000;
+}
+.toolbarMenu li.menuItem:hover {
+    background-color: #ccc;
+    color: #000;
+}
+.toolbarMenu li.break {
+    height: 0px;
+    padding: 0px;
+    margin: 4px 10px;
+    border-top: 2px dashed #ccc;
+}
+.toolbarMenu li.menuItem.break:hover{
+    background: none;
+}
+.toolbarMenu span.subMenuIcon {
+    float: right;
+}
+
+
+/* Tag immagini */
+
+.taggedImage {
+    position: relative;
+
+}
+.taggedImage img {
+    margin: 0;
+    padding: 0;
+}
+.imageTarget {
+    position: absolute;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background: transparent url('../img/imageTarget.empty.png');
+    /*opacity:0.3;
+    filter:alpha(opacity=0);*/
+}
+.imageTarget.opened,
+.imageTarget:hover {
+    cursor: pointer;
+}
+.imageTarget.filled:hover {
+    cursor: pointer;
+    background: rgba(255,255,97,0.5);
+}
+.imageTarget.dotted {
+    background: transparent url('../img/imageTarget.dotted.png') center center no-repeat;
+}
+.imageTarget.dotted.opened {
+    background: transparent url('../img/imageTarget.dotted.opened.png') center center no-repeat;
+}
+.imageTarget.bordered {
+    border: 3px solid #000;
+}
+.imageTarget.filled {
+    background: rgba(255,255,97,0.3);
+}
+.imageTarget.hidden,
+.imageTarget.hidden.opened {
+    border: 0px;
+    background: transparent;
+}
+.imageHotspot {
+    position: absolute;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.imageText {
+    font-family: 'Titillium';
+    position: absolute;
+    background: white;
+    border: 1px solid #000;
+    display: none;
+    cursor: auto;
+    background-color: white;
+}
+.imageText p {
+    text-indent: 0;
+    font-size:0.875rem;
+    line-height:1.125rem;
+    text-align: left;
+}
+.imageText .imageTitle {
+    font-size:1rem;
+    line-height:1rem;
+    font-weight: bold;
+    text-align: left;
+    margin: 7px;
+    margin-bottom: 5px;
+
+}
+.imageText .imageDescription {
+    margin: 7px;
+    margin-top: 0px;
+}
+.imageText .closeText {
+    font-family: 'IcoMoon';
+    cursor: pointer;
+    display: block;
+    position: absolute;
+    color: #666;
+    text-decoration: none;
+    font-size: 16px;
+    line-height: 16px;
+    top:-8px;
+    right:-8px;
+    width:16px;
+    height:16px;
+    background: white;
+    border-radius: 50%;
+}
+.imageText.modal {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    width: 300px;
+    padding: 10px;
+    margin-left: -150px;
+    border: 1px solid #000;
+    z-index: 50;
+}
+.imageText .closeTextModal {
+    text-align: right;
+}
+.imageText.tooltip {
+    width: 230px;
+    margin-left: -115px;
+    /*left: 50%;
+    right: 50%;*/
+}
+.imageText.tooltip.left {
+    margin-left: -10px;
+}
+.imageText.tooltip.right {
+    margin-right: -10px;
+}
+.imageText.tooltip img {
+    width: 100%;
+}
+.imageText.postit {
+    margin: 0px;
+    min-width: 100%;
+    min-height: 100%;
+    border-top: 3px solid #666;
+    -webkit-border-radius: 0 0 15px 0; 
+    border-radius: 0 0 10px 0;
+    background-color: #F0F1D3;
+}
+
+.imageText.top {
+    top: 0;
+}
+.imageText.bottom {
+    bottom: 0;
+}
+.imageText.left {
+    left: 0;
+}
+.imageText.right {
+    right: 0;
+}
+.imageLine {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: #000;
+    top: 0px;
+    left: 0px;
+}
+
+.imageCaption {
+}
+.imageText.caption {
+    min-height: 40px;
+}
+.caption.xsmall { width: 10%; margin-left: -5%; }
+.caption.small { width: 15%; margin-left: -7.5%; }
+.caption.medium { width: 20%; margin-left: -10%; }
+.caption.large { width: 25%; margin-left: -12.5%; }
+.caption.xlarge { width: 30%; margin-left: -15%; }
+.captionLine {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    top: 0px;
+    left: 0px;
+    border: 0px solid black;
+    display: none;
+}
+.captionLine::before {
+}
+.captionLine::before { 
+    content: '';
+    background-color: black; 
+    position: absolute;
+    top: -3px; /* - 1/2 larghezza + 1/2 (altezza linea + spessore bordo)*/
+    left: -3px;
+    width: 6px;
+    height: 6px;
+    border-radius: 5px;
+}
+.captionLine::after {
+    content: '';
+    background-color: black; 
+    position: absolute;
+    top: -2px;
+    right: -3px;
+    width: 5px;
+    height: 5px;
+    border-radius: 3px;
+}
+.captionHotspot, .captionLineConnection {
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    margin-left: -10px;
+    position: absolute;
+    border-radius: 10px;
+    background-color: rgba(0,0,0,0.2);
+    top: 20%;
+    left: 30%;
+    cursor: pointer;
+}
+.captionLineConnection {
+    background-color: rgba(0,0,0,0);
+    display: none;
+}
+
+.multimediaToTag img{
+    width:100%;
+}

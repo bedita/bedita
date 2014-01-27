@@ -360,7 +360,27 @@ $config["defaultObjRelationType"] = array(
 		"hidden" => true,
 		"left" => array("link"),
 		"right" => array()
-	)
+	),
+	'mediamap' => array(
+		'left' => array('image'),
+		'right' => array(),
+		'inverse' => 'mediamapped',
+		'label' => 'mediamap',
+		'inverseLabel' => 'mediamapped_by',
+		'params' => array(
+			'number',
+			'top',
+			'left',
+			'width',
+			'height',
+			'hotspotX',
+			'hotspotY',
+			'style' => array('none', 'bordered', 'fill', 'pointer'),
+			'direction'=> array('auto', 'North', 'West', 'East', 'South', 'North - West', 'North - East', 'South - West', 'South - East'),
+			'behaviour' => array('skin', 'popup', 'popup & zoom', 'modal'),
+		),
+		'hidden' => false,
+  ),
 );
 
 // Relations - local objects' relation types (override in bedita.cfg)
