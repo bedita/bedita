@@ -21,7 +21,8 @@ function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
 		var tr = $(html);
-		$("#relationType_" + postdata.relation + " table:first").find("tr:first").parent().children('tr:last').after(tr);
+		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tr").first().parent();
+		tbody.html( tbody.html()+html );
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$("#relationContainer table").find("tbody").sortable("refresh");
 		$(document).trigger('relation_' + postdata.relation + ':added', tr);
