@@ -32,7 +32,38 @@ class Image extends BeditaStreamModel
 {
 	var $actsAs = array();
 	public $objectTypesGroups = array("multimedia", "leafs", "related");
-	
+
+	protected $modelBindings = array(
+				"detailed" => array("BEObject" => array("ObjectType",
+														"Permission",
+														"UserCreated",
+														"UserModified",
+														"RelatedObject",
+														"Category",
+														"ObjectProperty",
+														"LangText",
+														"Annotation",
+														"Alias",
+														"Version" => array("User.realname", "User.userid")
+														),
+									"Content", "Stream"),
+				"default" => array("BEObject" => array(	"ObjectProperty",
+														"LangText",
+														"ObjectType",
+				                                        "RelatedObject",
+														"Category",
+														"Annotation"),
+									"Content", "Stream"),
+				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
+
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"Category",
+														"RelatedObject.switch = 'mediamap'"
+														),
+									"Content", "Stream")
+	);
+
 	/**
 	 * Set image width and height reading from file
 	 *

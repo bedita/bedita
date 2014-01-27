@@ -526,27 +526,42 @@ class AppController extends Controller
 	 *
 	 * @param array $objectArray
 	 * @param array $status, default get all objects
+	 * @param array $options, possible values are
+	 *                        'mainLanguage' => set fields with "mainLanguage" value
+	 *                        'user' => in frontend app check frontend access that user
 	 * @return array
 	 */
 	public function objectRelationArray($objectArray, $status=array(), $options=array()) {
-		$conf  = Configure::getInstance() ;
+		$conf = Configure::getInstance() ;
 		$relationArray = array();
-
 		$beObject = ClassRegistry::init("BEObject");
+		$permission = ClassRegistry::init("Permission");
 		foreach ($objectArray as $obj) {
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
 			$level = (BACKEND_APP)? 'default' : 'frontend';
 			$this->modelBindings($this->{$modelClass}, $level);
-			if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
-				continue ;
+			if (!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
+				continue;
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
+				// if frontend app add object_type and check frontend obj permission
+				if (!BACKEND_APP) {
+					$objDetail['object_type'] = $modelClass;
+					$userdata = (!empty($options['user']))? $options['user'] : array();
+					$frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
+					if ($frontendAccess == "denied") {
+						continue;
+					}
+					$objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
+				}
+
 				$objDetail['priority'] = $obj['priority'];
 				$objDetail['params'] = !empty($obj['params']) ? $obj['params'] : array();
-				if(isset($objDetail['url']))
+				if (isset($objDetail['url'])) {
 					$objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
+				}
 
 				// set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
 				if (!empty($options["mainLanguage"])) {
@@ -555,11 +570,6 @@ class AppController extends Controller
 						$this->BeLangText = new BeLangTextComponent();
 					}
 					$this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
-				}
-
-				// if frontend app add object_type
-				if (!BACKEND_APP) {
-					$objDetail['object_type'] = $modelClass;
 				}
 
 				$relationArray[$rel][] = $objDetail;

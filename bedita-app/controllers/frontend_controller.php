@@ -1314,26 +1314,30 @@ abstract class FrontendController extends AppController {
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if(!empty($obj["RelatedObject"])) {
-			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, array("mainLanguage" => $this->currLang));
 			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
-			$rr = array();
-			$permissionModel = ClassRegistry::init("Permission");
-			foreach($obj['relations'] as $relationName => $relationObjects) {
-				$ro = array();
-				foreach($relationObjects as $relation) {
-					$frontendAccess = $permissionModel->frontendAccess($relation['id'],$userdata);
-					if($frontendAccess != "denied") {
-					    $relation["authorized"] = ($frontendAccess == "full") ? 1 : 0;
-					    $ro[] = $relation;
-					}
-				}
-				$rr[$relationName] = $ro;
-			}
-			$obj["relations"] = $rr;
+			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
+			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
+
 			unset($obj["RelatedObject"]);
 			$obj['relations_count'] = array();
 			foreach ($obj["relations"] as $k=>$v) {
 				$obj['relations_count'][$k] = count($v);
+			}
+
+			// if not empty attach relations check if attached object have 'mediamap' relations
+			// if so explicit mediamap objects
+			if (!empty($obj['relations']['attach'])) {
+				foreach ($obj['relations']['attach'] as &$attach) {
+					$mediamap = array();
+					if (!empty($attach['RelatedObject'])) {
+						foreach ($attach['RelatedObject'] as $relObj) {
+							if ($relObj['switch'] == 'mediamap') {
+								$mediamap[] = $relObj;
+							}
+						}
+						$attach['relations'] = $this->objectRelationArray($mediamap, $this->status, $relOptions);
+					}
+				}
 			}
 		}
 		if (!empty($obj['Annotation'])) {
