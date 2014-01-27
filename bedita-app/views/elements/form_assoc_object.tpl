@@ -36,10 +36,14 @@
 	
 	<td>{$objRelated.lang|default:''}</td>
 
-	{if !empty($conf->defaultObjRelationType[$rel])}
-		{$relationParamsArray = $conf->defaultObjRelationType[$rel].params|default:[]}
+	{if !empty($allObjectsRelations[$rel])}
+		{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
 	{else}
-		{$relationParamsArray = $conf->objRelationType[$rel].params|default:[]}
+		{foreach $allObjectsRelations as $relName => $rule}
+			{if !empty($rule.inverse) && $rule.inverse == $rel}
+				{$relationParamsArray = $rule.params|default:[]}
+			{/if}
+		{/foreach}
 	{/if}
 
 	{if !empty($relationParamsArray[0])}
