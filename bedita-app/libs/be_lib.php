@@ -187,7 +187,7 @@ class BeLib {
 					}
 				}
 			} else {
-				$data = Sanitize::$method($value);
+				$data = Sanitize::$method($data);
 			}
 		}
 		
