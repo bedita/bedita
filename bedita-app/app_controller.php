@@ -1089,6 +1089,7 @@ abstract class ModulesController extends AppController {
 			}
 			if (!empty($obj['RelatedObject'])) {
 				$relations = $this->objectRelationArray($obj['RelatedObject']);
+				$obj['relations'] = $relations;
 			}
 			foreach ($relations as $k=>$v) {
 				$relationsCount[$k] = count($v);
