@@ -145,7 +145,6 @@ Flatlander = function (options) {
 				if (divAppended) {
 					var areaObj = new FlatlanderArea(div, obj);
 					areaObj.set({
-						id: 'area_'+n,
 						priority: n,
 						left: parseFloat(div[0].style.left),
 						top: parseFloat(div[0].style.top),
@@ -153,9 +152,7 @@ Flatlander = function (options) {
 						height: parseFloat(div[0].style.height),
 					});
 					obj.FlatlanderEditorInstance.appendArea(areaObj);
-					obj.areas[areaObj.get('id')] = areaObj;
 					obj.trigger('areacreated', areaObj);
-					obj.numberOfElements++;
 					$(this).unbind('mouseup.betag').unbind('mousemove.betag');
 				}
 			})
@@ -243,7 +240,7 @@ FlatlanderArea = function(el, workspace) {
 	this.workspace = workspace;
 
 	this.attr = {
-		id: 'area_',
+		id: 'area_'+workspace.numberOfElements,
 		priority: 1,
 		title: '',
 		body: '',
@@ -261,6 +258,8 @@ FlatlanderArea = function(el, workspace) {
 		deleted: false,
 		direction: 'auto',
 	}
+
+	workspace.numberOfElements += 1;
 
 	this.callbacks = {
 		'change': [],
@@ -458,6 +457,7 @@ FlatlanderArea = function(el, workspace) {
 	this.onLoad();
 	this.trigger('created');
 	this.trigger('change');
+	workspace.areas[this.get('id')] = this;
 }
 
 FlatlanderEditor = function(el, workspace) {
@@ -480,10 +480,11 @@ FlatlanderEditor = function(el, workspace) {
 	var html = '';
 	html += '<div class="fl-editorContainer">';
 	html += '<ul class="fl-layers"></ul><button rel="deleteArea">Delete Area</button><hr />';
-	//html += '<label for="number">Number:</label><textarea rows="1" type="text" name="number" /></textarea><label for="title">Title:</label><textarea name="title" rows="1"></textarea><label for="background">Background-image:</label><form id="inputFileForm"><input type="file" name="background" /></form><button rel="deleteBackground">Remove background image</button><label for="style">Style:</label><select name="style"><option>none</option><option>bordered</option><option>fill</option><option>pointer</option></select><label for="behaviour">Behaviour:</label><select name="behaviour"><option>popup</option><option>popup & zoom</option><option>modal</option></select><label for="direction">Popup direction:</label><select name="direction"><option value="auto">auto</option><option value="n">North</option><option value="w">West</option><option value="e">East</option><option value="s">South</option><option value="nw">North - West</option><option value="ne">North - East</option><option value="sw">South - West</option><option value="se">South - East</option></select><label for="body">Content:</label><textarea rows="8" name="body"></textarea>';
 	html += '</div>';
 
 	this.el.innerHTML = html;
+
+	this.editableInEditor = ['top', 'left', 'width', 'height', 'hotspotX', 'hotspotY'];
 
 	this.toggle = function() {
 		if (this.isOpen) this.close()
@@ -594,22 +595,6 @@ FlatlanderEditor = function(el, workspace) {
 			return false;
 		});
 
-		/*this.$el.find('input[type="file"]').bind('change', function(ev) {
-			if (this.files.length==0) {
-				$('.activeArea').attr('data-backgroundimage','').css('background-image','none');
-			} else {
-				var name = 'img/dettagli/'+this.files[0].name;
-				var img = this.files[0];
-				var reader = new FileReader();
-				reader.onload = function(f) {
-					var base64Image = f.target.result;
-					obj.currentArea.addBackground(base64Image);
-					obj.$el.find('[rel="deleteBackground"]').show();
-				};
-				reader.readAsDataURL(img);
-			}
-		});*/
-
 		$(window).bind('keydown', function(ev) {
 			var bind = [37,38,39,40,46,107,109];
 			if (ev.keyCode == 18) obj.altPressed = true;
@@ -703,7 +688,27 @@ FlatlanderEditor = function(el, workspace) {
 
 	this.appendInput = function(prop) {
 		var obj = this;
-		var $el = $(prop.el);
+		if (this.editableInEditor.indexOf(prop.name)!=-1) {
+			return;
+		}
+
+		var $el = $('<'+prop.type+'>');
+		$el.attr('data-name', prop.name);
+		
+		if (prop.editable == false) {
+			$el.attr('readonly', true);
+		}
+
+		switch(prop.type) {
+			case 'select':
+				for (var i=0; i<prop.options.length; i++) {
+					$el.append('<option value="'+prop.options[i]+'">'+prop.options[i]+'</option>');
+				}
+				break;
+			case 'textarea':
+				$el.attr('rows', 1);
+				break;	
+		}
 
 		if (obj.inputs==null) {
 			$el.attr('data-flatlander-inputid', 0);
@@ -720,7 +725,7 @@ FlatlanderEditor = function(el, workspace) {
 		
 		if ($el.attr('type')!='hidden') {
 			var name = $el.attr('data-name');
-			var label = '<label for="'+name+'">'+name+':</label>';
+			var label = '<label>'+name+':</label>';
 			obj.$el.find('.fl-editorContainer').append(label);
 		}
 		
