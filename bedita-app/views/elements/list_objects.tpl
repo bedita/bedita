@@ -133,9 +133,13 @@ $(document).ready(function(){
 			{/if}
 			
 			{if !empty($objects[i].num_of_permission)}
-				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
+				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; margin:0 0 0 -5px; vertical-align:top;">
 			{/if}
 			
+			{if ($objects[i].ubiquity|default:0 > 1)}
+				<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:4px 4px 0 0; height:18px; vertical-align:top;">
+			{/if}
+
 			{if (empty($objects[i].fixed))}
 				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{else}
@@ -165,8 +169,6 @@ $(document).ready(function(){
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
-		
-		
 		{sectionelse}
 		
 			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
@@ -175,10 +177,9 @@ $(document).ready(function(){
 		
 {if ($smarty.section.i.total) >= 10}
 		
-			{$smarty.capture.theader}
+	{$smarty.capture.theader}
 			
 {/if}
-
 
 </table>
 

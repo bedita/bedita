@@ -327,10 +327,10 @@ UL.modules {
 .smallist .on {
 	font-weight: normal;
 }
-.smallist .off {
+.smallist .off, .smallist .off * {
 	color: gray;
 }
-.smallist .draft {
+.smallist .draft, .smallist .draft * {
 	color: gray;
 }
 
@@ -494,6 +494,25 @@ UL.modules {
 }
 
 
+/*...........................................
+ 
+    Subwarning
+
+...........................................*/
+
+.subwarning {
+	text-align:left;
+	color:#FFF;
+	padding:3px 25px 7px 5px;
+	background: #666;
+}
+
+.subwarning.ubiquity {
+	background: #666 url('../img/iconUbiquity.png') 115px 3px no-repeat;
+	background-size:20px;
+	height:15px;
+	overflow:hidden;
+}
 /*...........................................
  
     MENU SMALL Modules 

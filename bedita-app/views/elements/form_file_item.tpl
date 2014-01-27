@@ -71,6 +71,11 @@ $(document).ready(function(){
 		<li>
 			<input class="info_file_item" style="border:0px;" type="text" value="{$item.title|escape:'htmlall':'UTF-8'|default:""}" 
 			name="data[RelatedObject][{$relation}][{$item.id}][title]" />
+	        {if !empty($item.params)}
+	        {foreach $item.params as $k => $v}
+	            <input type="hidden" name="data[RelatedObject][{$relation}][{$item.id}][params][{$k}]" value="{$v|default:''}" />
+	        {/foreach}
+	        {/if}
 		</li>
 		<li>
 			<textarea class="info_file_item" style="width:100%; border:0px; border-bottom:0px solid silver;" 

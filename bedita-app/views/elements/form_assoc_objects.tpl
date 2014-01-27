@@ -20,9 +20,12 @@ function addObjToAssoc(url, postdata) {
 	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
-		$("#relationType_" + postdata.relation + " table:first").find("tr:last").after(html);
+		var tr = $(html);
+		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tr").first().parent();
+		tbody.html( tbody.html()+html );
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$("#relationContainer table").find("tbody").sortable("refresh");
+		$(document).trigger('relation_' + postdata.relation + ':added', tr);
 		relatedRefreshButton();
 	});
 }
@@ -107,7 +110,7 @@ $(document).ready(function() {
 });
 
 $(function() {
-    $('.disableSelection').disableTextSelect();
+   //$('.disableSelection').disableTextSelect();
 });
 
 //-->
@@ -115,7 +118,7 @@ $(function() {
 
 
 {$view->set("object_type_id",$object_type_id)}
-<div class="tab"><h2>{t}Relationships{/t}</h2></div>
+<div class="tab"><h2>{t}Relations{/t}</h2></div>
 
 <fieldset id="frmAssocObject">
 	
@@ -129,20 +132,17 @@ $(function() {
 	</tr>
 	</table>
 
-
 	<div class="htabcontainer" id="relationContainer">
 	{foreach $availabeRelations as $rel => $relLabel}
 	<div class="htabcontent" id="relationType_{$rel}">
-
 		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
 		
 		<table class="indexlist" style="width:100%; margin-bottom:10px;">
 			<tbody class="disableSelection">
+				<tr><td colspan="10" style="padding: 0"></td></tr>
 			{if !empty($relObjects.$rel)}
 				{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
 				{$view->element('form_assoc_object', $params)}
-			{else}
-				<tr><td colspan="10"></td></tr>
 			{/if}
 			</tbody>
 		</table>

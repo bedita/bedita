@@ -240,6 +240,12 @@ class AppController extends Controller
 
 		}
 
+		// set up for view and BEDITA js object
+		if (BACKEND_APP) {
+			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
+			$this->set('allObjectsRelations', $allRelations);
+		}
+
 	}
 
 	private function redirUrl($url) {
@@ -520,26 +526,42 @@ class AppController extends Controller
 	 *
 	 * @param array $objectArray
 	 * @param array $status, default get all objects
+	 * @param array $options, possible values are
+	 *                        'mainLanguage' => set fields with "mainLanguage" value
+	 *                        'user' => in frontend app check frontend access that user
 	 * @return array
 	 */
 	public function objectRelationArray($objectArray, $status=array(), $options=array()) {
-		$conf  = Configure::getInstance() ;
+		$conf = Configure::getInstance() ;
 		$relationArray = array();
-
 		$beObject = ClassRegistry::init("BEObject");
+		$permission = ClassRegistry::init("Permission");
 		foreach ($objectArray as $obj) {
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
 			$level = (BACKEND_APP)? 'default' : 'frontend';
 			$this->modelBindings($this->{$modelClass}, $level);
-			if(!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
-				continue ;
+			if (!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
+				continue;
 			}
             if (empty($status) || in_array($objDetail["status"],$status)) {
+				// if frontend app add object_type and check frontend obj permission
+				if (!BACKEND_APP) {
+					$objDetail['object_type'] = $modelClass;
+					$userdata = (!empty($options['user']))? $options['user'] : array();
+					$frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
+					if ($frontendAccess == "denied") {
+						continue;
+					}
+					$objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
+				}
+
 				$objDetail['priority'] = $obj['priority'];
-				if(isset($objDetail['url']))
+				$objDetail['params'] = !empty($obj['params']) ? $obj['params'] : array();
+				if (isset($objDetail['url'])) {
 					$objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
+				}
 
 				// set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
 				if (!empty($options["mainLanguage"])) {
@@ -548,11 +570,6 @@ class AppController extends Controller
 						$this->BeLangText = new BeLangTextComponent();
 					}
 					$this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
-				}
-
-				// if frontend app add object_type
-				if (!BACKEND_APP) {
-					$objDetail['object_type'] = $modelClass;
 				}
 
 				$relationArray[$rel][] = $objDetail;
@@ -763,11 +780,10 @@ abstract class ModulesController extends AppController {
 			array("dir", "boolean", &$dir)
 		) ;
 
-
 		// get selected section
 		$sectionSel = null;
 		$pubSel = null;
-		if(isset($id)) {
+		if (isset($id)) {
 			$section = $this->loadModelByType("section");
 			$section->containLevel("minimum");
 			$sectionSel = $section->findById($id);
@@ -775,18 +791,24 @@ abstract class ModulesController extends AppController {
 		}
 
 		$filter["count_permission"] = true;
-		$filter['count_relations'] = array("attach", "seealso", "download");
 
-		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
+		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
 		$treeModel = ClassRegistry::init("Tree");
+		$relToCount =  array("attach", "seealso", "download");
+		$objectRelation = ClassRegistry::init('ObjectRelation');
 		$items = array();
-		foreach($objects['items'] as $obj) {
-			$ubiquity = 0;
-			$parents_id = $treeModel->getParents($obj['id']) ;
-			if(is_array($parents_id)) {
-				$ubiquity = count($parents_id);
+		foreach ($objects['items'] as $obj) {
+			$obj['ubiquity'] = $treeModel->find('count', array(
+				'conditions' => array('id' => $obj['id'])
+			));
+
+			// get relations count
+			foreach ($relToCount as $rel) {
+				$obj['num_of_relations_' . $rel] = $objectRelation->find('count', array(
+					'conditions' => array('id' => $obj['id'], 'switch' => $rel)
+				));
 			}
-			$obj['ubiquity'] = $ubiquity;
+
 			$items[] = $obj;
 		}
 		$this->params['toolbar'] = &$objects['toolbar'] ;
@@ -1084,6 +1106,7 @@ abstract class ModulesController extends AppController {
 			}
 			if (!empty($obj['RelatedObject'])) {
 				$relations = $this->objectRelationArray($obj['RelatedObject']);
+				$obj['relations'] = $relations;
 			}
 			foreach ($relations as $k=>$v) {
 				$relationsCount[$k] = count($v);

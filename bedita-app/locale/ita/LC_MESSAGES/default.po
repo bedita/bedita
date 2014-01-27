@@ -2245,6 +2245,24 @@ msgstr "elimina"
 msgid "delete all"
 msgstr "elimina tutti"
 
+msgid "lock"
+msgstr "blocca"
+
+msgid "lock all"
+msgstr "blocca tutti"
+
+msgid "unlock"
+msgstr "sblocca"
+
+msgid "unlock all"
+msgstr "sblocca tutti"
+
+msgid "hide"
+msgstr "nascondi"
+
+msgid "hide all"
+msgstr "nascondi tutti"
+
 msgid "delete all cached files from BEdita and frontends"
 msgstr "eliminare tutti i file in cache da BEdita e frontend"
 
@@ -3243,6 +3261,72 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+msgid "Advanced editor"
+msgstr "Editor avanzato"
+
+msgid "define interactive areas"
+msgstr "definisci nuove aree"
+
+msgid "define interactive points"
+msgstr "definisci nuovi tiranti"
+
+msgid "edit interactive elements"
+msgstr "modifica aree e tiranti"
+
+msgid "preview interactive image"
+msgstr "anteprima"
+
+msgid "new interactive area"
+msgstr "nuova area"
+
+msgid "bordered area"
+msgstr "area con bordo"
+
+msgid "filled area"
+msgstr "area piena"
+
+msgid "hidden area"
+msgstr "area nascosta"
+
+msgid "hidden"
+msgstr "nascosto"
+
+msgid "arrange layers"
+msgstr "gestisci livelli"
+
+msgid "bring to front"
+msgstr "porta sopra"
+
+msgid "bring forward"
+msgstr "porta davanti"
+
+msgid "send backward"
+msgstr "porta dietro"
+
+msgid "send to back"
+msgstr "porta sotto"
+
+msgid "interactive pop-up positon"
+msgstr "posizione del pop-up"
+
+msgid "relative to area"
+msgstr "relativa all'area"
+
+msgid "relative to image"
+msgstr "relativa all'immagine"
+
+msgid "initial situation"
+msgstr "situazione iniziale"
+
+msgid "visible"
+msgstr "visibile"
+
+msgid "style"
+msgstr "stile"
+
+msgid "icon"
+msgstr "icona"
 
 #~ msgid "friday"
 #~ msgstr "venerdì"
