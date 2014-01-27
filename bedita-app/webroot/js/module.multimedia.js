@@ -142,7 +142,7 @@ $(window).load(function() {
             })
         }).find('.assoc_obj_title').click(onRelationInputClick);
 
-        $(document).bind('relation:added', function(ev, args) {
+        $(document).bind('relation_mediamap:added', function(ev, args) {
             var area = newArea;
             if (area == null) {
                 var div = $('<div>');

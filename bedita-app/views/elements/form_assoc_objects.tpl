@@ -24,7 +24,7 @@ function addObjToAssoc(url, postdata) {
 		$("#relationType_" + postdata.relation + " table:first").find("tr:first").parent().children('tr:last').after(tr);
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$("#relationContainer table").find("tbody").sortable("refresh");
-		$(document).trigger('relation:added', tr);
+		$(document).trigger('relation_' + postdata.relation + ':added', tr);
 		relatedRefreshButton();
 	});
 }
