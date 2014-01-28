@@ -203,7 +203,7 @@ class BeTreeComponent extends Object {
 	}
 
 	/**
-	 * TODO: remove this method
+	 * TODO: remove this method. Used only in some addons shell scripts
 	 * update tree position of object $id with new $destination array
 	 *
 	 * @param integer $id
@@ -212,7 +212,29 @@ class BeTreeComponent extends Object {
 	public function updateTree($id, $destination) {
 		return $this->Tree->updateTree($id, $destination);
 	}
-	
+
+	/**
+	 * setup array of tree destinations (parent ids)
+	 * if some parents is forbidden to user (backend_private permission)
+	 * then add it to $destination because user can't edit that destination
+	 *
+	 * @param  int $objectId
+	 * @param  array  $destination array of parent ids
+	 */
+	public function setupForSave($objectId, &$destination = array()) {
+		$permission = ClassRegistry::init('Permission');
+	    $parentIds = $this->Tree->find('list', array(
+	    	'fields' => array('parent_id'),
+	    	'conditions' => array('id' => $objectId)
+	    ));
+	    $userData = $this->controller->BeAuth->getUserSession();
+	    foreach ($parentIds as $parent_id) {
+	    	if ($permission->isForbidden($parent_id, $userData) && !in_array($parent_id, $destination)) {
+	    		$destination[] = $parent_id;
+	    	}
+	    }
+	}
+
 	/////////////////////////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////////////////////////
 	/**

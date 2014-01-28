@@ -272,8 +272,11 @@ class MultimediaController extends ModulesController {
 			$this->Stream->id = $this->{$model}->id;
 		}
 
-		if(isset($this->data['destination'])) {
-			$this->BeTree->updateTree($this->Stream->id, $this->data['destination']);
+		if (isset($this->data['destination'])) {
+			if (!$new) {
+				$this->BeTree->setupForSave($this->Stream->id, $this->data['destination']);
+			}
+			ClassRegistry::init('Tree')->updateTree($this->Stream->id, $this->data['destination']);
 		}
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);

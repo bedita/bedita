@@ -668,7 +668,10 @@ class AppController extends Controller
 
 		// handle tree. Section and Area handled in AreaController
 		if(!$fixed && isset($this->data['destination']) && $beModel->name != "Section" &&  $beModel->name != "Area") {
-			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
+			if (!$new) {
+				$this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+			}
+			ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
 		}
 	}
 
