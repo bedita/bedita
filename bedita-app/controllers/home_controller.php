@@ -118,7 +118,7 @@ class HomeController extends AppController {
 				
 			$user = $this->Session->read("BEAuthUser");
 
-			$objects = $this->BEObject->findObjects(null, $user["id"], null, $filter, null, true, $page, $dim);
+			$objects = $this->BEObject->findObjects(null, $user["userid"], null, $filter, null, true, $page, $dim);
 			// get objects module
 			foreach ($objects["items"] as $key => $o) {
 				$condition = "id=".$o['object_type_id'];
