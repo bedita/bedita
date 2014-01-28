@@ -122,7 +122,7 @@ class Permission extends BEAppModel
 	 */
 	public function isForbidden($objectId, array &$userData) {
 		// no private objects for administrator
-		if(!BACKEND_APP || ( !empty($userData['groups']) && in_array("administrator", $userData['groups'])) ) {
+		if (!BACKEND_APP || ( !empty($userData['groups']) && in_array("administrator", $userData['groups'])) ) {
 			return false;
 		}
 

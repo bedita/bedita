@@ -40,7 +40,11 @@ class PermissionTestData extends BeditaTestData {
 		'permsFrontendCheck3' => array(
 				// frontend_access_with_block
 				array('switch' => 'group', 'flag' => 2, 'name' => 'editor')
-		)
+		),
+		'permsForbiddenCheck' => array(
+				// backend_private
+				array('switch' => 'group', 'flag' => 4, 'name' => 'editor')
+		),
 	);
 
 }
