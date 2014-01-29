@@ -686,17 +686,26 @@ class BuildFilterBehavior extends ModelBehavior {
 		$userGroups = Set::combine($user, 'Group.{n}.name', 'Group.{n}.id');
 
 		if (!empty($userGroups) && !in_array('administrator', array_keys($userGroups))) {
-			// forbidden objects on which user can't access
+			$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
 			$permission = ClassRegistry::init('Permission');
+			$allowedObjIds = $permission->find('list', array(
+				'fields' => array('object_id'),
+				'conditions' => array(
+					'Permission.flag' => $backendPrivatePerms,
+					'Permission.ugid' => $userGroups
+				)
+			));
+
 			$permission->bindModel(array(
 				'belongsTo' => array('BEObject' => array('className' => 'BEObject', 'foreignKey' => 'object_id'))
 			));
+			// forbidden objects on which user can't access
 			$forbiddenObjects = $permission->find('all', array(
 				'fields' => array('object_id', 'BEObject.object_type_id'),
 				'conditions' => array(
 					'Permission.switch' => 'group',
-					'Permission.flag' => Configure::read('objectPermissions.backend_private'),
-					'NOT' => array('Permission.ugid' => $userGroups)
+					'Permission.flag' => $backendPrivatePerms,
+					'NOT' => array('Permission.object_id' => $allowedObjIds)
 				),
 				'contain' => array('BEObject')
 			));
