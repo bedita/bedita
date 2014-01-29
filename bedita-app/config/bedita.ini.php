@@ -294,7 +294,8 @@ $config['BEDITA_PERMS_READ_MODIFY'] = BEDITA_PERMS_READ_MODIFY;
 $config["objectPermissions"] = array(
 	"write" => 1,
 	"frontend_access_with_block" => 2,
-	"frontend_access_without_block" => 3
+	"frontend_access_without_block" => 3,
+	"backend_private" => 4
 );
 
 

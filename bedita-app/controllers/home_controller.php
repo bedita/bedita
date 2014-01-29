@@ -43,29 +43,18 @@ class HomeController extends AppController {
 	 	$lastModBYUser = array();
 	 	$lastMod = array();
 	 	$userObjectTypes = $this->userObjectTypeIds();
-	 	
-	 	$lastModBYUser = $this->BEObject->find("all", array(
-		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
-		 								"conditions" 	=> array(
-		 														"user_modified = '" . $user["id"] . "'",
-		 														'object_type_id' => $userObjectTypes
-	 														),
-		 								"order"			=> array("modified DESC"),
-		 								"limit"			=> 5
-	 								)
-	 						);
 
-	 	$lastMod = $this->BEObject->find("all", array(
-		 								"contain" 		=> array("ObjectType"),
-		 								"fields"		=> array("id", "title", "status", "modified", "object_type_id", "ObjectType.module_name"),
-		 								"conditions" 	=> array(
-		 														'object_type_id' => $userObjectTypes,
-	 														),
-	 									"order"			=> array("modified DESC"),
-		 								"limit"			=> 10
-	 								)
-	 						);
+	 	$lastModFilter = array('object_type_id' => $userObjectTypes);
+	 	$lastMod = $this->BEObject->findObjects(null, $user['userid'], null, $lastModFilter, 'modified', false, 1, 10);
+	 	foreach ($lastMod['items'] as &$item) {
+	 		$item['module_name'] = $conf->objectTypes[$item['object_type_id']]['module_name'];
+	 	}
+
+	 	$lastModFilter['user_modified'] = $user['id'];
+	 	$lastModBYUser = $this->BEObject->findObjects(null, $user['userid'], null, $lastModFilter, 'modified', false, 1, 5);
+	 	foreach ($lastModBYUser['items'] as &$item) {
+	 		$item['module_name'] = $conf->objectTypes[$item['object_type_id']]['module_name'];
+	 	}
 
 	 	$filter = array();
 	 	$filter["object_type_id"] = $conf->objectTypes['comment']["id"];
@@ -80,8 +69,8 @@ class HomeController extends AppController {
 		$lastNotes = $this->BEObject->findObjects(null, null, null, $filter,  "modified", false, 1, 10);
 
 	 	$connectedUser = $this->BeAuth->connectedUser();
-	 	$this->set("lastModBYUser", $lastModBYUser);
-	 	$this->set("lastMod", $lastMod);
+	 	$this->set("lastModBYUser", $lastModBYUser['items']);
+	 	$this->set("lastMod", $lastMod['items']);
 	 	$this->set("lastNotes", $lastNotes["items"]);
 	 	$this->set("lastComments", $lastComments["items"]);
 	 	$this->set("connectedUser", $connectedUser);
@@ -129,7 +118,7 @@ class HomeController extends AppController {
 				
 			$user = $this->Session->read("BEAuthUser");
 
-			$objects = $this->BEObject->findObjects(null, $user["id"], null, $filter, null, true, $page, $dim);
+			$objects = $this->BEObject->findObjects(null, $user["userid"], null, $filter, null, true, $page, $dim);
 			// get objects module
 			foreach ($objects["items"] as $key => $o) {
 				$condition = "id=".$o['object_type_id'];

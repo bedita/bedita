@@ -355,8 +355,15 @@ class BEAppModel extends AppModel {
                 unset($filter["query"]);
             }
         }
-		if(!empty($excludeIds))
+		if(!empty($excludeIds)) {
 			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
+		}
+
+		// setup filter to get only allowed objects
+		// exclude backend private objects and object that stay only in private publication/section
+		if (BACKEND_APP && $userid) {
+			$filter["allowed_to_user"] = $userid;
+		}
 
 		// get specific query elements
 		if (!$this->Behaviors->attached('BuildFilter')) {
@@ -384,12 +391,10 @@ class BEAppModel extends AppModel {
 			}
 			$from .= ", {$s}trees{$e} AS {$s}Tree{$e}";
 			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
-//			if (!empty($userid))
-//				$conditions[] 	= " prmsUserByID ('{$userid}', Tree.id, ".BEDITA_PERMS_READ.") > 0 " ;
 
-			if($all) {
+			if ($all) {
 				$cond = "";
-				if($this->getDriver() == 'mysql') {
+				if ($this->getDriver() == 'mysql') {
 					// #MYSQL
 					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
 				} else {
@@ -400,7 +405,7 @@ class BEAppModel extends AppModel {
 			} else {
 				$conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
 			}
-			if(empty($order)) {
+			if (empty($order)) {
 				$order = "{$s}Tree{$e}.{$s}priority{$e}";
 				$section = ClassRegistry::init("Section");
 				$priorityOrder = $section->field("priority_order", array("id" => $id));
@@ -425,12 +430,12 @@ class BEAppModel extends AppModel {
 		$sqlClausole = $db->conditions($conditions, true, true) ;
 
 		$ordClausole = "";
-		if(is_string($order) && strlen($order)) {
+		if (is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
 				$order = "{$s}BEObject{$e}." . $order;
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
-			if(!empty($otherOrder)) {
+			if (!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
 			} else {
 				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
@@ -448,7 +453,7 @@ class BEAppModel extends AppModel {
 		if ($tmp === false)
 			throw new BeditaException(__("Error finding objects", true));
 
-        if($searchCount === null) {
+        if ($searchCount === null) {
     		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
     
     		// #CUSTOM QUERY
@@ -466,7 +471,7 @@ class BEAppModel extends AppModel {
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 
 		// reorder array using search engine rank 
-        if(!empty($rankOrder)) {
+        if (!empty($rankOrder)) {
             $tmpOrder = array();
             foreach ($tmp as $item) {
                 $obj = $this->am($item);

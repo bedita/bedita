@@ -668,7 +668,10 @@ class AppController extends Controller
 
 		// handle tree. Section and Area handled in AreaController
 		if(!$fixed && isset($this->data['destination']) && $beModel->name != "Section" &&  $beModel->name != "Area") {
-			$this->BeTree->updateTree($beModel->id, $this->data['destination']);
+			if (!$new) {
+				$this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+			}
+			ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
 		}
 	}
 
@@ -1076,7 +1079,7 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function viewObject(BEAppModel $beModel, $id = null) {
-		if(Configure::read("langOptionsIso") == true) {
+		if (Configure::read("langOptionsIso") == true) {
 			Configure::load('langs.iso') ;
 		}
 		$obj = null ;
@@ -1085,16 +1088,23 @@ abstract class ModulesController extends AppController {
 		$relationsCount = array();
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
-		if(isset($id)) {
+		if (isset($id)) {
+			// check if object is forbidden for user
+			$user = $this->Session->read("BEAuthUser");
+			$permission = ClassRegistry::init("Permission");
+			if ($permission->isForbidden($id, $user)) {
+				throw new BeditaException(__("Access forbidden to object", true) . " $id");
+			}
+
 			$id = ClassRegistry::init("BEObject")->objectId($id);
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 
 			$beModel->containLevel("detailed");
-			if(!($obj = $beModel->findById($id))) {
+			if (!($obj = $beModel->findById($id))) {
 				throw new BeditaException(__("Error loading $name: ", true).$id);
 			}
-			if(!$beModel->checkType($obj['object_type_id'])) {
+			if (!$beModel->checkType($obj['object_type_id'])) {
                throw new BeditaException(__("Wrong content type: ", true).$id);
 			}
 			if (!empty($obj['RelatedObject'])) {

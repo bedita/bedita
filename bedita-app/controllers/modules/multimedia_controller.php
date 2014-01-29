@@ -95,6 +95,12 @@ class MultimediaController extends ModulesController {
 		$parents_id = array();
 		$name = '';
 		if($id) {
+			// check if object is forbidden for user
+			$user = $this->Session->read("BEAuthUser");
+			$permission = ClassRegistry::init("Permission");
+			if ($permission->isForbidden($id, $user)) {
+				throw new BeditaException(__("Access forbidden to object", true) . " $id");
+			}
 			$objEditor = ClassRegistry::init("ObjectEditor");
 			$objEditor->cleanup($id);
 			$model = ClassRegistry::init($this->BEObject->getType($id));
@@ -266,8 +272,11 @@ class MultimediaController extends ModulesController {
 			$this->Stream->id = $this->{$model}->id;
 		}
 
-		if(isset($this->data['destination'])) {
-			$this->BeTree->updateTree($this->Stream->id, $this->data['destination']);
+		if (isset($this->data['destination'])) {
+			if (!$new) {
+				$this->BeTree->setupForSave($this->Stream->id, $this->data['destination']);
+			}
+			ClassRegistry::init('Tree')->updateTree($this->Stream->id, $this->data['destination']);
 		}
 		$this->Transaction->commit() ;
 		$this->userInfoMessage(__("Multimedia object saved", true)." - ".$this->data["title"]);

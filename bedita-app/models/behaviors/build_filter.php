@@ -670,6 +670,107 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->from = $from . $this->from;
 		}
 	}
+
+	/**
+	 * filter objects allowed to user
+	 *
+	 * @param string $s, start quote sql
+	 * @param string $e, end quote sql
+	 * @param  string $userid userid (users.userid field)
+	 */
+	protected function allowed_to_userFilter($s, $e, $userid) {
+		$user = ClassRegistry::init('User')->find('first', array(
+			'conditions' => array('User.userid' => $userid),
+			'contain' => array('Group')
+		));
+		$userGroups = Set::combine($user, 'Group.{n}.name', 'Group.{n}.id');
+
+		if (!empty($userGroups) && !in_array('administrator', array_keys($userGroups))) {
+			$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
+			$permission = ClassRegistry::init('Permission');
+			$allowedObjIds = $permission->find('list', array(
+				'fields' => array('object_id'),
+				'conditions' => array(
+					'Permission.flag' => $backendPrivatePerms,
+					'Permission.ugid' => $userGroups
+				)
+			));
+
+			$permission->bindModel(array(
+				'belongsTo' => array('BEObject' => array('className' => 'BEObject', 'foreignKey' => 'object_id'))
+			));
+			// forbidden objects on which user can't access
+			$forbiddenObjects = $permission->find('all', array(
+				'fields' => array('object_id', 'BEObject.object_type_id'),
+				'conditions' => array(
+					'Permission.switch' => 'group',
+					'Permission.flag' => $backendPrivatePerms,
+					'NOT' => array('Permission.object_id' => $allowedObjIds)
+				),
+				'contain' => array('BEObject')
+			));
+
+			if (!empty($forbiddenObjects)) {
+				$forbiddenObjectsIds = array();
+				$forbiddenPub = array();
+				$forbiddenSection = array();
+				$sectionTypeId = Configure::read('objectTypes.section.id');
+				$pubTypeId = Configure::read('objectTypes.area.id');
+				foreach ($forbiddenObjects as $item) {
+					$forbiddenObjectsIds[] = $item['BEObject']['id'];
+					if ($item['BEObject']['object_type_id'] == $sectionTypeId) {
+						$forbiddenSection[] = $item['BEObject']['id'];
+					} elseif ($item['BEObject']['object_type_id'] == $pubTypeId) {
+						$forbiddenPub[] = $item['BEObject']['id'];
+					}
+				}
+
+				if (!empty($forbiddenPub) || !empty($forbiddenSection)) {
+
+					$query = "SELECT {$s}Tree{$e}.{$s}id{$e}
+						     FROM {$s}trees{$e} AS {$s}Tree{$e}
+						     WHERE {$s}BEObject{$e}.{$s}id{$e} = {$s}Tree{$e}.{$s}id{$e}";
+
+					if (!empty($forbiddenPub)) {
+						$forbiddenPubList = implode(',', $forbiddenPub);
+						$query .= " AND {$s}Tree{$e}.{$s}area_id{$e} NOT IN (" . $forbiddenPubList .")";
+					}
+
+					if (!empty($forbiddenSection)) {
+						$forbiddenSectionCondition = "";
+						foreach ($forbiddenSection as $key => $forbiddenId) {
+							if ($key > 0) {
+								$forbiddenSectionCondition .= " AND ";
+							}
+							$forbiddenSectionCondition .= "{$s}Tree{$e}.{$s}object_path{$e} NOT LIKE '%/$forbiddenId/%'";
+						}
+						$query .= " AND (" . $forbiddenSectionCondition . ")";
+					}
+
+					// get only objects not in tree
+					// or objects inside no private publication and/or inside no private section
+					$this->conditions[] = "(
+						(
+							NOT EXISTS (
+								SELECT {$s}Tree{$e}.{$s}id{$e}
+								FROM {$s}trees{$e} AS {$s}Tree{$e}
+								WHERE {$s}Tree{$e}.{$s}id{$e} = {$s}BEObject{$e}.{$s}id{$e}
+							)
+						)
+						OR
+						(
+							EXISTS (" . $query . ")
+						)
+					)";
+
+				}
+
+				// get only objects not forbidden
+				$forbiddenObjectsList = implode(',', $forbiddenObjectsIds);
+				$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} NOT IN (" . $forbiddenObjectsList .")";
+			}
+		}
+	}
 }
  
 ?>

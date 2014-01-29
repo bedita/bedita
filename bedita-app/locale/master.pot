@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2013-12-20 12:04:24\n"
+"POT-Creation-Date: 2014-01-15 16:00:44\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -16,6 +16,9 @@ msgid "(un)select all"
 msgstr ""
 
 msgid "A new version of the addon seems to be present. Do you want to update it?"
+msgstr ""
+
+msgid "Access forbidden to object"
 msgstr ""
 
 msgid "Access to Backend"
@@ -2013,6 +2016,9 @@ msgstr ""
 msgid "author"
 msgstr ""
 
+msgid "backend_private"
+msgstr ""
+
 msgid "ban this IP!"
 msgstr ""
 
@@ -2491,6 +2497,15 @@ msgid "master title"
 msgstr ""
 
 msgid "matching the query"
+msgstr ""
+
+msgid "matching the query beginning by"
+msgstr ""
+
+msgid "matching the query containing"
+msgstr ""
+
+msgid "matching the query ending by"
 msgstr ""
 
 msgid "maximum"

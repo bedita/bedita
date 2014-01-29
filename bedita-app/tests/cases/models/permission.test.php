@@ -64,10 +64,10 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->Transaction->begin() ;
 		
 		$this->_insert($this->Area, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Area->id;
-		$this->_insert($this->Section, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Section->id;
-		$this->_insert($this->Document, $this->data['min']) ;
+		$dataChild = array_merge($this->data['min'], array('parent_id' => $this->Area->id));
+		$this->_insert($this->Section, $dataChild) ;
+		$dataChild['parent_id'] = $this->Section->id;
+		$this->_insert($this->Document, $dataChild) ;
 
 		$this->Permission->add($this->Area->id, $this->data['addPerms1']) ;
 		$this->Permission->add($this->Section->id, $this->data['addPerms1']) ;
@@ -137,130 +137,9 @@ class PermissionTestCase extends BeditaTestCase {
 	} 
 
 
-/*	
-	function testReplaceByRootTree() {	
-		$this->Transaction->begin() ;
-
-		$this->_insert($this->Area, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Area->id;
-		$this->_insert($this->Section, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Section->id;
-		$this->_insert($this->Document, $this->data['min']) ;
-		
-		sort($this->data['addPerms1']);
-		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
-		$this->assertEqual($ret,true);
-		
-		// area permissions
-		$perms = $this->Permission->load($this->Area->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Area->id) ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
-		
-		// section permissions
-		$perms = $this->Permission->load($this->Section->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Section->id) ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
-		
-		// document permissions
-		$perms = $this->Permission->load($this->Document->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Document->id) ;
-		$this->assertEqual($this->data['addPerms1'], $perms);
-		
-		$this->_delete($this->Document) ;
-		$this->_delete($this->Section) ;
-		$this->_delete($this->Area) ;
-		$this->Transaction->rollback() ;
-	} 
-
-	function testDeleteByRootTree() {	
-		$this->Transaction->begin() ;
-		
-		$this->_insert($this->Area, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Area->id;
-		$this->_insert($this->Section, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Section->id;
-		$this->_insert($this->Document, $this->data['min']) ;
-		
-		sort($this->data['addPerms1']);
-		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
-		$this->assertEqual($ret,true);
-		
-		// remove permissions
-		$ret = $this->Permission->removeTree($this->Area->id, $this->data['removePerms1']) ;
-		$this->assertEqual($ret,true);
-		
-		// area permissions
-		$perms = $this->Permission->load($this->Area->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Area->id) ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
-		
-		// section permissions
-		$perms = $this->Permission->load($this->Section->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Section->id) ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
-		
-		// document permissions
-		$perms = $this->Permission->load($this->Document->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Document->id) ;
-		$this->assertEqual($this->data['resultDeletePerms1'], $perms);
-		
-		$this->_delete($this->Document) ;
-		$this->_delete($this->Section) ;
-		$this->_delete($this->Area) ;
-		$this->Transaction->rollback() ;
-	} 
-
-	function testDeleteAllByRootTree() {	
-		$this->Transaction->begin() ;
-		
-		$this->_insert($this->Area, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Area->id;
-		$this->_insert($this->Section, $this->data['min']) ;
-		$this->data['min']['parent_id'] = $this->Section->id;
-		$this->_insert($this->Document, $this->data['min']) ;
-		
-		sort($this->data['addPerms1']);
-		$ret = $this->Permission->addTree($this->Area->id, $this->data['addPerms1']) ;
-		$this->assertEqual($ret,true);
-
-		// remove all permissions
-		$ret = $this->Permission->removeAllTree($this->Area->id);
-		$this->assertEqual($ret,true);
-		
-		// area permissions
-		$perms = $this->Permission->load($this->Area->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Area->id) ;
-		$this->assertEqual(array(), $perms);
-		
-		// section permissions
-		$perms = $this->Permission->load($this->Section->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Section->id) ;
-		$this->assertEqual(array(), $perms);
-		
-		// document permissions
-		$perms = $this->Permission->load($this->Document->id);
-		sort($perms);
-		pr("Verify permission on id:" . $this->Document->id) ;
-		$this->assertEqual(array(), $perms);
-		
-		$this->_delete($this->Document) ;
-		$this->_delete($this->Section) ;
-		$this->_delete($this->Area) ;
-		$this->Transaction->rollback() ;
-	} 
-*/
-
 	function testWritePermissions() {	
 		$this->Transaction->begin() ;
-		
+		$this->Area->create();
 		$this->_insert($this->Area, $this->data['min']) ;
 		
 		sort($this->data['addPerms1']);
@@ -291,7 +170,11 @@ class PermissionTestCase extends BeditaTestCase {
 
 
 	function testFrontendAccess() {
-		$this->_insert($this->Section, $this->data['min']) ;
+		$this->Transaction->begin() ;
+		$this->Area->create();
+		$this->_insert($this->Area, $this->data['min']) ;
+		$dataChild = array_merge($this->data['min'], array('parent_id' => $this->Area->id));
+		$this->_insert($this->Section, $dataChild) ;
 		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck']) ;
 	
 		$user = ClassRegistry::init("User");
@@ -311,7 +194,7 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->assertEqual($result,"full");
 		
 		$this->Section->create();
-		$this->_insert($this->Section, $this->data['min']) ;
+		$this->_insert($this->Section, $dataChild) ;
 		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck2']) ;
 		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
 		$this->assertEqual($result,"full");
@@ -321,11 +204,67 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->assertEqual($result,"partial");
 		
 		$this->Section->create();
-		$this->_insert($this->Section, $this->data['min']) ;
+		$this->_insert($this->Section, $dataChild) ;
 		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck3']) ;
 		$userData["groups"] = array("frontend");
 		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
 		$this->assertEqual($result,"denied");
+
+		$this->Transaction->rollback() ;
+	}
+
+	function testForbiddenObject() {
+		$this->Transaction->begin() ;
+		$this->Area->create();
+		$this->_insert($this->Area, $this->data['min']);
+		$this->Permission->add($this->Area->id, $this->data['permsForbiddenCheck']) ;
+	
+		$user = ClassRegistry::init("User");
+		$userData = array();
+		$userData["id"]= $user->field('id', array('userid' => "bedita"));
+		$userData["groups"] = array("administrator");
+
+		// check forbidden on object itself
+		$result = $this->Permission->isForbidden($this->Area->id, $userData);
+		$this->assertFalse($result);
+
+		$userData["groups"] = array("editor", "reader");
+		$result = $this->Permission->isForbidden($this->Area->id, $userData);
+		$this->assertFalse($result);
+
+		$userData["groups"] = array("reader");
+		$result = $this->Permission->isForbidden($this->Area->id, $userData);
+		$this->assertTrue($result);
+
+		// check forbidden on child (document) of object (area) with permission set
+		$dataChild = array_merge($this->data['min'], array('parent_id' => $this->Area->id));
+		$this->Section->create();
+		$this->_insert($this->Section, $dataChild);
+		$this->Document->create();
+		$this->_insert($this->Document, $this->data['min']);
+		$tree = ClassRegistry::init('Tree');
+		$tree->appendChild($this->Document->id, $this->Section->id);
+
+		$userData["groups"] = array("administrator");
+		$result = $this->Permission->isForbidden($this->Document->id, $userData);
+		$this->assertFalse($result);
+
+		$userData["groups"] = array("editor", "reader");
+		$result = $this->Permission->isForbidden($this->Document->id, $userData);
+		$this->assertFalse($result);
+
+		$userData["groups"] = array("reader");
+		$result = $this->Permission->isForbidden($this->Document->id, $userData);
+		$this->assertTrue($result);
+
+		// add document to a free area and check that it's never forbidden
+		$this->Area->create();
+		$this->_insert($this->Area, $this->data['min']);
+		$tree->appendChild($this->Document->id, $this->Area->id);
+		$result = $this->Permission->isForbidden($this->Document->id, $userData);
+		$this->assertFalse($result);
+
+		$this->Transaction->rollback();
 	}
 	
 	/////////////////////////////////////////////////

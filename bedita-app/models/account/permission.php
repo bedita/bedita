@@ -98,32 +98,84 @@ class Permission extends BEAppModel
 	 * @param integer $objectId
 	 * @param array $userData user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
 	 * @param $perms permission array defined like in checkPermissionByUser() call
-	 * 				 if it's defined use this else get permission by $objectId
+	 * 				 if it's defined use it else get permission by $objectId
 	 * @return boolean, true if it's writable
 	 */
-	public function isWritable($objectId, array &$userData, $perms=array()) {
+	public function isWritable($objectId, array &$userData, $perms = array()) {
 		// administrator can always write....
 		if(!empty($userData['groups']) && in_array("administrator",$userData['groups'])) {
 			return true;		
 		}
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, Configure::read("objectPermissions.write"));
+			$perms = $this->isPermissionSet($objectId, Configure::read("objectPermissions.write"));
 		}
 		return $this->checkPermissionByUser($perms, $userData);
 	}
-	
+
+	/**
+	 * Is object ($objectId) forbidden to user?
+	 * Backend only (check backend_private permission)
+	 *
+	 * @param integer $objectId
+	 * @param array $userData user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
+	 * @return boolean, true if it's forbidden false if it's allowed
+	 */
+	public function isForbidden($objectId, array &$userData) {
+		// no private objects for administrator
+		if (!BACKEND_APP || ( !empty($userData['groups']) && in_array("administrator", $userData['groups'])) ) {
+			return false;
+		}
+
+		$forbidden = false;
+		$privatePermission = Configure::read("objectPermissions.backend_private");
+
+		// check perms on main object ($objectId)
+		$perms = $this->isPermissionSet($objectId, $privatePermission);
+		$forbidden = !$this->checkPermissionByUser($perms, $userData);
+		if ($forbidden) {
+			return true;
+		}
+
+		// check if some branch parent is allowed, if so object is not forbidden
+		$parentsPath = ClassRegistry::init('Tree')->find('list', array(
+			'fields' => array('parent_path'),
+			'conditions' => array('id' => $objectId)
+		));
+
+		if (!empty($parentsPath)) {
+			foreach ($parentsPath as $path) {
+				$path = trim($path, '/');
+				$pathArr = explode('/', $path);
+				$branchAllowed = array();
+				foreach ($pathArr as $parentId) {
+					$perms = $this->isPermissionSet($parentId, $privatePermission);
+					$branchAllowed[] = $this->checkPermissionByUser($perms, $userData);
+				}
+
+				if (!in_array(false, $branchAllowed)) {
+					$forbidden = false;
+					break;
+				} else {
+					$forbidden = true;
+				}
+			}
+		}
+
+		return $forbidden;
+	}
+
 	/**
 	 * Is object ($objectId) accessible by user in frontend?
 	 * 
 	 * @param $objectId
 	 * @param $userData  user data, like array("id" => .., "userid" => ..., "groups" => array("administrator", "frontend",...))
 	 * @param $perms permission array defined like in checkPermissionByUser() call
-	 * 				 if it's defined use this else get permission by $objectId
+	 * 				 if it's defined use it else get permission by $objectId
 	 * @return boolean, true if it's accessible
 	 */
-	public function isAccessibleByFrontend($objectId, array &$userData, $perms=array()) {
+	public function isAccessibleByFrontend($objectId, array &$userData, $perms = array()) {
 		if (empty($perms)) {
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_with_block"),
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
@@ -133,13 +185,13 @@ class Permission extends BEAppModel
 	
 	public function frontendAccess($objectId, array &$userData) {
 		if(empty($userData)) { // not logged
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_with_block")
 			));
 			if(!empty($perms)) { // A) access denied => object has at least one perm 'frontend_access_with_block'
 				return "denied";
 			}
-			$perms = $this->isPermissionSetted($objectId, array(
+			$perms = $this->isPermissionSet($objectId, array(
 				Configure::read("objectPermissions.frontend_access_without_block")
 			));
 			if(!empty($perms)) { // B) partial access => object has at least one perm 'frontend_access_without_block'
@@ -149,7 +201,7 @@ class Permission extends BEAppModel
 			return "full";
 		}
 		// logged
-		$perms = $this->isPermissionSetted($objectId, array(
+		$perms = $this->isPermissionSet($objectId, array(
 			Configure::read("objectPermissions.frontend_access_with_block"),
 			Configure::read("objectPermissions.frontend_access_without_block")
 		));
@@ -157,7 +209,7 @@ class Permission extends BEAppModel
 		if(empty($perms) || $this->checkPermissionByUser($perms,$userData)) {
 		    return "full";
 		}
-		$perms = $this->isPermissionSetted($objectId, array(
+		$perms = $this->isPermissionSet($objectId, array(
 			Configure::read("objectPermissions.frontend_access_with_block")
 		));
 		// B) access denied => perms for groups [others than user's groups], at least one frontend_access_with_block perm
@@ -200,7 +252,7 @@ class Permission extends BEAppModel
 	 * @param $flag permission
 	 * @return array of perms with users and groups or false if no permission is setted
 	 */
-	public function isPermissionSetted($objectId, $flag) {
+	public function isPermissionSet($objectId, $flag) {
 		$result = $this->find('all', array(
 				"conditions" => array("object_id" => $objectId, "flag" => $flag)
 			)

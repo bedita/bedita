@@ -47,10 +47,10 @@ $(document).ready(function() {
     
 	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
 	<ul id="recent" class="bordered smallist">
-	{foreach from=$lastModBYUser item=item}
-		<li><span class="listrecent {$item.ObjectType.module_name}">&nbsp;</span>
-		<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
-			{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{foreach $lastModBYUser as $item}
+		<li><span class="listrecent {$item.module_name}">&nbsp;</span>
+		<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+			{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{foreachelse}
 		<li><i>{t}you have no recent items{/t}</i></li>
 	{/foreach}
@@ -58,11 +58,11 @@ $(document).ready(function() {
 	
 	<div class="tab"><h2>{t}recent items{/t}</h2></div>
 	<ul id="allrecent" class="bordered smallist">
-	{foreach from=$lastMod item=item}
+	{foreach $lastMod as $item}
 		<li>
-			<span class="listrecent {$item.ObjectType.module_name}">&nbsp;&nbsp;</span>
-			&nbsp;<a class="{$item.BEObject.status|default:''}" title="{$item.ObjectType.module_name} | {t}modified on{/t} {$item.BEObject.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.BEObject.id}">
-				{$item.BEObject.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+			<span class="listrecent {$item.module_name}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+				{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
 	{/foreach}
 	</ul>	
 	
