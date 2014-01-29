@@ -99,7 +99,8 @@ class PagesController extends AppController {
 	public function showObjects($main_object_id=null, $relation=null, $main_object_type_id=null, $objectType="related") {
 		$this->ajaxCheck();
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
-		
+		$filter = array();
+		$excludeIds = array();
 		$conf = Configure::getInstance();
 		
 		if (!empty($relation)) {
@@ -180,11 +181,28 @@ class PagesController extends AppController {
 					$objectTypeIds[] = $conf->objectTypes[$val]["id"];
 				}
 			}
-						
+
 		} else {
-			$objectTypeIds = Configure::read("objectTypes." . $objectType . ".id");
+			// if set param named group get leafs + section + area and only objects without permission on that group
+			if (!empty($this->params['named']['group'])) {
+				$objectType = 'all';
+				$permission = ClassRegistry::init('Permission');
+				$objIdsWithPerms = $permission->find('list', array(
+					'fields' => array('object_id'),
+					'conditions' => array('switch' => 'group', 'ugid' => $this->params['named']['group'])
+				));
+				$excludeIds = array_merge($excludeIds, $objIdsWithPerms);
+			}
+
+			if ($objectType == 'all') {
+				$leafsIds = Configure::read("objectTypes.leafs.id");
+				$collectionIds = array(Configure::read('objectTypes.area.id'), Configure::read('objectTypes.section.id'));
+				$objectTypeIds = array_merge($leafsIds, $collectionIds);
+			} else {
+				$objectTypeIds = Configure::read("objectTypes." . $objectType . ".id");
+			}
 		}
-		
+
 		// set object_type_id filter
 		if (!empty($this->params["form"]["objectType"])) {
 			$filter["object_type_id"] = array($this->params["form"]["objectType"]);
@@ -210,8 +228,11 @@ class PagesController extends AppController {
 					"switch" => $usedRelation
 				)
 			));
-			$excludeIds = Set::extract("/ObjectRelation/object_id", $res);
+			$excludeIds = array_merge($excludeIds, Set::extract("/ObjectRelation/object_id", $res));
 			$excludeIds[] = $main_object_id;
+		}
+
+		if (!empty($excludeIds)) {
 			$filter["BEObject.id"] = array("NOT" => $excludeIds);
 		}
 		
