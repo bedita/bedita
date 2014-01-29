@@ -96,7 +96,7 @@ class PagesController extends AppController {
 	 * 							  Used if $this->parmas["form"]["objectType"] and $relation are empty	
 	 * 
 	 **/
-	public function showObjects($main_object_id=null, $relation=null, $main_object_type_id=null, $objectType="related") {
+	public function showObjects($main_object_id = null, $relation = null, $main_object_type_id = null, $objectType = "related") {
 		$this->ajaxCheck();
 		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
 		$filter = array();
@@ -290,12 +290,16 @@ class PagesController extends AppController {
 	 * 				 i.e. areas.inc.list_object become areas/inc/list_object.tpl
 	 * 				  
 	 */
-	public function loadObjectToAssoc($main_object_id=null, $objectType=null, $tplname=null) {
+	public function loadObjectToAssoc($main_object_id = null, $objectType = null, $tplname = null) {
 		$this->ajaxCheck();
+		$tplname = (!empty($this->params["form"]["tplname"]))? $this->params["form"]["tplname"] : $tplname;
+		$relation = (!empty($this->params["form"]["relation"]))? $this->params["form"]["relation"] : null;
+
 		$conditions = array("BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ));
 		
-		if (!empty($objectType))
+		if (!empty($objectType)) {
 			$conditions["BEObject.object_type_id"] = Configure::read("objectTypes." . $objectType . ".id");
+		}
 		
 		$objects = ClassRegistry::init("BEObject")->find("all", array(
 													"contain" => array("ObjectType"),
@@ -330,7 +334,7 @@ class PagesController extends AppController {
 			}
 		}
 		$this->set("objsRelated", $objRelated);
-		$this->set("rel", $this->params["form"]["relation"]);
+		$this->set("rel", $relation);
 		$tplname = (empty($tplname))? "elements/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
 		$this->render(null, null, VIEWS . $tplname);
 	}
