@@ -637,7 +637,13 @@ $(".modulesmenu_d LI[class]").hover(
 
 	//var objstatus = $(".secondacolonna .modules label").attr("class");
 
+/*...........................................    
 
+   form enhancement / depend on libs/jquery.bsmselect
+
+...........................................*/
+
+	$("select[multiple]").bsmSelect();
 
 
 });

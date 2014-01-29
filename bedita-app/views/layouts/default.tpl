@@ -34,6 +34,11 @@
 	{$html->script("jquery/jquery.tooltip.min")}
 	{$html->script("beditaUI")}
 
+	{$html->script("libs/jquery.bsmselect")}
+	{$html->css('jquery.bsmselect.css')}
+<!-- https://github.com/vicb/bsmSelect -->
+<!-- OR http://harvesthq.github.io/chosen/ ??? -->
+
 	{$beurl->addModuleScripts()}
 
 	{* collect linked scripts around *}

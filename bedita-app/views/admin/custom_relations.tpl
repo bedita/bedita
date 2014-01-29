@@ -1,16 +1,8 @@
-<!-- https://github.com/vicb/bsmSelect -->
-
-{$html->script("libs/jquery.bsmselect")}
-{$html->css('jquery.bsmselect.css')}
-
 <script type="text/javascript">
 	var messageDel = "{t}Do you want to remove the relation? Relation already created between objects will be maintained.{/t}"
 	var urlDelete = "{$html->url('/admin/deleteCustomRelation')}";
     $(document).ready(function() {
 		openAtStart("table[id]");
-
-		$("select[multiple]").bsmSelect();
-
 		$("input.js-del-relation").click(function() {
 			if (!confirm(messageDel)) {
 				return false ;
@@ -55,7 +47,7 @@
 					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
 				</th>
 				<td style="vertical-align:top">
-					<select multiple name="data[right][]">
+					<select multiple name="data[right][]" title="select an object type">>
 						<option value="related" selected="selected">all</option>
 					{foreach $conf->objectTypes.related.id as $id}	
 						<option value="{$conf->objectTypes[$id].name}">	
