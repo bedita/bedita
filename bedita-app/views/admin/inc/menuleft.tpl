@@ -20,7 +20,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	<ul class="menuleft insidecol bordered">
 		<li {if $view->action eq 'customproperties'}class="on"{/if}><a href="{$html->url('/admin/customproperties')}">{t}Custom properties{/t}</a></li>
-		{bedev}<li {if $view->action eq 'customRelations'}class="on"{/if}><a href="{$html->url('/admin/customRelations')}">{t}Custom relations{/t}</a></li>{/bedev}
+		<li {if $view->action eq 'customRelations'}class="on"{/if}><a href="{$html->url('/admin/customRelations')}">{t}Custom relations{/t}</a></li>
 		{* tpl relations still to develop *}
 	</ul>
 	
