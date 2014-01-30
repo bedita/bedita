@@ -823,7 +823,7 @@ UL.menuleft + UL.menuleft {
 
 .pub H2 A {
 	color:#663300;
-	text-transform:uppercase;
+	/*text-transform:uppercase;*/
 }
 
 .publishingtree H2 A {
@@ -836,8 +836,8 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree H2 A.plusminus {
-	display:inline-block;
-	padding-right:10px;
+	/*display:inline-block;
+	padding-right:10px;*/
 }
 
 .publishingtree H2 A.plusminus:before {
