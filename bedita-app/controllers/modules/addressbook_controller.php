@@ -68,7 +68,7 @@ class AddressbookController extends ModulesController {
 				$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
 			}
 			$this->data['birthdate'] = $this->data['person']['birthdate'];
-            if(!in_array("deathdate", $conf->hideFields['addressbook'])){
+            if (empty($conf->hideFields['addressbook']) || !in_array("deathdate", $conf->hideFields['addressbook'])) {
                 $this->data['deathdate'] = $this->data['person']['deathdate'];
             }
 
