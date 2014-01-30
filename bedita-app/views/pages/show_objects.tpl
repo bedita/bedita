@@ -101,6 +101,14 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 	<div class="modalcommands">
 		
 		<input type="button" id="addButton" style="width:300px" value=" {t}add{/t} ">
+
+		{if !empty($html->params.named.group)}
+ 		<select title="{t}add permission{/t}" id="selectGroupPermission" name="data[Permission][{$ob.id}][]">
+            {foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
+            <option value="{$permVal}">{t}{$permLabel}{/t}</option>
+            {/foreach}
+        </select>
+        {/if}
 	
 	</div>
 </div>
