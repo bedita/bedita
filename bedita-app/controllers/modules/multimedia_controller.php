@@ -142,6 +142,14 @@ class MultimediaController extends ModulesController {
 				$objEditor->updateAccess($id, $this->BeAuth->user["id"]);
 			}
 
+			//check if hash is present elsewhere
+			if (!empty($obj['hash_file'])) {
+				$results = $this->Image->query("SELECT * FROM streams INNER JOIN objects ON objects.id = streams.id WHERE hash_file='".$obj['hash_file']."'  AND streams.id != ".$obj['id']."");
+				$this->set('elsewhere_hash',$results);
+			}
+			
+
+
 			$this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
 		} else {
 			Configure::write("defaultStatus", "on"); // set default ON for new objects

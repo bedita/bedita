@@ -64,12 +64,38 @@
 
 {/if}
 
+{if !empty($elsewhere_hash)}
+<div class="tab"><h2>{t}Other media ({$elsewhere_hash|@count}) with the same image file hash{/t}</h2></div>
+<fieldset id="others">
+	<table class="bordered indexlist">
+		<thead>
+			<tr>
+				<th colspan=2>{t}Media title{/t}</th>
+				<th>{t}File uri{/t}</th>
+				<th>{t}status{/t}</th>
+				<th>{t}modified{/t}</th>
+			</tr>
+		</thead>
+		<tbody>
+		{foreach from=$elsewhere_hash item=item}
+			<tr style="cursor:pointer" onClick="window.open('{$html->url('/')}view/{$item.streams.id}','_newtab');">
+				<td><span class="listrecent image" style="margin:5px 5px 0 5px">&nbsp;</span></td>
+				<td>{if !empty($item.objects.title)}{$item.objects.title}{else}<i>[ {$item.objects.nickname} ]</i>{/if}</td>
+				<td nowrap>{$item.streams.uri}</td>
+				<td style="text-align:center">{$item.objects.status}</td>
+				<td nowrap style="text-align:center">{$item.objects.modified|date_format:$conf->dateTimePattern}</td>
+			</tr>
+		{/foreach}
+		</tbody>
+	</table>
+</fieldset>
+{/if}
 
 <div class="tab"><h2>
 	{if (!isset($object)) or (empty($object.uri))}
 		{t}Upload new file{/t}
 	{else}
-		{t}Change this file with another{/t}
+		{t}Change this file{/t}
 	{/if}
 	</h2></div>
 
