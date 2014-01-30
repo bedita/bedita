@@ -369,25 +369,14 @@ class UsersController extends ModulesController {
 		$this->Transaction->begin();
 		$newGroup = false;
 		$groupId = $this->BeAuth->saveGroup($this->data);
-		if(!isset($this->data['Group']['id'])) {
+		if (!isset($this->data['Group']['id'])) {
 			$this->eventInfo("group ".$this->data['Group']['name']." created");
 			$newGroup = true;
 		} else {
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
-		if(isset($this->data['ModuleFlags'])) {
+		if (isset($this->data['ModuleFlags'])) {
 			$permissionModule = ClassRegistry::init("PermissionModule");
-			// if user doesn't belong to administrator group then it adds admin flag to update module persmission with the same value
-			$user = $this->BeAuth->getUserSession();
-			if (!in_array("administrator", $user["groups"])) {
-				$adminModuleId = ClassRegistry::init("Module")->field("id", array("name" => "admin"));
-				$groupId = $this->Group->field("id", array("name" => "administrator"));
-				$this->data['ModuleFlags']["admin"] =  $permissionModule->field("flag", array(
-					"module_id" => $adminModuleId,
-					"ugid" => $groupId,
-					"switch" => $permissionModule->SWITCH_GROUP
-				));
-			}
 			$permissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 		}
 
