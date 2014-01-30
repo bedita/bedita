@@ -342,7 +342,7 @@ class UsersController extends ModulesController {
 			foreach ($res as $key => $obj) {
 				$objId = $obj['BEObject']['id'];
 				if (empty($objects[$objId])) {
-					$objects[$objId]['BEObject'] = $obj['BEObject'];
+					$objects[$objId] = $obj['BEObject'];
 				}
 				$objects[$objId]['Permission'][] = $obj['Permission'];
 			}
@@ -369,27 +369,31 @@ class UsersController extends ModulesController {
 		$this->Transaction->begin();
 		$newGroup = false;
 		$groupId = $this->BeAuth->saveGroup($this->data);
-		if(!isset($this->data['Group']['id'])) {
+		if (!isset($this->data['Group']['id'])) {
 			$this->eventInfo("group ".$this->data['Group']['name']." created");
 			$newGroup = true;
 		} else {
 			$this->eventInfo("group ".$this->data['Group']['name']." update");
 		}
-		if(isset($this->data['ModuleFlags'])) {
+		if (isset($this->data['ModuleFlags'])) {
 			$permissionModule = ClassRegistry::init("PermissionModule");
-			// if user doesn't belong to administrator group then it adds admin flag to update module persmission with the same value
-			$user = $this->BeAuth->getUserSession();
-			if (!in_array("administrator", $user["groups"])) {
-				$adminModuleId = ClassRegistry::init("Module")->field("id", array("name" => "admin"));
-				$groupId = $this->Group->field("id", array("name" => "administrator"));
-				$this->data['ModuleFlags']["admin"] =  $permissionModule->field("flag", array(
-					"module_id" => $adminModuleId,
-					"ugid" => $groupId,
-					"switch" => $permissionModule->SWITCH_GROUP
-				));
-			}
 			$permissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 		}
+
+		// replace perms
+		$permissionData = array();
+		if (isset($this->data['Permission'])) {
+			foreach ($this->data['Permission'] as $objectId => $flags) {
+				foreach ($flags as $flag) {
+					$permissionData[] = array(
+						'object_id' => $objectId,
+						'flag' => $flag
+					);
+				}
+			}
+		}
+		$permission = ClassRegistry::init('Permission');
+		$permission->replaceGroupPerms($groupId, $permissionData);
 
 		$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
 		$this->Transaction->commit();

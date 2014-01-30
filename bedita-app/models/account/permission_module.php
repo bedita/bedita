@@ -309,10 +309,15 @@ class PermissionModule extends BEAppModel
 	* change module permissions for a group
 	*
 	* @param $groupId
-	* @param $moduleFlags array ('module' => flag,....)
+	* @param $moduleFlags array ('moduleName' => flag,....)
 	*/
 	public function updateGroupPermission($groupId, $moduleFlags) {
-		$conditions = array("ugid" => $groupId, "switch" => self::SWITCH_GROUP);
+		$moduleIds = $this->Module->find('list', array(
+			'fields' => array('id'),
+			'conditions' => array('name' => array_keys($moduleFlags))
+		));
+		// replace only module permission flagged by $moduleFlags
+		$conditions = array("ugid" => $groupId, "switch" => self::SWITCH_GROUP, "module_id" => $moduleIds);
 		$this->deleteAll($conditions);
 		$this->Group->contain = array();
 		$g = $this->Group->findById($groupId);
