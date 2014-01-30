@@ -74,36 +74,9 @@
 			<th>{t}status{/t}</th>
 			<th colspan="2">{t}permission type{/t}</th>
 		</tr>
-		{foreach $group.objects as $ob}
-			<tr class="{$ob.BEObject.status}">
-				<td>
-					<a title="{$ob.BEObject.title|default:$ob.BEObject.nickname}" href="{$html->url('/view/')}{$ob.BEObject.id}">
-						{$ob.BEObject.title|default:$ob.BEObject.nickname|truncate:38:'…':true}</a>
-				</td>
-				<td nowrap>
-					<span class="listrecent {$conf->objectTypes[$ob.BEObject.object_type_id].name}" style="vertical-align:middle; margin:0px 5px 0 0"></span>
-					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$conf->objectTypes[$ob.BEObject.object_type_id].name}</a>
-				</td>
-				<td>
-					<a href="{$html->url('/view/')}{$ob.BEObject.id}">{$ob.BEObject.status}</a>
-				</td>
-				<td>
-					{foreach $ob.Permission as $obp}
-						{$permissionset[] = $obp.flag}
-					{/foreach}
-					<select title="{t}add permission{/t}" multiple id="selectGroupPermission" name="groupPermission">
-						{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
-						<option 
-						{if (in_array($permVal,$permissionset))}selected{/if} 
-						value="{$permVal}">{t}{$permLabel}{/t}</option>
-						{/foreach}
-					</select>
-				</td>
-				<td>
-					<input class="BEbutton" name="remove" type="button" value="x">
-				</td>
-			</tr>
-		{/foreach}
+		
+		{$view->element('form_group_permissions', ['objsRelated' => $group.objects])}
+		
 	</table>
 
 	<br />

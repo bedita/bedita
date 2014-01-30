@@ -90,7 +90,29 @@ class Permission extends BEAppModel
 	public function replace($objectId, $perms) {
 		$this->removeAll($objectId);
 		$this->add($objectId, $perms);
-	}	
+	}
+
+
+	/**
+	 * remove old permissions on $groupId and add new $perms
+	 *
+	 * @param  int $groupId
+	 * @param  array $perms array like (array("flag"=> 1, "object_id"), array(...))
+	 */
+	public function replaceGroupPerms($groupId, array $perms) {
+		// remove all group permissions
+		if(!$this->deleteAll(array('ugid' => $groupId, 'switch' => 'group'), false)) {
+			throw new BeditaException(__("Error removing permissions for group", true) . " $groupId");
+		}
+		foreach ($perms as $p) {
+			$p['ugid'] = $groupId;
+			$p['switch'] = 'group';
+			$this->create();
+			if (!$this->save($p)) {
+				throw new BeditaException(__("Error saving permissions for group", true), array($p));
+			}
+		}
+	}
 	
 	/**
 	 * Is object ($objectId) writable by user?

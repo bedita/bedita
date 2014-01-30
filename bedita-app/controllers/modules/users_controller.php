@@ -342,7 +342,7 @@ class UsersController extends ModulesController {
 			foreach ($res as $key => $obj) {
 				$objId = $obj['BEObject']['id'];
 				if (empty($objects[$objId])) {
-					$objects[$objId]['BEObject'] = $obj['BEObject'];
+					$objects[$objId] = $obj['BEObject'];
 				}
 				$objects[$objId]['Permission'][] = $obj['Permission'];
 			}
@@ -390,6 +390,21 @@ class UsersController extends ModulesController {
 			}
 			$permissionModule->updateGroupPermission($groupId, $this->data['ModuleFlags']);
 		}
+
+		// replace perms
+		$permissionData = array();
+		if (isset($this->data['Permission'])) {
+			foreach ($this->data['Permission'] as $objectId => $flags) {
+				foreach ($flags as $flag) {
+					$permissionData[] = array(
+						'object_id' => $objectId,
+						'flag' => $flag
+					);
+				}
+			}
+		}
+		$permission = ClassRegistry::init('Permission');
+		$permission->replaceGroupPerms($groupId, $permissionData);
 
 		$this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
 		$this->Transaction->commit();
