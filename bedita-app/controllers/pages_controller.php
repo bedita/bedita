@@ -308,6 +308,14 @@ class PagesController extends AppController {
 										) ;
 		$objRelated = array();
 
+		// build permissions array to add to every object
+		if (!empty($this->params['form']['permission'])) {
+			$permissions = array();
+			foreach ($this->params['form']['permission'] as $flag) {
+				$permissions[] = array('flag' => $flag);
+			}
+		}
+
 		foreach ($objects as $key => $obj) {
 			if (empty($main_object_id) || $objects[$key]["BEObject"]["id"] != $main_object_id) {
 				$obj["BEObject"]["module_name"] = $obj["ObjectType"]["module_name"];
@@ -330,9 +338,17 @@ class PagesController extends AppController {
 					);
 					$obj["BEObject"] = array_merge($obj["BEObject"], $streamFields["Stream"]);
 				}
-				$objRelated[] = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
+
+				$obj = array_merge($obj["BEObject"], array("ObjectType" => $obj["ObjectType"]));
+
+				if (isset($permissions)) {
+					$obj['Permission'] = $permissions;
+				}
+
+				$objRelated[] = $obj;
 			}
 		}
+
 		$this->set("objsRelated", $objRelated);
 		$this->set("rel", $relation);
 		$tplname = (empty($tplname))? "elements/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";

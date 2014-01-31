@@ -31,6 +31,7 @@ function loadObjToAssoc(page) {
 
 $(document).ready(function() {
 
+	$("select[multiple]").bsmSelect();
 
 	$(".searchTrigger").click(function() {
 		$(".search").toggle('fast');
@@ -48,6 +49,10 @@ $(document).ready(function() {
 		$("#assocObjContainer :checked").each(function() {
 			obj_sel.object_selected += $(this).val() + ","; 
 		});
+
+		if ($("#modalSelectGroupPermission").length > 0) {
+			obj_sel.permission = $("#modalSelectGroupPermission").val();
+		}
 		
 		if (obj_sel.object_selected != "") {
 			
@@ -103,8 +108,8 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 		<input type="button" id="addButton" style="width:300px" value=" {t}add{/t} ">
 
 		{if !empty($html->params.named.group)}
- 		<select title="{t}add permission{/t}" id="selectGroupPermission" name="data[Permission][{$ob.id}][]">
-            {foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
+ 		<select title="{t}add permission{/t}" multiple id="modalSelectGroupPermission" name="permission[]">
+            {foreach $conf->objectPermissions as $permLabel => $permVal}
             <option value="{$permVal}">{t}{$permLabel}{/t}</option>
             {/foreach}
         </select>
