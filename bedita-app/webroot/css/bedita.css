@@ -893,6 +893,10 @@ UL.menuleft + UL.menuleft {
 	/*background-color:#d8d8d8;*/
 }
 
+.publishingtree H2 A[rel] {
+	padding-left:7px
+}
+
 .publishingtree .on {
 	color:#FFF;
 	font-weight:normal;
