@@ -93,8 +93,10 @@ $(document).ready(function() {
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form action="">
-			<input type="text" style="width:190px; margin-bottom:5px; padding:5px; " name="searchstring" id="searchstring" value=""/>
-			<input id="searchButton" type="button" value="{t}go{/t}" />
+			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="searchstring" id="searchstring" value=""/>
+			<br />
+			<input type="checkbox" checked="checked" id="substring" name="substring" /> {t}substring{/t}
+			&nbsp;&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
 		</form>
 		<div id="searchResult"></div>	
 	</div>

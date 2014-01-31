@@ -15,19 +15,14 @@ available options:
 -->
 *}
 
-<style scoped>
-	.filters td {
-		border-right:1px solid gray;
-		padding-right:10px;
-	}
-</style>
-
 <table class="filters">
 	<tr>
 		
 	{if !empty($filters.word)}
-		<th><label>{t}word{/t}:</label></th>
-		<td><input type="text" name="search" id="search" style="width:98%" value="" /></td>
+		<td>
+			<input type="text" placeholder="{t}search word{/t}" name="search" id="search" style="width:255px" />&nbsp;
+			<input type="checkbox" checked="checked" id="substring" name="substring" /> {t}substring{/t}
+		</td>
 	{/if}
 	
 	{if !empty($filters.type)}
@@ -55,9 +50,9 @@ available options:
 	<tr>
 
 	{if !empty($filters.tree)}
-		<th><label>{t}on{/t}:</label></th>
 		<td>
-			<select style="width:180px" name="parent_id" id="parent_id">
+			<label>{t}on position{/t}:</label>
+			<select style="margin-left:10px; width:270px" name="parent_id" id="parent_id">
 			{$beTree->option($tree)}
 			</select>
 			{if !empty($filters.treeDescendants)}

@@ -547,7 +547,7 @@ NAV.modulesmenu {
 }
 
 .searchobjects {
-	display:none; z-index:100; position:absolute; left:835px; top:50px;
+	display:none; z-index:100; position:absolute; left:735px; top:50px;
 }
 
 .searchobjects input[type=text]{

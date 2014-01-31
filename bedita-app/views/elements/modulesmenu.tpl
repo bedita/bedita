@@ -19,8 +19,8 @@
 	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	
 	action="{$html->url('/')}{$moduleName|default:''}/{$searchDestination|default:'index'}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
 
-	<input type="text" placeholder="{t}search{/t} {$searchDestination|default:'index'}" name="searchstring" value="{$stringSearched|default:""}"/>
-
+	<input type="checkbox" checked="checked" id="substring" name="substring" /> {t}substring{/t}
+	<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="searchstring" value="{$stringSearched|default:""}"/>
 	<input type="submit" value="{t}GO{/t}"/>
 </form>
 
