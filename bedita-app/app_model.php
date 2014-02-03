@@ -353,6 +353,15 @@ class BEAppModel extends AppModel {
                 }
                 $searchCount = $result["total"];
                 unset($filter["query"]);
+            // default search engine
+            } else {
+            	if (!empty($filter['searchType'])) {
+            		$filter['query'] = array(
+            			'searchType' => $filter['searchType'],
+            			'searchString' => $filter['query']
+            		);
+            		unset($filter['searchType']);
+            	}
             }
         }
 		if(!empty($excludeIds)) {

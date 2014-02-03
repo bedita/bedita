@@ -371,26 +371,37 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * 
 	 * @param string $s, start quote sql
 	 * @param string $e, end quote sql
-	 * @param string $value, the string to search for
+	 * @param mixed $value, the string to search for (default $defaultConf['searchType'] used)
+	 *                      array(
+	 *                      	'searchType' => 'like' or 'fulltext'
+	 *                      	'searchString' => 'the string to search'
+	 *                      )
 	 */
 	protected function queryFilter($s, $e, $value) {
+		if (!is_array($value)) {
+			$value = array('searchString' => $value);
+		}
+		$defaultConf = array('searchType' => 'like', 'searchString' => '');
+		$queryConf = array_merge($defaultConf, $value);
+		if (empty($queryConf['searchString'])) {
+			return;
+		}
+
 		// #MYSQL
 		App::import('Sanitize');
-		$value = Sanitize::html($value, array('remove' => true));
+		$searchString = Sanitize::html($queryConf['searchString'], array('remove' => true));
 
-		// match if $value starts or ends with * (wildcard set)
-		$wildcard = preg_match('/(^\*.+|.+\*$)/', $value);
-		$sType = ($wildcard)? 'like' : Configure::read("searchType");
+		$sType = $queryConf['searchType'];
 
 		if ($sType == "fulltext") {
 			if ($this->driver === "mysql") {
 				// #MYSQL
-				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $value . "') * SearchText.relevance ) AS points";
+				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $searchString . "') * SearchText.relevance ) AS points";
 				$this->from .= ", search_texts AS SearchText";
-				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $value . "')";
+				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $searchString . "')";
 				$this->order .= "points DESC ";
 			} elseif ($this->driver === "postgres") {
-				$expr = explode(" ", $value);
+				$expr = explode(" ", $searchString);
 				$ts = "";
 				for($i = 0; $i < count($expr); $i++) {
 					if(!empty($expr[$i])) {
@@ -406,18 +417,12 @@ class BuildFilterBehavior extends ModelBehavior {
 			}
 		
 		} elseif ($sType == "like") {
-			if ($wildcard) {
-				// replace start and/or end '*' with '%'
-				$wildcardPatterns = array('/^\*/', '/\*$/');
-				$value = preg_replace($wildcardPatterns, '%', $value);
-			} else {
-				$value = '%' . $value . '%';
-			}
+			$searchString = '%' . $searchString . '%';
 			$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, {$s}SearchText{$e}.{$s}relevance{$e}";
 			$this->from .= ", {$s}search_texts{$e} AS {$s}SearchText{$e}";
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
 				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
-				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $value ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
+				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 	}

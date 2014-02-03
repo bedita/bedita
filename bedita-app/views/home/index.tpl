@@ -1,10 +1,24 @@
 <script type="text/javascript">
 <!--
-var urlToSearch = "{$html->url('/home/search')}" 
+var urlToSearch = "{$html->url('/home/search')}";
 
-function loadSearch() {
-	$("#searchResult").load(urlToSearch, { searchstring: $("input[name='searchstring']").val() }, function() {
-		//			
+function loadSearch(page, dim) {
+	var url = urlToSearch;
+	if (page) {
+		url += "/" + page;
+	}
+	if (dim) {
+		url += "/" + dim;
+	}
+	var data = {
+		searchstring: $("input[name='searchstring']").val()
+	}
+	if ($("input[name='substring']").attr('checked')) {
+		data.substring = true;
+	}
+	$("#searchResult").empty().addClass('loader').show();
+	$("#searchResult").load(url, data, function() {
+		$(this).removeClass('loader');
 	});
 }
 
@@ -95,7 +109,7 @@ $(document).ready(function() {
 		<form action="">
 			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="searchstring" id="searchstring" value=""/>
 			<br />
-			<input type="checkbox" checked="checked" id="substring" name="substring" /> {t}substring{/t}
+			<input type="checkbox" {if $view->params.named.searchType|default:'like' == 'like'}checked="checked"{/if} id="substring" name="substring" /> {t}substring{/t}
 			&nbsp;&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
 		</form>
 		<div id="searchResult"></div>	

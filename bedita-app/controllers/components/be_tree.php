@@ -83,12 +83,19 @@ class BeTreeComponent extends Object {
 			$this->filter["query"] = addslashes($this->controller->params["form"]["searchstring"]);
 			$this->controller->params["named"]["query"] = urlencode($this->controller->params["form"]["searchstring"]);
 			$this->controller->set("stringSearched", $this->controller->params["form"]["searchstring"]);
+			// if empty substring mode use fulltext search
+			$sType = (empty($this->controller->params["form"]["substring"]))? 'fulltext' : 'like';
+			$this->filter['searchType'] = $sType;
+			$this->controller->params["named"]["searchType"] = $sType;
 		} elseif (!empty($this->controller->passedArgs["query"])) {
 			App::import('Sanitize');
 			$this->controller->passedArgs["query"] = Sanitize::html($this->controller->passedArgs["query"], array('remove' => true));
 			$this->controller->params["named"]["query"] = urlencode($this->controller->passedArgs["query"]);
 			$this->filter["query"] = addslashes(urldecode($this->controller->passedArgs["query"]));
 			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["query"]));
+			if (!empty($this->controller->passedArgs["searchType"])) {
+				$this->filter['searchType'] = $this->controller->passedArgs["searchType"];
+			}
 		}
 	}
 

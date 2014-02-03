@@ -107,9 +107,9 @@ class PagesController extends AppController {
 			
 			$relTypes = BeLib::getObject("BeConfigure")->mergeAllRelations();
 			$usedRelation = $relation;
-			if(empty($relTypes[$relation])) {
+			if (empty($relTypes[$relation])) {
 				foreach ($relTypes as $n => $r) {
-					if(!empty($r["inverse"]) && $r["inverse"] == $relation) {
+					if (!empty($r["inverse"]) && $r["inverse"] == $relation) {
 						$usedRelation = $n;
 					}
 				}
@@ -156,15 +156,15 @@ class PagesController extends AppController {
 						}
 					}
 					
-					if(!is_array($addRight)) {
+					if (!is_array($addRight)) {
 						$addRight = array($addRight);
 					}
-					if(!is_array($addLeft)) {
+					if (!is_array($addLeft)) {
 						$addLeft = array($addLeft);
 					}
 					
 					// if relation has not "inverse" use left and right types
-					if(empty($relTypes[$usedRelation]["inverse"])) {
+					if (empty($relTypes[$usedRelation]["inverse"])) {
 						$ot = array_unique(array_merge($addRight, $addLeft));
 					} else {
 						// otherwise use "right" types on "direct" relations, "left" types on "inverse" relations
@@ -211,13 +211,10 @@ class PagesController extends AppController {
 		}
 		
 		// set lang filter
-		if (!empty($this->params["form"]["lang"]))
+		if (!empty($this->params["form"]["lang"])) {
 			$filter["lang"] = $this->params["form"]["lang"]; 
-		
-		// set search filter
-		if (!empty($this->params["form"]["search"]))
-			$filter["query"] = addslashes($this->params["form"]["search"]);
-		
+		}
+
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 
 		// set id to exclude: $main_object_id and already related objects

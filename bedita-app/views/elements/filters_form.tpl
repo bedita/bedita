@@ -21,7 +21,7 @@ available options:
 	{if !empty($filters.word)}
 		<td>
 			<input type="text" placeholder="{t}search word{/t}" name="search" id="search" style="width:255px" />&nbsp;
-			<input type="checkbox" checked="checked" id="substring" name="substring" /> {t}substring{/t}
+			<input type="checkbox" {if $view->params.named.searchType|default:'like' == 'like'}checked="checked"{/if} id="modalsubstring" name="substring" /> {t}substring{/t}
 		</td>
 	{/if}
 	

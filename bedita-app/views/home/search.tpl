@@ -7,16 +7,12 @@
 	page = 1;
 {/if}
 
-urlToSearchPag = urlToSearch +  "/" + page + "/10";
-
 $(document).ready(function() {
 
 	$("#moreRes").click(function() {
-		$("#searchResult").load(urlToSearchPag, { searchstring: $("input[name='searchstring']").val()}, function() {
-			
-		});
+		loadSearch(page, 10);
 	});
-	
+
 });
 //-->
 </script>

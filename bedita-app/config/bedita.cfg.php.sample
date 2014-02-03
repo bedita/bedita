@@ -187,15 +187,6 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  */
 
 /**
- * Type of search used in BEdita - possible values:
- * "fulltext" (default) - fulltext search
- * "like"  - SQL Like %% search
- */
-//$config["searchType"] = "fulltext";
- 
- 
- 
-/**
  ** Relations - local objects' relation types
  ** define here custom semantic relations
  */

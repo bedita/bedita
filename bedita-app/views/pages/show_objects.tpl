@@ -16,16 +16,18 @@ var suffix = "{$relation|default:""|capitalize}";
 
 function loadObjToAssoc(page) {
 	$("#loadObjInModal").show();
-	$("#assocObjContainer").empty().load(urlShowObj, 
-			{
-				"parent_id": $("#parent_id").val(),
-				"objectType": $("#objectType").val(),
-				"lang": $("#lang").val(),
-				"search": $("#search").val(),
-				"page": page
-			},
-			function() {
-				$("#loadObjInModal").hide();
+	var data = {
+		"parent_id": $("#parent_id").val(),
+		"objectType": $("#objectType").val(),
+		"lang": $("#lang").val(),
+		"searchstring": $("#search").val(),
+		"page": page
+	};
+	if ($("input#modalsubstring").attr('checked')) {
+		data.substring = true;
+	}
+	$("#assocObjContainer").empty().load(urlShowObj, data, function() {
+		$("#loadObjInModal").hide();
 	});
 }
 
