@@ -360,10 +360,13 @@ class BEAppModel extends AppModel {
             			'searchType' => $filter['searchType'],
             			'searchString' => $filter['query']
             		);
-            		unset($filter['searchType']);
             	}
             }
         }
+        if (isset($filter['searchType'])) {
+        	unset($filter['searchType']);
+        }
+
 		if(!empty($excludeIds)) {
 			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
 		}
