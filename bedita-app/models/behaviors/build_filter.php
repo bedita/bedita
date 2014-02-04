@@ -697,7 +697,8 @@ class BuildFilterBehavior extends ModelBehavior {
 				'fields' => array('object_id'),
 				'conditions' => array(
 					'Permission.flag' => $backendPrivatePerms,
-					'Permission.ugid' => $userGroups
+					'Permission.ugid' => $userGroups,
+					'Permission.switch' => 'group'
 				)
 			));
 

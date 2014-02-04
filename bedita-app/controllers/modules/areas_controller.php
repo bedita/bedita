@@ -49,11 +49,57 @@ class AreasController extends ModulesController {
 		}
 		// if empty $id try to get first publication.id
 		if (empty($id)) {
-			$publication = $this->Area->find("first", array(
-				"order" => "BEObject.title asc",
-				"contain" => array("BEObject")
+
+			$pubIds = $this->BEObject->find('list', array(
+				'fields' => array('id'),
+				'conditions' => array(
+					'object_type_id' => $conf->objectTypes['area']['id']
+				),
+				'order' => 'title asc'
 			));
-			$this->params["named"]["id"] = $id = $publication["id"];
+
+			$user = $this->BeAuth->getUserSession();
+
+			if (!in_array('administrator', $user['groups'])) {
+
+				$groupIds = ClassRegistry::init('Group')->find('list', array(
+					'fields' => array('id'),
+					'conditions' => array('name' => $user['groups'])
+				));
+
+				$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
+				$permission = ClassRegistry::init('Permission');
+				$allowedPubIds = $permission->find('list', array(
+					'fields' => array('object_id'),
+					'conditions' => array(
+						'flag' => $backendPrivatePerms,
+						'ugid' => $groupIds,
+						'switch' => 'group',
+						'object_id' => $pubIds
+					)
+				));
+
+				$pubToCheckForbidden = array_diff($pubIds, $allowedPubIds);
+
+				$forbiddenPubIds = $permission->find('list', array(
+					'fields' => array('object_id'),
+					'conditions' => array(
+						'flag' => $backendPrivatePerms,
+						'switch' => 'group',
+						'object_id' => $pubToCheckForbidden,
+					),
+					'group' => 'object_id'
+				));
+
+				$pubIds = array_diff($pubIds, $forbiddenPubIds);
+
+			}
+
+			if (empty($pubIds)) {
+				throw new BeditaException(__("All publications are forbidden", true));
+			}
+
+			$this->params["named"]["id"] = $id = array_shift($pubIds);
 		}
 
 		if (!empty($id)) {
