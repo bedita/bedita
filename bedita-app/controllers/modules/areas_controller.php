@@ -58,48 +58,52 @@ class AreasController extends ModulesController {
 				'order' => 'title asc'
 			));
 
-			$user = $this->BeAuth->getUserSession();
+			if (!empty($pubIds)) {
 
-			if (!in_array('administrator', $user['groups'])) {
+				$user = $this->BeAuth->getUserSession();
 
-				$groupIds = ClassRegistry::init('Group')->find('list', array(
-					'fields' => array('id'),
-					'conditions' => array('name' => $user['groups'])
-				));
+				if (!in_array('administrator', $user['groups'])) {
 
-				$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
-				$permission = ClassRegistry::init('Permission');
-				$allowedPubIds = $permission->find('list', array(
-					'fields' => array('object_id'),
-					'conditions' => array(
-						'flag' => $backendPrivatePerms,
-						'ugid' => $groupIds,
-						'switch' => 'group',
-						'object_id' => $pubIds
-					)
-				));
+					$groupIds = ClassRegistry::init('Group')->find('list', array(
+						'fields' => array('id'),
+						'conditions' => array('name' => $user['groups'])
+					));
 
-				$pubToCheckForbidden = array_diff($pubIds, $allowedPubIds);
+					$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
+					$permission = ClassRegistry::init('Permission');
+					$allowedPubIds = $permission->find('list', array(
+						'fields' => array('object_id'),
+						'conditions' => array(
+							'flag' => $backendPrivatePerms,
+							'ugid' => $groupIds,
+							'switch' => 'group',
+							'object_id' => $pubIds
+						)
+					));
 
-				$forbiddenPubIds = $permission->find('list', array(
-					'fields' => array('object_id'),
-					'conditions' => array(
-						'flag' => $backendPrivatePerms,
-						'switch' => 'group',
-						'object_id' => $pubToCheckForbidden,
-					),
-					'group' => 'object_id'
-				));
+					$pubToCheckForbidden = array_diff($pubIds, $allowedPubIds);
 
-				$pubIds = array_diff($pubIds, $forbiddenPubIds);
+					$forbiddenPubIds = $permission->find('list', array(
+						'fields' => array('object_id'),
+						'conditions' => array(
+							'flag' => $backendPrivatePerms,
+							'switch' => 'group',
+							'object_id' => $pubToCheckForbidden,
+						),
+						'group' => 'object_id'
+					));
+
+					$pubIds = array_diff($pubIds, $forbiddenPubIds);
+
+				}
+
+				if (empty($pubIds)) {
+					throw new BeditaException(__("All publications are forbidden", true));
+				}
+
+				$this->params["named"]["id"] = $id = array_shift($pubIds);
 
 			}
-
-			if (empty($pubIds)) {
-				throw new BeditaException(__("All publications are forbidden", true));
-			}
-
-			$this->params["named"]["id"] = $id = array_shift($pubIds);
 		}
 
 		if (!empty($id)) {
