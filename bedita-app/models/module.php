@@ -182,6 +182,8 @@ class Module extends BEAppModel {
 					}
 				}
 			}
+		} else if (!empty($setup["tables"])) {
+			$this->handlePluginSchema($pluginName, $setup, BEDITA_MODULES_PATH);
 		}
 		
 		// set admin permission
