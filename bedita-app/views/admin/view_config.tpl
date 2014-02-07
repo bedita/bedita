@@ -176,6 +176,15 @@
 						<input type="text" name="cfg[projectName]" value="{$conf->projectName}" style="width: 300px;"/>
 					</td>
 				</tr>
+                <tr>
+                    <th>{t}Colophon widget{/t}:</th>
+                    <td>
+                        <textarea name="cfg[colophon]" 
+                            style="font-size:0.8em; color:gray; width:470px;">
+                            {$conf->colophon|default:''}
+                        </textarea>
+                    </td>
+                </tr>
 			</table>
 			{/if}
 		</fieldset>
