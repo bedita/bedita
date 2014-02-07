@@ -310,6 +310,9 @@ class BEAppModel extends AppModel {
 	 *							"rel_object_id" => "val" search object relateds to a particular object (object_relation object_id)
 	 *							...
 	 *							see all in BuildFilter behavior
+     *
+     *                          "afterFilter" => array() define some operations executed after the objects search
+     *                                           to spec on array params see BEAppModel::findObjectsAfterFilter()
 	 *
 	 * @param string $order		field to order result (id, status, modified..)
 	 * @param boolean $dir		true (default), ascending, otherwise descending.
@@ -320,19 +323,27 @@ class BEAppModel extends AppModel {
 	 */
 	public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
 
+        if (isset($filter['afterFilter'])) {
+            if (is_array($filter['afterFilter'])) {
+                $afterFilter = $filter['afterFilter'];
+            }
+            unset($filter['afterFilter']);
+        }
+
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
 
 		$beObjFields = $this->fieldsString("BEObject");
 		$contentFields = $this->fieldsString("Content", null, array("id"));
 
-		$fields  = "DISTINCT {$beObjFields}, {$contentFields}" ;
+		$fields = "DISTINCT {$beObjFields}, {$contentFields}" ;
 		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
 		$conditions = array();
 		$groupClausole = "GROUP BY {$beObjFields}, {$contentFields}";
 
-		if (!empty($status))
+		if (!empty($status)) {
 			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
+        }
 
         $rankOrder = array();
         $searchCount = null;
@@ -345,7 +356,7 @@ class BEAppModel extends AppModel {
                 $searchEngine = ClassRegistry::init($engine);
                 $result = $searchEngine->searchObjects($options);
                 $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $result["ids"]);
-                if(empty($order)) { // user rank order on empty $order
+                if (empty($order)) { // user rank order on empty $order
                     $rank = 1;
                     foreach ($result["ids"] as $idFound) {
                         $rankOrder[$idFound] = $rank++;
@@ -384,8 +395,9 @@ class BEAppModel extends AppModel {
 
 		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
 
-		if (!empty($otherFields))
+		if (!empty($otherFields)) {
 			$fields = $fields . $otherFields;
+        }
 		
 		$conditions = array_merge($conditions, $otherConditions);
 		$from .= $otherFrom;
@@ -425,10 +437,6 @@ class BEAppModel extends AppModel {
 					$priorityOrder = "asc";
 				$dir = ($priorityOrder == "asc");
 			}
-
-		} else {
-//			if (!empty($userid))
-//				$conditions[] 	= " prmsUserByID ('{$userid}', BEObject.id, ".BEDITA_PERMS_READ.") > 0 " ;
 		}
 
 		// if $order is empty and not performing search then set a default order
@@ -456,22 +464,24 @@ class BEAppModel extends AppModel {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 
-		$limit 	= (!empty($dim))? $this->getLimitClausole($dim, $page) : '';
+		$limit = (!empty($dim))? $this->getLimitClausole($dim, $page) : '';
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 
 		// #CUSTOM QUERY
-		$tmp  	= $this->query($query) ;
+		$tmp = $this->query($query);
 
-		if ($tmp === false)
+		if ($tmp === false) {
 			throw new BeditaException(__("Error finding objects", true));
+        }
 
         if ($searchCount === null) {
     		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
     
     		// #CUSTOM QUERY
     		$tmpCount = $this->query($queryCount);
-    		if ($tmpCount === false)
+    		if ($tmpCount === false) {
     			throw new BeditaException(__("Error counting objects", true));
+            }
     
     		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
         } else {
@@ -482,7 +492,7 @@ class BEAppModel extends AppModel {
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 
-		// reorder array using search engine rank 
+		// reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
             foreach ($tmp as $item) {
@@ -520,8 +530,94 @@ class BEAppModel extends AppModel {
 			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
 		}
 
-		return $recordset ;
+        // after filter callbacks
+        if (!empty($afterFilter)) {
+            $this->findObjectsAfterFilter($recordset['items'], $afterFilter);
+        }
+
+		return $recordset;
 	}
+
+    /**
+     * callback called by BEAppModel::findObjects() to work on list of BEdita objects
+     *
+     * @param  array $items  list of BEdita objects filtered by BEAppModel::findObjects()
+     * @param  array $params it's an array of configurable parameters to launch callbacks on Models or Behaviors.
+     *                       Every callback has to return the array of BEdita objects passed to it.
+     *
+     *                       It can be a plain array:
+     *
+     *                       array(
+     *                           'type' => 'Model' or 'Behavior' default to 'Model'
+     *                           'className' => 'ClassName' for Behavior it's the class name without Behavior suffix
+     *                           'methodName' => 'methodName' the method name of ClassName
+     *                           'options' => array() array of options to pass to ClassName::methodName()
+     *                       )
+     *
+     *                       or it can be a multidimensional array, for example
+     *
+     *                       array(
+     *                           array(
+     *                               'type' => 'Model',
+     *                               'className' => 'ModelClassName',
+     *                               'methodName' => 'modelMethodName',
+     *                               'options' => array()
+     *                           ),
+     *                           array(
+     *                               'type' => 'Behavior',
+     *                               'className' => 'BehaviorClassName',
+     *                               'methodName' => 'behaviorMethodName',
+     *                               'options' => array()
+     *                           )
+     *                       )
+     *
+     *                       If type is 'Model' the 'modelMethodName' method of 'ModelClassName' should be defined as
+     *
+     *                       public function modelMethodName($items, $options) {
+     *                           ....
+     *                           return $items;
+     *                       }
+     *
+     *                       If type is 'Behavior' the 'behaviorMethodName' method 'BehaviorClassName' should be defined as
+     *
+     *                       public function behaviorMethodName(&$model, $items, $options) {
+     *                           ....
+     *                           return $items;
+     *                       }
+     */
+    protected function findObjectsAfterFilter(array &$items, array $params) {
+        // multidimensional array two or more callbacks
+        if (isset($params[0])) {
+            foreach ($params as $value) {
+                if (!empty($value['className'])) {
+                    $this->findObjectsAfterFilter($items, $value);
+                }
+            }
+        // only one callback
+        } else {
+            $default = array('type' => 'Model', 'className' => '', 'methodName' => '', 'options' => array());
+            $params = array_merge($default, $params);
+            if (!empty($params['className']) && !empty($params['methodName'])) {
+                if ($params['type'] == 'Model') {
+                    $modelClass = ClassRegistry::init($params['className']);
+                    if (method_exists($modelClass, $params['methodName'])) {
+                        $items = $modelClass->{$params['methodName']}($items, $params['options']);
+                    }
+                } elseif ($params['type'] == 'Behavior') {
+                    if (App::import('Behavior', $params['className'])) {
+                        $behaviorClass = $params['className'];
+                        if (method_exists($behaviorClass . 'Behavior', $params['methodName'])) {
+                            if (!$this->Behaviors->attached($behaviorClass)) {
+                                $this->Behaviors->attach($behaviorClass);
+                            }
+                            $items = $this->{$params['methodName']}($items, $params['options']);
+                            $this->Behaviors->detach($behaviorClass);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
 
