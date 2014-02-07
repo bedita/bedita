@@ -102,6 +102,11 @@ $(document).ready(function(){
 			<th style="text-align:center">{$beToolbar->order('id', 'id')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'status')}</th>
 			<th>{$beToolbar->order('modified', 'modified')}</th>
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<th>{$p.name}</th>
+				{/foreach}
+			{/if}
 			<th style="text-align:center">
 				{assign_associative var="htmlAttributes" alt="comments" border="0"} 
 				{$beToolbar->order('num_of_comment', '', 'iconComments.gif', $htmlAttributes)}
@@ -164,6 +169,21 @@ $(document).ready(function(){
 			</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<td>
+					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
+						{if is_array($objects[i].customProperties[$p.name])}
+							{$objects[i].customProperties[$p.name]|@implode:", "}
+						{else}
+							{$objects[i].customProperties[$p.name]}
+						{/if}
+					{else}
+						-
+					{/if}
+					</td>
+				{/foreach}
+			{/if}
 			<td style="text-align:center">{$objects[i].num_of_comment|default:0}</td>
 			<td>{$objects[i].lang}</td>
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>

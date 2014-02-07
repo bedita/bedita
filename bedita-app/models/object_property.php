@@ -36,17 +36,55 @@ class ObjectProperty extends BEAppModel  {
 			"foreignKey" => "object_id"
 		)
 	);
-	
-	public function getObjectCustomProperties($objectId) {
+
+	/**
+	 * return smart readable array of object properties
+	 * The array keys are the property names
+	 *
+	 * @param  int  $objectId
+	 * @param  boolean $compact  true to compact results as
+	 *                           array(
+	 *                           	'propertyName' => 'propertyValue', // if property with single choice
+	 *                           	'propertyName2' => array( // if property with multiple choice
+	 *                           		'propertyValue1',
+	 *                           		'propertyValue2'
+	 *                           	),
+	 *                           )
+	 * @return array
+	 */
+	public function getObjectCustomProperties($objectId, $compact = false) {
+	    $objProp = array();
 	    $res = $this->find("all", array(
 	            "conditions" => array(
 	                    "object_id" => $objectId
 	            ),
 	            "contain" => array('Property')
 	    ));
-	    $res = Set::combine($res, "{n}.Property.name", "{n}.ObjectProperty");
-	    return $res;
+	    foreach ($res as $op) {
+	    	if ($op['Property']['multiple_choice']) {
+	    		$objProp[$op['Property']['name']][] = ($compact)? $op['ObjectProperty']['property_value'] : $op['ObjectProperty'];
+	    	} else {
+	    		$objProp[$op['Property']['name']] = ($compact)? $op['ObjectProperty']['property_value'] : $op['ObjectProperty'];
+	    	}
+	    }
+	    return $objProp;
 	}
+
+	/**
+	 * passed an array of BEdita objects add 'customProperties' key with array of custom properties
+	 *
+	 * @param  array $objects
+	 * @param  array $options accept 'compact' (default true) to compact or not custom prop array
+	 * @return array $objects with added 'customProperties' key
+	 */
+	public function objectsCustomProperties(array $objects, array $options) {
+		$options = array_merge(array('compact' => true), $options);
+		foreach ($objects as &$obj) {
+			$obj['customProperties'] = $this->getObjectCustomProperties($obj['id'], $options['compact']);
+		}
+		return $objects;
+	}
+
 }
  
 ?>

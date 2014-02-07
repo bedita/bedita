@@ -795,10 +795,24 @@ abstract class ModulesController extends AppController {
 
 		$filter["count_permission"] = true;
 
+		$customPropAfterFilter = array(
+			'className' => 'ObjectProperty',
+			'methodName' => 'objectsCustomProperties'
+		);
+		if (!empty($filter['afterFilter'])) {
+			if (!isset($filter['afterFilter'][0])) {
+				$filter['afterFilter'][] = $filter['afterFilter'];
+			}
+			$filter['afterFilter'][] = $customPropAfterFilter;
+		} else {
+			$filter['afterFilter'] = $customPropAfterFilter;
+		}
+
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
 		$treeModel = ClassRegistry::init("Tree");
 		$relToCount =  array("attach", "seealso", "download");
 		$objectRelation = ClassRegistry::init('ObjectRelation');
+
 		$items = array();
 		foreach ($objects['items'] as $obj) {
 			$obj['ubiquity'] = $treeModel->find('count', array(
@@ -815,11 +829,18 @@ abstract class ModulesController extends AppController {
 			$items[] = $obj;
 		}
 		$this->params['toolbar'] = &$objects['toolbar'] ;
+
+		$properties = ClassRegistry::init('Property')->find("all", array(
+			"conditions" => array("object_type_id" => $filter["object_type_id"]),
+			"contain" => array()
+		));
+
 		// template data
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
 		$this->set('objects', $items);
+		$this->set('properties', $properties);
 
 		// set prevNext array to session
 		$this->setSessionForObjectDetail($objects['items']);

@@ -60,9 +60,14 @@ class MultimediaController extends ModulesController {
 		
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$filter["count_permission"] = true;
+
+		$filter['afterFilter'] = array(
+			'className' => 'ObjectProperty',
+			'methodName' => 'objectsCustomProperties'
+		);
 		
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
-		
+
 		$relToCount =  array("attach", "seealso", "download");
 		$objectRelation = ClassRegistry::init('ObjectRelation');
 		$treeModel = ClassRegistry::init("Tree");
@@ -79,10 +84,16 @@ class MultimediaController extends ModulesController {
 			}
 		}
 
+		$properties = ClassRegistry::init('Property')->find("all", array(
+			"conditions" => array("object_type_id" => $filter["object_type_id"]),
+			"contain" => array()
+		));
+
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
 		// template data
 		$this->set('tree',$this->BeTree->getSectionsTree());
 		$this->set('objects', $bedita_items['items']);
+		$this->set('properties', $properties);
 		$this->setSessionForObjectDetail($bedita_items['items']);
 
 	 }
