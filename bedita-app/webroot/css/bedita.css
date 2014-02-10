@@ -1154,6 +1154,7 @@ th.headerSortUp , th.headerSortDown {
 
 
 .multimediaitem IMG {
+    max-width: 100%;
 
 }
 
