@@ -1,3 +1,7 @@
+{*
+** gallery form template
+*}
+
 <form action="{$html->url('/galleries/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
@@ -5,8 +9,9 @@
 
 {$view->element('form_previews')}
 	
-{assign_associative var="params" comments=true}
-{$view->element('form_properties', $params)}
+{$view->element('form_properties',['comments' => true])}
+
+{$view->element('form_categories')}
 
 {$view->element('form_tree')}
 
@@ -18,16 +23,16 @@
 	
 {$view->element('form_translations')}
 
-{assign_associative var="params" object_type_id=$conf->objectTypes.gallery.id}
-{$view->element('form_assoc_objects', $params)}
+{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.document.id}])}
 	
-{assign_associative var="params" el=$object}
-{$view->element('form_advanced_properties', $params)}
+{$view->element('form_advanced_properties',['el' => $object])}
 
 {$view->element('form_custom_properties')}
 
-{assign_associative var="params" el=$object recursion=true}
-{$view->element('form_permissions', $params)}
+{$view->element('form_permissions',[
+		'el'=>$object,
+		'recursion'=>true
+	])}
 
 {$view->element('form_versions')}
 
