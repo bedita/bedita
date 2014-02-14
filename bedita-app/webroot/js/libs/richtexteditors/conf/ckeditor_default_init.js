@@ -67,7 +67,26 @@ $(window).load(function() {
  		forcePasteAsPlainText:true,
  		startupOutlineBlocks: true,
 	};
-	
+
+	var configMini = {
+		toolbar: [
+			{ name: 'document', groups: [ 'mode' ], items: [ 'Source'] },
+			{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+			{ name: 'links', items: [ 'Link', 'Unlink'/*, 'Anchor' */] },
+			{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Undo', 'Redo' ] },
+		],
+		resize_enabled: true,
+		extraPlugins: 'codemirror,onchange',
+		language: BEDITA.currLang2,
+		codemirror: { theme: 'lesser-dark' },
+		entities:false,
+		fillEmptyBlocks:false,
+ 		forcePasteAsPlainText:true,
+ 		startupOutlineBlocks: false,
+ 		height:100,
+ 		toolbarLocation: 'bottom'
+	};
+
 	var configNewsletterTemplate = {
 		toolbar: [
 			{ name: 'document', groups: [ 'mode' ], items: [ 'Source'] },
@@ -123,6 +142,7 @@ $(window).load(function() {
 	$( 'textarea.mceSimple' ).ckeditor(configSimple);
 	$( '.richtext' ).ckeditor(configNormal);
 	$( '.richtextSimple' ).ckeditor(configSimple);
+	$( '.richtextMini' ).ckeditor(configMini);
 	$('.richtextNewsletterTemplate').ckeditor(configNewsletterTemplate);
 	$('.richtextNewsletterMessage').ckeditor(configNewsletterMessage);
 		
