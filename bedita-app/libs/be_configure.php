@@ -36,11 +36,13 @@ class BeConfigure {
 	 * add plugged model and component path
 	 */
 	public function initConfig() {
-		if (($cachedConfig = Cache::read('beConfig')) === false) {
+	    $cachedConfig = Cache::read('beConfig');
+		if ($cachedConfig  === false) {
 			$cachedConfig = $this->cacheConfig();
 		} else {
 			$this->addModulesPaths($cachedConfig);
 		}
+		Configure::write($cachedConfig);
 	}
 	
 	/**
@@ -111,7 +113,6 @@ class BeConfigure {
 					}
 				}
 			}			
-			$conf->objectTypes = $configurations["objectTypes"];
 		}
 		
 		// read import / export filters
@@ -160,7 +161,6 @@ class BeConfigure {
 			}
 			App::build($additionalPaths);
 		}
-		Configure::write($cachedConfig);
 	}
 
 	/**
