@@ -11,7 +11,8 @@ available options:
 	'type' => true,
 	'language' => true,
 	'customProp' => false,
-	'categories' => true
+	'categories' => true,
+	'mediaType' => false
 ]
 -->
 *}
@@ -91,18 +92,34 @@ available options:
 
 		<tr>
 		{if !empty($filters.categories)}
+			<th><label>{t}categories{/t}:</label></th>
 			<td>
-			<label>{t}categories{/t}:</label>
-			<select style="margin-left:10px; width:270px" name="filter[category]">
-				<option value="">{t}all{/t}</option>
-				{foreach $categories as $catId => $catLabel}
-					{strip}
-					<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
-						{$catLabel}
-					</option>
-					{/strip}
-				{/foreach}
-			</select>
+				<select style="margin-left:10px; width:270px" name="filter[category]">
+					<option value="">{t}all{/t}</option>
+					{foreach $categories as $catId => $catLabel}
+						{strip}
+						<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
+							{$catLabel}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
+			</td>
+		{/if}
+
+		{if !empty($filters.mediaTypes)}
+			<th><label>{t}media type{/t}:</label></th>
+			<td>
+				<select style="margin-left:10px; width:270px" name="filter[category]">
+					<option value="">{t}all{/t}</option>
+					{foreach $conf->mediaTypes as $mediaType}
+						{strip}
+						<option value="{$mediaType}" {if $view->SessionFilter->read('category') == $mediaType}selected="selected"{/if}>
+							{$mediaType}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
 			</td>
 		{/if}
 

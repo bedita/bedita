@@ -27,8 +27,8 @@
 		'language' => true,
 		'customProp' => false,
 		'categories' => true,
-		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action,
-		'ajax' => false
+		'mediaTypes' => false,
+		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action
 	]
 }
 
