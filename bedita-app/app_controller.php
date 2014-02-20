@@ -35,8 +35,8 @@ BeLib::getObject("BeConfigure")->initConfig();
  */
 class AppController extends Controller
 {
-	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "MediaProvider", "Perms", 'BeEmbedMedia');
-	var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler','BeHash');
+	var $helpers 	= array("Javascript", "Html", "Form", "Beurl", "Tr", "Session", "MediaProvider", "Perms", 'BeEmbedMedia', 'SessionFilter');
+	var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler', 'BeHash', 'SessionFilter');
 	var $uses = array('EventLog') ;
 
 	protected $moduleName = NULL;
@@ -759,8 +759,8 @@ class AppController extends Controller
 abstract class ModulesController extends AppController {
 
 	protected function checkWriteModulePermission() {
-		if(isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
-				throw new BeditaException(__("No write permissions in module", true));
+		if (isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
+			throw new BeditaException(__("No write permissions in module", true));
 		}
 	}
 
@@ -781,7 +781,10 @@ abstract class ModulesController extends AppController {
 			array("dim", "integer", &$dim),
 			array("order", "string", &$order),
 			array("dir", "boolean", &$dir)
-		) ;
+		);
+
+		$sessionFilter = $this->SessionFilter->setFromUrl();
+		$filter = array_merge($filter, $sessionFilter);
 
 		// get selected section
 		$sectionSel = null;

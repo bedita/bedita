@@ -299,6 +299,7 @@ class BEAppModel extends AppModel {
 	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
 	 * @param string $status	object status
 	 * @param array  $filter	example of filter:
+     *                          parent_id => used if $id is empty as root id
 	 * 							"object_type_id" => array(21,22,...),
 	 *							"ModelName.fieldname => "value",
 	 * 							"query" => "text to search"
@@ -328,6 +329,16 @@ class BEAppModel extends AppModel {
                 $afterFilter = $filter['afterFilter'];
             }
             unset($filter['afterFilter']);
+        }
+
+        if (isset($filter['parent_id'])) {
+            $id = (!$id && !empty($filter['parent_id']))? $filter['parent_id'] : $id;
+            unset($filter['parent_id']);
+        }
+
+        if (isset($filter['descendants'])) {
+            $all = true;
+            unset($filter['descendants']);
         }
 
 		$s = $this->getStartQuote();
@@ -367,11 +378,14 @@ class BEAppModel extends AppModel {
             // default search engine
             } else {
             	if (!empty($filter['searchType'])) {
-            		$filter['query'] = array(
-            			'searchType' => $filter['searchType'],
-            			'searchString' => $filter['query']
-            		);
-            	}
+            		$sType = $filter['searchType'];
+            	} else {
+                    $sType = (empty($filter['substring']))? 'fulltext' : 'like';
+                }
+                $filter['query'] = array(
+                    'searchType' => $sType,
+                    'searchString' => $filter['query']
+                );
             }
         }
         if (isset($filter['searchType'])) {

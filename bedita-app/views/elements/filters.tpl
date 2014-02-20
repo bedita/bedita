@@ -1,23 +1,41 @@
 {bedev}
-{* 
+{*
+	override default filter options defining an array of options in view that calls this element
+	i.e.
+
+	{$view->element("filters", [
+            'options' => [
+                'type' => true,
+                'url' => ...
+            ]
+        ]
+    )}
+
 	<!--
-	filters tab in list objects. Included in 
+	filters tab in list objects. Included in
 	/documebnts/index.tpl
 	/multimedia/index.tpl
 -->
 
 *}
 
-<div class="tab"><h2>{t}filters{/t}</h2></div>
-<div>
-	{$view->element("filters_form",[
-	'filters' => [
-		'word' => true, 
+{$defaultOptions = [
+		'word' => true,
 		'tree' => true,
-		'treeDescendants' => false,
-		'type' => true,
+		'treeDescendants' => true,
+		'type' => false,
 		'language' => true,
-		'customProp' => false
-	]])}
+		'customProp' => false,
+		'categories' => true,
+		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action,
+		'ajax' => false
+	]
+}
+
+{$options = array_merge($defaultOptions, $options|default:[])}
+
+<div class="tab{if $view->SessionFilter->check()} open filteractive{/if}"><h2>{t}filters{/t}</h2></div>
+<div>
+	{$view->element("filters_form", ['filters' => $options])}
 </div>
 {/bedev}

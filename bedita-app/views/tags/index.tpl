@@ -63,7 +63,7 @@ $(document).ready(function() {
 //-->
 </script>
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu', ['substringSearch' => false])}
 
 {include file="inc/menuleft.tpl"}
 

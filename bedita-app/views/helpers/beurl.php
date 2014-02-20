@@ -57,7 +57,7 @@ class BeurlHelper extends AppHelper {
 	 * @param mixed string|array $cleanFromFields, field or array of fields passed by name that you want to clean in url
 	 * @return string url
 	 */
-	public function getUrl($cleanFromFields=null) {
+	public function getUrl($cleanFromFields = null) {
 		$paramsNamed = $this->params["named"];
 		if (!empty($cleanFromFields)) {
 			$paramsNamed = $this->cleanPassedArgs($cleanFromFields);

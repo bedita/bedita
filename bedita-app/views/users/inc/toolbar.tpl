@@ -7,10 +7,13 @@
 	{elseif $view->action == 'groups'}
 		{t}User groups{/t}
 	{/if}
-	
-	{if !empty($stringSearched)}
-		&nbsp; {t}matching the query{/t}: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
+
+	{if $view->SessionFilter->check('query')}
+
+		&nbsp; {t}matching the query containing{/t}: “ <span style="color:white" class="evidence">{$view->SessionFilter->read('query')}</span> ”
+
 	{/if}
+
 </h2>
 
 <table>
@@ -33,10 +36,10 @@
 				{$paginator->first($label_page)}
 			{else}
 				{t}page{/t}
-			{/if} 
+			{/if}
 			<span class="evidence"> {$paginator->current()}</span>
-			{t}of{/t} 
-			<span class="evidence"> 
+			{t}of{/t}
+			<span class="evidence">
 			{if $paginator->hasNext()}
 				{$paginator->last($pagParams.pageCount)}
 			{else}

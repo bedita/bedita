@@ -19,8 +19,10 @@
 	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	
 	action="{$html->url('/')}{$moduleName|default:''}/{$searchDestination|default:'index'}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
 
-	<input type="checkbox" {if $view->params.named.searchType|default:'like' == 'like'}checked="checked"{/if} id="substring" name="substring" /> {t}substring{/t}
-	<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="searchstring" value="{$stringSearched|default:""}"/>
+	{if $substringSearch|default:true}
+		<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}
+	{/if}
+	<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="filter[query]" value="{$view->SessionFilter->read('query')}"/>
 	<input type="submit" value="{t}GO{/t}"/>
 </form>
 

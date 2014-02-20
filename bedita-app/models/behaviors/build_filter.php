@@ -123,8 +123,18 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @var string
 	 */
 	private $driver = "";
-	
-	
+
+	/**
+	 * translate some filter shortcut to extended version
+	 *
+	 * @var array
+	 */
+	private $map = array(
+        'relation' => 'ObjectRelation.switch',
+        'rel_object_id' => 'ObjectRelation.object_id',
+        'comment_object_id' => 'Comment.object_id'
+    );
+
 	function setup(&$model, $settings=array()) {
     	$this->model = $model;
 		if(empty($this->sQ)) {
@@ -158,6 +168,8 @@ class BuildFilterBehavior extends ModelBehavior {
 				$filterClassName = $filterExtension[0];
 				$filterMethodName = $filterExtension[1];
 			}
+
+			// if exists $filterClassNameBehavior::$filterMethodName()
 			if ($filterClassName && App::import('Behavior', $filterClassName) 
 					&& is_subclass_of($filterClassName . 'Behavior', get_class($this))
 					&& method_exists($filterClassName . 'Behavior', $filterMethodName)) {
@@ -186,16 +198,19 @@ class BuildFilterBehavior extends ModelBehavior {
 				if (!empty($items["order"])) {
 					$this->order .= $items["order"];
 				}
-						
+			
+			// else if exists specific method
 			} elseif (method_exists($this, $key . "Filter")) {
 				$this->{$key . "Filter"}($s, $e, $val);
-			} else {
+
+			// else if $key is a BEobject field or if it is in the form Model.field
+			} elseif ($beObject->hasField($key) || strstr($key, ".")) {
 			
 				if ($beObject->hasField($key)) {
 					$key = "{$s}BEObject{$e}." . $s . $key . $e;
 				} else {
 					
-					if(strstr($key, ".*")) {
+					if (strstr($key, ".*")) {
 						$mod = str_replace(".*", "", $key);
 						$this->group .= "," . $this->model->fieldsString($mod);
 						$key = $s . $mod . $e . ".*";
@@ -255,26 +270,24 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->conditions = array();
 		$this->group = "";
 		$this->order = "";
-		
-		if (array_key_exists("relation", $filter)) {
-			$filter["ObjectRelation.switch"] = $filter["relation"];
-			unset($filter["relation"]);
-		}
-			
-		if (array_key_exists("rel_object_id", $filter)) {
-			$filter["ObjectRelation.object_id"] = $filter["rel_object_id"];
-			unset($filter["rel_object_id"]);
-		}
+
+		foreach ($filter as $key => $value) {
+            if (array_key_exists($key, $this->map)) {
+                $filter[$this->map[$key]] = $value;
+                unset($filter[$key]);
+            }
+        }
+
 		if (array_key_exists("ref_object_details", $filter)) {
 			$mod = $filter["ref_object_details"];
 			$found = false;
 			foreach ($filter as $k => $v) {
-				if(strstr($k, $mod.".")) {
+				if (strstr($k, $mod . ".")) {
 					$found = true;
 				}
 			}
-			if(!$found) {
-				$filter[$mod.".*"] = "";
+			if (!$found) {
+				$filter[$mod . ".*"] = "";
 			}
 		}
 		$this->filter = $filter;

@@ -17,7 +17,7 @@
 
 {$view->element('form_common_js')}
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu', ['substringSearch' => false])}
 
 {include file="inc/menuleft.tpl" method="viewUser"}
 

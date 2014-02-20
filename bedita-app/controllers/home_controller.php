@@ -107,20 +107,16 @@ class HomeController extends AppController {
 	}
 
 
-	public function search($page = 1, $dim = 5) {
-
+	public function search() {
 		$this->layout = null;
-
-		if (!empty($this->params["form"]["searchstring"])) {
-			$conf  = Configure::getInstance();
-			$filter["query"] = addslashes($this->params["form"]["searchstring"]);
-			if (empty($this->params["form"]["substring"])) {
-				$filter['searchType'] = 'fulltext';
-			}
+		if (empty($this->params["form"]["filter"]["query"])) {
+			$this->SessionFilter->clean();
+		} else {
 			$filter["object_type_id"] = $this->userObjectTypeIds();
-
+			$filter = array_merge($filter, $this->SessionFilter->read());
 			$user = $this->Session->read("BEAuthUser");
-
+			$page = (!empty($this->params['form']['page']))? $this->params['form']['page'] : 1;
+			$dim = (!empty($this->params['form']['dim']))? $this->params['form']['dim'] : 5;
 			$objects = $this->BEObject->findObjects(null, $user["userid"], null, $filter, null, true, $page, $dim);
 			// get objects module
 			foreach ($objects["items"] as $key => $o) {
