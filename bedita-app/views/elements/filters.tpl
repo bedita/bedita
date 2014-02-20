@@ -1,4 +1,3 @@
-{bedev}
 {*
 	override default filter options defining an array of options in view that calls this element
 	i.e.
@@ -38,4 +37,3 @@
 <div>
 	{$view->element("filters_form", ['filters' => $options])}
 </div>
-{/bedev}
