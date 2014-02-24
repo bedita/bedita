@@ -341,6 +341,13 @@ class BEAppModel extends AppModel {
             unset($filter['descendants']);
         }
 
+        if (!empty($filter['searchstring'])) {
+            if (empty($filter['query'])) {
+                $filter['query'] = $filter['searchstring'];
+            }
+            unset($filter['searchstring']);
+        }
+
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
 

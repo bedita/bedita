@@ -47,6 +47,19 @@ class SessionFilterComponent extends Object {
      */
     private $sessionKey = null;
 
+    private $urlArgsAccepted = array(
+        'id',
+        'category',
+        'relation',
+        'rel_object_id',
+        'rel_detail',
+        'comment_object_id',
+        'mail_group',
+        'tag',
+        'query',
+        'substring'
+    );
+
     /**
      * initialize component
      *  - setup self::sessionKey
@@ -78,25 +91,32 @@ class SessionFilterComponent extends Object {
     }
 
     /**
+     * get filter from url
+     * only named params inside self::urlArgsAccepted will be returned
+     *
+     * @return array
+     */
+    public function getFromUrl() {
+        $urlFilter = array();
+        foreach ($this->controller->params['named'] as $key => $value) {
+            if (in_array($key, $this->urlArgsAccepted)) {
+                if ($key == 'id') {
+                    $key = 'parent_id';
+                }
+                $urlFilter[$key] = urldecode($value);
+            }
+        }
+        return $urlFilter;
+    }
+
+    /**
      * setup filter session reading some params from url
      *
      * @param boolean $merge true to merge with existing filter (default)
      *                       false to override all filter
      */
     public function setFromUrl($merge = true) {
-        $argsAccepted = array('id', 'category', 'relation', 'rel_object_id', 'rel_detail', 'comment_object_id', 'mail_group', 'tag', 'query', 'substring');
-        $urlFilter = array();
-        foreach ($this->controller->params['named'] as $key => $value) {
-            if (in_array($key, $argsAccepted)) {
-                if ($key == 'id') {
-                    $key = 'parent_id';
-                }
-                if ($key == 'query') {
-                    $value = addslashes(urldecode($value));
-                }
-                $urlFilter[$key] = $value;
-            }
-        }
+        $urlFilter = $this->getFromUrl();
         $this->addBulk($urlFilter, $merge);
         return $this->read();
     }
@@ -143,7 +163,7 @@ class SessionFilterComponent extends Object {
      *
      * @param  array  $filter
      */
-    private function arrange(array &$filter) {
+    public function arrange(array &$filter) {
         foreach ($filter as $key => $value) {
             if (empty($value)) {
                 unset($filter[$key]);
