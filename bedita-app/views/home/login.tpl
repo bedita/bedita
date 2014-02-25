@@ -25,6 +25,8 @@ $().ready(function() {
 	<div class="insidecol colophon">	
 	
 		{$view->element('colophon')}
+	    {$conf->colophon|default:''}
+
 	
 	</div>
 	 

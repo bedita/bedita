@@ -21,9 +21,6 @@ Menu a SX valido per tutte le pagine del controller.
 			<a href="{$html->url('/')}{$currentModule.url}/calendar">{t}Calendar view{/t}</a>
 		</li>
 		{/bedev}
-		{if !empty($view->action) && ($view->action == "index")}
-			{$view->element('select_categories')}
-		{/if}
 		<li {if $view->action eq 'categories'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.url}/categories">{t}Manage categories{/t}</a>
 		</li>

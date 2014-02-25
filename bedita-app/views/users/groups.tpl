@@ -18,7 +18,7 @@ function delGroupDialog(name,objectid) {
 //-->
 </script>
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu', ['searchDestination' => $view->action, 'substringSearch' => false])}
 
 {include file="inc/menuleft.tpl" method="groups"}
 

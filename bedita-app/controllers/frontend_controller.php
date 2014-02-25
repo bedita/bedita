@@ -29,7 +29,7 @@
  *
  * $Id$
  */
-if(defined('BEDITA_CORE_PATH')) {
+if (defined('BEDITA_CORE_PATH')) {
 	require_once (BEDITA_CORE_PATH . DS . 'bedita_exception.php');
 }
 
@@ -1453,10 +1453,10 @@ abstract class FrontendController extends AppController {
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
 
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1557,7 +1557,7 @@ abstract class FrontendController extends AppController {
 
 		$content_id = null;
 
-		if(!empty($contentName)) {
+		if (!empty($contentName)) {
 			if (is_numeric($contentName)) {
 				$content_id = $contentName;
 				$contentName = $this->BEObject->getNicknameFromId($content_id);
@@ -1565,7 +1565,7 @@ abstract class FrontendController extends AppController {
 				$content_id = $this->BEObject->getIdFromNickname($contentName);
 			}
 			$contentType = $this->BEObject->getType($content_id);
-			if($contentType === "Section") {
+			if ($contentType === "Section") {
 				$args = func_get_args();
 				array_shift($args);
 				return call_user_func_array(array($this, "section"), $args);
@@ -1603,7 +1603,17 @@ abstract class FrontendController extends AppController {
 			$this->sectionOptions["childrenParams"]["setAuthorizedTo"] = false;
 		}
 
-		if(!empty($content_id)) {
+		$urlFilter = $this->SessionFilter->getFromUrl();
+		if ($urlFilter) {
+			$this->SessionFilter->arrange($urlFilter);
+			if (empty($this->sectionOptions['childrenParams']['filter'])) {
+				$this->sectionOptions['childrenParams']['filter'] = $urlFilter;
+			} else {
+				$this->sectionOptions['childrenParams']['filter'] = array($this->sectionOptions['childrenParams']['filter'], $urlFilter);
+			}
+		}
+
+		if (!empty($content_id)) {
 			$section['currentContent'] = $this->loadObj($content_id);
 			if ($section['currentContent'] === self::UNLOGGED || $section['currentContent'] === self::UNAUTHORIZED) {
 				$this->accessDenied($section['currentContent']);
@@ -1611,16 +1621,19 @@ abstract class FrontendController extends AppController {
 
 			$section["contentRequested"] = true;
 			$section["contentPath"] = ($section["canonicalPath"] !== "/") ? $section["canonicalPath"] : "";
-			if(empty($section['currentContent']['canonicalPath'])) {
+			if (empty($section['currentContent']['canonicalPath'])) {
 				$section['currentContent']['canonicalPath'] = $section["contentPath"] .= "/" . $section['currentContent']['nickname'];
 			}
 			$this->historyItem["object_id"] = $content_id;
-			if(!empty($section['currentContent']['title'])) $this->historyItem["title"] = $section['currentContent']['title'];
-			else $this->historyItem["title"] = $section['title'];
+			if (!empty($section['currentContent']['title'])) {
+				$this->historyItem["title"] = $section['currentContent']['title'];
+			} else {
+				$this->historyItem["title"] = $section['title'];
+			}
 
 
 			if ($this->sectionOptions["showAllContents"]) {
-				if(empty($this->sectionOptions["childrenParams"]["detailed"])
+				if (empty($this->sectionOptions["childrenParams"]["detailed"])
 					|| $this->sectionOptions["childrenParams"]["detailed"] === false) {
 					$this->baseLevel = true;
 				}
@@ -1643,7 +1656,7 @@ abstract class FrontendController extends AppController {
 				$tmp['currentContent'] = (!empty($tmp['childContents']))? $tmp['childContents'][0] : array();
 				$section = array_merge($section, $tmp);
 			} else {
-				if(empty($tmp)) {
+				if (empty($tmp)) {
 					$section = array_merge($section, array("currentContent" => array(), "children" => array()));
 				} else {
 					$toolbar = $tmp["toolbar"];
@@ -1822,7 +1835,19 @@ abstract class FrontendController extends AppController {
 		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end_date"])) {
 				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
-		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $this->searchOptions["filter"], $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
+		$searchFilter = array();
+		if (!empty($this->params['form']['searchstring'])) {
+			$searchFilter['query'] = $this->params['form']['searchstring'];
+			$this->SessionFilter->arrange($searchFilter);
+			$this->set('stringSearched', $searchFilter['query']);
+			$this->params['named']['query'] = urlencode($searchFilter['query']);
+		} else {
+			$searchFilter = $this->SessionFilter->getFromUrl();
+			$this->SessionFilter->arrange($searchFilter);
+			$this->set('stringSearched', $searchFilter['query']);
+		}
+		$filter = array_merge($this->searchOptions["filter"], $searchFilter);
+		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $filter, $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
 		$this->set("searchResult", $result);
 	}
 
@@ -2171,11 +2196,15 @@ abstract class FrontendController extends AppController {
 
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-				$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-				$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
 		}
+
+		$urlFilter = $this->SessionFilter->getFromUrl();
+		$this->SessionFilter->arrange($urlFilter);
+		$filter = array_merge($filter, $urlFilter);
 
 		$contents = $this->BeTree->{$searchMethod}($section_id, $this->status, $filter, $order, $dir, $page, $dim);
 

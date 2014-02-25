@@ -3,7 +3,7 @@
 {$html->script("jquery/jquery.cmxforms", false)}
 {$html->script("jquery/jquery.metadata", false)}
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu', ['substringSearch' => false])}
 
 {include file="inc/menuleft.tpl" method="viewGroup"}
 

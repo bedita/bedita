@@ -98,7 +98,11 @@ class PagesController extends AppController {
 	 **/
 	public function showObjects($main_object_id = null, $relation = null, $main_object_type_id = null, $objectType = "related") {
 		$this->ajaxCheck();
-		$id = (!empty($this->params["form"]["parent_id"]))? $this->params["form"]["parent_id"] : null;
+		// clean session filter
+		if (empty($this->params['form']['filter'])) {
+			$this->SessionFilter->clean();
+		}
+
 		$filter = array();
 		$excludeIds = array();
 		$conf = Configure::getInstance();
@@ -203,17 +207,7 @@ class PagesController extends AppController {
 			}
 		}
 
-		// set object_type_id filter
-		if (!empty($this->params["form"]["objectType"])) {
-			$filter["object_type_id"] = array($this->params["form"]["objectType"]);
-		} else {
-			$filter["object_type_id"] = $objectTypeIds;
-		}
-		
-		// set lang filter
-		if (!empty($this->params["form"]["lang"])) {
-			$filter["lang"] = $this->params["form"]["lang"]; 
-		}
+		$filter["object_type_id"] = $objectTypeIds;
 
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
 
@@ -233,6 +227,8 @@ class PagesController extends AppController {
 			$filter["BEObject.id"] = array("NOT" => $excludeIds);
 		}
 		
+		$filter = array_merge($filter, $this->SessionFilter->read());
+
 		$relationRulesClass = Inflector::camelize($relation)."RelationRules";
 		if (App::import("model", $relationRulesClass) ) {
 			$model = ClassRegistry::init($relationRulesClass);	
@@ -241,7 +237,7 @@ class PagesController extends AppController {
 		}
 		
 		if ($filter !== null) {
-			$objects = $this->BeTree->getChildren($id, null, $filter, "modified", false, $page, $dim=20) ;
+			$objects = $this->BeTree->getChildren(null, null, $filter, "modified", false, $page, $dim=20) ;
 		} else  {
 			$objects["items"] = array();
 		}

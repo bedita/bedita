@@ -34,11 +34,12 @@
  * $Id$
  */
 class BeTreeComponent extends Object {
-	var $controller		= null ;
-	protected $Tree		= null ;
-	protected $BEObject	= null ;
-	protected $Section	= null ;
-	var $filter			= array();
+
+	public $controller = null;
+	public $filter = array();
+	protected $Tree	= null;
+	protected $BEObject	= null;
+	protected $Section = null;
 	
 	function __construct() {
 		$this->Tree = ClassRegistry::init('Tree');
@@ -51,52 +52,8 @@ class BeTreeComponent extends Object {
 	 * 
 	 * @param array object $controller
 	 */
-	function startup(&$controller)
-	{
+	function startup(&$controller) {
 		$this->controller 	= $controller;
-		// set filter parameters
-		if (!empty($this->controller->passedArgs["category"])) {
-			$this->filter["category"] = $this->controller->passedArgs["category"];
-			$this->controller->set("categorySearched", $this->controller->passedArgs["category"]);
-		}
-		if (!empty($this->controller->passedArgs["relation"]))
-			$this->filter["ObjectRelation.switch"] = $this->controller->passedArgs["relation"];
-			
-		if (!empty($this->controller->passedArgs["rel_object_id"]))
-			$this->filter["ObjectRelation.object_id"] = $this->controller->passedArgs["rel_object_id"];
-			
-		if (!empty($this->controller->passedArgs["rel_detail"]))
-			$this->filter["rel_detail"] = $this->controller->passedArgs["rel_detail"];
-			
-		if (!empty($this->controller->passedArgs["comment_object_id"]))
-			$this->filter["Comment.object_id"] = $this->controller->passedArgs["comment_object_id"];
-			
-		if (!empty($this->controller->passedArgs["mail_group"]))
-			$this->filter["mail_group"] = $this->controller->passedArgs["mail_group"];
-		
-		if (!empty($this->controller->passedArgs["tag"]))
-			$this->filter["tag"] = $this->controller->passedArgs["tag"];
-
-		if (!empty($this->controller->params["form"]["searchstring"])) {
-			App::import('Sanitize');
-			$this->controller->params["form"]["searchstring"] = Sanitize::html($this->controller->params["form"]["searchstring"], array('remove' => true));
-			$this->filter["query"] = addslashes($this->controller->params["form"]["searchstring"]);
-			$this->controller->params["named"]["query"] = urlencode($this->controller->params["form"]["searchstring"]);
-			$this->controller->set("stringSearched", $this->controller->params["form"]["searchstring"]);
-			// if empty substring mode use fulltext search
-			$sType = (empty($this->controller->params["form"]["substring"]))? 'fulltext' : 'like';
-			$this->filter['searchType'] = $sType;
-			$this->controller->params["named"]["searchType"] = $sType;
-		} elseif (!empty($this->controller->passedArgs["query"])) {
-			App::import('Sanitize');
-			$this->controller->passedArgs["query"] = Sanitize::html($this->controller->passedArgs["query"], array('remove' => true));
-			$this->controller->params["named"]["query"] = urlencode($this->controller->passedArgs["query"]);
-			$this->filter["query"] = addslashes(urldecode($this->controller->passedArgs["query"]));
-			$this->controller->set("stringSearched", urldecode($this->controller->passedArgs["query"]));
-			if (!empty($this->controller->passedArgs["searchType"])) {
-				$this->filter['searchType'] = $this->controller->passedArgs["searchType"];
-			}
-		}
 	}
 
 	/**

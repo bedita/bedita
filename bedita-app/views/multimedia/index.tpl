@@ -75,7 +75,9 @@ function resetError() {
 
 <div class="mainfull">
 
-	{$view->element("filters")}
+	{$view->element("filters", [
+		'options' => ['mediaTypes' => true, 'categories' => false]
+	])}
 	
 	{include file="./inc/list_streams.tpl" streamTitle="multimedia"}
 	

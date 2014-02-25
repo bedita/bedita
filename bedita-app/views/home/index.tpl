@@ -1,31 +1,36 @@
+{$html->script("jquery/jquery.form", false)}
+
 <script type="text/javascript">
 <!--
-var urlToSearch = "{$html->url('/home/search')}";
 
 function loadSearch(page, dim) {
-	var url = urlToSearch;
+	var otherData = {}
 	if (page) {
-		url += "/" + page;
+		otherData.page = page;
 	}
 	if (dim) {
-		url += "/" + dim;
+		otherData.dim = dim;
 	}
-	var data = {
-		searchstring: $("input[name='searchstring']").val()
+
+	var options = {
+		target: '#searchResult',
+		beforeSubmit: function() {
+			$('#searchResult').empty().addClass('loader').show();
+		},
+		success: function() {
+			$('#searchResult').removeClass('loader');
+		},
+		data: otherData
 	}
-	if ($("input[name='substring']").attr('checked')) {
-		data.substring = true;
-	}
-	$("#searchResult").empty().addClass('loader').show();
-	$("#searchResult").load(url, data, function() {
-		$(this).removeClass('loader');
-	});
+
+	$("#homeSearch").ajaxSubmit(options);
 }
 
 $(document).ready(function() {
 	
-	$("#searchButton").click(function() {
+	$("#homeSearch").submit(function() {
 		loadSearch();
+		return false;
 	});
 	
 	$("input[name='searchstring']").keypress(function(event) {
@@ -106,11 +111,11 @@ $(document).ready(function() {
 
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
-		<form action="">
-			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="searchstring" id="searchstring" value=""/>
+		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
+			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
 			<br />
-			<input type="checkbox" {if $view->params.named.searchType|default:'like' == 'like'}checked="checked"{/if} id="substring" name="substring" /> {t}substring{/t}
-			&nbsp;&nbsp;<input id="searchButton" type="button" value="{t}go{/t}" />
+			<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}
+			&nbsp;&nbsp;<input id="searchButton" type="submit" value="{t}go{/t}" />
 		</form>
 		<div id="searchResult"></div>	
 	</div>

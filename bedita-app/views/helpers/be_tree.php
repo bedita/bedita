@@ -34,7 +34,7 @@ class BeTreeHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array("Html");
+	var $helpers = array("Html", "SessionFilter");
 
 	var $tags = array(
 		'option'	=> "<option value=\"%s\"%s>%s</option>",
@@ -236,7 +236,7 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $parent_ids, array of ids parent
 	 * @return string html for simple view tree
 	 */
-	public function view($tree=array(), $inputType=null, $parent_ids=array()) {
+	public function view($tree = array(), $inputType = null, $parent_ids = array()) {
 
 		$output = "";
 		$class = "";
@@ -249,7 +249,8 @@ class BeTreeHelper extends AppHelper {
 				if (empty($inputType)) {
 					$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $publication["id"];
 					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
-							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]) {
+							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]
+							|| $this->SessionFilter->read('parent_id') == $publication['id'] ) {
 						$class = " class='on'";
 					} else {
 						$class = "";
@@ -394,7 +395,8 @@ class BeTreeHelper extends AppHelper {
 			if (empty($inputType)) {
 				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
 				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"])
-						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
+						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]
+						|| $this->SessionFilter->read('parent_id') == $section['id'] ) {
 					$class = " class='on'";
 				} else {
 					$class = "";
@@ -412,7 +414,7 @@ class BeTreeHelper extends AppHelper {
 				$liClass .= " menuhidden";
 			}
 
-			$res .= "<li class='" . $liClass . "' id='pub_" . $section['id'] . "'>";
+			$res .= "<li class='" . $liClass . "' id='sec_" . $section['id'] . "'>";
 			$res .= "<a " . $class . " rel='" . $url . "'>";
 
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {

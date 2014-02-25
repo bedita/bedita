@@ -436,54 +436,54 @@ $(document).ready(function(){
 
 ...........................................*/
 
-jQuery.fn.BEmodal = function(){
+	jQuery.fn.BEmodal = function(){
 
-	$("#modal").draggable({
-		handle : "#modalheader"
-	});
-
-	var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
-	var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
-	
-	var h = 1500; 
-	//alert(h);
-	
-	var destination = $(this).attr("rel");
-	var title = $(this).attr("title");
-	
-	var myTop = $(window).scrollTop() + 20;
-	
-	$("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
-		//$(this).hide();
-		//$("#modal").hide();
-	});
-	
-	$("#modal").toggle().css("top",myTop);
-
-	if ($(this).attr("rel")) {
-		$("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
-			$(this).removeClass("modaloader");
+		$("#modal").draggable({
+			handle : "#modalheader"
 		});
-	};
 
-	
-	if ($(this).attr("title")) {
-		$("#modalheader .caption").html(title+"&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;");
-	};
-	
-	
-	$("#modalheader .close").click(function () {
-		$("#modal").hide();
-		$("#modaloverlay").hide();
-		$(document).trigger('operation:cancel');
-	});
-/*
-	$("#modalheader .full").click(function () {
+		var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
+		var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
+		
+		var h = 1500; 
+		//alert(h);
+		
+		var destination = $(this).attr("rel");
+		var title = $(this).attr("title");
+		
+		var myTop = $(window).scrollTop() + 20;
+		
+		$("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
+			//$(this).hide();
+			//$("#modal").hide();
+		});
+		
+		$("#modal").toggle().css("top",myTop);
 
-	});
-*/
+		if ($(this).attr("rel")) {
+			$("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
+				$(this).removeClass("modaloader");
+			});
+		};
 
-}
+		
+		if ($(this).attr("title")) {
+			$("#modalheader .caption").html(title+"&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;");
+		};
+		
+		
+		$("#modalheader .close").click(function () {
+			$("#modal").hide();
+			$("#modaloverlay").hide();
+			$(document).trigger('operation:cancel');
+		});
+	/*
+		$("#modalheader .full").click(function () {
+
+		});
+	*/
+
+	}
 
 	$(".modalbutton").click(function () {
 	
@@ -494,15 +494,23 @@ jQuery.fn.BEmodal = function(){
 
 /*...........................................    
 
-   bottoni
+   bottons
 
 ...........................................*/
 
-		$(".BEbutton .golink").click(function () {
-			if ($(this).attr("href")) {
-				window.open($(this).attr("href"));
-			}
-		});
+	$(".BEbutton .golink").click(function () {
+		if ($(this).attr("href")) {
+			window.open($(this).attr("href"));
+		}
+	});
+
+	$("#cleanFilters").live('click', function(ev) {
+		ev.preventDefault();
+		var form = $(this).parents('form:first');
+		form.find('input[name=cleanFilter]').val(1);
+		form[0].reset();
+		form.submit();
+	});
 		
 /*...........................................    
 
@@ -565,10 +573,10 @@ jQuery.fn.BEmodal = function(){
 
 ...........................................*/
 
-$(".idtrigger").css("cursor","pointer").click(function() {
-	var trigged  = $(this).attr("rel");
-	$("#"+trigged+"").toggle();
-});
+	$(".idtrigger").css("cursor","pointer").click(function() {
+		var trigged  = $(this).attr("rel");
+		$("#"+trigged+"").toggle();
+	});
 
 /*...........................................    
 
@@ -576,9 +584,16 @@ $(".idtrigger").css("cursor","pointer").click(function() {
 
 ...........................................*/
 
-$(".searchtrigger").click(function() {
-	$(".searchobjects").toggle();
-});
+	$(".searchtrigger").click(function() {
+		$(".searchobjects").toggle();
+	});
+
+/*...........................................    
+
+   filter tab
+
+...........................................*/
+	$(".tab.filteractive").click();
 
 
 /*...........................................    
@@ -595,38 +610,38 @@ $(".searchtrigger").click(function() {
 ...........................................*/
 
 
-$(".primacolonna .modules label.bedita").toggle(function() {
-	$(this).addClass("shadow");  
-	$(".modulesmenu_d").show();
+	$(".primacolonna .modules label.bedita").toggle(function() {
+		$(this).addClass("shadow");  
+		$(".modulesmenu_d").show();
 
-}, function() {
+	}, function() {
 
-  $(this).removeClass("shadow");  
-	$(".modulesmenu_d").hide();
-});
+	  $(this).removeClass("shadow");  
+		$(".modulesmenu_d").hide();
+	});
 
-$(".modulesmenu_d LI[class]").each(function() {
-	var classname = $(this).attr('class');
-	var color = $(".modulesmenu ."+classname).css('background-color');
-	$(this).css("border-color", color);
-});
+	$(".modulesmenu_d LI[class]").each(function() {
+		var classname = $(this).attr('class');
+		var color = $(".modulesmenu ."+classname).css('background-color');
+		$(this).css("border-color", color);
+	});
 
-$(".modulesmenu_d LI[class]").hover(
-  function () {
-  	var classname = $(this).attr("class");
-	var position = $(this).position();
-	var topshift = position.top;
-	var leftshift = $(".modulesmenu_d").width();
-	$(".sub_modulesmenu_d."+classname+"").css({
-		"left": leftshift+160+"px",
-		"top":  topshift+20+"px"
-	}).show();
-	
-  }, 
-  function () {
-	$(".sub_modulesmenu_d").hide();
-  }
-);
+	$(".modulesmenu_d LI[class]").hover(
+	  function () {
+	  	var classname = $(this).attr("class");
+		var position = $(this).position();
+		var topshift = position.top;
+		var leftshift = $(".modulesmenu_d").width();
+		$(".sub_modulesmenu_d."+classname+"").css({
+			"left": leftshift+160+"px",
+			"top":  topshift+20+"px"
+		}).show();
+		
+	  }, 
+	  function () {
+		$(".sub_modulesmenu_d").hide();
+	  }
+	);
 
 
 /*...........................................    

@@ -10,6 +10,8 @@
 
 
 <div class="mainfull">
+
+    {$view->element("filters")}
 	
 	{include file="./inc/list_objects.tpl" method="index"}
 	

@@ -65,6 +65,9 @@ class MultimediaController extends ModulesController {
 			'className' => 'ObjectProperty',
 			'methodName' => 'objectsCustomProperties'
 		);
+
+		$sessionFilter = $this->SessionFilter->setFromUrl();
+		$filter = array_merge($filter, $sessionFilter);
 		
 		$bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 

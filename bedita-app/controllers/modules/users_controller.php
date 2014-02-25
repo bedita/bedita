@@ -43,15 +43,17 @@ class UsersController extends ModulesController {
 	
 	function index() {
 		$conditions = array();
-		if (!empty($this->params["form"]["searchstring"]) && strlen($this->params["form"]["searchstring"]) > 3) {
+		$query = $this->SessionFilter->read('query');
+		if (empty($this->params["form"]["filter"]) || ($query && strlen($query) <= 3)) {
+			$this->SessionFilter->clean();
+		} elseif ($query) {
 			$conditions = array(
 				"OR" => array(
-					"User.userid LIKE" => $this->params["form"]["searchstring"] . "%",
-					"User.realname LIKE" => "%" . $this->params["form"]["searchstring"] . "%",
-					"User.email LIKE" => "%" . $this->params["form"]["searchstring"] . "%"
+					"User.userid LIKE" => $query . "%",
+					"User.realname LIKE" => "%" . $query . "%",
+					"User.email LIKE" => "%" . $query . "%"
 				)
 			);
-			$this->set("stringSearched", $this->params["form"]["searchstring"]);
 		}
 
 		$users = $this->paginate('User', $conditions);
@@ -298,10 +300,13 @@ class UsersController extends ModulesController {
 	}
 
 	function groups() {
-		if (!empty($this->params["form"]["searchstring"]) && strlen($this->params["form"]["searchstring"]) > 3) {
-			$this->paginate["Group"]["conditions"] = array("Group.name LIKE" => $this->params["form"]["searchstring"] . "%");
-			$this->set("stringSearched", $this->params["form"]["searchstring"]);
+		$query = $this->SessionFilter->read('query');
+		if (empty($this->params["form"]["filter"]) || ($query && strlen($query) <= 3)) {
+			$this->SessionFilter->clean();
+		} elseif ($query) {
+			$this->paginate["Group"]["conditions"] = array("Group.name LIKE" => $query . "%");
 		}
+
 		$this->Group->recursive = -1;
 		$groups = $this->paginate('Group');
 		foreach ($groups as &$g) {

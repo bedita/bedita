@@ -1,6 +1,6 @@
 <script type="text/javascript">
 <!--
-var urlShowObj = "{$html->here}";
+//var urlShowObj = "{$html->here}";
 
 if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
 	var urlToAdd = urlAddObjToAss{$relation|capitalize}
@@ -15,20 +15,24 @@ var suffix = "{$relation|default:""|capitalize}";
 
 
 function loadObjToAssoc(page) {
-	$("#loadObjInModal").show();
-	var data = {
-		"parent_id": $("#parent_id").val(),
-		"objectType": $("#objectType").val(),
-		"lang": $("#lang").val(),
-		"searchstring": $("#search").val(),
-		"page": page
-	};
-	if ($("input#modalsubstring").attr('checked')) {
-		data.substring = true;
+
+	var options = {
+		target: '#assocObjContainer',
+		beforeSubmit: function() {
+			$('#assocObjContainer').empty();
+			$("#loadObjInModal").show();
+		},
+		success: function() {
+			$("#loadObjInModal").hide();
+			// reset cleanFilter
+			$("input[name=cleanFilter]", "#formFilter").val('');
+		},
+		data: {
+			page: page
+		}
 	}
-	$("#assocObjContainer").empty().load(urlShowObj, data, function() {
-		$("#loadObjInModal").hide();
-	});
+
+	$("#formFilter").ajaxSubmit(options);
 }
 
 $(document).ready(function() {
@@ -40,8 +44,9 @@ $(document).ready(function() {
 	});
 	
 	
-	$("#searchButton").click(function() {
+	$("#formFilter").submit(function() {
 		loadObjToAssoc(1);
+		return false;
 	});
 	
 	$("#addButton").click(function() {
@@ -91,7 +96,7 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
 	'filters' => [
 		'word' => true, 
 		'tree' => true,
-		'treeDescendants' => false,
+		'treeDescendants' => true,
 		'type' => true,
 		'language' => true,
 		'customProp' => false

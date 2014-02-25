@@ -25,15 +25,15 @@
 			{/if}
 			
 			
-			{if !empty($stringSearched)}
+			{if $view->SessionFilter->check('query')}
 			
-				{if $view->params.named.searchType|default:'like' == 'like'}
+				{if $view->SessionFilter->check('substring')}
 					&nbsp; {t}matching the query containing{/t}
 				{else}
 					&nbsp; {t}matching the query{/t}
 				{/if}
 
-				: “ <span style="color:white" class="evidence">{$stringSearched}</span> ”
+				: “ <span style="color:white" class="evidence">{$view->SessionFilter->read('query')}</span> ”
 				
 			{/if}
 			
@@ -77,18 +77,6 @@
 			
 			<td> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
 			
-			<!--
-			<td> 
-			
-				<form action="{$html->url('/')}{$moduleName}/index{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">				
-				<span>{t}search{/t}</span> : <span class="evidence"> &nbsp;</span>
-				<input type="text" name="searchstring" value="{$stringSearched|default:""}"/>
-				
-				<input type="submit" value="{t}go{/t}"/>
-				</form>
-				
-			</td>
-			-->
 		</tr>
 		</table>
 
