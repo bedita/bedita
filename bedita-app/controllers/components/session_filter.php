@@ -72,8 +72,12 @@ class SessionFilterComponent extends Object {
     public function initialize(&$controller, $settings = array()) {
         $this->controller =& $controller;
         $this->sessionKey = 'filter.' . $controller->name . '.' . $controller->action;
-        if (!empty($controller->params['form']['cleanFilter'])) {
+        if (!empty($controller->params['form']['cleanFilter']) || !empty($controller->params['named']['cleanFilter'])) {
             $this->clean();
+            // unset cleanFilter to avoid to use it writing url for pagination
+            if (isset($controller->params['named']['cleanFilter'])) {
+                unset($controller->params['named']['cleanFilter']);
+            }
         } elseif (!empty($controller->params['form']['filter'])) {
             $this->addBulk($controller->params['form']['filter']);
         }
