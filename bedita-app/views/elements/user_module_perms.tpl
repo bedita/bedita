@@ -23,7 +23,10 @@
 	{/foreach}
 </ul>
 
+
 {$view->element('colophon')}
+
+{$conf->colophon|default:''}
 
 <div id="handlerChangeAlert"></div>
 
