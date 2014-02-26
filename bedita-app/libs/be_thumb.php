@@ -511,67 +511,74 @@ class BeThumb {
 	 * @return boolean
 	 */
 	private function resample() {
-		
+
 	    $imageFilePath = $this->imageInfo['filepath'];
 	    if($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
 	        $imageFilePath = $this->remoteImageCachePathProxy();
 	    }
 	    App::import ('Vendor', 'phpthumb', array ('file' => 'php_thumb' . DS . 'ThumbLib.inc.php') );
-		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
-		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
-		
-		//set upscale
-		if ($this->imageTarget['upscale']) {
-			$thumbnail->setOptions(array("resizeUp" => true));
-		}
+	    
+	    try {
+	        
+    		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
+    		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
+    		
+    		//set upscale
+    		if ($this->imageTarget['upscale']) {
+    			$thumbnail->setOptions(array("resizeUp" => true));
+    		}
 
-		// more params about resample mode
-		switch ( $this->imageTarget['mode'] ) {
-			// croponly
-			case 0:
-				list ($starX, $startY)  = $this->getCropCoordinates($this->imageInfo['w'], 
-						$this->imageInfo['h'], $this->imageTarget['w'], $this->imageTarget['h'], 
-						$this->imageTarget['cropmode'] );
-				$thumbnail->crop($starX, $startY, $this->imageTarget['w'], $this->imageTarget['h']);
+    		// more params about resample mode
+    		switch ( $this->imageTarget['mode'] ) {
+    			// croponly
+    			case 0:
+    				list ($starX, $startY)  = $this->getCropCoordinates($this->imageInfo['w'], 
+    						$this->imageInfo['h'], $this->imageTarget['w'], $this->imageTarget['h'], 
+    						$this->imageTarget['cropmode'] );
+    				$thumbnail->crop($starX, $startY, $this->imageTarget['w'], $this->imageTarget['h']);
+    
+    				break;
+    			//crop: adaptive crop
+    			case 1:
+    			default:
+    				$thumbnail->adaptiveResize($this->imageTarget['w'], $this->imageTarget['h']);
+    				break;
+    
+    			// resize
+    			case 2:
+    
+    				//stretch or fill of simple resize
+    				if (empty($this->imageTarget['resizetype'])){
+    
+    					$thumbnail->resize($this->imageTarget['w'], $this->imageTarget['h']);
+    
+    				}else if ($this->imageTarget['resizetype'] == 'stretch') {
+    
+    					$thumbnail->resizeStretch($this->imageTarget['w'], $this->imageTarget['h']);
+    
+    				} else if ($this->imageTarget['resizetype'] == 'fill') {
+    
+    					$thumbnail->resizeFill($this->imageTarget['w'], $this->imageTarget['h'],  
+    							$this->imageTarget['fillcolor']);
+    				}
+    				break;
+    
+    		}
 
-				break;
-			//crop: adaptive crop
-			case 1:
-			default:
-				$thumbnail->adaptiveResize($this->imageTarget['w'], $this->imageTarget['h']);
-				break;
+            // add watermark
+            if (isset($this->imageTarget['watermark'])) {
+                $thumbnail->wmark($this->imageTarget['filepath'], $this->imageTarget['watermark']);
+            }
 
-			// resize
-			case 2:
-
-				//stretch or fill of simple resize
-				if (empty($this->imageTarget['resizetype'])){
-
-					$thumbnail->resize($this->imageTarget['w'], $this->imageTarget['h']);
-
-				}else if ($this->imageTarget['resizetype'] == 'stretch') {
-
-					$thumbnail->resizeStretch($this->imageTarget['w'], $this->imageTarget['h']);
-
-				} else if ($this->imageTarget['resizetype'] == 'fill') {
-
-					$thumbnail->resizeFill($this->imageTarget['w'], $this->imageTarget['h'],  
-							$this->imageTarget['fillcolor']);
-				}
-				break;
-
-		}
-
-        // add watermark
-        if (isset($this->imageTarget['watermark'])) {
-            $thumbnail->wmark($this->imageTarget['filepath'], $this->imageTarget['watermark']);
-        }
-
-		if ($thumbnail->save($this->imageTarget['filepath'], $this->imageTarget['type'])) {
-			return true;
-		} else {
-			$this->triggerError("phpThumb error");
-			return false;
+    		if ($thumbnail->save($this->imageTarget['filepath'], $this->imageTarget['type'])) {
+    			return true;
+    		} else {
+    			$this->triggerError("phpThumb error");
+    			return false;
+    		}
+		} catch (Exception $e) {
+		    $this->triggerError($e->getMessage());
+		    return false;
 		}
 	}
 	// end _resample
