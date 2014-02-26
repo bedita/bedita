@@ -2921,6 +2921,9 @@ msgstr "quartiere"
 msgid "questionnaires"
 msgstr "questionari"
 
+msgid "Questionnaires list"
+msgstr "lista questionari"
+
 msgid "quick item"
 msgstr "oggetto veloce"
 
@@ -3327,6 +3330,18 @@ msgstr "stile"
 
 msgid "icon"
 msgstr "icona"
+
+msgid "Question"
+msgstr "quesito"
+
+msgid "Questions"
+msgstr "quesiti"
+
+msgid "Questions list"
+msgstr "lista quesiti"
+
+msgid "Create new question"
+msgstr "Crea nuovo quesito"
 
 #~ msgid "friday"
 #~ msgstr "venerdì"
