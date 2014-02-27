@@ -1,5 +1,60 @@
 # ChangeLog
 
+## Version 3.3 - Corylus
+
+### User-visible changes
+
+* [#432](https://github.com/bedita/bedita/issues/432) Filtering objects in index view and new filters
+* [#417](https://github.com/bedita/bedita/issues/417) fix hideFields control
+* [#408](https://github.com/bedita/bedita/issues/408) Objects listing enhancement
+* [#427](https://github.com/bedita/bedita/issues/427) added colophon widget + edit in Admin / configuration
+* [#133](https://github.com/bedita/bedita/issues/133) advanced search using strings
+* [#423](https://github.com/bedita/bedita/issues/423) User Groups: adding permissions from the group detail view
+* [#312](https://github.com/bedita/bedita/issues/312) admin: object relations configuration in UI
+* [#433](https://github.com/bedita/bedita/issues/433) Can not insert a relation after already saved relations delete
+* [#424](https://github.com/bedita/bedita/issues/424) Add possibility to create interactive images
+* [#421](https://github.com/bedita/bedita/issues/421) Expose the relations' properties in object detail view
+* [#430](https://github.com/bedita/bedita/issues/430) fix for restore a version of an object with CKEditor default editor
+* [#409](https://github.com/bedita/bedita/issues/409) Multimedia list: adding permission and notes flag
+* [#388](https://github.com/bedita/bedita/issues/388) handle labels for object relations
+* added a new config for small rich text areas
+* replace relationships with relations label
+
+### Frontend changes
+
+* [#376](https://github.com/bedita/bedita/issues/376) befront->metaOg - open graph
+
+### Developer-visible changes
+
+* [#444](https://github.com/bedita/bedita/issues/444) - add try catch block in BeThumb::resample - avoid unrecoverable
+error
+* [#432](https://github.com/bedita/bedita/issues/432) Filtering objects in index view and new filters
+* [#441](https://github.com/bedita/bedita/issues/441) fix config cache load
+* [#440](https://github.com/bedita/bedita/issues/440) Add categories to galleries
+* [#439](https://github.com/bedita/bedita/issues/439) Extend BEAppModel::findObjects() to use custom methods after objects are filtered
+* [#438](https://github.com/bedita/bedita/issues/438) error during plug-in, with plugin module with a custom model and a custom table
+* [#437](https://github.com/bedita/bedita/issues/437) Backend permission: access error in publications module
+* [#133](https://github.com/bedita/bedita/issues/133) advanced search using strings
+* [#423](https://github.com/bedita/bedita/issues/423) User Groups: adding permissions from the group detail view
+* add check on addressbook save to avoid errors [#417](https://github.com/bedita/bedita/issues/417)
+* [#413](https://github.com/bedita/bedita/issues/413) info tab for other media using the same hash file
+* [#436](https://github.com/bedita/bedita/issues/436) Administrator module permissions are modified if user not in administrator group save a group
+* [#338](https://github.com/bedita/bedita/issues/338) Implement private objects
+* [#424](https://github.com/bedita/bedita/issues/424) Add possibility to create interactive images
+* [#408](https://github.com/bedita/bedita/issues/408) Objects listing enhancement
+* [#433](https://github.com/bedita/bedita/issues/433) Can not insert a relation after already saved relations delete
+* [#429](https://github.com/bedita/bedita/issues/429) Sanitizing string with BeLib::stripData() fails
+* [#421](https://github.com/bedita/bedita/issues/421) Expose the relations' properties in object detail view 
+* [#312](https://github.com/bedita/bedita/issues/312) admin: object relations configuration in UI
+* [#425](https://github.com/bedita/bedita/issues/425) Adding an UNIQUE index key in sql permission table
+* [#420](https://github.com/bedita/bedita/issues/420) Add and handle relations properties
+* [#422](https://github.com/bedita/bedita/issues/422) Remove obsolete relations
+* [#414](https://github.com/bedita/bedita/issues/414) Search index enhancement
+* refactor wrong method name isPermissionSetted. Changed to Permission::isPermissionSet()
+* drop and remove any references to authors table
+* add mail options to bedita.cfg sample
+
+
 ## Version 3.2.1 - Populus
 
 ### User-visible changes
