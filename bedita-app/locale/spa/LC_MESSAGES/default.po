@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-01-15 16:00:44\n"
+"POT-Creation-Date: 2014-02-27 10:38:08\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -69,10 +69,16 @@ msgstr "Dirección"
 msgid "Advanced Properties"
 msgstr "Propiedades Avanzadas"
 
+msgid "Advanced editor"
+msgstr ""
+
 msgid "Alias"
 msgstr "Alias"
 
 msgid "All modules"
+msgstr ""
+
+msgid "All publications are forbidden"
 msgstr ""
 
 msgid "All unsaved changes will be lost"
@@ -254,8 +260,8 @@ msgstr "Categoría guardada"
 msgid "Change Password"
 msgstr "Cambiar Contraseña"
 
-msgid "Change this file with another"
-msgstr "Reemplazar archivo"
+msgid "Change this file"
+msgstr ""
 
 msgid "Channels"
 msgstr "Canales"
@@ -274,6 +280,9 @@ msgstr ""
 
 msgid "Code"
 msgstr "Codigo"
+
+msgid "Colophon widget"
+msgstr ""
 
 msgid "Comment saved"
 msgstr "Comentario guardado"
@@ -343,6 +352,9 @@ msgstr "Módulos centrales"
 
 msgid "Create"
 msgstr "Crear"
+
+msgid "Create a new custom relation"
+msgstr ""
 
 msgid "Create new"
 msgstr "Crear nuevo"
@@ -427,6 +439,11 @@ msgstr "Quieres remover el grupo de verdad?"
 
 msgid "Do you really want to remove user"
 msgstr "Quieres remover el usuario de verdad?"
+
+msgid ""
+"Do you want to remove the relation? Relation already created between objects "
+"will be maintained."
+msgstr ""
 
 msgid "Do you want unsubscribe selected items?"
 msgstr "¿Quieres anular la suscripción de los elementos seleccionados?"
@@ -731,11 +748,11 @@ msgstr ""
 "El archivo no se puede escribir, actualizar adecuadamente los permisos de "
 "archivos para"
 
+msgid "File uri"
+msgstr ""
+
 msgid "Find and fill latlong coords"
 msgstr "Buscar y llenar coordenadas LatLong"
-
-msgid "Find it"
-msgstr "Búsqueda"
 
 msgid "Fixed"
 msgstr ""
@@ -985,7 +1002,7 @@ msgstr "Mantenimiento"
 msgid "Manage categories"
 msgstr ""
 
-msgid "Manage relations"
+msgid "Manage custom relations"
 msgstr ""
 
 msgid "Media already exists in the system"
@@ -993,6 +1010,9 @@ msgstr "Media ya existente en el sistema"
 
 msgid "Media root"
 msgstr "Media root"
+
+msgid "Media title"
+msgstr ""
 
 msgid "Media type"
 msgstr "Tipo media"
@@ -1042,6 +1062,12 @@ msgstr "Falta recibidor"
 msgid "Missing referenced object. Save new item before adding a note"
 msgstr ""
 "Falta objeto referenciado. Guardar nuevo elemento antes de añadir una nota"
+
+msgid "Missing relation name to delete"
+msgstr ""
+
+msgid "Missing relation to delete"
+msgstr ""
 
 msgid "Missing sending date"
 msgstr "Falta fecha de envío"
@@ -1249,9 +1275,6 @@ msgstr "Publicación no establecida"
 
 msgid "No questionnaires found"
 msgstr "Ningun cuestionario encontrado"
-
-msgid "No references"
-msgstr "Ninguna referencia"
 
 msgid "No subscribers"
 msgstr "Ningun suscriptor"
@@ -1481,17 +1504,23 @@ msgstr "Nombre real"
 msgid "Real name is required (at least %1 alphanumerical chars)"
 msgstr "Se requiere nombre real  (por lo menos 1% caracteres alfanuméricos)"
 
-msgid "Referenced in"
-msgstr "Referenciado en"
-
 msgid "Refresh file"
 msgstr ""
 
 msgid "Related tickets"
 msgstr ""
 
-msgid "Relationships"
-msgstr "Relaciones"
+msgid "Relation deleted"
+msgstr ""
+
+msgid "Relation name is mandatory"
+msgstr ""
+
+msgid "Relation saved"
+msgstr ""
+
+msgid "Relations"
+msgstr ""
 
 msgid "Remove"
 msgstr "Quitar"
@@ -1683,6 +1712,9 @@ msgstr "Tags"
 msgid "Tags saved"
 msgstr "Tags guardadas"
 
+msgid "Technical details"
+msgstr ""
+
 msgid "Templates"
 msgstr "Templates"
 
@@ -1764,6 +1796,9 @@ msgstr "URL inalcanzable"
 
 msgid "URLs and paths"
 msgstr "URLs y paths"
+
+msgid "Ubiquitous object"
+msgstr ""
 
 msgid "Unique name"
 msgstr "Nombre único"
@@ -1981,6 +2016,9 @@ msgstr "añadir grupo"
 msgid "add more tags"
 msgstr "añadir más tag"
 
+msgid "add permission"
+msgstr ""
+
 msgid "addon plugged succesfully"
 msgstr ""
 
@@ -2094,6 +2132,9 @@ msgstr "tarjeta(s) asociada a grupo de correo"
 
 msgid "cards"
 msgstr "tarjetas"
+
+msgid "categories"
+msgstr ""
 
 msgid "category"
 msgstr "categoría"
@@ -2251,6 +2292,9 @@ msgstr "eliminar los elementos seleccionados"
 msgid "delete this file or reference"
 msgstr ""
 
+msgid "descendants"
+msgstr ""
+
 msgid "description"
 msgstr "descripción"
 
@@ -2350,6 +2394,9 @@ msgstr "filtro:"
 msgid "filters"
 msgstr "filtros"
 
+msgid "find it"
+msgstr ""
+
 msgid "first"
 msgstr "primero"
 
@@ -2392,6 +2439,9 @@ msgstr "hashjob para anular la suscripción ya está en uso"
 msgid "here"
 msgstr "aquí"
 
+msgid "hidden"
+msgstr ""
+
 msgid "hidden from menu and canonical path"
 msgstr "ocultos en menú y ruta canónica"
 
@@ -2419,17 +2469,26 @@ msgstr "en los grupos de beneficiarios"
 msgid "info"
 msgstr "info"
 
+msgid "insert a new params"
+msgstr ""
+
 msgid "inserted on"
 msgstr "insertado en"
 
 msgid "inventory"
 msgstr "inventario"
 
+msgid "inverse label"
+msgstr ""
+
 msgid "inverse name"
 msgstr ""
 
 msgid "invoice id"
 msgstr "id invoice"
+
+msgid "is a core relation, you can't override them"
+msgstr ""
 
 msgid "is user"
 msgstr "es un usuario"
@@ -2503,9 +2562,6 @@ msgstr "texto largo"
 msgid "longitude"
 msgstr "longitud"
 
-msgid "mail address"
-msgstr "correo electrónico"
-
 msgid "mail body"
 msgstr "texto"
 
@@ -2539,13 +2595,7 @@ msgstr "título principal"
 msgid "matching the query"
 msgstr "corresponde a la búsqueda"
 
-msgid "matching the query beginning by"
-msgstr ""
-
 msgid "matching the query containing"
-msgstr ""
-
-msgid "matching the query ending by"
 msgstr ""
 
 msgid "maximum"
@@ -2570,6 +2620,9 @@ msgstr "carpeta media root no encontrada"
 
 msgid "media root not set"
 msgstr "media root no establecido"
+
+msgid "media type"
+msgstr ""
 
 msgid "media url can't be empty"
 msgstr "el media url no puede estar vacío"
@@ -2757,6 +2810,9 @@ msgstr "on"
 msgid "on my stuff only"
 msgstr "solo en cosas mias"
 
+msgid "on position"
+msgstr ""
+
 msgid "online from"
 msgstr "online desde"
 
@@ -2798,6 +2854,9 @@ msgstr ""
 
 msgid "page"
 msgstr "página"
+
+msgid "params"
+msgstr ""
 
 msgid "password"
 msgstr "contraseña"
@@ -2931,6 +2990,9 @@ msgstr "responder a"
 msgid "required"
 msgstr "necesario"
 
+msgid "reset filters"
+msgstr ""
+
 msgid "reside in"
 msgstr "residir en"
 
@@ -2952,11 +3014,17 @@ msgstr "satélite"
 msgid "save"
 msgstr "guardar"
 
+msgid "save all"
+msgstr ""
+
 msgid "save draft"
 msgstr "guardar borrador"
 
 msgid "save profile"
 msgstr "guardar perfil"
+
+msgid "save this new relation"
+msgstr ""
 
 msgid "scheduled"
 msgstr "programado"
@@ -2967,11 +3035,17 @@ msgstr "programado de"
 msgid "search"
 msgstr "buscar"
 
+msgid "search word"
+msgstr ""
+
 msgid "sections"
 msgstr "secciones"
 
 msgid "sections only"
 msgstr "sólo secciones"
+
+msgid "see all"
+msgstr ""
 
 msgid "see error detail"
 msgstr "ver los detalles de error"
@@ -3024,6 +3098,9 @@ msgstr "firma"
 msgid "size"
 msgstr "tamaño"
 
+msgid "source and/or target objects group can't be empty"
+msgstr ""
+
 msgid "staging url"
 msgstr "url staging"
 
@@ -3053,6 +3130,9 @@ msgstr "suscriptores"
 
 msgid "subscribing method"
 msgstr "método de suscripción"
+
+msgid "substring"
+msgstr ""
 
 msgid "surname"
 msgstr "apellido"
@@ -3214,9 +3294,6 @@ msgstr "con email"
 msgid "with status"
 msgstr "con estado"
 
-msgid "word"
-msgstr "palabra"
-
 msgid "world"
 msgstr "palabra"
 
@@ -3234,6 +3311,27 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "Change this file with another"
+#~ msgstr "Reemplazar archivo"
+
+#~ msgid "Find it"
+#~ msgstr "Búsqueda"
+
+#~ msgid "No references"
+#~ msgstr "Ninguna referencia"
+
+#~ msgid "Referenced in"
+#~ msgstr "Referenciado en"
+
+#~ msgid "Relationships"
+#~ msgstr "Relaciones"
+
+#~ msgid "mail address"
+#~ msgstr "correo electrónico"
+
+#~ msgid "word"
+#~ msgstr "palabra"
 
 #~ msgid "reference"
 #~ msgstr "referencia"

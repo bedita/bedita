@@ -17,14 +17,19 @@ available options:
 -->
 *}
 
+<style scoped>
+
+
+</style>
+
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
 
 	<input type="hidden" name="cleanFilter" value=""/>
 
 	<table class="filters">
-		<tr>
-			
 		{if !empty($filters.word)}
+		<tr>
+			<th><label>{t}search word{/t}:</label></th>
 			<td>
 				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" style="width:255px" value="{$view->SessionFilter->read('query')}"/>&nbsp;
 				<input type="checkbox"
@@ -33,9 +38,28 @@ available options:
 					{/if} 
 					id="modalsubstring" name="filter[substring]" /> {t}substring{/t}
 			</td>
+		</tr>
 		{/if}
-		
+		{if !empty($filters.language)}
+		<tr>
+			<th><label>{t}language{/t}:</label></th>
+			<td>
+				<select name="filter[lang]" id="lang">
+					<option value="">{t}all{/t}</option>
+					{foreach $conf->langOptions as $val => $label}
+						{strip}
+						<option value="{$val}" {if $view->SessionFilter->read('lang') == $val}selected="selected"{/if}>
+							{$label}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
+		{/if}
+
 		{if !empty($filters.type)}
+		<tr>
 			<th><label>{t}type{/t}:</label></th>
 			<td>
 				<select name="filter[object_type_id]" id="objectType">
@@ -51,66 +75,13 @@ available options:
 					{/foreach}
 				</select>
 			</td>
-		{/if}
-
-			<td rowspan="4" style="border:0px">
-				<input type="submit" id="searchButton" value=" {t}Find it{/t} ">
-				<input type="button" id="cleanFilters" value=" {t}Clean{/t} "
-			</td>
 		</tr>
-		<tr>
-
-		{if !empty($filters.tree)}
-			<td>
-				<label>{t}on position{/t}:</label>
-				<select style="margin-left:10px; width:270px" name="filter[parent_id]" id="parent_id">
-				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select>
-				{if !empty($filters.treeDescendants)}
-					<input type="checkbox" name="filter[descendants]"
-						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
-				{/if}
-			</td>
 		{/if}
-
-		{if !empty($filters.language)}
-			<th><label>{t}language{/t}:</label></th>
-			<td>
-				<select name="filter[lang]" id="lang">
-					<option value="">{t}all{/t}</option>
-					{foreach $conf->langOptions as $val => $label}
-						{strip}
-						<option value="{$val}" {if $view->SessionFilter->read('lang') == $val}selected="selected"{/if}>
-							{$label}
-						</option>
-						{/strip}
-					{/foreach}
-				</select>
-			</td>
-		{/if}
-		</tr>
-
-		<tr>
-		{if !empty($filters.categories)}
-			<th><label>{t}categories{/t}:</label></th>
-			<td>
-				<select style="margin-left:10px; width:270px" name="filter[category]">
-					<option value="">{t}all{/t}</option>
-					{foreach $categories as $catId => $catLabel}
-						{strip}
-						<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
-							{$catLabel}
-						</option>
-						{/strip}
-					{/foreach}
-				</select>
-			</td>
-		{/if}
-
 		{if !empty($filters.mediaTypes)}
+		<tr>
 			<th><label>{t}media type{/t}:</label></th>
 			<td>
-				<select style="margin-left:10px; width:270px" name="filter[category]">
+				<select name="filter[category]">
 					<option value="">{t}all{/t}</option>
 					{foreach $conf->mediaTypes as $mediaType}
 						{strip}
@@ -121,17 +92,56 @@ available options:
 					{/foreach}
 				</select>
 			</td>
+		</tr>
+		{/if}
+		{if !empty($filters.tree)}
+		<tr>
+			<th><label>{t}on position{/t}:</label></th>
+			<td>
+				<select name="filter[parent_id]" id="parent_id">
+				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
+				</select>
+				{if !empty($filters.treeDescendants)}
+					<input type="checkbox" name="filter[descendants]"
+						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
+				{/if}
+			</td>
+		</tr>
+		{/if}
+		{if !empty($filters.categories)}
+		<tr>
+			<th><label>{t}categories{/t}:</label></th>
+			<td>
+				<select name="filter[category]">
+					<option value="">{t}all{/t}</option>
+					{foreach $categories as $catId => $catLabel}
+						{strip}
+						<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
+							{$catLabel}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
+			</td>
+		</tr>
 		{/if}
 
 		{if !empty($filters.customProp)}
+		<tr>
 			<th><label>{t}properties{/t}:</label></th>
-			<td colspan="3">
+			<td>
+				
 				[...]
 			</td>
 		{/if}
 
 		</tr>
-
+		<tr>
+			<td colspan="10">
+				<input type="submit" id="searchButton" style="width:150px" value=" {t}find it{/t} ">
+				<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">
+			</td>
+		</tr>
 	</table>
 
 </form>
