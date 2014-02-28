@@ -4,7 +4,7 @@
 {foreach from=$dateItems item=item key=key}
 {if !empty($item.DateItem.start_date)}
 	{$dateprev = $date|default:''}
-	{$date = $item.DateItem.start_date|date_format:"%A<span class='day'>%d</span> %B %Y"}
+	{$date = $item.DateItem.start_date|date_format:"%A<span class='day'>%d</span> %B <span class='year'>%Y</span>"}
 	{$now = $smarty.now|date_format:"%a %d %B %Y"}
 
 	{if $date != $dateprev}
