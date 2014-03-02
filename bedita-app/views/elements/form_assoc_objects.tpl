@@ -1,4 +1,4 @@
-{$html->script("jquery/jquery.disable.text.select", true)}
+{*$html->script("jquery/jquery.disable.text.select", true)*}
 
 <script type="text/javascript">
 var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
@@ -107,7 +107,7 @@ $(document).ready(function() {
 });
 
 $(function() {
-    $('.disableSelection').disableTextSelect();
+   // $('.disableSelection').disableTextSelect();
 });
 
 //-->

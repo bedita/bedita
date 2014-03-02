@@ -1243,18 +1243,6 @@ IMG.multimediaitemToolbar.viewthumb {
 }
 
 
-.priority {
-	color: #000000;
-	border:0px !important;
-	font: normal 1.2em "Georgia" !important;
-	padding:0px; margin:0px;
-}
-
-input.priority {
-	width: 42px;
-}
-
-
 .dark.multimediaitem .priority {
 	color: #FFFFFF;
 }
@@ -1382,22 +1370,21 @@ input#titleBEObject {
 
 INPUT.priority {
 	text-align:center; 
-	margin-left: 0px; 
-	margin-right:0px; width:35px;
-	background-color:transparent
+	margin:-5px 0 0 0;
+	width:20px;
+	height:20px;
+	border-radius:35px !important; 
+	font-size: 11px;
+	border-width:0px !important;
+	color:#FFF !important;
 }
 
 INPUT.objectCheck {
 	margin-top:5px;
-	
 }
-
 
 INPUT[type=text],INPUT[type=password], textarea {	
 	border-radius : 7px; 
-	-moz-border-radius : 7px; 
-	-webkit-border-radius : 7px;
-	-khtml-border-radius: 7px;
 	border:1px solid silver;
 }
 

@@ -25,6 +25,9 @@
 		opacity:.5;
 	}
 
+	.eventitem:hover {
+		background-color: #CCC;	
+	}
 	.eventitem time.hour {
 		padding:2px 5px 2px 5px; display:block;
 		color:#0099CC;

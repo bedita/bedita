@@ -12,6 +12,7 @@
 			{$date}
 		</li>
 	{/if}
+	<a href="{$html->url('view/')}{$item.DateItem.Event.id}">
 	<li class="eventitem {$item.DateItem.Event.status}">
 		{$time = $item.DateItem.start_date|date_format:"%H:%M"}
 		<!--
@@ -20,12 +21,10 @@
 		-->
 		<time class="hour">ore {$time}</time>
 		<h3 style="padding:5px;">
-			<a href="{$html->url('view/')}{$item.DateItem.Event.id}">{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"}</a>
+			{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"}
 		</h3>
 		
-	</li>
+	</li></a>
 {/if}
 {/foreach}
 </ul>
-
-{*dump var=$dateItems*}

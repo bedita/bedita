@@ -1,4 +1,4 @@
-{$html->script("jquery/jquery.disable.text.select", true)}
+{*$html->script("jquery/jquery.disable.text.select", true)*}
 
 <script type="text/javascript">
 <!--
@@ -87,7 +87,7 @@ $(document).ready(function() {
 
 
     $(function() {
-        $('.disableSelection').disableTextSelect();
+        //$('.disableSelection').disableTextSelect();
     });
 
 {/literal}
