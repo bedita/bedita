@@ -57,6 +57,8 @@ class AppController extends Controller
 	protected $currLang = NULL; // selected UI lang
 	protected $currLocale = NULL; // selected UI locale
 
+	protected $profiling = false;
+	
 	/**
 	 * Specific per-controller model bindings
 	 *
@@ -131,7 +133,37 @@ class AppController extends Controller
 	protected function beforeCheckLogin() {}
 	
 	
+	/**
+	 * Start profiler
+	 */
+	protected function startProfiler() {
+	    if (Configure::read('enableProfiling') && function_exists('xhprof_enable')) {
+	        $this->profiling = true;
+	        xhprof_enable();
+	    }
+	}
+	
+	/**
+	 * Stop profiler and save data
+	 */
+    protected function stopProfiler($save = true) {
+        if ($this->profiling) {
+            $xhprof_data = xhprof_disable();
+            if ($save) {
+                App::import('Vendor', 'xhprof_lib', array('file' => 'xhprof'.DS.'xhprof_lib.php'));
+                App::import('Vendor', 'xhprof_runs', array('file' => 'xhprof'.DS.'xhprof_runs.php'));
+                $xhprof_runs = new XHProfRuns_Default();
+                $profileName = str_replace(array("http://", "https://", "."), '', $this->fullBaseUrl);
+                $profileName .= "-". $this->name . "-" . $this->action; 
+                $run_id = $xhprof_runs->save_run($xhprof_data, $profileName);
+                $this->log("Profile run saved: " . $run_id, 'debug');
+            }
+            $this->profiling = false;
+        }
+    }
+	
 	final function beforeFilter() {
+	    $this->startProfiler();
 		self::$current = $this;
 		$this->view = 'Smarty';
 		$conf = Configure::getInstance();
@@ -260,6 +292,7 @@ class AppController extends Controller
 		// convienience methods for frontends [like afterFilter]
 		$this->beditaAfterFilter();
 		$this->updateHistory();
+	    $this->stopProfiler();
 	}
 
 	protected function updateHistory() {
