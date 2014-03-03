@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,25 +20,15 @@
  */
 
 /**
- * Base Date object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * Date item object
  */
 class DateItem extends BEAppModel 
 {
-	var $recursive = 0 ;
+    public $recursive = 0;
 
-	var $validate = array(
-//		'start_date' => array('rule' => 'notEmpty'),
-//		'end_date' => array('rule' => 'notEmpty')
-	) ;
-	
-	function beforeValidate() {
+    public $validate = array();
 
+    function beforeValidate() {
         $this->checkDate('start_date');
         $this->checkDate('end_date');
         $data = &$this->data[$this->name] ;
@@ -50,6 +40,106 @@ class DateItem extends BEAppModel
         }
         
         return true;
-	}
+    }
+    
+    /**
+     * Load calendar date items from a "start day" to an "end day"
+     * Returns array contatining object_id (events) with matching date items, 
+     * and "calendar" array with DateItems for each day
+     * 
+     * @param string $today - in the form YYYY-MM-DD, i.e. 2014-02-28
+     * @param string $nextCalendarDay, 
+     * @return array, containing 
+     *     "objIds" => array of object id matched, 
+     *     "calendar" => associative array having "date" as key and date items as values
+     */
+    public function loadDateItemsCalendar($today, $nextCalendarDay) {
+
+        $lastDay = $today;
+        $todayTime = $today . " 00:00:00";
+        $nextCalendarTime = $nextCalendarDay . " 00:00:00";
+
+        $query = "select * from date_items as DateItem where " .
+                " (start_date >= '$todayTime' AND start_date < '$nextCalendarTime') ".
+                " OR (start_date < '$nextCalendarTime' AND end_date > '$todayTime' AND end_date IS NOT NULL)" .
+                " order by start_date";
+        $dateItems = $this->query($query);
+        $objIds = array();
+
+        $calendar = array();
+        $multiDay = array();
+        foreach ($dateItems as &$di) {
+            if (!empty($di["DateItem"]["start_date"])) {
+                $isMultiDay = false;
+                $objIds[] = $di["DateItem"]["object_id"];
+                $startDay = substr($di["DateItem"]["start_date"], 0, 10);
+                $calDay = null;
+                if (!empty($di["DateItem"]["end_date"])) {
+                    $endDay = substr($di["DateItem"]["end_date"], 0, 10);
+                    if ($startDay !== $endDay) {
+                        $startTime = substr($di["DateItem"]["start_date"], 10);
+                        $calDay = ($startDay >= $today) ? $startDay : $today;
+                        $di["DateItem"]["start_date"] = $calDay . $startTime;
+                        unset($di["DateItem"]["end_date"]);
+                        $di["DateItem"]["firstDay"] = $calDay;
+                        $di["DateItem"]["lastDay"] = $endDay;
+                        $di["DateItem"]["startTime"] = $startTime;
+                        $isMultiDay = true;
+                        $multiDay[] = $di;
+                    } else {
+                        $calDay = $startDay;
+                    }
+                } else {
+                    $calDay = $startDay;
+                }
+                if (!$isMultiDay && ($calDay > $lastDay)) {
+                    $lastDay = $calDay;
+                }
+                if (empty($calendar[$calDay])) {
+                    $calendar[$calDay]= array();
+                }
+                if (!$isMultiDay) {
+                    $calendar[$calDay][] = $di;
+                }
+            }
+        }
+
+        foreach ($multiDay as $multi) {
+            $first = $multi["DateItem"]["firstDay"];
+            $last = $multi["DateItem"]["lastDay"];
+            $sTime = $multi["DateItem"]["startTime"];
+            foreach ($calendar as $day => &$item) {
+                $dc = date_create($day);
+                $nDay = intval(date("N", date_timestamp_get($dc)));
+                if (empty($multi["DateItem"]["days"]) ||
+                in_array($nDay, $multi["DateItem"]["days"])) {
+                    if ($day >= $first && $day <= $last) {
+                        $multi["DateItem"]["start_date"] = $day . $sTime;
+                        if ($sTime == " 00:00:00") {
+                            array_push($item, $multi);
+                        } else {
+                            $newItem = array();
+                            $found = false;
+                            foreach ($item as $di) {
+                                if (!$found &&
+                                ( ($multi["DateItem"]["start_date"] < $di["DateItem"]["start_date"])
+                                        || ( isset($di["DateItem"]["startTime"]) &&
+                                                $di["DateItem"]["startTime"] == " 00:00:00" ) )) {
+                                    $newItem[] = $multi;
+                                    $found = true;
+                                }
+                                $newItem[] = $di;
+                            }
+                            if (!$found) {
+                                $newItem[] = $multi;
+                            }
+                            $calendar[$day] = $newItem;
+                        }
+                    }
+                }
+            }
+        }
+        return array("objIds" => $objIds, "calendar" => $calendar);
+    }
 }
 ?>

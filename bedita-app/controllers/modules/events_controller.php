@@ -28,9 +28,9 @@ class EventsController extends ModulesController {
 	public $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
 	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
 	public $uses = array('BEObject','Event','Category','Area','Tree', 'DateItem');
-	// calendar pagination
-	public $paginate = array("DateItem" => array('limit' => 100, 'page' => 1, 
-		        'order'=> array('start_date'=>'asc')));
+
+	// default calendar: 7 days
+	protected $calendarDays = 7;
 	protected $moduleName = 'events';
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
@@ -41,27 +41,53 @@ class EventsController extends ModulesController {
 		$this->loadCategories($filter["object_type_id"]);
 	 }
 
-	public function calendar() {
-		$conditions = array("DateItem.start_date > 0");
-		$dateItems = $this->paginate('DateItem', $conditions);
-		$objIds = array();
-		foreach ($dateItems as $di) {
-		    $objIds[] = $di["DateItem"]["object_id"];
-		}
-		$events = $this->Event->find("all", array(
-		        "conditions" => array("Event.id IN (" . implode(",", $objIds) . ")",
-		           "BEObject.object_type_id" => Configure::read("objectTypes.event.id")),
-		));
-        $eventsOrdered = array();
-		foreach ($events as $evt) {
-		    $eventsOrdered[$evt["id"]] = $evt;
-		}
-		foreach ($dateItems as &$di) {
-		    $di["DateItem"]["Event"] = $eventsOrdered[$di["DateItem"]["object_id"]];
-		}
-		$this->set("dateItems", $dateItems);
-	 }
+    public function calendar() {
+        if(!empty($this->params["url"]["Date_Day"])) {
+            $startDay = $this->params["url"]["Date_Year"] . "-" . 
+                $this->params["url"]["Date_Month"] . "-" . 
+                str_pad($this->params["url"]["Date_Day"], 2, "0", STR_PAD_LEFT);
+        } else {
+            $startDay = date("Y-m-d");
+        }
+        $startTime = $startDay . " 00:00:00";
+        // end day: today + caelndarDays + 1
+        $nextCalendarDay = date("Y-m-d", strtotime($startTime) + ($this->calendarDays * DAY));
+        $this->set("nextCalendarDay", $nextCalendarDay);
+        $prevCalendarDay = date("Y-m-d", strtotime($startTime) - ($this->calendarDays * DAY));
+        $this->set("prevCalendarDay", $prevCalendarDay);
 
+        $calendarData = $this->DateItem->loadDateItemsCalendar($startDay, $nextCalendarDay);
+        
+        $events = array();
+        $this->Event->containLevel("minimum");
+        if (!empty($calendarData["objIds"])) {
+            $events = $this->Event->find("all", array(
+                    "conditions" => array(
+                            "Event.id IN (" . implode(",", $calendarData["objIds"]) . ")",
+                            "BEObject.object_type_id" => Configure::read("objectTypes.event.id")),
+        
+            ));
+        }
+        
+        $eventsOrdered = array();
+        foreach ($events as &$evt) {
+            $eventsOrdered[$evt["id"]] = $evt;
+        }
+        
+        $dateItemsCalendar = array();
+        $allDates = array();
+        foreach ($calendarData["calendar"] as $day => $items) {
+            foreach ($items as $di) {
+                if (!empty($eventsOrdered[$di["DateItem"]["object_id"]])) {
+                    $di["DateItem"]["Event"] = $eventsOrdered[$di["DateItem"]["object_id"]];
+                    array_push($allDates, $eventsOrdered[$di["DateItem"]["object_id"]]);
+                    $dateItemsCalendar[] = $di;
+                }
+            }
+        }
+        $this->set("dateItems", $dateItemsCalendar);
+        $this->set("allDates", $allDates);
+    }
 
 	public function view($id = null) {
 		$this->viewObject($this->Event, $id);
