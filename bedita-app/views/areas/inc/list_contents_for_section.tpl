@@ -32,11 +32,11 @@
 		
 		<td style="width:25px">
 			<input type="hidden" class="id" name="reorder[{$c.id}][id]" value="{$c.id}" />
-			<input type="text" class="priority"	name="reorder[{$c.id}][priority]" value="{$c.priority|default:""}" 
-			style="width:25px"
-			size="3" maxlength="3"/>
+			<input type="text" class="priority {$conf->objectTypes[$c.object_type_id].module_name}"	name="reorder[{$c.id}][priority]" value="{$c.priority|default:""}" />
 		</td>
+		<!--
 		<td style="padding:0px; padding-top:7px; width:10px"><span title="{$conf->objectTypes[$c.object_type_id].module_name}" class="listrecent {$conf->objectTypes[$c.object_type_id].module_name}" style="margin:0px"></span></td>
+		\-->
 		<td>
 			{$c.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
 			<div class="description" style="width:auto" id="desc_{$c.id}">

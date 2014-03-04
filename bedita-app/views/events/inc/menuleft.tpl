@@ -1,7 +1,4 @@
-{*
-Template incluso.
-Menu a SX valido per tutte le pagine del controller.
-*}
+{* Left menu, all controller pages *}
 
 <div class="primacolonna">
 
@@ -16,11 +13,12 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'index'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.url}/">{t}List {$currentModule.name}{/t}</a>
 		</li>
-		{bedev}
 		<li {if $view->action eq 'calendar'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.url}/calendar">{t}Calendar view{/t}</a>
 		</li>
-		{/bedev}
+		{if !empty($view->action) && ($view->action == "index")}
+			{$view->element('select_categories')}
+		{/if}
 		<li {if $view->action eq 'categories'}class="on"{/if}>
 			<a href="{$html->url('/')}{$currentModule.url}/categories">{t}Manage categories{/t}</a>
 		</li>
