@@ -26,5 +26,9 @@
 		
 	</li></a>
 {/if}
+{foreachelse}
+	
+	<li style="padding:20px">{t}No events in this range of time{/t}</li>
+
 {/foreach}
 </ul>
