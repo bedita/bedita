@@ -50,6 +50,8 @@ class EventsController extends ModulesController {
             $startDay = date("Y-m-d");
         }
         $startTime = $startDay . " 00:00:00";
+        
+        $this->set("startTime", $startTime);
         // end day: today + caelndarDays + 1
         $nextCalendarDay = date("Y-m-d", strtotime($startTime) + ($this->calendarDays * DAY));
         $this->set("nextCalendarDay", $nextCalendarDay);

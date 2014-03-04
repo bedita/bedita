@@ -55,7 +55,7 @@
 
 {include file="inc/menucommands.tpl" fixed=1}
 
-{$view->element('toolbar')}
+{include file="inc/calendar_toolbar.tpl"}
 
 <div class="mainfull">
 
