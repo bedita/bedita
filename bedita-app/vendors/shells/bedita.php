@@ -487,16 +487,21 @@ class BeditaShell extends BeditaBaseShell {
 		$this->out("checkMedia - checking database");
         $allStream = $stream->find("all");
 		$mediaOk = true;
+		$dbCount = 0;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];
         	// if $p is a local path check existence
         	if((stripos($p, "/") === 0) && !file_exists($mediaRoot.$p)) {
 					$this->out("File $p not found on filesystem!!");
 					$mediaOk = false;
+					$dbCount++;
         	}
         }
         if($mediaOk) {
 			$this->out("checkMedia - database OK");
+        } else {
+            $this->out("checkMedia - some files are missing");
+            $this->out("Media local uri not on filesystem: " . $dbCount);
         }
 	}    
 	
