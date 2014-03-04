@@ -446,8 +446,10 @@ class BeditaShell extends BeditaBaseShell {
 	public function checkMedia() {
 
     	$this->initConfig();
-		$this->out("checkMedia - checking filesystem");
-		$mediaNotPresent = array();
+		$this->hr();
+    	$this->out("checkMedia - checking filesystem");
+		$this->hr();
+    	$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
 		$maxDepthLevel = 2;
 		if (isset($this->params["level"])) {
@@ -455,6 +457,7 @@ class BeditaShell extends BeditaBaseShell {
 			$this->out("Using max depth level: " . $maxDepthLevel);
 		}
 		$this->streamsCheck($mediaRoot, 0, $maxDepthLevel, $mediaNotPresent);
+		$this->hr();
 		$this->out("Media files not in BEdita - " . count($mediaNotPresent));
 		$stream = ClassRegistry::init("Stream");
 		if (isset($this->params["create"])) {
@@ -484,20 +487,29 @@ class BeditaShell extends BeditaBaseShell {
 		}
 		
 		// check db
+		$this->hr();
 		$this->out("checkMedia - checking database");
-        $allStream = $stream->find("all");
+		$this->hr();
+		$allStream = $stream->find("all");
 		$mediaOk = true;
+		$dbCount = 0;
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];
         	// if $p is a local path check existence
         	if((stripos($p, "/") === 0) && !file_exists($mediaRoot.$p)) {
 					$this->out("File $p not found on filesystem!!");
 					$mediaOk = false;
+					$dbCount++;
         	}
         }
+		$this->hr();
         if($mediaOk) {
 			$this->out("checkMedia - database OK");
+        } else {
+            $this->out("checkMedia - some files are missing");
+            $this->out("Media objects with missing local file: " . $dbCount);
         }
+		$this->hr();
 	}    
 	
 	
