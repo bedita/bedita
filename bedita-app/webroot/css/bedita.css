@@ -731,6 +731,9 @@ UL.menuleft + UL.menuleft {
 	margin-top:-10px;
 }
 
+.tab.filteractive H2:after {
+	content:" ✻ active"
+}
 
 /*...........................................    
 
