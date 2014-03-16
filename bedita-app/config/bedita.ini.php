@@ -671,7 +671,7 @@ if(!defined('BEDITA_IGNORE_CFG')) {
 /**
  * @deprecated system/server file specific settings
  */
-if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php")) {
-	include BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";
-}
+//if(file_exists(BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php")) {
+//	include BEDITA_CORE_PATH. DS ."config".DS."bedita.sys.php";
+//}
 ?>
