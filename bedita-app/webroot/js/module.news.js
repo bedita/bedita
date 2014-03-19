@@ -1,3 +1,0 @@
-/**
-shortnews custom js
-*/

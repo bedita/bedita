@@ -1,3 +1,0 @@
-/**
-categories custom js
-*/
