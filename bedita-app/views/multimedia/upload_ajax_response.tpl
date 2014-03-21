@@ -21,7 +21,7 @@
                         </td>
                     </tr>
 
-                    {if !$newObject}
+                    {if empty($newObject) || !$newObject}
                     <tr>
                         <td style="width:15px; vertical-alig:middle; padding:5px 0px 5px 10px;">
                             <input type="button" value="{t}override{/t}" class="uploadChoice" data-value="new_file_old_obj" />
