@@ -80,7 +80,7 @@ class BeditaShell extends BeditaBaseShell {
 		$res = @$this->checkAppDirPerms($mediaRoot);
 		$this->hr();
 		if(!$res) {
-			$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
 			$ans = $this->in("Proceed anyway? [y/n]");
 			if($ans != "y") {
 		   		$this->out("Bye");
@@ -93,7 +93,7 @@ class BeditaShell extends BeditaBaseShell {
 		$res = $this->checkAppUrl($mediaUrl);
 		$this->hr();
 		if(!$res) {
-			$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
 			$ans = $this->in("Proceed anyway? [y/n]");
 			if($ans != "y") {
 		   		$this->out("Bye");
@@ -579,8 +579,6 @@ class BeditaShell extends BeditaBaseShell {
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
         if (!$frontend) {
-	        //config/bedita.sys.php
-        	$this->checkAppFile($appPath.DS."config".DS."bedita.sys.php");
         	// config/bedita.cfg.php
 	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
         }
@@ -643,19 +641,19 @@ class BeditaShell extends BeditaBaseShell {
 		$this->hr();
 		$mediaRoot = Configure::read("mediaRoot");
 		if(empty($mediaRoot)) {
-			$this->out("WARNING: empty 'mediaRoot' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'mediaRoot' in config/bedita.cfg.php");
 		}
 		@$this->checkAppDirPerms($mediaRoot, "mediaRoot: ");
 		
 		$mediaUrl = Configure::read("mediaUrl");
 		if(empty($mediaUrl)) {
-			$this->out("WARNING: empty 'mediaUrl' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'mediaUrl' in config/bedita.cfg.php");
 		}
 		@$this->checkAppUrl($mediaUrl, "mediaUrl: ");
 		
 		$beUrl = Configure::read("beditaUrl");
 		if(empty($beUrl)) {
-			$this->out("WARNING: empty 'beditaUrl' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'beditaUrl' in config/bedita.cfg.php");
 		}
 		@$this->checkAppUrl($beUrl, "beditaUrl: ");
 		
