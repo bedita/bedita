@@ -35,6 +35,12 @@ class SessionFilterHelper extends AppHelper {
     public $helpers = array('Session');
 
     /**
+     * the session key prefix
+     * @var string
+     */
+    private $sessionKeyPrefix = 'beditaFilter';
+
+    /**
      * the session key as filter.ControllerName.actionName
      * if it's defined the view var $sessionFilterKey then use its value as key
      * @var string
@@ -47,7 +53,7 @@ class SessionFilterHelper extends AppHelper {
         if (!empty($view->viewVars['sessionFilterKey'])) {
             $this->sessionKey = $view->viewVars['sessionFilterKey'];
         } else {
-            $this->sessionKey = 'filter.' . $view->params['controller'] . '.' . $view->params['action'];
+            $this->sessionKey = $this->sessionKeyPrefix . '.' . $view->params['controller'] . '.' . $view->params['action'];
         }
     }
 

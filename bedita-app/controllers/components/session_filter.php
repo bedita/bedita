@@ -41,12 +41,23 @@ class SessionFilterComponent extends Object {
     public $controller = null;
 
     /**
+     * the session key prefix
+     * @var string
+     */
+    private $sessionKeyPrefix = 'beditaFilter';
+
+    /**
      * the session key used to store filter
-     * It's built as 'filter.ControllerName.actionName'
+     * It's usually built as self::$sessionKeyPrefix . '.ControllerName.actionName'
      * @var string
      */
     private $sessionKey = null;
 
+    /**
+     * url args that are accepted to be put in session filter
+     * used in self::getFromUrl() method
+     * @var array
+     */
     private $urlArgsAccepted = array(
         'id',
         'category',
@@ -62,29 +73,58 @@ class SessionFilterComponent extends Object {
 
     /**
      * initialize component
-     *  - setup self::sessionKey
-     *  - clean filter if not empty $controller->params['form']['cleanFilter']
-     *  - if not to clean, setup filter if not empty $controller->params['form']['filter']
      *
      * @param  Controller $controller
      * @param  array  $settings
      */
     public function initialize(&$controller, $settings = array()) {
         $this->controller =& $controller;
-        $this->sessionKey = 'filter.' . $controller->name . '.' . $controller->action;
-        if (!empty($controller->params['form']['cleanFilter']) || !empty($controller->params['named']['cleanFilter'])) {
-            $this->clean();
-            // unset cleanFilter to avoid to use it writing url for pagination
-            if (isset($controller->params['named']['cleanFilter'])) {
-                unset($controller->params['named']['cleanFilter']);
-            }
-        } elseif (!empty($controller->params['form']['filter'])) {
-            $this->addBulk($controller->params['form']['filter']);
-        }
-        $this->controller->set('sessionFilterKey', $this->sessionKey);
     }
 
-    public function startup(&$controller) {}
+    /**
+     * startup component
+     * @param  Controller $controller
+     */
+    public function startup(&$controller) {
+        $toEnable = Configure::read('enableSessionFilter');
+        if (BACKEND_APP || $toEnable) {
+            $this->setup();
+        }
+    }
+
+    /**
+     *  setup Session Filter
+     *
+     * - setup self::sessionKey
+     * - clean filter if not empty $controller->params['form']['cleanFilter']
+     * - if not to clean, setup filter if not empty $controller->params['form']['filter']
+     * @param  string $name suffix to assign to session key
+     *                      if empty ControllerName.actionName was used
+     */
+    public function setup($name = null) {
+        $this->setSessionKey($name);
+        if (!empty($this->controller->params['form']['cleanFilter']) || !empty($this->controller->params['named']['cleanFilter'])) {
+            $this->clean();
+            // unset cleanFilter to avoid to use it writing url for pagination
+            if (isset($this->controller->params['named']['cleanFilter'])) {
+                unset($this->controller->params['named']['cleanFilter']);
+            }
+        } elseif (!empty($this->controller->params['form']['filter'])) {
+            $this->addBulk($this->controller->params['form']['filter']);
+        }
+    }
+
+    /**
+     * set session key prefixing it with self::sessionKeyPrefix
+     *
+     * @param string $name suffix to assign to session key
+     *                     if empty ControllerName.actionName was used
+     */
+    private function setSessionKey($name = null) {
+        $suffix = (!empty($name))? $name : $this->controller->name . '.' . $this->controller->action;
+        $this->sessionKey = $this->sessionKeyPrefix . '.' . $suffix;
+        $this->controller->set('sessionFilterKey', $this->sessionKey);
+    }
 
     /**
      * return filter session key
@@ -134,11 +174,12 @@ class SessionFilterComponent extends Object {
     public function add($key, $value) {
         $filterToAdd = array($key => $value);
         $this->arrange($filterToAdd);
+        reset($filterToAdd);
         $key = key($filterToAdd);
         $value = current($filterToAdd);
         $filter = $this->read();
         $filter[$key] = $value;
-        $this->Session->write($this->sessionKey, $filter);
+        return $this->Session->write($this->sessionKey, $filter);
     }
 
     /**
@@ -157,7 +198,7 @@ class SessionFilterComponent extends Object {
             }
             $filter = array_merge($sessionFilter, $filter);
         }
-        $this->Session->write($this->sessionKey, $filter);
+        return $this->Session->write($this->sessionKey, $filter);
     }
 
     /**
@@ -168,10 +209,10 @@ class SessionFilterComponent extends Object {
      * @param  array  $filter
      */
     public function arrange(array &$filter) {
-        foreach ($filter as $key => $value) {
+        foreach ($filter as $key => &$value) {
             if (empty($value)) {
                 unset($filter[$key]);
-            } else {
+            } elseif (is_string($value)) {
                 $value = Sanitize::html($value, array('remove' => true));
             }
         }
@@ -185,8 +226,10 @@ class SessionFilterComponent extends Object {
      */
     public function read($key = null) {
         $sessionKey = (!empty($key))? $this->sessionKey . '.' . $key : $this->sessionKey;
-        $filter = $this->Session->read($sessionKey);
-        if (!$filter) {
+        $filter = $this->Session->read($this->sessionKey);
+        if (!empty($key)) {
+            $filter = $filter[$key];
+        } elseif (!$filter) {
             $filter = array();
         }
         return $filter;
@@ -199,7 +242,13 @@ class SessionFilterComponent extends Object {
      * @return boolean true if session variable is set and can be deleted, false if variable was not set
      */
     public function delete($key) {
-        return $this->Session->delete($this->sessionKey . '.' . $key);
+        $filter = $this->Session->read($this->sessionKey);
+        $ret = false;
+        if (isset($filter[$key])) {
+            unset($filter[$key]);
+            $ret = $this->addBulk($filter);
+        }
+        return $ret;
     }
 
     /**
@@ -217,7 +266,7 @@ class SessionFilterComponent extends Object {
      * @return boolean true if session variable is set and can be deleted, false if variable was not set
      */
     public function cleanAll() {
-        return $this->Session->delete('filter');
+        return $this->Session->delete($this->sessionKeyPrefix);
     }
 
 }
