@@ -24,7 +24,9 @@ App::import('Sanitize');
 /**
  * SessionFilterComponent class
  *
- * Handle filter session used to list BEdita objects
+ * Handle filter session used to list BEdita objects.
+ * The session key used to store filter
+ * is usually built as self::$sessionKeyPrefix . '.ControllerName.actionName'
  */
 class SessionFilterComponent extends Object {
 
@@ -47,7 +49,7 @@ class SessionFilterComponent extends Object {
     private $sessionKeyPrefix = 'beditaFilter';
 
     /**
-     * the session key used to store filter
+     * the session key used to store filter.
      * It's usually built as self::$sessionKeyPrefix . '.ControllerName.actionName'
      * @var string
      */
@@ -83,11 +85,16 @@ class SessionFilterComponent extends Object {
 
     /**
      * startup component
+     *
+     * starts the setup in BEdita backend
+     * for frontend apps the setup starts in FrontendController::route()
+     * if the config var 'enableSessionFilter' is set to true
+     *
      * @param  Controller $controller
      */
     public function startup(&$controller) {
-        $toEnable = Configure::read('enableSessionFilter');
-        if (BACKEND_APP || $toEnable) {
+        // automatic setup only in backend
+        if (BACKEND_APP) {
             $this->setup();
         }
     }

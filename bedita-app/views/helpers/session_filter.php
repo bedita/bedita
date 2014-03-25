@@ -24,7 +24,7 @@ App::import('Helper', 'Session');
 /**
  * SessionFilterHelper class
  *
- * operate on filters put in session by SessionFilterComponent class
+ * work on filters put in session by SessionFilterComponent class
  */
 class SessionFilterHelper extends AppHelper {
 

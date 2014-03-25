@@ -1798,6 +1798,10 @@ abstract class FrontendController extends AppController {
 
 		$this->action = $methodName;
 
+		if (Configure::read('enableSessionFilter')) {
+			$this->SessionFilter->setup();
+		}
+
 		try {
 			// check before filter method
 			if ($reflectionClass->hasMethod($methodName . "BeforeFilter")) {
