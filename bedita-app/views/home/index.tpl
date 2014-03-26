@@ -1,5 +1,6 @@
-{$html->script("jquery/jquery.form", false)}
+<!-- //////// home page //////////// -->
 
+{$html->script("jquery/jquery.form", false)}
 <script type="text/javascript">
 <!--
 
@@ -120,36 +121,10 @@ $(document).ready(function() {
 		<div id="searchResult"></div>	
 	</div>
 	
-	{*bedev}
+	{bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
-	<div id="new" class="bordered smallist">
-		<form>
-			<label>{t}Title{/t}</label>
-			<input type="text">
-			
-			<label>{t}Text{/t}</label>
-			<textarea></textarea>
-			
-			<label >{t}Object type{/t}</label>		
-			<select>
-			{assign var=leafs value=$conf->objectTypes.leafs}
-			{foreach from=$conf->objectTypes item=type key=key}	
-				{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
-				<option {if ($type.name == 'document')}selected="selected"{/if}>	
-					{t}{$type.model}{/t}
-				</option>
-				{/if}
-			{/foreach}
-			</select>
-			<label>{t}Position{/t}</label>
-			<select>
-				{$beTree->option($tree)}
-			</select>
-			<hr />
-			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
-		</form>
-	</div>
-	{/bedev*}
+	{$view->element('quick_item')}
+	{/bedev}
 
 <script type="text/javascript">
 <!--

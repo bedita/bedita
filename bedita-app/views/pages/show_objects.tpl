@@ -39,8 +39,8 @@ $(document).ready(function() {
 
 	$("select[multiple]").bsmSelect();
 
-	$(".searchTrigger").click(function() {
-		$(".search").toggle('fast');
+	$(".trigger").click(function() {
+		$(this).next().toggle('fast');
 	});
 	
 	
@@ -81,39 +81,46 @@ $(document).ready(function() {
 
 //-->
 </script>
+<style scoped>
+.trigger {
+	background:white url('{$html->webroot}img/piumeno.gif') no-repeat left 2px; 
+	padding:5px 0px 5px 30px; font-weight:bold; cursor:pointer;border-bottom:1px solid #CCC;
+}
+.search, .quick {
+	display:none; padding:10px;
+	
+}
+</style>
 
 <div class="bodybg">
 
-<div class="searchTrigger" style="
-background:white url('{$html->webroot}img/piumeno.gif') no-repeat left 2px; 
-padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
-	{t}Search{/t} 
-</div>
+	<div class="trigger">{t}Search{/t}</div>
+	<div class="search" >
+		{$view->element("filters_form",[
+		'filters' => [
+			'word' => true, 
+			'tree' => true,
+			'treeDescendants' => true,
+			'type' => true,
+			'language' => true,
+			'customProp' => false
+		]])}
+	</div>
 
-<div class="search" style="display:none; padding:10px; border:0px solid red;">
-	
-	{$view->element("filters_form",[
-	'filters' => [
-		'word' => true, 
-		'tree' => true,
-		'treeDescendants' => true,
-		'type' => true,
-		'language' => true,
-		'customProp' => false
-	]])}
-	
-</div>
-	
+	<div class="trigger">{t}Create new{/t}</div>
+	<div class="quick">
+	{$view->element('quick_item')}
+	</div>
+
+
 	<div id="loadObjInModal" class="loader"><span></span></div>
 	
 	<div id="assocObjContainer">
 		{include file="list_contents_to_assoc.tpl"}
 	</div>
-
+	
 	<div class="modalcommands">
-		
 		<input type="button" id="addButton" style="margin-bottom:10px; width:300px" value=" {t}add{/t} ">
-
 		{if !empty($html->params.named.group)}
  		<select title="{t}permission type{/t}" multiple id="modalSelectGroupPermission" name="permission[]">
             {foreach $conf->objectPermissions as $permLabel => $permVal}
@@ -121,6 +128,6 @@ padding:5px 0px 5px 30px; margin-bottom:1px; font-weight:bold; cursor:pointer;">
             {/foreach}
         </select>
         {/if}
-	
 	</div>
+
 </div>
