@@ -181,7 +181,9 @@ class MultimediaController extends ModulesController {
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 		$this->set('availabeRelations', $availableRelations);
-		$this->set('relObjects', $obj["relations"]);
+		if(!empty($obj["relations"])) {
+			$this->set('relObjects', $obj["relations"]);
+		}
 		$this->set('tree', $this->BeTree->getSectionsTree());
 		$this->set('parents',	$parents_id);
 		$this->setSessionForObjectDetail();

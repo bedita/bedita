@@ -230,3 +230,4 @@
 
 # /examples/wp.example.com/tmp/tests/
 /examples/wp.example.com/tmp/tests/*
+/.externalToolBuilders

@@ -7,6 +7,8 @@
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	
 	{include file="../inc/form_card_details.tpl"}
+	
+	{$view->element('form_previews')}
 
 	{include file="../inc/form_properties.tpl"}
 		

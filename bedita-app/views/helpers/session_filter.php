@@ -24,7 +24,7 @@ App::import('Helper', 'Session');
 /**
  * SessionFilterHelper class
  *
- * operate on filters put in session by SessionFilterComponent class
+ * work on filters put in session by SessionFilterComponent class
  */
 class SessionFilterHelper extends AppHelper {
 
@@ -33,6 +33,12 @@ class SessionFilterHelper extends AppHelper {
      * @var array
      */
     public $helpers = array('Session');
+
+    /**
+     * the session key prefix
+     * @var string
+     */
+    private $sessionKeyPrefix = 'beditaFilter';
 
     /**
      * the session key as filter.ControllerName.actionName
@@ -47,7 +53,7 @@ class SessionFilterHelper extends AppHelper {
         if (!empty($view->viewVars['sessionFilterKey'])) {
             $this->sessionKey = $view->viewVars['sessionFilterKey'];
         } else {
-            $this->sessionKey = 'filter.' . $view->params['controller'] . '.' . $view->params['action'];
+            $this->sessionKey = $this->sessionKeyPrefix . '.' . $view->params['controller'] . '.' . $view->params['action'];
         }
     }
 

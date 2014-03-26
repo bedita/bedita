@@ -1,4 +1,4 @@
-{$html->script("jquery/jquery.disable.text.select", true)}
+{*$html->script("jquery/jquery.disable.text.select", true)*}
 
 <script type="text/javascript">
 <!--
@@ -19,7 +19,7 @@ $(document).ready(function() {
 });
 
     $(function() {
-        $('.disableSelection').disableTextSelect();
+        //$('.disableSelection').disableTextSelect();
     });
 	
 {/literal}
@@ -70,12 +70,9 @@ $(document).ready(function() {
 				</td>
 				
 				<td style="width:25px">
-					<input type="hidden" class="id" 	name="reorder[{$s.id}][id]" value="{$s.id}" />
-					<input type="text" class="priority"	name="reorder[{$s.id}][priority]" value="{$s.priority|default:""}" 
-					style="width:25px"
-					size="3" maxlength="3"/>
+					<input type="hidden" class="id" name="reorder[{$s.id}][id]" value="{$s.id}" />
+					<input type="text" class="priority areas" name="reorder[{$s.id}][priority]" value="{$s.priority|default:""}" />
 				</td>
-				<td style="padding:0px; padding-top:7px; width:10px"><span class="listrecent areas" style="margin:0px"></span></td>
 				<td>
 					{$s.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
 					<div class="description" style="width:auto" id="desc_{$s.id}">

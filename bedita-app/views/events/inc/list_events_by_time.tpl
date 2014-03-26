@@ -4,7 +4,7 @@
 {foreach from=$dateItems item=item key=key}
 {if !empty($item.DateItem.start_date)}
 	{$dateprev = $date|default:''}
-	{$date = $item.DateItem.start_date|date_format:"%A<span class='day'>%d</span> %B %Y"}
+	{$date = $item.DateItem.start_date|date_format:"%A<span class='day'>%d</span> %B <span class='year'>%Y</span>"}
 	{$now = $smarty.now|date_format:"%a %d %B %Y"}
 
 	{if $date != $dateprev}
@@ -12,6 +12,7 @@
 			{$date}
 		</li>
 	{/if}
+	<a href="{$html->url('view/')}{$item.DateItem.Event.id}">
 	<li class="eventitem {$item.DateItem.Event.status}">
 		{$time = $item.DateItem.start_date|date_format:"%H:%M"}
 		<!--
@@ -20,12 +21,14 @@
 		-->
 		<time class="hour">ore {$time}</time>
 		<h3 style="padding:5px;">
-			<a href="{$html->url('view/')}{$item.DateItem.Event.id}">{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"}</a>
+			{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"}
 		</h3>
 		
-	</li>
+	</li></a>
 {/if}
+{foreachelse}
+	
+	<li style="padding:20px">{t}No events in this range of time{/t}</li>
+
 {/foreach}
 </ul>
-
-{*dump var=$dateItems*}

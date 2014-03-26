@@ -12,16 +12,12 @@
 			{/if}
 		{/if}
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
-		<input type="text" class="priority" 
-				style="margin:0px; width:20px; text-align:right; background-color:transparent"
+		<input type="text" class="priority {$objRelated.ObjectType.module_name|default:''}" 
+				style="margin-top:2px"
 				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 	</td>
 
-	<td style="width:10px;">
-		<span title="{$objRelated.ObjectType.name}" class="listrecent {$objRelated.ObjectType.module_name|default:''}" style="margin:0px">&nbsp;</span>
-	</td>
-	
 	<td class="assoc_obj_title">{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</td>
 
 {if $rel == "download"}

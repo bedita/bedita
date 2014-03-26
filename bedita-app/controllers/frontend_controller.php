@@ -655,10 +655,10 @@ abstract class FrontendController extends AppController {
 
 		$canPath .= (($canPath === "/") ? "" : "/");
 		$menu = true;
-		if($obj["object_type_id"] == Configure::read("objectTypes.section.id")) {
+		if(!empty($obj["object_type_id"]) && ($obj["object_type_id"] == Configure::read("objectTypes.section.id"))) {
 			$menu = !isset($obj["menu"]) ? true : (($obj["menu"] === '0') ? false : true);
 		}
-		if($menu) {
+		if($menu && !empty($obj["nickname"])) {
 			$canPath .= $obj["nickname"];
 		}
 		$obj["canonicalPath"] = $canPath;
@@ -1797,6 +1797,10 @@ abstract class FrontendController extends AppController {
 		}
 
 		$this->action = $methodName;
+
+		if (Configure::read('enableSessionFilter')) {
+			$this->SessionFilter->setup();
+		}
 
 		try {
 			// check before filter method

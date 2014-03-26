@@ -115,7 +115,7 @@ class BeHashComponent extends Object {
 		$mailParams = array();
 		if (method_exists($this->controller, $method)) {
 		    $mailParams = $this->controller->{$method}();
-		} else 	if (!method_exists($this, $method)) {
+		} else if (method_exists($this, $method)) {
 		    $mailParams = $this->{$method}($this->controller->data);
 		} else {
 		    throw new BeditaException(__("missing method to manage hash case", true));

@@ -80,7 +80,7 @@ class BeditaShell extends BeditaBaseShell {
 		$res = @$this->checkAppDirPerms($mediaRoot);
 		$this->hr();
 		if(!$res) {
-			$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$this->out("HINT: edit \$config['mediaRoot'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
 			$ans = $this->in("Proceed anyway? [y/n]");
 			if($ans != "y") {
 		   		$this->out("Bye");
@@ -93,7 +93,7 @@ class BeditaShell extends BeditaBaseShell {
 		$res = $this->checkAppUrl($mediaUrl);
 		$this->hr();
 		if(!$res) {
-			$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.sys.php, if necessary uncomment it.");
+			$this->out("HINT: edit \$config['mediaUrl'] in bedita-app/config/bedita.cfg.php, if necessary uncomment it.");
 			$ans = $this->in("Proceed anyway? [y/n]");
 			if($ans != "y") {
 		   		$this->out("Bye");
@@ -446,15 +446,19 @@ class BeditaShell extends BeditaBaseShell {
 	public function checkMedia() {
 
     	$this->initConfig();
-		$this->out("checkMedia - checking filesystem");
-		$mediaNotPresent = array();
+		$this->hr();
+    	$this->out("checkMedia - checking filesystem");
+		$this->hr();
+    	$mediaNotPresent = array();
 		$mediaRoot = Configure::read("mediaRoot");
 		$maxDepthLevel = 2;
 		if (isset($this->params["level"])) {
 			$maxDepthLevel = $this->params["level"];
 			$this->out("Using max depth level: " . $maxDepthLevel);
 		}
-		$this->streamsCheck($mediaRoot, 0, $maxDepthLevel, $mediaNotPresent);
+        $this->streamsCheck($mediaRoot, 0, $maxDepthLevel, $mediaNotPresent, 
+                isset($this->params['-remove-files']), isset($this->params['-force-remove']));
+		$this->hr();
 		$this->out("Media files not in BEdita - " . count($mediaNotPresent));
 		$stream = ClassRegistry::init("Stream");
 		if (isset($this->params["create"])) {
@@ -481,27 +485,38 @@ class BeditaShell extends BeditaBaseShell {
 				$id = $model->id;
 				$stream->updateStreamFields($id);
 			}
-		}
-		
+        }
+
 		// check db
+		$this->hr();
 		$this->out("checkMedia - checking database");
-        $allStream = $stream->find("all");
+		$this->hr();
+		$allStream = $stream->find("all");
 		$mediaOk = true;
+		$dbCount = 0;
+		$beUrl = Configure::read('beditaUrl');
         foreach ($allStream as $v) {
         	$p = $v['Stream']['uri'];
         	// if $p is a local path check existence
         	if((stripos($p, "/") === 0) && !file_exists($mediaRoot.$p)) {
-					$this->out("File $p not found on filesystem!!");
+					$this->out("File $p not found on filesystem!! - " . $beUrl . '/view/' . $v['Stream']['id']);
 					$mediaOk = false;
+					$dbCount++;
         	}
         }
+		$this->hr();
         if($mediaOk) {
 			$this->out("checkMedia - database OK");
+        } else {
+            $this->out("checkMedia - some files are missing");
+            $this->out("Media objects with missing local file: " . $dbCount);
         }
+		$this->hr();
 	}    
 	
 	
-	private function streamsCheck($mediaPath, $level, $maxLevel, array &$mediaFiles) {
+	private function streamsCheck($mediaPath, $level, $maxLevel, 
+	        array &$mediaFiles, $removeFiles = false, $forceRemove = false) {
 		if($level > $maxLevel) {
 			return;
 		}
@@ -510,15 +525,29 @@ class BeditaShell extends BeditaBaseShell {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder = new Folder($mediaPath);
 		$ls = $folder->read();
-		foreach ($ls[1] as $f) {
-			if($f[0] !== '.') {
-				$p = substr($mediaPath . DS . $f, strlen($mediaRoot));
-				$s = $stream->findByUri($p);
-				if($s === false) {
-					$this->out("File $p not found on db!!");
-					$mediaFiles[] = $p;
-				}
-			}
+        foreach ($ls[1] as $f) {
+            if($f[0] !== '.') {
+                $filePath = $mediaPath . DS . $f;
+                $p = substr($filePath, strlen($mediaRoot));
+                $s = $stream->findByUri($p);
+                if($s === false) {
+                    $this->out("File $p not found on db!!");
+                    $remove = $forceRemove;
+                    if ($removeFiles && !$forceRemove) {
+                        $res = $this->in("Remove file ${filePath} ? [y/n]");
+                        if ($res == 'y') {
+                            $remove = true;
+                        }
+                    }
+                    if ($remove) {
+                        $this->out("Removing file : ${filePath}");
+                        if (!unlink($filePath)) {
+                            $this->out("Error removing: ${filePath}");
+                        }
+                    }
+                    $mediaFiles[] = $p;
+                }
+            }
 		}
 		
 		$exlude = array();
@@ -527,7 +556,8 @@ class BeditaShell extends BeditaBaseShell {
 		}
 		foreach ($ls[0] as $dir) {
 			if($dir[0] !== '.' && !in_array($dir, $exlude) ) {
-				$this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, $mediaFiles);				
+				$this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, 
+				        $mediaFiles, $removeFiles, $forceRemove);				
 			}
 		}
 	}
@@ -549,8 +579,6 @@ class BeditaShell extends BeditaBaseShell {
         // config/database.php
         $this->checkAppFile($appPath.DS."config".DS."database.php");
         if (!$frontend) {
-	        //config/bedita.sys.php
-        	$this->checkAppFile($appPath.DS."config".DS."bedita.sys.php");
         	// config/bedita.cfg.php
 	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
         }
@@ -613,19 +641,19 @@ class BeditaShell extends BeditaBaseShell {
 		$this->hr();
 		$mediaRoot = Configure::read("mediaRoot");
 		if(empty($mediaRoot)) {
-			$this->out("WARNING: empty 'mediaRoot' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'mediaRoot' in config/bedita.cfg.php");
 		}
 		@$this->checkAppDirPerms($mediaRoot, "mediaRoot: ");
 		
 		$mediaUrl = Configure::read("mediaUrl");
 		if(empty($mediaUrl)) {
-			$this->out("WARNING: empty 'mediaUrl' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'mediaUrl' in config/bedita.cfg.php");
 		}
 		@$this->checkAppUrl($mediaUrl, "mediaUrl: ");
 		
 		$beUrl = Configure::read("beditaUrl");
 		if(empty($beUrl)) {
-			$this->out("WARNING: empty 'beditaUrl' in config/bedita.sys.php");
+			$this->out("WARNING: empty 'beditaUrl' in config/bedita.cfg.php");
 		}
 		@$this->checkAppUrl($beUrl, "beditaUrl: ");
 		
@@ -984,9 +1012,11 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');
-        $this->out('    Usage: checkMedia [-create] [-level <max-depth-level>]');
+        $this->out('    Usage: checkMedia [-create] [--remove-files] [--force-remove][-level <max-depth-level>]');
         $this->out(' ');
         $this->out("    -create \t create media objects from files in media root not in DB");
+        $this->out("    --remove-files \t remove files not referenced in media objects, ask user confirm");
+        $this->out("    --force-remove \t remove files not referenced in media objects, don't ask user confirm");
         $this->out("    -level <max-depth-level> \t max depth level checking filesystem, default 2");
         $this->out(' ');
         $this->out('4. export: export media files and data dump');
