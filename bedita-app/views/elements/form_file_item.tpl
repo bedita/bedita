@@ -80,6 +80,10 @@ $(document).ready(function(){
 		<li>
 			<textarea class="info_file_item" style="width:100%; border:0px; border-bottom:0px solid silver;" 
 			name="data[RelatedObject][{$relation}][{$item.id}][description]">{$item.description|default:""}</textarea>
+
+
+data[RelatedObject][{$relation}][{$item.id}][description]
+
 			<br />
 			<table style="width:100%; margin-top:5px" class="ultracondensed">
 				<tr>

@@ -180,7 +180,13 @@ class MultimediaController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		
+		//exclude some kind of relations from view
+		$relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
+		$availableRelations = array_diff_key($availableRelations, $relationsToExclude);
+
 		$this->set('availabeRelations', $availableRelations);
+		
 		if(!empty($obj["relations"])) {
 			$this->set('relObjects', $obj["relations"]);
 		}

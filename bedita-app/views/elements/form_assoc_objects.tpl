@@ -1,15 +1,11 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
 var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
-<!--
-
 function relatedRefreshButton() {
-	$("#relationContainer").find("input[name='details']").click(function() {
+	$(".relationList").find("input[name='details']").click(function() {
 		location.href = $(this).attr("rel");
 	});
 	
-	$("#relationContainer").find("input[name='remove']").click(function() {
+	$(".relationList").find("input[name='remove']").click(function() {
 		tableToReorder = $(this).parents("table");
 		$(this).parents("tr").remove();
 		tableToReorder.fixItemsPriority();
@@ -24,48 +20,14 @@ function addObjToAssoc(url, postdata) {
 		tbody.html( tbody.html()+html );
 		var tr = tbody.children('tr').last();
 		$("#relationType_" + postdata.relation).fixItemsPriority();
-		$("#relationContainer table").find("tbody").sortable("refresh");
+		$(".relationList table").find("tbody").sortable("refresh");
 		$(document).trigger('relation_' + postdata.relation + ':added', tr);
 		relatedRefreshButton();
 	});
 }
 
-function commitUploadItemDownloadRel(IDs) {
-	obj_sel = {};
-	obj_sel.object_selected = "";
-	for(var i=0 ; i < IDs.length ; i++) {
-		obj_sel.object_selected += IDs[i] + ",";
-	}
-	obj_sel.relation = "download";
-	addObjToAssoc(urlAddObjToAss, obj_sel);	
-}
-
-function showResponseDownloadRel(data) {
-	if (data.UploadErrorMsg) {
-		$("#loadingDownloadRel").hide();
-		$("#ajaxUploadContainerDownloadRel").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
-	} else {
-		var tmp = new Array() ;
-		var countFile = 0; 
-		$.each(data, function(entryIndex, entry) {
-			tmp[countFile++] = entry['fileId'];
-		});
-
-		commitUploadItemDownloadRel(tmp);
-	}
-	
-	$("#ajaxUploadContainerDownloadRel").find("input[@type=text]").attr("value", "");
-	$("#ajaxUploadContainerDownloadRel").find("input[@type=file]").attr("value", "");
-	$("#ajaxUploadContainerDownloadRel").find("textarea").attr("value", "");
-}
-
-function resetErrorDownloadRel() {
-	$("#ajaxUploadContainerDownloadRel").find("label").remove();
-	$("#loadingDownloadRel").show();
-}
-
 $(document).ready(function() {
-	$("#relationContainer table").find("tbody").sortable ({
+	$(".relationList table").find("tbody").sortable ({
 		distance: 20,
 		opacity:0.7,
 		update: $(this).fixItemsPriority
@@ -81,7 +43,6 @@ $(document).ready(function() {
 		addObjToAssoc(urlAddObjToAss, obj_sel);
 		input_ids.val("");
 	});
-	
 	// manage enter key on search text to prevent default submit
 	$("input[name='list_object_id']").keypress(function(event) {
 		if (event.keyCode == 13 && $(this).val() != "") {
@@ -93,31 +54,50 @@ $(document).ready(function() {
 			$(this).val("");
 		}
 	});
-
-	// upload ajax for download relation
-	var optionsFormDownloadRel = {
-		beforeSubmit:	resetErrorDownloadRel,
-		success:		showResponseDownloadRel,  // post-submit callback  
-		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
-		url: "{$html->url('/files/uploadAjax/DownloadRel')}"
-	};
-
-	$("#uploadFormDownloadRel").click(function() {
-		$('#updateForm').ajaxSubmit(optionsFormDownloadRel);
-		return false;
-	});
-	
 });
-
-$(function() {
-   //$('.disableSelection').disableTextSelect();
-});
-
-//-->
 </script>
 
-
 {$view->set("object_type_id",$object_type_id)}
+
+{foreach $availabeRelations as $rel => $relLabel}
+
+{$relcount = $relObjects.$rel|@count|default:0}
+<div class="tab">
+	<h2 {if $relcount == 0}class="empty"{/if}>
+		{t}{$relLabel}{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
+	</h2>
+</div>
+
+<div class="relationList {if $rel == "attach"}boxed{/if}" id="relationType_{$rel}">
+
+	<div class="relViewOptions" style="margin:0px 10px 0px 10px; text-align:right;">
+		<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
+		<a style="display:inline-block;" onClick="$(this).closest('.relationList').toggleClass('boxed')" href="javascript:void(0)"><img class="multimediaitemToolbar viewthumb" 
+			src="{$html->webroot}img/iconML-thumb.png" /></a>
+	</div>
+
+	<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
+	<table class="indexlist">
+		<tbody>
+			<tr class="trick"><td></td></tr>
+		{if !empty($relObjects.$rel)}
+			{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
+			{$view->element('form_assoc_object', $params)}
+		{/if}
+		</tbody>
+	</table>
+	
+	<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
+	rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" 
+	value="  {t}connect new items{/t}  " />
+	
+</div>
+
+{/foreach}
+
+
+{*
+<!--
 <div class="tab"><h2>{t}Relations{/t}</h2></div>
 
 <fieldset id="frmAssocObject">
@@ -155,19 +135,13 @@ $(function() {
 			{assign_associative var="params" uploadIdSuffix="DownloadRel"}
 			{$view->element('form_upload_multi', $params)}
 		{/if}
-		
-		{*
-		<br /><br />
-		{t}or{/t} &nbsp;
-		<label>{t}add by object ids{/t}</label>: <input type="text" name="list_object_id" size="12" /> 
-		<input class="BEbutton" name="addIds" type="button" value="{t}add{/t}">
-		*}
+	
 
 		
 	</div>
 	{/foreach}
 	</div>
 
-
-	
 </fieldset>
+-->
+*}
