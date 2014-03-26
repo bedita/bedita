@@ -1814,11 +1814,23 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 #modalmain .body {
 	padding:10px;
 	/*min-height:505px;*/
-	
+}
+
+#modalmain .trigger {
+	background:white url('../img/piumeno.gif') no-repeat left 2px; 
+	padding:5px 0px 5px 30px;
+	font-weight:bold;
+	cursor:pointer;
+	border-bottom:1px solid #CCC;
+}
+#modalmain .search, #modalmain .quick {
+	display:none;
+	padding:10px;
 }
 
 .modalcommands {
-	padding:10px; margin-top:0px; text-align:center; 
+	padding:10px; margin-top:0px;
+	text-align:center; 
 	background-color:#FFFFFF;
 }
 
@@ -1842,6 +1854,28 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	color:white;
 	cursor:pointer;
 }
+
+/*...........................................    
+
+    Specific template layout: login
+
+...........................................*/
+
+	.login {
+
+		margin-left:310px;
+		padding-top:25px;
+	}
+
+	.login input {
+		width:140px;
+	}
+
+	.login .bemaincommands {
+		margin:20px 0px; 
+		width:145px !important;
+		padding:5px;
+	}
 
 /*...........................................    
 
