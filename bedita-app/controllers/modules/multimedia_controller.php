@@ -170,7 +170,7 @@ class MultimediaController extends ModulesController {
 		}
 
 		$availableRelations = $this->getAvailableRelations($name);
-		$availableRelations = array_merge(array('attach' => 'attach'), $availableRelations);
+		//$availableRelations = array_merge(array('attach' => 'attach'), $availableRelations);
 
 		// data for template
 		$this->set('object',	@$obj);

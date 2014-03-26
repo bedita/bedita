@@ -11,7 +11,8 @@
 			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
 			{/if}
 		{/if}
-
+		
+		<input type="hidden" class="mod" name="data[RelatedObject][{$rel}][{$objRelated.id}][modified]" value="0" />
 		<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
 		<input type="text" class="priority {$objRelated.ObjectType.module_name|default:''}" 
@@ -26,9 +27,16 @@
 	</td>
 {/if}
 
-	<td class="assoc_obj_title">
-		{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}
-	</td>
+	<td class="assoc_obj_title" data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]">
+		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		
+		<textarea style="display:none" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]">{$objRelated.title|default:''}</textarea>
+
+	</td> 
+
+{if $rel == "question"}
+	<td class="">{$objRelated.question_type|default:''}</td>
+{/if}
 
 {if $rel == "download" or $rel == "attach"}
 	
@@ -53,55 +61,49 @@
 		{/foreach}
 	{/if}
 
-	{if $rel == "attach"}
-		<input class="BEbutton" type="button" value="D" onclick="$(event.target).closest('.obj').find('.description').toggle()" />
-	{/if}
-
-	{if !empty($relationParamsArray[0])}
-		<input class="BEbutton" type="button" value="P" onclick="$(event.target).closest('.obj').find('.relparams').toggle()" />
-	{/if}
-		
+{if !empty($relationParamsArray)}
+		<a class="BEbutton showmore">+</a>	
+{/if}
 		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
-		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}">G</a>	
+		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}">{t}view{/t}</a>	
 		
-		<input class="BEbutton" name="remove" type="button" value="x">
-	
-	{if !empty($relationParamsArray[0])}
-		<div class="relparams" style="display:none">
-			<table>
-			{foreach $relationParamsArray as $paramKey => $paramVal}
-				{if is_array($paramVal)}
-					{$paramName = $paramKey}
-				{else}
-					{$paramName = $paramVal}
-				{/if}
-				<tr>
-					<td>
-						<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">{$paramName}</label>
-					</td>
-					<td>
-						{if is_array($paramVal)}
-							<select name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">
-								{foreach $paramVal as $paramOpt}
-									<option value="{$paramOpt}" {if $objRelated.params[$paramName]|default:"" == $paramOpt}selected{/if}>{$paramOpt}</option>
-								{/foreach}
-							</select>
-						{else}
-							<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
-						{/if}
-					</td>
-				</tr>
-			{/foreach}
-			</table>
+		<a class="BEbutton remove">x</a>
+
+		<div class="moredata" style="display:none">
+			{if !empty($relationParamsArray[0])}
+				<table>
+				{foreach $relationParamsArray as $paramKey => $paramVal}
+					{if is_array($paramVal)}
+						{$paramName = $paramKey}
+					{else}
+						{$paramName = $paramVal}
+					{/if}
+					<tr>
+						<td>
+							<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">{$paramName}</label>
+						</td>
+						<td>
+							{if is_array($paramVal)}
+								<select name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">
+									{foreach $paramVal as $paramOpt}
+										<option value="{$paramOpt}" {if $objRelated.params[$paramName]|default:"" == $paramOpt}selected{/if}>{$paramOpt}</option>
+									{/foreach}
+								</select>
+							{else}
+								<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
+							{/if}
+						</td>
+					</tr>
+				{/foreach}
+				</table>
+			{/if}
+			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
+			<div class="description">
+				<label>description</label>
+				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+			</div>
+			{/if}
 		</div>
-	{/if}
-	
-	{if $rel == "attach"}
-	<div class="description" style="display:none">
-		<label>description</label>
-		<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
-	</div>
-	{/if}
 
 	</td>
 </tr>

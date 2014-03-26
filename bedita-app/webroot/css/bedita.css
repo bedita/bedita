@@ -853,10 +853,12 @@ UL.menuleft + UL.menuleft {
 }
 
 .relationList .commands {
-	text-align:right; white-space:nowrap;
+	text-align:right;
+	white-space:nowrap;
 }
 
 .boxed.relationList .commands {
+	text-align: left;
 	border-top:1px solid #999;
 }
 
@@ -880,8 +882,12 @@ UL.menuleft + UL.menuleft {
 	border-bottom:1px solid #999;
 }
 
+.boxed.relationList .assoc_obj_title textarea {
+	width:100%
+}
+
 .boxed.relationList .description  {
-	display:none;
+	display:block;
 	font-style:normal;
 	width:auto;
 	white-space: normal;
@@ -899,6 +905,27 @@ UL.menuleft + UL.menuleft {
 	margin-top:10px;
 	font-weight:normal;
 	color:#000;
+}
+
+.relViewOptions {
+	margin:0px 10px 0px 10px;
+	text-align:right;
+}
+
+.relViewOptions img.viewthumb {
+	opacity:.2;
+}
+
+.relViewOptions img.viewsmall {
+	opacity:1;
+}
+
+.boxed .relViewOptions img.viewthumb {
+	opacity:1;
+}
+
+.boxed .relViewOptions img.viewsmall {
+	opacity:.2;
 }
 
 /*...........................................    

@@ -1,11 +1,10 @@
 <script type="text/javascript">
+
 var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
+
 function relatedRefreshButton() {
-	$(".relationList").find("input[name='details']").click(function() {
-		location.href = $(this).attr("rel");
-	});
 	
-	$(".relationList").find("input[name='remove']").click(function() {
+	$(".remove",".relationList").click(function() {
 		tableToReorder = $(this).parents("table");
 		$(this).parents("tr").remove();
 		tableToReorder.fixItemsPriority();
@@ -54,6 +53,27 @@ $(document).ready(function() {
 			$(this).val("");
 		}
 	});
+
+	$(".showmore").live("click",function() {
+		var container = $(this).closest('.obj');
+		$('.moredata',container).toggle();
+		//mette il modified a 1 
+		var mod = $('.mod',container).val();
+		if (mod > 0) {
+			$('.mod',container).val(0);
+		}
+		else {
+			$('.mod',container).val(1);
+		}
+		//e mostra la textarea del titolo al posto del titolo 
+		$('.assoc_obj_title textarea',container).toggle();
+		$('.assoc_obj_title h4',container).toggle();
+	});
+
+	$(".relViewOptions").live("click",function() {
+		$(this).closest('.relationList').toggleClass('boxed');
+	});
+
 });
 </script>
 
@@ -70,10 +90,9 @@ $(document).ready(function() {
 
 <div class="relationList {if $rel == "attach"}boxed{/if}" id="relationType_{$rel}">
 
-	<div class="relViewOptions" style="margin:0px 10px 0px 10px; text-align:right;">
-		<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
-		<a style="display:inline-block;" onClick="$(this).closest('.relationList').toggleClass('boxed')" href="javascript:void(0)"><img class="multimediaitemToolbar viewthumb" 
-			src="{$html->webroot}img/iconML-thumb.png" /></a>
+	<div class="relViewOptions">
+		<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
+		<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-list.png" />
 	</div>
 
 	<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
