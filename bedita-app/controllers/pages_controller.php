@@ -216,7 +216,7 @@ class PagesController extends AppController {
 			$res = ClassRegistry::init("ObjectRelation")->find("all", array(
 				"conditions" => array(
 					"id" => $main_object_id,
-					"switch" => $usedRelation
+					"switch" => @$usedRelation
 				)
 			));
 			$excludeIds = array_merge($excludeIds, Set::extract("/ObjectRelation/object_id", $res));

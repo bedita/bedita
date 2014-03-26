@@ -98,7 +98,7 @@ available options:
 		<tr>
 			<th><label>{t}on position{/t}:</label></th>
 			<td>
-				<select name="filter[parent_id]" id="parent_id">
+				<select name="filter[parent_id]" id="parent_id" style="max-width:440px">
 				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
 				</select>
 				{if !empty($filters.treeDescendants)}
