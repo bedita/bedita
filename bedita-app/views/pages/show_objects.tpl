@@ -37,7 +37,7 @@ function loadObjToAssoc(page) {
 
 $(document).ready(function() {
 
-	$("select[multiple]").bsmSelect();
+	$("select[multiple]").chosen();
 
 	$(".trigger").click(function() {
 		$(this).next().toggle('fast');
@@ -122,7 +122,7 @@ $(document).ready(function() {
 	<div class="modalcommands">
 		<input type="button" id="addButton" style="margin-bottom:10px; width:300px" value=" {t}add{/t} ">
 		{if !empty($html->params.named.group)}
- 		<select title="{t}permission type{/t}" multiple id="modalSelectGroupPermission" name="permission[]">
+ 		<select title="{t}permission type{/t}" multiple id="modalSelectGroupPermission" name="permission[]" data-placeholder="{t}select a permission{/t}">
             {foreach $conf->objectPermissions as $permLabel => $permVal}
             <option value="{$permVal}">{t}{$permLabel}{/t}</option>
             {/foreach}

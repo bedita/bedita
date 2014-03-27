@@ -638,7 +638,7 @@ class BeFrontHelper extends AppHelper {
 			// include js that staging toolbar needs
 			echo $this->Html->script(
 				array(
-					$this->_conf->beditaUrl . "/js/jquery/jquery.cookie.js",
+					$this->_conf->beditaUrl . "/js/libs/jquery/plugins/jquery.cookie.js",
 					$this->_conf->beditaUrl . "/js/staging_toolbar.js"
 				),
 				array("inline" => false)

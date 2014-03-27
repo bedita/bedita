@@ -1,6 +1,5 @@
-{$html->css("jquery.timepicker.css")}
-{$html->script("jquery/jquery.placement.below")}
-{$html->script("jquery/jquery.timepicker-list")}
+{$html->css('jquery.timepicker', null, ['inline' => false])}
+{$html->script('libs/jquery/plugins/jquery.timepicker.min')}
 
 <style scoped>
 .daterow .dateadd, .dummydaterow {
@@ -18,7 +17,13 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	$(".timeStart, .timeEnd", ".daterow").timePicker({ startTime: "00:00", endTime: "23:30"});
+    var timePickerOptions = {
+        minTime: '00:00',
+        maxTime: '23:30',
+        timeFormat: 'G:i'
+    }
+
+	$('.timeStart, .timeEnd', '.daterow').timepicker(timePickerOptions);
 
     var numDates = {$numDates};
 
@@ -61,7 +66,7 @@ $(document).ready(function(){
         timeEnd.attr("id","timeEnd_" + numDates);
         timeEnd.attr("name","data[DateItem][" + numDates + "][timeEnd]");
         numDates++;
-        newRow.find(".timeStart, .timeEnd").timePicker({ startTime: "00:00", endTime: "23:30"});
+        newRow.find(".timeStart, .timeEnd").timepicker(timePickerOptions);
         newRow.find("input.dateinput").datepicker();
 	});
 

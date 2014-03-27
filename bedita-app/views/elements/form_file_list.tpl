@@ -1,11 +1,6 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
-    $(function() {
-       // $('.disableSelection').disableTextSelect();
-    });	
-	
-var urlGetObj		= '{$html->url("/streams/get_item_form_by_id")}' ;
+
+var urlGetObj = '{$html->url("/streams/get_item_form_by_id")}' ;
 var urlGetAllItemNoAssoc = '{$html->url("/streams/showStreams")}/{$object.id|default:'0'}';
 var containerItem = "#multimediaItems";
 
@@ -226,7 +221,7 @@ $(document).ready(function()
 		
 		setPlaceCss(editor);
 		
-		$('*',editor.document.$).live('keyup', function() {
+		$(document).on('keyup', editor.document.$ + ' *', function() {
 			setPlaceCss(editor);
 		});
 	}

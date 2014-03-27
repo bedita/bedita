@@ -1,7 +1,4 @@
-{assign_associative var="cssOptions" inline=false}
-{$html->css("tree", null, $cssOptions)}
-{$html->script("jquery.treeview", false)}
-{$html->script("jquery.changealert", false)}
+{$html->script("libs/jquery/plugins/jquery.changealert", false)}
 
 
 {assign var="p" value=$beToolbar->params}

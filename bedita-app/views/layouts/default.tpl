@@ -27,25 +27,24 @@
 		{$html->css('IE6fix')}
 	<![endif]-->
 
-	{$html->script("jquery/jquery")}
-	{$html->script("jquery/jquery.cookie")}
-	{$html->script("jquery/jquery.autogrow")}
-	{$html->script("jquery/jquery.dimensions")}
-	{$html->script("jquery/jquery.tooltip.min")}
+	{$html->script("libs/jquery/jquery-2.1.0.min")}
+	{$html->script("libs/jquery/jquery-migrate-1.2.1")}
+	{$html->script("libs/jquery/plugins/jquery.cookie")}
+	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
+	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
-	{$html->script("libs/jquery.bsmselect")}
-	{$html->css('jquery.bsmselect.css')}
-<!-- https://github.com/vicb/bsmSelect -->
-<!-- OR http://harvesthq.github.io/chosen/ ??? -->
+	{$html->css('chosen.css')}
+	{$html->script("libs/jquery/plugins/chosen.jquery.min")}
 
 	{$beurl->addModuleScripts()}
 
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
 
-	{$html->script("jquery/ui/jquery-ui-1.8rc3.custom")}
-	{$html->script("jquery/ui/jquery.ui.draggable")}
+	{$html->script("libs/jquery/ui/jquery-ui.min")}
+	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
+	{$html->script("libs/jquery/ui/jquery.ui.tooltip.min")}
 
 	
 </head>

@@ -1,6 +1,6 @@
 {* included by show_objects.tpl *}
 
-{$html->script("jquery/jquery.tablesorter.min")}
+{$html->script("libs/jquery/plugins/jquery.tablesorter.min")}
 
 <script type="text/javascript">
 <!--

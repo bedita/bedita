@@ -5,7 +5,7 @@
 $(document).ready(function(){
 	var v = $().jquery;
 	$("#jquery-version").text(v);
-	if(tinymce != undefined) {
+	if (typeof tinymce !== 'undefined') {
 		v = tinymce.majorVersion + "." + tinymce.minorVersion;
 		$("#tinymce-version").text(v);
 	}
