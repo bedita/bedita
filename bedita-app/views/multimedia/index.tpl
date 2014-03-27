@@ -1,8 +1,6 @@
 {$html->script("form", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.changealert", false)}
-
-{*$html->script("jquery/jquery.MultiFile.pack", false)*}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.changealert", false)}
 
 <script type="text/javascript">
 	

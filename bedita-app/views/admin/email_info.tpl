@@ -1,4 +1,3 @@
-{$html->script("jquery/treeview/jquery.treeview", false)}
 {$html->script("form", false)}
 
 <script type="text/javascript">

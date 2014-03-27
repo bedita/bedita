@@ -11,28 +11,28 @@
 		if(!confirm(message)) { 
 			return false ;
 		} 
-		var fileToEmpty = $(elem).attr("title");
+		var fileToEmpty = $(elem).prop("title");
 		var form = $(elem).parents('form:first');
-		$("#fileToEmpty").attr("value",fileToEmpty);
+		$("#fileToEmpty").val(fileToEmpty);
 		form.attr("action", urlEmptyFile) ;
 		form.submit() ;
 	}
 
 	function refreshFile(elem) {
-		var fileToRefresh = $(elem).attr("title");
+		var fileToRefresh = $(elem).prop("title");
 		var ajaxResultId = $(elem).attr("index");
 		$("#" + ajaxResultId).empty();
 		$("#" + ajaxResultId).addClass('loader');
 		$("#" + ajaxResultId).show();
-		var rowLimit = $("#rowLimit").attr("value");
-		$("#" + ajaxResultId).load(urlRefreshFile,{ 'fileToRefresh':fileToRefresh, 'rowLimit': rowLimit }, function() {
+		var rowLimit = $("#rowLimit").val();
+		$("#" + ajaxResultId).load(urlRefreshFile, { 'fileToRefresh':fileToRefresh, 'rowLimit': rowLimit }, function() {
 			$("#" + ajaxResultId).removeClass('loader');
 		});
 	}
 
 	function updateInterval(elem) {
 		var index = $(elem).attr("index");
-		if($(elem).attr("checked")) {
+		if($(elem).prop("checked")) {
 			intervalsAutoupdate[index] = setInterval(function(){ $("#"+index).click(); },3000);
 		} else {
 			clearInterval(intervalsAutoupdate[index]);

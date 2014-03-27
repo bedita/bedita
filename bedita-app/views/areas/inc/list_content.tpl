@@ -1,12 +1,8 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
 <!--
 var urlAddObjToAss = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
 var priorityOrder = "{$priorityOrder|default:'asc'}";
 var pageUrl = "{$beurl->getUrl('object_type_id')}";
-
-{literal}
 
 function addObjToAssoc(url, postdata) {
 	$.post(url, postdata, function(html){
@@ -25,7 +21,6 @@ function addObjToAssoc(url, postdata) {
 			$("#noContents").hide();
 		}
 		$("#areacontent").fixItemsPriority(startPriority);
-		$("#areacontent").sortable("refresh");
 		$("#areacontent table").find("tbody").sortable("refresh");
 		setRemoveActions();
 	});
@@ -58,21 +53,20 @@ $(document).ready(function() {
 		var startPriority = 1;
 	}
 
-	//$("#areacontent").sortable ({
-	$("#areacontent table").find("tbody").sortable ({
+	$("#areacontent table").find("tbody").sortable({
 		distance: 20,
 		opacity:0.7,
 		update: function() {
-					if (priorityOrder == 'desc' && startPriority < $("#areacontent").find("input[name*='[priority]']:first").val()) {
-						startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-					}
-					$(this).fixItemsPriority(startPriority);
-				}
+			if (priorityOrder == 'desc' && startPriority < $("#areacontent").find("input[name*='[priority]']:first").val()) {
+				startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
+			}
+			$(this).fixItemsPriority(startPriority);
+		}
 	}).css("cursor","move");
 	
 	setRemoveActions();
 	
-	$(".newcontenthere").click(function(){
+	$(".newcontenthere").click(function() {
 		var urltogo = $('.selectcontenthere').val();
 		window.location.href = urltogo;
 		return false;
@@ -85,12 +79,6 @@ $(document).ready(function() {
 	
 });
 
-
-    $(function() {
-        //$('.disableSelection').disableTextSelect();
-    });
-
-{/literal}
 //-->
 </script>
 

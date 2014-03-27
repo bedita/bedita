@@ -40,7 +40,7 @@ Menu a SX valido per tutte le pagine del controller.
 		});
 
 		// save behavior when modal is opened for file exists error
-		$("#modalmain div[data-file-exists] input.uploadChoice").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input.uploadChoice', function() {
 			var serilizedFormArr = $("#modalmain div[data-file-exists] :input").serializeArray();
 			var d = {
 				upload_choice: $(this).attr('data-value')
@@ -55,12 +55,12 @@ Menu a SX valido per tutte le pagine del controller.
 			$("#modalheader .close").click();
 		});
 
-		$("#modalmain div[data-file-exists] input#fileExistsCancel").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input#fileExistsCancel', function() {
 			$("input[name=Filedata]").val('');
 			$("#modalheader .close").click();
 		});
 
-		$("#modalmain div[data-file-exists] input#goto").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input#goto', function() {
 			var href = $(this).attr('data-href');
 			location.href = href;
 		});

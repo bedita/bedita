@@ -1,14 +1,9 @@
-{$html->script("jquery/treeview/jquery.treeview", false)}
-{$html->script("form", false)}
-
-{literal}
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function() {
 		var openAtStart ="#system_info";
 		$(openAtStart).prev(".tab").BEtabstoggle();
 	});
 </script>
-{/literal}
 
 {$view->element('modulesmenu')}
 

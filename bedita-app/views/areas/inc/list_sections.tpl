@@ -1,8 +1,5 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
 <!--
-{literal}
 $(document).ready(function() {
 
 	var startSecPriority = $("#areasections").find("input[name*='[priority]']:first").val();
@@ -18,11 +15,6 @@ $(document).ready(function() {
 
 });
 
-    $(function() {
-        //$('.disableSelection').disableTextSelect();
-    });
-	
-{/literal}
 //-->
 </script>
 

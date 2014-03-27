@@ -1,7 +1,6 @@
 {$html->script("form", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.cmxforms", false)}
-{$html->script("jquery/jquery.metadata", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
 {$view->element('modulesmenu', ['substringSearch' => false])}
 

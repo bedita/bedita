@@ -1,6 +1,6 @@
 <!-- //////// home page //////////// -->
 
-{$html->script("jquery/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
 <script type="text/javascript">
 <!--
 
