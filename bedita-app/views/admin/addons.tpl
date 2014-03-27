@@ -1,4 +1,4 @@
-{$html->script('jquery/jquery.form', false)}
+{$html->script('libs/jquery/plugins/jquery.form', false)}
 
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";

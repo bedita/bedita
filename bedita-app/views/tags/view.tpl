@@ -1,10 +1,8 @@
-{assign_associative var="cssOptions" inline=false}
-{$html->css('tree', null, $cssOptions)}
+{$html->css('tree', null, ['inline' => false])}
 {$html->script("form", false)}
-{$html->script("jquery/jquery.changealert", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.cmxforms", false)}
-{$html->script("jquery/jquery.metadata", false)}
+{$html->script("libs/jquery/plugins/jquery.changealert", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
 <script type="text/javascript">
 $(document).ready( function ()

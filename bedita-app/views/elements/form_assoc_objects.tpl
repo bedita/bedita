@@ -20,14 +20,14 @@ function addObjToAssoc(url, postdata) {
 		tbody.html( tbody.html()+html );
 		var tr = tbody.children('tr').last();
 		$("#relationType_" + postdata.relation).fixItemsPriority();
-		$(".relationList table").find("tbody").sortable("refresh");
+		$(".relationList table.indexlist").find("tbody:first").sortable("refresh");
 		$(document).trigger('relation_' + postdata.relation + ':added', tr);
 		relatedRefreshButton();
 	});
 }
 
 $(document).ready(function() {
-	$(".relationList table").find("tbody").sortable ({
+	$(".relationList table.indexlist").find("tbody:first").sortable({
 		distance: 20,
 		opacity:0.7,
 		update: $(this).fixItemsPriority

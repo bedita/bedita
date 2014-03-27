@@ -74,8 +74,8 @@
 	}
 
 	$(document).ready(function() {
-		
-		$('.richtextNewsletterTemplate').live('instanceReady.ckeditor', function(event,editor) {
+
+		$(document).on('instanceReady.ckeditor', '.richtextNewsletterTemplate', function(event,editor) {
 			var linkElement = $(editor.document.$).find('link');
 			linkElement.attr('href', "{$templateCSS}");
 		});

@@ -1,18 +1,17 @@
-{assign_associative var="cssOptions" inline=false}
-{$html->css('../js/jquery/treeview/jquery.treeview', null, $cssOptions)}
-{$html->script("jquery/treeview/jquery.treeview", false)}
+{$html->css('../js/libs/jquery/plugins/treeview/jquery.treeview', null, ['inline' => false])}
+{$html->script('libs/jquery/plugins/treeview/jquery.treeview', false)}
 
 <script type="text/javascript">
-$(document).ready(function(){ 
+$(document).ready(function() {
 	// third example
-	$(".menutree").treeview({ 
+	$(".menutree").treeview({
 		animated: "normal",
 		collapsed: true,
 		unique: false,
 		persist: "cookie"
 	});
 
-$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
+	$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
 
 });
 </script>

@@ -11,10 +11,10 @@
 		$("#system_config").prev(".tab").BEtabstoggle();
 		$("#general_config").prev(".tab").BEtabstoggle();
 		$('#addLocale').click(function () { 
-			var v = $('#localesV').attr('value');
+			var v = $('#localesV').val();
 			if($('input[value="' + v + '"]').length == 0) { 
-				var key = $('#localesK').attr('value');
-				var value = $('#localesV').attr('value');
+				var key = $('#localesK').val();
+				var value = $('#localesV').val();
 				var newinput = '<input type="text" name="sys[locales][' + key + ']" value="' + value + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#localesAdded').append(newinput);
 			} 
@@ -22,8 +22,8 @@
 		$('#addTranslationLang').click(function () { 
 			var label = $('#translationLangs option:selected').text();
 			if(!($('input[title="' + label + '"]')) || ($('input[title="' + label + '"]').length == 0)) { 
-				var value = $('#translationLangs').attr('value');
-				var index = $('#translationLangs').attr("selectedIndex");
+				var value = $('#translationLangs').val();
+				var index = $('#translationLangs').prop("selectedIndex");
 				var newinput = '<input type="text" rel="' + index + '" title="' + value + '" name="cfg[langOptions][' + value + ']" value="' + label + '" readonly="readonly" /><input type="button" value="-" onclick="delElems(this)" />'
 				$('#translationLangsAdded').append(newinput);
 			} 
@@ -42,8 +42,10 @@
 		{if !$conf->langOptionsIso}$("#translationLangsTr").show();{/if}
 		$("#testSmtp").click(function() { 
 			to = prompt("{t}Send email to{/t}");
-			$("#configForm").attr("action", testSmtpUrl + "/" + to);
-			$("#configForm").submit();
+			if (to) {
+				$("#configForm").prop("action", testSmtpUrl + "/" + to);
+				$("#configForm").submit();
+			}
 		} );
 	} );
 </script>

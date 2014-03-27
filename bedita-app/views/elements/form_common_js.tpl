@@ -168,7 +168,7 @@ $(document).ready(function(){
 {/if}
 
 {if !empty($parents.1) || 
-	(!empty($object) && in_array($object.object_type_id, $conf->objectTypes.multimedia.id) && $object.relations.attach|@count > 1)}
+	(!empty($object) && in_array($object.object_type_id, $conf->objectTypes.multimedia.id) && $object.relations.attach|default:[]|@count > 1)}
 
 		$(".secondacolonna .modules").after("<div class='subwarning ubiquity'>{t}Ubiquitous object{/t}</div>");
 	

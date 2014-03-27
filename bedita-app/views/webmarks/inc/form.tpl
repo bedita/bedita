@@ -89,7 +89,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	
 {$view->element('form_categories')}
 
-{$view->element('form_file_list',['relation' => 'attach'])}
+{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.link.id}])}
 
 {$view->element('form_tags')}
 

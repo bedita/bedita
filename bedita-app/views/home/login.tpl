@@ -1,8 +1,7 @@
 {$html->script("form", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.cmxforms", false)}
-{$html->script("jquery/jquery.metadata", false)}
-{$html->script("jquery/jquery.validate", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.metadata", false)}
+{$html->script("libs/jquery/plugins/jquery.validate", false)}
 
 <script type="text/javascript">
 <!--

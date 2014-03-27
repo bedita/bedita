@@ -1,4 +1,4 @@
-{$html->script("jquery/jquery.changealert", false)}
+{$html->script("libs/jquery/plugins/jquery.changealert", false)}
 	
 {$view->element('modulesmenu')}
 

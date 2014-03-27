@@ -7,8 +7,8 @@
 			if (!confirm(messageDel)) {
 				return false ;
 			}
-			var customId = $(this).attr("title");
-			$(this).parents("form:first").attr("action", urlDelete).submit();
+			var customId = $(this).prop("title");
+			$(this).parents("form:first").prop("action", urlDelete).submit();
 			return false;
 		});
     });
@@ -34,12 +34,10 @@
 			<tr>
 				<th style="vertical-align:top"><label>source</label></th>
 				<td style="vertical-align:top">
-					<select multiple name="data[left][]">
+					<select multiple name="data[left][]" data-placeholder="{t}select an object type{/t}">
 						<option value="related" selected="selected">all</option>
 					{foreach $conf->objectTypes.related.id as $id}	
-						<option value="{$conf->objectTypes[$id].name}">	
-							{t}{$conf->objectTypes[$id].name}{/t}
-						</option>
+						<option value="{$conf->objectTypes[$id].name}">{t}{$conf->objectTypes[$id].name}{/t}</option>
 					{/foreach}
 					</select>
 				</td>
@@ -47,12 +45,10 @@
 					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
 				</th>
 				<td style="vertical-align:top">
-					<select multiple name="data[right][]" title="select an object type">>
+					<select multiple name="data[right][]" data-placeholder="{t}select an object type{/t}">
 						<option value="related" selected="selected">all</option>
 					{foreach $conf->objectTypes.related.id as $id}	
-						<option value="{$conf->objectTypes[$id].name}">	
-							{t}{$conf->objectTypes[$id].name}{/t}
-						</option>
+						<option value="{$conf->objectTypes[$id].name}">{t}{$conf->objectTypes[$id].name}{/t}</option>
 					{/foreach}
 					</select>
 				</td>
@@ -98,11 +94,12 @@
 			<tr>
 				<th style="vertical-align:top"><label>source</label></th>
 				<td style="vertical-align:top">
-					<select multiple name="data[left][]">
+					<select multiple name="data[left][]" data-placeholder="{t}select an object type{/t}">
 						<option value="related" {if empty($item.left) && is_array($item.left)}selected=1{/if}>all</option>
 					{foreach $conf->objectTypes.related.id as $id}
-						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.left)}selected=1{/if}>	
+						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.left)}selected=1{/if}>{strip}
 							{t}{$conf->objectTypes[$id].name}{/t}
+						{/strip}
 						</option>
 					{/foreach}
 					</select>					
@@ -111,11 +108,12 @@
 					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
 				</th>
 				<td style="vertical-align:top">
-					<select multiple name="data[right][]">
+					<select multiple name="data[right][]" data-placeholder="{t}select an object type{/t}">
 						<option value="related" {if empty($item.right) && is_array($item.right)}selected=1{/if}>all</option>
 					{foreach $conf->objectTypes.related.id as $id}
-						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>	
+						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>{strip}
 							{t}{$conf->objectTypes[$id].name}{/t}
+						{/strip}
 						</option>
 					{/foreach}
 					</select>

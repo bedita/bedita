@@ -52,5 +52,3 @@
 		</table>
 	</form>
 </div>
-
-{$html->script("libs/dropzone")}

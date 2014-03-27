@@ -9,13 +9,13 @@ function addObjToAssoc(url, postdata) {
         $("#loadingDownloadRel").hide();
         // add row
         $("table.group_objects").append(html);
-        $("table.group_objects select[multiple]").bsmSelect();
+        $("table.group_objects select[multiple]").chosen({width: '95%'});
     });
 }
 
 $(document).ready(function() {
 
-    $("table.group_objects input[name=remove]").live('click', function() {
+    $(document).on('click', 'table.group_objects input[name=remove]', function() {
         $(this).parents('tr:first').remove();
     });
 

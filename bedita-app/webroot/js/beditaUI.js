@@ -504,7 +504,7 @@ $(document).ready(function(){
 		}
 	});
 
-	$("#cleanFilters").live('click', function(ev) {
+	$(document).on('click', '#cleanFilters', function(ev) {
 		ev.preventDefault();
 		var form = $(this).parents('form:first');
 		form.find('input[name=cleanFilter]').val(1);
@@ -518,9 +518,7 @@ $(document).ready(function(){
 
 ...........................................*/
 	
-	$('.autogrowarea').autogrow({
-		lineHeight: 16
-	});
+	$('.autogrowarea').autosize();
 						
 /*...........................................    
 
@@ -610,14 +608,15 @@ $(document).ready(function(){
 ...........................................*/
 
 
-	$(".primacolonna .modules label.bedita").toggle(function() {
-		$(this).addClass("shadow");  
-		$(".modulesmenu_d").show();
+	$('.primacolonna .modules label.bedita').click(function(e) {
+		if ($('.modulesmenu_d').length) {
+			if ($('.modulesmenu_d:visible').length) {
+				$('.modulesmenu_d').hide();
+			} else {
+				$('.modulesmenu_d').show();
+			}
 
-	}, function() {
-
-	  $(this).removeClass("shadow");  
-		$(".modulesmenu_d").hide();
+		}
 	});
 
 	$(".modulesmenu_d LI[class]").each(function() {
@@ -658,7 +657,7 @@ $(document).ready(function(){
 
 ...........................................*/
 
-	$("select[multiple]").bsmSelect();
+	$('select[multiple]').chosen({width: '95%'});
 
 
 });
