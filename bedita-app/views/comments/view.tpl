@@ -11,13 +11,17 @@
 
 	$(document).ready(function() {
 		$("#banIP").bind("click", function() {
-			if(!confirm(msgBan)) return false ;
-			$("#updateForm").attr("action", urlBan).submit();
+			if (!confirm(msgBan)) {
+				return false;
+			}
+			$("#updateForm").prop("action", urlBan).submit();
 			return false;
 		});
 		$("#sbanIP").bind("click", function() {
-			if(!confirm(msgAccept)) return false ;
-			$("#updateForm").attr("action", urlBan).submit();
+			if (!confirm(msgAccept)) {
+				return false;
+			}
+			$("#updateForm").prop("action", urlBan).submit();
 			return false;
 		});
 	});

@@ -260,10 +260,8 @@ $(document).ready(function(){
 	
 	};
 	
-	$(".tab:not(.stayopen)").click(function (){
-		
-		$(this).BEtabstoggle() ;	
-
+	$(document).on('click', '.tab:not(.stayopen)', function () {
+		$(this).BEtabstoggle();
 	});
 
 	

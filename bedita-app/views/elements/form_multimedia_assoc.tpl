@@ -7,7 +7,7 @@ function addItemsToParent() {
 	$(":checkbox").each(function() { 
 		try { 
 			if (this.checked && this.name == 'chk_bedita_item') { 
-				itemsIds[itemsIds.length] = $(this).attr("value");
+				itemsIds[itemsIds.length] = $(this).val();
 			} 
 		} catch(e) { 
 		} 

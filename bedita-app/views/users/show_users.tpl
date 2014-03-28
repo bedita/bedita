@@ -17,20 +17,20 @@ function showResponse(data) {
 
 var optionsUcardForm = {
 	//beforeSubmit:	resetError,
-	success:		showResponse,  // post-submit callback  
-	dataType:		'json'        // 'xml', 'script', or 'json' (expected server response type) 
+	success: showResponse,  // post-submit callback  
+	dataType: 'json'        // 'xml', 'script', or 'json' (expected server response type) 
 };
 
 $(document).ready(function() {
 
 	$("#userToCard").click(function() {
-		id = $(".uradio:checked").attr("value");
+		id = $(".uradio:checked").val();
 		username = $(".uradio:checked").attr("rel");
 		$("#modal").hide();
 		$("#modaloverlay").hide();
 		addUserToCard(id,username);
 	});
-	
+
 	$("#createUser").click(function() {
 		if($(".ugroup:checked").size() > 0 ) {
 			optionsUcardForm.url = "{$html->url('/users/saveUserAjax')}"; // override form action
@@ -39,19 +39,10 @@ $(document).ready(function() {
 			alert(g_msg);
 		}
 	});
-	
 
-	$(".tab").click(function (){
-		
-		$(this).BEtabstoggle();
-
-	});
-	
 	var openAtStart ="#selectuser";
 	$(openAtStart).prev(".tab").BEtabstoggle();
-		
 
-	
 });
 
 //-->

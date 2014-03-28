@@ -27,7 +27,7 @@ function createThumbnails() {
 	$(".uploadCompleted").each(function() {
 		// Get filename
 		var item = this ;
-		var id = $(this).attr("id") ; 
+		var id = $(this).prop("id") ; 
 		try {
 			if(files[id].length) {
 				tmp[tmp.length] = files[id] ;
@@ -50,7 +50,7 @@ function closeEsc() {
 	$(".uploadCompleted").each(function() {
 		// Get filename
 		var item = this ;
-		var id = $(this).attr("id") ; 
+		var id = $(this).prop("id") ; 
 		try {
 			if(files[id].length) {
 				var fileName= files[id] ;
@@ -140,13 +140,13 @@ function beuploadFileCancelled(file, queuelength) {
 
 // start upload
 function beuploadFileStart(file, position, queuelength) {
-	$("#"+file.id+"").attr("class", $("#"+file.id+"").attr("class") + " fileUploading") ;
+	$("#"+file.id+"").prop("class", $("#" + file.id + "").prop("class") + " fileUploading") ;
 	$("#queueinfo").html("{t}Uploading file{/t} " + position + "/" + queuelength) ;
 }
 
 function beuploadFileComplete(file) {
 	files[file.id] = file.name ;
-	$("#"+file.id+"").attr("class", "SWFUploadFileItem uploadCompleted") ;
+	$("#"+file.id+"").prop("class", "SWFUploadFileItem uploadCompleted") ;
 }
 
 function beuploadError(errcode, file, msg) {
@@ -183,7 +183,7 @@ function beSetupErrorFile(file, code) {
 		case 533: msg = "BEDITA_DELETE_STREAM" ; break ;
 	}
 	// write message
-	$("#"+file.id).append("<span>"+msg+"<\/span>").attr("class", $("#"+file.id).attr("class") + " uploadError") ;
+	$("#" + file.id).append("<span>" + msg + "<\/span>").prop("class", $("#" + file.id).prop("class") + " uploadError") ;
 }
 
 /**
@@ -194,7 +194,7 @@ function beUploadQueueComplete(file) {
 	// if at least one file uploaded, show "ok" button
 	var ok = 0 ;
 	$("#SWFUploadFileListingFiles li").each(function() {
-		var className = $(this).attr("class") ; 
+		var className = $(this).prop("class") ; 
 		if(!className.match(/uploadError/)) ok++ ;
 	}) ;
 	

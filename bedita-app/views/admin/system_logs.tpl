@@ -8,13 +8,13 @@
 	var intervalsAutoupdate = new Array();
 
 	function emptyFile(elem) {
-		if(!confirm(message)) { 
+		if (!confirm(message)) { 
 			return false ;
 		} 
 		var fileToEmpty = $(elem).prop("title");
 		var form = $(elem).parents('form:first');
 		$("#fileToEmpty").val(fileToEmpty);
-		form.attr("action", urlEmptyFile) ;
+		form.prop("action", urlEmptyFile) ;
 		form.submit() ;
 	}
 
@@ -44,7 +44,7 @@
 		$(openAtStart).prev(".tab").BEtabstoggle();
 
 		$("#rowLimit").change(function() { 
-			var url = "{$html->url('systemLogs/')}" + $(this).attr("value");
+			var url = "{$html->url('systemLogs/')}" + $(this).val();
 			location.href = url;
 		} );
 	} );

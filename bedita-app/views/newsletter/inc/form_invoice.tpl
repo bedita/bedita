@@ -4,12 +4,12 @@ var testNewsletterUrl = "{$html->url('/newsletter/testNewsletter')}";
 
 $(document).ready(function() {
 	$("#sendNewsletter").click(function() {
-		$("#updateForm").attr("action", sendNewsletterUrl).submit();
+		$("#updateForm").prop("action", sendNewsletterUrl).submit();
 	});
 	
 	$("#testNewsletter").click(function() {
 		to = prompt("{t}Send email to{/t}");
-		$("#updateForm").attr("action", testNewsletterUrl + "/" + to);
+		$("#updateForm").prop("action", testNewsletterUrl + "/" + to);
 		$("#updateForm").submit();
 	});
 });

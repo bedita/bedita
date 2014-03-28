@@ -16,7 +16,7 @@ $(document).ready(function() {
 			}
 		} else if ($(this).hasClass("js-update")) {
 			if (confirm(updateMessage)) {
-				formItem.attr("action", updateUrl);
+				formItem.prop("action", updateUrl);
 				formItem.submit();
 			}
 		} else {

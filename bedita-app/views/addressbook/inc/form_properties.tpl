@@ -1,8 +1,7 @@
 <script type="text/javascript">
 <!--
-{literal}
 function addUserToCard(id,username) {
-	$("#user_id").attr("value",id);
+	$("#user_id").val(id);
 	$("#user_name").text(username);
 }
 
@@ -11,11 +10,10 @@ $(document).ready(function() {
 });
 
 function removeUserFromCard() {
-	$("#user_id").attr("value", "");
+	$("#user_id").val('');
 	$("#user_name").text(" - ");
-	$("#remove_user").attr("disabled", "disabled");
+	$("#remove_user").prop("disabled", true);
 }
-{/literal}
 //-->
 </script>
 

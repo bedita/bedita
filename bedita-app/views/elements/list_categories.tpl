@@ -4,7 +4,7 @@ var message = "{t}Are you sure that you want to delete the item?{/t}";
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
-		var catId = $(this).attr("title");
+		var catId = $(this).prop("title");
 		$("#form_" + catId).prop("action", urlDelete).submit();
 		return false;
 	});
