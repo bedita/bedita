@@ -16,3 +16,4 @@
 /vendor/*
 /tmp/*
 /Bedita/Config/app.php
+/composer.lock
