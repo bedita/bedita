@@ -13,7 +13,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
-		if($(this).attr("checked")) {
+		if($(this).prop("checked")) {
 			checked++;
 		}
 	});
@@ -22,32 +22,33 @@ function count_check_selected() {
 $(document).ready(function(){
 	
 	$("#deleteSelected").click(function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		if(!confirm(message)) 
+		if (!confirm(message)) {
 			return false ;
-		$("#formObject").attr("action", urls['deleteSelected']) ;
+		}
+		$("#formObject").prop("action", urls['deleteSelected']) ;
 		$("#formObject").submit() ;
 	});
 
 	$("#assocObjects").click( function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
-		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
+		$("#formObject").prop("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
 	$(".opButton").click( function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		$("#formObject").attr("action",urls[this.id]) ;
+		$("#formObject").prop("action", urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
 });

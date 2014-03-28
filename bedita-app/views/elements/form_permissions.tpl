@@ -28,7 +28,7 @@ $(document).ready(function(){
 		var name = $("#inputAddPermGroup").val();
 		var type = "group";
 		var perm = $("#selectGroupPermission").val();
-		var index = $("#frmCustomPermissions").find("tr[id^='permTR_']:last").attr("id");
+		var index = $("#frmCustomPermissions").find("tr[id^='permTR_']:last").prop("id");
 		
 		if (index == undefined) {
 			index = 0;

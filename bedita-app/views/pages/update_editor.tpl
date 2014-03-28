@@ -10,7 +10,7 @@
 		
 		$(".secondacolonna .modules label:not(.concurrentuser)")
 		.addClass("concurrentuser")
-		.attr("title","Warning! More users are editing this document")
+		.prop("title", "Warning! More users are editing this document")
 		.tooltip({
 			extraClass: "tip",
 			fixPNG: true,
@@ -37,7 +37,7 @@
 
 	<script type="text/javascript">
 	if (autoSaveTimer === false) {
-		var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
+		var newStatus = $("input[name=data\\[status\\]]:checked").val();
 		if ((status != 'on') && (status == newStatus))
 			switchAutosave("on");
 	}

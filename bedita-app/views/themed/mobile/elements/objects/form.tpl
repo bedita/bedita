@@ -110,14 +110,14 @@
 			
 			$('#deleteButton').click(function(e){
 				if (confirm("{t}Are you sure you want to delete{/t}")) {
-					$('#updateForm').attr('action',$(this).val()).submit();
+					$('#updateForm').prop('action', $(this).val()).submit();
 				} else {
 					e.preventDefault();
 				}
 			});
 			
 			$('#saveButton').click(function(e){
-				$('#updateForm').attr('action',$(this).val()).submit();
+				$('#updateForm').prop('action', $(this).val()).submit();
 			});
 
 		});
@@ -127,11 +127,11 @@
 		$(document).bind('pageinit',function(e,ui){
 			// Manage form submission based on action
 			$('#updateForm').on('submit',function(e){
-				$(this).attr('action',$("input[name='action']:checked").val());
+				$(this).prop('action', $("input[name='action']:checked").val());
 				if ($('#cloneBEObject:checked').length){ // Clone Object
 					var cloneTitle=prompt("{t}Title{/t}",$("input[name='data[title]']").val()+"-copy",false);
 					if (cloneTitle) {
-						$("input[name='data[title]']").attr("value",cloneTitle);
+						$("input[name='data[title]']").val(cloneTitle);
 					} else {
 						e.preventDefault();
 					}

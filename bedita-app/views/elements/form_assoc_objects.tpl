@@ -54,7 +54,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$(".showmore").live("click",function() {
+	$(document).on('click', '.showmore', function() {
 		var container = $(this).closest('.obj');
 		$('.moredata',container).toggle();
 		//mette il modified a 1 
@@ -70,7 +70,7 @@ $(document).ready(function() {
 		$('.assoc_obj_title h4',container).toggle();
 	});
 
-	$(".relViewOptions").live("click",function() {
+	$(document).on('click', '.relViewOptions', function() {
 		$(this).closest('.relationList').toggleClass('boxed');
 	});
 

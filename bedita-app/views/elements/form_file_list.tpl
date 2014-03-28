@@ -6,7 +6,7 @@ var containerItem = "#multimediaItems";
 
 function commitUploadItem(IDs) {
 
-	var currClass =  $(".multimediaitem:last").attr("class");
+	var currClass =  $(".multimediaitem:last").prop("class");
 	//alert(currClass);
 	
 	for(var i=0 ; i < IDs.length ; i++)
@@ -41,9 +41,9 @@ function showResponse(data) {
 		commitUploadItem(tmp);
 	}
 
-		$("#addmultimedia").find("input[type=text]").attr("value", "");
-		$("#addmultimedia").find("input[type=file]").attr("value", "");
-		$("#addmultimedia").find("textarea").attr("value", "");
+		$("#addmultimedia").find("input[type=text]").val("");
+		$("#addmultimedia").find("input[type=file]").val("");
+		$("#addmultimedia").find("textarea").val("");
 }
 
 function showMultimediaAjaxError(XMLHttpRequest, textStatus, errorThrown) {
@@ -115,7 +115,9 @@ $(document).ready(function()
 	var textToReplace = '';
 	
 	$(document).bind('instanceReady.ckeditor', function(e,editor){
-		if (editor.name=='data[body]') listenMode(editor);
+		if (editor.name == 'data[body]') {
+			listenMode(editor);
+		}
 		$(".cke_button_image").attr('onclick','');
 		$(".cke_button_image").bind('click', function() {
 			openModal();
@@ -185,7 +187,7 @@ $(document).ready(function()
 				}
 				var optionsList = $.parseJSON($('.dropSubTarget[rel="'+targetName+'"]').attr('data-options'));
 				var nickname = $(draggedElement.item).find('.media_nickname').val();
-				var imageUrl = $(draggedElement.item).find('.imagebox img').attr('src');
+				var imageUrl = $(draggedElement.item).find('.imagebox img').prop('src');
 
 				if(typeof optionsList.selection !== 'undefined' && optionsList.selection == 'required'){
 					if(textToReplace==''){
@@ -232,7 +234,7 @@ $(document).ready(function()
 		if (editor.mode == "wysiwyg") {
 			jph.each(function() {
 				var href = $(this).attr('href');
-				var src = $('.multimediaitem input[value="'+href+'"]').siblings('.imagebox').children('img').attr('src');	
+				var src = $('.multimediaitem input[value="'+href+'"]').siblings('.imagebox').children('img').prop('src');	
 				style+=' A[href='+href+']:after{ background-image: url("'+src+'") } ';
 			});
 		}

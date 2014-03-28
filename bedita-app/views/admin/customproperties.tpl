@@ -10,10 +10,11 @@ var message = "{t}Are you sure that you want to delete the property? this will a
 
 $(document).ready(function() {
 	$(".delete").bind("click", function() {
-		if(!confirm(message))
-			return false ;
-		var customId = $(this).attr("title");
-		$("#form_"+customId).attr("action", urlDelete).submit();
+		if (!confirm(message)) {
+			return false;
+		}
+		var customId = $(this).prop("title");
+		$("#form_" + customId).prop("action", urlDelete).submit();
 		return false;
 	});
 
@@ -23,7 +24,7 @@ $(document).ready(function() {
 	$(".optionlist").change(function () {
         $(".optionsfields").hide();
 		$(".optionlist option[value='options']:selected").parents("tr").find(".optionsfields").show();
-     })
+    })
 
 });
 </script>

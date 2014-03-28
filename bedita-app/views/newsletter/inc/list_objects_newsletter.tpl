@@ -13,18 +13,18 @@ $(document).ready(function(){
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(message)) 
 			return false ;	
-		$("#formObject").attr("action", urlDelete) ;
+		$("#formObject").prop("action", urlDelete) ;
 		$("#formObject").submit() ;
 	});
 	
 	
 	$("#assocObjects").click( function() {
-		$("#formObject").attr("action", urlAddToAreaSection) ;
+		$("#formObject").prop("action", urlAddToAreaSection) ;
 		$("#formObject").submit() ;
 	});
 	
 	$("#changestatusSelected").click( function() {
-		$("#formObject").attr("action", urlChangeStatus) ;
+		$("#formObject").prop("action", urlChangeStatus) ;
 		$("#formObject").submit() ;
 	});
 });

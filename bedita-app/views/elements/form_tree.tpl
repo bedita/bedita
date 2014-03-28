@@ -2,7 +2,7 @@
 <!--
 {if $object.fixed}
 $(document).ready(function(){
-		$("#whereto input[type=checkbox]").attr("disabled","disabled");
+		$("#whereto input[type=checkbox]").prop("disabled", true);
 });
 {/if}
 //-->
