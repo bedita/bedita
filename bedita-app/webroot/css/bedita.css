@@ -2297,6 +2297,24 @@ code ins {
 	-khtml-border-radius: 11px;
 }
 
+/*...........................................    
+
+   New Upload system
+
+...........................................*/
+
+.fileupload {
+	height: 108px;
+	border: 2px dashed #999;
+	border-radius: 20px;
+	margin: 10px;
+	padding:10px;
+	text-align: center;
+}
+
+.fileupload:after {
+	content:"drag your files here";
+}
 
 /*...........................................    
 

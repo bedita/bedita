@@ -37,12 +37,9 @@ function loadObjToAssoc(page) {
 
 $(document).ready(function() {
 
-	$("select[multiple]").chosen();
-
 	$(".trigger").click(function() {
 		$(this).next().toggle('fast');
 	});
-	
 	
 	$("#formFilter").submit(function() {
 		loadObjToAssoc(1);
@@ -86,7 +83,7 @@ $(document).ready(function() {
 	background:white url('{$html->webroot}img/piumeno.gif') no-repeat left 2px; 
 	padding:5px 0px 5px 30px; font-weight:bold; cursor:pointer;border-bottom:1px solid #CCC;
 }
-.search, .quick {
+.search, .quick, .quickmedia {
 	display:none; padding:10px;
 	
 }
@@ -110,6 +107,11 @@ $(document).ready(function() {
 	<div class="trigger">{t}Create new{/t}</div>
 	<div class="quick">
 	{$view->element('quick_item')}
+	</div>
+
+	<div class="trigger">{t}Create many{/t}</div>
+	<div class="quickmedia">
+	{$view->element('quick_item_media')}
 	</div>
 
 

@@ -1,6 +1,4 @@
 <div class="quickitem">
-
-
 	<form action="{$html->url('/quickitem/save')}" method="post">
 		<table style="width:100%">
 			<tr>
@@ -21,13 +19,9 @@
 				<td style="width:100%"><input style="width:100%" type="text" name="data[title]" /></td>
 			</tr>
 			<!-- TODO only if image object-type is selected -->
-			<tr class="dragfile">
+			<tr>
 				<td colspan="5" style="padding:10px">
-					<div style="padding-top:25px; text-align:center; border-radius:25px; font-size:16px; color:gray; border:2px dashed gray; width:100%; height:150px">
-							drag images here
-							<input type="file" name="file" />
-
-					</div>
+					<input name="file" type="file" />
 				</td>
 			</tr>
 			<tr>
