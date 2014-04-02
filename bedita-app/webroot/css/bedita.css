@@ -879,6 +879,14 @@ UL.menuleft + UL.menuleft {
 	display:none;
 }
 
+.publishingtree UL.loading:empty {
+	min-height: 30px;
+}
+
+.publishingtree UL.loading:empty:before {
+	content: 'loading'
+}
+
 .publishingtree LI {
 	min-width:275px;
 }

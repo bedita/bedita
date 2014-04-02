@@ -34,7 +34,8 @@ Menu a SX valido per tutte le pagine del controller.
 	<div class="insidecol publishingtree">	
 			{if !empty($tree)}
 			
-			{$view->element('tree')}
+			{assign_associative var="options" treeParams=['depth' => 0]}
+			{$view->element('tree', $options)}
 			
 			{/if}
 	</div>

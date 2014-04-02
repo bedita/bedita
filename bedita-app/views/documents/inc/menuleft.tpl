@@ -25,7 +25,8 @@ Menu a SX valido per tutte le pagine del controller.
 
 	{if !empty($view->action) && $view->action == "index"}
 	<div class="insidecol publishingtree">
-		{$view->element('tree')}
+		{assign_associative var="options" treeParams=['action' => 'index', 'depth' => 0]}
+		{$view->element('tree', $options)}
 	</div>
 	{/if}
 

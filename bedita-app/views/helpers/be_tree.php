@@ -181,7 +181,7 @@ class BeTreeHelper extends AppHelper {
 		foreach ($branch as $section) {
 
 			if (empty($inputType)) {
-				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
+				$url = $section["id"];
 				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"])
 						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]) {
 					$class = " class='on'";
@@ -242,12 +242,18 @@ class BeTreeHelper extends AppHelper {
 		$class = "";
 		$url = "";
 
+		if (isset($this->treeParams['depth'])) {
+			$depth = $this->treeParams['depth'];
+		} else {
+			$depth = -1;
+		}
+
 		if (!empty($tree)) {
 
 			foreach ($tree as $publication) {
 
 				if (empty($inputType)) {
-					$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $publication["id"];
+					$url = $publication["id"];
 					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
 							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]
 							|| $this->SessionFilter->read('parent_id') == $publication['id'] ) {
@@ -273,8 +279,12 @@ class BeTreeHelper extends AppHelper {
 				$output .= $publication["title"] . "</a>";
 				$output .= "</h2>";
 
-				if (!empty($publication["children"])) {
-					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids);
+				if ($depth!=0) {
+					if (!empty($publication["children"])) {
+						$output .= $this->designBranch($publication["children"], $inputType, $parent_ids, $depth-1, $publication['id']);
+					}
+				} else {
+					$output .= "<ul class='menutree' rel='/pages/tree/" . $publication['id'] . "' data-controller='" . $this->treeParams["controller"] . "' data-action='" . $this->treeParams["action"] . "'></ul>";
 				}
 				$output .= "</div>";
 			}
@@ -383,17 +393,19 @@ class BeTreeHelper extends AppHelper {
 	 * @param array $branch, section
 	 * @param string $inputType, type of input to prepend to section name (checkbox, radio)
 	 * @param array $parent_ids, array of ids parent
+	 * @param number $deep, the deepness of the tree (-1 = all)
+	 * @param string $parent_id, the bedita id of the parent
 	 * @return string html for section simple tree
 	 */
-	private function designBranch($branch, $inputType, $parent_ids) {
+	private function designBranch($branch, $inputType, $parent_ids, $depth, $parent_id) {
 		$url = "";
 		$class = "";
-		$res = "<ul class='menutree'>";
+		$res = "<ul class='menutree' rel='/pages/tree/" . $parent_id . "' data-controller='" . $this->treeParams["controller"] . "'>";
 
 		foreach ($branch as $section) {
 
 			if (empty($inputType)) {
-				$url = $this->Html->url('/') . $this->treeParams["controller"] . "/" . $this->treeParams["action"] . "/id:" . $section["id"];
+				$url = $section["id"];
 				if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $section["id"])
 						|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $section["id"]
 						|| $this->SessionFilter->read('parent_id') == $section['id'] ) {
@@ -429,8 +441,8 @@ class BeTreeHelper extends AppHelper {
 				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
 			}
 
-			if (!empty($section["children"])) {
-				$res .= $this->designBranch($section["children"], $inputType, $parent_ids);
+			if (!empty($section["children"]) && $depth!=0) {
+				$res .= $this->designBranch($section["children"], $inputType, $parent_ids, $depth-1, $section['id']);
 			}
 
 			$res .= "</li>";

@@ -12,9 +12,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 	{if (!empty($view->action)) && $view->action eq "index"}
 	<div class="insidecol publishingtree">
-
 		{$view->element('tree')}
-	
 	</div>
 	{/if}
 

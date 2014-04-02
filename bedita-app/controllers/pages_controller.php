@@ -527,7 +527,15 @@ class PagesController extends AppController {
 		$model = $this->loadModelByType($modelName);
 		$this->viewRevision($model, $id, $rev);
 	}
-	
+
+	public function tree($parentid) {
+		$this->layout = 'ajax';
+		if (empty($parentid)) {
+			$this->set('tree', $this->BeTree->getSectionsTree());
+		} else {
+			$this->set('tree', $this->BeTree->getPublicationTree($parentid));
+		}
+	}
 
 	/**
 	 * Ajax modal for export 

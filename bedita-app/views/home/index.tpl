@@ -1,4 +1,5 @@
 {$html->script("jquery/jquery.form", false)}
+{$html->script("jquery/jquery.form", false)}
 
 <script type="text/javascript">
 <!--
@@ -59,8 +60,8 @@ $(document).ready(function() {
 
     {if isset($moduleList.areas)}    
 	<div class="publishingtree">
-	{assign_associative var="options" treeParams=['controller' => 'areas']}
-	{$view->element('tree',$options)}
+	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index', 'depth' => 0]}
+	{$view->element('tree', $options)}
 	</div>
     {/if}
     
