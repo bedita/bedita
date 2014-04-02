@@ -74,6 +74,11 @@ $(document).ready(function() {
 		}
 	});
 
+	$("select").select2({
+		dropdownAutoWidth:true,
+		allowClear: true
+	});
+	
 });
 
 //-->

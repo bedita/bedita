@@ -168,7 +168,7 @@ $(document).ready(function(){
 				</a>	
 			</td>
 			<td style="text-align:center">{$objects[i].status}</td>
-			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
+			<td style="white-space:nowrap">{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			{if !empty($properties)}
 				{foreach $properties as $p}
 					<td>

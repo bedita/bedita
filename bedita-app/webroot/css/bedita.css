@@ -1498,7 +1498,7 @@ UL#mediatypes  {
 
 
 INPUT, TEXTAREA, SELECT {
-	padding:2px;
+	padding:5px;
 }
 INPUT[type=text], INPUT[type=file], INPUT[type=search], TEXTAREA {
 	border:1px solid silver;
@@ -1558,6 +1558,7 @@ INPUT.priority {
 	font-size: 11px;
 	border-width:0px !important;
 	color:#FFF !important;
+	padding:2px;
 }
 
 INPUT.objectCheck {
@@ -1581,6 +1582,12 @@ INPUT[type=button], INPUT[type=submit], button  {
 	text-transform:uppercase;
 }
 
+SELECT {
+	width:auto;
+}
+SELECT#selObjectType {
+	min-width:240px;
+}
 
 /*...........................................    
 

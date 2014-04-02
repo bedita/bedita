@@ -655,7 +655,11 @@ $(document).ready(function(){
 
 ...........................................*/
 
-	$('select[multiple]').chosen({width: '95%'});
+	//$('select[multiple]').chosen({width: '95%'});
+	$("select").select2({
+		dropdownAutoWidth:true,
+		allowClear: true
+	});
 
 
 });

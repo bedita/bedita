@@ -51,6 +51,7 @@ $(document).ready(function(){
 	});
 
 	refreshRemovePermButton();
+
 });
 
 function refreshRemovePermButton() {
@@ -67,6 +68,10 @@ function loadUserGroupAjax(url) {
 	});
 }
 </script>
+
+
+
+
 
 
 
@@ -119,11 +124,12 @@ function loadUserGroupAjax(url) {
 
 <tr id="addPermGroupTR" class="ignore">
 	<td style="white-space:nowrap">
-		<select id="inputAddPermGroup" name="name"></select>
+		<select data-placeholder="{t}select a group{/t}" id="inputAddPermGroup" name="name"></select>
 	</td>
 
 	<td>
-		<select id="selectGroupPermission" name="groupPermission">
+		<select data-placeholder="{t}select a permission type{/t}" id="selectGroupPermission" name="groupPermission">
+			<option></option>
 			{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
 			<option value="{$permVal}">{t}{$permLabel}{/t}</option>
 			{/foreach}

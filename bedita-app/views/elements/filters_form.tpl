@@ -18,7 +18,9 @@ available options:
 *}
 
 <style scoped>
-
+th {
+	white-space: nowrap;
+}
 
 </style>
 
@@ -30,7 +32,7 @@ available options:
 		{if !empty($filters.word)}
 		<tr>
 			<th><label>{t}search word{/t}:</label></th>
-			<td>
+			<td colspan="6">
 				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" style="width:255px" value="{$view->SessionFilter->read('query')}"/>&nbsp;
 				<input type="checkbox"
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
@@ -40,8 +42,8 @@ available options:
 			</td>
 		</tr>
 		{/if}
-		{if !empty($filters.language)}
 		<tr>
+		{if !empty($filters.language)}
 			<th><label>{t}language{/t}:</label></th>
 			<td>
 				<select name="filter[lang]" id="lang">
@@ -55,11 +57,8 @@ available options:
 					{/foreach}
 				</select>
 			</td>
-		</tr>
 		{/if}
-
 		{if !empty($filters.type)}
-		<tr>
 			<th><label>{t}type{/t}:</label></th>
 			<td>
 				<select name="filter[object_type_id]" id="objectType">
@@ -75,8 +74,21 @@ available options:
 					{/foreach}
 				</select>
 			</td>
-		</tr>
 		{/if}
+		{if !empty($filters.tree)}
+			<th><label>{t}on position{/t}:</label></th>
+			<td style="width:100%">
+				<select name="filter[parent_id]" id="parent_id" style="max-width:440px">
+				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
+				</select>
+				{if !empty($filters.treeDescendants)}
+					<input type="checkbox" name="filter[descendants]"
+						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
+				{/if}
+			</td>
+		{/if}
+		</tr>
+
 		{if !empty($filters.mediaTypes)}
 		<tr>
 			<th><label>{t}media type{/t}:</label></th>
@@ -91,20 +103,6 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
-		{/if}
-		{if !empty($filters.tree)}
-		<tr>
-			<th><label>{t}on position{/t}:</label></th>
-			<td>
-				<select name="filter[parent_id]" id="parent_id" style="max-width:440px">
-				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select>
-				{if !empty($filters.treeDescendants)}
-					<input type="checkbox" name="filter[descendants]"
-						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
-				{/if}
 			</td>
 		</tr>
 		{/if}

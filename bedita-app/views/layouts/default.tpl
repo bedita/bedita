@@ -33,8 +33,11 @@
 	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
-	{$html->css('chosen.css')}
-	{$html->script("libs/jquery/plugins/chosen.jquery.min")}
+	{*$html->css('chosen.css')}
+	{$html->script("libs/jquery/plugins/chosen.jquery.min")*}
+
+	<link rel="stylesheet" href="/js/libs/select2/select2.css" />
+	{$html->script("libs/select2/select2.min")}
 
 	{$beurl->addModuleScripts()}
 
