@@ -32,12 +32,9 @@ Menu a SX valido per tutte le pagine del controller.
 		
 	{if ($method != "viewArea" && $method != "viewSection")}
 	<div class="insidecol publishingtree">	
-			{if !empty($tree)}
-			
-			{assign_associative var="options" treeParams=['depth' => 0]}
-			{$view->element('tree', $options)}
-			
-			{/if}
+		{if !empty($tree)}
+			{$view->element('tree')}
+		{/if}
 	</div>
 	{/if}
 	

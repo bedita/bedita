@@ -389,61 +389,43 @@ $(document).ready(function(){
 		}
 	});
 
-	$(".publishingtree h2 A").each(function() {
+	$('.publishingtree .pub > ul.menutree').not(':empty').each(function() {
+		$(this)
+			.treeview({ 
+				animated: "normal",
+				collapsed: false,
+				unique: false
+			})
+			.find('.on')
+			.parents('ul')
+			.show()
+			.parents('li')
+			.removeClass('expandable')
+			.addClass('collapsable')
+			.children('.hitarea')
+			.removeClass('expandable-hitarea')
+			.addClass('collapsable-hitarea');
+
+		$(this)
+			.find('.on')
+			.closest('.pub')
+			.children('h2')
+			.addClass('open')
+	});
+
+	$(".publishingtree A").each(function() {
 		var $t = $(this);
-		var who = $t.parent("H2");
-		var ul = $(who).siblings("ul.menutree").first();
-		if ($(this).attr("rel")) {
-			var rel = $(this).attr("rel");
+		var ul = $t.closest('.pub').children("ul.menutree").first();
+		if ($t.attr("rel")) {
+			var rel = $t.attr("rel");
 			rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
-			$(this).attr("rel", rel);
-		}
-	}).click(function () {
-		if ($(this).attr("rel")) {
-			window.location = $(this).attr("rel");
+			$t.attr("rel", rel);
 		}
 	});
-	
-	$(".publishingtree H2 A.on").closest("H2").addClass("on").each(function() {
-		var $t = $(this);
-		var ul = $t.siblings("ul.menutree").first();
-		if (ul.is(':empty')) {
-			var url = ul.attr('rel');
-			$.ajax({
-				url: url,
-				success: function(data) {
-					var tree = $(data).find('ul.menutree').first();
-					ul.append( tree.html() );
-					ul.treeview({ 
-						animated: "normal",
-						collapsed: true,
-						unique: false
-					});
 
-					$("LI A", ul).each(function() {
-						if ($(this).attr("rel")) {
-							var rel = $(this).attr("rel");
-							rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
-							$(this).attr("rel", rel);
-						}
-					}).click(function () {
-						if ($(this).attr("rel")) {
-							window.location = $(this).attr("rel");
-						}
-					});
-
-					ul.slideToggle(800, function() {
-						$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
-					});
-				},
-
-				error: function(er) {
-					console.log(er);
-				}
-			});
-		} else {
-			ul.slideToggle(800);
-			$(who).toggleClass("open");
+	$(".publishingtree A").click(function () {
+		if ($(this).attr("rel")) {
+			window.location = $(this).attr("rel");
 		}
 	});
 
