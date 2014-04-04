@@ -63,7 +63,7 @@ class BeAuthComponent extends Object {
 	/**
 	 * Check whether session key is valid
 	 */
-	private function checkSessionKey() {
+	protected function checkSessionKey() {
 		$res = true;
 		if(!isset($this->Session)) {
 			$res = false;
