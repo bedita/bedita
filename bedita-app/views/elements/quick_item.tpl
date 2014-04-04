@@ -21,14 +21,14 @@
 				</td>
 				<td><label>{t}Position{/t}</label>
 				<td colspan="4" style="width:100%" >
-					<select>
+					<select style="max-width:440px">
 					{$beTree->option($tree)}
 					</select>
 				</td>
 			</tr>
 			<!-- TODO only if image object-type is selected -->
 			<tr>
-				<td colspan="5" style="padding:10px">
+				<td colspan="5">
 					<input name="file" type="file" />
 				</td>
 			</tr>

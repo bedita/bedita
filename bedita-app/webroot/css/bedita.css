@@ -1830,9 +1830,13 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	cursor:pointer;
 	border-bottom:1px solid #CCC;
 }
-#modalmain .search, #modalmain .quick {
+#modalmain .search, #modalmain .quick, #modalmain .quickmedia {
 	display:none;
 	padding:10px;
+}
+
+#modalmain .quickmedia {
+	padding:0px;
 }
 
 .modalcommands {
@@ -1861,6 +1865,16 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 	color:white;
 	cursor:pointer;
 }
+
+
+#modalmain .trigger {
+	background:white url('../img/piumeno.gif') no-repeat left 2px; 
+	padding:5px 0px 5px 30px;
+	font-weight:bold;
+	cursor:pointer;
+	border-bottom:1px solid #CCC;
+}
+
 
 /*...........................................    
 
