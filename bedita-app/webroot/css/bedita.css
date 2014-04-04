@@ -829,7 +829,7 @@ UL.menuleft + UL.menuleft {
 .boxed.relationList TR {
 	box-shadow: 0px 0px 6px rgba(0,0,0,.2);
 	background-color:#d5d5d5;
-	border-radius:10px;
+	border-radius:0px;
 	display:inline-block;
 	margin:5px;
 	width: 145px;
@@ -840,6 +840,7 @@ UL.menuleft + UL.menuleft {
 .boxed.relationList TR TD {
 	border:0px solid red;
 	display:block;
+	padding-left: 0px;
 }
 
 .boxed.relationList TD TR {
@@ -858,7 +859,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .commands {
-	text-align: left;
+	text-align: right;
 	border-top:1px solid #999;
 }
 
@@ -870,7 +871,7 @@ UL.menuleft + UL.menuleft {
 
 .boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang {
 	display: table-cell;
-	padding:0px 5px 0px 5px;
+	padding:0px 5px 0px 0px;
 }
 
 .boxed.relationList .mimetype {
@@ -883,7 +884,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .assoc_obj_title textarea {
-	width:100%
+	width:90%
 }
 
 .boxed.relationList .description  {
@@ -896,7 +897,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .description  textarea {
-	width:100%;
+	width:90%;
 }
 .boxed.relationList label  {
 	border-top:1px solid #999;
