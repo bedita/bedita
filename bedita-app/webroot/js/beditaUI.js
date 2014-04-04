@@ -396,7 +396,7 @@ $(document).ready(function(){
 				collapsed: false,
 				unique: false
 			})
-			.find('.on')
+			.find('.on, :checked')
 			.parents('ul')
 			.show()
 			.parents('li')
@@ -404,13 +404,18 @@ $(document).ready(function(){
 			.addClass('collapsable')
 			.children('.hitarea')
 			.removeClass('expandable-hitarea')
-			.addClass('collapsable-hitarea');
-
-		$(this)
-			.find('.on')
+			.addClass('collapsable-hitarea')
 			.closest('.pub')
 			.children('h2')
-			.addClass('open')
+			.addClass('open');
+
+		if ($(this).find('.on, :checked').length == 0) {
+			$(this)
+				.closest('.pub')
+				.children('h2')
+				.addClass('on');
+		}
+
 	});
 
 	$(".publishingtree A").each(function() {
@@ -419,6 +424,9 @@ $(document).ready(function(){
 		if ($t.attr("rel")) {
 			var rel = $t.attr("rel");
 			rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
+			if (ul.attr('data-type')) {
+				rel += '/'+ul.attr('data-type');
+			}
 			$t.attr("rel", rel);
 		}
 	});
