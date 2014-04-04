@@ -79,7 +79,7 @@ $(document).ready(function() {
 		allowClear: true
 	});
 
-	$('select.areaSectionAssociation, [name="filter[parent_id]"]')
+	$('.modal select.areaSectionAssociation, [name="filter[parent_id]"]')
 		.select2({
 			escapeMarkup: function(m) { return m; },
 			formatResult: function(state) {
@@ -96,21 +96,10 @@ $(document).ready(function() {
 				}
 			}
 		});
-	
 });
 
 //-->
 </script>
-<style scoped>
-.trigger {
-	background:white url('{$html->webroot}img/piumeno.gif') no-repeat left 2px; 
-	padding:5px 0px 5px 30px; font-weight:bold; cursor:pointer;border-bottom:1px solid #CCC;
-}
-.search, .quick, .quickmedia {
-	display:none; padding:10px;
-	
-}
-</style>
 
 <div class="bodybg">
 
