@@ -424,9 +424,6 @@ $(document).ready(function(){
 		if ($t.attr("rel")) {
 			var rel = $t.attr("rel");
 			rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
-			if (ul.attr('data-type')) {
-				rel += '/'+ul.attr('data-type');
-			}
 			$t.attr("rel", rel);
 		}
 	});

@@ -904,7 +904,7 @@ UL.menuleft + UL.menuleft {
 	/*background-color:#d8d8d8;*/
 }
 
-.publishingtree H2 A[rel] {
+.publishingtree H2 A.treeAreaTitle {
 	padding-left:7px
 }
 
@@ -939,7 +939,7 @@ UL.menuleft + UL.menuleft {
 
 }
 
-.publishingtree .protected > A[rel] {
+.publishingtree .protected > A.treeAreaTitle {
 	padding-left:24px; 
 	background: transparent url('../img/iconLocked.png') center left no-repeat;
 	background-size: 24px;

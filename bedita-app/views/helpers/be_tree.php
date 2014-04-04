@@ -239,7 +239,7 @@ class BeTreeHelper extends AppHelper {
 	public function view($tree = array(), $inputType = null, $parent_ids = array()) {
 
 		$output = "";
-		$class = "";
+		$class = "treeAreaTitle";
 		$url = "";
 
 		if (!empty($tree)) {
@@ -254,9 +254,7 @@ class BeTreeHelper extends AppHelper {
 						if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
 								|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]
 								|| $this->SessionFilter->read('parent_id') == $publication['id'] ) {
-							$class = " class='on'";
-						} else {
-							$class = "";
+							$class .= ' on';
 						}
 					}
 				}
@@ -267,15 +265,25 @@ class BeTreeHelper extends AppHelper {
 					$output .= " class='protected'";
 				}
 				$output .= ">";
-				$output .= "<a ".$class." rel='" . $url . "'>";
+
+				$output .= '<a class="' . $class . '"';
+				if ($inputType == null) {
+					$output .= ' rel="' . $url . '"';
+				}
+				$output .= '>';
 
 				if (!empty($inputType) && !empty($this->tags[$inputType])) {
-					$checked = (in_array($publication["id"], $parent_ids))? "checked='checked'" : "";
-					$output .= sprintf($this->tags[$inputType], $publication["id"], $checked) ;
+					$checked = (in_array($publication['id'], $parent_ids))? 'checked="checked"' : '';
+					$output .= sprintf($this->tags[$inputType], $publication['id'], $checked) ;
 				}
 
-				$output .= $publication["title"] . "</a>";
-				$output .= "</h2>";
+				$output .= $publication['title'];
+
+				if ($inputType == null) {
+					$output .= '</a>';
+				}
+
+				$output .= '</h2>';
 
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids, $publication['id']);
