@@ -245,7 +245,7 @@ class BeTreeHelper extends AppHelper {
 
 			foreach ($tree as $publication) {
 
-				$class = "treeAreaTitle";
+				$class = "treeAreaTitle " . $publication['id'];
 
 				if (empty($inputType)) {
 					if (!empty($this->treeParams["pass"][1]) && !empty($this->tags[$this->treeParams["pass"][1]]) ) {
@@ -283,9 +283,7 @@ class BeTreeHelper extends AppHelper {
 
 				$output .= $publication['title'];
 
-				if ($inputType == null) {
-					$output .= '</a>';
-				}
+				$output .= '</a>';
 
 				$output .= '</h2>';
 
