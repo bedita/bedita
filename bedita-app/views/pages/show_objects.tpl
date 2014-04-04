@@ -74,10 +74,28 @@ $(document).ready(function() {
 		}
 	});
 
-	$("select").select2({
+	$("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
 		dropdownAutoWidth:true,
 		allowClear: true
 	});
+
+	$('select.areaSectionAssociation, [name="filter[parent_id]"]')
+		.select2({
+			escapeMarkup: function(m) { return m; },
+			formatResult: function(state) {
+				if ($(state.element).is('.pubOption')) {
+					return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
+				} else {
+					if (!$(state.element).is(':first-child')) {
+						var ar = state.text.split(' > ');
+						var last = ar.pop();
+						return '<span class="gray">'+ar.join(' > ')+' > </span>'+last;
+					} else {
+						return state.text;
+					}
+				}
+			}
+		});
 	
 });
 

@@ -21,7 +21,7 @@
 				</td>
 				<td><label>{t}Position{/t}</label>
 				<td colspan="4" style="width:100%" >
-					<select>
+					<select class="areaSectionAssociation">
 					{$beTree->option($tree)}
 					</select>
 				</td>

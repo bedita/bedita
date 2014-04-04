@@ -239,16 +239,20 @@ class BeTreeHelper extends AppHelper {
 	public function view($tree = array(), $inputType = null, $parent_ids = array()) {
 
 		$output = "";
-		$class = "treeAreaTitle";
 		$url = "";
 
 		if (!empty($tree)) {
 
 			foreach ($tree as $publication) {
 
+				$class = "treeAreaTitle";
+
 				if (empty($inputType)) {
 					if (!empty($this->treeParams["pass"][1]) && !empty($this->tags[$this->treeParams["pass"][1]]) ) {
 						$inputType = $this->treeParams["pass"][1];
+						if ($inputType == 'option') {
+							return $this->option($tree);
+						}
 					} else {
 						$url = $publication["id"];
 						if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
@@ -386,16 +390,21 @@ class BeTreeHelper extends AppHelper {
 	 * 		   			<option value="">...</option>
 	 * 					....
 	 */
-	public function option($tree, $selId=null, $numInd=3, $indentation="&nbsp;") {
+	public function option($tree, $selId=null, $numInd=1, $indentation="&nbsp;&nbsp;&nbsp;&nbsp;") {
 
-		$output = "<option value=\"\"> -- </option>";
+		$output = "<option value=\"\"> None </option>";
 
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
-				$selected = ($selId == $publication["id"])? " selected" : "";
-				$output .= sprintf($this->tags['option'], $publication["id"], $selected, mb_strtoupper($publication["title"])) ;
+				$params = ' class="pubOption" rel="/pages/tree/' . $publication["id"] . '/option"';
 				if (!empty($publication["children"])) {
-					$output .= $this->optionBranch($publication["children"], $selId, $numInd, $indentation);
+					$params .= ' data-loaded="true"';
+				}
+				$path = mb_strtoupper($publication["title"]);
+				$params .= ($selId == $publication["id"])? ' selected' : '';
+				$output .= sprintf($this->tags['option'], $publication["id"], $params, $path) ;
+				if (!empty($publication["children"])) {
+					$output .= $this->optionBranch($publication["children"], $selId, $numInd, $indentation, $path);
 				}
 			}
 		}
@@ -489,7 +498,7 @@ class BeTreeHelper extends AppHelper {
 	 *
 	 * @return string of option
 	 */
-	private function optionBranch($branch, $selId, $numInd, $indentation) {
+	private function optionBranch($branch, $selId, $numInd, $indentation, $path) {
 
 		if (!isset($this->numInd)) {
 			$this->numInd = $numInd;
@@ -508,10 +517,12 @@ class BeTreeHelper extends AppHelper {
 		}
 
 		foreach ($branch as $section) {
-			$selected = ($selId == $section["id"])? " selected" : "";
-			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
+			$params = ' class="depth' . $numInd . '"';
+			$params .= ($selId == $section['id'])? ' selected' : '';
+			$npath = $path . ' > ' . $section["title"];
+			$res .= sprintf($this->tags['option'], $section["id"], $params, $npath) ;
 			if (!empty($section["children"])) {
-				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation);
+				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation, $npath);
 			}
 
 		}

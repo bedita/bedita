@@ -18,7 +18,7 @@
 		<tr>
 			<th>{t}public name{/t}:</th>
 			<td>
-				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}""/>
+				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}"/>
 			</td>
 		</tr>
 		<tr>

@@ -2539,3 +2539,28 @@ img.smallicon {
 span.highlight {
 	color: red;
 }
+
+.select2-results {
+	overflow: auto !important;
+}
+
+.select2-results li {
+	padding-left: 5px;
+}
+
+.select2-results .select2-result-label {
+	white-space: nowrap;
+}
+
+.select2-results .select2-result-label .gray{
+	color: #999;
+}
+
+.select2-results .select2-result-label A{
+	position: absolute;
+	margin-left: -10px;
+}
+
+.select2-container {
+	width: 100%;
+}

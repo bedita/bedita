@@ -722,13 +722,57 @@ $(document).ready(function(){
 ...........................................*/
 
 	//$('select[multiple]').chosen({width: '95%'});
-	$("select").select2({
+	$("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
 		dropdownAutoWidth:true,
 		allowClear: true
 	});
 
+	$('select.areaSectionAssociation, [name="filter[parent_id]"]')
+		.select2({
+			escapeMarkup: function(m) { return m; },
+			formatResult: function(state) {
+				if ($(state.element).is('.pubOption')) {
+					return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
+				} else {
+					if (!$(state.element).is(':first-child')) {
+						var ar = state.text.split(' > ');
+						var last = ar.pop();
+						return '<span class="gray">'+ar.join(' > ')+' > </span>'+last;
+					} else {
+						return state.text;
+					}
+				}
+			}
+		});
 
 });
+
+var toggleSelectTree = function(ev) {
+	ev.preventDefault();
+	ev.stopPropagation();
+	var pubLi = $(ev.target).closest('.pubOption');
+	var subLi = pubLi.nextUntil('.pubOption');
+	var url = $(ev.target).attr('rel');
+	var option = $('option[rel="'+url+'"]');
+	if (subLi.length>0) {
+		$('input.select2-input').val(option.first().text()).trigger('keyup-change');
+	} else {
+		$.ajax({
+			url: url,
+			success: function(data) {
+				data = $.trim(data);
+				var ntree = $(data).slice(2);
+				ntree.insertAfter(option);
+				var select = option.closest('select');
+				console.log(select);
+				$('input.select2-input').val(option.first().text()).trigger('keyup-change');
+			},
+			error: function(er) {
+				console.log(er);
+			}
+		});
+	}
+}
 
 /* end of document ready() */
 

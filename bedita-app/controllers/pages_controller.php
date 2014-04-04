@@ -257,8 +257,18 @@ class PagesController extends AppController {
 		}
 		$this->set("objectsToAssoc", $objects);
 		
-		$tree = $this->BeTree->getSectionsTree() ;
-		$this->set('tree',$tree);
+		// get publications
+		$treeModel = ClassRegistry::init("Tree");
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
+		$this->set('tree', $tree);
 		
 		$this->set("relation", $relation);
 		
