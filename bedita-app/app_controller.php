@@ -1211,8 +1211,13 @@ abstract class ModulesController extends AppController {
 		$this->set('objectProperty', $property);
 		$this->set('availabeRelations', $this->getAvailableRelations($name));
 
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $parents_id);
+
+		$this->set('tree', $tree);
+
 		$this->set('parents',	$parents_id);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
 		$this->set('previews',	$previews);
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));

@@ -7,7 +7,7 @@
 
 	{$view->element('form_title_subtitle')}
 
-	{*$view->element('form_tree')*}
+	{$view->element('form_tree')}
 		
 	{$view->element('form_textbody',[
 		'addshorttext'=>{$conf->addshorttext|default:false},
