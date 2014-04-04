@@ -129,7 +129,7 @@ $config["cookieName"] = array(
 
 /**
  * save history navigation
- 
+ *
  * "sessionEntry" => number of history items in session
  * "showDuplicates" => false to not show duplicates in history session 
  * "trackNotLogged" => true save history for all users (not logged too)
@@ -139,5 +139,14 @@ $config["cookieName"] = array(
 //	"showDuplicates" => false,
 //	"trackNotLogged" => false
 //);
+
+/**
+ * set to true if you want to use SessionFilter component
+ * to automatic store in session some objects filter
+ * populating a form named 'filter'
+ * @see SessionFilterComponent
+ * @see SessionFilterHelper
+ */
+// $config['enableSessionFilter'] = false;
 
 ?>

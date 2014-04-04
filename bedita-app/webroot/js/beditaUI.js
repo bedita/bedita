@@ -338,33 +338,99 @@ $(document).ready(function(){
 
    publishing tree
 
-...........................................*/	
+...........................................*/
 
-	//$(".publishingtree DIV UL").hide();
-
+	$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
 	$(".publishingtree h2 A").before("<a class='plusminus'></a>");
 	
 	$(".publishingtree h2 .plusminus").click(function () {
-		var who = $(this).parent("H2");
-		$(who).next("ul").slideToggle(800,function(){
+		var $t = $(this);
+		var who = $t.parent("H2");
+		var ul = $(who).siblings("ul.menutree").first();
+		if (ul.is(':empty')) {
+			var url = ul.attr('rel');
+			$.ajax({
+				url: url,
+				success: function(data) {
+					var tree = $(data).find('ul.menutree').first();
+					ul.append( tree.html() );
+					ul.treeview({ 
+						animated: "normal",
+						collapsed: true,
+						unique: false
+					});
+
+					$("LI A", ul).each(function() {
+						if ($(this).attr("rel")) {
+							var rel = $(this).attr("rel");
+							rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
+							$(this).attr("rel", rel);
+						}
+					}).click(function () {
+						if ($(this).attr("rel")) {
+							window.location = $(this).attr("rel");
+						}
+					});
+
+					ul.slideToggle(800, function() {
+						$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
+					});
+					$(who).toggleClass("open");
+				},
+				error: function(er) {
+					console.log(er);
+				}
+			});
+		} else {
+			ul.slideToggle(800);
 			$(who).toggleClass("open");
-		});
+		}
 	});
 
-	$(".publishingtree h2 A").click(function () {
-		if ($(this).attr("rel")) {
-			window.location = $(this).attr("rel");
-		}	
+	$('.publishingtree .pub > ul.menutree').not(':empty').each(function() {
+		$(this)
+			.treeview({ 
+				animated: "normal",
+				collapsed: false,
+				unique: false
+			})
+			.find('.on, :checked')
+			.parents('ul')
+			.show()
+			.parents('li')
+			.removeClass('expandable')
+			.addClass('collapsable')
+			.children('.hitarea')
+			.removeClass('expandable-hitarea')
+			.addClass('collapsable-hitarea')
+			.closest('.pub')
+			.children('h2')
+			.addClass('open');
+
+		if ($(this).find('.on, :checked').length == 0) {
+			$(this)
+				.closest('.pub')
+				.children('h2')
+				.addClass('on');
+		}
+
 	});
 
-	$(".publishingtree LI A").click(function () {
+	$(".publishingtree A").each(function() {
+		var $t = $(this);
+		var ul = $t.closest('.pub').children("ul.menutree").first();
+		if ($t.attr("rel")) {
+			var rel = $t.attr("rel");
+			rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
+			$t.attr("rel", rel);
+		}
+	});
+
+	$(".publishingtree A").click(function () {
 		if ($(this).attr("rel")) {
 			window.location = $(this).attr("rel");
 		}
 	});
-	
-	$(".publishingtree LI A.on").parents("DIV:first").find("UL").show();
-	$(".publishingtree h2 A.on").closest("H2").addClass("on");
 
 	$(".publishingtree .on").addClass(currentclassmodule);
 

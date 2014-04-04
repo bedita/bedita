@@ -60,8 +60,8 @@ $(document).ready(function() {
 
     {if isset($moduleList.areas)}    
 	<div class="publishingtree">
-	{assign_associative var="options" treeParams=['controller' => 'areas']}
-	{$view->element('tree',$options)}
+	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index']}
+	{$view->element('tree', $options)}
 	</div>
     {/if}
     

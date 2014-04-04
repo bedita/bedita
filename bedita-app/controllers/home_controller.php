@@ -76,7 +76,19 @@ class HomeController extends AppController {
 	 	$this->set("connectedUser", $connectedUser);
 		$this->set("noFooter", true);
 		$this->set("bodyClass", "home");
-		$this->set('tree',$this->BeTree->getSectionsTree());
+
+		// get publications
+		$treeModel = ClassRegistry::init("Tree");
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
+		$this->set('tree', $tree);
 	 }
 
 	/**

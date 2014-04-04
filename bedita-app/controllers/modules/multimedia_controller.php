@@ -39,7 +39,7 @@ class MultimediaController extends ModulesController {
 	var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
 	protected $moduleName = 'multimedia';
 
-	 function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
+	function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$this->setup_args(
 			array("id", "integer", &$id),
@@ -93,8 +93,19 @@ class MultimediaController extends ModulesController {
 		));
 
 		$this->params['toolbar'] = &$bedita_items['toolbar'] ;
+
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
 		// template data
-		$this->set('tree',$this->BeTree->getSectionsTree());
+		$this->set('tree', $tree);
 		$this->set('objects', $bedita_items['items']);
 		$this->set('properties', $properties);
 		$this->setSessionForObjectDetail($bedita_items['items']);
@@ -190,7 +201,18 @@ class MultimediaController extends ModulesController {
 		if(!empty($obj["relations"])) {
 			$this->set('relObjects', $obj["relations"]);
 		}
-		$this->set('tree', $this->BeTree->getSectionsTree());
+
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
+		$this->set('tree', $tree);
 		$this->set('parents',	$parents_id);
 		$this->setSessionForObjectDetail();
 	 }

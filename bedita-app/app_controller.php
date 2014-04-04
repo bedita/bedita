@@ -871,8 +871,18 @@ abstract class ModulesController extends AppController {
 			"contain" => array()
 		));
 
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
 		// template data
-		$this->set('tree', $this->BeTree->getSectionsTree());
+		$this->set('tree', $tree);
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
 		$this->set('objects', $items);

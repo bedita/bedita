@@ -83,6 +83,25 @@ class BeTreeComponent extends Object {
 	}
 
 	/**
+	 * Tree of a publication and sections for user connected
+	 * 
+	 * @return array
+	 */
+	public function getPublicationTree($id) {
+		$conf  = Configure::getInstance() ;
+		
+		// Get connected user
+		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		$filter = array(
+			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) ,
+			"count_permission" => true
+		);
+		$tree = $this->Tree->getAll($id, $userid, null, $filter) ;
+		
+		return $tree ;	
+	}
+
+	/**
 	 * get publication (area) data for the section $section_id
 	 * 
 	 * @param int $section_id

@@ -30,9 +30,9 @@ $(document).ready(function(){
 	
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
-		$('input[value="{$branch}"]').prop("checked", true);
+		$('input[value="{$branch}"]').attr("checked",true);
 		
-		$('option[value="{$branch}"]').prop("selected", true);
+		$('option[value="{$branch}"]').attr("selected",true);
 		
 		$("#whereto").prev(".tab").BEtabsopen();
 	{/if}
@@ -125,8 +125,8 @@ $(document).ready(function(){
 	$("div.insidecol input[name='clone']").click(function() {
 		var cloneTitle=prompt("{t}Title{/t}",$("input[name='data[title]']").val()+"-copy");
 		if (cloneTitle) {
-			$("input[name='data[title]']").val(cloneTitle);
-			$("#updateForm").prop("action","{$html->url('/')}{$submiturl}/cloneObject");
+			$("input[name='data[title]']").attr("value",cloneTitle);
+			$("#updateForm").attr("action","{$html->url('/')}{$submiturl}/cloneObject");
 			$("#updateForm").submit();
 		}
 	});
@@ -155,20 +155,20 @@ $(document).ready(function(){
 
 {if (!empty($module_modify) && ($module_modify != 1))}
 		
-		$("#saveBEObject,#delBEObject,#publishBEObject").prop("disabled", true);
-		$(".secondacolonna .modules label").addClass("readonly").prop("title", "readonly object");
+		$("#saveBEObject,#delBEObject,#publishBEObject").attr("disabled",true);
+		$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 
 {/if}
 
 
 {if !empty($object.Permission)}
 
-		$(".secondacolonna .modules label").addClass("lock").prop("title", "object with limited permissions");
+		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
 	
 {/if}
 
 {if !empty($parents.1) || 
-	(!empty($object) && in_array($object.object_type_id, $conf->objectTypes.multimedia.id) && $object.relations.attach|default:[]|@count > 1)}
+	(!empty($object) && !empty($object.relations) && !empty($object.relations.attach) && in_array($object.object_type_id, $conf->objectTypes.multimedia.id) && $object.relations.attach|@count > 1)}
 
 		$(".secondacolonna .modules").after("<div class='subwarning ubiquity'>{t}Ubiquitous object{/t}</div>");
 	
@@ -176,76 +176,76 @@ $(document).ready(function(){
 
 
 {*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}
-		//$("#delBEObject").prop("disabled", true);
-		//$("#saveBEObject,#cloneBEObject,#delBEObject").prop("disabled", true);
-		//$(".secondacolonna .modules label").addClass("readonly").prop("title", "readonly object");
+		//$("#delBEObject").attr("disabled",true);
+		//$("#saveBEObject,#cloneBEObject,#delBEObject").attr("disabled",true);
+		//$(".secondacolonna .modules label").addClass("readonly").attr("title","readonly object");
 	
 {/if}*}
 
 
 {if !empty($object.start_date) && ($object.start_date > ($smarty.now|date_format:"%Y-%m-%d %T"))}
 		
-		$(".secondacolonna .modules label").addClass("future").prop("title", "object scheduled in the future");
+		$(".secondacolonna .modules label").addClass("future").attr("title","object scheduled in the future");
 
 {/if}
 
 {if !empty($object.end_date) && ($object.end_date < ($smarty.now|date_format:"%Y-%m-%d %T"))}
 		
-		$(".secondacolonna .modules label").addClass("expired").prop("title","expired object");
+		$(".secondacolonna .modules label").addClass("expired").attr("title","expired object");
 
 {/if}
 
 
 {if !empty($object.start_date) && ($object.start_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}
 		
-		$(".secondacolonna .modules label").addClass("today").prop("title","object scheduled to start today");
+		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to start today");
 
 {/if}
 
 {if !empty($object.end_date) && ($object.end_date|date_format:"%Y-%m-%d" == ($smarty.now|date_format:"%Y-%m-%d"))}
 		
-		$(".secondacolonna .modules label").addClass("today").prop("title", "object scheduled to end today");
+		$(".secondacolonna .modules label").addClass("today").attr("title","object scheduled to end today");
 
 {/if}
 
 
 {if !empty($object.fixed) && ($object.fixed == 1)}
 
-		$("#nicknameBEObject,#start,#end").prop("readonly", true);
-		$("#status input").prop("readonly", true);
-		$("#delBEObject").prop("disabled", true);
-		$("#areaSectionAssoc").prop("disabled", true);
-		$(".secondacolonna .modules label").addClass("fixedobject").prop("title", "fixed object");
+		$("#nicknameBEObject,#start,#end").attr("readonly",true);
+		$("#status input").attr("readonly",true);
+		$("#delBEObject").attr("disabled",true);
+		$("#areaSectionAssoc").attr("disabled",true);
+		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
 		
 {/if}
 
 {if ($object.mail_status|default:'' == "sent")}
 
-		$(".secondacolonna .modules label").addClass("sent").prop("title", "sent message");
+		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
 		
 {elseif ($object.mail_status|default:'' == "injob")}
 		
-		$(".secondacolonna .modules label").addClass("injob").prop("title", "in job");
+		$(".secondacolonna .modules label").addClass("injob").attr("title","in job");
 
 		//un'ora prima dell'invio avverte 
 {elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}
 		
-		$(".secondacolonna .modules label").addClass("pendingAlert").prop("title", "shortly scheduled invoice");
+		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
 		{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T")}
 		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {$object.start_sending|date_format:'%H:%M'}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
 		{/if}
 	
 {elseif ($object.mail_status|default:'' == "pending")}
 		
-		$(".secondacolonna .modules label").addClass("pending").prop("title", "pending invoice");
+		$(".secondacolonna .modules label").addClass("pending").attr("title","pending invoice");
 	
 {elseif ($object.mail_status|default:'' == "unsent")}
 
-		$(".secondacolonna .modules label").addClass("unsent").prop("title", "unsent message");
+		$(".secondacolonna .modules label").addClass("unsent").attr("title","unsent message");
 
 {elseif ($object.status|default:'' == "draft")}
 
-		$(".secondacolonna .modules label").addClass("draft").prop("title", "draft message");
+		$(".secondacolonna .modules label").addClass("draft").attr("title","draft message");
 		$(".head H1").css("color","#666");
 
 							
@@ -260,10 +260,10 @@ $(document).ready(function(){
 		
 		
 		
-		$(".secondacolonna .modules label").addClass("save").prop("title", "unsaved object");
+		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 		{if $autosave|default:false}
-		if (autoSaveTimer == undefined || ( $(this).prop("name") == "data[status]" && autoSaveTimer !== false ) ){
+		if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
 			autoSave();
 		}
 		{/if}
@@ -273,7 +273,7 @@ $(document).ready(function(){
 	updateEditors();
 {/if}
 
-	status = $("input[name=data\\[status\\]]:checked").val();
+	status = $("input[name=data\\[status\\]]:checked").attr('value');
 	if (status == "on") {
 		switchAutosave('off', false);
 	}
@@ -281,10 +281,10 @@ $(document).ready(function(){
 });
 
 function onChangeHandler() {
-	$(".secondacolonna .modules label").addClass("save").prop("title", "unsaved object");
+	$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 	$("#cancelBEObject").show();
 	{if $autosave|default:false}
-	if (autoSaveTimer == undefined || ( $(this).prop("name") == "data[status]" && autoSaveTimer !== false ) ){
+	if (autoSaveTimer == undefined || ( $(this).attr("name") == "data[status]" && autoSaveTimer !== false ) ){
 		autoSave();
 	}
 	{/if}
@@ -300,7 +300,7 @@ function autoSave() {
 
 	var optionsForm = { target: '#messagesDiv' };
 
-	var newStatus = $("input[name=data\\[status\\]]:checked").val();
+	var newStatus = $("input[name=data\\[status\\]]:checked").attr('value');
 
 	if (status != newStatus) {
 		if (newStatus == 'on') {

@@ -1,21 +1,6 @@
 {$html->css('../js/libs/jquery/plugins/treeview/jquery.treeview', null, ['inline' => false])}
 {$html->script('libs/jquery/plugins/treeview/jquery.treeview', false)}
 
-<script type="text/javascript">
-$(document).ready(function() {
-	// third example
-	$(".menutree").treeview({
-		animated: "normal",
-		collapsed: true,
-		unique: false,
-		persist: "cookie"
-	});
-
-	$(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
-
-});
-</script>
-
 {if isset($treeParams) && is_array($treeParams)}
 	{$beTree->setTreeParams($treeParams)}	
 {/if}
@@ -26,9 +11,14 @@ $(document).ready(function() {
 	<input type='hidden' name='data[destination]' value=''/>
 	{$beTree->view($tree, "checkbox", $parents)}
 	
+{elseif !empty($option)}			
+	
+	<input type='hidden' name='data[destination]' value=''/>
+	{$beTree->option($tree, $parents)}
+	
 {else}
 
-	{$beTree->view($tree)}
+	{$beTree->view($tree, null, array())}
 	
 {/if}
 

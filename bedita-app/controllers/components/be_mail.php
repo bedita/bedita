@@ -40,7 +40,7 @@ class BeMailComponent extends Object {
 
 	/**
 	 * startup component
-	 * set smtp options if it's in configuration (bedita.sys.php)
+	 * set smtp options if it's in configuration (bedita.cfg.php)
 	 * @param unknown_type $controller
 	 */
 	function startup(&$controller=null) {
