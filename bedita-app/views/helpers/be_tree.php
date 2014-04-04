@@ -247,13 +247,17 @@ class BeTreeHelper extends AppHelper {
 			foreach ($tree as $publication) {
 
 				if (empty($inputType)) {
-					$url = $publication["id"];
-					if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
-							|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]
-							|| $this->SessionFilter->read('parent_id') == $publication['id'] ) {
-						$class = " class='on'";
+					if (!empty($this->treeParams["pass"][1]) && !empty($this->tags[$this->treeParams["pass"][1]]) ) {
+						$inputType = $this->treeParams["pass"][1];
 					} else {
-						$class = "";
+						$url = $publication["id"];
+						if ( (!empty($this->treeParams["named"]["id"]) && $this->treeParams["named"]["id"] == $publication["id"])
+								|| !empty($this->treeParams["pass"][0]) && $this->treeParams["pass"][0] == $publication["id"]
+								|| $this->SessionFilter->read('parent_id') == $publication['id'] ) {
+							$class = " class='on'";
+						} else {
+							$class = "";
+						}
 					}
 				}
 
@@ -276,7 +280,20 @@ class BeTreeHelper extends AppHelper {
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids, $publication['id']);
 				} else {
-					$output .= "<ul class='menutree' rel='/pages/tree/" . $publication['id'] . "' data-controller='" . $this->treeParams["controller"] . "' data-action='" . $this->treeParams["action"] . "'></ul>";
+					$url = '/pages/tree/' . $publication['id'];
+					$data = '';
+					if (!empty($this->treeParams["controller"])) {
+						$data .= ' data-controller="' . $this->treeParams["controller"] . '"';
+					}
+					if (!empty($this->treeParams["action"])) {
+						$data .= ' data-action="' . $this->treeParams["action"] . '"';
+					}
+					if ($inputType != null) {
+						$data .= ' data-type="' . $inputType . '"';
+						$url .= '/' . $inputType;
+					}
+
+					$output .= '<ul class="menutree" rel="' . $url . '"' . $data . '></ul>';
 				}
 				$output .= "</div>";
 			}
@@ -391,7 +408,19 @@ class BeTreeHelper extends AppHelper {
 	private function designBranch($branch, $inputType, $parent_ids, $parent_id) {
 		$url = "";
 		$class = "";
-		$res = "<ul class='menutree' rel='/pages/tree/" . $parent_id . "' data-controller='" . $this->treeParams["controller"] . "' data-action='" . $this->treeParams["action"] . "' >";
+
+		$data = '';
+		if (!empty($this->treeParams["controller"])) {
+			$data .= ' data-controller="' . $this->treeParams["controller"] . '"';
+		}
+		if (!empty($this->treeParams["action"])) {
+			$data .= ' data-action="' . $this->treeParams["action"] . '"';
+		}
+		if ($inputType != null) {
+			$data .= ' data-type="' . $inputType . '"';
+		}
+
+		$res = '<ul class="menutree" rel="/pages/tree/' . $parent_id . '"' . $data . '>';
 
 		foreach ($branch as $section) {
 
