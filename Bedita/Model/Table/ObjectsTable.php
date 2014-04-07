@@ -32,11 +32,18 @@ class ObjectsTable extends Table {
         $this->entityClass('Bedita\Model\Entity\Object');
 
         $this->belongsTo('ObjectTypes');
-        $this->belongsTo('Users', [
+
+        $this->belongsTo('UserCreated', [
+            'className' => 'Bedita\Model\Table\UsersTable',
             'foreignKey' => 'user_created',
             'propertyName' => 'created_by'
         ]);
-        //$this->belongsTo('Users', ['foreignKey' => 'user_modified', 'propertyName' => 'modified_by']);
+
+        $this->belongsTo('UserModified', [
+            'className' => 'Bedita\Model\Table\UsersTable',
+            'foreignKey' => 'user_modified',
+            'propertyName' => 'modified_by'
+        ]);
     }
 
 }

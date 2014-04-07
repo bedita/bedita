@@ -23,7 +23,7 @@ namespace Bedita\Model\Table;
 use Bedita\Model\Table\BaseObject\BaseObject;
 
 /**
- * Represents an image object type
+ * Represents the image object type
  */
 class ImageObjectsTable extends BaseObject {
 

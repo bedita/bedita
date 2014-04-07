@@ -24,8 +24,6 @@ use Cake\ORM\Entity;
 
 class Object extends Entity {
 
-    protected $_accessible = ['*' => true];
-
     public function setTitle($title) {
         $nickname = $this->get('nickname');
         if (empty($nickname)) {
