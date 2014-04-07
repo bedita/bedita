@@ -44,6 +44,53 @@ class ObjectsTable extends Table {
             'foreignKey' => 'user_modified',
             'propertyName' => 'modified_by'
         ]);
+
+        $this->hasMany('Permissions', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('Versions', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('ObjectProperties', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('SearchTexts', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('LangTexts', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('Annotations', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('ObjectRelations', [
+            'foreignKey' => 'id'
+        ]);
+
+        $this->hasMany('Aliases', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->hasMany('GeoTags', [
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->belongsToMany('Categories', [
+            'joinTable' => 'object_categories',
+            'foreignKey' => 'object_id'
+        ]);
+
+        $this->belongsToMany('Users', [
+            'joinTable' => 'object_users',
+            'through' => 'ObjectUsers',
+            'foreignKey' => 'object_id'
+        ]);
     }
 
 }
