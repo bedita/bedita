@@ -1155,6 +1155,7 @@ abstract class ModulesController extends AppController {
 		$relationsCount = array();
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
+		$treeModel = ClassRegistry::init("Tree");
 		if (isset($id)) {
 			// check if object is forbidden for user
 			$user = $this->Session->read("BEAuthUser");
@@ -1194,7 +1195,6 @@ abstract class ModulesController extends AppController {
 				}
 				$obj["assocCategory"] = $objCat;
 			}
-			$treeModel = ClassRegistry::init("Tree");
 			$parents_id = $treeModel->getParents($id) ;
 
 			$previews = $this->previewsForObject($parents_id, $obj["nickname"]);
@@ -1216,9 +1216,8 @@ abstract class ModulesController extends AppController {
 		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $parents_id);
 
 		$this->set('tree', $tree);
-
-		$this->set('parents',	$parents_id);
-		$this->set('previews',	$previews);
+		$this->set('parents', $parents_id);
+		$this->set('previews', $previews);
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);
