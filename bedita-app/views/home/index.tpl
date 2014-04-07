@@ -64,27 +64,6 @@ $(document).ready(function() {
 	{$view->element('tree', $options)}
 	</div>
     {/if}
-    
-	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	<ul id="recent" class="bordered smallist">
-	{foreach $lastModBYUser as $item}
-		<li><span class="listrecent {$item.module_name}">&nbsp;</span>
-		<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
-			{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{foreachelse}
-		<li><i>{t}you have no recent items{/t}</i></li>
-	{/foreach}
-	</ul>
-	
-	<div class="tab"><h2>{t}recent items{/t}</h2></div>
-	<ul id="allrecent" class="bordered smallist">
-	{foreach $lastMod as $item}
-		<li>
-			<span class="listrecent {$item.module_name}">&nbsp;&nbsp;</span>
-			&nbsp;<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
-				{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{/foreach}
-	</ul>	
 	
 </div>
 
@@ -110,10 +89,31 @@ $(document).ready(function() {
 
 <div class="dashboard right">
 
+	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
+	<ul id="recent" class="bordered smallist">
+	{foreach $lastModBYUser as $item}
+		<li><span class="listrecent {$item.module_name}">&nbsp;</span>
+		<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+			{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{foreachelse}
+		<li><i>{t}you have no recent items{/t}</i></li>
+	{/foreach}
+	</ul>
+	
+	<div class="tab"><h2>{t}recent items{/t}</h2></div>
+	<ul id="allrecent" class="bordered smallist">
+	{foreach $lastMod as $item}
+		<li>
+			<span class="listrecent {$item.module_name}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+				{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{/foreach}
+	</ul>	
+
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
-			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
+			<input type="text" placeholder="{t}search word{/t}" style="width:100%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
 			<br />
 			<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}
 			&nbsp;&nbsp;<input id="searchButton" type="submit" value="{t}go{/t}" />

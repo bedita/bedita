@@ -83,6 +83,14 @@ UL {list-style:none;}
 
 UL UL {margin-left:20px;}
 
+* {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+
 /*...........................................    
 
     General, states
@@ -128,18 +136,21 @@ UL UL {margin-left:20px;}
 	top:20px;
 	left:20px;
 	z-index:102;
-	width:140px;
+	width: 140px;
 }
 
 .secondacolonna {
 	position:absolute;
 	top:20px;
-	left:160px;
+	left: 160px;
 	z-index:130;
-	width:140px;
+	width: 140px;
 	background-color:#B6B6B6;
 }
 
+.secondacolonna .insidecol {
+	text-align: center;	
+}
 
 .insidecol {
 	margin: 10px 0px 0px 0px;
@@ -174,8 +185,8 @@ UL UL {margin-left:20px;}
 
 .mainfull, .main.full {
 	top:130px;
-	min-width: 660px;
-	padding-right:20px;
+	min-width: 670px;
+	padding-right: 10px;
 }
 
 .mainfull .tab, .main.full .tab {
@@ -275,7 +286,6 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 .modules {
 	/*background:transparent url(../img/shadowpattern160.png);*/
 	width:auto;
-	height:110px;
 }
 
 UL.modules {
@@ -285,8 +295,8 @@ UL.modules {
 .modules.block LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:120px; 
-	height:90px; 
+	width: 140px; 
+	height: 110px; 
 	padding:10px;
 	margin: 0px;
 	background-color:#CCCCCC; 
@@ -295,8 +305,8 @@ UL.modules {
 	background-repeat:repeat-x;
 */
 	color:#FFFFFF;
-	float:left;
 	font-weight:normal;
+	border-radius: 0;
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -318,7 +328,7 @@ UL.modules {
 }
 
 .listrecent {
-	display:block; height:15px; width:15px; margin-left:-10px; margin-right:5px; float:left;
+	display:block; height:15px; width:15px;  margin-right:5px; float:left;
 	border-radius:10px;
 }
 
@@ -530,13 +540,13 @@ NAV.modulesmenu {
 }
 
 .modulesmenu A {
-	height:25px; width:15px;
+	height: 25px; 
+	width: 25px;
 	float:right; margin-left:0px;
 	cursor:pointer;
 	/*background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
 	background-position: left -5px;*/
-	padding:0px 5px 0px 5px;
 	color:white;
 }
 
@@ -567,12 +577,9 @@ NAV.modulesmenu {
 }
 
 
-.modulesmenu .over {
+.modulesmenu .on, .modulesmenu .over {
 	border-bottom:5px solid #CCCCCC;
-}
-
-.modulesmenu .on {
-	border-bottom:5px solid #CCCCCC;
+	height: 30px;
 }
 
 
@@ -683,18 +690,16 @@ UL.menuleft + UL.menuleft {
 
 
 .tab, .tab2  {
-	height:25px;
 	/*background:transparent url(../img/shadowh2-small.png) repeat left top;*/
-	padding:10px 0px 10px 0px;
-	margin-top:-10px;
+	margin-bottom: 10px;
 }
 
 .tab H2,  .tab2 H2 {
 	cursor:pointer;
 	color: white; 
 	background:#808080 url(../img/piumeno.gif) no-repeat;
-	background-position:right 0px ;
-	height:20px; padding:5px 10px 0px 10px;
+	background-position:right 0px ; 
+	padding: 7px 10px 7px 10px;
 	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;*/
@@ -731,7 +736,6 @@ UL.menuleft + UL.menuleft {
 }
 
 .tab:first-child, .tab2:first-child {
-	margin-top:-10px;
 }
 
 .tab.filteractive H2:after {
@@ -739,7 +743,8 @@ UL.menuleft + UL.menuleft {
 }
 
 .tab H2 .relnumb {
-	display:inline-block; width:16px; height:14px; text-align:center; margin-left:-5px; border-radius:16px; padding-top:2px; 
+	display:inline-block; width:16px; 
+	height: 16px; text-align:center; margin-left:-5px; border-radius:16px; padding-top:2px; 
 	background-color:#444;
 }
 
@@ -774,7 +779,7 @@ UL.menuleft + UL.menuleft {
 	clear:left;
 	background:transparent url(../img/sfohtabscontent.png) repeat-x;
 	padding:2%;
-	width:96%;
+	width: 100%;
 	min-height:150px;
 	display:none;
 }
@@ -936,12 +941,14 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 .publishingtree {
-	min-width:275px;
-	margin-left:-5px;
+	min-width: 270px;
+}
+
+.dashboard .publishingtree {
+	min-width: 0;
 }
 
 .insidecol.publishingtree {
-	overflow-x:hidden;
 }
 
 /*
@@ -964,16 +971,20 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree DIV.pub {
-	margin: 0px 0px 0px 0px;
+	margin: 0px 0px 10px 0px;
 	clear:both;
 	/*border:1px solid red;*/
 	word-wrap: break-word; /* or "normal" */
 }
 
 .pub H2 {
-	margin:0px 0px 10px 5px;
+	margin: 0px 0px 10px 0px;
 	background-color:#dedede;
 	padding:5px 5px 5px 10px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	min-width: 100%
 }
 
 .pub H2 A {
@@ -1065,6 +1076,10 @@ UL.menuleft + UL.menuleft {
 	font-weight:normal;
 }
 
+.publishingtree .on:hover {
+	color:#FFF;
+}
+
 .publishingtree INPUT {
 	margin-right:5px;
 }
@@ -1130,6 +1145,7 @@ UL.menuleft + UL.menuleft {
 }
 .toolbar TD:first-child {
 	padding-left:0px;
+	padding-top: 10px !important;
 }
 
 /*...........................................    
@@ -1142,7 +1158,9 @@ UL.menuleft + UL.menuleft {
 UL.bordered LI  {
 
 	border-top:1px solid #999999;
-	padding:5px 0px 5px 10px;
+	
+
+	padding: 5px 0px 5px 0px;
 
 }
 
@@ -1460,16 +1478,20 @@ UL#mediatypes  {
 	list-style:none;
 	padding:4px 0px 0px 32px;
 	margin:0px;
-	height:20px;
 	background-repeat: no-repeat;
 	margin-top:6px;
 	cursor:pointer;
 }
 
 #mediatypes .inline LI {
-	float:left;
 	padding:4px 8px 0px 26px;
 	margin-right:8px;
+	margin-bottom: 10px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 0px;
+	width: 130px;
+	height: 24px;
 }
 
 
@@ -1557,6 +1579,7 @@ input#titleBEObject, input#title, textarea.subtitle {
 
 input#titleBEObject {
 	padding:5px 0px 5px 5px; font-size:1.25em;
+	margin-bottom: 10px;
 }
 
 INPUT.priority {
@@ -1953,15 +1976,15 @@ LI.welcome {
 	position:absolute;
 	width:200px; 
 	top:20px;
-	left:170px;
+	left: 170px;
 }
 
 .dashboard.center {
-	left:380px; width:120px
-}
+	left: 380px; 
+	width: 140px;}
 
 .dashboard.right {
-	left:530px;
+	left: 530px;
 }
 
 .dashboard .modules LI {
@@ -1984,18 +2007,18 @@ LI.welcome {
 	.dashboard { width:240px }
 	.dashboard.center {
 		width:280px;
-		left:420px; 
+		left: 420px; 
 	}
-	.dashboard.right { left:710px; }
+	.dashboard.right { left: 710px; }
 }
 
 @media only screen and (min-width: 1200px) {
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:420px;
-		left:480px; 
+		left: 480px; 
 	}
-	.dashboard.right { left:910px; }
+	.dashboard.right { left: 910px; }
 }
 
 
@@ -2003,9 +2026,9 @@ LI.welcome {
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:700px;
-		left:480px; 
+		left: 480px; 
 	}
-	.dashboard.right { left:1190px; }
+	.dashboard.right { left: 1190px; }
 }
 
 
@@ -2555,6 +2578,13 @@ span.highlight {
 	color: red;
 }
 
+/* ckeditor */
+.cke {
+	margin-bottom: 10px !important;
+}
+
+/* select2 */
+
 .select2-results {
 	overflow: auto !important;
 }
@@ -2576,6 +2606,7 @@ span.highlight {
 	margin-left: -10px;
 }
 
-.select2-container {
+.select2-container.areaSectionAssociation {
 	width: 100%;
+	max-width: 550px
 }

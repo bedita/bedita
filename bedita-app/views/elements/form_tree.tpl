@@ -17,7 +17,7 @@ $(document).ready(function(){
 		{t}No tree found{/t}
 	{else}
 
-		<div class="publishingtree" style="width:auto; margin-left:10px;">
+		<div class="publishingtree">
 		
 			{assign_associative var="params" checkbox=true}
 			{$view->element('tree', $params)}

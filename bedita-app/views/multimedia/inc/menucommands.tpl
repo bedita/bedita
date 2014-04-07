@@ -111,24 +111,6 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	{/if}
 
-	{if $view->action == "index"}
-		<ul class="menuleft insidecol catselector">
-			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
-				<ul id="mediatypes" style="padding-left:10px; {if empty($categorySearched)}display:none{/if}">
-					
-					{foreach from=$conf->mediaTypes item="media_type"}
-					<li class="ico_{$media_type} {if $view->SessionFilter->read('category') == $media_type}on{/if}" rel="{$html->url('/multimedia')}/index/category:{$media_type}">
-						{$media_type}
-					</li>
-					{/foreach}
-					<li class="ico_all" rel="{$html->url('/multimedia')}">
-						All
-					</li>
-				
-				</ul>
-		</ul>
-	{/if}	
-
 
 
 </div>

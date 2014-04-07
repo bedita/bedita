@@ -67,7 +67,7 @@ function resetError() {
 
 {include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" fixed=true}
+{include file="inc/menucommands.tpl"}
 
 {$view->element('toolbar')}
 
@@ -87,8 +87,8 @@ function resetError() {
 	
 	<div class="tab"><h2>{t}Add multiple items{/t}</h2></div>
 	
-	<div class="htabcontent">
-		<div style="clear:both; margin:-20px 0px 20px -20px">
+	<div>
+		<div>
 		{* form needed for ajax upload *}
 		<form id="uploadAjaxMedia" action="#" method="post" enctype="multipart/form-data">
 		{$view->element('form_upload_multi')}
@@ -97,7 +97,6 @@ function resetError() {
 
 		<div id="loading" style="clear:both" class="multimediaitem itemBox small">&nbsp;</div>
 		<div id="multimediaItems"></div>
-			
 
 	</div>
 	

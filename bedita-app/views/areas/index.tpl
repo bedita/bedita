@@ -13,7 +13,7 @@
 
 {include file="inc/menuleft.tpl"}
 
-{include file="inc/menucommands.tpl" fixed=true}
+{include file="inc/menucommands.tpl"}
 
 <div class="head">
 

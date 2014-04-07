@@ -78,7 +78,7 @@ th {
 		{if !empty($filters.tree)}
 			<th><label>{t}on position{/t}:</label></th>
 			<td style="width:100%">
-				<select name="filter[parent_id]" id="parent_id" style="max-width:440px">
+				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
 				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
 				</select>
 				{if !empty($filters.treeDescendants)}

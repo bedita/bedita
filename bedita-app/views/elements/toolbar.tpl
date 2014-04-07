@@ -39,7 +39,6 @@
 			
 		</h2>
 		
-		
 		<table>
 		<tr>
 			{if ($view->viewVars.module_modify eq '1') && empty($noitem)} 

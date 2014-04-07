@@ -159,7 +159,7 @@ $(document).ready(function(){
 <br />
 
 <div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div class="htabcontent" style="width:620px">
+<div>
 
 {t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">
 								{html_options options=$conf->statusOptions}
