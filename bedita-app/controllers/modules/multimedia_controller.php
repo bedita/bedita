@@ -210,6 +210,7 @@ class MultimediaController extends ModulesController {
 		} elseif (!empty($id)) {
 			$expandBranch[] = $id;
 		}
+		$treeModel = ClassRegistry::init("Tree");
 		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
 		$this->set('tree', $tree);
