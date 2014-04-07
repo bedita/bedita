@@ -31,7 +31,8 @@
  * $Id$
  */
 class BeAuthComponent extends Object {
-	var $controller	;
+	var $controller	= null;
+	var $extAuthComponents = array();
 	var $Session	= null ;
 	var $user		= null ;
 	var $isValid	= true;
@@ -39,15 +40,14 @@ class BeAuthComponent extends Object {
 	var $sessionKey = "BEAuthUser" ;
 	const SESSION_INFO_KEY = "BESession" ;
 	var $authResult	= 'OK';
-	
+	var $userAuth = 'bedita';
 
 	/**
 	 * Set current user, if already logged in and/or valid
 	 * 
 	 * @param object $controller
 	 */
-	function initialize(&$controller)
-	{
+	function initialize(&$controller) {
 		$conf = Configure::getInstance() ;		
 		$this->sessionKey = $conf->session["sessionUserKey"] ;
 		
@@ -57,6 +57,21 @@ class BeAuthComponent extends Object {
 		if($this->checkSessionKey()) {
 			$this->user 	= $this->Session->read($this->sessionKey);
 		}
+
+		$externalAuth = Configure::read("ext_auth_params");
+		if (!empty($externalAuth)) {
+			foreach ($externalAuth as $service => $value) {
+				//load component dynamically
+				$componentClass = "BeAuth" . Inflector::camelize($service);
+				if(!App::import("Component", $componentClass)) {
+					throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
+				} else {
+					$componentClass .= "Component";
+					$this->extAuthComponents[$service] = new $componentClass($this->controller);
+				}
+			}
+		}
+
 		$this->controller->set($this->sessionKey, $this->user);
 	}
 
@@ -92,24 +107,10 @@ class BeAuthComponent extends Object {
 	 */
 	public function externalLogin($userid, $extAuthType, array $extAuthOptions = array()) {
 		$userModel = ClassRegistry::init('User');
-		// if user / auth_type not foud return false
-		$user->create();
-		$conditions = array("User.userid" 	=> $userid, "User.auth_type" => $extAuthType );
-		$userModel->containLevel("default");
-		$u = $userModel->find($conditions);
-		if(empty($u["User"])) {
-			$this->logout() ;
-			return false ;
-		}
 		// load authType component
-		$componentClass = "BeAuth" . Inflector::camelize($extAuthType);
-		// TODO: load component dynamically??
-		if(!App::import("Component", $componentClass)) {
-			throw new BeditaException(__("External auth component not found: ",true) . $extAuthType);
-		}
-		$componentClass .= "Component";
-		$authComponent = new $componentClass();
-		
+		$extAuthComponent = $this->extAuthComponents[$extAuthType];
+		$extAuthComponent->login();
+		exit();
 	}
 	
 	/**
@@ -119,23 +120,29 @@ class BeAuthComponent extends Object {
 	 * @param string $password
 	 * @param array $policy (could contain parameters like maxLoginAttempts,maxNumDaysInactivity,maxNumDaysValidity)
 	 * @param array $auth_group_name
+	 * @param string $authType
 	 * @return boolean 
 	 */
-	public function login($userid, $password, $policy=null, $auth_group_name=array()) {
-		$userModel = ClassRegistry::init('User');
-		$conditions = array(
-			"User.userid" 	=> $userid,
-			"User.passwd" 	=> md5($password),
-		);
+	public function login($userid, $password, $policy=null, $auth_group_name=array(), $authType = 'bedita') {
+		if ($authType == $this->userAuth) {
+			$userModel = ClassRegistry::init('User');
+			$conditions = array(
+				"User.userid" 	=> $userid,
+				"User.passwd" 	=> md5($password),
+			);
+			$userModel->containLevel("default");
+			$u = $userModel->find($conditions);
+		} else {
+			$u = $this->externalLogin($userid, $authType);
+		}			
 		
-		$userModel->containLevel("default");
-		$u = $userModel->find($conditions);
 		if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
 			return false ;
 		}
 		$userModel->compact($u) ;
 		$this->user = $u;
 		$this->setSessionVars();
+
 		
 		return true ;
 	}
@@ -200,7 +207,7 @@ class BeAuthComponent extends Object {
 	 * @param array $auth_group_name
 	 * @return boolean
 	 */
-	private function loginPolicy($userid, $u, $policy, $auth_group_name=array()) {
+	protected function loginPolicy($userid, $u, $policy = null, $auth_group_name=array()) {
 		$userModel = ClassRegistry::init("User");
 		// If fails, exit
 		if(empty($u["User"])) {
@@ -219,7 +226,7 @@ class BeAuthComponent extends Object {
 		if($policy == null) {
 			$policy = array(); // load backend defaults
 			$config = Configure::getInstance() ;
-			$policy['maxLoginAttempts'] = $config->loginPolicy['maxLoginAttempts'];
+			$policy['maxLoginAttempts'] = ( !empty($config->loginPolicy['maxLoginAttempts']) ) ? $config->loginPolicy['maxLoginAttempts'] : -1;
 			$policy['maxNumDaysInactivity'] = $config->loginPolicy['maxNumDaysInactivity'];
 			$policy['maxNumDaysValidity'] = $config->loginPolicy['maxNumDaysValidity'];
 		}
@@ -230,7 +237,7 @@ class BeAuthComponent extends Object {
 		}
 		$daysFromLastLogin = (time() - strtotime($u["User"]["last_login"]))/(86400000);
 		$this->isValid = $u['User']['valid'];
-		
+
 		if($u["User"]["num_login_err"] >= $policy['maxLoginAttempts']) {
 			$this->isValid = false;
 			$this->log("Max login attempts error, user: ".$userid);
@@ -430,7 +437,7 @@ class BeAuthComponent extends Object {
 	 * @param array $userData
 	 * @param array $groups
 	 */
-	private function userGroupModel(&$userData, $groups) {
+	protected function userGroupModel(&$userData, $groups) {
 		if(isset($groups)) {
 			$userData['Group']= array();
 			$userData['Group']['Group']= array();

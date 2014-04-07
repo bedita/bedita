@@ -184,8 +184,9 @@ abstract class FrontendController extends AppController {
 			if (!empty($this->params["form"]["login"])) {
 				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
-
-				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin)) {
+				$authType 	= (isset($this->params["form"]["login"]["auth_type"])) ? $this->params["form"]["login"]["auth_type"] : "bedita" ;
+				
+				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin, $authType)) {
 					//$this->loginEvent('warn', $userid, "login not authorized");
 					$this->userErrorMessage(__("Wrong username/password or session expired", true));
 					$this->logged = false;
