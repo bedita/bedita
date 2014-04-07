@@ -105,12 +105,16 @@ class BeAuthComponent extends Object {
      * @return boolean
      * @throws BeditaException
      */
-    public function externalLogin($userid, $extAuthType, array $extAuthOptions = array()) {
-        $userModel = ClassRegistry::init('User');
+    public function externalLogin($extAuthType, $extAuthOptions = array()) {
         // load authType component
         if (!empty($this->extAuthComponents[$extAuthType])) {
             $extAuthComponent = $this->extAuthComponents[$extAuthType];
-            $extAuthComponent->login();
+            if ($extAuthComponent->login()) {
+                $this->user = $extAuthComponent->getUser();
+                return true;
+            } else {
+                return false;
+            }
         }
     }
     
@@ -133,18 +137,16 @@ class BeAuthComponent extends Object {
             );
             $userModel->containLevel("default");
             $u = $userModel->find($conditions);
-        } else {
-            $u = $this->externalLogin($userid, $authType);
-        }           
-        
-        if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
-            return false ;
-        }
-        $userModel->compact($u) ;
-        $this->user = $u;
-        $this->setSessionVars();
 
-        
+            if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
+                return false ;
+            }
+        } else {
+            return $this->externalLogin($authType);
+            print_r($this->user);
+            exit();
+        }
+
         return true ;
     }
 
@@ -281,6 +283,10 @@ class BeAuthComponent extends Object {
             $this->logout();
             return false;
         }
+
+        $userModel->compact($u) ;
+        $this->user = $u;
+        $this->setSessionVars();
         
         return true;
     }

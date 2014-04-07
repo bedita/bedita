@@ -57,8 +57,6 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     protected function checkSessionKey() {
         if (isset( $this->vendorController )) {
             $this->vendorId = $this->vendorController->getUser();
-            /*echo $this->vendorId;
-            exit();*/
             if ($this->vendorId) {
                 try {
                     $profile = $this->vendorController->api('/me');
@@ -94,11 +92,6 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
                 return false ;
             }
-
-            $userModel = ClassRegistry::init('User');
-            $userModel->compact($u) ;
-            $this->user = $u;
-            $this->setSessionVars();
             
             return true;
 
@@ -109,6 +102,10 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             $url = $this->vendorController->getLoginUrl($params);
             $this->controller->redirect($url);
         }
+    }
+
+    public function getUser() {
+        return $this->user;
     }
 
     public function createUser($profile, $authType, $notify=true) {
