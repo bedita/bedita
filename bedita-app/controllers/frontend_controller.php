@@ -185,6 +185,7 @@ abstract class FrontendController extends AppController {
 				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
 				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
 				$authType 	= (isset($this->params["form"]["login"]["auth_type"])) ? $this->params["form"]["login"]["auth_type"] : "bedita" ;
+				$redirect 	= (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
 				
 				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin, $authType)) {
 					//$this->loginEvent('warn', $userid, "login not authorized");
@@ -193,7 +194,6 @@ abstract class FrontendController extends AppController {
 				} else {
 					$this->eventInfo("FRONTEND logged in publication");
 				}
-				$redirect = (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
 
 				$this->redirect($redirect);
 				return true;
