@@ -407,11 +407,17 @@ $(document).ready(function(){
 			.children('h2')
 			.addClass('open');
 
-		if ($(this).find('.on, :checked').length == 0) {
-			$(this)
-				.closest('.pub')
-				.children('h2')
-				.addClass('on');
+		var on = $(this).closest('.pub').find('.on, :checked');
+		if (on.length != 0) {
+
+			if (on.parent().parent().hasClass('pub')) {
+				on.parent().addClass('on');
+			} else {
+				$(this)
+					.closest('.pub')
+					.children('h2')
+					.addClass('open');
+			}
 		}
 
 	});
