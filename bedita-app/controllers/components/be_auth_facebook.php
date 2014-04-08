@@ -7,6 +7,11 @@
 *
 *------------------------------------------------------------------->8-----
 */
+
+if(class_exists('BeAuthComponent') != true) {
+    require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
+}
+
 if(class_exists('Facebook') != true) {
     require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'social' . DS . 'facebook' . DS . 'facebook.php');
 }
@@ -37,7 +42,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $this->controller = &$controller;
         $this->Session = &$controller->Session;
 
-        $this->params = Configure::read("ext_auth_params");
+        $this->params = Configure::read("extAuthParams");
 
         if (isset( $this->params['facebook'] ) && isset( $this->params['facebook']['kies'] )) {
             $this->vendorController = new Facebook(array(
