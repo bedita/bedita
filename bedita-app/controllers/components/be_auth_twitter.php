@@ -38,11 +38,11 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         $this->params = Configure::read("extAuthParams");
 
-        if ($this->Session->check('twitter.oauthTokens')) {
-            $this->oauthTokens = $this->Session->read('twitter.oauthTokens');
+        if ($this->Session->check('twitterOauthTokens')) {
+            $this->oauthTokens = $this->Session->read('twitterOauthTokens');
         }
-        if ($this->Session->check('twitter.accessTokens')) {
-            $this->accessTokens = $this->Session->read('twitter.accessTokens');
+        if ($this->Session->check('twitterAccessTokens')) {
+            $this->accessTokens = $this->Session->read('twitterAccessTokens');
         }
 
         if (isset( $this->params['twitter'] ) && isset( $this->params['twitter']['kies'] )) {
@@ -71,7 +71,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                     );
 
                 $this->accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
-                $this->Session->write('twitter.accessTokens', $this->accessTokens);
+                $this->Session->write('twitterAccessTokens', $this->accessTokens);
             }
 
             $profile = $this->loadProfile();
@@ -122,14 +122,47 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     }
 
     public function logout() {
-        $this->Session->write('twitter.accessTokens', null);
-        $this->Session->write('twitter.oauthTokens', null);
+        $this->Session->write('twitterAccessTokens', null);
+        $this->Session->write('twitterOauthTokens', null);
     }
 
+    protected function getCurrentUrl() {
+        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
+            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
+        $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $parts = parse_url($currentUrl);
+
+        $query = '';
+        if (!empty($parts['query'])) {
+                // drop known fb params
+                $params = explode('&', $parts['query']);
+                $retained_params = array();
+                foreach ($params as $param) {
+                if ($this->shouldRetainParam($param)) {
+                  $retained_params[] = $param;
+                }
+            }
+
+            if (!empty($retained_params)) {
+                $query = '?'.implode($retained_params, '&');
+            }
+        }
+
+        // use port if non default
+        $port = isset($parts['port']) && (($protocol === 'http://' && $parts['port'] !== 80) || ($protocol === 'https://' && $parts['port'] !== 443)) ? ':' . $parts['port'] : '';
+
+        // rebuild
+        return $protocol . $parts['host'] . $port . $parts['path'] . $query;
+  }
+
     protected function loginUrl() {
-        $request_token = $this->vendorController->getRequestToken('http://www.beexample.lcl');
+        $request_token = $this->vendorController->getRequestToken($this->getCurrentUrl());
         $this->oauthTokens = $request_token;
-        $this->Session->write('twitter.oauthTokens', $this->oauthTokens);
+        $this->Session->write('twitterOauthTokens', $this->oauthTokens);
         $url = $this->vendorController->getAuthorizeURL($request_token);
         $this->controller->redirect($url);
     }
