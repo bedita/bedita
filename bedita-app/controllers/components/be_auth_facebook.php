@@ -31,14 +31,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     protected $userIdPrefix = 'facebook-';
 
     function __construct(&$controller=null) {
-         foreach ($this->components as $component) {
-            if(isset($this->{$component})) continue;
-            $className = $component . 'Component' ;
-            if(!class_exists($className))
-                App::import('Component', $component);
-            $this->{$component} = new $className() ;
-        }
-
+        $this->loadComponents();
         $this->controller = &$controller;
         $this->Session = &$controller->Session;
 

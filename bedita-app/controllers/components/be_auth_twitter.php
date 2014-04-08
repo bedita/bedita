@@ -32,24 +32,18 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     protected $userIdPrefix = 'twitter-';
 
     function __construct(&$controller=null) {
-        foreach ($this->components as $component) {
-            if(isset($this->{$component})) continue;
-            $className = $component . 'Component' ;
-            if(!class_exists($className))
-                App::import('Component', $component);
-            $this->{$component} = new $className() ;
-        }
-
+        $this->loadComponents();
         $this->controller = &$controller;
         $this->Session = &$controller->Session;
+
+        $this->params = Configure::read("extAuthParams");
+
         if ($this->Session->check('twitter.oauthTokens')) {
             $this->oauthTokens = $this->Session->read('twitter.oauthTokens');
         }
         if ($this->Session->check('twitter.accessTokens')) {
             $this->accessTokens = $this->Session->read('twitter.accessTokens');
         }
-
-        $this->params = Configure::read("extAuthParams");
 
         if (isset( $this->params['twitter'] ) && isset( $this->params['twitter']['kies'] )) {
             $this->vendorController = new TwitterOAuth(
@@ -121,6 +115,11 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             //get tokens
             $this->loginUrl($url);
         }
+    }
+
+    public function logout() {
+        $this->Session->write('twitter.accessTokens', null);
+        $this->Session->write('twitter.oauthTokens', null);
     }
 
     protected function loginUrl() {
@@ -232,7 +231,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             "person_title" => "",
             "gender" => "",
             "status" => "on",
-            "email" => $u['User']['userid'],
             "ObjectUser" =>  array(
                     "card" => array(
                         0 => array(
@@ -262,9 +260,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         $this->data = $data;
 
         $this->Transaction->begin();
-
-        print_r($data);
-        exit();
 
         $cardModel = ClassRegistry::init("Card");
         if (!$cardModel->save($this->data)) {

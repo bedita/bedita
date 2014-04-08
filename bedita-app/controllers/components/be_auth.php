@@ -76,6 +76,22 @@ class BeAuthComponent extends Object {
     }
 
     /**
+     * Load components
+     */
+    protected function loadComponents() {
+        foreach ($this->components as $component) {
+            if(isset($this->{$component})) {
+                continue;
+            }
+            $className = $component . 'Component' ;
+            if(!class_exists($className)) {
+                App::import('Component', $component);
+            }
+            $this->{$component} = new $className() ;
+        }
+    }
+
+    /**
      * Check whether session key is valid
      */
     protected function checkSessionKey() {
@@ -110,6 +126,7 @@ class BeAuthComponent extends Object {
         if (!empty($this->extAuthComponents[$extAuthType])) {
             $extAuthComponent = $this->extAuthComponents[$extAuthType];
             if ($extAuthComponent->login()) {
+                $this->userAuth = $extAuthType;
                 $this->user = $extAuthComponent->getUser();
                 return true;
             } else {
@@ -143,8 +160,6 @@ class BeAuthComponent extends Object {
             }
         } else {
             return $this->externalLogin($authType);
-            print_r($this->user);
-            exit();
         }
 
         return true ;
@@ -323,6 +338,12 @@ class BeAuthComponent extends Object {
      * @return boolean
      */
     public function logout() {
+        if ($this->userAuth != 'bedita' && !empty($this->extAuthComponents[$this->userAuth])) {
+            if (method_exists($this->extAuthComponents[$this->userAuth], 'logout')) {
+                $this->extAuthComponents[$this->userAuth]->logout();
+            }
+        }
+
         $this->user = null ;
         
         if(isset($this->Session)) {
@@ -360,6 +381,20 @@ class BeAuthComponent extends Object {
         return false ;
     }
 
+    /**
+     * Get the current used component for the authentication
+     */
+    public function getAuthComponent() {
+        if ($this->userAuth != 'bedita' && !empty($this->extAuthComponents[$this->userAuth])) {
+            return $this->extAuthComponents[$this->userAuth];
+        } else {
+            return $this;
+        }
+    }
+
+    /**
+     * Get the current logged user
+     */
     public function getUser() {
         return $this->user;
     }
@@ -489,21 +524,6 @@ class BeAuthComponent extends Object {
         if(!$user->save($userData))
             throw new BeditaException(__("Error updating user",true), $user->validationErrors);
         return true;
-    }
-
-    /**
-     * Create Card Object for the User
-     *
-     * @param array $u
-     * @return array
-     */
-    public function createCard($u = null) {
-        $res = array(
-            'title' => $u['User']['realname'],
-            'email' => $u['User']['email']
-        );
-
-        return $res;
     }
 
     /**
