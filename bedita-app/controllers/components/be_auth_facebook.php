@@ -13,7 +13,7 @@ if(class_exists('BeAuthComponent') != true) {
 }
 
 if(class_exists('Facebook') != true) {
-    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'social' . DS . 'facebook' . DS . 'facebook.php');
+    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'facebook' . DS . 'facebook.php');
 }
 
 /**
