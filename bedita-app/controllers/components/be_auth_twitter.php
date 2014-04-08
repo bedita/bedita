@@ -197,7 +197,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
             if (!empty($this->params['twitter']['createCard']) && $this->params['twitter']['createCard']) {
-                $this->createCard($u);
+                $this->createCard($u, $profile);
             }
             return $u;
         } else {
@@ -205,13 +205,14 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         }
     }
 
-    public function createCard($u) {
+    public function createCard($u, $profile = null) {
         $res = array();
         
-        $profile = $this->loadProfile();
-
-        if ($profile !== null) {
-            return false;
+        if ($profile == null) {
+            $profile = $this->loadProfile();
+            if ($profile == null) {
+                return false;
+            }
         }        
 
         $res = array(
@@ -243,9 +244,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         $data = array_merge($data, $res);
 
-        print_r($data);
-        exit();
-
         $avatarId = null;
         if (!empty($data['avatar'])) {
             $avatar = $this->uploadAvatarByUrl($data);
@@ -261,9 +259,12 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             }
         }
 
+        $this->data = $data;
+
         $this->Transaction->begin();
 
-        $this->data = $data;
+        print_r($data);
+        exit();
 
         $cardModel = ClassRegistry::init("Card");
         if (!$cardModel->save($this->data)) {
