@@ -914,7 +914,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .relViewOptions {
-	margin:0px 10px 0px 10px;
+	margin: 0px 10px 10px 10px;
 	text-align:right;
 }
 
@@ -948,9 +948,6 @@ UL.menuleft + UL.menuleft {
 	min-width: 0;
 }
 
-.insidecol.publishingtree {
-}
-
 /*
 .insidecol.publishingtree:hover {
 	width:275px;
@@ -967,13 +964,15 @@ UL.menuleft + UL.menuleft {
 }
 */
 .publishingtree LI A {
-	padding:5px;
+	padding: 5px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: -6px;
 }
 
 .publishingtree DIV.pub {
 	margin: 0px 0px 10px 0px;
 	clear:both;
-	/*border:1px solid red;*/
 	word-wrap: break-word; /* or "normal" */
 }
 
@@ -1050,17 +1049,8 @@ UL.menuleft + UL.menuleft {
 	content: 'loading'
 }
 
-.publishingtree LI {
-	min-width:275px;
-}
-
-.publishingtree LI A {
-	padding:5px;
-}
-
 .publishingtree A {
 	cursor:pointer;	
-	white-space:nowrap;
 }
 
 .publishingtree A:Hover {
@@ -1215,6 +1205,7 @@ TABLE.indexlist {
  
 .indexlist TH  {
 	background-color:#FFFFFF;
+	min-width: 50px;
 }
 
 .indexlist TD  {
