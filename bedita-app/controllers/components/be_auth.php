@@ -58,7 +58,7 @@ class BeAuthComponent extends Object {
             $this->user     = $this->Session->read($this->sessionKey);
         }
 
-        $externalAuth = Configure::read("ext_auth_params");
+        $externalAuth = Configure::read("extAuthParams");
         if (!empty($externalAuth)) {
             foreach ($externalAuth as $service => $value) {
                 //load component dynamically
@@ -358,6 +358,10 @@ class BeAuthComponent extends Object {
         $this->controller->set($this->sessionKey, $this->user);
         
         return false ;
+    }
+
+    public function getUser() {
+        return $this->user;
     }
 
     /**

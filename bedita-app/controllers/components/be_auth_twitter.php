@@ -12,26 +12,27 @@ if(class_exists('BeAuthComponent') != true) {
     require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
 }
 
-if(class_exists('Facebook') != true) {
-    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'facebook' . DS . 'facebook.php');
+if(class_exists('tmhOAuth') != true) {
+    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'twitteroauth' . DS . 'twitteroauth.php');
 }
 
 /**
  * Facebook User auth component
 */
-class BeAuthFacebookComponent extends BeAuthComponent{
+class BeAuthTwitterComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
 
-    public $vendorId = null;
-    public $userAuth = 'facebook';
+    public $userAuth = 'twitter';
 
     protected $params = null;
     protected $vendorController = null;
-    protected $userIdPrefix = 'facebook-';
+    protected $oauthTokens = null;
+    protected $accessTokens = null;
+    protected $userIdPrefix = 'twitter-';
 
     function __construct(&$controller=null) {
-         foreach ($this->components as $component) {
+        foreach ($this->components as $component) {
             if(isset($this->{$component})) continue;
             $className = $component . 'Component' ;
             if(!class_exists($className))
@@ -41,15 +42,20 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
         $this->controller = &$controller;
         $this->Session = &$controller->Session;
+        if ($this->Session->check('twitter.oauthTokens')) {
+            $this->oauthTokens = $this->Session->read('twitter.oauthTokens');
+        }
+        if ($this->Session->check('twitter.accessTokens')) {
+            $this->accessTokens = $this->Session->read('twitter.accessTokens');
+        }
 
         $this->params = Configure::read("extAuthParams");
 
-        if (isset( $this->params['facebook'] ) && isset( $this->params['facebook']['kies'] )) {
-            $this->vendorController = new Facebook(array(
-                'appId'  => $this->params['facebook']['kies']['appId'],
-                'secret' => $this->params['facebook']['kies']['secret'],
-                'cookie' => true
-            ));
+        if (isset( $this->params['twitter'] ) && isset( $this->params['twitter']['kies'] )) {
+            $this->vendorController = new TwitterOAuth(
+                    $this->params['twitter']['kies']['consumerKey'],
+                    $this->params['twitter']['kies']['consumerSecret']
+                );
         }
 
         if($this->checkSessionKey()) {
@@ -60,86 +66,113 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     }
 
     protected function checkSessionKey() {
-        $profile = $this->loadProfile();
-        if ($profile) {
-            if (isset($profile['email'])) {
-                $be_user_object = $this->createUser($profile, 'facebook');
-                return $this->login();
+        if (isset( $this->vendorController )) {
+            if(!empty($_REQUEST['oauth_verifier'])) {
+
+                $this->vendorController = new TwitterOAuth(
+                        $this->params['twitter']['kies']['consumerKey'],
+                        $this->params['twitter']['kies']['consumerSecret'],
+                        $this->oauthTokens['oauth_token'],
+                        $this->oauthTokens['oauth_token_secret']
+                    );
+
+                $this->accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
+                $this->Session->write('twitter.accessTokens', $this->accessTokens);
             }
+
+            $profile = $this->loadProfile();
+            if ($profile) {
+                $be_user_object = $this->createUser($profile);
+                if ($this->login( $be_user_object['User']['id'] )) {
+                    return true;
+                }
+            } else {
+                $this->log("Twitter login failed");
+                return false;
+            }
+            return false;
+        } else {
+            return false;
         }
-        return false;
     }
 
-    public function login($policy = null, $auth_group_name = array()) {
+    public function login($userid = null, $policy = null, $auth_group_name = array()) {        
         if (!isset( $this->vendorController )) {
             return;
         }
 
+        if ($this->accessTokens) {
+            $profile = $this->loadProfile();
+            $userid = $this->userIdPrefix . $profile->id;
+        }
+
         //get the user
-        $profile = $this->loadProfile();
-        if ($profile) {
+        if ($userid) {
+            //BE user
             $user = ClassRegistry::init('User');
             $user->containLevel("default");
-            $userid = $this->userIdPrefix . $profile['id'];
             $u = $user->findByUserid($userid);
             if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
-                return false ;
+                return false;
             }
             return true;
-        } else {            
-            $params = array(
-                'scope' => $this->params['facebook']['permissions']
-            );
-            $url = $this->vendorController->getLoginUrl($params);
-            $this->controller->redirect($url);
+
+        } else { 
+            //get tokens
+            $this->loginUrl($url);
         }
     }
 
-    public function loadProfile() {
-         if (isset( $this->vendorController )) {
-            $this->vendorId = $this->vendorController->getUser();
-            if ($this->vendorId) {
-                try {
-                    $profile = $this->vendorController->api('/me');
-                    $photo = $this->vendorController->api(
-                        '/me/picture',
-                        "GET",
-                        array(
-                            'redirect' => false,
-                            'height' => '200',
-                            'type' => 'normal',
-                            'width' => '200',
-                        )
-                    );
-                    $profile['avatar'] = $photo;
-                    return $profile;
-                } catch (FacebookApiException $e) {
-                    return null;
-                }
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }   
+    protected function loginUrl() {
+        $request_token = $this->vendorController->getRequestToken('http://www.beexample.lcl');
+        $this->oauthTokens = $request_token;
+        $this->Session->write('twitter.oauthTokens', $this->oauthTokens);
+        $url = $this->vendorController->getAuthorizeURL($request_token);
+        $this->controller->redirect($url);
     }
 
-    public function createUser($profile, $authType, $notify=true) {
+    public function getUser() {
+        return $this->user;
+    }
+
+    public function loadProfile() {
+        if (!empty($this->accessTokens['oauth_token'])) {
+            $this->vendorController = new TwitterOAuth(
+                    $this->params['twitter']['kies']['consumerKey'],
+                    $this->params['twitter']['kies']['consumerSecret'],
+                    $this->accessTokens['oauth_token'],
+                    $this->accessTokens['oauth_token_secret']
+                );
+            $profile = $this->vendorController->get('account/verify_credentials');
+            if (property_exists($profile, 'id')) {
+                return $profile;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public function createUser($profile = null) {
+        if ($profile == null) {
+            $profile = $this->loadProfile();
+        }
+
         //create the data array
         $res = array();
         $res['User'] = array(
-            'userid' => $this->userIdPrefix . $profile['id'],
-            'email' => $profile['email'],
-            'realname' => $profile['name'],
-            'auth_type' => $authType,
+            'userid' => $this->userIdPrefix . $profile->id,
+            'realname' => $profile->name,
+            'auth_type' => 'twitter',
             'auth_params' => array(
-                'userid' => $profile['id']
+                'userid' => $profile->id
             )
         );
 
         $groups = array();
-        if (!empty($this->params['facebook']['groups'])) {
-            foreach ($this->params['facebook']['groups'] as $key => $value) {
+        if (!empty($this->params['twitter']['groups'])) {
+            foreach ($this->params['twitter']['groups'] as $key => $value) {
                 array_push($groups, $value);
             }
         }
@@ -155,22 +188,15 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         }
 
         $this->userGroupModel($res, $groups);
-        if ($notify) {
-            $user->Behaviors->attach('Notify');
-        }
         
         $user->create();
         if(!$user->save($res)) {
             throw new BeditaException(__("Error saving user", true), $user->validationErrors);
         }
-
-        if ($notify) {
-            $user->Behaviors->detach('Notify');
-        }
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params['facebook']['createCard']) && $this->params['facebook']['createCard']) {
+            if (!empty($this->params['twitter']['createCard']) && $this->params['twitter']['createCard']) {
                 $this->createCard($u);
             }
             return $u;
@@ -181,18 +207,16 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
     public function createCard($u) {
         $res = array();
+        
         $profile = $this->loadProfile();
-       
-        $this->vendorId = $u['User']['auth_params']['userid'];
+
+        if ($profile !== null) {
+            return false;
+        }        
 
         $res = array(
-            'title' => $profile['name'],
-            'email' => $profile['email'],
-            'name' => $profile['first_name'],
-            'surname' => $profile['last_name'],
-            'birthdate' => $profile['birthday'],
-            'gender' => $profile['gender'],
-            'avatar' => $profile['avatar']['data']['url']
+            'title' => $profile->name,
+            'avatar' => $profile->profile_image_url
         );
 
         $card = ClassRegistry::init("ObjectUser")->find("first", array(
@@ -218,6 +242,9 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         );
 
         $data = array_merge($data, $res);
+
+        print_r($data);
+        exit();
 
         $avatarId = null;
         if (!empty($data['avatar'])) {
