@@ -80,7 +80,7 @@ $(document).ready(function() {
 
 	<tr>
 		
-		<th style="width:45px;">
+		<th style="width:50px;">
 			
 			<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
 			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />

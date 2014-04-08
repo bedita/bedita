@@ -1,3 +1,4 @@
+{strip}
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
 
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
@@ -108,3 +109,4 @@
 	</td>
 </tr>
 {/foreach}
+{/strip}

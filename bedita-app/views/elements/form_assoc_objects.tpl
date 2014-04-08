@@ -15,12 +15,14 @@ function addObjToAssoc(url, postdata) {
 	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
+		var newTrs = $(html);
 		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tr").first().parent();
-		tbody.html( tbody.html()+html );
-		var tr = tbody.children('tr').last();
+		tbody.append( newTrs );
 		$("#relationType_" + postdata.relation).fixItemsPriority();
 		$(".relationList table.indexlist").find("tbody:first").sortable("refresh");
-		$(document).trigger('relation_' + postdata.relation + ':added', tr);
+		newTrs.each(function() {
+			$(document).trigger('relation_' + postdata.relation + ':added', $(this));
+		});
 		relatedRefreshButton();
 	});
 }

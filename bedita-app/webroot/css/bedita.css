@@ -970,6 +970,10 @@ UL.menuleft + UL.menuleft {
 	margin-top: -6px;
 }
 
+.publishingtree LI A:hover {
+	background-color: #B6B6B6;
+}
+
 .publishingtree DIV.pub {
 	margin: 0px 0px 10px 0px;
 	clear:both;
@@ -1037,7 +1041,7 @@ UL.menuleft + UL.menuleft {
 
 .publishingtree UL {
 	min-width:275px;
-	margin-left:10px;
+	margin-left: 7px;
 	display:none;
 }
 
@@ -1205,12 +1209,15 @@ TABLE.indexlist {
  
 .indexlist TH  {
 	background-color:#FFFFFF;
-	min-width: 50px;
 }
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
 	vertical-align:top;
+}
+
+.indexlist tr:last-child TD {
+	border-bottom:0px solid #d8d8d8;
 }
 
 .indexlist TD .description  {
@@ -1304,7 +1311,9 @@ th.headerSortUp , th.headerSortDown {
     MultimediaItems
 
 ...........................................*/
-
+.multimediaiteminside img {
+	width: 100%;
+}
 
 .multimediaitem {
 	width:130px;
@@ -1317,9 +1326,9 @@ th.headerSortUp , th.headerSortDown {
 
 	border-radius : 10px; 
 	-moz-border-radius : 10px; 
-	-webkit-border-radius : 10px;
-	
+	-webkit-border-radius : 10px;	
 }
+
 .multimediaitem input, .multimediaitem textarea, .multimediaitem LI {
 	font-size:0.9em;
 }
