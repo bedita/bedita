@@ -7,6 +7,15 @@
 	<br />
 	<input type="password" name="login[passwd]" />
 	<br />
-	<input type="hidden" name="backURL" value="{$beurl->here()}"/>
 	<input style="margin:10px 0px 10px 0px" type="submit" value="{t}submit{/t}" />
+</form>
+
+<form action="{$html->here}" method="post">
+	<input type="hidden" name="login[auth_type]" value="facebook" />
+	<input type="submit" value="{t}facebook{/t}" />
+</form>
+
+<form action="{$html->here}" method="post">
+	<input type="hidden" name="login[auth_type]" value="twitter" />
+	<input type="submit" value="{t}twitter{/t}" />
 </form>

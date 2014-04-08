@@ -104,6 +104,29 @@ $config['frontendLangsMap'] = array(
 	"en-us"	=> "eng",
 	"en_gb"	=> "eng"
 ) ;
+
+/**
+ * external auth params
+ */
+$config['extAuthParams'] = array(
+	'facebook' => array(
+		'kies' => array(
+			'appId' => '355729061230707',
+			'secret' => '2b9d5e892defe3f814dcd44f6483d8fd'
+		),
+		'permissions' => 'email, user_birthday',
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createCard' => true
+	),
+	'twitter' => array(
+		'kies' => array(
+			'consumerKey' => 'KqvyUfk41IzTq7w18BlryGaN9',
+			'consumerSecret' => 'zH0DkSVLZxZTI2qmomCMwL4E8iUh7Hr6nFEI53AS9WArdOEnJk'
+		),
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createCard' => true
+	)
+);
 								
 
 /**
