@@ -77,7 +77,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             $profile = $this->loadProfile();
             if ($profile) {
                 $be_user_object = $this->createUser($profile);
-                if ($this->login( $be_user_object['User']['id'] )) {
+                if ($this->login()) {
                     return true;
                 }
             } else {
@@ -90,7 +90,11 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         }
     }
 
-    public function login($userid = null, $policy = null, $auth_group_name = array()) {        
+    public function login() {
+        $policy = $this->Session->read($this->sessionKey . 'Policy');
+        $auth_group_name = $this->Session->read($this->sessionKey . 'AuthGroupName');
+        $userid = null;
+
         if (!isset( $this->vendorController )) {
             return;
         }
@@ -113,7 +117,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         } else { 
             //get tokens
-            $this->loginUrl($url);
+            $this->loginUrl();
         }
     }
 

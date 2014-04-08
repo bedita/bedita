@@ -125,7 +125,7 @@ class BeAuthComponent extends Object {
         // load authType component
         if (!empty($this->extAuthComponents[$extAuthType])) {
             $extAuthComponent = $this->extAuthComponents[$extAuthType];
-            if ($extAuthComponent->login()) {
+            if ($extAuthComponent->login($extAuthOptions)) {
                 $this->userAuth = $extAuthType;
                 $this->user = $extAuthComponent->getUser();
                 return true;
@@ -143,9 +143,10 @@ class BeAuthComponent extends Object {
      * @param array $policy (could contain parameters like maxLoginAttempts,maxNumDaysInactivity,maxNumDaysValidity)
      * @param array $auth_group_name
      * @param string $authType
+     * @param array $extAuthOptions
      * @return boolean 
      */
-    public function login($userid, $password, $policy=null, $auth_group_name=array(), $authType = 'bedita') {
+    public function login($userid, $password, $policy = null, $auth_group_name = array(), $authType = 'bedita', $extAuthOptions = array()) {
         if ($authType == $this->userAuth) {
             $userModel = ClassRegistry::init('User');
             $conditions = array(
@@ -159,10 +160,12 @@ class BeAuthComponent extends Object {
                 return false ;
             }
         } else {
+            $this->Session->write($this->sessionKey . 'Policy', $policy);
+            $this->Session->write($this->sessionKey . 'AuthGroupName', $auth_group_name);
             return $this->externalLogin($authType);
         }
 
-        return true ;
+        return true;
     }
 
     /**
@@ -174,7 +177,7 @@ class BeAuthComponent extends Object {
      * @param array $auth_group_name
      * @return number (can be 200 'ok' 401 'unauthorized' 403 'forbidden'
      */
-    public function responseLogin($userid, $password, $policy=null, $auth_group_name=array()) {
+    public function responseLogin($userid, $password, $policy = null, $auth_group_name = array()) {
         $userModel = ClassRegistry::init('User');
         $conditions = array(
             "User.userid"   => $userid,
@@ -225,7 +228,7 @@ class BeAuthComponent extends Object {
      * @param array $auth_group_name
      * @return boolean
      */
-    protected function loginPolicy($userid, $u, $policy = null, $auth_group_name=array()) {
+    protected function loginPolicy($userid, $u, $policy = null, $auth_group_name = array()) {
         $userModel = ClassRegistry::init("User");
         // If fails, exit
         if(empty($u["User"])) {
@@ -353,6 +356,7 @@ class BeAuthComponent extends Object {
         if(isset($this->controller)) {
             $this->controller->set($this->sessionKey, null);
         }
+
         return true ;
     }
 

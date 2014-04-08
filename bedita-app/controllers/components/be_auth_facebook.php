@@ -63,7 +63,10 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         return false;
     }
 
-    public function login($policy = null, $auth_group_name = array()) {
+    public function login() {
+        $policy = $this->Session->read($this->sessionKey . 'Policy');
+        $auth_group_name = $this->Session->read($this->sessionKey . 'AuthGroupName');
+
         if (!isset( $this->vendorController )) {
             return;
         }
@@ -80,12 +83,16 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             }
             return true;
         } else {            
-            $params = array(
-                'scope' => $this->params['facebook']['permissions']
-            );
-            $url = $this->vendorController->getLoginUrl($params);
-            $this->controller->redirect($url);
+            $this->loginUrl();
         }
+    }
+
+    protected function loginUrl() {
+        $params = array(
+            'scope' => $this->params['facebook']['permissions']
+        );
+        $url = $this->vendorController->getLoginUrl($params);
+        $this->controller->redirect($url);
     }
 
     public function loadProfile() {
