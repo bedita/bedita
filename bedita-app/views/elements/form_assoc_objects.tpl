@@ -104,8 +104,13 @@ $(document).ready(function() {
 			<tr>
 				<th></th>
 				<th>{t}title{/t}</th>
+				{if $rel == "question"}
+				<th>{t}type{/t}</th>
+				{/if}
+				{if $rel == "download" or $rel == "attach"}
 				<th>{t}type{/t}</th>
 				<th style="text-align:right">{t}size{/t}</th>
+				{/if}
 				<th>{t}status{/t}</th>
 				<th>{t}lang{/t}</th>
 				<th>{t}more{/t}</th>
