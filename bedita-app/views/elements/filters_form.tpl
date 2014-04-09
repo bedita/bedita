@@ -18,17 +18,25 @@ available options:
 *}
 
 <style scoped>
-th {
-	white-space: nowrap;
-}
+	th {
+		white-space: nowrap;
+	}
+	.filters th {
+		width: 1px;
+		vertical-align: top;
+		padding-top: 8px;
+	}
 
+	.filters td {
+		vertical-align: top;
+	}
 </style>
 
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
 
 	<input type="hidden" name="cleanFilter" value=""/>
 
-	<table class="filters">
+	<table class="filters"  style="width:100%">
 		{if !empty($filters.word)}
 		<tr>
 			<th><label>{t}search word{/t}:</label></th>
@@ -75,19 +83,21 @@ th {
 				</select>
 			</td>
 		{/if}
+		</tr>
 		{if !empty($filters.tree)}
+		<tr>
 			<th><label>{t}on position{/t}:</label></th>
-			<td style="width:100%">
+			<td>
 				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
 				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
 				</select>
 				{if !empty($filters.treeDescendants)}
 					<input type="checkbox" name="filter[descendants]"
-						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
+						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> <label>{t}descendants{/t}</label>
 				{/if}
 			</td>
-		{/if}
 		</tr>
+		{/if}
 
 		{if !empty($filters.mediaTypes)}
 		<tr>
