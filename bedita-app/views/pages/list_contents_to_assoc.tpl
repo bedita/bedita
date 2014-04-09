@@ -10,8 +10,17 @@ $(document).ready(function() {
 		loadObjToAssoc($(this).attr("rel"));
 	});
 
-	 $("#objtable").tablesorter(); 	
-	 $("#objtable thead TH").css("cursor","pointer"); 
+	$("#objtable").tablesorter(); 	
+	$("#objtable thead TH").css("cursor","pointer");
+
+	$('#objtable').find('input[type=checkbox]').click(function() {
+		var objectId = $(this).val();
+		if ($(this).prop('checked')) {
+			objectsChecked.add(objectId);
+		} else {
+			objectsChecked.remove(objectId);
+		}
+	});
 
 });
 //-->

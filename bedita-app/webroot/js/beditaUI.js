@@ -900,3 +900,80 @@ function getFlashVersion(){
 
     return false; 
 } 
+
+
+/**
+ * Handle a list of items
+ * Items in list can be string, integer, boolean
+ *
+ * Example:
+ *
+ * var mylist = new ListHandler();
+ * mylist.add(['one', 'two']);
+ * mylist.add('three');
+ * mylist.remove('one');
+ * mylist.remove(['two', 'three'])
+ *
+ * @contructor
+ */
+function ListHandler() {
+
+	/**
+	 * @type Array
+	 */
+	var list = [];
+
+	/**
+	 * add or remove items from list
+	 *
+	 * @param  mixed items
+	 * @param  string operation Can be 'add' or 'delete'
+	 */
+	var handleList = function(items, operation) {
+		if (typeof items != 'undefined') {
+			if (!Array.isArray(items)) {
+				items = [items];
+			}
+			for (var i in items) {
+				if (!$.isPlainObject(items[i]) && !Array.isArray(items[i])) {
+					var index = $.inArray(items[i], list);
+					if (operation == 'add') {
+						if (index == -1) {
+							list.push(items[i]);
+						}
+					} else if (operation == 'remove') {
+						if (index != -1) {
+							list.splice(index, 1);
+						}
+					}
+				}
+			}
+		}
+		return list;
+	}
+
+	/**
+	 * add items to list
+	 * items already in list will not added
+	 * @param mixed items
+	 */
+	this.add = function(items) {
+		return handleList(items, 'add');
+	}
+
+	/**
+	 * remove object's ids
+	 * @param  mixed items
+	 */
+	this.remove = function(items) {
+		return handleList(items, 'remove');
+	}
+
+	/**
+	 * return the list
+	 * @return Array
+	 */
+	this.get = function() {
+		return list;
+	}
+}
