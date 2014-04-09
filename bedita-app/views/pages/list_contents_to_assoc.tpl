@@ -20,6 +20,14 @@ $(document).ready(function() {
 		} else {
 			objectsChecked.remove(objectId);
 		}
+		// update add button
+		var addLabel = $('#addButton').val();
+		addLabel = addLabel.replace(/\s\d+\sitems/, '');
+		var countIds = objectsChecked.get().length;
+		if (countIds) {
+			addLabel += ' ' + countIds + ' items';
+		}
+		$('#addButton').val(addLabel);
 	});
 
 });
