@@ -1,4 +1,6 @@
+{* included by show_objects.tpl *}
 {strip}
+
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
 
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
@@ -21,17 +23,17 @@
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 	</td>
 
-{if $objRelated.ObjectType.module_name == "multimedia"}
 	<td class="filethumb">
-		{assign_associative var="params" presentation="thumb" width='135'}
+	{if $objRelated.ObjectType.module_name == "multimedia"}
+		{assign_associative var="params" presentation="thumb" width='135' height='85'}
 		{$beEmbedMedia->object($objRelated,$params)}
+	{/if}
 	</td>
-{/if}
 
 	<td class="assoc_obj_title" data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]">
 		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
 		
-		<textarea style="display:none" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]">{$objRelated.title|default:''}</textarea>
+		<textarea style="display:none" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]">{$objRelated.title|default:''}</textarea>
 
 	</td> 
 
@@ -66,7 +68,7 @@
 		<a class="BEbutton showmore">+</a>	
 {/if}
 		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
-		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}">{t}view{/t}</a>	
+		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}"></a>	
 		
 		<a class="BEbutton remove">x</a>
 
@@ -91,7 +93,7 @@
 									{/foreach}
 								</select>
 							{else}
-								<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
+								<input type="text" placeholder="{$paramName}" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
 							{/if}
 						</td>
 					</tr>
@@ -100,8 +102,8 @@
 			{/if}
 			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
 			<div class="description">
-				<label>description</label>
-				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				<label>{t}description{/t}</label>
+				<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
 			</div>
 			{/if}
 		</div>

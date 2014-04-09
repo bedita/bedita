@@ -837,7 +837,7 @@ UL.menuleft + UL.menuleft {
 	border-radius:0px;
 	display:inline-block;
 	margin:5px;
-	width: 145px;
+	width: 155px;
 	vertical-align:top;
 	padding:5px
 }
@@ -863,15 +863,27 @@ UL.menuleft + UL.menuleft {
 	white-space:nowrap;
 }
 
+.relationList .description  textarea {
+	width:100%;
+}
+
+.relationList .moredata TD {
+	border:0px;
+}
+
 .boxed.relationList .commands {
 	text-align: right;
 	border-top:1px solid #999;
 }
 
-.boxed.relationList .filethumb {
-	width:130px;
-	height:84px;
-	overflow: hidden;
+.boxed.relationList TD.filethumb {
+	padding:5px 0px 0px 0px;
+	width:auto;
+}
+
+.boxed.relationList TD.filethumb > img {
+	margin:0px;
+	width:auto; 
 }
 
 .boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang {
@@ -884,12 +896,8 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .assoc_obj_title {
-	min-height:36px;
+	min-height:46px;
 	border-bottom:1px solid #999;
-}
-
-.boxed.relationList .assoc_obj_title textarea {
-	width:90%
 }
 
 .boxed.relationList .description  {
@@ -901,9 +909,14 @@ UL.menuleft + UL.menuleft {
 	margin-top:5px;
 }
 
-.boxed.relationList .description  textarea {
-	width:90%;
+.boxed.relationList textarea {
+	width:100%;
 }
+
+.boxed.relationList input[type=text] {
+	width:100%;
+}
+
 .boxed.relationList label  {
 	border-top:1px solid #999;
 	width:140px;
@@ -1222,6 +1235,14 @@ TABLE.indexlist {
 
 .indexlist TD .description  {
 	display:none; font-style:italic; width:300px; color:gray;
+}
+
+.indexlist .filethumb {
+	width:64px;
+}
+
+.indexlist .filethumb img {
+	width:100%; 
 }
 
 .indexlist TR[rel] {
@@ -1632,7 +1653,6 @@ A.BEbutton  {
 	padding:4px 8px 4px 8px !important;
 }
 
-
 .bemaincommands {
 	width:100px !important;
 	display:block; 
@@ -1645,13 +1665,7 @@ A.BEbutton  {
 	line-height:1.2em;
 	border-color:#BBBBBB;
 	color:#333;
-	
-	-moz-border-radius:9px;
 	border-radius : 9px; 
-	-webkit-border-radius : 9px;
-	-khtml-border-radius: 9px;
-	-moz-box-sizing:content-box;
-	
 	border-style:solid;
 	border-width:1px;
 	cursor:pointer;
@@ -1678,6 +1692,9 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 :focus { outline: none; }
 :active { outline: none; }
 
+A.BEbutton.golink:before {
+	content:"go";
+}
 
 /*...........................................    
 

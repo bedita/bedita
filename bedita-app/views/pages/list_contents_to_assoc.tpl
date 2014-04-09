@@ -26,12 +26,17 @@ $(document).ready(function() {
 			<th>{t}title{/t}</th>
 			<th style="text-align:center">{t}type{/t}</th>
 			<th style="text-align:center">{t}status{/t}</th>
+			<th></th>
 			<th style="text-align:center">{t}modified{/t}</th>
 			<th style="text-align:center">{t}lang{/t}</th>
 			<th style="text-align:center">Id</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
+
+	{assign_associative var="params" presentation="thumb" width='64'}
+
 		{foreach from=$objectsToAssoc.items item="objToAss"}
 		<tr>
 			<td style="width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
@@ -42,9 +47,16 @@ $(document).ready(function() {
 				<span class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>
 			<td style="text-align:center">{$objToAss.status}</td>
+			<td class="filethumb">
+			<!-- {*if $objToAss.moduleName == "multimedia"*} -->
+			{if !empty($objToAss.uri)}
+				{$beEmbedMedia->object($objToAss,$params)}
+			{/if}
+			</td>
 			<td style="white-space:nowrap; text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
 			<td style="text-align:center">{$objToAss.lang}</td>
 			<td style="text-align:center">{$objToAss.id}</td>
+			<td><a class="BEbutton golink" title="{$objToAss.nickname}" target="_blank" href="{$html->url('/')}view/{$objToAss.nickname}"></a></td>
 		</tr>
 		{/foreach}
 	</tbody>
