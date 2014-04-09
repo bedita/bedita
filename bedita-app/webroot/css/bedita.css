@@ -91,6 +91,14 @@ UL UL {margin-left:20px;}
 	-o-box-sizing: border-box;
 }
 
+img {
+	user-drag: none;
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
+	-ms-user-drag: none;
+	-o-user-drag: none;
+}
+
 /*...........................................    
 
     General, states
@@ -1358,17 +1366,17 @@ th.headerSortUp , th.headerSortDown {
 }
 
 .multimediaitem {
-	width:130px;
+	width: 140px;
 	background-color:#FFFFFF;
 	border:0px solid white;
 	padding:10px;
 	margin-right:10px;
 	margin-bottom:10px;
 	float:left;
+}
 
-	border-radius : 10px; 
-	-moz-border-radius : 10px; 
-	-webkit-border-radius : 10px;	
+.multimediaitem:hover {
+	background-color:#DDD;
 }
 
 .multimediaitem input, .multimediaitem textarea, .multimediaitem LI {
@@ -1751,7 +1759,8 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 }
 			
 .message {
-	width:120px; height:120px; 
+	width: 140px; 
+	height: 110px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;

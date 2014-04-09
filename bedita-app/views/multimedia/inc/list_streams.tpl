@@ -130,7 +130,7 @@ $(document).ready(function(){
 						{/if}
 					</td>
 	
-					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">…</a></td>
+					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">open</a></td>
 
 					
 				</tr>	

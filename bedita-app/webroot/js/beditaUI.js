@@ -442,23 +442,6 @@ $(document).ready(function(){
 
 /*...........................................    
 
-   multimediaitem
-
-...........................................*/   
-
-    $("#viewthumb .multimediaitem").mouseover(function () {
-
-        $(this).toggleClass("dark");
-
-    }).mouseout(function () {
-        
-        $(this).toggleClass("dark");
-
-    });
-
-
-/*...........................................    
-
    multimediaitem icon toolbar
 
 ...........................................*/
@@ -579,6 +562,9 @@ $(document).ready(function(){
         var form = $(this).parents('form:first');
         form.find('input[name=cleanFilter]').val(1);
         form[0].reset();
+        form.find('select').each(function() {
+            $(this).select2('val', $(this).val());
+        });
         form.submit();
     });
         
@@ -770,7 +756,6 @@ var toggleSelectTree = function(ev) {
                 var ntree = $(data).slice(2);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
-                console.log(select);
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
             },
             error: function(er) {

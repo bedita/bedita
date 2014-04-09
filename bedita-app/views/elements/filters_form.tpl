@@ -46,12 +46,12 @@ available options:
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
 						checked="checked"
 					{/if} 
-					id="modalsubstring" name="filter[substring]" /> {t}substring{/t}
+					id="modalsubstring" name="filter[substring]" /> <label>{t}substring{/t}</label>
 			</td>
 		</tr>
 		{/if}
-		<tr>
 		{if !empty($filters.language)}
+		<tr>
 			<th><label>{t}language{/t}:</label></th>
 			<td>
 				<select name="filter[lang]" id="lang">
@@ -65,8 +65,10 @@ available options:
 					{/foreach}
 				</select>
 			</td>
+		</tr>
 		{/if}
 		{if !empty($filters.type)}
+		<tr>
 			<th><label>{t}type{/t}:</label></th>
 			<td>
 				<select name="filter[object_type_id]" id="objectType">
@@ -82,15 +84,15 @@ available options:
 					{/foreach}
 				</select>
 			</td>
-		{/if}
 		</tr>
+		{/if}
 		{if !empty($filters.tree)}
 		<tr>
 			<th><label>{t}on position{/t}:</label></th>
 			<td>
 				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
 				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select>
+				</select><br>
 				{if !empty($filters.treeDescendants)}
 					<input type="checkbox" name="filter[descendants]"
 						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> <label>{t}descendants{/t}</label>
@@ -141,10 +143,12 @@ available options:
 				
 				[...]
 			</td>
+		</tr>
 		{/if}
 
-		</tr>
+		
 		<tr>
+			<th></th>
 			<td colspan="10">
 				<input type="submit" id="searchButton" style="width:150px" value=" {t}find it{/t} ">
 				<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">

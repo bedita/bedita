@@ -81,8 +81,9 @@ $(document).ready(function() {
 				<td></td><td colspan="3">loading...</td>
 			</tr>
 			<tr id="newLink">
-				<td style="padding:0px !important"><input type="text" class="priority" 
-				style="width:20px; padding:0px; margin:0px !important;" name="linkPriority" value="{$prior+1}" size="3" maxlength="3"/></td>
+				<td>
+					<input type="text" class="priority link" name="linkPriority" value="{$prior+1}" size="3" maxlength="3"/>
+				</td>
 				<td><input type="text" class="new" style="width:140px" name="linkTitle" id="linkTitle" /></td>
 				<td><input type="text" class="new" style="width:230px" name="linkUrl" id="linkUrl" /></td>
 				<td><input type="button" value="{t}add{/t}" id="addLink"/></td>
