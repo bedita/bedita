@@ -1,4 +1,6 @@
+{* included by show_objects.tpl *}
 {strip}
+
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
 
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
@@ -21,16 +23,16 @@
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 	</td>
 
-{if $objRelated.ObjectType.module_name == "multimedia"}
 	<td class="filethumb">
+	{if $objRelated.ObjectType.module_name == "multimedia"}
 		{assign_associative var="params" presentation="thumb" width='155' height='155' mode='croponly'}
-		{$beEmbedMedia->object($objRelated, $params)}
+		{$beEmbedMedia->object($objRelated,$params)}
+	{/if}
 	</td>
-{/if}
 
 	<td class="assoc_obj_title" data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]">
 		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
-		<input type="text" style="display:none" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
+		<input type="text" style="display:none" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
 	</td> 
 
 {if $rel == "question"}
@@ -72,7 +74,7 @@
 		{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
 		<div class="description">
 			<label>description</label>
-			<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+			<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
 		</div>
 		{/if}
 		</div>
@@ -94,7 +96,7 @@
 		<a class="BEbutton showmore">+</a>	
 {/if}
 		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
-		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}">{t}view{/t}</a>	
+		href="{$html->url('/')}{$objRelated.ObjectType.module_name}/view/{$objRelated.id}"></a>	
 		
 		<a class="BEbutton remove">x</a>
 
