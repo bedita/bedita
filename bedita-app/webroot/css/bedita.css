@@ -808,15 +808,28 @@ UL.menuleft + UL.menuleft {
 	margin:10px 10px 10px 0px
 }
 
-.relationList TR.obj TD:first-child {
-	padding:0px; width:20px;
+.relationList TR.obj TD:first-child { 
+	width:20px;
 }
+
+.relationList.boxed TR.obj TD:first-child { 
+	padding: 5px 0 0 0;
+}
+
 .relationList .relparams {
 	width: 40%
 }
 
 .relationList .priority {
-	margin-top:2px
+    display: inline-block;
+}
+
+.relationList.boxed .priority {
+    position: absolute;
+	
+    width: 20px;
+    margin-left: -10px;
+    margin-top: -10px;
 }
 
 .relationList TR.trick {
@@ -831,21 +844,34 @@ UL.menuleft + UL.menuleft {
 	text-align: right;
 }
 
+.boxed.relationList thead {
+	display: none;
+}
+
 .boxed.relationList TR {
 	box-shadow: 0px 0px 6px rgba(0,0,0,.2);
 	background-color:#d5d5d5;
 	border-radius:0px;
 	display:inline-block;
 	margin:5px;
-	width: 145px;
+	width: 155px;
 	vertical-align:top;
-	padding:5px
+	padding: 0 5px 5px 5px;
 }
 
 .boxed.relationList TR TD {
 	border:0px solid red;
 	display:block;
 	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.boxed.relationList TR TD table{
+	width: 100%;
+}
+
+.boxed.relationList TR TD input, .boxed.relationList TR TD textarea{
+	width: 100%;
 }
 
 .boxed.relationList TD TR {
@@ -866,21 +892,30 @@ UL.menuleft + UL.menuleft {
 .boxed.relationList .commands {
 	text-align: right;
 	border-top:1px solid #999;
+	height: 35px;
+	line-height: 29px;
 }
 
 .boxed.relationList .filethumb {
-	width:130px;
-	height:84px;
-	overflow: hidden;
+    width: 100%;
+    padding: 0;
+}
+
+.boxed.relationList .filethumb img{
+	width:100%;
 }
 
 .boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang {
 	display: table-cell;
-	padding:0px 5px 0px 0px;
+	padding: 5px 5px 0 0;
 }
 
 .boxed.relationList .mimetype {
 	display: block;
+}
+
+.boxed.relationList .mimetype:empty {
+	display: none;
 }
 
 .boxed.relationList .assoc_obj_title {
@@ -888,8 +923,8 @@ UL.menuleft + UL.menuleft {
 	border-bottom:1px solid #999;
 }
 
-.boxed.relationList .assoc_obj_title textarea {
-	width:90%
+.boxed.relationList .assoc_obj_title input {
+	width: 100%
 }
 
 .boxed.relationList .description  {
@@ -902,15 +937,14 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .description  textarea {
-	width:90%;
+	width: 100%;
 }
 .boxed.relationList label  {
 	border-top:1px solid #999;
 	width:140px;
 	display:block;
-	margin-top:10px;
-	font-weight:normal;
 	color:#000;
+	padding-top: 5px;
 }
 
 .relViewOptions {
@@ -1216,12 +1250,20 @@ TABLE.indexlist {
 	vertical-align:top;
 }
 
+.indexlist TD.moredata input {
+	width: 100%;
+}
+
 .indexlist tr:last-child TD {
 	border-bottom:0px solid #d8d8d8;
 }
 
-.indexlist TD .description  {
-	display:none; font-style:italic; width:300px; color:gray;
+.indexlist TD .description  {  
+	width: 100%; 
+}
+
+.indexlist TD .description textarea { 
+	width: 100%; 
 }
 
 .indexlist TR[rel] {
@@ -1554,7 +1596,7 @@ INPUT[readonly] {
 }
 
 
-label {font-weight:bold;}
+label {font-weight:bold;vertical-align: middle;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
 
@@ -1562,6 +1604,7 @@ fieldset {border:0}
 
 textarea {
 	overflow:auto;
+	vertical-align: top;
 }
 
 textarea#description, textarea#title, textarea#addtaglist, textarea.longtext, textarea.mce, textarea.mceSimple {
@@ -1584,7 +1627,7 @@ input#titleBEObject {
 
 INPUT.priority {
 	text-align:center; 
-	margin:-5px 0 0 0;
+	margin: 0;
 	width:20px;
 	height:20px;
 	border-radius:35px !important; 
@@ -1630,6 +1673,9 @@ SELECT#selObjectType {
 
 A.BEbutton  {
 	padding:4px 8px 4px 8px !important;
+	min-width: 25px;
+	display: inline-block;
+	text-align: center;
 }
 
 

@@ -58,9 +58,10 @@ $(document).ready(function() {
 
 	$(document).on('click', '.showmore', function() {
 		var container = $(this).closest('.obj');
-		$('.moredata',container).toggle();
+		$(this).toggleText('+', '-');
+		$('.moredata > div', container).toggle();
 		//mette il modified a 1 
-		var mod = $('.mod',container).val();
+		var mod = $('.mod', container).val();
 		if (mod > 0) {
 			$('.mod',container).val(0);
 		}
@@ -68,8 +69,8 @@ $(document).ready(function() {
 			$('.mod',container).val(1);
 		}
 		//e mostra la textarea del titolo al posto del titolo 
-		$('.assoc_obj_title textarea',container).toggle();
-		$('.assoc_obj_title h4',container).toggle();
+		$('.assoc_obj_title textarea, .assoc_obj_title input[type="text"]', container).toggle();
+		$('.assoc_obj_title h4', container).toggle();
 	});
 
 	$(document).on('click', '.relViewOptions', function() {
@@ -99,6 +100,18 @@ $(document).ready(function() {
 
 	<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
 	<table class="indexlist">
+		<thead>
+			<tr>
+				<th></th>
+				<th>{t}title{/t}</th>
+				<th>{t}type{/t}</th>
+				<th style="text-align:right">{t}size{/t}</th>
+				<th>{t}status{/t}</th>
+				<th>{t}lang{/t}</th>
+				<th>{t}more{/t}</th>
+				<th style="text-align:right">{t}commands{/t}</th>
+			</tr>
+		</thead>
 		<tbody>
 			<tr class="trick"><td></td></tr>
 		{if !empty($relObjects.$rel)}
