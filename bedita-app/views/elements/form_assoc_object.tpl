@@ -52,6 +52,15 @@
 
 	<td class="moredata">
 		<div style="display: none">
+		{if !empty($allObjectsRelations[$rel])}
+			{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
+		{else}
+			{foreach $allObjectsRelations as $relName => $rule}
+				{if !empty($rule.inverse) && $rule.inverse == $rel}
+					{$relationParamsArray = $rule.params|default:[]}
+				{/if}
+			{/foreach}
+		{/if}
 		{if !empty($relationParamsArray[0])}
 			{foreach $relationParamsArray as $paramKey => $paramVal}
 				{if is_array($paramVal)}
@@ -79,16 +88,6 @@
 	</td>
 
 	<td class="commands">
-
-	{if !empty($allObjectsRelations[$rel])}
-		{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
-	{else}
-		{foreach $allObjectsRelations as $relName => $rule}
-			{if !empty($rule.inverse) && $rule.inverse == $rel}
-				{$relationParamsArray = $rule.params|default:[]}
-			{/if}
-		{/foreach}
-	{/if}
 
 {if !empty($relationParamsArray)}
 		<a class="BEbutton showmore">+</a>	

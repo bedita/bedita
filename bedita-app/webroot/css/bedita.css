@@ -851,6 +851,10 @@ UL.menuleft + UL.menuleft {
 	text-align: right;
 }
 
+.relationList TR TD.moredata textarea, .relationList TR TD.moredata input, .relationList TR TD.moredata select, .relationList TR TD.moredata .select2-container {
+	width: 100%;
+}
+
 .boxed.relationList thead {
 	display: none;
 }
