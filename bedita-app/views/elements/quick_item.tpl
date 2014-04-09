@@ -11,13 +11,13 @@
 				<td nowrap><label>{t}Object type{/t}</label></td>
 				<td>
 					<select name="data[object_type_id]">
-					{assign var=leafs value=$conf->objectTypes.leafs}
-					{foreach from=$conf->objectTypes item=type key=key}	
-						{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
-						<option {if ($type.name == 'document')}selected="selected"{/if} value="{$type.id}" {if in_array($type.id, $conf->objectTypes.multimedia.id)}data-multimedia="true"{/if}>
-							{t}{$type.name}{/t}
+					{$objectTypeIds = $objectTypeIds|default:$conf->objectTypes.leafs.id}
+					{foreach $objectTypeIds as $typeId}
+						{strip}
+						<option {if ($conf->objectTypes[$typeId].name == 'document')}selected="selected"{/if} value="{$typeId}" {if in_array($typeId, $conf->objectTypes.multimedia.id)}data-multimedia="true"{/if}>
+							{t}{$conf->objectTypes[$typeId].name}{/t}
 						</option>
-						{/if}
+						{/strip}
 					{/foreach}
 					</select>
 				</td>
