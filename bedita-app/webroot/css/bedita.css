@@ -2605,10 +2605,8 @@ img.smallicon {
 	position: relative;
 	width: 100%;
 	display: none;
-	/*display: table;*/
 }
 .dropSubTarget {
-	/* display: table-cell; */
 	display: none; 
 	position: relative;
 	height: 90%;
@@ -2635,15 +2633,21 @@ img.smallicon {
 	text-transform: uppercase;
 	text-align: center;
 	margin-top: 30%; 
-	font-size: 30px;
+	font-size: 24px;
 	line-height: 40px;
 	color: black;
+}
+.dropSubTarget.allowed p + p {
+	position: absolute;
+	bottom: 0;
+	margin-top: 0;
+	margin-bottom: 40px;
 }
 .denied p {
 	text-transform: uppercase;
 	text-align: center;
 	margin-top: 20%; 
-	font-size: 30px;
+	font-size: 20px;
 	line-height: 40px;
 	color: white;
 }

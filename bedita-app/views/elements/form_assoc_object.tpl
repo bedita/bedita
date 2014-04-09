@@ -3,7 +3,7 @@
 
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
 
-<tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}">
+<tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}" data-benick="{$objRelated.nickname}">
 	<td>
 		{if !empty($objRelated.uri) && $objRelated.ObjectType.name=="image"}
 		{assign_associative var="bkgparams" URLonly=true}
