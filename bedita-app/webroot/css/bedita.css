@@ -959,6 +959,7 @@ UL.menuleft + UL.menuleft {
 
 .boxed.relationList input[type=text] {
 	width:100%;
+	margin-bottom: 5px;
 }
 
 .boxed.relationList label  {
@@ -1282,6 +1283,7 @@ TABLE.indexlist {
 
 .indexlist TD .description  {  
 	width: 100%; 
+	display: none;
 }
 
 .indexlist TD .description textarea { 

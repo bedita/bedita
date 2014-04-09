@@ -72,10 +72,8 @@
 			{/foreach}
 		{/if}
 		{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
-		<div class="description">
-			<label>description</label>
-			<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
-		</div>
+		<label>description</label>
+		<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
 		{/if}
 		</div>
 	</td>
