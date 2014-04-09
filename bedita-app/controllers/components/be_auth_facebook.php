@@ -56,7 +56,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $profile = $this->loadProfile();
         if ($profile) {
             if (isset($profile['email'])) {
-                $be_user_object = $this->createUser($profile, 'facebook');
+                $this->createUser($profile, 'facebook');
                 return $this->login();
             }
         }
@@ -65,7 +65,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
     public function login() {
         $policy = $this->Session->read($this->sessionKey . 'Policy');
-        $auth_group_name = $this->Session->read($this->sessionKey . 'AuthGroupName');
+        $authGroupName = $this->Session->read($this->sessionKey . 'AuthGroupName');
 
         if (!isset( $this->vendorController )) {
             return;
@@ -78,7 +78,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             $user->containLevel("default");
             $userid = $this->userIdPrefix . $profile['id'];
             $u = $user->findByUserid($userid);
-            if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
+            if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
                 return false ;
             }
             return true;

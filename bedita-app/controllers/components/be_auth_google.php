@@ -52,7 +52,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                $this->vendorController->addScope($scope);
             }
 
-            if (isset($_GET['code']) && !$this->Session->check('googleAccessToken')) {
+            if (isset($_GET['code']) && !$this->Session->check('googleAccessToken') && $this->Session->check('googleRequestedToken')) {
                 $this->vendorController->authenticate($_GET['code']);
                 $this->Session->write('googleAccessToken', $this->vendorController->getAccessToken());
             }
@@ -77,7 +77,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
             
             $profile = $this->loadProfile();
             if ($profile) {
-                $be_user_object = $this->createUser($profile);
+                $this->createUser($profile);
                 if ($this->login()) {
                     return true;
                 }
@@ -93,7 +93,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
 
     public function login() {
         $policy = $this->Session->read($this->sessionKey . 'Policy');
-        $auth_group_name = $this->Session->read($this->sessionKey . 'AuthGroupName');
+        $authGroupName = $this->Session->read($this->sessionKey . 'AuthGroupName');
         $userid = null;
 
         if (!isset( $this->vendorController )) {
@@ -111,7 +111,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
             $user = ClassRegistry::init('User');
             $user->containLevel("default");
             $u = $user->findByUserid($userid);
-            if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
+            if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
                 return false;
             }
             return true;
@@ -128,6 +128,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
     }
 
     protected function loginUrl() {
+        $this->Session->write('googleRequestedToken', true);
         $url = $this->vendorController->createAuthUrl();
         $this->controller->redirect($url);
     }
