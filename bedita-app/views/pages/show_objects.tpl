@@ -4,7 +4,7 @@
 
 if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
 	var urlToAdd = urlAddObjToAss{$relation|capitalize}
-} else if (typeof urlAddObjToAss == "string") { 
+} else if (typeof urlAddObjToAss == "string") {
 	var urlToAdd = urlAddObjToAss;
 } else {
 	var urlToAdd = "{$html->url('/pages/loadObjectToAssoc')}";
@@ -13,9 +13,19 @@ if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string"
 var relType = "{$relation|default:""}";
 var suffix = "{$relation|default:""|capitalize}";
 
+/**
+ * handle a list of object's ids
+ * used to track checked objects also with pagination
+ */
+var objectsChecked = new ListHandler();
 
-function loadObjToAssoc(page) {
-
+/**
+ * ajax load objects' list to associate to main object
+ *
+ * @param  integer page The page number
+ * @param  Array itemsToCheck List of objects' ids to check automatically
+ */
+function loadObjToAssoc(page, itemsToCheck) {
 	var options = {
 		target: '#assocObjContainer',
 		beforeSubmit: function() {
@@ -26,6 +36,17 @@ function loadObjToAssoc(page) {
 			$("#loadObjInModal").hide();
 			// reset cleanFilter
 			$("input[name=cleanFilter]", "#formFilter").val('');
+			if (typeof itemsToCheck != 'undefined') {
+				objectsChecked.add(itemsToCheck);
+			}
+			var listIds = objectsChecked.get();
+			for (var i in listIds) {
+				$('#objtable').find('input[type=checkbox][value=' + listIds[i] + ']').prop('checked', true);
+			}
+		},
+		error: function(jqXHR, textStatus, errorThrown) {
+			$("#loadObjInModal").hide();
+			console.error('error loading object list: ' + textStatus + ', ' + errorThrown);
 		},
 		data: {
 			page: page
@@ -33,6 +54,36 @@ function loadObjToAssoc(page) {
 	}
 
 	$("#formFilter").ajaxSubmit(options);
+}
+
+/**
+ * options to init select2 simple
+ * to leave out of dom ready to have visibility in nested items
+ */
+var select2optionsSimple = {
+	dropdownAutoWidth:true,
+	allowClear: true
+}
+
+/**
+ * options to init select2 in tree mode
+ * to leave out of dom ready to have visibility in nested items
+ */
+var select2optionsTree = {
+	escapeMarkup: function(m) { return m; },
+	formatResult: function(state) {
+		if ($(state.element).is('.pubOption')) {
+			return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
+		} else {
+			if (!$(state.element).is(':first-child')) {
+				var ar = state.text.split(' > ');
+				var last = ar.pop();
+				return '<span class="gray">'+ar.join(' > ')+' > </span>'+last;
+			} else {
+				return state.text;
+			}
+		}
+	}
 }
 
 $(document).ready(function() {
@@ -48,11 +99,7 @@ $(document).ready(function() {
 	
 	$("#addButton").click(function() {
 		obj_sel = { relation: relType};
-		obj_sel.object_selected = "";
-		
-		$("#assocObjContainer :checked").each(function() {
-			obj_sel.object_selected += $(this).val() + ","; 
-		});
+		obj_sel.object_selected = objectsChecked.get().join(',');
 
 		if ($("#modalSelectGroupPermission").length > 0) {
 			obj_sel.permission = $("#modalSelectGroupPermission").val();
@@ -74,28 +121,9 @@ $(document).ready(function() {
 		}
 	});
 
-	$("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
-		dropdownAutoWidth:true,
-		allowClear: true
-	});
+	$("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2(select2optionsSimple);
 
-	$('.modal select.areaSectionAssociation, [name="filter[parent_id]"]')
-		.select2({
-			escapeMarkup: function(m) { return m; },
-			formatResult: function(state) {
-				if ($(state.element).is('.pubOption')) {
-					return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
-				} else {
-					if (!$(state.element).is(':first-child')) {
-						var ar = state.text.split(' > ');
-						var last = ar.pop();
-						return '<span class="gray">'+ar.join(' > ')+' > </span>'+last;
-					} else {
-						return state.text;
-					}
-				}
-			}
-		});
+	$('#modal select.areaSectionAssociation, [name="filter[parent_id]"]').select2(select2optionsTree);
 });
 
 //-->
