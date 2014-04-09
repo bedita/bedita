@@ -25,7 +25,7 @@
 
 	<td class="filethumb">
 	{if $objRelated.ObjectType.module_name == "multimedia"}
-		{assign_associative var="params" presentation="thumb" width='155' height='155' mode='croponly'}
+		{assign_associative var="params" presentation="thumb" width='155'}
 		{$beEmbedMedia->object($objRelated,$params)}
 	{/if}
 	</td>
