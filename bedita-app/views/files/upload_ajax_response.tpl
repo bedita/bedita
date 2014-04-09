@@ -1,13 +1,8 @@
 {*
 *	return a JSON object for ajax response
-*	if fileUploaded setted put JSON object into textarea (trick for file upload)
+*	if fileUploaded is set put JSON object into textarea (trick for file upload)
 *}
-
 {strip}
-
-{if !empty($fileUploaded)}
-<textarea>
-{/if}
 
 {if $errorMsg|default:""}
 	{ "UploadErrorMsg": "{$errorMsg}" }
@@ -17,10 +12,6 @@
 			"fileId":	"{$fileId|default:''}"
 		}
 	]
-{/if}
-
-{if !empty($fileUploaded)}
-</textarea>
 {/if}
 
 {/strip}
