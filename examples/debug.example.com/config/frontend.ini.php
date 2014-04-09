@@ -125,6 +125,18 @@ $config['extAuthParams'] = array(
 		),
 		'groups' => array('frontend', 'editor', 'administrator'),
 		'createCard' => true
+	),
+	'google' => array(
+		'kies' => array(
+			'clientId' => '701520687241-va63lnm4ftabdprs8305p9f4387bsq60.apps.googleusercontent.com',
+			'clientSecret' => 'hZ64XcDeh_V3ERlT0Eaf4Hc4'
+		),
+		'scopes' => array(
+			'email',
+			'profile'
+		),
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createCard' => true
 	)
 );
 								

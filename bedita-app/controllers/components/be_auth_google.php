@@ -12,24 +12,29 @@ if(class_exists('BeAuthComponent') != true) {
     require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
 }
 
-if(class_exists('tmhOAuth') != true) {
-    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'twitteroauth' . DS . 'twitteroauth.php');
+if(class_exists('Google_Client') != true) {
+    set_include_path(BEDITA_CORE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
+    require_once('Google' . DS . 'Client.php');
+}
+if(class_exists('Google_Service_Oauth2') != true) {
+    set_include_path(BEDITA_CORE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
+    require_once('Google' . DS . 'Service' . DS . 'OAuth2.php');
 }
 
 /**
- * Twitter User auth component
+ * Google User auth component
 */
-class BeAuthTwitterComponent extends BeAuthComponent{
+class BeAuthGoogleComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
 
-    public $userAuth = 'twitter';
+    public $userAuth = 'google';
 
     protected $params = null;
     protected $vendorController = null;
     protected $oauthTokens = null;
     protected $accessTokens = null;
-    protected $userIdPrefix = 'twitter-';
+    protected $userIdPrefix = 'google-';
 
     function __construct(&$controller=null) {
         $this->loadComponents();
@@ -38,18 +43,26 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         $this->params = Configure::read("extAuthParams");
 
-        if ($this->Session->check('twitterOauthTokens')) {
-            $this->oauthTokens = $this->Session->read('twitterOauthTokens');
-        }
-        if ($this->Session->check('twitterAccessTokens')) {
-            $this->accessTokens = $this->Session->read('twitterAccessTokens');
-        }
+        if (isset( $this->params['google'] ) && isset( $this->params['google']['kies'] )) {
+            $this->vendorController = new Google_Client();
+            $this->vendorController->setClientId($this->params['google']['kies']['clientId']);
+            $this->vendorController->setClientSecret($this->params['google']['kies']['clientSecret']);
+            $this->vendorController->setRedirectUri($this->getCurrentUrl());
+            foreach ($this->params['google']['scopes'] as $scope) {
+               $this->vendorController->addScope($scope);
+            }
 
-        if (isset( $this->params['twitter'] ) && isset( $this->params['twitter']['kies'] )) {
-            $this->vendorController = new TwitterOAuth(
-                    $this->params['twitter']['kies']['consumerKey'],
-                    $this->params['twitter']['kies']['consumerSecret']
-                );
+            if (isset($_GET['code']) && !$this->Session->check('googleAccessToken')) {
+                $this->vendorController->authenticate($_GET['code']);
+                $this->Session->write('googleAccessToken', $this->vendorController->getAccessToken());
+            }
+
+            if ($this->Session->check('googleAccessToken')) {
+                $this->vendorController->setAccessToken($this->Session->read('googleAccessToken'));
+            } else {
+                $this->vendorController->setRedirectUri($this->getCurrentUrl());
+                return false;
+            }
         }
 
         if($this->checkSessionKey()) {
@@ -61,19 +74,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
     protected function checkSessionKey() {
         if (isset( $this->vendorController )) {
-            if(!empty($_REQUEST['oauth_verifier'])) {
-
-                $this->vendorController = new TwitterOAuth(
-                        $this->params['twitter']['kies']['consumerKey'],
-                        $this->params['twitter']['kies']['consumerSecret'],
-                        $this->oauthTokens['oauth_token'],
-                        $this->oauthTokens['oauth_token_secret']
-                    );
-
-                $this->accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
-                $this->Session->write('twitterAccessTokens', $this->accessTokens);
-            }
-
+            
             $profile = $this->loadProfile();
             if ($profile) {
                 $be_user_object = $this->createUser($profile);
@@ -99,7 +100,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             return;
         }
 
-        if ($this->accessTokens) {
+        if ($this->Session->check('googleAccessToken')) {
             $profile = $this->loadProfile();
             $userid = $this->userIdPrefix . $profile->id;
         }
@@ -122,32 +123,12 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     }
 
     public function logout() {
-        $this->Session->write('twitterAccessTokens', null);
-        $this->Session->write('twitterOauthTokens', null);
-    }
-
-    protected function getCurrentUrl() {
-        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-            $protocol = 'https://';
-        } else {
-            $protocol = 'http://';
-        }
-        $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-        $parts = parse_url($currentUrl);
-
-        // use port if non default
-        $port = isset($parts['port']) && (($protocol === 'http://' && $parts['port'] !== 80) || ($protocol === 'https://' && $parts['port'] !== 443)) ? ':' . $parts['port'] : '';
-
-        // rebuild
-        return $protocol . $parts['host'] . $port . $parts['path'];
+        $this->vendorController->revokeToken();
+        $this->Session->del('googleAccessToken');
     }
 
     protected function loginUrl() {
-        $request_token = $this->vendorController->getRequestToken($this->getCurrentUrl());
-        $this->oauthTokens = $request_token;
-        $this->Session->write('twitterOauthTokens', $this->oauthTokens);
-        $url = $this->vendorController->getAuthorizeURL($request_token);
+        $url = $this->vendorController->createAuthUrl();
         $this->controller->redirect($url);
     }
 
@@ -156,14 +137,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     }
 
     public function loadProfile() {
-        if (!empty($this->accessTokens['oauth_token'])) {
-            $this->vendorController = new TwitterOAuth(
-                    $this->params['twitter']['kies']['consumerKey'],
-                    $this->params['twitter']['kies']['consumerSecret'],
-                    $this->accessTokens['oauth_token'],
-                    $this->accessTokens['oauth_token_secret']
-                );
-            $profile = $this->vendorController->get('account/verify_credentials');
+        if ($this->Session->check('googleAccessToken')) {
+            $oauth2 = new Google_Service_Oauth2($this->vendorController);
+            $profile = $oauth2->userinfo->get();
             if (property_exists($profile, 'id')) {
                 return $profile;
             } else {
@@ -184,15 +160,16 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         $res['User'] = array(
             'userid' => $this->userIdPrefix . $profile->id,
             'realname' => $profile->name,
-            'auth_type' => 'twitter',
+            'email' => $profile->email,
+            'auth_type' => 'google',
             'auth_params' => array(
                 'userid' => $profile->id
             )
         );
 
         $groups = array();
-        if (!empty($this->params['twitter']['groups'])) {
-            foreach ($this->params['twitter']['groups'] as $key => $value) {
+        if (!empty($this->params['google']['groups'])) {
+            foreach ($this->params['google']['groups'] as $key => $value) {
                 array_push($groups, $value);
             }
         }
@@ -216,7 +193,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params['twitter']['createCard']) && $this->params['twitter']['createCard']) {
+            if (!empty($this->params['google']['createCard']) && $this->params['google']['createCard']) {
                 $this->createCard($u, $profile);
             }
             return $u;
@@ -233,11 +210,15 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             if ($profile == null) {
                 return false;
             }
-        }        
+        }
 
         $res = array(
             'title' => $profile->name,
-            'avatar' => $profile->profile_image_url
+            'name' => $profile->givenName,
+            'surname' => $profile->familyName,
+            'email' => $profile->email,
+            'gender' => $profile->gender,
+            'avatar' => $profile->picture
         );
 
         $card = ClassRegistry::init("ObjectUser")->find("first", array(
@@ -290,6 +271,23 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         $this->Transaction->commit();
  
         return $cardModel;
+    }
+
+    protected function getCurrentUrl() {
+        if (isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1)
+            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+            $protocol = 'https://';
+        } else {
+            $protocol = 'http://';
+        }
+        $currentUrl = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $parts = parse_url($currentUrl);
+
+        // use port if non default
+        $port = isset($parts['port']) && (($protocol === 'http://' && $parts['port'] !== 80) || ($protocol === 'https://' && $parts['port'] !== 443)) ? ':' . $parts['port'] : '';
+
+        // rebuild
+        return $protocol . $parts['host'] . $port . $parts['path'];
     }
 
     protected function uploadAvatarByUrl($userData) {

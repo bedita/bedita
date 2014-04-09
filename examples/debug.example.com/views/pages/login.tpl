@@ -19,3 +19,8 @@
 	<input type="hidden" name="login[auth_type]" value="twitter" />
 	<input type="submit" value="{t}twitter{/t}" />
 </form>
+
+<form action="{$html->here}" method="post">
+	<input type="hidden" name="login[auth_type]" value="google" />
+	<input type="submit" value="{t}google{/t}" />
+</form>
