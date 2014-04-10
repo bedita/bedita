@@ -33,10 +33,10 @@
 	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
-	<link rel="stylesheet" href="/js/libs/select2/select2.css" />
+	<link rel="stylesheet" href="{$html->webroot}js/libs/select2/select2.css" />
 	{$html->script("libs/select2/select2.min")}
 
-	<link rel="stylesheet" href="/js/libs/dropzone/css/dropzone.css" />
+	<link rel="stylesheet" href="{$html->webroot}js/libs/dropzone/css/dropzone.css" />
 	{$html->script("libs/dropzone/dropzone.min")}
 
 	{$beurl->addModuleScripts()}
