@@ -110,7 +110,7 @@ $config['frontendLangsMap'] = array(
  */
 /*$config['extAuthParams'] = array(
 	'facebook' => array(
-		'kies' => array(
+		'keys' => array(
 			'appId' => 'aaa',
 			'secret' => 'bbb'
 		),
@@ -119,7 +119,7 @@ $config['frontendLangsMap'] = array(
 		'createCard' => true
 	),
 	'twitter' => array(
-		'kies' => array(
+		'keys' => array(
 			'consumerKey' => 'ccc',
 			'consumerSecret' => 'ddd'
 		),
@@ -127,7 +127,7 @@ $config['frontendLangsMap'] = array(
 		'createCard' => true
 	),
 	'google' => array(
-		'kies' => array(
+		'keys' => array(
 			'clientId' => 'eee',
 			'clientSecret' => 'fff'
 		),

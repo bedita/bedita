@@ -32,7 +32,7 @@
 					<select id="authselect" name="data[User][auth_type]">
 						<option label="BEdita (default)" value="bedita"{if ($userdetail.auth_type|default:'bedita' == 'bedita') } selected{/if}>BEdita ( default )</option>
 						{foreach from=$externalAuthServices item="service"}
-						<option label="{$service}" value="{$service|strtolower}"{if ($userdetail.auth_type|default:'bedita' == $service|strtolower) } selected{/if}>{$service}</option>
+						<option label="{$service}" value="{$service}"{if ($userdetail.auth_type|default:'bedita' == $service) } selected{/if}>{$service}</option>
 						{/foreach}
 					</select>
 			</tr>
@@ -45,11 +45,14 @@
 				<td>
 					<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
 						class="{ required:true,lettersnumbersonly:true,minLength:6}" 
-						title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>&nbsp;</td>
+						title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>
+
+					<input type="hidden" name="data[User][auth_params][userid]" value="{if !isset($userdetail.auth_params.userid)}{$userdetail.auth_params|default:''}{/if}" />
+					&nbsp;</td>
 			</tr>
 
 
-			<tbody id="defaultAuth" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
+			<tbody class="authTypeForm" id="authTypeBedita" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
 				<tr>
 				 	<th>{t}New password{/t}</th>
 					<td>
@@ -65,17 +68,21 @@
 				</tr>
 			</tbody>
 
+			{foreach from=$externalAuthServices item="service"}
 
-			<tbody id="authType" {if (!$userdetail.auth_type|default:'')}style="display:none"{/if}>
+
+			<tbody class="authTypeForm" id="authType{$service}" {if ($userdetail.auth_type|default:'bedita' != $service)}style="display:none"{/if}>
 				<tr>
 					<th>{t}Password{/t}</th>
 					<td>
-						{t}authentication provided by{/t} <span class="auth_name evidence">{$userdetail.auth_type|default:'external service'}</span>
+						{t}authentication provided by{/t} <span class="auth_name evidence">{$service}</span>
 					</td>	
 				</tr>
 				<tr>
-					<th><span class="auth_name">{$userdetail.auth_type|default:'external service'}</span> userid</th>
-					<td><input type="text" name="data[User][auth_params][userid]" value="{$userdetail.auth_params.userid|default:''}" />&nbsp;
+					<th><span class="auth_name">{$service}</span> userid</th>
+					<td>
+						<input type="text" name="data[Service][{$service}][userid]" value="{if !isset($userdetail.auth_params.userid)}{$userdetail.auth_params|default:''}{/if}" />
+					&nbsp;
 					{foreach from=$userdetail.auth_params item="val" key="k"}
 						{if $k != 'userid'}
 						 <input type="hidden" name="data[User][auth_params][{$k}]" value="{$val}"/>
@@ -85,6 +92,7 @@
 				</tr>
 			</tbody>
 
+			{/foreach}
 
 			<tr>
 				<th><label id="lrealname" for="realname">{t}Real name{/t}</label></th>

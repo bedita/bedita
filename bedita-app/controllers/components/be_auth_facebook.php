@@ -23,7 +23,6 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
 
-    public $vendorId = null;
     public $userAuth = 'facebook';
 
     protected $params = null;
@@ -38,10 +37,10 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
         $this->params = Configure::read("extAuthParams");
 
-        if (isset( $this->params['facebook'] ) && isset( $this->params['facebook']['kies'] )) {
+        if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
             $this->vendorController = new Facebook(array(
-                'appId'  => $this->params['facebook']['kies']['appId'],
-                'secret' => $this->params['facebook']['kies']['secret'],
+                'appId'  => $this->params[$this->userAuth]['keys']['appId'],
+                'secret' => $this->params[$this->userAuth]['keys']['secret'],
                 'cookie' => true
             ));
         }
@@ -57,7 +56,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $profile = $this->loadProfile();
         if ($profile) {
             if (isset($profile['email'])) {
-                $this->createUser($profile, 'facebook');
+                $this->createUser($profile);
                 return $this->login();
             }
         }
@@ -77,8 +76,19 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         if ($profile) {
             $user = ClassRegistry::init('User');
             $user->containLevel("default");
-            $userid = $this->userIdPrefix . $profile['id'];
-            $u = $user->findByUserid($userid);
+            $u = $user->find('first', array(
+                    'conditions' => array(
+                        //'auth_params.userid' => $profile['id'],
+                        'auth_type' => $this->userAuth
+                    )
+                )
+            );
+
+            if (empty($u['User'])) {
+                return false;
+            }
+
+            $userid = $u['User']['id'];
             if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
                 return false ;
             }
@@ -90,7 +100,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
     protected function loginUrl() {
         $params = array(
-            'scope' => $this->params['facebook']['permissions']
+            'scope' => $this->params[$this->userAuth]['permissions']
         );
         $url = $this->vendorController->getLoginUrl($params);
         $this->controller->redirect($url);
@@ -98,8 +108,8 @@ class BeAuthFacebookComponent extends BeAuthComponent{
 
     public function loadProfile() {
          if (isset( $this->vendorController )) {
-            $this->vendorId = $this->vendorController->getUser();
-            if ($this->vendorId) {
+            $vendorId = $this->vendorController->getUser();
+            if ($vendorId) {
                 try {
                     $profile = $this->vendorController->api('/me');
                     $photo = $this->vendorController->api(
@@ -125,22 +135,35 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         }   
     }
 
-    public function createUser($profile, $authType, $notify=true) {
-        //create the data array
-        $res = array();
-        $res['User'] = array(
-            'userid' => $this->userIdPrefix . $profile['id'],
-            'email' => $profile['email'],
-            'realname' => $profile['name'],
-            'auth_type' => $authType,
-            'auth_params' => array(
-                'userid' => $profile['id']
+    public function createUser($profile) {
+        $user = ClassRegistry::init('User');
+        $user->containLevel("default");
+
+        $u = $user->find('first', array(
+                'conditions' => array(
+                    'auth_params' => $profile['id'],
+                    'auth_type' => $this->userAuth
+                )
             )
         );
 
+        if(!empty($u["User"])) {
+            return $u;
+        }
+
+        //create the data array
+        $res = array();
+        $res['User'] = array(
+            'userid' => $profile['id'],
+            'email' => $profile['email'],
+            'realname' => $profile['name'],
+            'auth_type' => $this->userAuth,
+            'auth_params' => $profile['id']
+        );
+
         $groups = array();
-        if (!empty($this->params['facebook']['groups'])) {
-            foreach ($this->params['facebook']['groups'] as $key => $value) {
+        if (!empty($this->params[$this->userAuth]['groups'])) {
+            foreach ($this->params[$this->userAuth]['groups'] as $key => $value) {
                 array_push($groups, $value);
             }
         }
@@ -148,30 +171,16 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $res['Groups'] = $groups;
 
         //create the BE user
-        $user = ClassRegistry::init('User');
-        $user->containLevel("minimum");
-        $u = $user->findByUserid($res['User']['userid']);
-        if(!empty($u["User"])) {
-            return $u;
-        }
-
         $this->userGroupModel($res, $groups);
-        if ($notify) {
-            $user->Behaviors->attach('Notify');
-        }
         
         $user->create();
         if(!$user->save($res)) {
             throw new BeditaException(__("Error saving user", true), $user->validationErrors);
         }
-
-        if ($notify) {
-            $user->Behaviors->detach('Notify');
-        }
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params['facebook']['createCard']) && $this->params['facebook']['createCard']) {
+            if (!empty($this->params[$this->userAuth]['createCard']) && $this->params[$this->userAuth]['createCard']) {
                 $this->createCard($u);
             }
             return $u;
@@ -184,8 +193,6 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $res = array();
         $profile = $this->loadProfile();
        
-        $this->vendorId = $u['User']['auth_params']['userid'];
-
         $res = array(
             'title' => $profile['name'],
             'email' => $profile['email'],

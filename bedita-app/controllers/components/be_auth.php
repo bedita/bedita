@@ -470,6 +470,11 @@ class BeAuthComponent extends Object {
     public function createUser($userData, $groups=NULL, $notify=true) {
         $user = ClassRegistry::init('User');
         $user->containLevel("minimum");
+
+        if ($userData['auth_type'] != 'bedita') {
+            $user->validate = $user->externalServiceValidate;
+        }
+
         $u = $user->findByUserid($userData['User']['userid']);
         if(!empty($u["User"])) {
             $this->log("User ".$userData['User']['userid']." already created");

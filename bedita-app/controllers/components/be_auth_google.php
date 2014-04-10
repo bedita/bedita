@@ -44,12 +44,12 @@ class BeAuthGoogleComponent extends BeAuthComponent{
 
         $this->params = Configure::read("extAuthParams");
 
-        if (isset( $this->params['google'] ) && isset( $this->params['google']['kies'] )) {
+        if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
             $this->vendorController = new Google_Client();
-            $this->vendorController->setClientId($this->params['google']['kies']['clientId']);
-            $this->vendorController->setClientSecret($this->params['google']['kies']['clientSecret']);
+            $this->vendorController->setClientId($this->params[$this->userAuth]['keys']['clientId']);
+            $this->vendorController->setClientSecret($this->params[$this->userAuth]['keys']['clientSecret']);
             $this->vendorController->setRedirectUri($this->getCurrentUrl());
-            foreach ($this->params['google']['scopes'] as $scope) {
+            foreach ($this->params[$this->userAuth]['scopes'] as $scope) {
                $this->vendorController->addScope($scope);
             }
 
@@ -75,7 +75,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
 
     protected function checkSessionKey() {
         if (isset( $this->vendorController )) {
-            
             $profile = $this->loadProfile();
             if ($profile) {
                 $this->createUser($profile);
@@ -83,7 +82,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                     return true;
                 }
             } else {
-                $this->log("Twitter login failed");
+                $this->log("Google login failed");
                 return false;
             }
             return false;
@@ -103,7 +102,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
 
         if ($this->Session->check('googleAccessToken')) {
             $profile = $this->loadProfile();
-            $userid = $this->userIdPrefix . $profile->id;
+            $userid = $profile->id;
         }
 
         //get the user
@@ -111,7 +110,18 @@ class BeAuthGoogleComponent extends BeAuthComponent{
             //BE user
             $user = ClassRegistry::init('User');
             $user->containLevel("default");
-            $u = $user->findByUserid($userid);
+            $u = $user->find('first', array(
+                    'conditions' => array(
+                        'auth_params' => $profile->id,
+                        'auth_type' => $this->userAuth
+                    )
+                )
+            );
+
+            if (empty($u['User'])) {
+                return false;
+            }
+
             if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
                 return false;
             }
@@ -141,10 +151,14 @@ class BeAuthGoogleComponent extends BeAuthComponent{
     public function loadProfile() {
         if ($this->Session->check('googleAccessToken')) {
             $oauth2 = new Google_Service_Oauth2($this->vendorController);
-            $profile = $oauth2->userinfo->get();
-            if (property_exists($profile, 'id')) {
-                return $profile;
-            } else {
+            try {
+                $profile = $oauth2->userinfo->get();
+                if (property_exists($profile, 'id')) {
+                    return $profile;
+                } else {
+                    return null;
+                }
+            } catch(Exception $ex) {
                 return null;
             }
         } else {
@@ -157,21 +171,34 @@ class BeAuthGoogleComponent extends BeAuthComponent{
             $profile = $this->loadProfile();
         }
 
-        //create the data array
-        $res = array();
-        $res['User'] = array(
-            'userid' => $this->userIdPrefix . $profile->id,
-            'realname' => $profile->name,
-            'email' => $profile->email,
-            'auth_type' => 'google',
-            'auth_params' => array(
-                'userid' => $profile->id
+        $user = ClassRegistry::init('User');
+        $user->containLevel("minimum");
+
+        $u = $user->find('first', array(
+                'conditions' => array(
+                    'auth_params' => $profile->id,
+                    'auth_type' => $this->userAuth
+                )
             )
         );
 
+        if(!empty($u["User"])) {
+            return $u;
+        }
+
+        //create the data array
+        $res = array();
+        $res['User'] = array(
+            'userid' => $profile->id,
+            'realname' => $profile->name,
+            'email' => $profile->email,
+            'auth_type' => $this->userAuth,
+            'auth_params' => $profile->id
+        );
+
         $groups = array();
-        if (!empty($this->params['google']['groups'])) {
-            foreach ($this->params['google']['groups'] as $key => $value) {
+        if (!empty($this->params[$this->userAuth]['groups'])) {
+            foreach ($this->params[$this->userAuth]['groups'] as $key => $value) {
                 array_push($groups, $value);
             }
         }
@@ -179,13 +206,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
         $res['Groups'] = $groups;
 
         //create the BE user
-        $user = ClassRegistry::init('User');
-        $user->containLevel("minimum");
-        $u = $user->findByUserid($res['User']['userid']);
-        if(!empty($u["User"])) {
-            return $u;
-        }
-
         $this->userGroupModel($res, $groups);
         
         $user->create();
@@ -195,7 +215,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params['google']['createCard']) && $this->params['google']['createCard']) {
+            if (!empty($this->params[$this->userAuth]['createCard']) && $this->params[$this->userAuth]['createCard']) {
                 $this->createCard($u, $profile);
             }
             return $u;

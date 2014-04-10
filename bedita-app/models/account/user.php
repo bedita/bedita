@@ -44,6 +44,16 @@ class User extends BEAppModel
 		)
 	);
 
+	var $externalServiceValidate  = array(
+		'userid' => array(
+			'rule' => 'notEmpty'
+		),
+		'email' => array(
+			'rule' => 'email',
+			'allowEmpty' => true
+		)
+	);
+
 	protected $modelBindings = array( 
 		"detailed" =>  array("Group", "ObjectUser", "Permission", "UserProperty"),
 		"default" => array("Group", "ObjectUser", "UserProperty"),
