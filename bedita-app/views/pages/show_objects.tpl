@@ -149,10 +149,13 @@ $(document).ready(function() {
 	{$view->element('quick_item')}
 	</div>
 
-	<div class="trigger">{t}Create many{/t}</div>
-	<div class="quickmedia">
-	{$view->element('quick_item_media')}
-	</div>
+	{$multimediaIds = array_intersect($objectTypeIds, $conf->objectTypes.multimedia.id)}
+	{if !empty($objectTypeIds) && !empty($multimediaIds)}
+		<div class="trigger">{t}Create many{/t}</div>
+		<div class="quickmedia">
+		{$view->element('quick_item_media')}
+		</div>
+	{/if}
 
 
 	<div id="loadObjInModal" class="loader"><span></span></div>
