@@ -471,7 +471,7 @@ class BeAuthComponent extends Object {
         $user = ClassRegistry::init('User');
         $user->containLevel("minimum");
 
-        if ($userData['auth_type'] != 'bedita') {
+        if (isset($userData['auth_type']) && $userData['auth_type'] != 'bedita') {
             $user->validate = $user->externalServiceValidate;
         }
 
