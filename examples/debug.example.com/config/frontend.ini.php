@@ -116,6 +116,7 @@ $config['frontendLangsMap'] = array(
 		),
 		'permissions' => 'email, user_birthday',
 		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
 		'createCard' => true
 	),
 	'twitter' => array(
@@ -124,6 +125,7 @@ $config['frontendLangsMap'] = array(
 			'consumerSecret' => 'ddd'
 		),
 		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
 		'createCard' => true
 	),
 	'google' => array(
@@ -136,6 +138,7 @@ $config['frontendLangsMap'] = array(
 			'profile'
 		),
 		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
 		'createCard' => true
 	)
 );*/

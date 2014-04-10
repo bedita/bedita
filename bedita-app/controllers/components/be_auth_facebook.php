@@ -56,7 +56,9 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $profile = $this->loadProfile();
         if ($profile) {
             if (isset($profile['email'])) {
-                $this->createUser($profile);
+                if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
+                    $this->createUser($profile);
+                }
                 return $this->login();
             }
         }
