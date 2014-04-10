@@ -35,6 +35,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
     protected $oauthTokens = null;
     protected $accessTokens = null;
     protected $userIdPrefix = 'google-';
+    public $disabled = false;
 
     function __construct(&$controller=null) {
         $this->loadComponents();

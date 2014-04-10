@@ -248,6 +248,8 @@ class UsersController extends ModulesController {
 			$userdetailModules = NULL;
 		}
 
+		$this->set('externalAuthServices', $this->BeAuth->getExternalServices());
+
 		$userGroups = array();
 		if(isset($userdetail)) {
 			foreach ($userdetail['Group'] as $g) {

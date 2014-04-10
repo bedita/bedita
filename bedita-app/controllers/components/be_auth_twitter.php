@@ -28,8 +28,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     protected $params = null;
     protected $vendorController = null;
     protected $userIdPrefix = 'twitter-';
+    public $disabled = false;
 
-    function __construct(&$controller=null) {
+    public function startup(&$controller=null) {
         $this->loadComponents();
         $this->controller = &$controller;
         $this->Session = &$controller->Session;

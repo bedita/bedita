@@ -92,6 +92,35 @@ class BeAuthComponent extends Object {
     }
 
     /**
+     * Get external auth services components
+     */
+    public function getExternalServices() {
+        $services = array();
+        $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
+        if ($handle = opendir($defaultComponentPath)) {
+            while (false !== ($entry = readdir($handle))) {
+                if (strpos($entry, 'be_auth_') === 0) {
+                    $name = str_replace('be_auth_', '', $entry);
+                    $name = str_replace('.php', '', $name);
+                    array_push($services, Inflector::camelize($name));
+                }
+            }
+
+            closedir($handle);
+        }
+        $addons = ClassRegistry::init("Addon")->getAddons();
+        if (!empty($addons['components']) && !empty($addons['components']['on'])) {
+            $addonComponents = $addons['components']['on'];
+            foreach ($addonComponents as $key => $component) {
+                if (strpos($component['name'], 'BeAuth') === 0) {
+                    array_push($services, str_replace('BeAuth', '', $component['name']));
+                }
+            }
+        }
+        return $services;
+    }
+
+    /**
      * Check whether session key is valid
      */
     protected function checkSessionKey() {

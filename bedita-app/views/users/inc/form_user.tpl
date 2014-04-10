@@ -30,8 +30,10 @@
 				<th><label>{t}Authentication service{/t}</label></th>
 				<td>
 					<select id="authselect" name="data[User][auth_type]">
-						<option label="BEdita" value="" selected>BEdita ( default )  </option>
-						{html_options values=$conf->extAuthTypes output=$conf->extAuthTypes selected=$userdetail.auth_type}
+						<option label="BEdita (default)" value="bedita"{if ($userdetail.auth_type|default:'bedita' == 'bedita') } selected{/if}>BEdita ( default )</option>
+						{foreach from=$externalAuthServices item="service"}
+						<option label="{$service}" value="{$service|strtolower}"{if ($userdetail.auth_type|default:'bedita' == $service|strtolower) } selected{/if}>{$service}</option>
+						{/foreach}
 					</select>
 			</tr>
 

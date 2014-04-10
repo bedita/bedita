@@ -29,6 +29,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     protected $params = null;
     protected $vendorController = null;
     protected $userIdPrefix = 'facebook-';
+    public $disabled = false;
 
     function __construct(&$controller=null) {
         $this->loadComponents();
