@@ -111,8 +111,8 @@ $config['frontendLangsMap'] = array(
 $config['extAuthParams'] = array(
 	'facebook' => array(
 		'kies' => array(
-			'appId' => '355729061230707',
-			'secret' => '2b9d5e892defe3f814dcd44f6483d8fd'
+			'appId' => 'aaa',
+			'secret' => 'bbb'
 		),
 		'permissions' => 'email, user_birthday',
 		'groups' => array('frontend', 'editor', 'administrator'),
@@ -120,16 +120,16 @@ $config['extAuthParams'] = array(
 	),
 	'twitter' => array(
 		'kies' => array(
-			'consumerKey' => 'KqvyUfk41IzTq7w18BlryGaN9',
-			'consumerSecret' => 'zH0DkSVLZxZTI2qmomCMwL4E8iUh7Hr6nFEI53AS9WArdOEnJk'
+			'consumerKey' => 'ccc',
+			'consumerSecret' => 'ddd'
 		),
 		'groups' => array('frontend', 'editor', 'administrator'),
 		'createCard' => true
 	),
 	'google' => array(
 		'kies' => array(
-			'clientId' => '701520687241-va63lnm4ftabdprs8305p9f4387bsq60.apps.googleusercontent.com',
-			'clientSecret' => 'hZ64XcDeh_V3ERlT0Eaf4Hc4'
+			'clientId' => 'eee',
+			'clientSecret' => 'fff'
 		),
 		'scopes' => array(
 			'email',
