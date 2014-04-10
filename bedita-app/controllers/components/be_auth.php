@@ -67,7 +67,8 @@ class BeAuthComponent extends Object {
                     throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
                 } else {
                     $componentClass .= "Component";
-                    $this->extAuthComponents[$service] = new $componentClass($this->controller);
+                    $this->extAuthComponents[$service] = new $componentClass();
+                    $this->extAuthComponents[$service]->startup($this->controller);
                 }
             }
         }

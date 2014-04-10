@@ -108,7 +108,7 @@ $config['frontendLangsMap'] = array(
 /**
  * external auth params
  */
-$config['extAuthParams'] = array(
+/*$config['extAuthParams'] = array(
 	'facebook' => array(
 		'kies' => array(
 			'appId' => 'aaa',
@@ -138,7 +138,7 @@ $config['extAuthParams'] = array(
 		'groups' => array('frontend', 'editor', 'administrator'),
 		'createCard' => true
 	)
-);
+);*/
 								
 
 /**
@@ -175,5 +175,10 @@ $config["cookieName"] = array(
 //	"showDuplicates" => false,
 //	"trackNotLogged" => false
 //);
+
+// frontend.cfg 
+if(file_exists(	APP. "config" . DS . "frontend.cfg.php")) {
+	include APP. "config" . DS . "frontend.cfg.php";
+}
 
 ?>
