@@ -30,10 +30,10 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     protected $userIdPrefix = 'twitter-';
     public $disabled = false;
 
-    public function startup(&$controller=null) {
+    public function startup($controller=null) {
         $this->loadComponents();
-        $this->controller = &$controller;
-        $this->Session = &$controller->Session;
+        $this->controller = $controller;
+        $this->Session = $controller->Session;
 
         $this->params = Configure::read("extAuthParams");
 
@@ -53,23 +53,26 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
     protected function checkSessionKey() {
         if (isset( $this->vendorController )) {
-            if(!empty($_REQUEST['oauth_verifier'])) {
-
+            if(!empty($_REQUEST['oauth_verifier']) && $this->Session->check('twitterOauthTokens')) {
                 $oauthTokens = $this->Session->read('twitterOauthTokens');
+                if (isset($oauthTokens['oauth_token'])) {
+                    $this->vendorController = new TwitterOAuth(
+                            $this->params[$this->userAuth]['keys']['consumerKey'],
+                            $this->params[$this->userAuth]['keys']['consumerSecret'],
+                            $oauthTokens['oauth_token'],
+                            $oauthTokens['oauth_token_secret']
+                        );
 
-                $this->vendorController = new TwitterOAuth(
-                        $this->params[$this->userAuth]['keys']['consumerKey'],
-                        $this->params[$this->userAuth]['keys']['consumerSecret'],
-                        $oauthTokens['oauth_token'],
-                        $oauthTokens['oauth_token_secret']
-                    );
-
-                $accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
-                $this->Session->write('twitterAccessTokens', $accessTokens);
+                    $accessTokens = $this->vendorController->getAccessToken($_REQUEST['oauth_verifier']);
+                    $this->Session->write('twitterAccessTokens', $accessTokens);
+                } else {
+                    $this->Session->delete('twitterOauthTokens');
+                    return false;
+                }
             }
 
             $profile = $this->loadProfile();
-            if ($profile) {
+            if ($profile != null) {
                 if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
                     $this->createUser($profile);
                 }
@@ -95,9 +98,11 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             return;
         }
 
-        if ($this->Session->check('twitterAccessTokens')) {
+        if ($this->Session->check('twitterProfile')) {
             $profile = $this->loadProfile();
-            $userid = $profile->id;
+            if ($profile != null) {
+                $userid = $profile->id;
+            }
         }
 
         //get the user
@@ -117,6 +122,8 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                 return false;
             }
 
+            $userid = $u['User']['userid'];
+
             if(!$this->loginPolicy($userid, $u, $policy, $authGroupName)) {
                 return false;
             }
@@ -129,8 +136,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     }
 
     public function logout() {
-        $this->Session->write('twitterAccessTokens', null);
-        $this->Session->write('twitterOauthTokens', null);
+        $this->Session->delete('twitterAccessTokens');
+        $this->Session->delete('twitterOauthTokens');
+        $this->Session->delete('twitterProfile');
     }
 
     protected function getCurrentUrl() {
@@ -162,6 +170,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     }
 
     public function loadProfile() {
+        if ($this->Session->check('twitterProfile')) {
+            return $this->Session->read('twitterProfile');
+        }
         if ($this->Session->check('twitterAccessTokens')) {
             $accessTokens = $this->Session->read('twitterAccessTokens');
             if (!empty($accessTokens['oauth_token'])) {
@@ -173,6 +184,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                     );
                 $profile = $this->vendorController->get('account/verify_credentials');
                 if (property_exists($profile, 'id')) {
+                    $this->Session->write('twitterProfile', $profile);
                     return $profile;
                 } else {
                     return null;

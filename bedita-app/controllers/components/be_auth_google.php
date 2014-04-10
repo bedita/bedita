@@ -137,7 +137,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
 
     public function logout() {
         $this->vendorController->revokeToken();
-        $this->Session->del('googleAccessToken');
+        $this->Session->delete('googleAccessToken');
     }
 
     protected function loginUrl() {
