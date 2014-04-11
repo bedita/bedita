@@ -1,5 +1,4 @@
 {$html->script("form", false)}
-{$html->script("libs/jquery/plugins/jquery.changealert", false)}
 
 {literal}
 <script type="text/javascript">

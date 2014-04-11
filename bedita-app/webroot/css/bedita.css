@@ -1938,28 +1938,30 @@ A.BEbutton.golink:before {
 }
 
 #modal {
-	position:absolute;
-	top:20px;
+	position: fixed;
 	left:300px;
-	background-color: #FFFFFF;
+	top: 20px;
+	bottom: 20px;
+	background: transparent;
 	width:660px;
-	/*height:550px;*/
 	display:none;
-	z-index:500;
-	/*overflow:hidden;*/
-	border-radius : 22px; 
-	-moz-border-radius : 22px; 
-	-webkit-border-radius : 22px;
-	-khtml-border-radius: 22px;
+	z-index:500;  
+	overflow: hidden;
 }
 
 #modalmain {
 	width:100%;
-	min-height:125px;
-	/*overflow-y:auto;*/
-	/*overflow-x:hidden;*/
-	/*background: transparent url(../img/shadowsimple.png) repeat-x;*/
-	margin-bottom:30px;
+	height: calc(100% - 21px);
+	overflow:hidden;
+	position: relative;
+	background: #FFF;
+}
+
+#modalmain .bodybg{
+	height: -webkit-calc(100% - 55px);
+	height: calc(100% - 55px);
+	overflow-y:auto;
+	overflow-x:hidden;
 }
 
 #modalmain .body {
@@ -1967,13 +1969,6 @@ A.BEbutton.golink:before {
 	/*min-height:505px;*/
 }
 
-#modalmain .trigger {
-	background:white url('../img/piumeno.gif') no-repeat left 2px; 
-	padding:5px 0px 5px 30px;
-	font-weight:bold;
-	cursor:pointer;
-	border-bottom:1px solid #CCC;
-}
 #modalmain .search, #modalmain .quick, #modalmain .quickmedia {
 	display:none;
 	padding:10px;
@@ -1987,6 +1982,9 @@ A.BEbutton.golink:before {
 	padding:10px; margin-top:0px;
 	text-align:center; 
 	background-color:#FFFFFF;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 #modalheader {
@@ -1997,17 +1995,19 @@ A.BEbutton.golink:before {
 	padding-right:20px;
 	text-align:right;
 	color:white;
-	cursor:move;
 	border-bottom:1px solid gray;
 }
-
+/*
 #modalheader:Hover {
 	background-color:#333;
 }
-
+*/
 #modalheader A {
 	color:white;
 	cursor:pointer;
+	margin-left: 20px;
+	padding-left: 20px;
+	border-left: solid 1px #FFF;
 }
 
 
@@ -2017,6 +2017,10 @@ A.BEbutton.golink:before {
 	font-weight:bold;
 	cursor:pointer;
 	border-bottom:1px solid #CCC;
+}
+
+#modalmain .trigger.open {
+	background-position: left -25px;
 }
 
 

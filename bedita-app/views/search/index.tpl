@@ -1,7 +1,5 @@
 {$html->css("tree", null, ['inline' => false])}
 {$html->script("form", false)}
-{$html->script("libs/jquery/plugins/jquery.changealert", false)}
-
 
 <script type="text/javascript">
 <!--

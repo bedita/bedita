@@ -1,6 +1,5 @@
 {$html->script('form', false)}
 {$html->script('libs/jquery/plugins/jquery.form', false)}
-{$html->script('libs/jquery/plugins/jquery.changealert', false)}
 
 {$view->element('modulesmenu')}
 

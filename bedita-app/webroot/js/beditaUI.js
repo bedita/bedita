@@ -491,27 +491,19 @@ $(document).ready(function(){
 
     jQuery.fn.BEmodal = function(){
 
-        $("#modal").draggable({
-            handle : "#modalheader"
-        });
-
         var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
         var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
         
-        var h = 1500; 
-        //alert(h);
+        var h = 1500;
         
         var destination = $(this).attr("rel");
         var title = $(this).attr("title");
         
         var myTop = $(window).scrollTop() + 20;
         
-        $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h).click(function () {
-            //$(this).hide();
-            //$("#modal").hide();
-        });
+        $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h);
         
-        $("#modal").toggle().css("top",myTop);
+        $("#modal").toggle()/*.css("top", myTop)*/;
 
         if ($(this).attr("rel")) {
             $("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
@@ -521,7 +513,7 @@ $(document).ready(function(){
 
         
         if ($(this).attr("title")) {
-            $("#modalheader .caption").html(title+"&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;");
+            $("#modalheader .caption").html(title);
         };
         
         
@@ -530,11 +522,45 @@ $(document).ready(function(){
             $("#modaloverlay").hide();
             $(document).trigger('operation:cancel');
         });
+
+        $("#modalheader .toggle").click(function () {
+            $("#modal #modalmain").toggle();
+        });
     /*
         $("#modalheader .full").click(function () {
 
         });
     */
+        //$("#modal").draggable();
+
+        //prevent mousewheel propagation
+        $(document).on('DOMMouseScroll mousewheel', '#modal .bodybg', function(ev) {
+            var $this = $(this),
+                scrollTop = this.scrollTop,
+                scrollHeight = this.scrollHeight,
+                height = $this.height(),
+                delta = (ev.type == 'DOMMouseScroll' ?
+                    ev.originalEvent.detail * -40 :
+                    ev.originalEvent.wheelDelta),
+                up = delta > 0;
+
+            var prevent = function() {
+                ev.stopPropagation();
+                ev.preventDefault();
+                ev.returnValue = false;
+                return false;
+            }
+
+            if (!up && -delta > scrollHeight - height - scrollTop) {
+                // Scrolling down, but this will take us past the bottom.
+                $this.scrollTop(scrollHeight);
+                return prevent();
+            } else if (up && delta > scrollTop) {
+                // Scrolling up, but this will take us past the top.
+                $this.scrollTop(0);
+                return prevent();
+            }
+        });
 
     }
 

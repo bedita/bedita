@@ -1,6 +1,3 @@
-{$html->script("libs/jquery/plugins/jquery.changealert", false)}
-
-
 {assign var="p" value=$beToolbar->params}
 {assign var="toolbarstring" value=$p.named}
 
