@@ -131,7 +131,7 @@ $(window).load(function() {
 		
 		setPlaceCss(editor);
 		
-		$(document).on('keyup', editor.document.$ + ' *', function() {
+		$(document).on('keyup', '*', function() {
 			setPlaceCss(editor);
 		});
 	}
@@ -143,7 +143,6 @@ $(window).load(function() {
 			jph.each(function() {
 				var href = $(this).attr('href');
 				var src = $('#relationType_attach .obj[data-benick="'+href+'"]').find('img').prop('src');
-				console.log(src);
 				style+=' A[href='+href+']:after{ background-image: url("'+src+'") } ';
 			});
 		}
