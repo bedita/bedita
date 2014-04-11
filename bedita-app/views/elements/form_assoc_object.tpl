@@ -1,4 +1,4 @@
-{* included by show_objects.tpl *}
+{* included in form_assoc_objects *}
 {strip}
 
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
@@ -24,7 +24,7 @@
 	</td>
 
 	<td class="filethumb">
-	{if $objRelated.ObjectType.module_name == "multimedia"}
+	{if !empty($objRelated.uri)}
 		{assign_associative var="params" presentation="thumb" width='155'}
 		{$beEmbedMedia->object($objRelated,$params)}
 	{/if}
@@ -36,19 +36,24 @@
 	</td> 
 
 {if $rel == "question"}
-	<td class="">{$objRelated.question_type|default:''}</td>
+	<td>{$objRelated.question_type|default:''}</td>
 {/if}
 
-{if $rel == "download" or $rel == "attach"}
-	
-	<td class="mimetype" >{$objRelated.mime_type|default:''|truncate:60:'~':true}</td>
-	<td class="filesize">{$objRelated.file_size|default:0|filesize}</td>
-
+{if $objRelated.ObjectType.module_name == "multimedia"}
+	{$calctype = $objRelated.Category.0.name|default:$objRelated.ObjectType.name} 
+{else}
+	{$calctype = $objRelated.ObjectType.name} 
 {/if}
+
+	<td title="{$calctype}" class="obtype"><span class="icon-{$calctype}"></span></td>
 
 	<td class="status">{$objRelated.status|default:''}</td>
 	
 	<td class="lang">{$objRelated.lang|default:''}</td>
+
+	<td nowrap class="mimetype">
+		{if !empty($objRelated.file_size)}{$objRelated.file_size|default:0|filesize}&nbsp;&nbsp;{/if} {$objRelated.mime_type|default:''|truncate:60:'~':true}
+	</td>
 
 	<td class="moredata">
 		<div style="display: none">

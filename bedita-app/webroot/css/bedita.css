@@ -112,8 +112,9 @@ img {
 
 .obj.on {font-weight:normal;}
 .obj.disabled {opacity:0.5}
-.obj.draft *, .obj.off *, .obj.required *   {color:#666666}
+/*.obj.draft *, .obj.off *, .obj.required *   {color:#666666}*/
 
+.obj.draft, .obj.off  {opacity:.6}
 
 /*...........................................
  
@@ -531,7 +532,7 @@ UL.modules {
 .subwarning.ubiquity {
 	background: #666 url('../img/iconUbiquity.png') 115px 3px no-repeat;
 	background-size:20px;
-	height:15px;
+	height:26px;
 	overflow:hidden;
 }
 /*...........................................
@@ -751,9 +752,12 @@ UL.menuleft + UL.menuleft {
 }
 
 .tab H2 .relnumb {
-	display:inline-block; width:16px; 
-	height: 16px; text-align:center; margin-left:-5px; border-radius:16px; padding-top:2px; 
+	height: 16px;
+	text-align:center;
+	border-radius:16px; 
+	padding: 2px 4px 2px 4px; 
 	background-color:#444;
+	font-size:.9em;
 }
 
 
@@ -916,22 +920,34 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .filethumb {
+	min-height:20px;
     width: 100%;
     padding: 0;
 }
 
-.boxed.relationList .filethumb img{
+.boxed.relationList .filethumb img {
 	width:100%;
 	margin:0px;
 }
 
-.boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang {
+.boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang, .boxed.relationList .obtype {
 	display: table-cell;
 	padding: 5px 5px 0 0;
 }
 
+.relationList .obtype *{
+	font-size:14px;
+	color:#444;
+}
+
+.boxed.relationList .obtype *{
+	font-size:28px;
+	color:#444;
+}
+
 .boxed.relationList .mimetype {
 	display: block;
+	padding:0px;
 }
 
 .boxed.relationList .mimetype:empty {
@@ -939,7 +955,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .boxed.relationList .assoc_obj_title {
-	min-height:46px;
+	/*min-height:46px;*/
 	border-bottom:1px solid #999;
 }
 
@@ -1583,7 +1599,7 @@ UL#mediatypes  {
 
 /*...........................................    
 
-    iconset
+    media iconset
 
 ...........................................*/
 
@@ -1599,6 +1615,22 @@ UL#mediatypes  {
 .ico_rss {background-image: url('../img/iconset/24px/rss.png');}
 .ico_rss.on {background-image: url('../img/iconset/24px/rss-on.png');}
 .ico_application {background-image: url('../img/iconset/24px/application.png');}
+
+.icon-image,
+.icon-video,
+.icon-audio,
+.icon-text ,
+.icon-spreadsheet,
+.icon-presentation ,
+.icon-drawing,
+.icon-chart,
+.icon-formula,
+.icon-rss,
+.icon-gallery,
+.icon-application {
+
+}
+
 
 /*...........................................    
 

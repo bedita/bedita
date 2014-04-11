@@ -22,6 +22,7 @@
 	{$view->element('json_meta_config')}
 
 	{$html->css('bedita.css?v=01')}
+	{$html->css('bedita-icons.css')}
 	
 	<!--[if lte IE 6]>
 		{$html->css('IE6fix')}

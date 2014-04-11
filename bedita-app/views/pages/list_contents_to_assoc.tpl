@@ -56,8 +56,18 @@ $(document).ready(function() {
 
 		{foreach from=$objectsToAssoc.items item="objToAss"}
 		<tr>
-			<td style="width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
+			<td style="white-space:nowrap; width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
 				<input type="checkbox" name="object_selected[]" class="objectCheck" value="{$objToAss.id}"/>
+				{if !empty($objToAss.num_of_permission)}
+					<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; margin:0 0 0 -5px; vertical-align:top;">
+				{/if}
+				
+				{if ($objToAss.ubiquity|default:0 > 1)}
+					<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:4px 4px 0 0; height:18px; vertical-align:top;">
+				{/if}
+				{if (!empty($objToAss.fixed))}
+					<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
+				{/if}
 			</td>
 			<td>{$objToAss.title|default:'<i>[no title]</i>'}</td>
 			<td style="padding:0px; width:10px;">
@@ -73,7 +83,7 @@ $(document).ready(function() {
 			<td style="white-space:nowrap; text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
 			<td style="text-align:center">{$objToAss.lang}</td>
 			<td style="text-align:center">{$objToAss.id}</td>
-			<td><a class="BEbutton golink" title="{$objToAss.nickname}" target="_blank" href="{$html->url('/')}view/{$objToAss.nickname}"></a></td>
+			<td><a class="BEbutton golink" style="padding:0px 2px 0px 2px !important; margin:0px" title="{$objToAss.nickname}" target="_blank" href="{$html->url('/')}view/{$objToAss.nickname}"></a></td>
 		</tr>
 		{/foreach}
 	</tbody>
