@@ -89,6 +89,7 @@ var select2optionsTree = {
 $(document).ready(function() {
 
 	$(".trigger").click(function() {
+		$(this).toggleClass('open');
 		$(this).next().toggle('fast');
 	});
 	
@@ -163,16 +164,16 @@ $(document).ready(function() {
 	<div id="assocObjContainer">
 		{include file="list_contents_to_assoc.tpl"}
 	</div>
-	
-	<div class="modalcommands">
-		<input type="button" id="addButton" style="margin-bottom:10px; width:300px" value=" {t}add{/t} ">
-		{if !empty($html->params.named.group)}
- 		<select title="{t}permission type{/t}" multiple id="modalSelectGroupPermission" name="permission[]" data-placeholder="{t}select a permission{/t}">
-            {foreach $conf->objectPermissions as $permLabel => $permVal}
-            <option value="{$permVal}">{t}{$permLabel}{/t}</option>
-            {/foreach}
-        </select>
-        {/if}
-	</div>
 
+</div>
+
+<div class="modalcommands">
+	<input type="button" id="addButton" style="margin-bottom:10px; width:300px" value=" {t}add{/t} ">
+	{if !empty($html->params.named.group)}
+		<select title="{t}permission type{/t}" multiple id="modalSelectGroupPermission" name="permission[]" data-placeholder="{t}select a permission{/t}">
+        {foreach $conf->objectPermissions as $permLabel => $permVal}
+        <option value="{$permVal}">{t}{$permLabel}{/t}</option>
+        {/foreach}
+    </select>
+    {/if}
 </div>

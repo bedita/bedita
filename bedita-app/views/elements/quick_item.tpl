@@ -29,6 +29,7 @@
 				</td>
 			</tr>
 			<tr id="quickitemFileContainer">
+				<td><label>{t}File{/t}</label>
 				<td colspan="5">
 					<input name="Filedata" type="file" />
 				</td>
