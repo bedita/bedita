@@ -1,5 +1,3 @@
-{$html->script("libs/jquery/plugins/jquery.changealert", false)}
-	
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
