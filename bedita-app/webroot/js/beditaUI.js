@@ -901,12 +901,14 @@ function getFlashVersion(){
  *
  * @contructor
  */
-function ListHandler() {
+(function(window, $) {
 
-	/**
-	 * @type Array
-	 */
-	var list = [];
+	function ListHandler(list) {
+
+		this.list = [];
+
+		return this;
+	}
 
 	/**
 	 * add or remove items from list
@@ -914,51 +916,55 @@ function ListHandler() {
 	 * @param  mixed items
 	 * @param  string operation Can be 'add' or 'delete'
 	 */
-	var handleList = function(items, operation) {
+	ListHandler.prototype.handleList = function(items, operation) {
 		if (typeof items != 'undefined') {
 			if (!Array.isArray(items)) {
 				items = [items];
 			}
 			for (var i in items) {
 				if (!$.isPlainObject(items[i]) && !Array.isArray(items[i])) {
-					var index = $.inArray(items[i], list);
+					var index = $.inArray(items[i], this.list);
 					if (operation == 'add') {
 						if (index == -1) {
-							list.push(items[i]);
+							this.list.push(items[i]);
 						}
 					} else if (operation == 'remove') {
 						if (index != -1) {
-							list.splice(index, 1);
+							this.list.splice(index, 1);
 						}
 					}
 				}
 			}
 		}
-		return list;
-	}
+		return this.list;
+	};
 
 	/**
 	 * add items to list
 	 * items already in list will not added
 	 * @param mixed items
 	 */
-	this.add = function(items) {
-		return handleList(items, 'add');
-	}
+	ListHandler.prototype.add = function(items) {
+		return this.handleList(items, 'add');
+	};
 
 	/**
 	 * remove object's ids
 	 * @param  mixed items
 	 */
-	this.remove = function(items) {
-		return handleList(items, 'remove');
-	}
+	ListHandler.prototype.remove = function(items) {
+		return this.handleList(items, 'remove');
+	};
 
 	/**
 	 * return the list
 	 * @return Array
 	 */
-	this.get = function() {
-		return list;
-	}
-}
+	ListHandler.prototype.get = function() {
+		return this.list;
+	};
+
+	// expose constructor to window
+	window.ListHandler = ListHandler;
+
+})(window, jQuery);

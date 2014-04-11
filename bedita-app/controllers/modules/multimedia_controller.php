@@ -359,43 +359,13 @@ class MultimediaController extends ModulesController {
 	}
 
 	/**
-	 * Form page to upload multimedia objects
+	 * Load multiupload in modal
+	 * called via ajax
 	 */
-	function frm_upload() {
-	}
-	
-	/**
-	 * Form page to select bedita multimedia objects
-	 */
-	function frm_upload_bedita() {
-		$order = ""; $dir = true; $page = 1; $dim = 20 ;
-		$conf  = Configure::getInstance() ;
-		$this->setup_args(
-			array("page", "integer", &$page),
-			array("dim", "integer", &$dim),
-			array("order", "string", &$order),
-			array("dir", "boolean", &$dir)
-		) ;
-		$ot = &$conf->objectTypes ; 
-		$multimedia = $this->BeTree->getDescendants(null, null, array($ot['image']["id"], $ot['audio']["id"], $ot['video']["id"]), $order, $dir, $page, $dim)  ;
-		for($i=0; $i < count($multimedia['items']) ; $i++) {
-			$id = $multimedia['items'][$i]['id'] ;
-			$ret = $this->Stream->findById($id) ;
-			$multimedia['items'][$i] = array_merge($multimedia['items'][$i], $ret['Stream']) ;
-			$multimedia['items'][$i]['bedita_type'] = $conf->objectTypes[$multimedia['items'][$i]['object_type_id']]["model"] ;
-		}
-		$this->params['toolbar'] = &$multimedia['toolbar'] ;
-		// Data for template
-		$this->set('multimedia', 	$multimedia['items']);
-		$this->set('toolbar', 		$multimedia['toolbar']);
+	public function multipleUpload() {
+		$this->layout = 'ajax';
 	}
 
-	/**
-	 * Form page to upload multimedia through URL
-	 */
-	function frm_upload_url() {
-	}
-	
 	/**
 	 * Form page to open add multimedia method choice (modal)
 	 */
