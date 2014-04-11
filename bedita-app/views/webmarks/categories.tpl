@@ -1,12 +1,9 @@
-{$html->script("libs/jquery/plugins/jquery.changealert", false)}
-
-	
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl" method="categories"}
 
 <div class="head">
-	
+
 	<h1>{t}Categories{/t}</h1>
 
 </div>
@@ -15,7 +12,7 @@
 
 
 <div class="mainfull">
-	
+
 {$view->element('list_categories')}
 
 </div>
