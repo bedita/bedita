@@ -2401,41 +2401,6 @@ code ins {
 
 /*...........................................    
 
-   Uploadify
-
-...........................................*/
-
-.uploadifyQueueItem {
-	border: 1px solid silver !important;
-	margin-top: 5px;
-	padding: 10px;
-	width: 300px;
-}
-.uploadifyQueueItem .cancel {
-	float: right;
-}
-.uploadifyProgress {
-	background-color: #FFFFFF;
-	border-top: 0px solid red;
-	margin-top: 10px;
-	width: 100%;
-}
-.uploadifyProgressBar {
-	background-color: #0099FF;
-	width: 1px;
-	height: 3px;
-}
-
-#vcontainer {
-	border:5px solid #000;
-	border-radius : 11px; 
-	-moz-border-radius : 11px; 
-	-webkit-border-radius : 11px;
-	-khtml-border-radius: 11px;
-}
-
-/*...........................................    
-
    New Upload system
 
 ...........................................*/

@@ -366,17 +366,6 @@ class MultimediaController extends ModulesController {
 		$this->layout = 'ajax';
 	}
 
-	/**
-	 * Form page to open add multimedia method choice (modal)
-	 */
-	function add_multimedia() {
-			
-		$this->layout = null;
-		//$view = "multimedia/add_multimedia.tpl";
-		//$this->render(null, null, VIEWS . $view);		
-		
-	}
-	
 	protected function forward($action, $esito) {
 
 		$REDIRECT = array(

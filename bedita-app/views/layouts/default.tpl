@@ -22,10 +22,6 @@
 	{$view->element('json_meta_config')}
 
 	{$html->css('bedita.css?v=01')}
-	
-	<!--[if lte IE 6]>
-		{$html->css('IE6fix')}
-	<![endif]-->
 
 	{$html->script("libs/jquery/jquery-2.1.0.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
