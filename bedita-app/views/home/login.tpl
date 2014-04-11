@@ -1,20 +1,6 @@
 {$html->script("form", false)}
 {$html->script("libs/jquery/plugins/jquery.form", false)}
 {$html->script("libs/jquery/plugins/jquery.metadata", false)}
-{$html->script("libs/jquery/plugins/jquery.validate", false)}
-
-<script type="text/javascript">
-<!--
-$.validator.setDefaults({ 
-	/*submitHandler: function() { alert("submitted!"); },*/
-	success: function(label) { label.html("&nbsp;").addClass("checked");}
-});
-$().ready(function() { 
-	$("#loginform").validate();
-	$("#userid").focus();
-});
-//-->
-</script>
 
 <div class="primacolonna">
 	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>

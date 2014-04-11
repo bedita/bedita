@@ -14,16 +14,9 @@
 	{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
 {/if}
 
-{$html->script("libs/jquery/plugins/jquery.placement.below")}
-{$html->script("libs/jquery/plugins/jquery.timepicker-list")}
-
-{$html->script("libs/jquery/plugins/jquery.validate")}
-
 <script type="text/javascript">
 	$(document).ready(function () {
 		openAtStart("#contents, #invoice");
-		$("#timeStart, #timeEnd").timePicker({ startTime: "00:00", endTime: "23:30" });
-		$("#updateForm").validate();
 	});
 </script>
 

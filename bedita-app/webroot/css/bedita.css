@@ -1993,7 +1993,7 @@ A.BEbutton.golink:before {
 	background-color:#000000;
 	/*width:480px;*/
 	height:21px;
-	padding-top:5px;
+	padding-top: 2px;
 	padding-right:20px;
 	text-align:right;
 	color:white;
@@ -2699,6 +2699,10 @@ span.highlight {
 }
 
 /* select2 */
+
+.select2-container .select2-choice abbr {
+	top: 6px !important;
+}
 
 .select2-results {
 	overflow: auto !important;
