@@ -361,7 +361,7 @@ UL.modules {
 
 ...........................................*/
 
-.areas, .area, .section 	{background-color:#626151 !important;}
+.areas, .area, .section 	{background-color: #626151 !important;}
 .documents, .document		{background-color:#ff6600 !important;}
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
 .events, .event				{background-color:#0099CC !important;}
@@ -705,7 +705,7 @@ UL.menuleft + UL.menuleft {
 .tab H2,  .tab2 H2 {
 	cursor:pointer;
 	color: white; 
-	background:#808080 url(../img/piumeno.gif) no-repeat;
+	background: #808080 url(../img/piumeno.gif) no-repeat;
 	background-position:right 0px ; 
 	padding: 7px 10px 7px 10px;
 	/*-webkit-border-radius: 3px;
@@ -1024,6 +1024,11 @@ UL.menuleft + UL.menuleft {
 	border-top:0px dashed #999999;
 }
 */
+
+.pub H2.open {
+	background-position: 2px -27px !important;
+}
+
 .publishingtree LI A {
 	padding: 5px;
 	display: inline-block;
@@ -1031,29 +1036,49 @@ UL.menuleft + UL.menuleft {
 	margin-top: -6px;
 }
 
+/*.publishingtree .treeview A.hover{
+	color: #626151;
+}*/
+
 .publishingtree LI A:hover {
-	background-color: #B6B6B6;
+    color: #4B4705;
 }
 
 .publishingtree DIV.pub {
 	margin: 0px 0px 10px 0px;
 	clear:both;
 	word-wrap: break-word; /* or "normal" */
+	overflow-x: auto;
+}
+
+.publishingtree DIV.pub li{
+	min-width: 150px;
+}
+
+.publishingtree DIV.pub > ul{
+	padding-top: 10px;
+	min-width: 100%; */;
 }
 
 .pub H2 {
-	margin: 0px 0px 10px 0px;
-	background-color:#dedede;
-	padding:5px 5px 5px 10px;
+	margin: 0px;
+	background: #dedede url(../img/piumeno.gif) no-repeat;
+	background-position: 2px -1px;
+	padding: 5px 5px 5px 25px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	min-width: 100%
+;
+	cursor: pointer;
 }
 
 .pub H2 A {
-	color:#663300;
 	/*text-transform:uppercase;*/
+	color: #444;
+}
+
+.pub H2.open A {
 }
 
 .publishingtree H2 A {
@@ -1068,14 +1093,6 @@ UL.menuleft + UL.menuleft {
 .publishingtree H2 A.plusminus {
 	/*display:inline-block;
 	padding-right:10px;*/
-}
-
-.publishingtree H2 A.plusminus:before {
-	content: "+";
-}
-
-.publishingtree H2.open A.plusminus:before {
-	content: "−";
 }
 
 /*
@@ -1101,8 +1118,8 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree UL {
-	min-width:275px;
-	margin-left: 7px;
+	/* min-width:275px; */
+	padding-left: 7px;
 	display:none;
 }
 
@@ -2118,10 +2135,6 @@ LI.welcome {
 
 .dashboard H1 {
 	margin-bottom:5px;
-}
-
-.dashboard H2.open {
-	background-color:#666;
 }
 
 .dashboard .bordered {

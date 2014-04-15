@@ -341,12 +341,10 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
-    $(".publishingtree h2 A").before("<a class='plusminus'></a>");
     
-    $(".publishingtree h2 .plusminus").click(function () {
+    $(".publishingtree .pub h2").click(function () {
         var $t = $(this);
-        var who = $t.parent("H2");
-        var ul = $(who).siblings("ul.menutree").first();
+        var ul = $t.siblings("ul.menutree").first();
         if (ul.is(':empty')) {
             var url = ul.attr('rel');
             $.ajax({
@@ -366,24 +364,25 @@ $(document).ready(function(){
                             rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
                             $(this).attr("rel", rel);
                         }
-                    }).click(function () {
+                    }).click(function (ev) {
+                        ev.stopPropagation();
                         if ($(this).attr("rel")) {
                             window.location = $(this).attr("rel");
                         }
                     });
 
-                    ul.slideToggle(800, function() {
-                        $(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
+                    ul.slideToggle(250, function() {
+                        ul.find("input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
                     });
-                    $(who).toggleClass("open");
+                    $t.toggleClass("open");
                 },
                 error: function(er) {
                     console.log(er);
                 }
             });
         } else {
-            ul.slideToggle(800);
-            $(who).toggleClass("open");
+            ul.slideToggle(250);
+            $t.toggleClass("open");
         }
     });
 
@@ -432,7 +431,8 @@ $(document).ready(function(){
         }
     });
 
-    $(".publishingtree A").click(function () {
+    $(".publishingtree A").click(function (ev) {
+        ev.stopPropagation();
         if ($(this).attr("rel")) {
             window.location = $(this).attr("rel");
         }
