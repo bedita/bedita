@@ -65,7 +65,7 @@
 }
 
 .treeview li:last-child { 
-	border-left: dotted 0px #636363;
+	border-left: dotted 1px transparent;
 }
 
 .treeview li:before {
@@ -87,7 +87,7 @@
 	border-left: dotted 1px #636363;
 	display: inline-block;
 	position: absolute;
-	left: 0;
+	left: -1px;
 	top: 0px;
 	z-index: 5;
 }
