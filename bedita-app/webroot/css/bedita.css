@@ -61,7 +61,7 @@ article, aside, figure, footer, header, hgroup, nav, section {display: block;}
 
 
 BODY, .bodybg, .catselector {
-	background-color:#B6B6B6;
+	background-color: #B6B6B6;
 }
 
 
@@ -1030,7 +1030,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree LI A {
-	padding: 5px;
+	padding: 5px 5px 5px 15px;
 	display: inline-block;
 	vertical-align: top;
 	margin-top: -6px;
@@ -1119,7 +1119,7 @@ UL.menuleft + UL.menuleft {
 
 .publishingtree UL {
 	/* min-width:275px; */
-	padding-left: 7px;
+	padding-left: 14px;
 	display:none;
 }
 
