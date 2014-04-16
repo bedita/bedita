@@ -531,7 +531,7 @@ UL.modules {
 .subwarning.ubiquity {
 	background: #666 url('../img/iconUbiquity.png') 115px 3px no-repeat;
 	background-size:20px;
-	height:15px;
+	height: 26px;
 	overflow:hidden;
 }
 /*...........................................
@@ -1030,10 +1030,11 @@ UL.menuleft + UL.menuleft {
 }
 
 .publishingtree LI A {
-	padding: 5px 5px 5px 15px;
+	padding: 5px 5px 5px 25px;
 	display: inline-block;
 	vertical-align: top;
 	margin-top: -6px;
+	margin-left: -10px;
 }
 
 /*.publishingtree .treeview A.hover{
