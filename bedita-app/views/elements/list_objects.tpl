@@ -284,7 +284,7 @@ $(document).ready(function(){
 		{/if}
 	{/if}
 	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+	<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 </div>
 
 {/if}
