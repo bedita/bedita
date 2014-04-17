@@ -1,6 +1,6 @@
-{$html->script('fragments/quick_item')}
-
 <div class="quickitem">
+	{$html->script('fragments/quick_item')}
+	
 	<form id="addQuickItem" action="{$html->url('/pages/saveQuickItem')}" method="post">
 		<table style="width:100%">
 			<tr>

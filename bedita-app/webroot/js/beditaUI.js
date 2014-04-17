@@ -226,7 +226,7 @@ $(document).ready(function(){
     }
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).next().toggle('fast') ; 
+        $(this).next().slideToggle('fast') ; 
         $("h2",this).toggleClass("open").toggleClass(currentclassmodule);
     
     };

@@ -197,6 +197,10 @@ img {
 	padding-right: 10px;
 }
 
+.mainfull .modules li, .main.full .modules li{
+	float: left;
+}
+
 .mainfull .tab, .main.full .tab {
 	/*
 width: 660px;
@@ -298,20 +302,17 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 
 UL.modules {
 	/*background:transparent url(../img/shadowh2-small.png) repeat-y top left ;*/
+	overflow: hidden;
 }
 
 .modules.block LI, .modules label {
-	display:block;
+	display: block;
 	font-size: 1.16em ;
 	width: 140px; 
 	height: 110px; 
 	padding:10px;
 	margin: 0px;
 	background-color:#CCCCCC; 
-/*
-	background-image: url(../img/sfomodulo.png);
-	background-repeat:repeat-x;
-*/
 	color:#FFFFFF;
 	font-weight:normal;
 	border-radius: 0;
@@ -1739,7 +1740,7 @@ A.BEbutton  {
 	margin:5px auto;
 }
 
-.bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button], button {
+.bemaincommands, .BEbutton, input[type=submit], input[type=button], button {
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
 	background-color:#F2F2F2;
 	line-height:1.2em;
@@ -1803,7 +1804,7 @@ A.BEbutton.golink:before {
 			
 .message {
 	width: 140px; 
-	height: 110px; 
+	height: 120px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
