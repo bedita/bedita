@@ -621,7 +621,6 @@ NAV.modulesmenu {
 UL.menuleft {
 	padding-bottom:5px;
 	border-bottom:5px solid gray;
-	margin-bottom:10px !important;
 	border-top:5px solid gray;
 	padding-top:5px;
 }

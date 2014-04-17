@@ -1,13 +1,21 @@
 .publishingtree, .publishingtree ul { 
 	padding: 0;
-	margin: 0;
 	list-style: none;
+}
+
+.publishingtree {
+	margin: 10px 0 0  0;
+}
+
+.publishingtree:first-child {
+	margin-top: 0;
 }
 
 .publishingtree ul {
 	background-color: transparent;
 	margin-top: 4px;
 	padding-left: 14px;
+	margin: 0;
 }
 
 .publishingtree LI A {
