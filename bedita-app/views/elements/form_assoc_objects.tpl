@@ -107,12 +107,10 @@ $(document).ready(function() {
 				{if $rel == "question"}
 				<th>{t}type{/t}</th>
 				{/if}
-				{if $rel == "download" or $rel == "attach"}
-				<th>{t}type{/t}</th>
-				<th style="text-align:right">{t}size{/t}</th>
-				{/if}
+				<th></th>
 				<th>{t}status{/t}</th>
 				<th>{t}lang{/t}</th>
+				<th>{t}type{/t} and {t}size{/t}</th>
 				<th>{t}more{/t}</th>
 				<th style="text-align:right">{t}commands{/t}</th>
 			</tr>
