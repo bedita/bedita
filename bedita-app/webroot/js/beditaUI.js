@@ -149,21 +149,6 @@ jQuery.fn.extend({
 
 $(document).ready(function(){
 
-
-/*...........................................    
-
-   home
-
-...........................................*/
-
-    //$(".pub H2",".hometree").wrap("<div class='tab' />"); 
-
-    $("LI A[rel]",".hometree").css("cursor","pointer").click(function () {
-        window.location = $(this).attr("rel");
-    });
-    
-    //$(".publishingtree LI A.on",".home").parents("DIV:first").find("UL").show();
-
 /*...........................................    
 
    primacolonna
@@ -241,7 +226,7 @@ $(document).ready(function(){
     }
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).next().toggle('fast') ; 
+        $(this).next().slideToggle('fast') ; 
         $("h2",this).toggleClass("open").toggleClass(currentclassmodule);
     
     };
@@ -333,112 +318,7 @@ $(document).ready(function(){
         
     });
 */
-
-/*...........................................    
-
-   publishing tree
-
-...........................................*/
-
-    $(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
-    $(".publishingtree h2 A").before("<a class='plusminus'></a>");
     
-    $(".publishingtree h2 .plusminus").click(function () {
-        var $t = $(this);
-        var who = $t.parent("H2");
-        var ul = $(who).siblings("ul.menutree").first();
-        if (ul.is(':empty')) {
-            var url = ul.attr('rel');
-            $.ajax({
-                url: url,
-                success: function(data) {
-                    var tree = $(data).find('ul.menutree').first();
-                    ul.append( tree.html() );
-                    ul.treeview({ 
-                        animated: "normal",
-                        collapsed: true,
-                        unique: false
-                    });
-
-                    $("LI A", ul).each(function() {
-                        if ($(this).attr("rel")) {
-                            var rel = $(this).attr("rel");
-                            rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
-                            $(this).attr("rel", rel);
-                        }
-                    }).click(function () {
-                        if ($(this).attr("rel")) {
-                            window.location = $(this).attr("rel");
-                        }
-                    });
-
-                    ul.slideToggle(800, function() {
-                        $(".menutree input:checked").parent().css("background-color","#dedede").parents("ul, li").show();
-                    });
-                    $(who).toggleClass("open");
-                },
-                error: function(er) {
-                    console.log(er);
-                }
-            });
-        } else {
-            ul.slideToggle(800);
-            $(who).toggleClass("open");
-        }
-    });
-
-    $('.publishingtree .pub > ul.menutree').not(':empty').each(function() {
-        $(this)
-            .treeview({ 
-                animated: "normal",
-                collapsed: false,
-                unique: false
-            })
-            .find('.on, :checked')
-            .parents('ul')
-            .show()
-            .parents('li')
-            .removeClass('expandable')
-            .addClass('collapsable')
-            .children('.hitarea')
-            .removeClass('expandable-hitarea')
-            .addClass('collapsable-hitarea')
-            .closest('.pub')
-            .children('h2')
-            .addClass('open');
-
-        var on = $(this).closest('.pub').find('.on, :checked');
-        if (on.length != 0) {
-
-            if (on.parent().parent().hasClass('pub')) {
-                on.parent().addClass('on');
-            } else {
-                $(this)
-                    .closest('.pub')
-                    .children('h2')
-                    .addClass('open');
-            }
-        }
-
-    });
-
-    $(".publishingtree A").each(function() {
-        var $t = $(this);
-        var ul = $t.closest('.pub').children("ul.menutree").first();
-        if ($t.attr("rel")) {
-            var rel = $t.attr("rel");
-            rel = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
-            $t.attr("rel", rel);
-        }
-    });
-
-    $(".publishingtree A").click(function () {
-        if ($(this).attr("rel")) {
-            window.location = $(this).attr("rel");
-        }
-    });
-
-    $(".publishingtree .on").addClass(currentclassmodule);
 
 /*...........................................    
 

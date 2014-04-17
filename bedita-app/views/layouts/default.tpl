@@ -6,28 +6,14 @@
 
 	<meta name="robots" content="noindex,nofollow"/>
 	
-	{if $agent.iPHONE or $agent.iPAD}
-		
-		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-	    <meta name="apple-mobile-web-app-capable" content="yes" />
-	    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	    <link rel="apple-touch-icon" href="{$html->url('/img/')}BElogo_iphone.png"/>
-	    <link rel="apple-touch-startup-image" href="{$html->url('/img/')}BElogo_iphone.png" />
-		<link rel="stylesheet" href="{$html->url('/css/')}beditaMobile.css" type="text/css" media="screen" title="main" charset="utf-8">
-		
-	{/if}
-		
 	{include file="inc/meta.tpl"}
 
 	{$view->element('json_meta_config')}
 
 	{$html->css('bedita.css?v=01')}
+
 	{$html->css('bedita-icons.css')}
 	
-	<!--[if lte IE 6]>
-		{$html->css('IE6fix')}
-	<![endif]-->
-
 	{$html->script("libs/jquery/jquery-2.1.0.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
 	{$html->script("libs/jquery/plugins/jquery.autosize.min")}

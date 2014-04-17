@@ -1,5 +1,5 @@
-{$html->css('../js/libs/jquery/plugins/treeview/jquery.treeview', null, ['inline' => false])}
-{$html->script('libs/jquery/plugins/treeview/jquery.treeview', false)}
+{$html->css('tree.css', null, ['inline' => false])}
+{$html->script('fragments/tree.js', false)}
 
 {if isset($treeParams) && is_array($treeParams)}
 	{$beTree->setTreeParams($treeParams)}	

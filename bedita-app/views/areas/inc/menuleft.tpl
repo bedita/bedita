@@ -37,12 +37,7 @@ Menu a SX valido per tutte le pagine del controller.
 			{$view->element('tree', $options)}
 		{/if}
 	</div>
-	{/if}
-	
-	<div style="margin-top:40px;">
-	
-	</div>
-	
+	{/if}	
 
 	{$view->element('user_module_perms')}
 	
