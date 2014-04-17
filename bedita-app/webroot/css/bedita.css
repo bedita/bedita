@@ -702,7 +702,7 @@ UL.menuleft + UL.menuleft {
 	margin-bottom: 10px;
 }
 
-.tab H2,  .tab2 H2 {
+.tab H2, .tab2 H2 {
 	cursor:pointer;
 	color: white; 
 	background:#808080 url(../img/piumeno.gif) no-repeat;
@@ -1059,7 +1059,7 @@ UL.menuleft + UL.menuleft {
 .pub H2 {
 	margin: 0px 0px 10px 0px;
 	background-color:#dedede;
-	padding:5px 5px 5px 10px;
+	padding: 5px 5px 5px 20px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -1067,7 +1067,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .pub H2 A {
-	color:#663300;
+	color: #444;
 	/*text-transform:uppercase;*/
 }
 
@@ -1093,23 +1093,18 @@ UL.menuleft + UL.menuleft {
 	content: "−";
 }
 
-/*
-.publishingtree .plusminus {
-	float:left;
+
+.publishingtree h2 {
 	cursor:pointer;
-	background: transparent url(../img/piumenoBlack.gif) no-repeat;
-	background-position: right 0px ;
-	height:25px;
-	width:25px;
-	margin:0px 0px 20px -10px;
-	background-position: right -25px !important;
+	background-image: url('../img/piumeno.gif'); 
+	background-repeat: no-repeat;
+	background-position: 1px 0;
 }
 
-.publishingtree .plusminus.on {
-	background-position: right 0px !important;
-	background-color: transparent;
+.publishingtree h2.open {
+	background-position: 1px -25px !important;
 }
-*/
+
 
 .publishingtree *[rel] {
 	cursor:pointer;

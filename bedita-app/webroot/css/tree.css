@@ -16,6 +16,7 @@
 	margin-top: 4px;
 	padding-left: 14px;
 	margin: 0;
+	overflow: hidden;
 }
 
 .publishingtree LI A {
