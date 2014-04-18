@@ -220,28 +220,25 @@ $(document).ready(function(){
 
 ...........................................*/
 
-    var currentclassmodule   = $(".secondacolonna .modules LABEL").attr("class");
-    if(!currentclassmodule) {
-        currentclassmodule = "";
-    }
+    var currentclassmodule = BEDITA.currentModule.name || '';
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).next().slideToggle('fast') ; 
-        $("h2",this).toggleClass("open").toggleClass(currentclassmodule);
+        $(this).next().slideToggle('fast').toggleClass('open').trigger('slideToggle'); 
+        $("h2",this).toggleClass("open").toggleClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsopen = function() {
             
-        $(this).next().show('fast') ;   
-        $("h2",this).addClass("open").addClass(currentclassmodule);
+        $(this).next().slideDown('fast').addClass('open').trigger('slideDown');   
+        $("h2",this).addClass("open").addClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsclose = function() {
             
-        $(this).next().hide('fast') ;   
-        $("h2",this).removeClass("open").removeClass(currentclassmodule);
+        $(this).next().slideUp('fast').removeClass('open').trigger('slideUp');   
+        $("h2",this).removeClass("open").removeClass(BEDITA.currentModule.name || '');
     
     };
     
@@ -250,7 +247,7 @@ $(document).ready(function(){
     });
 
     
-    $(".tab.stayopen H2").addClass("open").addClass(currentclassmodule);
+    $(".tab.stayopen H2").addClass("open").addClass(BEDITA.currentModule.name || '');
 
     
 /*...........................................    

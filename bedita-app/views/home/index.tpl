@@ -42,10 +42,6 @@ $(document).ready(function() {
 	});
 	
 });
-
-    $(document).ready(function(){	
-		openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
-    });
 	
 //-->
 </script>
@@ -132,7 +128,7 @@ $(document).ready(function(){
 	
 	var showTagsFirst = false;
 	var showTags = false;
-	$("#callTags").bind("click", function() {
+	$("#tags").on("slideToggle", function() {
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
 			$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
@@ -149,7 +145,9 @@ $(document).ready(function(){
 			}
 			showTags = !showTags;
 		}
-	});	
+	});
+
+	openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
 });
 //-->
 </script>

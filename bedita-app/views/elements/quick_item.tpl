@@ -1,6 +1,5 @@
-{$html->script('fragments/quick_item')}
-
 <div class="quickitem">
+	{$html->script('fragments/quick_item')}
 	<form id="addQuickItem" action="{$html->url('/pages/saveQuickItem')}" method="post">
 		<table style="width:100%">
 			<tr>
@@ -21,6 +20,8 @@
 					{/foreach}
 					</select>
 				</td>
+			</tr>
+			<tr>
 				<td><label>{t}Position{/t}</label>
 				<td colspan="4" style="width:100%" >
 					<select class="areaSectionAssociation max-width:440px" name="data[destination]">
@@ -31,7 +32,7 @@
 			<tr id="quickitemFileContainer">
 				<td><label>{t}File{/t}</label>
 				<td colspan="5">
-					<input name="Filedata" type="file" />
+					<input name="Filedata" type="file" style="width: 100%" />
 				</td>
 			</tr>
 			<tr>
