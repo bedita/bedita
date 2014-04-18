@@ -846,10 +846,6 @@ UL.menuleft + UL.menuleft {
 	display:none !important;
 }
 
-.relationList TD.filethumb {
-	display:none;
-}
-
 .relationList .filesize {
 	text-align: right;
 }
@@ -1339,11 +1335,10 @@ TABLE.indexlist H4{
 }
 
 .indexlist .filethumb {
-	width:64px;
 }
 
 .indexlist .filethumb img {
-	width:100%; 
+	width: 64px; 
 }
 
 .indexlist TR[rel] {

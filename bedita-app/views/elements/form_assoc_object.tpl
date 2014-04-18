@@ -41,7 +41,7 @@
 			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
 		{/if}
 
-		{if !empty($objRelated.uri) && $ObjectType.name=="image"}
+		{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
 		{assign_associative var="bkgparams" URLonly=true}
 		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
 		{else}
@@ -67,7 +67,7 @@
 	</td>
 
 	<td class="filethumb">
-	{if !empty($objRelated.uri)}
+	{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
 		{assign_associative var="params" presentation="thumb" width='155'}
 		{$beEmbedMedia->object($objRelated,$params)}
 	{/if}
@@ -81,12 +81,12 @@
 			{/if}
 			<label>id:</label> {$objRelated.id}<br>
 			<label>nickname:</label> {$objRelated.nickname}<br>
+
+			{if !empty($rel) &&  $rel == "question"}
+			<label>type:</label> {$objRelated.question_type|default:''}<br>
+			{/if}
 		</div>
 	</td> 
-
-{if !empty($rel) && $rel == "question"}
-	<td>{$objRelated.question_type|default:''}</td>
-{/if}
 
 {if $ObjectType.name == "multimedia"}
 	{$calctype = $objRelated.Category.0.name|default:$ObjectType.name} 
@@ -125,10 +125,10 @@
 						<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
 					{/if}
 				{/foreach}
-			{/if}
-			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
-			<label>{t}description{/t}</label>
-			<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
+				<label>{t}description{/t}</label>
+				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				{/if}
 			{/if}
 		{/if}
 		</div>
@@ -137,7 +137,7 @@
 	<td class="commands">
 
 		<a class="BEbutton showmore">+</a>
-		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
+		<a class="BEbutton golink" target="_blank" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
 		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	
 		
 		<a class="BEbutton remove">x</a>

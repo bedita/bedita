@@ -86,10 +86,8 @@ $(document).ready(function() {
 		<thead>
 			<tr>
 				<th></th>
+				<th></th>
 				<th>{t}title{/t}</th>
-				{if $rel == "question"}
-				<th>{t}type{/t}</th>
-				{/if}
 				<th></th>
 				<th>{t}status{/t}</th>
 				<th>{t}lang{/t}</th>
