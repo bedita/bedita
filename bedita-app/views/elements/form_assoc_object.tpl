@@ -77,7 +77,7 @@
 		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
 		<div class="show_on_more">
 			{if !empty($rel) && !empty($relationParamsArray)}
-			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
+			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}"><br>
 			{/if}
 			<label>id:</label> {$objRelated.id}<br>
 			<label>nickname:</label> {$objRelated.nickname}<br>

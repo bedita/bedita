@@ -1278,6 +1278,11 @@ TABLE.indexlist {
 	width:100%;
 }
  
+TABLE.indexlist H4{
+	vertical-align: middle;
+	line-height: 20px;
+}
+  
 .indexlist TH  {
 	background-color:#FFFFFF;
 	white-space: nowrap;
