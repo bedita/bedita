@@ -1280,6 +1280,7 @@ TABLE.indexlist {
  
 .indexlist TH  {
 	background-color:#FFFFFF;
+	white-space: nowrap;
 }
 
 .indexlist TD  {
