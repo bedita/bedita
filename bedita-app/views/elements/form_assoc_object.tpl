@@ -125,10 +125,10 @@
 						<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
 					{/if}
 				{/foreach}
-			{/if}
-			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
-			<label>{t}description{/t}</label>
-			<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
+				<label>{t}description{/t}</label>
+				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				{/if}
 			{/if}
 		{/if}
 		</div>
