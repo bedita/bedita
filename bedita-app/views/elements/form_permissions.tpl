@@ -70,7 +70,16 @@ function loadUserGroupAjax(url) {
 </script>
 
 
+<style scoped>
 
+#permissions .indexlist TD, #permissions .indexlist TH {
+	white-space: nowrap;
+	text-align: left;
+}
+
+
+
+</style>
 
 
 
@@ -82,8 +91,8 @@ function loadUserGroupAjax(url) {
 <table class="indexlist" border=0 id="frmCustomPermissions">
 {if !empty($el.Permission)}
 <tr>
-	<th style="width:190px">{t}name{/t}</th>
-	<th style="width:190px">{t}permission{/t}</th>
+	<th>{t}name{/t}</th>
+	<th>{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
@@ -108,8 +117,8 @@ function loadUserGroupAjax(url) {
 	{/section}
 {else}
 <tr>
-	<th style="width:190px"></th>
-	<th style="width:190px"></th>
+	<th></th>
+	<th></th>
 	<th>&nbsp;</th>
 </tr>
 {/if}
@@ -117,8 +126,8 @@ function loadUserGroupAjax(url) {
 
 <table class="indexlist" border=0 id="selCustomPermissions">
 <tr>
-	<th style="width:190px">{t}add group{/t}:</th>
-	<th style="width:190px">{t}permission{/t}</th>
+	<th>{t}add group{/t}:</th>
+	<th>{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
