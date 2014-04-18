@@ -70,21 +70,13 @@ function loadUserGroupAjax(url) {
 </script>
 
 
-<style scoped>
+{$relcount = $el.Permission|@count|default:0}
+<div class="tab" id="permissionsTab">
+	<h2 {if $relcount == 0}class="empty"{/if}>
+		{t}Permissions{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
+	</h2>
+</div>
 
-#permissions .indexlist TD, #permissions .indexlist TH {
-	white-space: nowrap;
-	text-align: left;
-}
-
-
-
-</style>
-
-
-
-
-<div class="tab" id="permissionsTab"><h2>{t}Permissions{/t}</h2></div>
 <fieldset id="permissions">
 <div class="loader" id="loaderug"></div>
 
