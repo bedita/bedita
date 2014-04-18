@@ -2,8 +2,10 @@
 <!--
 //var urlShowObj = "{$html->here}";
 
-if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string") {
-	var urlToAdd = urlAddObjToAss{$relation|capitalize}
+if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize} == "string") {
+	var urlToAdd = urlAddObjToAss{$relation|default:''|capitalize};
+} else if (typeof urlAddObjToAss{$objectType|default:''|capitalize} == "string") {
+	var urlToAdd = urlAddObjToAss{$objectType|default:''|capitalize};
 } else if (typeof urlAddObjToAss == "string") {
 	var urlToAdd = urlAddObjToAss;
 } else {
@@ -12,6 +14,7 @@ if (typeof urlAddObjToAss{$relation|default:'norelation'|capitalize} == "string"
 
 var relType = "{$relation|default:""}";
 var suffix = "{$relation|default:""|capitalize}";
+var typesuffix = "{$objectType|default:'related'|capitalize}";
 
 /**
  * handle a list of object's ids
@@ -107,16 +110,19 @@ $(document).ready(function() {
 		}
 		
 		if (obj_sel.object_selected != "") {
-			
 			$("#modal").hide();
 			$("#modaloverlay").hide();
-			
+
 			// if addObjToAssoc + suffix is defined use it (i.e. addObjToAssocQuestion in questionnaires/form_list_questions.tpl)
 			// else addObjToAssoc function has to be defined in other template (i.e. elements/form_assoc_objects.tpl)
 			if (eval("typeof addObjToAssoc" + suffix) == 'function') {
 				eval("addObjToAssoc" + suffix)(urlToAdd, obj_sel);
 			} else {
-				addObjToAssoc(urlToAdd, obj_sel);
+				if (eval("typeof addObjToAssoc" + typesuffix) == 'function') {
+					eval("addObjToAssoc" + typesuffix)(urlToAdd, obj_sel);
+				} else {
+					console.log('function not found');
+				}
 			}
 			
 		}

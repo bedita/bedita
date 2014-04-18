@@ -11,7 +11,7 @@ function relatedRefreshButton() {
 	});
 }
 
-function addObjToAssoc(url, postdata) {
+function addObjToAssocRelated(url, postdata) {
 	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
