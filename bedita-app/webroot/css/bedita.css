@@ -1287,6 +1287,21 @@ TABLE.indexlist {
 	vertical-align:top;
 }
 
+.indexlist TD:first-child  {
+	text-align:right;
+	width:20px;
+	white-space:nowrap
+}
+
+.indexlist TD:nth-child(3)  {
+	width:100%;
+	white-space:normal;
+}
+
+.indexlist TD:last-child  {
+	white-space:nowrap;
+}
+
 .indexlist TD.moredata input {
 	width: 100%;
 }
