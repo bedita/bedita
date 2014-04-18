@@ -1,8 +1,4 @@
-#upgrade relations attach with inverse relation "attached_to"
-
-# Se l'oggetto(id) è una immagine(12), un audio(31), un video (32), o un be_file(10) 
-# e lo switch della relazione è "attach", allora lo switch va cambiato in "attached_to"
-
+# upgrade relations attach with inverse relation "attached_to"
 UPDATE object_relations
 SET switch = "attached_to"
 WHERE
@@ -24,10 +20,6 @@ object_relations.id in
 );
 
 #upgrade relations download with inverse relation "downloadable_in"
-
-# Se l'oggetto(id) è una immagine(12), un audio(31), un video (32), o un be_file(10) 
-# e lo switch della relazione è "download", allora lo switch va cambiato in "downloadable_in"
-
 UPDATE object_relations
 SET switch = "downloadable_in"
 WHERE
