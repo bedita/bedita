@@ -6,46 +6,34 @@
 
 	<meta name="robots" content="noindex,nofollow"/>
 	
-	{if $agent.iPHONE or $agent.iPAD}
-		
-		<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-	    <meta name="apple-mobile-web-app-capable" content="yes" />
-	    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-	    <link rel="apple-touch-icon" href="{$html->url('/img/')}BElogo_iphone.png"/>
-	    <link rel="apple-touch-startup-image" href="{$html->url('/img/')}BElogo_iphone.png" />
-		<link rel="stylesheet" href="{$html->url('/css/')}beditaMobile.css" type="text/css" media="screen" title="main" charset="utf-8">
-		
-	{/if}
-		
 	{include file="inc/meta.tpl"}
 
 	{$view->element('json_meta_config')}
 
 	{$html->css('bedita.css?v=01')}
-	
-	<!--[if lte IE 6]>
-		{$html->css('IE6fix')}
-	<![endif]-->
 
-	{$html->script("jquery/jquery")}
-	{$html->script("jquery/jquery.cookie")}
-	{$html->script("jquery/jquery.autogrow")}
-	{$html->script("jquery/jquery.dimensions")}
-	{$html->script("jquery/jquery.tooltip.min")}
+	{$html->css('bedita-icons.css')}
+	
+	{$html->script("libs/jquery/jquery-2.1.0.min")}
+	{$html->script("libs/jquery/plugins/jquery.cookie")}
+	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
+	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
-	{$html->script("libs/jquery.bsmselect")}
-	{$html->css('jquery.bsmselect.css')}
-<!-- https://github.com/vicb/bsmSelect -->
-<!-- OR http://harvesthq.github.io/chosen/ ??? -->
+	<link rel="stylesheet" href="{$html->webroot}js/libs/select2/select2.css" />
+	{$html->script("libs/select2/select2.min")}
+
+	<link rel="stylesheet" href="{$html->webroot}js/libs/dropzone/css/dropzone.css" />
+	{$html->script("libs/dropzone/dropzone.min")}
 
 	{$beurl->addModuleScripts()}
 
+	{$html->script("libs/jquery/ui/jquery-ui.min")}
+	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
+	{$html->script("libs/jquery/ui/jquery.ui.tooltip.min")}
+
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
-
-	{$html->script("jquery/ui/jquery-ui-1.8rc3.custom")}
-	{$html->script("jquery/ui/jquery.ui.draggable")}
 
 	
 </head>

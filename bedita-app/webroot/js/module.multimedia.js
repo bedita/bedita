@@ -200,4 +200,4 @@ $(window).load(function() {
 
         $('#relationType_mediamap .obj').first().find('.assoc_obj_title').click();
     }
-})
+});

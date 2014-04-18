@@ -19,7 +19,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
-		if($(this).attr("checked")) {
+		if ($(this).prop("checked")) {
 			checked++;
 		}
 	});
@@ -34,54 +34,55 @@ $(document).ready(function(){
 
 	$(".indexlist .obj TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
-	} );
+	});
 
 	$("#deleteSelected").bind("click", function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected()<1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		if(!confirm(message)) 
-			return false ;	
-		$("#formObject").attr("action", urls['deleteSelected']) ;
+		if (!confirm(message)) {
+			return false;
+		}
+		$("#formObject").prop("action", urls['deleteSelected']) ;
 		$("#formObject").submit() ;
 	});
 
 	$("#assocObjects").click( function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected()<1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		if($('#areaSectionAssoc').val() == "") {
+		if ($('#areaSectionAssoc').val() == "") {
 			alert(sel_copy_to_msg);
 			return false;
 		}
-		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
+		var op = ($('#areaSectionAssocOp').val())? $('#areaSectionAssocOp').val() : "copy";
 		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
 	$(".opButton").click( function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		if(this.id.indexOf('changestatus') > -1) {
-			if($('#newStatus').val() == "") {
+		if (this.id.indexOf('changestatus') > -1) {
+			if ($('#newStatus').val() == "") {
 				alert(sel_status_msg);
 				return false;
 			}
 		}
-		if(this.id == 'assocObjectsCategory') {
-			if($('#objCategoryAssoc').val() == "") {
+		if (this.id == 'assocObjectsCategory') {
+			if ($('#objCategoryAssoc').val() == "") {
 				alert(sel_category_msg);
 				return false;
 			}
 		}
-		if(this.id == 'disassocObjectsCategory') {
-			$('#objCategoryAssoc').attr('value',$('#filter_category').val());
+		if (this.id == 'disassocObjectsCategory') {
+			$('#objCategoryAssoc').val($('#filter_category').val());
 		}
-		$("#formObject").attr("action",urls[this.id]) ;
+		$("#formObject").prop("action", urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
 });

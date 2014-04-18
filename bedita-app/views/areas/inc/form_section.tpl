@@ -9,8 +9,8 @@
 
 	{$view->element('form_geotag')}
 	
-	{$view->element('form_file_list',['relation' => 'attach'])}
-	
+	{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.section.id}, 'availabeRelations' => ['attach' => 'multimedia items']])}
+
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
 

@@ -1,77 +1,143 @@
-{* included in list_content.tpl and used in add content in section by ajax*}
-{foreach from=$objsRelated|default:'' item="c"}
-	<tr class="obj {$c.status}">
-		
-		<td class="checklist">
-			{if !empty($c.start_date) && ($c.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
-			
-				<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
-			
-			{elseif !empty($c.end_date) && ($c.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
-			
-				<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
-			
-			{elseif (!empty($c.start_date) && (($c.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($c.end_date) && (($c.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
-			
-				<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
+{* included in form_assoc_objects *}
+{strip}
 
-			{/if}
+{foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
+
+{assign_associative var='ObjectType' name=$conf->objectTypes[$objRelated.object_type_id].module_name}
+
+<tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}" data-benick="{$objRelated.nickname}">
+	<td>
+		{if !empty($objRelated.start_date) && ($objRelated.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
-			{if !empty($c.num_of_permission)}
-				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
+			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
+		
+		{elseif !empty($objRelated.end_date) && ($objRelated.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
+		
+			<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
+		
+		{elseif (!empty($objRelated.start_date) && (($objRelated.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objRelated.end_date) && (($objRelated.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
+		
+			<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
+
+		{/if}
+		
+		{if !empty($objRelated.num_of_permission)}
+			<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
+		{/if}
+		
+		{if (!empty($objRelated.fixed))}
+			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
+		{/if}
+
+		{if !empty($objRelated.uri) && $ObjectType.name=="image"}
+		{assign_associative var="bkgparams" URLonly=true}
+		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{else}
+			{if !empty($objRelated.thumbnail) && $ObjectType.name=="video"}
+			{assign_associative var="bkgparams" URLonly=true}
+			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated, $bkgparams)}">
 			{/if}
+		{/if}
 			
-			{if (empty($c.fixed))}
-				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$c.id}" value="{$c.id}" />
-			{else}
-				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
-			{/if}
+		{if !empty($rel)}
+		<input type="hidden" class="mod" name="data[RelatedObject][{$rel}][{$objRelated.id}][modified]" value="0" />
+		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
+		<input type="text" class="priority {$ObjectType.name|default:''}" 
+				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 
+				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 
+		{else}
+		<input style="margin-top: -2px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objRelated.id}" value="{$objRelated.id}" />
+		<input type="hidden" class="id" name="reorder[{$objRelated.id}][id]" value="{$objRelated.id}" />
+		<input type="text" class="priority {$ObjectType.name}" name="reorder[{$objRelated.id}][priority]" value="{$objRelated.priority|default:""}" />
+		{/if}
+		<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
+	</td>
 
-		</td>	
-		
-		<td style="width:25px">
-			<input type="hidden" class="id" name="reorder[{$c.id}][id]" value="{$c.id}" />
-			<input type="text" class="priority {$conf->objectTypes[$c.object_type_id].module_name}"	name="reorder[{$c.id}][priority]" value="{$c.priority|default:""}" />
-		</td>
-		<!--
-		<td style="padding:0px; padding-top:7px; width:10px"><span title="{$conf->objectTypes[$c.object_type_id].module_name}" class="listrecent {$conf->objectTypes[$c.object_type_id].module_name}" style="margin:0px"></span></td>
-		\-->
-		<td>
-			{$c.title|default:'<i>[no title]</i>'|truncate:"64":"…":true}
-			<div class="description" style="width:auto" id="desc_{$c.id}">
-				{$c.description|strip_tags} / id:{$c.id} / nickname: {$c.nickname}
-			</div>
-		</td>
-		<td>
-			<a href="javascript:void(0)" onclick="$('#desc_{$c.id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
-				<span class="plusminus">+</span></a>	
-		</td>
-		<td style="white-space:nowrap">
-			{$c.modified|date_format:$conf->dateTimePattern}
-		</td>
-		<td>
-			{$c.status}
-		</td>
-		<td>
-			{$c.lang}
-		</td>
-		
-		<td>{if $c.num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
-		
-		<td class="commands" style="white-space:nowrap">
-			<input type="button" class="BEbutton golink" onClick="window.open($(this).attr('href'));" href="{$html->url('/')}{$conf->objectTypes[$c.object_type_id].module_name}/view/{$c.id}" name="details" value="››" />
-			{if !empty($c.fixed)}
-				
-				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-left:10px; height:12px;" />
-				
-			{else}
-				<input type="button" name="remove" value="x" />
-			{/if}
-		</td>
-	</tr>
-{foreachelse}
+	<td class="filethumb">
+	{if !empty($objRelated.uri)}
+		{assign_associative var="params" presentation="thumb" width='155'}
+		{$beEmbedMedia->object($objRelated,$params)}
+	{/if}
+	</td>
 
+	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
+		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		{if !empty($rel)}
+		<input type="text" style="display:none" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
+		{/if}
+	</td> 
+
+{if !empty($rel) && $rel == "question"}
+	<td>{$objRelated.question_type|default:''}</td>
+{/if}
+
+{if $ObjectType.name == "multimedia"}
+	{$calctype = $objRelated.Category.0.name|default:$ObjectType.name} 
+{else}
+	{$calctype = $ObjectType.name} 
+{/if}
+
+	<td title="{$calctype}" class="obtype"><span class="icon-{$calctype}"></span></td>
+
+	<td class="status">{$objRelated.status|default:''}</td>
 	
+	<td class="lang">{$objRelated.lang|default:''}</td>
 
+	<td nowrap class="mimetype">
+		{if !empty($objRelated.file_size)}{$objRelated.file_size|default:0|filesize}&nbsp;&nbsp;{/if} {$objRelated.mime_type|default:''|truncate:60:'~':true}
+	</td>
+
+	<td class="moredata">
+		<div style="display: none">
+		{if !empty($rel)}
+			{if !empty($allObjectsRelations[$rel])}
+				{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
+			{else}
+				{foreach $allObjectsRelations as $relName => $rule}
+					{if !empty($rule.inverse) && $rule.inverse == $rel}
+						{$relationParamsArray = $rule.params|default:[]}
+					{/if}
+				{/foreach}
+			{/if}
+			{if !empty($relationParamsArray[0])}
+				{foreach $relationParamsArray as $paramKey => $paramVal}
+					{if is_array($paramVal)}
+						{$paramName = $paramKey}
+					{else}
+						{$paramName = $paramVal}
+					{/if}
+					<label for="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">{$paramName}</label>
+					{if is_array($paramVal)}
+						<select name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]">
+							{foreach $paramVal as $paramOpt}
+								<option value="{$paramOpt}" {if $objRelated.params[$paramName]|default:"" == $paramOpt}selected{/if}>{$paramOpt}</option>
+							{/foreach}
+						</select>
+					{else}
+						<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
+					{/if}
+				{/foreach}
+			{/if}
+			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
+			<label>description</label>
+			<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+			{/if}
+		{/if}
+		</div>
+	</td>
+
+	<td class="commands">
+
+{if !empty($rel) && !empty($relationParamsArray)}
+		<a class="BEbutton showmore">+</a>	
+{/if}
+		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
+		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	
+		
+		<a class="BEbutton remove">x</a>
+
+	</td>
+</tr>
 {/foreach}
+{/strip}

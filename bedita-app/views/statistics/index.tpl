@@ -1,6 +1,6 @@
 {$html->script("form", false)}
 
-{$html->script("jquery/jquery.tablesorter.min",false)}
+{$html->script("libs/jquery/plugins/jquery.tablesorter.min",false)}
 
 <script type="text/javascript">
     $(document).ready(function(){	

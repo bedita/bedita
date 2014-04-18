@@ -28,7 +28,8 @@
 
 	{if !empty($view->action) && ($view->action == "index")}
 	<div class="insidecol publishingtree">
-		{$view->element('tree')}
+		{assign_associative var="options" treeParams=['action' => 'index']}
+		{$view->element('tree', $options)}
 	</div>
 	{/if}
 

@@ -1,20 +1,18 @@
 {$html->script("form", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.cmxforms", false)}
-{$html->script("jquery/jquery.metadata", false)}
-{$html->script("jquery/jquery.validate", false)}
-{$html->script("jquery/jquery.changealert", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCustomProperties/')}";
 var message = "{t}Are you sure that you want to delete the property? this will also delete any properties data associated{/t}";
-{literal}
-$(document).ready(function(){
-	$(".delete").bind("click", function(){
-		if(!confirm(message))
-			return false ;
-		var customId = $(this).attr("title");
-		$("#form_"+customId).attr("action", urlDelete).submit();
+
+$(document).ready(function() {
+	$(".delete").bind("click", function() {
+		if (!confirm(message)) {
+			return false;
+		}
+		var customId = $(this).prop("title");
+		$("#form_" + customId).prop("action", urlDelete).submit();
 		return false;
 	});
 
@@ -24,13 +22,9 @@ $(document).ready(function(){
 	$(".optionlist").change(function () {
         $(".optionsfields").hide();
 		$(".optionlist option[value='options']:selected").parents("tr").find(".optionsfields").show();
-     })
+    })
 
-	});
-
-
-
-{/literal}
+});
 </script>
 
 {$view->element('modulesmenu')}

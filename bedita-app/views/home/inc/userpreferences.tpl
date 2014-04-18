@@ -36,11 +36,11 @@
 
 <tr>
 	<td><label class="simple">{t}old psw{/t}</label></td>
-	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}"/></td>
+	<td><input type="password" name="oldpwd" value="" id="oldpwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}" autocomplete="off"/></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new psw{/t}</label></td>
-	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}"></td>
+	<td><input type="password" name="pwd" value="" id="pwd" class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}" autocomplete="off"></td>
 </tr>
 <tr>
 	<td><label class="simple">{t}new again{/t}</label></td>

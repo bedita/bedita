@@ -2,8 +2,11 @@
 ** subscriber view template
 *}
 
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
+{if $currLang != "eng"}
+	{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
+{/if}
 
 <script type="text/javascript">
 <!--

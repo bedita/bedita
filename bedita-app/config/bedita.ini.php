@@ -36,7 +36,7 @@ $config["projectName"] = "BEdita 3.3"; // override in bedita.cfg
 
 $config["userVersion"] = "BEdita 3.3"; // don't override
 
-$config["majorVersion"] = "3.3"; // don't override -- admin/system
+$config["majorVersion"] = "3.3.1"; // don't override -- admin/system
 
 $config["codenameVersion"] = "Corylus"; // don't override -- admin/system
 
@@ -335,6 +335,22 @@ $config["defaultObjRelationType"] = array(
 		"left" 		=> array(),
 		"right" 		=> array()
 	),
+	"attach" => array(
+		"hidden" => false,
+		"label" => "multimedia items",
+		"left" => array(),
+		"right" => array("b_e_file","image","application","audio","video","gallery"),
+		"params" => array(
+			"label"
+		),
+		"inverse" => "attached_to",
+		"inverseLabel" => "attached_to",
+	),
+	"link" => array(
+		"hidden" => true,
+		"left" => array("link"),
+		"right" => array()
+	),
 	"seealso" => array(
 		"hidden" => false,
 		"left" 		=> array(),
@@ -342,39 +358,35 @@ $config["defaultObjRelationType"] = array(
 	),
 	"download" => array(
 		"hidden" => false,
-		"left" 		=> array("b_e_file","image","application","audio","video"),
-		"right" 		=> array()
-	),
-	"attach" => array(
-		"hidden" => true,
-		"left" => array("b_e_file","image","application","audio","video"),
-		"right" => array()
-	),
-	"link" => array(
-		"hidden" => true,
-		"left" => array("link"),
-		"right" => array()
-	),
-	'mediamap' => array(
-		'left' => array('image'),
-		'right' => array(),
-		'inverse' => 'mediamapped',
-		'label' => 'mediamap',
-		'inverseLabel' => 'mediamapped_by',
-		'params' => array(
-			'number',
-			'top',
-			'left',
-			'width',
-			'height',
-			'hotspotX',
-			'hotspotY',
-			'style' => array('none', 'bordered', 'fill', 'pointer'),
-			'direction'=> array('auto', 'North', 'West', 'East', 'South', 'North - West', 'North - East', 'South - West', 'South - East'),
-			'behaviour' => array('skin', 'popup', 'popup & zoom', 'modal'),
+		"label" => "download",
+		"left" 	=> array(),
+		"right" => array("b_e_file","image","application","audio","video"),
+		"params" => array(
+			"label"
 		),
-		'hidden' => false,
-  ),
+		"inverse" => "downloadable_in",
+		"inverseLabel" => "downloadable_in",
+	),
+	"mediamap" => array(
+		"left" => array("image"),
+		"right" => array(),
+		"inverse" => "mediamapped",
+		"label" => "mediamap",
+		"inverseLabel" => "mediamapped_by",
+		"params" => array(
+			"number",
+			"top",
+			"left",
+			"width",
+			"height",
+			"hotspotX",
+			"hotspotY",
+			"style" => array("none", "bordered", "fill", "pointer"),
+			"direction"=> array("auto", "North", "West", "East", "South", "North - West", "North - East", "South - West", "South - East"),
+			"behaviour" => array("skin", "popup", "popup & zoom", "modal"),
+		),
+		"hidden" => false,
+  	),
 );
 
 // Relations - local objects' relation types (override in bedita.cfg)

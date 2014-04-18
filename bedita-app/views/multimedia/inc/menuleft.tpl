@@ -15,7 +15,8 @@ Menu a SX valido per tutte le pagine del controller.
 
 		<ul class="menuleft insidecol">
 			
-			<li><a href="{$html->url('/multimedia/view')}">{t}Add new item{/t}</a></li>	
+			<li><a href="{$html->url('/multimedia/view')}">{t}Add new item{/t}</a></li>
+			<li><a href="javascript:void(0);" class="modalbutton" rel="{$html->url('/multimedia/multipleUpload')}" title="{t}Upload files{/t}">{t}Add many items{/t}</a></li>
 					
 		</ul>
 
@@ -23,9 +24,8 @@ Menu a SX valido per tutte le pagine del controller.
 
 	{if (!empty($view->action)) && $view->action eq "index"}
 	<div class="insidecol publishingtree">
-
-		{$view->element('tree')}
-
+		{assign_associative var="options" treeParams=['action' => 'index']}
+		{$view->element('tree', $options)}
 	</div>
 	{/if}
 

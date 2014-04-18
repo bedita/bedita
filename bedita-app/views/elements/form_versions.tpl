@@ -10,16 +10,16 @@
 	<th></th>
 </tr>
 {foreach from=$object.Version|@array_reverse item=h key=k}
-	{*<tr class="idtrigger" rel="diff-{$h.revision}">*}
+	<!-- {*<tr class="idtrigger" rel="diff-{$h.revision}">*} -->
 	<tr>
 		<td style="text-align:center">
 			{$h.revision}
 		</td>
-		<td>{$h.created|date_format:$conf->dateTimePattern}</td>
+		<td style="white-space:nowrap">{$h.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
 		<td><a class="modalbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  view  </a></td>
 	</tr>
-	{*
+	<!-- {*
 	<tr id="diff-{$h.revision}" style="display:none">
 		<td></td>
 		<td colspan=3 style="padding:0px;">
@@ -30,7 +30,7 @@
 			</table>
 		</td>
 	</tr>
-	*}
+	*} -->
 {/foreach}
 </table>
 {else}

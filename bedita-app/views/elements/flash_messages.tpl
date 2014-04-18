@@ -1,13 +1,13 @@
 <script type="text/javascript" charset="utf-8">
-$(document).ready ( function () { 
+$(document).ready(function() { 
 
 {if !empty($id)}
-	$("input[name=data\\[id\\]]").attr('value', {$id});
+	$("input[name=data\\[id\\]]").val({$id});
 {/if}
 
 {if ($session->check('Message.error'))}
 
-	$(".secondacolonna .modules label").addClass("error").attr("title","error");
+	$(".secondacolonna .modules label").addClass("error").prop("title", "error");
 	$("#messagesDiv").triggerMessage("error");
 
 {elseif ($session->check('Message.warn'))}

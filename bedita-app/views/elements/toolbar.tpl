@@ -39,7 +39,6 @@
 			
 		</h2>
 		
-		
 		<table>
 		<tr>
 			{if ($view->viewVars.module_modify eq '1') && empty($noitem)} 
@@ -49,9 +48,14 @@
 					{t}{$itemName}{/t}
 				{else}
 					{assign var=leafs value=$conf->objectTypes.leafs}
+					{assign var=isFirst value=true}
 					{foreach from=$conf->objectTypes item=type key=key}	
 						{if ( in_array($type.id,$leafs.id) && is_numeric($key) && $type.module_name == $currentModule.name )}
-							{t}{$type.model|lower}{/t} 
+							{if !$isFirst}
+							&nbsp;/&nbsp;
+							{/if}
+							{t}{$type.model|lower}{/t}
+							{$isFirst=false}
 						{/if}
 					{/foreach}
 				{/if}

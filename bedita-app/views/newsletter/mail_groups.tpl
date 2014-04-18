@@ -1,6 +1,3 @@
-{$html->script("jquery/jquery.changealert", false)}
-
-	
 {$view->element('modulesmenu', ['substringSearch' => false])}
 
 {include file="inc/menuleft.tpl" method="mailgroups"}

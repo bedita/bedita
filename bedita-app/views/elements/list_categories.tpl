@@ -4,17 +4,17 @@ var message = "{t}Are you sure that you want to delete the item?{/t}";
 $(document).ready(function(){
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
-		var catId = $(this).attr("title");
-		$("#form_"+catId).attr("action", urlDelete).submit();
+		var catId = $(this).prop("title");
+		$("#form_" + catId).prop("action", urlDelete).submit();
 		return false;
 	});
 
 	$("input.js-label[type=text]").bind("keyup", function(){
 		var text = $(this).val();
 		if (jQuery.trim(text) == "") {
-	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "disabled");
+	   		$(this).parent().siblings().find("input[type=submit]").prop("disabled", true);
 		} else {
-	   		$(this).parent().siblings().find("input[type=submit]").attr("disabled", "");
+	   		$(this).parent().siblings().find("input[type=submit]").prop("disabled", false);
 	    }
 	});
 	

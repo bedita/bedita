@@ -83,6 +83,22 @@ UL {list-style:none;}
 
 UL UL {margin-left:20px;}
 
+* {
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-ms-box-sizing: border-box;
+	-o-box-sizing: border-box;
+}
+
+img {
+	user-drag: none;
+	-webkit-user-drag: none;
+	-moz-user-drag: none;
+	-ms-user-drag: none;
+	-o-user-drag: none;
+}
+
 /*...........................................    
 
     General, states
@@ -96,8 +112,9 @@ UL UL {margin-left:20px;}
 
 .obj.on {font-weight:normal;}
 .obj.disabled {opacity:0.5}
-.obj.draft *, .obj.off *, .obj.required *   {color:#666666}
+/*.obj.draft *, .obj.off *, .obj.required *   {color:#666666}*/
 
+.obj.draft, .obj.off  {opacity:.6}
 
 /*...........................................
  
@@ -128,18 +145,21 @@ UL UL {margin-left:20px;}
 	top:20px;
 	left:20px;
 	z-index:102;
-	width:140px;
+	width: 140px;
 }
 
 .secondacolonna {
 	position:absolute;
 	top:20px;
-	left:160px;
+	left: 160px;
 	z-index:130;
-	width:140px;
+	width: 140px;
 	background-color:#B6B6B6;
 }
 
+.secondacolonna .insidecol {
+	text-align: center;	
+}
 
 .insidecol {
 	margin: 10px 0px 0px 0px;
@@ -174,8 +194,8 @@ UL UL {margin-left:20px;}
 
 .mainfull, .main.full {
 	top:130px;
-	min-width: 660px;
-	padding-right:20px;
+	min-width: 670px;
+	padding-right: 10px;
 }
 
 .mainfull .tab, .main.full .tab {
@@ -244,6 +264,9 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 	font-family: "Arial", "Helvetica", sans-serif;
 	font-size:1em; font-weight:normal; 
 }
+.tab H2:first-letter {
+	text-transform: uppercase;
+}
 .pub H2 {
 	font-family: "Arial", "Helvetica", sans-serif;
 	font-size:0.8rem; font-weight:normal; 
@@ -272,7 +295,6 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 .modules {
 	/*background:transparent url(../img/shadowpattern160.png);*/
 	width:auto;
-	height:110px;
 }
 
 UL.modules {
@@ -282,8 +304,8 @@ UL.modules {
 .modules.block LI, .modules label {
 	display:block;
 	font-size: 1.16em ;
-	width:120px; 
-	height:90px; 
+	width: 140px; 
+	height: 110px; 
 	padding:10px;
 	margin: 0px;
 	background-color:#CCCCCC; 
@@ -292,8 +314,8 @@ UL.modules {
 	background-repeat:repeat-x;
 */
 	color:#FFFFFF;
-	float:left;
 	font-weight:normal;
+	border-radius: 0;
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -315,7 +337,7 @@ UL.modules {
 }
 
 .listrecent {
-	display:block; height:15px; width:15px; margin-left:-10px; margin-right:5px; float:left;
+	display:block; height:15px; width:15px;  margin-right:5px; float:left;
 	border-radius:10px;
 }
 
@@ -510,7 +532,7 @@ UL.modules {
 .subwarning.ubiquity {
 	background: #666 url('../img/iconUbiquity.png') 115px 3px no-repeat;
 	background-size:20px;
-	height:15px;
+	height:26px;
 	overflow:hidden;
 }
 /*...........................................
@@ -527,13 +549,13 @@ NAV.modulesmenu {
 }
 
 .modulesmenu A {
-	height:25px; width:15px;
+	height: 25px; 
+	width: 25px;
 	float:right; margin-left:0px;
 	cursor:pointer;
 	/*background-image: url(../img/sfomodulo.png);
 	background-repeat:repeat-x;
 	background-position: left -5px;*/
-	padding:0px 5px 0px 5px;
 	color:white;
 }
 
@@ -564,12 +586,9 @@ NAV.modulesmenu {
 }
 
 
-.modulesmenu .over {
+.modulesmenu .on, .modulesmenu .over {
 	border-bottom:5px solid #CCCCCC;
-}
-
-.modulesmenu .on {
-	border-bottom:5px solid #CCCCCC;
+	height: 30px;
 }
 
 
@@ -602,7 +621,6 @@ NAV.modulesmenu {
 UL.menuleft {
 	padding-bottom:5px;
 	border-bottom:5px solid gray;
-	margin-bottom:10px !important;
 	border-top:5px solid gray;
 	padding-top:5px;
 }
@@ -680,18 +698,16 @@ UL.menuleft + UL.menuleft {
 
 
 .tab, .tab2  {
-	height:25px;
 	/*background:transparent url(../img/shadowh2-small.png) repeat left top;*/
-	padding:10px 0px 10px 0px;
-	margin-top:-10px;
+	margin-bottom: 10px;
 }
 
-.tab H2,  .tab2 H2 {
+.tab H2, .tab2 H2 {
 	cursor:pointer;
 	color: white; 
 	background:#808080 url(../img/piumeno.gif) no-repeat;
-	background-position:right 0px ;
-	height:20px; padding:5px 10px 0px 10px;
+	background-position:right 0px ; 
+	padding: 7px 10px 7px 10px;
 	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;*/
@@ -728,12 +744,21 @@ UL.menuleft + UL.menuleft {
 }
 
 .tab:first-child, .tab2:first-child {
-	margin-top:-10px;
 }
 
 .tab.filteractive H2:after {
 	content:" ✻ active"
 }
+
+.tab H2 .relnumb {
+	height: 16px;
+	text-align:center;
+	border-radius:16px; 
+	padding: 2px 4px 2px 4px; 
+	background-color:#444;
+	font-size:.9em;
+}
+
 
 /*...........................................    
 
@@ -765,7 +790,7 @@ UL.menuleft + UL.menuleft {
 	clear:left;
 	background:transparent url(../img/sfohtabscontent.png) repeat-x;
 	padding:2%;
-	width:96%;
+	width: 100%;
 	min-height:150px;
 	display:none;
 }
@@ -776,6 +801,214 @@ UL.menuleft + UL.menuleft {
 	min-height:150px;
 }
 
+/*...........................................    
+
+   relationList
+
+...........................................*/
+
+.tab H2.empty {
+	opacity:.6
+}
+
+.tab H2.open.empty {
+	opacity:1
+}
+
+.relationList .modalbutton {
+	margin:10px 10px 10px 0px
+}
+
+.relationList TR.obj TD:first-child { 
+	width: 0px;
+}
+
+.relationList.boxed TR.obj TD:first-child { 
+	padding: 5px 0 0 0;
+}
+
+.relationList .relparams {
+	width: 40%
+}
+
+.relationList .priority {
+    display: inline-block;
+}
+
+.relationList.boxed .priority {
+    position: absolute;
+    width: 20px !important;
+    margin-left: -10px;
+    margin-top: -10px;
+}
+
+.relationList TR.trick {
+	display:none !important;
+}
+
+.relationList TD.filethumb {
+	display:none;
+}
+
+.relationList .filesize {
+	text-align: right;
+}
+
+.relationList TR TD.moredata textarea, .relationList TR TD.moredata input, .relationList TR TD.moredata select, .relationList TR TD.moredata .select2-container {
+	width: 100%;
+}
+
+.boxed.relationList thead {
+	display: none;
+}
+
+.boxed.relationList TR {
+	box-shadow: 0px 0px 6px rgba(0,0,0,.2);
+	background-color:#d5d5d5;
+	border-radius:0px;
+	display:inline-block;
+	margin:5px;
+	width: 155px;
+	vertical-align:top;
+	padding: 0 5px 5px 5px;
+}
+
+.boxed.relationList TR TD {
+	border:0px solid red;
+	display:block;
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+.boxed.relationList TR TD table{
+	width: 100%;
+}
+
+.boxed.relationList TR TD input, .boxed.relationList TR TD textarea{
+	width: 100%;
+}
+
+.boxed.relationList TD TR {
+	border:0px;
+	display:block;
+	box-shadow: none;
+	border-radius:0px;
+	margin:0px;
+	width:auto;
+	padding:0px
+}
+
+.relationList .commands {
+	text-align:right;
+	white-space:nowrap;
+}
+
+.relationList .description  textarea {
+	width:100%;
+}
+
+.relationList .moredata TD {
+	border:0px;
+}
+
+.boxed.relationList .commands {
+	text-align: right;
+	border-top:1px solid #999;
+	height: 35px;
+	line-height: 29px;
+}
+
+.boxed.relationList .filethumb {
+	min-height:20px;
+    width: 100%;
+    padding: 0;
+}
+
+.boxed.relationList .filethumb img {
+	width:100%;
+	margin:0px;
+}
+
+.boxed.relationList .mimetype, .boxed.relationList .filesize, .boxed.relationList .status, .boxed.relationList .lang, .boxed.relationList .obtype {
+	display: table-cell;
+	padding: 5px 5px 0 0;
+}
+
+.relationList .obtype *{
+	font-size:14px;
+	color:#444;
+}
+
+.boxed.relationList .obtype *{
+	font-size:28px;
+	color:#444;
+}
+
+.boxed.relationList .mimetype {
+	display: block;
+	padding:0px;
+}
+
+.boxed.relationList .mimetype:empty {
+	display: none;
+}
+
+.boxed.relationList .assoc_obj_title {
+	/*min-height:46px;*/
+	border-bottom:1px solid #999;
+}
+
+
+.boxed.relationList .assoc_obj_title input {
+	width: 100%
+}
+
+.boxed.relationList .description  {
+	display:block;
+	font-style:normal;
+	width:auto;
+	white-space: normal;
+	text-align: left;
+	margin-top:5px;
+}
+
+.boxed.relationList .description  textarea {
+	width: 100%;
+}
+
+.boxed.relationList input[type=text] {
+	width:100%;
+	margin-bottom: 5px;
+}
+
+.boxed.relationList label  {
+	border-top:1px solid #999;
+	width:140px;
+	display:block;
+	color:#000;
+	padding-top: 5px;
+}
+
+.relViewOptions {
+	margin: 0px 10px 10px 10px;
+	text-align:right;
+}
+
+.relViewOptions img.viewthumb {
+	opacity:.2;
+}
+
+.relViewOptions img.viewsmall {
+	opacity:1;
+}
+
+.boxed .relViewOptions img.viewthumb {
+	opacity:1;
+}
+
+.boxed .relViewOptions img.viewsmall {
+	opacity:.2;
+}
 
 /*...........................................    
 
@@ -784,12 +1017,11 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 .publishingtree {
-	min-width:275px;
-	margin-left:-5px;
+	min-width: 270px;
 }
 
-.insidecol.publishingtree {
-	overflow-x:hidden;
+.dashboard .publishingtree {
+	min-width: 0;
 }
 
 /*
@@ -808,24 +1040,34 @@ UL.menuleft + UL.menuleft {
 }
 */
 .publishingtree LI A {
-	padding:5px;
+	padding: 5px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: -6px;
+}
+
+.publishingtree LI A:hover {
+	background-color: #B6B6B6;
 }
 
 .publishingtree DIV.pub {
-	margin: 0px 0px 0px 0px;
+	margin: 0px 0px 10px 0px;
 	clear:both;
-	/*border:1px solid red;*/
 	word-wrap: break-word; /* or "normal" */
 }
 
 .pub H2 {
-	margin:0px 0px 10px 5px;
+	margin: 0px 0px 10px 0px;
 	background-color:#dedede;
-	padding:5px 5px 5px 10px;
+	padding: 5px 5px 5px 20px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	min-width: 100%
 }
 
 .pub H2 A {
-	color:#663300;
+	color: #444;
 	/*text-transform:uppercase;*/
 }
 
@@ -851,23 +1093,18 @@ UL.menuleft + UL.menuleft {
 	content: "−";
 }
 
-/*
-.publishingtree .plusminus {
-	float:left;
+
+.publishingtree h2 {
 	cursor:pointer;
-	background: transparent url(../img/piumenoBlack.gif) no-repeat;
-	background-position: right 0px ;
-	height:25px;
-	width:25px;
-	margin:0px 0px 20px -10px;
-	background-position: right -25px !important;
+	background-image: url('../img/piumeno.gif'); 
+	background-repeat: no-repeat;
+	background-position: 1px 0;
 }
 
-.publishingtree .plusminus.on {
-	background-position: right 0px !important;
-	background-color: transparent;
+.publishingtree h2.open {
+	background-position: 1px -25px !important;
 }
-*/
+
 
 .publishingtree *[rel] {
 	cursor:pointer;
@@ -875,34 +1112,37 @@ UL.menuleft + UL.menuleft {
 
 .publishingtree UL {
 	min-width:275px;
-	margin-left:10px;
+	margin-left: 7px;
 	display:none;
 }
 
-.publishingtree LI {
-	min-width:275px;
+.publishingtree UL.loading:empty {
+	min-height: 30px;
 }
 
-.publishingtree LI A {
-	padding:5px;
+.publishingtree UL.loading:empty:before {
+	content: 'loading'
 }
 
 .publishingtree A {
 	cursor:pointer;	
-	white-space:nowrap;
 }
 
 .publishingtree A:Hover {
 	/*background-color:#d8d8d8;*/
 }
 
-.publishingtree H2 A[rel] {
+.publishingtree H2 A.treeAreaTitle {
 	padding-left:7px
 }
 
 .publishingtree .on {
 	color:#FFF;
 	font-weight:normal;
+}
+
+.publishingtree .on:hover {
+	color:#FFF;
 }
 
 .publishingtree INPUT {
@@ -931,7 +1171,7 @@ UL.menuleft + UL.menuleft {
 
 }
 
-.publishingtree .protected > A[rel] {
+.publishingtree .protected > A.treeAreaTitle {
 	padding-left:24px; 
 	background: transparent url('../img/iconLocked.png') center left no-repeat;
 	background-size: 24px;
@@ -970,6 +1210,7 @@ UL.menuleft + UL.menuleft {
 }
 .toolbar TD:first-child {
 	padding-left:0px;
+	padding-top: 10px !important;
 }
 
 /*...........................................    
@@ -982,7 +1223,9 @@ UL.menuleft + UL.menuleft {
 UL.bordered LI  {
 
 	border-top:1px solid #999999;
-	padding:5px 0px 5px 10px;
+	
+
+	padding: 5px 0px 5px 0px;
 
 }
 
@@ -1035,8 +1278,14 @@ TABLE.indexlist {
 	width:100%;
 }
  
+TABLE.indexlist H4{
+	vertical-align: middle;
+	line-height: 20px;
+}
+  
 .indexlist TH  {
 	background-color:#FFFFFF;
+	white-space: nowrap;
 }
 
 .indexlist TD  {
@@ -1044,8 +1293,57 @@ TABLE.indexlist {
 	vertical-align:top;
 }
 
-.indexlist TD .description  {
-	display:none; font-style:italic; width:300px; color:gray;
+.indexlist .show_on_more {
+	display: none;
+}
+
+.indexlist .show_more .show_on_more {
+	display: block;
+}
+
+.indexlist .show_more .assoc_obj_title h4.editable{
+	display: none;
+}
+
+.indexlist TD:first-child  {
+	text-align:right;
+	width:20px;
+	white-space:nowrap
+}
+
+.indexlist TD.assoc_obj_title  {
+	white-space:normal;
+	width: 100%;
+}
+
+.indexlist TD:last-child  {
+	white-space:nowrap;
+	text-align: right;
+}
+
+.indexlist TD.moredata input {
+	width: 100%;
+}
+
+.indexlist tr:last-child TD {
+	border-bottom:0px solid #d8d8d8;
+}
+
+.indexlist TD .description  {  
+	width: 100%; 
+	display: none;
+}
+
+.indexlist TD .description textarea { 
+	width: 100%; 
+}
+
+.indexlist .filethumb {
+	width:64px;
+}
+
+.indexlist .filethumb img {
+	width:100%; 
 }
 
 .indexlist TR[rel] {
@@ -1135,22 +1433,24 @@ th.headerSortUp , th.headerSortDown {
     MultimediaItems
 
 ...........................................*/
-
+.multimediaiteminside img {
+	width: 100%;
+}
 
 .multimediaitem {
-	width:130px;
+	width: 140px;
 	background-color:#FFFFFF;
 	border:0px solid white;
 	padding:10px;
 	margin-right:10px;
 	margin-bottom:10px;
 	float:left;
-
-	border-radius : 10px; 
-	-moz-border-radius : 10px; 
-	-webkit-border-radius : 10px;
-	
 }
+
+.multimediaitem:hover {
+	background-color:#DDD;
+}
+
 .multimediaitem input, .multimediaitem textarea, .multimediaitem LI {
 	font-size:0.9em;
 }
@@ -1300,16 +1600,20 @@ UL#mediatypes  {
 	list-style:none;
 	padding:4px 0px 0px 32px;
 	margin:0px;
-	height:20px;
 	background-repeat: no-repeat;
 	margin-top:6px;
 	cursor:pointer;
 }
 
 #mediatypes .inline LI {
-	float:left;
 	padding:4px 8px 0px 26px;
 	margin-right:8px;
+	margin-bottom: 10px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: 0px;
+	width: 130px;
+	height: 24px;
 }
 
 
@@ -1323,11 +1627,12 @@ UL#mediatypes  {
 
 /*...........................................    
 
-    iconset
+    media iconset
 
 ...........................................*/
 
 .ico_image {background-image: url('../img/iconset/24px/image.png');}
+.ico_archive {background-image: url('../img/iconset/24px/archive.png');}
 .ico_video {background-image: url('../img/iconset/24px/video.png');}
 .ico_audio {background-image: url('../img/iconset/24px/audio.png');}
 .ico_text {background-image: url('../img/iconset/24px/text.png');}
@@ -1340,6 +1645,22 @@ UL#mediatypes  {
 .ico_rss.on {background-image: url('../img/iconset/24px/rss-on.png');}
 .ico_application {background-image: url('../img/iconset/24px/application.png');}
 
+.icon-image,
+.icon-video,
+.icon-audio,
+.icon-text ,
+.icon-spreadsheet,
+.icon-presentation ,
+.icon-drawing,
+.icon-chart,
+.icon-formula,
+.icon-rss,
+.icon-gallery,
+.icon-application {
+
+}
+
+
 /*...........................................    
 
     Forms
@@ -1348,7 +1669,7 @@ UL#mediatypes  {
 
 
 INPUT, TEXTAREA, SELECT {
-	padding:2px;
+	padding:5px;
 }
 INPUT[type=text], INPUT[type=file], INPUT[type=search], TEXTAREA {
 	border:1px solid silver;
@@ -1372,7 +1693,7 @@ INPUT[readonly] {
 }
 
 
-label {font-weight:bold;}
+label {font-weight:bold;vertical-align: bottom;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
 
@@ -1380,6 +1701,7 @@ fieldset {border:0}
 
 textarea {
 	overflow:auto;
+	vertical-align: top;
 }
 
 textarea#description, textarea#title, textarea#addtaglist, textarea.longtext, textarea.mce, textarea.mceSimple {
@@ -1397,17 +1719,20 @@ input#titleBEObject, input#title, textarea.subtitle {
 
 input#titleBEObject {
 	padding:5px 0px 5px 5px; font-size:1.25em;
+	margin-bottom: 10px;
 }
 
 INPUT.priority {
 	text-align:center; 
-	margin:-5px 0 0 0;
+	margin: 0;
 	width:20px;
 	height:20px;
 	border-radius:35px !important; 
 	font-size: 11px;
 	border-width:0px !important;
 	color:#FFF !important;
+	padding:2px;
+	vertical-align: middle;
 }
 
 INPUT.objectCheck {
@@ -1431,6 +1756,12 @@ INPUT[type=button], INPUT[type=submit], button  {
 	text-transform:uppercase;
 }
 
+SELECT {
+	width:auto;
+}
+SELECT#selObjectType {
+	min-width:240px;
+}
 
 /*...........................................    
 
@@ -1440,8 +1771,10 @@ INPUT[type=button], INPUT[type=submit], button  {
 
 A.BEbutton  {
 	padding:4px 8px 4px 8px !important;
+	min-width: 25px;
+	display: inline-block;
+	text-align: center;
 }
-
 
 .bemaincommands {
 	width:100px !important;
@@ -1449,19 +1782,13 @@ A.BEbutton  {
 	margin:5px auto;
 }
 
-.bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button], button {
+.bemaincommands, .BEbutton, input[type=submit], input[type=button], button {
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
 	background-color:#F2F2F2;
 	line-height:1.2em;
 	border-color:#BBBBBB;
 	color:#333;
-	
-	-moz-border-radius:9px;
 	border-radius : 9px; 
-	-webkit-border-radius : 9px;
-	-khtml-border-radius: 9px;
-	-moz-box-sizing:content-box;
-	
 	border-style:solid;
 	border-width:1px;
 	cursor:pointer;
@@ -1488,6 +1815,9 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 :focus { outline: none; }
 :active { outline: none; }
 
+A.BEbutton.golink:before {
+	content:"go";
+}
 
 /*...........................................    
 
@@ -1515,7 +1845,8 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 }
 			
 .message {
-	width:120px; height:120px; 
+	width: 140px; 
+	height: 110px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
@@ -1637,61 +1968,113 @@ input[type=submit]:hover, input[type=button]:hover, A.BEbutton:hover, button:hov
 }
 
 #modal {
-	position:absolute;
-	top:20px;
+	position: fixed;
 	left:300px;
-	background-color: #FFFFFF;
+	top: 20px;
+	bottom: 20px;
+	background: transparent;
 	width:660px;
-	/*height:550px;*/
 	display:none;
-	z-index:500;
-	/*overflow:hidden;*/
-	border-radius : 22px; 
-	-moz-border-radius : 22px; 
-	-webkit-border-radius : 22px;
-	-khtml-border-radius: 22px;
+	z-index:500;  
+	overflow: hidden;
 }
 
 #modalmain {
 	width:100%;
-	/*min-height:525px;*/
-	/*overflow-y:auto;*/
-	/*overflow-x:hidden;*/
-	/*background: transparent url(../img/shadowsimple.png) repeat-x;*/
-	margin-bottom:30px;
+	height: calc(100% - 21px);
+	overflow:hidden;
+	position: relative;
+	background: #FFF;
+}
+
+#modalmain .bodybg{
+	height: -webkit-calc(100% - 55px);
+	height: calc(100% - 55px);
+	overflow-y:auto;
+	overflow-x:hidden;
 }
 
 #modalmain .body {
 	padding:10px;
 	/*min-height:505px;*/
-	
+}
+
+#modalmain .search, #modalmain .quick, #modalmain .quickmedia {
+	display:none;
+	padding:10px;
+}
+
+#modalmain .quickmedia {
+	padding:0px;
 }
 
 .modalcommands {
-	padding:10px; margin-top:0px; text-align:center; 
+	padding:10px; margin-top:0px;
+	text-align:center; 
 	background-color:#FFFFFF;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
 }
 
 #modalheader {
 	background-color:#000000;
 	/*width:480px;*/
 	height:21px;
-	padding-top:5px;
+	padding-top: 2px;
 	padding-right:20px;
 	text-align:right;
 	color:white;
-	cursor:move;
 	border-bottom:1px solid gray;
 }
-
+/*
 #modalheader:Hover {
 	background-color:#333;
 }
-
+*/
 #modalheader A {
 	color:white;
 	cursor:pointer;
+	margin-left: 20px;
+	padding-left: 20px;
+	border-left: solid 1px #FFF;
 }
+
+
+#modalmain .trigger {
+	background:white url('../img/piumeno.gif') no-repeat left 2px; 
+	padding:5px 0px 5px 30px;
+	font-weight:bold;
+	cursor:pointer;
+	border-bottom:1px solid #CCC;
+}
+
+#modalmain .trigger.open {
+	background-position: left -25px;
+}
+
+
+/*...........................................    
+
+    Specific template layout: login
+
+...........................................*/
+
+	.login {
+
+		margin-left:310px;
+		padding-top:25px;
+	}
+
+	.login input {
+		width:140px;
+	}
+
+	.login .bemaincommands {
+		margin:20px 0px; 
+		width:145px !important;
+		padding:5px;
+	}
 
 /*...........................................    
 
@@ -1738,15 +2121,15 @@ LI.welcome {
 	position:absolute;
 	width:200px; 
 	top:20px;
-	left:170px;
+	left: 170px;
 }
 
 .dashboard.center {
-	left:380px; width:120px
-}
+	left: 380px; 
+	width: 140px;}
 
 .dashboard.right {
-	left:530px;
+	left: 530px;
 }
 
 .dashboard .modules LI {
@@ -1769,18 +2152,18 @@ LI.welcome {
 	.dashboard { width:240px }
 	.dashboard.center {
 		width:280px;
-		left:420px; 
+		left: 420px; 
 	}
-	.dashboard.right { left:710px; }
+	.dashboard.right { left: 710px; }
 }
 
 @media only screen and (min-width: 1200px) {
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:420px;
-		left:480px; 
+		left: 480px; 
 	}
-	.dashboard.right { left:910px; }
+	.dashboard.right { left: 910px; }
 }
 
 
@@ -1788,9 +2171,9 @@ LI.welcome {
 	.dashboard { width:300px }
 	.dashboard.center {
 		width:700px;
-		left:480px; 
+		left: 480px; 
 	}
-	.dashboard.right { left:1190px; }
+	.dashboard.right { left: 1190px; }
 }
 
 
@@ -1894,6 +2277,17 @@ Table.graph TD DIV.bar {
 
 Table.graph .value {
 	padding-left:5px; vertical-align:middle;
+}
+
+/*...........................................    
+
+    Specific element layout: permissions
+
+...........................................*/
+
+#permissions .indexlist TD, #permissions .indexlist TH {
+	white-space: nowrap;
+	text-align: left;
 }
 
 /*...........................................    
@@ -2113,6 +2507,24 @@ code ins {
 	-khtml-border-radius: 11px;
 }
 
+/*...........................................    
+
+   New Upload system
+
+...........................................*/
+
+.fileupload {
+	height: 108px;
+	border: 2px dashed #999;
+	border-radius: 20px;
+	margin: 10px;
+	padding:10px;
+	text-align: center;
+}
+
+.fileupload:after {
+	content:"drag your files here";
+}
 
 /*...........................................    
 
@@ -2161,14 +2573,6 @@ label.error {
 	background-color:red !important;
 }
 
-
-
-.shadow {
-	-moz-box-shadow: 0px 0px 5px #666;
-	-webkit-box-shadow: 0px 0px 5px #666;
-	box-shadow: 0px 0px 5px #666;
-}
-
 /*...........................................    
 
    UI varie
@@ -2178,7 +2582,11 @@ label.error {
 .shadow {
 	-moz-box-shadow: 0px 0px 5px #666;
 	-webkit-box-shadow: 0px 0px 5px #666;
-	box-shadow: 0px 0px 5px #666;
+	box-shadow: 0px 0px 5px rgba(0,0,0,.2);
+}
+
+.shadow20 {
+	box-shadow: 0px 0px 20px rgba(0,0,0,.2);
 }
 
 img.smallicon {
@@ -2274,10 +2682,8 @@ img.smallicon {
 	position: relative;
 	width: 100%;
 	display: none;
-	/*display: table;*/
 }
 .dropSubTarget {
-	/* display: table-cell; */
 	display: none; 
 	position: relative;
 	height: 90%;
@@ -2304,15 +2710,21 @@ img.smallicon {
 	text-transform: uppercase;
 	text-align: center;
 	margin-top: 30%; 
-	font-size: 30px;
+	font-size: 24px;
 	line-height: 40px;
 	color: black;
+}
+.dropSubTarget.allowed p + p {
+	position: absolute;
+	bottom: 0;
+	margin-top: 0;
+	margin-bottom: 40px;
 }
 .denied p {
 	text-transform: uppercase;
 	text-align: center;
 	margin-top: 20%; 
-	font-size: 30px;
+	font-size: 20px;
 	line-height: 40px;
 	color: white;
 }
@@ -2324,4 +2736,41 @@ img.smallicon {
 
 span.highlight {
 	color: red;
+}
+
+/* ckeditor */
+.cke {
+	margin-bottom: 10px !important;
+}
+
+/* select2 */
+
+.select2-container .select2-choice abbr {
+	top: 6px !important;
+}
+
+.select2-results {
+	overflow: auto !important;
+}
+
+.select2-results li {
+	padding-left: 5px;
+}
+
+.select2-results .select2-result-label {
+	/*white-space: nowrap;*/
+}
+
+.select2-results .select2-result-label .gray{
+	color: #999;
+}
+
+.select2-results .select2-result-label A{
+	position: absolute;
+	margin-left: -10px;
+}
+
+.select2-container.areaSectionAssociation {
+	width: 100%;
+	max-width: 550px
 }

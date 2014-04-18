@@ -10,7 +10,7 @@ $(document).ready(function(){
 	});
 	
 	$(".htab TD").click(function () {
-		$("input",this).attr({ checked:"checked" });
+		$("input", this).prop('checked', true);
 	});
 	
 	{if (!empty($object) && !empty($object.country))}

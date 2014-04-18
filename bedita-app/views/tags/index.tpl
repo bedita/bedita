@@ -13,7 +13,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
-		if($(this).attr("checked")) {
+		if ($(this).prop("checked")) {
 			checked++;
 		}
 	});
@@ -22,14 +22,15 @@ function count_check_selected() {
 $(document).ready(function() {
 
 	$("#deleteSelected").bind("click", function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		if(!confirm(messageSelected)) 
-			return false ;
-		$("#formObject").attr("action", urlDelete) ;
-		$("#formObject").submit() ;
+		if (!confirm(messageSelected)) {
+			return false;
+		}
+		$("#formObject").prop("action", urlDelete);
+		$("#formObject").submit();
 	});
 	
 
@@ -45,16 +46,16 @@ $(document).ready(function() {
 	});
 	
 	$("#addmultipletag").click(function() {
-		$("#formObject").attr("action", urlAddMultipleTags) ;
+		$("#formObject").prop("action", urlAddMultipleTags) ;
 		$("#formObject").submit();
 	});
 	
 	$("#changestatusSelected").click(function() {
-		if(count_check_selected()<1) {
+		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
 			return false;
 		}
-		$("#formObject").attr("action", urlChangeStatus) ;
+		$("#formObject").prop("action", urlChangeStatus) ;
 		$("#formObject").submit();
 	});
 
@@ -79,7 +80,7 @@ $(document).ready(function() {
 
 	<tr>
 		
-		<th style="width:45px;">
+		<th style="width:50px;">
 			
 			<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
 			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />

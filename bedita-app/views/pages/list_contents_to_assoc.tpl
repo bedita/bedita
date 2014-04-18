@@ -1,6 +1,6 @@
 {* included by show_objects.tpl *}
 
-{$html->script("jquery/jquery.tablesorter.min")}
+{$html->script("libs/jquery/plugins/jquery.tablesorter.min")}
 
 <script type="text/javascript">
 <!--
@@ -10,8 +10,25 @@ $(document).ready(function() {
 		loadObjToAssoc($(this).attr("rel"));
 	});
 
-	 $("#objtable").tablesorter(); 	
-	 $("#objtable thead TH").css("cursor","pointer"); 
+	$("#objtable").tablesorter(); 	
+	$("#objtable thead TH").css("cursor","pointer");
+
+	$('#objtable').find('input[type=checkbox]').click(function() {
+		var objectId = $(this).val();
+		if ($(this).prop('checked')) {
+			objectsChecked.add(objectId);
+		} else {
+			objectsChecked.remove(objectId);
+		}
+		// update add button
+		var addLabel = $('#addButton').val();
+		addLabel = addLabel.replace(/\s\d+\sitems/, '');
+		var countIds = objectsChecked.get().length;
+		if (countIds) {
+			addLabel += ' ' + countIds + ' items';
+		}
+		$('#addButton').val(addLabel);
+	});
 
 });
 //-->
@@ -26,25 +43,47 @@ $(document).ready(function() {
 			<th>{t}title{/t}</th>
 			<th style="text-align:center">{t}type{/t}</th>
 			<th style="text-align:center">{t}status{/t}</th>
+			<th></th>
 			<th style="text-align:center">{t}modified{/t}</th>
 			<th style="text-align:center">{t}lang{/t}</th>
 			<th style="text-align:center">Id</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
+
+	{assign_associative var="params" presentation="thumb" width='64'}
+
 		{foreach from=$objectsToAssoc.items item="objToAss"}
 		<tr>
-			<td style="width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
+			<td style="white-space:nowrap; width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
 				<input type="checkbox" name="object_selected[]" class="objectCheck" value="{$objToAss.id}"/>
+				{if !empty($objToAss.num_of_permission)}
+					<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; margin:0 0 0 -5px; vertical-align:top;">
+				{/if}
+				
+				{if ($objToAss.ubiquity|default:0 > 1)}
+					<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:4px 4px 0 0; height:18px; vertical-align:top;">
+				{/if}
+				{if (!empty($objToAss.fixed))}
+					<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
+				{/if}
 			</td>
 			<td>{$objToAss.title|default:'<i>[no title]</i>'}</td>
 			<td style="padding:0px; width:10px;">
 				<span class="listrecent {$objToAss.moduleName}">&nbsp;</span>
 			</td>
 			<td style="text-align:center">{$objToAss.status}</td>
+			<td class="filethumb">
+			<!-- {*if $objToAss.moduleName == "multimedia"*} -->
+			{if !empty($objToAss.uri)}
+				{$beEmbedMedia->object($objToAss,$params)}
+			{/if}
+			</td>
 			<td style="white-space:nowrap; text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
 			<td style="text-align:center">{$objToAss.lang}</td>
 			<td style="text-align:center">{$objToAss.id}</td>
+			<td><a class="BEbutton golink" style="padding:0px 2px 0px 2px !important; margin:0px" title="{$objToAss.nickname}" target="_blank" href="{$html->url('/')}view/{$objToAss.nickname}"></a></td>
 		</tr>
 		{/foreach}
 	</tbody>

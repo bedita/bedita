@@ -5,10 +5,11 @@
 
 	$(document).ready(function() { 
 		$(".delJob").bind("click", function() { 
-			if(!confirm(message))
-				return false ;
-			var jobId = $(this).attr("title");
-			$("#form_job_"+jobId).attr("action", delJobUrl + '/' + jobId).submit();
+			if (!confirm(message)) {
+				return false;
+			}
+			var jobId = $(this).prop("title");
+			$("#form_job_" + jobId).prop("action", delJobUrl + '/' + jobId).submit();
 		} );
 	} );
 </script>

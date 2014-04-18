@@ -1,96 +1,8 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
 <!--
-var urlAddObjToAss = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
+var urlAddObjToAssLeafs = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
 var priorityOrder = "{$priorityOrder|default:'asc'}";
 var pageUrl = "{$beurl->getUrl('object_type_id')}";
-
-{literal}
-
-function addObjToAssoc(url, postdata) {
-	$.post(url, postdata, function(html){
-		if(priorityOrder == 'asc') {
-			var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-			$("#areacontent tr:last").after(html);
-		} else {
-			var startPriority = parseInt($("#areacontent").find("input[name*='[priority]']:first").val());
-			var beforeInsert = parseInt($("#areacontent tr").size());
-			$("#areacontent tr:first").before(html);
-			var afterInsert = parseInt($("#areacontent tr").size());
-			startPriority = startPriority + (afterInsert - beforeInsert);
-		}
-
-		if ($("#noContents")) {
-			$("#noContents").hide();
-		}
-		$("#areacontent").fixItemsPriority(startPriority);
-		$("#areacontent").sortable("refresh");
-		$("#areacontent table").find("tbody").sortable("refresh");
-		setRemoveActions();
-	});
-}
-
-function setRemoveActions() {
-	$("#areacontent").find("input[name='remove']").click(function() {
-		var contentField = $("#contentsToRemove").val() + $(this).parents("tr:first").find("input[name*='[id]']").val() + ",";
-		$("#contentsToRemove").val(contentField);
-		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-		
-		if (priorityOrder == "desc" && $(this) != $("#areacontent").find("input[name*='[priority]']:first")) {
-			startPriority--;
-		}
-		
-		$(this).parents("tr:first").remove();
-		
-		if ($("#areacontent tr:visible").not('#noContents').length == 0) {
-			$("#noContents").show();
-		}
-		$("#areacontent").fixItemsPriority(startPriority);
-	});
-}
-
-$(document).ready(function() {
-
-	if ($("#areacontent").find("input[name*='[priority]']:first")) {
-		var startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-	} else {
-		var startPriority = 1;
-	}
-
-	//$("#areacontent").sortable ({
-	$("#areacontent table").find("tbody").sortable ({
-		distance: 20,
-		opacity:0.7,
-		update: function() {
-					if (priorityOrder == 'desc' && startPriority < $("#areacontent").find("input[name*='[priority]']:first").val()) {
-						startPriority = $("#areacontent").find("input[name*='[priority]']:first").val();
-					}
-					$(this).fixItemsPriority(startPriority);
-				}
-	}).css("cursor","move");
-	
-	setRemoveActions();
-	
-	$(".newcontenthere").click(function(){
-		var urltogo = $('.selectcontenthere').val();
-		window.location.href = urltogo;
-		return false;
-	});
-		
-	$("#selObjectType").change(function() {
-		var url = ($(this).val() != "")? pageUrl + "/object_type_id:" + $(this).val() : pageUrl;
-		location.href = url;
-	});
-	
-});
-
-
-    $(function() {
-        //$('.disableSelection').disableTextSelect();
-    });
-
-{/literal}
 //-->
 </script>
 
@@ -106,7 +18,7 @@ $(document).ready(function() {
 			<tr id="noContents"{if !empty($objects)} style="display: none;"{/if}>
 				<td><i>no items</i></td>
 			</tr>
-			{include file="../inc/list_contents_for_section.tpl" objsRelated=$objects}
+			{include file="../../elements/form_assoc_object.tpl" objsRelated=$objects}
 		</tbody>
 	</table>
 	

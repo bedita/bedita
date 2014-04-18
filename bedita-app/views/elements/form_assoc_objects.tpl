@@ -1,71 +1,34 @@
-{*$html->script("jquery/jquery.disable.text.select", true)*}
-
 <script type="text/javascript">
+
 var urlAddObjToAss= "{$html->url('/pages/loadObjectToAssoc/')}{$object.id}";
-<!--
 
 function relatedRefreshButton() {
-	$("#relationContainer").find("input[name='details']").click(function() {
-		location.href = $(this).attr("rel");
-	});
 	
-	$("#relationContainer").find("input[name='remove']").click(function() {
+	$(".remove",".relationList").click(function() {
 		tableToReorder = $(this).parents("table");
 		$(this).parents("tr").remove();
 		tableToReorder.fixItemsPriority();
 	});
 }
 
-function addObjToAssoc(url, postdata) {
+function addObjToAssocRelated(url, postdata) {
 	$("#loadingDownloadRel").show();
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
-		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tr").first().parent();
-		tbody.html( tbody.html()+html );
-		var tr = tbody.children('tr').last();
+		var newTrs = $(html);
+		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tbody");
+		tbody.append( newTrs );
 		$("#relationType_" + postdata.relation).fixItemsPriority();
-		$("#relationContainer table").find("tbody").sortable("refresh");
-		$(document).trigger('relation_' + postdata.relation + ':added', tr);
+		$(".relationList table.indexlist").find("tbody:first").sortable("refresh");
+		newTrs.each(function() {
+			$(document).trigger('relation_' + postdata.relation + ':added', $(this));
+		});
 		relatedRefreshButton();
 	});
 }
 
-function commitUploadItemDownloadRel(IDs) {
-	obj_sel = {};
-	obj_sel.object_selected = "";
-	for(var i=0 ; i < IDs.length ; i++) {
-		obj_sel.object_selected += IDs[i] + ",";
-	}
-	obj_sel.relation = "download";
-	addObjToAssoc(urlAddObjToAss, obj_sel);	
-}
-
-function showResponseDownloadRel(data) {
-	if (data.UploadErrorMsg) {
-		$("#loadingDownloadRel").hide();
-		$("#ajaxUploadContainerDownloadRel").append("<label class='error'>"+data.UploadErrorMsg+"<\/label>").addClass("error");
-	} else {
-		var tmp = new Array() ;
-		var countFile = 0; 
-		$.each(data, function(entryIndex, entry) {
-			tmp[countFile++] = entry['fileId'];
-		});
-
-		commitUploadItemDownloadRel(tmp);
-	}
-	
-	$("#ajaxUploadContainerDownloadRel").find("input[@type=text]").attr("value", "");
-	$("#ajaxUploadContainerDownloadRel").find("input[@type=file]").attr("value", "");
-	$("#ajaxUploadContainerDownloadRel").find("textarea").attr("value", "");
-}
-
-function resetErrorDownloadRel() {
-	$("#ajaxUploadContainerDownloadRel").find("label").remove();
-	$("#loadingDownloadRel").show();
-}
-
 $(document).ready(function() {
-	$("#relationContainer table").find("tbody").sortable ({
+	$(".relationList table.indexlist").find("tbody:first").sortable({
 		distance: 20,
 		opacity:0.7,
 		update: $(this).fixItemsPriority
@@ -81,7 +44,6 @@ $(document).ready(function() {
 		addObjToAssoc(urlAddObjToAss, obj_sel);
 		input_ids.val("");
 	});
-	
 	// manage enter key on search text to prevent default submit
 	$("input[name='list_object_id']").keypress(function(event) {
 		if (event.keyCode == 13 && $(this).val() != "") {
@@ -94,80 +56,61 @@ $(document).ready(function() {
 		}
 	});
 
-	// upload ajax for download relation
-	var optionsFormDownloadRel = {
-		beforeSubmit:	resetErrorDownloadRel,
-		success:		showResponseDownloadRel,  // post-submit callback  
-		dataType:		'json',        // 'xml', 'script', or 'json' (expected server response type)
-		url: "{$html->url('/files/uploadAjax/DownloadRel')}"
-	};
-
-	$("#uploadFormDownloadRel").click(function() {
-		$('#updateForm').ajaxSubmit(optionsFormDownloadRel);
-		return false;
+	$(document).on('click', '.relViewOptions', function() {
+		$(this).closest('.relationList').toggleClass('boxed');
 	});
-	
-});
 
-$(function() {
-   //$('.disableSelection').disableTextSelect();
 });
-
-//-->
 </script>
 
-
 {$view->set("object_type_id",$object_type_id)}
-<div class="tab"><h2>{t}Relations{/t}</h2></div>
 
-<fieldset id="frmAssocObject">
-	
-	<div id="loadingDownloadRel" class="loader" title="{t}Loading data{/t}"></div>
-	
-	<table class="htab">
-	<tr>
-	{foreach $availabeRelations as $rel => $relLabel}
-		<td rel="relationType_{$rel}">{t}{$relLabel}{/t}</td>
-	{/foreach}
-	</tr>
-	</table>
+{foreach $availabeRelations as $rel => $relLabel}
 
-	<div class="htabcontainer" id="relationContainer">
-	{foreach $availabeRelations as $rel => $relLabel}
-	<div class="htabcontent" id="relationType_{$rel}">
-		<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
-		
-		<table class="indexlist" style="width:100%; margin-bottom:10px;">
-			<tbody class="disableSelection">
-				<tr><td colspan="10" style="padding: 0"></td></tr>
-			{if !empty($relObjects.$rel)}
-				{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
-				{$view->element('form_assoc_object', $params)}
-			{/if}
-			</tbody>
-		</table>
-		
-		<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
-		rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" style="width:200px" 
-		value="  {t}connect new items{/t}  " />
-		
-		{if $rel == "download"}
-			{assign_associative var="params" uploadIdSuffix="DownloadRel"}
-			{$view->element('form_upload_multi', $params)}
+{$relcount = $relObjects.$rel|@count|default:0}
+<div class="tab">
+	<h2 {if $relcount == 0}class="empty"{/if}>
+		{t}{$relLabel}{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
+	</h2>
+</div>
+
+<div class="relationList {if $rel == "attach"}boxed{/if}" id="relationType_{$rel}">
+
+	<div class="relViewOptions">
+		<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
+		<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-list.png" />
+	</div>
+
+	<input type="hidden" class="relationTypeHidden" name="data[RelatedObject][{$rel}][0][switch]" value="{$rel}" />
+	<table class="indexlist">
+		<thead>
+			<tr>
+				<th></th>
+				<th>{t}title{/t}</th>
+				{if $rel == "question"}
+				<th>{t}type{/t}</th>
+				{/if}
+				<th></th>
+				<th>{t}status{/t}</th>
+				<th>{t}lang{/t}</th>
+				<th>{t}type{/t} and {t}size{/t}</th>
+				<th>{t}more{/t}</th>
+				<th style="text-align:right">{t}commands{/t}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="trick"><td></td></tr>
+		{if !empty($relObjects.$rel)}
+			{assign_associative var="params" objsRelated=$relObjects.$rel rel=$rel}
+			{$view->element('form_assoc_object', $params)}
 		{/if}
-		
-		{*
-		<br /><br />
-		{t}or{/t} &nbsp;
-		<label>{t}add by object ids{/t}</label>: <input type="text" name="list_object_id" size="12" /> 
-		<input class="BEbutton" name="addIds" type="button" value="{t}add{/t}">
-		*}
-
-		
-	</div>
-	{/foreach}
-	</div>
-
-
+		</tbody>
+	</table>
 	
-</fieldset>
+	<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
+	rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" 
+	value="  {t}connect new items{/t}  " />
+	
+</div>
+
+{/foreach}

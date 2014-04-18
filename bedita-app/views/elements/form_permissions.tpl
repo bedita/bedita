@@ -28,7 +28,7 @@ $(document).ready(function(){
 		var name = $("#inputAddPermGroup").val();
 		var type = "group";
 		var perm = $("#selectGroupPermission").val();
-		var index = $("#frmCustomPermissions").find("tr[id^='permTR_']:last").attr("id");
+		var index = $("#frmCustomPermissions").find("tr[id^='permTR_']:last").prop("id");
 		
 		if (index == undefined) {
 			index = 0;
@@ -51,6 +51,7 @@ $(document).ready(function(){
 	});
 
 	refreshRemovePermButton();
+
 });
 
 function refreshRemovePermButton() {
@@ -69,16 +70,21 @@ function loadUserGroupAjax(url) {
 </script>
 
 
+{$relcount = $el.Permission|@count|default:0}
+<div class="tab" id="permissionsTab">
+	<h2 {if $relcount == 0}class="empty"{/if}>
+		{t}Permissions{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}
+	</h2>
+</div>
 
-<div class="tab" id="permissionsTab"><h2>{t}Permissions{/t}</h2></div>
 <fieldset id="permissions">
 <div class="loader" id="loaderug"></div>
 
 <table class="indexlist" border=0 id="frmCustomPermissions">
 {if !empty($el.Permission)}
 <tr>
-	<th style="width:190px">{t}name{/t}</th>
-	<th style="width:190px">{t}permission{/t}</th>
+	<th>{t}name{/t}</th>
+	<th>{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
@@ -103,8 +109,8 @@ function loadUserGroupAjax(url) {
 	{/section}
 {else}
 <tr>
-	<th style="width:190px"></th>
-	<th style="width:190px"></th>
+	<th></th>
+	<th></th>
 	<th>&nbsp;</th>
 </tr>
 {/if}
@@ -112,18 +118,19 @@ function loadUserGroupAjax(url) {
 
 <table class="indexlist" border=0 id="selCustomPermissions">
 <tr>
-	<th style="width:190px">{t}add group{/t}:</th>
-	<th style="width:190px">{t}permission{/t}</th>
+	<th>{t}add group{/t}:</th>
+	<th>{t}permission{/t}</th>
 	<th>&nbsp;</th>
 </tr>
 
 <tr id="addPermGroupTR" class="ignore">
 	<td style="white-space:nowrap">
-		<select id="inputAddPermGroup" name="name"></select>
+		<select data-placeholder="{t}select a group{/t}" id="inputAddPermGroup" name="name"></select>
 	</td>
 
 	<td>
-		<select id="selectGroupPermission" name="groupPermission">
+		<select data-placeholder="{t}select a permission type{/t}" id="selectGroupPermission" name="groupPermission">
+			<option></option>
 			{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
 			<option value="{$permVal}">{t}{$permLabel}{/t}</option>
 			{/foreach}

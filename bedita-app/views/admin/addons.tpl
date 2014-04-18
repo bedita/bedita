@@ -1,4 +1,4 @@
-{$html->script('jquery/jquery.form', false)}
+{$html->script('libs/jquery/plugins/jquery.form', false)}
 
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
@@ -16,7 +16,7 @@ $(document).ready(function() {
 			}
 		} else if ($(this).hasClass("js-update")) {
 			if (confirm(updateMessage)) {
-				formItem.attr("action", updateUrl);
+				formItem.prop("action", updateUrl);
 				formItem.submit();
 			}
 		} else {

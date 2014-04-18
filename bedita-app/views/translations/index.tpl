@@ -13,7 +13,7 @@ $(document).ready(function() {
 
 	$("#deleteSelected").bind("click", delObjects);
 	$("a.delete").bind("click", function() {
-		delObject($(this).attr("title"));
+		delObject($(this).prop("title"));
 	});
 
 	$("#changestatusSelected").bind("click",changeStatusTranslations);
@@ -21,20 +21,26 @@ $(document).ready(function() {
 });
 
 function delObject(id) {
-	if(!confirm(message)) return false ;
-	$("#objects_selected").attr("value",id);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
+	if (!confirm(message)){
+		return false;
+	}
+	$("#objects_selected").val(id);
+	$("#formObject").prop("action", urlDelete);
+	$("#formObject").get(0).submit();
 	return false ;
 }
 function delObjects() {
 	if(!confirm(messageSelected)) return false ;
 	var oToDel = "";
 	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	for (var i = 0; i < checkElems.length; i++) {
+		if (checkElems[i].checked) {
+			oToDel += "," + checkElems[i].title;
+		}
+	}
 	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").attr("value",oToDel);
-	$("#formObject").attr("action", urlDelete) ;
+	$("#objects_selected").val(oToDel);
+	$("#formObject").prop("action", urlDelete) ;
 	$("#formObject").get(0).submit() ;
 	return false ;
 }
@@ -43,10 +49,14 @@ function changeStatusTranslations() {
 	if(status != "") {
 		var oToDel = "";
 		var checkElems = document.getElementsByName('object_chk');
-		for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
-		oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-		$("#objects_selected").attr("value",oToDel);
-		$("#formObject").attr("action", '{$html->url('changeStatusTranslations/')}' + status) ;
+		for (var i = 0; i < checkElems.length; i++) {
+			if (checkElems[i].checked) {
+				oToDel += "," + checkElems[i].title;
+			}
+		}
+		oToDel = (oToDel == "")? "" : oToDel.substring(1);
+		$("#objects_selected").val(oToDel);
+		$("#formObject").prop("action", "{$html->url('changeStatusTranslations/')}" + status) ;
 		$("#formObject").get(0).submit() ;
 		return false ;
 	}

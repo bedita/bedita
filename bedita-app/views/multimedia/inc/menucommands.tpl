@@ -40,7 +40,7 @@ Menu a SX valido per tutte le pagine del controller.
 		});
 
 		// save behavior when modal is opened for file exists error
-		$("#modalmain div[data-file-exists] input.uploadChoice").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input.uploadChoice', function() {
 			var serilizedFormArr = $("#modalmain div[data-file-exists] :input").serializeArray();
 			var d = {
 				upload_choice: $(this).attr('data-value')
@@ -55,12 +55,12 @@ Menu a SX valido per tutte le pagine del controller.
 			$("#modalheader .close").click();
 		});
 
-		$("#modalmain div[data-file-exists] input#fileExistsCancel").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input#fileExistsCancel', function() {
 			$("input[name=Filedata]").val('');
 			$("#modalheader .close").click();
 		});
 
-		$("#modalmain div[data-file-exists] input#goto").live('click', function() {
+		$(document).on('click', '#modalmain div[data-file-exists] input#goto', function() {
 			var href = $(this).attr('data-href');
 			location.href = href;
 		});
@@ -110,24 +110,6 @@ Menu a SX valido per tutte le pagine del controller.
 		{$view->element('prevnext')}
 	
 	{/if}
-
-	{if $view->action == "index"}
-		<ul class="menuleft insidecol catselector">
-			<li><a href="javascript:void(0)" onClick="$('#mediatypes').slideToggle();">{t}Select by type{/t}</a></li>
-				<ul id="mediatypes" style="padding-left:10px; {if empty($categorySearched)}display:none{/if}">
-					
-					{foreach from=$conf->mediaTypes item="media_type"}
-					<li class="ico_{$media_type} {if $view->SessionFilter->read('category') == $media_type}on{/if}" rel="{$html->url('/multimedia')}/index/category:{$media_type}">
-						{$media_type}
-					</li>
-					{/foreach}
-					<li class="ico_all" rel="{$html->url('/multimedia')}">
-						All
-					</li>
-				
-				</ul>
-		</ul>
-	{/if}	
 
 
 

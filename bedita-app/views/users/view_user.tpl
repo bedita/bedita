@@ -1,15 +1,9 @@
 {$html->script("form", false)}
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.cmxforms", false)}
-{$html->script("jquery/jquery.metadata", false)}
-{*
-{$html->script("jquery/jquery.validate", false)}
-*}
-{$html->script("jquery/jquery.changealert", false)}
-
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
 <script type="text/javascript">
-	$(document).ready(function(){
+	$(document).ready(function() {
 		openAtStart("#details");
 	});
 </script>

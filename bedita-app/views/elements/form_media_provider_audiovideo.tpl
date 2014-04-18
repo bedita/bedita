@@ -15,9 +15,9 @@ function showResponse(data) {
 	    	tmp[countFile++] = entry['filename'];
 	    });
 	    // clear input form
-	    $("#uploadMediaProvider").find("input[type=text]").attr("value", "");
-	    $("#uploadMediaProvider").find("input[type=file]").attr("value", "");
-	    $("#uploadMediaProvider").find("textarea").attr("value", "");
+	    $("#uploadMediaProvider").find("input[type=text]").val("");
+	    $("#uploadMediaProvider").find("input[type=file]").val("");
+	    $("#uploadMediaProvider").find("textarea").val("");
 		commitFileUpload(tmp);
 	}
 }
@@ -37,7 +37,7 @@ function showResponseMedia(data) {
     	var tmp = new Array(data['filename']) ;
     	commitFileUpload(tmp);
     	
-    	$("#uploadMediaProvider input[type='text']").attr("value", "") ;
+    	$("#uploadMediaProvider input[type='text']").val("") ;
     }
 }
 

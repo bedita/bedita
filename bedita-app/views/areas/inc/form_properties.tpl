@@ -2,9 +2,9 @@
 
 <fieldset id="properties">
 
-{$html->script("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
 {if $currLang != "eng"}
-{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+	{$html->script('libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js', false)}
 {/if}
 
 {$view->element('form_common_js')}

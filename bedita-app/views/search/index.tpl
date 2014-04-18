@@ -1,8 +1,5 @@
-{assign_associative var="cssOptions" inline=false}
-{$html->css("tree", null, $cssOptions)}
+{$html->css("tree", null, ['inline' => false])}
 {$html->script("form", false)}
-{$html->script("jquery/jquery.changealert", false)}
-
 
 <script type="text/javascript">
 <!--
@@ -15,27 +12,33 @@ $(document).ready(function() {
 
 	$("#deleteSelected").bind("click", delObjects);
 	$("a.delete").bind("click", function() {
-		delObject($(this).attr("title"));
+		delObject($(this).prop("title"));
 	});
 	
 });
 function delObject(id) {
-	if(!confirm(message)) return false ;
-	$("#objects_selected").attr("value",id);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
+	if (!confirm(message)) {
+		return false;
+	}
+	$("#objects_selected").val(id);
+	$("#formObject").prop("action", urlDelete);
+	$("#formObject").get(0).submit();
+	return false;
 }
 function delObjects() {
-	if(!confirm(messageSelected)) return false ;
+	if(!confirm(messageSelected)) return false;
 	var oToDel = "";
 	var checkElems = document.getElementsByName('object_chk');
-	for(var i=0;i<checkElems.length;i++) { if(checkElems[i].checked) oToDel+= ","+checkElems[i].title; }
+	for (var i = 0; i < checkElems.length; i++) {
+		if (checkElems[i].checked) {
+			oToDel += "," + checkElems[i].title;
+		}
+	}
 	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").attr("value",oToDel);
-	$("#formObject").attr("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
+	$("#objects_selected").val(oToDel);
+	$("#formObject").prop("action", urlDelete);
+	$("#formObject").get(0).submit();
+	return false;
 }
 
 //-->

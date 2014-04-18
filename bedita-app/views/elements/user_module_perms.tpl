@@ -28,8 +28,6 @@
 
 {$conf->colophon|default:''}
 
-<div id="handlerChangeAlert"></div>
-
 
 
 
