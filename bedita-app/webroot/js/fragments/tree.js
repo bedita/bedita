@@ -70,7 +70,7 @@ $(document).ready(function() {
         var rel = $t.attr("rel");
         if (rel) {
             var ul = $t.closest('.pub').children("ul.menutree").first();
-            var url = '/' + ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
+            var url = ul.attr('data-controller') + '/' + ul.attr('data-action') + '/id:' + rel;
             window.location = url;
         }
     }).delegate('.hitarea', 'click.publishingtree', function() {

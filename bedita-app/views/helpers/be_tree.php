@@ -293,7 +293,7 @@ class BeTreeHelper extends AppHelper {
 					$url = '/pages/tree/' . $publication['id'];
 					$data = '';
 					if (!empty($this->treeParams["controller"])) {
-						$data .= ' data-controller="' . $this->treeParams["controller"] . '"';
+						$data .= ' data-controller="' . $this->Html->url('/'.$this->treeParams["controller"]) . '"';
 					}
 					if (!empty($this->treeParams["action"])) {
 						$data .= ' data-action="' . $this->treeParams["action"] . '"';
@@ -394,7 +394,7 @@ class BeTreeHelper extends AppHelper {
 
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
-				$params = ' class="pubOption" rel="/pages/tree/' . $publication["id"] . '/option"';
+				$params = ' class="pubOption" rel="'. $this->Html->url('/pages/tree/' . $publication["id"]) . '/option"';
 				if (!empty($publication["children"])) {
 					$params .= ' data-loaded="true"';
 				}
@@ -426,7 +426,7 @@ class BeTreeHelper extends AppHelper {
 
 		$data = '';
 		if (!empty($this->treeParams["controller"])) {
-			$data .= ' data-controller="' . $this->treeParams["controller"] . '"';
+			$data .= ' data-controller="' . $this->Html->url('/'.$this->treeParams["controller"]) . '"';
 		}
 		if (!empty($this->treeParams["action"])) {
 			$data .= ' data-action="' . $this->treeParams["action"] . '"';
@@ -435,7 +435,7 @@ class BeTreeHelper extends AppHelper {
 			$data .= ' data-type="' . $inputType . '"';
 		}
 
-		$res = '<ul class="menutree" rel="/pages/tree/' . $parent_id . '"' . $data . '>';
+		$res = '<ul class="menutree" rel="'. $this->Html->url('/pages/tree/' . $parent_id ). '"' . $data . '>';
 
 		foreach ($branch as $section) {
 
