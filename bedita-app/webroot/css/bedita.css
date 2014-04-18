@@ -820,7 +820,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .relationList TR.obj TD:first-child { 
-	width:20px;
+	width: 0px;
 }
 
 .relationList.boxed TR.obj TD:first-child { 
@@ -1280,11 +1280,24 @@ TABLE.indexlist {
  
 .indexlist TH  {
 	background-color:#FFFFFF;
+	white-space: nowrap;
 }
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
 	vertical-align:top;
+}
+
+.indexlist .show_on_more {
+	display: none;
+}
+
+.indexlist .show_more .show_on_more {
+	display: block;
+}
+
+.indexlist .show_more .assoc_obj_title h4.editable{
+	display: none;
 }
 
 .indexlist TD:first-child  {
@@ -1294,12 +1307,13 @@ TABLE.indexlist {
 }
 
 .indexlist TD:nth-child(3)  {
-	width:100%;
 	white-space:normal;
+	width: 100%;
 }
 
 .indexlist TD:last-child  {
 	white-space:nowrap;
+	text-align: right;
 }
 
 .indexlist TD.moredata input {
@@ -1673,7 +1687,7 @@ INPUT[readonly] {
 }
 
 
-label {font-weight:bold;vertical-align: middle;}
+label {font-weight:bold;vertical-align: bottom;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
 
@@ -1712,6 +1726,7 @@ INPUT.priority {
 	border-width:0px !important;
 	color:#FFF !important;
 	padding:2px;
+	vertical-align: middle;
 }
 
 INPUT.objectCheck {

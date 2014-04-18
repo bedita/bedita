@@ -717,6 +717,27 @@ document.onkeydown = function(e){
     //alert(keycode);
 };
 
+/*...........................................    
+
+   objects list
+
+...........................................*/
+
+$(document).on('click', '.showmore', function() {
+    var container = $(this).closest('.obj');
+    $(this).toggleText('+', '-');
+    //mette il modified a 1 
+    var mod = $('.mod', container).val();
+    if (mod > 0) {
+        $('.mod',container).val(0);
+    }
+    else {
+        $('.mod',container).val(1);
+    }
+    //e mostra la textarea del titolo al posto del titolo 
+    container.toggleClass('show_more');
+});
+
 
 /*...........................................    
 

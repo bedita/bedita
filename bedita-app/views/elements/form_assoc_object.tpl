@@ -5,24 +5,36 @@
 
 {assign_associative var='ObjectType' name=$conf->objectTypes[$objRelated.object_type_id].module_name}
 
+{if !empty($rel)}
+	{if !empty($allObjectsRelations[$rel])}
+		{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
+	{else}
+		{foreach $allObjectsRelations as $relName => $rule}
+			{if !empty($rule.inverse) && $rule.inverse == $rel}
+				{$relationParamsArray = $rule.params|default:[]}
+			{/if}
+		{/foreach}
+	{/if}
+{/if}
+
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}" data-benick="{$objRelated.nickname}">
 	<td>
 		{if !empty($objRelated.start_date) && ($objRelated.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
-			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align:top;">
+			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align: middle;">
 		
 		{elseif !empty($objRelated.end_date) && ($objRelated.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
 		
-			<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align:top;">
+			<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align: middle;">
 		
 		{elseif (!empty($objRelated.start_date) && (($objRelated.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objRelated.end_date) && (($objRelated.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
 		
-			<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align:top;">
+			<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align: middle;">
 
 		{/if}
 		
 		{if !empty($objRelated.num_of_permission)}
-			<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align:top;">
+			<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align: middle;">
 		{/if}
 		
 		{if (!empty($objRelated.fixed))}
@@ -47,7 +59,7 @@
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 
 		{else}
-		<input style="margin-top: -2px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objRelated.id}" value="{$objRelated.id}" />
+		<input style="margin-top: 0px; margin-right: 4px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objRelated.id}" value="{$objRelated.id}" />
 		<input type="hidden" class="id" name="reorder[{$objRelated.id}][id]" value="{$objRelated.id}" />
 		<input type="text" class="priority {$ObjectType.name}" name="reorder[{$objRelated.id}][priority]" value="{$objRelated.priority|default:""}" />
 		{/if}
@@ -62,10 +74,14 @@
 	</td>
 
 	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
-		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
-		{if !empty($rel)}
-		<input type="text" style="display:none" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
-		{/if}
+		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		<div class="show_on_more">
+			{if !empty($rel) && !empty($relationParamsArray)}
+			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
+			{/if}
+			<label>id:</label> {$objRelated.id}<br>
+			<label>nickname:</label> {$objRelated.nickname}<br>
+		</div>
 	</td> 
 
 {if !empty($rel) && $rel == "question"}
@@ -89,17 +105,8 @@
 	</td>
 
 	<td class="moredata">
-		<div style="display: none">
+		<div class="show_on_more">
 		{if !empty($rel)}
-			{if !empty($allObjectsRelations[$rel])}
-				{$relationParamsArray = $allObjectsRelations[$rel].params|default:[]}
-			{else}
-				{foreach $allObjectsRelations as $relName => $rule}
-					{if !empty($rule.inverse) && $rule.inverse == $rel}
-						{$relationParamsArray = $rule.params|default:[]}
-					{/if}
-				{/foreach}
-			{/if}
 			{if !empty($relationParamsArray[0])}
 				{foreach $relationParamsArray as $paramKey => $paramVal}
 					{if is_array($paramVal)}
@@ -120,8 +127,8 @@
 				{/foreach}
 			{/if}
 			{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
-			<label>description</label>
-			<textarea placeholder="{t}description{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+			<label>{t}description{/t}</label>
+			<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
 			{/if}
 		{/if}
 		</div>
@@ -129,9 +136,7 @@
 
 	<td class="commands">
 
-{if !empty($rel) && !empty($relationParamsArray)}
-		<a class="BEbutton showmore">+</a>	
-{/if}
+		<a class="BEbutton showmore">+</a>
 		<a class="BEbutton golink" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
 		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	
 		
