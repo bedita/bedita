@@ -28,8 +28,8 @@
  * 
  * $Id$
  */
-class Group extends BEAppModel
-{
+class Group extends BEAppModel {
+
 	var $name = 'Group';
 
 	var $validate = array(
@@ -49,6 +49,15 @@ class Group extends BEAppModel
 	public function afterDelete() {
 	    #379 - temporary fix, not necessary ig groups_users.id is defined
 	    $this->bindModel(array('hasAndBelongsToMany' => array('User')), false);
+	    // remove all group premissions
+	    $permission = ClassRegistry::init('Permission');
+	    $del = $permission->deleteAll(array(
+	    	'ugid' => $this->id,
+	    	'switch' => 'group'
+	    ));
+	    if (!$del) {
+	    	throw new BeditaException(__('Error deleting permission related to group to delete', true) . ' ' . $this->id);
+	    }
 	    return true;
 	}
 	

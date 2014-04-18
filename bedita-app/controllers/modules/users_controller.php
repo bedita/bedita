@@ -407,7 +407,9 @@ class UsersController extends ModulesController {
 	function removeGroup($id) {
 		$this->checkWriteModulePermission();
 		$groupName = $this->Group->field("name", array("id" => $id));
+		$this->Transaction->begin();
 		$this->BeAuth->removeGroup($groupName);
+		$this->Transaction->commit();
 		$this->eventInfo("group ".$groupName." deleted");
 		$this->userInfoMessage(__("Group deleted",true));
 	}
