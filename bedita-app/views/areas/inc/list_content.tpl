@@ -18,7 +18,7 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
 			<tr id="noContents"{if !empty($objects)} style="display: none;"{/if}>
 				<td><i>no items</i></td>
 			</tr>
-			{include file="../inc/list_contents_for_section.tpl" objsRelated=$objects}
+			{include file="../../elements/form_assoc_object.tpl" objsRelated=$objects}
 		</tbody>
 	</table>
 	
