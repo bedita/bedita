@@ -369,34 +369,44 @@ $(document).ready(function(){
 
 ...........................................*/
 
-    jQuery.fn.BEmodal = function(){
+    jQuery.fn.BEmodal = function(options) {
+
+        // default options for modal
+        var defaultOptions = {
+            success: function() {}
+        };
+
+        if (typeof options == 'undefined' || !$.isPlainObject(options)) {
+            options = {};
+        }
+
+        var options = $.extend({}, defaultOptions, options);
 
         var w = window.innerWidth || self.innerWidth || document.body.clientWidth;
         var h = window.innerHeight || self.innerHeight || document.body.clientHeight;
-        
+
         var h = 1500;
-        
+
         var destination = $(this).attr("rel");
         var title = $(this).attr("title");
-        
+
         var myTop = $(window).scrollTop() + 20;
-        
+
         $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h);
-        
+
         $("#modal").toggle()/*.css("top", myTop)*/;
 
         if ($(this).attr("rel")) {
             $("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
                 $(this).removeClass("modaloader");
+                options.success();
             });
-        };
+        }
 
-        
         if ($(this).attr("title")) {
             $("#modalheader .caption").html(title);
-        };
-        
-        
+        }
+
         $("#modalheader .close").click(function () {
             $("#modal").hide();
             $("#modaloverlay").hide();
