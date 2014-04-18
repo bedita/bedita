@@ -820,7 +820,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .relationList TR.obj TD:first-child { 
-	width:20px;
+	width: 0px;
 }
 
 .relationList.boxed TR.obj TD:first-child { 
@@ -1278,6 +1278,11 @@ TABLE.indexlist {
 	width:100%;
 }
  
+TABLE.indexlist H4{
+	vertical-align: middle;
+	line-height: 20px;
+}
+  
 .indexlist TH  {
 	background-color:#FFFFFF;
 	white-space: nowrap;
@@ -1288,6 +1293,18 @@ TABLE.indexlist {
 	vertical-align:top;
 }
 
+.indexlist .show_on_more {
+	display: none;
+}
+
+.indexlist .show_more .show_on_more {
+	display: block;
+}
+
+.indexlist .show_more .assoc_obj_title h4.editable{
+	display: none;
+}
+
 .indexlist TD:first-child  {
 	text-align:right;
 	width:20px;
@@ -1295,12 +1312,13 @@ TABLE.indexlist {
 }
 
 .indexlist TD:nth-child(3)  {
-	width:100%;
 	white-space:normal;
+	width: 100%;
 }
 
 .indexlist TD:last-child  {
 	white-space:nowrap;
+	text-align: right;
 }
 
 .indexlist TD.moredata input {
@@ -1614,6 +1632,7 @@ UL#mediatypes  {
 ...........................................*/
 
 .ico_image {background-image: url('../img/iconset/24px/image.png');}
+.ico_archive {background-image: url('../img/iconset/24px/archive.png');}
 .ico_video {background-image: url('../img/iconset/24px/video.png');}
 .ico_audio {background-image: url('../img/iconset/24px/audio.png');}
 .ico_text {background-image: url('../img/iconset/24px/text.png');}
@@ -1674,7 +1693,7 @@ INPUT[readonly] {
 }
 
 
-label {font-weight:bold;vertical-align: middle;}
+label {font-weight:bold;vertical-align: bottom;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
 
@@ -1713,6 +1732,7 @@ INPUT.priority {
 	border-width:0px !important;
 	color:#FFF !important;
 	padding:2px;
+	vertical-align: middle;
 }
 
 INPUT.objectCheck {
