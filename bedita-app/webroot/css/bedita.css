@@ -1311,7 +1311,7 @@ TABLE.indexlist H4{
 	white-space:nowrap
 }
 
-.indexlist TD:nth-child(3)  {
+.indexlist TD.assoc_obj_title  {
 	white-space:normal;
 	width: 100%;
 }
@@ -1782,7 +1782,7 @@ A.BEbutton  {
 	margin:5px auto;
 }
 
-.bemaincommands, .modalbutton, .BEbutton, input[type=submit], input[type=button], button {
+.bemaincommands, .BEbutton, input[type=submit], input[type=button], button {
 	/* background:#F2F2F2 url(../images/BEbutton_dark.gif) repeat-x scroll left top; */
 	background-color:#F2F2F2;
 	line-height:1.2em;
