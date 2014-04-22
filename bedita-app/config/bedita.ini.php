@@ -32,11 +32,11 @@
 
 $config = array() ;
 
-$config["projectName"] = "BEdita 3.3"; // override in bedita.cfg
+$config["projectName"] = "BEdita 3.4"; // override in bedita.cfg
 
-$config["userVersion"] = "BEdita 3.3"; // don't override
+$config["userVersion"] = "BEdita 3.4"; // don't override
 
-$config["majorVersion"] = "3.3.1"; // don't override -- admin/system
+$config["majorVersion"] = "3.4.0"; // don't override -- admin/system
 
 $config["codenameVersion"] = "Corylus"; // don't override -- admin/system
 
