@@ -124,7 +124,12 @@ $(document).ready(function(){
 			<th>{t}is user{/t}</th>
 			<th>{$beToolbar->order('email','email')}</th>
 			<th>{$beToolbar->order('country','country')}</th>
-			<th>{$beToolbar->order('note','Notes')}</th>	
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<th>{$p.name}</th>
+				{/foreach}
+			{/if}
+			<th>{$beToolbar->order('note','Notes')}</th>
 		</tr>
 	{/capture}
 		
@@ -158,6 +163,21 @@ $(document).ready(function(){
 			<td style="text-align:center">{if empty($objects[i].obj_userid)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
 			<td>{$objects[i].email|default:''}</td>
 			<td>{$objects[i].country}</td>
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<td>
+					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
+						{if is_array($objects[i].customProperties[$p.name])}
+							{$objects[i].customProperties[$p.name]|@implode:", "}
+						{else}
+							{$objects[i].customProperties[$p.name]}
+						{/if}
+					{else}
+						-
+					{/if}
+					</td>
+				{/foreach}
+			{/if}
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>
 		</tr>
 		
