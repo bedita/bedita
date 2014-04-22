@@ -64,8 +64,7 @@ function loadObjToAssoc(page, itemsToCheck) {
  * to leave out of dom ready to have visibility in nested items
  */
 var select2optionsSimple = {
-	dropdownAutoWidth:true,
-	allowClear: true
+	dropdownAutoWidth :true
 }
 
 /**
