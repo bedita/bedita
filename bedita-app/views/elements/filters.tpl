@@ -24,7 +24,7 @@
 		'treeDescendants' => true,
 		'type' => false,
 		'language' => true,
-		'customProp' => false,
+		'customProp' => ['showObjectTypes' => false],
 		'categories' => true,
 		'mediaTypes' => false,
 		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action

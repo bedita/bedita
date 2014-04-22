@@ -12,7 +12,11 @@
 <div class="mainfull">
 
 	{$view->element('filters', [
-		'options' => ['mediaTypes' => true, 'categories' => false]
+		'options' => [
+			'mediaTypes' => true,
+			'categories' => false,
+			'customProp' => ['showObjectTypes' => true]
+		]
 	])}
 	
 	{include file='./inc/list_streams.tpl' streamTitle='multimedia'}

@@ -140,8 +140,19 @@ available options:
 		<tr>
 			<th><label>{t}properties{/t}:</label></th>
 			<td>
-				
-				[...]
+				<select name="filter[custom_property]">
+					<option value="">{t}all{/t}</option>
+					{foreach $properties as $prop}
+						{strip}
+						<option value="{$prop.id}" {if $view->SessionFilter->read('custom_property') == $prop.id}selected="selected"{/if}>
+							{$prop.name}
+							{if is_array($filters.customProp) && !empty($filters.customProp.showObjectTypes)}
+								&nbsp;({$conf->objectTypes[$prop.object_type_id].name})
+							{/if}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
 			</td>
 		</tr>
 		{/if}
