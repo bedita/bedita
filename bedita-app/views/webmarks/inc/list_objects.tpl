@@ -104,6 +104,11 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('url', 'Url')}</th>
 			<th>{$beToolbar->order('http_code', 'check result')}</th>
 			<th style="text-align:center">{$beToolbar->order('status', 'Status')}</th>
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<th>{$p.name}</th>
+				{/foreach}
+			{/if}
 			<th style="text-align:center">{t}Link{/t}</th>
 			<th>{t}Notes{/t}</th>
 		</tr>
@@ -123,7 +128,22 @@ $(document).ready(function(){
 			<td>{$objects[i].url|default:''|truncate:48:'(...)':true:true}</td>
 			<td>{$objects[i].http_code|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
-		<td class="go">
+			{if !empty($properties)}
+				{foreach $properties as $p}
+					<td>
+					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
+						{if is_array($objects[i].customProperties[$p.name])}
+							{$objects[i].customProperties[$p.name]|@implode:", "}
+						{else}
+							{$objects[i].customProperties[$p.name]}
+						{/if}
+					{else}
+						-
+					{/if}
+					</td>
+				{/foreach}
+			{/if}
+			<td class="go">
 				<input type="button" value="{t}go{/t}" onclick="window.open('{$objects[i].url|default:''}','_blank')" />	
 			</td>
 			
