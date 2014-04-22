@@ -146,13 +146,13 @@ $(document).ready(function(){
 {if !empty($objects)}
 
 <div style="border-top: 1px solid gray; padding-top:10px; margin-top:10px; white-space:nowrap">
-	
+	<input type="checkbox" class="selectAll" id="selectAll"/>
+	<label for="selectAll">{t}(un)select all{/t}</label>
+	&nbsp;&nbsp;&nbsp;
 	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
 	&nbsp;&nbsp;&nbsp;
 	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 	&nbsp;&nbsp;&nbsp
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
 	
 </div>
 

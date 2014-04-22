@@ -1674,6 +1674,10 @@ INPUT[type=checkbox] {
 	vertical-align:middle;
 }
 
+INPUT[type=checkbox] + label{
+	vertical-align:middle;
+}
+
 input[type=radio] {
 	margin-right:5px; vertical-align:middle;
 }

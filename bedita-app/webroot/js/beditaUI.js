@@ -628,8 +628,7 @@ $(document).ready(function(){
 
     //$('select[multiple]').chosen({width: '95%'});
     $("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
-        dropdownAutoWidth:true,
-        allowClear: true
+        dropdownAutoWidth:true
     });
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
