@@ -2025,7 +2025,6 @@ A.BEbutton.golink:before {
 	padding-right:20px;
 	text-align:right;
 	color:white;
-	border-bottom:1px solid gray;
 }
 /*
 #modalheader:Hover {
@@ -2183,7 +2182,7 @@ LI.welcome {
 }
 
 .dashboard H2.open {
-	background-color:#666;
+	/* background-color:#666; */
 }
 
 .dashboard .bordered {

@@ -223,26 +223,26 @@ $(document).ready(function(){
     var currentclassmodule = BEDITA.currentModule.name || '';
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).next().slideToggle('fast').toggleClass('open').trigger('slideToggle'); 
-        $("h2",this).toggleClass("open").toggleClass(BEDITA.currentModule.name || '');
+        $(this).toggleClass("open").next().slideToggle('fast').toggleClass('open').trigger('slideToggle'); 
+        $("h2", this).toggleClass("open").toggleClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsopen = function() {
             
-        $(this).next().slideDown('fast').addClass('open').trigger('slideDown');   
+        $(this).addClass("open").next().slideDown('fast').addClass('open').trigger('slideDown');   
         $("h2",this).addClass("open").addClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsclose = function() {
             
-        $(this).next().slideUp('fast').removeClass('open').trigger('slideUp');   
+        $(this).removeClass("open").next().slideUp('fast').removeClass('open').trigger('slideUp');   
         $("h2",this).removeClass("open").removeClass(BEDITA.currentModule.name || '');
     
     };
     
-    $(document).on('click', '.tab:not(.stayopen)', function () {
+    $(document).on('click', '.tab:not(.stayopen), .trigger', function () {
         $(this).BEtabstoggle();
     });
 
@@ -259,7 +259,7 @@ $(document).ready(function(){
     $(".htabcontainer .htabcontent:first-child").show();
     $(".htab TD:first-child,.htab LI:first-child").addClass("on");
     
-    $(".htab TD,.htab LI").click(function() {
+    $(".htab TD, .htab LI").click(function() {
 
         var trigged           = $(this).attr("rel");
         var containermenu     = $(this).parents(".htab");
@@ -390,7 +390,7 @@ $(document).ready(function(){
         var myTop = $(window).scrollTop() + 20;
 
         $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h);
-
+        $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
         if ($(this).attr("rel")) {
@@ -404,13 +404,13 @@ $(document).ready(function(){
             $("#modalheader .caption").html(title);
         }
 
-        $("#modalheader .close").click(function () {
+        $("#modalheader .close").unbind('click').bind('click', function () {
             $("#modal").hide();
             $("#modaloverlay").hide();
             $(document).trigger('operation:cancel');
         });
 
-        $("#modalheader .toggle").click(function () {
+        $("#modalheader .toggle").unbind('click').bind('click', function () {
             $("#modal #modalmain").toggle();
         });
     /*

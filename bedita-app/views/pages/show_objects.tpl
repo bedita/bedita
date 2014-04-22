@@ -89,11 +89,6 @@ var select2optionsTree = {
 }
 
 $(document).ready(function() {
-
-	$(".trigger").click(function() {
-		$(this).toggleClass('open');
-		$(this).next().toggle('fast');
-	});
 	
 	$("#formFilter").submit(function() {
 		loadObjToAssoc(1);
