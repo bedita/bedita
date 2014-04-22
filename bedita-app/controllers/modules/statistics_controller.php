@@ -54,7 +54,7 @@ class StatisticsController extends ModulesController {
 					"hasOne" => array(
 						"Tree" => array('foreignKey' => 'id')
 					)
-				)
+				), false
 			);
 			
 			$params["contain"] = array("Tree", "ObjectType");
