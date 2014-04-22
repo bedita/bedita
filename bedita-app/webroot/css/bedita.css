@@ -302,7 +302,8 @@ UL.modules {
 }
 
 .modules.block LI, .modules label {
-	display:block;
+	display: inline-block;
+	vertical-align: top;
 	font-size: 1.16em ;
 	width: 140px; 
 	height: 110px; 
