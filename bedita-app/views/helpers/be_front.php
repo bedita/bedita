@@ -205,7 +205,7 @@ class BeFrontHelper extends AppHelper {
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
 		$html = '';
 		// og:title
-		$html .= '\n' . $this->Html->meta(array(
+		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:title',
 			'content' => $title
 		));
@@ -225,7 +225,7 @@ class BeFrontHelper extends AppHelper {
 			$type = 'audio';
 		}
 		// TODO: handle more types: http://ogp.me/#types
-		$html .= '\n' . $this->Html->meta(array(
+		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:type',
 			'content' => $type
 		));
@@ -235,13 +235,13 @@ class BeFrontHelper extends AppHelper {
 		if(!empty($object['canonicalPath'])) {
 			$path.=	$object['canonicalPath'];
 		}
-		$html .= '\n' . $this->Html->meta(array(
+		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:url',
 			'content' => $path
 		));
 
 		// TODO: og:image
-// 		$html .= '\n' . $this->Html->meta(array(
+// 		$html .= "\n" . $this->Html->meta(array(
 // 			'property' => 'og:image',
 // 			'content' => ?
 // 		));
@@ -249,14 +249,14 @@ class BeFrontHelper extends AppHelper {
 		// og:description
 		$content = $this->get_description();
 		if(!empty($content)) {
-			$html .= '\n' . $this->Html->meta(array(
+			$html .= "\n" . $this->Html->meta(array(
 				'property' => 'og:description',
 				'content' => strip_tags($content)
 			));
 		}
 
 		// og:site_name
-		$html .= '\n' . $this->Html->meta(array(
+		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:site_name',
 			'content' => $this->_publication['public_name']
 		));
@@ -270,7 +270,7 @@ class BeFrontHelper extends AppHelper {
 		foreach ($mapOGtagsToFields as $ogTag => $field) {
 			$content = $this->get_value_for_field($field);
 			if (!empty($content)) {
-				$html.= '\n' . $this->Html->meta(array(
+				$html.= "\n" . $this->Html->meta(array(
 					'property' => $ogTag,
 					'content' => strip_tags($content)
 				));
