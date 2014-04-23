@@ -20,12 +20,12 @@
  */
 namespace Bedita\Model\Table;
 
-use Bedita\Model\Table\BaseObject\BaseObject;
+use Bedita\Model\Table\BaseObject\StreamObject;
 
 /**
  * Represents the image object type
  */
-class ImageObjectsTable extends BaseObject {
+class ImageObjectsTable extends StreamObject {
 
     protected $objectType = 'image';
 

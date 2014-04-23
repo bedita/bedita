@@ -22,6 +22,7 @@ namespace Bedita\Model\Behavior;
 
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 
 /**
  * BeditaObjectBehavior
@@ -37,14 +38,29 @@ class BeditaObjectBehavior extends Behavior {
 
     /**
      * add condition on object_type_id
+     * set formatResults
      *
-     * @param  Cake\Event\Event $event]
+     * @param  Cake\Event\Event $event
      * @param  Cake\ORM\Query $query The query object
      * @param  array  $options
      * @param  boolean $primary Indicates whether or not this is the root query, or an associated query
      */
     public function beforeFind($event, $query, array $options, $primary) {
         $query->where(['object_type_id' => $this->table->objectTypeId()]);
+
+        $query->formatResults(function($results) {
+            return $results->map(function($row) {
+                // flat object chain
+                foreach ($this->table->getObjectChain() as $chainTable) {
+                    $property = Inflector::underscore(Inflector::classify($chainTable));
+                    if ($row->$property) {
+                        $row->set($row->$property->toArray(), ['guard' => false]);
+                        $row->unsetProperty($property);
+                    }
+                }
+                return $row;
+            });
+        });
     }
 
 }

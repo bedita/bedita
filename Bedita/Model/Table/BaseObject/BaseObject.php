@@ -31,6 +31,7 @@ abstract class BaseObject extends ObjectsTable {
 
     /**
      * The object type name
+     *
      * @var string
      */
     protected $objectType = null;
@@ -59,6 +60,15 @@ abstract class BaseObject extends ObjectsTable {
     }
 
     /**
+     * return the list of object chain
+     *
+     * @return array
+     */
+    public function getObjectChain() {
+        return $this->objectChain;
+    }
+
+    /**
      * Initialize the object type chain set hasOne associations
      *
      * @return void
@@ -82,4 +92,17 @@ abstract class BaseObject extends ObjectsTable {
             ->first();
         return ($res)? $res->id : null;
     }
+
+    // public function findFlat($query, $options = []) {
+    //     return $query->formatResults(function($results) {
+    //         return $results->map(function($row) {
+    //             //echo 1;
+    //             if ($row->content) {
+    //                 $row->set($row->content->toArray(), ['guard' => false]);
+    //                 $row->unsetProperty('content');
+    //             }
+    //             return $row;
+    //         });
+    //     });
+    // }
 }
