@@ -1,10 +1,6 @@
 <?php
 /**
- * Index
- *
  * The Front Controller for handling every request
- *
- * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -30,7 +26,6 @@ if (php_sapi_name() === 'cli-server') {
 }
 require dirname(__DIR__) . '/Bedita/Config/bootstrap.php';
 
-use Cake\Core\Configure;
 use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\Routing\Dispatcher;

@@ -1,10 +1,5 @@
 <?php
 /**
- * Application level View Helper
- *
- * This file is application-wide helper file. You can put all
- * application-wide helper-related methods here.
- *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
@@ -14,20 +9,16 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.2.9
+ * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace App\View\Helper;
-
-use Cake\View\Helper;
+use Cake\Core\Configure;
 
 /**
- * Application helper
- *
- * Add your application-wide methods in the class below, your helpers
- * will inherit them.
- *
+ * Additional bootstrapping and configuration for CLI environments should
+ * be put here.
  */
-class AppHelper extends Helper {
-}
+
+// Set logs to different files so they don't have permission conflicts.
+Configure::write('Log.debug.file', 'cli-debug');
+Configure::write('Log.error.file', 'cli-error');

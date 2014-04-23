@@ -83,10 +83,10 @@ try {
 //Configure::load('app_local.php', 'default');
 
 /**
- * Uncomment this line and correct your server timezone to fix
- * any date & time related errors.
+ * Set server timezone to UTC. You can change it to another timezone of your
+ * choice but using UTC makes time calculations / conversions easier.
  */
-//date_default_timezone_set('UTC');
+date_default_timezone_set('UTC');
 
 /**
  * Configure the mbstring extension to use the correct encoding.
@@ -96,10 +96,16 @@ mb_internal_encoding(Configure::read('App.encoding'));
 /**
  * Register application error and exception handlers.
  */
-if (php_sapi_name() === 'cli') {
+$isCli = php_sapi_name() === 'cli';
+if ($isCli) {
 	(new ConsoleErrorHandler(Configure::consume('Error')))->register();
 } else {
 	(new ErrorHandler(Configure::consume('Error')))->register();
+}
+
+// Include the CLI bootstrap overrides.
+if ($isCli) {
+	require __DIR__ . '/bootstrap_cli.php';
 }
 
 /**
@@ -131,11 +137,13 @@ Log::config(Configure::consume('Log'));
  * Setup detectors for mobile and tablet.
  */
 Request::addDetector('mobile', function($request) {
-	return (new \Detection\MobileDetect())->isMobile();
+	$detector = new \Detection\MobileDetect();
+	return $detector->isMobile();
 });
 
 Request::addDetector('tablet', function($request) {
-	return (new \Detection\MobileDetect())->isTablet();
+	$detector = new \Detection\MobileDetect();
+	return $detector->isTablet();
 });
 
 /**
