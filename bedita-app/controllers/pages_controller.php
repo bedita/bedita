@@ -539,7 +539,7 @@ class PagesController extends AppController {
 		$this->viewRevision($model, $id, $rev);
 	}
 
-	public function tree($parentid, $inputType) {
+	public function tree($parentid) {
 		$this->layout = 'ajax';
 		if (empty($parentid)) {
 			$this->set('tree', $this->BeTree->getSectionsTree());
