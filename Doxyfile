@@ -611,7 +611,8 @@ RECURSIVE              = YES
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
 EXCLUDE                = bedita-app/tmp \
-                         bedita-app/vendors \
+                         bedita-app/vendors/*.php \
+                         bedita-app/vendors/_smartyPlugins \
                          bedita-app/config \
                          bedita-app/webroot \
                          bedita-app/tests \
