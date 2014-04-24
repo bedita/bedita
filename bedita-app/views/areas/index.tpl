@@ -4,11 +4,6 @@
 {$html->script("libs/jquery/ui/jquery.ui.sortable.min", true)}
 {$html->script("libs/jquery/plugins/jquery.selectboxes.pack", false)}
 
-{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
-{if $currLang != "eng"}
-	{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
-{/if}
-
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}

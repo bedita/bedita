@@ -3,52 +3,27 @@
  */
 
 var priorityOrder = 'asc';
+var contentStartPriority = 1;
+var sectionStartPriority = 1;
 
 function addObjToAssocLeafs(url, postdata) {
     $.post(url, postdata, function(html) {
-        var startPriority = 1;
-        if ($("#areacontentC").find("input[name*='[priority]']:first").length) {
-            startPriority = parseInt($("#areacontentC").find("input[name*='[priority]']:first").val());
-        }
         if (priorityOrder == 'asc') {
             $("#areacontentC tr:last").after(html);
         } else {
             var beforeInsert = parseInt($("#areacontentC tr:not(#noContents)").length);
             $("#areacontentC tr:first").before(html);
             var afterInsert = parseInt($("#areacontentC tr:not(#noContents)").length);
-            if (beforeInsert == 0) {
-                startPriority = 0;
+            if (beforeInsert > 0) {
+                contentStartPriority = contentStartPriority + (afterInsert - beforeInsert);
             }
-            startPriority = startPriority + (afterInsert - beforeInsert);
         }
 
         if ($("#noContents")) {
             $("#noContents").hide();
         }
-        $("#areacontentC").fixItemsPriority(startPriority);
+        $("#areacontentC").fixItemsPriority(contentStartPriority);
         $("#areacontentC table").find("tbody").sortable("refresh");
-        setRemoveActions();
-    });
-}
-
-function setRemoveActions() {
-    $("#areacontentC, #areasectionsC").find(".remove").click(function() {
-        var contentField = $("#contentsToRemove").val() + $(this).parents("tr:first").find("input[name*='[id]']").val() + ",";
-        $("#contentsToRemove").val(contentField);
-        var itemToUpdate = $(this).parents('.htabcontent:first');
-        var startPriority = itemToUpdate.find("input[name*='[priority]']:first").val();
-
-        if (priorityOrder == "desc" && $(this) != itemToUpdate.find("input[name*='[priority]']:first")) {
-            startPriority--;
-        }
-
-        $(this).parents("tr:first").remove();
-
-        if ($("#areacontentC tr:visible, #areasectionsC tr:visible").not('#noContents').length == 0) {
-            $("#noContents").show();
-        }
-
-        itemToUpdate.fixItemsPriority(startPriority);
     });
 }
 
@@ -56,19 +31,18 @@ $(document).ready(function() {
 
     priorityOrder = $('input[name=data\\[priority_order\\]]:checked').val();
     var startPriority;
+    if ($("#areacontentC").find("input[name*='[priority]']:first").length) {
+        contentStartPriority = parseInt($("#areacontentC").find("input[name*='[priority]']:first").val());
+    }
+    if ($("#areasectionsC").find("input[name*='[priority]']:first").length) {
+        sectionStartPriority = parseInt($("#areasectionsC").find("input[name*='[priority]']:first").val());
+    }
 
     $("#areacontentC table").find("tbody").sortable({
         distance: 20,
         opacity:0.7,
-        start: function(event, ui) {
-            // calculate startPriority
-            startPriority = 1;
-            if ($("#areacontentC").find("input[name*='[priority]']:first").length) {
-                startPriority = $("#areacontentC").find("input[name*='[priority]']:first").val();
-            }
-        },
         update: function() {
-            $(this).fixItemsPriority(startPriority);
+            $(this).fixItemsPriority(contentStartPriority);
         }
     }).css("cursor","move");
 
@@ -81,21 +55,15 @@ $(document).ready(function() {
     $("#areasectionsC table").find("tbody").sortable ({
         distance: 20,
         opacity:0.7,
-        start: function(event, ui) {
-            // calculate startPriority
-            startPriority = 1;
-            if ($("#areasectionsC").find("input[name*='[priority]']:first").length) {
-                startPriority = $("#areasectionsC").find("input[name*='[priority]']:first").val();
-            }
-        },
         update: function() {
-            $(this).fixItemsPriority(startPriority);
+            $(this).fixItemsPriority(sectionStartPriority);
         }
     }).css("cursor","move");
 
     // reorder contents and sections on the fly changing priority
     $('input[name=data\\[priority_order\\]]').click(function() {
         priorityOrder = $('input[name=data\\[priority_order\\]]:checked').val();
+
         $("#areacontentC table").find("tbody").each(function(elem,index){
             var arr = $.makeArray($("tr", this).detach());
             arr.reverse();
@@ -106,7 +74,32 @@ $(document).ready(function() {
             arr.reverse();
             $(this).append(arr);
         });
+
+        var firstInputContent = $("#areacontentC").find("input[name*='[priority]']:first");
+        contentStartPriority = (firstInputContent.length)? parseInt(firstInputContent.val()) : 1;
+        var firstInputSection = $("#areacontentS").find("input[name*='[priority]']:first");
+        sectionStartPriority = (firstInputSection.length)? parseInt(firstInputSection.val()) : 1;
     });
 
-    setRemoveActions();
+    $(document).on('click', '#areacontentC .remove, #areasectionsC .remove', function() {
+        var contentField = $("#contentsToRemove").val() + $(this).parents("tr:first").find("input[name*='[id]']").val() + ",";
+        $("#contentsToRemove").val(contentField);
+        var itemToUpdate = $(this).parents('.htabcontent:first');
+
+        $(this).parents("tr:first").remove();
+
+        var startPriority = 1;
+        if (itemToUpdate[0] === $('#areacontentC')[0]) {
+            startPriority = contentStartPriority;
+        } else if (itemToUpdate[0] === $('#areasectionsC')[0]) {
+            startPriority = sectionStartPriority;
+        }
+
+        if ($("#areacontentC tr:visible, #areasectionsC tr:visible").not('#noContents').length == 0) {
+            $("#noContents").show();
+        }
+
+        itemToUpdate.fixItemsPriority(startPriority);
+    });
+
 });
