@@ -1,7 +1,6 @@
 <script type="text/javascript">
 <!--
 var urlAddObjToAssLeafs = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
-var priorityOrder = "{$priorityOrder|default:'asc'}";
 var pageUrl = "{$beurl->getUrl('object_type_id')}";
 //-->
 </script>
