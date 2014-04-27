@@ -110,10 +110,8 @@
 
 {$view->element('form_geotag')}
 
-{$view->element('form_file_list', ['relation' => 'attach'])}
-
-	{assign_associative var="params" object_type_id=$conf->objectTypes.document.id}
-	{$view->element('form_assoc_objects', $params)}
+{assign_associative var="params" object_type_id=$conf->objectTypes.document.id}
+{$view->element('form_assoc_objects', $params)}
 	
 </form>
 

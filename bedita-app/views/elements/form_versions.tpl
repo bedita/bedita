@@ -1,4 +1,6 @@
-<div class="tab"><h2>{t}Versions{/t}</h2></div>
+{$relcount = $object.Version|@count|default:0}
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}Versions{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}</h2></div>
+
 <fieldset id="history">
 
 {if !empty($object.Version)}

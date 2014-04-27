@@ -1,5 +1,6 @@
 {if isset($moduleList.translations)}
-<div class="tab"><h2>{t}Translations{/t}</h2></div>
+
+<div class="tab"><h2 {if empty($object.LangText)}class="empty"{/if}>{t}Translations{/t}</h2></div>
 <fieldset id="translations">
 
 {if !empty($object.LangText.status)}

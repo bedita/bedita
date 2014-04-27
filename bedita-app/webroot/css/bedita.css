@@ -123,7 +123,7 @@ img {
 ...........................................*/
 
 
-.modulesmenu, .head, .main, .mainfull  {position:absolute; left:300px; margin-right:0px;}
+.modulesmenu, .head, .main, .mainfull  {position:absolute; left: 320px; margin-right:0px;}
 
 
 .head {
@@ -151,7 +151,7 @@ img {
 .secondacolonna {
 	position:absolute;
 	top:20px;
-	left: 160px;
+	left: 170px;
 	z-index:130;
 	width: 140px;
 	background-color:#B6B6B6;
@@ -181,7 +181,7 @@ img {
 
 .quartacolonna {
 	position:absolute; 
-	left:970px;
+	left: 990px;
 	width:180px;
 	top:130px;
 	min-height:400px;
@@ -1013,7 +1013,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 .publishingtree {
-	min-width: 270px;
+	min-width: 290px;
 }
 
 .dashboard .publishingtree {
@@ -1428,6 +1428,7 @@ th.headerSortUp , th.headerSortDown {
     MultimediaItems
 
 ...........................................*/
+
 .multimediaiteminside img {
 	width: 100%;
 }
@@ -2091,6 +2092,7 @@ A.BEbutton.golink:before {
 	width:140px; 
 	display:block; 
 	float:left;
+	margin: 0px 0px 10px 10px;
 }
 
 .home UL.modules LI A {
@@ -2104,7 +2106,9 @@ A.BEbutton.golink:before {
 	width:120px;
 }
 
-
+.home  .modulesmenutop {
+	display:none;
+}
 
 LI.welcome {
 	width: 260px !important;
@@ -2115,64 +2119,39 @@ LI.welcome {
 	padding-bottom:15px;
 }
 
+.dashboardcontainer {
+	margin: 20px 0px 0px 150px;
+}
 
 .dashboard {
-	position:absolute;
-	width:200px; 
-	top:20px;
-	left: 170px;
+	margin:0px 0px 10px 10px;
+	float:left;
+	width: 290px;
 }
 
-.dashboard.center {
-	left: 380px; 
-	width: 140px;}
-
-.dashboard.right {
-	left: 530px;
+.dashboard:first-child {
+	float: left;
+	width: auto;
+	max-width: 450px;
+	/* margin-right: -40px; */
 }
+
 
 .dashboard .modules LI {
-	height:95px;
+	height:110px;
 }
-/*	
-@media only screen and (min-width: 768px) {	
-	.dashboard .modules LI {
-		max-height:70px;
-	}
-	.dashboard { width:200px }
-	.dashboard.center {
-		width:120px;
-		left:380px; 
-	}
-	.dashboard.right { left:530px; }
-}
-*/
+
 @media only screen and (min-width: 960px) {
-	.dashboard { width:240px }
-	.dashboard.center {
-		width:280px;
-		left: 420px; 
-	}
-	.dashboard.right { left: 710px; }
+
 }
 
 @media only screen and (min-width: 1200px) {
-	.dashboard { width:300px }
-	.dashboard.center {
-		width:420px;
-		left: 480px; 
-	}
-	.dashboard.right { left: 910px; }
+
 }
 
 
 @media only screen and (min-width: 1500px) {
-	.dashboard { width:300px }
-	.dashboard.center {
-		width:700px;
-		left: 480px; 
-	}
-	.dashboard.right { left: 1190px; }
+
 }
 
 
@@ -2216,7 +2195,9 @@ LI.welcome {
 	margin-right:5%;
 }
 
-
+#searchResult {
+	margin-top:10px;
+}
 /*...........................................
  
 	 Specific template layout: publishing
@@ -2418,6 +2399,13 @@ code del {
 
 code ins {
 	color:green
+}
+
+.clear {
+	clear:both;
+	height:0px;
+	width:0px;
+	line-height: 0px;
 }
 
 /*...........................................    
