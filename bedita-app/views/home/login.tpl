@@ -19,7 +19,7 @@
 
 
 <div class="login">
-	<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
+	<form name="login" action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
 	<fieldset>
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
@@ -46,8 +46,8 @@
 	<br>
 	<label>{t}Or use one of this external auth service{/t}</label><br />
 	{foreach from=$externalAuthServices item=service}
-	<form action="{$html->url('/authentications/login')}" class="auth_form" method="post">
-		<input type="hidden" name="login[auth_type]" value="{$service|lower}">
+	<form name="login" action="{$html->url('/authentications/login')}" class="auth_form" method="post">
+		<input type="hidden" name="data[login][auth_type]" value="{$service}">
 		<input type="submit" class="auth_button auth_button_{$service|lower}" value="{$service}">
 	</form>
 	{/foreach}

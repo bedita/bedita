@@ -53,14 +53,14 @@ class BeAuthComponent extends Object {
         
         $this->controller   = $controller;
         $this->Session      = &$controller->Session;
-        
-        if($this->checkSessionKey()) {
-            $this->user     = $this->Session->read($this->sessionKey);
+
+        if(!$this->Session->valid()) {
+            $this->log("Session not valid!");
         }
 
-        $externalAuth = Configure::read("extAuthParams");
-        if (!empty($externalAuth)) {
-            foreach ($externalAuth as $service => $value) {
+        $services = $this->getExternalServices();
+        if (!empty($services)) {
+            foreach ($services as $key => $service) {
                 //load component dynamically
                 $componentClass = "BeAuth" . Inflector::camelize($service);
                 if(!App::import("Component", $componentClass)) {
@@ -73,23 +73,11 @@ class BeAuthComponent extends Object {
             }
         }
 
-        $this->controller->set($this->sessionKey, $this->user);
-    }
-
-    /**
-     * Load components
-     */
-    protected function loadComponents() {
-        foreach ($this->components as $component) {
-            if(isset($this->{$component})) {
-                continue;
-            }
-            $className = $component . 'Component' ;
-            if(!class_exists($className)) {
-                App::import('Component', $component);
-            }
-            $this->{$component} = new $className() ;
+        if($this->checkSessionKey()) {
+            $this->user = $this->Session->read($this->sessionKey);
         }
+
+        $this->controller->set($this->sessionKey, $this->user);
     }
 
     /**
@@ -126,19 +114,35 @@ class BeAuthComponent extends Object {
      */
     protected function checkSessionKey() {
         $res = true;
+        $extRes = false;
+
         if(!isset($this->Session)) {
             $res = false;
             $this->log("Session component not set!");
         } else if(!$this->Session->valid()) {
             $res = false;
             $this->log("Session not valid!");
-        } else if(!$this->Session->check($this->sessionKey)) {
-            $res = false;
-            if(BACKEND_APP) {
-                $this->log("Session key does not exist");
+        } 
+
+        if ($res) {
+            foreach ($this->extAuthComponents as $key => $component) {
+                $extRes = $component->checkSessionKey();
+                if ($extRes) {
+                    break;
+                }
+            }
+
+            if (!$extRes) {
+                if(!$this->Session->check($this->sessionKey)) {
+                    $res = false;
+                    if(BACKEND_APP) {
+                        $this->log("Session key does not exist");
+                    }
+                }
             }
         }
-        return $res;
+
+        return $res || $extRes;
     }
     
     
@@ -397,7 +401,7 @@ class BeAuthComponent extends Object {
      */
     public function isLogged() {
         if ($this->checkSessionKey()) {
-            if(@empty($this->user)) $this->user     = $this->Session->read($this->sessionKey);
+            if(@empty($this->user)) $this->user = $this->Session->read($this->sessionKey);
             $this->controller->set($this->sessionKey, $this->user);
             // update session info
             $this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 

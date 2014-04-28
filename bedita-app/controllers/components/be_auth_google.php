@@ -37,10 +37,9 @@ class BeAuthGoogleComponent extends BeAuthComponent{
     protected $userIdPrefix = 'google-';
     public $disabled = false;
 
-    public function startup(&$controller=null) {
-        $this->loadComponents();
-        $this->controller = &$controller;
-        $this->Session = &$controller->Session;
+    public function startup($controller=null) {
+        $this->controller = $controller;
+        $this->Session = $controller->Session;
 
         $this->params = Configure::read("extAuthParams");
 
@@ -65,12 +64,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                 return false;
             }
         }
-
-        if($this->checkSessionKey()) {
-            $this->user = $this->Session->read($this->sessionKey);
-        }
-        
-        $this->controller->set($this->sessionKey, $this->user);
     }
 
     protected function checkSessionKey() {

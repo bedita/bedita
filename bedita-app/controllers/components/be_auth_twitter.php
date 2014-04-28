@@ -31,7 +31,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
     public $disabled = false;
 
     public function startup($controller=null) {
-        $this->loadComponents();
         $this->controller = $controller;
         $this->Session = $controller->Session;
 
@@ -43,12 +42,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                     $this->params[$this->userAuth]['keys']['consumerSecret']
                 );
         }
-
-        if($this->checkSessionKey()) {
-            $this->user = $this->Session->read($this->sessionKey);
-        }
-        
-        $this->controller->set($this->sessionKey, $this->user);
     }
 
     protected function checkSessionKey() {
