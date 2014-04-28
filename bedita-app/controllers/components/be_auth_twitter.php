@@ -41,6 +41,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                     $this->params[$this->userAuth]['keys']['consumerKey'],
                     $this->params[$this->userAuth]['keys']['consumerSecret']
                 );
+            return true;
+        } else {
+            return false;
         }
     }
 

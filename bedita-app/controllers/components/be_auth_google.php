@@ -42,7 +42,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
         $this->Session = $controller->Session;
 
         $this->params = Configure::read("extAuthParams");
-
         if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
             $this->vendorController = new Google_Client();
             $this->vendorController->setClientId($this->params[$this->userAuth]['keys']['clientId']);
@@ -61,8 +60,10 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                 $this->vendorController->setAccessToken($this->Session->read('googleAccessToken'));
             } else {
                 $this->vendorController->setRedirectUri($this->getCurrentUrl());
-                return false;
             }
+            return true;
+        } else {
+            return false;
         }
     }
 

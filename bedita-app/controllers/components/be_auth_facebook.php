@@ -42,6 +42,9 @@ class BeAuthFacebookComponent extends BeAuthComponent{
                 'secret' => $this->params[$this->userAuth]['keys']['secret'],
                 'cookie' => true
             ));
+            return true;
+        } else {
+            return false;
         }
     }
 

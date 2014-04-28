@@ -59,19 +59,6 @@ class BeAuthComponent extends Object {
         }
 
         $services = $this->getExternalServices();
-        if (!empty($services)) {
-            foreach ($services as $key => $service) {
-                //load component dynamically
-                $componentClass = "BeAuth" . Inflector::camelize($service);
-                if(!App::import("Component", $componentClass)) {
-                    throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
-                } else {
-                    $componentClass .= "Component";
-                    $this->extAuthComponents[$service] = new $componentClass();
-                    $this->extAuthComponents[$service]->startup($this->controller);
-                }
-            }
-        }
 
         if($this->checkSessionKey()) {
             $this->user = $this->Session->read($this->sessionKey);
@@ -103,6 +90,23 @@ class BeAuthComponent extends Object {
             foreach ($addonComponents as $key => $component) {
                 if (strpos($component['name'], 'BeAuth') === 0) {
                     array_push($services, str_replace('BeAuth', '', $component['name']));
+                }
+            }
+        }
+        if (!empty($services)) {
+            foreach ($services as $key => $service) {
+                //load component dynamically
+                $componentClass = "BeAuth" . Inflector::camelize($service);
+                if(!App::import("Component", $componentClass)) {
+                    throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
+                } else {
+                    $componentClass .= "Component";
+                    $componentObject = new $componentClass();
+                    if ($componentObject->startup($this->controller)) {
+                        $this->extAuthComponents[$service] = $componentObject;
+                    } else {
+                        unset($services[$key]);
+                    };
                 }
             }
         }
