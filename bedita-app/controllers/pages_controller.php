@@ -582,14 +582,56 @@ class PagesController extends AppController {
             // if it's multimedia object and a file was loaded
             $multimediaIds = Configure::read('objectTypes.multimedia.id');
             if (in_array($this->data['object_type_id'], $multimediaIds) && !empty($this->params['form']['Filedata'])) {
-                $this->data['id'] = $this->BeUploadToObj->upload();
+                try {
+                	$this->data['id'] = $this->BeUploadToObj->upload();
+                } catch (BEditaFileExistException $ex) {
+                    // prepare data to touch multimedia object (to show it on top of object list)
+                    // or to create new one if title and description are different
+                    $mediaId = $ex->getObjectId();
+                    $newMedia = false;
+                    $regExpPattern = '/\s|\n|\r/';
+                    $title = preg_replace($regExpPattern, '', $this->data['title']);
+                    $desc = preg_replace($regExpPattern, '', $this->data['description']);
+                    if (!empty($title) || !empty($desc)) {
+                        $beObject = ClassRegistry::init('BEObject');
+                        $mediaData = $beObject->find('first', array(
+                            'fields' => array('title', 'description'),
+                            'conditions' => array('id' => $mediaId),
+                            'contain' => array()
+                        ));
+
+                        $objTitle = $mediaData['BEObject']['title'];
+                        $objTitle = preg_replace($regExpPattern, '', $objTitle);
+                        $objDesc = strip_tags($mediaData['BEObject']['description']);
+                        $objDesc = preg_replace($regExpPattern, '', $objDesc);
+
+                        // if title or description are different to form data prepare to create new media object
+                        if ( (!empty($title) && $objTitle != $title) || (!empty($desc) && $objDesc != $desc) ) {
+                            $newMedia = true;
+                        }
+                    }
+
+                    // if media is not new then touch the object
+                    if (!$newMedia) {
+                        unset($this->data['title']);
+                        unset($this->data['description']);
+                        unset($this->data['destination']);
+                        $this->data['id'] = $mediaId;
+                    } else {
+                        $this->params['form']['forceupload'] = true;
+                        $this->data['id'] = $this->BeUploadToObj->upload();
+                    }
+
+                } catch (BEditaException $ex) {
+                    throw new BeditaException($ex->getMessage(), $ex->getDetails());
+                }
             }
             $modelName = Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model');
             $model = ClassRegistry::init($modelName);
             $this->saveObject($model);
             $this->Transaction->commit();
         } catch (BeditaException $ex) {
-            throw new BeditaAjaxException($ex->getMessage(), array('output' => 'json'));
+            throw new BeditaAjaxException($ex->getMessage(), array('output' => 'json', 'headers' => 'HTTP/1.1 500 Internal Server Error'));
         }
 
         $this->RequestHandler->respondAs('json');

@@ -48,9 +48,20 @@ $(document).ready(function() {
                 $('#addQuickItem select.areaSectionAssociation').select2(select2optionsTree);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                console.error(textStatus);
+                console.error('textStatus: ' + textStatus + ', errorThrown: ' + errorThrown);
                 $('.quickitem form').show()
                 $('.quickitem').removeClass('loader');
+                try {
+                    if (jqXHR.responseText) {
+                        var data = JSON.parse(jqXHR.responseText);
+                        if (typeof data != 'undefined' && data.errorMsg && data.htmlMsg) {
+                            $('#messagesDiv').empty();
+                            $('#messagesDiv').html(data.htmlMsg).triggerMessage('error');
+                        }
+                    }
+                } catch (e) {
+                    console.error("Missing responseText or it's not a valid json");
+                }
             }
         });
     });
