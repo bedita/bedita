@@ -129,18 +129,21 @@ class BeAuthComponent extends Object {
         } 
 
         if ($res) {
-            foreach ($this->extAuthComponents as $key => $component) {
-                $extRes = $component->checkSessionKey();
-                if ($extRes) {
-                    break;
+
+            if(!$this->Session->check($this->sessionKey)) {
+                $res = false;
+                if(BACKEND_APP) {
+                    $this->log("Session key does not exist");
                 }
             }
 
-            if (!$extRes) {
-                if(!$this->Session->check($this->sessionKey)) {
-                    $res = false;
-                    if(BACKEND_APP) {
-                        $this->log("Session key does not exist");
+            
+
+            if (!$res) {
+                foreach ($this->extAuthComponents as $key => $component) {
+                    $extRes = $component->checkSessionKey();
+                    if ($extRes) {
+                        break;
                     }
                 }
             }
