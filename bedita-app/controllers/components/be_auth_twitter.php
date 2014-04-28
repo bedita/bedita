@@ -75,9 +75,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                 if ($this->login()) {
                     return true;
                 }
-            } else {
-                $this->log("Twitter login failed");
-                return false;
             }
             return false;
         } else {

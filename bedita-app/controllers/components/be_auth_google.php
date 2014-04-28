@@ -77,9 +77,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                 if ($this->login()) {
                     return true;
                 }
-            } else {
-                $this->log("Google login failed");
-                return false;
             }
             return false;
         } else {
