@@ -40,5 +40,16 @@
 		<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 		{if isset($conf->projectAdmin)}
 		{t}or{/t} <label><a href="mailto:{$conf->projectAdmin}">{t}contact the project admin{/t}</a></label>{/if}
+		</form>
 	</div>
+	{if !empty($externalAuthServices)}
+	<br>
+	<label>{t}Or use one of this external auth service{/t}</label><br />
+	{foreach from=$externalAuthServices item=service}
+	<form action="{$html->url('/authentications/login')}" class="auth_form" method="post">
+		<input type="hidden" name="login[auth_type]" value="{$service|lower}">
+		<input type="submit" class="auth_button auth_button_{$service|lower}" value="{$service}">
+	</form>
+	{/foreach}
+	{/if}
 </div>

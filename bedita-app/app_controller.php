@@ -417,6 +417,8 @@ class AppController extends Controller
 				throw new BeditaAjaxException(__("Session Expired", true), array("output" => "reload"));
 			}
 
+			$this->set('externalAuthServices', $this->BeAuth->getExternalServices());
+
 			if ($this->view == 'Smarty') {
 				echo $this->render(null, null, VIEWS."home".DS."login.tpl") ;
 			} elseif ($this->view == 'ThemeSmarty'){
