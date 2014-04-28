@@ -790,6 +790,10 @@ function openAtStart(defaultOpen) {
    utility
 
 ...........................................*/
+
+function capitaliseFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
       
       
 function getFlashVersion(){ 
