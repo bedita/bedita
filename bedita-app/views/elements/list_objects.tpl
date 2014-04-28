@@ -18,7 +18,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 function count_check_selected() {
 	var checked = 0;
 	$('input[type=checkbox].objectCheck').each(function(){
-		if($(this).attr("checked")) {
+		if($(this).prop("checked")) {
 			checked++;
 		}
 	});
@@ -43,7 +43,7 @@ $(document).ready(function(){
 		}
 		if(!confirm(messageSelected)) 
 			return false ;	
-		$("#formObject").attr("action", urls['deleteSelected']) ;
+		$("#formObject").prop("action", urls['deleteSelected']) ;
 		$("#formObject").submit() ;
 	});
 
@@ -57,7 +57,7 @@ $(document).ready(function(){
 			return false;
 		}
 		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
-		$("#formObject").attr("action", urls[op + 'ItemsSelectedToAreaSection']) ;
+		$("#formObject").prop("action", urls[op + 'ItemsSelectedToAreaSection']) ;
 		$("#formObject").submit() ;
 	});
 
@@ -79,9 +79,9 @@ $(document).ready(function(){
 			}
 		}
 		if(this.id == 'disassocObjectsCategory') {
-			$('#objCategoryAssoc').attr('value',$('#filter_category').val());
+			$('#objCategoryAssoc').val($('#filter_category').val());
 		}
-		$("#formObject").attr("action",urls[this.id]) ;
+		$("#formObject").prop("action",urls[this.id]) ;
 		$("#formObject").submit() ;
 	});
 });
@@ -168,7 +168,7 @@ $(document).ready(function(){
 				</a>	
 			</td>
 			<td style="text-align:center">{$objects[i].status}</td>
-			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
+			<td style="white-space:nowrap">{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			{if !empty($properties)}
 				{foreach $properties as $p}
 					<td>
@@ -208,8 +208,8 @@ $(document).ready(function(){
 {if !empty($objects)}
 
 <div style="white-space:nowrap">
-	
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+	<input type="checkbox" class="selectAll" id="selectAll"/>
+	<label for="selectAll">{t}(un)select all{/t}</label>
 	&nbsp;&nbsp;&nbsp
 	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
 	&nbsp;
@@ -285,7 +285,7 @@ $(document).ready(function(){
 		{/if}
 	{/if}
 	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
+	<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 </div>
 
 {/if}

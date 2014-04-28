@@ -6,8 +6,8 @@ $(document).ready(function() {
 	
 	$("#plugged input[type=button]").click(function() {
 		var form = $(this).parents("form");
-		form.attr("action", $(this).attr("rel"));
-		if ($(this).attr("id") == "unplugButton") {
+		form.prop("action", $(this).attr("rel"));
+		if ($(this).prop("id") == "unplugButton") {
 			if (confirm(unplugMessage)) {
 				form.submit();
 			}

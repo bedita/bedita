@@ -24,8 +24,6 @@
 	
 	{assign_associative var="params" height=400}
 	{$view->element('form_textbody', $params)}
-	
-	{$view->element('form_file_list', ['relation' => 'attach'])}
 
 	{$view->element('form_tags')}
 

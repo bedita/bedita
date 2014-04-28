@@ -871,8 +871,18 @@ abstract class ModulesController extends AppController {
 			"contain" => array()
 		));
 
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
 		// template data
-		$this->set('tree', $this->BeTree->getSectionsTree());
+		$this->set('tree', $tree);
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
 		$this->set('objects', $items);
@@ -1145,6 +1155,7 @@ abstract class ModulesController extends AppController {
 		$relationsCount = array();
 		$previews = array();
 		$name = Inflector::underscore($beModel->name);
+		$treeModel = ClassRegistry::init("Tree");
 		if (isset($id)) {
 			// check if object is forbidden for user
 			$user = $this->Session->read("BEAuthUser");
@@ -1184,7 +1195,6 @@ abstract class ModulesController extends AppController {
 				}
 				$obj["assocCategory"] = $objCat;
 			}
-			$treeModel = ClassRegistry::init("Tree");
 			$parents_id = $treeModel->getParents($id) ;
 
 			$previews = $this->previewsForObject($parents_id, $obj["nickname"]);
@@ -1201,9 +1211,13 @@ abstract class ModulesController extends AppController {
 		$this->set('objectProperty', $property);
 		$this->set('availabeRelations', $this->getAvailableRelations($name));
 
-		$this->set('parents',	$parents_id);
-		$this->set('tree', 		$this->BeTree->getSectionsTree());
-		$this->set('previews',	$previews);
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $parents_id);
+
+		$this->set('tree', $tree);
+		$this->set('parents', $parents_id);
+		$this->set('previews', $previews);
 		$categoryModel = ClassRegistry::init("Category");
 		$areaCategory = $categoryModel->getCategoriesByArea(Configure::read('objectTypes.'.$name.'.id'));
 		$this->set("areaCategory", $areaCategory);

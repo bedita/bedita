@@ -6,15 +6,15 @@
 {$html->css("ui.datepicker", null, $cssOptions)}
 {$html->css("jquery.autocomplete", null, $cssOptions)}
 
-{$javascript->link("jquery/jquery.form", false)}
-{$javascript->link("jquery/jquery.selectboxes.pack", false)}
+{$javascript->link("libs/jquery/plugins/jquery.form", false)}
+{$javascript->link("libs/jquery/plugins/jquery.selectboxes.pack", false)}
 
-{$html->script("jquery/ui/jquery.ui.sortable", true)}
-{$html->script("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("libs/jquery/ui/jquery.ui.sortable.min", true)}
+{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
 {if $currLang != "eng"}
-	{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+	{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
 {/if}
-{$html->script("jquery/jquery.autocomplete", false)}
+{$html->script("libs/jquery/plugins/jquery.autocomplete", false)}
 
 
 <script type="text/javascript">

@@ -11,10 +11,10 @@
 		{$html->css('IE6fix')}
 	<![endif]-->
 
-	{$html->script("jquery/jquery")}
-	{$html->script("jquery/jquery.cookie")}
-	{$html->script("jquery/jquery.autogrow")}
-	{$html->script("jquery/jquery.dimensions")}
+	{$html->script("libs/jquery/jquery-2.1.0.min")}
+	{$html->script("libs/jquery/plugins/jquery.cookie")}
+	{$html->script("libs/jquery/plugins/jquery.autosize")}
+	{$html->script("libs/jquery/plugins/jquery.dimensions")}
 	{$html->script("beditaUI")}
 
 	{$beurl->addModuleScripts()}
@@ -22,8 +22,8 @@
 	{* collect linked scripts around *}
 	{$scripts_for_layout}
 
-	{$html->script("jquery/ui/jquery-ui-1.8rc3.custom")}
-	{$html->script("jquery/ui/jquery.ui.draggable")}
+	{$html->script("libs/jquery/ui/jquery-ui.min")}
+	{$html->script("libs/jquery/ui/jquery.ui.draggable.min")}
 
 	
 </head>

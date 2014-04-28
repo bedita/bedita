@@ -58,13 +58,13 @@
 					<td>
 						<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="pwd" value="{if empty($userdetail.id)}{$genpassword|default:''}{/if}" id="pwd"
 							class="{if isset($userdetail)}{ password:true}{else}{ required:true,password:true}{/if}" 
-					    	title="{$tr->t($conf->passwdRegexMsg)|default:''}"/>&nbsp;</td>
+					    	title="{$tr->t($conf->passwdRegexMsg)|default:''}" autocomplete="off"/>&nbsp;</td>
 				</tr>
 				<tr>
 					<th>{t}Confirm password{/t}</th>
 					<td>
 						<input type="{if !empty($userdetail.id)}password{else}text{/if}" name="data[User][passwd]" id="pwdagain" value=""
-					class="{ equalTo:'#pwd'}" title="{t}Passwords should be equal{/t}"/>&nbsp;</td>
+					class="{ equalTo:'#pwd'}" title="{t}Passwords should be equal{/t}" autocomplete="off"/>&nbsp;</td>
 				</tr>
 			</tbody>
 

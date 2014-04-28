@@ -1,4 +1,3 @@
-{$html->script("jquery/treeview/jquery.treeview", false)}
 {$html->script("form", false)}
 
 <script type="text/javascript">
@@ -10,8 +9,8 @@
 		$(".delLog").bind("click", function() { 
 			if(!confirm(message))
 				return false ;
-			var logId = $(this).attr("title");
-			$("#form_log_"+logId).attr("action", delLogUrl + '/' + logId).submit();
+			var logId = $(this).prop("title");
+			$("#form_log_"+logId).prop("action", delLogUrl + '/' + logId).submit();
 		} );
 	} );
 </script>

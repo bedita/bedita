@@ -1,113 +1,128 @@
-#tree, .tree ul { padding: 0; margin: 2px; list-style: none;}
-#tree li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
-#tree li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
-#tree .collapsable { background-image: url(treeview/tv-collapsable.gif); }
-#tree .expandable { background-image: url(treeview/tv-expandable.gif); }
-#tree .last { background-image: url(treeview/tv-item-last.gif); }
-#tree .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
-#tree .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
-
-.treeview li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
-.treeview .collapsable { background-image: url(treeview/tv-collapsable.gif); }
-.treeview .expandable { background-image: url(treeview/tv-expandable.gif); }
-.treeview .last { background-image: url(treeview/tv-item-last.gif); }
-.treeview .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
-.treeview .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
-
-#tree.treeview li { background: url(treeview/area/tv-folder-item.gif) 0 0 no-repeat; }
-#tree.treeview .collapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
-#tree.treeview .expandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
-#tree.treeview .last { background-image: url(treeview/area/tv-folder-item.gif); }
-#tree.treeview .lastCollapsable { background-image: url(treeview/area/tv-folder-collapsable.gif); }
-#tree.treeview .lastExpandable { background-image: url(treeview/area/tv-folder-expandable.gif); }
-
-#treecontrol { margin: 1em 0; }
-#tree .AreaItem 	{ font-weight: bold; }
-#tree .SectionItem { }
-span.dropOver
-{
-	background-color: #00c;
-	color: #fff;
-}	  	
-
-#cmdTree {
-	float:left;
-	border:0px solid black; 
-	padding: 0px 0px 0px 0px;
-}	
-	
-#tree input {
-	margin: 0;
-	padding: 0px 0px 0px 0px;
-	font-family: Verdana, helvetica, arial, sans-serif;
-	font-size: 11px;
-	background: #fff;
-	color: #333;
-	border: 1px solid black;
-}	
-
-#tree .initCmdTree {
-	display: none ;
-	background: #fff;
-	color: black;
-	border: 1px solid gray;
-}	
-
-#tree .enabledCmdTree {
-	background: #fff;
-	color: black;
-	border: 1px solid gray;
-}	
-
-#tree .disabledCmdTree {
-	background: #fff;
-	color: gray;
-	border: 1px solid gray;
-}
-
-#treeWhere, .treeWhere ul { padding: 0; margin: 2px; list-style: none;}
-#treeWhere li { margin: 0; padding: 3px 0pt 3px 18px; list-style: none; }
-#treeWhere li { background: url(treeview/tv-item.gif) 0 0 no-repeat; }
-#treeWhere .collapsable { background-image: url(treeview/tv-collapsable.gif); }
-#treeWhere .expandable { background-image: url(treeview/tv-expandable.gif); }
-#treeWhere .last { background-image: url(treeview/tv-item-last.gif); }
-#treeWhere .lastCollapsable { background-image: url(treeview/tv-collapsable-last.gif); }
-#treeWhere .lastExpandable { background-image: url(treeview/tv-expandable-last.gif); }
-
-treeview ul { background-color: white; }
-
-.treeview, .treeview ul { 
+.publishingtree, .publishingtree ul { 
 	padding: 0;
-	margin: 0;
 	list-style: none;
 }
 
-.treeview div.hitarea {
-	height: 15px;
-	width: 15px;
-	margin-left: -15px;
-	float: left;
+.publishingtree {
+	margin: 10px 0 0  0;
+}
+
+.publishingtree:first-child {
+	margin-top: 0;
+}
+
+.publishingtree ul {
+	background-color: transparent;
+	margin-top: 4px;
+	padding-left: 14px;
+	margin: 0;
+	overflow: hidden;
+}
+
+.publishingtree LI A {
+	padding: 5px 5px 5px 5px;
+	display: inline-block;
+	vertical-align: top;
+	margin-top: -6px;
+	margin-left: 10px;
+	margin-right: 0px;
+}
+
+.publishingtree LI A + A{
+	margin-left: 0px;
+	border-radius: 100%;
+	width: 20px;
+	height: 20px;
+	text-align: center;
+	line-height: 20px;
+	font-size: 20px;
+	padding: 0;
+	vertical-align: middle;
+	background: none !important;
+}
+
+.publishingtree .hitarea {
+	/*background: url(images/treeview-default.gif) -64px -25px no-repeat;*/
+	background-color: #B6B6B6;
+	border: solid 1px #7C7C7C;
+	height: 14px;
+	width: 14px;
+	left: -7px;
+	margin-top: 0px;
 	cursor: pointer;
+	position: absolute;
+	z-index: 10;
+}
+
+.publishingtree .hitarea:before {
+	content: '+';
+	line-height: 12px;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+}
+
+
+.publishingtree .collapsable > .hitarea:before {
+	content: '-';
 }
 
 /* fix for IE6 */
-* html div.hitarea {
-	background: #fff;
-	filter: alpha(opacity=0);
+* html .hitarea {
 	display: inline;
 	float:none;
 }
 
-.treeview li { 
+.publishingtree li { 
 	margin: 0;
-	padding: 3px 0pt 3px 16px;
+	padding: 3px 0pt 3px 0px;
 }
 
-.treeview a.selected {
+.publishingtree a.selected {
 	background-color: #eee;
 }
 
+.publishingtree .hover { 
+	color: red; 
+	cursor: pointer; 
+}
 
-.treeview .hover { color: red; cursor: pointer; }
+.publishingtree li { 
+	border-left: dotted 1px #636363; 
+	border-bottom: solid 1px transparent; 
+	position: relative;
+	display: inline-block;
+	float: left;
+	clear: both;
+}
 
+.publishingtree li:last-child { 
+	border-left: dotted 1px transparent;
+}
 
+.publishingtree li:before {
+	content: '';
+	width: 11px;
+	height: 0px;
+	border-top: dotted 1px #636363;
+	display: inline-block;
+	position: absolute;
+	left: 0;
+	top: 10px;
+	z-index: 5;
+}
+
+.publishingtree li:last-child:after { 
+	content: '';
+	height: 9px;
+	width: 0px;
+	border-left: dotted 1px #636363;
+	display: inline-block;
+	position: absolute;
+	left: -1px;
+	top: 0px;
+	z-index: 5;
+}

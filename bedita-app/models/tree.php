@@ -444,6 +444,34 @@ class Tree extends BEAppModel
 	}
 
 	/**
+	 * get all tree roots objects (publications)
+	 *
+	 * @param  int $userid
+	 * @param  mixed $status string or array of status
+	 * @param  array  $filter filter options see BEAppModel::findObjects
+	 * @param  array  $expandBranch array of branch ids of which roots have to expanded
+	 * @return array
+	 */
+	public function getAllRoots($userid = null, $status = null, $filter = array(), $expandBranch = array()) {
+		$filter['object_type_id'] = array(Configure::read('objectTypes.area.id'));
+		$roots = $this->getAll(null, $userid, $status, $filter);
+		if (!empty($expandBranch)) {
+			// get root of $expandedBranch array
+			foreach ($expandBranch as &$branchId) {
+				$branchId = $this->getRootForSection($branchId);
+			}
+			$filter['object_type_id'][] = Configure::read('objectTypes.section.id');
+			foreach ($roots as $key => $root) {
+				if (in_array($root['id'], $expandBranch)) {
+					$res = $this->getAll($root['id'], $userid, $status, $filter);
+					$roots[$key] = $res[0];
+				}
+			}
+		}
+		return $roots;
+	}
+
+	/**
 	 * Get Tree where 'id' (if it passed) has to be tree root
 	 * If it's a section id then an empty array is returned
 	 * @param integer $id		publication id. If null get all trees, one for every publication
@@ -453,10 +481,8 @@ class Tree extends BEAppModel
 	 * @return array every first level key is a publication
 	 */
 	public function getAll($id = null, $userid = null, $status = null, $filter = array()) {
-
 		// build tree
-		$roots 	= array() ;
-		$tree 	= array() ;
+		$tree = array();
 
 		$filter["Tree.*"] = "";
 		if (!empty($id)) {
@@ -477,6 +503,7 @@ class Tree extends BEAppModel
 	 */
 	public function buildTree($items) {
 		$tree = array();
+		$roots = array();
 		foreach ($items as $root) {
 
 			$root['children']	= array() ;

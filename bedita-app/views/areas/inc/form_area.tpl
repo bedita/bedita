@@ -7,20 +7,18 @@
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 
-
-
 	<table class="areaform" border=0 style="margin-bottom:10px">
 
 		<tr>
 			<th>{t}title{/t}:</th>
 			<td>
-				<input id="titleBEObject" type="text" name="data[title]"	value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
+				<input id="titleBEObject" type="text" name="data[title]" value="{$object.title|default:''|escape:'html'|escape:'quotes'}" />
 			</td>
 		</tr>
 		<tr>
 			<th>{t}public name{/t}:</th>
 			<td>
-				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}""/>
+				<input type="text" name="data[public_name]" value="{$object.public_name|default:''|escape:'html'|escape:'quotes'}"/>
 			</td>
 		</tr>
 		<tr>
@@ -193,15 +191,15 @@
 	<tr>
 		<th>{t}Code{/t}:</th>
 		<td colspan="2">
-			<textarea name="data[stats_code]" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+			<textarea name="data[stats_code]" class="autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
 		</td>
 	</tr>
 	</table>
 		
 	</fieldset>
 
-	{$view->element('form_file_list',['relation' => 'attach'])}
-	
+	{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.area.id}, 'availabeRelations' => ['attach' => 'multimedia items']])}
+
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
 

@@ -18,25 +18,35 @@ available options:
 *}
 
 <style scoped>
+	th {
+		white-space: nowrap;
+	}
+	.filters th {
+		width: 1px;
+		vertical-align: top;
+		padding-top: 8px;
+	}
 
-
+	.filters td {
+		vertical-align: top;
+	}
 </style>
 
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
 
 	<input type="hidden" name="cleanFilter" value=""/>
 
-	<table class="filters">
+	<table class="filters"  style="width:100%">
 		{if !empty($filters.word)}
 		<tr>
 			<th><label>{t}search word{/t}:</label></th>
-			<td>
+			<td colspan="6">
 				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" style="width:255px" value="{$view->SessionFilter->read('query')}"/>&nbsp;
 				<input type="checkbox"
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
 						checked="checked"
 					{/if} 
-					id="modalsubstring" name="filter[substring]" /> {t}substring{/t}
+					id="modalsubstring" name="filter[substring]" /> <label>{t}substring{/t}</label>
 			</td>
 		</tr>
 		{/if}
@@ -57,7 +67,6 @@ available options:
 			</td>
 		</tr>
 		{/if}
-
 		{if !empty($filters.type)}
 		<tr>
 			<th><label>{t}type{/t}:</label></th>
@@ -77,6 +86,21 @@ available options:
 			</td>
 		</tr>
 		{/if}
+		{if !empty($filters.tree)}
+		<tr>
+			<th><label>{t}on position{/t}:</label></th>
+			<td>
+				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
+				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
+				</select><br>
+				{if !empty($filters.treeDescendants)}
+					<input type="checkbox" name="filter[descendants]"
+						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> <label>{t}descendants{/t}</label>
+				{/if}
+			</td>
+		</tr>
+		{/if}
+
 		{if !empty($filters.mediaTypes)}
 		<tr>
 			<th><label>{t}media type{/t}:</label></th>
@@ -91,20 +115,6 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
-		{/if}
-		{if !empty($filters.tree)}
-		<tr>
-			<th><label>{t}on position{/t}:</label></th>
-			<td>
-				<select name="filter[parent_id]" id="parent_id">
-				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select>
-				{if !empty($filters.treeDescendants)}
-					<input type="checkbox" name="filter[descendants]"
-						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> {t}descendants{/t}
-				{/if}
 			</td>
 		</tr>
 		{/if}
@@ -130,13 +140,26 @@ available options:
 		<tr>
 			<th><label>{t}properties{/t}:</label></th>
 			<td>
-				
-				[...]
+				<select name="filter[custom_property]">
+					<option value="">{t}all{/t}</option>
+					{foreach $properties as $prop}
+						{strip}
+						<option value="{$prop.id}" {if $view->SessionFilter->read('custom_property') == $prop.id}selected="selected"{/if}>
+							{$prop.name}
+							{if is_array($filters.customProp) && !empty($filters.customProp.showObjectTypes)}
+								&nbsp;({$conf->objectTypes[$prop.object_type_id].name})
+							{/if}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
 			</td>
+		</tr>
 		{/if}
 
-		</tr>
+		
 		<tr>
+			<th></th>
 			<td colspan="10">
 				<input type="submit" id="searchButton" style="width:150px" value=" {t}find it{/t} ">
 				<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">

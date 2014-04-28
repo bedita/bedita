@@ -12,9 +12,9 @@
 
     <div class="tab"><h2>{t}Technical details{/t}</h2></div>
 
-    <fieldset id="technicaldetails" style="margin-left:-10px;">
+    <fieldset id="technicaldetails">
 
-        <table class="bordered" style="margin:10px auto; width:95%; border:1px solid #999; clear:both">
+        <table class="bordered" style="border:1px solid #999; clear:both">
 
             <tr>
                 <th>{t}filename{/t}:</th>

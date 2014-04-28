@@ -1,6 +1,5 @@
-{$html->css("jquery.timepicker.css")}
-{$html->script("jquery/jquery.placement.below")}
-{$html->script("jquery/jquery.timepicker-list")}
+{$html->css('jquery.timepicker', null, ['inline' => false])}
+{$html->script('libs/jquery/plugins/jquery.timepicker.min')}
 
 <style scoped>
 .daterow .dateadd, .dummydaterow {
@@ -18,7 +17,13 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	
-	$(".timeStart, .timeEnd", ".daterow").timePicker({ startTime: "00:00", endTime: "23:30"});
+    var timePickerOptions = {
+        minTime: '00:00',
+        maxTime: '23:30',
+        timeFormat: 'G:i'
+    }
+
+	$('.timeStart, .timeEnd', '.daterow').timepicker(timePickerOptions);
 
     var numDates = {$numDates};
 
@@ -48,30 +53,30 @@ $(document).ready(function(){
         if (numDates == 0) {
         	numDates = 1;
         }
-        evtStart.attr("id","eventStart_" + numDates);
-        evtStart.attr("name","data[DateItem][" + numDates + "][start_date]");
+        evtStart.prop("id", "eventStart_" + numDates);
+        evtStart.prop("name", "data[DateItem][" + numDates + "][start_date]");
         var timeStart = newRow.find(".timeStart")
-        timeStart.attr("id","timeStart_" + numDates);
-        timeStart.attr("name","data[DateItem][" + numDates + "][timeStart]");
+        timeStart.prop("id", "timeStart_" + numDates);
+        timeStart.prop("name", "data[DateItem][" + numDates + "][timeStart]");
         var evtEnd = newRow.find(".eventEnd")
         evtEnd.addClass("dateinput");
-        evtEnd.attr("id","eventEnd_" + numDates);
-        evtEnd.attr("name","data[DateItem][" + numDates + "][end_date]");
+        evtEnd.prop("id", "eventEnd_" + numDates);
+        evtEnd.prop("name", "data[DateItem][" + numDates + "][end_date]");
         var timeEnd = newRow.find(".timeEnd")
-        timeEnd.attr("id","timeEnd_" + numDates);
-        timeEnd.attr("name","data[DateItem][" + numDates + "][timeEnd]");
+        timeEnd.prop("id", "timeEnd_" + numDates);
+        timeEnd.prop("name", "data[DateItem][" + numDates + "][timeEnd]");
         numDates++;
-        newRow.find(".timeStart, .timeEnd").timePicker({ startTime: "00:00", endTime: "23:30"});
+        newRow.find(".timeStart, .timeEnd").timepicker(timePickerOptions);
         newRow.find("input.dateinput").datepicker();
 	});
 
     $(".radioAlways").click(function (){
     	var always = $(this).val();
         if (always == "true") {
-        	$(this).parent().find("input[type=checkbox]").attr("disabled", "disabled");
-            $(this).parent().find("input[type=checkbox]").removeAttr("checked");
+        	$(this).parent().find("input[type=checkbox]").prop('disabled', true);
+            $(this).parent().find("input[type=checkbox]").prop('checked', false);
         } else {
-            $(this).parent().find("input[type=checkbox]").removeAttr("disabled");
+            $(this).parent().find("input[type=checkbox]").prop('disabled', false);
         }
     });
 

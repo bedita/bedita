@@ -2,11 +2,6 @@
 
 <fieldset id="properties">
 
-{$html->script("jquery/ui/jquery.ui.datepicker", false)}
-{if $currLang != "eng"}
-{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
-{/if}
-
 {$view->element('form_common_js')}
 
 {$view->element('texteditor')}

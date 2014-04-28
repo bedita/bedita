@@ -1,6 +1,6 @@
 {* included by show_objects.tpl *}
 
-{$html->script("jquery/jquery.tablesorter.min")}
+{$html->script("libs/jquery/plugins/jquery.tablesorter.min")}
 
 <script type="text/javascript">
 <!--
@@ -10,8 +10,25 @@ $(document).ready(function() {
 		loadObjToAssoc($(this).attr("rel"));
 	});
 
-	 $("#objtable").tablesorter(); 	
-	 $("#objtable thead TH").css("cursor","pointer"); 
+	$("#objtable").tablesorter(); 	
+	$("#objtable thead TH").css("cursor","pointer");
+
+	$('#objtable').find('input[type=checkbox]').click(function() {
+		var objectId = $(this).val();
+		if ($(this).prop('checked')) {
+			objectsChecked.add(objectId);
+		} else {
+			objectsChecked.remove(objectId);
+		}
+		// update add button
+		var addLabel = $('#addButton').val();
+		addLabel = addLabel.replace(/\s\d+\sitems/, '');
+		var countIds = objectsChecked.get().length;
+		if (countIds) {
+			addLabel += ' ' + countIds + ' items';
+		}
+		$('#addButton').val(addLabel);
+	});
 
 });
 //-->
@@ -20,33 +37,24 @@ $(document).ready(function() {
 {if !empty($objectsToAssoc.items)}
 	
 	<table class="indexlist" id="objtable">
-	<thead>
-		<tr>
-			<th></th>
-			<th>{t}title{/t}</th>
-			<th style="text-align:center">{t}type{/t}</th>
-			<th style="text-align:center">{t}status{/t}</th>
-			<th style="text-align:center">{t}modified{/t}</th>
-			<th style="text-align:center">{t}lang{/t}</th>
-			<th style="text-align:center">Id</th>
-		</tr>
-	</thead>
+		<thead>
+			<tr>
+				<th></th>
+				<th></th>
+				<th>{t}title{/t}</th>
+				<th></th>
+				<th>{t}status{/t}</th>
+				<th>{t}lang{/t}</th>
+				<th>{t}type{/t} and {t}size{/t}</th>
+				<th>{t}more{/t}</th>
+				<th style="text-align:right">{t}commands{/t}</th>
+			</tr>
+		</thead>
 	<tbody>
-		{foreach from=$objectsToAssoc.items item="objToAss"}
-		<tr>
-			<td style="width:15px; vertical-alig:middle; padding:0px 0px 0px 10px;">
-				<input type="checkbox" name="object_selected[]" class="objectCheck" value="{$objToAss.id}"/>
-			</td>
-			<td>{$objToAss.title|default:'<i>[no title]</i>'}</td>
-			<td style="padding:0px; width:10px;">
-				<span class="listrecent {$objToAss.moduleName}">&nbsp;</span>
-			</td>
-			<td style="text-align:center">{$objToAss.status}</td>
-			<td style="white-space:nowrap; text-align:center">{$objToAss.modified|date_format:$conf->datePattern}</td>
-			<td style="text-align:center">{$objToAss.lang}</td>
-			<td style="text-align:center">{$objToAss.id}</td>
-		</tr>
-		{/foreach}
+
+		{assign_associative var="params" presentation="thumb" width='64'}
+		{include file="../elements/form_assoc_object.tpl" objsRelated=$objectsToAssoc.items}
+
 	</tbody>
 	</table>
 

@@ -2,29 +2,21 @@
 ** nesletter view template
 *}
 
-{assign_associative var="cssOptions" inline=false}
-{$html->css("ui.datepicker", null, $cssOptions)}
-{$html->css("jquery.timepicker.css", null, $cssOptions)}
+{$html->css("ui.datepicker", null, ['inline' => false])}
+{$html->css("jquery.timepicker.css", null, ['inline' => false])}
 
-{$html->script("jquery/jquery.form", false)}
-{$html->script("jquery/jquery.selectboxes.pack", false)}
+{$html->script("libs/jquery/plugins/jquery.form", false)}
+{$html->script("libs/jquery/plugins/jquery.selectboxes.pack", false)}
 
-{$html->script("jquery/ui/jquery.ui.sortable", true)}
-{$html->script("jquery/ui/jquery.ui.datepicker", false)}
+{$html->script("libs/jquery/ui/jquery.ui.sortable.min", true)}
+{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
 {if $currLang != "eng"}
-	{$html->script("jquery/ui/i18n/ui.datepicker-$currLang.js", false)}
+	{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
 {/if}
-
-{$html->script("jquery/jquery.placement.below")}
-{$html->script("jquery/jquery.timepicker-list")}
-
-{$html->script("jquery/jquery.validate")}
 
 <script type="text/javascript">
 	$(document).ready(function () {
 		openAtStart("#contents, #invoice");
-		$("#timeStart, #timeEnd").timePicker({ startTime: "00:00", endTime: "23:30" });
-		$("#updateForm").validate();
 	});
 </script>
 

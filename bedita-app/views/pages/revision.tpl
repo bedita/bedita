@@ -40,7 +40,7 @@
 			}
 			
 			//set page on to save/confirm on leave status
-			$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
+			$(".secondacolonna .modules label").addClass("save").prop("title", "unsaved object");
 
 			/*
 			// da fare*******

@@ -1,5 +1,6 @@
-{$html->script("jquery/jquery.form", false)}
+<!-- //////// home page //////////// -->
 
+{$html->script("libs/jquery/plugins/jquery.form", false)}
 <script type="text/javascript">
 <!--
 
@@ -41,10 +42,6 @@ $(document).ready(function() {
 	});
 	
 });
-
-    $(document).ready(function(){	
-		openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
-    });
 	
 //-->
 </script>
@@ -59,31 +56,10 @@ $(document).ready(function() {
 
     {if isset($moduleList.areas)}    
 	<div class="publishingtree">
-	{assign_associative var="options" treeParams=['controller' => 'areas']}
-	{$view->element('tree',$options)}
+	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index']}
+	{$view->element('tree', $options)}
 	</div>
     {/if}
-    
-	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
-	<ul id="recent" class="bordered smallist">
-	{foreach $lastModBYUser as $item}
-		<li><span class="listrecent {$item.module_name}">&nbsp;</span>
-		<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
-			{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{foreachelse}
-		<li><i>{t}you have no recent items{/t}</i></li>
-	{/foreach}
-	</ul>
-	
-	<div class="tab"><h2>{t}recent items{/t}</h2></div>
-	<ul id="allrecent" class="bordered smallist">
-	{foreach $lastMod as $item}
-		<li>
-			<span class="listrecent {$item.module_name}">&nbsp;&nbsp;</span>
-			&nbsp;<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
-				{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
-	{/foreach}
-	</ul>	
 	
 </div>
 
@@ -109,10 +85,31 @@ $(document).ready(function() {
 
 <div class="dashboard right">
 
+	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
+	<ul id="recent" class="bordered smallist">
+	{foreach $lastModBYUser as $item}
+		<li><span class="listrecent {$item.module_name}">&nbsp;</span>
+		<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+			{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{foreachelse}
+		<li><i>{t}you have no recent items{/t}</i></li>
+	{/foreach}
+	</ul>
+	
+	<div class="tab"><h2>{t}recent items{/t}</h2></div>
+	<ul id="allrecent" class="bordered smallist">
+	{foreach $lastMod as $item}
+		<li>
+			<span class="listrecent {$item.module_name}">&nbsp;&nbsp;</span>
+			&nbsp;<a class="{$item.status|default:''}" title="{$item.module_name} | {t}modified on{/t} {$item.modified|date_format:$conf->dateTimePattern}" href="{$html->url('/')}{$item.module_name}/view/{$item.id}">
+				{$item.title|strip_tags|truncate:36:"~":true|default:'<i>[no title]</i>'}</a></li>
+	{/foreach}
+	</ul>	
+
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
-			<input type="text" placeholder="{t}search word{/t}" style="width:95%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
+			<input type="text" placeholder="{t}search word{/t}" style="width:100%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
 			<br />
 			<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}
 			&nbsp;&nbsp;<input id="searchButton" type="submit" value="{t}go{/t}" />
@@ -120,36 +117,10 @@ $(document).ready(function() {
 		<div id="searchResult"></div>	
 	</div>
 	
-	{*bedev}
+	{bedev}
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
-	<div id="new" class="bordered smallist">
-		<form>
-			<label>{t}Title{/t}</label>
-			<input type="text">
-			
-			<label>{t}Text{/t}</label>
-			<textarea></textarea>
-			
-			<label >{t}Object type{/t}</label>		
-			<select>
-			{assign var=leafs value=$conf->objectTypes.leafs}
-			{foreach from=$conf->objectTypes item=type key=key}	
-				{if ( in_array($type.id,$leafs.id) && is_numeric($key) )}
-				<option {if ($type.name == 'document')}selected="selected"{/if}>	
-					{t}{$type.model}{/t}
-				</option>
-				{/if}
-			{/foreach}
-			</select>
-			<label>{t}Position{/t}</label>
-			<select>
-				{$beTree->option($tree)}
-			</select>
-			<hr />
-			<input type="submit" value="{t}publish{/t}"/> <input type="submit" value="{t}save draft{/t}"/>
-		</form>
-	</div>
-	{/bedev*}
+	{$view->element('quick_item')}
+	{/bedev}
 
 <script type="text/javascript">
 <!--
@@ -157,7 +128,7 @@ $(document).ready(function(){
 	
 	var showTagsFirst = false;
 	var showTags = false;
-	$("#callTags").bind("click", function() {
+	$("#tags").on("slideToggle", function() {
 		if (!showTagsFirst) {
 			$("#loadingTags").show();
 			$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
@@ -174,7 +145,9 @@ $(document).ready(function(){
 			}
 			showTags = !showTags;
 		}
-	});	
+	});
+
+	openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
 });
 //-->
 </script>

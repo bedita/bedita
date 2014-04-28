@@ -34,27 +34,27 @@ class FilesController extends AppController {
 	var $uses		= array('Stream','BEObject') ;
 	var $components = array('Transaction', 'BeUploadToObj', 'RequestHandler');
 
-	function upload () {
-		$this->layout = "ajax";
-		header("Content-Type: application/json");
+	function upload() {
 		try {
-			$data=array();
-			if (!empty($this->params["form"]["userid"]))
-				$data = array("user_created" => $this->params["form"]["userid"], "user_modified" => $this->params["form"]["userid"]);
-			$this->Transaction->begin() ;
-			$id = $this->BeUploadToObj->upload($data) ;
+			$this->Transaction->begin();
+			$id = $this->BeUploadToObj->upload();
 			$this->Transaction->commit();
-			$response = array("fileId" => $id, "fileUploaded" => true);
-			$this->set("response", $id);
-		} catch(BeditaException $ex) {
-			$errTrace = get_class($ex) . " - " . $ex->getMessage()."\nFile: ".$ex->getFile()." - line: ".$ex->getLine()."\nTrace:\n".$ex->getTraceAsString();
-			$this->handleError($ex->getMessage(), $ex->getMessage(), $errTrace);
-			$this->setResult(self::ERROR);
-			$this->set("response", $ex->getMessage());
+			$response = array('id' => $id);
+		} catch (BeditaException $ex) {
+			throw new BeditaAjaxException($ex->getMessage(), array(
+				'output' => 'json',
+				'headers' => array('HTTP/1.1 409 Conflict')
+			));
 		}
+
+		$this->layout = 'ajax';
+		$this->RequestHandler->respondAs('json');
+        $this->set('data', $response);
+        $this->view = 'View';
+        $this->render('/pages/json');
 	}
 
-	function uploadAjax ($uploadSuffix=null) {
+	function uploadAjax($uploadSuffix = null) {
 		$this->layout = "ajax";
 		try {
 			$this->Transaction->begin() ;
@@ -78,7 +78,7 @@ class FilesController extends AppController {
 		}
 	}
 
-	function uploadAjaxMediaProvider () {
+	function uploadAjaxMediaProvider() {
 		$this->layout = "ajax";
 		header("Content-Type: application/json");
 		try {
@@ -134,10 +134,6 @@ class FilesController extends AppController {
 
 	protected function forward($action, $esito) {
 		$REDIRECT = array(
-			"upload" =>	array(
-	 			"OK"	=> self::VIEW_FWD.'upload_multi_response',
-		 		"ERROR"	=> self::VIEW_FWD.'upload_multi_response'
-		 	),
 			"uploadAjax" =>	array(
 	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
 		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'

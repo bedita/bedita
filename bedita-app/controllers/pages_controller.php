@@ -30,8 +30,9 @@
  */
 class PagesController extends AppController {
 	
-	var $uses = array();
-	var $helpers = array('BeTree');
+	public $uses = array();
+	public $helpers = array('BeTree');
+    public $components = array('BeUploadToObj');
 
 	protected function beforeCheckLogin() {
 		if($this->action === 'changeLang') { // skip auth check, on lang change
@@ -216,7 +217,7 @@ class PagesController extends AppController {
 			$res = ClassRegistry::init("ObjectRelation")->find("all", array(
 				"conditions" => array(
 					"id" => $main_object_id,
-					"switch" => $usedRelation
+					"switch" => @$usedRelation
 				)
 			));
 			$excludeIds = array_merge($excludeIds, Set::extract("/ObjectRelation/object_id", $res));
@@ -257,8 +258,18 @@ class PagesController extends AppController {
 		}
 		$this->set("objectsToAssoc", $objects);
 		
-		$tree = $this->BeTree->getSectionsTree() ;
-		$this->set('tree',$tree);
+		// get publications
+		$treeModel = ClassRegistry::init("Tree");
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+
+		$this->set('tree', $tree);
 		
 		$this->set("relation", $relation);
 		
@@ -527,7 +538,15 @@ class PagesController extends AppController {
 		$model = $this->loadModelByType($modelName);
 		$this->viewRevision($model, $id, $rev);
 	}
-	
+
+	public function tree($parentid) {
+		$this->layout = 'ajax';
+		if (empty($parentid)) {
+			$this->set('tree', $this->BeTree->getSectionsTree());
+		} else {
+			$this->set('tree', $this->BeTree->getPublicationTree($parentid));
+		}
+	}
 
 	/**
 	 * Ajax modal for export 
@@ -544,6 +563,40 @@ class PagesController extends AppController {
 		$this->render(null, null, "form_import");
 	}
 	
+
+	/**
+	 * save quick item
+	 * used in modal window to save quickly objects to associate
+	 * to main object
+	 *
+	 * @return void
+	 */
+    public function saveQuickItem() {
+        $this->ajaxCheck();
+        if (empty($this->data['object_type_id'])) {
+            throw new BeditaAjaxException(__('Missing object type', true), array('output' => 'json'));
+        }
+
+        try {
+            $this->Transaction->begin();
+            // if it's multimedia object and a file was loaded
+            $multimediaIds = Configure::read('objectTypes.multimedia.id');
+            if (in_array($this->data['object_type_id'], $multimediaIds) && !empty($this->params['form']['Filedata'])) {
+                $this->data['id'] = $this->BeUploadToObj->upload();
+            }
+            $modelName = Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model');
+            $model = ClassRegistry::init($modelName);
+            $this->saveObject($model);
+            $this->Transaction->commit();
+        } catch (BeditaException $ex) {
+            throw new BeditaAjaxException($ex->getMessage(), array('output' => 'json'));
+        }
+
+        $this->RequestHandler->respondAs('json');
+        $this->set('data', array('id' => $model->id));
+        $this->view = 'View';
+        $this->action = 'json';
+	}
 }
 
 ?>

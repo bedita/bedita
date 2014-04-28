@@ -2,7 +2,7 @@
 
 {$view->element('texteditor')}
 
-<div class="tab"><h2>{t}Title{/t}</h2></div>
+<div class="tab"><h2>{t}Title & Description{/t}</h2></div>
 
 <fieldset id="title">
 

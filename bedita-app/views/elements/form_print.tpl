@@ -1,4 +1,4 @@
-	
+<!--	
 <form action="{$html->url('/pages/printme')}" target="print" method="post">
 <input type="hidden" name="id" value="{$object.id|default:''}"/>
 
@@ -30,3 +30,4 @@
 </fieldset>
 
 </form>
+-->
