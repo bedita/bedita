@@ -471,7 +471,7 @@ class BeAuthComponent extends Object {
         $user = ClassRegistry::init('User');
         $user->containLevel("minimum");
 
-        if (isset($userData['auth_type']) && $userData['auth_type'] != 'bedita') {
+        if (isset($userData['User']['auth_type']) && $userData['User']['auth_type'] != 'bedita') {
             $user->validate = $user->externalServiceValidate;
         }
 
@@ -486,12 +486,15 @@ class BeAuthComponent extends Object {
             $user->Behaviors->attach('Notify');
         }
         
-        if(!$user->passwordValidation($userData['User'])) {
-            throw new BeditaException(__("Password not valid",true) . " - " . Configure::read("loginPolicy.passwordErrorMessage"));
+        if (!isset($userData['User']['auth_type']) || $userData['User']['auth_type'] == 'bedita') {
+            if(!$user->passwordValidation($userData['User'])) {
+                throw new BeditaException(__("Password not valid",true) . " - " . Configure::read("loginPolicy.passwordErrorMessage"));
+            }
+            if (!empty($userData['User']['passwd'])) {
+                $userData['User']['passwd'] = md5($userData['User']['passwd']);
+            }
         }
-        if (!empty($userData['User']['passwd'])) {
-            $userData['User']['passwd'] = md5($userData['User']['passwd']);
-        }
+
         $user->create();
         if(!$user->save($userData)) {
             throw new BeditaException(__("Error saving user",true), $user->validationErrors);
