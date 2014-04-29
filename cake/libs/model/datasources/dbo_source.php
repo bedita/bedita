@@ -137,6 +137,7 @@ class DboSource extends DataSource {
 		parent::__construct($config);
 		$this->fullDebug = Configure::read() > 1;
 		if (!$this->enabled()) {
+			trigger_error(sprintf(__('%s - Selected driver is not enabled', true), get_class($this)), E_USER_ERROR);
 			return false;
 		}
 		if ($autoConnect) {
@@ -2156,10 +2157,8 @@ class DboSource extends DataSource {
 			$not = null;
 
 			if (is_array($value)) {
-				$valueInsert = (
-					!empty($value) &&
-					(substr_count($key, '?') == count($value) || substr_count($key, ':') == count($value))
-				);
+				$valueCount = count($value);
+				$valueInsert = (!empty($value) && (substr_count($key, '?') === $valueCount || (substr_count($key, ':') === $valueCount && preg_match("/(\:){" . $valueCount . "}/", $key) === 0)));
 			}
 
 			if (is_numeric($key) && empty($value)) {
