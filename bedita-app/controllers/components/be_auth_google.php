@@ -8,18 +8,10 @@
 *------------------------------------------------------------------->8-----
 */
 
-if(class_exists('BeAuthComponent') != true) {
-    require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
-}
-
-if(class_exists('Google_Client') != true) {
-    set_include_path(BEDITA_CORE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
-    require_once('Google' . DS . 'Client.php');
-}
-if(class_exists('Google_Service_Oauth2') != true) {
-    set_include_path(BEDITA_CORE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
-    require_once('Google' . DS . 'Service' . DS . 'OAuth2.php');
-}
+set_include_path(BEDITA_CORE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
+App::import('component', 'be_auth');
+App::import('Vendor', 'google', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'Client.php'));
+App::import('Vendor', 'google', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'OAuth2.php'));
 
 /**
  * Google User auth component

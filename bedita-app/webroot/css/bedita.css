@@ -2792,6 +2792,7 @@ form.auth_form {
 input[type=submit].auth_button {
 	width: 46px;
 	height: 46px;
+	border: none;
 }
 
 input[type=submit].auth_button_facebook {

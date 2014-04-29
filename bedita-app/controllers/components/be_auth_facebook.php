@@ -8,13 +8,8 @@
 *------------------------------------------------------------------->8-----
 */
 
-if(class_exists('BeAuthComponent') != true) {
-    require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
-}
-
-if(class_exists('Facebook') != true) {
-    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'facebook' . DS . 'facebook.php');
-}
+App::import('component', 'be_auth');
+App::import('Vendor', 'facebook', array('file' => 'facebook' . DS . 'facebook.php'));
 
 /**
  * Facebook User auth component

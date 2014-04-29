@@ -8,13 +8,8 @@
 *------------------------------------------------------------------->8-----
 */
 
-if(class_exists('BeAuthComponent') != true) {
-    require(BEDITA_CORE_PATH . DS . "controllers" . DS . 'components' . DS . 'be_auth.php');
-}
-
-if(class_exists('tmhOAuth') != true) {
-    require(BEDITA_CORE_PATH . DS . "vendors" . DS . 'twitteroauth' . DS . 'twitteroauth.php');
-}
+App::import('component', 'be_auth');
+App::import('Vendor', 'twitteroauth', array('file' => 'twitteroauth' . DS . 'twitteroauth.php'));
 
 /**
  * Twitter User auth component
