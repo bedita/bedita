@@ -93,16 +93,4 @@ abstract class BaseObject extends ObjectsTable {
         return ($res)? $res->id : null;
     }
 
-    // public function findFlat($query, $options = []) {
-    //     return $query->formatResults(function($results) {
-    //         return $results->map(function($row) {
-    //             //echo 1;
-    //             if ($row->content) {
-    //                 $row->set($row->content->toArray(), ['guard' => false]);
-    //                 $row->unsetProperty('content');
-    //             }
-    //             return $row;
-    //         });
-    //     });
-    // }
 }

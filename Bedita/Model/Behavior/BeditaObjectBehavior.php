@@ -22,7 +22,11 @@ namespace Bedita\Model\Behavior;
 
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
+use Cake\ORM\Query;
+use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
+use Cake\Event\Event;
 
 /**
  * BeditaObjectBehavior
@@ -37,30 +41,64 @@ class BeditaObjectBehavior extends Behavior {
     }
 
     /**
-     * add condition on object_type_id
-     * set formatResults
+     * Add condition on object_type_id
+     * If $options['formatResults'] == false (default true),
+     * it doesn't make any formatResults operation
      *
-     * @param  Cake\Event\Event $event
-     * @param  Cake\ORM\Query $query The query object
-     * @param  array  $options
-     * @param  boolean $primary Indicates whether or not this is the root query, or an associated query
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Query $query The query object
+     * @param array  $options
+     * @param boolean $primary Indicates whether or not this is the root query, or an associated query
      */
-    public function beforeFind($event, $query, array $options, $primary) {
+    public function beforeFind(Event $event, Query $query, array $options, $primary) {
         $query->where(['object_type_id' => $this->table->objectTypeId()]);
 
-        $query->formatResults(function($results) {
-            return $results->map(function($row) {
-                // flat object chain
-                foreach ($this->table->getObjectChain() as $chainTable) {
-                    $property = Inflector::underscore(Inflector::classify($chainTable));
-                    if ($row->$property) {
-                        $row->set($row->$property->toArray(), ['guard' => false]);
-                        $row->unsetProperty($property);
+        $defaultOptions = ['formatResults' => true];
+        $options = array_merge($defaultOptions, $options);
+
+        if ($options['formatResults']) {
+            $query->formatResults(function($results) {
+                return $results->map(function($row) {
+                    // flat object chain
+                    foreach ($this->table->getObjectChain() as $tableName) {
+                        $property = Inflector::underscore(Inflector::singularize($tableName));
+                        if ($row->$property) {
+                            $row->set($row->$property->toArray(), ['guard' => false]);
+                            $row->unsetProperty($property);
+                        }
+                    }
+                    return $row;
+                });
+            });
+        }
+    }
+
+    /**
+     * Dynamically build object chain entities
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
+     * @param array $options
+     */
+    public function beforeSave(Event $event, Entity $entity, $options) {
+        foreach ($this->table->getObjectChain() as $tableName) {
+            $table = TableRegistry::get($tableName);
+            $tableData = [];
+            foreach ($entity->visibleProperties() as $field) {
+                if ($table->hasField($field)) {
+                    $tableData[$field] = $entity->$field;
+                    if ($field != 'id') {
+                        $entity->unsetProperty($field);
                     }
                 }
-                return $row;
-            });
-        });
+            }
+
+            if (!empty($tableData)) {
+                $chainEntity = $table->newEntity($tableData);
+                $dataField = Inflector::underscore(Inflector::singularize($tableName));
+                $entity->set($dataField, $chainEntity);
+            }
+        }
     }
 
 }
