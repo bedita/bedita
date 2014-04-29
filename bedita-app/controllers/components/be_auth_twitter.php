@@ -8,7 +8,7 @@
 *------------------------------------------------------------------->8-----
 */
 
-App::import('component', 'be_auth');
+App::import('Component', 'BeAuth');
 App::import('Vendor', 'twitteroauth', array('file' => 'twitteroauth' . DS . 'twitteroauth.php'));
 
 /**
