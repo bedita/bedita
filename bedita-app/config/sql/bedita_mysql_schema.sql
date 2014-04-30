@@ -560,9 +560,9 @@ CREATE TABLE object_properties (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = '???' ;
 
 CREATE TABLE object_relations (
-  object_id INTEGER UNSIGNED NOT NULL,
   id INTEGER UNSIGNED NOT NULL,
   switch varchar(63) NOT NULL default 'attach' COMMENT '???',
+  object_id INTEGER UNSIGNED NOT NULL,
   priority int(11) default NULL COMMENT '???',
   params TEXT NULL COMMENT 'relation properties values',
   PRIMARY KEY  (`object_id`,`id`,`switch`),
