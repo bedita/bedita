@@ -23,10 +23,10 @@ namespace Bedita\Model\Table\BaseObject;
 use Bedita\Model\Table\BaseObject\BaseObject;
 
 /**
- * Abstract base class for BEdita stream object types
+ * Abstract base class for BEdita content object types
  */
-abstract class StreamObject extends BaseObject {
+abstract class ContentObject extends BaseObject {
 
-    protected $objectChain = ['Contents', 'Streams'];
+    protected $objectChain = ['Content'];
 
 }

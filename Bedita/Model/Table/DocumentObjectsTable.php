@@ -18,15 +18,15 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table\BaseObject;
+namespace Bedita\Model\Table;
 
-use Bedita\Model\Table\BaseObject\BaseObject;
+use Bedita\Model\Table\BaseObject\ContentObject;
 
 /**
- * Abstract base class for BEdita stream object types
+ * Represents the document object type
  */
-abstract class StreamObject extends BaseObject {
+class DocumentObjectsTable extends ContentObject {
 
-    protected $objectChain = ['Contents', 'Streams'];
+    protected $objectType = 'document';
 
 }
