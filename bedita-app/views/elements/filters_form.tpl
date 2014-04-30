@@ -101,6 +101,32 @@ available options:
 		</tr>
 		{/if}
 
+		{if !empty($filters.relations)}
+		<tr>
+			<th><label>{t}relations{/t}:</label></th>
+			<td>
+				{$availableRelations = $availableRelations|default:[]}
+				<select name="filter[relation]" id="relation">
+					<option value="">{t}all{/t}</option>
+					{foreach $availableRelations as $relName => $relLabel}
+						{strip}
+						<option value="{$relName}" {if $view->SessionFilter->read('relation') == $relName}selected="selected"{/if}>
+							{t}{$relLabel}{/t}
+						</option>
+						{/strip}
+					{/foreach}
+				</select>
+
+				{if !empty($filters.tree)}
+					&nbsp;
+					<input type="checkbox" name="filter[tree_related_object]"
+						{if $view->SessionFilter->check('tree_related_object')}checked="checked"{/if} />
+						<label>{t}with items located on above position{/t}</label>
+				{/if}
+			</td>
+		</tr>
+		{/if}
+
 		{if !empty($filters.mediaTypes)}
 		<tr>
 			<th><label>{t}media type{/t}:</label></th>

@@ -104,10 +104,21 @@ class MultimediaController extends ModulesController {
         }
         $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
+        // get available relations
+        $availableRelations = array();
+        foreach ($conf->objectTypes['multimedia']['id'] as $mediaId) {
+            $r = $this->getAvailableRelations($conf->objectTypes[$mediaId]['name']);
+            $availableRelations = array_merge($availableRelations, $r);
+        }
+        // exclude some kind of relations from view
+        $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
+        $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
+
         // template data
         $this->set('tree', $tree);
         $this->set('objects', $bedita_items['items']);
         $this->set('properties', $properties);
+        $this->set('availableRelations', $availableRelations);
         $this->setSessionForObjectDetail($bedita_items['items']);
 
      }
@@ -192,7 +203,7 @@ class MultimediaController extends ModulesController {
         $this->set("usersList", $this->User->find('list', array("order" => "userid")));
         $this->set("groupsList", $this->Group->find('list', array("order" => "name")));
         
-        //exclude some kind of relations from view
+        // exclude some kind of relations from view
         $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 

@@ -341,6 +341,29 @@ class BEAppModel extends AppModel {
             unset($filter['descendants']);
         }
 
+        // if filter 'tree_related_object' is set
+        // it filters objects that have some relation with objects located
+        // on $id tree branch or on $id tree branch descendants (if $all is true)
+        if ($id && isset($filter['tree_related_object'])) {
+            $objectIds = array();
+            $tree = ClassRegistry::init('Tree');
+            if ($all) {
+                $objectIds = $tree->find('list', array(
+                    'fields' => array('id'),
+                    'conditions' => array('object_path LIKE' => '%/' . $id . '/%'),
+                    'group' => 'id'
+                ));
+            } else {
+                $objectIds = $tree->find('list', array(
+                    'fields' => array('id'),
+                    'conditions' => array('parent_id' => $id)
+                ));
+            }
+            $filter['ObjectRelation.object_id'] = $objectIds;
+            // avoid to search objects children on $id branch tree
+            $id = null;
+        }
+
         if (!empty($filter['searchstring'])) {
             if (empty($filter['query'])) {
                 $filter['query'] = $filter['searchstring'];
