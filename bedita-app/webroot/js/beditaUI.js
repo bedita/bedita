@@ -77,8 +77,7 @@ jQuery.fn.extend({
 *   fixItemsPriority (was reorderListItems)
 *   optional first parameter define priority start number
 */
-    fixItemsPriority: function ()
-    {
+    fixItemsPriority: function() {
         if(window.priorityOrder === undefined) {
             priorityOrder = "asc";
         }

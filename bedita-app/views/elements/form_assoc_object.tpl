@@ -18,7 +18,7 @@
 {/if}
 
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}" data-benick="{$objRelated.nickname}">
-	<td>
+	<td class="priority-column">
 		{if !empty($objRelated.start_date) && ($objRelated.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
 			
 			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align: middle;">

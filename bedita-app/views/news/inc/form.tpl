@@ -18,8 +18,6 @@
 	
 	{$view->element('form_textbody')}
 	
-	{$view->element('form_file_list', ['relation' => 'attach'])}
-
 	{$view->element('form_tags')}
 	
 	{$view->element('form_links')}
