@@ -81,7 +81,7 @@
 				<tr>
 					<th><span class="auth_name">{$service}</span> userid</th>
 					<td>
-						<input type="text" name="data[Service][{$service}][userid]" value="{if !isset($userdetail.auth_params.userid)}{$userdetail.auth_params|default:''}{/if}" />
+						<input type="text" name="data[Service][{$service}][userid]" value="{if !empty($userdetail.auth_params)}{$userdetail.auth_params|default:''}{/if}" />
 					&nbsp;
 					{foreach from=$userdetail.auth_params item="val" key="k"}
 						{if $k != 'userid'}
