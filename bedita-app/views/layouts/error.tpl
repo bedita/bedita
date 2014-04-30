@@ -37,7 +37,7 @@
 	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>	
 </div>
 
-<div id="messagesDiv" style="margin-top:140px">
+<div id="messagesDiv" style="margin-top:110px">
 	<div class="message error">
 		{$content_for_layout}	
 	</div>

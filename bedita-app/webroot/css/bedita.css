@@ -53,6 +53,16 @@ abbr,acronym { border:0;
 
 article, aside, figure, footer, header, hgroup, nav, section {display: block;}
 
+* { 
+	-webkit-user-drag: none;
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box; 
+	-webkit-tap-highlight-color: transparent; 
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
+
 /*...........................................    
 
     General, elements
@@ -308,14 +318,10 @@ UL.modules {
 	height: 110px; 
 	padding:10px;
 	margin: 0px;
-	background-color:#CCCCCC; 
-/*
-	background-image: url(../img/sfomodulo.png);
-	background-repeat:repeat-x;
-*/
+	background-color:#CCC; 
 	color:#FFFFFF;
 	font-weight:normal;
-	border-radius: 0;
+	border-bottom:20px solid rgba(0,0,0,.3);
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -2093,6 +2099,7 @@ A.BEbutton.golink:before {
 	display:block; 
 	float:left;
 	margin: 0px 0px 10px 10px;
+	border-bottom:20px solid rgba(0,0,0,.3);
 }
 
 .home UL.modules LI A {
@@ -2133,7 +2140,6 @@ LI.welcome {
 	float: left;
 	width: auto;
 	max-width: 450px;
-	/* margin-right: -40px; */
 }
 
 
@@ -2761,3 +2767,79 @@ span.highlight {
 	width: 100%;
 	max-width: 550px
 }
+
+
+/*...........................................    
+
+Media Queries	720
+
+..........................................*/
+
+@media only screen and (max-width: 1024px) {
+
+	.primacolonna {
+		left:20px;
+	}
+	.secondacolonna {
+		left:170px;
+	}
+
+	.quartacolonna {
+		display:block;
+		left:820px;
+	}
+	.head, .main, .mainfull {
+		left: 320px;
+	}
+
+	.modulesmenu {
+		left:320px; 
+	}
+
+	.modulesmenu A {
+		height: 25px; 
+		width: 25px;
+	}
+
+	.main, .mainfull {
+		width:490px;
+		min-width: 270px;
+	}
+
+}
+
+
+@media only screen and (max-width: 768px) {
+
+	.primacolonna {
+		left:-340px;
+	}
+	.secondacolonna {
+		left:20px;
+	}
+
+	.quartacolonna {
+		display:none;
+	}
+	.head, .main, .mainfull {
+		left: 170px;
+	}
+
+	.modulesmenu {
+		left:-40px; 
+	}
+
+	.modulesmenu A {
+		height: 25px; 
+		width: 20px;
+	}
+
+	.main, .mainfull {
+		width:470px;
+		min-width: 270px;
+	}
+
+}
+
+
+

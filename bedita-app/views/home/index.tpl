@@ -101,8 +101,8 @@ $(document).ready(function() {
 	<div class="tab"><h2>{t}last comments{/t}</h2></div>
 	<ul id="lastcomments" class="bordered">
 		{foreach from=$lastComments item="cmt"}
-			<li><span class="listrecent comments">&nbsp;</span>{$cmt.author|default:''}, 
-			{t}on{/t} "<i><a href="{$html->url('/')}view/{$cmt.id}">{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
+			<li><a href="{$html->url('/')}view/{$cmt.id}"><span class="listrecent comments">&nbsp;</span>{$cmt.author|default:''}, 
+			{t}on{/t} "<i>{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"</a></li>
 		{foreachelse}
 			<li>{t}no comments{/t}</li>
 		{/foreach}
