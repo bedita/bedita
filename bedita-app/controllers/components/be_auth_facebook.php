@@ -71,7 +71,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             $user->containLevel("default");
             $u = $user->find('first', array(
                     'conditions' => array(
-                        'auth_params' => $profile['id'],
+                        'auth_params' => $profile['email'],
                         'auth_type' => $this->userAuth
                     )
                 )
