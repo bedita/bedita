@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,40 +20,34 @@
  */
 
 /**
- * frontend.ini.php - bedita frontend parameters + backend overrides
- *  
- * @version			$Revision: 2061 $
- * @modifiedby 		$LastChangedBy: dante $
- * @lastmodified	$LastChangedDate: 2009-07-03 16:44:07 +0200 (ven, 03 lug 2009) $
- * 
- * $Id: frontend.ini.php 2061 2009-07-03 14:44:07Z dante $
+ * frontend.ini.php - frontend parameters + backend overrides
  */
 
-require BEDITA_CORE_PATH . DS . "config" . DS . "bedita.ini.php";
-include APP. "config" . DS . "mapping.cfg.php";
+require BEDITA_CORE_PATH . DS . 'config' . DS . 'bedita.ini.php';
+include APP. 'config' . DS . 'mapping.cfg.php';
 
 ///////////////////////////////////////////////////
-// EDITABLE STUFF         			///////////////
+// EDITABLE STUFF                     ///////////////
 ///////////////////////////////////////////////////
 
 /**
  * Publication id referenced by frontend, 
  * change if different from id = 1 (default)
  */
-$config['frontendAreaId'] 	= 1;
+$config['frontendAreaId'] = 1;
 
 
 /**
  * show or not objects with status = draft
  * default: show only objects with status = ON
  */ 
-$config['draft']            = false;
+$config['draft'] = false;
 
 
 /**
  * staging site ? default: false -> production site
  */  
-$config['staging'] 			= false;
+$config['staging']             = false;
 
 
 /**
@@ -85,25 +79,25 @@ $config['frontendLang']     = 'eng';
  * supported frontend languages
  */
 $config['frontendLangs']    = array (
-								 	"eng"	=> array("en", "english"),
-								 	"ita"	=> array("it", "italiano"),
-								/*	
-									"spa"	=> array("es", "espa&ntilde;ol"),
-									"por"	=> array("pt", "portugu&ecirc;s"),
-									"fra"	=> array("fr", "fran&ccedil;oise"),
-									"deu"	=> array("de", "deutsch"),
-								*/
-								);
+                                     'eng'    => array('en', 'english'),
+                                     'ita'    => array('it', 'italiano'),
+                                /*    
+                                    'spa'    => array('es', 'espa&ntilde;ol'),
+                                    'por'    => array('pt', 'portugu&ecirc;s'),
+                                    'fra'    => array('fr', 'fran&ccedil;oise'),
+                                    'deu'    => array('de', 'deutsch'),
+                                */
+                                );
 
 /**
  * maps of languages to autodetecting language choice 
  */
 $config['frontendLangsMap'] = array(
-	"it"	=> "ita",
-	"en"	=> "eng",
-	"en_us"	=> "eng",
-	"en-us"	=> "eng",
-	"en_gb"	=> "eng"
+    'it'    => 'ita',
+    'en'    => 'eng',
+    'en_us'    => 'eng',
+    'en-us'    => 'eng',
+    'en_gb'    => 'eng'
 ) ;
 
 /**
@@ -115,38 +109,33 @@ $config['sitemapAllContent'] = true;
  * custom model bindings for BEdita objects (defaults defined in Model of BEdita object)
  */
 //$config['modelBindings'] = array(
-	//'Document' => array("BEObject" => array("LangText","RelatedObject", "GeoTag")),
-	//'Event' => ...
-	//...
+    //'Document' => array('BEObject' => array('LangText','RelatedObject', 'GeoTag')),
+    //'Event' => ...
+    //...
 //);
 
 /**
  * frontend cookie names 
  */
-$config["cookieName"] = array(
-	"langSelect" => "dummyExampleLang"
+$config['cookieName'] = array(
+    'langSelect' => 'dummyExampleLang'
 );
 
 /**
  * save history navigation
- *
- * "sessionEntry" => number of history items in session
- * "showDuplicates" => false to not show duplicates in history session 
- * "trackNotLogged" => true save history for all users (not logged too)
+ 
+ * 'sessionEntry' => number of history items in session
+ * 'showDuplicates' => false to not show duplicates in history session 
+ * 'trackNotLogged' => true save history for all users (not logged too)
  */
-//$config["history"] = array(
-//	"sessionEntry" => 5,
-//	"showDuplicates" => false,
-//	"trackNotLogged" => false
+//$config['history'] = array(
+//    'sessionEntry' => 5,
+//    'showDuplicates' => false,
+//    'trackNotLogged' => false
 //);
 
-/**
- * set to true if you want to use SessionFilter component
- * to automatic store in session some objects filter
- * populating a form named 'filter'
- * @see SessionFilterComponent
- * @see SessionFilterHelper
- */
-// $config['enableSessionFilter'] = false;
-
-?>
+// frontend.cfg
+if(file_exists(APP. 'config' . DS . 'frontend.cfg.php')) {
+    include APP. 'config' . DS . 'frontend.cfg.php';
+}
+// DON'T WRITE BELOW
