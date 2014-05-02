@@ -71,10 +71,21 @@ class BeditaException extends Exception
             $this->getTraceAsString();   
     }
 
+    /**
+     * Return httpCode for exception (null, if not set)
+     * 
+     * @return number
+     */
     public function getHttpCode() {
         return $this->httpCode;
     }
 
+    /**
+     * Handling http status code header, according to $this->httpCode (if not set or code not handled, return null)
+     * Http codes handled: 401, 403, 404, 500
+     * 
+     * @return string|NULL
+     */
     public function getHeader() {
     	if($this->getHttpCode() == 401) {
     		return 'HTTP/1.1 401 Unauthorized';
@@ -89,6 +100,9 @@ class BeditaException extends Exception
     }
 }
 
+/**
+ * Runtime exception (default http status code 500)
+ */
 class BeditaRuntimeException extends BeditaException {
 	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 500) {
 		parent::__construct($message, $details, $res, $code);
@@ -297,7 +311,7 @@ class BeditaUnauthorizedException extends BeditaException {
 }
 
 /**
- * 403 Forbidden
+ * Exception for http status code 403 Forbidden
  */
 class BeditaForbiddenException extends BeditaException {
 	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 403) {
@@ -306,7 +320,7 @@ class BeditaForbiddenException extends BeditaException {
 }
 
 /**
- * 404 Not Found
+ * Exception for http status code 404 Not Found
  */
 class BeditaNotFoundException extends BeditaException {
 	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 404) {
