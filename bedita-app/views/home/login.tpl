@@ -47,8 +47,8 @@
 	<label>{t}Or use one of this external auth service{/t}</label><br />
 	{foreach from=$externalAuthServices item=service}
 	<form name="login" action="{$html->url('/authentications/login')}" class="auth_form" method="post">
-		<input type="hidden" name="data[login][auth_type]" value="{$service}">
-		<input type="submit" class="auth_button auth_button_{$service|lower}" value="{$service}">
+		<input type="hidden" name="data[login][auth_type]" value="{$service.name}">
+		<input type="submit" class="auth_button auth_button_{$service.name|lower}" value="{$service.name}">
 	</form>
 	{/foreach}
 	{/if}
