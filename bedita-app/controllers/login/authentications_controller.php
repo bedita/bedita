@@ -38,28 +38,26 @@ class AuthenticationsController extends AppController {
 	 */
 	function login() {
 
-		$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
-		$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
-	
-		if(!$this->BeAuth->login($userid, $password)) {
-			$this->loginEvent('warn', $userid, "login not authorized");
-			$this->userErrorMessage(__("Wrong username/password or no authorization", true));
-			$this->result=self::ERROR;
-		}
+		if (!empty($this->data["login"])) {
+		
+			$userid 	= (isset($this->data["login"]["userid"])) ? $this->data["login"]["userid"] : "" ;
+			$password 	= (isset($this->data["login"]["passwd"])) ? $this->data["login"]["passwd"] : "" ;
+			$authType 	= (isset($this->data["login"]["auth_type"])) ? $this->data["login"]["auth_type"] : "bedita" ;
+			
+			if(!$this->BeAuth->login($userid, $password, null, array(), $authType)) {
+				$this->loginEvent('warn', $userid, "login not authorized");
+				if ($authType=='bedita') {
+					$this->userErrorMessage(__("Wrong username/password or session expired", true));
+				}
+				$this->logged = false;
+			} else {
+				$this->eventInfo("logged in");
+			}
 
-		if(!$this->BeAuth->isValid) {
-			$this->loginEvent('warn', $userid, "login blocked");
-			$this->userErrorMessage(__("User login temporary blocked", true));
-			$this->result=self::ERROR;
-		}
-		
-		if($this->result === self::OK) {
-			$this->eventInfo("logged in");
-		}
-		
-		// redirect setup
-		if(isset($this->data["login"]["URLOK"])) {
-			$this->data['OK'] = $this->data["login"]["URLOK"];
+			if (isset($this->data["login"]["URLOK"])) {
+				$this->redirect($this->data["login"]["URLOK"]);
+			}
+			return true;
 		}
 	}
 
@@ -116,7 +114,7 @@ class AuthenticationsController extends AppController {
 	 }
 	 
 	
-	 private function loginEvent($level, $user, $msg) {
+	private function loginEvent($level, $user, $msg) {
 		$event = array('EventLog'=>array("log_level"=>$level, 
 			"userid"=>$user,"msg"=>$msg, "context"=>strtolower($this->name)));
 		$this->EventLog->save($event);

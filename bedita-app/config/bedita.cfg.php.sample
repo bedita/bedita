@@ -8,7 +8,7 @@
 
 /**
  * bedita.cfg.php - local installation specific settings,
- *					overrides settings in bedita.ini
+ *                  overrides settings in bedita.ini
  */
 
 // BEdita instance name 
@@ -16,9 +16,9 @@
 
 
 //////////////////////////////////
-//								//
-//    START - SERVER SETTINGS	//
-//								//
+//                              //
+//    START - SERVER SETTINGS   //
+//                              //
 //////////////////////////////////
 
 
@@ -33,7 +33,7 @@ $config['beditaUrl']="http://localhost/bedita";
 
 /** Multimedia - root folder on filesystem (use absolute path, if you need to change it)
  **
- **	On Linux could be /var/www/bedita/bedita-app/webroot/files
+ ** On Linux could be /var/www/bedita/bedita-app/webroot/files
  ** On Windows could be C:\\xampp\\htdocs\\bedita\\bedita-app\\webroot\\files
  ** Or you can use DS as crossplatform directory separator as in default
  ** BEDITA_CORE_PATH . DS . "webroot" . DS . "files"
@@ -62,8 +62,8 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  */
 
 //$config["locales"] = array(
-//	'eng' => array('en_US.UTF8','en_US.UTF-8'),
-//	);
+//  'eng' => array('en_US.UTF8','en_US.UTF-8'),
+//  );
 
 
 /**
@@ -85,11 +85,11 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  ** smtp server configuration used for any kind of mail (notifications, newsletters, etc...)
  */
 //$config['smtpOptions'] = array(
-//	'port' => '25',
-//	'timeout' => '30',
-//	'host' => 'your.smtp.server',
-//	'username' => 'your_smtp_username',
-//	'password' => 'your_smtp_password'
+//  'port' => '25',
+//  'timeout' => '30',
+//  'host' => 'your.smtp.server',
+//  'username' => 'your_smtp_username',
+//  'password' => 'your_smtp_password'
 //);
 
 /**
@@ -97,15 +97,15 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * uncomment and fill to send error messages to your support
  */
 //$config["mailSupport"] = array(
-//	"from" => "bedita-support@...",	
-//	'to' => "bedita-support@...",
-//	'subject' => "[bedita] error message",
+//  "from" => "bedita-support@...", 
+//  'to' => "bedita-support@...",
+//  'subject' => "[bedita] error message",
 //);
 
 //////////////////////////////////
-//								//
-//     END - SERVER SETTINGS	//
-//								//
+//                              //
+//     END - SERVER SETTINGS    //
+//                              //
 //////////////////////////////////
 
 
@@ -123,22 +123,22 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 // ISO-639-3 codes - User interface language options (backend)
 // $config['langsSystem'] = array(
-//	"eng"	=> "english",
-//	"ita"	=> "italiano",
-//	"deu"	=> "deutsch",
-//	"por"	=> "portuguěs"
+//  "eng"   => "english",
+//  "ita"   => "italiano",
+//  "deu"   => "deutsch",
+//  "por"   => "portuguěs"
 // );
 
 /**
  * Lang selection options ISO-639-3 - Language options for contents
  */
 //$config['langOptions'] = array(
-//	"ita"	=> "italiano",
-//	"eng"	=> "english",
-//	"spa"	=> "espa&ntilde;ol",
-//	"por"	=> "portugu&ecirc;s",
-//	"fra"	=> "fran&ccedil;ais",
-//	"deu"	=> "deutsch"
+//  "ita"   => "italiano",
+//  "eng"   => "english",
+//  "spa"   => "espa&ntilde;ol",
+//  "por"   => "portugu&ecirc;s",
+//  "fra"   => "fran&ccedil;ais",
+//  "deu"   => "deutsch"
 //) ;
 
 
@@ -157,8 +157,8 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * conf => 'tiny_mce_default_init'
  */
 // $config['richtexteditor'] = array(
-// 	'name' => 'ckeditor',
-// 	'conf' => 'ckeditor_default_init'
+//  'name' => 'ckeditor',
+//  'conf' => 'ckeditor_default_init'
 // );
 
 
@@ -171,14 +171,38 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 // A simple example with a simple password regexp rule, uncomment and change according to your needs
 //
 //$config['loginPolicy'] = array (
-//	"maxLoginAttempts" => 3,
-//	"maxNumDaysInactivity" => 60,
-//	"maxNumDaysValidity" => 10,
-//	"passwordRule" => "/\w{4,}/", // regexp to match for valid passwords (empty => no regexp)
-//	"passwordErrorMessage" => "Password must contain at least 4 valid alphanumeric characters", // error message for passwrds not matching given regexp
+//  "maxLoginAttempts" => 3,
+//  "maxNumDaysInactivity" => 60,
+//  "maxNumDaysValidity" => 10,
+//  "passwordRule" => "/\w{4,}/", // regexp to match for valid passwords (empty => no regexp)
+//  "passwordErrorMessage" => "Password must contain at least 4 valid alphanumeric characters", // error message for passwrds not matching given regexp
 //);
 
-
+/**
+ ** ******************************************
+ **  External Authentication Services Params
+ ** ******************************************
+ */
+//$config['extAuthParams'] = array(
+//    'facebook' => array(
+//        'keys' => array(
+//            'appId' => '',
+//            'secret' => ''
+//        )
+//    ),
+//    'twitter' => array(
+//        'keys' => array(
+//            'appId' => '',
+//            'secret' => ''
+//        )
+//    ),
+//    'google' => array(
+//        'keys' => array(
+//            'appId' => '',
+//            'secret' => ''
+//        )
+//    )
+//);
 
 /**
  ** ******************************************
@@ -191,7 +215,7 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  ** define here custom semantic relations
  */
 // $config["objRelationType"] = array(
-// 		"language" => array()
+//      "language" => array()
 // );
 
 // Reserved words [avoided in nickname creation]
@@ -199,7 +223,7 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 // default values for fulltext search
 // $config['searchFields'] = array(
-//	'ModelName' => array('title'=> 6, 'description' => 4),
+//  'ModelName' => array('title'=> 6, 'description' => 4),
 //) ;
 
 
@@ -214,9 +238,9 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * "trackNotLogged" => true save history for all users (not logged too)
  */
 //$config["history"] = array(
-//	"sessionEntry" => 5,
-//	"showDuplicates" => false,
-//	"trackNotLogged" => false
+//  "sessionEntry" => 5,
+//  "showDuplicates" => false,
+//  "trackNotLogged" => false
 //);
 
 ?>

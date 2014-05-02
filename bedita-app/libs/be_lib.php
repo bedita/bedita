@@ -71,8 +71,10 @@ class BeLib {
 					}
 				}
 			}
-			$libObject = new $name();
-			ClassRegistry::addObject($name, $libObject);
+			if (class_exists($name)) {
+				$libObject = new $name();
+				ClassRegistry::addObject($name, $libObject);
+			}
 		}
 		return $libObject;
 	}

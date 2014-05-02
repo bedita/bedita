@@ -104,6 +104,44 @@ $config['frontendLangsMap'] = array(
 	"en-us"	=> "eng",
 	"en_gb"	=> "eng"
 ) ;
+
+/**
+ * external auth params
+ */
+/*$config['extAuthParams'] = array(
+	'facebook' => array(
+		'keys' => array(
+			'appId' => 'aaa',
+			'secret' => 'bbb'
+		),
+		'permissions' => 'email, user_birthday',
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
+		'createCard' => true
+	),
+	'twitter' => array(
+		'keys' => array(
+			'consumerKey' => 'ccc',
+			'consumerSecret' => 'ddd'
+		),
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
+		'createCard' => true
+	),
+	'google' => array(
+		'keys' => array(
+			'clientId' => 'eee',
+			'clientSecret' => 'fff'
+		),
+		'scopes' => array(
+			'email',
+			'profile'
+		),
+		'groups' => array('frontend', 'editor', 'administrator'),
+		'createUser' => true,
+		'createCard' => true
+	)
+);*/
 								
 
 /**
@@ -140,5 +178,10 @@ $config["cookieName"] = array(
 //	"showDuplicates" => false,
 //	"trackNotLogged" => false
 //);
+
+// frontend.cfg 
+if(file_exists(	APP. "config" . DS . "frontend.cfg.php")) {
+	include APP. "config" . DS . "frontend.cfg.php";
+}
 
 ?>

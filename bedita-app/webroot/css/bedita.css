@@ -67,7 +67,7 @@ BODY, .bodybg, .catselector {
 
 TD {padding:2px; vertical-align:middle}
 
-HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
+HR {height:0px; border:0px; margin: 8px 0px 10px 0px; border-top:1px solid gray}
 
 A {color:#000000}
 
@@ -1862,7 +1862,7 @@ A.BEbutton.golink:before {
 }
 
 .message .close {
-	margin-top:10px; color:#FFF; display:block;
+	margin-top: 10px; color:#FFF; display:block;
 }
 
 .messageDetail {
@@ -2075,7 +2075,13 @@ A.BEbutton.golink:before {
 	.login {
 
 		margin-left:310px;
-		padding-top:25px;
+		
+
+		padding-top: 20px;
+	}
+
+	.login form{
+		width:140px;
 	}
 
 	.login input {
@@ -2084,7 +2090,7 @@ A.BEbutton.golink:before {
 
 	.login .bemaincommands {
 		margin:20px 0px; 
-		width:145px !important;
+		width: 140px !important;
 		padding:5px;
 	}
 
@@ -2785,4 +2791,37 @@ span.highlight {
 .select2-container.areaSectionAssociation {
 	width: 100%;
 	max-width: 550px
+}
+
+/*** 
+	external auth buttons
+***/
+
+form.auth_form {
+	width: 46px;
+	display: inline-block;
+}
+
+input[type=submit].auth_button {
+	width: 46px;
+	height: 46px;
+	border: none;
+}
+
+input[type=submit].auth_button_facebook {
+	text-indent: -1000px;
+	background-image: url('../img/facebook.svg');
+	background-size: cover;
+}
+
+input[type=submit].auth_button_twitter {
+	text-indent: -1000px;
+	background-image: url('../img/twitter.svg');
+	background-size: cover;
+}
+
+input[type=submit].auth_button_google {
+	text-indent: -1000px;
+	background-image: url('../img/plus.svg');
+	background-size: cover;
 }

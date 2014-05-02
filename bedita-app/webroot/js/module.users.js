@@ -19,4 +19,10 @@ $(document).ready(function() {
         $(this).parents('tr:first').remove();
     });
 
+    $('#authselect').change(function() {
+        var value = $(this).val();
+        $('.authTypeForm').hide();
+        $('.authTypeForm#authType'+capitaliseFirstLetter(value)).show();
+    });
+
 });

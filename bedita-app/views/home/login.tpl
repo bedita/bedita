@@ -19,7 +19,7 @@
 
 
 <div class="login">
-	<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
+	<form name="login" action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
 	<fieldset>
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
@@ -40,5 +40,16 @@
 		<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 		{if isset($conf->projectAdmin)}
 		{t}or{/t} <label><a href="mailto:{$conf->projectAdmin}">{t}contact the project admin{/t}</a></label>{/if}
+		</form>
 	</div>
+	{if !empty($externalAuthServices)}
+	<br>
+	<label>{t}Or use one of this external auth service{/t}</label><br />
+	{foreach from=$externalAuthServices item=service}
+	<form name="login" action="{$html->url('/authentications/login')}" class="auth_form" method="post">
+		<input type="hidden" name="data[login][auth_type]" value="{$service.name}">
+		<input type="submit" class="auth_button auth_button_{$service.name|lower}" value="{$service.name}">
+	</form>
+	{/foreach}
+	{/if}
 </div>

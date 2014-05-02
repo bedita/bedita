@@ -111,13 +111,24 @@ class UsersController extends ModulesController {
 			}
 		}
 
+		//set userid param for external servie
+		if ($this->data['User']['auth_type'] != 'bedita') {
+			$type = $this->data['User']['auth_type'];
+			if (isset($this->data['Service']) && isset($this->data['Service'][$type]) && isset($this->data['Service'][$type]['userid'])) {
+				$this->data['User']['auth_params'] = $this->data['Service'][$type]['userid'];
+			}
+		}
+
 		// Format custom properties
 		$this->BeCustomProperty->setupUserPropertyForSave() ;
 
 		if(!isset($this->data['User']['id'])) {
-			if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
-				throw new BeditaException(__("Passwords mismatch",true));
+			if ($this->data['User']['auth_type'] == 'bedita') {
+				if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
+					throw new BeditaException(__("Passwords mismatch",true));
+				}
 			}
+
 			$this->data['User']['passwd'] = trim($this->data['User']['passwd']);
 			$this->BeAuth->createUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." created");
@@ -127,8 +138,10 @@ class UsersController extends ModulesController {
 			$confirmPass = trim($this->params['form']['pwd']);
 			if(empty($pass) && empty($confirmPass)) {
 				unset($this->data['User']['passwd']);
-			} elseif (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
-				throw new BeditaException(__("Passwords mismatch",true));
+			} elseif ($this->data['User']['auth_type'] == 'bedita') {
+				if (!$this->BeAuth->checkConfirmPassword($this->params['form']['pwd'], $this->data['User']['passwd'])) {
+					throw new BeditaException(__("Passwords mismatch",true));
+				}
 			}
 			$this->BeAuth->updateUser($this->data, $userGroups);
 			$this->eventInfo("user ".$this->data['User']['userid']." updated");
@@ -247,6 +260,8 @@ class UsersController extends ModulesController {
 			$userdetail = NULL;
 			$userdetailModules = NULL;
 		}
+
+		$this->set('externalAuthServices', $this->BeAuth->getExternalServices());
 
 		$userGroups = array();
 		if(isset($userdetail)) {
