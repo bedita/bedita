@@ -27,6 +27,6 @@ use Bedita\Model\Table\BaseObject\BaseObject;
  */
 abstract class ContentObject extends BaseObject {
 
-    protected $objectChain = ['Content'];
+    protected $objectChain = ['Contents'];
 
 }
