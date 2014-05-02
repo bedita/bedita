@@ -32,6 +32,7 @@
 class BeditaException extends Exception
 {
 	public $result;
+	public $httpCode = null;
 	protected $errorDetails; // details for log file
 	const ERROR 	= 'ERROR' ;
 	
@@ -54,6 +55,9 @@ class BeditaException extends Exception
    			}
    		}
    		$this->result = $res;
+   		if($code != 0) {
+   			$this->httpCode = $code;
+   		}
         parent::__construct($message, $code);
     }
     
@@ -66,10 +70,29 @@ class BeditaException extends Exception
             $this->getFile()." - line: ".$this->getLine()." \nTrace:\n".
             $this->getTraceAsString();   
     }
+
+    public function getHttpCode() {
+        return $this->httpCode;
+    }
+
+    public function getHeader() {
+    	if($this->getHttpCode() == 401) {
+    		return 'HTTP/1.1 401 Unauthorized';
+    	} else if($this->getHttpCode() == 403) {
+    		return 'HTTP/1.1 403 Forbidden';
+    	} else if($this->getHttpCode() == 404) {
+    		return 'HTTP/1.1 404 Not Found';
+    	} else if($this->getHttpCode() == 500) {
+    		return 'HTTP/1.1 500 Internal Server Error';
+    	} // TODO: handle more http status codes...
+    	return null;
+    }
 }
 
-class BeditaRuntimeException extends BeditaException 
-{	
+class BeditaRuntimeException extends BeditaException {
+	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 500) {
+		parent::__construct($message, $details, $res, $code);
+	}
 }
 /**
  * 
@@ -261,6 +284,33 @@ class BeditaFrontAccessException extends BeditaException {
 
 	public function getHeaders() {
 		return $this->headers;
+	}
+}
+
+/**
+ * 401 Unauthorized
+ */
+class BeditaUnauthorizedException extends BeditaException {
+	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 401) {
+		parent::__construct($message, $details, $res, $code);
+	}
+}
+
+/**
+ * 403 Forbidden
+ */
+class BeditaForbiddenException extends BeditaException {
+	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 403) {
+		parent::__construct($message, $details, $res, $code);
+	}
+}
+
+/**
+ * 404 Not Found
+ */
+class BeditaNotFoundException extends BeditaException {
+	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 404) {
+		parent::__construct($message, $details, $res, $code);
 	}
 }
 ?>
