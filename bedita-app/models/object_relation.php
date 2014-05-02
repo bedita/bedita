@@ -184,5 +184,63 @@ class ObjectRelation extends BEAppModel
 		return $pri[0]["object_relations"]["priority"];
 	}
 	
+    /**
+     * Returns array of available relations for an $objectType
+     * relations with 'hidden' => true are excluded
+     * If 'inverse' relation is defined ('inverse' => 'inverseName'), then types on 'right' side
+     * will have 'inverseName' relation
+     *
+     * array returned is like
+     * array('relation_name' => 'relation label', ...)
+     *
+     * @param string|int $objectType Object type name or object type id
+     * @return array
+     */
+    public function availableRelations($objectType) {
+        $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+        $availableRelations = array();
+        if (is_numeric($objectType)) {
+            $objectType = Configure::read('objectTypes.' . $objectType . '.name');
+        }
+        foreach ($allRelations as $relation => $rule) {
+            if (empty($rule['hidden'])) {
+                $relLabel = (!empty($rule['label']))? $rule['label'] : $relation;
+                // no rule defined
+                if (empty($rule[$objectType]) && empty($rule['left']) && empty($rule['right'])) {
+                    $availableRelations[$relation] = $relLabel;
+                // rule on objectType
+                } elseif (!empty($rule[$objectType])) {
+                    $availableRelations[$relation] = $relLabel;
+                // rule on sideA / sideB
+                } else {
+                    $addRelation = array();
+                    if (key_exists('left', $rule)) {
+                        if(is_array($rule['left']) && (in_array($objectType, $rule['left']) || (empty($rule['left'])))) {
+                            $addRelation[$relation] = $relLabel;
+                        } else if($rule['left'] === $objectType) {
+                            $addRelation[$relation] = $relLabel;
+                        }
+                    }
+                    if (key_exists('right', $rule)) {
+                        if (!empty($rule['inverse'])) {
+                            $rightRel = $rule['inverse'];
+                            $rightRelLabel = (!empty($rule['inverseLabel']))? $rule['inverseLabel'] : $rule['inverse'];
+                        } else {
+                            $rightRel = $relation;
+                            $rightRelLabel = (!empty($rule['label']))? $rule['label'] : $relation;
+                        }
+                        if(is_array($rule['right']) && (in_array($objectType, $rule['right']) || (empty($rule['right'])))) {
+                            $addRelation[$rightRel] = $rightRelLabel;
+                        } else if($rule['right'] === $objectType) {
+                            $addRelation[$rightRel] = $rightRelLabel;
+                        }
+                    }
+                    $availableRelations= array_merge($availableRelations, $addRelation);
+                }
+            }
+        }
+        return array_unique($availableRelations);
+    }
+
 }
 ?>

@@ -141,7 +141,8 @@ $(document).ready(function() {
 			'treeDescendants' => true,
 			'type' => true,
 			'language' => true,
-			'customProp' => false
+			'customProp' => false,
+			'relations' => true
 		]])}
 	</div>
 

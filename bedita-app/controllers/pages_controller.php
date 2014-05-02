@@ -256,8 +256,7 @@ class PagesController extends AppController {
 				$objects["items"][$key] = array_merge($objects["items"][$key], $mediaData);
 			}
 		}
-		$this->set("objectsToAssoc", $objects);
-		
+
 		// get publications
 		$treeModel = ClassRegistry::init("Tree");
 		$user = $this->BeAuth->getUserSession();
@@ -269,10 +268,19 @@ class PagesController extends AppController {
 		}
 		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
+		// get available relations
+		$availableRelations = array();
+		if (!empty($filter['object_type_id'])) {
+			foreach ($filter['object_type_id'] as $objectTypeId) {
+				$r = ClassRegistry::init('ObjectRelation')->availableRelations($objectTypeId);
+				$availableRelations = array_merge($availableRelations, $r);
+			}
+		}
+
+		$this->set("objectsToAssoc", $objects);
 		$this->set('tree', $tree);
-		
+		$this->set('availableRelations', $availableRelations);
 		$this->set("relation", $relation);
-		
 		$this->set("main_object_id", $main_object_id);
 		$this->set("object_type_id", $main_object_type_id);
 		$this->set("objectType", $objectType);
