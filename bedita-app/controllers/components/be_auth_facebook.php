@@ -25,9 +25,9 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     protected $permissions = array('email', 'user_birthday');
     public $disabled = false;
 
-    public function startup($controller=null) {
+    public function startup(&$controller=null) {
         $this->controller = $controller;
-        $this->Session = $controller->Session;
+        $this->Session = &$controller->Session;
 
         $this->params = Configure::read("extAuthParams");
 
@@ -86,7 +86,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
                 return false ;
             }
             return true;
-        } else {            
+        } else {
             $this->loginUrl();
         }
     }

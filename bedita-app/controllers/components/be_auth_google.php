@@ -76,8 +76,12 @@ class BeAuthGoogleComponent extends BeAuthComponent{
                     return true;
                 }
             }
+            $this->Session->delete('googleAccessToken');
+            $this->Session->delete('googleRequestedToken');
             return false;
         } else {
+            $this->Session->delete('googleAccessToken');
+            $this->Session->delete('googleRequestedToken');
             return false;
         }
     }

@@ -417,6 +417,12 @@ class AppController extends Controller
 				throw new BeditaAjaxException(__("Session Expired", true), array("output" => "reload"));
 			}
 
+			if ($this->Session->check('externalLoginRequestFailed')) {
+				$this->eventWarn('external login failed: ' . $this->Session->read('externalLoginRequestFailed'));
+				$this->userWarnMessage('external login failed: ' . $this->Session->read('externalLoginRequestFailed'));
+				$this->Session->delete('externalLoginRequestFailed');
+			};
+
 			$this->set('externalAuthServices', $this->BeAuth->getExternalServices());
 
 			if ($this->view == 'Smarty') {

@@ -285,6 +285,9 @@ class BeAuthComponent extends Object {
                 $userModel->save($u);
             }
             $this->logout();
+            if ($this->userAuth != 'bedita') {
+                $this->Session->write('externalLoginRequestFailed', $userid);
+            }
             return false;
         }
 
@@ -327,6 +330,9 @@ class BeAuthComponent extends Object {
 
         if($authorized === false) {
             $this->log("User login not authorized: ".$userid);
+            if ($this->userAuth != 'bedita') {
+                $this->Session->write('externalLoginRequestFailed', $userid);
+            }
             // TODO: special message?? or not for security???
             return false;
         }
@@ -343,6 +349,9 @@ class BeAuthComponent extends Object {
         
         if(!$this->isValid) {
             $this->logout();
+            if ($this->userAuth != 'bedita') {
+                $this->Session->write('externalLoginRequestFailed', $userid);
+            }
             return false;
         }
 
@@ -417,7 +426,7 @@ class BeAuthComponent extends Object {
             $this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
                 "ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
             
-            return true ;
+            return true;
         } else {
             $this->user = null;
         }

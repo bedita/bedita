@@ -66,9 +66,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                 /*if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
                     $this->createUser($profile);
                 }*/
-                if ($this->login()) {
-                    return true;
-                }
+                return $this->login();
             }
             return false;
         } else {

@@ -67,7 +67,7 @@ BODY, .bodybg, .catselector {
 
 TD {padding:2px; vertical-align:middle}
 
-HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
+HR {height:0px; border:0px; margin: 8px 0px 10px 0px; border-top:1px solid gray}
 
 A {color:#000000}
 
@@ -1855,14 +1855,14 @@ A.BEbutton.golink:before {
 			
 .message {
 	width: 140px; 
-	height: 120px; 
+	min-height: 110px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
 }
 
 .message .close {
-	margin-top:10px; color:#FFF; display:block;
+	margin-top: 10px; color:#FFF; display:block;
 }
 
 .messageDetail {
