@@ -302,7 +302,7 @@ class BeditaFrontAccessException extends BeditaException {
 }
 
 /**
- * 401 Unauthorized
+ * Exception for http status code 401 Unauthorized
  */
 class BeditaUnauthorizedException extends BeditaException {
 	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 401) {

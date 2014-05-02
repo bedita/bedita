@@ -35,14 +35,46 @@ class UsersController extends ModulesController {
 	public $helpers = array('Paginator');
 	 
 	public $paginate = array(
-	 	'User' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
-		'Group' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc') )//, 'contain' => array())
-	 );
+	 	'User' => array(
+	 		'limit' => 20,
+	 		'page' => 1,
+	 		'order' => array('created' => 'desc')
+	 	),
+		'Group' => array(
+			'limit' => 20,
+			'page' => 1,
+			'order' => array('created' => 'desc')
+		)
+	);
 	
 	protected $moduleName = 'users';
 	
 	function index() {
-		$conditions = array();
+		$users = $this->getUsers();
+		$beObject = ClassRegistry::init("BEObject");
+		foreach ($users as &$user) {
+			$res = $beObject->find('list', array(
+				"conditions" => "user_created=" . $user["User"]['id']
+			));
+
+			if (!empty($res)) {
+				$user['User']['related_obj'] = 1;
+			} else {
+				$user['User']['related_obj'] = 0;
+			}
+		}
+
+		$this->set('users', $users);
+	}
+
+	/**
+	 * Return a paginated user list.
+	 * If 'query' filter is set add it to $conditions
+	 *
+	 * @param array $conditions
+	 * @return array
+	 */
+	protected function getUsers($conditions = array()) {
 		$query = $this->SessionFilter->read('query');
 		if (empty($this->params["form"]["filter"]) || ($query && strlen($query) <= 3)) {
 			$this->SessionFilter->clean();
@@ -57,47 +89,37 @@ class UsersController extends ModulesController {
 		}
 
 		$users = $this->paginate('User', $conditions);
-
-		$beObject = ClassRegistry::init("BEObject");
-		foreach ($users as &$user) {
-			$res = $beObject->find('list', array(
-				"conditions" => "user_created=" . $user["User"]['id']
-			));
-
-			if (!empty($res)) {
-				$user['User']['related_obj'] = 1;
-			}else {
-				$user['User']['related_obj'] = 0;
-			}
-		}
-
-		$this->set('users', $users);
+		return $users;
 	}
-	
-	function showUsers() {
-		$allGroups = $this->Group->find("all", array("contain" => array()));
-		$authGroups = array();
-		$userGroups = array();
-		if(isset($user)) {
-			foreach ($user['Group'] as $g) {
-				array_push($userGroups, $g['name']);
-			}
+
+	/**
+	 * Load users that haven't a card related.
+	 * Used to promote card as user from Addressbook module
+	 *
+	 * @return void
+	 */
+	function usersWithoutCard() {
+		$this->layout = 'ajax';
+		// clean session filter
+		if (empty($this->params['form']['filter'])) {
+			$this->SessionFilter->clean();
 		}
-		$formGroups = array();
-		foreach ($allGroups as $g) {
-			$isGroup=false;
-			if(array_search($g['Group']['name'],$userGroups) !== false) {
-				$isGroup = true;
-			}
-			$formGroups[$g['Group']['name']] = $isGroup;
-			if($g['Group']['backend_auth'] == 1) {
-				$authGroups[] = $g['Group']['name'];
-			}
+		$objectUser = ClassRegistry::init('ObjectUser');
+		$userIds = $objectUser->find('list', array(
+			'fields' => array('user_id'),
+			'conditions' => array(
+				array('switch' => 'card')
+			),
+			'group' => 'user_id'
+		));
+		$this->paginate['User']['contain'] = array();
+		$users = $this->getUsers(array(
+			'NOT' => array('id' => $userIds)
+		));
+		$this->set('users', $users);
+		if (isset($this->params['named']['page'])) {
+			$this->render('inc/form_users_to_promote');
 		}
-		$this->set('users', $this->User->find("all"));
-		$this->set('formGroups',  $formGroups);
-		$this->set('authGroups',  $authGroups);
-		$this->layout = null;
 	}
 
 	function saveUser() {
