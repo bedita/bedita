@@ -1941,6 +1941,23 @@ A.BEbutton.golink:before {
 
 /*...........................................    
 
+    Filter form
+
+...........................................*/
+
+.filters th {
+	width: 1px;
+	vertical-align: top;
+	padding-top: 8px;
+	white-space: nowrap;
+}
+
+.filters td {
+	vertical-align: top;
+}
+
+/*...........................................    
+
     Ajax
 
 ...........................................*/
@@ -1998,8 +2015,8 @@ A.BEbutton.golink:before {
 }
 
 #modalmain .bodybg{
-	height: -webkit-calc(100% - 55px);
-	height: calc(100% - 55px);
+	max-height: -webkit-calc(100% - 55px);
+	max-height: calc(100% - 55px);
 	overflow-y:auto;
 	overflow-x:hidden;
 }
@@ -2064,6 +2081,25 @@ A.BEbutton.golink:before {
 
 #modalmain .trigger.open {
 	background-position: left -25px;
+}
+
+/*...........................................    
+
+    Select user modal
+
+...........................................*/
+
+#selectuser td:first-child {
+	padding-left: 8px;
+}
+
+#selectuser td:nth-child(2) {
+	width: 1px;
+	padding-right: 100px;
+}
+
+#selectuser td:nth-child(3) {
+	width: 100%;
 }
 
 

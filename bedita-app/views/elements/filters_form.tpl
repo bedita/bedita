@@ -17,21 +17,6 @@ available options:
 -->
 *}
 
-<style scoped>
-	th {
-		white-space: nowrap;
-	}
-	.filters th {
-		width: 1px;
-		vertical-align: top;
-		padding-top: 8px;
-	}
-
-	.filters td {
-		vertical-align: top;
-	}
-</style>
-
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
 
 	<input type="hidden" name="cleanFilter" value=""/>
