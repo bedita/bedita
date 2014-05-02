@@ -71,7 +71,7 @@
 			{foreach from=$externalAuthServices item="service"}
 
 
-			<tbody class="authTypeForm" id="authType{$service.name}" {if ($userdetail.auth_type|default:'bedita' != $service)}style="display:none"{/if}>
+			<tbody class="authTypeForm" id="authType{$service.name}" {if ($userdetail.auth_type|default:'bedita' != $service.name)}style="display:none"{/if}>
 				<tr>
 					<th>{t}Password{/t}</th>
 					<td>
