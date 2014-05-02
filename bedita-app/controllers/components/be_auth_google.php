@@ -10,8 +10,8 @@
 
 set_include_path(CAKE_CORE_INCLUDE_PATH . DS . "vendors" . DS . 'google' . DS . 'src' . PATH_SEPARATOR . get_include_path());
 App::import('Component', 'BeAuth');
-App::import('Vendor', 'google', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'Client.php'));
-App::import('Vendor', 'google', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'Auth' . DS . 'OAuth2.php'));
+App::import('Vendor', 'Google_Client', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'Client.php'));
+App::import('Vendor', 'Google_Service_Oauth2', array('file' => 'google' . DS . 'src' . DS . 'Google' . DS . 'Service' . DS . 'Oauth2.php'));
 
 /**
  * Google User auth component
