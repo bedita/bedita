@@ -1,5 +1,6 @@
 {assign_associative var="cssOptions" inline=false}
-{$html->css('tree', null, ['inline' => false]}
+
+{$html->css('tree', null, ['inline' => false])}
 
 {$html->script("form", false)}
 {$html->script("libs/jquery/plugins/jquery.form", false)}
