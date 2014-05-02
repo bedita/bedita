@@ -19,14 +19,14 @@ App::import('Vendor', 'Google_Service_Oauth2', array('file' => 'google' . DS . '
 class BeAuthGoogleComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
-
     public $userAuth = 'google';
-
     protected $params = null;
     protected $vendorController = null;
     protected $oauthTokens = null;
     protected $accessTokens = null;
     protected $userIdPrefix = 'google-';
+    public $relatedBy = 'e-mail';
+    protected $permissions = array('email', 'profile');
     public $disabled = false;
 
     public function startup($controller=null) {
@@ -36,10 +36,16 @@ class BeAuthGoogleComponent extends BeAuthComponent{
         $this->params = Configure::read("extAuthParams");
         if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
             $this->vendorController = new Google_Client();
-            $this->vendorController->setClientId($this->params[$this->userAuth]['keys']['clientId']);
-            $this->vendorController->setClientSecret($this->params[$this->userAuth]['keys']['clientSecret']);
+            $this->vendorController->setClientId($this->params[$this->userAuth]['keys']['appId']);
+            $this->vendorController->setClientSecret($this->params[$this->userAuth]['keys']['secret']);
             $this->vendorController->setRedirectUri($this->getCurrentUrl());
-            foreach ($this->params[$this->userAuth]['scopes'] as $scope) {
+
+            if (isset($this->params[$this->userAuth]['extraUserData'])) {
+                $this->permissions = array_merge($this->permissions, $this->params[$this->userAuth]['extraUserData']);
+            }
+            $permissions = $this->permissions;
+
+            foreach ($permissions as $scope) {
                $this->vendorController->addScope($scope);
             }
 
@@ -63,9 +69,9 @@ class BeAuthGoogleComponent extends BeAuthComponent{
         if (isset( $this->vendorController )) {
             $profile = $this->loadProfile();
             if ($profile) {
-                if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
+                /*if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
                     $this->createUser($profile);
-                }
+                }*/
                 if ($this->login()) {
                     return true;
                 }
@@ -151,7 +157,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
         }
     }
 
-    public function createUser($profile = null) {
+    public function createUser($profile = null, $groups = array(), $createCard = false) {
         if ($profile == null) {
             $profile = $this->loadProfile();
         }
@@ -181,13 +187,6 @@ class BeAuthGoogleComponent extends BeAuthComponent{
             'auth_params' => $profile->id
         );
 
-        $groups = array();
-        if (!empty($this->params[$this->userAuth]['groups'])) {
-            foreach ($this->params[$this->userAuth]['groups'] as $key => $value) {
-                array_push($groups, $value);
-            }
-        }
-
         $res['Groups'] = $groups;
 
         //create the BE user
@@ -200,7 +199,7 @@ class BeAuthGoogleComponent extends BeAuthComponent{
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params[$this->userAuth]['createCard']) && $this->params[$this->userAuth]['createCard']) {
+            if ($createCard) {
                 $this->createCard($u, $profile);
             }
             return $u;

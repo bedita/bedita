@@ -17,12 +17,11 @@ App::import('Vendor', 'twitteroauth', array('file' => 'twitteroauth' . DS . 'twi
 class BeAuthTwitterComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
-
     public $userAuth = 'twitter';
-
     protected $params = null;
     protected $vendorController = null;
     protected $userIdPrefix = 'twitter-';
+    public $relatedBy = 'nickname';
     public $disabled = false;
 
     public function startup($controller=null) {
@@ -33,8 +32,8 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         if (isset( $this->params[$this->userAuth] ) && isset( $this->params[$this->userAuth]['keys'] )) {
             $this->vendorController = new TwitterOAuth(
-                    $this->params[$this->userAuth]['keys']['consumerKey'],
-                    $this->params[$this->userAuth]['keys']['consumerSecret']
+                    $this->params[$this->userAuth]['keys']['appId'],
+                    $this->params[$this->userAuth]['keys']['secret']
                 );
             return true;
         } else {
@@ -48,8 +47,8 @@ class BeAuthTwitterComponent extends BeAuthComponent{
                 $oauthTokens = $this->Session->read('twitterOauthTokens');
                 if (isset($oauthTokens['oauth_token'])) {
                     $this->vendorController = new TwitterOAuth(
-                            $this->params[$this->userAuth]['keys']['consumerKey'],
-                            $this->params[$this->userAuth]['keys']['consumerSecret'],
+                            $this->params[$this->userAuth]['keys']['appId'],
+                            $this->params[$this->userAuth]['keys']['secret'],
                             $oauthTokens['oauth_token'],
                             $oauthTokens['oauth_token_secret']
                         );
@@ -64,9 +63,9 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
             $profile = $this->loadProfile();
             if ($profile != null) {
-                if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
+                /*if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
                     $this->createUser($profile);
-                }
+                }*/
                 if ($this->login()) {
                     return true;
                 }
@@ -89,7 +88,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         if ($this->Session->check('twitterProfile')) {
             $profile = $this->loadProfile();
             if ($profile != null) {
-                $userid = $profile->id;
+                $userid = $profile->screen_name;
             }
         }
 
@@ -100,7 +99,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             $user->containLevel("default");
             $u = $user->find('first', array(
                     'conditions' => array(
-                        'auth_params' => $profile->id,
+                        'auth_params' => $userid,
                         'auth_type' => $this->userAuth
                     )
                 )
@@ -165,8 +164,8 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             $accessTokens = $this->Session->read('twitterAccessTokens');
             if (!empty($accessTokens['oauth_token'])) {
                 $this->vendorController = new TwitterOAuth(
-                        $this->params[$this->userAuth]['keys']['consumerKey'],
-                        $this->params[$this->userAuth]['keys']['consumerSecret'],
+                        $this->params[$this->userAuth]['keys']['appId'],
+                        $this->params[$this->userAuth]['keys']['secret'],
                         $accessTokens['oauth_token'],
                         $accessTokens['oauth_token_secret']
                     );
@@ -185,7 +184,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
         }
     }
 
-    public function createUser($profile = null) {
+    public function createUser($profile = null, $groups = array(), $createCard = false) {
         if ($profile == null) {
             $profile = $this->loadProfile();
         }
@@ -195,7 +194,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
 
         $u = $user->find('first', array(
                 'conditions' => array(
-                    'auth_params' => $profile->id,
+                    'auth_params' => $profile->screen_name,
                     'auth_type' => $this->userAuth
                 )
             )
@@ -214,13 +213,6 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             'auth_params' => $profile->id
         );
 
-        $groups = array();
-        if (!empty($this->params[$this->userAuth]['groups'])) {
-            foreach ($this->params[$this->userAuth]['groups'] as $key => $value) {
-                array_push($groups, $value);
-            }
-        }
-
         $res['Groups'] = $groups;
 
         //create the BE user
@@ -233,7 +225,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params[$this->userAuth]['createCard']) && $this->params[$this->userAuth]['createCard']) {
+            if ($createCard) {
                 $this->createCard($u, $profile);
             }
             return $u;

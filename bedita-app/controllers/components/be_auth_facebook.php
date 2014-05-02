@@ -17,12 +17,12 @@ App::import('Vendor', 'facebook', array('file' => 'facebook' . DS . 'facebook.ph
 class BeAuthFacebookComponent extends BeAuthComponent{
     var $components = array('Transaction');
     var $uses = array('Image', 'Card');
-
     public $userAuth = 'facebook';
-
     protected $params = null;
     protected $vendorController = null;
     protected $userIdPrefix = 'facebook-';
+    public $relatedBy = 'e-mail';
+    protected $permissions = array('email', 'user_birthday');
     public $disabled = false;
 
     public function startup($controller=null) {
@@ -47,9 +47,9 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         $profile = $this->loadProfile();
         if ($profile) {
             if (isset($profile['email'])) {
-                if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
+                /*if (isset($this->params[$this->userAuth]['createUser']) && $this->params[$this->userAuth]['createUser']) {
                     $this->createUser($profile);
-                }
+                }*/
                 return $this->login();
             }
         }
@@ -92,8 +92,12 @@ class BeAuthFacebookComponent extends BeAuthComponent{
     }
 
     protected function loginUrl() {
+        if (isset($this->params[$this->userAuth]['extraUserData'])) {
+            $this->permissions = array_merge($this->permissions, $this->params[$this->userAuth]['extraUserData']);
+        }
+        $permissions = implode(',', $this->permissions);
         $params = array(
-            'scope' => $this->params[$this->userAuth]['permissions']
+            'scope' => $permissions
         );
         $url = $this->vendorController->getLoginUrl($params);
         $this->controller->redirect($url);
@@ -128,7 +132,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
         }   
     }
 
-    public function createUser($profile) {
+    public function createUser($profile, $groups = array(), $createCard = false) {
         $user = ClassRegistry::init('User');
         $user->containLevel("default");
 
@@ -154,13 +158,6 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             'auth_params' => $profile['id']
         );
 
-        $groups = array();
-        if (!empty($this->params[$this->userAuth]['groups'])) {
-            foreach ($this->params[$this->userAuth]['groups'] as $key => $value) {
-                array_push($groups, $value);
-            }
-        }
-
         $res['Groups'] = $groups;
 
         //create the BE user
@@ -173,7 +170,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
  
         $u = $user->findByUserid($res['User']['userid']);
         if(!empty($u["User"])) {
-            if (!empty($this->params[$this->userAuth]['createCard']) && $this->params[$this->userAuth]['createCard']) {
+            if ($createCard) {
                 $this->createCard($u);
             }
             return $u;

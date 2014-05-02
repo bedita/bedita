@@ -71,14 +71,14 @@ class BeAuthComponent extends Object {
      * Get external auth services components
      */
     public function getExternalServices() {
-        $services = array();
+        $components = array();
         $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
         if ($handle = opendir($defaultComponentPath)) {
             while (false !== ($entry = readdir($handle))) {
                 if (strpos($entry, 'be_auth_') === 0) {
                     $name = str_replace('be_auth_', '', $entry);
                     $name = str_replace('.php', '', $name);
-                    array_push($services, Inflector::camelize($name));
+                    array_push($components, Inflector::camelize($name));
                 }
             }
 
@@ -89,12 +89,13 @@ class BeAuthComponent extends Object {
             $addonComponents = $addons['components']['on'];
             foreach ($addonComponents as $key => $component) {
                 if (strpos($component['name'], 'BeAuth') === 0) {
-                    array_push($services, str_replace('BeAuth', '', $component['name']));
+                    array_push($components, str_replace('BeAuth', '', $component['name']));
                 }
             }
         }
-        if (!empty($services)) {
-            foreach ($services as $key => $service) {
+        $services = array();
+        if (!empty($components)) {
+            foreach ($components as $key => $service) {
                 //load component dynamically
                 $componentClass = "BeAuth" . Inflector::camelize($service);
                 if(!App::import("Component", $componentClass)) {
@@ -104,8 +105,10 @@ class BeAuthComponent extends Object {
                     $componentObject = new $componentClass();
                     if ($componentObject->startup($this->controller)) {
                         $this->extAuthComponents[$service] = $componentObject;
-                    } else {
-                        unset($services[$key]);
+                        array_push($services, array(
+                            'name' => $service,
+                            'relatedBy' => $componentObject->relatedBy
+                        ));
                     };
                 }
             }
