@@ -203,74 +203,76 @@ class BeFrontHelper extends AppHelper {
 		$contentRequested = !empty($this->_section['contentRequested']) && ($this->_section['contentRequested'] == 1);
 		$object = (!empty($this->_currentContent) && $contentRequested) ? $this->_currentContent : $this->_publication;
 		$title = (!empty($object['public_name'])) ? $object['public_name'] : $object['title'];
-		$html = "";
+		$html = '';
 		// og:title
 		$html .= "\n" . $this->Html->meta(array(
-			"property" => "og:title",
-			"content" => $title
+			'property' => 'og:title',
+			'content' => $title
 		));
 
 		// og:type
 		$conf = Configure::getInstance() ;
-		$type = "article";
-		if($object['object_type_id'] == $conf->objectTypes["area"]["id"]) {
-			$type = "website";
-		} else if($object['object_type_id'] == $conf->objectTypes["book"]["id"]) {
-			$type = "book";
-		} else if($object['object_type_id'] == $conf->objectTypes["video"]["id"]) {
-			$type = "video";
-		} else if($object['object_type_id'] == $conf->objectTypes["audio"]["id"]) {
-			$type = "audio";
+		$type = 'article';
+		$objTypeId = $object['object_type_id'];
+		if ($objTypeId == $conf->objectTypes['area']['id']) {
+			$type = 'website';
+		} else if (!empty($conf->objectTypes['book']['id']) && 
+		    ($object['object_type_id'] == $conf->objectTypes['book']['id'])) {
+			$type = 'book';
+		} else if ($object['object_type_id'] == $conf->objectTypes['video']['id']) {
+			$type = 'video';
+		} else if ($object['object_type_id'] == $conf->objectTypes['audio']['id']) {
+			$type = 'audio';
 		}
 		// TODO: handle more types: http://ogp.me/#types
 		$html .= "\n" . $this->Html->meta(array(
-			"property" => "og:type",
-			"content" => $type
+			'property' => 'og:type',
+			'content' => $type
 		));
 
 		// og:url
 		$path = $this->_publication['public_url'];
-		if(!empty($object["canonicalPath"])) {
-			$path.=	$object["canonicalPath"];
+		if(!empty($object['canonicalPath'])) {
+			$path.=	$object['canonicalPath'];
 		}
 		$html .= "\n" . $this->Html->meta(array(
-			"property" => "og:url",
-			"content" => $path
+			'property' => 'og:url',
+			'content' => $path
 		));
 
 		// TODO: og:image
 // 		$html .= "\n" . $this->Html->meta(array(
-// 			"property" => "og:image",
-// 			"content" => ?
+// 			'property' => 'og:image',
+// 			'content' => ?
 // 		));
 
 		// og:description
 		$content = $this->get_description();
 		if(!empty($content)) {
 			$html .= "\n" . $this->Html->meta(array(
-				"property" => "og:description",
-				"content" => strip_tags($content)
+				'property' => 'og:description',
+				'content' => strip_tags($content)
 			));
 		}
 
 		// og:site_name
 		$html .= "\n" . $this->Html->meta(array(
-			"property" => "og:site_name",
-			"content" => $this->_publication['public_name']
+			'property' => 'og:site_name',
+			'content' => $this->_publication['public_name']
 		));
 
 		
 		$mapOGtagsToFields = array(
-			"og:app_id" => "id",
-			"og:updated_time" => "modified"
+			'og:app_id' => 'id',
+			'og:updated_time' => 'modified'
 		);
 
 		foreach ($mapOGtagsToFields as $ogTag => $field) {
 			$content = $this->get_value_for_field($field);
 			if (!empty($content)) {
 				$html.= "\n" . $this->Html->meta(array(
-					"property" => $ogTag,
-					"content" => strip_tags($content)
+					'property' => $ogTag,
+					'content' => strip_tags($content)
 				));
 			}
 		}

@@ -22,6 +22,7 @@
 		'word' => true,
 		'tree' => true,
 		'treeDescendants' => true,
+        'relations' => true,
 		'type' => false,
 		'language' => true,
 		'customProp' => ['showObjectTypes' => false],

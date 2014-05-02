@@ -824,6 +824,10 @@ UL.menuleft + UL.menuleft {
 	width: 0px;
 }
 
+.relationList TR.obj TD {
+	vertical-align: top;
+}
+
 .relationList.boxed TR.obj TD:first-child { 
 	padding: 5px 0 0 0;
 }
@@ -1287,7 +1291,7 @@ TABLE.indexlist H4{
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
-	vertical-align:top;
+	vertical-align: middle;
 }
 
 .indexlist .show_on_more {
@@ -1303,17 +1307,22 @@ TABLE.indexlist H4{
 }
 
 .indexlist TD:first-child  {
-	text-align:right;
+	/* text-align:right; */
 	width:20px;
+	/* white-space:nowrap
+ */}
+ 
+ .indexlist TD.priority-column  {
+	text-align:right;
 	white-space:nowrap
-}
+ }
 
 .indexlist TD.assoc_obj_title  {
 	white-space:normal;
 	width: 100%;
 }
 
-.indexlist TD:last-child  {
+.indexlist TD.commands  {
 	white-space:nowrap;
 	text-align: right;
 }

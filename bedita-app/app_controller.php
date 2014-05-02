@@ -883,12 +883,25 @@ abstract class ModulesController extends AppController {
 		}
 		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
+		// get available relations
+		$availableRelations = array();
+		if (!empty($filter['object_type_id'])) {
+			if (!is_array($filter['object_type_id'])) {
+				$filter['object_type_id'] = array($filter['object_type_id']);
+			}
+			foreach ($filter['object_type_id'] as $objectTypeId) {
+				$r = $this->getAvailableRelations(Configure::read('objectTypes.' . $objectTypeId . '.name'));
+				$availableRelations = array_merge($availableRelations, $r);
+			}
+		}
+
 		// template data
 		$this->set('tree', $tree);
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
 		$this->set('objects', $items);
 		$this->set('properties', $properties);
+		$this->set('availableRelations', $availableRelations);
 
 		// set prevNext array to session
 		$this->setSessionForObjectDetail($objects['items']);
