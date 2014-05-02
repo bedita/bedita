@@ -418,8 +418,13 @@ class AppController extends Controller
 			}
 
 			if ($this->Session->check('externalLoginRequestFailed')) {
-				$this->eventWarn('external login failed: ' . $this->Session->read('externalLoginRequestFailed'));
-				$this->userWarnMessage('external login failed: ' . $this->Session->read('externalLoginRequestFailed'));
+				$msg = 'external login failed';
+				$extUserId = $this->Session->read('externalLoginRequestFailed');
+				if ($extUserId != true) {
+					$msg .= ': ' . $extUserId;
+				}
+				$this->eventWarn($msg);
+				$this->userWarnMessage($msg);
 				$this->Session->delete('externalLoginRequestFailed');
 			};
 

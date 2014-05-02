@@ -286,7 +286,7 @@ class BeAuthComponent extends Object {
             }
             $this->logout();
             if ($this->userAuth != 'bedita') {
-                $this->Session->write('externalLoginRequestFailed', $userid);
+                $this->Session->write('externalLoginRequestFailed', true);
             }
             return false;
         }

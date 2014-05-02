@@ -46,7 +46,9 @@ class AuthenticationsController extends AppController {
 			
 			if(!$this->BeAuth->login($userid, $password, null, array(), $authType)) {
 				$this->loginEvent('warn', $userid, "login not authorized");
-				$this->userErrorMessage(__("Wrong username/password or session expired", true));
+				if ($authType=='bedita') {
+					$this->userErrorMessage(__("Wrong username/password or session expired", true));
+				}
 				$this->logged = false;
 			} else {
 				$this->eventInfo("logged in");

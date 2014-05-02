@@ -104,6 +104,7 @@ class BeAuthTwitterComponent extends BeAuthComponent{
             );
 
             if (empty($u['User'])) {
+                $this->Session->write('externalLoginRequestFailed', $userid);
                 return false;
             }
 

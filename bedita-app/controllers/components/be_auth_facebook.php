@@ -78,6 +78,7 @@ class BeAuthFacebookComponent extends BeAuthComponent{
             );
 
             if (empty($u['User'])) {
+                $this->Session->write('externalLoginRequestFailed', $profile['email']);
                 return false;
             }
 
