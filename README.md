@@ -11,7 +11,10 @@ Once you have installed composer clone repository and checkout the right branch,
 $ cd /my/bedita/folder
 $ composer update
 ```
+
 It will install all necessary dependencies to startup BEdita.
+
+Copy `Bedita/Config/app.default.php` to `Bedita/Config/app.php` and edit the `$config['Datasources']['default']` array with your database connection data.
 
 ---
 
