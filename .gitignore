@@ -15,5 +15,5 @@
 /.idea
 /vendor/*
 /tmp/*
-/Bedita/Config/app.php
+/App/Config/app.php
 /composer.lock

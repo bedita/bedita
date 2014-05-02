@@ -24,7 +24,7 @@ if (php_sapi_name() === 'cli-server') {
 		return false;
 	}
 }
-require dirname(__DIR__) . '/Bedita/Config/bootstrap.php';
+require dirname(__DIR__) . '/App/Config/bootstrap.php';
 
 use Cake\Network\Request;
 use Cake\Network\Response;

@@ -17,6 +17,7 @@ namespace Bedita\Controller;
 use Cake\Core\Configure;
 use Cake\Error;
 use Cake\Utility\Inflector;
+use Cake\ORM\TableRegistry;
 
 /**
  * Static content controller
@@ -36,6 +37,63 @@ class PagesController extends AppController {
  *	or Cake\Error\MissingViewException in debug mode.
  */
 	public function display() {
+// $t = TableRegistry::get('MailJobs');
+// $d['sending_date'] = '2014-01-01 00:00:00';
+//$e = $t->newEntity($d);
+//$t->save($e);
+//$t->patchEntity($e, ['priority' => 6]);
+
+// $e = $t->find()->first();
+// debug($e->sending_date);
+// $eData = $e->toArray();
+// debug($eData['sending_date']);
+// $eData['priority'] = 5;
+// $t->patchEntity($e, $eData);
+
+//debug($e);
+
+
+
+		$images = TableRegistry::get('ImageObjects');
+        debug($images->objectTypeId());
+		//$query = $images->find('flat');
+		//$query = $images->find('all', ['formatResults' => false]);
+		$query = $images->find();
+		$query->contain([
+			'Contents',
+			'Streams',
+			'Images',
+			'ObjectTypes',
+			'UserCreated',
+			'UserModified',
+			'Permissions',
+			'Versions',
+			'ObjectProperties',
+			'ObjectRelations',
+			'Categories',
+			'Users'
+		]);
+
+		$row = $query->first();
+
+
+		debug($row->toArray());
+
+		$imageData = [];
+		$imageData['license'] = 'licenza tua';
+		$imageData['body'] = 'body';
+		$imageData['start_date'] = '2014-05-29';
+
+		//$imageEntity = $images->newEntity($imageData);
+		//debug($imageEntity->toArray());
+		//$images->save($imageEntity);
+		//exit;
+ 		$images->patchEntity($row, $imageData);
+ //debug($row);exit;
+ 		$images->save($row);
+
+		//debug($imageEntity);
+
 		$path = func_get_args();
 
 		$count = count($path);
