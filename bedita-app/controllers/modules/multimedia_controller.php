@@ -107,7 +107,7 @@ class MultimediaController extends ModulesController {
         // get available relations
         $availableRelations = array();
         foreach ($conf->objectTypes['multimedia']['id'] as $mediaId) {
-            $r = $this->getAvailableRelations($conf->objectTypes[$mediaId]['name']);
+            $r = $objectRelation->availableRelations($mediaId);
             $availableRelations = array_merge($availableRelations, $r);
         }
         // exclude some kind of relations from view
@@ -191,8 +191,7 @@ class MultimediaController extends ModulesController {
             Configure::write("defaultStatus", "on"); // set default ON for new objects
         }
 
-        $availableRelations = $this->getAvailableRelations($name);
-        //$availableRelations = array_merge(array('attach' => 'attach'), $availableRelations);
+        $availableRelations = ClassRegistry::init('ObjectRelation')->availableRelations($name);
 
         // data for template
         $this->set('object',    @$obj);

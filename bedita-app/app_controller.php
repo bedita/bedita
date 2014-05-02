@@ -884,11 +884,12 @@ abstract class ModulesController extends AppController {
 		// get available relations
 		$availableRelations = array();
 		if (!empty($filter['object_type_id'])) {
+			$objectRelation = ClassRegistry::init('ObjectRelation');
 			if (!is_array($filter['object_type_id'])) {
 				$filter['object_type_id'] = array($filter['object_type_id']);
 			}
 			foreach ($filter['object_type_id'] as $objectTypeId) {
-				$r = $this->getAvailableRelations(Configure::read('objectTypes.' . $objectTypeId . '.name'));
+				$r = $objectRelation->availableRelations($objectTypeId);
 				$availableRelations = array_merge($availableRelations, $r);
 			}
 		}
@@ -1216,13 +1217,14 @@ abstract class ModulesController extends AppController {
 		}
 
 		$property = $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $name . ".id"));
+		$availabeRelations = ClassRegistry::init('ObjectRelation')->availableRelations($name);
 
 		$this->set('object',	$obj);
 		$this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
 		$this->set('relObjects', $relations);
 		$this->set('relationsCount', $relationsCount);
 		$this->set('objectProperty', $property);
-		$this->set('availabeRelations', $this->getAvailableRelations($name));
+		$this->set('availabeRelations', $availabeRelations);
 
 		// get publications
 		$user = $this->BeAuth->getUserSession();
@@ -1298,23 +1300,6 @@ abstract class ModulesController extends AppController {
 									)
 								);
 	}
-
-	/**
-	 * Returns array of available relations for an $objectType
-	 * relations with "hidden" => true are excluded
-	 * If "inverse" relation is defined ("inverse" => "inverseName"), then types on "right" side
-	 * will have "inverseName" relation
-	 *
-	 * array returned is like
-	 * array("relation_name" => "relation label", ...)
-	 *
-	 * @param string $objectType
-	 * @return array
-	 */
-	protected function getAvailableRelations($objectType) {
-		return ClassRegistry::init('ObjectRelation')->availableRelations($objectType);
-	}
-
 
 	/**
 	 * return array of object types belong to module
