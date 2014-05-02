@@ -24,6 +24,7 @@ $(document).ready(function(){
 {assign var='label_valid' value=$tr->t('blocked',true)}
 {assign var='label_created' value=$tr->t('created',true)}
 {assign var='label_last_login' value=$tr->t('last login',true)}
+{$labelAuth = $tr->t('auth',true)}
 <table class="indexlist">
 	<tr>{* TODO: i18n sulle colonne in sort*}
 		<th>{$paginator->sort($label_id,'id')}</th>
@@ -33,6 +34,7 @@ $(document).ready(function(){
 		<th>{$paginator->sort($label_valid,'valid')}</th>
 		<th>{$paginator->sort($label_created,'created')}</th>
 		<th>{$paginator->sort($label_last_login,'last_login')}</th>
+        <th>{$paginator->sort($labelAuth,'auth_type')}</th>
 		<th>{t}Action{/t}</th>
 	</tr>
 	{foreach from=$users item=u}
@@ -44,6 +46,7 @@ $(document).ready(function(){
 		<td>{if $u.User.valid=='1'}{t}No{/t}{else}{t}Yes{/t}{/if}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$u.User.last_login|date_format:$conf->dateTimePattern}</td>
+        <td>{$u.User.auth_type|default:'BEdita'}</td>
 		<td class="go">
 			{if $module_modify eq '1' && $BEAuthUser.userid ne $u.User.userid}
 			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id},{$u.User.related_obj|default:0},{$u.User.valid});"/>
