@@ -104,7 +104,7 @@ $(document).ready(function(){
 
 
 <br />
-	
+
 {$view->element('list_objects_bulk')}
 
 </form>

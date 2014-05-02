@@ -143,62 +143,8 @@ $(document).ready(function(){
 
 	<br style="margin:0px; line-height:0px; clear:both" />
 
-{if !empty($objects)}
-
-<div style="border-top: 1px solid gray; padding-top:10px; margin-top:10px; white-space:nowrap">
-	<input type="checkbox" class="selectAll" id="selectAll"/>
-	<label for="selectAll">{t}(un)select all{/t}</label>
-	&nbsp;&nbsp;&nbsp;
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
-	
-</div>
-
-<br />
-
-<div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
-
-{t}change status to{/t}: 	<select style="width:75px" id="newStatus" name="newStatus">
-								{html_options options=$conf->statusOptions}
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " class="opButton" />
-	<hr />
-
-	{if !empty($tree)}
-
-		{assign var='named_arr' value=$view->params.named}
-		{if empty($named_arr.id)}
-			{t}copy{/t}
-		{else}
-			<select id="areaSectionAssocOp" name="areaSectionAssocOp" style="width:75px">
-				<option value="copy"> {t}copy{/t} </option>
-				<option value="move"> {t}move{/t} </option>
-			</select>
-		{/if}
-		&nbsp;{t}to{/t}:  &nbsp;
-
-		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-		{$beTree->option($tree)}
-		</select>
-
-		<input type="hidden" name="data[source]" value="{$named_arr.id|default:''}" />
-		<input id="assocObjects" type="button" value=" ok " />
-		<hr />
-
-		{if !empty($named_arr)}
-		<input id="removeFromAreaSection" type="button" value="{t}Remove selected from section{/t}" class="opButton" />
-		<hr/>
-		{/if}
-	{/if}
-
-	<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
-	
-</div>
-
-{/if}
+{assign_associative var="params" bulk_tree=true bulk_categories=true}
+{$view->element('list_objects_bulk', $params)}
 
 </form>
 

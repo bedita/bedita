@@ -133,32 +133,10 @@ $(document).ready(function() {
 	</table>
 
 	<br />
-	<div class="tab"><h2>{t}Bulk actions on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-	<div>
 
-		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-		
-		<hr>
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								{html_options options=$conf->statusOptions}
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
-	<hr />
-
-
+	{assign_associative var="params" bulk_tags=true objects=$tags}
+	{$view->element('list_objects_bulk', $params)}
 	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-		<hr />
-		
-		<textarea name="addtaglist" id="addtaglist"></textarea>
-		<p style="margin-top:5px">
-		<input id="addmultipletag" type="button" value="{t}add more tags{/t}"/> 
-		{t}Add comma separated words{/t}
-		</p>
-		
-	</div>
-
-
 </form>
 
 </div>
