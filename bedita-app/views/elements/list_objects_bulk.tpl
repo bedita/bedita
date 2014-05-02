@@ -26,8 +26,8 @@
 </div>
 <div>
 	{t}change status to:{/t}&nbsp;
-	<select style="width:75px" id="newStatus" name="newStatus">
-		<option value=""> -- </option>
+	<select id="newStatus" name="newStatus" placeholder='{t}select a status{/t}' data-placeholder='{t}select a status{/t}'>
+		<option></option>
 		{html_options options=$conf->statusOptions}
 	</select>
 	&nbsp;
@@ -68,9 +68,9 @@
 
 	{if isset($bulk_categories) && $bulk_categories==true && !empty($categories)}
 		<hr />
-		{t}category{/t}
-		&nbsp;<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]">
-		<option value="">--</option>
+		{t}category{/t}:
+		&nbsp;<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]" placeholder='{t}select a category{/t}' data-placeholder='{t}select a category{/t}'>
+		<option></option>
 		{foreach from=$categories item='category' key='key'}
 		{if !empty($named_arr.category) && ($key == $named_arr.category)}{assign var='filter_category_name' value=$category}{/if}
 		<option value="{$key}">{$category}</option>
