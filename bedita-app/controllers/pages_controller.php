@@ -208,6 +208,7 @@ class PagesController extends AppController {
 			}
 		}
 
+		$objectTypeIds = (is_array($objectTypeIds))? $objectTypeIds : array($objectTypeIds);
 		$filter["object_type_id"] = $objectTypeIds;
 
 		$page = (!empty($this->params["form"]["page"]))? $this->params["form"]["page"] : 1;
@@ -270,8 +271,8 @@ class PagesController extends AppController {
 
 		// get available relations
 		$availableRelations = array();
-		if (!empty($filter['object_type_id'])) {
-			foreach ($filter['object_type_id'] as $objectTypeId) {
+		if (!empty($objectTypeIds)) {
+			foreach ($objectTypeIds as $objectTypeId) {
 				$r = ClassRegistry::init('ObjectRelation')->availableRelations($objectTypeId);
 				$availableRelations = array_merge($availableRelations, $r);
 			}
@@ -284,7 +285,7 @@ class PagesController extends AppController {
 		$this->set("main_object_id", $main_object_id);
 		$this->set("object_type_id", $main_object_type_id);
 		$this->set("objectType", $objectType);
-		$this->set("objectTypeIds", (is_array($objectTypeIds))? $objectTypeIds : array($objectTypeIds) );
+		$this->set("objectTypeIds", $objectTypeIds);
 				
 		if (!empty($this->params["form"])) {
 			$this->render("list_contents_to_assoc");
