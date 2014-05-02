@@ -207,8 +207,8 @@ $(document).ready(function(){
 {if !empty($objects)}
 
 <div style="white-space:nowrap">
-	
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
+	<input type="checkbox" class="selectAll" id="selectAll"/>
+	<label for="selectAll">{t}(un)select all{/t}</label>
 	&nbsp;&nbsp;&nbsp
 	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
 	&nbsp;

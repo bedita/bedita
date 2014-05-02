@@ -105,46 +105,6 @@ $(document).ready(function(){
 
 <br />
 	
-{if !empty($objects)}
-
-<div style="white-space:nowrap">
-	
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
-	
-</div>
-
-<br />
-
-<div class="tab"><h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2></div>
-<div>
-
-{t}change status to:{/t} 	<select style="width:75px" id="newStatus" name="newStatus">
-								<option value=""> -- </option>
-								{html_options options=$conf->statusOptions}
-							</select>
-			<input id="changestatusSelected" type="button" value=" ok " />
-	<hr />
-
-	
-	<input id="deleteSelected" type="button" value="X {t}Delete selected items{/t}"/>
-	
-</div>
-
-{/if}
+{$view->element('list_objects_bulk')}
 
 </form>
-
-<br />
-<br />
-<br />
-<br />
-	
-	
-
-
-
