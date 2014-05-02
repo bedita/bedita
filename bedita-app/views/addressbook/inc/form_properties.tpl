@@ -1,22 +1,3 @@
-<script type="text/javascript">
-<!--
-function addUserToCard(id,username) {
-	$("#user_id").val(id);
-	$("#user_name").text(username);
-}
-
-$(document).ready(function() {
-	$("#remove_user").click(removeUserFromCard);
-});
-
-function removeUserFromCard() {
-	$("#user_id").val('');
-	$("#user_name").text(" - ");
-	$("#remove_user").prop("disabled", true);
-}
-//-->
-</script>
-
 <div class="tab"><h2>{t}Properties{/t}</h2></div>
 
 <fieldset id="properties">
@@ -45,8 +26,8 @@ function removeUserFromCard() {
 			<input type="hidden" name="data[ObjectUser][card][0][switch]" value="card"/>
 			&nbsp;&nbsp;&nbsp;
 			{if empty($object.User)}
-			<input type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
-				rel="{$html->url('/users/showUsers')}"
+			<input id="promoteAsUser" type="button" class="modalbutton" name="edit" value="  {t}promote as user{/t}  "
+				rel="{$html->url('/users/usersWithoutCard')}"
 				title="USERS : select an item to associate" />
 			{else}
 			<input id="remove_user" type="button" value="  {t}remove from users{/t}  "/>

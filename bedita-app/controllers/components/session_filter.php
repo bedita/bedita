@@ -232,9 +232,8 @@ class SessionFilterComponent extends Object {
      * @return array
      */
     public function read($key = null) {
-        $sessionKey = (!empty($key))? $this->sessionKey . '.' . $key : $this->sessionKey;
         $filter = $this->Session->read($this->sessionKey);
-        if (!empty($key)) {
+        if (!empty($key) && !empty($filter[$key])) {
             $filter = $filter[$key];
         } elseif (!$filter) {
             $filter = array();
