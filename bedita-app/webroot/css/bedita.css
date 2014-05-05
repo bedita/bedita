@@ -762,6 +762,7 @@ UL.menuleft + UL.menuleft {
 
 .tab + fieldset, .tab2 + fieldset {
 	padding: 0;
+	margin-bottom: 10px;
 }
 
 .tab:first-child, .tab2:first-child {
