@@ -1,7 +1,15 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCategories/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
 $(document).ready(function(){
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull').outerWidth() )
+            .floatThead();
+    });
+	
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
 		var catId = $(this).prop("title");
@@ -22,15 +30,16 @@ $(document).ready(function(){
 </script>
 	
 	<table class="indexlist">
-
-		<tr>
-			<th>{t}label{/t}</th>
-			<th>{t}unique name{/t}</th>
-			<th>{t}status{/t}</th>
-			<th>{t}publication{/t}</th>
-			<th>Id</th>
-			<th>&nbsp;</th>
-		</tr>
+		<thead>
+			<tr>
+				<th>{t}label{/t}</th>
+				<th>{t}unique name{/t}</th>
+				<th>{t}status{/t}</th>
+				<th>{t}publication{/t}</th>
+				<th>Id</th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
 		
 		{foreach from=$categories item="cat" name="fc"}
 		<form id="form_{$cat.id}" method="post" action="{$html->url('saveCategories')}">

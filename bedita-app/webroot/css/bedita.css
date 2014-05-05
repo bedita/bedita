@@ -202,7 +202,7 @@ img {
 	position:absolute; 
 	left: 990px;
 	width:180px;
-	top:130px;
+	top: 140px;
 	min-height:400px;
 }
 
@@ -1357,6 +1357,14 @@ TABLE.indexlist H4{
 	vertical-align: top;
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+.indexlist TD.custom-property-cell {
+    max-width: 160px;
+	
+    word-break: break-word;
+    text-overflow: ellipsis;
+    height: 65px;
 }
 
 .indexlist .show_on_more {

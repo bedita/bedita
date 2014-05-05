@@ -292,7 +292,7 @@ $(document).ready(function(){
 
 
 
-    $(".indexlist TR:has(input:checked)").addClass("overChecked");
+    $(".indexlist TR:has(input.objectCheck:checked)").addClass("overChecked");
     
     $(".indexlist input.objectCheck").change(function(){
 

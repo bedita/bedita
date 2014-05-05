@@ -103,12 +103,12 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 			<td style="white-space:nowrap">{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			{if !empty($properties)}
 				{foreach $properties as $p}
-					<td>
+					<td class="custom-property-cell">
 					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
 						{if is_array($objects[i].customProperties[$p.name])}
-							{$objects[i].customProperties[$p.name]|@implode:", "}
+							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
 						{else}
-							{$objects[i].customProperties[$p.name]}
+							{$objects[i].customProperties[$p.name]|truncate:80:"..."}
 						{/if}
 					{else}
 						-
