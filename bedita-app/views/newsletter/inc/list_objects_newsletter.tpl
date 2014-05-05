@@ -94,7 +94,7 @@ $(document).ready(function(){
 			
 		{sectionelse}
 		
-			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
+			<tr><td colspan="100">{t}No items found{/t}</td></tr>
 		
 		{/section}
 
@@ -102,32 +102,8 @@ $(document).ready(function(){
 
 
 <br />
-	
-{if !empty($objects)}
 
-<div style="white-space:nowrap">
-	
-	{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
-	&nbsp;&nbsp;&nbsp;
-	{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
-	&nbsp;&nbsp;&nbsp
-	<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-
-	
-</div>
-
-
-
-{/if}
+{assign_associative var=params bulk_status=false}
+{$view->element('list_objects_bulk', $params)}
 
 </form>
-
-<br />
-<br />
-<br />
-<br />
-	
-	
-
-
-

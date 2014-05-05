@@ -87,25 +87,22 @@ $(document).ready(function() {
 
 	<thead>
 		<tr>
-			
-			<th style="width:50px;">
-				
-				<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
-				<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
-				
-			</th>
-			
-			<th><a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
+			<th></th>
+			<th >
+				<a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
 			<th><a href="{$html->url('/tags/index/')}status/{if $order == "status"}{$dir}{else}1{/if}">{t}Status{/t}</a></th>
 			<th><a href="{$html->url('/tags/index/')}weight/{if $order == "weight"}{$dir}{else}1{/if}">{t}Occurrences{/t}</a></th>
 			<th>Id</th>
-			<th></th>
+			<th>
+				<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
+				<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
+			</th>
 		</tr>
 	</thead>
 	<tbody id="taglist">
 	{foreach from=$tags item=tag}
 		<tr class="obj {$tag.status}">
-			<td style="width:36px; text-align:center">
+			<td style="width:1px; text-align:center">
 				<input type="checkbox" name="tags_selected[{$tag.id}]" class="objectCheck" title="{$tag.id}" value="{$tag.id}"/>
 			</td>
 			<td>
@@ -126,7 +123,7 @@ $(document).ready(function() {
 	
 	<tbody id="tagcloud">
 		<tr>
-			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px;">
+			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px 10px;">
 				{foreach from=$tags item=tag}
 				<span class="obj {$tag.status}">
 					<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">

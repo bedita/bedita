@@ -1,6 +1,7 @@
 <table class="indexlist" id="viewlist" style="display:block;">
 		
 	{capture name="theader"}
+	<thead>
 		<tr>
 			<th colspan="2" nowrap>
 				{* 
@@ -19,6 +20,7 @@
 			<th>{$beToolbar->order('status', 'Status')}</th>
 			<th>{$beToolbar->order('modified', 'Modified')}</th>		
 		</tr>
+	</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}

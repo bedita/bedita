@@ -4,10 +4,12 @@
 <fieldset id="customProperties">
 	
 	<table class="indexlist" id="frmCustomProperties">
-	<tr>
-		<th>{t}name{/t}:</th>
-		<th>{t}value{/t}:</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>{t}name{/t}:</th>
+			<th>{t}value{/t}:</th>
+		</tr>
+	</thead>
 	{assign var="countProperty" value="0"}
 	{foreach from=$objectProperty item="prop"}
 		<tr>

@@ -20,9 +20,11 @@ $(document).ready(function(){
 <fieldset id="system_info">
 	
 <table class="indexlist">
-	<tr>
-		<th colspan="3" style="text-transform:uppercase">{t}Software{/t}</th>
-	</tr>
+	<thead>
+		<tr>
+			<th colspan="3" style="text-transform:uppercase">{t}Software{/t}</th>
+		</tr>
+	</thead>
 	<tr>
 		<td><label>BEdita</label></td>
 		<td>{$conf->Bedita.version}</td>
@@ -68,10 +70,11 @@ $(document).ready(function(){
 		<td>{$sys.osVersion}</td>
 		<td></td>
 	</tr>
-
-	<tr>
-		<th colspan="3" style="text-transform:uppercase">{t}URLs and paths{/t}</th><td></td>
-	</tr>
+	<thead>
+		<tr>
+			<th colspan="3" style="text-transform:uppercase">{t}URLs and paths{/t}</th><td></td>
+		</tr>
+	</thead>
 	<tr>
 		<td><label>Media files URL</label></td>
 		<td><a href="{$conf->mediaUrl}" target="_blank">{$conf->mediaUrl}</a></td><td></td>

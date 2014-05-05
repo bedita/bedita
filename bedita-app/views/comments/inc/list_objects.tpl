@@ -80,7 +80,7 @@ $(document).ready(function(){
 		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
-			<td style="width:15px; padding:7px 0px 0px 0px;">
+			<td>
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			</td>
 			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
