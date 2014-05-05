@@ -1,5 +1,13 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
 <script type="text/javascript">
 $(document).ready(function(){
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
+
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e){ 
 		e.preventDefault();
@@ -26,17 +34,19 @@ $(document).ready(function(){
 {assign var='label_last_login' value=$tr->t('last login',true)}
 {$labelAuth = $tr->t('auth',true)}
 <table class="indexlist">
-	<tr>{* TODO: i18n sulle colonne in sort*}
-		<th>{$paginator->sort($label_id,'id')}</th>
-		<th>{$paginator->sort($label_userid,'userid')}</th>
-		<th>{$paginator->sort($label_realname,'realname')}</th>
-		<th>{$paginator->sort('email','email')}</th>
-		<th>{$paginator->sort($label_valid,'valid')}</th>
-		<th>{$paginator->sort($label_created,'created')}</th>
-		<th>{$paginator->sort($label_last_login,'last_login')}</th>
-        <th>{$paginator->sort($labelAuth,'auth_type')}</th>
-		<th>{t}Action{/t}</th>
-	</tr>
+	<thead>
+		<tr>{* TODO: i18n sulle colonne in sort*}
+			<th>{$paginator->sort($label_id,'id')}</th>
+			<th>{$paginator->sort($label_userid,'userid')}</th>
+			<th>{$paginator->sort($label_realname,'realname')}</th>
+			<th>{$paginator->sort('email','email')}</th>
+			<th>{$paginator->sort($label_valid,'valid')}</th>
+			<th>{$paginator->sort($label_created,'created')}</th>
+			<th>{$paginator->sort($label_last_login,'last_login')}</th>
+	        <th>{$paginator->sort($labelAuth,'auth_type')}</th>
+			<th>{t}Action{/t}</th>
+		</tr>
+	</thead>
 	{foreach from=$users item=u}
 	<tr class="obj">
 		<td><a href="{$html->url('/users/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>

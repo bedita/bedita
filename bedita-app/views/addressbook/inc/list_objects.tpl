@@ -1,3 +1,4 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
 
 <script type="text/javascript">
 <!--
@@ -29,6 +30,12 @@ function count_check_selected() {
 }
 
 $(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
 
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e) {
@@ -114,6 +121,7 @@ $(document).ready(function(){
 
 	<table class="indexlist">
 	{capture name="theader"}
+	<thead>
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title','name')}&nbsp;&nbsp;&nbsp;&nbsp;{$beToolbar->order('surname','surname')}</th>
@@ -131,6 +139,7 @@ $(document).ready(function(){
 			{/if}
 			<th>{$beToolbar->order('note','Notes')}</th>
 		</tr>
+	</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}
@@ -189,13 +198,6 @@ $(document).ready(function(){
 		
 		{/section}
 		
-{if ($smarty.section.i.total) >= 10}
-		
-			{$smarty.capture.theader}
-			
-{/if}
-
-
 </table>
 
 <br />

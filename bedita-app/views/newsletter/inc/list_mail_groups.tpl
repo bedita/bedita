@@ -1,8 +1,16 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteMailGroups/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
 
 $(document).ready(function(){
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
+
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
 		var groupId = $(this).prop("title");
@@ -24,14 +32,15 @@ $(document).ready(function(){
 </script>
 
 	<table class="indexlist">
-
-		<tr>
-			<th>{t}list name{/t}</th>
-			<th>{t}status{/t}</th>
-			<th>{t}subscribers{/t}</th>
-			<th>{t}publication{/t}</th>
-			<th>Id</th>
-		</tr>
+		<thead>
+			<tr>
+				<th>{t}list name{/t}</th>
+				<th>{t}status{/t}</th>
+				<th>{t}subscribers{/t}</th>
+				<th>{t}publication{/t}</th>
+				<th>Id</th>
+			</tr>
+		</thead>
 
 		{foreach from=$mailGroups item="grp" name="fc"}
 

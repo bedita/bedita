@@ -1,3 +1,4 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
 {$html->script("form", false)}
 
 <script type="text/javascript">
@@ -20,6 +21,12 @@ function count_check_selected() {
 	return checked;
 }
 $(document).ready(function() {
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
 
 	$("#deleteSelected").bind("click", function() {
 		if (count_check_selected() < 1) {
@@ -78,21 +85,23 @@ $(document).ready(function() {
 
 	<table class="indexlist">
 
-	<tr>
-		
-		<th style="width:50px;">
+	<thead>
+		<tr>
 			
-			<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
-			<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
+			<th style="width:50px;">
+				
+				<img class="tagToolbar viewcloud" src="{$html->webroot}img/iconML-cloud.png" />
+				<img class="tagToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
+				
+			</th>
 			
-		</th>
-		
-		<th><a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
-		<th><a href="{$html->url('/tags/index/')}status/{if $order == "status"}{$dir}{else}1{/if}">{t}Status{/t}</a></th>
-		<th><a href="{$html->url('/tags/index/')}weight/{if $order == "weight"}{$dir}{else}1{/if}">{t}Occurrences{/t}</a></th>
-		<th>Id</th>
-		<th></th>
-	</tr>
+			<th><a href="{$html->url('/tags/index/')}label/{if $order == "label"}{$dir}{else}1{/if}">{t}Name{/t}</a></th>
+			<th><a href="{$html->url('/tags/index/')}status/{if $order == "status"}{$dir}{else}1{/if}">{t}Status{/t}</a></th>
+			<th><a href="{$html->url('/tags/index/')}weight/{if $order == "weight"}{$dir}{else}1{/if}">{t}Occurrences{/t}</a></th>
+			<th>Id</th>
+			<th></th>
+		</tr>
+	</thead>
 	<tbody id="taglist">
 	{foreach from=$tags item=tag}
 		<tr class="obj {$tag.status}">

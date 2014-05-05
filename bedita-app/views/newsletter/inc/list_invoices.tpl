@@ -1,14 +1,29 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
+})
+//-->
+</script>
 
 <table class="indexlist vtop">
 	{capture name="theader"}
-
-	<tr>
-		<th>{$beToolbar->order('start_sending', 'sending date')}</th>
-		<th>{$beToolbar->order('mail_status', 'status')}</th>
-		<th>{$beToolbar->order('title', 'newsletter title')}</th>
-		<th>{t}to recipients{/t}</th>
-		<th>{$beToolbar->order('id', 'invoice id')}</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>{$beToolbar->order('start_sending', 'sending date')}</th>
+			<th>{$beToolbar->order('mail_status', 'status')}</th>
+			<th>{$beToolbar->order('title', 'newsletter title')}</th>
+			<th>{t}to recipients{/t}</th>
+			<th>{$beToolbar->order('id', 'invoice id')}</th>
+		</tr>
+	</thead>
 	{/capture}
 
 	{$smarty.capture.theader}
@@ -40,12 +55,6 @@
 	{foreachelse}
 		<tr><td colspan="100">{t}No invoices{/t}</td></tr>
 	{/foreach}
-
-	{if ($smarty.foreach.i.total) >= 10}
-
-		{$smarty.capture.theader}
-
-	{/if}
 </table>
 
 <br />

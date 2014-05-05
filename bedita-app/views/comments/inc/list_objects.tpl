@@ -1,3 +1,5 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('deleteSelected/')}" ;
@@ -9,6 +11,12 @@ var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
 {literal}
 $(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
 
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e){ 
@@ -45,9 +53,6 @@ $(document).ready(function(){
 
 //-->
 </script>	
-
-
-	
 	
 	<form method="post" action="" id="formObject">
 
@@ -56,6 +61,7 @@ $(document).ready(function(){
 
 	<table class="indexlist">
 	{capture name="theader"}
+	<thead>
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title','Title')}</th>
@@ -66,6 +72,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('ip_created', 'IP')}</th>	
 			<th>{$beToolbar->order('id','id')}</th>
 		</tr>
+	</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}
@@ -92,13 +99,6 @@ $(document).ready(function(){
 			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 		
 		{/section}
-		
-{if ($smarty.section.i.total) >= 10}
-		
-			{$smarty.capture.theader}
-			
-{/if}
-
 
 </table>
 

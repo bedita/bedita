@@ -1,3 +1,5 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
 <script type="text/javascript">
 <!--
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
@@ -26,6 +28,12 @@ function count_check_selected() {
 	return checked;
 }
 $(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
 
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e){ 
@@ -98,6 +106,7 @@ $(document).ready(function(){
 
 	<table class="indexlist">
 	{capture name="theader"}
+	<thead>
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title', 'Title')}</th>
@@ -112,6 +121,7 @@ $(document).ready(function(){
 			<th style="text-align:center">{t}Link{/t}</th>
 			<th>{t}Notes{/t}</th>
 		</tr>
+	</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}
@@ -157,13 +167,6 @@ $(document).ready(function(){
 			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 		
 		{/section}
-		
-{if ($smarty.section.i.total) >= 10}
-		
-			{$smarty.capture.theader}
-			
-{/if}
-
 
 </table>
 

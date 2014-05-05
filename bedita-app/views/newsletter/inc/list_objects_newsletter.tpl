@@ -1,3 +1,4 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
 
 <script type="text/javascript">
 <!--
@@ -9,6 +10,12 @@ var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
 $(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
 	
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(message)) 
@@ -40,15 +47,17 @@ $(document).ready(function(){
 
 	<table class="indexlist">
 	{capture name="theader"}
-		<tr>
-			<th></th>
-			<th>{$beToolbar->order('title','Title')}</th>
-			<th>{$beToolbar->order('id','id')}</th>
-			<th>{$beToolbar->order('status','Status')}</th>
-			<th>{$beToolbar->order('sent','last invoice')}</th>
-			<th>{$beToolbar->order('template','Template')}</th>	
-			<th>{$beToolbar->order('lang','language')}</th>
-		</tr>
+		<thead>
+			<tr>
+				<th></th>
+				<th>{$beToolbar->order('title','Title')}</th>
+				<th>{$beToolbar->order('id','id')}</th>
+				<th>{$beToolbar->order('status','Status')}</th>
+				<th>{$beToolbar->order('sent','last invoice')}</th>
+				<th>{$beToolbar->order('template','Template')}</th>	
+				<th>{$beToolbar->order('lang','language')}</th>
+			</tr>
+		</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}
@@ -88,13 +97,6 @@ $(document).ready(function(){
 			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
 		
 		{/section}
-		
-{if ($smarty.section.i.total) >= 10}
-		
-			{$smarty.capture.theader}
-			
-{/if}
-
 
 </table>
 

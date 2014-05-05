@@ -1,15 +1,32 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
+
+<script type="text/javascript">
+<!--
+$(document).ready(function(){
+
+	$('.indexlist').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
+})
+//-->
+</script>
+
 {* DO NOT MOVE FROM HERE!! used in ajax call*}
 {if !empty($subscribers)}
 		
-	<table class="indexlist">
-	<tr id="orderSubscribers">
-		<th></th>
-		<th>{$beToolbar->order('newsletter_email', 'Email')}</th>
-		<th>{$beToolbar->order('mail_html', 'Html')}</th>
-		<th>{$beToolbar->order('mail_status', 'Status')}</th>
-		<th>{$beToolbar->order('created', 'Inserted on')}</th>
-		<th></th>
-	</tr>
+<table class="indexlist">
+	<thead>
+		<tr id="orderSubscribers">
+			<th></th>
+			<th>{$beToolbar->order('newsletter_email', 'Email')}</th>
+			<th>{$beToolbar->order('mail_html', 'Html')}</th>
+			<th>{$beToolbar->order('mail_status', 'Status')}</th>
+			<th>{$beToolbar->order('created', 'Inserted on')}</th>
+			<th></th>
+		</tr>
+	</thead>
 	
 	{foreach from=$subscribers item="s"}
 	<tr>
@@ -37,7 +54,7 @@
 		<td style="border:1px solid gray; border-top:0px; border-bottom:0px;">{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></td>
 		<td>{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
 	</tr>
-	</table>
+</table>
 	
 {else}
 	{t}No subscribers{/t}

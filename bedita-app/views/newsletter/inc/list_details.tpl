@@ -31,5 +31,5 @@
 				<label for="visible">{t}private list {/t}</label> (back-end insertions only)
 			</td>
 		</tr>
-		</table>
-	</fieldset>
+	</table>
+</fieldset>
