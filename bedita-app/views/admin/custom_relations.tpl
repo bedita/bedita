@@ -67,17 +67,37 @@
 				<td><input type="text" name="data[inverseLabel]"></td>
 			</tr>
 			<tr>
-				<th><label>{t}params{/t}</label></th>
-				<td colspan="5">
-					<ol style="list-style:decimal;">
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" /></li>
-					</ol>
-				</td>
-			</tr>
-			<tr>
 				<th><label>{t}hidden{/t}</label></th>
 				<td colspan="5">
 					<input type="checkbox" name="data[hidden]" />
+				</td>
+			</tr>
+			<tr>
+				<th><label>{t}params{/t}</label></th>
+				<td colspan="5">
+					<table class="noborder">	
+						<tr>
+							<td>
+								<input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" />
+							</td>
+							<th>
+								<label>param type</label>
+							</th>
+							<td>
+								<select>
+									<option>text</option>
+									<option>options</option>
+								</select>
+							</td>
+							<th>
+								<label>param options</label>
+							</th>
+							<td>
+								<input type="text" value="" />
+							</td>
+
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>
@@ -138,22 +158,61 @@
 				<td><input type="text" name="data[inverseLabel]" value="{$item.inverseLabel|default:''}"></td>
 			</tr>
 			<tr>
-				<th><label>{t}params{/t}</label></th>
-				<td colspan="5">
-					<ol style="list-style:decimal;">
-				{if !empty($item.params)}
-					{foreach name=p from=$item.params item=param key=k}
-						<li style="margin:0 0 2px 20px; float:left"><input type="text" name="data[params][]" value="{$param}" /></li>
-					{/foreach}
-				{/if}
-						<li style="margin:0 0 2px 20px; float:left"><input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" /></li>
-					</ol>
-				</td>
-			</tr>
-			<tr>
 				<th><label>{t}hidden{/t}</label></th>
 				<td colspan="5">
 					<input type="checkbox" name="data[hidden]" {if $item.hidden}checked="checked"{/if}/>
+				</td>
+			</tr>
+			<tr>
+				<th><label>{t}params{/t}</label></th>
+				<td colspan="5">
+					<table class="noborder">
+				{if !empty($item.params)}
+					{foreach name=p from=$item.params item=param key=k}
+						<tr>
+							<td>
+								<input type="text" name="data[params][]" value="{$param}" />
+							</td>
+							<th>
+								<label>param type</label>
+							</th>
+							<td>
+								<select>
+									<option>text</option>
+									<option>options</option>
+								</select>
+							</td>
+							<th>
+								<label>param options</label>
+							</th>
+							<td>
+								<input type="text" value="" />
+							</td>
+						</tr>
+					{/foreach}
+				{/if}
+						<tr>
+							<td>
+								<input placeholder="{t}insert a new params{/t}" type="text" name="data[params][]" />
+							</td>
+							<th>
+								<label>param type</label>
+							</th>
+							<td>
+								<select>
+									<option>text</option>
+									<option>options</option>
+								</select>
+							</td>
+							<th>
+								<label>param options</label>
+							</th>
+							<td>
+								<input type="text" value="" />
+							</td>
+
+						</tr>
+					</table>
 				</td>
 			</tr>
 		</table>

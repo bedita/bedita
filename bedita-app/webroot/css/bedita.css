@@ -1440,6 +1440,9 @@ th.headerSortUp , th.headerSortDown {
     color: red !important;
 } 
 
+TABLE.noborder TD, TABLE.noborder TH {
+	border:0px;
+}
 
 /*...........................................    
 
