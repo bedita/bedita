@@ -1361,10 +1361,9 @@ TABLE.indexlist H4{
 
 .indexlist TD.custom-property-cell {
     max-width: 160px;
-	
     word-break: break-word;
     text-overflow: ellipsis;
-    height: 65px;
+    max-height: 65px;
 }
 
 .indexlist .show_on_more {
