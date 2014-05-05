@@ -49,7 +49,9 @@ $(document).ready(function(){
 });	
 </script>
 
-<div class="tab"><h2>{t}{$title|default:'Geotag'}{/t}</h2></div>
+{$relcount = $object.GeoTag|@count|default:0}
+
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}GeoTag{/t}</h2></div>
 
 <fieldset id="geotag">
 

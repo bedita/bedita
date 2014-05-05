@@ -1,7 +1,13 @@
 @charset "utf-8";
-
-/*
-
+/*             
+`7MM"""Yp, `7MM"""YMM       `7MM    db   mm            
+  MM    Yb   MM    `7         MM         MM            
+  MM    dP   MM   d      ,M""bMM  `7MM mmMMmm  ,6"Yb.  
+  MM"""bg.   MMmmMM    ,AP    MM    MM   MM   8)   MM  
+  MM    `Y   MM   Y  , 8MI    MM    MM   MM    ,pm9MM  
+  MM    ,9   MM     ,M `Mb    MM    MM   MM   8M   MM  
+.JMMmmmd9  .JMMmmmmMMM  `Wbmd"MML..JMML. `Mbmo`Moo9^Yo.
+                                                      
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 CSS Created by Chialab.it
@@ -51,7 +57,19 @@ q:before,q:after {
 abbr,acronym { border:0;
 }
 
-article, aside, figure, footer, header, hgroup, nav, section {display: block;}
+article, aside, figure, footer, header, hgroup, nav, section {
+	display: block;
+}
+
+* { 
+	-webkit-user-drag: none;
+	-moz-box-sizing: border-box; 
+	-webkit-box-sizing: border-box; 
+	box-sizing: border-box; 
+	-webkit-tap-highlight-color: transparent; 
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+}
 
 /*...........................................    
 
@@ -67,7 +85,12 @@ BODY, .bodybg, .catselector {
 
 TD {padding:2px; vertical-align:middle}
 
-HR {height:0px; border:0px; margin: 8px 0px 10px 0px; border-top:1px solid gray}
+HR { 
+	height:0px;
+	border:0px;
+	margin:10px 0px 10px 0px;
+	border-top:1px solid gray;
+}
 
 A {color:#000000}
 
@@ -123,7 +146,7 @@ img {
 ...........................................*/
 
 
-.modulesmenu, .head, .main, .mainfull  {position:absolute; left:300px; margin-right:0px;}
+.modulesmenu, .head, .main, .mainfull  {position:absolute; left: 320px; margin-right:0px;}
 
 
 .head {
@@ -151,7 +174,7 @@ img {
 .secondacolonna {
 	position:absolute;
 	top:20px;
-	left: 160px;
+	left: 170px;
 	z-index:130;
 	width: 140px;
 	background-color:#B6B6B6;
@@ -170,18 +193,15 @@ img {
 	width:180px;
 	left:280px;
 }
-	
 
 .fixed {
-	
 	position:fixed;
 	
 }
 
-
 .quartacolonna {
 	position:absolute; 
-	left:970px;
+	left: 990px;
 	width:180px;
 	top:130px;
 	min-height:400px;
@@ -238,10 +258,12 @@ width: 660px;
 	float:left;
 }
 
-.doppia, .singola, .singolapadded {margin-bottom:10px}
+.doppia, 
+.singola, 
+.singolapadded { 
+	margin-bottom:10px
+}
 
-
-	
 /*...........................................
  
     Headings and all typography
@@ -309,14 +331,10 @@ UL.modules {
 	height: 110px; 
 	padding:10px;
 	margin: 0px;
-	background-color:#CCCCCC; 
-/*
-	background-image: url(../img/sfomodulo.png);
-	background-repeat:repeat-x;
-*/
+	background-color:#CCC; 
 	color:#FFFFFF;
 	font-weight:normal;
-	border-radius: 0;
+	border-bottom:20px solid rgba(0,0,0,.3);
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -1019,7 +1037,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 .publishingtree {
-	min-width: 270px;
+	min-width: 290px;
 }
 
 .dashboard .publishingtree {
@@ -1439,6 +1457,7 @@ th.headerSortUp , th.headerSortDown {
     MultimediaItems
 
 ...........................................*/
+
 .multimediaiteminside img {
 	width: 100%;
 }
@@ -1855,20 +1874,21 @@ A.BEbutton.golink:before {
 }
 			
 .message {
-	width: 140px; 
-	min-height: 110px; 
+	width: 290px; 
+	min-height: 136px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
 }
 
-.message .close {
-	margin-top: 10px; color:#FFF; display:block;
+.message A {
+	color:#FFF;
+	display:block;
 }
 
 .messageDetail {
 	width:340px; 
-	min-height:120px; 
+	min-height:136px; 
 	padding:10px;
 	background-color:#FFF;
 	color:#000;
@@ -2147,12 +2167,8 @@ A.BEbutton.golink:before {
 	width:140px; 
 	display:block; 
 	float:left;
-	border-bottom: solid 0px rgba(0,0,0,0);
-}
-
-.home UL.modules LI:hover {
-	transition: border 250ms;
-	border-bottom: solid 6px rgba(0,0,0,0.1);
+	margin: 0px 0px 10px 10px;
+	border-bottom:20px solid rgba(0,0,0,.3);
 }
 
 .home UL.modules LI A {
@@ -2167,7 +2183,9 @@ A.BEbutton.golink:before {
 	width:120px;
 }
 
-
+.home  .modulesmenutop {
+	display:none;
+}
 
 LI.welcome {
 	width: 260px !important;
@@ -2178,64 +2196,40 @@ LI.welcome {
 	padding-bottom:15px;
 }
 
+.dashboardcontainer {
+	margin: 20px 0px 0px 160px;
+	overflow: auto;
+}
 
 .dashboard {
-	position:absolute;
-	width:200px; 
-	top:20px;
-	left: 170px;
+	margin: 0px 0px 10px 10px;
+	float:left;
+	width: 290px;
 }
 
-.dashboard.center {
-	left: 380px; 
-	width: 140px;}
-
-.dashboard.right {
-	left: 530px;
+.dashboard:first-child {
+	float: left;
+	width: auto;
+	max-width: 450px;
+	margin: 0px 0px 10px 0px;
 }
+
 
 .dashboard .modules LI {
-	height:95px;
+	height:110px;
 }
-/*	
-@media only screen and (min-width: 768px) {	
-	.dashboard .modules LI {
-		max-height:70px;
-	}
-	.dashboard { width:200px }
-	.dashboard.center {
-		width:120px;
-		left:380px; 
-	}
-	.dashboard.right { left:530px; }
-}
-*/
+
 @media only screen and (min-width: 960px) {
-	.dashboard { width:240px }
-	.dashboard.center {
-		width:280px;
-		left: 420px; 
-	}
-	.dashboard.right { left: 710px; }
+
 }
 
 @media only screen and (min-width: 1200px) {
-	.dashboard { width:300px }
-	.dashboard.center {
-		width:420px;
-		left: 480px; 
-	}
-	.dashboard.right { left: 910px; }
+
 }
 
 
 @media only screen and (min-width: 1500px) {
-	.dashboard { width:300px }
-	.dashboard.center {
-		width:700px;
-		left: 480px; 
-	}
-	.dashboard.right { left: 1190px; }
+
 }
 
 
@@ -2245,7 +2239,12 @@ LI.welcome {
 }
 
 .dashboard H2.open {
-	/* background-color:#666; */
+	background-color:#333;
+	color: #FFF !important;
+}
+
+.dashboard .pub H2.open A {
+	color: #FFF !important;
 }
 
 .dashboard .bordered {
@@ -2279,7 +2278,9 @@ LI.welcome {
 	margin-right:5%;
 }
 
-
+#searchResult {
+	margin-top:10px;
+}
 /*...........................................
  
 	 Specific template layout: publishing
@@ -2483,6 +2484,13 @@ code ins {
 	color:green
 }
 
+.clear {
+	clear:both;
+	height:0px;
+	width:0px;
+	line-height: 0px;
+}
+
 /*...........................................    
 
    Print Layout
@@ -2663,11 +2671,20 @@ img.smallicon {
 ...........................................*/
 
 	.modulesmenu_d {
-		display:none; height:auto; position:absolute; z-index:800; top:20px; left:160px;
+		display:none;
+		height:auto; 
+		position:absolute;
+		z-index:800; 
+		top: 110px; 
+		left: 20px;
 	}
 
 	.modulesmenu_d nav {
-		overflow:auto; min-width:170px; padding-left:0px; min-height:140px;  background-color:#fff;
+		overflow:auto; 
+		min-width: 290px;
+		padding-left:0px;
+		min-height:140px; 
+		background-color:#fff;
 	}
 	.modulesmenu_d UL {
 		margin:0px 0px 0px 0px;
@@ -2676,9 +2693,9 @@ img.smallicon {
 		background-color:transparent !important;
 		display:block;
 		border-top:0px solid #CCC;
-		padding:5px 0px 5px 25px;
-		border-left:0px solid transparent;
-		border-right:25px solid transparent;
+		padding: 5px 0px 5px 25px;
+		/* border-left: 25px solid transparent; */
+		border-right: 25px solid transparent;
 	}
 	
 	.modulesmenu_d LI A {
@@ -2699,11 +2716,13 @@ img.smallicon {
 	}	
 
 	.modulesmenu_d img.smallicon {
-		vertical-align:middle; margin-left:-25px
+		vertical-align:middle;
+		margin-left:-25px
 	}
 	
 	.modulesmenu_d LI.index {
-		border-right:0px; padding-right:10px;
+		border-right:0px;
+		padding-right:10px;
 	}
 	
 	.sub_modulesmenu_d {

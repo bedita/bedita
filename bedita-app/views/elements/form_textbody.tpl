@@ -1,7 +1,7 @@
 
 {$view->element('texteditor')}
 
-<div class="tab"><h2>{t}Text{/t}</h2></div>
+<div class="tab"><h2 {if empty($object.body) && empty($object.abstract)}class="empty"{/if}>{t}Text{/t}</h2></div>
 
 <fieldset id="long_desc_langs_container">
 

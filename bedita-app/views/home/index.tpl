@@ -1,6 +1,7 @@
 <!-- //////// home page //////////// -->
 
 {$html->script("libs/jquery/plugins/jquery.form", false)}
+
 <script type="text/javascript">
 <!--
 
@@ -46,26 +47,15 @@ $(document).ready(function() {
 //-->
 </script>
 
-{*$view->element('modulesmenu')*}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
+
+<div class="dashboardcontainer">
 
 <!-- /////////////////////////////// -->
 
 <div class="dashboard">
-
-    {if isset($moduleList.areas)}    
-	<div class="publishingtree">
-	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index']}
-	{$view->element('tree', $options)}
-	</div>
-    {/if}
-	
-</div>
-
-<!-- /////////////////////////////// -->
-
-<div class="dashboard center">
 	
 	{if !empty($moduleList)}
 	<ul class="modules">
@@ -83,7 +73,7 @@ $(document).ready(function() {
 
 <!-- /////////////////////////////// -->
 
-<div class="dashboard right">
+<div class="dashboard">
 
 	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
 	<ul id="recent" class="bordered smallist">
@@ -106,6 +96,24 @@ $(document).ready(function() {
 	{/foreach}
 	</ul>	
 
+
+	{if isset($moduleList.comments)}	
+	<div class="tab"><h2>{t}last comments{/t}</h2></div>
+	<ul id="lastcomments" class="bordered">
+		{foreach from=$lastComments item="cmt"}
+			<li><a href="{$html->url('/')}view/{$cmt.id}"><span class="listrecent comments">&nbsp;</span>{$cmt.author|default:''}, 
+			{t}on{/t} "<i>{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"</a></li>
+		{foreachelse}
+			<li>{t}no comments{/t}</li>
+		{/foreach}
+	</ul>
+	{/if}
+
+	
+</div>
+
+<div class="dashboard">
+
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
@@ -116,11 +124,6 @@ $(document).ready(function() {
 		</form>
 		<div id="searchResult"></div>	
 	</div>
-	
-	{bedev}
-	<div class="tab"><h2>{t}quick item{/t}</h2></div>
-	{$view->element('quick_item')}
-	{/bedev}
 
 <script type="text/javascript">
 <!--
@@ -157,31 +160,13 @@ $(document).ready(function(){
 	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
 	<div id="tags">
 		<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
-		<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
+		<div id="listExistingTags" class="tag graced"></div>
 	</div>
 	{/if}
-	
-	<div class="tab"><h2>{t}last notes{/t}</h2></div>
-	<ul id="lastnotes" class="bordered">
-		{foreach from=$lastNotes item="note"}
-			<li>{$note.realname|default:$note.userid}, 
-			{t}on{/t} "<i><a href="{$html->url('/')}view/{$note.ReferenceObject.id}">{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
-		{foreachelse}
-			<li>{t}no notes{/t}</li>
-		{/foreach}
-	</ul>
+</div>
 
-	{if isset($moduleList.comments)}	
-	<div class="tab"><h2>{t}last comments{/t}</h2></div>
-	<ul id="lastcomments" class="bordered">
-		{foreach from=$lastComments item="cmt"}
-			<li>{$cmt.author|default:''}, 
-			{t}on{/t} "<i><a href="{$html->url('/')}view/{$cmt.id}">{$cmt.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</a></i>"</li>
-		{foreachelse}
-			<li>{t}no comments{/t}</li>
-		{/foreach}
-	</ul>
-	{/if}
+
+<div class="dashboard">
 
 	<div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">
@@ -197,5 +182,40 @@ $(document).ready(function(){
 		{/foreach}
 	{/section}
 	</ul>
-		
+
+	<div class="tab"><h2>{t}last notes{/t}</h2></div>
+	<ul id="lastnotes" class="bordered">
+		{foreach from=$lastNotes item="note"}
+			<li><a href="{$html->url('/')}view/{$note.ReferenceObject.id}">
+				<span class="listrecent {$conf->objectTypes.{$note.ReferenceObject.object_type_id}.name}">&nbsp;</span>{$note.realname|default:$note.userid}, 
+				{t}on{/t} "<i>{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"
+			</a></li>
+		{foreachelse}
+			<li>{t}no notes{/t}</li>
+		{/foreach}
+
+
+	</ul>
+
+
+	
+	{bedev}
+	<div class="tab"><h2>{t}quick item{/t}</h2></div>
+	{$view->element('quick_item')}
+	{/bedev}
+
+
+</div>
+
+
+<div class="dashboard">
+
+    {if isset($moduleList.areas) && !empty($tree)}    
+	<div class="publishingtree">
+	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index']}
+	{$view->element('tree', $options)}
+	</div>
+    {/if}
+ </div>
+
 </div>

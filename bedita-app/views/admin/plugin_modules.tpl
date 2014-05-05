@@ -23,8 +23,9 @@ $(document).ready(function() {
 		width:105px;
 		margin-bottom:5px;
 	}
-	.modules#plugged {
+	.modules#plugged, .modules#unplugged {
 		margin-bottom:20px;
+		overflow:auto;
 	}
 		
 	.modules#unplugged LI {
@@ -34,8 +35,13 @@ $(document).ready(function() {
 	.modules.block LI {
 		margin-right:10px;
 		margin-bottom:10px;
+		float:left;
 	}
-			
+
+	.modules.block LI form {
+		margin-top:5px;
+	}
+
 	.modules LI.off {
 		opacity:0.3;
 	}
@@ -66,10 +72,8 @@ $(document).ready(function() {
 	<ul class="modules block" id="plugged">
 	{foreach from=$pluginModules.plugged item="mod"}
 		<li class="{$mod.name} {$mod.status}">
-			<form action="{$html->url('/admin/plugModule')}" method="post">
 			{t}{$mod.label}{/t}
-			
-			<br/><br/>
+			<form action="{$html->url('/admin/plugModule')}" method="post">
 			<input type="hidden" value="{$mod.id}" name="data[id]"/>
 			<input type="hidden" value="{$mod.name}" name="pluginName"/>
 			{if $mod.status == "on"}
@@ -93,9 +97,8 @@ $(document).ready(function() {
 	<ul class="modules block" id="unplugged">
 	{foreach from=$pluginModules.unplugged item="mod"}
 		<li>
+			{t}{$mod.publicName}{/t}<div style="font-size:.9em">version {$mod.version}</div>
 			<form action="{$html->url('/admin/plugModule')}" method="post">
-			{t}{$mod.publicName}{/t}<br/>
-			version {$mod.version}<br/><br/>
 			<input type="hidden" value="{$mod.pluginName}" name="pluginName"/>
 			<input type="submit" value="{t}plug-in{/t}"/>
 			</form>

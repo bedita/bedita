@@ -29,8 +29,8 @@ $(document).ready(function(){
 //-->
 </script>
 
-
-<div class="tab"><h2>{t}Tags{/t}</h2></div>
+{$relcount = $object.Tag|@count|default:0}
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}Tags{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}</h2></div>
 <fieldset id="tags">
 
 	<label>{t}add comma separated words{/t}:</label>
