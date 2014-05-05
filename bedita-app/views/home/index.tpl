@@ -160,7 +160,7 @@ $(document).ready(function(){
 	<div class="tab"><h2 id="callTags">{t}tags{/t}</h2></div>
 	<div id="tags">
 		<div id="loadingTags" class="generalLoading" title="{t}Loading data{/t}">&nbsp;</div>	
-		<div id="listExistingTags" class="tag graced" style="display: none; text-align:justify;"></div>
+		<div id="listExistingTags" class="tag graced"></div>
 	</div>
 	{/if}
 </div>
@@ -210,7 +210,7 @@ $(document).ready(function(){
 
 <div class="dashboard">
 
-    {if isset($moduleList.areas)}    
+    {if isset($moduleList.areas) && !empty($tree)}    
 	<div class="publishingtree">
 	{assign_associative var="options" treeParams=['controller' => 'areas', 'action' => 'index']}
 	{$view->element('tree', $options)}
