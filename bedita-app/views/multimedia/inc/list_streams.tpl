@@ -66,6 +66,7 @@ $(document).ready(function(){
 	<div id="viewthumb">
 	<table class="indexlist">
 	{capture name="theader"}
+	<thead>
 		<tr>
 			<th colspan="2" nowrap>
 				{* 
@@ -83,6 +84,7 @@ $(document).ready(function(){
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
 		</tr>
+	</thead>
 	{/capture}
 		
 		{$smarty.capture.theader}
