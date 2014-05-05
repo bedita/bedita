@@ -1863,20 +1863,20 @@ A.BEbutton.golink:before {
 }
 			
 .message {
-	width: 140px; 
-	height: 110px; 
+	width: 290px; 
+	height: 136px; 
 	padding:10px;
 	background-color:#333;
 	color:#FFF;
 }
 
-.message .close {
-	margin-top:10px; color:#FFF; display:block;
+.message A {
+	color:#FFF; display:block;
 }
 
 .messageDetail {
 	width:340px; 
-	min-height:120px; 
+	min-height:136px; 
 	padding:10px;
 	background-color:#FFF;
 	color:#000;
