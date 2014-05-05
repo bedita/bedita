@@ -113,6 +113,7 @@ class UsersController extends ModulesController {
 			'group' => 'user_id'
 		));
 		$this->paginate['User']['contain'] = array();
+		$this->paginate['User']['order'] = array('userid' => 'asc');
 		$users = $this->getUsers(array(
 			'NOT' => array('id' => $userIds)
 		));
