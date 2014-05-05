@@ -109,11 +109,6 @@ $(document).ready(function() {
 	</ul>
 	{/if}
 
-	
-</div>
-
-<div class="dashboard">
-
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
@@ -125,35 +120,35 @@ $(document).ready(function() {
 		<div id="searchResult"></div>	
 	</div>
 
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-	
-	var showTagsFirst = false;
-	var showTags = false;
-	$("#tags").on("slideToggle", function() {
-		if (!showTagsFirst) {
-			$("#loadingTags").show();
-			$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
-				$("#loadingTags").slideUp("fast");
-				$("#listExistingTags").slideDown("fast");
-				showTagsFirst = true;
-				showTags = true;
-			});
-		} else {
-			if (showTags) {
-				$("#listExistingTags").slideUp("fast");
+	<script type="text/javascript">
+	<!--
+	$(document).ready(function(){
+		
+		var showTagsFirst = false;
+		var showTags = false;
+		$("#tags").on("slideToggle", function() {
+			if (!showTagsFirst) {
+				$("#loadingTags").show();
+				$("#listExistingTags").load("{$html->url('/tags/listAllTags/1')}", function() {
+					$("#loadingTags").slideUp("fast");
+					$("#listExistingTags").slideDown("fast");
+					showTagsFirst = true;
+					showTags = true;
+				});
 			} else {
-				$("#listExistingTags").slideDown("fast");
+				if (showTags) {
+					$("#listExistingTags").slideUp("fast");
+				} else {
+					$("#listExistingTags").slideDown("fast");
+				}
+				showTags = !showTags;
 			}
-			showTags = !showTags;
-		}
-	});
+		});
 
-	openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
-});
-//-->
-</script>
+		openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
+	});
+	//-->
+	</script>
 
 
 	{if isset($moduleList.tags)}	
@@ -163,10 +158,6 @@ $(document).ready(function(){
 		<div id="listExistingTags" class="tag graced"></div>
 	</div>
 	{/if}
-</div>
-
-
-<div class="dashboard">
 
 	<div class="tab"><h2>{t}connected user{/t}</h2></div>
 	<ul id="connected" class="bordered">

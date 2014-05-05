@@ -164,9 +164,9 @@ img {
 }
 
 .primacolonna {
-	position:absolute; 
-	top:20px;
-	left:20px;
+	float: left; 
+	margin-top: 20px;
+	margin-left: 20px;
 	z-index:102;
 	width: 140px;
 }
@@ -334,7 +334,7 @@ UL.modules {
 	background-color:#CCC; 
 	color:#FFFFFF;
 	font-weight:normal;
-	border-bottom:20px solid rgba(0,0,0,.3);
+	border-bottom: 20px solid rgba(0,0,0,0.3);
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -416,7 +416,8 @@ UL.modules {
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
 			line-height:1em !important;
 			color:#996600  !important;
-			}
+			border-bottom: none !important;
+}
 
 .default 		{background-color:#CCCCCC !important; color:#000000 !important}
 
@@ -1079,7 +1080,7 @@ UL.menuleft + UL.menuleft {
 .pub H2 {
 	margin: 0px 0px 10px 0px;
 	background-color:#dedede;
-	padding: 5px 5px 5px 20px;
+	padding: 7px 5px 7px 20px;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -2169,6 +2170,11 @@ A.BEbutton.golink:before {
 	float:left;
 	margin: 0px 0px 10px 10px;
 	border-bottom:20px solid rgba(0,0,0,.3);
+	transition: border 250ms;
+}
+
+.home UL.modules LI:hover {
+	border-bottom:10px solid rgba(0,0,0,0.3);
 }
 
 .home UL.modules LI A {
@@ -2197,12 +2203,12 @@ LI.welcome {
 }
 
 .dashboardcontainer {
-	margin: 20px 0px 0px 160px;
-	overflow: auto;
+	margin: 0px 0px 0px 160px;
+	/* overflow: hidden; */
 }
 
 .dashboard {
-	margin: 0px 0px 10px 10px;
+	margin: 20px 0px 0px 10px;
 	float:left;
 	width: 290px;
 }
@@ -2210,8 +2216,9 @@ LI.welcome {
 .dashboard:first-child {
 	float: left;
 	width: auto;
-	max-width: 450px;
-	margin: 0px 0px 10px 0px;
+	max-width: 600px;
+	margin: 20px 0px 10px 0px;
+	min-width: 300px;
 }
 
 
