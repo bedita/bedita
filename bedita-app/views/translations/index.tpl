@@ -172,32 +172,13 @@ function changeStatusTranslations() {
 
 		</tr>
 		{sectionelse}
-			<tr><td colspan="100" class="noclick" style="padding:30px">{t}No items found{/t}</td></tr>
+			<tr><td colspan="100" class="noclick">{t}No items found{/t}</td></tr>
 		{/section}
 
 </table>
-
-<br />
-
-{if !empty($translations)}
-	
-	<div class="tab"><h2>{t}Operations on above records{/t}</h2></div>
-	<div>
-		<label for="selectAll"><input type="checkbox" class="selectAll" id="selectAll"/> {t}(un)select all{/t}</label>
-		<hr />
-		{t}change status to:{/t}	<select style="width:75px" id="newStatus" data="newStatus">
-									<option value=""> -- </option>
-									<option value="on"> ON </option>
-									<option value="off"> OFF </option>
-									<option value="draft"> DRAFT </option>
-									<option value="required"> REQUIRED </option>
-								</select>
-				<input id="changestatusSelected" type="button" value=" ok " />
-		<hr />
-		{t}delete selected items{/t}&nbsp;<input id="deleteSelected" type="button" value=" ok "/>
-		<hr />
-	</div>
-{/if}
+<br>
+{assign_associative var=params objects=$translations}
+{$view->element('list_objects_bulk', $params)}
 
 </form>
 </div>
