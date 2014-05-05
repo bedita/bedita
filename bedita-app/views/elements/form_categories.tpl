@@ -1,6 +1,6 @@
 {if !empty($areaCategory)}
 
-<div class="tab"><h2>{t}Categories{/t}</h2></div>
+<div class="tab"><h2 {if empty($object.assocCategory)}class="empty"{/if}>{t}Categories{/t}</h2></div>
 
 <fieldset id="category" >
 	

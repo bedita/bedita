@@ -15,10 +15,10 @@
 	</p>
 	<hr />
 	{if !empty($detail)}
-		<a class="close" href="javascript:void(0)" onclick="$('.messageDetail').toggle()">
-			{t}see error detail{/t}</a>
+		<a href="javascript:void(0)" onclick="$('.messageDetail').toggle()">
+			{t}see error detail{/t}</a>&nbsp;&nbsp;&nbsp;&nbsp;
 	{/if}
-		<a class="close" href="javascript:void(0)" onClick="$('#messagesDiv').fadeOut()">
+		<a class="closemessage" href="javascript:void(0)">
 			{t}close{/t}</a>	
 </div>
 	
@@ -26,7 +26,7 @@
 <div class="messageDetail shadow" style="display:none">	
 	<p style="font-family:monospace;">{$detail}</p>
 	<hr />
-	<a class="close" href="javascript:void(0)" onClick="$('.messageDetail').fadeOut()">
+	<a class="closemessage" href="javascript:void(0)">
 		{t}close{/t}</a>	
 </div>
 {/if}

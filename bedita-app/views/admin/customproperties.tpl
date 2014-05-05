@@ -44,9 +44,6 @@ $(document).ready(function() {
 
 <div class="mainfull">
 
-					
-					
-					
 	<table class="indexlist">
 		<tr>
 			<th>{t}property name{/t}</th>
@@ -64,7 +61,8 @@ $(document).ready(function() {
 				<td>
 					<input type="text" name="data[Property][name]" value="{$p.name}" />
 				</td>
-				<td>
+				<td style="vertical-align:middle">
+					<span class="listrecent {$conf->objectTypes[$p.object_type_id].name}">&nbsp;&nbsp;</span>
 					<input type="hidden" name="data[Property][object_type_id]" value="{$p.object_type_id}"/>
 					{if $p.object_type_id == null}
 						user
@@ -116,11 +114,10 @@ $(document).ready(function() {
 		{/foreach}
 	</table>
 
-
-
-
+	
 	<form action="{$html->url('/admin/saveCustomProperties')}" method="post">
 
+	<h2 style="margin:30px 0 15px 0" >{t}Create a new custom property{/t}</h2>
 	<table class="indexlist">
 		<tr>
 			<th>{t}property name{/t}</th>
@@ -161,13 +158,13 @@ $(document).ready(function() {
 				<input type="checkbox" name="data[Property][multiple_choice]" value="1" /> {t}multiple choice{/t}
 				</span>
 			</td>
-			<td>
-				<input type="submit" value="{t}save{/t}" />
+			<td style="width:110px" >
+				<input style="width:100%" type="submit" value="{t}save{/t}" />
 			</td>
 		</tr>
 			
 	</table>
-	
+	<br /><br />
 	</form>
 </div>
 

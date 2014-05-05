@@ -8,9 +8,10 @@ $(document).ready(function(){
 //-->
 </script>
 
-<div class="tab"><h2>{t}{if empty($tpl_title)}Position{else}{$tpl_title}{/if}{/t}</h2></div>
+<div class="tab"><h2 {if empty($parents)}class="empty"{/if}>{t}{if empty($tpl_title)}Position{else}{$tpl_title}{/if}{/t}</h2></div>
 
 <fieldset id="whereto">
+
 	{if $object.fixed}{t}The content is fixed: it's not possible to change the position in the tree{/t}{/if}
 	
 	{if empty($tree)}

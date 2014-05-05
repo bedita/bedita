@@ -1,4 +1,5 @@
-<div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
+<div class="modulesmenutop">	
+	<div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
 
 	<nav class="modulesmenu">
 		<a title="{t}search{/t}" class="searchtrigger"></a>
@@ -16,14 +17,12 @@
 	</nav>
 
 	<!-- {* searchDestination default is "index". Fot different defaults set $params.searchDestination in various modules views.tpl *} -->
-	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	
-	action="{$html->url('/')}{$moduleName|default:''}/{$searchDestination|default:'index'}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
-
+	<form class="searchobjects" {if !empty($stringSearched)}style="display:block"{/if} 	action="{$html->url('/')}{$moduleName|default:''}/{$searchDestination|default:'index'}{if !empty($sectionSel)}/id:{$sectionSel.id}{/if}" method="post">					
 	{if $substringSearch|default:true}
 		<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}
 	{/if}
-	<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="filter[query]" value="{$view->SessionFilter->read('query')}"/>
-	<input type="submit" value="{t}GO{/t}"/>
-</form>
-
+		<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="filter[query]" value="{$view->SessionFilter->read('query')}"/>
+		<input type="submit" value="{t}GO{/t}"/>
+	</form>
+</div>
 {$view->element('modulesmenu_dyn')}

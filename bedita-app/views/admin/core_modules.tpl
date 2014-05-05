@@ -20,6 +20,7 @@ $(document).ready(function() {
 	.modules.block LI {
 		margin-right:10px;
 		margin-bottom:10px;
+		float:left;
 	}
 			
 	.modules LI.off {

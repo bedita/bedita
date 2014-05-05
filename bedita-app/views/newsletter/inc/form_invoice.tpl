@@ -62,7 +62,7 @@ $(document).ready(function() {
 		
 	</tr>
 </table>
-	<div class="modalcommands newsletter">
+	<div style="background-color:#FFF; padding:20px; text-align:center">
 		<input type="button" id="testNewsletter" value="  test newsletter  " {if !($object.id|default:false)}disabled="disabled"{/if}/> 
 		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status != 'injob'))}
 		&nbsp;&nbsp;

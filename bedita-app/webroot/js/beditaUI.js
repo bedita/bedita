@@ -120,7 +120,7 @@ jQuery.fn.extend({
         }
             
         $_this.find(".closemessage").click(function() {
-            $_this.fadeOut('slow');
+            $_this.hide();
         });
         
         $_this.find(".messagedetail").click(function() {

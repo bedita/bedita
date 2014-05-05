@@ -58,7 +58,7 @@
 				<td><input type="text" name="data[name]"></td>
 				<th><label>{t}inverse name{/t}</label></th>
 				<td><input type="text" name="data[inverse]"></td>
-				<td></td>
+				
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
@@ -130,7 +130,6 @@
 					{$item.inverse|default:'-'}
 					<input type="hidden" name="data[inverse]" value="{$item.inverse|default:''}">
 				</td>
-				<td></td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
