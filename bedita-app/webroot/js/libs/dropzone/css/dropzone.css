@@ -160,12 +160,13 @@
 .dropzone .dz-default.dz-message:before {
   font-weight: "bold";
   font-size: 3em;
-  content: "Drop files to upload here (or click)";
+  content: "Drop files to upload (or click)";
   display:block;
   text-align: center;
+  white-space:nowrap;
   line-height: 1em;
-  padding-top:20px;
-  color:#444;
+  padding-top:35px;
+  color:#666;
   font-style: italic;
 }
 
