@@ -1,7 +1,13 @@
 @charset "utf-8";
-
-/*
-
+/*             
+`7MM"""Yp, `7MM"""YMM       `7MM    db   mm            
+  MM    Yb   MM    `7         MM         MM            
+  MM    dP   MM   d      ,M""bMM  `7MM mmMMmm  ,6"Yb.  
+  MM"""bg.   MMmmMM    ,AP    MM    MM   MM   8)   MM  
+  MM    `Y   MM   Y  , 8MI    MM    MM   MM    ,pm9MM  
+  MM    ,9   MM     ,M `Mb    MM    MM   MM   8M   MM  
+.JMMmmmd9  .JMMmmmmMMM  `Wbmd"MML..JMML. `Mbmo`Moo9^Yo.
+                                                      
 \\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 CSS Created by Chialab.it
@@ -51,7 +57,9 @@ q:before,q:after {
 abbr,acronym { border:0;
 }
 
-article, aside, figure, footer, header, hgroup, nav, section {display: block;}
+article, aside, figure, footer, header, hgroup, nav, section {
+	display: block;
+}
 
 * { 
 	-webkit-user-drag: none;
@@ -77,7 +85,12 @@ BODY, .bodybg, .catselector {
 
 TD {padding:2px; vertical-align:middle}
 
-HR {height:0px; border:0px; margin:10px 0px 10px 0px; border-top:1px solid gray}
+HR { 
+	height:0px;
+	border:0px;
+	margin:10px 0px 10px 0px;
+	border-top:1px solid gray;
+}
 
 A {color:#000000}
 
@@ -180,14 +193,11 @@ img {
 	width:180px;
 	left:280px;
 }
-	
 
 .fixed {
-	
 	position:fixed;
 	
 }
-
 
 .quartacolonna {
 	position:absolute; 
@@ -248,10 +258,12 @@ width: 660px;
 	float:left;
 }
 
-.doppia, .singola, .singolapadded {margin-bottom:10px}
+.doppia, 
+.singola, 
+.singolapadded { 
+	margin-bottom:10px
+}
 
-
-	
 /*...........................................
  
     Headings and all typography
@@ -2127,11 +2139,12 @@ LI.welcome {
 }
 
 .dashboardcontainer {
-	margin: 20px 0px 0px 150px;
+	margin: 20px 0px 0px 160px;
+	overflow: auto;
 }
 
 .dashboard {
-	margin:0px 0px 10px 10px;
+	margin: 0px 0px 10px 10px;
 	float:left;
 	width: 290px;
 }
@@ -2140,6 +2153,7 @@ LI.welcome {
 	float: left;
 	width: auto;
 	max-width: 450px;
+	margin: 0px 0px 10px 0px;
 }
 
 
@@ -2594,11 +2608,20 @@ img.smallicon {
 ...........................................*/
 
 	.modulesmenu_d {
-		display:none; height:auto; position:absolute; z-index:800; top:20px; left:160px;
+		display:none;
+		height:auto; 
+		position:absolute;
+		z-index:800; 
+		top: 110px; 
+		left: 20px;
 	}
 
 	.modulesmenu_d nav {
-		overflow:auto; min-width:170px; padding-left:0px; min-height:140px;  background-color:#fff;
+		overflow:auto; 
+		min-width: 290px;
+		padding-left:0px;
+		min-height:140px; 
+		background-color:#fff;
 	}
 	.modulesmenu_d UL {
 		margin:0px 0px 0px 0px;
@@ -2607,9 +2630,9 @@ img.smallicon {
 		background-color:transparent !important;
 		display:block;
 		border-top:0px solid #CCC;
-		padding:5px 0px 5px 25px;
-		border-left:0px solid transparent;
-		border-right:25px solid transparent;
+		padding: 5px 0px 5px 25px;
+		/* border-left: 25px solid transparent; */
+		border-right: 25px solid transparent;
 	}
 	
 	.modulesmenu_d LI A {
@@ -2630,11 +2653,13 @@ img.smallicon {
 	}	
 
 	.modulesmenu_d img.smallicon {
-		vertical-align:middle; margin-left:-25px
+		vertical-align:middle;
+		margin-left:-25px
 	}
 	
 	.modulesmenu_d LI.index {
-		border-right:0px; padding-right:10px;
+		border-right:0px;
+		padding-right:10px;
 	}
 	
 	.sub_modulesmenu_d {
@@ -2773,7 +2798,7 @@ span.highlight {
 
 Media Queries	720
 
-..........................................*/
+..........................................
 
 @media only screen and (max-width: 1024px) {
 
@@ -2841,5 +2866,4 @@ Media Queries	720
 
 }
 
-
-
+*/

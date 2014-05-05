@@ -287,9 +287,9 @@
 				</tr>
 				<tr>
 					<td colspan="4">
-						<div class="modalcommands administration">
-							<input type="button" id="testSmtp" value="  test smtp  " /> 
-						</div>
+						
+							<input type="button" style="width:50%" id="testSmtp" value="  test smtp  " /> 
+						
 					</td>
 				</tr>
 				<tr>
@@ -297,12 +297,13 @@
 					<th>{t}from{/t}:</th>
 					<td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td>
 					<th>{t}to{/t}:</th>
-					<td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td></tr>
+					<td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td>
+				</tr>
 				<tr>
 					<th>{t}subject{/t}:</th>
-					<td colspan=3><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td>
+					<td><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td>
 				</tr>
-				</table>
+			</table>
 		</fieldset>
 
 	</form>
