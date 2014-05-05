@@ -258,9 +258,24 @@ class BEObject extends BEAppModel
 			$this->data[$this->name][$label] = $tmps ;
 		  }
 		}
+
+		// empty GeoTag array if no value is in
+		if (!empty($this->data[$this->name]['GeoTag'])) {
+			foreach ($this->data[$this->name]['GeoTag'] as $key => $geotag) {
+				//if (trim($geotag['title']) == '' && )
+				$concat = trim($geotag['title']) .
+					trim($geotag['address']) .
+					trim($geotag['latitude']) .
+					trim($geotag['longitude']);
+				if (strlen($concat) == 0) {
+					unset($this->data[$this->name]['GeoTag'][$key]);
+				}
+			}
+		}
+
 		$this->unbindModel(array("hasMany"=>array("LangText","Version")));
 		$this->unbindModel(array("hasAndBelongsToMany"=>array("User")));
-		return true ;
+		return true;
 	}
 	
 	/**
@@ -271,37 +286,38 @@ class BEObject extends BEAppModel
 		// hasMany relations
 		foreach ($this->hasMany as $name => $assoc) {
 			// skip specific manage
-			if($name == 'Permission' || $name == 'RelatedObject' || $name == 'Annotation') {
-				continue ;
+			if ($name == 'Permission' || $name == 'RelatedObject' || $name == 'Annotation') {
+				continue;
 			}
 
 			// if not set data array do nothing
-			if(!isset($this->data[$this->name][$name])) {
-				continue ;
+			if (!isset($this->data[$this->name][$name])) {
+				continue;
 			}
 			
-			$db 		=& ConnectionManager::getDataSource($this->useDbConfig);
-			$model 		= new $assoc['className']() ; 
+			$db =& ConnectionManager::getDataSource($this->useDbConfig);
+			$model = new $assoc['className']();
 			
 			// delete previous associations
-			$table 		= (isset($model->useTable)) ? $model->useTable : ($db->name($db->fullTableName($assoc->className))) ;
-			$id 		= (isset($this->data[$this->name]['id'])) ? $this->data[$this->name]['id'] : $this->getInsertID() ;		
-			$foreignK	= $assoc['foreignKey'] ;
+			$table = (isset($model->useTable))? $model->useTable : ($db->name($db->fullTableName($assoc->className)));
+			$id = (isset($this->data[$this->name]['id']))? $this->data[$this->name]['id'] : $this->getInsertID();
+			$foreignK = $assoc['foreignKey'];
 			// #CUSTOM QUERY
 			$db->query("DELETE FROM {$table} WHERE {$foreignK} = '{$id}'");
 			
 			if (!(is_array($this->data[$this->name][$name]) && count($this->data[$this->name][$name]))) {
-				continue ;
+				continue;
 			}
 			
 			// save associations
-			$size = count($this->data[$this->name][$name]) ;
-			for ($i=0; $i < $size ; $i++) {
-				$modelTmp	 	 = new $assoc['className']() ; 
-				$data 			 = &$this->data[$this->name][$name][$i] ;
-				$data[$foreignK] = $id ; 
-				if(!$modelTmp->save($data))
+			$size = count($this->data[$this->name][$name]);
+			for ($i = 0; $i < $size; $i++) {
+				$modelTmp = new $assoc['className']();
+				$data = &$this->data[$this->name][$name][$i];
+				$data[$foreignK] = $id;
+				if (!$modelTmp->save($data)) {
 					throw new BeditaException(__("Error saving object", true), "Error saving hasMany relation in BEObject for model " . $assoc['className']);
+				}
 				
 				unset($modelTmp);
 			}
@@ -326,8 +342,9 @@ class BEObject extends BEAppModel
 					if (is_array($objUserArr)) {
 						foreach ($objUserArr as $objUserData) {
 							if (!empty($objUserData["user_id"])) {
-								if (empty($objUserData["object_id"]))
+								if (empty($objUserData["object_id"])) {
 									$objUserData["object_id"] = $this->id;
+								}
 								$objectUserModel->create();
 								if (!$objectUserModel->save($objUserData)) {
 									throw new BeditaException(__("error saving object_users relations",true));
@@ -340,50 +357,49 @@ class BEObject extends BEAppModel
 		}
 				
 		$permissions = false;
-		if(isset($this->data["Permission"]))
+		if (isset($this->data["Permission"])) {
 			$permissions = $this->data["Permission"] ;
-		else if(isset($this->data[$this->name]["Permission"]))
-			$permissions = $this->data[$this->name]["Permission"] ;
+		} elseif (isset($this->data[$this->name]["Permission"])) {
+			$permissions = $this->data[$this->name]["Permission"];
+		}
 		
-		if(is_array($permissions)) {
+		if (is_array($permissions)) {
 			$this->Permission->replace($this->{$this->primaryKey}, $permissions);
 		}
 		// save relations between objects
 		if (!empty($this->data['BEObject']['RelatedObject'])) {
-			
-			
-			$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
-			$queriesDelete 	= array() ;
-			$queriesInsert 	= array() ;
-			$queriesModified 	= array() ;
-			$lang			= (isset($this->data['BEObject']['lang'])) ? $this->data['BEObject']['lang']: null ;
+			$db = &ConnectionManager::getDataSource($this->useDbConfig);
+			$queriesDelete = array();
+			$queriesInsert = array();
+			$queriesModified = array();
+			$lang = (isset($this->data['BEObject']['lang']))? $this->data['BEObject']['lang'] : null;
 			
 			$allRelations = BeLib::getObject("BeConfigure")->mergeAllRelations();
 			$inverseRelations = array();
 			foreach ($allRelations as $n => $r) {
-				if(!empty($r["inverse"])) {
+				if (!empty($r["inverse"])) {
 					$inverseRelations[$r["inverse"]] = $n;
 				}
 			}
 			
-			$assoc 	= $this->hasMany['RelatedObject'] ;
-			$table 	= $db->name($db->fullTableName($assoc['joinTable']));
-			$fields = $assoc['foreignKey'] .",".$assoc['associationForeignKey'].", switch, priority, params"  ;
+			$assoc = $this->hasMany['RelatedObject'] ;
+			$table = $db->name($db->fullTableName($assoc['joinTable']));
+			$fields = $assoc['foreignKey'] . "," . $assoc['associationForeignKey'] . ", switch, priority, params";
 
 			foreach ($this->data['BEObject']['RelatedObject'] as $switch => $values) {
 				
-				foreach($values as $key => $val) {
-					$obj_id		= isset($val['id'])? $val['id'] : false;
-					$priority	= isset($val['priority']) ? "'{$val['priority']}'" : 'NULL' ;
-					$params    = isset($val['params']) ? "'" . json_encode($val['params']) . "'" : 'NULL' ;
+				foreach ($values as $key => $val) {
+					$obj_id	= isset($val['id'])? $val['id'] : false;
+					$priority = isset($val['priority'])? "'{$val['priority']}'" : 'NULL';
+					$params = isset($val['params'])? "'" . json_encode($val['params']) . "'" : 'NULL';
 					// Delete old associations
 					// #CUSTOM QUERY
 					$queriesDelete[] = "DELETE FROM {$table} WHERE {$assoc['foreignKey']} = '{$this->id}' AND switch = '{$switch}' ";
 
 					$inverseSwitch = $switch;
-					if(!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])){
+					if (!empty($allRelations[$switch]) && !empty($allRelations[$switch]["inverse"])) {
 						$inverseSwitch = $allRelations[$switch]["inverse"];
-					} else if(!empty($inverseRelations[$switch])) {
+					} elseif (!empty($inverseRelations[$switch])) {
 						$inverseSwitch = $inverseRelations[$switch];
 					}
 
@@ -414,16 +430,16 @@ class BEObject extends BEAppModel
 					}
 					
 					$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
-					if($modified && $obj_id) {
-						$title 		= isset($val['title']) ? addslashes($val['title']) : "" ;
+					if ($modified && $obj_id) {
+						$title = isset($val['title'])? addslashes($val['title']) : "";
 						if($switch == 'link') {
 							// #CUSTOM QUERY
-							$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} " ;
+							$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} ";
 							$link = ClassRegistry::init('Link');
 							$link->id = $obj_id;
 							$link->saveField('url',$val['url']);
 						} else {
-							$description 	= isset($val['description']) ? addslashes($val['description']) : "" ;
+							$description = isset($val['description'])? addslashes($val['description']) : "";
 							// #CUSTOM QUERY
 							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
 						}
@@ -433,20 +449,23 @@ class BEObject extends BEAppModel
 
 			$queriesDelete = array_unique($queriesDelete);
 			foreach ($queriesDelete as $qDel) {
-				if ($db->query($qDel) === false)
+				if ($db->query($qDel) === false) {
 					throw new BeditaException(__("Error deleting associations", true), $qDel);
+				}
 			}
 			foreach ($queriesInsert as $qIns) {
-				if ($db->query($qIns)  === false)
+				if ($db->query($qIns)  === false) {
 					throw new BeditaException(__("Error inserting associations", true), $qIns);
+				}
 			}
 			foreach ($queriesModified as $qMod) {
-				if ($db->query($qMod)  === false)
+				if ($db->query($qMod)  === false) {
 					throw new BeditaException(__("Error modifying title and description", true), $qMod);
+				}
 			}
 		}
 
-		return true ;
+		return true;
 	}
 	
 	/**

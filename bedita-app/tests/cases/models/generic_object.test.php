@@ -69,6 +69,38 @@ class GenericObjectTestCase extends BeditaTestCase  {
 		$this->assertEqual($res,false);		
 	}
 
+	public function testSaveGeoTag() {
+		$this->requiredData(array('geotag'));
+		$document = ClassRegistry::init("Document");
+		$res = $document->save($this->data['geotag']);
+		$this->assertEqual($res, true);
+		$geotag = ClassRegistry::init('GeoTag');
+		$res = $geotag->find('first', array(
+			'conditions' => array('object_id' => $document->id)
+		));
+		$this->assertNotEqual($res, false);
+		$this->assertEqual(round($res['GeoTag']['latitude']), 40);
+		$this->assertEqual(round($res['GeoTag']['longitude']), 10);
+		$this->assertEqual($res['GeoTag']['title'], 'geo tag title');
+		$this->assertEqual($res['GeoTag']['address'], 'via Rismondo 2, Bologna');
+
+		// remove geotag
+		$this->data['geotag']['id'] = $document->id;
+		$this->data['geotag']['GeoTag'][0] = array(
+			'title' => '  ',
+			'address' => '',
+			'latitude' => '',
+			'longitude' => ''
+		);
+		$document->create();
+		$res = $document->save($this->data['geotag']);
+		$this->assertEqual($res, true);
+		$res = $geotag->find('first', array(
+			'conditions' => array('object_id' => $document->id)
+		));
+		$this->assertFalse($res);
+	}
+
 	private function insertAndCheck(Model $model, array &$d) {
 		$model->create();
 		$res = $model->save($d);

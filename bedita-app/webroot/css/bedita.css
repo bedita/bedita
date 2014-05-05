@@ -1382,6 +1382,7 @@ TABLE.indexlist H4{
 .indexlist TD.assoc_obj_title  {
 	white-space:normal;
 	width: 100%;
+	word-break: break-all;
 }
 
 .indexlist TD.commands  {
