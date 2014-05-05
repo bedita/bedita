@@ -387,14 +387,15 @@ $(document).ready(function(){
         var title = $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
-
         $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
         if ($(this).attr("rel")) {
-            $("#modalmain").empty().addClass("modaloader").load(destination, function(response, status, xhr) {
-                $(this).removeClass("modaloader");
+            $("#modal #modalmain").empty().append('<div class="loader"></div>');
+            $("#modal #modalmain").find('.loader').show();
+            $("#modalmain").load(destination, function(response, status, xhr) {
+                $("#modal #modalmain").find('.loader').hide();
                 options.success();
             });
         }

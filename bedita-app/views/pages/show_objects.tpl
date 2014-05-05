@@ -1,3 +1,5 @@
+{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', true)}
+
 <script type="text/javascript">
 <!--
 //var urlShowObj = "{$html->here}";
@@ -33,10 +35,10 @@ function loadObjToAssoc(page, itemsToCheck) {
 		target: '#assocObjContainer',
 		beforeSubmit: function() {
 			$('#assocObjContainer').empty();
-			$("#loadObjInModal").show();
+			$("#modalmain .loader").show();
 		},
 		success: function() {
-			$("#loadObjInModal").hide();
+			$("#modalmain .loader").hide();
 			// reset cleanFilter
 			$("input[name=cleanFilter]", "#formFilter").val('');
 			if (typeof itemsToCheck != 'undefined') {
@@ -48,7 +50,7 @@ function loadObjToAssoc(page, itemsToCheck) {
 			}
 		},
 		error: function(jqXHR, textStatus, errorThrown) {
-			$("#loadObjInModal").hide();
+			$("#modalmain .loader").hide();
 			console.error('error loading object list: ' + textStatus + ', ' + errorThrown);
 		},
 		data: {
@@ -89,6 +91,19 @@ var select2optionsTree = {
 }
 
 $(document).ready(function() {
+
+	/*$('#modal .indexlist').each(function() {
+		var $t = $(this);
+        $t
+            .width( $(this).closest('.mainfull').outerWidth() )
+            .floatThead({
+            	scrollContainer: function($table){
+					return $('#modalmain .bodybg');
+				}
+            });
+
+            $('#modalmain .floatThead-wrapper').css('height', '100%')
+    });*/
 	
 	$("#formFilter").submit(function() {
 		loadObjToAssoc(1);
@@ -160,7 +175,7 @@ $(document).ready(function() {
 	{/if}
 
 
-	<div id="loadObjInModal" class="loader"><span></span></div>
+	<div class="loader"></div>
 	
 	<div id="assocObjContainer">
 		{include file="list_contents_to_assoc.tpl"}
