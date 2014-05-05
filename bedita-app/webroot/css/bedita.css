@@ -1426,7 +1426,7 @@ TABLE.indexlist H4{
 
 .indexlist TD.checklist {
 	width:15px; 
-	padding: 5px 0px 0px 0px;
+	padding: 10px 0px 0px 0px;
 	vertical-align:top;
 	text-align:right;
 	white-space:nowrap;
@@ -1769,7 +1769,7 @@ INPUT[readonly] {
 }
 
 
-label {font-weight:bold;vertical-align: bottom;}
+label {font-weight:bold;vertical-align: middle;}
 
 label.block {display:block; margin-top:4px; margin-bottom:2px}
 

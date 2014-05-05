@@ -1,6 +1,6 @@
 {strip}
 {if !empty($objects)}
-<div style="white-space:nowrap">
+<div style="white-space:nowrap; padding: 0 4px">
 	<input type="checkbox" class="selectAll" id="selectAll"/>
 	&nbsp;<label for="selectAll">{t}(un)select all{/t}</label>
 	&nbsp;&nbsp;&nbsp;

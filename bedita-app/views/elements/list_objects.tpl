@@ -78,9 +78,9 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 			{/if}
 
 			{if (empty($objects[i].fixed))}
-				<input style="margin-top:8px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
+				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{else}
-				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
+				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="height:12px;" />
 			{/if}
 
 
@@ -88,11 +88,11 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 			<td style="min-width:300px">
 				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
 				<div class="description" id="desc_{$objects[i].id}">
-					nickname:{$objects[i].nickname}<br />
+					<label>nickname:</label> {$objects[i].nickname}<br />
 					{$objects[i].description}
 				</div>
 			</td>
-			<td class="checklist detail" style="text-align:left; padding-top:4px;">
+			<td class="checklist detail" style="text-align:left;">
 				<a href="javascript:void(0)" onclick="$('#desc_{$objects[i].id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
 				<span class="plusminus">+</span>			
 				&nbsp;
