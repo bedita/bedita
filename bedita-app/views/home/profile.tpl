@@ -20,10 +20,12 @@
 
 	<div class="toolbar" style="padding-top:20px">
 	
-		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname}</h1>
+		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname}</h1><br>
+		<span style="white-space: nowrap">
 		{t}Created on{/t} <a>{$BEAuthUser.created|date_format:$conf->dateTimePattern}</a>
 		/
 		{t}Last access on:{/t} <a>{$BEAuthUser.last_login|date_format:$conf->dateTimePattern}</a>
+		</span>
 	 </div>
 	 
 </div>
@@ -61,7 +63,7 @@
 			});
 			</script>
 			
-			<table class="condensed">
+			<table class="condensed" style="width: 100%">
 			<!--
 			<tr>
 				<td colspan=2><label>{t}notify me by email{/t}</label></td>

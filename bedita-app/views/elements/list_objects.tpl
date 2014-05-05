@@ -74,7 +74,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 			{/if}
 			
 			{if ($objects[i].ubiquity|default:0 > 1)}
-				<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:4px 4px 0 0; height:18px; vertical-align:top;">
+				<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="height:18px; vertical-align:middle;">
 			{/if}
 
 			{if (empty($objects[i].fixed))}
