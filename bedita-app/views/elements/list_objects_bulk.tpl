@@ -25,6 +25,7 @@
 	<h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2>
 </div>
 <div>
+	{if !isset($bulk_status) || $bulk_status==true}
 	{t}change status to:{/t}&nbsp;
 	<select id="newStatus" name="newStatus" placeholder='{t}select a status{/t}' data-placeholder='{t}select a status{/t}'>
 		<option></option>
@@ -32,7 +33,7 @@
 	</select>
 	&nbsp;
 	<input id="changestatusSelected" type="button" value=" ok " />
-
+	{/if}
 	{if isset($bulk_checklinks) && $bulk_checklinks==true}
 	<hr />
 	{t}check urls{/t}: <input id="checkSelected" type="button" value="{t}check selected links{/t}" class="opButton"/>

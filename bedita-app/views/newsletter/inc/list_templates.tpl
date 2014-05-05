@@ -46,7 +46,7 @@ $(document).ready(function(){
 {/foreach}
 {else}
 	
-	<tr><td colspan="100" style="padding: 30px;">{t}No templates found{/t}</td></tr>
+	<tr><td colspan="100">{t}No templates found{/t}</td></tr>
 	
 {/if}
 

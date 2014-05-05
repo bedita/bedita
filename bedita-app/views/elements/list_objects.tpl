@@ -123,7 +123,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 		
 		{sectionelse}
 		
-			<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
+			<tr><td colspan="100">{t}No items found{/t}</td></tr>
 		
 		{/section}
 

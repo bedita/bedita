@@ -147,7 +147,7 @@ $(document).ready(function(){
 		{section name="i" loop=$objects}
 		
 		<tr class="obj {$objects[i].status}">
-			<td class="checklist" style="padding-top:5px">
+			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}"/>
 			</td>
 
@@ -158,7 +158,7 @@ $(document).ready(function(){
 					{$objects[i].description}
 				</div>
 			</td>
-			<td class="checklist detail" style="text-align:left; padding-top:4px;">
+			<td class="checklist detail" style="text-align:left;">
 				<a href="javascript:void(0)" onclick="$('#desc_{$objects[i].id}').slideToggle(); $('.plusminus',this).toggleText('+','-')">
 				<span class="plusminus">+</span>			
 				&nbsp;

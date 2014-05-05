@@ -68,7 +68,6 @@ article, aside, figure, footer, header, hgroup, nav, section {
 	box-sizing: border-box; 
 	-webkit-tap-highlight-color: transparent; 
 	-webkit-touch-callout: none;
-	-webkit-user-select: none;
 }
 
 /*...........................................    
@@ -151,7 +150,7 @@ img {
 
 .head {
 	z-index:80;
-	top:50px;
+	top: 58px;
 	height:80px;
 	/*
 	width: 660px;
@@ -208,12 +207,12 @@ img {
 }
 
 .main {
-	top:130px;
+	top: 140px;
 	width: 660px; 
 }
 
 .mainfull, .main.full {
-	top:130px;
+	top: 140px;
 	min-width: 670px;
 	padding-right: 10px;
 }
@@ -707,7 +706,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 
-.head H1 {margin-top:35px;}
+.head H1 {margin-top: 45px;}
 
 
 
@@ -1443,15 +1442,15 @@ TABLE.indexlist TH.on * {
 }
 
 A.asc, A.desc {
-	color:red !important;
+	font-weight: bold;
 }
 
 A.asc:after {
-	content: " ↑";
+	content: " ▲";
 }
 
 A.desc:after {
-	content: " ↓";
+	content: " ▼";
 }
 
 .indexlist TR.overChecked,.indexlist TR.overChecked:Hover {
@@ -1479,11 +1478,7 @@ A.desc:after {
 
 th.headerSortUp , th.headerSortDown { 
     color: #000 !important;
-} 
-
-.SortUp { 
-    color: red !important;
-} 
+}
 
 
 /*...........................................    
