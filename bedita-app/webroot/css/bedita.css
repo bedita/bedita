@@ -1424,7 +1424,8 @@ TABLE.indexlist H4{
 }
 
 .indexlist TD.checklist {
-	width:15px; padding:0px 0px 0px 0px;
+	width:15px; 
+	padding: 5px 0px 0px 0px;
 	vertical-align:top;
 	text-align:right;
 	white-space:nowrap;
