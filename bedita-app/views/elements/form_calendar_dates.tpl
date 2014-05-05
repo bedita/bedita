@@ -11,6 +11,9 @@
 .daterow:first-child .dateremove {
 	display:none;
 }
+.daterow label {
+    vertical-align: middle;
+}
 </style>
 
 {assign var=numDates  value=count($object.DateItem)}
@@ -85,9 +88,10 @@ $(document).ready(function(){
 
 </script>
 
-<div class="tab"><h2>{t}Event calendar{/t}</h2></div>
-<fieldset id="eventDates">
+{$relcount = $object.DateItem|@count|default:0}
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}Event calendar{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}</h2></div>
 
+<fieldset id="eventDates">
 
 <div class="dummydaterow">
     <label>{t}start{/t}:</label>
