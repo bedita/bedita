@@ -283,8 +283,8 @@ INPUT[type=text],INPUT[type=password], TEXTAREA {
 .modules {font-family: "Arial", "Helvetica", sans-serif}
 
 .tab H2,  .tab2 H2 {
-	font-family: "Arial", "Helvetica", sans-serif;
-	font-size:1em; font-weight:normal; 
+	font-family: "Arial", "Helvetica", sans-serif; font-weight:normal; 
+	font-size: 0.8rem;
 }
 .tab H2:first-letter {
 	text-transform: uppercase;
@@ -728,7 +728,7 @@ UL.menuleft + UL.menuleft {
 	color: white; 
 	background:#808080 url(../img/piumeno.gif) no-repeat;
 	background-position:right 0px ; 
-	padding: 7px 10px 7px 10px;
+	padding: 7px 5px 7px 10px;
 	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;*/
@@ -761,7 +761,7 @@ UL.menuleft + UL.menuleft {
 }
 
 .tab + fieldset, .tab2 + fieldset {
-	padding:0px 10px 15px 10px;
+	padding: 0;
 }
 
 .tab:first-child, .tab2:first-child {
@@ -1353,7 +1353,8 @@ TABLE.indexlist H4{
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
 	vertical-align: top;
-	line-height: 30px;
+	padding-top: 10px;
+	padding-bottom: 10px;
 }
 
 .indexlist .show_on_more {
@@ -2175,7 +2176,7 @@ A.BEbutton.golink:before {
 
 	.login {
 
-		margin-left:310px;
+		margin-left: 320px;
 		
 
 		padding-top: 20px;

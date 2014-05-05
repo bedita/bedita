@@ -8,13 +8,15 @@
 {assign var='label_msg' value=$tr->t('msg',true)}
 {assign var='label_context' value=$tr->t('context',true)}
 <table class="indexlist">
-	<tr>
-		<th>{$paginator->sort($label_date,'created')}</th>
-		<th>{$paginator->sort($label_level,'level')}</th>
-		<th>{$paginator->sort($label_user,'user')}</th>
-		<th>{$paginator->sort($label_msg,'msg')}</th>
-		<th>{$paginator->sort($label_context,'context')}</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>{$paginator->sort($label_date,'created')}</th>
+			<th>{$paginator->sort($label_level,'level')}</th>
+			<th>{$paginator->sort($label_user,'user')}</th>
+			<th>{$paginator->sort($label_msg,'msg')}</th>
+			<th>{$paginator->sort($label_context,'context')}</th>
+		</tr>
+	</thead>
 	{foreach from=$events item=e}
 	<tr>
 		<td style="white-space:nowrap">{$e.EventLog.created}</td>
