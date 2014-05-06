@@ -3,7 +3,7 @@ var FlatLanderEditor;
 $(window).load(function() {
     if (window['Flatlander']!=undefined) {
         FlatLanderEditor = new Flatlander({
-            el: $('#advanced-multimedia-editor img')[0]
+            el: $('#multimediaitem img')[0]
         });
 
         var newArea;
@@ -18,6 +18,30 @@ $(window).load(function() {
             type: 'textarea',
             name: 'link',
             editable: false,
+        });
+
+        function hideMediamaps() {
+            $('#toggleMediamap').text($('#toggleMediamap').data('show'));
+            FlatLanderEditor.$editor.hide();
+            FlatLanderEditor.$workspace.hide();
+        }
+
+        function showMediamaps() {
+            $('#toggleMediamap').text($('#toggleMediamap').data('hide'));
+            FlatLanderEditor.$workspace.show();
+        }
+
+        $('#toggleMediamap').on('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            var visible = FlatLanderEditor.$workspace.is(':visible');
+            if (visible) {
+                hideMediamaps();
+            } else {
+                showMediamaps();
+            }
+
+            return false;
         });
 
         if (BEDITA && BEDITA.relations && BEDITA.relations.mediamap && BEDITA.relations.mediamap.params) {
@@ -113,15 +137,18 @@ $(window).load(function() {
             areaObj.set({
                 priority: $el.find('.priority').val(),
             });
-            $el.find('.relparams table input, .relparams table select').each(function() {
-                var val = $(this).val();
-                var label = $(this).attr('name').split('[').pop().replace(']','');
-                areaObj.set(label, val);
+
+            $el.find('.moredata input, .moredata textarea, .moredata select').each(function() {
+                if ($(this).attr('name')) {
+                    var val = $(this).val();
+                    var label = $(this).attr('name').split('[').pop().replace(']','');
+                    areaObj.set(label, val);
+                }
             });
 
             $el.find('input').bind('change.fl keyup.fl', onRelationInputChange);
 
-            areaObj.set('title', $el.find('.assoc_obj_title').html());
+            areaObj.set('title', $el.find('.assoc_obj_title h4').text());
             areaObj.set('link', $el.attr('data-beid'));
             areaObj.set('background', $el.find('.rel_uri').val());
 
@@ -142,6 +169,16 @@ $(window).load(function() {
             })
         }).find('.assoc_obj_title').click(onRelationInputClick);
 
+        $(document).on('click.flatlander', function(ev) {
+            if (!$(ev.target).is('.flatlanderWrapper, .flatlanderWrapper *')) {
+                FlatLanderEditor.FlatlanderEditorInstance.$el.slideUp('fast');
+            } else {
+                if ($(ev.target).is('.flatlanderArea, .flatlanderArea *')) {
+                    FlatLanderEditor.FlatlanderEditorInstance.$el.slideDown('fast');
+                }
+            }
+        });
+
         $(document).bind('relation_mediamap:added', function(ev, args) {
             var area = newArea;
             if (area == null) {
@@ -154,7 +191,7 @@ $(window).load(function() {
             }
 
             $(args).attr('data-flatlanderarea-id', area.get('id')).find('.relparams input').bind('change.fl keyup.fl', onRelationInputChange);
-            area.set('title', $(args).find('.assoc_obj_title').html());
+            area.set('title', $(args).find('.assoc_obj_title h4').text());
             area.set('link', $(args).attr('data-beid'));
             area.set('background', $(args).find('.rel_uri').val());
 
@@ -198,6 +235,11 @@ $(window).load(function() {
             $('#relationType_mediamap .modalbutton').BEmodal();
         });
 
-        $('#relationType_mediamap .obj').first().find('.assoc_obj_title').click();
+        if ($('#toggleMediamap').data('start') == 'hidden') {
+            hideMediamaps();
+        } else {
+            showMediamaps();
+        }
+        FlatLanderEditor.$editor.hide();
     }
 });

@@ -219,6 +219,12 @@ $(document).ready(function(){
 		
 {/if}
 
+{if !empty($object.relations) && !empty($object.relations.mediamap)}
+
+		$(".secondacolonna .modules").after("<div class='subwarning mediamap'>{t}Mediamap object{/t}</div>");
+		
+{/if}
+
 {if ($object.mail_status|default:'' == "sent")}
 
 		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");

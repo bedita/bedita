@@ -5,62 +5,70 @@
 
 {if (isset($object)) and (!empty($object.uri))}
 
-	<div class="tab"><h2>{t}File{/t}</h2></div>
+<div class="tab"><h2>{t}File{/t}</h2></div>
 
-	<fieldset id="multimediaitem" style="margin-left:-10px;">
+<fieldset id="multimediaitem">
 
-		<div class="multimediaiteminside">
+	<div class="multimediaiteminside">
 
-			{if ($object.ObjectType.name == "image")}
+		{if ($object.ObjectType.name == "image")}
 
-				{if strpos($object.uri,'/') === 0}
-					{assign_concat var="fileUrl"  1=$conf->mediaRoot  2=$object.uri}
-				{else}
-					{assign var="fileUrl"  value=$object.uri}
-				{/if}
-				{$imgInfo = $imageInfo->get($fileUrl)}
-
-				{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
-
-				{$beEmbedMedia->object($object,$params)}
-
-				
-			{elseif strtolower(($object.ObjectType.name) == "video")}
-
-				{assign_associative var="params" presentation="full"}
-				{assign_associative var="htmlAttr" width=500 height=345}
-				{$beEmbedMedia->object($object,$params,$htmlAttr)}
-				
-			{elseif strtolower($object.ObjectType.name) == "audio"}
-
-				{assign_associative var="htmlAttr" id="multimediaitemaudio"}
-				{$beEmbedMedia->object($object, null, $htmlAttr)}
-				
-			{elseif strtolower($object.ObjectType.name) == "application"}
-				
-				{assign_associative var="htmlAttributes" id="appContainer"} 
-				{assign_associative var="params" presentation="full"}
-				{$beEmbedMedia->object($object,$params,$htmlAttributes)}
-				
+			{if strpos($object.uri,'/') === 0}
+				{assign_concat var="fileUrl"  1=$conf->mediaRoot  2=$object.uri}
 			{else}
-					
-				<a href="{$conf->mediaUrl}{$object.uri}" target="_blank">
-					{$beEmbedMedia->object($object)}
-				</a>
-
+				{assign var="fileUrl"  value=$object.uri}
 			{/if}
+			{$imgInfo = $imageInfo->get($fileUrl)}
 
-			{bedev}
-            {if !empty($object.uri)}
-                <button>{t}delete this file or reference{/t}</button>
-            {/if}
-            {/bedev}
+			{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
 
-		</div>
+			{$beEmbedMedia->object($object,$params)}
 
-	</fieldset>
+			
+		{elseif strtolower(($object.ObjectType.name) == "video")}
 
-	{$view->element('file_tech_details')}
+			{assign_associative var="params" presentation="full"}
+			{assign_associative var="htmlAttr" width=500 height=345}
+			{$beEmbedMedia->object($object,$params,$htmlAttr)}
+			
+		{elseif strtolower($object.ObjectType.name) == "audio"}
+
+			{assign_associative var="htmlAttr" id="multimediaitemaudio"}
+			{$beEmbedMedia->object($object, null, $htmlAttr)}
+			
+		{elseif strtolower($object.ObjectType.name) == "application"}
+			
+			{assign_associative var="htmlAttributes" id="appContainer"} 
+			{assign_associative var="params" presentation="full"}
+			{$beEmbedMedia->object($object,$params,$htmlAttributes)}
+			
+		{else}
+				
+			<a href="{$conf->mediaUrl}{$object.uri}" target="_blank">
+				{$beEmbedMedia->object($object)}
+			</a>
+
+		{/if}
+
+		{if isset($object) && !empty($object.uri) && $object.ObjectType.name == "image"}
+
+		<button style="margin: 10px 0;" data-start="{if empty($object.relations) || empty($object.relations.mediamap)}hidden{else}visible{/if}" id="toggleMediamap" data-show="{t}show mediamaps{/t}" data-hide="{t}hide mediamaps{/t}"></button>
+
+		{$html->script('flatlander', false)}
+	    {$html->css('flatlander', false)}
+
+		{/if}
+
+		{bedev}
+        {if !empty($object.uri)}
+            <button>{t}delete this file or reference{/t}</button>
+        {/if}
+        {/bedev}
+	</div>
+
+</fieldset>
+
+{$view->element('file_tech_details')}
 
 {/if}
 
