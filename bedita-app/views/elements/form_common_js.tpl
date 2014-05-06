@@ -163,7 +163,7 @@ $(document).ready(function(){
 
 {if !empty($object.Permission)}
 
-		$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
+	$(".secondacolonna .modules").after("<div class='subwarning permissions'>{t}Permissions{/t}</div>");
 	
 {/if}
 
@@ -173,7 +173,6 @@ $(document).ready(function(){
 		$(".secondacolonna .modules").after("<div class='subwarning ubiquity'>{t}Ubiquitous object{/t}</div>");
 	
 {/if}
-
 
 {*  {if !($perms->isWritable($user.userid,$user.groups,$object.Permission))}
 		//$("#delBEObject").attr("disabled",true);
@@ -215,7 +214,8 @@ $(document).ready(function(){
 		$("#status input").attr("readonly",true);
 		$("#delBEObject").attr("disabled",true);
 		$("#areaSectionAssoc").attr("disabled",true);
-		$(".secondacolonna .modules label").addClass("fixedobject").attr("title","fixed object");
+		$(".secondacolonna .modules label").attr("title","fixed object");
+		$(".secondacolonna .modules").after("<div class='subwarning fixed'>{t}Fixed object{/t}</div>");
 		
 {/if}
 
