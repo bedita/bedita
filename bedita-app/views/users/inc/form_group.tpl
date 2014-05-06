@@ -7,6 +7,7 @@
 		padding-left:30px;
 		background: url("{$html->url('/')}img/iconLocked.png") center left no-repeat;
 		background-size: 28px;
+		background-position: 0px 2px;
 	}
 </style>
 
@@ -67,13 +68,15 @@
 	{$objPermReverse = $conf->objectPermissions|@array_flip}
 	<div class="tab"><h2>{$group.objects|@count|default:''} {t}objects for this group{/t}</h2></div>
 	<fieldset>
-	<table class="smallist group_objects bordered">
-		<tr>
-			<th>{t}title{/t}</th>
-			<th nowrap>{t}type{/t}</th>
-			<th>{t}status{/t}</th>
-			<th colspan="2">{t}permission type{/t}</th>
-		</tr>
+	<table class="indexlist group_objects">
+		<thead>
+			<tr>
+				<th>{t}title{/t}</th>
+				<th nowrap>{t}type{/t}</th>
+				<th>{t}status{/t}</th>
+				<th colspan="2">{t}permission type{/t}</th>
+			</tr>
+		</thead>
 		
 		{$view->element('form_group_permissions', ['objsRelated' => $group.objects])}
 		

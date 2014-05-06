@@ -1,12 +1,12 @@
 {* USED in Users module group detail *}
 
 {foreach $objsRelated as $ob}
-<tr class="{$ob.status}">
-    <td>
+<tr>
+    <td style="width: 50%">
         <a title="{$ob.BEObject.title|default:$ob.nickname}" href="{$html->url('/view/')}{$ob.id}">
             {$ob.title|default:$ob.nickname|truncate:38:'…':true}</a>
     </td>
-    <td nowrap>
+    <td >
         <span class="listrecent {$conf->objectTypes[$ob.object_type_id].name}" style="vertical-align:middle; margin:0px 5px 0 0"></span>
         <a href="{$html->url('/view/')}{$ob.id}">{$conf->objectTypes[$ob.object_type_id].name}</a>
     </td>
@@ -26,7 +26,7 @@
             {/foreach}
         </select>
     </td>
-    <td>
+    <td style="text-align: right">
         <input class="BEbutton" name="remove" type="button" value="x">
     </td>
 </tr>

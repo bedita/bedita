@@ -39,7 +39,7 @@ $(document).ready(function(){
 		
 		var htmlBlock = "<tr id=\"permTR_" + index + "\"><td>" + name + "</td>" +
 						"<td>" + permissions[perm] + "</td>" + 
-						"<td>" +
+						"<td style='text-align: right;'>" +
 						"<input type=\"hidden\" name=\"data[Permission]["+index+"][flag]\" value=\""+perm+"\"/>" + 
 						"<input type=\"hidden\" name=\"data[Permission]["+index+"][switch]\" value=\""+type+"\"/>" +
 						"<input type=\"hidden\" name=\"data[Permission]["+index+"][name]\" value=\""+name+"\"/>" +
@@ -80,14 +80,15 @@ function loadUserGroupAjax(url) {
 <fieldset id="permissions">
 <div class="loader" id="loaderug"></div>
 
-<table class="indexlist" border=0 id="frmCustomPermissions">
+<table class="indexlist" border="0" id="frmCustomPermissions">
 {if !empty($el.Permission)}
-<tr>
-	<th>{t}name{/t}</th>
-	<th>{t}permission{/t}</th>
-	<th>&nbsp;</th>
-</tr>
-
+	<thead>
+		<tr>
+			<th>{t}name{/t}</th>
+			<th>{t}permission{/t}</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
 	{section name=i loop=$el.Permission}
 	{assign var="perm" 	value=$el.Permission[i]}
 	{assign var="i" 	value=$smarty.section.i.index}
@@ -98,7 +99,7 @@ function loadUserGroupAjax(url) {
 			{assign var="objPermReverse" value=$conf->objectPermissions|@array_flip}
 			{t}{$objPermReverse[$perm.flag]}{/t}
 			</td>
-			<td>
+			<td style="text-align: right">
 				<input type="hidden" name="data[Permission][{$i}][flag]" value="{$perm.flag}"/>
 				<input type="hidden" name="data[Permission][{$i}][switch]" value="{$perm.switch|escape:'quotes'}"/>
 				<input type="hidden" name="data[Permission][{$i}][name]" value="{$perm.name|escape:'quotes'}"/>
@@ -108,37 +109,33 @@ function loadUserGroupAjax(url) {
 		
 	{/section}
 {else}
-<tr>
-	<th></th>
-	<th></th>
-	<th>&nbsp;</th>
-</tr>
+	<thead>
+		<tr>
+			<th></th>
+			<th></th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
 {/if}
 </table>
 
-<table class="indexlist" border=0 id="selCustomPermissions">
-<tr>
-	<th>{t}add group{/t}:</th>
-	<th>{t}permission{/t}</th>
-	<th>&nbsp;</th>
-</tr>
+<table class="" border="0" style="margin-top: 20px" id="selCustomPermissions">
+	<tr id="addPermGroupTR" class="ignore">
+		<td style="white-space:nowrap">
+			<label>{t}add group{/t}</label>: <select data-placeholder="{t}select a group{/t}" id="inputAddPermGroup" name="name"></select>
+		</td>
 
-<tr id="addPermGroupTR" class="ignore">
-	<td style="white-space:nowrap">
-		<select data-placeholder="{t}select a group{/t}" id="inputAddPermGroup" name="name"></select>
-	</td>
-
-	<td>
-		<select data-placeholder="{t}select a permission type{/t}" id="selectGroupPermission" name="groupPermission">
-			<option></option>
-			{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
-			<option value="{$permVal}">{t}{$permLabel}{/t}</option>
-			{/foreach}
-		</select>
-	</td>
-	
-	<td><input type="button" id="cmdAddGroupPerm" value=" {t}add{/t} "/></td>
-</tr>
+		<td>
+			<label>{t}permission{/t}:</label> <select data-placeholder="{t}select a permission type{/t}" id="selectGroupPermission" name="groupPermission">
+				<option></option>
+				{foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
+				<option value="{$permVal}">{t}{$permLabel}{/t}</option>
+				{/foreach}
+			</select>
+		</td>
+		
+		<td style="text-align: right"><input type="button" id="cmdAddGroupPerm" value=" {t}add{/t} "/></td>
+	</tr>
 </table>
 </fieldset>
 
