@@ -694,6 +694,7 @@ class AdminController extends ModulesController {
 					if (count($p['options']) < 2) {
 						throw new BeditaException(__('For type options you have to define at least two options', true), $formData['params'][$key]);
 					}
+					$p['options'] = array_map('trim', $p['options']);
 					$relParams[$p['name']] = $p['options'];
 				} else {
 					$relParams[] = $p['name'];

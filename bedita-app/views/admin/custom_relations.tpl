@@ -21,21 +21,21 @@
 	<form method="post" action="{$html->url('/admin/saveCustomRelation')}">
 		<table class="bordered">
 			<tr>
-				<th style="vertical-align:top"><label>source</label></th>
+				<th style="vertical-align:top"><label>{t}source{/t}</label></th>
 				<td style="vertical-align:top">
 					<select multiple name="data[left][]" data-placeholder="{t}select an object type{/t}">
-						<option value="related" selected="selected">all</option>
+						<option value="related" selected="selected">{t}all{/t}</option>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}">{t}{$conf->objectTypes[$id].name}{/t}</option>
 					{/foreach}
 					</select>
 				</td>
 				<th style="vertical-align:top">
-					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
+					&nbsp;&nbsp;→&nbsp;&nbsp; <label>{t}target{/t}</label>
 				</th>
 				<td style="vertical-align:top">
 					<select multiple name="data[right][]" data-placeholder="{t}select an object type{/t}">
-						<option value="related" selected="selected">all</option>
+						<option value="related" selected="selected">{t}all{/t}</option>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}">{t}{$conf->objectTypes[$id].name}{/t}</option>
 					{/foreach}
@@ -70,22 +70,23 @@
 								<input placeholder="{t}insert a new params{/t}" type="text" name="data[params][0][name]" />
 							</td>
 							<th>
-								<label>param type</label>
+								<label>{t}type{/t}</label>
 							</th>
 							<td>
 								<select class="js-params-type" name="data[params][0][type]">
-									<option>text</option>
-									<option>options</option>
+									<option value="text">{t}text{/t}</option>
+									<option value="options">{t}options{/t}</option>
 								</select>
 							</td>
 							<th>
-								<label>param options</label>
+								<label>{t}options{/t} *</label>
 							</th>
 							<td>
-								<input type="text" class="js-params-options" name="data[params][0][options]" value="" />
+								<input type="text" class="js-params-options" name="data[params][0][options]" value="" placeholder="{t}option{/t} 1,{t}option{/t} 2,..."/>
 							</td>
 
 						</tr>
+						<tr><td colspan="5">* {t}comma separated values{/t}</td></tr>
 					</table>
 				</td>
 			</tr>
@@ -101,7 +102,7 @@
 	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">
 		<table class="bordered">
 			<tr>
-				<th style="vertical-align:top"><label>source</label></th>
+				<th style="vertical-align:top"><label>{t}source{/t}</label></th>
 				<td style="vertical-align:top">
 					<select multiple name="data[left][]" data-placeholder="{t}select an object type{/t}">
 						<option value="related" {if empty($item.left) && is_array($item.left)}selected=1{/if}>all</option>
@@ -114,11 +115,11 @@
 					</select>
 				</td>
 				<th style="vertical-align:top">
-					&nbsp;&nbsp;→&nbsp;&nbsp; <label>target</label>
+					&nbsp;&nbsp;→&nbsp;&nbsp; <label>{t}target{/t}</label>
 				</th>
 				<td style="vertical-align:top">
 					<select multiple name="data[right][]" data-placeholder="{t}select an object type{/t}">
-						<option value="related" {if empty($item.right) && is_array($item.right)}selected=1{/if}>all</option>
+						<option value="related" {if empty($item.right) && is_array($item.right)}selected=1{/if}>{t}all{/t}</option>
 					{foreach $conf->objectTypes.related.id as $id}
 						<option value="{$conf->objectTypes[$id].name}" {if in_array($conf->objectTypes[$id].name, $item.right)}selected=1{/if}>{strip}
 							{t}{$conf->objectTypes[$id].name}{/t}
@@ -173,19 +174,19 @@
 										<input type="text" name="data[params][{$paramsIndex}][name]" value="{$name}" />
 									</td>
 									<th>
-										<label>param type</label>
+										<label>{t}type{/t}</label>
 									</th>
 									<td>
 										<select class="js-params-type" name="data[params][{$paramsIndex}][type]">
-											<option>text</option>
-											<option {if $type == 'options'}selected{/if}>options</option>
+											<option value="text">{t}text{/t}</option>
+											<option value="options" {if $type == 'options'}selected{/if}>{t}options{/t}</option>
 										</select>
 									</td>
 									<th>
-										<label>param options</label>
+										<label>{t}options{/t} *</label>
 									</th>
 									<td>
-										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options}{/if}" />
+										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options}{/if}" placeholder="{t}option{/t} 1,{t}option{/t} 2,..."/>
 									</td>
 								</tr>
 							{/foreach}
@@ -197,22 +198,22 @@
 								<input placeholder="{t}insert a new params{/t}" type="text" name="data[params][{$paramsIndex}][name]" />
 							</td>
 							<th>
-								<label>param type</label>
+								<label>{t}type{/t}</label>
 							</th>
 							<td>
 								<select class="js-params-type" name="data[params][{$paramsIndex}][type]">
-									<option>text</option>
-									<option>options</option>
+									<option value="text">{t}text{/t}</option>
+									<option value="options">{t}options{/t}</option>
 								</select>
 							</td>
 							<th>
-								<label>param options</label>
+								<label>{t}options{/t} *</label>
 							</th>
 							<td>
-								<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="" />
+								<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="" placeholder="{t}option{/t} 1,{t}option{/t} 2,..."/>
 							</td>
-
 						</tr>
+						<tr><td colspan="5">* {t}comma separated values{/t}</td></tr>
 					</table>
 				</td>
 			</tr>
