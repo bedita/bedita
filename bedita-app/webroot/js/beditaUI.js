@@ -758,7 +758,7 @@ function openAtStart(defaultOpen) {
         var openAtStart = localStorage.getItem(title);
         
         if (openAtStart == null) {
-            var openAtStart = defaultOpen;
+            openAtStart = defaultOpen;
         }
         var openTmp = openAtStart.split(',');
         for(var i=0; i < openTmp.length; i++) {

@@ -1,3 +1,9 @@
+<script type="text/javascript">
+	$(document).ready(function(){
+		openAtStart("#groupFormProp, #usersInGroup");
+	});
+</script>
+
 <form action="{$html->url('/users/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
 <style scoped>
 	table.group_objects {
@@ -12,7 +18,7 @@
 </style>
 
 <div class="tab"><h2>{t}group properties {/t}</h2></div>
-<fieldset id="groupForm">
+<fieldset id="groupFormProp">
 		{if !empty($group)}<input type="hidden" name="data[Group][id]" value="{$group.Group.id}"/>{/if}				
 		<table>
 			<tr>
@@ -67,7 +73,7 @@
 
 	{$objPermReverse = $conf->objectPermissions|@array_flip}
 	<div class="tab"><h2>{$group.objects|@count|default:''} {t}objects for this group{/t}</h2></div>
-	<fieldset>
+	<fieldset id="groupObjects">
 	<table class="indexlist group_objects">
 		<thead>
 			<tr>
@@ -91,7 +97,7 @@
 
 
 	<div class="tab"><h2><span id="users-in-group">{$group.User|@count|default:''}</span> {t}users in this group{/t}</h2></div>
-	<div>
+	<div id="usersInGroup">
 		<table class="indexlist" id="users-in-group-table">
 			<thead>
 				<tr>
