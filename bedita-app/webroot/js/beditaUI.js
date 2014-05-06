@@ -211,7 +211,23 @@ $(document).ready(function(){
             window.location = ($(this).attr("href"));
         }
     });
-        
+
+/*...........................................    
+
+   current module box fixed
+
+...........................................*/
+    
+    if ($('.secondacolonna.fixed').length>0) {
+        var fixedColumn = $('.secondacolonna.fixed');
+        $(window).scroll(function(){
+            var s = $(window).scrollTop();
+            if (s<0) {
+                s = 0;
+            }
+            fixedColumn.css('margin-top', s);
+        });
+    }
 
 /*...........................................    
 
