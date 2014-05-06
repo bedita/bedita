@@ -59,6 +59,8 @@ function addUserToGroup(id) {
         var tbody = $("#users-in-group-table").find("tbody");
         tbody.append( newTrs );
         $('#users-in-group').text( tbody.find('tr').length - 1 );
+        $('#fakeSave').val('edited');
+        $('.secondacolonna .modules label').addClass('save');
     });
 }
 
@@ -82,12 +84,16 @@ $(document).ready(function() {
 
     $(document).on('click', 'table.group_objects input[name=remove]', function() {
         $(this).parents('tr:first').remove();
+        $('#fakeSave').val('edited');
+        $('.secondacolonna .modules label').addClass('save');
     });
 
     $(document).on('click', '.indexlist .commands .remove', function() {
         var table = $(this).closest('tbody');
         $(this).closest('tr').remove();
         $('#users-in-group').text( table.find('tr').length - 1 );
+        $('#fakeSave').val('edited');
+        $('.secondacolonna .modules label').addClass('save');
     });
 
     $('#authselect').change(function() {

@@ -1,6 +1,17 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 		openAtStart("#groupFormProp, #usersInGroup");
+
+		window.onbeforeunload = function () {
+			if ( !$(".secondacolonna .modules label").hasClass("submitForm") && $(".secondacolonna .modules label").hasClass("save")) {
+				return "{t}All unsaved changes will be lost{/t}";
+			}
+		};
+
+		$("#groupForm").submit(function() {
+			$(".secondacolonna .modules label").addClass("submitForm");
+		});
+
 	});
 </script>
 
@@ -117,6 +128,7 @@
 		<input id="addUserToGroupModal" type="button" class="modalbutton" title="{$group.Group.name} : {t}select users to add{/t}"
 		rel="{$html->url('/users/showUsersToAddToGroup/')}{$group.Group.id|default:0}" 
 		value="  {t}add users{/t}  " style="margin-top: 20px" />
+		<input type="hidden" name="fakeSave" id="fakeSave" val="" />
 	</div>
 {/if}
 

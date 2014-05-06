@@ -33,6 +33,5 @@
 <div class="modalcommands">
 
 	<input id="addUserToGroup" style="margin-bottom:10px;" type="button" value=" {t}add to group{/t} "  data-value=" {t}add to group{/t} "/>
-	<input id="createUser" style="margin: 0 0 10px 10px" type="button" value=" {t}create new user{/t} "/>
 
 </div>
