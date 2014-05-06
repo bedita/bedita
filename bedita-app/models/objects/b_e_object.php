@@ -262,11 +262,13 @@ class BEObject extends BEAppModel
 		// empty GeoTag array if no value is in
 		if (!empty($this->data[$this->name]['GeoTag'])) {
 			foreach ($this->data[$this->name]['GeoTag'] as $key => $geotag) {
-				//if (trim($geotag['title']) == '' && )
-				$concat = trim($geotag['title']) .
-					trim($geotag['address']) .
-					trim($geotag['latitude']) .
-					trim($geotag['longitude']);
+				$concat = '';
+				$geoTagFields = array('title', 'address', 'latitude', 'longitude');
+				foreach ($geoTagFields as $field) {
+					if (isset($geotag[$field])) {
+						$concat .= trim($geotag[$field]);
+					}
+				}
 				if (strlen($concat) == 0) {
 					unset($this->data[$this->name]['GeoTag'][$key]);
 				}

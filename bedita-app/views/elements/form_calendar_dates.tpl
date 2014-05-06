@@ -76,10 +76,13 @@ $(document).ready(function(){
     $(".radioAlways").click(function (){
     	var always = $(this).val();
         if (always == "true") {
-        	$(this).parent().find("input[type=checkbox]").prop('disabled', true);
-            $(this).parent().find("input[type=checkbox]").prop('checked', false);
+        	$(this).closest(".daterow").find("input[type=checkbox]").prop('disabled', true);
+            $(this).closest(".daterow").find("input[type=checkbox]").prop('checked', false);
+            $(this).closest(".daterow").find(".date_exceptions").hide();
+
         } else {
-            $(this).parent().find("input[type=checkbox]").prop('disabled', false);
+            $(this).closest(".daterow").find("input[type=checkbox]").prop('disabled', false);
+            $(this).closest(".daterow").find(".date_exceptions").show();
         }
     });
 
@@ -103,7 +106,7 @@ $(document).ready(function(){
     <input size=5 type="text"  id=""  class="timeEnd" name="" value="" />
 
     <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
-    <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+    <a href="javascript:void(0)" style="margin-left:160px"  class="BEbutton dateadd">+</a>
     
 </div>
 
@@ -135,18 +138,24 @@ $(document).ready(function(){
 	value="{if !empty($d.end_date)}{$d.end_date|date_format:'%H:%M'}{/if}" />
 
 	<a href="javascript:void(0)" class="BEbutton dateremove">X</a>
-	<a href="javascript:void(0)" class="BEbutton dateadd">+</a>
-	{if !empty($conf->dateItemParams) && !empty($d.start_date) && !empty($d.end_date) 
-	    && $dayStart != $dayEnd}
-	<div>    
-	    <label>{t}always{/t}:</label>
-	    <input type="radio" id="everyY_{$key}" name="data[DateItem][{$key}][always]" 
-	       class="radioAlways" value="true" 
-	       {if empty($d.days)}checked="checked"{/if} />{t}yes{/t}
-	    <input type="radio" id="everyN_{$key}" name="data[DateItem][{$key}][always]" 
+
+    {if !empty($d.start_date) && !empty($d.end_date) && $dayStart != $dayEnd}
+    <div style="margin:0px 30px 0 10px; display:inline-block;">
+        <label>{t}every day{/t}:</label>
+        <input type="radio" id="everyY_{$key}" name="data[DateItem][{$key}][always]" 
+           class="radioAlways" value="true" 
+           {if empty($d.days)}checked="checked"{/if} />{t}yes{/t}
+        <input type="radio" id="everyN_{$key}" name="data[DateItem][{$key}][always]" 
            class="radioAlways" value="false" 
            {if !empty($d.days)}checked="checked"{/if}/>{t}no{/t}
-	
+    </div>
+    {/if}
+    <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
+
+
+    {if !empty($d.start_date) && !empty($d.end_date) && $dayStart != $dayEnd}
+	<div class="date_exceptions"  {if empty($d.days)}style="display:none;"{/if}>    
+
 	    <label>{t}days{/t}:</label>
 	    {if empty($d.days)}
 	        {$dd = []}
@@ -157,7 +166,7 @@ $(document).ready(function(){
 	        <input type="checkbox" id="dayChk_{$key}_{$num}" 
 	            name="data[DateItem][{$key}][days][]" value="{$num}" 
 	            {if in_array($num, $dd)}checked="checked"{/if}
-	            {if empty($dd)}disabled="disabled"{/if}/>{t}{$d}{/t}
+	            {if empty($dd)}disabled="disabled"{/if}/> {t}{$d}{/t} &nbsp;&nbsp;
 	   {/foreach}
 	</div>
 	{/if}    
@@ -181,7 +190,6 @@ $(document).ready(function(){
     value="" />
 
     <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
-    <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
 </div>
 {/if}
 

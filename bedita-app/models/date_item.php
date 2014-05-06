@@ -31,15 +31,21 @@ class DateItem extends BEAppModel
     function beforeValidate() {
         $this->checkDate('start_date');
         $this->checkDate('end_date');
-        $data = &$this->data[$this->name] ;
-        if(!empty($data['start_date']) && !empty($data['timeStart'])) {
-            $data['start_date'] .= " " . $data['timeStart'];
-        }
-        if (!empty($data['end_date']) && !empty($data['timeEnd'])) {
-            $data['end_date'] .= " " . $data['timeEnd'];
-        }
-        if (!empty($data['days'])) {
-            $data['params'] = serialize(array("days" => $data['days']));
+        $data = &$this->data[$this->name];
+
+        // if new row and start_date and end_date are null empty $data array to not save in db
+        if (empty($data['id']) && $data['start_date'] === null && $data['end_date'] === null) {
+            $data = array();
+        } else {
+            if(!empty($data['start_date']) && !empty($data['timeStart'])) {
+                $data['start_date'] .= " " . $data['timeStart'];
+            }
+            if (!empty($data['end_date']) && !empty($data['timeEnd'])) {
+                $data['end_date'] .= " " . $data['timeEnd'];
+            }
+            if (!empty($data['days'])) {
+                $data['params'] = serialize(array("days" => $data['days']));
+            }
         }
         return true;
 	}

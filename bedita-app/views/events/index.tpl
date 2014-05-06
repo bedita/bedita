@@ -1,7 +1,3 @@
-</head>
-
-<body>
-
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
