@@ -290,7 +290,7 @@ class PagesController extends AppController {
 		if (!empty($this->params["form"])) {
 			$this->render("list_contents_to_assoc");
 		}
-	} 
+	}
 	
 	/**
 	 * called via ajax

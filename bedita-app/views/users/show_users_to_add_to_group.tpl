@@ -14,8 +14,8 @@
 				<tr>
 					<th></th>
 					<td colspan="10">
-						<input type="button" id="promoteUserSearch" style="width:150px" value=" {t}find it{/t} ">
-						<input type="button" id="promoteUserClean" value=" {t}reset{/t} ">
+						<input type="button" id="addUserToGroupSearch" style="width:150px" value=" {t}find it{/t} ">
+						<input type="button" id="addUserToGroupClean" value=" {t}reset{/t} ">
 					</td>
 				</tr>
 			</tbody>
@@ -25,14 +25,14 @@
 	<div id="loadUsersInModal" class="loader"><span></span></div>
 
 	<div id="listUsers">
-		{include file='./inc/form_users_to_promote.tpl'}
+		{include file='./inc/form_users_to_associate.tpl'}
 	</div>
 
 </div>
 
 <div class="modalcommands">
 
-	<input id="userToCard" style="margin-bottom:10px;" type="button" value=" {t}associate{/t} "/>
+	<input id="addUserToGroup" style="margin-bottom:10px;" type="button" value=" {t}add to group{/t} "  data-value=" {t}add to group{/t} "/>
 	<input id="createUser" style="margin: 0 0 10px 10px" type="button" value=" {t}create new user{/t} "/>
 
 </div>

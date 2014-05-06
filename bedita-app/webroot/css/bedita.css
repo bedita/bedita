@@ -209,6 +209,7 @@ img {
 .main {
 	top: 140px;
 	width: 660px; 
+	padding-bottom: 20px;
 }
 
 .mainfull, .main.full {
@@ -707,7 +708,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 
-.head H1 {margin-top: 45px;}
+.head H1 {margin-top: 37px;}
 
 
 

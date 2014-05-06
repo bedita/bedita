@@ -87,17 +87,28 @@
 	</fieldset>
 
 
-	<div class="tab"><h2>{$group.User|@count|default:''} {t}users in this group{/t}</h2></div>
-	<table class="bordered">
-	{foreach $group.User as $u}
-		<tr>
-			<td>
-				<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid}</a>
-			</td>
-		</tr>
-	{/foreach}
-	</table>
-
-{/if}		
+	<div class="tab"><h2><span id="users-in-group">{$group.User|@count|default:''}</span> {t}users in this group{/t}</h2></div>
+	<div>
+		<table class="indexlist" id="users-in-group-table">
+			<thead>
+				<tr>
+					<th>{t}userid{/t}</th>
+					<th>{t}name{/t}</th>
+					<th>{t}e-mail{/t}</th>
+					<th>{t}auth type{/t}</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr class="trick"></tr>
+		{foreach $group.User as $u}
+			{include file='../user_in_group_html.tpl'}
+		{/foreach}
+		</table>
+		<div class="loader" id="loadingUserInGroup"></div>
+		<input id="addUserToGroupModal" type="button" class="modalbutton" title="{$group.Group.name} : {t}select users to add{/t}"
+		rel="{$html->url('/users/showUsersToAddToGroup/')}{$group.Group.id|default:0}" 
+		value="  {t}add users{/t}  " style="margin-top: 20px" />
+	</div>
+{/if}
 
 </form>

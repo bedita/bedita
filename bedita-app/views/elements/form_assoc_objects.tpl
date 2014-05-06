@@ -106,7 +106,7 @@ $(document).ready(function() {
 	</table>
 	
 	<input type="button" class="modalbutton" title="{t}{$rel}{/t} : {t}select an item to associate{/t}"
-	rel="{$html->url('/pages/showObjects/')}{$object.id|default:0}/{$rel}/{$object_type_id}" 
+	rel="{$html->url('/pages/showUsers/')}{$object.id|default:0}/{$rel}/{$object_type_id}" 
 	value="  {t}connect new items{/t}  " />
 	
 </div>
