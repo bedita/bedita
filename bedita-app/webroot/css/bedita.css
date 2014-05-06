@@ -179,6 +179,10 @@ img {
 	background-color:#B6B6B6;
 }
 
+.secondacolonna.fixed {
+	position:absolute;
+}
+
 .secondacolonna .insidecol {
 	text-align: center;	
 }
