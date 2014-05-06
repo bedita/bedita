@@ -2426,8 +2426,8 @@ Table.graph .value {
 	border:0px solid gray; 
 	margin:0 10px 10px 0; 
 	display:block; 
-	width:128px; 
-	height:128px; 
+	width:140px; 
+	height:110px; 
 	float:left;
 }
 
@@ -2436,10 +2436,8 @@ Table.graph .value {
 	color: #FFF;
 	font-size: 1.275em;
 	line-height: 1.1;
-	text-align: right;
-	width: 118px;
-	height: 118px;
-	padding:5px;
+	text-align: center;
+	padding:10px 5px;
 }
 
 .eventitem.draft, .eventitem.off {
