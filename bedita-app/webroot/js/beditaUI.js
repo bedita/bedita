@@ -294,7 +294,14 @@ $(document).ready(function(){
 
 ...........................................*/
 
-
+    //thead fix
+    $(".indexlist tbody th").parent('TR').each(function() {
+        if ($(this).closest('table').find('thead').length == 0) {
+            var thead = $('<thead>');
+            $(this).closest('table').prepend(thead);
+            thead.append($(this));
+        }
+    });
 
     $(".indexlist TR").mouseover(function() {
 
@@ -403,7 +410,7 @@ $(document).ready(function(){
         var title = $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
-        $("#modaloverlay").show().fadeTo("fast", 0.8).width(w).height(h);
+        $("#modaloverlay").show().fadeTo("fast", 0.8);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 

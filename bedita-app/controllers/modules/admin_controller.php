@@ -21,13 +21,6 @@
 
 /**
  * Administration: system info, eventlogs, plug/unplug module, addons, utility....
- *
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 class AdminController extends ModulesController {
 
@@ -689,14 +682,26 @@ class AdminController extends ModulesController {
 		if (in_array('related', $formData['right'])) {
 			$formData['right'] = array();
 		}
-		// remove empty params
+
+		// format params
+		$relParams = array();
 		foreach ($formData['params'] as $key => $p) {
-			$p = trim($p);
-			if (empty($p)) {
-				unset($formData['params'][$key]);
+			$p['name'] = trim($p['name']);
+			if (!empty($p['name'])) {
+				if ($p['type'] == 'options') {
+					$p['options'] = trim(trim($p['options']),',');
+					$p['options'] = explode(',', $p['options']);
+					if (count($p['options']) < 2) {
+						throw new BeditaException(__('For type options you have to define at least two options', true), $formData['params'][$key]);
+					}
+					$p['options'] = array_map('trim', $p['options']);
+					$relParams[$p['name']] = $p['options'];
+				} else {
+					$relParams[] = $p['name'];
+				}
 			}
 		}
-		$formData['params'] = array_values($formData['params']);
+		$formData['params'] = $relParams;
 		$relToSave[$relName] = $formData;
 		$relToSave[$relName]['hidden'] = (empty($relToSave[$relName]['hidden']))? false : true;
 

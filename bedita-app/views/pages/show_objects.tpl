@@ -4,8 +4,8 @@
 <!--
 //var urlShowObj = "{$html->here}";
 
-if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize} == "string") {
-	var urlToAdd = urlAddObjToAss{$relation|default:''|capitalize};
+if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize|replace:'-':'_'} == "string") {
+	var urlToAdd = urlAddObjToAss{$relation|default:''|capitalize|replace:'-':'_'};
 } else if (typeof urlAddObjToAss{$objectType|default:''|capitalize} == "string") {
 	var urlToAdd = urlAddObjToAss{$objectType|default:''|capitalize};
 } else if (typeof urlAddObjToAss == "string") {
@@ -15,7 +15,7 @@ if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize} == "string
 }
 
 var relType = "{$relation|default:""}";
-var suffix = "{$relation|default:""|capitalize}";
+var suffix = "{$relation|default:""|capitalize|replace:'-':'_'}";
 var typesuffix = "{$objectType|default:'related'|capitalize}";
 
 /**

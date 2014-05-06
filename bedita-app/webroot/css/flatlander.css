@@ -169,10 +169,13 @@
 .flatlanderEditor {
   display: block;
   width: 300px; 
-  margin-left: 20px;
+  margin-left: 10px;
   position: absolute;
-  top: 0;
+  top: 0px;
   left: 100%;
+  z-index: 50;
+  background-color: #FFF;
+  padding: 10px 10px 30px 10px;
 }
 
 
@@ -215,7 +218,6 @@
 .flatlanderEditor button[rel="deleteFocusPoint"],
 .flatlanderEditor button[rel="deleteBackground"] {
   margin-bottom: 0px;
-  background: rgb(255, 163, 163);
   outline: none;
   cursor: pointer;
   transition: background 100ms, border 100ms;
@@ -328,7 +330,7 @@
   list-style: none;
   background: #DBDBDB;
   margin-bottom: 10px;
-  border-bottom: solid 3px #999;
+  border-bottom: solid 2px #999;
   overflow: hidden;
 }
 
@@ -347,6 +349,9 @@
   cursor: pointer;
   height: 35px !important;
   transition: opacity 100ms, box-shadow: 100ms;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .flatlanderEditor .fl-layers li.ui-sortable-helper{

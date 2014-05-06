@@ -70,17 +70,17 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 			{/if}
 			
 			{if !empty($objects[i].num_of_permission)}
-				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; margin:0 0 0 -5px; vertical-align:top;">
+				<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png">
 			{/if}
 			
 			{if ($objects[i].ubiquity|default:0 > 1)}
-				<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="height:18px; vertical-align:middle;">
+				<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png">
 			{/if}
 
 			{if (empty($objects[i].fixed))}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{else}
-				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="height:12px;" />
+				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" />
 			{/if}
 
 

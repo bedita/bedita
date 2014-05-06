@@ -340,6 +340,7 @@ UL.modules {
 	color:#FFFFFF;
 	font-weight:normal;
 	border-bottom: 20px solid rgba(0,0,0,0.3);
+	background-position: right bottom !important;
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -549,17 +550,31 @@ UL.modules {
 
 .subwarning {
 	text-align:left;
-	color:#FFF;
+	color: #FFF;
 	padding:3px 25px 7px 5px;
 	background: #666;
+	position: static;
+	background-size: 20px; height: 26px; overflow: hidden;
+	background-repeat: no-repeat;
+	background-position: right;
+}
+
+.subwarning + .subwarning{
+	border-top: solid 1px #999;
 }
 
 .subwarning.ubiquity {
-	background: #666 url('../img/iconUbiquity.png') 115px 3px no-repeat;
-	background-size:20px;
-	height:26px;
-	overflow:hidden;
+	background-image: url('../img/iconUbiquity.png');
 }
+
+.subwarning.fixed {
+	background-image: url('../img/iconFixed.png');
+}
+
+.subwarning.permissions {
+	background-image: url('../img/iconLocked.png');
+}
+
 /*...........................................
  
     MENU SMALL Modules 
@@ -1446,6 +1461,12 @@ TABLE.indexlist H4{
 	white-space:nowrap;
 }
 
+.indexlist TD.checklist img {
+	height: 28px;
+	margin: -5px 0 0 -5px;
+	vertical-align: top;
+}
+
 .indexlist TR:Hover {
 	/*
 background-color:#d8d8d8;
@@ -2076,9 +2097,13 @@ A.BEbutton.golink:before {
 
 #modal {
 	position: fixed;
-	left:300px;
+	left: 0;
+	right: 0;
+	margin: auto;
 	top: 20px;
 	bottom: 20px;
+	max-height: 100%;
+	height: auto;
 	background: transparent;
 	width:660px;
 	display:none;
@@ -2133,7 +2158,8 @@ A.BEbutton.golink:before {
 #modalheader {
 	background-color:#000000;
 	/*width:480px;*/
-	height:21px;
+	height: 30px;
+	line-height: 28px;
 	padding-top: 2px;
 	padding-right:20px;
 	text-align:right;
