@@ -35,7 +35,7 @@ class GalleriesController extends ModulesController {
     var $uses = array('BEObject', 'Gallery', 'Tree', 'Category') ;
 	protected $moduleName = 'galleries';
 	
-	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 10) {
+	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
 		$filter["object_type_id"] = $conf->objectTypes['gallery']["id"];
 		$filter["count_annotation"] = array("Comment","EditorNote");
