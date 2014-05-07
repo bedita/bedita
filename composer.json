@@ -10,19 +10,17 @@
         "mobiledetect/mobiledetectlib": "2.*"
     },
     "require-dev": {
-        "d11wtq/boris": "1.0.*"
-    },
-    "suggest": {
-        "phpunit/phpunit": "Allows automated tests to be run without system-wide install."
+        "d11wtq/boris": "1.0.*",
+        "phpunit/phpunit": "3.7.*"
     },
     "autoload": {
         "psr-4": {
-            "Bedita\\": "App",
-            "Bedita\\Test\\": "Test",
+            "BEdita\\": "App",
+            "BEdita\\Test\\": "Test",
             "": "./Plugin"
         }
     },
     "scripts": {
-        "post-install-cmd": "Bedita\\Console\\Installer::postInstall"
+        "post-install-cmd": "BEdita\\Console\\Installer::postInstall"
     }
 }

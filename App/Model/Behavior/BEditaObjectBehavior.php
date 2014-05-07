@@ -18,7 +18,7 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Behavior;
+namespace BEdita\Model\Behavior;
 
 use Cake\ORM\Behavior;
 use Cake\ORM\Table;
@@ -29,9 +29,9 @@ use Cake\Utility\Inflector;
 use Cake\Event\Event;
 
 /**
- * BeditaObjectBehavior
+ * BEditaObjectBehavior
  */
-class BeditaObjectBehavior extends Behavior {
+class BEditaObjectBehavior extends Behavior {
 
     protected $table;
 

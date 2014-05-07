@@ -18,9 +18,9 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table\BaseObject;
+namespace BEdita\Model\Table\BaseObject;
 
-use Bedita\Model\Table\ObjectsTable;
+use BEdita\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -55,7 +55,7 @@ abstract class BaseObject extends ObjectsTable {
      */
     public function initialize(array $config) {
         parent::initialize($config);
-        $this->addBehavior('BeditaObject');
+        $this->addBehavior('BEditaObject');
         $this->initChain();
     }
 

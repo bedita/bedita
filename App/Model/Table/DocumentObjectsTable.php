@@ -18,9 +18,9 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table;
+namespace BEdita\Model\Table;
 
-use Bedita\Model\Table\BaseObject\ContentObject;
+use BEdita\Model\Table\BaseObject\ContentObject;
 
 /**
  * Represents the document object type

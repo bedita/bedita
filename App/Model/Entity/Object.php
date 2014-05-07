@@ -18,7 +18,7 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Entity;
+namespace BEdita\Model\Entity;
 
 use Cake\ORM\Entity;
 

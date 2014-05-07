@@ -13,7 +13,7 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-namespace App\Console\Command;
+namespace BEdita\Console\Command;
 
 use Cake\Console\Shell;
 

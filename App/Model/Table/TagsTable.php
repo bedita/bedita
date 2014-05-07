@@ -18,7 +18,7 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table;
+namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\Event\Event;

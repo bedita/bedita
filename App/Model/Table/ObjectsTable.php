@@ -18,7 +18,7 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table;
+namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
 
@@ -29,18 +29,18 @@ class ObjectsTable extends Table {
 
     public function initialize(array $config) {
         $this->table('objects');
-        $this->entityClass('Bedita\Model\Entity\Object');
+        $this->entityClass('BEdita\Model\Entity\Object');
 
         $this->belongsTo('ObjectTypes');
 
         $this->belongsTo('UserCreated', [
-            'className' => 'Bedita\Model\Table\UsersTable',
+            'className' => 'BEdita\Model\Table\UsersTable',
             'foreignKey' => 'user_created',
             'propertyName' => 'created_by'
         ]);
 
         $this->belongsTo('UserModified', [
-            'className' => 'Bedita\Model\Table\UsersTable',
+            'className' => 'BEdita\Model\Table\UsersTable',
             'foreignKey' => 'user_modified',
             'propertyName' => 'modified_by'
         ]);

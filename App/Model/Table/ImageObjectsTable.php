@@ -18,9 +18,9 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table;
+namespace BEdita\Model\Table;
 
-use Bedita\Model\Table\BaseObject\StreamObject;
+use BEdita\Model\Table\BaseObject\StreamObject;
 
 /**
  * Represents the image object type

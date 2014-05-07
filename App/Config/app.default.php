@@ -34,7 +34,7 @@ $config = [
  *   subkeys, which allow the definition of paths for plugins and view templates respectively.
  */
 	'App' => [
-		'namespace' => 'Bedita',
+		'namespace' => 'BEdita',
 		'encoding' => 'UTF-8',
 		'base' => false,
 		'dir' => 'App',

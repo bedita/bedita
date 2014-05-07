@@ -1,10 +1,10 @@
 <?php
 
-namespace Bedita\Test\TestCase\Model;
+namespace BEdita\Test\TestCase\Model;
 
 use Cake\TestSuite\TestCase;
 use Cake\ORM\TableRegistry;
-use Bedita\Model\Table\DocumentObjectsTable;
+use BEdita\Model\Table\DocumentObjectsTable;
 
 class DocumentObjectsTableTest extends TestCase {
 

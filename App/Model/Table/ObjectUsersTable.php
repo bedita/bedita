@@ -1,6 +1,6 @@
 <?php
 
-namespace Bedita\Model\Table;
+namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
 

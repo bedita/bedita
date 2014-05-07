@@ -18,9 +18,9 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace Bedita\Model\Table\BaseObject;
+namespace BEdita\Model\Table\BaseObject;
 
-use Bedita\Model\Table\BaseObject\BaseObject;
+use BEdita\Model\Table\BaseObject\BaseObject;
 
 /**
  * Abstract base class for BEdita content object types
