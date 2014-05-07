@@ -74,6 +74,8 @@ $(document).ready(function() {
 <!-- /////////////////////////////// -->
 
 <div class="dashboard">
+	<div class="tab"><h2>{t}quick item{/t}</h2></div>
+	{$view->element('quick_item')}
 
 	<div class="tab"><h2>{t}your 5 recent items{/t}</h2></div>
 	<ul id="recent" class="bordered smallist">
@@ -145,7 +147,7 @@ $(document).ready(function() {
 			}
 		});
 
-		openAtStart("#search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
+		openAtStart("#addQuickItemWrap, #search, #allrecent, #lastnotes, #lastcomments, #recent, #userpreferences");
 	});
 	//-->
 	</script>
@@ -187,15 +189,6 @@ $(document).ready(function() {
 
 
 	</ul>
-
-
-	
-	{bedev}
-	<div class="tab"><h2>{t}quick item{/t}</h2></div>
-	{$view->element('quick_item')}
-	{/bedev}
-
-
 </div>
 
 

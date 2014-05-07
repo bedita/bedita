@@ -29,40 +29,42 @@ $(document).ready(function() {
     });
 
     $('#addQuickItem').submit(function(e) {
-        e.preventDefault();
-        $(this).ajaxSubmit({
-            dataType: 'json',
-            resetForm: true,
-            beforeSubmit: function() {
-                $('.quickitem form').hide()
-                $('.quickitem').addClass('loader').show();
-            },
-            success: function(data) {
-                $('.quickitem form').show()
-                $('.quickitem').removeClass('loader');
-                if (typeof data != 'undefined' && data.id) {
-                    quickItemsCreated.push(data.id);
-                    loadObjToAssoc(1, quickItemsCreated);
-                }
-                $('#addQuickItem select:not(.areaSectionAssociation)').select2(select2optionsSimple);
-                $('#addQuickItem select.areaSectionAssociation').select2(select2optionsTree);
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.error('textStatus: ' + textStatus + ', errorThrown: ' + errorThrown);
-                $('.quickitem form').show()
-                $('.quickitem').removeClass('loader');
-                try {
-                    if (jqXHR.responseText) {
-                        var data = JSON.parse(jqXHR.responseText);
-                        if (typeof data != 'undefined' && data.errorMsg && data.htmlMsg) {
-                            $('#messagesDiv').empty();
-                            $('#messagesDiv').html(data.htmlMsg).triggerMessage('error');
-                        }
+        if ($(this).hasClass('ajaxSubmit')) {
+            e.preventDefault();
+            $(this).ajaxSubmit({
+                dataType: 'json',
+                resetForm: true,
+                beforeSubmit: function() {
+                    $('.quickitem form').hide()
+                    $('.quickitem').addClass('loader').show();
+                },
+                success: function(data) {
+                    $('.quickitem form').show()
+                    $('.quickitem').removeClass('loader');
+                    if (typeof data != 'undefined' && data.id) {
+                        quickItemsCreated.push(data.id);
+                        loadObjToAssoc(1, quickItemsCreated);
                     }
-                } catch (e) {
-                    console.error("Missing responseText or it's not a valid json");
+                    $('#addQuickItem select:not(.areaSectionAssociation)').select2(select2optionsSimple);
+                    $('#addQuickItem select.areaSectionAssociation').select2(select2optionsTree);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('textStatus: ' + textStatus + ', errorThrown: ' + errorThrown);
+                    $('.quickitem form').show()
+                    $('.quickitem').removeClass('loader');
+                    try {
+                        if (jqXHR.responseText) {
+                            var data = JSON.parse(jqXHR.responseText);
+                            if (typeof data != 'undefined' && data.errorMsg && data.htmlMsg) {
+                                $('#messagesDiv').empty();
+                                $('#messagesDiv').html(data.htmlMsg).triggerMessage('error');
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Missing responseText or it's not a valid json");
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 });
