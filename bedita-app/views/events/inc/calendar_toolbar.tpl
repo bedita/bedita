@@ -5,12 +5,6 @@
 		<table>
 			<tr>
 				<td>
-					<a href="{$html->url('/')}events/calendar?{$nextCalendarDay|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
-						{t}next 7 days{/t}
-					</a>
-				</td>
-				
-				<td>
 					<a href="{$html->url('/')}events/calendar?{$prevCalendarDay|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
 						{t}previous 7 days{/t}
 					</a>
@@ -21,6 +15,13 @@
 						{t}today{/t}
 					</a>
 				</td>
+
+				<td>
+					<a href="{$html->url('/')}events/calendar?{$nextCalendarDay|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
+						{t}next 7 days{/t}
+					</a>
+				</td>
+
 			</tr>
 		</table>
 	</div>

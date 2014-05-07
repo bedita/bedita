@@ -340,7 +340,8 @@ UL.modules {
 	color:#FFFFFF;
 	font-weight:normal;
 	border-bottom: 20px solid rgba(0,0,0,0.3);
-	background-position: right bottom !important;
+	/*background-position: right bottom !important;*/
+	background-position:center 35px !important;
 }
 
 .modules LI:first-letter, .modules label:first-letter {
@@ -413,11 +414,11 @@ UL.modules {
 .topography, .topographies 	{background-color:#993300 !important;}
 .statistics, .stats 	{background-color:#788279 !important;}
 
-.bedita 	{
+.modules.block LI.bedita, .modules label.bedita, .bedita {
 			background-color: #FFF !important;
 			background-image: url(../img/BElogogray.gif) !important;
 			background-repeat:no-repeat !important;
-			background-position: left bottom;
+			background-position:right bottom !important;
 			background-size: 50%;
 			font:normal 1.75em Georgia, "Times New Roman", Times, serif !important;
 			line-height:1em !important;
@@ -800,7 +801,7 @@ UL.menuleft + UL.menuleft {
 	background-color:#444;
 	font-size:.9em;
 	min-width: 16px;
-	display: inline-block;
+	/*display: inline-block;*/
 }
 
 
