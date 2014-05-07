@@ -162,7 +162,8 @@ $(document).ready(function(){
 
 
 {if !empty($object.Permission)}
-
+	
+	$(".secondacolonna .modules label").addClass("lock").attr("title","object with limited permissions");
 	$(".secondacolonna .modules").after("<div class='subwarning permissions'>{t}Permissions{/t}</div>");
 	
 {/if}
@@ -262,10 +263,7 @@ $(document).ready(function(){
 /*
 	check on not saved modify
 */
-	$(formFieldToCheckSelector).change(function () {
-		
-		
-		
+	$(formFieldToCheckSelector).change(function (ev) {
 		$(".secondacolonna .modules label").addClass("save").attr("title","unsaved object");
 		$("#cancelBEObject").show();
 		{if $autosave|default:false}
@@ -273,6 +271,7 @@ $(document).ready(function(){
 			autoSave();
 		}
 		{/if}
+
 	});
 
 {if !empty($object.id)}
