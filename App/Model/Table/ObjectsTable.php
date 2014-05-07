@@ -86,6 +86,12 @@ class ObjectsTable extends Table {
             'foreignKey' => 'object_id'
         ]);
 
+        $this->belongsToMany('Tags', [
+            'joinTable' => 'object_categories',
+            'foreignKey' => 'object_id',
+            'targetForeignKey'=> 'category_id'
+        ]);
+
         $this->belongsToMany('Users', [
             'joinTable' => 'object_users',
             'through' => 'ObjectUsers',
