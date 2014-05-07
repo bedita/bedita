@@ -77,9 +77,9 @@ available options:
 			<td>
 				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
 				{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select><br>
+				</select>
 				{if !empty($filters.treeDescendants)}
-					<input type="checkbox" name="filter[descendants]"
+					&nbsp;<input type="checkbox" name="filter[descendants]"
 						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> <label>{t}descendants{/t}</label>
 				{/if}
 			</td>
