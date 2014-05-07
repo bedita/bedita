@@ -2514,7 +2514,8 @@ Table.graph .value {
 
 .editornotes {
 	line-height: 16px!important; 
-	width:146px; 
+	width: 100%; 
+	max-width: 100%;
 	padding:5px;
 	font:normal 12px Arial,Helvetica, sans-serif;
 	/* background: transparent url('../img/sfo_zebranotes.gif'); */
@@ -2755,6 +2756,27 @@ code ins {
 
 ...........................................*/
 
+.ui-tooltip {
+	z-index: 1000;
+	background: #111;
+	border-radius: 0;
+	padding: 5px;
+	color: white;
+	width: auto;
+	position: absolute !important;
+}
+
+.ui-tooltip:before {
+	content: '';
+	position: absolute;
+	display: inline-block;
+	border-left: solid 10px transparent;
+	border-right: solid 10px transparent; 
+	border-bottom: solid 10px #111;
+	left: 50%;
+	bottom: 100%;
+	margin-left: -13px;
+}
 
 .tip { 
 	/*background: transparent url(../img/black_arrow-up.png); */
@@ -2975,6 +2997,8 @@ span.highlight {
 /* ckeditor */
 .cke {
 	margin-bottom: 10px !important;
+	box-shadow: none !important;
+	-webkit-box-shadow: none !important;
 }
 
 /* select2 */
