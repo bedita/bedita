@@ -1,14 +1,7 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteCategories/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
 $(document).ready(function(){
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull').outerWidth() )
-            .floatThead();
-    });
 	
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
@@ -29,7 +22,7 @@ $(document).ready(function(){
 });
 </script>
 	
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 		<thead>
 			<tr>
 				<th>{t}label{/t}</th>
@@ -100,12 +93,14 @@ $(document).ready(function(){
 		<form method="post" id="addCat" action="{$html->url('saveCategories')}">
 		
 		<table class="indexlist">
-			<tr>
-			<th>{t}label{/t}</th>
-			<th>{t}status{/t}</th>
-			<th>{t}publication{/t}</th>
-			<th>&nbsp;</th>
-			</tr>
+			<thead>
+				<tr>
+					<th>{t}label{/t}</th>
+					<th>{t}status{/t}</th>
+					<th>{t}publication{/t}</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
 			<tr>
 				<td><input type="text" style="width:220px" name="data[label]" value="" class="js-label" /></td>
 				<td style="white-space:nowrap; ">

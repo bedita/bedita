@@ -1,12 +1,5 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 $(document).ready(function(){
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e){ 
@@ -33,7 +26,7 @@ $(document).ready(function(){
 {assign var='label_created' value=$tr->t('created',true)}
 {assign var='label_last_login' value=$tr->t('last login',true)}
 {$labelAuth = $tr->t('auth',true)}
-<table class="indexlist">
+<table class="indexlist js-header-float">
 	<thead>
 		<tr>{* TODO: i18n sulle colonne in sort*}
 			<th>{$paginator->sort($label_id,'id')}</th>

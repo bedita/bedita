@@ -1,5 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 <!--
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
@@ -30,12 +28,6 @@ function count_check_selected() {
 }
 
 $(document).ready(function(){
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 
 	// avoid to perform double click
 	$("a:first", ".indexlist .obj").click(function(e) {
@@ -119,7 +111,7 @@ $(document).ready(function(){
 
 	<input type="hidden" name="data[id]"/>
 
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 	{capture name="theader"}
 	<thead>
 		<tr>

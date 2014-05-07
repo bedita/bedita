@@ -1,5 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', true)}
-
 <script type="text/javascript">
 <!--
 //var urlShowObj = "{$html->here}";

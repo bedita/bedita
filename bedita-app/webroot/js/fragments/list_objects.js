@@ -10,12 +10,6 @@ function count_check_selected() {
 
 $(document).ready(function(){
 
-    $('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull').outerWidth() )
-            .floatThead();
-    });
-
     // avoid to perform double click
     $("a:first", ".indexlist .obj").click(function(e){ 
         e.preventDefault();

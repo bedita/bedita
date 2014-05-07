@@ -1,4 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
 {$html->script("form", false)}
 
 <script type="text/javascript">
@@ -21,12 +20,6 @@ function count_check_selected() {
 	return checked;
 }
 $(document).ready(function() {
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 
 	$("#deleteSelected").bind("click", function() {
 		if (count_check_selected() < 1) {
@@ -83,7 +76,7 @@ $(document).ready(function() {
 
 <form method="post" action="" id="formObject">
 
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 
 	<thead>
 		<tr>

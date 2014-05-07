@@ -1,15 +1,7 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <form action="{$html->url('/users/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
 
 <script type="text/javascript">
 $(document).ready(function(){
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 
 	$(".indexlist TD").not(".checklist").not(".go").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
@@ -24,7 +16,7 @@ $(document).ready(function(){
 
 {assign var='p_name' value=$tr->t('name',true)}
 {assign var='p_modified' value=$tr->t('modified',true)}
-<table class="indexlist">
+<table class="indexlist js-header-float">
 	<thead>
 		<tr>
 			<th>{$paginator->sort($p_name,'name')}</th>

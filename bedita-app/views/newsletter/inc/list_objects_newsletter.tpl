@@ -1,5 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 <!--
 var urlDelete = "{$html->url('delete/')}" ;
@@ -10,12 +8,6 @@ var urlChangeStatus = "{$html->url('changeStatusObjects/')}";
 var urlAddToAreaSection = "{$html->url('addItemsToAreaSection/')}";
 
 $(document).ready(function(){
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 	
 	$("#deleteSelected").bind("click", function() {
 		if(!confirm(message)) 
@@ -44,8 +36,7 @@ $(document).ready(function(){
 
 	<input type="hidden" name="data[id]"/>
 
-
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 	{capture name="theader"}
 		<thead>
 			<tr>

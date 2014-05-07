@@ -303,6 +303,12 @@ $(document).ready(function(){
         }
     });
 
+    $('.indexlist.js-header-float').each(function() {
+        $(this)
+            .width( $(this).closest('.mainfull, .main').outerWidth() )
+            .floatThead();
+    });
+
     $(".indexlist TR").mouseover(function() {
 
         $("TD",this).addClass("over");

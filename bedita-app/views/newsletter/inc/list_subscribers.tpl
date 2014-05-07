@@ -1,22 +1,7 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
-})
-//-->
-</script>
-
 {* DO NOT MOVE FROM HERE!! used in ajax call*}
 {if !empty($subscribers)}
 		
-<table class="indexlist">
+<table class="indexlist js-header-float">
 	<thead>
 		<tr id="orderSubscribers">
 			<th></th>
