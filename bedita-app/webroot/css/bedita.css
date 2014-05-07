@@ -1377,8 +1377,7 @@ TABLE.indexlist H4{
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
 	vertical-align: top;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	/*padding-top: 10px; padding-bottom: 10px;*/
 }
 
 .indexlist TD.custom-property-cell {
@@ -1456,7 +1455,7 @@ TABLE.indexlist H4{
 
 .indexlist TD.checklist {
 	width:15px; 
-	padding: 10px 0px 0px 0px;
+	padding: 5px 0px 0px 0px;
 	vertical-align:top;
 	text-align:right;
 	white-space:nowrap;
