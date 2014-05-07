@@ -1,5 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', true)}
-
 <script type="text/javascript">
 <!--
 //var urlShowObj = "{$html->here}";
@@ -163,7 +161,8 @@ $(document).ready(function() {
 
 	<div class="trigger">{t}Create new{/t}</div>
 	<div class="quick">
-	{$view->element('quick_item')}
+	{assign_associative var=quickParams ajax=true}
+	{$view->element('quick_item', $quickParams)}
 	</div>
 
 	{$multimediaIds = array_intersect($objectTypeIds, $conf->objectTypes.multimedia.id)}

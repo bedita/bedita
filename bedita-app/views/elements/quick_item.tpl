@@ -1,6 +1,6 @@
-<div class="quickitem">
+<div class="quickitem" id="addQuickItemWrap">
 	{$html->script('fragments/quick_item')}
-	<form id="addQuickItem" action="{$html->url('/pages/saveQuickItem')}" method="post">
+	<form id="addQuickItem"{if isset($ajax) && $ajax==true}class="ajaxSubmit"{/if} action="{$html->url('/pages/saveQuickItem')}" method="post" enctype="multipart/form-data">
 		<table style="width:100%">
 			<tr>
 				<td><label>{t}Title{/t}</label></td>

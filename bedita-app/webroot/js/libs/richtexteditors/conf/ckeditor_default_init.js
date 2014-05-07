@@ -147,6 +147,7 @@ $(window).load(function() {
 	$('.richtextNewsletterMessage').ckeditor(configNewsletterMessage);
 		
 	for (i in CKEDITOR.instances) {
-		CKEDITOR.instances[i].on('change', onChangeHandler);
+		CKEDITOR.instances[i].on('key', onChangeHandler);
+		CKEDITOR.instances[i].on('afterPaste', onChangeHandler);
 	}
 })

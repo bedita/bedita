@@ -1,19 +1,4 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
-<script type="text/javascript">
-<!--
-$(document).ready(function(){
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
-})
-//-->
-</script>
-
-<table class="indexlist">
+<table class="indexlist js-header-float">
 	<thead>
 		<tr>
 			<th>{t}name{/t}</th>

@@ -18,14 +18,13 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 //-->
 </script>
 
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
 {$html->script('fragments/list_objects.js', false)}
 	
 <form method="post" action="" id="formObject">
 
 	<input type="hidden" name="data[id]"/>
 
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 	{capture name="theader"}
 		<thead>
 		<tr>

@@ -1,37 +1,20 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteMailGroups/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}";
 
 $(document).ready(function(){
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
-
 	$(".delete").bind("click", function(){
 		if(!confirm(message)) return false ;
 		var groupId = $(this).prop("title");
 		$("#form_"+groupId).prop("action", urlDelete).submit();
 		return false;
 	});
-
-	$("input[type=text]").bind("keyup", function(){
-		var text = $(this).val();
-		if (jQuery.trim(text) == "") {
-	   		$(this).parent().siblings().find("input[type=submit]").prop("disabled", true);
-		} else {
-	   		$(this).parent().siblings().find("input[type=submit]").prop("disabled", false);
-	    }
-	});
 	
 });
 
 </script>
 
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 		<thead>
 			<tr>
 				<th>{t}list name{/t}</th>

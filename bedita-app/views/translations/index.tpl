@@ -1,5 +1,3 @@
-{$html->script('libs/jquery/plugins/jquery.float_thead.min.js', false)}
-
 <script type="text/javascript">
 var urlDelete = "{$html->url('deleteTranslations/')}" ;
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
@@ -8,12 +6,6 @@ var URLBase = "{$html->url('index/')}" ;
 
 
 $(document).ready(function() {
-
-	$('.indexlist').each(function() {
-        $(this)
-            .width( $(this).closest('.mainfull, .main').outerWidth() )
-            .floatThead();
-    });
 
 	$(".indexlist TD").not(".checklist").not(".noclick").css("cursor","pointer").click(function(i) {
 		document.location = $(this).parent().find("a:first").attr("href"); 
@@ -131,7 +123,7 @@ function changeStatusTranslations() {
 {/if}
 	
 	</div>
-	<table class="indexlist">
+	<table class="indexlist js-header-float">
 	{capture name="theader"}
 	<thead>
 		<tr>
