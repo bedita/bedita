@@ -17,3 +17,4 @@
 /tmp/*
 /App/Config/app.php
 /composer.lock
+/phpunit.xml
