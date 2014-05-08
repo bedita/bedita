@@ -97,7 +97,7 @@
 	<td class="moredata">
 		<div class="show_on_more">
 		{if !empty($rel)}
-			{if !empty($relationParamsArray[0])}
+			{if !empty($relationParamsArray)}
 				{foreach $relationParamsArray as $paramKey => $paramVal}
 					{if is_array($paramVal)}
 						{$paramName = $paramKey}
