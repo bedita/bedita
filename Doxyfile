@@ -611,14 +611,12 @@ RECURSIVE              = YES
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
 
 EXCLUDE                = bedita-app/tmp \
-                         bedita-app/vendors/*.php \
                          bedita-app/vendors/_smartyPlugins \
                          bedita-app/config \
                          bedita-app/webroot \
                          bedita-app/tests \
                          bedita-app/locale \
-                         bedita-app/plugins \
-                         bedita-app/vendors
+                         bedita-app/plugins
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded
