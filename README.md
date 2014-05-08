@@ -14,7 +14,7 @@ $ composer install
 
 It will install all necessary dependencies to startup BEdita.
 
-Copy `Bedita/Config/app.default.php` to `Bedita/Config/app.php` and edit the `$config['Datasources']['default']` array with your database connection data.
+In `Bedita/Config/app.php` edit the `$config['Datasources']['default']` array with your database connection data.
 
 ---
 
