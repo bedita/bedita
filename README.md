@@ -9,7 +9,7 @@ Once you have installed composer clone repository and checkout the right branch,
 
 ```bash
 $ cd /my/bedita/folder
-$ composer update
+$ composer install
 ```
 
 It will install all necessary dependencies to startup BEdita.
