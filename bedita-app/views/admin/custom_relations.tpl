@@ -3,6 +3,11 @@
 	var urlDelete = "{$html->url('/admin/deleteCustomRelation')}";
 </script>
 
+<style scoped>
+.js-params-options {
+	width:240px;
+}
+</style>
 {$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
@@ -186,7 +191,7 @@
 										<label>{t}options{/t} *</label>
 									</th>
 									<td>
-										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options}{/if}" placeholder="{t}option{/t} 1,{t}option{/t} 2,..."/>
+										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options}{/if}" placeholder="{t}option{/t} 1,{t}option{/t} 2,..." />
 									</td>
 								</tr>
 							{/foreach}
@@ -213,14 +218,14 @@
 								<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="" placeholder="{t}option{/t} 1,{t}option{/t} 2,..."/>
 							</td>
 						</tr>
-						<tr><td colspan="5">* {t}comma separated values{/t}</td></tr>
 					</table>
 				</td>
 			</tr>
 		</table>
+		<div style="text-align:right">* {t}comma separated values{/t}</div>
 
-		<input type="submit" style="margin:10px 10px 10px 70px;" value="{t}save '{$keyname}' relation{/t}" />
-		<input type="button" class="js-del-relation" style="margin:10px 10px 10px 70px;" value="{t}delete{/t}" />
+		<input type="submit" style="margin:0px 10px 10px 70px;" value="{t}save{/t} '{$keyname}' {t}relation{/t}" />
+		<input type="button" class="js-del-relation" style="margin:0px 10px 20px 70px;" value=" {t}delete{/t} '{$keyname}' {t}relation{/t}" />
 	</form>
 {/foreach}
 
