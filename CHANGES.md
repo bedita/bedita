@@ -1,5 +1,66 @@
 # ChangeLog
 
+## Version 3.4.0 - Corylus
+
+### User-visible changes
+
+* [#479](https://github.com/bedita/bedita/issues/479) Ckeditor does not allow inserting span elements
+* [#445](https://github.com/bedita/bedita/issues/445) Handle in UI multiple options for relations' properties
+* [#477](https://github.com/bedita/bedita/issues/477) Handle quickitem creation in dashboard
+* [#471](https://github.com/bedita/bedita/issues/471) users: add users to group from group detail view
+* [#456](https://github.com/bedita/bedita/issues/456) Multimedia upload: multiupload of files in modal window
+* [#473](https://github.com/bedita/bedita/issues/473) fix BEdita home and html layout
+* [#455](https://github.com/bedita/bedita/issues/455) Quickitem: create new objects in modal window
+* [#466](https://github.com/bedita/bedita/issues/466) Publications: contents order error on drag'n'drop with newst contents first
+* [#464](https://github.com/bedita/bedita/issues/464) Custom properties list missing in some module
+* [#442](https://github.com/bedita/bedita/issues/442) Add custom properties to module filters tab
+* [#297](https://github.com/bedita/bedita/issues/297) ui: merge Relations and Multimedia elements
+* [#450](https://github.com/bedita/bedita/issues/450) Load Tree tab in object detail view via ajax
+* starting [#416](https://github.com/bedita/bedita/issues/416) font-icon embedding for object types
+* [#458](https://github.com/bedita/bedita/issues/458) Persistent checked items in modal window 
+* [#369](https://github.com/bedita/bedita/issues/369) Gallery as *attach*
+* #297 fix and [#244](https://github.com/bedita/bedita/issues/244) some inline editing
+* [#432](https://github.com/bedita/bedita/issues/432) Filtering objects in index view and new filters
+* [#378](https://github.com/bedita/bedita/issues/378) Events: create a new calendar view
+
+### Frontend changes
+
+
+### Developer-visible changes
+
+* [#465](https://github.com/bedita/bedita/issues/465) Missing apidocs for Shell classes
+* [#445](https://github.com/bedita/bedita/issues/445) Handle in UI multiple options for relations' properties
+* [#471](https://github.com/bedita/bedita/issues/471) users: add users to group from group detail view
+* [#394](https://github.com/bedita/bedita/issues/394) Events: add week days selection in calendar
+* [#475](https://github.com/bedita/bedita/issues/475) empty dateItems in DB
+* [#467](https://github.com/bedita/bedita/issues/467) empty GeoTag items in DB
+* [#453](https://github.com/bedita/bedita/issues/453) addressbook: paginate "promote as user modal"
+* [#472](https://github.com/bedita/bedita/issues/472) bedita exceptions for http status 401, 403, 404 and 500
+* [#454](https://github.com/bedita/bedita/issues/454) external pluggable authentication system: OAuth implementation
+* [#443](https://github.com/bedita/bedita/issues/443) Multimedia: tree filtering should affect attached media
+* [#469](https://github.com/bedita/bedita/issues/469) Upgrade to CakePHP 1.3.18 and Smarty 3.1.18
+* [#466](https://github.com/bedita/bedita/issues/466) Publications: contents order error on drag'n'drop with newst contents first
+* [#464](https://github.com/bedita/bedita/issues/464) Custom properties list missing in some module
+* [#462](https://github.com/bedita/bedita/issues/462) Statistics filtered by tree gives warnings
+* [#459](https://github.com/bedita/bedita/issues/459) merged form_assoc_object view in the modal and minor fix
+* [#460](https://github.com/bedita/bedita/issues/460) Deleting a user- group and updating permissions
+* [#463](https://github.com/bedita/bedita/issues/463) Webkit bug with CKEditor adds styled spans
+* [#450](https://github.com/bedita/bedita/issues/450) Load Tree tab in object detail view via ajax
+* [#456](https://github.com/bedita/bedita/issues/456) Multimedia upload: multiupload of files in modal window
+* [#428](https://github.com/bedita/bedita/issues/428) Upgrade to jQuery 2
+* [#455](https://github.com/bedita/bedita/issues/455) Quickitem: create new objects in modal window
+* [#297](https://github.com/bedita/bedita/issues/297) ui: merge Relations and Multimedia elements
+* [#457](https://github.com/bedita/bedita/issues/457) Use localStorage instead of cookies to track tabs to open
+* [#420](https://github.com/bedita/bedita/issues/420) Add and handle relations properties
+* [#451](https://github.com/bedita/bedita/issues/451) BeHash component error checking the existence of a method
+* [#244](https://github.com/bedita/bedita/issues/244) in progress
+* [#432](https://github.com/bedita/bedita/issues/432) Filtering objects in index view and new filters
+* [#448](https://github.com/bedita/bedita/issues/448) remove references to bedita.sys.php
+* [#449](https://github.com/bedita/bedita/issues/449) bedita shell remove unused media files, add url for missing
+* [#378](https://github.com/bedita/bedita/issues/378) Events: create a new calendar view
+* [#446](https://github.com/bedita/bedita/issues/446) xhprof profiler integration
+
+
 ## Version 3.3 - Corylus
 
 ### User-visible changes

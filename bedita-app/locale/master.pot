@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-02-27 11:32:47\n"
+"POT-Creation-Date: 2014-05-09 11:58:47\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "Add event date"
 msgstr ""
 
-msgid "Add multiple items"
+msgid "Add many items"
 msgstr ""
 
 msgid "Add new category"
@@ -64,9 +64,6 @@ msgid "Address"
 msgstr ""
 
 msgid "Advanced Properties"
-msgstr ""
-
-msgid "Advanced editor"
 msgstr ""
 
 msgid "Alias"
@@ -204,9 +201,6 @@ msgstr ""
 msgid "Bit depth"
 msgstr ""
 
-msgid "Browse"
-msgstr ""
-
 msgid "Bulk actions on"
 msgstr ""
 
@@ -217,9 +211,6 @@ msgid "Calendar view"
 msgstr ""
 
 msgid "Cancel"
-msgstr ""
-
-msgid "Cancel queue"
 msgstr ""
 
 msgid "Captcha image and text don't match"
@@ -342,7 +333,13 @@ msgstr ""
 msgid "Create"
 msgstr ""
 
+msgid "Create a new custom property"
+msgstr ""
+
 msgid "Create a new custom relation"
+msgstr ""
+
+msgid "Create many"
 msgstr ""
 
 msgid "Create new"
@@ -355,9 +352,6 @@ msgid "Create new publication"
 msgstr ""
 
 msgid "Create new section"
-msgstr ""
-
-msgid "Create new user"
 msgstr ""
 
 msgid "Created on"
@@ -594,6 +588,9 @@ msgstr ""
 msgid "Error removing group"
 msgstr ""
 
+msgid "Error saving avatar data"
+msgstr ""
+
 msgid "Error saving card for "
 msgstr ""
 
@@ -651,6 +648,9 @@ msgstr ""
 msgid "Error saving user"
 msgstr ""
 
+msgid "Error saving user data"
+msgstr ""
+
 msgid "Error saving user."
 msgstr ""
 
@@ -675,9 +675,6 @@ msgstr ""
 msgid "Error: utility operation undefined"
 msgstr ""
 
-msgid "Errors during upload"
-msgstr ""
-
 msgid "Event Promoter"
 msgstr ""
 
@@ -688,6 +685,9 @@ msgid "Event saved"
 msgstr ""
 
 msgid "Event start"
+msgstr ""
+
+msgid "Events calendar"
 msgstr ""
 
 msgid "Events deleted"
@@ -738,7 +738,13 @@ msgstr ""
 msgid "Fixed"
 msgstr ""
 
-msgid "Forgotten username or password?"
+msgid "Fixed object"
+msgstr ""
+
+msgid "For type options you have to define at least two options"
+msgstr ""
+
+msgid "Forgot your username or password?"
 msgstr ""
 
 msgid "Frontend Logs"
@@ -763,6 +769,9 @@ msgid "General configuration"
 msgstr ""
 
 msgid "Generic categories"
+msgstr ""
+
+msgid "GeoTag"
 msgstr ""
 
 msgid "Get contents"
@@ -844,9 +853,6 @@ msgid "IP accepted"
 msgstr ""
 
 msgid "IP banned"
-msgstr ""
-
-msgid "If you have any problems try with browser upload"
 msgstr ""
 
 msgid "Immutable group"
@@ -999,6 +1005,9 @@ msgstr ""
 msgid "Media url"
 msgstr ""
 
+msgid "Mediamap object"
+msgstr ""
+
 msgid "Message template"
 msgstr ""
 
@@ -1024,6 +1033,9 @@ msgid "Missing mail group id"
 msgstr ""
 
 msgid "Missing message id or recipient"
+msgstr ""
+
+msgid "Missing object type"
 msgstr ""
 
 msgid "Missing options"
@@ -1188,6 +1200,9 @@ msgstr ""
 msgid "No documents found"
 msgstr ""
 
+msgid "No events in this range of time"
+msgstr ""
+
 msgid "No file in the form"
 msgstr ""
 
@@ -1335,7 +1350,7 @@ msgstr ""
 msgid "Operations on"
 msgstr ""
 
-msgid "Operations on above records"
+msgid "Or use one of this external auth service"
 msgstr ""
 
 msgid "Organization"
@@ -1452,9 +1467,6 @@ msgstr ""
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr ""
 
-msgid "Queue is empty"
-msgstr ""
-
 msgid "Queued"
 msgstr ""
 
@@ -1491,22 +1503,13 @@ msgstr ""
 msgid "Relation saved"
 msgstr ""
 
-msgid "Relations"
-msgstr ""
-
 msgid "Remove"
-msgstr ""
-
-msgid "Remove association"
 msgstr ""
 
 msgid "Remove selected from"
 msgstr ""
 
 msgid "Remove selected from category"
-msgstr ""
-
-msgid "Remove selected from section"
 msgstr ""
 
 msgid "Reserved method called from url"
@@ -1554,13 +1557,7 @@ msgstr ""
 msgid "Select a status"
 msgstr ""
 
-msgid "Select a user from the list"
-msgstr ""
-
 msgid "Select by category"
-msgstr ""
-
-msgid "Select by type"
 msgstr ""
 
 msgid "Select content languages"
@@ -1725,6 +1722,9 @@ msgstr ""
 msgid "Title"
 msgstr ""
 
+msgid "Title & Description"
+msgstr ""
+
 msgid "Title is required"
 msgstr ""
 
@@ -1791,16 +1791,10 @@ msgstr ""
 msgid "Upload"
 msgstr ""
 
-msgid "Upload end"
+msgid "Upload files"
 msgstr ""
 
 msgid "Upload new file"
-msgstr ""
-
-msgid "Upload queue"
-msgstr ""
-
-msgid "Uploading file"
 msgstr ""
 
 msgid "Url"
@@ -1810,9 +1804,6 @@ msgid "Use a valid email"
 msgstr ""
 
 msgid "Use all available languages for contents"
-msgstr ""
-
-msgid "Use the multiple upload"
 msgstr ""
 
 msgid "User"
@@ -1843,9 +1834,6 @@ msgid "User groups"
 msgstr ""
 
 msgid "User is not subscribed to mail group"
-msgstr ""
-
-msgid "User login temporary blocked"
 msgstr ""
 
 msgid "User name"
@@ -1914,9 +1902,6 @@ msgstr ""
 msgid "Wrong old user password"
 msgstr ""
 
-msgid "Wrong username/password or no authorization"
-msgstr ""
-
 msgid "Wrong username/password or session expired"
 msgstr ""
 
@@ -1956,9 +1941,6 @@ msgstr ""
 msgid "add"
 msgstr ""
 
-msgid "add by object ids"
-msgstr ""
-
 msgid "add by url"
 msgstr ""
 
@@ -1975,6 +1957,12 @@ msgid "add more tags"
 msgstr ""
 
 msgid "add permission"
+msgstr ""
+
+msgid "add to group"
+msgstr ""
+
+msgid "add users"
 msgstr ""
 
 msgid "addon plugged succesfully"
@@ -2034,9 +2022,6 @@ msgstr ""
 msgid "already contains the file uploaded"
 msgstr ""
 
-msgid "always"
-msgstr ""
-
 msgid "associate"
 msgstr ""
 
@@ -2044,6 +2029,9 @@ msgid "at"
 msgstr ""
 
 msgid "audio"
+msgstr ""
+
+msgid "auth type"
 msgstr ""
 
 msgid "authentication provided by"
@@ -2148,6 +2136,12 @@ msgstr ""
 msgid "close"
 msgstr ""
 
+msgid "comma separated values"
+msgstr ""
+
+msgid "commands"
+msgstr ""
+
 msgid "comments"
 msgstr ""
 
@@ -2184,9 +2178,6 @@ msgstr ""
 msgid "create"
 msgstr ""
 
-msgid "create and associate"
-msgstr ""
-
 msgid "create group"
 msgstr ""
 
@@ -2200,6 +2191,9 @@ msgid "create new multimedia object containing the uploaded file"
 msgstr ""
 
 msgid "create new translation"
+msgstr ""
+
+msgid "create new user"
 msgstr ""
 
 msgid "created"
@@ -2244,9 +2238,6 @@ msgstr ""
 msgid "delete all cached files from BEdita and frontends"
 msgstr ""
 
-msgid "delete selected items"
-msgstr ""
-
 msgid "delete this file or reference"
 msgstr ""
 
@@ -2274,6 +2265,9 @@ msgstr ""
 msgid "does not affect email newsletter"
 msgstr ""
 
+msgid "done"
+msgstr ""
+
 msgid "download"
 msgstr ""
 
@@ -2281,6 +2275,9 @@ msgid "draft"
 msgstr ""
 
 msgid "duration in minutes"
+msgstr ""
+
+msgid "e-mail"
 msgstr ""
 
 msgid "edit"
@@ -2316,6 +2313,9 @@ msgstr ""
 msgid "events"
 msgstr ""
 
+msgid "every day"
+msgstr ""
+
 msgid "exit"
 msgstr ""
 
@@ -2338,9 +2338,6 @@ msgid "file is already used, please change it to avoid malfunctioning"
 msgstr ""
 
 msgid "filename"
-msgstr ""
-
-msgid "files queued"
 msgstr ""
 
 msgid "filesize"
@@ -2400,7 +2397,7 @@ msgstr ""
 msgid "hidden"
 msgstr ""
 
-msgid "hidden from menu and canonical path"
+msgid "hide mediamaps"
 msgstr ""
 
 msgid "host"
@@ -2523,9 +2520,6 @@ msgstr ""
 msgid "mail body"
 msgstr ""
 
-msgid "mailgroups"
-msgstr ""
-
 msgid "mails / minute"
 msgstr ""
 
@@ -2619,6 +2613,9 @@ msgstr ""
 msgid "modified on"
 msgstr ""
 
+msgid "more"
+msgstr ""
+
 msgid "more from this IP"
 msgstr ""
 
@@ -2674,6 +2671,9 @@ msgid "newsletter"
 msgstr ""
 
 msgid "next"
+msgstr ""
+
+msgid "next 7 days"
 msgstr ""
 
 msgid "next invoice"
@@ -2754,9 +2754,6 @@ msgstr ""
 msgid "off"
 msgstr ""
 
-msgid "ok"
-msgstr ""
-
 msgid "old psw"
 msgstr ""
 
@@ -2779,6 +2776,9 @@ msgid "open in new window"
 msgstr ""
 
 msgid "operations"
+msgstr ""
+
+msgid "option"
 msgstr ""
 
 msgid "option list"
@@ -2848,6 +2848,9 @@ msgid "port"
 msgstr ""
 
 msgid "prev"
+msgstr ""
+
+msgid "previous 7 days"
 msgstr ""
 
 msgid "previous page"
@@ -2934,6 +2937,12 @@ msgstr ""
 msgid "referenced objects list"
 msgstr ""
 
+msgid "relation"
+msgstr ""
+
+msgid "relations"
+msgstr ""
+
 msgid "remove from users"
 msgstr ""
 
@@ -2944,6 +2953,9 @@ msgid "reply to"
 msgstr ""
 
 msgid "required"
+msgstr ""
+
+msgid "reset"
 msgstr ""
 
 msgid "reset filters"
@@ -2991,6 +3003,9 @@ msgstr ""
 msgid "search"
 msgstr ""
 
+msgid "search user"
+msgstr ""
+
 msgid "search word"
 msgstr ""
 
@@ -3009,16 +3024,34 @@ msgstr ""
 msgid "seealso"
 msgstr ""
 
+msgid "select a category"
+msgstr ""
+
+msgid "select a group"
+msgstr ""
+
+msgid "select a permission"
+msgstr ""
+
+msgid "select a permission type"
+msgstr ""
+
+msgid "select a status"
+msgstr ""
+
 msgid "select an item to associate"
 msgstr ""
 
-msgid "select from archive"
+msgid "select an object type"
 msgstr ""
 
 msgid "select one"
 msgstr ""
 
 msgid "select position"
+msgstr ""
+
+msgid "select users to add"
 msgstr ""
 
 msgid "selected records"
@@ -3048,10 +3081,16 @@ msgstr ""
 msgid "show"
 msgstr ""
 
+msgid "show mediamaps"
+msgstr ""
+
 msgid "signature"
 msgstr ""
 
 msgid "size"
+msgstr ""
+
+msgid "source"
 msgstr ""
 
 msgid "source and/or target objects group can't be empty"
@@ -3061,6 +3100,9 @@ msgid "staging url"
 msgstr ""
 
 msgid "start"
+msgstr ""
+
+msgid "start from"
 msgstr ""
 
 msgid "start has to be a valid date in the following format:"
@@ -3126,6 +3168,9 @@ msgstr ""
 msgid "today"
 msgstr ""
 
+msgid "toggle"
+msgstr ""
+
 msgid "total mails"
 msgstr ""
 
@@ -3180,9 +3225,6 @@ msgstr ""
 msgid "updated succesfully"
 msgstr ""
 
-msgid "upload new items"
-msgstr ""
-
 msgid "url"
 msgstr ""
 
@@ -3193,6 +3235,9 @@ msgid "use template"
 msgstr ""
 
 msgid "user"
+msgstr ""
+
+msgid "userid"
 msgstr ""
 
 msgid "username"
@@ -3241,6 +3286,9 @@ msgid "website"
 msgstr ""
 
 msgid "with email"
+msgstr ""
+
+msgid "with items located on above position"
 msgstr ""
 
 msgid "with status"

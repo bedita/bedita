@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita 3.3 setup | Admin</title>
+	<title>BEdita 3.4 setup | Admin</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>

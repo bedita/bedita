@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-02-27 10:38:08\n"
+"POT-Creation-Date: 2014-05-09 11:38:21\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -45,8 +45,8 @@ msgstr "Añadir palabras divididas por comas"
 msgid "Add event date"
 msgstr "Añadir fecha evento"
 
-msgid "Add multiple items"
-msgstr "Añadir elementos múltiplos"
+msgid "Add many items"
+msgstr ""
 
 msgid "Add new category"
 msgstr "Añadir nueva categoría"
@@ -68,9 +68,6 @@ msgstr "Dirección"
 
 msgid "Advanced Properties"
 msgstr "Propiedades Avanzadas"
-
-msgid "Advanced editor"
-msgstr ""
 
 msgid "Alias"
 msgstr "Alias"
@@ -215,9 +212,6 @@ msgstr ""
 msgid "Bit depth"
 msgstr "Profundidad bit"
 
-msgid "Browse"
-msgstr "Navega"
-
 msgid "Bulk actions on"
 msgstr "Operaciones sobre"
 
@@ -229,9 +223,6 @@ msgstr ""
 
 msgid "Cancel"
 msgstr ""
-
-msgid "Cancel queue"
-msgstr "Borrar cola"
 
 msgid "Captcha image and text don't match"
 msgstr "Imagen captcha y texto no corresponden"
@@ -353,7 +344,13 @@ msgstr "Módulos centrales"
 msgid "Create"
 msgstr "Crear"
 
+msgid "Create a new custom property"
+msgstr ""
+
 msgid "Create a new custom relation"
+msgstr ""
+
+msgid "Create many"
 msgstr ""
 
 msgid "Create new"
@@ -367,9 +364,6 @@ msgstr "Crear nueva publicación"
 
 msgid "Create new section"
 msgstr "Crear nueva sección"
-
-msgid "Create new user"
-msgstr "Crear nuevo usuario"
 
 msgid "Created on"
 msgstr ""
@@ -611,6 +605,9 @@ msgstr ""
 msgid "Error removing group"
 msgstr "Error en la eliminación del grupo"
 
+msgid "Error saving avatar data"
+msgstr ""
+
 msgid "Error saving card for "
 msgstr "Error guardando la tarjeta para"
 
@@ -668,6 +665,9 @@ msgstr "Error guardando tag"
 msgid "Error saving user"
 msgstr "Error guardando usuario"
 
+msgid "Error saving user data"
+msgstr ""
+
 msgid "Error saving user."
 msgstr "Error guardando usuario."
 
@@ -692,9 +692,6 @@ msgstr "Error en carga usuario"
 msgid "Error: utility operation undefined"
 msgstr "Error: operación de utilidad indefinida"
 
-msgid "Errors during upload"
-msgstr "Errores subiendo archivos"
-
 msgid "Event Promoter"
 msgstr "Promotor Evento"
 
@@ -706,6 +703,9 @@ msgstr "Evento guardado"
 
 msgid "Event start"
 msgstr "Inicio Evento"
+
+msgid "Events calendar"
+msgstr ""
 
 msgid "Events deleted"
 msgstr "Eventos borrado"
@@ -757,8 +757,14 @@ msgstr "Buscar y llenar coordenadas LatLong"
 msgid "Fixed"
 msgstr ""
 
-msgid "Forgotten username or password?"
-msgstr "¿Has olvidado nombre de usuario o contraseña?"
+msgid "Fixed object"
+msgstr ""
+
+msgid "For type options you have to define at least two options"
+msgstr ""
+
+msgid "Forgot your username or password?"
+msgstr ""
 
 msgid "Frontend Logs"
 msgstr "Log Frontend"
@@ -783,6 +789,9 @@ msgstr "Configuración general"
 
 msgid "Generic categories"
 msgstr "Categorías genéricas"
+
+msgid "GeoTag"
+msgstr ""
 
 msgid "Get contents"
 msgstr "Obtener los contenidos"
@@ -864,11 +873,6 @@ msgstr "IP aceptado"
 
 msgid "IP banned"
 msgstr "IP prohibido"
-
-msgid "If you have any problems try with browser upload"
-msgstr ""
-"Si se encuentran problemas, intentar con la subida del navegador [browser "
-"upload]"
 
 msgid "Immutable group"
 msgstr "Grupo Inmutable"
@@ -1020,6 +1024,9 @@ msgstr "Tipo media"
 msgid "Media url"
 msgstr "url Media"
 
+msgid "Mediamap object"
+msgstr ""
+
 msgid "Message template"
 msgstr "Template mensaje"
 
@@ -1046,6 +1053,9 @@ msgstr "Falta id del grupo de correo"
 
 msgid "Missing message id or recipient"
 msgstr "Falta id de mensaje o recibidor"
+
+msgid "Missing object type"
+msgstr ""
 
 msgid "Missing options"
 msgstr "Faltan opciones"
@@ -1213,6 +1223,9 @@ msgstr "Ningun dato"
 msgid "No documents found"
 msgstr "Ningun documento encontrado"
 
+msgid "No events in this range of time"
+msgstr ""
+
 msgid "No file in the form"
 msgstr "Ningun archivo en el form"
 
@@ -1360,8 +1373,8 @@ msgstr "Calendario abierto"
 msgid "Operations on"
 msgstr "Operaciones sobre"
 
-msgid "Operations on above records"
-msgstr "Operaciones en los records seleccionados"
+msgid "Or use one of this external auth service"
+msgstr ""
 
 msgid "Organization"
 msgstr "Organización"
@@ -1480,9 +1493,6 @@ msgstr "Publicar"
 msgid "Publisher is required (at least %1 alphanumerical char)"
 msgstr "Publicación obligatoria (por lo menos %1 caracteres alfanuméricos)"
 
-msgid "Queue is empty"
-msgstr "Cola vacía"
-
 msgid "Queued"
 msgstr "En cola"
 
@@ -1519,23 +1529,14 @@ msgstr ""
 msgid "Relation saved"
 msgstr ""
 
-msgid "Relations"
-msgstr ""
-
 msgid "Remove"
 msgstr "Quitar"
-
-msgid "Remove association"
-msgstr "Quitar la asociación"
 
 msgid "Remove selected from"
 msgstr "Quitar seleccionado(s) de"
 
 msgid "Remove selected from category"
 msgstr "Quitar seleccionado(s) de la categoría"
-
-msgid "Remove selected from section"
-msgstr "Quitar seleccionado(s) de la sección"
 
 msgid "Reserved method called from url"
 msgstr ""
@@ -1583,14 +1584,8 @@ msgstr "Seleccionar un grupo de correo"
 msgid "Select a status"
 msgstr "Seleccionar estado"
 
-msgid "Select a user from the list"
-msgstr "Seleccionar usuario de la lista"
-
 msgid "Select by category"
 msgstr "Seleccionar por categoría"
-
-msgid "Select by type"
-msgstr "Seleccionar por tipo"
 
 msgid "Select content languages"
 msgstr "Seleccionar lenguas para los contenidos"
@@ -1755,6 +1750,9 @@ msgstr "Este objeto está fijo - Algunos datos sólo lectura"
 msgid "Title"
 msgstr "Título"
 
+msgid "Title & Description"
+msgstr ""
+
 msgid "Title is required"
 msgstr "El título es obligatorio"
 
@@ -1824,17 +1822,11 @@ msgstr "Tipo no compatible"
 msgid "Upload"
 msgstr "Subir"
 
-msgid "Upload end"
-msgstr "Subida terminada"
+msgid "Upload files"
+msgstr ""
 
 msgid "Upload new file"
 msgstr "Subir nuevo archivo"
-
-msgid "Upload queue"
-msgstr "Cola de subida"
-
-msgid "Uploading file"
-msgstr "Subiendo archivo"
 
 msgid "Url"
 msgstr "Url"
@@ -1844,9 +1836,6 @@ msgstr "Utilizar correo valido "
 
 msgid "Use all available languages for contents"
 msgstr "Utilizar todos los idiomas disponibles para los contenidos"
-
-msgid "Use the multiple upload"
-msgstr "Utilizar subida múltiple"
 
 msgid "User"
 msgstr "Usuario"
@@ -1881,9 +1870,6 @@ msgstr "Grupos de usuarios"
 
 msgid "User is not subscribed to mail group"
 msgstr "Usuario no suscrito al grupo de correo"
-
-msgid "User login temporary blocked"
-msgstr "Inicio sesión de usuario bloqueado temporalmente"
 
 msgid "User name"
 msgstr "Nombre usuario"
@@ -1956,9 +1942,6 @@ msgstr "Escribir su e-mail aquí"
 msgid "Wrong old user password"
 msgstr "Contraseña de antiguo usuario incorrecta"
 
-msgid "Wrong username/password or no authorization"
-msgstr "Usuario/contraseña incorrecto o no autorización "
-
 msgid "Wrong username/password or session expired"
 msgstr "Usuario/contraseña incorrecto o sesión finalizada"
 
@@ -1998,9 +1981,6 @@ msgstr ""
 msgid "add"
 msgstr "Añadir"
 
-msgid "add by object ids"
-msgstr "Añadir por identificadores de los objetos"
-
 msgid "add by url"
 msgstr "Añadir por URL"
 
@@ -2017,6 +1997,12 @@ msgid "add more tags"
 msgstr "añadir más tag"
 
 msgid "add permission"
+msgstr ""
+
+msgid "add to group"
+msgstr ""
+
+msgid "add users"
 msgstr ""
 
 msgid "addon plugged succesfully"
@@ -2076,9 +2062,6 @@ msgstr "todos los webmarks"
 msgid "already contains the file uploaded"
 msgstr ""
 
-msgid "always"
-msgstr ""
-
 msgid "associate"
 msgstr "asociar"
 
@@ -2087,6 +2070,9 @@ msgstr "en"
 
 msgid "audio"
 msgstr "audio"
+
+msgid "auth type"
+msgstr ""
 
 msgid "authentication provided by"
 msgstr "autenticación proporcionada por"
@@ -2190,6 +2176,12 @@ msgstr "clonar"
 msgid "close"
 msgstr "cerrar"
 
+msgid "comma separated values"
+msgstr ""
+
+msgid "commands"
+msgstr ""
+
 msgid "comments"
 msgstr "comentarios"
 
@@ -2226,9 +2218,6 @@ msgstr "país"
 msgid "create"
 msgstr "crear"
 
-msgid "create and associate"
-msgstr "crear y asociar"
-
 msgid "create group"
 msgstr "crear grupo"
 
@@ -2243,6 +2232,9 @@ msgstr ""
 
 msgid "create new translation"
 msgstr "crear nueva traducción"
+
+msgid "create new user"
+msgstr ""
 
 msgid "created"
 msgstr "creado"
@@ -2286,9 +2278,6 @@ msgstr "borrar todo"
 msgid "delete all cached files from BEdita and frontends"
 msgstr "eliminar todos los archivos de cache de BEdita y frontends"
 
-msgid "delete selected items"
-msgstr "eliminar los elementos seleccionados"
-
 msgid "delete this file or reference"
 msgstr ""
 
@@ -2316,6 +2305,9 @@ msgstr "documentos"
 msgid "does not affect email newsletter"
 msgstr "no afecta la newsletter de correos"
 
+msgid "done"
+msgstr ""
+
 msgid "download"
 msgstr "descargar"
 
@@ -2324,6 +2316,9 @@ msgstr "borrador"
 
 msgid "duration in minutes"
 msgstr "duración en minutos"
+
+msgid "e-mail"
+msgstr ""
 
 msgid "edit"
 msgstr "editar"
@@ -2358,6 +2353,9 @@ msgstr "final tiene que ser una fecha válida en el formato siguiente:"
 msgid "events"
 msgstr "eventos"
 
+msgid "every day"
+msgstr ""
+
 msgid "exit"
 msgstr "salir"
 
@@ -2381,9 +2379,6 @@ msgstr "el archivo ya está en uso, cambiarlo para evitar un mal funcionamiento"
 
 msgid "filename"
 msgstr "nombre archivo"
-
-msgid "files queued"
-msgstr "archivos en cola"
 
 msgid "filesize"
 msgstr "tamaño archivo"
@@ -2442,8 +2437,8 @@ msgstr "aquí"
 msgid "hidden"
 msgstr ""
 
-msgid "hidden from menu and canonical path"
-msgstr "ocultos en menú y ruta canónica"
+msgid "hide mediamaps"
+msgstr ""
 
 msgid "host"
 msgstr "host"
@@ -2565,9 +2560,6 @@ msgstr "longitud"
 msgid "mail body"
 msgstr "texto"
 
-msgid "mailgroups"
-msgstr "grupos de correo"
-
 msgid "mails / minute"
 msgstr "mails / minuto"
 
@@ -2663,6 +2655,9 @@ msgstr "modificado"
 msgid "modified on"
 msgstr "modificado el"
 
+msgid "more"
+msgstr ""
+
 msgid "more from this IP"
 msgstr "más de este IP"
 
@@ -2719,6 +2714,9 @@ msgstr "newsletter"
 
 msgid "next"
 msgstr "próximo"
+
+msgid "next 7 days"
+msgstr ""
 
 msgid "next invoice"
 msgstr "próximo invoice"
@@ -2798,9 +2796,6 @@ msgstr "de id principal"
 msgid "off"
 msgstr "off"
 
-msgid "ok"
-msgstr "ok"
-
 msgid "old psw"
 msgstr "vieja contraseña"
 
@@ -2824,6 +2819,9 @@ msgstr "abrir en una nueva ventana"
 
 msgid "operations"
 msgstr "operaciones"
+
+msgid "option"
+msgstr ""
 
 msgid "option list"
 msgstr "opción de la lista"
@@ -2893,6 +2891,9 @@ msgstr "puerta"
 
 msgid "prev"
 msgstr "previo"
+
+msgid "previous 7 days"
+msgstr ""
 
 msgid "previous page"
 msgstr "página anterior"
@@ -2978,6 +2979,12 @@ msgstr "destinatario(s)"
 msgid "referenced objects list"
 msgstr "lista objetos referenciados"
 
+msgid "relation"
+msgstr ""
+
+msgid "relations"
+msgstr ""
+
 msgid "remove from users"
 msgstr "quitar de usuarios"
 
@@ -2989,6 +2996,9 @@ msgstr "responder a"
 
 msgid "required"
 msgstr "necesario"
+
+msgid "reset"
+msgstr ""
 
 msgid "reset filters"
 msgstr ""
@@ -3035,6 +3045,9 @@ msgstr "programado de"
 msgid "search"
 msgstr "buscar"
 
+msgid "search user"
+msgstr ""
+
 msgid "search word"
 msgstr ""
 
@@ -3053,16 +3066,34 @@ msgstr "ver los detalles de error"
 msgid "seealso"
 msgstr "véase también"
 
+msgid "select a category"
+msgstr ""
+
+msgid "select a group"
+msgstr ""
+
+msgid "select a permission"
+msgstr ""
+
+msgid "select a permission type"
+msgstr ""
+
+msgid "select a status"
+msgstr ""
+
 msgid "select an item to associate"
 msgstr "seleccionar un elemento para asociar"
 
-msgid "select from archive"
-msgstr "seleccionar desde archivo"
+msgid "select an object type"
+msgstr ""
 
 msgid "select one"
 msgstr "seleccionar uno"
 
 msgid "select position"
+msgstr ""
+
+msgid "select users to add"
 msgstr ""
 
 msgid "selected records"
@@ -3092,11 +3123,17 @@ msgstr "texto breve"
 msgid "show"
 msgstr "mostrar"
 
+msgid "show mediamaps"
+msgstr ""
+
 msgid "signature"
 msgstr "firma"
 
 msgid "size"
 msgstr "tamaño"
+
+msgid "source"
+msgstr ""
 
 msgid "source and/or target objects group can't be empty"
 msgstr ""
@@ -3106,6 +3143,9 @@ msgstr "url staging"
 
 msgid "start"
 msgstr "comenzar"
+
+msgid "start from"
+msgstr ""
 
 msgid "start has to be a valid date in the following format:"
 msgstr "inicio tiene que ser una fecha válida en el siguiente formato:"
@@ -3170,6 +3210,9 @@ msgstr "a los destinatarios"
 msgid "today"
 msgstr "hoy"
 
+msgid "toggle"
+msgstr ""
+
 msgid "total mails"
 msgstr "total mails"
 
@@ -3228,9 +3271,6 @@ msgstr "actualizar campos stream"
 msgid "updated succesfully"
 msgstr ""
 
-msgid "upload new items"
-msgstr "subir nuevos elementos"
-
 msgid "url"
 msgstr "url"
 
@@ -3242,6 +3282,9 @@ msgstr "utilizar template"
 
 msgid "user"
 msgstr "usuario"
+
+msgid "userid"
+msgstr ""
 
 msgid "username"
 msgstr "nombre de usuario"
@@ -3291,6 +3334,9 @@ msgstr "sitio web"
 msgid "with email"
 msgstr "con email"
 
+msgid "with items located on above position"
+msgstr ""
+
 msgid "with status"
 msgstr "con estado"
 
@@ -3311,6 +3357,92 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "Add multiple items"
+#~ msgstr "Añadir elementos múltiplos"
+
+#~ msgid "Browse"
+#~ msgstr "Navega"
+
+#~ msgid "Cancel queue"
+#~ msgstr "Borrar cola"
+
+#~ msgid "Create new user"
+#~ msgstr "Crear nuevo usuario"
+
+#~ msgid "Errors during upload"
+#~ msgstr "Errores subiendo archivos"
+
+#~ msgid "Forgotten username or password?"
+#~ msgstr "¿Has olvidado nombre de usuario o contraseña?"
+
+#~ msgid "If you have any problems try with browser upload"
+#~ msgstr ""
+#~ "Si se encuentran problemas, intentar con la subida del navegador [browser "
+#~ "upload]"
+
+#~ msgid "Operations on above records"
+#~ msgstr "Operaciones en los records seleccionados"
+
+#~ msgid "Queue is empty"
+#~ msgstr "Cola vacía"
+
+#~ msgid "Remove association"
+#~ msgstr "Quitar la asociación"
+
+#~ msgid "Remove selected from section"
+#~ msgstr "Quitar seleccionado(s) de la sección"
+
+#~ msgid "Select a user from the list"
+#~ msgstr "Seleccionar usuario de la lista"
+
+#~ msgid "Select by type"
+#~ msgstr "Seleccionar por tipo"
+
+#~ msgid "Upload end"
+#~ msgstr "Subida terminada"
+
+#~ msgid "Upload queue"
+#~ msgstr "Cola de subida"
+
+#~ msgid "Uploading file"
+#~ msgstr "Subiendo archivo"
+
+#~ msgid "Use the multiple upload"
+#~ msgstr "Utilizar subida múltiple"
+
+#~ msgid "User login temporary blocked"
+#~ msgstr "Inicio sesión de usuario bloqueado temporalmente"
+
+#~ msgid "Wrong username/password or no authorization"
+#~ msgstr "Usuario/contraseña incorrecto o no autorización "
+
+#~ msgid "add by object ids"
+#~ msgstr "Añadir por identificadores de los objetos"
+
+#~ msgid "create and associate"
+#~ msgstr "crear y asociar"
+
+#~ msgid "delete selected items"
+#~ msgstr "eliminar los elementos seleccionados"
+
+#~ msgid "files queued"
+#~ msgstr "archivos en cola"
+
+#~ msgid "hidden from menu and canonical path"
+#~ msgstr "ocultos en menú y ruta canónica"
+
+#~ msgid "mailgroups"
+#~ msgstr "grupos de correo"
+
+#~ msgid "ok"
+#~ msgstr "ok"
+
+#~ msgid "select from archive"
+#~ msgstr "seleccionar desde archivo"
+
+#~ msgid "upload new items"
+#~ msgstr "subir nuevos elementos"
 
 #~ msgid "Change this file with another"
 #~ msgstr "Reemplazar archivo"
