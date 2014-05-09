@@ -1,6 +1,7 @@
 # BEdita, a semantic content management framework
 
 master: [![Build Status](https://travis-ci.org/bedita/bedita.png?branch=master)](https://travis-ci.org/bedita/bedita)
+3-corylus: [![Build Status](https://travis-ci.org/bedita/bedita.png?branch=3-corylus)](https://travis-ci.org/bedita/bedita)
 3.2-populus: [![Build Status](https://travis-ci.org/bedita/bedita.png?branch=3.2-populus)](https://travis-ci.org/bedita/bedita)
 
 BEdita is a software to create, manage content and organize it with semantic rules.
