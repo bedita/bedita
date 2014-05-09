@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<h1>BEdita 3.3 setup</h1>
+<h1>BEdita 3.4 setup</h1>
 
 {assign var="page" value=$smarty.post.page|default:3}
 
