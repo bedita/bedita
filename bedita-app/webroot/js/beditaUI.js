@@ -238,21 +238,21 @@ $(document).ready(function(){
     var currentclassmodule = BEDITA.currentModule.name || '';
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).toggleClass("open").next().slideToggle('fast').toggleClass('open').trigger('slideToggle'); 
+        $(this).toggleClass("open").next().slideToggle('fast', function() { $(window).trigger('resize') }).toggleClass('open').trigger('slideToggle'); 
         $("h2", this).toggleClass("open").toggleClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsopen = function() {
             
-        $(this).addClass("open").next().slideDown('fast').addClass('open').trigger('slideDown');   
+        $(this).addClass("open").next().slideDown('fast', function() { $(window).trigger('resize') }).addClass('open').trigger('slideDown');   
         $("h2",this).addClass("open").addClass(BEDITA.currentModule.name || '');
     
     };
 
     jQuery.fn.BEtabsclose = function() {
             
-        $(this).removeClass("open").next().slideUp('fast').removeClass('open').trigger('slideUp');   
+        $(this).removeClass("open").next().slideUp('fast', function() { $(window).trigger('resize') }).removeClass('open').trigger('slideUp');   
         $("h2",this).removeClass("open").removeClass(BEDITA.currentModule.name || '');
     
     };
@@ -301,6 +301,14 @@ $(document).ready(function(){
             $(this).closest('table').prepend(thead);
             thead.append($(this));
         }
+    });
+
+    $(window).bind('resize', function() {
+        $('.indexlist.js-header-float').each(function() {
+            $(this)
+                .width( $(this).closest('.mainfull, .main').outerWidth() )
+                .trigger('reflow');
+        });
     });
 
     $('.indexlist.js-header-float').each(function() {
