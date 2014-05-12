@@ -18,24 +18,12 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace BEdita\Model\Table;
+namespace BEdita\Model\Entity;
 
-use Cake\ORM\Table;
-use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\ORM\Entity;
 
-/**
- * Represents the tags
- * It uses categories table where object_type_id IS NULL
- */
-class TagsTable extends Table {
+class User extends Entity {
 
-    public function initialize(array $config) {
-        $this->table('categories');
-    }
-
-    public function beforeFind(Event $event, Query $query, array $options, $primary) {
-        $query->where(['object_type_id IS' => null]);
-    }
+    protected $_hidden = ['passwd'];
 
 }

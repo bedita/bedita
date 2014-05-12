@@ -18,24 +18,26 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace BEdita\Model\Table;
+namespace BEdita\Test\TestCase\Model\Table;
 
-use Cake\ORM\Table;
-use Cake\Event\Event;
-use Cake\ORM\Query;
+use Cake\TestSuite\TestCase;
+use Cake\ORM\TableRegistry;
+use BEdita\Model\Table\DocumentObjectsTable;
 
-/**
- * Represents the tags
- * It uses categories table where object_type_id IS NULL
- */
-class TagsTable extends Table {
+class DocumentObjectsTableTest extends TestCase {
 
-    public function initialize(array $config) {
-        $this->table('categories');
+    public $documentTable = null;
+
+    public function setUp() {
+        parent::setUp();
+        $this->documentTable = TableRegistry::get('DocumentObjects');
     }
 
-    public function beforeFind(Event $event, Query $query, array $options, $primary) {
-        $query->where(['object_type_id IS' => null]);
-    }
+    public function testConf() {
+        $objectTypeId = $this->documentTable->objectTypeId();
+        $this->assertEquals(22, $objectTypeId);
 
+        $objectChain = $this->documentTable->getObjectChain();
+        $this->assertEquals(['Contents'], $objectChain);
+    }
 }
