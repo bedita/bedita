@@ -305,9 +305,7 @@ $(document).ready(function(){
 
     $(window).bind('resize', function() {
         $('.indexlist.js-header-float').each(function() {
-            $(this)
-                .width( $(this).closest('.mainfull, .main').outerWidth() )
-                .trigger('reflow');
+            $(this).trigger('reflow');
         });
     });
 
