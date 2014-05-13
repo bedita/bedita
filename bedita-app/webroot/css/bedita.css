@@ -753,6 +753,7 @@ UL.menuleft + UL.menuleft {
 	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;*/
+	position: relative;
 }
 
 .tab H2 A,  .tab2 H2 A{
@@ -801,7 +802,10 @@ UL.menuleft + UL.menuleft {
 	background-color:#444;
 	font-size:.9em;
 	min-width: 16px;
-	/*display: inline-block;*/
+	display: inline-block;
+	color: white;
+	position: absolute;
+	top: 5px;
 }
 
 
