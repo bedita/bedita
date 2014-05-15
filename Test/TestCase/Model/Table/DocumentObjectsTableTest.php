@@ -40,4 +40,38 @@ class DocumentObjectsTableTest extends TestCase {
         $objectChain = $this->documentTable->getObjectChain();
         $this->assertEquals(['Contents'], $objectChain);
     }
+
+    public function testSave() {
+        $objectsData = [
+            'id' => 28,
+            'title' => 'Document title',
+        ];
+        $contentsData = [
+            'abstract' => 'Document abstract',
+            'body' => 'Document body',
+            'start_date' => '2014-05-12 00:00:00',
+            'end_date' => '2014-05-15 20:30:00',
+        ];
+
+        $data = array_merge($objectsData, $contentsData);
+
+        $docEntity = $this->documentTable->newEntity($data);
+        $res = $this->documentTable->save($docEntity);
+        $this->assertNotEquals(false, $res);
+
+        // check contents table
+        $contents = TableRegistry::get('Contents');
+        $contentRes = $contents->find()
+            ->where(['Contents.id' => $docEntity->id])
+            ->first();
+
+        foreach ($contentsData as $key => $value) {
+            if ($key == 'start_date' || $key == 'end_date') {
+                $this->assertInstanceOf('Cake\Utility\Time', $contentRes->$key);
+                $this->assertEquals($value, $contentRes->$key->format('Y-m-d H:i:s'));
+            } else {
+                $this->assertEquals($value, $contentRes->$key);
+            }
+        }
+    }
 }

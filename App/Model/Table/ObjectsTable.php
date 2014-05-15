@@ -21,6 +21,9 @@
 namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\Event\Event;
+use Cake\ORM\Entity;
+use Cake\Validation\Validator;
 
 /**
  * Represents the objects table
@@ -97,6 +100,43 @@ class ObjectsTable extends Table {
             'through' => 'ObjectUsers',
             'foreignKey' => 'object_id'
         ]);
+    }
+
+    /**
+     * beforeValidate method
+     * set default values as nickname, lang, etc...
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
+     * @param \ArrayObject $options
+     * @param \Cake\Validation\Validator $validator
+     * @return void
+     */
+    public function beforeValidate(Event $event, Entity $entity, \ArrayObject $options, Validator $validator) {
+        if (empty($entity->id)) {
+            $tmpName = (!empty($entity->nickname)) ? $entity->nickname : $entity->title;
+            $nickname = $entity->defaultNickname($entity->title);
+        } else {
+            $currentObject = $this->find()
+                ->where(['id' => $entity->id])
+                ->first();
+
+            // don't change nickname & status
+            if ($currentObject->fixed == 1) {
+                if ((!empty($entity->status) && $entity->status != $currentObject->status)
+                    || (!empty($entity->nickname) && $entity->nickname != $currentObject->nickname)) {
+                    // throw exception?
+                    // throw new BeditaException(__('Error: modifying fixed object!', true));
+                }
+                $nickname = $currentObject->nickname;
+                $entity->set('status', $currentObject->status);
+            } elseif (empty($entity->nickname)) {
+                $nickname = $currentObject->nickname;
+            } else {
+                $nickname = $entity->defaultNickname($entity->nickname);
+            }
+        }
+        $entity->set('nickname', $nickname);
     }
 
 }

@@ -21,16 +21,58 @@
 namespace BEdita\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
+use BEdita\Lib\Utility\String;
 
 class Object extends Entity {
 
-    public function setTitle($title) {
-        $nickname = $this->get('nickname');
+    /**
+     * Build object unique name
+     *
+     * @param string $value
+     * @return string
+     */
+    public function defaultNickname($value) {
+        $nickname = $nickname_base = String::friendlyUrl($value);
+        $nickOk = false;
+        $countNick = 1;
+        $reservedWords = array_merge(Configure::read('defaultReservedWords'), Configure::read('cfgReservedWords'));
+        debug($this->object_type_id);
+
         if (empty($nickname)) {
-            $nickname = str_replace(' ', '-', $title);
-            $this->set('nickname', $nickname);
+            //$nickname_base = $conf->objectTypes[$objTypeId]["name"] . "-" . time(); // default name - model type name - timestamp
+            $nickname_base = 'object_' . $this->object_type_id . '-' . time();
+            $nickname = $nickname_base ;
+        };
+
+        $aliasTable = TableRegistry::get('Aliases');
+        $objectsTable = TableRegistry::get('Objects');
+        while (!$nickOk) {
+
+            $query = $objectsTable->find()
+                ->where(['nickname' => $nickname]);
+            if ($this->id) {
+                $query->andWhere(['id <>' => $this->id]);
+            }
+            $numNickDb = $query->count();
+
+            // check nickname in db and in reservedWords
+            if ($numNickDb == 0 && !in_array($nickname, $reservedWords)) {
+                // check aliases
+                $numAlias = $aliasTable->find()
+                    ->where(['nickname_alias' => $nickname])
+                    ->count();
+                if ($numAlias == 0) {
+                    $nickOk = true;
+                }
+            }
+            if (!$nickOk) {
+                $nickname = $nickname_base . '-' . $countNick++;
+            }
         }
-        return $title;
+
+        return $nickname;
     }
 
 }

@@ -62,7 +62,7 @@ class BEditaObjectBehavior extends Behavior {
                     // flat object chain
                     foreach ($this->table->getObjectChain() as $tableName) {
                         $property = Inflector::underscore(Inflector::singularize($tableName));
-                        if ($row->$property) {
+                        if (is_object($row) && $row->$property) {
                             $row->set($row->$property->toArray(), ['guard' => false]);
                             $row->unsetProperty($property);
                         }

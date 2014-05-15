@@ -35,7 +35,7 @@ if (!class_exists('Cake\Core\Configure')) {
 	$loader = new \Cake\Core\ClassLoader;
 	$loader->register();
 	$loader->addNamespace('Cake', CAKE);
-	$loader->addNamespace('App', APP);
+	$loader->addNamespace('BEdita', APP);
 }
 
 /**
@@ -73,6 +73,7 @@ use Cake\Utility\Inflector;
 try {
 	Configure::config('default', new PhpConfig());
 	Configure::load('app.php', 'default', false);
+	Configure::load('bedita_ini.php');
 } catch (\Exception $e) {
 	die('Unable to load Config/app.php. Create it by copying Config/app.default.php to Config/app.php.');
 }

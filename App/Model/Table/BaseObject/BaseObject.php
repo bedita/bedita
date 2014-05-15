@@ -22,6 +22,9 @@ namespace BEdita\Model\Table\BaseObject;
 
 use BEdita\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
+use Cake\Event\Event;
+use Cake\ORM\Entity;
+use Cake\Validation\Validator;
 
 /**
  * Abstract base class for BEdita object types.
@@ -57,6 +60,23 @@ abstract class BaseObject extends ObjectsTable {
         parent::initialize($config);
         $this->addBehavior('BEditaObject');
         $this->initChain();
+    }
+
+    /**
+     * beforeValidate method
+     * set object_type_id and call parent::beforeValidate()
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
+     * @param \ArrayObject $options
+     * @param \Cake\Validation\Validator $validator
+     * @return void
+     */
+    public function beforeValidate(Event $event, Entity $entity, \ArrayObject $options, Validator $validator) {
+        if (empty($entity->object_type_id)) {
+            $entity->set('object_type_id', $this->objectTypeId());
+        }
+        parent::beforeValidate($event, $entity, $options, $validator);
     }
 
     /**
