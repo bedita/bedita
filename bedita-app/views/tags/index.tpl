@@ -2,67 +2,18 @@
 
 <script type="text/javascript">
 <!--
-var urlDelete = "{$html->url('deleteSelected/')}";
+var urls = {};
+urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
+urls['URLBase'] = "{$html->url('index/')}";
+urls['urlAddMultipleTags'] = "{$html->url('addMultipleTags/')}";
+urls['changestatusSelected'] = "{$html->url('changeStatus/')}";
 var message = "{t}Are you sure that you want to delete the tag?{/t}";
 var messageSelected = "{t}Are you sure that you want to delete selected tags?{/t}";
-var URLBase = "{$html->url('index/')}";
-var urlAddMultipleTags = "{$html->url('addMultipleTags/')}";
-var urlChangeStatus = "{$html->url('changeStatus/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
-
-function count_check_selected() {
-	var checked = 0;
-	$('input[type=checkbox].objectCheck').each(function(){
-		if ($(this).prop("checked")) {
-			checked++;
-		}
-	});
-	return checked;
-}
-$(document).ready(function() {
-
-	$("#deleteSelected").bind("click", function() {
-		if (count_check_selected() < 1) {
-			alert(no_items_checked_msg);
-			return false;
-		}
-		if (!confirm(messageSelected)) {
-			return false;
-		}
-		$("#formObject").prop("action", urlDelete);
-		$("#formObject").submit();
-	});
-	
-
-	$("#taglist").hide();
-	
-	$(".tagToolbar.viewlist").click(function () {
-		$("#taglist").show();
-		$("#tagcloud").hide();
-	});
-	$(".tagToolbar.viewcloud").click(function () {
-		$("#taglist").hide();
-		$("#tagcloud").show();
-	});
-	
-	$("#addmultipletag").click(function() {
-		$("#formObject").prop("action", urlAddMultipleTags) ;
-		$("#formObject").submit();
-	});
-	
-	$("#changestatusSelected").click(function() {
-		if (count_check_selected() < 1) {
-			alert(no_items_checked_msg);
-			return false;
-		}
-		$("#formObject").prop("action", urlChangeStatus) ;
-		$("#formObject").submit();
-	});
-
-});
-
 //-->
 </script>
+
+{$html->script('fragments/list_objects.js', false)}
 
 {$view->element('modulesmenu', ['substringSearch' => false])}
 
@@ -95,12 +46,12 @@ $(document).ready(function() {
 	<tbody id="taglist">
 	{foreach from=$tags item=tag}
 		<tr class="obj {$tag.status}">
-			<td style="width:1px; text-align:center">
+			<td class="checklist">
 				<input type="checkbox" name="tags_selected[{$tag.id}]" class="objectCheck" title="{$tag.id}" value="{$tag.id}"/>
 			</td>
 			<td>
 				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
-				
+
 			</td>
 			<td>{$tag.status}</td>
 			<td class="center">{$tag.weight}</td>
@@ -108,12 +59,12 @@ $(document).ready(function() {
 			<td><a href="{$html->url('view/')}{$tag.id}">{t}details{/t}</a></td>
 		</tr>
 	{foreachelse}
-	
+
 		<tr><td colspan="100" style="padding:30px">{t}No items found{/t}</td></tr>
-	
+
 	{/foreach}
 	</tbody>
-	
+
 	<tbody id="tagcloud">
 		<tr>
 			<td colspan="10" class="tag graced" style="text-align:justify; line-height:1.5em; padding:20px 10px;">
@@ -126,16 +77,16 @@ $(document).ready(function() {
 				{/foreach}
 			</td>
 		</tr>
-		
+
 	</tbody>
-	
+
 	</table>
 
 	<br />
 
 	{assign_associative var="params" bulk_tags=true objects=$tags}
 	{$view->element('list_objects_bulk', $params)}
-	
+
 </form>
 
 </div>
