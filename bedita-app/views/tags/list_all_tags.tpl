@@ -1,4 +1,3 @@
-
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#listTags a").bind("click", function() {
@@ -17,8 +16,8 @@
 			}
 			if (!tagInTextArea) {
 				$("#tagsArea").val(
-					$("#tagsArea").val() 
-					+ sep 
+					$("#tagsArea").val()
+					+ sep
 					+ jQuery.trim($(this).text())
 				);
 			}
@@ -37,5 +36,3 @@
 	{t}No tags found.{/t}
 {/if}
 </div>
-
-				

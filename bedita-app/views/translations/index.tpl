@@ -1,68 +1,14 @@
 <script type="text/javascript">
-var urlDelete = "{$html->url('deleteTranslations/')}" ;
+var urls = {};
+urls['URLBase'] = "{$html->url('index/')}" ;
+urls['deleteSelected'] = "{$html->url('deleteTranslations/')}" ;
+urls['changestatusSelected'] = "{$html->url('changeStatusTranslations/')}";
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
-var URLBase = "{$html->url('index/')}" ;
-
-
-$(document).ready(function() {
-
-	$(".indexlist TD").not(".checklist").not(".noclick").css("cursor","pointer").click(function(i) {
-		document.location = $(this).parent().find("a:first").attr("href"); 
-	} );
-
-	$("#deleteSelected").bind("click", delObjects);
-	$("a.delete").bind("click", function() {
-		delObject($(this).prop("title"));
-	});
-
-	$("#changestatusSelected").bind("click",changeStatusTranslations);
-
-});
-
-function delObject(id) {
-	if (!confirm(message)){
-		return false;
-	}
-	$("#objects_selected").val(id);
-	$("#formObject").prop("action", urlDelete);
-	$("#formObject").get(0).submit();
-	return false ;
-}
-function delObjects() {
-	if(!confirm(messageSelected)) return false ;
-	var oToDel = "";
-	var checkElems = document.getElementsByName('object_chk');
-	for (var i = 0; i < checkElems.length; i++) {
-		if (checkElems[i].checked) {
-			oToDel += "," + checkElems[i].title;
-		}
-	}
-	oToDel = (oToDel=="") ? "" : oToDel.substring(1);
-	$("#objects_selected").val(oToDel);
-	$("#formObject").prop("action", urlDelete) ;
-	$("#formObject").get(0).submit() ;
-	return false ;
-}
-function changeStatusTranslations() {
-	var status = $("#newStatus").val();
-	if(status != "") {
-		var oToDel = "";
-		var checkElems = document.getElementsByName('object_chk');
-		for (var i = 0; i < checkElems.length; i++) {
-			if (checkElems[i].checked) {
-				oToDel += "," + checkElems[i].title;
-			}
-		}
-		oToDel = (oToDel == "")? "" : oToDel.substring(1);
-		$("#objects_selected").val(oToDel);
-		$("#formObject").prop("action", "{$html->url('changeStatusTranslations/')}" + status) ;
-		$("#formObject").get(0).submit() ;
-		return false ;
-	}
-}
-
+var no_items_checked_msg = "{t}No items selected{/t}";
 </script>
+
+{$html->script('fragments/list_objects.js', false)}
 
 {$view->element('modulesmenu')}
 
@@ -73,14 +19,14 @@ function changeStatusTranslations() {
 {$view->element('toolbar')}
 
 <div class="mainfull">
-	
+
 	<form method="post" action="{$html->url('/translations/index')}" id="formObject">
 
 	<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
 
-	
+
 <div class="tab"><h2>{t}filters{/t}</h2></div>
 <div>
 	{t}Show translations in{/t}: &nbsp;
@@ -90,7 +36,7 @@ function changeStatusTranslations() {
 		<option value="{$val}"{if $langSelected==$val} selected="selected"{/if}>{$label}</option>
 	{/foreach}
 	</select>
-	
+
 	&nbsp;{t}with status{/t}: &nbsp;
 	<select name="data[translation_status]">
 	<option value=""></option>
@@ -99,7 +45,7 @@ function changeStatusTranslations() {
 	<option value="draft"{if $statusSelected=='draft'} selected="selected"{/if}>{t}draft{/t}</option>
 	<option value="required"{if $statusSelected=='required'} selected="selected"{/if}>{t}required{/t}</option>
 	</select>
-	
+
 	&nbsp;{t}for object type{/t}: &nbsp;
 	<select name="data[translation_object_type_id]">
 	<option value=""></option>
@@ -114,14 +60,14 @@ function changeStatusTranslations() {
 	<input type="text" name="data[translation_object_id]" style="width:25px"
 	value="{$objectIdSelected}"/>
 	&nbsp;<input type="submit" value="{t}go{/t}"/>
-	
+
 {if !empty($translations)}
 	<hr />
-		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')} 
+		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
 		&nbsp;&nbsp;&nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')} &nbsp;
 {/if}
-	
+
 	</div>
 	<table class="indexlist js-header-float">
 	{capture name="theader"}
@@ -137,19 +83,19 @@ function changeStatusTranslations() {
 	</thead>
 	{/capture}
 
-		{$smarty.capture.theader}	
-	
+		{$smarty.capture.theader}
+
 		{section name="i" loop=$translations}
-	
+
 
 		{assign var="oid" value=$translations[i].LangText.object_id}
 		{assign var="olang" value=$translations[i].LangText.lang}
 		{assign var="ot" value=$translations[i].BEObject.object_type_id}
 		{assign var="mtitle" value=$translations[i].BEObject.title}
-		
+
 		<tr class="obj {$translations[i].LangText.status}">
 			<td class="checklist">
-				<input  type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
+				<input type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
 				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;

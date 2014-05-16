@@ -11,21 +11,38 @@ function count_check_selected() {
 $(document).ready(function(){
 
     // avoid to perform double click
-    $("a:first", ".indexlist .obj").click(function(e){ 
+    $("a:first", ".indexlist .obj").click(function(e){
         e.preventDefault();
     });
 
     $(".indexlist .obj TD").not(".checklist").css("cursor","pointer").click(function(i) {
-        document.location = $(this).parent().find("a:first").attr("href"); 
-    } );
+        document.location = $(this).parent().find("a:first").attr("href");
+    });
+
+    $("#changestatusSelected").click( function() {
+        if(count_check_selected()<1) {
+            alert(no_items_checked_msg);
+            return false;
+        }
+
+        $("#formObject").prop("action", urls['changestatusSelected']) ;
+        $("#formObject").submit() ;
+    });
+
+	$("#addmultipletag").click(function() {
+		$("#formObject").prop("action", urls['urlAddMultipleTags']) ;
+		$("#formObject").submit();
+	});
+
 
     $("#deleteSelected").bind("click", function() {
         if(count_check_selected()<1) {
             alert(no_items_checked_msg);
             return false;
         }
-        if(!confirm(messageSelected)) 
-            return false ;  
+
+        if(!confirm(messageSelected))
+            return false ;
         $("#formObject").prop("action", urls['deleteSelected']) ;
         $("#formObject").submit() ;
     });
