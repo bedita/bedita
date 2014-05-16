@@ -11,10 +11,7 @@
 	
 	{$view->element('form_tree')}
 		
-	{$view->element('form_textbody',[
-		'addshorttext'=>{$conf->addshorttext|default:false},
-		'height'=>500
-	])}
+	{$view->element('form_textbody',['height'=>500])}
 
 	{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.document.id}])}
 			
