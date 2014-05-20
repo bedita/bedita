@@ -1,5 +1,10 @@
 <?php
 /**
+ * Application level View Helper
+ *
+ * This file is application-wide helper file. You can put all
+ * application-wide helper-related methods here.
+ *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
@@ -9,8 +14,20 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
+ * @since         0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+namespace App\View\Helper;
+
+use Cake\View\Helper;
+
+/**
+ * Application helper
+ *
+ * Add your application-wide methods in the class below, your helpers
+ * will inherit them.
+ *
+ */
+class AppHelper extends Helper {
+}

@@ -1,1 +1,0 @@
-{$view->element('objects/view')}

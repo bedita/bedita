@@ -9,8 +9,16 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
+ * @since         3.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+use Cake\Core\Configure;
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+/**
+ * Additional bootstrapping and configuration for CLI environments should
+ * be put here.
+ */
+
+// Set logs to different files so they don't have permission conflicts.
+Configure::write('Log.debug.file', 'cli-debug');
+Configure::write('Log.error.file', 'cli-error');

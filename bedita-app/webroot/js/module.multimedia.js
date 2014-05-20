@@ -1,6 +1,0 @@
-/**
-multimedia custom js
-*/
-
-
-

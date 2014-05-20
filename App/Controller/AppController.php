@@ -9,8 +9,20 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
+ * @since         0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+namespace BEdita\Controller;
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+use Cake\Controller\Controller;
+
+/**
+ * Application Controller
+ *
+ * Add your application-wide methods in the class below, your controllers
+ * will inherit them.
+ *
+ * @link http://book.cakephp.org/3.0/en/controllers.html#the-app-controller
+ */
+class AppController extends Controller {
+}

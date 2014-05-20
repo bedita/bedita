@@ -1,0 +1,26 @@
+{
+    "name": "bedita/bedita",
+    "description": "BEdita the Semantic Content Management Framework",
+    "homepage": "http://bedita.com",
+    "type": "project",
+    "license": "LGPL",
+    "require": {
+        "php": ">=5.4.19",
+        "cakephp/cakephp": "3.0.*-dev",
+        "mobiledetect/mobiledetectlib": "2.*"
+    },
+    "require-dev": {
+        "d11wtq/boris": "1.0.*",
+        "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "BEdita\\": "App",
+            "BEdita\\Test\\": "Test",
+            "": "./Plugin"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "BEdita\\Console\\Installer::postInstall"
+    }
+}
