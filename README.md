@@ -1,5 +1,25 @@
 # BEdita, a semantic content management framework
 
+## Developer preview
+
+This is an early developer preview branch where we test new CakePHP 3 features and others.
+To install you have to use [composer](https://getcomposer.org/doc/00-intro.md#globally).
+
+Once you have installed composer clone repository and checkout the right branch, then
+
+```bash
+$ cd /my/bedita/folder
+$ composer install
+```
+
+It will install all necessary dependencies to startup BEdita.
+
+In `Bedita/Config/app.php` edit the `$config['Datasources']['default']` array with your database connection data.
+
+NB. For now the db has to be initialized using schema and data in 3.4.0 or greater version
+
+---
+
 BEdita is a software to create, manage content and organize it with semantic rules.
 BEdita is a modular framework that features a back-end Content Management System out-of-the-box.
 It is an integrated environment that inherits all the features of the libraries and tools it includes,

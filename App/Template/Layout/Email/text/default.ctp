@@ -12,5 +12,7 @@
  * @since         0.10.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+?>
+<?php echo $this->fetch('content'); ?>
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+This email was sent using the CakePHP Framework, http://cakephp.org.

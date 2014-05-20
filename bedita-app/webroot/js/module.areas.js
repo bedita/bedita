@@ -1,3 +1,0 @@
-/**
- *	areas custom js
- */

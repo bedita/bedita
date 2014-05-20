@@ -9,8 +9,21 @@
  *
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.10.0
+ * @since         2.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-require 'webroot' . DIRECTORY_SEPARATOR . 'index.php';
+namespace BEdita\Console\Command;
+
+use Cake\Console\Shell;
+
+/**
+ * Application Shell
+ *
+ * Add your application-wide methods in the class below, your shells
+ * will inherit them.
+ *
+ */
+class AppShell extends Shell {
+
+}
