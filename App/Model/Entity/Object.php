@@ -43,6 +43,7 @@ class Object extends Entity {
     /**
      * Build object unique name
      *
+     * @todo if empty $nickname initilize nickname using object type
      * @param string $value
      * @return string
      */
@@ -116,7 +117,8 @@ class Object extends Entity {
      * If no one exists (as in shell scripts)
      * then it returns self.defaultUserId property
      *
-     * @return [type] [description]
+     * @todo get user id from Session
+     * @return integer
      */
     public function defaultUserId() {
         return $this->defaultUserId;
