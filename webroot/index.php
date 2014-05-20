@@ -18,9 +18,9 @@
 if (php_sapi_name() === 'cli-server') {
 	$_SERVER['PHP_SELF'] = '/' . basename(__FILE__);
 
-	$url = urldecode($_SERVER['REQUEST_URI']);
-	$file = __DIR__ . $url;
-	if (strpos($url, '..') === false && strpos($url, '.') !== false && is_file($file)) {
+	$url = parse_url(urldecode($_SERVER['REQUEST_URI']));
+	$file = __DIR__ . $url['path'];
+	if (strpos($url['path'], '..') === false && strpos($url['path'], '.') !== false && is_file($file)) {
 		return false;
 	}
 }
@@ -28,10 +28,10 @@ require dirname(__DIR__) . '/App/Config/bootstrap.php';
 
 use Cake\Network\Request;
 use Cake\Network\Response;
-use Cake\Routing\Dispatcher;
+use Cake\Routing\DispatcherFactory;
 
-$Dispatcher = new Dispatcher();
-$Dispatcher->dispatch(
+$dispatcher = DispatcherFactory::create();
+$dispatcher->dispatch(
 	Request::createFromGlobals(),
 	new Response()
 );

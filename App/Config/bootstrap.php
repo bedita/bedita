@@ -21,22 +21,7 @@ namespace BEdita\Config;
 require __DIR__ . '/paths.php';
 
 // Use composer to load the autoloader.
-if (file_exists(ROOT . '/vendor/autoload.php')) {
-	require ROOT . '/vendor/autoload.php';
-}
-
-// If composer is not used, use CakePHP's classloader to autoload the framework
-// and the application. You will also need setup autoloading for plugins by
-// passing `autoload' => true for `Plugin::loadAll()` or `Plugin::load()`
-//
-// If you are using a custom namespace, you'll need to set it here as well.
-if (!class_exists('Cake\Core\Configure')) {
-	require CAKE . 'Core/ClassLoader.php';
-	$loader = new \Cake\Core\ClassLoader;
-	$loader->register();
-	$loader->addNamespace('Cake', CAKE);
-	$loader->addNamespace('BEdita', APP);
-}
+require ROOT . '/vendor/autoload.php';
 
 /**
  * Bootstrap CakePHP.
@@ -60,6 +45,7 @@ use Cake\Error\ErrorHandler;
 use Cake\Log\Log;
 use Cake\Network\Email\Email;
 use Cake\Network\Request;
+use Cake\Routing\DispatcherFactory;
 use Cake\Utility\Inflector;
 
 /**
@@ -82,6 +68,14 @@ try {
 // You can use this file to provide local overrides to your
 // shared configuration.
 //Configure::load('app_local.php', 'default');
+
+// When debug = false the metadata cache should last
+// for a very very long time, as we don't want
+// to refresh the cache while users are doing requests.
+if (!Configure::read('debug')) {
+	Configure::write('Cache._cake_model_.duration', '+99 years');
+	Configure::write('Cache._cake_core_.duration', '+99 years');
+}
 
 /**
  * Set server timezone to UTC. You can change it to another timezone of your
@@ -141,7 +135,6 @@ Request::addDetector('mobile', function($request) {
 	$detector = new \Detection\MobileDetect();
 	return $detector->isMobile();
 });
-
 Request::addDetector('tablet', function($request) {
 	$detector = new \Detection\MobileDetect();
 	return $detector->isTablet();
@@ -151,8 +144,8 @@ Request::addDetector('tablet', function($request) {
  * Custom Inflector rules, can be set to correctly pluralize or singularize table, model, controller names or whatever other
  * string is passed to the inflection functions
  *
- * Inflector::rules('singular', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
- * Inflector::rules('plural', array('rules' => array(), 'irregular' => array(), 'uninflected' => array()));
+ * Inflector::rules('singular', ['rules' => [], 'irregular' => [], 'uninflected' => []]);
+ * Inflector::rules('plural', ['rules' => [], 'irregular' => [], 'uninflected' => []]);
  *
  */
 
@@ -165,3 +158,12 @@ Request::addDetector('tablet', function($request) {
  * Plugin::load('DebugKit'); //Loads a single plugin named DebugKit
  *
  */
+
+/**
+ * Connect middleware/dispatcher filters.
+ */
+
+DispatcherFactory::add('Asset');
+DispatcherFactory::add('Cache');
+DispatcherFactory::add('Routing');
+DispatcherFactory::add('ControllerFactory');

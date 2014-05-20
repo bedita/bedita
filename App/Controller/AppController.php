@@ -15,6 +15,7 @@
 namespace BEdita\Controller;
 
 use Cake\Controller\Controller;
+
 /**
  * Application Controller
  *

@@ -100,7 +100,7 @@ $config = [
 			'prefix' => 'myapp_cake_core_',
 			'path' => CACHE . 'persistent/',
 			'serialize' => true,
-			'duration' => '+10 seconds',
+			'duration' => '+2 minutes',
 		],
 
 	/**
@@ -215,7 +215,14 @@ $config = [
 			'database' => 'my_app',
 			'prefix' => false,
 			'encoding' => 'utf8',
-			'timezone' => 'UTC'
+			'timezone' => 'UTC',
+			'cacheMetadata' => true,
+			/* During development, if using MySQL < 5.6, uncommenting the following line
+			* could boost the speed at which schema metadata is fetched from the database.
+			* It can also be set directly with the mysql configuration directive 'innodb_stats_on_metadata = 0'
+			* which is the recommended value in production enviroments
+			*/
+			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 		],
 
 		/**
@@ -231,7 +238,9 @@ $config = [
 			'database' => 'test_myapp',
 			'prefix' => false,
 			'encoding' => 'utf8',
-			'timezone' => 'UTC'
+			'timezone' => 'UTC',
+			'cacheMetadata' => true,
+			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 		],
 	],
 
