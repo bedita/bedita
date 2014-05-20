@@ -87,10 +87,21 @@ class Object extends Entity {
         return $nickname;
     }
 
+    /**
+     * Return default lang
+     *
+     * @return string
+     */
     public function defaultLang() {
         return Configure::read('defaultLang');
     }
 
+    /**
+     * Return user IP
+     * If no one is set then it returns self.defaultIp property
+     *
+     * @return string
+     */
     public function defaultIp() {
         if(!empty($_SERVER['REMOTE_ADDR'])) {
             $ip = $_SERVER['REMOTE_ADDR'];
@@ -100,6 +111,13 @@ class Object extends Entity {
         return $ip;
     }
 
+    /**
+     * Return id of user in session
+     * If no one exists (as in shell scripts)
+     * then it returns self.defaultUserId property
+     *
+     * @return [type] [description]
+     */
     public function defaultUserId() {
         return $this->defaultUserId;
     }
