@@ -22,6 +22,7 @@ namespace BEdita\Test\TestCase\Model\Table;
 
 use Cake\TestSuite\TestCase;
 use Cake\ORM\TableRegistry;
+use Cake\Core\Configure;
 use BEdita\Model\Table\DocumentObjectsTable;
 
 class DocumentObjectsTableTest extends TestCase {
@@ -43,7 +44,6 @@ class DocumentObjectsTableTest extends TestCase {
 
     public function testSave() {
         $objectsData = [
-            'id' => 28,
             'title' => 'Document title',
         ];
         $contentsData = [
@@ -59,6 +59,12 @@ class DocumentObjectsTableTest extends TestCase {
         $res = $this->documentTable->save($docEntity);
         $this->assertNotEquals(false, $res);
 
+        // check default values
+        $this->assertEquals(1, $res->user_created);
+        $this->assertEquals(1, $res->user_modified);
+        $this->assertEquals('::1', $res->ip_created);
+        $this->assertEquals(Configure::read('defaultLang'), $res->lang);
+
         // check contents table
         $contents = TableRegistry::get('Contents');
         $contentRes = $contents->find()
@@ -73,5 +79,22 @@ class DocumentObjectsTableTest extends TestCase {
                 $this->assertEquals($value, $contentRes->$key);
             }
         }
+
+        // update document
+        $data['id'] = $res->id;
+        $data['title'] = 'Document title changed';
+        $data['description'] = 'Document description';
+        $data['abstract'] = 'Document abstract changed';
+
+        $docEntity = $this->documentTable->newEntity($data);
+        $resUp = $this->documentTable->save($docEntity);
+        $this->assertNotEquals(false, $resUp);
+
+        // check updates
+        $this->assertEquals($res->id, $resUp->id);
+        $this->assertEquals($res->nickname, $resUp->nickname);
+        $this->assertEquals($data['title'], $resUp->title);
+        $this->assertEquals($data['description'], $resUp->description);
+        $this->assertEquals($data['abstract'], $resUp->content->abstract);
     }
 }

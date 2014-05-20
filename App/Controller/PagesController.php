@@ -56,10 +56,10 @@ class PagesController extends AppController {
 			'Tags',
 			'Users'
 		]);
+		//$query->hydrate(false);
 		$row = $query->first();
 
 		if ($row) {
-
 			debug($row->toArray());
 
 			// $imageData = [];

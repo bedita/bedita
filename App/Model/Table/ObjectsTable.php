@@ -24,6 +24,7 @@ use Cake\ORM\Table;
 use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\Validation\Validator;
+use Cake\Model\Behavior\TimestampBehavior;
 
 /**
  * Represents the objects table
@@ -33,6 +34,8 @@ class ObjectsTable extends Table {
     public function initialize(array $config) {
         $this->table('objects');
         $this->entityClass('BEdita\Model\Entity\Object');
+
+        $this->addBehavior('Timestamp');
 
         $this->belongsTo('ObjectTypes');
 
@@ -113,14 +116,26 @@ class ObjectsTable extends Table {
      * @return void
      */
     public function beforeValidate(Event $event, Entity $entity, \ArrayObject $options, Validator $validator) {
-        if (empty($entity->id)) {
-            $tmpName = (!empty($entity->nickname)) ? $entity->nickname : $entity->title;
-            $nickname = $entity->defaultNickname($entity->title);
+        // new object
+        if ($entity->isNew() === true || !$entity->has('id')) {
+            $nickname = (!empty($entity->nickname)) ? $entity->nickname : $entity->title;
+            $entity->set('nickname', $entity->defaultNickname($nickname));
+            if (empty($entity->lang)) {
+                $entity->set('lang', $entity->defaultLang());
+            }
+            if (empty($entity->ip_created)) {
+                $entity->set('ip_created', $entity->defaultIp());
+            }
+            if (empty($entity->user_created)) {
+                $entity->set('user_created', $entity->defaultUserId());
+            }
+        // update object
         } else {
             $currentObject = $this->find()
                 ->where(['id' => $entity->id])
                 ->first();
 
+            $nickname = null;
             // don't change nickname & status
             if ($currentObject->fixed == 1) {
                 if ((!empty($entity->status) && $entity->status != $currentObject->status)
@@ -135,8 +150,20 @@ class ObjectsTable extends Table {
             } else {
                 $nickname = $entity->defaultNickname($entity->nickname);
             }
+
+            $entity->set('nickname', $nickname);
+
+            if (!$entity->has('lang') || empty($entity->lang)) {
+                $entity->set('lang', $currentObject->lang);
+            }
+            if (!$entity->has('ip_created') || empty($entity->ip_created)) {
+                $entity->set('ip_created', $currentObject->ip_created);
+            }
         }
-        $entity->set('nickname', $nickname);
+
+        if (empty($entity->user_modified)) {
+            $entity->set('user_modified', $entity->defaultUserId());
+        }
     }
 
 }

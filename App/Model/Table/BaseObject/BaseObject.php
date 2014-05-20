@@ -73,10 +73,10 @@ abstract class BaseObject extends ObjectsTable {
      * @return void
      */
     public function beforeValidate(Event $event, Entity $entity, \ArrayObject $options, Validator $validator) {
+        parent::beforeValidate($event, $entity, $options, $validator);
         if (empty($entity->object_type_id)) {
             $entity->set('object_type_id', $this->objectTypeId());
         }
-        parent::beforeValidate($event, $entity, $options, $validator);
     }
 
     /**

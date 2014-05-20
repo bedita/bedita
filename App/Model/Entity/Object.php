@@ -28,6 +28,19 @@ use BEdita\Lib\Utility\String;
 class Object extends Entity {
 
     /**
+     * Default IP addr for saved objects
+     * @var string
+     */
+    protected $defaultIp = '::1';
+
+    /**
+     * Default user id
+     * e.g.: objects created by shell scripts don't have proper user
+     * @var integer
+     */
+    protected $defaultUserId = 1;
+
+    /**
      * Build object unique name
      *
      * @param string $value
@@ -38,7 +51,6 @@ class Object extends Entity {
         $nickOk = false;
         $countNick = 1;
         $reservedWords = array_merge(Configure::read('defaultReservedWords'), Configure::read('cfgReservedWords'));
-        debug($this->object_type_id);
 
         if (empty($nickname)) {
             //$nickname_base = $conf->objectTypes[$objTypeId]["name"] . "-" . time(); // default name - model type name - timestamp
@@ -75,4 +87,20 @@ class Object extends Entity {
         return $nickname;
     }
 
+    public function defaultLang() {
+        return Configure::read('defaultLang');
+    }
+
+    public function defaultIp() {
+        if(!empty($_SERVER['REMOTE_ADDR'])) {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        } else {
+            $ip = $this->defaultIp;
+        }
+        return $ip;
+    }
+
+    public function defaultUserId() {
+        return $this->defaultUserId;
+    }
 }
