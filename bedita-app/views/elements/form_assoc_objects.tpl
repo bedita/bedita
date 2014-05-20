@@ -31,7 +31,8 @@ $(document).ready(function() {
 	$(".relationList table.indexlist").find("tbody:first").sortable({
 		distance: 20,
 		opacity:0.7,
-		update: $(this).fixItemsPriority
+		update: $(this).fixItemsPriority,
+		cancel: 'span, input, textarea, [contenteditable]'
 	}).css("cursor","move");
 	
 	relatedRefreshButton();

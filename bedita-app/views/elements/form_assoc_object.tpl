@@ -69,11 +69,11 @@
 			{if !empty($rel) && !empty($relationParamsArray)}
 			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}"><br>
 			{/if}
-			<label>id:</label> {$objRelated.id}<br>
-			<label>nickname:</label> {$objRelated.nickname}<br>
+			<span><label>id:</label> {$objRelated.id}</span><br>
+			<span><label>nickname:</label> {$objRelated.nickname}</span><br>
 
 			{if !empty($rel) &&  $rel == "question"}
-			<label>type:</label> {$objRelated.question_type|default:''}<br>
+			<span><label>type:</label> {$objRelated.question_type|default:''}</span><br>
 			{/if}
 		</div>
 	</td> 
