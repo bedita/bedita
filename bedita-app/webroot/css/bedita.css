@@ -899,6 +899,10 @@ UL.menuleft + UL.menuleft {
     margin-top: -10px;
 }
 
+TR.trick {
+	display:none !important;
+}
+
 .relationList TR.trick {
 	display:none !important;
 }
