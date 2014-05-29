@@ -39,7 +39,7 @@ class MultimediaController extends ModulesController {
     var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
     protected $moduleName = 'multimedia';
 
-    function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
+    function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 50) {
         $conf  = Configure::getInstance() ;
         $this->setup_args(
             array("id", "integer", &$id),
