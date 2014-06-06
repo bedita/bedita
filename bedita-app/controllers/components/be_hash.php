@@ -115,7 +115,7 @@ class BeHashComponent extends Object {
 		$mailParams = array();
 		if (method_exists($this->controller, $method)) {
 		    $mailParams = $this->controller->{$method}();
-		} else if (method_exists($this, $method)) {
+		} elseif (method_exists($this, $method)) {
 		    $mailParams = $this->{$method}($this->controller->data);
 		} else {
 		    throw new BeditaException(__("missing method to manage hash case", true));
@@ -675,7 +675,7 @@ class BeHashComponent extends Object {
 
 		if (BACKEND_APP) {
 			$groups = $groupModel->getList(array("backend_auth" => 1));
-			$urlBase = "/authentications/recoverPassword/exec/";
+			$urlBase = "/authentications/recoverUserPassword/exec/";
 		} else {
 			$groups = Configure::read("authorizedGroups");
 			if (empty($groups)) {
@@ -694,8 +694,9 @@ class BeHashComponent extends Object {
 				)
 			)
 		);
-		if (empty($user["Group"])) {
-			throw new BeditaHashException(__("No user with access privileges found", true));
+		
+		if (empty($user["Group"]) || (!empty($user['User']['auth_type']) && $user['User']['auth_type'] != 'bedita')) {
+			throw new BeditaHashException(__("No user with access privileges found or user uses an external authentication", true));
 		}
 
 		$hash_job = ClassRegistry::init("HashJob");
@@ -852,4 +853,3 @@ class BeHashComponent extends Object {
 		return $text;		
 	}
 }
-?>

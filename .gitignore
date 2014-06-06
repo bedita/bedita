@@ -15,6 +15,7 @@
 /frontends
 /.idea
 /sources
+/tags
 
 .DS_Store
 

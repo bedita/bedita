@@ -25,7 +25,7 @@
 
 {if $session->read("userToChangePwd")}
 
-	<div style="width:180px; margin-left:310px; padding-top:25px;">
+	<div class="login">
 	{t}Hi{/t} {$session->read("userToChangePwd.User.realname")},<br/>
 	{t}to change your password fill the following form{/t}
 	<form action="#" method="post" name="loginForm" id="loginForm" class="cmxform" style="padding-left:5px;">
