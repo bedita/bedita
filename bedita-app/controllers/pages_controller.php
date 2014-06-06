@@ -480,6 +480,7 @@ class PagesController extends AppController {
      * Provides on line Help contents, called via AJAX like /pages/helpOnline/$controller/$action
      * 2 arguments at least mandatory
      */
+    @deprecated
     public function helpOnline() {
         $args = func_get_args();
         $count = func_num_args();
