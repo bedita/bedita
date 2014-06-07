@@ -62,31 +62,23 @@ class AddressbookController extends ModulesController {
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
         $conf  = Configure::getInstance() ;
+
         $kind = ($this->data['company']==0) ? 'person' : 'cmp';
 		if($kind == 'person') {
-			if(!empty($this->data['person']['name']) || !empty($this->data['person']['surname'])) {
-				$this->data['title'] = $this->data['person']['name']." ".$this->data['person']['surname'];
+			if(!empty($this->data['name']) || !empty($this->data['surname'])) {
+				$this->data['title'] = $this->data['name']." ".$this->data['surname'];
 			}
-			$this->data['birthdate'] = $this->data['person']['birthdate'];
-            if (empty($conf->hideFields['addressbook']) || !in_array("deathdate", $conf->hideFields['addressbook'])) {
-                $this->data['deathdate'] = $this->data['person']['deathdate'];
-            }
-
         } else {
-			if(!empty($this->data['cmp']['company_name'])) {
-				$this->data['title'] = $this->data['cmp']['company_name'];
+			if(!empty($this->data['company_name'])) {
+				$this->data['title'] = $this->data['company_name'];
 			}
-			$this->data['company_name'] = $this->data['cmp']['company_name'];
 		}
 
-		$this->data['name'] = $this->data[$kind]['name'];
-		$this->data['surname'] = $this->data[$kind]['surname'];
-		$this->data['person_title'] = $this->data[$kind]['person_title'];
-		$this->data['company_name'] = $this->data[$kind]['company_name'];
 		if(empty($this->data['User'][0])) {
 			$this->data['User'] = array();
 		}
-		
+
+
 		$this->saveObject($this->Card);
 	 	$this->Transaction->commit();
 	 	if(empty($this->data["title"])) {

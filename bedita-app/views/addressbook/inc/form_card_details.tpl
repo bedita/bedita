@@ -4,135 +4,129 @@
 
 $(document).ready(function(){
 
-	$("#fototessera").click(function () {
-		$('.main .tab').BEtabsclose();
-		$('#multimedia').prev('.tab').BEtabstoggle();
-	});
+	{if (!empty($object.id) && ($object.company==1))}
+		show_company();
+	{else}
+		show_person()
+	{/if}
 	
-	$(".htab TD").click(function () {
+
+	$("TD[rel]").css("cursor","pointer").click(function () {
 		$("input", this).prop('checked', true);
+		var cardtype = $(this).attr('rel');
+		if (cardtype == "company") {
+			show_company();
+		} else {
+			show_person();
+		}
+
+
 	});
 	
 	{if (!empty($object) && !empty($object.country))}
 	   $("#country").selectOptions("{$object.country}",true);
 	{/if}
 	
-	{if (!empty($object.id) && ($object.company==1))}
-	   $(".htab TD[rel=company]").click();
-	{/if}
+	function show_company(){
+		$('.labelcompany').show()
+		$('.labelperson').hide()
+		$('#company_name').insertBefore("#titlex");
+	}
+	function show_person(){
+		$('.labelcompany').hide()
+		$('.labelperson').show()
+		$('#company_name').insertAfter("#gender");
+	}
 
 });
 
 
 </script>
 
+<style>
+
+#companychoice TD {
+	height:60px; 
+	padding-right:20px;
+	padding-left:10px;
+	text-transform: uppercase;
+	border-left:1px solid gray; 
+}
+
+#companychoice TD:first-child {
+	border-left:0px solid gray; 
+}
+
+</style>
 
 <div class="tab"><h2>{t}Card{/t}</h2></div>
 
 <fieldset id="card">
 
-<table class="htab">
-	<td id="personh" rel="person">
-		<input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if} />
-		{t}Person{/t}</td>
-	<td id="companyh" rel="company">
-		<input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if} />
-		{t}Organization{/t}</td>
-</table>
 
-		
-<div class="htabcontainer" id="companyperson">
-	
-	<div class="htabcontent" id="person">
-		<table style="width:100%">
+
+		<table id="companychoice">
 			<tr>
-			{if !empty($attach[0])}
-				<td id="fototessera" style="width:100px; padding-right:10px;" rowspan="4">
-					{assign_associative var="params" width=100 height=125 longside=false mode="crop"}
-					{$beEmbedMedia->object($attach[0],$params)}
-				</td>
-			{/if}
-				<th style="width:70px;">{t}title{/t}:</th>
-				<td>
-					<input type="text" style="width:45px" id="vtitle" name="data[person][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
+				<td  rel="person">
+					<input type="radio" name="data[company]" value="0" {if (empty($object.id)||($object.company==0))}checked="checked"{/if} />
+					{t}Person{/t}</td>
+				<td rel="company">
+					<input type="radio" name="data[company]" value="1" {if (!empty($object.id)&&($object.company==1))}checked="checked"{/if} />
+					{t}Organization{/t}</td>
+			</tr>
+		</table>
+		
+		<table style="margin-top:20px; width:100%;">
+			
+			<tr id="company_name">
+				<th nowrap><span class="labelcompany">{t}company name{/t}</span><span class="labelperson">{t}Organization{/t}</span>:</th>
+				<td colspan="4"><input type="text" style="width:100%" name="data[company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
+			</tr>
+			
+			<tr id="titlex">
+				<th style="width:70px;">
+					<span class="labelperson">{t}title{/t}</span>
+					<span class="labelcompany">{t}legal form{/t}</span>:</th>
+				<td colspan="4">
+					<input type="text" style="width:50%" id="vtitle" name="data[person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
 				</td>
 			</tr>
+			
+			<tr class="labelcompany">
+				<td></td><th colspan="3"><b>{t}Person of reference{/t}</b></th>
+			</tr>
+			
 			<tr>
 				<th>{t}name{/t}:</th>
-				<td><input type="text" name="data[person][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
+				<td colspan="4"><input type="text" style="width:100%" name="data[name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>
 			</tr>
 			<tr>				
 				<th>{t}surname{/t}:</th>
-				<td><input type="text" name="data[person][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
+				<td colspan="4"><input type="text" style="width:100%" name="data[surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
 			</tr>	
-			<tr>
-				<th>{t}organization{/t}:</th>
-				<td><input type="text" style="width:100%" name="data[person][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>				
-			</tr>
-			<tr>
-				<td colspan="3">
+
+			
+			<tr id="gender" class="labelperson">
+				<td></td>
+				<td colspan="6">
 					<input type="radio" name="data[gender]" value="male" {if (!empty($object.gender) && $object.gender=='male')}checked="checked"{/if}/> {t}male{/t} &nbsp&nbsp
 					<input type="radio" name="data[gender]" value="female" {if (!empty($object.gender) && $object.gender=='female')}checked="checked"{/if}/> {t}female{/t} &nbsp&nbsp
 					<input type="radio" name="data[gender]" value="transgender" {if (!empty($object.gender) && $object.gender=='transgender')}checked="checked"{/if}/> {t}transgender{/t}
 				</td>
 			</tr>
-		</table>
-		<table>
+
 			<tr>
-				<th>{t}birthdate{/t}:</th>
-				<td><input type="text" style="width:75px" class="dateinput" name="data[person][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
+				<th nowrap><span class="labelperson">{t}birthdate{/t}</span><span class="labelcompany">{t}active from{/t}</span>:</th>
+				<td style="width:185px"><input type="text" class="dateinput" name="data[birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
                 {$hideFields = $conf->hideFields.addressbook|default:[]}
                 {if !in_array('deathdate', $hideFields)}
-                    <th>{t}deathdate{/t}:</th>
-                    <td><input type="text" style="width:75px" class="dateinput" name="data[person][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
+                    <th><span class="labelperson">{t}deathdate{/t}:</span><span class="labelcompany">{t}to{/t}:</span></th>
+                    <td><input type="text" class="dateinput" name="data[deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
                 {/if}
             </tr>
 		</table>
-	</div>
 
 
-
-	<div class="htabcontent" id="company" >
-		<table style="width:100%">
-			<tr>
-			{if !empty($attach[0])}
-				<td id="fototessera" style="width:100px; padding-right:10px;" rowspan="14">
-					{assign_associative var="params" width=100 height=125 longside=false mode="crop"}
-					{$beEmbedMedia->object($attach[0],$params)}
-				</td>
-			{/if}
-				<th nowrap style="width:100px;">{t}company name{/t}:</th>
-				<td colspan="3"><input type="text" style="width:400px" name="data[cmp][company_name]" value="{$object.company_name|escape:'html'|escape:'quotes'}" /></td>
-			</tr>
-			<tr>
-				<th nowrap>{t}business name{/t}:</th>
-				<td colspan="3">
-					<input type="text" style="width:75px" id="vtitle" name="data[cmp][person_title]" value="{$object.person_title|escape:'html'|escape:'quotes'}" />
-				</td>
-			</tr>
-
-			<tr>
-				<th>{t}active{/t}:</th>
-				<td colspan="3">
-					{t}from{/t}:
-				<input type="text" style="width:75px" class="dateinput" name="data[cmp][birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/>
-					{t}to{/t}:
-				<input type="text" style="width:75px" class="dateinput" name="data[cmp][deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
-			</tr>
-
-			<tr>
-				<th colspan="4"><b>{t}Person of reference{/t}</b></th>
-			</tr>
-			<tr>
-				<th nowrap>{t}name{/t}:</th>
-				<td><input type="text" name="data[cmp][name]" value="{$object.name|escape:'html'|escape:'quotes'}" /></td>			
-				<th>{t}surname{/t}:</th>
-				<td><input type="text" name="data[cmp][surname]" value="{$object.surname|escape:'html'|escape:'quotes'}" /></td>
-			</tr>
-		</table>
-	</div>
-		
-</div>
 
 </fieldset>
 
