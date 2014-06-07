@@ -1667,9 +1667,6 @@ IMG.multimediaitemToolbar.viewthumb {
 	background-position: -36px;
 }
 
-
-
-
 .dark.multimediaitem {
 	background-color:#000000;
 	color: #999999;
@@ -1959,7 +1956,7 @@ A.BEbutton.golink:before {
 	position: fixed !important;
 	z-index:9999;
 	line-height:1.2em;
-	height: 90%;
+	/*height: 90%;*/
 }
 			
 .message {
