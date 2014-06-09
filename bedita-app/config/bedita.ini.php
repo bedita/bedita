@@ -385,8 +385,16 @@ $config["defaultObjRelationType"] = array(
 			"direction"=> array("auto", "North", "West", "East", "South", "North - West", "North - East", "South - West", "South - East"),
 			"behaviour" => array("skin", "popup", "popup & zoom", "modal"),
 		),
-		"hidden" => false,
+		"hidden" => false
   	),
+	 'poster' => array(
+	    'hidden' => false,
+	    'label' => 'poster',
+	    'left' => array(),
+	    'right' => array('image'),
+	    'inverse' => 'poster_of',
+	    'inverseLabel' => 'poster of',
+	)
 );
 
 // Relations - local objects' relation types (override in bedita.cfg)
