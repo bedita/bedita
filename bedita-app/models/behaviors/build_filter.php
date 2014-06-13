@@ -227,14 +227,27 @@ class BuildFilterBehavior extends ModelBehavior {
 					$firstKey = strtolower(key($val));
 					if ($firstKey == "not") {
 						$operator = "NOT IN";
-						$listValue = (is_array($val["NOT"]))? "('" . implode("','", $val["NOT"]) . "')" : "('" . $val["NOT"] . "')";
+						if (is_array($val['NOT'])) {
+							$val['NOT'] = array_map(array('Sanitize', 'escape'), $val['NOT']);
+							$listValue = "('" . implode("','", $val["NOT"]) . "')";
+						} else {
+							$listValue = "('" . Sanitize::escape($val["NOT"]) . "')";
+						}
 					} else {
+						$val = array_map(array('Sanitize', 'escape'), $val);
 						$operator = "IN";
 						$listValue = "('" . implode("','", $val) . "')";
 					}
 					$this->conditions[] = $key . " " . $operator . " " . $listValue;
 				} elseif ($val !== "" && $val !== null) {
-					$this->conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
+					if (preg_match('/^(<=|>=|<>|<|>)\s+(.+)/', $val, $matches)) {
+						$op = $matches[1];
+						$val = Sanitize::escape($matches[2]);
+						$this->conditions[] = "($key $op $val)";
+					} else {
+						$val = Sanitize::escape($val);
+						$this->conditions[] = $key . "='" . $val . "'";
+					}
 				}
 	
 				if (count($arr = explode(".", $key)) == 2 ) {
@@ -305,6 +318,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS obj_userid";
 		$from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}";
 		if(!empty($value)) {
+			$value = Sanitize::escape($value);
 			$from .= " AND {$s}ObjectUser{$e}.{$s}switch{$e} = '$value'";
 		}
 		//$from .= " LEFT OUTER JOIN {$s}users{$e} AS {$s}UserOU{$e} ON {$s}ObjectUser{$e}.{$s}user_id{$e}={$s}UserOU{$e}.{$s}id{$e}";
@@ -402,7 +416,9 @@ class BuildFilterBehavior extends ModelBehavior {
 
 		// #MYSQL
 		App::import('Sanitize');
-		$searchString = Sanitize::html($queryConf['searchString'], array('remove' => true));
+		$searchString = Sanitize::escape(
+			Sanitize::html($queryConf['searchString'], array('remove' => true))
+		);
 
 		$sType = $queryConf['searchType'];
 
@@ -450,6 +466,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 */
 	protected function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
+		$value = Sanitize::escape($value);
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
@@ -467,6 +484,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 */
 	protected function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
+		$value = Sanitize::escape($value);
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
@@ -535,7 +553,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				if(!$first) {
 					$in .= ", ";
 				}
-				$in .= $v;
+				$in .= Sanitize::escape($v);
 				$first = false; 
 			}
 			$this->conditions[] = "{$s}ReferenceObject{$e}.{$s}object_type_id{$e} IN ($in)";
@@ -551,6 +569,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param integer $value, mail_group_id
 	 */
 	protected function mail_groupFilter($s, $e, $value) {
+		$value = Sanitize::escape($value);
 		$this->from .= ", {$s}mail_group_cards{$e} AS {$s}MailGroupCard{$e}";
 		$this->conditions[] = "{$s}MailGroupCard{$e}.{$s}mail_group_id{$e}='" . $value . "' 
 					AND {$s}MailGroupCard{$e}.{$s}card_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
@@ -609,6 +628,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		unset($value['join']);
 		if (!empty($value)) {
 			foreach ($value as $k => $v) {
+				$v = Sanitize::escape($v);
 				$from .= " AND {$s}ObjectProperty{$e}.{$s}{$k}{$e}='" . $v ."'";
 			}
 		}
@@ -638,6 +658,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		unset($value['join']);
 		if (!empty($value)) {
 			foreach ($value as $k => $v) {
+				$v = Sanitize::escape($v);
 				$from .= " AND {$s}DateItem{$e}.{$s}{$k}{$e}='" . $v ."'";
 			}
 		}
@@ -668,6 +689,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$object_type_id = $this->filter["BEObject.object_type_id"];
 		}
 		foreach ($value as $relation) {
+			$relation = Sanitize::escape($relation);
 			$numOf =  "num_of_relations_" . $relation;
 			$alias = "Relation" . Inflector::camelize($relation);
 			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
@@ -791,5 +813,3 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 }
- 
-?>

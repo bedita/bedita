@@ -73,6 +73,9 @@ class SessionFilterHelper extends AppHelper {
         } else {
             $value = $activeFilter;
         }
+        if (is_string($value)) {
+            $value = Sanitize::html($value, array('remove' => true));
+        }
         return $value;
     }
 

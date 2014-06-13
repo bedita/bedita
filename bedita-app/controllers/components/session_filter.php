@@ -211,7 +211,6 @@ class SessionFilterComponent extends Object {
     /**
      * arrange data before insert in session
      * empty values are removed
-     * other values are sanitized
      *
      * @param  array  $filter
      */
@@ -219,8 +218,6 @@ class SessionFilterComponent extends Object {
         foreach ($filter as $key => &$value) {
             if (empty($value)) {
                 unset($filter[$key]);
-            } elseif (is_string($value)) {
-                $value = Sanitize::html($value, array('remove' => true));
             }
         }
     }
