@@ -290,7 +290,7 @@ class BeTreeHelper extends AppHelper {
 				if (!empty($publication["children"])) {
 					$output .= $this->designBranch($publication["children"], $inputType, $parent_ids, $publication['id']);
 				} else {
-					$url = '/pages/tree/' . $publication['id'];
+					$url = $this->Html->url('/pages/tree/' . $publication['id']);
 					$data = '';
 					if (!empty($this->treeParams["controller"])) {
 						$data .= ' data-controller="' . $this->Html->url('/'.$this->treeParams["controller"]) . '"';
