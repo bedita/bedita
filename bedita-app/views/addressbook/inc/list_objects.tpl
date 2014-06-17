@@ -50,13 +50,13 @@ $(document).ready(function(){
 		<tr>
 			<th></th>
 			<th>{$beToolbar->order('title','name')}&nbsp;&nbsp;&nbsp;&nbsp;{$beToolbar->order('surname','surname')}</th>
-{*			<th>{$beToolbar->order('company_name','organization')}</th>*}
-<th>{$beToolbar->order('id','id')}</th>
+			<th>{$beToolbar->order('id','id')}</th>
+			<th>{$beToolbar->order('company_name','organization')}</th>
 			<th>{$beToolbar->order('status','Status')}</th>
 			<th>{$beToolbar->order('modified','modified')}</th>
 			<th>{t}is user{/t}</th>
 			<th>{$beToolbar->order('email','email')}</th>
-			<th>{$beToolbar->order('country','country')}</th>
+			{*<th>{$beToolbar->order('country','country')}</th>*}
 			{if !empty($properties)}
 				{foreach $properties as $p}
 					<th>{$p.name}</th>
@@ -91,24 +91,26 @@ $(document).ready(function(){
 				</a>
 			</td>
 
-{*			<td>{$objects[i].company_name|default:''}</td>*}
+			<td>{$objects[i].company_name|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{if empty($objects[i].obj_userid)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
 			<td>{$objects[i].email|default:''}</td>
-			<td>{$objects[i].country}</td>
+			{* <td>{$objects[i].country}</td> *}
 			{if !empty($properties)}
 				{foreach $properties as $p}
 					<td class="custom-property-cell">
-					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
-						{if is_array($objects[i].customProperties[$p.name])}
-							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
+						<p>
+						{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
+							{if is_array($objects[i].customProperties[$p.name])}
+								{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
+							{else}
+								{$objects[i].customProperties[$p.name]|truncate:80:"..."}
+							{/if}
 						{else}
-							{$objects[i].customProperties[$p.name]|truncate:80:"..."}
+							-
 						{/if}
-					{else}
-						-
-					{/if}
+						</p>
 					</td>
 				{/foreach}
 			{/if}

@@ -1388,11 +1388,12 @@ TABLE.indexlist H4{
 	/*padding-top: 10px; padding-bottom: 10px;*/
 }
 
-.indexlist TD.custom-property-cell {
+.indexlist TD.custom-property-cell P {
     max-width: 160px;
-    word-break: break-word;
+    word-break: break-all;
     text-overflow: ellipsis;
-    max-height: 65px;
+    max-height: 20px;
+	overflow:hidden;
 }
 
 .indexlist .show_on_more {
