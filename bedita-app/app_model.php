@@ -386,6 +386,8 @@ class BEAppModel extends AppModel {
 			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
         }
 
+        // actual SQL limit page (may vary using external searchEngine)
+        $limitPage = $page;
         $rankOrder = array();
         $searchCount = null;
         if (!empty($filter["query"])) {
@@ -405,6 +407,7 @@ class BEAppModel extends AppModel {
                 }
                 $searchCount = $result["total"];
                 unset($filter["query"]);
+                $limitPage = 1;
             // default search engine
             } else {
             	if (!empty($filter['searchType'])) {
@@ -508,7 +511,7 @@ class BEAppModel extends AppModel {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 
-		$limit = (!empty($dim))? $this->getLimitClausole($dim, $page) : '';
+		$limit = (!empty($dim))? $this->getLimitClausole($dim, $limitPage) : '';
 		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 
 		// #CUSTOM QUERY

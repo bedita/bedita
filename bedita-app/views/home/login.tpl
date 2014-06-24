@@ -35,7 +35,7 @@
 	<label class="block"><a href='javascript:void(0)' onClick="$('#pswforget').toggle('fast')">{t}Forgot your username or password?{/t}</a></label>
 	
 	<div id="pswforget" style="margin-top:20px; display:none">
-		<form method="post" action="{$html->url('/authentications/recoverPassword')}">
+		<form method="post" action="{$html->url('/authentications/recoverUserPassword')}">
 		<input class="big" style="width:280px" type="text" placeholder="{t}Write your email here{/t}" name="data[email]"/>
 		<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 		{if isset($conf->projectAdmin)}

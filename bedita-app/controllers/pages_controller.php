@@ -475,42 +475,6 @@ class PagesController extends AppController {
         }
         $this->layout="ajax";
     }
-    
-    /**
-     * Provides on line Help contents, called via AJAX like /pages/helpOnline/$controller/$action
-     * 2 arguments at least mandatory
-     */
-    public function helpOnline() {
-        $args = func_get_args();
-        $count = func_num_args();
-        if($count < 2) {
-            throw new BeditaException(__("Error invoking online help", true));
-        }
-        $module = $args[0];
-        $action = $args[1];
-        
-        $path = " " . $module . " " . $action;
-        $url = Configure::read("helpBaseUrl");
-
-        // add language choice
-        $langChoice = "/lang:" . $this->currLang;
-        
-        // help online URL convention is <base-url>/<module-name>-module/<module-name>-<action-name>
-        // example: <base-url>/events-module/events-view
-        $url .= "/$module-module/$module-$action" . $langChoice;
-
-        $this->log($url);   
-        $result = @get_headers($url);
-        if(preg_match("|200|",$result[0])) {
-            $result = file_get_contents($url);
-        } else {
-            $result = "404";
-        }
-        $this->set('module_name',$module);
-        $this->set('action',$action);
-        $this->set('path',$path);
-        $this->set('result',$result);
-    }
 
     /**
      * Ajax update of current object editors/viewers
