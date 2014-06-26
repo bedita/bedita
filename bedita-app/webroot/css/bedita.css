@@ -1365,7 +1365,8 @@ TABLE.indexlist {
  
 TABLE.indexlist H4{
 	vertical-align: middle;
-	line-height: 30px;
+	display: inline-block;
+	min-height: 30px;
 }
   
 .indexlist thead {
