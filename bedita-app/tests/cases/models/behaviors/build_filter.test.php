@@ -137,8 +137,14 @@ class BuildFilterTestCase extends BeditaTestCase {
         $expectedWhere = $this->quoteFields("Content.start_date > '2014-06-23 09:30:00' AND ((BEObject.title = 'title one') OR (BEObject.title = 'title two')) AND ((Stream.mime_type = 'image/png') OR (NOT (BEObject.status IN ('on', 'off'))))");
         $this->assertEqual($where, $expectedWhere);
 
-        debug($conditions);
-        debug($where);
+        // sqlInjection
+        $this->requiredData(array('sqlInjection'));
+        $conditions = $this->buildStatements($this->data['sqlInjection'], 'conditions');
+        $expected = $this->data['sqlInjection'];
+        $this->assertEqual($conditions, $expected);
+        $where = $this->db->conditions($conditions, true, false);
+        $expectedWhere = $this->quoteFields("BEObject.object_type_id = '1\' OR \'1\' = \'1'");
+        $this->assertEqual($where, $expectedWhere);
     }
 
     public function testFields() {
@@ -152,6 +158,12 @@ class BuildFilterTestCase extends BeditaTestCase {
         $this->requiredData(array('selectStreamFields'));
         $fields = $this->buildStatements($this->data['selectStreamFields'], 'fields');
         $expected = ', ' . $this->BEObject->fieldsString('Stream');
+        $this->assertEqual($fields, $expected);
+
+        // notOldStyle
+        $this->requiredData(array('notOldStyle'));
+        $fields = $this->buildStatements($this->data['notOldStyle'], 'fields');
+        $expected = ', ' . $this->quoteFields('Stream.mime_type');
         $this->assertEqual($fields, $expected);
     }
 

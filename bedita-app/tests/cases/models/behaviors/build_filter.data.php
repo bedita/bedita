@@ -55,6 +55,10 @@ class BuildFilterTestData extends BeditaTestData {
                     )
                 )
            )
+        ),
+
+        'sqlInjection' => array(
+            'BEObject.object_type_id' => "1' OR '1' = '1"
         )
 
     );
