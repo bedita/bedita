@@ -41,7 +41,9 @@ $config["majorVersion"] = "3.4.0"; // don't override -- admin/system
 $config["codenameVersion"] = "Corylus"; // don't override -- admin/system
 
 // Multimedia - image file substituting missing content (as now used in BeThumb helper)
-$config['imgMissingFile'] = "/img/iconMissingImage_130x85.gif";
+$config['imgMissingFile'] = '/img/iconMissingImage_130x85.gif';
+
+$config['imgUnsupported'] = '/img/iconset/image-large.png';
 
 /**
  ** ******************************************
