@@ -259,34 +259,11 @@ class BuildFilterBehavior extends ModelBehavior {
 										$this->conditions['NOT'] = array();
 									}
 									$this->conditions['NOT'] += array($key => $val['NOT']);
-
-									// $operator = "NOT IN";
-									// if (is_array($val['NOT'])) {
-									// 	$val['NOT'] = array_map(array('Sanitize', 'escape'), $val['NOT']);
-									// 	$listValue = "('" . implode("','", $val["NOT"]) . "')";
-									// } else {
-									// 	$listValue = "('" . Sanitize::escape($val["NOT"]) . "')";
-									// }
 								} else {
-									// $val = array_map(array('Sanitize', 'escape'), $val);
-									// $operator = "IN";
-									// $listValue = "('" . implode("','", $val) . "')";
 									$this->conditions[$key] = $val;
 								}
-								//$this->conditions[] = $key . " " . $operator . " " . $listValue;
 							} elseif ($val !== '' && $val !== null) {
-								if (preg_match('/^(<=|>=|<>|<|>)\s+(.+)/', $val, $matches)) {
-									$valOp = $matches[1];
-									//$val = Sanitize::escape($matches[2]);
-									$val = $matches[2];
-									//$this->conditions[] = "($key $op $val)";
-									if (empty($this->conditions['AND'])) {
-										$this->conditions['AND'] = array();
-									}
-									$this->conditions['AND'] += array($key . ' ' . $valOp => $val);
-								} else {
-									$this->conditions[$key] = $val;
-								}
+								$this->conditions[$key] = $val;
 							}
 						}
 

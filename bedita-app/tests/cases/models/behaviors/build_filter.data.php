@@ -35,8 +35,8 @@ class BuildFilterTestData extends BeditaTestData {
         ),
 
         'signedFilter' => array(
-            'Content.start_date' => '>= 2014-06-23', // old style (to avoid)
-            'Content.end_date <=' => '2014-06-30'
+            'Content.end_date <=' => '2014-06-30',
+            'BEObject.title LIKE' => '%title%'
         ),
 
         'complexConditions' => array(

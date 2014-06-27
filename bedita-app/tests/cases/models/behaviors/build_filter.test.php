@@ -119,13 +119,10 @@ class BuildFilterTestCase extends BeditaTestCase {
         // signedFilter
         $this->requiredData(array('signedFilter'));
         $conditions = $this->buildStatements($this->data['signedFilter'], 'conditions');
-        $expected = array(
-            'AND' => array('Content.start_date >=' => '2014-06-23'),
-            'Content.end_date <=' => '2014-06-30'
-        );
+        $expected = $this->data['signedFilter'];
         $this->assertEqual($conditions, $expected);
         $where = $this->db->conditions($conditions, true, false);
-        $expectedWhere = $this->quoteFields("Content.start_date >= '2014-06-23' AND Content.end_date <= '2014-06-30'");
+        $expectedWhere = $this->quoteFields("Content.end_date <= '2014-06-30' AND BEObject.title LIKE '%title%'");
         $this->assertEqual($where, $expectedWhere);
 
         // complexConditions

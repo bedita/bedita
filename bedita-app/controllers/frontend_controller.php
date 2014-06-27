@@ -1454,10 +1454,12 @@ abstract class FrontendController extends AppController {
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+			$filter['OR']["Content.start_date <="] = date("Y-m-d");
+			$filter['OR']["Content.start_date"] = null;
 		}
 		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+			$filter['AND']['OR']["Content.end_date >="] = date("Y-m-d");
+			$filter['AND']['OR']["Content.end_date"] = null;
 		}
 
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1835,10 +1837,12 @@ abstract class FrontendController extends AppController {
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start_date"])) {
-				$this->searchOptions["filter"]["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+			$this->searchOptions["filter"]['OR']["Content.start_date <="] = date("Y-m-d");
+			$this->searchOptions["filter"]['OR']["Content.start_date"] = null;
 		}
 		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end_date"])) {
-				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+			$this->searchOptions["filter"]['AND']['OR']["Content.end_date >="] = date("Y-m-d");
+			$this->searchOptions["filter"]['AND']['OR']["Content.end_date"] = null;
 		}
 		$searchFilter = array();
 		if (!empty($this->params['form']['searchstring'])) {
