@@ -567,9 +567,6 @@ msgstr "Fehler beim Holen der Objekt-ID: %s"
 msgid "Error getting object: %d"
 msgstr "Fehler beim Holen des Objekts: %d"
 
-msgid "Error invoking online help"
-msgstr "Fehler beim Aufrufen der Online-Hilfe"
-
 msgid "Error loading area: %d"
 msgstr "Fehler beim Laden des Bereichs: %d"
 

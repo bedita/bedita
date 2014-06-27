@@ -597,7 +597,7 @@ class AppController extends Controller
 					$objDetail['object_type'] = $modelClass;
 					$userdata = (!empty($options['user']))? $options['user'] : array();
 					$frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
-					if ($frontendAccess == "denied") {
+					if ($frontendAccess == "denied" && empty($this->showUnauthorized)) {
 						continue;
 					}
 					$objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
@@ -1392,4 +1392,3 @@ abstract class ModulesController extends AppController {
 	}
 
 }
-?>

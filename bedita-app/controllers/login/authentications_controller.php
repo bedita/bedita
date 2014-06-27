@@ -66,27 +66,31 @@ class AuthenticationsController extends AppController {
 		$this->BeAuth->logout() ;
 	}
 
-	public function recoverPassword($service_type="recover_password", $hash=null) {
+	/**
+	 * Recovery user password system
+	 *
+	 * @param string $service_type the service type used by BeHashComponent
+	 * @param string $hash hashed string used to handle the recovery
+	 */
+	public function recoverUserPassword($service_type = 'recover_password', $hash = null) {
 		$this->setupLocale();
 		if (!empty($service_type) || !empty($hash)) {
 			try {
 				$this->Transaction->begin();
 				if (!$this->BeHash->handleHash($service_type, $hash)) {
-					$this->redirect("/");
+					$this->redirect('/');
 				}
 				$this->Transaction->commit();
-				if (empty($hash)) {
-					$this->redirect("/");
+				if (empty($hash) || !$this->Session->check('userToChangePwd')) {
+					$this->redirect('/');
 				}
-			} catch (BeditaHashException $ex) {
-				$this->Transaction->rollback();
-				$this->userErrorMessage($ex->getMessage());
-				$this->eventError($ex->getDetails());
 			} catch (BeditaException $ex) {
 				$this->Transaction->rollback();
 				$this->userErrorMessage($ex->getMessage());
 				$this->eventError($ex->getDetails());
-				$this->redirect("/");
+				if (empty($hash)) {
+					$this->redirect('/');
+				}
 			}
 			$this->render(null, null, VIEWS."pages/change_password.tpl");
 		}
@@ -122,5 +126,3 @@ class AuthenticationsController extends AppController {
 	 
 
 }
-
-?>

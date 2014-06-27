@@ -43,13 +43,6 @@
 	</div>
 </div>
 
-	
-{*
-** Help container
-*}
-
-{$view->element('help')}
-
 
 {*
 ** Modal container

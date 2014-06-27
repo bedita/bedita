@@ -115,7 +115,7 @@
 						<input type="text" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][params][{$paramName}]" value="{$objRelated.params[$paramName]|default:""}" />
 					{/if}
 				{/foreach}
-				{if in_array($objRelated.object_type_id,$conf->objectTypes['multimedia']['id'])}
+				{if (in_array($objRelated.object_type_id, $conf->objectTypes['multimedia']['id']) || $objRelated.object_type_id == $conf->objectTypes['gallery']['id'])}
 				<label>{t}description{/t}</label>
 				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
 				{/if}

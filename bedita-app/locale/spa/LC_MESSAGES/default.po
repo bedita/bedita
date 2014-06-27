@@ -553,9 +553,6 @@ msgstr "Error en lectura objeto id: %s"
 msgid "Error getting object: %d"
 msgstr "Error en lectura objeto: %d"
 
-msgid "Error invoking online help"
-msgstr "Error en invocación ayuda online"
-
 msgid "Error loading area: %d"
 msgstr "Error en cargamiento area: %d"
 
