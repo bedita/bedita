@@ -25,7 +25,8 @@ class Installer {
 /**
  * Does some routine installation tasks so people don't have to.
  *
- * @param Composer\Script\Event $event
+ * @param Composer\Script\Event $event The composer event object.
+ * @return void
  */
 	public static function postInstall(Event $event) {
 		$io = $event->getIO();
@@ -40,12 +41,12 @@ class Installer {
  * Create the Config/app.php file if it does not exist.
  *
  * @param string $dir The application's root directory.
- * @param Composer\IO\IOInterface IO interface to write to console.
+ * @param Composer\IO\IOInterface $io IO interface to write to console.
  * @return void
  */
 	public static function createAppConfig($dir, $io) {
-		$appConfig = $dir . '/App/Config/app.php';
-		$defaultConfig = $dir . '/App/Config/app.default.php';
+		$appConfig = $dir . '/src/Config/app.php';
+		$defaultConfig = $dir . '/src/Config/app.default.php';
 		if (!file_exists($appConfig)) {
 			copy($defaultConfig, $appConfig);
 			$io->write('Created `Config/app.php` file');
@@ -58,7 +59,7 @@ class Installer {
  * This is not the most secure default, but it gets people up and running quickly.
  *
  * @param string $dir The application's root directory.
- * @param Composer\IO\IOInterface IO interface to write to console.
+ * @param Composer\IO\IOInterface $io IO interface to write to console.
  * @return void
  */
 	public static function setTmpPermissions($dir, $io) {
@@ -101,11 +102,11 @@ class Installer {
  * Set the security.salt value in the application's config file.
  *
  * @param string $dir The application's root directory.
- * @param Composer\IO\IOInterface IO interface to write to console.
+ * @param Composer\IO\IOInterface $io IO interface to write to console.
  * @return void
  */
 	public static function setSecuritySalt($dir, $io) {
-		$config = $dir . '/App/Config/app.php';
+		$config = $dir . '/src/Config/app.php';
 		$content = file_get_contents($config);
 
 		$newKey = hash('sha256', $dir . php_uname() . microtime(true));
@@ -118,7 +119,7 @@ class Installer {
 
 		$result = file_put_contents($config, $content);
 		if ($result) {
-			$io->write('Updated Security.salt value in App/Config/app.php');
+			$io->write('Updated Security.salt value in src/Config/app.php');
 			return;
 		}
 		$io->write('Unable to update Security.salt value.');

@@ -24,6 +24,8 @@ if (!Configure::read('debug')):
 	throw new Error\NotFoundException();
 endif;
 ?>
+<iframe src="http://cakephp.org/bake-banner" width="830" height="160" style="overflow:hidden; border:none;">
+</iframe>
 <h2>Release Notes for CakePHP <?= Configure::version(); ?></h2>
 <p>
 	<a href="http://cakephp.org/changelogs/<?= Configure::version(); ?>">Read the changelog</a>
@@ -151,8 +153,8 @@ endif;
 
 <h3><?php echo 'Editing this Page'; ?></h3>
 <p>
-	To change the content of this page, edit: APP/Template/Pages/home.ctp.<br />
-	To change its layout, edit: APP/Template/Layout/default.ctp.<br />
+	To change the content of this page, edit: src/Template/Pages/home.ctp.<br />
+	To change its layout, edit: src/Template/Layout/default.ctp.<br />
 	You can also add some CSS styles for your pages at: webroot/css/.
 </p>
 

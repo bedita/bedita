@@ -15,9 +15,9 @@
     },
     "autoload": {
         "psr-4": {
-            "BEdita\\": "App",
-            "BEdita\\Test\\": "Test",
-            "": "./Plugin"
+            "BEdita\\": "src",
+            "BEdita\\Test\\": "tests",
+            "": "./plugins"
         }
     },
     "scripts": {

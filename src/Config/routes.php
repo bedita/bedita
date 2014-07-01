@@ -46,11 +46,11 @@ use Cake\Routing\Router;
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
-	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+	Router::connect('/', array('controller' => 'Pages', 'action' => 'display', 'home'));
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	Router::connect('/pages/*', array('controller' => 'Pages', 'action' => 'display'));
 
 /**
  * Load all plugin routes.  See the Plugin documentation on
@@ -59,7 +59,7 @@ use Cake\Routing\Router;
 	Plugin::routes();
 
 /**
- * Load the CakePHP default routes. Only remove this if you do not want to use
- * the built-in default routes.
+ * Load the CakePHP default routes. This will help you get started and make every controller and action available by
+ * default, though we recommend to write out all your routes and remove this line.
  */
 	require CAKE . 'Config/routes.php';

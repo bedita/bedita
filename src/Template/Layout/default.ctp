@@ -39,7 +39,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 			<h1><?= $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
 		</div>
 		<div id="content">
-			<?= $this->Session->flash(); ?>
+			<?= $this->Flash->render(); ?>
 
 			<?= $this->fetch('content'); ?>
 		</div>
@@ -52,6 +52,5 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 			?>
 		</div>
 	</div>
-	<?= $this->element('sql_dump'); ?>
 </body>
 </html>
