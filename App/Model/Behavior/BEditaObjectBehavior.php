@@ -121,4 +121,19 @@ class BEditaObjectBehavior extends Behavior {
         }
     }
 
+    /**
+     * Perform operations before delete object:
+     * - delete all trees entry related to the object
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Entity $entity
+     * @param  array  $options
+     * @return void
+     */
+    public function beforeDelete(Event $event, Entity $entity, array $options) {
+        // remove trees entry
+        $trees = TableRegistry::get('Trees');
+        $trees->deleteAll(['id' => $entity->id]);
+    }
+
 }
