@@ -51,8 +51,7 @@
 					&nbsp;</td>
 			</tr>
 
-
-			<tbody class="authTypeForm" id="authTypeBedita" {if ($userdetail.auth_type|default:'')}style="display:none"{/if}>
+			<tbody class="authTypeForm" id="authTypeBedita" {if ($userdetail.auth_type|mb_lower|default:'bedita' != 'bedita')}style="display:none"{/if}>
 				<tr>
 				 	<th>{t}New password{/t}</th>
 					<td>
