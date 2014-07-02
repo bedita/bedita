@@ -621,7 +621,10 @@ class PagesController extends AppController {
 
         if ($this->RequestHandler->isAjax()) {
             $this->RequestHandler->respondAs('json');
-            $this->set('data', array('id' => $model->id));
+            // jsonize object saved
+            $model->containLevel('detailed');
+            $object = $model->findById($model->id);
+            $this->set('data', $object);
             $this->view = 'View';
             $this->action = 'json';
         } else {
