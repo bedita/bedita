@@ -73,9 +73,9 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
 		
 	{include file="inc/tools_commands.tpl" type="all"}
 
-	{bedev}
+	{*bedev}
 	{include file="inc/bulk_actions.tpl" type="all"}
-	{/bedev}
+	{/bedev*}
 
 
 </div>	

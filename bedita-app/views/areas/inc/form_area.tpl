@@ -1,9 +1,12 @@
-<fieldset id="properties">	
+
 
 {$view->element('form_common_js')}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
-	
+
+<div class="tab"><h2>{t}{$title|default:'Title and properties'}{/t}</h2></div>
+
+<fieldset id="properties">	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
 
@@ -61,7 +64,7 @@
 			</td>
 		</tr>
 	</table>
-	
+</fieldset>	
 
 
 <div class="tab"><h2>{t}More properties{/t}</h2></div>
