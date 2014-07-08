@@ -2,15 +2,15 @@
 
 <script type="text/javascript">
 	var message = "{t}Are you sure that you want to delete the item?{/t}";
-	var delLogUrl = "{$html->url('/admin/deleteMailLog')}";
 
 	$(document).ready(function() { 
 		$("#email_logs").prev(".tab").BEtabstoggle();
 		$(".delLog").bind("click", function() { 
-			if(!confirm(message))
-				return false ;
+			if(!confirm(message)) {
+				return false;
+			}
 			var logId = $(this).prop("title");
-			$("#form_log_"+logId).prop("action", delLogUrl + '/' + logId).submit();
+			$("#form_log_"+logId).submit();
 		} );
 	} );
 </script>
@@ -53,17 +53,21 @@
 		</tr>
 		{if !empty($logs)}
 		{foreach from=$logs item=j}
-		<form id="form_log_{$j.MailLog.id}" method="post" action="">
-		<tr>
-			<td style="white-space:nowrap">{$j.MailLog.id}</td>
-			<td style="white-space:nowrap">{$j.MailLog.created|date_format:$conf->dateTimePattern}</td>
-			<td style="white-space:nowrap">{$j.MailLog.log_level}</td>
-			<td style="white-space:nowrap">{$j.MailLog.recipient|default:''}</td>
-			<td>{$j.MailLog.subject|default:''}</td>
-			<td>{$j.MailLog.mail_body|default:''|truncate:64}</td>
-			<td><input type="button" class="delLog" value="{t}Delete{/t}" title="{$j.MailLog.id}" /></td>
-		</tr>
-		</form>
+			{assign_concat var='formId' 1='form_log_' 2=$j.MailLog.id}
+			{$view->Form->create(null, ['action' => 'deleteMailLog', 'id' => $formId])}
+			<tr>
+				<td style="white-space:nowrap">{$j.MailLog.id}</td>
+				<td style="white-space:nowrap">{$j.MailLog.created|date_format:$conf->dateTimePattern}</td>
+				<td style="white-space:nowrap">{$j.MailLog.log_level}</td>
+				<td style="white-space:nowrap">{$j.MailLog.recipient|default:''}</td>
+				<td>{$j.MailLog.subject|default:''}</td>
+				<td>{$j.MailLog.mail_body|default:''|truncate:64}</td>
+				<td>
+					{$view->Form->hidden('MailLog.id', ['value' => $j.MailLog.id])}
+					<input type="button" class="delLog" value="{t}Delete{/t}" title="{$j.MailLog.id}" />
+				</td>
+			</tr>
+			{$view->Form->end()}
 		{/foreach}
 		{/if}
 	</table>
