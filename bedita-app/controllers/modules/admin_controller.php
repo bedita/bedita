@@ -25,7 +25,20 @@
 class AdminController extends ModulesController {
 
 	public $uses = array('MailJob','MailLog','MailMessage') ;
-	public $components = array('Security', 'BeSystem','BeMail');
+	public $components = array(
+		'Security' => array(
+			'requirePost' => array(
+				'deleteEventLog',
+				'emptySystemLog',
+				'deleteAllMailLogs',
+				'deleteAllMailUnsent',
+				'deleteMailLog',
+				'deleteMailJob'
+			)
+		),
+		'BeSystem',
+		'BeMail'
+	);
 	public $helpers = array('Paginator', 'Text');
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
@@ -34,14 +47,10 @@ class AdminController extends ModulesController {
 	protected $moduleName = 'admin';
 
 	protected function beditaBeforeFilter() {
-		$this->Security->requirePost = array(
-			'deleteEventLog',
-			'emptySystemLog',
-			'deleteAllMailLogs',
-			'deleteAllMailUnsent',
-			'deleteMailLog',
-			'deleteMailJob'
-		);
+		// disable Security component for method not in requirePost
+		if (!in_array($this->action, $this->Security->requirePost)) {
+			$this->Security->validatePost = false;
+		}
 	}
 
 	public function index() {
