@@ -9,7 +9,7 @@
 
 		<th>{t}nickname{/t}:</th>
 		<td colspan="5">
-			<input type="text" id="nicknameBEObject" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
+			<input type="text" style="width:100%" name="data[nickname]" value="{$object.nickname|escape:'html'|escape:'quotes'}"/>
 		</td>
 
 	</tr>

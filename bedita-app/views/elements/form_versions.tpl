@@ -19,7 +19,7 @@
 		</td>
 		<td style="white-space:nowrap">{$h.created|date_format:$conf->dateTimePattern}</td>
 		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
-		<td><a class="modalbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  view  </a></td>
+		<td style="text-align: right"><a class="modalbutton BEbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  view  </a></td>
 	</tr>
 	<!-- {*
 	<tr id="diff-{$h.revision}" style="display:none">

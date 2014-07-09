@@ -5,7 +5,9 @@
 
 <fieldset id="long_desc_langs_container">
 
-{if (!empty($addshorttext)) or (!empty($object.abstract))}
+{$shortText = $conf->addShortText|default:false}
+
+{if ($shortText) or (!empty($object.abstract))}
 
 		<label>{t}short text{/t}:</label>
 		<textarea name="data[abstract]" class="mce abstract">{$object.abstract|default:''}</textarea>

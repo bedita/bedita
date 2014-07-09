@@ -537,9 +537,6 @@ msgstr ""
 msgid "Error getting object: %d"
 msgstr ""
 
-msgid "Error invoking online help"
-msgstr ""
-
 msgid "Error loading area: %d"
 msgstr ""
 

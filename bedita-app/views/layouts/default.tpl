@@ -46,13 +46,6 @@
 {$content_for_layout}
 	
 {*
-** Help container
-*}
-
-{$view->element('help')}
-
-
-{*
 ** Modal container
 *}
 

@@ -745,7 +745,14 @@ class Tree extends BEAppModel
 	 * @throws BeditaException
 	 */
 	public function copyContentsToBranch($originalBranchId, $newBranchId) {
-		$children = $this->getChildren($originalBranchId, null, null, array("object_type_id" => "<> " . Configure::read("objectTypes.section.id")));
+		$children = $this->getChildren(
+			$originalBranchId,
+			null,
+			null,
+			array(
+				'NOT' => array('object_type_id' => Configure::read('objectTypes.section.id'))
+			)
+		);
 		if (!empty($children["items"])) {
 			foreach ($children["items"] as $item) {
 				if (!$this->appendChild($item["id"], $newBranchId)) {

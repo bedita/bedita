@@ -62,13 +62,15 @@ $(document).ready(function() {
 					<input type="text" name="data[Property][name]" value="{$p.name}" />
 				</td>
 				<td style="vertical-align:middle">
-					<span class="listrecent {$conf->objectTypes[$p.object_type_id].name}">&nbsp;&nbsp;</span>
-					<input type="hidden" name="data[Property][object_type_id]" value="{$p.object_type_id}"/>
-					{if $p.object_type_id == null}
-						user
-					{else}
-						{$conf->objectTypes[$p.object_type_id].name}
-					{/if}
+                    {if !empty($p.object_type_id)}
+                        {$typeName=$conf->objectTypes[$p.object_type_id].name}
+                    {else}
+                        {$typeName='user'}
+                    {/if}
+					
+					<span class="listrecent {$typeName}">&nbsp;&nbsp;</span>
+					<input type="hidden" name="data[Property][object_type_id]" value="{$p.object_type_id|default:null}"/>
+					{$typeName}
 					
 				</td>
 				<td>

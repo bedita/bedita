@@ -161,6 +161,8 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 //  'conf' => 'ckeditor_default_init'
 // );
 
+// Activate short text (abstract) for documents
+//$config['addShortText'] = true;
 
 /**
  ** ******************************************

@@ -81,7 +81,6 @@ function loadUserGroupAjax(url) {
 <div class="loader" id="loaderug"></div>
 
 <table class="indexlist" border="0" id="frmCustomPermissions">
-{if !empty($el.Permission)}
 	<thead>
 		<tr>
 			<th>{t}name{/t}</th>
@@ -89,6 +88,9 @@ function loadUserGroupAjax(url) {
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
+
+{if !empty($el.Permission)}
+	
 	{section name=i loop=$el.Permission}
 	{assign var="perm" 	value=$el.Permission[i]}
 	{assign var="i" 	value=$smarty.section.i.index}
@@ -109,13 +111,11 @@ function loadUserGroupAjax(url) {
 		
 	{/section}
 {else}
-	<thead>
-		<tr>
-			<th></th>
-			<th></th>
-			<th>&nbsp;</th>
-		</tr>
-	</thead>
+	<tr class="trick">
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
 {/if}
 </table>
 

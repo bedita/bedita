@@ -753,6 +753,7 @@ UL.menuleft + UL.menuleft {
 	/*-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;*/
+	position: relative;
 }
 
 .tab H2 A,  .tab2 H2 A{
@@ -801,7 +802,10 @@ UL.menuleft + UL.menuleft {
 	background-color:#444;
 	font-size:.9em;
 	min-width: 16px;
-	/*display: inline-block;*/
+	display: inline-block;
+	color: white;
+	position: absolute;
+	top: 5px;
 }
 
 
@@ -893,6 +897,10 @@ UL.menuleft + UL.menuleft {
     width: 20px !important;
     margin-left: -10px;
     margin-top: -10px;
+}
+
+TR.trick {
+	display:none !important;
 }
 
 .relationList TR.trick {
@@ -1357,7 +1365,8 @@ TABLE.indexlist {
  
 TABLE.indexlist H4{
 	vertical-align: middle;
-	line-height: 30px;
+	display: inline-block;
+	min-height: 30px;
 }
   
 .indexlist thead {
@@ -1659,9 +1668,6 @@ IMG.multimediaitemToolbar.viewthumb {
 	background-position: -36px;
 }
 
-
-
-
 .dark.multimediaitem {
 	background-color:#000000;
 	color: #999999;
@@ -1951,7 +1957,7 @@ A.BEbutton.golink:before {
 	position: fixed !important;
 	z-index:9999;
 	line-height:1.2em;
-	height: 90%;
+	/*height: 90%;*/
 }
 			
 .message {

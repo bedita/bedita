@@ -10,7 +10,7 @@
 	{elseif $class == "error"}
 		<h2>{t}Error{/t}</h2>
 	{/if}
-	<p style="display:block; margin-top:10px; max-height: 30px; overflow: hidden; word-wrap: break-word;">
+	<p style="display:block; margin-top:10px; min-height: 30px; overflow: visible; word-wrap: break-word;">
 		{$message}
 	</p>
 	<hr />

@@ -2,7 +2,7 @@
 <!--
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
-var urls = Array();
+var urls = {};
 urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
 urls['changestatusSelected'] = "{$html->url('changeStatusObjects/')}";
 urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}";
@@ -10,51 +10,10 @@ urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')
 urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
 
-function count_check_selected() {
-	var checked = 0;
-	$('input[type=checkbox].objectCheck').each(function(){
-		if($(this).prop("checked")) {
-			checked++;
-		}
-	});
-	return checked;
-}
-$(document).ready(function(){
-	
-	$("#deleteSelected").click(function() {
-		if (count_check_selected() < 1) {
-			alert(no_items_checked_msg);
-			return false;
-		}
-		if (!confirm(message)) {
-			return false ;
-		}
-		$("#formObject").prop("action", urls['deleteSelected']) ;
-		$("#formObject").submit() ;
-	});
-
-	$("#assocObjects").click( function() {
-		if (count_check_selected() < 1) {
-			alert(no_items_checked_msg);
-			return false;
-		}
-		var op = ($('#areaSectionAssocOp').val()) ? $('#areaSectionAssocOp').val() : "copy";
-		$("#formObject").prop("action", urls[op + 'ItemsSelectedToAreaSection']) ;
-		$("#formObject").submit() ;
-	});
-
-	$(".opButton").click( function() {
-		if (count_check_selected() < 1) {
-			alert(no_items_checked_msg);
-			return false;
-		}
-		$("#formObject").prop("action", urls[this.id]) ;
-		$("#formObject").submit() ;
-	});
-});
-
 //-->
-</script>	
+</script>
+
+{$html->script('fragments/list_objects.js', false)}
 
 <style>
 	.vlist { display:none }
@@ -69,7 +28,7 @@ $(document).ready(function(){
 	<thead>
 		<tr>
 			<th colspan="2" nowrap>
-				{* 
+				{*
 				<img class="multimediaitemToolbar viewlist" src="{$html->webroot}img/iconML-list.png" />
 				<img class="multimediaitemToolbar viewsmall" src="{$html->webroot}img/iconML-small.png" />
 				<img class="multimediaitemToolbar viewthumb" src="{$html->webroot}img/iconML-thumb.png" />
@@ -86,19 +45,19 @@ $(document).ready(function(){
 		</tr>
 	</thead>
 	{/capture}
-		
+
 		{$smarty.capture.theader}
 
 	</table>
 
 	<br style="clear:both" />
 
-	{strip}	
+	{strip}
 		{foreach from=$objects item="item"}
 			<div class="multimediaitem itemBox{if $item.status != "on"} off{/if}">
 				{assign_associative var="params" item=$item}
 				{$view->element('file_item',$params)}
-				
+
 				<table border=0 padding="0" spacing="0" style="width:100%">
 				<tr>
 					<td colspan=4 class="vlist">{$item.id}</td>
@@ -109,8 +68,8 @@ $(document).ready(function(){
 					<td colspan=4 class="vlist">{$item.status}</td>
 					<td colspan=4 class="vlist">{$item.created|date_format:'%b %e, %Y'}</td>
 				</tr>
-				<tr>	
-					{if (empty($item.fixed))}	
+				<tr>
+					{if (empty($item.fixed))}
 					<td style="text-align:left; padding:0px">
 						<input type="checkbox" style="width:15px" name="objects_selected[]" class="objectCheck" title="{$item.id}" value="{$item.id}" />
 					</td>
@@ -131,13 +90,13 @@ $(document).ready(function(){
 							<img title="{t}ubiquous object{/t}" src="{$html->webroot}img/iconUbiquity.png" style="margin:0; width:18px; vertical-align:middle;">
 						{/if}
 					</td>
-	
+
 					<td style="text-align:right;"><a href="{$html->url('view/')}{$item.id}" class="BEbutton">open</a></td>
 
-					
-				</tr>	
+
+				</tr>
 				</table>
-				
+
 			</div>
 		{/foreach}
 	</div>
@@ -149,5 +108,3 @@ $(document).ready(function(){
 {$view->element('list_objects_bulk', $params)}
 
 </form>
-
-
