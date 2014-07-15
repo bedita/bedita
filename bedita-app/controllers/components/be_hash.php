@@ -771,9 +771,9 @@ class BeHashComponent extends Object {
 				)
 			);
 
-			$this->controller->Session->delete("userToChangePwd");
-
-			return $mailParams;
+            $this->controller->Session->delete('userToChangePwd');
+            $this->controller->Session->write('userPwdChanged', true);
+            return $mailParams;
 		}
 	}
 
