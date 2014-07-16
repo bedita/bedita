@@ -13,9 +13,9 @@
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		{t}Dimensions{/t}: {$beToolbar->changeDimSelect('selectTop')}
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-		{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span>	
+        {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
 		|&nbsp;&nbsp;&nbsp;
-		{$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span>
+        {$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span> 
 	{/if}
 </div>
 
