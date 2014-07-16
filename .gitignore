@@ -15,6 +15,6 @@
 /.idea
 /vendor/*
 /tmp/*
-/App/Config/app.php
+/src/Config/app.php
 /composer.lock
 /phpunit.xml

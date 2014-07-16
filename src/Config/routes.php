@@ -4,7 +4,7 @@
  *
  * In this file, you set up routes to your controllers and their actions.
  * Routes are very important mechanism that allows you to freely connect
- * different urls to chosen controllers and their actions (functions).
+ * different URLs to chosen controllers and their actions (functions).
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -25,14 +25,14 @@ use Cake\Routing\Router;
 
 Router::scope('/', function($routes) {
 /**
- * Here, we are connecting '/' (base path) to controller called 'Pages',
+ * Here, we are connecting '/' (base path) to a controller called 'Pages',
  * its action called 'display', and we pass a param to select the view file
- * to use (in this case, /app/View/Pages/home.ctp)...
+ * to use (in this case, src/Template/Pages/home.ctp)...
  */
 	$routes->connect('/', ['controller' => 'Pages', 'action' => 'display', 'home']);
 
 /**
- * ...and connect the rest of 'Pages' controller's urls.
+ * ...and connect the rest of 'Pages' controller's URLs.
  */
 	$routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
@@ -40,11 +40,14 @@ Router::scope('/', function($routes) {
  * Connect a route for the index action of any controller.
  * And a more general catch all route for any action.
  *
+ * The `fallbacks` method is a shortcut for
+ *    `$this->connect('/:controller', ['action' => 'index'], ['routeClass' => 'InflectedRoute']);`
+ *    `$this->connect('/:controller/:action/*', [], ['routeClass' => 'InflectedRoute']);`
+ *
  * You can remove these routes once you've connected the
  * routes you want in your application.
  */
-	$routes->connect('/:controller', ['action' => 'index'], ['routeClass' => 'InflectedRoute']);
-	$routes->connect('/:controller/:action/*', [], ['routeClass' => 'InflectedRoute']);
+	$routes->fallbacks();
 });
 
 /**
