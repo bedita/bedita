@@ -37,6 +37,8 @@ class PagesController extends AppController {
  */
 	public function display() {
 
+		debug($this->Auth->user());
+
 		$images = TableRegistry::get('ImageObjects');
 		//$query = $images->find('all', ['formatResults' => false]);
 		$query = $images->find();

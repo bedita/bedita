@@ -38,6 +38,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 		</div>
 		<div id="content">
 			<?= $this->Flash->render() ?>
+			<?= $this->Flash->render('auth'); ?>
 
 			<?= $this->fetch('content') ?>
 		</div>

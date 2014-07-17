@@ -21,9 +21,14 @@
 namespace BEdita\Model\Entity;
 
 use Cake\ORM\Entity;
+use Cake\Auth\DefaultPasswordHasher;
 
 class User extends Entity {
 
     protected $_hidden = ['passwd'];
+
+    protected function _setPasswd($password) {
+        return (new DefaultPasswordHasher)->hash($password);
+    }
 
 }

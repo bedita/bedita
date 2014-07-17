@@ -22,15 +22,4 @@ namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
 
-class UsersTable extends Table {
-
-    /**
-     * Initialize the table instance
-     *
-     * @param  array  $config Configuration options
-     * @return void
-     */
-    public function initialize(array $config) {
-        $this->belongsToMany('Groups');
-    }
-}
+class GroupsTable extends Table {}

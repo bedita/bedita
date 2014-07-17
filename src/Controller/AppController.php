@@ -1,16 +1,22 @@
 <?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+/**-----8<--------------------------------------------------------------------
  *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
+ * BEdita - a semantic content management framework
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @since         0.2.9
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License
+ * version 3 along with BEdita (see LICENSE.LGPL).
+ * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
+ *
+ *------------------------------------------------------------------->8-----
  */
 namespace BEdita\Controller;
 
@@ -27,15 +33,36 @@ use Cake\Event\Event;
  */
 class AppController extends Controller {
 
-/**
- * Components this controller uses.
- *
- * Component names should not include the `Component` suffix. Components
- * declared in subclasses will be merged with components declared here.
- *
- * @var array
- */
-	public $components = ['Flash'];
+	/**
+	 * Components this controller uses.
+	 *
+	 * Component names should not include the `Component` suffix. Components
+	 * declared in subclasses will be merged with components declared here.
+	 *
+	 * @var array
+	 */
+	public $components = [
+		'Flash',
+		'Session',
+		'Auth' => [
+			'authenticate' => [
+				'Form' => [
+					'fields' =>[
+						'username' => 'userid',
+						'password' => 'passwd'
+					],
+					'scope' => [
+						'Users.valid' => true
+					],
+					'contain' => ['Groups'],
+					'passwordHasher' => [
+						'className' => 'Fallback',
+						'hashers' => ['Default', 'Md5']
+					]
+				]
+			]
+		]
+	];
 	
 	public function beforeFilter(Event $event) {
 		parent::beforeFilter($event);
