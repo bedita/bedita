@@ -18,19 +18,22 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace BEdita\Model\Table;
+namespace BEdita\Auth;
 
-use Cake\ORM\Table;
+use Cake\Auth\AbstractPasswordHasher;
 
-class UsersTable extends Table {
+/**
+ * Md5 hasher class
+ *
+ * Used to backward compatibility with BEdita 3.x password algorithm
+ */
+class Md5PasswordHasher extends AbstractPasswordHasher {
 
-    /**
-     * Initialize the table instance
-     *
-     * @param  array  $config Configuration options
-     * @return void
-     */
-    public function initialize(array $config) {
-        $this->belongsToMany('Groups');
+    public function hash($password) {
+        return md5($password);
+    }
+
+    public function check($password, $hashed) {
+        return md5($password) === $hashed;
     }
 }
