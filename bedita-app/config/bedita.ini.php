@@ -344,7 +344,7 @@ $config["defaultObjRelationType"] = array(
 			"label"
 		),
 		"inverse" => "attached_to",
-		"inverseLabel" => "attached_to",
+		"inverseLabel" => "attached to",
 	),
 	"link" => array(
 		"hidden" => true,
@@ -365,14 +365,14 @@ $config["defaultObjRelationType"] = array(
 			"label"
 		),
 		"inverse" => "downloadable_in",
-		"inverseLabel" => "downloadable_in",
+		"inverseLabel" => "downloadable in",
 	),
 	"mediamap" => array(
 		"left" => array("image"),
 		"right" => array(),
 		"inverse" => "mediamapped",
 		"label" => "mediamap",
-		"inverseLabel" => "mediamapped_by",
+		"inverseLabel" => "mediamapped by",
 		"params" => array(
 			"number",
 			"top",
