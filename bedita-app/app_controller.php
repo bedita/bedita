@@ -163,6 +163,7 @@ class AppController extends Controller
     }
 	
 	final function beforeFilter() {
+	    $this->initDebugKit();
 	    $this->startProfiler();
 		self::$current = $this;
 		$this->view = 'Smarty';
@@ -191,6 +192,26 @@ class AppController extends Controller
 		$this->beditaBeforeFilter();
 	}
 
+    /**
+     * Initialize DebugKit Component if 'debugKit' config is set
+     */
+    protected function initDebugKit() {
+         if (Configure::read('debugKit')) {
+             $component = 'Toolbar';
+             if (App::import('Component', 'DebugKit.' . $component)) {
+                 $componentCn = $component . 'Component';
+                 $this->{$component} = new $componentCn();
+                 $this->{$component}->enabled = true;
+                 $this->Component->_loaded[$component] = $this->{$component};
+                 $this->Component->_primary[] = $component;
+                 $this->Component->_loadComponents($this->{$component}, $component);
+                 $this->{$component}->initialize($this, array());
+             } else {
+                 $this->log('DebugKit Toolbar not found, check your setup', 'warn');
+             }
+         }
+    }
+	
 	protected function setupLocale() {
 
 		$this->currLang = $this->Session->read('Config.language');
