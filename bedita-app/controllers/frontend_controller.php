@@ -1319,15 +1319,32 @@ abstract class FrontendController extends AppController {
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
 
-			unset($obj["RelatedObject"]);
+			unset($obj['RelatedObject']);
 			$obj['relations_count'] = array();
-			foreach ($obj["relations"] as $k=>$v) {
+			$secondaryRel = Configure::read('frontendSecondaryRelations');
+			foreach ($obj['relations'] as $k=>$v) {
 				$obj['relations_count'][$k] = count($v);
+			    // load secondary relations
+			    if (!empty($secondaryRel) && !empty($secondaryRel[$k])) {
+			        foreach ($obj['relations'][$k] as &$related) {
+                        $secondaryObj = array();
+			            if (!empty($related['RelatedObject'])) {
+			                foreach ($related['RelatedObject'] as $secondRelated) {
+			                    if (in_array($secondRelated['switch'], $secondaryRel[$k])) {
+			                        $secondaryObj[] = $secondRelated;
+			                    }
+			                }
+			                if (!empty($secondaryObj)) {
+			                    $related['relations'] = $this->objectRelationArray($secondaryObj, $this->status, $relOptions);
+			                }
+			            }
+			        }
+			    }
 			}
 
 			// if not empty attach relations check if attached object have 'mediamap' relations
 			// if so explicit mediamap objects
-			if (!empty($obj['relations']['attach'])) {
+/*			if (!empty($obj['relations']['attach'])) {
 				foreach ($obj['relations']['attach'] as &$attach) {
 					$mediamap = array();
 					if (!empty($attach['RelatedObject'])) {
@@ -1340,7 +1357,8 @@ abstract class FrontendController extends AppController {
 					}
 				}
 			}
-		}
+*/		}
+		
 		if (!empty($obj['Annotation'])) {
 			$this->setupAnnotations($obj, $this->status);
 		}

@@ -400,6 +400,11 @@ $config["defaultObjRelationType"] = array(
 // Relations - local objects' relation types (override in bedita.cfg)
 $config["objRelationType"] = array ();
 
+// secondary relations to load in frontends - #515
+$config['frontendSecondaryRelations'] = array (
+        'attach' => array('mediamap', 'poster')
+);
+
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("captchaImage", "category", "content",
   "css", "download", "favicon.gif", "favicon.ico", "feed", "files", "georss",
