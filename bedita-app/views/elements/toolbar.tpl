@@ -77,9 +77,10 @@
 				</span>
 			</td>
 			
-			<td>{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></td>
-			
 			<td> {$beToolbar->prev('prev','','prev')}  <span class="evidence"> &nbsp;</span></td>
+
+            <td>{$beToolbar->next('next','','next')}  <span class="evidence"> &nbsp;</span></td>
+            
 			
 		</tr>
 		</table>

@@ -17,31 +17,30 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 	
 		{if $view->action == "systemEvents"}
-		
-			<form action="{$html->url('/admin/deleteEventLog')}" method="post">
+			{$view->Form->create(null, ['action' => 'deleteEventLog'])}
 			<input type="submit" value="{t}delete all{/t}"/>
-			</form>
+			{$view->Form->end()}
 
 		{elseif $view->action == "systemLogs"}
 		
-			<form action="{$html->url('/admin/emptySystemLog')}" method="post">
+			{$view->Form->create(null, ['action' => 'emptySystemLog'])}
 			<input type="submit" value="{t}empty all{/t}"/>
-			</form>
+			{$view->Form->end()}
 
 		{elseif $view->action == "emailInfo"}
 
-			<form action="{$html->url('/admin/deleteAllMailUnsent')}" method="post">
+			{$view->Form->create(null, ['action' => 'deleteAllMailUnsent'])}
 			<input type="submit" value="{t}delete all{/t}*"/>
 				<p style="margin:10px; padding:10px; border-top:1px solid gray; border-bottom:1px solid gray; font-style:italic">
 					* {t}does not affect email newsletter{/t}
 				</p>
-			</form>
+			{$view->Form->end()}
 		
 		{elseif $view->action == "emailLogs"}
 
-			<form action="{$html->url('/admin/deleteAllMailLogs')}" method="post">
+			{$view->Form->create(null, ['action' => 'deleteAllMailLogs'])}
 			<input type="submit" value="{t}delete all{/t}"/>
-			</form>
+			{$view->Form->end()}
 
 		{elseif $view->action == "viewConfig"}
 

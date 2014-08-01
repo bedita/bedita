@@ -1319,15 +1319,32 @@ abstract class FrontendController extends AppController {
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
 
-			unset($obj["RelatedObject"]);
+			unset($obj['RelatedObject']);
 			$obj['relations_count'] = array();
-			foreach ($obj["relations"] as $k=>$v) {
+			$secondaryRel = Configure::read('frontendSecondaryRelations');
+			foreach ($obj['relations'] as $k=>$v) {
 				$obj['relations_count'][$k] = count($v);
+			    // load secondary relations
+			    if (!empty($secondaryRel) && !empty($secondaryRel[$k])) {
+			        foreach ($obj['relations'][$k] as &$related) {
+                        $secondaryObj = array();
+			            if (!empty($related['RelatedObject'])) {
+			                foreach ($related['RelatedObject'] as $secondRelated) {
+			                    if (in_array($secondRelated['switch'], $secondaryRel[$k])) {
+			                        $secondaryObj[] = $secondRelated;
+			                    }
+			                }
+			                if (!empty($secondaryObj)) {
+			                    $related['relations'] = $this->objectRelationArray($secondaryObj, $this->status, $relOptions);
+			                }
+			            }
+			        }
+			    }
 			}
 
 			// if not empty attach relations check if attached object have 'mediamap' relations
 			// if so explicit mediamap objects
-			if (!empty($obj['relations']['attach'])) {
+/*			if (!empty($obj['relations']['attach'])) {
 				foreach ($obj['relations']['attach'] as &$attach) {
 					$mediamap = array();
 					if (!empty($attach['RelatedObject'])) {
@@ -1340,7 +1357,8 @@ abstract class FrontendController extends AppController {
 					}
 				}
 			}
-		}
+*/		}
+		
 		if (!empty($obj['Annotation'])) {
 			$this->setupAnnotations($obj, $this->status);
 		}
@@ -1453,11 +1471,21 @@ abstract class FrontendController extends AppController {
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
+			$filter['AND'][] = array(
+				'OR' => array(
+					'Content.start_date <=' => date('Y-m-d'),
+					'Content.start_date' => null
+				)
+			);
 		}
-		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
+			$filter['AND'][] = array(
+				'OR' => array(
+					'Content.end_date >=' => date('Y-m-d'),
+					'Content.end_date' => null
+				)
+			);
 		}
 
 		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
@@ -1830,15 +1858,25 @@ abstract class FrontendController extends AppController {
 		if(!in_array('BeToolbar', $this->helpers)) {
        		$this->helpers[] = 'BeToolbar';
 		}
-		$this->searchOptions = array_merge($this->searchOptions, $this->params["named"]);
+		$this->searchOptions = array_merge($this->searchOptions, $this->params['named']);
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($this->searchOptions["filter"]["Content.start_date"])) {
-				$this->searchOptions["filter"]["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+		if ($this->checkPubDate['start'] == true && empty($this->searchOptions['filter']['Content.start_date'])) {
+			$this->searchOptions['filter']['AND'][] = array(
+				'OR' => array(
+					'Content.start_date <=' => date('Y-m-d'),
+					'Content.start_date' => null
+				)
+			);
 		}
-		if ($this->checkPubDate["end"] == true && empty($this->searchOptions["filter"]["Content.end_date"])) {
-				$this->searchOptions["filter"]["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+		if ($this->checkPubDate['end'] == true && empty($this->searchOptions['filter']['Content.end_date'])) {
+			$this->searchOptions['filter']['AND'][] = array(
+				'OR' => array(
+					'Content.end_date >=' => date('Y-m-d'),
+					'Content.end_date' => null
+				)
+			);
 		}
 		$searchFilter = array();
 		if (!empty($this->params['form']['searchstring'])) {
@@ -1851,9 +1889,9 @@ abstract class FrontendController extends AppController {
 			$this->SessionFilter->arrange($searchFilter);
 			$this->set('stringSearched', $searchFilter['query']);
 		}
-		$filter = array_merge($this->searchOptions["filter"], $searchFilter);
-		$result = $this->BeTree->getDescendants($this->publication["id"], $this->status, $filter, $this->searchOptions["order"], $this->searchOptions["dir"], $this->searchOptions["page"], $this->searchOptions["dim"]);
-		$this->set("searchResult", $result);
+		$filter = array_merge($this->searchOptions['filter'], $searchFilter);
+		$result = $this->BeTree->getDescendants($this->publication['id'], $this->status, $filter, $this->searchOptions['order'], $this->searchOptions['dir'], $this->searchOptions['page'], $this->searchOptions['dim']);
+		$this->set('searchResult', $result);
 	}
 
 	/**
@@ -2200,11 +2238,21 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate["start"] == true && empty($filter["Content.start_date"])) {
-			$filter["Content.start_date"] = "<= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}start_date{$e} IS NULL";
+		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
+			$filter['AND'][] = array(
+				'OR' => array(
+					'Content.start_date <=' => date('Y-m-d'),
+					'Content.start_date' => null
+				)
+			);
 		}
-		if ($this->checkPubDate["end"] == true && empty($filter["Content.end_date"])) {
-			$filter["Content.end_date"] = ">= '" . date("Y-m-d") . "' OR {$s}Content{$e}.{$s}end_date{$e} IS NULL";
+		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
+			$filter['AND'][] = array(
+				'OR' => array(
+					'Content.end_date >=' => date('Y-m-d'),
+					'Content.end_date' => null
+				)
+			);
 		}
 
 		$urlFilter = $this->SessionFilter->getFromUrl();

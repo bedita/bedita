@@ -25,13 +25,33 @@
 class AdminController extends ModulesController {
 
 	public $uses = array('MailJob','MailLog','MailMessage') ;
-	public $components = array('BeSystem','BeMail');
-	public $helpers = array('Paginator','Text');
+	public $components = array(
+		'Security' => array(
+			'requirePost' => array(
+				'deleteEventLog',
+				'emptySystemLog',
+				'deleteAllMailLogs',
+				'deleteAllMailUnsent',
+				'deleteMailLog',
+				'deleteMailJob'
+			)
+		),
+		'BeSystem',
+		'BeMail'
+	);
+	public $helpers = array('Paginator', 'Text');
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
 		'MailJob' => array('limit' => 10, 'page' => 1, 'order'=>array('created'=>'desc'))
 	);
 	protected $moduleName = 'admin';
+
+	protected function beditaBeforeFilter() {
+		// disable Security component for method not in requirePost
+		if (!in_array($this->action, $this->Security->requirePost)) {
+			$this->Security->validatePost = false;
+		}
+	}
 
 	public function index() {
 		$this->action = "systemEvents";
@@ -164,14 +184,22 @@ class AdminController extends ModulesController {
 
 	public function deleteMailJob($id) {
 		$this->checkWriteModulePermission();
+		if (empty($this->data['MailJob']['id'])) {
+			throw new BeditaException(__('Missing data', true));
+		}
+		$id = $this->data['MailJob']['id'];
 		$this->MailJob->delete($id);
 		$this->loadMailData();
 		$this->userInfoMessage(__("MailJob deleted", true) . " -  " . $id);
 		$this->eventInfo("mail job $id deleted");
 	}
 
-	public function deleteMailLog($id) {
+	public function deleteMailLog() {
 		$this->checkWriteModulePermission();
+		if (empty($this->data['MailLog']['id'])) {
+			throw new BeditaException(__('Missing data', true));
+		}
+		$id = $this->data['MailLog']['id'];
 		$this->MailLog->delete($id);
 		$this->loadMailLogData();
 		$this->userInfoMessage(__("MailLog deleted", true) . " -  " . $id);
@@ -746,32 +774,32 @@ class AdminController extends ModulesController {
 	protected function forward($action, $esito) {
 			$REDIRECT = array(
 				"deleteAllMailUnsent" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailInfo',
-								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+								"OK"	=> '/admin/emailInfo',
+								"ERROR"	=> '/admin/emailInfo'
 							),
 				"deleteAllMailLogs" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailLogs',
-								"ERROR"	=> self::VIEW_FWD.'emailLogs'
+								"OK"	=> '/admin/emailLogs',
+								"ERROR"	=> '/admin/emailLogs'
 							),
 				"deleteMailJob" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailInfo',
-								"ERROR"	=> self::VIEW_FWD.'emailInfo'
+								"OK"	=> '/admin/emailInfo',
+								"ERROR"	=> '/admin/emailInfo'
 							),
 				"deleteMailLog" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailLogs',
-								"ERROR"	=> self::VIEW_FWD.'emailLogs'
+								"OK"	=> '/admin/emailLogs',
+								"ERROR"	=> '/admin/emailLogs'
 							),
 				"emptyFile" => 	array(
-								"OK"	=> self::VIEW_FWD.'systemLogs',
-								"ERROR"	=> self::VIEW_FWD.'systemLogs'
+								"OK"	=> '/admin/systemLogs',
+								"ERROR"	=> '/admin/systemLogs'
 							),
 				"emptySystemLog" => 	array(
-								"OK"	=> self::VIEW_FWD.'systemLogs',
-								"ERROR"	=> self::VIEW_FWD.'systemLogs'
+								"OK"	=> '/admin/systemLogs',
+								"ERROR"	=> '/admin/systemLogs'
 							),
 	 	 		"deleteEventLog" => 	array(
- 								"OK"	=> self::VIEW_FWD.'systemEvents',
-	 							"ERROR"	=> self::VIEW_FWD.'systemEvents'
+ 								"OK"	=> '/admin/systemEvents',
+	 							"ERROR"	=> '/admin/systemEvents'
 	 						),
 				"saveCustomProperties" =>	array(
 					 			"OK"	=> '/admin/customproperties',

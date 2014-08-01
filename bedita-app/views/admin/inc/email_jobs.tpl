@@ -1,15 +1,14 @@
 
 <script type="text/javascript">
 	var message = "{t}Are you sure that you want to delete the item?{/t}";
-	var delJobUrl = '{$html->url('/admin/deleteMailJob')}';
 
-	$(document).ready(function() { 
-		$(".delJob").bind("click", function() { 
+	$(document).ready(function() {
+		$(".delJob").bind("click", function() {
 			if (!confirm(message)) {
 				return false;
 			}
 			var jobId = $(this).prop("title");
-			$("#form_job_" + jobId).prop("action", delJobUrl + '/' + jobId).submit();
+			$("#form_job_" + jobId).submit();
 		} );
 	} );
 </script>
@@ -34,27 +33,33 @@
 		<th>{$paginator->sort($label_status,'status')}</th>
 		<th></th>
 	</tr>
-	{foreach from=$jobs item=j}	
-	<form id="form_job_{$j.MailJob.id}" method="post" action="">
-	<tr>
-		<td style="white-space:nowrap">{$j.MailJob.id}</td>
-		<td style="white-space:nowrap">{$j.MailJob.created|date_format:$conf->dateTimePattern}</td>
-		<td style="white-space:nowrap">{$j.MailJob.recipient}</td>
-		<td style="text-align:center; white-space:nowrap">
-			{$j.MailJob.sending_date|date_format:$conf->dateTimePattern|default:'no'}
-		</td>
-		<td style="text-align:center">
-			{if !empty($j.MailJob.mail_message_id)}
-			<a href="{$html->url('/newsletter/view/')}{$j.MailJob.mail_message_id}">{$j.MailJob.mail_message_id}</a>
-			{else}
-				
-			{/if}
-		</td>
-		<td>{$j.MailJob.mail_body|truncate:64}</td>
-		<td>{$j.MailJob.status}</td>
-		<td>{if $j.MailJob.status != 'pending'}<input type="button" class="delJob" value="{t}Delete{/t}" title="{$j.MailJob.id}" />{/if}</td>
-	</tr>
-	</form>
+	{foreach from=$jobs item=j}
+		{assign_concat var='formId' 1='form_job_' 2=$j.MailJob.id}
+		{$view->Form->create(null, ['action' => 'deleteMailJob', 'id' => $formId])}
+		<tr>
+			<td style="white-space:nowrap">{$j.MailJob.id}</td>
+			<td style="white-space:nowrap">{$j.MailJob.created|date_format:$conf->dateTimePattern}</td>
+			<td style="white-space:nowrap">{$j.MailJob.recipient}</td>
+			<td style="text-align:center; white-space:nowrap">
+				{$j.MailJob.sending_date|date_format:$conf->dateTimePattern|default:'no'}
+			</td>
+			<td style="text-align:center">
+				{if !empty($j.MailJob.mail_message_id)}
+				<a href="{$html->url('/newsletter/view/')}{$j.MailJob.mail_message_id}">{$j.MailJob.mail_message_id}</a>
+				{else}
+
+				{/if}
+			</td>
+			<td>{$j.MailJob.mail_body|truncate:64}</td>
+			<td>{$j.MailJob.status}</td>
+			<td>
+				{$view->Form->hidden('MailJob.id', ['value' => $j.MailJob.id])}
+				{if $j.MailJob.status != 'pending'}
+					<input type="button" class="delJob" value="{t}Delete{/t}" title="{$j.MailJob.id}" />
+				{/if}
+			</td>
+		</tr>
+		{$view->Form->end()}
 	{/foreach}
 </table>
 

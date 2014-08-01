@@ -771,9 +771,9 @@ class BeHashComponent extends Object {
 				)
 			);
 
-			$this->controller->Session->delete("userToChangePwd");
-
-			return $mailParams;
+            $this->controller->Session->delete('userToChangePwd');
+            $this->controller->Session->write('userPwdChanged', true);
+            return $mailParams;
 		}
 	}
 
@@ -801,20 +801,32 @@ class BeHashComponent extends Object {
 		}
 	}
 
-	/**
-	 * load messages (if present)
-	 */
-	protected function loadMessages() {
-		// load local messages if present
-		$localMsg = BEDITA_CORE_PATH.DS."config".DS."notify".DS."local.msg.php";
-		$notify = array();
-		if (file_exists ($localMsg) ) {
-			require($localMsg);
-		} else {
-			require(BEDITA_CORE_PATH.DS."config".DS."notify".DS."default.msg.php");
-		}
-		$this->notifyMsg = &$notify;
-	}
+    /**
+     * Load messages:
+     *  1. default messages
+     *  2. local unversioned instance messages
+     *  3. frontend messages (if frontend app)
+     */
+    protected function loadMessages() {
+        // 1. load default messages
+        include BEDITA_CORE_PATH.DS . 'config' . DS. 'notify' . DS. 'default.msg.php';
+
+        // 2. load local unversioned messages, if present - may override default
+        $localMsgPath = BEDITA_CORE_PATH.DS . 'config' . DS. 'notify' . DS. 'local.msg.php';
+        if (file_exists ($localMsgPath) ) {
+            include $localMsgPath;
+        }
+
+        // 3. load frontend messages - if present and if frontend app
+        if (!BACKEND_APP) {
+            $frontendMsgPath = APP .DS . 'config' . DS. 'notify' . DS. 'frontend.msg.php';
+            if (file_exists ($frontendMsgPath) ) {
+                include $frontendMsgPath;
+            }
+        }
+
+        $this->notifyMsg = $notify;
+    }
 
 	/**
 	 * get message (in current lang, if present translation)
