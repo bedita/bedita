@@ -1157,7 +1157,12 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 									"Content"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content"),
 
-				"frontend" => array("BEObject" => array("LangText", "ObjectProperty", "Category"), "Content")
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"Category",
+														"RelatedObject"
+														),
+									"Content")
 	);
 
 	var $actsAs 	= array(
