@@ -1232,7 +1232,12 @@ class BeditaStreamModel extends BEAppObjectModel {
 									"Content", "Stream"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
 
-				"frontend" => array("BEObject" => array("LangText", "ObjectProperty", "Category"), "Content", "Stream")
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"Category",
+														"RelatedObject"
+														),
+									"Content", "Stream")
 	);
 
 
