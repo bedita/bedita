@@ -12,7 +12,6 @@
  * @since         0.10.8
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-namespace BEdita\Config;
 
 /**
  * Configure paths required to find CakePHP + general filepath
@@ -32,7 +31,7 @@ require ROOT . '/vendor/autoload.php';
  * - Registering the CakePHP autoloader.
  * - Setting the default application paths.
  */
-require CAKE . 'bootstrap.php';
+require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
 use Cake\Cache\Cache;
 use Cake\Configure\Engine\PhpConfig;
@@ -61,7 +60,7 @@ try {
 	Configure::load('app.php', 'default', false);
 	Configure::load('bedita_ini.php');
 } catch (\Exception $e) {
-	die('Unable to load Config/app.php. Create it by copying Config/app.default.php to Config/app.php.');
+	die('Unable to load config/app.php. Create it by copying config/app.default.php to config/app.php.');
 }
 
 // Load an environment local configuration file.
@@ -164,6 +163,5 @@ Request::addDetector('tablet', function($request) {
  */
 
 DispatcherFactory::add('Asset');
-DispatcherFactory::add('Cache');
 DispatcherFactory::add('Routing');
 DispatcherFactory::add('ControllerFactory');

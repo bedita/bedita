@@ -100,7 +100,7 @@ $config = [
 	 */
 		'_cake_model_' => [
 			'className' => 'File',
-			'prefix' => 'my_app_cake_model_',
+			'prefix' => 'myapp_cake_model_',
 			'path' => CACHE . 'models/',
 			'serialize' => true,
 			'duration' => '+2 minutes',
@@ -207,11 +207,23 @@ $config = [
 			'prefix' => false,
 			'encoding' => 'utf8',
 			'timezone' => 'UTC',
-			'quoteIdentifiers' => false,
 			'cacheMetadata' => true,
-			/* During development, if using MySQL < 5.6, uncommenting the following line
-			* could boost the speed at which schema metadata is fetched from the database.
-			* It can also be set directly with the mysql configuration directive 'innodb_stats_on_metadata = 0'
+
+			/*
+			* Set identifier quoting to true if you are using reserved words or
+			* special characters in your table or column names. Enabling this
+			* setting will result in queries built using the Query Builder having
+			* identifiers quoted when creating SQL. It should be noted that this
+			* decreases performance because each query needs to be traversed and
+			* manipulated before being executed.
+			*/
+			'quoteIdentifiers' => false,
+
+			/*
+			* During development, if using MySQL < 5.6, uncommenting the
+			* following line could boost the speed at which schema metadata is
+			* fetched from the database. It can also be set directly with the
+			* mysql configuration directive 'innodb_stats_on_metadata = 0'
 			* which is the recommended value in production enviroments
 			*/
 			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
@@ -231,8 +243,8 @@ $config = [
 			'prefix' => false,
 			'encoding' => 'utf8',
 			'timezone' => 'UTC',
-			'quoteIdentifiers' => false,
 			'cacheMetadata' => true,
+			'quoteIdentifiers' => false,
 			//'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
 		],
 	],
@@ -284,7 +296,7 @@ $config = [
  * Make sure the class implements PHP's `SessionHandlerInterface` and set
  * Session.handler to <name>
  *
- * To use database sessions, load the SQL file located at src/Config/Schema/sessions.sql
+ * To use database sessions, load the SQL file located at config/Schema/sessions.sql
  */
 	'Session' => [
 		'defaults' => 'php',
