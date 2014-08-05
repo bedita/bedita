@@ -21,6 +21,7 @@
 namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
+use Cake\Model\Behavior\TimestampBehavior;
 
 class UsersTable extends Table {
 
@@ -32,5 +33,6 @@ class UsersTable extends Table {
      */
     public function initialize(array $config) {
         $this->belongsToMany('Groups');
+        $this->addBehavior('Timestamp');
     }
 }

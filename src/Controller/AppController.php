@@ -46,7 +46,7 @@ class AppController extends Controller {
 		'Session',
 		'Auth' => [
 			'authenticate' => [
-				'Form' => [
+				'BEdita' => [
 					'fields' =>[
 						'username' => 'userid',
 						'password' => 'passwd'
