@@ -27,12 +27,6 @@ class UsersController extends AppController {
             $user = $this->Auth->identify();
             if ($user) {
                 $this->Auth->setUser($user);
-                // migrate old hashed password to new algorithm
-                if ($this->Auth->authenticationProvider()->needsPasswordRehash()) {
-                    $userEntity = $this->Users->get($this->Auth->user('id'));
-                    $userEntity->passwd = $this->request->data('passwd');
-                    $this->Users->save($userEntity);
-                }
                 return $this->redirect($this->Auth->redirectUrl());
             } else {
                 $this->Flash->error(

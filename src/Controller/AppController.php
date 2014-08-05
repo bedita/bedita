@@ -21,6 +21,8 @@
 namespace BEdita\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\Event;
+use Cake\Core\Configure;
 
 /**
  * Application Controller
@@ -45,7 +47,7 @@ class AppController extends Controller {
 		'Session',
 		'Auth' => [
 			'authenticate' => [
-				'Form' => [
+				'BEdita' => [
 					'fields' =>[
 						'username' => 'userid',
 						'password' => 'passwd'
@@ -62,4 +64,5 @@ class AppController extends Controller {
 			]
 		]
 	];
+
 }
