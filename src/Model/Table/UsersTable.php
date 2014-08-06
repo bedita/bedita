@@ -22,6 +22,8 @@ namespace BEdita\Model\Table;
 
 use Cake\ORM\Table;
 use Cake\Model\Behavior\TimestampBehavior;
+use Cake\Event\Event;
+use Cake\ORM\Query;
 
 class UsersTable extends Table {
 
@@ -35,4 +37,38 @@ class UsersTable extends Table {
         $this->belongsToMany('Groups');
         $this->addBehavior('Timestamp');
     }
+
+    /**
+     * Add formatResults to create a list of group names
+     *
+     * @param \Cake\Event\Event $event
+     * @param \Cake\ORM\Query $query The query object
+     * @param array  $options
+     * @param boolean $primary Indicates whether or not this is the root query, or an associated query
+     */
+    public function beforeFind(Event $event, Query $query, array $options, $primary) {
+        $query->formatResults(function($results) {
+            return $results->map(function($row) {
+                $groupsList = [];
+                if (is_object($row)) {
+                    if ($row->groups) {
+                        foreach ($row->groups as $g) {
+                            $groupsList[] = $g->name;
+                        }
+                        $row->set('groupsList', $groupsList);
+                    }
+                // else it's an array (Entity was not hydrated)
+                } else {
+                    if (!empty($row['groups'])) {
+                        foreach ($row['groups'] as $g) {
+                            $groupsList[] = $g['name'];
+                        }
+                        $row['groupsList'] = $groupsList;
+                    }
+                }
+                return $row;
+            });
+        });
+    }
+
 }

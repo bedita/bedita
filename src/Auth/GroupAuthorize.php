@@ -18,16 +18,28 @@
  *
  *------------------------------------------------------------------->8-----
  */
-namespace BEdita\Model\Table;
+namespace BEdita\Auth;
 
-use Cake\ORM\Table;
-use Cake\Model\Behavior\TimestampBehavior;
+use Cake\Auth\BaseAuthorize;
+use Cake\Network\Request;
+use Cake\Collection\Collection;
 
-class GroupsTable extends Table {
+class GroupAuthorize extends BaseAuthorize {
 
-    public function initialize(array $config) {
-        $this->displayField('name');
-        $this->addBehavior('Timestamp');
+    public function authorize($user, Request $request) {
+        if (empty($user['groups'])) {
+            return false;
+        }
+
+        $collection = new Collection($user['groups']);
+        $authGroups = $collection->filter(function($group, $key) {
+            return $group['backend_auth'] === true;
+        });
+
+        if (count($authGroups->toArray()) == 0) {
+            return false;
+        }
+
+        return true;
     }
-
 }
