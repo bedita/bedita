@@ -48,7 +48,7 @@ class AppController extends Controller {
 		'Auth' => [
 			'authenticate' => [
 				'BEdita' => [
-					'fields' =>[
+					'fields' => [
 						'username' => 'userid',
 						'password' => 'passwd'
 					],
@@ -61,7 +61,9 @@ class AppController extends Controller {
 						'hashers' => ['Default', 'Md5']
 					]
 				]
-			]
+			],
+			'authorize' => ['Group'],
+			'unauthorizedRedirect' => '/users/login'
 		]
 	];
 
