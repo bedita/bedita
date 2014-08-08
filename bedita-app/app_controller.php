@@ -1412,4 +1412,58 @@ abstract class ModulesController extends AppController {
 		$this->{$method}();
 	}
 
+    /**
+     * Default module controller forward given $action and $result.
+     * Default rules are used, you may pass custom rules in $moduleRedirect array
+     * 
+     * @param string $action
+     * @param string $result
+     * @param string $moduleRedirect
+     * @return mixed, redirect url or false if no redirect is found
+     */
+    public function moduleForward($action, $result, $moduleRedirect = array()) {
+        $referer = $this->referer();
+        if (!empty($this->uses)) {
+            $modelName = $this->uses[0];
+            $viewUrl = '/' . $this->moduleName . '/view/' . @$this->{$modelName}->id;
+        } else {
+            $viewUrl = $referer;
+        }
+
+        $defaultRedirect = array(
+                'cloneObject'	=> 	array(
+                        'OK'	=> $viewUrl,
+                        'ERROR'	=> $viewUrl
+                ),
+                'view'	=> 	array(
+                        'ERROR'	=> '/'.$this->moduleName
+                ),
+                'save'	=> 	array(
+                        'OK'	=> $viewUrl,
+                        'ERROR'	=> $referer
+                ),
+                'delete' =>	array(
+                        'OK'	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
+                        'ERROR'	=> $referer
+                ),
+                'deleteSelected' =>	array(
+                        'OK'	=> $referer,
+                        'ERROR'	=> $referer
+                ),
+                'addItemsToAreaSection'	=> 	array(
+                        'OK'	=> $referer,
+                        'ERROR'	=> $referer
+                ),
+                'changeStatusObjects'	=> 	array(
+                        'OK'	=> $referer,
+                        'ERROR'	=> $referer
+                )
+        );
+        $redirect = array_merge($defaultRedirect, $moduleRedirect);
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result] ;
+        }
+        return false ;
+    }
+
 }
