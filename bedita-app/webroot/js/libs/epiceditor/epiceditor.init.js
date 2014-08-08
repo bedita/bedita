@@ -1,13 +1,14 @@
 $(document).ready(function() {
-    openAtStart("#title,#description");
-}
+
+    var clientStore = (BEDITA.id) ? true : false;
+    var storageName = (BEDITA.id) ? 'epiceditor-' + BEDITA.id : 'epiceditor';
 
     var opts = {
-        container : 'epiceditor',
-        textarea : null,
-        basePath : 'epiceditor',
-        clientSideStorage : true,
-        localStorageName : 'epiceditor',
+        container : 'md-editor',
+        textarea : 'md-textarea',
+        basePath : BEDITA.webroot,
+        clientSideStorage : clientStore,
+        localStorageName : storageName,
         useNativeFullscreen : true,
         parser : marked,
         file : {
@@ -16,9 +17,9 @@ $(document).ready(function() {
             autoSave : 100
         },
         theme : {
-            base : '/wikidocs/css/epiceditor/base/epiceditor.css',
-            preview : '/wikidocs/css/epiceditor/preview/preview-dark.css',
-            editor : '/wikidocs/css/epiceditor/editor/epic-dark.css'
+            base : 'css/epiceditor/base/epiceditor.css',
+            preview : 'css/epiceditor/preview/github.css',
+            editor : 'css/epiceditor/editor/epic-light.css'
         },
         button : {
             preview : true,
