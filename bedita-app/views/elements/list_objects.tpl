@@ -51,7 +51,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 		{$smarty.capture.theader}
 	
 		{section name="i" loop=$objects}
-		
+
 		<tr class="obj {$objects[i].status}">
 			<td class="checklist">
 			{if !empty($objects[i].start_date) && ($objects[i].start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
@@ -82,13 +82,13 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 				<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" />
 			{/if}
 
+            {$view->element('list_objects_elements', ['object' => $objects[i]])}
 
 			</td>
 			<td style="min-width:300px">
 				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
 				<div class="description" id="desc_{$objects[i].id}">
-					<label>nickname:</label> {$objects[i].nickname}<br />
-					{$objects[i].description}
+					{$view->element('list_objects_detail', ['object' => $objects[i]])}
 				</div>
 			</td>
 			<td class="checklist detail" style="text-align:left;">
