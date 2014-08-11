@@ -353,7 +353,7 @@ class BeditaShell extends BeditaBaseShell {
 		fclose($handle);
 		
 		$this->out("Creating metadata....");
-		file_put_contents($tmpBasePath."version.txt", Configure::read("majorVersion"));
+		file_put_contents($tmpBasePath."version.txt", Configure::read('version'));
        	if(!copy(APP."config".DS."bedita.cfg.php", $tmpBasePath . "bedita.cfg.php")) {
        		throw new Exception("Error copying bedita.cfg.php file");
        	}

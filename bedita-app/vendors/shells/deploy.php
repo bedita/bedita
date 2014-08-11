@@ -215,7 +215,7 @@ class DeployShell extends BeditaBaseShell {
 		// create version file
 		// release name is : base name + major version (like 3.0.beta1) + codename + git abbreviated sha1 checksum
 		$codeName = empty($rel["releaseCodeName"]) ? "" : $rel["releaseCodeName"];
-		$releaseName = Configure::read("majorVersion") . "." . $codeName . "." . $gitRelease;
+		$releaseName = Configure::read('version') . "." . $codeName . "." . $gitRelease;
 		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $releaseName . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
 		fwrite($handle, $versionFileContent);
@@ -293,7 +293,7 @@ class DeployShell extends BeditaBaseShell {
     	chdir(APP);
 		$versionFile = APP . 'config' . DS . 'bedita.version.php';
     	Configure::load("bedita.ini"); // reload new bedita.ini, may be changed by svn up
-		$beditaVersion = Configure::read("majorVersion") . "." . $revision;
+		$beditaVersion = Configure::read('version') . "." . $revision;
 		$handle = fopen($versionFile, 'w');
 		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
 		fclose($handle);
@@ -660,7 +660,7 @@ class DeployShell extends BeditaBaseShell {
         $this->out($this->nl(1) . 'Change log will be placed in ' . $filePath);
 
         $file = new File($filePath, true);
-        $version = '## Version ' . Configure::read('majorVersion') . ' - ' . Configure::read('codenameVersion') . "\n";
+        $version = '## Version ' . Configure::read('version') . ' - ' . Configure::read('codenameVersion') . "\n";
         $file->write($version);
         foreach ($changes as $group => $changesGroup) {
             switch ($group) {
