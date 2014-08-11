@@ -1429,41 +1429,74 @@ abstract class ModulesController extends AppController {
         } else {
             $viewUrl = $referer;
         }
-
+        $categoriesUrl = '/'. $this->moduleName . '/categories';
+        
         $defaultRedirect = array(
+                'addItemsToAreaSection'	=> 	array(
+                        'OK'	=> $referer,
+                        'ERROR'	=> $referer
+                ),
+                'assocCategory'	=> 	array(
+                        'OK'	=> $this->referer(),
+                        'ERROR'	=> $this->referer()
+                ),
+                'changeStatusObjects'	=> 	array(
+                        'OK'	=> $this->referer(),
+                        'ERROR'	=> $this->referer()
+                ),
                 'cloneObject'	=> 	array(
                         'OK'	=> $viewUrl,
                         'ERROR'	=> $viewUrl
-                ),
-                'view'	=> 	array(
-                        'ERROR'	=> '/'.$this->moduleName
-                ),
-                'save'	=> 	array(
-                        'OK'	=> $viewUrl,
-                        'ERROR'	=> $referer
                 ),
                 'delete' =>	array(
                         'OK'	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
                         'ERROR'	=> $referer
                 ),
+                'deleteCategories' 	=> array(
+                        'OK'	=> $categoriesUrl,
+                        'ERROR'	=> $categoriesUrl
+                ),
                 'deleteSelected' =>	array(
                         'OK'	=> $referer,
                         'ERROR'	=> $referer
                 ),
-                'addItemsToAreaSection'	=> 	array(
-                        'OK'	=> $referer,
+                'disassocCategory'	=> 	array(
+                        'OK'	=> $this->referer(),
+                        'ERROR'	=> $this->referer()
+                ),
+                'moveItemsToAreaSection'	=> 	array(
+                        'OK'	=> $this->referer(),
+                        'ERROR'	=> $this->referer()
+                ),
+                'removeItemsFromAreaSection'	=> 	array(
+                        'OK'	=> $this->referer(),
+                        'ERROR'	=> $this->referer()
+                ),
+                'save'	=> 	array(
+                        'OK'	=> $viewUrl,
                         'ERROR'	=> $referer
                 ),
-                'changeStatusObjects'	=> 	array(
-                        'OK'	=> $referer,
-                        'ERROR'	=> $referer
-                )
+                'saveCategories' 	=> array(
+                        'OK'	=> $categoriesUrl,
+                        'ERROR'	=> $categoriesUrl
+                ),
+                'view'	=> 	array(
+                        'ERROR'	=> '/'.$this->moduleName
+                ),
         );
         $redirect = array_merge($defaultRedirect, $moduleRedirect);
         if (isset($redirect[$action][$result])) {
             return $redirect[$action][$result] ;
         }
         return false ;
+    }
+
+    /** 
+     * Default forward for BEdita modules - to overrider in module controllers if needed
+     * @see AppController::forward()
+     */
+    protected function forward($action, $result) {
+        return $this->moduleForward($action, $result);
     }
 
 }
