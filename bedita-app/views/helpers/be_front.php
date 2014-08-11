@@ -302,7 +302,7 @@ class BeFrontHelper extends AppHelper {
 		));
 		$html.= "\n" . $this->Html->meta(array(
 			"name" => "generator",
-			"content" => $this->_conf->version
+			"content" => 'BEdita ' . $this->_conf->version
 		));
 		return $html;
 	}
