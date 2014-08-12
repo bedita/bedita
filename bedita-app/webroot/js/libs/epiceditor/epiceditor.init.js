@@ -40,4 +40,5 @@ $(document).ready(function() {
         autogrow : false
     }
     var editor = new EpicEditor(opts).load();
+    editor.preview();
 });
