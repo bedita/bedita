@@ -1,0 +1,1 @@
+Smarty version {$smarty.version}

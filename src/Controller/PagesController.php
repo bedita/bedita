@@ -59,7 +59,7 @@ class PagesController extends AppController {
 		$row = $query->first();
 
 		if ($row) {
-			debug($row->toArray());
+			//debug($row->toArray());
 
 			// $imageData = [];
 			// $imageData['license'] = 'licenza tua';

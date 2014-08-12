@@ -15,6 +15,7 @@
 namespace BEdita\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Event\Event;
 
 /**
  * Application Controller
@@ -35,4 +36,9 @@ class AppController extends Controller {
  * @var array
  */
 	public $components = ['Flash'];
+	
+	public function beforeFilter(Event $event) {
+		parent::beforeFilter($event);
+		$this->viewClass = 'Smarty';
+	}
 }
