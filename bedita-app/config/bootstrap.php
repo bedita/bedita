@@ -154,9 +154,9 @@ enableSubFoldersOn(BEDITA_CORE_PATH . DS . 'models', $additionalPaths["models"],
 
 if (BACKEND_APP) {
 	$additionalPaths["plugins"][] = BEDITA_MODULES_PATH . DS;
-
 // reorder frontend paths (first watch frontend app paths then bedita core paths and finally cake core paths)
 } else {
+	$additionalPaths["plugins"][] = BEDITA_CORE_PATH . DS . 'plugins' . DS;
 	$cakeCorePaths = App::core();
 	foreach ($additionalPaths as $type => $paths) {
 		if (!empty($cakeCorePaths[$type])) {
@@ -186,6 +186,3 @@ if (!empty($proxyOpts)) {
     }
     stream_context_set_default($aContext);
 }
-
-//EOF
-?>
