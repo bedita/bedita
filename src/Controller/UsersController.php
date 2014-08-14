@@ -20,8 +20,14 @@
  */
 namespace BEdita\Controller;
 
+/**
+ * UsersController class
+ */
 class UsersController extends AppController {
 
+    /**
+     * Login user or show the login form
+     */
     public function login() {
         if ($this->request->is('post')) {
             $user = $this->Auth->identify();
@@ -39,6 +45,9 @@ class UsersController extends AppController {
         }
     }
 
+    /**
+     * Logout user
+     */
     public function logout() {
         $this->redirect($this->Auth->logout());
     }

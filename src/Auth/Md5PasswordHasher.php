@@ -29,10 +29,23 @@ use Cake\Auth\AbstractPasswordHasher;
  */
 class Md5PasswordHasher extends AbstractPasswordHasher {
 
+    /**
+     * Return hash of password
+     *
+     * @param string $password
+     * @return string
+     */
     public function hash($password) {
         return md5($password);
     }
 
+    /**
+     * Check md5 password against hashed string
+     *
+     * @param string $password
+     * @param string $hashed
+     * @return bool
+     */
     public function check($password, $hashed) {
         return md5($password) === $hashed;
     }

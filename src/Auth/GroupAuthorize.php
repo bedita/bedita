@@ -24,8 +24,20 @@ use Cake\Auth\BaseAuthorize;
 use Cake\Network\Request;
 use Cake\Collection\Collection;
 
+/**
+ * GroupAuthorize class
+ *
+ * Check if user groups are authorized to access
+ */
 class GroupAuthorize extends BaseAuthorize {
 
+    /**
+     * Checks user authorization usign groups
+     *
+     * @param array $user Active user data
+     * @param \Cake\Network\Request $request Request instance.
+     * @return bool
+     */
     public function authorize($user, Request $request) {
         if (empty($user['groups'])) {
             return false;

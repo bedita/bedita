@@ -27,6 +27,12 @@ use Cake\Core\Configure;
 use Cake\Log\LogTrait;
 use Cake\ORM\TableRegistry;
 
+/**
+ * BEditaAuthenticate class
+ *
+ * Authenticate users based on form POST data
+ * Check username and password and login policy defined in configuration
+ */
 class BEditaAuthenticate extends FormAuthenticate {
 
     use LogTrait;
@@ -35,6 +41,7 @@ class BEditaAuthenticate extends FormAuthenticate {
      * Authenticates the identity contained in a request. Will use the `config.userModel`, and `config.fields`
      * to find POST data that is used to find a matching record in the `config.userModel`. Will return false if
      * there is no post data, either username or password is missing, or if the scope conditions have not been met.
+     * Additionally check login policy defined in configuration
      *
      * @param \Cake\Network\Request $request The request that contains login information.
      * @param \Cake\Network\Response $response Unused response object.
