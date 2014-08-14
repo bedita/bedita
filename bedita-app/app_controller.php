@@ -80,6 +80,18 @@ class AppController extends Controller
 	 */
 	protected $historyItem = array();
 
+	/**
+	 * Constructor
+	 * If debugKit is enabled in configuration and it's found in plugins paths
+	 * then add it to self::componenets array
+	 */
+	public function __construct() {
+		if (Configure::read('debugKit') && App::import('Component', 'DebugKit.Toolbar')) {
+			$this->components[] = 'DebugKit.Toolbar';
+		}
+		parent::__construct();
+	}
+
 	public static function currentController() {
 		return self::$current;
 	}
@@ -163,7 +175,6 @@ class AppController extends Controller
     }
 	
 	final function beforeFilter() {
-	    $this->initDebugKit();
 	    $this->startProfiler();
 		self::$current = $this;
 		$this->view = 'Smarty';
@@ -192,26 +203,6 @@ class AppController extends Controller
 		$this->beditaBeforeFilter();
 	}
 
-    /**
-     * Initialize DebugKit Component if 'debugKit' config is set
-     */
-    protected function initDebugKit() {
-         if (Configure::read('debugKit')) {
-             $component = 'Toolbar';
-             if (App::import('Component', 'DebugKit.' . $component)) {
-                 $componentCn = $component . 'Component';
-                 $this->{$component} = new $componentCn();
-                 $this->{$component}->enabled = true;
-                 $this->Component->_loaded[$component] = $this->{$component};
-                 $this->Component->_primary[] = $component;
-                 $this->Component->_loadComponents($this->{$component}, $component);
-                 $this->{$component}->initialize($this, array());
-             } else {
-                 $this->log('DebugKit Toolbar not found, check your setup', 'warn');
-             }
-         }
-    }
-	
 	protected function setupLocale() {
 
 		$this->currLang = $this->Session->read('Config.language');
@@ -452,15 +443,19 @@ class AppController extends Controller
 			$this->set('externalAuthServices', $this->BeAuth->getExternalServices());
 
 			if ($this->view == 'Smarty') {
-				echo $this->render(null, null, VIEWS."home".DS."login.tpl") ;
+				$viewFile = VIEWS . 'home' . DS . 'login.tpl';
 			} elseif ($this->view == 'ThemeSmarty'){
-				echo $this->render(null, null, VIEWS."themed".DS.$this->theme.DS."home".DS."login.tpl") ;
+				$viewFile = VIEWS . 'themed' . DS . $this->theme . DS . 'home' . DS . 'login.tpl';
 			} elseif ($this->view == 'Theme'){
-				echo $this->render(null, null, VIEWS."themed".DS.$this->theme.DS."home".DS."login.ctp") ;
+				$viewFile = VIEWS . 'themed' . DS . $this->theme . DS . 'home' . DS . 'login.ctp';
 			} else {
-				echo $this->render(null, null, VIEWS."home".DS."login.ctp") ;
+				$viewFile = VIEWS . 'home' . DS . 'login.ctp';
 			}
 
+			if (Configure::read('debugKit') && isset($this->Component->_loaded['Toolbar'])) {
+				$this->Toolbar->startup($this);
+			}
+			echo $this->render(null, null, $viewFile);
 			$_loginRunning = false;
 			exit;
 		}
