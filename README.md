@@ -12,9 +12,14 @@ $ cd /my/bedita/folder
 $ composer install
 ```
 
-It will install all necessary dependencies to startup BEdita.
+It will install all necessary dependencies to startup BEdita. After that when you want to update vendor libs
 
-In `Bedita/Config/app.php` edit the `$config['Datasources']['default']` array with your database connection data.
+```bash
+$ cd /my/bedita/folder
+$ composer update
+```
+
+In `config/app.php` edit the `$config['Datasources']['default']` array with your database connection data.
 
 NB. For now the db has to be initialized using schema and data in 3.4.0 or greater version
 
