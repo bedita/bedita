@@ -135,7 +135,7 @@ class DeployShell extends BeditaBaseShell {
 
 		$this->out("Git clone command:\n> $gitClone");
     	$res = system($gitClone);
-		if(empty($res)) {
+		if($res === false) {
 	        $this->out("Error in git clone. Bye.");
 			return;
 		}
@@ -152,7 +152,7 @@ class DeployShell extends BeditaBaseShell {
 		$this->out("Export command: $gitExport");
 
 		$res = system($gitExport);
-		if (!empty($res)) {
+		if ($res === false) {
 			$this->out("Failed to export git code. Bye.");
 			return;
 		}
@@ -211,6 +211,24 @@ class DeployShell extends BeditaBaseShell {
 	        	throw new Exception("Error moving " . $pathFrom. " to " .$pathTo);
 			}
 		}
+
+        // add frontends to package
+        $this->out('');
+        $this->out('Adding frontends:');
+        $frontendsBasePath = $exportPath . DS . 'frontends' . DS;
+        foreach ($rel['frontends'] as $frontendName => $frontendUrl) {
+            $frontendPath = $frontendsBasePath . $frontendName;
+            $gitClone = "git clone $frontendUrl $frontendPath";
+            $this->out('');
+            $this->out("Git clone command:\n> $gitClone");
+            $res = system($gitClone);
+            if ($res === false) {
+                $this->out("Error cloning $frontendName. Bye.");
+                return;
+            }
+            $folder->delete($frontendPath . DS . '.git');
+            $this->out('Frontend ' . $frontendName . ' added.');
+        }
 		
 		// create version file
 		// release name is : base name + major version (like 3.0.beta1) + codename + git abbreviated sha1 checksum
@@ -223,9 +241,9 @@ class DeployShell extends BeditaBaseShell {
 		
 		$releaseFile = $releaseDir. DS . $rel["releaseBaseName"] . "-" . $releaseName . ".tar";
 		
-    	if(file_exists($releaseFile)) {
+    	if (file_exists($releaseFile)) {
 			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
-			if($res == "y") {
+			if ($res == "y") {
 				if(!unlink($releaseFile)){
 					throw new Exception("Error deleting $releaseFile");
 				}

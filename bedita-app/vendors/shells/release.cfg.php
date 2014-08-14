@@ -42,22 +42,19 @@ $rel["createDirs"] = array(
 	"addons" . DS . "vendors",
 );
 
-$rel["renameFiles"]= array(
-	"examples".DS."debug.example.com".DS."config".DS."core.php.sample" => "examples".DS."debug.example.com".DS."config".DS."core.php",
-	"examples".DS."site.example.com".DS."config".DS."core.php.sample" => "examples".DS."site.example.com".DS."config".DS."core.php",
-	"examples".DS."dummy.example.com".DS."config".DS."core.php.sample" => "examples".DS."dummy.example.com".DS."config".DS."core.php",
-	"examples".DS."html5.example.com".DS."config".DS."core.php.sample" => "examples".DS."html5.example.com".DS."config".DS."core.php",
-	"examples".DS."wp.example.com".DS."config".DS."core.php.sample" => "examples".DS."wp.example.com".DS."config".DS."core.php"
-);
+$rel["renameFiles"] = array();
 
 $rel["createFiles"] = array();
 
-$rel["moveDirs"]= array(
-	"examples" => "frontends",
-	"bedita-app". DS . "plugins" . DS . "sample_module" => "modules" . DS . "sample_module",
-	"bedita-app". DS . "plugins" . DS . "addons" => "addons",
+$rel["moveDirs"] = array(
+	"examples" => "frontends"
 );
 
-$rel["versionFileName"]="bedita-app".DS."config".DS."bedita.version.php";
+$rel['frontends'] = array(
+	'bootstrap' => 'https://github.com/bedita/bootstrap.git',
+	'web-starter-kit' => 'https://github.com/bedita/web-starter-kit.git',
+	'responsive' => 'https://github.com/bedita/responsive.git',
+	'boilerplate' => 'https://github.com/bedita/boilerplate.git'
+);
 
-?>
+$rel["versionFileName"] = "bedita-app" . DS . "config" . DS . "bedita.version.php";
