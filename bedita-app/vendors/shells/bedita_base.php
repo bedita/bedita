@@ -49,7 +49,16 @@ class BeditaBaseShell extends Shell {
 		$this->initConfig();
 		// default debug = 1, get error/debug messages
 		Configure::write('debug', 1);
+        $this->Dispatch->clear();
 	}
+
+    public function title($title) {
+        $this->out();
+        $this->hr();
+        $this->out(' ' . strtoupper($title));
+        $this->hr();
+        $this->out();
+    }
 	
 	protected function check_sys_get_temp_dir() {
 		if ( !function_exists('sys_get_temp_dir') ) {
