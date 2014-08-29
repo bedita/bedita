@@ -18,7 +18,7 @@
         {foreach $ob.Permission|default:[] as $obp}
             {$permissionset[] = $obp.flag}
         {/foreach}
-        <select title="{t}add permission{/t}" multiple id="selectGroupPermission" name="data[Permission][{$ob.id}][]">
+        <select title="{t}add permission{/t}" multiple id="selectGroupPermission_{$ob.id}" name="data[Permission][{$ob.id}][]">
             {foreach from=$conf->objectPermissions item="permVal" key="permLabel"}
             <option 
             {if (in_array($permVal,$permissionset))}selected{/if} 
