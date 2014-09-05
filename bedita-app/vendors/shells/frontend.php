@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008, 2014 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -108,14 +108,14 @@ class FrontendShell extends BeditaBaseShell {
         }
 
         $this->out();
-        $answer = $this->in('Do you want to init a git repository?', array('y', 'n'), 'y');
+        $answer = $this->in('Do you want to init a new git repository?', array('y', 'n'), 'y');
         $this->out();
         if ($answer != 'y' && $answer != 'n') {
             $this->error($answer . 'is not valid answer');
         }
         if ($answer == 'y') {
             if (system('cd ' . $frontendPath . '; git init') === false) {
-                $path = $this->error('fail to init git repository in ' . $frontendPath);
+                $path = $this->error('git repository init failed in ' . $frontendPath);
             }
         }
 
