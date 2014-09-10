@@ -693,7 +693,8 @@ class Tree extends BEAppModel
 				"contain" => array(
 					"BEObject" => array(
 						"Permission",
-						"ObjectProperty",
+						"Category",
+					    "ObjectProperty",
 						"LangText"
 						),
 					"Tree"

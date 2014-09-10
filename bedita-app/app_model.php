@@ -860,6 +860,13 @@ class BEAppObjectModel extends BEAppModel {
 			}
 			$data["RelatedObject"] = $relatedObject;
 		}
+        if (!empty($data['Category'])) {
+            $cat = array();
+            foreach ($data['Category'] as $k => $value) {
+                $cat[] = $value['id'];
+            }
+            $data['Category'] = $cat;
+        }
 	}
 
 	/**
@@ -959,8 +966,8 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	public $actsAs = array(
 		'CompactResult' => array(),
 		'SearchTextSave',
-		'DeleteObject' => 'objects',
-		'Notify'
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	public $hasOne = array(
@@ -980,7 +987,7 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 															"LangText",
 															"RelatedObject",
 															"Annotation",
-															"Category"
+				                                            "Category"
 															)),
 				"default" => array("BEObject" => array("ObjectProperty",
 									"LangText", "ObjectType", "Annotation",
