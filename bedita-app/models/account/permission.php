@@ -310,7 +310,6 @@ class Permission extends BEAppModel
 		}
 	}	
 
-
 	/**
 	 * Load all object permissions
 	 *
@@ -321,5 +320,26 @@ class Permission extends BEAppModel
 		return $this->find('all', array("conditions" => array("object_id" => $objectId)));
 	}
 
+	/**
+	 * passed an array of BEdita objects add 'count_permission' key
+	 * with the number of permissions applied to objects
+	 *
+	 * @param  array $objects
+	 * @param  array $options
+	 *         		- flag: if specified count permission with that flag
+	 * @return array $objects with added 'count_permission' key
+	 */
+	public function countPermissions(array $objects, array $options) {
+		foreach ($objects as &$obj) {
+			$conditions = array('object_id' => $obj['id']);
+			if (isset($options['flag'])) {
+				$conditions['flag'] = $options['flag'];
+			}
+			$obj['count_permission'] = $this->find('count', array(
+				'conditions' => $conditions
+			));
+		}
+		return $objects;
+	}
+
 }
-?>
