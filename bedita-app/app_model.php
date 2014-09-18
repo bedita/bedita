@@ -358,7 +358,8 @@ class BEAppModel extends AppModel {
             }
 
             if (in_array($order, $countAnnotationNames)) {
-                $a = array_flip($countAnnotationNames)[$order];
+                $flipCountAnnotationNames =  array_flip($countAnnotationNames);
+                $a = $flipCountAnnotationNames[$order];
                 $filter['count_annotation'] = array($a);
                 $countAnnotation = array_diff($countAnnotation, $filter['count_annotation']);
             }
