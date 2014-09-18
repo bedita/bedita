@@ -589,6 +589,35 @@ class AppController extends Controller
 	}
 
 	/**
+	 * set model bindings for BEdita object
+	 *
+	 * @param string $modelType model name of BE object
+	 * @return array that contains:
+	 *				"bindings_used" => multidimensional array of bindings used,
+	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
+	 *
+	 */
+	protected function setObjectBindings($modelType) {
+	    if(!isset($this->{$modelType})) {
+	        $this->{$modelType} = $this->loadModelByType($modelType);
+	    }
+	
+	    if (!$this->baseLevel) {
+	        $bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
+	    } else {
+	        $bindingsUsed = array("BEObject" => array("LangText"));
+	        if ($modelType == "Section") {
+	            $bindingsUsed[] = "Tree";
+	        }
+	        $this->{$modelType}->contain($bindingsUsed);
+	    }
+	    $listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
+	    natsort($listOfBindings);
+	    return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
+	}
+
+	
+	/**
 	 * Reorder content objects relations in array where keys are relation names
 	 *
 	 * @param array $objectArray
@@ -607,11 +636,28 @@ class AppController extends Controller
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
-			$level = (BACKEND_APP)? 'default' : 'frontend';
-			$this->modelBindings($this->{$modelClass}, $level);
-			if (!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
-				continue;
-			}
+            if (BACKEND_APP) {
+                // TODO: return $bindings array like in setObjectBindings
+                $this->modelBindings($this->{$modelClass}, 'default');
+                $bindings = array();
+            } else {
+                $bindings = $this->setObjectBindings($modelClass);
+            }
+            
+            $objDetail = null;
+            if ($this->objectCakeCache) {
+                $objDetail = $this->ObjectCache->read($obj['object_id'], $bindings);
+            }
+            
+            if (empty($objDetail)) {
+                $objDetail = $this->{$modelClass}->findById($obj['object_id']);
+                if (empty($objDetail)) {
+                    continue;
+                } elseif ($this->objectCakeCache) {
+                    $this->ObjectCache->write($obj['object_id'], $bindings, $objDetail);
+                }
+            }
+
             if (empty($status) || in_array($objDetail["status"],$status)) {
 				// if frontend app add object_type and check frontend obj permission
 				if (!BACKEND_APP) {

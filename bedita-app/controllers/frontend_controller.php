@@ -1145,34 +1145,6 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * set model bindings for BEdita object
-	 *
-	 * @param string $modelType model name of BE object
-	 * @return array that contains:
-	 *				"bindings_used" => multidimensional array of bindings used,
-	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
-	 *
-	 */
-	protected function setObjectBindings($modelType) {
-		if(!isset($this->{$modelType})) {
-			$this->{$modelType} = $this->loadModelByType($modelType);
-		}
-
-		if (!$this->baseLevel) {
-			$bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
-		} else {
-			$bindingsUsed = array("BEObject" => array("LangText"));
-			if ($modelType == "Section") {
-				$bindingsUsed[] = "Tree";
-			}
-			$this->{$modelType}->contain($bindingsUsed);
-		}
-		$listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
-		natsort($listOfBindings);
-		return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
-	}
-
-	/**
 	 * Returns bedita Object
 	 * Throws Exception on errors
 	 *
