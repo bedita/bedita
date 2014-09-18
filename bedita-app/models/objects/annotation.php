@@ -77,13 +77,13 @@ class Annotation extends BEAppModel {
 	}
 
 	/**
-	 * passed an array of BEdita objects add 'count_permission' key
-	 * with the number of permissions applied to objects
+	 * passed an array of BEdita objects add 'num_of_annotation_name' key
+	 * with the number of annotation applied to objects
 	 *
 	 * @param  array $objects
 	 * @param  array $options list of options accepted
 	 *             - type: array of Annotation object as array('Comment', 'EditorNote')
-	 * @return array $objects with added 'count_permission' key
+	 * @return array $objects
 	 */
 	public function countAnnotations(array $objects, array $options) {
         if (!empty($options['type'])) {

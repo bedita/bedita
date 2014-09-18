@@ -335,7 +335,7 @@ class Permission extends BEAppModel
 			if (isset($options['flag'])) {
 				$conditions['flag'] = $options['flag'];
 			}
-			$obj['count_permission'] = $this->find('count', array(
+			$obj['num_of_permission'] = $this->find('count', array(
 				'conditions' => $conditions
 			));
 		}
