@@ -858,57 +858,58 @@ abstract class ModulesController extends AppController {
             $pubSel = $this->BeTree->getAreaForSection($id);
         }
 
+        $afterFilter = array(
+            array(
+                'className' => 'ObjectProperty',
+                'methodName' => 'objectsCustomProperties'
+            ),
+            array(
+                'className' => 'Content',
+                'methodName' => 'appendContentFields'
+            ),
+            array(
+                'className' => 'ObjectRelation',
+                'methodName' => 'countRelations',
+                'options' => array(
+                    'relations' => array('attach', 'seealso', 'download')
+                )
+            ),
+            array(
+                'className' => 'Tree',
+                'methodName' => 'countUbiquity'
+            )
+        );
+
+		if (!empty($filter['afterFilter'])) {
+			if (!isset($filter['afterFilter'][0])) {
+				$filter['afterFilter'][] = $filter['afterFilter'];
+			}
+			$filter['afterFilter'] = array_merge($filter['afterFilter'], $afterFilter);
+		} else {
+			$filter['afterFilter'] = $afterFilter;
+		}
+
         $filter['count_permission'] = true;
 
-        $customPropAfterFilter = array(
-            'className' => 'ObjectProperty',
-            'methodName' => 'objectsCustomProperties'
-        );
-        if (!empty($filter['afterFilter'])) {
-            if (!isset($filter['afterFilter'][0])) {
-                $filter['afterFilter'][] = $filter['afterFilter'];
-            }
-            $filter['afterFilter'][] = $customPropAfterFilter;
-        } else {
-            $filter['afterFilter'] = $customPropAfterFilter;
-        }
+		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
 
-        $objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
-        $treeModel = ClassRegistry::init('Tree');
-        $relToCount =  array('attach', 'seealso', 'download');
-        $objectRelation = ClassRegistry::init('ObjectRelation');
-
-        $items = array();
-        foreach ($objects['items'] as $obj) {
-            $obj['ubiquity'] = $treeModel->find('count', array(
-                'conditions' => array('id' => $obj['id'])
-            ));
-
-            // get relations count
-            foreach ($relToCount as $rel) {
-                $obj['num_of_relations_' . $rel] = $objectRelation->find('count', array(
-                    'conditions' => array('id' => $obj['id'], 'switch' => $rel)
-                ));
-            }
-
-            $items[] = $obj;
-        }
-        $this->params['toolbar'] = &$objects['toolbar'] ;
+		$this->params['toolbar'] = &$objects['toolbar'] ;
 
         $properties = ClassRegistry::init('Property')->find('all', array(
             'conditions' => array('object_type_id' => $filter['object_type_id']),
             'contain' => array()
         ));
 
-        // get publications
-        $user = $this->BeAuth->getUserSession();
-        $expandBranch = array();
-        if (!empty($filter['parent_id'])) {
-            $expandBranch[] = $filter['parent_id'];
-        } elseif (!empty($id)) {
-            $expandBranch[] = $id;
-        }
-        $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+		// get publications
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+		if (!empty($filter['parent_id'])) {
+			$expandBranch[] = $filter['parent_id'];
+		} elseif (!empty($id)) {
+			$expandBranch[] = $id;
+		}
+        $treeModel = ClassRegistry::init("Tree");
+		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
         // get available relations
         $availableRelations = array();
@@ -927,7 +928,7 @@ abstract class ModulesController extends AppController {
         $this->set('tree', $tree);
         $this->set('sectionSel',$sectionSel);
         $this->set('pubSel',$pubSel);
-        $this->set('objects', $items);
+        $this->set('objects', $objects['items']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
 

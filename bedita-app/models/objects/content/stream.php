@@ -300,7 +300,23 @@ class Stream extends BEAppModel
 	public function getMimeTypes() {
 		return $this->mimeTypes;
 	}
-	
-	
+
+	/**
+     * append stream fields to objects array
+     *
+     * @param array $objects
+     * @param array $options
+     */
+    public function appendStreamFields(array $objects, $options = array()) {
+        foreach ($objects as &$obj) {
+            $c = $this->find('first', array(
+                'conditions' => array('id' => $obj['id'])
+            ));
+            if (!empty($c['Stream'])) {
+                $obj += $c['Stream'];
+            }
+        }
+        return $objects;
+    }
+
 }
-?>

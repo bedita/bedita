@@ -1472,6 +1472,7 @@ abstract class FrontendController extends AppController {
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
+			$filter['Content.*'] = '';
 			$filter['AND'][] = array(
 				'OR' => array(
 					'Content.start_date <=' => date('Y-m-d'),
@@ -1480,6 +1481,7 @@ abstract class FrontendController extends AppController {
 			);
 		}
 		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
+			$filter['Content.*'] = '';
 			$filter['AND'][] = array(
 				'OR' => array(
 					'Content.end_date >=' => date('Y-m-d'),
@@ -1863,6 +1865,7 @@ abstract class FrontendController extends AppController {
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate['start'] == true && empty($this->searchOptions['filter']['Content.start_date'])) {
+			$this->searchOptions['filter']['Content.*'] = '';
 			$this->searchOptions['filter']['AND'][] = array(
 				'OR' => array(
 					'Content.start_date <=' => date('Y-m-d'),
@@ -1871,6 +1874,7 @@ abstract class FrontendController extends AppController {
 			);
 		}
 		if ($this->checkPubDate['end'] == true && empty($this->searchOptions['filter']['Content.end_date'])) {
+			$this->searchOptions['filter']['Content.*'] = '';
 			$this->searchOptions['filter']['AND'][] = array(
 				'OR' => array(
 					'Content.end_date >=' => date('Y-m-d'),
@@ -2239,6 +2243,7 @@ abstract class FrontendController extends AppController {
 
 		// add rules for start and end pubblication date
 		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
+			$filter['Content.*'] = '';
 			$filter['AND'][] = array(
 				'OR' => array(
 					'Content.start_date <=' => date('Y-m-d'),
@@ -2247,6 +2252,7 @@ abstract class FrontendController extends AppController {
 			);
 		}
 		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
+			$filter['Content.*'] = '';
 			$filter['AND'][] = array(
 				'OR' => array(
 					'Content.end_date >=' => date('Y-m-d'),

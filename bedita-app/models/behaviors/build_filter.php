@@ -135,6 +135,14 @@ class BuildFilterBehavior extends ModelBehavior {
         'comment_object_id' => 'Comment.object_id'
     );
 
+	/**
+	 * Force BEAppModel::findObjects() to use 'GROUP BY' clausole
+	 * its value is returned in self::getSqlItems()
+	 *
+	 * @var boolean
+	 */
+    private $useGroupBy = false;
+
 	function setup(&$model, $settings=array()) {
     	$this->model = $model;
 		if(empty($this->sQ)) {
@@ -290,7 +298,14 @@ class BuildFilterBehavior extends ModelBehavior {
 				}
 			}
 		}
-		return array($this->fields, $this->from ,$this->conditions, $this->group, $this->order);
+		return array(
+			'fields' => $this->fields,
+			'from' => $this->from,
+			'conditions' => $this->conditions,
+			'group' => $this->group,
+			'order' => $this->order,
+			'useGroupBy' => $this->useGroupBy
+		);
 	}
 	
 	/**
@@ -299,11 +314,12 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param array $filter 
 	 */
 	private function initVars(array $filter) {
-		$this->fields = "";
-		$this->from = "";
+		$this->fields = '';
+		$this->from = '';
 		$this->conditions = array();
-		$this->group = "";
-		$this->order = "";
+		$this->group = '';
+		$this->order = '';
+		$this->useGroupBy = false;
 
 		foreach ($filter as $key => $value) {
             if (array_key_exists($key, $this->map)) {
@@ -392,6 +408,8 @@ class BuildFilterBehavior extends ModelBehavior {
 			
 			$this->from = $from . $this->from;
 		}
+
+		$this->useGroupBy = true;
 	}
 	
 	/**
