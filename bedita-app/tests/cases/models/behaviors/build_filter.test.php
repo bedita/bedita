@@ -177,14 +177,7 @@ class BuildFilterTestCase extends BeditaTestCase {
     }
 
     private function buildStatements($filter, $returnType = null) {
-        $statements = array();
-        list(
-            $statements['fields'],
-            $statements['from'],
-            $statements['conditions'],
-            $statements['group'],
-            $statements['order']
-            ) = $this->BEObject->getSqlItems($filter);
+        $statements = $this->BEObject->getSqlItems($filter);
 
         if ($returnType && isset($statements[$returnType])) {
             return $statements[$returnType];
