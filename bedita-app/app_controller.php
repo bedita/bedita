@@ -72,7 +72,7 @@ class AppController extends Controller
 	 * @var string
 	 */
 	protected $fullBaseUrl = "";
-
+	
 	/**
 	 * fields to save in history table
 	 *
@@ -80,6 +80,27 @@ class AppController extends Controller
 	 */
 	protected $historyItem = array();
 
+    /**
+     * Use objce cake cache? [ObjectCache component]
+     *
+     * @var boolean
+     */
+    protected $objectCakeCache = false;
+
+    /**
+     * Constructor
+     * If object cache is enabled in configuration add ObjectCache in self::components array
+     */
+    public function __construct() {
+        if (Configure::read('objectCakeCache')) {
+            $this->components[] = 'ObjectCache';
+            $this->objectCakeCache = true;
+        }
+        parent::__construct();
+    }
+    
+    
+    
 	public static function currentController() {
 		return self::$current;
 	}

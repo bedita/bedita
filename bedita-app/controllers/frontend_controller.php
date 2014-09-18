@@ -1275,44 +1275,56 @@ abstract class FrontendController extends AppController {
 			$bindings = $this->setObjectBindings($modelType);
 		}
 
-		$obj = $this->{$modelType}->find("first", array(
-								"conditions" => array(
-									"BEObject.id" => $obj_id,
-									"BEObject.status" => $this->status
-									)
-								)
-							);
-		if(empty($obj)) {
-			throw new BeditaException(__("Content not found", true));
-		}
-		// #304 status filter for Category and Tag
-		if(!empty($obj['Category'])) {
-			$cc = array();
-			foreach($obj['Category'] as $k => $v) {
-				if(in_array($v['status'],$this->status)) {
-					$cc[] = $v;
-				}
-			}
-			unset($obj['Category']);
-			$obj['Category'] = $cc;
-		}
-		if(!empty($obj['Tag'])) {
-			$tt = array();
-			foreach($obj['Tag'] as $k => $v) {
-				if(in_array($v['status'],$this->status)) {
-					$tt[] = $v;
-				}
-			}
-			unset($obj['Tag']);
-			$obj['Tag'] = $tt;
-		}
-		if(!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true));
-		}
+        $obj = null;
+        if ($this->objectCakeCache) {
+            $obj = $this->ObjectCache->read($obj_id, $bindings);
+        }
 
-		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
-
-		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
+        if (empty($obj)) {
+    		$obj = $this->{$modelType}->find("first", array(
+    								"conditions" => array(
+    									"BEObject.id" => $obj_id,
+    									"BEObject.status" => $this->status
+    									)
+    								)
+    							);
+    		
+    		if (empty($obj)) {
+    			throw new BeditaException(__("Content not found", true));
+    		}
+    		// #304 status filter for Category and Tag
+    		if(!empty($obj['Category'])) {
+    			$cc = array();
+    			foreach($obj['Category'] as $k => $v) {
+    				if(in_array($v['status'],$this->status)) {
+    					$cc[] = $v;
+    				}
+    			}
+    			unset($obj['Category']);
+    			$obj['Category'] = $cc;
+    		}
+    		if(!empty($obj['Tag'])) {
+    			$tt = array();
+    			foreach($obj['Tag'] as $k => $v) {
+    				if(in_array($v['status'],$this->status)) {
+    					$tt[] = $v;
+    				}
+    			}
+    			unset($obj['Tag']);
+    			$obj['Tag'] = $tt;
+    		}
+    		if(!$this->checkPubblicationDate($obj)) {
+    			throw new BeditaException(__("Content not found", true));
+    		}
+    
+    		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
+    
+    		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
+    		
+    		if ($this->objectCakeCache) {
+    		    $this->ObjectCache->write($obj_id, $bindings, $obj);
+    		}
+        }
 
 		if(!empty($obj["RelatedObject"])) {
 			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
