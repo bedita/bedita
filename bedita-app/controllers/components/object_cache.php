@@ -89,7 +89,7 @@ class ObjectCacheComponent extends Object {
     }
 
     private function cacheName($id, array &$bindings) {
-        $strBind = implode($bindings);
+        $strBind = print_r($bindings, true);
         return $id . '-' . md5($strBind);
     }
 
