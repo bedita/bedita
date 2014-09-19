@@ -53,7 +53,8 @@ class ObjectCacheComponent extends Object {
     public function initialize($controller) {
         $this->controller = $controller;
         // init cache
-        if (empty(Cache::settings('objects'))) {
+        $cacheConf = Cache::settings('objects');
+        if (empty($cacheConf)) {
             // default cache path and settings if not configured
             $this->baseCachePath = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
             $this->cacheConfig = array(
