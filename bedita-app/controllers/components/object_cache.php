@@ -76,16 +76,18 @@ class ObjectCacheComponent extends Object {
 
 
     private function setCacheOptions($id) {
-        $strId = "{$id}";
-        if ($id < 100) {
-            $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
+        if (!empty($this->cacheConfig['path'])) {
+            $strId = "{$id}";
+            if ($id < 100) {
+                $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
+            }
+            $path = $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
+            if (!file_exists($path)) {
+                mkdir($path);
+            }
+            $this->cacheConfig['path'] = $path;
+            Cache::set($this->cacheConfig);
         }
-        $path = $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
-        if (!file_exists($path)) {
-            mkdir($path);
-        }
-        $this->cacheConfig['path'] = $path;
-        Cache::set($this->cacheConfig);
     }
 
     private function cacheName($id, array &$bindings) {
@@ -127,6 +129,7 @@ class ObjectCacheComponent extends Object {
      * @return array
      */
     public function delete($id, array $bindings = null) {
+        // TODO....
     }
 
 }
