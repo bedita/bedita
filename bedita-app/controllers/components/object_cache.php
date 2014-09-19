@@ -86,8 +86,8 @@ class ObjectCacheComponent extends Object {
                 mkdir($path);
             }
             $this->cacheConfig['path'] = $path;
-            Cache::set($this->cacheConfig);
         }
+        Cache::set($this->cacheConfig);
     }
 
     private function cacheName($id, array &$bindings) {
