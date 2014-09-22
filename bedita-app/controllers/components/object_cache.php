@@ -23,7 +23,7 @@
 /**
  * ObjectCacheComponent class
  *
- * Component to read/write objects using Cake Cache
+ * Component to read/write object data using Cake Cache
  */
 class ObjectCacheComponent extends Object {
 
@@ -86,21 +86,26 @@ class ObjectCacheComponent extends Object {
         Cache::set($this->cacheConfig);
     }
 
-    private function cacheName($id, array &$bindings) {
-        $strBind = implode('', $bindings['bindings_list']);
-        return $id . '-' . md5($strBind);
+    private function cacheName($id, array &$options, $label = null) {
+        if (!empty($options['bindings_list'])) {
+            $strOpt = implode('', $options['bindings_list']);
+        } else {
+            $strOpt = print_r($options, true);
+        }
+        $label = empty($label) ? '' : $label . '-';
+        return $id . '-' . $label . md5($strOpt);
     }
 
     /**
      * Read object from cache
      *
      * @param  int $id
-     * @param  array $bindings
+     * @param  array $options
      * @return data array or false if no cache is found
      */
-    public function read($id, array &$bindings) {
+    public function read($id, array &$options, $label = null) {
         $res = false;
-        $cacheName = $this->cacheName($id, $bindings);
+        $cacheName = $this->cacheName($id, $options, $label);
         $this->setCacheOptions($id);
         $res = Cache::read($cacheName);
         return $res;
@@ -112,8 +117,8 @@ class ObjectCacheComponent extends Object {
      * @param  string $key
      * @return array
      */
-    public function write($id, array &$bindings, array &$data) {
-        $cacheName = $this->cacheName($id, $bindings);
+    public function write($id, array &$options, array &$data, $label = null) {
+        $cacheName = $this->cacheName($id, $options, $label);
         $this->setCacheOptions($id);
         return Cache::write($cacheName, $data);
     }
@@ -124,8 +129,10 @@ class ObjectCacheComponent extends Object {
      * @param  string $key
      * @return array
      */
-    public function delete($id, array $bindings = null) {
-        // TODO....
+    public function delete($id, array $options = null) {
+        $cacheName = $this->cacheName($id, $options);
+        $this->setCacheOptions($id);
+        return Cache::delete($cacheName);
     }
 
 }

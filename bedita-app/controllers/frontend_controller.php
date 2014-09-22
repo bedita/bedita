@@ -1474,7 +1474,19 @@ abstract class FrontendController extends AppController {
 			);
 		}
 
-		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+        $items = null;
+        $cacheOpts = array();
+        if ($this->objectCakeCache) {
+            $cacheOpts = array($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+            $items = $this->ObjectCache->read($parent_id, $cacheOpts, 'children');
+        }
+        
+        if (empty($items)) {
+            $items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+            if ($this->objectCakeCache) {
+                $this->ObjectCache->write($parent_id, $cacheOpts, $items, 'children');
+            }
+        }
 
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
