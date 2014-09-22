@@ -80,6 +80,7 @@ class ObjectCacheComponent extends Object {
             $path = $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
             if (!file_exists($path)) {
                 mkdir($path);
+                chmod($path, 0775);
             }
             $this->cacheConfig['path'] = $path;
         }
