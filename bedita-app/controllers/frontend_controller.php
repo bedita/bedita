@@ -562,7 +562,20 @@ abstract class FrontendController extends AppController {
 		if (empty($parent_id)) {
 			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
 		}
-		$sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
+
+        $sections = array();
+        $cacheOpts = array();
+        if ($this->objectCakeCache) {
+            $cacheOpts = array($parent_id, $this->status, $filter, "priority");
+            $sections = $this->ObjectCache->read($parent_id, $cacheOpts, 'children');
+        }
+
+        if (empty($sections)) {
+            $sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
+            if ($this->objectCakeCache) {
+                $this->ObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
+            }
+        }
 
 		foreach ($sections['items'] as $s) {
 
