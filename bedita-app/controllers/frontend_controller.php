@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -21,13 +21,6 @@
 
 /**
  * Frontend base class (Frontend API)
- *
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 if (defined('BEDITA_CORE_PATH')) {
 	require_once (BEDITA_CORE_PATH . DS . 'bedita_exception.php');
