@@ -84,11 +84,12 @@ class BeObjectCache {
     private function cacheName($id, array &$options, $label = null) {
         if (!empty($options['bindings_list'])) {
             $strOpt = implode('', $options['bindings_list']);
-        } else {
+        } elseif (!empty($options)) {
             $strOpt = print_r($options, true);
         }
-        $label = empty($label) ? '' : $label . '-';
-        return $id . '-' . $label . md5($strOpt);
+        $label = empty($label) ? '' : '-' . $label;
+        $strOpt = (!empty($strOpt)) ? '-' . md5($strOpt) : '';
+        return $id . $label . $strOpt;
     }
 
     /**

@@ -105,7 +105,6 @@ class CacheableBehavior extends ModelBehavior {
 
         $idsToAdd = array_merge($parents, $relatedObjects);
         $this->addObjectsToClean($model, $idsToAdd);
-        debug($this->objectsToClean);
     }
 
     /**

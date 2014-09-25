@@ -172,7 +172,7 @@ class AppController extends Controller
 	
 	final function beforeFilter() {
 	    $this->startProfiler();
-        if (Configure::read('objectCakeCache')) {
+        if (!BACKEND_APP && Configure::read('objectCakeCache')) {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
 		self::$current = $this;

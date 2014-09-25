@@ -268,20 +268,43 @@ class Permission extends BEAppModel
 	}
 	
 	/**
-	 * check if a permission over an object is set 
-	 * 
-	 * @param $objectId
-	 * @param $flag permission
+	 * check if a permission over an object is set
+	 *
+	 * @param integer $objectId
+	 * @param array|integer $flag permission
 	 * @return array of perms with users and groups or false if no permission is setted
 	 */
 	public function isPermissionSet($objectId, $flag) {
-		$result = $this->find('all', array(
-				"conditions" => array("object_id" => $objectId, "flag" => $flag)
-			)
-		);
+		if (!is_array($flag)) {
+			$flag = array($flag);
+		}
+		// if frontend and object cache active use cache
+		if (!BACKEND_APP && Configure::read('objectCakeCache')) {
+			$beObjectCache = BeLib::getObject('BeObjectCache');
+			$options = array();
+			$perms = $beObjectCache->read($objectId, $options, 'perms');
+			if (!$perms && !is_array($perms)) {
+				$perms = $this->find('all', array(
+					'conditions' => array('object_id' => $objectId)
+				));
+				$beObjectCache->write($objectId, $options, $perms, 'perms');
+			}
+			// search $flag inside $perms
+			$result = array();
+			if (!empty($perms)) {
+				foreach ($perms as $p) {
+					if (in_array($p['Permission']['flag'], $flag)) {
+						$result[] = $p;
+					}
+				}
+			}
+		} else {
+			$result = $this->find('all', array(
+				'conditions' => array('object_id' => $objectId, 'flag' => $flag)
+			));
+		}
 
-		$ret = (!empty($result))? $result : false;
-		
+		$ret = (!empty($result)) ? $result : false;
 		return $ret;
 	}
 	
