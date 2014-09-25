@@ -565,15 +565,15 @@ abstract class FrontendController extends AppController {
 
         $sections = array();
         $cacheOpts = array();
-        if ($this->objectCakeCache) {
+        if ($this->BeObjectCache) {
             $cacheOpts = array($parent_id, $this->status, $filter, "priority");
-            $sections = $this->ObjectCache->read($parent_id, $cacheOpts, 'children');
+            $sections = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
         }
 
         if (empty($sections)) {
             $sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
-            if ($this->objectCakeCache) {
-                $this->ObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
             }
         }
 
@@ -1261,8 +1261,8 @@ abstract class FrontendController extends AppController {
 		}
 
         $obj = null;
-        if ($this->objectCakeCache) {
-            $obj = $this->ObjectCache->read($obj_id, $bindings);
+        if ($this->BeObjectCache) {
+            $obj = $this->BeObjectCache->read($obj_id, $bindings);
         }
 
         if (empty($obj)) {
@@ -1298,18 +1298,19 @@ abstract class FrontendController extends AppController {
     			unset($obj['Tag']);
     			$obj['Tag'] = $tt;
     		}
-    		if(!$this->checkPubblicationDate($obj)) {
-    			throw new BeditaException(__("Content not found", true));
-    		}
-    
+
     		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
-    
-    		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
-    		
-    		if ($this->objectCakeCache) {
-    		    $this->ObjectCache->write($obj_id, $bindings, $obj);
+
+    		if ($this->BeObjectCache) {
+    		    $this->BeObjectCache->write($obj_id, $bindings, $obj);
     		}
         }
+
+        if (!$this->checkPubblicationDate($obj)) {
+			throw new BeditaException(__("Content not found", true));
+		}
+
+		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if(!empty($obj["RelatedObject"])) {
 			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
@@ -1489,15 +1490,15 @@ abstract class FrontendController extends AppController {
 
         $items = null;
         $cacheOpts = array();
-        if ($this->objectCakeCache) {
+        if ($this->BeObjectCache) {
             $cacheOpts = array($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
-            $items = $this->ObjectCache->read($parent_id, $cacheOpts, 'children');
+            $items = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
         }
         
         if (empty($items)) {
             $items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
-            if ($this->objectCakeCache) {
-                $this->ObjectCache->write($parent_id, $cacheOpts, $items, 'children');
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($parent_id, $cacheOpts, $items, 'children');
             }
         }
 

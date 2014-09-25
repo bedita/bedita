@@ -19,20 +19,12 @@
  *------------------------------------------------------------------->8-----
  */
 
-
 /**
- * ObjectCacheComponent class
+ * BeObjectCache class
  *
- * Component to read/write object data using Cake Cache
+ * Class to read/write object data using Cake Cache
  */
-class ObjectCacheComponent extends Object {
-
-    /**
-     * the controller that use this component
-     * @var Controller
-     */
-    public $controller = null;
-
+class BeObjectCache {
 
     /**
      * Base path for objects cache
@@ -43,15 +35,14 @@ class ObjectCacheComponent extends Object {
      * Default cache config
      */
     private $cacheConfig = null;
-    
+
     /**
-     * Initialize component
+     * Constructor
+     * Initialize cache config
      *
-     * @param  Controller $controller
-     * @param  array  $settings
+     * @param array $settings
      */
-    public function initialize($controller) {
-        $this->controller = $controller;
+    public function __construct() {
         // init cache
         $cacheConf = Cache::settings('objects');
         if (empty($cacheConf)) {
@@ -70,14 +61,17 @@ class ObjectCacheComponent extends Object {
         }
     }
 
+    public function getPathById($id) {
+        $strId = "{$id}";
+        if ($id < 100) {
+            $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
+        }
+        return $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
+    }
 
     private function setCacheOptions($id) {
         if (!empty($this->cacheConfig['path'])) {
-            $strId = "{$id}";
-            if ($id < 100) {
-                $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
-            }
-            $path = $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
+            $path = $this->getPathById($id);
             if (!file_exists($path)) {
                 mkdir($path);
                 chmod($path, 0775);
@@ -125,15 +119,18 @@ class ObjectCacheComponent extends Object {
     }
 
     /**
-     * Delete object from cache
+     * Delete objects from cache
      *
-     * @param  string $key
-     * @return array
+     * @param  integer $id objectId
      */
     public function delete($id, array $options = null) {
-        $cacheName = $this->cacheName($id, $options);
-        $this->setCacheOptions($id);
-        return Cache::delete($cacheName);
+        $cachePath = $this->getPathById($id);
+        $prefix = (!empty($this->cacheConfig['prefix'])) ? $this->cacheConfig['prefix'] : 'cake_';
+        $wildCard = $cachePath . DS . $prefix . $id . '-*';
+        $toDelete = glob($wildCard);
+        if (!empty($toDelete)) {
+            array_map('unlink', $toDelete);
+        }
     }
 
 }

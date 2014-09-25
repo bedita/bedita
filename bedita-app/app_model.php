@@ -24,9 +24,10 @@
  * BEdita base model classes
  */
 
-class AppModel extends Model{
+class AppModel extends Model {
 
-	var $actsAs 	= array("Containable");
+	public $actsAs = array('Containable');
+
 }
 
 /**
@@ -35,9 +36,11 @@ class AppModel extends Model{
 class BEAppModel extends AppModel {
 
 	protected $modelBindings = array();
-	protected $sQ = ""; // internal use: start quote
-	protected $eQ = ""; // internal use: end quote
-	protected $driver = ""; // internal use: database driver
+	protected $sQ = ''; // internal use: start quote
+	protected $eQ = ''; // internal use: end quote
+	protected $driver = ''; // internal use: database driver
+
+    public $actsAs = array();
 
 	/**
 	 * Merge record result in one array

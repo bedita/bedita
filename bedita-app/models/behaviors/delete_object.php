@@ -55,6 +55,11 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 */
 	
 	function beforeDelete(&$model) {
+		// prepare objects to delete from cache
+		if ($model->BEObject->isCacheableOn()) {
+			$model->BEObject->setObjectsToClean($model->id);
+		}
+
 		$model->tmpAssociations = array();
 		$model->tmpTable 		= $model->table ;
 		
@@ -83,7 +88,7 @@ class DeleteObjectBehavior extends ModelBehavior {
 			}
 		}
 		
-		$model->table =  (isset($configure) && is_string($configure)) ? $configure : $model->table ;
+		$model->table = (isset($configure) && is_string($configure)) ? $configure : $model->table;
 
 		// Delete object references on tree as well
 		$tree = ClassRegistry::init('Tree');
@@ -95,11 +100,11 @@ class DeleteObjectBehavior extends ModelBehavior {
 		}
 
 		$st = ClassRegistry::init('SearchText');
-		$st->removeObject($model->id) ;
+		$st->removeObject($model->id);
 
 		$this->deleteAnnotations($model->id);
 		
-		return true ;
+		return true;
 	}
 
 	/**
@@ -108,15 +113,20 @@ class DeleteObjectBehavior extends ModelBehavior {
 	 */
 	function afterDelete(&$model) {
 		if (!empty($model->tmpTable)) {
-			$model->table = $model->tmpTable ;
-			unset($model->tmpTable) ;
+			$model->table = $model->tmpTable;
+			unset($model->tmpTable);
 		}
 		if (!empty($model->tmpAssociations)) {
 			// Re-establish associations
 			foreach ($model->tmpAssociations as $association => $v) {
-				$model->$association = $v ;
+				$model->$association = $v;
 			}
-			unset($model->tmpAssociations) ;
+			unset($model->tmpAssociations);
+		}
+
+		// clear cache
+		if ($model->BEObject->isCacheableOn()) {
+			$model->BEObject->clearCache();
 		}
 	}
 
@@ -186,4 +196,3 @@ class DeleteObjectBehavior extends ModelBehavior {
 	}
 
 }
-?>

@@ -81,26 +81,13 @@ class AppController extends Controller
 	protected $historyItem = array();
 
     /**
-     * Use objce cake cache? [ObjectCache component]
+     * If object cache is activate by objectCakeCache config param
+     * it contains instance of BeObjectCache class in libs
      *
-     * @var boolean
+     * @var BeObjectCache
      */
-    protected $objectCakeCache = false;
+    public $BeObjectCache = null;
 
-    /**
-     * Constructor
-     * If object cache is enabled in configuration add ObjectCache in self::components array
-     */
-    public function __construct() {
-        if (Configure::read('objectCakeCache')) {
-            $this->components[] = 'ObjectCache';
-            $this->objectCakeCache = true;
-        }
-        parent::__construct();
-    }
-    
-    
-    
 	public static function currentController() {
 		return self::$current;
 	}
@@ -185,6 +172,9 @@ class AppController extends Controller
 	
 	final function beforeFilter() {
 	    $this->startProfiler();
+        if (Configure::read('objectCakeCache')) {
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
 		self::$current = $this;
 		$this->view = 'Smarty';
 		$conf = Configure::getInstance();
@@ -645,16 +635,16 @@ class AppController extends Controller
             }
             
             $objDetail = null;
-            if ($this->objectCakeCache) {
-                $objDetail = $this->ObjectCache->read($obj['object_id'], $bindings);
+            if ($this->BeObjectCache) {
+                $objDetail = $this->BeObjectCache->read($obj['object_id'], $bindings);
             }
             
             if (empty($objDetail)) {
                 $objDetail = $this->{$modelClass}->findById($obj['object_id']);
                 if (empty($objDetail)) {
                     continue;
-                } elseif ($this->objectCakeCache) {
-                    $this->ObjectCache->write($obj['object_id'], $bindings, $objDetail);
+                } elseif ($this->BeObjectCache) {
+                    $this->BeObjectCache->write($obj['object_id'], $bindings, $objDetail);
                 }
             }
 
