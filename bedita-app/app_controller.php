@@ -664,19 +664,31 @@ class AppController extends Controller
                 }
             }
 
+            if (empty($status) || in_array($objDetail["status"],$status)) {
+                // if frontend app add object_type and check frontend obj permission
+                if (!BACKEND_APP) {
+                    $objDetail['object_type'] = $modelClass;
+                    $userdata = (!empty($options['user']))? $options['user'] : array();
+                    $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
+                    if ($frontendAccess == "denied" && empty($this->showUnauthorized)) {
+                        continue;
+                    }
+                    $objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
+                }
+
                 $objDetail['priority'] = $obj['priority'];
                 $objDetail['params'] = !empty($obj['params']) ? $obj['params'] : array();
                 if (isset($objDetail['url'])) {
-                    $objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],'/')+1);
+                    $objDetail['filename'] = substr($objDetail['url'],strripos($objDetail['url'],"/")+1);
                 }
 
-                // set fields with 'mainLanguage' value. Usually used in frontend (frontend_controller.php)
-                if (!empty($options['mainLanguage'])) {
+                // set fields with "mainLanguage" value. Usually used in frontend (frontend_controller.php)
+                if (!empty($options["mainLanguage"])) {
                     if(!isset($this->BeLangText)) {
                         App::import('Component', 'BeLangText');
                         $this->BeLangText = new BeLangTextComponent();
                     }
-                    $this->BeLangText->setObjectLang($objDetail, $options['mainLanguage'], $status);
+                    $this->BeLangText->setObjectLang($objDetail, $options["mainLanguage"], $status);
                 }
 
                 $relationArray[$rel][] = $objDetail;
