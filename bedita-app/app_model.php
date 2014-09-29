@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009-2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -19,14 +19,13 @@
  *------------------------------------------------------------------->8-----
  */
 
-
 /**
  * BEdita base model classes
  */
+class AppModel extends Model {
 
-class AppModel extends Model{
+	public $actsAs = array('Containable');
 
-	var $actsAs 	= array("Containable");
 }
 
 /**
@@ -35,9 +34,11 @@ class AppModel extends Model{
 class BEAppModel extends AppModel {
 
 	protected $modelBindings = array();
-	protected $sQ = ""; // internal use: start quote
-	protected $eQ = ""; // internal use: end quote
-	protected $driver = ""; // internal use: database driver
+	protected $sQ = ''; // internal use: start quote
+	protected $eQ = ''; // internal use: end quote
+	protected $driver = ''; // internal use: database driver
+
+    public $actsAs = array();
 
 	/**
 	 * Merge record result in one array

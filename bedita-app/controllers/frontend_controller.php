@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -21,13 +21,6 @@
 
 /**
  * Frontend base class (Frontend API)
- *
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 if (defined('BEDITA_CORE_PATH')) {
 	require_once (BEDITA_CORE_PATH . DS . 'bedita_exception.php');
@@ -562,7 +555,20 @@ abstract class FrontendController extends AppController {
 		if (empty($parent_id)) {
 			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
 		}
-		$sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
+
+        $sections = array();
+        $cacheOpts = array();
+        if ($this->BeObjectCache) {
+            $cacheOpts = array($parent_id, $this->status, $filter, "priority");
+            $sections = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+        }
+
+        if (empty($sections)) {
+            $sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
+            }
+        }
 
 		foreach ($sections['items'] as $s) {
 
@@ -1145,34 +1151,6 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * set model bindings for BEdita object
-	 *
-	 * @param string $modelType model name of BE object
-	 * @return array that contains:
-	 *				"bindings_used" => multidimensional array of bindings used,
-	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
-	 *
-	 */
-	protected function setObjectBindings($modelType) {
-		if(!isset($this->{$modelType})) {
-			$this->{$modelType} = $this->loadModelByType($modelType);
-		}
-
-		if (!$this->baseLevel) {
-			$bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
-		} else {
-			$bindingsUsed = array("BEObject" => array("LangText"));
-			if ($modelType == "Section") {
-				$bindingsUsed[] = "Tree";
-			}
-			$this->{$modelType}->contain($bindingsUsed);
-		}
-		$listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
-		natsort($listOfBindings);
-		return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
-	}
-
-	/**
 	 * Returns bedita Object
 	 * Throws Exception on errors
 	 *
@@ -1275,42 +1253,55 @@ abstract class FrontendController extends AppController {
 			$bindings = $this->setObjectBindings($modelType);
 		}
 
-		$obj = $this->{$modelType}->find("first", array(
-								"conditions" => array(
-									"BEObject.id" => $obj_id,
-									"BEObject.status" => $this->status
-									)
-								)
-							);
-		if(empty($obj)) {
-			throw new BeditaException(__("Content not found", true));
-		}
-		// #304 status filter for Category and Tag
-		if(!empty($obj['Category'])) {
-			$cc = array();
-			foreach($obj['Category'] as $k => $v) {
-				if(in_array($v['status'],$this->status)) {
-					$cc[] = $v;
-				}
-			}
-			unset($obj['Category']);
-			$obj['Category'] = $cc;
-		}
-		if(!empty($obj['Tag'])) {
-			$tt = array();
-			foreach($obj['Tag'] as $k => $v) {
-				if(in_array($v['status'],$this->status)) {
-					$tt[] = $v;
-				}
-			}
-			unset($obj['Tag']);
-			$obj['Tag'] = $tt;
-		}
-		if(!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true));
-		}
+        $obj = null;
+        if ($this->BeObjectCache) {
+            $obj = $this->BeObjectCache->read($obj_id, $bindings);
+        }
 
-		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
+        if (empty($obj)) {
+    		$obj = $this->{$modelType}->find("first", array(
+    								"conditions" => array(
+    									"BEObject.id" => $obj_id,
+    									"BEObject.status" => $this->status
+    									)
+    								)
+    							);
+    		
+    		if (empty($obj)) {
+    			throw new BeditaException(__("Content not found", true));
+    		}
+    		// #304 status filter for Category and Tag
+    		if(!empty($obj['Category'])) {
+    			$cc = array();
+    			foreach($obj['Category'] as $k => $v) {
+    				if(in_array($v['status'],$this->status)) {
+    					$cc[] = $v;
+    				}
+    			}
+    			unset($obj['Category']);
+    			$obj['Category'] = $cc;
+    		}
+    		if(!empty($obj['Tag'])) {
+    			$tt = array();
+    			foreach($obj['Tag'] as $k => $v) {
+    				if(in_array($v['status'],$this->status)) {
+    					$tt[] = $v;
+    				}
+    			}
+    			unset($obj['Tag']);
+    			$obj['Tag'] = $tt;
+    		}
+
+    		$obj["publication_date"] = (!empty($obj["start_date"]))? $obj["start_date"] : $obj["created"];
+
+    		if ($this->BeObjectCache) {
+    		    $this->BeObjectCache->write($obj_id, $bindings, $obj);
+    		}
+        }
+
+        if (!$this->checkPubblicationDate($obj)) {
+			throw new BeditaException(__("Content not found", true));
+		}
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
@@ -1490,7 +1481,19 @@ abstract class FrontendController extends AppController {
 			);
 		}
 
-		$items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+        $items = null;
+        $cacheOpts = array();
+        if ($this->BeObjectCache) {
+            $cacheOpts = array($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+            $items = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+        }
+        
+        if (empty($items)) {
+            $items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($parent_id, $cacheOpts, $items, 'children');
+            }
+        }
 
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {

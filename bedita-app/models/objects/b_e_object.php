@@ -20,17 +20,12 @@
  */
 
 /**
- * Basical object
+ * BEObject class
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class BEObject extends BEAppModel
-{
-	var $actsAs = array();
+class BEObject extends BEAppModel {
+
+	public $actsAs = array('Cacheable');
 	
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
