@@ -84,7 +84,7 @@ class CacheableBehavior extends ModelBehavior {
         if (!$this->on) {
             return;
         }
-        $this->resetObjectsToClean();
+        $this->resetObjectsToClean($model);
         $idsToAdd = $this->getObjectsToCleanById($model, $objectId, $excludeIds);
         $this->addObjectsToClean($model, $idsToAdd);
     }
