@@ -693,7 +693,8 @@ class Tree extends BEAppModel
 				"contain" => array(
 					"BEObject" => array(
 						"Permission",
-						"ObjectProperty",
+						"Category",
+					    "ObjectProperty",
 						"LangText"
 						),
 					"Tree"
@@ -767,7 +768,20 @@ class Tree extends BEAppModel
 		}
 	}
 
+    /**
+     * Add to array of BEdita objects a count of ubiquity
+     *
+     * @param array $objects
+     * @param array $options
+     * @return array
+     */
+    public function countUbiquity(array $objects, array $options = array()) {
+        foreach ($objects as &$obj) {
+            $obj['ubiquity'] = $this->find('count', array(
+                'conditions' => array('id' => $obj['id'])
+            ));
+        }
+        return $objects;
+    }
+
 }
-
-
-?>

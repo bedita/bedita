@@ -59,7 +59,7 @@ class Image extends BeditaStreamModel
 				"frontend" => array("BEObject" => array("LangText",
 														"ObjectProperty",
 														"Category",
-														"RelatedObject.switch = 'mediamap'"
+														"RelatedObject"
 														),
 									"Content", "Stream")
 	);

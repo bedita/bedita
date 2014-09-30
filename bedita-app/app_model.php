@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009-2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -19,14 +19,13 @@
  *------------------------------------------------------------------->8-----
  */
 
-
 /**
  * BEdita base model classes
  */
+class AppModel extends Model {
 
-class AppModel extends Model{
+	public $actsAs = array('Containable');
 
-	var $actsAs 	= array("Containable");
 }
 
 /**
@@ -35,9 +34,11 @@ class AppModel extends Model{
 class BEAppModel extends AppModel {
 
 	protected $modelBindings = array();
-	protected $sQ = ""; // internal use: start quote
-	protected $eQ = ""; // internal use: end quote
-	protected $driver = ""; // internal use: database driver
+	protected $sQ = ''; // internal use: start quote
+	protected $eQ = ''; // internal use: end quote
+	protected $driver = ''; // internal use: database driver
+
+    public $actsAs = array();
 
 	/**
 	 * Merge record result in one array
@@ -324,11 +325,55 @@ class BEAppModel extends AppModel {
 	 */
 	public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
 
+        $afterFilter = array();
         if (isset($filter['afterFilter'])) {
             if (is_array($filter['afterFilter'])) {
                 $afterFilter = $filter['afterFilter'];
             }
             unset($filter['afterFilter']);
+        }
+
+        // if 'count_permission' filter is set and 'num_of_permission' order is not requested
+        // avoid join and count them after filter
+        if (!empty($filter['count_permission']) && $order != 'num_of_permission') {
+            unset($filter['count_permission']);
+            $afterFilter[] = array(
+                'className' => 'Permission',
+                'methodName' => 'countPermissions'
+            );
+        }
+
+        // if 'count_annotation' filter is set and 'num_of_annotation_object' order is not requested
+        // avoid join and count them after filter
+        // else join only annotation related to 'num_of_annotation_object' and count others in after filter
+        if (!empty($filter['count_annotation'])) {
+            if (!is_array($filter['count_annotation'])) {
+                $countAnnotation = array($filter['count_annotation']);
+            } else {
+                $countAnnotation = $filter['count_annotation'];
+            }
+            unset($filter['count_annotation']);
+            $countAnnotationNames = array();
+            foreach ($countAnnotation as $annotationModelName) {
+                $countAnnotationNames[$annotationModelName] = 'num_of_' . Inflector::underscore($annotationModelName);
+            }
+
+            if (in_array($order, $countAnnotationNames)) {
+                $flipCountAnnotationNames =  array_flip($countAnnotationNames);
+                $a = $flipCountAnnotationNames[$order];
+                $filter['count_annotation'] = array($a);
+                $countAnnotation = array_diff($countAnnotation, $filter['count_annotation']);
+            }
+
+            if (!empty($countAnnotation)) {
+                 $afterFilter[] = array(
+                    'className' => 'Annotation',
+                    'methodName' => 'countAnnotations',
+                    'options' => array(
+                        'type' => $countAnnotation
+                    )
+                );
+            }
         }
 
         if (isset($filter['parent_id'])) {
@@ -375,15 +420,27 @@ class BEAppModel extends AppModel {
 		$e = $this->getEndQuote();
 
 		$beObjFields = $this->fieldsString("BEObject");
-		$contentFields = $this->fieldsString("Content", null, array("id"));
-
-		$fields = "DISTINCT {$beObjFields}, {$contentFields}" ;
-		$from = "{$s}objects{$e} as {$s}BEObject{$e} LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
+		$fields = 'DISTINCT ' . $beObjFields;
+		$from = "{$s}objects{$e} as {$s}BEObject{$e}";
 		$conditions = array();
-		$groupClausole = "GROUP BY {$beObjFields}, {$contentFields}";
+		$groupClausole = $beObjFields;
+
+        $filterKeysString = implode('|', array_keys($filter));
+        if (strstr($filterKeysString, 'Content.')) {
+            $contentFields = $this->fieldsString('Content', null, array('id'));
+            $fields .= ', ' . $contentFields;
+            $from .= " LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
+            $groupClausole .= ', ' . $contentFields;
+            // if set remove Content::addContentFields() from afterFilter
+            foreach ($afterFilter as $key => $f) {
+                if ($f['className'] == 'Content' && $f['methodName'] == 'appendContentFields') {
+                    unset($afterFilter[$key]);
+                }
+            }
+        }
 
 		if (!empty($status)) {
-			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status) ;
+			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status);
         }
 
         // actual SQL limit page (may vary using external searchEngine)
@@ -440,20 +497,25 @@ class BEAppModel extends AppModel {
 			$this->Behaviors->attach('BuildFilter');
 		}
 
-		list($otherFields, $otherFrom, $otherConditions, $otherGroup, $otherOrder) = $this->getSqlItems($filter);
+		$sqlItems = $this->getSqlItems($filter);
+        $otherFields = $sqlItems['fields'];
+        $otherFrom = $sqlItems['from'];
+        $otherConditions = $sqlItems['conditions'];
+        $otherGroup = $sqlItems['group'];
+        $otherOrder = $sqlItems['order'];
+        $useGroupBy = $sqlItems['useGroupBy'];
 
 		if (!empty($otherFields)) {
 			$fields = $fields . $otherFields;
         }
-		
+
 		$conditions = array_merge($conditions, $otherConditions);
 		$from .= $otherFrom;
-		$groupClausole .= $otherGroup;
 
 		if (!empty($id)) {
 			$treeFields = $this->fieldsString("Tree");
 			$fields .= "," . $treeFields;
-			if($this->getDriver() == 'mysql') {
+			if ($this->getDriver() == 'mysql') {
 				// #MYSQL
 				$groupClausole .= ", {$s}Tree{$e}.{$s}id{$e}";
 			} else {
@@ -495,6 +557,12 @@ class BEAppModel extends AppModel {
 		// build sql conditions
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 		$sqlClausole = $db->conditions($conditions, true, true) ;
+
+        if ($useGroupBy || !empty($otherGroup) || ($id && $all)) {
+            $groupClausole = 'GROUP BY ' . $groupClausole . $otherGroup;
+        } else {
+            $groupClausole = '';
+        }
 
 		$ordClausole = "";
 		if (is_string($order) && strlen($order)) {
@@ -860,6 +928,13 @@ class BEAppObjectModel extends BEAppModel {
 			}
 			$data["RelatedObject"] = $relatedObject;
 		}
+        if (!empty($data['Category'])) {
+            $cat = array();
+            foreach ($data['Category'] as $k => $value) {
+                $cat[] = $value['id'];
+            }
+            $data['Category'] = $cat;
+        }
 	}
 
 	/**
@@ -959,8 +1034,8 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	public $actsAs = array(
 		'CompactResult' => array(),
 		'SearchTextSave',
-		'DeleteObject' => 'objects',
-		'Notify'
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	public $hasOne = array(
@@ -980,7 +1055,7 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 															"LangText",
 															"RelatedObject",
 															"Annotation",
-															"Category"
+				                                            "Category"
 															)),
 				"default" => array("BEObject" => array("ObjectProperty",
 									"LangText", "ObjectType", "Annotation",
@@ -1157,7 +1232,12 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 									"Content"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content"),
 
-				"frontend" => array("BEObject" => array("LangText", "ObjectProperty", "Category"), "Content")
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"Category",
+														"RelatedObject"
+														),
+									"Content")
 	);
 
 	var $actsAs 	= array(
@@ -1232,7 +1312,12 @@ class BeditaStreamModel extends BEAppObjectModel {
 									"Content", "Stream"),
 				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
 
-				"frontend" => array("BEObject" => array("LangText", "ObjectProperty", "Category"), "Content", "Stream")
+				"frontend" => array("BEObject" => array("LangText",
+														"ObjectProperty",
+														"Category",
+														"RelatedObject"
+														),
+									"Content", "Stream")
 	);
 
 

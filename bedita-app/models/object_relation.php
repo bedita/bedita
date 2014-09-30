@@ -27,12 +27,14 @@ class ObjectRelation extends BEAppModel
 {
 
     public function afterFind($results) {
-        if (!empty($results[0]["RelatedObject"])) {
+        if (!empty($results[0]['RelatedObject'])) {
             foreach ($results as &$r) {
-                if (!empty($r["RelatedObject"]["params"])) {
-                    $params = json_decode($r["RelatedObject"]["params"], true);
+                if (!empty($r['RelatedObject']['params'])) {
+                    $params = json_decode($r['RelatedObject']['params'], true);
                     if(!empty($params) && is_array($params)) {
-                        $r["RelatedObject"]["params"] = $params;
+                        $r['RelatedObject']['params'] = $params;
+                    } else {
+                        unset($r['RelatedObject']['params']);
                     }
                 }
             }
@@ -242,5 +244,26 @@ class ObjectRelation extends BEAppModel
         return array_unique($availableRelations);
     }
 
+    /**
+     * passed an array of BEdita objects add 'num_of_relations_name' key
+     * with the number of each relations passed in options applied to objects
+     *
+     * @param  array $objects
+     * @param  array $options list of options accepted
+     *             - relations: array of relation name as array('attach', 'seealso')
+     * @return array $objects
+     */
+    public function countRelations(array $objects, array $options) {
+        if (!empty($options['relations'])) {
+            foreach ($objects as &$obj) {
+                foreach ($options['relations'] as $rel) {
+                    $obj['num_of_relations_' . $rel] = $this->find('count', array(
+                        'conditions' => array('id' => $obj['id'], 'switch' => $rel)
+                    ));
+                }
+            }
+        }
+        return $objects;
+    }
+
 }
-?>

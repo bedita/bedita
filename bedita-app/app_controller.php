@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008-2012 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -72,13 +72,21 @@ class AppController extends Controller
 	 * @var string
 	 */
 	protected $fullBaseUrl = "";
-
+	
 	/**
 	 * fields to save in history table
 	 *
 	 * @var array, set to null to avoid history insert also with history configure var setted
 	 */
 	protected $historyItem = array();
+
+    /**
+     * If object cache is activate by objectCakeCache config param
+     * it contains instance of BeObjectCache class in libs
+     *
+     * @var BeObjectCache
+     */
+    public $BeObjectCache = null;
 
 	public static function currentController() {
 		return self::$current;
@@ -164,6 +172,9 @@ class AppController extends Controller
 	
 	final function beforeFilter() {
 	    $this->startProfiler();
+        if (!BACKEND_APP && Configure::read('objectCakeCache')) {
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
 		self::$current = $this;
 		$this->view = 'Smarty';
 		$conf = Configure::getInstance();
@@ -568,6 +579,35 @@ class AppController extends Controller
 	}
 
 	/**
+	 * set model bindings for BEdita object
+	 *
+	 * @param string $modelType model name of BE object
+	 * @return array that contains:
+	 *				"bindings_used" => multidimensional array of bindings used,
+	 *				"bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
+	 *
+	 */
+	protected function setObjectBindings($modelType) {
+	    if(!isset($this->{$modelType})) {
+	        $this->{$modelType} = $this->loadModelByType($modelType);
+	    }
+	
+	    if (!$this->baseLevel) {
+	        $bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
+	    } else {
+	        $bindingsUsed = array("BEObject" => array("LangText"));
+	        if ($modelType == "Section") {
+	            $bindingsUsed[] = "Tree";
+	        }
+	        $this->{$modelType}->contain($bindingsUsed);
+	    }
+	    $listOfBindings = BeLib::getInstance()->arrayValues($bindingsUsed, true);
+	    natsort($listOfBindings);
+	    return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
+	}
+
+	
+	/**
 	 * Reorder content objects relations in array where keys are relation names
 	 *
 	 * @param array $objectArray
@@ -586,11 +626,28 @@ class AppController extends Controller
 			$rel = $obj['switch'];
 			$modelClass = $beObject->getType($obj['object_id']);
 			$this->{$modelClass} = $this->loadModelByType($modelClass);
-			$level = (BACKEND_APP)? 'default' : 'frontend';
-			$this->modelBindings($this->{$modelClass}, $level);
-			if (!($objDetail = $this->{$modelClass}->findById($obj['object_id']))) {
-				continue;
-			}
+            if (BACKEND_APP) {
+                // TODO: return $bindings array like in setObjectBindings
+                $this->modelBindings($this->{$modelClass}, 'default');
+                $bindings = array();
+            } else {
+                $bindings = $this->setObjectBindings($modelClass);
+            }
+            
+            $objDetail = null;
+            if ($this->BeObjectCache) {
+                $objDetail = $this->BeObjectCache->read($obj['object_id'], $bindings);
+            }
+            
+            if (empty($objDetail)) {
+                $objDetail = $this->{$modelClass}->findById($obj['object_id']);
+                if (empty($objDetail)) {
+                    continue;
+                } elseif ($this->BeObjectCache) {
+                    $this->BeObjectCache->write($obj['object_id'], $bindings, $objDetail);
+                }
+            }
+
             if (empty($status) || in_array($objDetail["status"],$status)) {
 				// if frontend app add object_type and check frontend obj permission
 				if (!BACKEND_APP) {
@@ -842,41 +899,41 @@ abstract class ModulesController extends AppController {
 			$pubSel = $this->BeTree->getAreaForSection($id);
 		}
 
-		$filter["count_permission"] = true;
+        $afterFilter = array(
+            array(
+                'className' => 'ObjectProperty',
+                'methodName' => 'objectsCustomProperties'
+            ),
+            array(
+                'className' => 'Content',
+                'methodName' => 'appendContentFields'
+            ),
+            array(
+                'className' => 'ObjectRelation',
+                'methodName' => 'countRelations',
+                'options' => array(
+                    'relations' => array('attach', 'seealso', 'download')
+                )
+            ),
+            array(
+                'className' => 'Tree',
+                'methodName' => 'countUbiquity'
+            )
+        );
 
-		$customPropAfterFilter = array(
-			'className' => 'ObjectProperty',
-			'methodName' => 'objectsCustomProperties'
-		);
 		if (!empty($filter['afterFilter'])) {
 			if (!isset($filter['afterFilter'][0])) {
 				$filter['afterFilter'][] = $filter['afterFilter'];
 			}
-			$filter['afterFilter'][] = $customPropAfterFilter;
+			$filter['afterFilter'] = array_merge($filter['afterFilter'], $afterFilter);
 		} else {
-			$filter['afterFilter'] = $customPropAfterFilter;
+			$filter['afterFilter'] = $afterFilter;
 		}
+
+        $filter['count_permission'] = true;
 
 		$objects = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim);
-		$treeModel = ClassRegistry::init("Tree");
-		$relToCount =  array("attach", "seealso", "download");
-		$objectRelation = ClassRegistry::init('ObjectRelation');
 
-		$items = array();
-		foreach ($objects['items'] as $obj) {
-			$obj['ubiquity'] = $treeModel->find('count', array(
-				'conditions' => array('id' => $obj['id'])
-			));
-
-			// get relations count
-			foreach ($relToCount as $rel) {
-				$obj['num_of_relations_' . $rel] = $objectRelation->find('count', array(
-					'conditions' => array('id' => $obj['id'], 'switch' => $rel)
-				));
-			}
-
-			$items[] = $obj;
-		}
 		$this->params['toolbar'] = &$objects['toolbar'] ;
 
 		$properties = ClassRegistry::init('Property')->find("all", array(
@@ -892,6 +949,7 @@ abstract class ModulesController extends AppController {
 		} elseif (!empty($id)) {
 			$expandBranch[] = $id;
 		}
+        $treeModel = ClassRegistry::init("Tree");
 		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
 		// get available relations
@@ -911,7 +969,7 @@ abstract class ModulesController extends AppController {
 		$this->set('tree', $tree);
 		$this->set('sectionSel',$sectionSel);
 		$this->set('pubSel',$pubSel);
-		$this->set('objects', $items);
+		$this->set('objects', $objects['items']);
 		$this->set('properties', $properties);
 		$this->set('availableRelations', $availableRelations);
 

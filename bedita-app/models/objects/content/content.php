@@ -20,15 +20,26 @@
  */
 
 /**
- * Generic content object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * Content model
  */
-class Content extends BEAppModel
-{
+class Content extends BEAppModel {
+
+    /**
+     * append content fields to objects
+     *
+     * @param array $objects
+     * @param array $options
+     */
+    public function appendContentFields(array $objects, $options = array()) {
+        foreach ($objects as &$obj) {
+            $c = $this->find('first', array(
+                'conditions' => array('id' => $obj['id'])
+            ));
+            if (!empty($c['Content'])) {
+                $obj += $c['Content'];
+            }
+        }
+        return $objects;
+    }
+
 }
-?>

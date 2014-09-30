@@ -449,7 +449,10 @@ class UsersController extends ModulesController {
         }
         $this->set('modules', $modules);
     }
-      
+
+    /**
+     * @throws BeditaException
+     */
     function saveGroup() {
         $this->checkWriteModulePermission();
 
@@ -543,19 +546,85 @@ class UsersController extends ModulesController {
         }
 
         // replace perms
-        $permissionData = array();
+        $permission = ClassRegistry::init('Permission');
+        $permissionToSave = array();
+        $permissionToRemove = array();
+
+        // get all previous permissions for that group
+        $previousPerms = $permission->find('all', array(
+            'conditions' => array(
+                'ugid' => $groupId,
+                'switch' => 'group'
+            ),
+            'contain' => array()
+        ));
+
         if (isset($this->data['Permission'])) {
-            foreach ($this->data['Permission'] as $objectId => $flags) {
+            $formPermission = $this->data['Permission'];
+            if (!empty($previousPerms)) {
+                foreach ($previousPerms as $p) {
+                    $p = $p['Permission'];
+                    // if prev permission 'object_id' isn't in $formPermission keys add it to $permissionToRemove
+                    if (empty($formPermission[$p['object_id']])) {
+                        $permissionToRemove[$p['id']] = $p['object_id'];
+                    } else {
+                        $formFlagKey = array_search($p['flag'], $formPermission[$p['object_id']]);
+                        // if prev permission 'flag' for 'object_id' isn't in $formPermission add it to $permissionToRemove
+                        if ($formFlagKey === false) {
+                            $permissionToRemove[$p['id']] = $p['object_id'];
+                        // else if it is present remove it from $formPermission to avoid useless save
+                        } else {
+                            if (count($formPermission[$p['object_id']]) > 1) {
+                                unset($formPermission[$p['object_id']][$formFlagKey]);
+                            } else {
+                                unset($formPermission[$p['object_id']]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // in $formPermission remains only new permission to save
+            foreach ($formPermission as $objectId => $flags) {
                 foreach ($flags as $flag) {
-                    $permissionData[] = array(
+                    $permissionToSave[] = array(
                         'object_id' => $objectId,
+                        'ugid' => $groupId,
+                        'switch' => 'group',
                         'flag' => $flag
                     );
                 }
             }
+        } elseif (!empty($previousPerms)) {
+            $permissionToRemove = Set::combine($previousPerms, '{n}.Permission.id', '{n}.Permission.object_id');
         }
-        $permission = ClassRegistry::init('Permission');
-        $permission->replaceGroupPerms($groupId, $permissionData);
+
+        // delete perms
+        if (!empty($permissionToRemove)) {
+            if (!$permission->deleteAll(array('Permission.id' => array_keys($permissionToRemove)), false)) {
+                throw new BeditaException(__('Error removing permissions for group', true) . ' ' . $groupId);
+            }
+        }
+
+        // save new perms
+        if (!empty($permissionToSave)) {
+            foreach ($permissionToSave as $p) {
+                $permission->create();
+                if (!$permission->save($p)) {
+                    throw new BeditaException(__('Error saving permissions for group', true), array($p));
+                }
+            }
+        }
+
+        // if object cache is on clear cache
+        if (Configure::read('objectCakeCache')) {
+            $beObject = ClassRegistry::init('BEObject');
+            $objectsToClean = Set::extract('/object_id', $permissionToSave);
+            $objectsToClean = array_unique(
+                array_merge($objectsToClean, $permissionToRemove)
+            );
+            $beObject->clearCacheByIds($objectsToClean);
+        }
 
         $this->userInfoMessage(__("Group ".($newGroup? "created":"updated"),true));
         $this->Transaction->commit();
