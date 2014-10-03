@@ -278,8 +278,8 @@ class Permission extends BEAppModel
 		if (!is_array($flag)) {
 			$flag = array($flag);
 		}
-		// if frontend and object cache active use cache
-		if (!BACKEND_APP && Configure::read('objectCakeCache')) {
+		// if frontend app (not staging) and object cache is active
+		if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
 			$beObjectCache = BeLib::getObject('BeObjectCache');
 			$options = array();
 			$perms = $beObjectCache->read($objectId, $options, 'perms');
