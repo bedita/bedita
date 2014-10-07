@@ -25,16 +25,9 @@ BeLib::getObject('BeConfigure')->initConfig();
 
 /**
  * Controller base class for backends+frontends
- *
- *
- * @version         $Revision$
- * @modifiedby      $LastChangedBy$
- * @lastmodified    $LastChangedDate$
- *
- * $Id$
  */
-class AppController extends Controller
-{
+class AppController extends Controller {
+
     var $helpers    = array('Javascript', 'Html', 'Form', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
     var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler', 'BeHash', 'SessionFilter');
     var $uses = array('EventLog') ;
@@ -184,7 +177,8 @@ class AppController extends Controller
     
     final function beforeFilter() {
         $this->startProfiler();
-        if (!BACKEND_APP && Configure::read('objectCakeCache')) {
+	    // if frontend app (not staging) and object cache is active
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
         self::$current = $this;
