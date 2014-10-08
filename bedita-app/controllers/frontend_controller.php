@@ -2378,7 +2378,7 @@ abstract class FrontendController extends AppController {
 		$relatedObjectId = $objRel->find('first', array(
 			'conditions' => array(
 				"ObjectRelation.id" => $id,
-				"ObjectRelation.switch" => array("download", "attach")
+				"ObjectRelation.switch" => array("downloadable_in", "attached_to")
 			),
 			'fields' => array('object_id')));
 		// check if multimedia is on the tree
