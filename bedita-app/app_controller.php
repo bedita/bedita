@@ -172,7 +172,8 @@ class AppController extends Controller
 	
 	final function beforeFilter() {
 	    $this->startProfiler();
-        if (!BACKEND_APP && Configure::read('objectCakeCache')) {
+	    // if frontend app (not staging) and object cache is active
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
 		self::$current = $this;

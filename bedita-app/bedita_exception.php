@@ -21,29 +21,36 @@
 
 /**
  * Bedita exceptions definitions, loaded from bootstrap.php
- * 
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class BeditaException extends Exception
-{
+class BeditaException extends Exception {
+
 	public $result;
+
 	public $httpCode = null;
+
 	protected $errorDetails; // details for log file
-	const ERROR 	= 'ERROR' ;
-	
+
+    /**
+     * the reason why the Exception was thrown
+     *
+     * @var string
+     */
+    protected $cause = null;
+
+	const ERROR = 'ERROR';
+
 	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
    		if(empty($message)) {
    			$message = __("Unexpected error, operation failed",true);
    		}
    		$this->errorDetails = $message;
-   		if(!empty($details)) {
-   			if(is_array($details)) {
+   		if (!empty($details)) {
+   			if (is_array($details)) {
    				foreach ($details as $k => $v) {
+                    if ($k == 'cause') {
+                        $this->cause = $v;
+                    }
    					if (is_array($v)) {
    						$this->errorDetails .= "; [$k] => array(" . implode(", ", $v) . ")";
    					} else {
@@ -84,19 +91,30 @@ class BeditaException extends Exception
      * Handling http status code header, according to $this->httpCode (if not set or code not handled, return null)
      * Http codes handled: 401, 403, 404, 500
      * 
-     * @return string|NULL
+     * @return string|null
      */
     public function getHeader() {
-    	if($this->getHttpCode() == 401) {
+    	if ($this->getHttpCode() == 401) {
     		return 'HTTP/1.1 401 Unauthorized';
-    	} else if($this->getHttpCode() == 403) {
+    	} elseif ($this->getHttpCode() == 403) {
     		return 'HTTP/1.1 403 Forbidden';
-    	} else if($this->getHttpCode() == 404) {
+    	} elseif ($this->getHttpCode() == 404) {
     		return 'HTTP/1.1 404 Not Found';
-    	} else if($this->getHttpCode() == 500) {
+    	} elseif ($this->getHttpCode() == 500) {
     		return 'HTTP/1.1 500 Internal Server Error';
+        }  elseif ($this->getHttpCode() == 503) {
+            return 'HTTP/1.1 503 Service Unavailable';
     	} // TODO: handle more http status codes...
     	return null;
+    }
+
+    /**
+     * Return the reason why the Exception was thrown
+     *
+     * @return string|null
+     */
+    public function getCause() {
+        return $this->cause;
     }
 }
 
@@ -327,4 +345,14 @@ class BeditaNotFoundException extends BeditaException {
 		parent::__construct($message, $details, $res, $code);
 	}
 }
-?>
+
+/**
+ * Exception for http status code 503 Service Unavailable
+ */
+class BeditaServiceUnavailableException extends BeditaException {
+
+    public function __construct($message, $details = NULL, $res = self::ERROR, $code = 503) {
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
