@@ -493,6 +493,8 @@ class BuildFilterBehavior extends ModelBehavior {
 				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
+
+		$this->useGroupBy = true;
 	}
 		
 	
