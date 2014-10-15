@@ -455,9 +455,7 @@ class BuildFilterBehavior extends ModelBehavior {
 
 		// #MYSQL
 		App::import('Sanitize');
-		$searchString = Sanitize::escape(
-			Sanitize::html($queryConf['searchString'], array('remove' => true))
-		);
+		$searchString = Sanitize::clean($queryConf['searchString'], array('encode' => false, 'remove_html' => true));
 
 		$sType = $queryConf['searchType'];
 

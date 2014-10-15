@@ -235,7 +235,7 @@ class SessionFilterComponent extends Object {
         } elseif (!$filter) {
             $filter = array();
         }
-        $filter = Sanitize::clean($filter, array('encode' => true, 'remove_html' => true));
+        $filter = Sanitize::clean($filter, array('encode' => false, 'remove_html' => true));
         return $filter;
     }
 
