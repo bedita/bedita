@@ -236,7 +236,17 @@ class SessionFilterComponent extends Object {
             $filter = array();
         }
         $filter = Sanitize::clean($filter, 
-            array('escape' => false, 'encode' => false, 'remove_html' => true));
+            array('escape' => false, 'encode' => false));
+        // #532 add custom strip_tags - in Sanitize::clean withou 'encode' is not used
+        if (is_array($filter)) {
+            foreach ($filter as $k => $v) {
+                if (!is_array($v)) {
+                    $filter[$k] = strip_tags($v);
+                }
+            }
+        } else {
+            $filter = strip_tags($filter);
+        }
         return $filter;
     }
 
