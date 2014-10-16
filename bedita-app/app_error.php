@@ -133,8 +133,8 @@ class AppError extends ErrorHandler {
 			$this->controller->set("errorMsg",  $messages['msg']);
 			$usrMsgParams = array();
 		}
-		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		$this->restoreDebugLevel();
+		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
