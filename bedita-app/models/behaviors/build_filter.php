@@ -454,11 +454,11 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 
 		// #MYSQL
-		App::import('Sanitize');
-		$searchString = Sanitize::escape(
-			Sanitize::html($queryConf['searchString'], array('remove' => true))
-		);
-
+        App::import('Sanitize');
+        $searchString = Sanitize::clean($queryConf['searchString'], 
+            array('escape' => false, 'encode' => false, 'remove_html' => true));
+        $searchString = addslashes($searchString);
+		
 		$sType = $queryConf['searchType'];
 
 		if ($sType == "fulltext") {

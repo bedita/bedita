@@ -531,7 +531,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @see bedita-app/AppController#handleError()
 	 */
-	public function handleError($eventMsg, $userMsg, $errTrace) {
+	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
 		if(Configure::read('debug') > 0) {
 			$this->log($errTrace);
 		}
