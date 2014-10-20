@@ -502,9 +502,9 @@ $config['validate_resource'] = array(
 $config['media_providers'] = array(
 	"youtube"	=> array(
 		"regexp" => array(
-			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
+			'/^http[s]?:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
+			'/^http[s]?:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
+			'/^http[s]?:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
 		),
 		"params" => array(
 			"width" 	=> 300,
