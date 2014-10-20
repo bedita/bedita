@@ -115,7 +115,8 @@ class AppController extends Controller
 	}
 
 	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
-		$this->log($errTrace);
+        $this->log($eventMsg);
+        $this->log($errTrace, 'exception');
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
 			if($this->Transaction->started())
