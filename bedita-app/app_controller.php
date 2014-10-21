@@ -114,8 +114,12 @@ class AppController extends Controller
 		return new AppError($handleMethod, $messages, $errTrace);
 	}
 
-	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
-        $this->log($eventMsg);
+    public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
+        $url = !empty($_GET['url']) ? $_GET['url'] : (!empty($_POST['url']) ? $_POST['url'] : '');
+        if (!empty($url)) {
+            $url = ' - url: ' . $url;
+        }
+        $this->log($eventMsg . $url);
         $this->log($errTrace, 'exception');
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
