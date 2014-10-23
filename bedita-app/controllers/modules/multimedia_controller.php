@@ -195,7 +195,15 @@ class MultimediaController extends ModulesController {
                 $this->set('elsewhere_hash',$results);
             }
             
-
+            // #536 check local file existence
+            if (!empty($obj['uri']) && ($obj['uri'][0] === '/' || $data['uri'][0] === DS)) {
+                $path = Configure::read('mediaRoot') . $obj['uri'];
+                if (!file_exists($path)) {
+                    $url = Configure::read('mediaUrl') . $obj['uri'];
+                    $this->userErrorMessage(__('Media file is missing', true) . ' -  ' . $url);
+                    $this->eventError("multimedia missing file: " . $url);
+                }
+            }
 
             $this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
         } else {
