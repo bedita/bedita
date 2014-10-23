@@ -533,7 +533,11 @@ abstract class FrontendController extends AppController {
 	 */
 	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
         $url = self::usedUrl();
-        $this->log($eventMsg . $url);
+        $userid = '';
+        if (!empty($this->BeAuth->user['userid'])) {
+            $userid = ' - ' . $this->BeAuth->user['userid'];
+        }
+        $this->log($eventMsg . $userid. $url);
         $this->log($errTrace, 'exception');
     }
 
@@ -1173,7 +1177,7 @@ abstract class FrontendController extends AppController {
 	 */
 	public function loadObj($obj_id, $blockAccess=true) {
 		if($obj_id === null) {
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
 		// use object cache
@@ -1268,7 +1272,7 @@ abstract class FrontendController extends AppController {
     							);
     		
     		if (empty($obj)) {
-    			throw new BeditaException(__("Content not found", true));
+    			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
     		}
     		// #304 status filter for Category and Tag
     		if(!empty($obj['Category'])) {
@@ -1300,7 +1304,7 @@ abstract class FrontendController extends AppController {
         }
 
         if (!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaException(__("Content not found", true) ' id: ' . $obj_id);
 		}
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
