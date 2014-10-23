@@ -1304,7 +1304,7 @@ abstract class FrontendController extends AppController {
         }
 
         if (!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true) ' id: ' . $obj_id);
+			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
