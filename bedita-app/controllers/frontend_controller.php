@@ -1996,6 +1996,9 @@ abstract class FrontendController extends AppController {
 					if(!empty($pathArr[$p]["canonicalPath"])) {
 						$currPath = $pathArr[$p]["canonicalPath"];
 					} else {
+					    if (!isset($pathArr[$p]['menu']) || !isset($pathArr[$p]['nickname'])) {
+					        $this->log('Bad data in getPath() - id: ' . $object_id . ' parent id: ' . $p . ' - data: ' . print_r($pathArr[$p], true));
+					    }
 						if($pathArr[$p]["menu"] !== '0') {
 							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
 						}
