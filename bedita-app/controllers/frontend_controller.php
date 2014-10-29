@@ -1993,21 +1993,16 @@ abstract class FrontendController extends AppController {
 					} else {
 						$pathArr[$p] = $this->loadObj($p);
 					}
-					if(!empty($pathArr[$p]["canonicalPath"])) {
-						$currPath = $pathArr[$p]["canonicalPath"];
-					} else {
-					    if (!isset($pathArr[$p]['menu']) || !isset($pathArr[$p]['nickname'])) {
-					        $this->log('Bad data in getPath() - id: ' . $object_id . ' parent id: ' . $p);
-					        $this->log('Bad data in getPath() - parent data: ' . print_r($pathArr[$p], true), 'exception');
-					    }
-						if($pathArr[$p]["menu"] !== '0') {
-							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
+                    if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
+                        $this->accessDenied($pathArr[$p]);
+                    } else if (!empty($pathArr[$p]['canonicalPath'])) {
+                        $currPath = $pathArr[$p]['canonicalPath'];
+                    } else {
+						if($pathArr[$p]['menu'] !== '0') {
+							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]['nickname'];
 						}
-						$pathArr[$p]["canonicalPath"] = empty($currPath) ? "/" : $currPath;
-						$this->objectCache[$p]["canonicalPath"] = $pathArr[$p]["canonicalPath"];
-					}
-					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
-						$this->accessDenied($pathArr[$p]);
+						$pathArr[$p]['canonicalPath'] = empty($currPath) ? "/" : $currPath;
+						$this->objectCache[$p]['canonicalPath'] = $pathArr[$p]['canonicalPath'];
 					}
 				}
 			}
