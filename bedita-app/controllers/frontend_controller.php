@@ -1994,7 +1994,8 @@ abstract class FrontendController extends AppController {
 						$pathArr[$p] = $this->loadObj($p);
 					}
                     if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
-                        $this->accessDenied($pathArr[$p]);
+                            $this->log('Error getting parent data in getPath() - id: ' . $object_id . ' parent id: ' . $p . ' - ' . $this->BeAuth->userid());
+                            $this->accessDenied($pathArr[$p]);
                     } else if (!empty($pathArr[$p]['canonicalPath'])) {
                         $currPath = $pathArr[$p]['canonicalPath'];
                     } else {
