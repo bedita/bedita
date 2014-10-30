@@ -149,7 +149,7 @@ class BeUploadToObjComponent extends Object {
 	 * @param bool $cloneOnlyFile, true to clone only file (no new multimedia object will be created if $data['id'] is populated)
 	 * @return mixed boolean|int, false if cloning was unsuccessful, int $id otherwise
 	 */
-	public function cloneMediaObject($data, $cloneOnlyFile = false) {
+	public function cloneMediaObject(&$data, $cloneOnlyFile = false) {
 		if (!$cloneOnlyFile) {
 			if (!empty($data["id"])) {
 				unset($data["id"]);
