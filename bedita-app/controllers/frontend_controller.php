@@ -538,7 +538,9 @@ abstract class FrontendController extends AppController {
             $userid = ' - ' . $this->BeAuth->user['userid'];
         }
         $this->log($eventMsg . $userid. $url);
-        $this->log($errTrace, 'exception');
+        if (!empty($errTrace)) {
+            $this->log($errTrace, 'exception');
+        }
     }
 
 	/**
