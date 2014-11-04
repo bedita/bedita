@@ -67,6 +67,13 @@ $(document).ready(function() {
 
 {foreach $availabeRelations as $rel => $relLabel}
 
+{* ticket github #539 - if defined a relationView in config model, include that view, generic relation view otherwise *}
+{if !empty($allObjectsRelations[$rel]['relationView']) && file_exists($allObjectsRelations[$rel]['relationView'])}
+
+{include file=$allObjectsRelations[$rel]['relationView']}
+
+{else}
+
 {$relcount = $relObjects.$rel|@count|default:0}
 <div class="tab">
 	<h2 {if $relcount == 0}class="empty"{/if}>
@@ -110,5 +117,6 @@ $(document).ready(function() {
 	value="  {t}connect new items{/t}  " />
 	
 </div>
+{/if}
 
 {/foreach}
