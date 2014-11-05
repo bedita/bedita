@@ -733,7 +733,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$relation = Sanitize::escape($relation);
 			$numOf =  "num_of_relations_" . $relation;
 			$alias = "Relation" . Inflector::camelize($relation);
-			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$this->fields .= ", " . $numOf;  // Issue #541.
 			$from = " LEFT OUTER JOIN (
 						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}{$alias}{$e}.{$s}id{$e}) AS " . $numOf ."
 						FROM {$s}objects{$e} AS {$s}BEObject{$e} 
