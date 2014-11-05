@@ -180,8 +180,12 @@ class BeThumb {
 		}
 		
 		// if svg skip and return image without any resize
-		if($data['mime_type'] === 'image/svg+xml') { 
-			return Configure::read('mediaUrl') . $this->imageInfo['path'];
+		if($data['mime_type'] === 'image/svg+xml') {
+			if ($this->imageInfo["remote"]) {
+				return $this->imageInfo['path'];
+			} else {
+				return Configure::read('mediaUrl') . $this->imageInfo['path'];
+			}
 		}
 		
 		// test source file available
@@ -219,7 +223,7 @@ class BeThumb {
 	public function setupImageInfo(array &$data) {
 
 	    // check uri
-	    if(empty($data['uri'])) {
+	    if (empty($data['uri'])) {
 	        $this->triggerError("Missing image 'uri'");
 	        $data['error'] = 'notFund';
 	        return false;
@@ -244,7 +248,9 @@ class BeThumb {
 		// relative path (local files and remote uri)
 		$this->imageInfo['path'] = $data['path'];
 		
+		// thumbnail setup
 		$pathParts =  pathinfo($data['path']);
+
 		// complete file name
 		$this->imageInfo['filename'] = $pathParts['basename'];
 		// file name without extension
@@ -267,7 +273,7 @@ class BeThumb {
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
 		$this->imageInfo['cacheDirectory'] = $mediaRoot . $this->imageInfo['cachePath'];
-		if(!$this->checkCacheDirectory()) {
+		if (!$this->checkCacheDirectory()) {
 			$this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
 	        $data['error'] = 'fileSys';
 			return false;
@@ -287,6 +293,11 @@ class BeThumb {
 		}
 		$this->imageInfo['mime_type'] = $data['mime_type'];
 		$this->imageInfo['type'] = $this->supportedTypes[$data['mime_type']];		
+
+		// if SVG skip thumbnail and other info
+		if ($data['mime_type'] === 'image/svg+xml') { 
+			return true;
+		}
 
 		if (empty($data['width']) || empty($data['height']) ) {
 

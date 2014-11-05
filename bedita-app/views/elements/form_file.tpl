@@ -13,13 +13,6 @@
 
 		{if ($object.ObjectType.name == "image")}
 
-			{if strpos($object.uri,'/') === 0}
-				{assign_concat var="fileUrl"  1=$conf->mediaRoot  2=$object.uri}
-			{else}
-				{assign var="fileUrl"  value=$object.uri}
-			{/if}
-			{$imgInfo = $imageInfo->get($fileUrl)}
-
 			{assign_associative var="params" width=500 longside=false mode="fill" modeparam="000000" type=null upscale=false}
 
 			{$beEmbedMedia->object($object,$params)}

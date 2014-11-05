@@ -3,7 +3,7 @@
 *}
 
 
-{if $object.ObjectType.name == "image"}
+{if $object.ObjectType.name == "image" && $object.mime_type != 'image/svg+xml'}
 
 		{if strpos($object.uri,'/') === 0}
 			{assign_concat var="fileUrl"  1=$conf->mediaRoot  2=$object.uri}
