@@ -92,9 +92,18 @@
 	{/if}
 	
 	<tr>
-		<th>{t}duration in minutes{/t}:</th>
+		<th>{t}duration in seconds{/t}:</th>
 		<td>
-			<input type="text" name="data[duration]" value="{if !empty($object.duration)}{$object.duration/60}{/if}" />
+			{* Re-format date (human-readable format). *}
+			{if !empty($object.duration)}
+				{assign var=object_duration value=($object.duration % 60)|cat:"s"} {* seconds *}
+				{if $object.duration >= 60}{assign var=object_duration value=floor(($object.duration % 3600) / 60)|cat:"m "|cat:$object_duration}{/if} {* minutes *}
+				{if $object.duration >= 3600}{assign var=object_duration value=floor(($object.duration % 86400) / 3600)|cat:"h "|cat:$object_duration}{/if} {* hours *}
+				{if $object.duration >= 86400}{assign var=object_duration value=floor(($object.duration % 31536000) / 86400)|cat:"d "|cat:$object_duration}{/if} {* days *}
+				{if $object.duration >= 31536000}{assign var=object_duration value=floor($object.duration / 31536000)|cat:"y "|cat:$object_duration}{/if} {* years *}
+			{/if}
+			<input type="text" name="data[duration]" value="{$object_duration|default:""}" />
+			<span>Examples: <code style="background-color:rgba(255,255,255,.5)">30</code>, <code style="background-color:rgba(255,255,255,.5)">1:30</code>, <code style="background-color:rgba(255,255,255,.5)">6:30:00</code>, <code style="background-color:rgba(255,255,255,.5)">1y 2w 3d 4h 5m 6s</code>.
 		</td>
 	</tr>
 </table>
