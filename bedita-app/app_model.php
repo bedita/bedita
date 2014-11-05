@@ -179,8 +179,13 @@ class BEAppModel extends AppModel {
 	protected function checkDuration($key) {
 		$data = &$this->data[$this->name];
 
+		if (!array_key_exists($key, $data)) {
+			// Avoid E_NOTICE if PHP's error_reporting & 8 == true.
+			$data[$key] = null;
+			return;
+		}
 		$data[$key] = preg_replace("/[^a-z0-9\:\.]/i", "", $data[$key]);  // cleans string.
-		$matches;
+		$matches = array();
 		if (!empty($data[$key]) && preg_match("/^(?:(?P<y>\d+)y)?(?:(?P<w>\d+)w)?(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?$/i", $data[$key], $matches)) {
 			// y w d h m s
 			$matches = array_merge(array('y' => 0, 'w' => 0, 'd' => 0, 'h' => 0, 'm' => 0, 's' => 0), $matches);
