@@ -179,14 +179,16 @@ class BEAppModel extends AppModel {
 	protected function checkDuration($key) {
 		$data = &$this->data[$this->name];
 
-		$data[$key] = @preg_replace("/[^a-z0-9\:\.]/i", "", $data[$key]);  // cleans string.
+		$data[$key] = preg_replace("/[^a-z0-9\:\.]/i", "", $data[$key]);  // cleans string.
 		$matches;
-		if (preg_match("/^(?:(?P<y>\d+)y)?(?:(?P<w>\d+)w)?(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?$/i", $data[$key], $matches)) {
+		if (!empty($data[$key]) && preg_match("/^(?:(?P<y>\d+)y)?(?:(?P<w>\d+)w)?(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?$/i", $data[$key], $matches)) {
 			// y w d h m s
-			$data[$key] = (((@$matches['y'] * 365 + @$matches['w'] * 7 + @$matches['d']) * 24 + @$matches['h']) * 60 + @$matches['m']) * 60 + @$matches['s'];
-		} elseif (preg_match("/^(?:(?:(?P<h>\d+)?\:)?(?P<m>\d+)?\:)?(?P<s>\d+)?$/", $data[$key], $matches)) {
+			$matches = array_merge(array('y' => 0, 'w' => 0, 'd' => 0, 'h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ((($matches['y'] * 365 + $matches['w'] * 7 + $matches['d']) * 24 + $matches['h']) * 60 + $matches['m']) * 60 + $matches['s'];
+		} elseif (!empty($data[$key]) && preg_match("/^(?:(?:(?P<h>\d+)?\:)?(?P<m>\d+)?\:)?(?P<s>\d+)?$/", $data[$key], $matches)) {
 			// hh:mm:ss
-			$data[$key] = (@$matches['h'] * 60 + @$matches['m']) * 60 + @$matches['s'];
+			$matches = array_merge(array('h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ($matches['h'] * 60 + $matches['m']) * 60 + $matches['s'];
 		} else {
 			$data[$key] = null;
 		}
