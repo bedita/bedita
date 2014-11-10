@@ -248,15 +248,18 @@ class BeFileHandlerComponent extends Object {
 			throw new BEditaFileExistException(__("File already exists in the filesystem",true),array("id"=>$stream_id)) ;
 		}
 		$targetPath	= $this->getPathTargetFile($data['name']);
-		if (!empty($data["id"])) {
-			$ret = $streamModel->read('uri', $data["id"]);
-			// if present a path to a file on filesystem, delete it
-			if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
-				$this->_removeFile($ret['Stream']['uri']) ;
-			}
-		}
 		// Create file
-		if(!$this->_putFile($sourcePath, $targetPath)) return false ;
+		if (!$this->_putFile($sourcePath, $targetPath)) {
+            return false;
+        }
+        // if update an object remove old file (if any)
+        if (!empty($data["id"])) {
+            $ret = $streamModel->read('uri', $data["id"]);
+            // if present a path to a file on filesystem, delete it
+            if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
+                $this->_removeFile($ret['Stream']['uri']) ;
+            }
+        }
 		$data['uri'] = (DS == "/")? $targetPath : str_replace(DS, "/", $targetPath);
 		// Create object
 		return $this->_create($data) ;

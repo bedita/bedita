@@ -2,7 +2,7 @@
 
 <script type="text/javascript">
 var unplugMessage = "{t}Disable object type will delete all related items. Do you want continue?{/t}";
-var updateMessage = "{t}A new version of the addon seems to be present. Do you want to update it?{/t}";
+var updateMessage = "{t}A new version of this is available. Do you want to update it?{/t}";
 var updateUrl = "{$html->url("/admin/updateAddon")}";
 var diffUrl = "{$html->url("/admin/showDiff")}";
 {literal}

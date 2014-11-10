@@ -52,13 +52,13 @@ class BeditaException extends Exception {
                         $this->cause = $v;
                     }
    					if (is_array($v)) {
-   						$this->errorDetails .= "; [$k] => array(" . implode(", ", $v) . ")";
+   						$this->errorDetails .= " - [$k] : array(" . implode(", ", $v) . ")";
    					} else {
-						$this->errorDetails .= "; [$k] => $v";
+						$this->errorDetails .= " - [$k] : $v";
 					}
 				}
    			} else {
-   				$this->errorDetails = $this->errorDetails . ": ".$details; 
+   				$this->errorDetails = $this->errorDetails . " - ".$details; 
    			}
    		}
    		$this->result = $res;

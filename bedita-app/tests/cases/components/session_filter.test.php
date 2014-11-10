@@ -92,7 +92,7 @@ class SessionFilterComponentTest extends BeditaTestCase {
         $filterValue = $this->SessionFilter->read();
         $expected = array(
             'query' => 'Title my text',
-            'BEObject.title' => "alert(&#039;hello&#039;) object title"
+            'BEObject.title' => "alert('hello') object title"
         );
         $this->assertEqual($filterValue, $expected);
 

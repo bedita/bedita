@@ -30,6 +30,10 @@ class ObjectRelationTestData extends BeditaTestData {
             "params" => array("p1" => 10, "p2" => "NO")
         ),
 
+        'relationNewPrior' => 5,
+
+        'relationNewParms' => array("p1" => 15, "p2" => "NONO"),
+
         'relationNoParms' => array(
             "switch" => 'testRelation3',
             "inverse" => 'inverseRelation3'
