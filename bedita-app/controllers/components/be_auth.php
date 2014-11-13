@@ -71,7 +71,7 @@ class BeAuthComponent extends Object {
      * @param string $sessionId the session id with which the session try to start (if not already started)
      * @return boolean true if session started and valid
      */
-    function startSession($sessionId = null) {
+    public function startSession($sessionId = null) {
         if (!$this->Session->started()) {
             $this->Session->activate();
             if ($sessionId) {
@@ -80,7 +80,7 @@ class BeAuthComponent extends Object {
             $this->Session->startup($this->controller);
 
             if (!$this->Session->valid()) {
-                $this->log('Session not valid!');
+                $this->log('Session just started but not valid! ' . $this->Session->id . AppController::usedUrl());
                 return false;
             }
 
@@ -88,7 +88,7 @@ class BeAuthComponent extends Object {
                 $this->user = $this->Session->read($this->sessionKey);
             }
         } elseif (!$this->Session->valid()) {
-            $this->log('Session not valid!');
+            $this->log('Session already started not valid! ' . $this->Session->id . AppController::usedUrl());
             return false;
         }
 
@@ -156,7 +156,7 @@ class BeAuthComponent extends Object {
             $this->log('Session component not set!');
         } elseif (!$this->Session->valid()) {
             $res = false;
-            $this->log('Session not valid!');
+            $this->log('checkSessionKey: session not valid! ' . $this->Session->id . AppController::usedUrl());
         } 
 
         if ($res) {
