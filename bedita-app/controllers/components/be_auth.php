@@ -54,13 +54,11 @@ class BeAuthComponent extends Object {
         $this->controller = $controller;
         $this->Session = &$controller->Session;
 
+        $this->initExternalServices();
         // autostart session
         if (Configure::read('Session.start') === true) {
             $this->startSession();
         }
-
-        $services = $this->getExternalServices();
-
         $this->controller->set($this->sessionKey, $this->user);
     }
 
@@ -83,7 +81,7 @@ class BeAuthComponent extends Object {
                 $this->log('Session just started but not valid! ' . $this->Session->id . AppController::usedUrl());
                 return false;
             }
-
+            $this->startupExternalServices();
             if ($this->checkSessionKey()) {
                 $this->user = $this->Session->read($this->sessionKey);
             }
@@ -96,9 +94,9 @@ class BeAuthComponent extends Object {
     }
 
     /**
-     * Get external auth services components
+     * Init external auth services components, create components without components startup
      */
-    public function getExternalServices() {
+    protected function initExternalServices() {
         $components = array();
         $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
         if ($handle = opendir($defaultComponentPath)) {
@@ -121,7 +119,6 @@ class BeAuthComponent extends Object {
                 }
             }
         }
-        $services = array();
         if (!empty($components)) {
             foreach ($components as $key => $service) {
                 //load component dynamically
@@ -131,19 +128,41 @@ class BeAuthComponent extends Object {
                 } else {
                     $componentClass .= "Component";
                     $componentObject = new $componentClass();
-                    if ($componentObject->startup($this->controller)) {
-                        $this->extAuthComponents[$service] = $componentObject;
-                        array_push($services, array(
-                            'name' => $service,
-                            'relatedBy' => $componentObject->relatedBy
-                        ));
-                    };
+                    $this->extAuthComponents[$service] = $componentObject;
                 }
+            }
+        }
+    }
+
+    /**
+     * Get external auth services list
+     */
+    public function getExternalServices() {
+        $services = array();
+        if (!empty($this->extAuthComponents)) {
+            foreach ($this->extAuthComponents as $service => $componentObject) {
+                $services[] = array(
+                    'name' => $service,
+                    'relatedBy' => $componentObject->relatedBy
+                );
             }
         }
         return $services;
     }
 
+    /**
+     * Startup external auth service components
+     */
+    protected function startupExternalServices() {
+        if (!empty($this->extAuthComponents)) {
+            foreach ($this->extAuthComponents as $service => $componentObject) {
+                if (!$componentObject->startup($this->controller)) {
+                    $this->log('External service startup failed: ' . $service);
+                }
+            }
+        }
+    }
+    
     /**
      * Check whether session key is valid
      */
@@ -452,7 +471,7 @@ class BeAuthComponent extends Object {
         if (Configure::read('Session.start') === false && isset($_COOKIE[Configure::read('Session.cookie')])) {
             $this->startSession();
         }
-        if ($this->checkSessionKey()) {
+        if ($this->Session->started() && $this->checkSessionKey()) {
             if (empty($this->user)) {
                 $this->user = $this->Session->read($this->sessionKey);
             }
@@ -463,18 +482,13 @@ class BeAuthComponent extends Object {
                 'ipNumber' => $_SERVER['REMOTE_ADDR'],
                 'time' => time()
             ));
-            
             return true;
-        } else {
-            $this->user = null;
         }
-        
+        $this->user = null;
         if (!isset($this->controller)) {
             return false;
         }
-        
         $this->controller->set($this->sessionKey, $this->user);
-        
         return false;
     }
 
