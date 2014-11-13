@@ -120,6 +120,4 @@ $(document).ready(function() {
 </div>
 {/if}
 
-{/if}
-
 {/foreach}
