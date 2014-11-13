@@ -8,10 +8,10 @@ $(document).ready(function(){
 	
 	$("A.googlemaptest").css("cursor","pointer").click(function(){
 		if ( ( $(".lat").val() == "" ) ) {
-			alert ("you need the latitude value"); return;
+			alert ("latitude value is required"); return;
 		} 
 		if ( ( $(".lng").val() == "" ) ) {
-			alert ("you need the longitude value"); return;
+			alert ("longitude value is required}"); return;
 		}
 		
 		var latitude = $.trim($(".lat").val());
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		} else {
 			q += "&t=" +  $("#mapType").val();
 		}
-		window.open("http://maps.google.com/maps?"+q);
+		window.open("http://maps.google.com/maps?" + q + "&output=classic");
 	});	
 	
 	geocoder = new google.maps.Geocoder();
