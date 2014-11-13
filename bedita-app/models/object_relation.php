@@ -72,7 +72,6 @@ class ObjectRelation extends BEAppModel
 
 	/**
 	 * Create direct and inverse relation using $switch and $inverseSwitch names
-
 	 * @param int $id, left relation element id
 	 * @param int $objectId, right relation element id
 	 * @param string $switch, direct name
@@ -153,6 +152,25 @@ class ObjectRelation extends BEAppModel
         }
     }
 
+    /**
+     * Updates parameters of a relation between objects.
+     * 
+     * @param int $id
+     * @param int $objectId
+     * @param string $switch
+     * @param array $params
+     * @return false on failure
+     */
+    public function updateRelationParams($id, $objectId, $switch, $params=array()) {
+        $jParams = json_encode($params);
+        $q = "  UPDATE object_relations
+                SET params='{$jParams}'
+                WHERE ((id={$id} AND object_id={$objectId}) OR (id={$objectId} AND object_id={$id})) AND switch='{$switch}'";
+        $res = $this->query($q);
+        if ($res === false) {
+            return $res;
+        }
+    }
 
     /**
      * Check object relation existence
@@ -185,6 +203,23 @@ class ObjectRelation extends BEAppModel
 		}
 		return $pri[0]["object_relations"]["priority"];
 	}
+
+    /**
+     * Get current parameters for a specific relation
+     * @param int $id
+     * @param int $objectId
+     * @param string $switch
+     * @param bool $assoc true to return an associative array, false to return an object (default: true)
+     * @return parameters as an associative array or object, or false if field is NULL or relation missing
+     */
+    public function relationParams($id, $objectId, $switch, $assoc=true) {
+        $pri = $this->query("SELECT params FROM object_relations WHERE id={$id}
+                                    AND object_id={$objectId} AND switch='{$switch}'");
+        if(empty($pri[0]["object_relations"]["params"])) {
+            return false;
+        }
+        return json_decode($pri[0]["object_relations"]["params"], $assoc);
+    }
 	
     /**
      * Returns array of available relations for an $objectType

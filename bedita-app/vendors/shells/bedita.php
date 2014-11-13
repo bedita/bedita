@@ -581,14 +581,17 @@ class BeditaShell extends BeditaBaseShell {
         if (!$frontend) {
         	// config/bedita.cfg.php
 	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
+        } else {
+            // config/frontend.cfg.php
+            $this->checkAppFile($appPath . DS . 'config' . DS . 'frontend.cfg.php');
         }
         // index.php
         $this->checkAppFile($appPath.DS."index.php");
         // webroot/index.php
         $this->checkAppFile($appPath.DS."webroot".DS."index.php");
         if (!$frontend) {
-	        // webroot/test.php
-	        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
+            // webroot/test.php
+            $this->checkAppFile($appPath.DS."webroot".DS."test.php");
         }
         // tmp/cache
         $this->checkAppDirPerms($appPath.DS."tmp".DS."cache");
