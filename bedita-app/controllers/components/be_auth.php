@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -22,13 +22,6 @@
  * User/group/authorization component:
  *  - login, session start
  *  - user/group creation/handling
- * 
- * @link            http://www.bedita.com
- * @version         $Revision$
- * @modifiedby      $LastChangedBy$
- * @lastmodified    $LastChangedDate$
- * 
- * $Id$
  */
 class BeAuthComponent extends Object {
     var $controller = null;
@@ -94,39 +87,45 @@ class BeAuthComponent extends Object {
     }
 
     /**
-     * Init external auth services components, create components without components startup
+     * Init external auth services components, reading 'extAuthParams' config
+     * Create components without components startup
      */
     protected function initExternalServices() {
-        $components = array();
-        $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
-        if ($handle = opendir($defaultComponentPath)) {
-            while (false !== ($entry = readdir($handle))) {
-                if (strpos($entry, 'be_auth_') === 0) {
-                    $name = str_replace('be_auth_', '', $entry);
-                    $name = str_replace('.php', '', $name);
-                    array_push($components, Inflector::camelize($name));
-                }
-            }
+        $serviceNames = array();
+        $extAutParams = Configure::read('extAuthParams');
+        if (!empty($extAutParams)) {
+            $serviceNames = array_keys($extAutParams);
+        }
 
-            closedir($handle);
-        }
-        $addons = ClassRegistry::init("Addon")->getAddons();
-        if (!empty($addons['components']) && !empty($addons['components']['on'])) {
-            $addonComponents = $addons['components']['on'];
-            foreach ($addonComponents as $key => $component) {
-                if (strpos($component['name'], 'BeAuth') === 0) {
-                    array_push($components, str_replace('BeAuth', '', $component['name']));
-                }
-            }
-        }
-        if (!empty($components)) {
-            foreach ($components as $key => $service) {
+//         $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
+//         if ($handle = opendir($defaultComponentPath)) {
+//             while (false !== ($entry = readdir($handle))) {
+//                 if (strpos($entry, 'be_auth_') === 0) {
+//                     $name = str_replace('be_auth_', '', $entry);
+//                     $name = str_replace('.php', '', $name);
+//                     array_push($components, Inflector::camelize($name));
+//                 }
+//             }
+
+//             closedir($handle);
+//         }
+//         $addons = ClassRegistry::init("Addon")->getAddons();
+//         if (!empty($addons['components']) && !empty($addons['components']['on'])) {
+//             $addonComponents = $addons['components']['on'];
+//             foreach ($addonComponents as $key => $component) {
+//                 if (strpos($component['name'], 'BeAuth') === 0) {
+//                     array_push($components, str_replace('BeAuth', '', $component['name']));
+//                 }
+//             }
+//         }
+        if (!empty($serviceNames)) {
+            foreach ($serviceNames as $service) {
                 //load component dynamically
-                $componentClass = "BeAuth" . Inflector::camelize($service);
-                if(!App::import("Component", $componentClass)) {
-                    throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
+                $componentClass = 'BeAuth' . Inflector::camelize($service);
+                if (!App::import('Component', $componentClass)) {
+                    throw new BeditaException(__('External auth component not found: ', true) . $componentClass);
                 } else {
-                    $componentClass .= "Component";
+                    $componentClass .= 'Component';
                     $componentObject = new $componentClass();
                     $this->extAuthComponents[$service] = $componentObject;
                 }
