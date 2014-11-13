@@ -196,7 +196,7 @@ class MultimediaController extends ModulesController {
             }
             
             // #536 check local file existence
-            if (!empty($obj['uri']) && ($obj['uri'][0] === '/' || $data['uri'][0] === DS)) {
+            if (!empty($obj['uri']) && ($obj['uri'][0] === '/' || $obj['uri'][0] === DS)) {
                 $path = Configure::read('mediaRoot') . $obj['uri'];
                 if (!file_exists($path)) {
                     $url = Configure::read('mediaUrl') . $obj['uri'];
