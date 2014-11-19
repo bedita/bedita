@@ -181,9 +181,6 @@ class BeAuthComponent extends Object {
 
             if (!$this->Session->check($this->sessionKey)) {
                 $res = false;
-                if (BACKEND_APP) {
-                    $this->log('Session key does not exist');
-                }
             }
 
             if (!$res) {
