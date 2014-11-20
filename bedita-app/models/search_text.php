@@ -140,14 +140,15 @@ class SearchText extends BEAppModel
 		$this->saveSearchTexts($searchFields, $data);
 	}
 	
-	/**
-	 * Rebuild indexes for text search
-	 * 
-	 * @param boolean $returnOnlyFailed, 
-	 *					true (default) return only 'failed' and 'langTextFailed' array
-	 *					false return also 'success' and 'langTextSuccess' array
-	 * @param boolean $delete, 
-	 *					delete current index first, default false
+    /**
+     * Rebuild indexes for text search
+     * 
+     * @param array $options
+     *      'returnOnlyFailed' => true (default) return only 'failed' and 'langTextFailed' array
+     *                            false return also 'success' and 'langTextSuccess' array
+     *      'delete' => delete index first (default false)
+     *      'type' => index object type only (default unset -> all types)
+     *      'log' => true to log errors
 	 * 
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
@@ -165,14 +166,23 @@ class SearchText extends BEAppModel
 	 *						"error" => message error,
 	 *						"detail" => error detail
 	 */
-	public function rebuildIndex($returnOnlyFailed = true, $delete = false) {
+	public function rebuildIndex($options) {
+	    
+	    $returnOnlyFailed = (isset($options['returnOnlyFailed']))? $options['returnOnlyFailed'] : true;
+	    $deleteIndex = (isset($options['delete']))? $options['delete'] : false;
+	    $conditions = array();
+	    if (!empty($options['type'])) {
+	        $conditions['object_type_id'] = $options['type'];
+            $this->log('using object type id: '. $options['type'], 'index');
+	    }
 		$beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
-		$nObj = $beObj->find('count');
+		$nObj = $beObj->find('count', array('conditions' => $conditions));
 		$pageSize = 1000;
 		$pageNum = 0;
-		
-		$this->initIndex($delete);
+
+		$this->log('num objects to index: '. $nObj, 'index');
+		$this->initIndex($deleteIndex);
 		$results = array('failed' => array(), 'langTextFailed' => array());
 		if (!$returnOnlyFailed) {
 			$results = array_merge($results, array('success' => array(), 'failed' => array()));
@@ -180,15 +190,17 @@ class SearchText extends BEAppModel
 		
 		while( ($pageSize * $pageNum) < $nObj ) {
 			$res = $beObj->find('list',array(
-					"fields" => array('id'),
-					"limit" => $pageSize,
-					"offset" => $pageNum * $pageSize,
+					'fields' => array('id'),
+			        'conditions' => $conditions,
+					'limit' => $pageSize,
+					'offset' => $pageNum * $pageSize,
 			));
 			$pageNum++;
 			foreach ($res as $id) {
 				$type = $beObj->getType($id);
 				if(empty($type)) {
 					$results['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
+					$this->log('type not found for object: '. $id, 'index');
 				} else {
 					$model = ClassRegistry::init($type);
 					$model->{$model->primaryKey} = $id;
@@ -198,6 +210,7 @@ class SearchText extends BEAppModel
 							throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
 						}
 						$this->createSearchText($model);
+					    $this->log('index created for object: '. $id, 'index');
 						if (!$returnOnlyFailed) {
 							$results['success'][] = array("id" => $id);
 						}
@@ -210,6 +223,7 @@ class SearchText extends BEAppModel
 		}
 		
 		// lang texts
+		$this->log('indexing langtext translations...', 'index');
 		$langText = ClassRegistry::init("LangText");
 		$res = $langText->find('all',array("fields"=>array('DISTINCT LangText.object_id, LangText.lang')));	
 		foreach ($res as $r) {
@@ -237,7 +251,7 @@ class SearchText extends BEAppModel
 				);
 			}
 		}
-
+		$this->log('rebuildIndex done', 'index');
 		return $results;
 	}
 

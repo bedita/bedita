@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-05-09 11:38:21\n"
+"POT-Creation-Date: 2014-05-12 13:33:51\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -17,8 +17,7 @@ msgstr ""
 msgid "(un)select all"
 msgstr "(de)selecionar todos"
 
-msgid ""
-"A new version of the addon seems to be present. Do you want to update it?"
+msgid "A new version of this is available. Do you want to update it?"
 msgstr ""
 
 msgid "Access forbidden to object"

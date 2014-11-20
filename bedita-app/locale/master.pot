@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-05-09 11:58:47\n"
+"POT-Creation-Date: 2014-05-12 13:33:51\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -15,7 +15,7 @@ msgstr ""
 msgid "(un)select all"
 msgstr ""
 
-msgid "A new version of the addon seems to be present. Do you want to update it?"
+msgid "A new version of this is available. Do you want to update it?"
 msgstr ""
 
 msgid "Access forbidden to object"

@@ -454,11 +454,11 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 
 		// #MYSQL
-		App::import('Sanitize');
-		$searchString = Sanitize::escape(
-			Sanitize::html($queryConf['searchString'], array('remove' => true))
-		);
-
+        App::import('Sanitize');
+        $searchString = Sanitize::clean($queryConf['searchString'], 
+            array('escape' => false, 'encode' => false, 'remove_html' => true));
+        $searchString = addslashes($searchString);
+		
 		$sType = $queryConf['searchType'];
 
 		if ($sType == "fulltext") {
@@ -493,6 +493,8 @@ class BuildFilterBehavior extends ModelBehavior {
 				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
+
+		$this->useGroupBy = true;
 	}
 		
 	
@@ -731,7 +733,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$relation = Sanitize::escape($relation);
 			$numOf =  "num_of_relations_" . $relation;
 			$alias = "Relation" . Inflector::camelize($relation);
-			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$this->fields .= ", " . $numOf;  // Issue #541.
 			$from = " LEFT OUTER JOIN (
 						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}{$alias}{$e}.{$s}id{$e}) AS " . $numOf ."
 						FROM {$s}objects{$e} AS {$s}BEObject{$e} 

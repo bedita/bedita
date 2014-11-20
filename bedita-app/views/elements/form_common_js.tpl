@@ -16,18 +16,22 @@
 {assign var=branch value=$html->params.named.branch|default:''}
 
 <script type="text/javascript">
+var formFieldToCheckData = null;
+/**
+ * serialized form data used on change page to check if any not saved data is present
+ * get all form fields without class ignore
+ * and/or without parent with class ignore
+ * and exclude also richtext items (check done calling onChangeHandler() function)
+ */
+var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not('[class^=mce]'):not('[class^=richtext]'):not(.ignore :input)";
+
+$(window).on('load', function() {
+	formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
+});
+
 
 $(document).ready(function(){
-	
-	/**
-	 * serialized form data used on change page to check if any not saved data is present
-	 * get all form fields without class ignore
-	 * and/or without parent with class ignore
-	 * and exclude also richtext items (check done calling onChangeHandler() function)
-	 */
-	var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not('[class^=mce]'):not('[class^=richtext]'):not(.ignore :input)";
-	var formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
-	
+
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
 		$('input[value="{$branch}"]').attr("checked",true);

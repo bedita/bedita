@@ -457,6 +457,13 @@ class BeAuthComponent extends Object {
     }
 
     /**
+     * Get the current logged userid or empty string if no user is logged
+     */
+    public function userid() {
+        return !empty($this->user['userid']) ? $this->user['userid'] : '';
+    }
+    
+    /**
      * Check whether user group is authorized
      * 
      * @param array $groups

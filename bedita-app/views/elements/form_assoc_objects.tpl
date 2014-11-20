@@ -118,7 +118,6 @@ $(document).ready(function() {
 	value="  {t}connect new items{/t}  " />
 	
 </div>
-
 {/if}
 
 {/foreach}

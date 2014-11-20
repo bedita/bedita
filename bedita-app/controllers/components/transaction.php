@@ -288,8 +288,7 @@ class TransactionFS {
 	}
 
 	function begin() {
-		$this->rollback() ;
-		$this->commands = array() ;
+		$this->commands = array();
 	}
 
 	/**

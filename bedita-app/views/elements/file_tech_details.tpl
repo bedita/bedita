@@ -61,7 +61,7 @@
         {/if}
 
 
-        {if ($object.ObjectType.name == "image")}
+        {if $object.ObjectType.name == "image" && $object.mime_type != 'image/svg+xml'}
             
             <tr>
                 <th nowrap>{t}Human readable type{/t}:</th>

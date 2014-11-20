@@ -54,8 +54,9 @@ class AppError extends ErrorHandler {
 	public function handleException(array $messages) {
 
 		$this->restoreDebugLevel();
+		$url = AppController::usedUrl();
 		$current = AppController::currentController();
-		if(isset($current)) {
+		if (isset($current)) {
 			try {
 				$this->controller = $current;
 				$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace);
@@ -67,7 +68,8 @@ class AppError extends ErrorHandler {
 				// log error
 				$this->errorTrace = get_class($e). ": ". $e->getMessage()."\nFile: ".$e->getFile().
 					" - line: ".$e->getLine()."\nTrace:\n". $e->getTraceAsString();
-				$this->controller->log($this->errorTrace);
+                $this->log($e->getMessage() . $url);
+                $this->log($this->errorTrace, 'exception');
 				$this->sendMail($this->errorTrace);
 				$this->controller->set($messages);
 				App::import('View', "Smarty");
@@ -76,7 +78,8 @@ class AppError extends ErrorHandler {
 			}
 		} else {
 			header('HTTP/1.1 404 Not Found');
-			$this->log($this->errorTrace);
+            $this->log($messages['details'] . $url);
+            $this->log($this->errorTrace, 'exception');
 			$this->controller->render(null, "error", VIEWS."errors/error404.tpl");
 			$this->sendMail($this->errorTrace);
 		}
@@ -133,8 +136,8 @@ class AppError extends ErrorHandler {
 			$this->controller->set("errorMsg",  $messages['msg']);
 			$usrMsgParams = array();
 		}
-		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		$this->restoreDebugLevel();
+		$this->controller->handleError($messages['details'], $messages['msg'], $this->errorTrace, $usrMsgParams);
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
 		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
@@ -195,7 +198,7 @@ class AppError extends ErrorHandler {
 	
 	private function sendMail($mailMsg) {
 		$mailSupport = Configure::read('mailSupport');
-		if(!empty($mailSupport)) {
+		if (!empty($mailSupport['to'])) {
 			$jobModel = ClassRegistry::init("MailJob");
 			$jobModel->containLevel("default");
 			$data = array();
@@ -213,7 +216,7 @@ class AppError extends ErrorHandler {
 					$this->log(__("Error creating mail job") . "-" . print_r($data,true),true);
 				}
 			}
-			
+
 		}
 	}
 

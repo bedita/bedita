@@ -531,11 +531,17 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @see bedita-app/AppController#handleError()
 	 */
-	public function handleError($eventMsg, $userMsg, $errTrace) {
-		if(Configure::read('debug') > 0) {
-			$this->log($errTrace);
-		}
-	}
+	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
+        $url = self::usedUrl();
+        $userid = '';
+        if (!empty($this->BeAuth->user['userid'])) {
+            $userid = ' - ' . $this->BeAuth->user['userid'];
+        }
+        $this->log($eventMsg . $userid. $url);
+        if (!empty($errTrace)) {
+            $this->log($errTrace, 'exception');
+        }
+    }
 
 	/**
 	* Get tree starting from specified section or area
@@ -1173,7 +1179,7 @@ abstract class FrontendController extends AppController {
 	 */
 	public function loadObj($obj_id, $blockAccess=true) {
 		if($obj_id === null) {
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
 		// use object cache
@@ -1268,7 +1274,7 @@ abstract class FrontendController extends AppController {
     							);
     		
     		if (empty($obj)) {
-    			throw new BeditaException(__("Content not found", true));
+    			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
     		}
     		// #304 status filter for Category and Tag
     		if(!empty($obj['Category'])) {
@@ -1300,7 +1306,7 @@ abstract class FrontendController extends AppController {
         }
 
         if (!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
@@ -1989,17 +1995,17 @@ abstract class FrontendController extends AppController {
 					} else {
 						$pathArr[$p] = $this->loadObj($p);
 					}
-					if(!empty($pathArr[$p]["canonicalPath"])) {
-						$currPath = $pathArr[$p]["canonicalPath"];
-					} else {
-						if($pathArr[$p]["menu"] !== '0') {
-							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]["nickname"];
+                    if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
+                            $this->log('Error getting parent data in getPath() - id: ' . $object_id . ' parent id: ' . $p . ' - ' . $this->BeAuth->userid());
+                            $this->accessDenied($pathArr[$p]);
+                    } else if (!empty($pathArr[$p]['canonicalPath'])) {
+                        $currPath = $pathArr[$p]['canonicalPath'];
+                    } else {
+						if($pathArr[$p]['menu'] !== '0') {
+							$currPath .= (($currPath === "/") ? "" : "/") . $pathArr[$p]['nickname'];
 						}
-						$pathArr[$p]["canonicalPath"] = empty($currPath) ? "/" : $currPath;
-						$this->objectCache[$p]["canonicalPath"] = $pathArr[$p]["canonicalPath"];
-					}
-					if ($pathArr[$p] === self::UNLOGGED || $pathArr[$p] === self::UNAUTHORIZED) {
-						$this->accessDenied($pathArr[$p]);
+						$pathArr[$p]['canonicalPath'] = empty($currPath) ? "/" : $currPath;
+						$this->objectCache[$p]['canonicalPath'] = $pathArr[$p]['canonicalPath'];
 					}
 				}
 			}
@@ -2378,7 +2384,7 @@ abstract class FrontendController extends AppController {
 		$relatedObjectId = $objRel->find('first', array(
 			'conditions' => array(
 				"ObjectRelation.id" => $id,
-				"ObjectRelation.switch" => array("download", "attach")
+				"ObjectRelation.switch" => array("downloadable_in", "attached_to")
 			),
 			'fields' => array('object_id')));
 		// check if multimedia is on the tree

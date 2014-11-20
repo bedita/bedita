@@ -171,12 +171,31 @@ class BEAppModel extends AppModel {
 		}
 	}
 
+	/**
+	 * Check duration format in $this->data[ModelName][$key] -> set to null if empty/invalid.
+	 * 
+	 * @param string key
+	 */
 	protected function checkDuration($key) {
 		$data = &$this->data[$this->name];
-		if(empty($data[$key]) || !is_numeric($data[$key])) {
+
+		if (!array_key_exists($key, $data)) {
+			// Avoid E_NOTICE if PHP's error_reporting & 8 == true.
 			$data[$key] = null;
+			return;
+		}
+		$data[$key] = preg_replace("/[^a-z0-9\:\.]/i", "", $data[$key]);  // cleans string.
+		$matches = array();
+		if (!empty($data[$key]) && preg_match("/^(?:(?P<y>\d+)y)?(?:(?P<w>\d+)w)?(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?$/i", $data[$key], $matches)) {
+			// y w d h m s
+			$matches = array_merge(array('y' => 0, 'w' => 0, 'd' => 0, 'h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ((($matches['y'] * 365 + $matches['w'] * 7 + $matches['d']) * 24 + $matches['h']) * 60 + $matches['m']) * 60 + $matches['s'];
+		} elseif (!empty($data[$key]) && preg_match("/^(?:(?:(?P<h>\d+)?\:)?(?P<m>\d+)?\:)?(?P<s>\d+)?$/", $data[$key], $matches)) {
+			// hh:mm:ss
+			$matches = array_merge(array('h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ($matches['h'] * 60 + $matches['m']) * 60 + $matches['s'];
 		} else {
-			$data[$key] = $data[$key]*60;
+			$data[$key] = null;
 		}
 	}
 
