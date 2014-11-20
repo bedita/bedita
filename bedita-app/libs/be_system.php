@@ -304,21 +304,14 @@ class BeSystem {
 		}
 				
 		if (!empty($fileLines)) {
-			//eval php code: join array in php string without php opening/closing tags
-			$code = array_slice($fileLines, 1, count($fileLines)-2);
-			// remove define() [constant definition] to avoid notice because they can be already defined
-			foreach ($code as $k => $c) {
-				if (strpos($c, "define(") !== false) {
-					unset($code[$k]);
-				}
+			// check php validity
+			$checkResponse = $this->checkCodeSyntax($fileLines);
+			if ($checkResponse !== true) {
+				throw new BeditaException(
+					__("Wrong PHP code generated", true),
+					array(__('See exception.log for more info', true))
+				);
 			}
-			
-			$codeString = implode("", $code);
-			
-			if (strpos($fileLines[0], "<?php") === false || strpos($fileLines[count($fileLines)-1], "?>") === false || eval($codeString) === false) {
-				throw new BeditaException(__("Wrong PHP code generated", true), $fileLines);
-			}
-			
 			// write to file
 			if (file_put_contents($filepath, $fileLines, LOCK_EX) === false) {
 				// restore backupped file
@@ -332,7 +325,63 @@ class BeSystem {
 		return true;
 	}
 	
-	
+	/**
+	 * Check for syntax error in file
+	 *
+	 * To check syntax it uses 'php -l' command (cli)
+	 *
+	 * @param string $fileName the complete file name
+	 * @return boolean true on check success
+	 */
+	public function checkFileSyntax($fileName) {
+		$cli = PHP_BINDIR . DS . 'php';
+		$cmd = $cli . ' -l ' . $fileName .' 2>&1';
+		exec($cmd, $outputAndErrors, $return);
+		if ($return === 0) {
+			return true;
+		} else {
+			CakeLog::write('error', 'Syntax error checking ' . $fileName);
+			CakeLog::write('exception', 'BeSystem::checkFileSyntax(): ' . print_r($outputAndErrors, true));
+			return false;
+		}
+	}
+
+	/**
+	 * Return true if no syntax errors are present in $sourceCode.
+	 *
+	 * To check syntax it uses BeSystem::checkFileSyntax()
+	 * Since 'php -l' works against files a temporary file is created in (bedita-app/tmp) and removed only if the check is correct.
+	 * If BeSystem::checkFileSyntax() or file creation fails the method returns false
+	 *
+	 * @see BeSystem::checkFileSyntax()
+	 * @param array|string $sourceCode the source code to test
+	 * @param boolean $addPHPtag true to add '<?php' at the begin of $sourceCode
+	 * @return boolean
+	 */
+	public function checkCodeSyntax($sourceCode, $addPHPtag = false) {
+		if ($addPHPtag) {
+			if (is_array($sourceCode)) {
+				array_unshift($sourceCode, '<?php');
+			} else {
+				$sourceCode = '<?php ' .$sourceCode;
+			}
+		}
+		$tmpFileName = (is_array($sourceCode)) ? md5(implode('', $sourceCode)) : md5($sourceCode);
+		$tmpFile = TMP . $tmpFileName . '.php';
+		if (file_put_contents($tmpFile, $sourceCode, LOCK_EX) === false) {
+			CakeLog::write('error', 'Fail to create temporary file to lint');
+			return false;
+		}
+		$checkResponse = $this->checkFileSyntax($tmpFile);
+		if ($checkResponse === true) {
+			// remove temporary file
+			if (!unlink($tmpFile)) {
+				CakeLog::write('warn', 'Error removing temporary file ' . $tmpFile);
+			}
+		}
+		return $checkResponse;
+	}
+
 	/**
 	 * parse file as array (returned from file() php function) and replace/insert var defined in $params
 	 * 

@@ -28,9 +28,13 @@
 {/if}
 
 {if !empty($endinstallfileerr)}
-<p><span class="ERROR">[ERROR]</span> File <code>bedita.cfg.php</code> cannot be created. Check filesystem permissions</p>
+    <p><span class="ERROR">[ERROR]</span> File <code>bedita.cfg.php</code> cannot be created. Check filesystem permissions</p>
 {else}
-<p>Now it's time to... <input style="float:right;" type="submit" value="Start with BEdita" onclick="javascript:document.getElementById('p').value = 5;" /></p>
+    {if !empty($configWriteFail)}
+        <p><span class="WARN">[WARNING]</span> Error writing configuration in <code>bedita.cfg.php</code>. You can continue and edit <code>$config['beditaUrl']</code> manually.
+    {/if}
+    <p>Now it's time to... <input style="float:right;" type="submit" value="Start with BEdita" onclick="javascript:document.getElementById('p').value = 5;" /></p>
+    }
 {/if}
 
 {*<input type="hidden" id="p" name="page" value="4"/>
