@@ -203,6 +203,8 @@
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
 
+    {$view->element('form_advanced_properties', ['el' => $object])}
+
 	{$view->element('form_custom_properties')}
 	
 	{assign_associative var="params" el=$object|default:null recursion=true}
