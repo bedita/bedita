@@ -1,11 +1,11 @@
 {if !empty($areaCategory)}
 
-<div class="tab"><h2 {if empty($object.assocCategory)}class="empty"{/if}>{t}Categories{/t}</h2></div>
+{$relcount = $object.assocCategory|@count|default:0}
+
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}Categories{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}</h2></div>
 
 <fieldset id="category" >
-	
 <table class="bordered">
-
 	{if !empty($areaCategory.noarea)}
 		<tr>
 			<th><h3 style="margin-left:-10px">{t}Generic categories{/t}</h3></th>
@@ -40,10 +40,6 @@
 		{/foreach}
 	
 	{/if}
-
-
 </table>
-
 </fieldset>
-
 {/if}
