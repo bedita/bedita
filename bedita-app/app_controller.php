@@ -1374,8 +1374,6 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function showCategories(BEAppModel $beModel) {
-		$conf  = Configure::getInstance() ;
-		$type = $conf->objectTypes[Inflector::underscore($beModel->name)]["id"];
 		$type = Configure::read("objectTypes." . Inflector::underscore($beModel->name) . ".id");
 		if (is_null($type)) {
 			return;
