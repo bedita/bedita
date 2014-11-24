@@ -1374,24 +1374,24 @@ abstract class ModulesController extends AppController {
 	}
 
 	protected function showCategories(BEAppModel $beModel) {
-		$type = Configure::read("objectTypes." . Inflector::underscore($beModel->name) . ".id");
+		$type = Configure::read('objectTypes.' . Inflector::underscore($beModel->name) . '.id');
 		if (is_null($type)) {
 			return;
 		}
-		$categoryModel = ClassRegistry::init("Category");
-		$this->set("categories", $categoryModel->find("all", array(
-			"conditions" => array("Category.object_type_id" => $type), "order" => "label"
+		$categoryModel = ClassRegistry::init('Category');
+		$this->set('categories', $categoryModel->find('all', array(
+			'conditions' => array('Category.object_type_id' => $type), 'order' => 'label'
 		)));
-		$this->set("object_type_id", $type);
-		$this->set("areasList", ClassRegistry::init("BEObject")->find('list', array(
-										"conditions" => "object_type_id=" . Configure::read("objectTypes.area.id"),
-										"order" => "title",
-										"fields" => "BEObject.title"
+		$this->set('object_type_id', $type);
+		$this->set('areasList', ClassRegistry::init('BEObject')->find('list', array(
+										'conditions' => 'object_type_id=' . Configure::read('objectTypes.area.id'),
+										'order' => 'title',
+										'fields' => 'BEObject.title'
 										)
 									)
 								);
 	}
-	
+
 	/**
 	 * Saves a category. Controllers should specify the list of categorizable models in $categorizableModels property.
 	 */
