@@ -37,7 +37,7 @@ class AreasController extends ModulesController {
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';
-	protected $categorizableModels = array("Section");
+	protected $categorizableModels = array('Section');
 
 	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
 		

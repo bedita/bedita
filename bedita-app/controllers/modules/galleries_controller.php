@@ -34,7 +34,7 @@ class GalleriesController extends ModulesController {
 	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
     var $uses = array('BEObject', 'Gallery', 'Tree', 'Category') ;
 	protected $moduleName = 'galleries';
-	protected $categorizableModels = array("Gallery");
+	protected $categorizableModels = array('Gallery');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;

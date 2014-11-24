@@ -36,7 +36,7 @@ class AddressbookController extends ModulesController {
 
 	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';
-	protected $categorizableModels = array("Card");
+	protected $categorizableModels = array('Card');
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;

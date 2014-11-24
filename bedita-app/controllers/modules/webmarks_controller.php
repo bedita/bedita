@@ -30,7 +30,7 @@ class WebmarksController extends ModulesController {
 
 	var $uses = array('BEObject', 'Link', 'Tree','Category','Area') ;
 	protected $moduleName = 'webmarks';
-	protected $categorizableModels = array("Link");
+	protected $categorizableModels = array('Link');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
 		$conf  = Configure::getInstance() ;

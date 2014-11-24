@@ -32,7 +32,7 @@ class EventsController extends ModulesController {
 	// default calendar: 7 days
 	protected $calendarDays = 7;
 	protected $moduleName = 'events';
-	protected $categorizableModels = array("Event");
+	protected $categorizableModels = array('Event');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;

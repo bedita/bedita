@@ -1398,30 +1398,34 @@ abstract class ModulesController extends AppController {
 	public function saveCategories() {
 		$this->checkWriteModulePermission();
 
-		$Category = ClassRegistry::init("Category");
+		$Category = ClassRegistry::init('Category');
 
 		if(empty($this->data['label'])) {
-			throw new BeditaException(__("No data", true));
+			throw new BeditaException(__('No data', true));
 		}
 
-		if (!in_array(Configure::read("objectTypes." . $this->data['object_type_id'] . ".model"), $this->categorizableModels)) {
-			throw new BeditaException(__("Object type not allowed", true));  // Object type not categorizable in current controller.
+		// Object type ID checks.
+		if (!in_array(Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model'), $this->categorizableModels)) {
+			// Object type not categorizable in current controller.
+			throw new BeditaException(__('Object type not allowed', true));
 		}
 		if (array_key_exists('id', $this->data)) {
-			$cat = $Category->findById($this->data['id']);  // Existing category.
+			// Existing category.
+			$cat = $Category->findById($this->data['id']);
 			if ($cat['object_type_id'] != $this->data['object_type_id']) {
-				throw new BeditaException(__("Cannot change object type for category", true));  // Trying to change object_type_id of category.
+				// Trying to change object_type_id of category.
+				throw new BeditaException(__('Cannot change object type for category', true));
 			}
 		}
 
 		$this->Transaction->begin();
 		if(!$Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $Category->validationErrors);
+			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
 		}
 		$this->Transaction->commit();
 
-		$this->userInfoMessage(__("Category saved", true) . " - " . $this->data['label']);
-		$this->eventInfo("Category [" .$this->data['label'] . "] saved");
+		$this->userInfoMessage(__('Category saved', true) . ' - ' . $this->data['label']);
+		$this->eventInfo('Category [' .$this->data['label'] . '] saved');
 	}
 
 	/**
@@ -1430,25 +1434,27 @@ abstract class ModulesController extends AppController {
 	public function deleteCategories() {
 		$this->checkWriteModulePermission();
 
-		$Category = ClassRegistry::init("Category");
+		$Category = ClassRegistry::init('Category');
 
 		if(empty($this->data['id'])) {
-			throw new BeditaException(__("No data", true));
+			throw new BeditaException(__('No data', true));
 		}
 
-		$cat = $Category->findById($this->data['id']);  // Find category data.
-		if (!in_array(Configure::read("objectTypes." . $cat['object_type_id'] . ".model"), $this->categorizableModels)) {
-			throw new BeditaException(__("Object type not allowed", true));  // Object type not categorizable in current controller.
+		// Object type ID checks.
+		$cat = $Category->findById($this->data['id']);
+		if (!in_array(Configure::read('objectTypes.' . $cat['object_type_id'] . '.model'), $this->categorizableModels)) {
+			// Object type not categorizable in current controller.
+			throw new BeditaException(__('Object type not allowed', true));
 		}
 
 		$this->Transaction->begin();
 		if(!$Category->delete($this->data['id'])) {
-			throw new BeditaException(__("Error saving tag", true), $Category->validationErrors);
+			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
 		}
 		$this->Transaction->commit();
 
-		$this->userInfoMessage(__("Category deleted", true) . " - " . $cat['label']);
-		$this->eventInfo("Category " . $this->data['id'] . "-" . $cat['label'] . " deleted");
+		$this->userInfoMessage(__('Category deleted', true) . ' - ' . $cat['label']);
+		$this->eventInfo('Category ' . $this->data['id'] . '-' . $cat['label'] . ' deleted');
 	}
 
 	/**

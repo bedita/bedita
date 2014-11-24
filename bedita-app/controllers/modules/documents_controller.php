@@ -36,7 +36,7 @@ class DocumentsController extends ModulesController {
 
 	var $uses = array('BEObject', 'Document', 'Tree','Category') ;
 	protected $moduleName = 'documents';
-	protected $categorizableModels = array("Document");
+	protected $categorizableModels = array('Document');
 
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
     	$conf  = Configure::getInstance() ;

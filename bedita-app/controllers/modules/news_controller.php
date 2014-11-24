@@ -35,7 +35,7 @@ class NewsController extends ModulesController {
 	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
 	var $uses = array('BEObject','ShortNews','Category','Area') ;
 	protected $moduleName = 'news';
-	protected $categorizableModels = array("ShortNews");
+	protected $categorizableModels = array('ShortNews');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
