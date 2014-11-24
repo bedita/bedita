@@ -37,6 +37,7 @@ class AreasController extends ModulesController {
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';
+	protected $categorizableModels = array('Section');
 
 	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
 		
@@ -427,32 +428,6 @@ class AreasController extends ModulesController {
 
 	public function categories() {
 		$this->showCategories($this->Section);
-	}
-
-	public function saveCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["label"]))
-			throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
-		$this->eventInfo("category [" .$this->data["label"] . "] saved");
-	}
-
-	public function deleteCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["id"]))
-			throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->delete($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
-		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 	
 	protected function forward($action, $esito) {

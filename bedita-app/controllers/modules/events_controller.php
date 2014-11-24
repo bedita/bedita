@@ -32,6 +32,7 @@ class EventsController extends ModulesController {
 	// default calendar: 7 days
 	protected $calendarDays = 7;
 	protected $moduleName = 'events';
+	protected $categorizableModels = array('Event');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
@@ -134,33 +135,6 @@ class EventsController extends ModulesController {
 	public function categories() {
 		$this->showCategories($this->Event);
 	}
-
-	public function saveCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["label"])) 
- 	 	    throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
-		$this->eventInfo("category [" .$this->data["label"] . "] saved");
-	}
-	
-	public function deleteCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["id"])) 
- 	 	    throw new BeditaException( __("No data", true));
- 	 	$this->Transaction->begin() ;
-		if(!$this->Category->delete($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
-		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
-	}
-
 
 	protected function forward($action, $esito) {
 	  	$REDIRECT = array(
