@@ -755,9 +755,14 @@ class AppController extends Controller
 
 		$categoryModel = ClassRegistry::init("Category");
 		$tagList = array();
-		if (!empty($this->params["form"]["tags"]))
-			$tagList = $categoryModel->saveTagList($this->params["form"]["tags"]);
-		$this->data["Category"] = (!empty($this->data["Category"]))? array_merge($this->data["Category"], $tagList) : $tagList;
+
+        if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
+            if (!empty($this->params['form']['tags'])) {
+                $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
+            }
+
+            $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+        }
 
 		$fixed = false;
 		if(!$new) {
