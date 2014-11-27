@@ -1007,11 +1007,11 @@ class BeditaShell extends BeditaBaseShell {
   		$this->out(' ');
   		$this->out('2. cleanup: cleanup cache, compile, log files');
         $this->out(' ');
-        $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-media]');
+        $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-all]');
         $this->out(' ');
         $this->out("    -frontend \t clean files in <frontend path> [use frontend /app path]");
         $this->out("    -logs \t clean log files");
-        $this->out("    -media  \t clean media files in 'mediaRoot' (default no)");
+        $this->out("    -all  \t clean all dirs in tmp/cache dir, not just 'models', 'persistent' and 'views' (default no)");
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');

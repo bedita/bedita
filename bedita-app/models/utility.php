@@ -158,16 +158,17 @@ class Utility extends AppModel {
 	 * cleanup cached files according to BeSystem::cleanupCache()
 	 * 
 	 * @param array $options 
-	 *				'basePath' => TMP (default) the path on which search and clear cache
-	 *				'frontendsToo' => true (default) to clean also frontends cache
+	 *             'basePath' => TMP (default) the path on which search and clear cache
+	 *             'frontendsToo' => true (default) to clean also frontends cache
+	 *             'cleanAll' => false (default) clean all folders in tmp/cache not just 'models', 'persistent' and 'views'
 	 */
 	protected function cleanupCache($options = array()) {
 	    $defaults = array(
 	            'basePath' => BEDITA_CORE_PATH . DS .'tmp' . DS, 
 	            'frontendsToo' => true);
 		$options = array_merge($defaults, $options);
-		$this->response['results'] = BeLib::getObject("BeSystem")->cleanupCache($options['basePath'], 
-		        $options['frontendsToo']);
+		$this->response['results'] = BeLib::getObject('BeSystem')->cleanupCache($options['basePath'], 
+		        $options['frontendsToo'], $options['cleanAll']);
 		if (!empty($this->response['results']['failed']) && !empty($options['log'])) {
 			$this->response['log'] = $this->buildLogItems($this->response['results']['failed']);
 		}

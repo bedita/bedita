@@ -117,15 +117,31 @@ class BeSystem {
 	 * cleanup cached files
 	 * 
 	 * @param string $basePath, base path on which build cake cache dir and smarty cache dir
-	 * @param type $frontendsToo, true (defualt) to delete also all frontends cached files
+	 * @param bool $frontendsToo, true (default) to delete also all frontends cached files
+	 * @param bool $cleanAll, false (default) clean all folders in tmp/cache not just 'models', 'persistent' and 'views'
 	 * @return array, it contains
 	 *				'failed' => array of errors, empty if no errors occured
-	 *				'success'  => array of file deleted
+	 *				'success'  => array deleted files
 	 */
-	public function cleanupCache($basePath = TMP, $frontendsToo = true) {
-		$cakeCacheDir = $basePath . DS . 'cache';
-		$smartyCacheDir = $basePath . DS . 'smarty';
-		$results = $this->cleanUpDir($cakeCacheDir, true);
+	public function cleanupCache($basePath = TMP, $frontendsToo = true, $cleanAll = false) {
+		$cakeCacheDir = $basePath . 'cache';
+		$smartyCacheDir = $basePath . 'smarty';
+		
+        $results = array();
+        if ($cleanAll) {
+            $results = $this->cleanUpDir($cakeCacheDir, true);
+        } else {
+            $results = $this->cleanUpDir($cakeCacheDir, false, false);
+            $defaultDirs = array('models', 'persistent', 'views');
+            foreach ($defaultDirs as $dir) {
+                $tmpDir = $cakeCacheDir . DS . $dir;
+                $resTmp = $this->cleanUpDir($tmpDir, true);
+                foreach ($results as $key => $val) {
+                    $results[$key] = array_merge($results[$key], $resTmp[$key]);
+                }
+            }
+        }
+		
 		if (file_exists($smartyCacheDir)) {
 			$resSmarty = $this->cleanUpDir($smartyCacheDir, true);
 			foreach ($results as $key => $val) {
@@ -135,10 +151,23 @@ class BeSystem {
 		Cache::clear();
 		if ($frontendsToo) {
 			$folder= new Folder(BEDITA_FRONTENDS_PATH);
-	        $dirs = $folder->read(true, true, true);
-	        foreach ($dirs[0] as $d) {
-	        	if($d[0] !== ".") {
-	            	$resCake = $this->cleanUpDir($d . DS . "tmp" . DS . "cache", true);
+            $dirs = $folder->read(true, true, true);
+            foreach ($dirs[0] as $d) {
+                if($d[0] !== '.') {
+                    $cakeCacheDir = $d . DS . 'tmp' . DS . 'cache';
+                    if ($cleanAll) {
+                        $resCake = $this->cleanUpDir($cakeCacheDir, true);
+                    } else {
+                        $resCake = $this->cleanUpDir($cakeCacheDir, false, false);
+                        $defaultDirs = array('models', 'persistent', 'views');
+                        foreach ($defaultDirs as $dir) {
+                            $tmpDir = $cakeCacheDir . DS . $dir;
+                            $resTmp = $this->cleanUpDir($tmpDir, true);
+                            foreach ($resCake as $key => $val) {
+                                $resCake[$key] = array_merge($resCake[$key], $resTmp[$key]);
+                            }
+                        }
+                    }
 					if (file_exists($d . DS . "tmp" . DS . "smarty")) {
 						$resSmarty = $this->cleanUpDir($d . DS . "tmp" . DS . "smarty", true);
 					}
@@ -173,9 +202,11 @@ class BeSystem {
 			$f = new File($file);
 			if ($f->name != "empty") {
 				if (!$f->delete()) {
+                    CakeLog::write('warn', 'cleanup - unable to delete file ' . $file);
 					$results['failed'][] = array('error' => __("Error deleting file", true) . " " . $file);
 				} else {
-					$results['success'][] = $file . " " . __('deleted', true);
+                    CakeLog::write('cleanup', 'file ' . $file . ' removed');
+				    $results['success'][] = $file . " " . __('deleted', true);
 				}
 			}
 		}
@@ -184,7 +215,10 @@ class BeSystem {
 			foreach ($list[0] as $d) {
 				if ($d[0] != '.') { // don't delete hidden dirs (.svn,...)
 					if (!$folder->delete($d)) {
-						$results['failed'][] = __("Error deleting dir", true) . " " . $d;
+                        CakeLog::write('warn', 'cleanup - unable to delete folder ' . $d);
+					    $results['failed'][] = __("Error deleting dir", true) . " " . $d;
+					} else {
+                        CakeLog::write('cleanup', 'dir' . $d . ' removed');
 					}
 				}
 			}
