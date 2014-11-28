@@ -561,9 +561,13 @@ class PagesController extends AppController {
             $this->Transaction->begin();
             // if it's multimedia object and a file was loaded
             $multimediaIds = Configure::read('objectTypes.multimedia.id');
-            if (in_array($this->data['object_type_id'], $multimediaIds) && !empty($this->params['form']['Filedata'])) {
+            if (in_array($this->data['object_type_id'], $multimediaIds) && (!empty($this->params['form']['Filedata']) || !empty($this->data['url']))) {
                 try {
-                    $this->data['id'] = $this->BeUploadToObj->upload();
+                    if (!empty($this->params['form']['Filedata'])) {
+                        $this->data['id'] = $this->BeUploadToObj->upload();
+                    } else {
+                        $this->data['id'] = $this->BeUploadToObj->uploadFromURL($this->data);
+                    }
                 } catch (BEditaFileExistException $ex) {
                     // prepare data to touch multimedia object (to show it on top of object list)
                     // or to create new one if title and description are different
