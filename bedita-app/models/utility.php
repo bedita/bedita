@@ -165,7 +165,8 @@ class Utility extends AppModel {
 	protected function cleanupCache($options = array()) {
 	    $defaults = array(
 	            'basePath' => BEDITA_CORE_PATH . DS .'tmp' . DS, 
-	            'frontendsToo' => true);
+	            'frontendsToo' => true,
+	            'cleanAll' => false);
 		$options = array_merge($defaults, $options);
 		$this->response['results'] = BeLib::getObject('BeSystem')->cleanupCache($options['basePath'], 
 		        $options['frontendsToo'], $options['cleanAll']);
