@@ -65,7 +65,7 @@ class BEFormat extends BEAppModel
 			// oldId => newId
 		),
 		'saveMode' => 1, // NEW
-		'logLevel' => 0 // ERROR
+		'logLevel' => 2 // INFO
 	);
 
 	protected $result = array(
@@ -139,7 +139,7 @@ class BEFormat extends BEAppModel
      * }'
      *
      * $options = array(
-     *    'logLevel' => 0, // can be 0 (ERROR), 1 (WARN), 2 (INFO), 3 (DEBUG)
+     *    'logDebug' => true, // can be true|false
      *    'saveMode' => 0, // can be 0 (MERGE), 1 (NEW), 2 (OVERRIDE), 3 (IGNORE), 4 (UPDATE)
      *)
      * 
@@ -150,9 +150,13 @@ class BEFormat extends BEAppModel
 	
 	public function import($jsonString, $options = array()) {
 
-		// setting log level - default ERROR
-		if (!empty($options['logLevel'])) {
-			$this->import['logLevel'] = $options['logLevel'];
+		// setting log level - default INFO
+		if (!empty($options['logDebug'])) {
+			if ($options['logDebug'] == true) {
+				$this->import['logLevel'] = $this->logLevels['DEBUG']; // DEBUG
+			} else {
+				$this->import['logLevel'] = $this->logLevels['INFO'];; // INFO
+			}
 		}
 		$this->logLevel = $this->import['logLevel'];
 		echo "\n" . 'Import options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
@@ -269,8 +273,12 @@ class BEFormat extends BEAppModel
 
 	public function export(array &$objects, $options = array()) {
 		// setting log level - default ERROR
-		if (!empty($options['logLevel'])) {
-			$this->export['logLevel'] = $options['logLevel'];
+		if (!empty($options['logDebug'])) {
+			if ($options['logDebug'] == true) {
+				$this->export['logLevel'] = 3; // DEBUG
+			} else {
+				$this->export['logLevel'] = 0; // ERROR
+			}
 		}
 		$this->logLevel = $this->export['logLevel'];
 

@@ -21,11 +21,9 @@ class FormatShell extends BeditaBaseShell {
 	);
 	private $options = array(
 		'import' => array(
-			'logLevel' => 3,
 			'saveMode' => 1
 		),
 		'export' => array(
-			'logLevel' => 3 // debug level | can be 0 (ERROR), 1 (WARN), 2 (INFO), 3 (DEBUG)
 		)
 	);
 
@@ -48,12 +46,8 @@ class FormatShell extends BeditaBaseShell {
 
 		$this->trackInfo('::: import start :::');
 
-		if (isset($this->params['ll'])) {
-			if (!in_array($this->params['ll'], array_values($this->logLevels))) {
-				$this->trackInfo('Log level "' . $this->params['ll'] . '" not valid; logLevel can be 0 (ERROR), 1 (WARN), 2 (INFO), 3 (DEBUG)');
-				return;
-			}
-			$this->options['import']['logLevel'] = $this->params['ll'];
+		if (isset($this->params['v'])) {
+			$this->options['import']['logDebug'] = true;
 		}
 		
 		// 2. do import
@@ -83,12 +77,8 @@ class FormatShell extends BeditaBaseShell {
 
 		$this->trackInfo('::: export start :::');
 
-		if (isset($this->params['ll'])) {
-			if (!in_array($this->params['ll'], array_values($this->logLevels))) {
-				$this->trackInfo('Log level "' . $this->params['ll'] . '" not valid; logLevel can be 0 (ERROR), 1 (WARN), 2 (INFO), 3 (DEBUG)');
-				return;
-			}
-			$this->options['import']['logLevel'] = $this->params['ll'];
+		if (isset($this->params['v'])) {
+			$this->options['import']['logDebug'] = true;
 		}
 
 		// 1. get data for rootId
@@ -140,10 +130,9 @@ class FormatShell extends BeditaBaseShell {
 		$this->hr();
 		$this->out('format script shell usage:');
 		$this->out('');
-		$this->out('./cake.sh format import -f <filename> [-ll <loglevel>]');
-		$this->out('./cake.sh format export -rootId <rootId> -f <filename> [-ll <loglevel>]');
+		$this->out('./cake.sh format import -f <filename> [-v]');
+		$this->out('./cake.sh format export -rootId <rootId> -f <filename> [-v]');
 		$this->out('');
-		$this->out('Note: logLevel can be 0 (ERROR), 1 (WARN), 2 (INFO), 3 (DEBUG)');		 
 	}
 
 	public function test() {
