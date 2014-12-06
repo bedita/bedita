@@ -2297,7 +2297,7 @@ LI.welcome {
 
 .dashboardcontainer {
 	margin: 0px 0px 0px 160px;
-	/* overflow: hidden; */
+	overflow: hidden;
 }
 
 .dashboard {
@@ -2306,10 +2306,13 @@ LI.welcome {
 	width: 290px;
 }
 
-.dashboard:first-child {
+.dashboard.dashboard-tools {
+	clear: left;
+}
+
+.dashboard.dashboard-modules {
 	float: left;
 	width: auto;
-	max-width: 600px;
 	margin: 20px 0px 10px 0px;
 	min-width: 300px;
 }
@@ -3120,4 +3123,24 @@ input[type=submit].auth_button_google {
 
 #loading, .loader {
 	display: none;
+}
+
+@media screen and (min-width: 1280px) {
+    .dashboard.dashboard-modules {
+    	max-width: 450px;
+    }
+
+    .dashboard.dashboard-tools {
+    	clear: none;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .dashboard.dashboard-modules {
+    	max-width: 600px;
+    }
+
+    .dashboard.dashboard-tools {
+    	clear: none;
+    }
 }
