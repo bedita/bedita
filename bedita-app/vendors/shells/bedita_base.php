@@ -32,6 +32,11 @@ App::import('Lib', 'BeLib');
  */
 class BeditaBaseShell extends Shell {
 
+    /**
+     * Verbose mode.
+     */
+    private $verbose = false;
+
 	/**
 	 * Init configuration for all bedita shells, called in startup()
 	 */
@@ -49,7 +54,12 @@ class BeditaBaseShell extends Shell {
 		$this->initConfig();
 		// default debug = 1, get error/debug messages
 		Configure::write('debug', 1);
-	}
+
+        // Verbose mode.
+        if (array_key_exists('verbose', $this->params)) {
+            $this->verbose = true;
+        }
+    }
 	
 	protected function check_sys_get_temp_dir() {
 		if ( !function_exists('sys_get_temp_dir') ) {
@@ -187,8 +197,20 @@ class BeditaBaseShell extends Shell {
             }
         }
         return ;
-    }    
-     
-}
+    }
 
-?>
+    /**
+     * Verbose output.
+     *
+     * @param string Message.
+     * @param integer New-lines.
+     * @see Shell::out()
+     */
+    protected function verbose($message = null, $newlines = 1) {
+        if (!$this->verbose) {
+            return;
+        }
+
+        return $this->out($message, $newlines);
+    }
+}
