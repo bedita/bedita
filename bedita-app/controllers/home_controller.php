@@ -202,18 +202,17 @@ class HomeController extends AppController {
 	}
 
 
-	protected function forward($action, $esito) {
- 	 	$REDIRECT = array(
-			"editProfile" => array(
- 							"OK"	=> "/home/profile",
- 							"ERROR"	=> "/home/profile"
- 						),
-			"view" => array(
- 							"ERROR"	=> "/home/index"
- 						)
- 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	 }
-}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'editProfile' => array(
+                'OK' => '/home/profile',
+                'ERROR' => '/home/profile'
+            ),
+            'view' => array(
+                'ERROR' => '/home/index'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
+}

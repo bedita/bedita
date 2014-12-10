@@ -455,52 +455,29 @@ class AreasController extends ModulesController {
 		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 	
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"saveArea"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Area->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"saveSection"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Section->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"delete"	=> 	array(
-									"OK"	=> "./",
-									"ERROR"	=> "/areas/view/" . @$this->data["id"]
-								),
-			"deleteSection"	=> 	array(
-									"OK"	=> "./",
-									"ERROR"	=> $this->referer()
-								),
-			"import"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Section->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"saveCategories" 	=> array(
-							"OK"	=> "/areas/categories",
-							"ERROR"	=> "/areas/categories"
-							),
-			"deleteCategories" 	=> array(
-							"OK"	=> "/areas/categories",
-							"ERROR"	=> "/areas/categories"
-							),
-			"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"export"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							)
-		) ;
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'saveArea' => array(
+                'OK'	=> "/areas/view/{$this->Area->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'saveSection'	=> 	array(
+                'OK'	=> "/areas/view/{$this->Section->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'deleteSection'	=> 	array(
+                'OK'	=> './',
+                'ERROR'	=> $this->referer()
+            ),
+            'import'	=> 	array(
+                'OK'	=> "/areas/view/{$this->Section->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'export'	=> 	array(
+                'OK'	=> $this->referer(),
+                'ERROR'	=> $this->referer()
+            ),
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 }
-
-?>
