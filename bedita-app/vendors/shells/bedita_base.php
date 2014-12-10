@@ -56,9 +56,14 @@ class BeditaBaseShell extends Shell {
 		Configure::write('debug', 1);
 
         // Verbose mode.
-        if (array_key_exists('verbose', $this->params)) {
+        if (array_key_exists('verbose', $this->params) || array_key_exists('-verbose', $this->params)) {
             $this->verbose = true;
         }
+    }
+
+    function help() {
+    	$this->out('  Default parameters:');
+    	$this->out("    --verbose\tVerbose output");
     }
 	
 	protected function check_sys_get_temp_dir() {
