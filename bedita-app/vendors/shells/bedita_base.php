@@ -62,8 +62,8 @@ class BeditaBaseShell extends Shell {
     }
 
     function help() {
-    	$this->out('  Default parameters:');
-    	$this->out("    --verbose\tVerbose output");
+        $this->out('  Default parameters:');
+        $this->out("    --verbose\tVerbose output");
     }
 	
 	protected function check_sys_get_temp_dir() {
