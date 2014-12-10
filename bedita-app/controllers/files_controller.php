@@ -133,7 +133,7 @@ class FilesController extends AppController {
 	}
 
     protected function forward($action, $result) {
-        $moduleRedirect = array(
+        $redirect = array(
             'uploadAjax' => array(
                 'OK' => self::VIEW_FWD . 'upload_ajax_response',
                 'ERROR' => self::VIEW_FWD . 'upload_ajax_response'
@@ -143,7 +143,10 @@ class FilesController extends AppController {
                 'ERROR' => self::VIEW_FWD . 'upload_ajax_response'
             )
         );
-        return $this->moduleForward($action, $result, $moduleRedirect);
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        }
+        return false;
     }
 
 }

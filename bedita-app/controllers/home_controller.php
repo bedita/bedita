@@ -203,7 +203,7 @@ class HomeController extends AppController {
 
 
     protected function forward($action, $result) {
-        $moduleRedirect = array(
+        $redirect = array(
             'editProfile' => array(
                 'OK' => '/home/profile',
                 'ERROR' => '/home/profile'
@@ -212,7 +212,10 @@ class HomeController extends AppController {
                 'ERROR' => '/home/index'
             )
         );
-        return $this->moduleForward($action, $result, $moduleRedirect);
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        }
+        return false;
     }
 
 }
