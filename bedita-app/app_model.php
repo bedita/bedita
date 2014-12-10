@@ -1032,7 +1032,7 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"note" => 2
 	);
@@ -1152,7 +1152,7 @@ class BeditaContentModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"creator" => 6,
 		"description" => 6,
 		"subject" => 4,
@@ -1175,7 +1175,7 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"body" => 4,
 		"author" => 3,
@@ -1219,7 +1219,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"subject" => 4,
 		"abstract" => 4,
@@ -1298,7 +1298,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"subject" => 4,
 		"abstract" => 4,
@@ -1387,7 +1387,7 @@ class BeditaProductModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"abstract" => 4,
 		"body" => 4,
