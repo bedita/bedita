@@ -177,11 +177,20 @@ class BEFormat extends BEAppModel
             // 2. Importing
             $this->trackInfo('2. import start');
 
-            // TODO: import config
-            // 2.1 import config [TODO]
-            $this->trackInfo('2.1 import config [TODO]');
-            // 2.1.1 import custom properties [TODO]
-            $this->trackInfo('2.1.1 import custom properties [TODO]');
+            // 2.1 import config
+            $this->trackInfo('2.1 import config');
+            if (!empty($this->import['source']['data']['config'])) {
+
+                // 2.1.1 import custom properties
+                $this->trackInfo('2.1.1 import custom properties');
+                if (!empty($this->import['source']['data']['config']['customProperties'])) {
+                    foreach ($this->import['source']['data']['config']['customProperties'] as $customProperty) {
+                        $this->trackDebug('2.1.1 import custom properties - save property with policy \'NEW\'');
+                        $this->saveProperty($customProperty);
+                    }
+                }
+            }
+
             // 2.1.? [...] [TODO]
             $this->trackInfo('2.1.? [...] [TODO]');
 
@@ -218,16 +227,6 @@ class BEFormat extends BEAppModel
 
             $this->trackInfo('2.3 save objects');
             foreach ($this->import['source']['data']['objects'] as &$object) {
-                // 2.3.1 save object with policy 'NEW'
-                $this->trackDebug('2.3.1 save object with policy \'NEW\'');
-                // 2.3.2 save object with other policies [TODO]
-                $this->trackDebug('2.3.2 save object with other policies [TODO]');
-                // 2.3.3 save object.customProperties [TODO]
-                $this->trackDebug('2.3.3 save object.customProperties [TODO]');
-                // 2.3.4 save object.categories [TODO]
-                $this->trackDebug('2.3.4 save object.categories [TODO]');
-                // 2.3.5 save object.tags [TODO]
-                $this->trackDebug('2.3.5 save object.tags [TODO]');
                 $this->saveObject($object);
             }
 
@@ -297,9 +296,9 @@ class BEFormat extends BEAppModel
      * 2.1.1 fields not empty: name, objectType, dataType
      * 2.1.2 valid objectType
      * 2.1.3 dataType can be 'number', 'date', 'text', 'options'
-     * 2.1.4 existence [TODO]
-     * 2.1.5 conflict [TODO]
-     * 2.1.6 objects.customProperty consistence (objects.customProperty must be declared in config.customProperties) [TODO]
+     * 2.1.4 existence
+     * 2.1.5 conflict
+     * 2.1.6 objects.customProperty consistence (objects.customProperty.name and objects.customProperty.value not empty / objects.customProperty.name must be declared in config.customProperties)
      * [...]
      *
      * 3 objects
@@ -307,6 +306,8 @@ class BEFormat extends BEAppModel
      * 3.2 necessary fields (defined in $this->objMinimalSet)
      * 3.3 objectType existence
      * 3.4 specific validation by objectType [TODO]
+     * 3.5 categories
+     * 3.6 tags [TODO]
      *
      * 4 trees
      * 4.1 not empty
@@ -347,12 +348,14 @@ class BEFormat extends BEAppModel
         // convert source objects to alternative structure
         $this->import['source']['data']['objects'] = Set::combine($this->import['source']['data'], 'objects.{n}.id', 'objects.{n}');
         $this->import['objects']['ids'] = array_keys($this->import['source']['data']['objects']);
+        $this->import['config'] = array();
 
         // 2 config
         if (!empty($this->import['source']['data']['config'])) {
 
             // 2.1 custom properties
             if (!empty($this->import['source']['data']['config']['customProperties'])) {
+                $this->import['config']['properties'] = array();
                 foreach ($this->import['source']['data']['config']['customProperties'] as $customProperty) {
 
                     // 2.1.1 fields not empty: name, objectType, dataType
@@ -367,8 +370,8 @@ class BEFormat extends BEAppModel
                     }
 
                     // 2.1.2 valid objectType
-                    $ot = Configure::read('objectTypes.' . $customProperty['objectType'] . '.id');
-                    if (empty($ot)) {
+                    $objTypeId = Configure::read('objectTypes.' . $customProperty['objectType'] . '.id');
+                    if (empty($objTypeId)) {
                         throw new BeditaException('config.customProperties: objectType ' . $customProperty['objectType'] . ' not found');
                     }
 
@@ -377,15 +380,89 @@ class BEFormat extends BEAppModel
                         throw new BeditaException('config.customProperties: dataType ' . $customProperty['dataType'] . ' not allowed | dataType should be number, date, text or options');
                     }
                     // 2.1.4 existence
-                    // TODO: check existence
+                    $propertyModel = ClassRegistry::init('Property');
+                    $propertyModel->create();
+                    $property = $propertyModel->find('first',
+                        array(
+                            'conditions' => array(
+                                'name' => $customProperty['name'],
+                                'object_type_id' => $objTypeId
+                            )
+                        )
+                    );
+                    if (!empty($property)) {
+                        $this->import['config']['properties'][$customProperty['name']] = $property;
 
-                    // 2.1.5 conflict
-                    // TODO: check conflict
+                        // 2.1.5 conflict
+
+                        // object_type_id
+                        if ($property['object_type_id'] != $objTypeId) {
+                            throw new BeditaException('config.customProperties.object_type_id "' . $objTypeId . '"" different from system custom property object_type_id "' . $property['object_type_id'] . '" for property ' . $customProperty['name']);
+                        }
+                        
+                        // property_type
+                        if ($property['property_type'] != $customProperty['dataType']) {
+                            throw new BeditaException('config.customProperties.dataType "' . $customProperty['dataType'] . '" different from system custom property property_type "' . $property['property_type'] . '" for property ' . $customProperty['name']);
+                        }
+
+                        // multiple_choice
+                        $multipleChoice = (!empty($property['multiple_choice']) && ($property['multiple_choice'] == true));
+                        $multipleChoiceImport = (!empty($customProperty['multipleChoice']) && ($customProperty['multipleChoice'] == true));
+                        if ($multipleChoice != $multipleChoiceImport) {
+                            throw new BeditaException('config.customProperties.multipleChoice "' . $customProperty['multipleChoice'] . '"" different from system custom property multiple_choice "' . $property['multiple_choice'] . '" for property ' . $customProperty['name']);
+                        } else if ($multipleChoice) {
+                            // property_options
+                            if (empty($customProperty['options'])) {
+                                throw new BeditaException('config.customProperties.options: empty options for multiple_choice property for property ' . $customProperty['name']);
+                            }
+                            $options = $customProperty['options'];
+                            if (sizeof($options) != sizeof($property['PropertyOption'])) {
+                                throw new BeditaException('config.customProperties.options: options differ from set of PropertyOption in the system property for property ' . $customProperty['name']);
+                            }
+                            $propertyOptions = array();
+                            foreach ($property['PropertyOption'] as $propertyOption) {
+                                if (!in_array($propertyOption['property_option'], $options)) {
+                                    throw new BeditaException('config.customProperties.options: options does not contain the system property PropertyOption "' . $propertyOption['property_option'] . '"" for property ' . $customProperty['name']);
+                                }
+                                $propertyOptions[] = $propertyOption['property_option'];
+                            }
+                            foreach ($options as $option) {
+                                if (!in_array($option,$propertyOptions)) {
+                                    throw new BeditaException('config.customProperties.options: option "' . $option . '" not found in the system property set of PropertyOption for property ' . $customProperty['name']);
+                                }
+                            }
+                        }
+                    }
+                    if (!in_array($customProperty['name'], array_keys($this->import['config']['properties']))) {
+                        $this->import['config']['properties'][$customProperty['name']] = array();
+                    }
                 }
             }
         }
-        // 2.1.5 objects.customProperty consistence (objects.customProperty must be declared in config.customProperties)
-        // TODO: check consistence
+        // 2.1.6 objects.customProperty consistence (objects.customProperty must be declared in config.customProperties)
+        if ( !empty($this->import['source']['data']) && !empty($this->import['source']['data']['objects'])) {
+            foreach ($this->import['source']['data']['objects'] as $object) {
+                if (!empty($object['customProperties'])) {
+                    
+                    if (empty($this->import['config']['properties'])) {
+                        throw new BeditaException('object.customProperties defined, but config.customProperties not defined');
+                    }
+                    foreach ($object['customProperties'] as $customProperty) {
+                        // name
+                        if (empty($customProperty['name'])) {
+                            throw new BeditaException('object.customProperties.name not found for object ' . $object['id']);
+                        }
+                        if (!in_array($customProperty['name'], array_keys($this->import['config']['properties']))) {
+                            throw new BeditaException('object.customProperties.name "' . $customProperty['name'] . '" not defined in config.customProperties');
+                        }
+                        // value
+                        if (empty($customProperty['value'])) {
+                            throw new BeditaException('object.customProperties.value not found for object ' . $object['id']);
+                        }
+                    }
+                }
+            }
+        }
 
         // 3 objects consistence validation
 
@@ -417,8 +494,24 @@ class BEFormat extends BEAppModel
             }
         }
 
-        // 3.4 specific validation by objectType
-        // TODO: implement it / idea: use model reflection (i.e. if <modelClass> has method 'validateBeforeImport' then invoke it)
+        foreach ($this->import['source']['data']['objects'] as $object) {
+            // 3.4 specific validation by objectType
+            // TODO: implement it / idea: use model reflection (i.e. if <modelClass> has method 'validateBeforeImport' then invoke it)
+
+            // 3.5 categories
+            if (!empty($object['categories'])) {
+                foreach ($object['categories'] as $category) {
+                    if (empty($category['name'])) {
+                        throw new BeditaException('missing category name for object id "' . $object['id'] . '"');
+                    }
+                }
+            }
+
+            // 3.6 tags
+            // TODO
+        }
+
+
 
         // 4 tree consistency
 
@@ -608,6 +701,59 @@ class BEFormat extends BEAppModel
 
     /* private methods saving objects */
 
+    private function saveProperty($customProperty) {
+        // TODO: manage different saving policies | now => direct save of NEW property
+        $mode = $this->import['saveMode'];
+        $this->trackDebug('- saving property ' . $customProperty['name'] . ' with mode ' . $mode);
+        $model = ClassRegistry::init('Property');
+        $model->create();
+        $objTypeId = Configure::read('objectTypes.' . $customProperty['objectType'] . '.id');
+        $property = $model->find('first',
+            array(
+                'conditions' => array(
+                    'name' => $customProperty['name'],
+                    'object_type_id' => $objTypeId
+                )
+            )
+        );
+        // does custom property exist?
+        if (empty($property)) { // no => save it
+            $propertyData = array(
+                'name' => $customProperty['name'],
+                'property_type' => $customProperty['dataType'],
+                'object_type_id' => $objTypeId
+            );
+            if (!empty($customProperty['multipleChoice'])) {
+                $propertyData['multiple_choice'] = $customProperty['multipleChoice'];
+            }
+            if(!$model->save($propertyData)) {
+                throw new BeditaException('error saving property (import name ' . $customProperty['name'] . ')');
+            }
+            $propertyData['id'] = $model->id;
+            if (!empty($customProperty['options'])) {
+                $propertyOptions = array();
+                $this->trackDebug('- saving property options for property "' . $customProperty['name'] . '"');
+                $model->PropertyOption->deleteAll("property_id='" . $propertyData['id'] . "'");
+                $options = $customProperty['options'];
+                foreach ($options as $option) {
+                    $propertyOptions[] = array(
+                        'property_id' => $propertyData['id'],
+                        'property_option' => trim($option)
+                    );
+                }
+                if (!$model->PropertyOption->saveAll($propertyOptions)) {
+                    throw new BeditaException('error saving property options (property import name ' . $customProperty['name'] . ')');
+                }
+            }
+            $this->import['config']['properties'][$customProperty['name']] = $propertyData;
+            $this->import['saveMap']['property'][$customProperty['name']][] = $propertyData['id'];
+            $this->trackDebug('- saving property ' . $customProperty['name'] . ' with BEdita Property id ' . $propertyData['id'] . ' ... END');
+        } else { // yes => skip | something else?
+            // TODO: update? in case of options 'extra data', update could be useful or necessary
+            $this->trackDebug('- property "' . $customProperty['name'] . '" found: skip saving [TODO: update?]');
+        }
+    }
+
     private function saveArea($area) {
         // TODO: manage different saving policies | now => direct save of NEW area
         $mode = $this->import['saveMode'];
@@ -647,9 +793,38 @@ class BEFormat extends BEAppModel
         if (!empty($this->import['saveMap'][$object['id']])) {
             $this->trackDebug($object['objectType'] . ' ' . $object['id'] . ' already saved with BEdita id ' . $this->import['saveMap'][$object['id']]);
         } else {
+            // 2.3.1 save object with policy 'NEW'
+            $this->trackDebug('2.3.1 save object with policy \'NEW\'');
+
+            // 2.3.2 save object with other policies [TODO]
+            $this->trackDebug('2.3.2 save object with other policies [TODO]');
+
             $mode = $this->import['saveMode'];
             $this->trackDebug('- saving object ' . $object['id'] . ' with mode ' . $mode . ' ... START');
-            // TODO: manage different saving policies | now => direct save of NEW object
+
+            $object['Category'] = array();
+            if (!empty($object['categories'])) {
+                // 2.3.3 save object.categories
+                $this->trackDebug('2.3.3 save object.categories');
+                foreach ($object['categories'] as $category) {
+                    $object['Category'] = $this->saveCategory($category['name'], $object['objectType']);
+                }
+            }
+
+            if (!empty($object['tags'])) {
+                // 2.3.4 save object.tags [TODO]
+                $this->trackDebug('2.3.4 save object.tags [TODO]');
+                $tagListString = '';
+                foreach ($object['tags'] as $tag) {
+                    $tagListString.= $tag . ',';
+                }
+                if (!empty($tagListString)) {
+                    $tagListString = substr($tagListString, 0, strlen($tagListString)-1);
+                    $tags = $this->saveTags($tagListString);
+                    $object['Category'] = array_merge($object['Category'], $tags);    
+                }
+            }
+
             $newObject = array_merge($this->objDefaults, $object);
             unset($newObject['id']);
             $model = ClassRegistry::init(Inflector::camelize($object['objectType']));
@@ -657,6 +832,30 @@ class BEFormat extends BEAppModel
             if (!$model->save($newObject)) {
                 throw new BeditaException('error saving ' . $object['objectType'] . ' (import id ' . $object['id'] . ')');
             }
+            if (!empty($object['customProperties'])) {
+
+                // 2.3.5 save object.customProperties
+                $this->trackDebug('2.3.5 save object.customProperties');
+
+                $this->trackDebug('- saving custom properties for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
+                $object['ObjectProperty'] = array();
+                foreach ($object['customProperties'] as $customProperty) {
+                    $property = array(
+                        'object_id' => $model->id,
+                        'property_id' => $this->import['config']['properties'][$customProperty['name']]['id'],
+                        'property_value' => $customProperty['value']
+                    );
+                    $object['ObjectProperty'][] = $property;
+                }
+                foreach ($object['ObjectProperty'] as $objectProperty) {
+                    $objectPropertyModel = ClassRegistry::init('ObjectProperty');
+                    $objectPropertyModel->create();
+                    if (!$objectPropertyModel->save($objectProperty)) {
+                        throw new BeditaException('error saving ObjectProperty for ' . $object['objectType'] . ' (import id ' . $object['id'] . ')');
+                    }
+                }
+            }
+
             $this->import['saveMap'][$object['id']] = $model->id;
             $this->trackDebug('- saving ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... object saved');
             if (!empty($object['parents'])) {
@@ -670,6 +869,18 @@ class BEFormat extends BEAppModel
             }
             $this->trackDebug('- saving object ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... END');
         }
+    }
+
+    private function saveCategory($categoryName, $objectType) {
+        $categoryModel = ClassRegistry::init('Category');
+        $objectTypeId = Configure::read("objectTypes.$objectType.id");
+        $categories = array( $categoryName );
+        return $categoryModel->findCreateCategories($categories, $objectTypeId);
+    }
+
+    private function saveTags($tagListString) {
+        $categoryModel = ClassRegistry::init('Category');
+        return $categoryModel->saveTagList($tagListString);
     }
 
     private function saveRelation($relation, $counter) {

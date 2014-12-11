@@ -22,6 +22,8 @@ class FormatShell extends BeditaBaseShell {
     private $options = array(
         'import' => array(
             'saveMode' => 1
+            // 'sourceMediaRoot' => ''
+            // 'preservePaths'
         ),
         'export' => array(
         )
@@ -37,7 +39,7 @@ class FormatShell extends BeditaBaseShell {
             return;
         }
 
-        // !. reading file
+        // 1. reading file
         $inputData = @file_get_contents($this->params['f']);
         if (!$inputData) {
             $this->trackInfo('File "' . $this->params['f'] . '" not found');
