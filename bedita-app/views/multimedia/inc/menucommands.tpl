@@ -6,18 +6,40 @@ Menu a SX valido per tutte le pagine del controller.
 *}
 
 {if !empty($view->action) && $view->action == "view"}
+
+<style>
+	.loader + #saveBEObject {
+		display: none;
+	}
+
+	.insidecol .loader {
+		margin: 20px auto;
+	}
+</style>
+
 <script type="text/javascript">
 	var urlView = '{$html->url("/multimedia/view/")}' ;
 
 	$(document).ready(function() { 
 
 		$("#collision").hide();
+
 		var optionsForm = { 
 			error: showResponse,  // post-submit callback  
 			success: showResponse,  // post-submit callback  
 			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
-			url: "{$html->url('/multimedia/saveAjax')}"
-		} ;
+			url: "{$html->url('/multimedia/saveAjax')}",
+			beforeSend: function() {
+		        $("div.insidecol #saveBEObject").before('<div class="loader" style="display: block"><span>0%</span></div>');
+		    },
+		    uploadProgress: function(event, position, total, percentComplete) {
+		        var percentVal = percentComplete + '%';
+		        $("div.insidecol .loader span").text(percentVal);
+		    },
+			complete: function(xhr) {
+				$("div.insidecol .loader span").remove();
+			}
+		};
 	
 		$("div.insidecol input[name='saveMedia']").click(function() { 
 			if ( $('#concurrenteditors #editorsList').children().size() > 0 ) { 

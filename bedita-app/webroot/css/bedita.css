@@ -3083,6 +3083,15 @@ input[type=submit].auth_button_google {
     height: 40px;
     position: relative;
     margin: 100px auto;
+    text-align: center;
+}
+
+#loading > *, .loader > *, .modaloader > * {
+	color: white;
+	z-index: 1;
+	position: relative;
+	line-height: 40px;
+	text-shadow: 0 0 5px #333;
 }
 
 #loading:before, .loader:before, .modaloader:before, #loading:after, .loader:after, .modaloader:after {
