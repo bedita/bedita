@@ -994,7 +994,7 @@ TR.trick {
 .boxed.relationList .commands {
 	text-align: right;
 	border-top:1px solid #999;
-	height: 35px;
+	min-height: 35px;
 	line-height: 29px;
 }
 
