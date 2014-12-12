@@ -712,6 +712,17 @@ var toggleSelectTree = function(ev) {
     }
 }
 
+/*...........................................    
+
+   A[download] links
+
+...........................................*/
+
+var a = document.createElement('a');
+if (typeof a.download == 'undefined') {
+    $('A[download]').remove();
+}
+
 /* end of document ready() */
 
 
