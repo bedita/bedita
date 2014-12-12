@@ -48,6 +48,9 @@ class FormatShell extends BeditaBaseShell {
 
         $this->trackInfo('::: import start :::');
 
+        if (isset($this->params['m'])) {
+            $this->options['import']['sourceMediaRoot'] = $this->params['m'];
+        }
         if (isset($this->params['v'])) {
             $this->options['import']['logDebug'] = true;
         }
@@ -132,7 +135,7 @@ class FormatShell extends BeditaBaseShell {
         $this->hr();
         $this->out('format script shell usage:');
         $this->out('');
-        $this->out('./cake.sh format import -f <filename> [-v]');
+        $this->out('./cake.sh format import -f <filename> [-m <sourceMediaRoot>] [-v]');
         $this->out('./cake.sh format export -rootId <rootId> -f <filename> [-v]');
         $this->out('');
     }

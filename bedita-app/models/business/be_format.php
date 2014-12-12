@@ -167,6 +167,12 @@ class BEFormat extends BEAppModel
         }
         echo "\n" . 'Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')' . "\n\n";
 
+        $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import'; // default 
+        if (!empty($options['sourceMediaRoot'])) {
+            $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
+        }
+        echo "\n" . 'Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"' . "\n\n";
+
         try {
 
             // 1. Validate
@@ -324,7 +330,19 @@ class BEFormat extends BEAppModel
      * 5.3 switch must be a valid relation name + valid relation objects (existence of objects and right connection)
      * 5.4 objectType(s) must be valid for specified relation switch
      *
-     * 6 media [TODO]
+     * 6 media
+     * 6.1 source folder (sourceMediaRoot)
+     * 6.1.1 existence
+     * 6.1.2 permits [TODO]
+     * 6.2 destination folder [TODO]
+     * 6.2.1 existence [TODO]
+     * 6.2.2 space available [TODO]
+     * 6.3 files
+     * 6.3.1 existence (base folder + objects[i].uri) [TODO]
+     * 6.3.2 extension allowed [TODO]
+     * 6.3.3 dimension allowed [TODO]
+     * 6.3.4 all files dimension < space available [TODO]
+     * ...
      * 7 [...] [TODO]
      */
     public function validate($jsonString, $options = array()) {
@@ -348,6 +366,7 @@ class BEFormat extends BEAppModel
         // convert source objects to alternative structure
         $this->import['source']['data']['objects'] = Set::combine($this->import['source']['data'], 'objects.{n}.id', 'objects.{n}');
         $this->import['objects']['ids'] = array_keys($this->import['source']['data']['objects']);
+        $this->import['media'] = array();
         $this->import['config'] = array();
 
         // 2 config
@@ -479,22 +498,23 @@ class BEFormat extends BEAppModel
                 }
             }
         }
+
         foreach ($this->import['source']['data']['objects'] as $object) {
+            // 3.3 objectType existence
             if (!in_array($object['objectType'], $this->import['objects']['types'])) {
+                $ot = Configure::read('objectTypes.' . $object['objectType'] . '.id');
+                if (empty($ot)) {
+                    throw new BeditaException('missing objectType ' . $object['objectType']);
+                }
                 $this->import['objects']['types'][] = $object['objectType'];
             }
             $this->import['objects']['typeById'][$object['id']] = $object['objectType'];
-        }
 
-        // 3.3 objectType existence
-        foreach ($this->import['objects']['types'] as $objType) {
-            $ot = Configure::read('objectTypes.' . $objType . '.id');
-            if (empty($ot)) {
-                throw new BeditaException('missing objectType ' . $objType);
+            // populate media uri array
+            if (!empty($object['id']) && !empty($object['uri'])) {
+                $this->import['media'][$object['id']]['uri'] = $object['uri'];
             }
-        }
 
-        foreach ($this->import['source']['data']['objects'] as $object) {
             // 3.4 specific validation by objectType
             // TODO: implement it / idea: use model reflection (i.e. if <modelClass> has method 'validateBeforeImport' then invoke it)
 
@@ -506,12 +526,7 @@ class BEFormat extends BEAppModel
                     }
                 }
             }
-
-            // 3.6 tags
-            // TODO
         }
-
-
 
         // 4 tree consistency
 
@@ -691,6 +706,63 @@ class BEFormat extends BEAppModel
                 }
             }
         }
+
+        // 6.media
+        if (!empty($this->import['media'])) {
+            // 6.1 source folder (sourceMediaRoot)
+            // 6.1.1 existence
+            if (!file_exists($this->import['sourceMediaRoot'])) {
+                throw new BeditaException('sourceMediaRoot folder "' . $this->import['sourceMediaRoot'] . '" not found');
+            }
+
+            $this->import['source']['media']['root'] = $this->import['sourceMediaRoot'];
+
+            // ... not for remote folders
+            $folder =& new Folder($this->import['source']['media']['root'], true);
+            $this->import['source']['media']['size'] = $folder->dirSize();
+
+            // 6.1.2 permits [TODO]
+            // ...
+
+            // 6.2 destination folder
+            $timestamp = time();
+            $this->import['destination']['media']['root'] = Configure::read('mediaRoot') . DS . 'import' . DS . $timestamp;
+
+            // 6.2.1 existence [TODO]
+            if (!file_exists($this->import['destination']['media']['root'])) {
+                if (!mkdir($this->import['destination']['media']['root'])) {
+                    throw new BeditaException('destination folder "' . $this->import['destination']['media']['root'] . '" not found: failure on creating it');
+                }
+            }
+
+            // 6.2.2 space available
+            $this->import['destination']['media']['space'] = disk_free_space($this->import['destination']['media']['root']);
+
+            // 6.3 files
+            foreach ($this->import['media'] as $id => &$media) {
+                $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
+                // 6.3.1 existence (base folder + objects[i].uri) [TODO]
+                if (!file_exists($filePath)) {
+                    throw new BeditaException('file "' . $filePath . '" not found (object id "' . $id . '")');
+                } else {
+                    $media['base'] = $this->import['sourceMediaRoot'];
+                    $media['full'] = $filePath;
+                }
+
+                // 6.3.2 extension allowed [TODO]
+                // ...
+
+                // 6.3.3 dimension allowed [TODO]
+                // ...
+            }
+
+            // 6.3.4 all files dimension < space available
+            // space required => $this->import['source']['media']['size']
+            // space available => $this->import['destination']['media']['space']
+            if ($this->import['source']['media']['size'] >= $this->import['destination']['media']['space']) {
+                throw new BeditaException('not enought space on destination folder "' . $this->import['destination']['media']['root'] . '" - space required: ' . $this->import['source']['media']['size'] . ' / space available: ' . $this->import['destination']['media']['space']);
+            }
+        }        
     }
 
     /* private methods for relation management */
