@@ -872,27 +872,22 @@ class BEFormat extends BEAppModel
         if (!empty($this->import['saveMap'][$object['id']])) {
             $this->trackDebug($object['objectType'] . ' ' . $object['id'] . ' already saved with BEdita id ' . $this->import['saveMap'][$object['id']]);
         } else {
-            // 2.3.1 save object with policy 'NEW'
-            $this->trackDebug('2.3.1 save object with policy \'NEW\'');
-
-            // 2.3.2 save object with other policies [TODO]
-            $this->trackDebug('2.3.2 save object with other policies [TODO]');
+            $this->trackDebug('2.3.2 save object with policy \'NEW\'');
+            $this->trackDebug('2.3.3 save object with other policies [TODO]');
 
             $mode = $this->import['saveMode'];
             $this->trackDebug('- saving object ' . $object['id'] . ' with mode ' . $mode . ' ... START');
 
             $object['Category'] = array();
             if (!empty($object['categories'])) {
-                // 2.3.3 save object.categories
-                $this->trackDebug('2.3.3 save object.categories');
+                $this->trackDebug('2.3.4 save object.categories');
                 foreach ($object['categories'] as $category) {
                     $object['Category'] = $this->saveCategory($category['name'], $object['objectType']);
                 }
             }
 
             if (!empty($object['tags'])) {
-                // 2.3.4 save object.tags [TODO]
-                $this->trackDebug('2.3.4 save object.tags [TODO]');
+                $this->trackDebug('2.3.5 save object.tags');
                 $tagListString = '';
                 foreach ($object['tags'] as $tag) {
                     $tagListString.= $tag . ',';
@@ -913,8 +908,7 @@ class BEFormat extends BEAppModel
             }
             if (!empty($object['customProperties'])) {
 
-                // 2.3.5 save object.customProperties
-                $this->trackDebug('2.3.5 save object.customProperties');
+                $this->trackDebug('2.3.6 save object.customProperties');
 
                 $this->trackDebug('- saving custom properties for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
                 $object['ObjectProperty'] = array();
