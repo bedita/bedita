@@ -232,6 +232,16 @@ class BEFormat extends BEAppModel
             }
 
             $this->trackInfo('2.3 save objects');
+
+            if (!empty($this->import['media'])) {
+            $this->trackInfo('2.3.1 copy media');
+                foreach ($this->import['media'] as $id => &$media) {
+                    $beUri = $this->copyFileToBEMedia($media['full'], $this->import['destination']['media']['root']);
+                    $beFull = $this->import['destination']['media']['root'] . $beUri;
+                    $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                }
+            }
+
             foreach ($this->import['source']['data']['objects'] as &$object) {
                 $this->saveObject($object);
             }
@@ -254,9 +264,6 @@ class BEFormat extends BEAppModel
                     }
                 }
             }
-
-            // 2.5 save media [TODO]
-            $this->trackInfo('2.5 save media [TODO]');
 
             // 2.? [...] [TODO]
             $this->trackInfo('2.? [...] [TODO]');
@@ -334,7 +341,7 @@ class BEFormat extends BEAppModel
      * 6.1 source folder (sourceMediaRoot)
      * 6.1.1 existence
      * 6.1.2 permits [TODO]
-     * 6.2 destination folder [TODO]
+     * 6.2 destination folder
      * 6.2.1 existence [TODO]
      * 6.2.2 space available [TODO]
      * 6.3 files
@@ -725,8 +732,7 @@ class BEFormat extends BEAppModel
             // ...
 
             // 6.2 destination folder
-            $timestamp = time();
-            $this->import['destination']['media']['root'] = Configure::read('mediaRoot') . DS . 'import' . DS . $timestamp;
+            $this->import['destination']['media']['root'] = Configure::read('mediaRoot');
 
             // 6.2.1 existence [TODO]
             if (!file_exists($this->import['destination']['media']['root'])) {
@@ -983,6 +989,52 @@ class BEFormat extends BEAppModel
         }
         $this->import['saveMap']['relations'][$objRelModel->id][] = $relationData;
         $this->trackDebug('- saving relation ' . $counter . ': ' . $relation['switch'] . ' ... DONE');
+    }
+
+    /* file utils */
+
+    /**
+     * Copy $name to $destPath using BEdita media logic (it's not a direct copy of the file)
+     * Return new relative path for file
+     * 
+     * @param  string $source file
+     * @param  string $destPath folder
+     * @return string new relative path to file
+     */
+    private function copyFileToBEMedia($source, $destPath) {
+        $tmp = explode(DS, $source);
+        $name = array_pop($tmp);
+        $md5 = md5($name);
+        preg_match("/(\w{2})(\w{2})/", $md5, $dirs);
+        array_shift($dirs);
+        $pointPosition = strrpos($name,".");
+        $filename = $tmpname = substr($name, 0, $pointPosition);
+        $ext = substr($name, $pointPosition);
+        $dirsString = implode(DS, $dirs);
+        $counter = 1;
+        while(file_exists($destPath . DS . $dirsString . DS . $filename . $ext)) {
+            $filename = $tmpname . "-" . $counter++;
+        }
+
+        // creating directories
+        $d = Configure::read('mediaRoot');
+        $dirs = array_reverse($dirs);
+        while (($current = array_pop($dirs))) {
+            $d.= DS . $current;
+            if (!file_exists($d) && !is_dir($d)) {
+                if (!mkdir($d)) {
+                    throw new BeditaException('Error creating dir "' . $current . '"');    
+                }
+            }
+        }
+
+        // save new name (passed by reference)
+        $name = $filename . $ext;
+        $destination = $destPath . DS . $dirsString . DS . $name;
+        if (!copy($source, $destination)) {
+            throw new BeditaException('Error copying file "' . $source . '" to "' . $destination);
+        }
+        return DS . $dirsString . DS . $name;
     }
 
     /* private logging functions */
