@@ -235,8 +235,9 @@ class BEFormat extends BEAppModel
 
             if (!empty($this->import['media'])) {
             $this->trackInfo('2.3.1 copy media');
+                $streamModel = ClassRegistry::init('Stream');
                 foreach ($this->import['media'] as $id => &$media) {
-                    $beUri = $this->copyFileToBEMedia($media['full'], $this->import['destination']['media']['root']);
+                    $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
                     $beFull = $this->import['destination']['media']['root'] . $beUri;
                     $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
                 }
