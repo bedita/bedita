@@ -53,7 +53,7 @@ class BeEmbedMediaHelper extends AppHelper {
 	 *
 	 * @var array
 	 */
-	var $helpers = array('Html', 'BeEmbedFlash');
+	var $helpers = array('Html', 'BeEmbedFlash', 'BeEmbedHtml5');
 
 	function __construct() {
 		// get configuration parameters
@@ -113,20 +113,81 @@ class BeEmbedMediaHelper extends AppHelper {
 		return $output;
 	}
 
+	
 	/******************************
 	 * private functions
 	 *****************************/
+	
+	/**
+	 * get img tag for thumbnail
+	 * 
+	 * @param array $obj
+	 * @param array $htmlAttributes
+	 * @param boolean $URLonly
+	 * @return string html
+	 */
+	private function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
+		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"]))
+			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
+		
+		if (!$helper = $this->getProviderHelper($obj))
+			return "";
+		
+		return $helper->thumbnail($obj, $htmlAttributes, $URLonly);
+	}
 
 	/**
-	 * return object model for $obj, getting it from configuration, by object_type_id
-	 *
-	 * @param array $obj, object
+	 * get embed video
+	 * 
+	 * @param array $obj
+	 * @param array $params
+	 * @param array $attributes
+	 * @return string html
+	 */
+	private function embed(&$obj, $params = array(), $attributes = array() ) {
+		
+		if (!$helper = $this->getProviderHelper($obj)){
+			$obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
+			$BeEmbedHtml5 = $this->getHelper("BeEmbedHtml5");
+			return  $BeEmbedHtml5->embed($obj, $params, $attributes);
+		}
+
+
+		/* provider helper to manage video/audio type don't exists
+		if (!$helper = $this->getProviderHelper($obj)){
+			$obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
+			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
+			return  $beEmbedFlash->embed($obj, $params, $attributes);
+		}
+		
+		// provider helper exists and it's setted to use provider helper 
+		if (!empty($params['useProviderPlayer'])) {
+			return $helper->embed($obj, $attributes);
+		} else {
+			// try to use internal player
+			$obj['uri'] = $this->sourceEmbed($obj);
+			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
+			$res = $beEmbedFlash->embed($obj, $params, $attributes);
+			if ( $res === false ) {
+				$res =  $helper->embed($obj, $attributes) ;
+			}
+			return $res;
+		}*/
+	}
+	
+	/**
+	 * get source url
+	 * 
+	 * @param array $obj
 	 * @return string
 	 */
-	private function getType ($obj) {
-		$model = Configure::read("objectTypes." . $obj['object_type_id'] . ".model");
-		return (!empty($model))? $model : "";
+	private function sourceEmbed(&$obj) {
+		if (!$helper = $this->getProviderHelper($obj))
+			return "";
+			
+		return $helper->sourceEmbed($obj);
 	}
+
 
 	/**
 	 * produce html tag for image
@@ -159,115 +220,6 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 	}
 
-	/**
-	 * Return image $obj uri
-	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumb Lib)
-	 * 
-	 * @param array $obj, object
-	 * @param array $params, specific parameters
-	 * @return string
-	 */
-	private function getImageSrc($obj, $params) {
-
-		if ($params["presentation"] == "thumb") {
-		    $src = $this->beThumb->image($obj, $params);
-		} else {
-			$src = $this->_conf['url'] . $obj['uri'];
-		}
-		return $src;
-	}
-
-	
-	/**
-	 * get img tag for thumbnail
-	 * 
-	 * @param array $obj
-	 * @param array $htmlAttributes
-	 * @param boolean $URLonly
-	 * @return string html
-	 */
-	public function thumbnail(&$obj, $htmlAttributes = array(), $URLonly=false ) {
-		if (!empty($obj["thumbnail"]) && preg_match(Configure::read("validate_resource.URL"), $obj["thumbnail"]))
-			return (!$URLonly)? $this->Html->image($obj["thumbnail"], $htmlAttributes) : $obj["thumbnail"];
-		
-		if (!$helper = $this->getProviderHelper($obj))
-			return "";
-		
-		return $helper->thumbnail($obj, $htmlAttributes, $URLonly);
-	}
-
-	/**
-	 * get embed video
-	 * 
-	 * @param array $obj
-	 * @param array $params
-	 * @param array $attributes
-	 * @return string html
-	 */
-	public function embed(&$obj, $params = array(), $attributes = array() ) {
-		
-		// provider helper to manage video/audio type don't exists
-		if (!$helper = $this->getProviderHelper($obj)){
-			$obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
-			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
-			return  $beEmbedFlash->embed($obj, $params, $attributes);
-		}
-		
-		// provider helper exists and it's setted to use provider helper 
-		if (!empty($params['useProviderPlayer'])) {
-			return $helper->embed($obj, $attributes);
-		} else {
-			// try to use internal player
-			$obj['uri'] = $this->sourceEmbed($obj);
-			$beEmbedFlash = $this->getHelper("BeEmbedFlash");
-			$res = $beEmbedFlash->embed($obj, $params, $attributes);
-			if ( $res === false ) {
-				$res =  $helper->embed($obj, $attributes) ;
-			}
-			return $res;
-		}
-	}
-	
-	/**
-	 * get source url
-	 * 
-	 * @param array $obj
-	 * @return string
-	 */
-	public function sourceEmbed(&$obj) {
-		if (!$helper = $this->getProviderHelper($obj))
-			return "";
-			
-		return $helper->sourceEmbed($obj);
-	}
-
-	/**
-	 * get provider, if set
-	 * 
-	 * @param array $obj
-	 * @return mixed string|boolean
-	 */
-	private function getProviderHelper(&$obj) {
-		if(empty($obj["provider"])) 
-			return false ;
-		$helperName = Inflector::camelize($obj["provider"]);
-		return $this->getHelper($helperName);
-	}
-
-	/**
-	 * check whether url is valid
-	 * 
-	 * @param string $url
-	 * @return boolean
-	 */
-	private function checkURL($url) {
-		foreach (Configure::read('validate_resource.allow') as $reg) {
-			if(preg_match($reg, $url)) 
-				return true;
-		}
-		return false;
-	}
-	
 
 
 	/**
@@ -420,6 +372,66 @@ class BeEmbedMediaHelper extends AppHelper {
 		}
 		return $output;
 	}
+
+
+	/**
+	 * return object model for $obj, getting it from configuration, by object_type_id
+	 *
+	 * @param array $obj, object
+	 * @return string
+	 */
+	private function getType ($obj) {
+		$model = Configure::read("objectTypes." . $obj['object_type_id'] . ".model");
+		return (!empty($model))? $model : "";
+	}
+
+	
+	/**
+	 * Return image $obj uri
+	 * if $params["presentation"] == "thumb", return image thumb (@see BeThumb Lib)
+	 * 
+	 * @param array $obj, object
+	 * @param array $params, specific parameters
+	 * @return string
+	 */
+	private function getImageSrc($obj, $params) {
+
+		if ($params["presentation"] == "thumb") {
+		    $src = $this->beThumb->image($obj, $params);
+		} else {
+			$src = $this->_conf['url'] . $obj['uri'];
+		}
+		return $src;
+	}
+
+
+	/**
+	 * get provider, if set
+	 * 
+	 * @param array $obj
+	 * @return mixed string|boolean
+	 */
+	private function getProviderHelper(&$obj) {
+		if(empty($obj["provider"])) 
+			return false ;
+		$helperName = Inflector::camelize($obj["provider"]);
+		return $this->getHelper($helperName);
+	}
+
+	/**
+	 * check whether url is valid
+	 * 
+	 * @param string $url
+	 * @return boolean
+	 */
+	private function checkURL($url) {
+		foreach (Configure::read('validate_resource.allow') as $reg) {
+			if(preg_match($reg, $url)) 
+				return true;
+		}
+		return false;
+	}
+
 
 	/**
 	 * media type image
