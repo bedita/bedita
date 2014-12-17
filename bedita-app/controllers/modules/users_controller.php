@@ -667,45 +667,40 @@ class UsersController extends ModulesController {
     }
       
       
-    protected function forward($action, $esito) {
-        $REDIRECT = array(
-            "viewUser" =>   array(
-                "ERROR" => $this->referer()
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'viewUser' =>   array(
+                'ERROR' => $this->referer()
             ),
-            "viewGroup" =>  array(
-                "ERROR" => '/users/groups'
+            'viewGroup' =>  array(
+                'ERROR' => '/users/groups'
             ),
-            "saveUser" =>   array(
-                "OK"    => "/users/viewUser/" . @$this->User->id,
-                "ERROR" => $this->referer() 
+            'saveUser' =>   array(
+                'OK'    => '/users/viewUser/' . @$this->User->id,
+                'ERROR' => $this->referer() 
             ),
-            "removeUser" =>     array(
-                "OK"    => "/users",
-                "ERROR" => "/users" 
+            'removeUser' =>     array(
+                'OK'    => '/users',
+                'ERROR' => '/users' 
             ),
-            "blockUser" =>  array(
-                "OK"    => "/users",
-                "ERROR" => "/users" 
+            'blockUser' =>  array(
+                'OK'    => '/users',
+                'ERROR' => '/users' 
             ),
-            "saveGroup" =>  array(
-                "OK"    => "/users/viewGroup/" . @$this->Group->id,
-                "ERROR" => $this->referer() 
+            'saveGroup' =>  array(
+                'OK'    => '/users/viewGroup/' . @$this->Group->id,
+                'ERROR' => $this->referer() 
             ),
-            "removeGroup" =>    array(
-                "OK"    => "/users/groups",
-                "ERROR" => "/users/groups" 
+            'removeGroup' =>    array(
+                'OK'    => '/users/groups',
+                'ERROR' => '/users/groups' 
             ),
-            "saveUserAjax" =>   array(
-                "OK"    => self::VIEW_FWD.'save_user_ajax_response',
-                "ERROR" => self::VIEW_FWD.'save_user_ajax_response'
+            'saveUserAjax' =>   array(
+                'OK'    => self::VIEW_FWD.'save_user_ajax_response',
+                'ERROR' => self::VIEW_FWD.'save_user_ajax_response'
             )
         );
-        if(isset($REDIRECT[$action][$esito])) {
-            return $REDIRECT[$action][$esito];
-        }
-        return false;
+        return $this->moduleForward($action, $result, $moduleRedirect);
     }
-    
-}
 
-?>
+}

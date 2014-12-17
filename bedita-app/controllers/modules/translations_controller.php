@@ -241,36 +241,19 @@ class TranslationsController extends ModulesController {
 		return $this->LangText->findObjs($filter,$order,$dir,$page,$dim);
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"page"	=> 						array(
-												"ERROR"	=> "/translations/index"
-											),
-			"save"	=> 						array(
-												"OK"	=> "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang'],
-												"ERROR" => "/translations/view/".$this->data['master_id']."/".$this->data['translation_lang']
-											),
-			"view"	=> 						array("ERROR"	=> "/translations"),
-			"delete"	=> 					array(
-												"OK"	=> "/translations",
-												"ERROR" => $this->referer()
-											),
-			"deleteSelected" =>				array(
-												"OK"	=> $this->referer(),
-												"ERROR"	=> $this->referer() 
-											),
-			"deleteTranslations"	=> 		array(
-												"OK"	=> $this->referer(),
-												"ERROR" => $this->referer()
-											),
-			"changeStatusTranslations"	=> 	array(
-												"OK"	=> $this->referer(),
-												"ERROR" => $this->referer()
-											),
-		);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
-}
 
-?>
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'deleteTranslations' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            ),
+            'changeStatusTranslations' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            ),
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
+	
+}

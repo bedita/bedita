@@ -38,7 +38,7 @@ class Area extends BeditaCollectionModel
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"public_name" => 10,
 		"public_url" => 8,
