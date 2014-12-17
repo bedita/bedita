@@ -26,27 +26,31 @@ $(document).ready(function(){
 		window.open("http://maps.google.com/maps?" + q + "&output=classic");
 	});	
 	
-	geocoder = new google.maps.Geocoder();
-	$(".geocodeme").click(function(){	
-		var address = $(".geoaddress").val();
-		if (address == "") {
-			alert ("devi prima inserire un indirizzo"); return;
-		}
-		geocoder.geocode( { 'address': address}, function(results, status) {
-			if (status == google.maps.GeocoderStatus.OK) {
-				var latlng = ""+results[0].geometry.location+"";
-				var latlng = latlng.replace("(","").replace(")","");				
-				var sublatlng = latlng.split(',');
-				$(".lat").val(sublatlng[0]);
-				$(".lng").val(sublatlng[1]);
-				$(".latlong").val(latlng)
-				
-			} else {
-				alert("Geocode was not successful for the following reason: " + status);
-			}
-		});				
-	});	
-});	
+    try {
+        geocoder = new google.maps.Geocoder();
+        $('.geocodeme').click(function() {
+            var address = $('.geoaddress').val();
+            if (address == '') {
+                alert('devi prima inserire un indirizzo'); return;
+            }
+            geocoder.geocode( { 'address': address}, function(results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var latlng = '' + results[0].geometry.location + '';
+                    var latlng = latlng.replace('(', '').replace(')', '');
+                    var sublatlng = latlng.split(',');
+                    $('.lat').val(sublatlng[0]);
+                    $('.lng').val(sublatlng[1]);
+                    $('.latlong').val(latlng)
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        });
+    } catch (err) {
+        $('.geocodeme').attr('disabled', 'disabled');
+        console.warn('Google CDN unreachable. Some functionalities have been disabled.');
+    }
+});
 </script>
 
 {$relcount = $object.GeoTag|@count|default:0}
