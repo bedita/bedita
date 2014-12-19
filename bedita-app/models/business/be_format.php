@@ -46,8 +46,8 @@ class BEFormat extends BEAppModel
     // utility array
     protected $import = array(
         'source' => array(
-            'string' => '', // jsonString
-            'data' => array() // json_decode of jsonString
+            'string' => null, // (is_string(data)) ? data : null
+            'data' => array() // json_decode of data
         ),
         'objects' => array(
             'ids' => array(),
@@ -68,9 +68,18 @@ class BEFormat extends BEAppModel
         'logLevel' => 2 // INFO
     );
 
+    protected $export = array(
+        'destination' => array(
+            'byType' => array()
+        ),
+        'returnType' => 0, // JSON
+        'logLevel' => 2 // INFO
+    );
+
     protected $result = array(
     );
 
+    private $logFile;
     private $logLevel;
 
     protected $logLevels = array(
@@ -96,47 +105,13 @@ class BEFormat extends BEAppModel
     );
 
     /**
-     * Import jsonString to BEdita
+     * Import data (json string or array) to BEdita
      *
-     * @param $jsonString string
+     * @param $data string|array
      * @param $options array
      * @return $result array
      *
-     * $jsonString = '{
-     *    'tree': {
-     *       'roots': ['<id>'],
-     *       'sections': [
-     *        {
-     *           'id': '<id>',
-     *           'parent': '<id>'
-     *        }
-     *       ]
-     *     },
-     *    'objects': [
-     *      {
-     *         'id': '<id>',
-     *         'objectType': '<objectType>'
-     *      },
-     *      {
-     *         'id': '<id>',
-     *         'objectType': '<objectType>'
-     *      }
-     *     ],
-     *    'relations': [
-     *      {
-     *         'idLeft': '<id>',
-     *         'idRight': '<id>',
-     *         'switch': '<relationName>',     
-     *         'params': []
-     *      },
-     *      {
-     *         'idLeft': '<id>',
-     *         'idRight': '<id>',
-     *         'switch': '<relationName>',     
-     *         'params': []
-     *      }
-     *    ]
-     * }'
+     * @link https://github.com/bedita/bedita/wiki/Default-serialized-format-for-BEdita-objects
      *
      * $options = array(
      *    'logDebug' => true, // can be true|false
@@ -148,7 +123,9 @@ class BEFormat extends BEAppModel
      * 3. Return result object
     */
     
-    public function import($jsonString, $options = array()) {
+    public function import(&$data, $options = array()) {
+
+        $this->logFile = 'import';
 
         // setting log level - default INFO
         if (!empty($options['logDebug'])) {
@@ -159,25 +136,28 @@ class BEFormat extends BEAppModel
             }
         }
         $this->logLevel = $this->import['logLevel'];
+
+        $this->trackInfo('START');
         echo "\n" . 'Import options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
 
         // setting save mode - default NEW
         if (!empty($options['saveMode'])) {
             $this->import['saveMode'] = $options['saveMode'];
         }
-        echo "\n" . 'Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')' . "\n\n";
+        echo "\n" . 'Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')';
 
         $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import'; // default 
         if (!empty($options['sourceMediaRoot'])) {
             $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
         }
-        echo "\n" . 'Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"' . "\n\n";
+        echo "\n" . 'Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"';
+        echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
 
         try {
 
             // 1. Validate
             $this->trackInfo('1. validate start');
-            $this->validate($jsonString, $options);
+            $this->validate($data, $options);
             $this->trackInfo('1. validate OK');
 
             // 2. Importing
@@ -281,10 +261,15 @@ class BEFormat extends BEAppModel
         $this->trackDebug('3.1 format / process result (?) [TODO]');
         // 3.2 return result
         $this->trackDebug('3.2 return result');
+
+        $this->trackInfo('END');
         return $this->result;
     }
 
     public function export(array &$objects, $options = array()) {
+
+        $this->logFile = 'export';
+
         // setting log level - default ERROR
         if (!empty($options['logDebug'])) {
             if ($options['logDebug'] == true) {
@@ -294,16 +279,71 @@ class BEFormat extends BEAppModel
             }
         }
         $this->logLevel = $this->export['logLevel'];
+        $this->trackInfo('START');
 
-        // TODO: implement
+        echo "\n" . 'Export options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
+
+        // setting returnType - default json string
+        if (!empty($options['returnType'])) {
+            $this->export['returnType'] = $options['returnType'];
+        } else {
+            $this->export['returnType'] = 'JSON';
+        }
+        echo "\n" . 'Export options - returnType: ' . $this->export['returnType'] . ' (' . $this->export['returnType'] . ')';
+
+        $this->export['destMediaRoot'] = 'TMP' . DS . 'media-export'; // default 
+        if (!empty($options['destMediaRoot'])) {
+            $this->export['destMediaRoot'] = $options['destMediaRoot'];
+        }
+        echo "\n" . 'Export options - destMediaRoot: "' . $this->export['destMediaRoot'] . '"';
+        echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
+
+        try {
+            // Fill object arrays: 'config' / 'tree' / 'objects' / 'relations'
+            $this->export['destination']['byType']['ARRAY'] = array(
+                'config' => array(),
+                'tree' => array(),
+                'objects' => array(),
+                'relations' => array()
+            );
+
+            // 1. config: [] [TODO]
+            // 1.1 config.customProperties: [] [TODO]
+            // 2. tree: [] [TODO]
+            // 3. objects: [] [TODO]
+            // 4. relations: [] [TODO]
+            // 5. media [TODO]
+            // 6. other [TODO]
+
+            if ($this->export['returnType'] == 'JSON') {
+
+                $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
+
+            } else if ($this->export['returnType'] == 'FILE') {
+
+                // TODO: implement
+                // $this->export['destination']['byType']['FILE'] = ... file ...
+
+            }
+        
+            $this->trackInfo('export OK');
+        } catch(Exception $e) {
+
+                $this->trackError('ERROR: ' . $e->getMessage());
+
+        }
+
+        $this->trackInfo('END');
+
+        return $this->export['destination']['byType'][$this->export['returnType']];
     }
 
     /**
-     * Validation of jsonString and related objects and semantics
+     * Validation of data and related objects and semantics
      * 
-     * 1 json
-     * 1.1 not empty
-     * 1.2 valid (json_decode / json_last_error)
+     * 1 if data is a string: check json
+     * 1.1 if data is a string: not empty
+     * 1.2 if data is a string: valid (json_decode / json_last_error)
      *
      * 2 config
      * 2.1 custom properties
@@ -352,23 +392,33 @@ class BEFormat extends BEAppModel
      * 6.3.4 all files dimension < space available [TODO]
      * ...
      * 7 [...] [TODO]
+     *
+     * @param $data string|array
+     * @param $options array
      */
-    public function validate($jsonString, $options = array()) {
+    public function validate(&$data, $options = array()) {
 
-        // 1 json
-        $this->import['source']['string'] = $jsonString;
+        if (!is_array($data)) {
+            // 1 json
+            $this->import['source']['string'] = $data;
 
-        // 1.1 not empty
-        if (empty($this->import['source']['string'])) {
-            throw new BeditaException('empty json string');
-        }
+            // 1.1 not empty
+            if (empty($this->import['source']['string'])) {
+                throw new BeditaException('empty json string');
+            }
 
-        $this->import['source']['string'] = trim($this->import['source']['string']);
-        $this->import['source']['data'] = json_decode($this->import['source']['string'], true);
+            $this->import['source']['string'] = trim($this->import['source']['string']);
+            $this->import['source']['data'] = json_decode($this->import['source']['string'], true);
 
-        // 1.2 valid (json_decode / json_last_error)
-        if (empty($this->import['source']['data'])) {
-            throw new BeditaException('json string not valid: json_last_error error code ' . $this->jsonLastErrorMsg());
+            // 1.2 valid (json_decode / json_last_error)
+            if (empty($this->import['source']['data'])) {
+                throw new BeditaException('json string not valid: json_last_error error code ' . $this->jsonLastErrorMsg());
+            }
+        } else {
+            $this->import['source']['data'] = $data;
+            if (empty($this->import['source']['data'])) {
+                throw new BeditaException('empty input data');
+            }
         }
 
         // convert source objects to alternative structure
@@ -1055,8 +1105,10 @@ class BEFormat extends BEAppModel
         $this->result['log']['ALL'][] = $level . ': ' . $message;
         if ($this->logLevels[$level] <= $this->logLevel) {
             $this->result['log']['filtered'][] = $message;
-            echo "\n[$level] $message";
             $this->log($message, strtolower($level));
+            if (!empty($this->logFile)) {
+                $this->log($message, $this->logFile);
+            }
         }
     }
 

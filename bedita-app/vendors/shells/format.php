@@ -46,7 +46,7 @@ class FormatShell extends BeditaBaseShell {
             return;
         }
 
-        $this->trackInfo('::: import start :::');
+        $this->trackInfo('Import start');
 
         if (isset($this->params['m'])) {
             $this->options['import']['sourceMediaRoot'] = $this->params['m'];
@@ -54,6 +54,9 @@ class FormatShell extends BeditaBaseShell {
         if (isset($this->params['v'])) {
             $this->options['import']['logDebug'] = true;
         }
+
+        // debug: uncomment to test import from array 
+        //$inputData = json_decode($inputData,true);
         
         // 2. do import
         $beFormat = ClassRegistry::init('BEFormat');
@@ -61,74 +64,46 @@ class FormatShell extends BeditaBaseShell {
 
         // 3. end
         $this->trackInfo('');
-        $this->trackInfo('::: import end :::');
+        $this->trackInfo('Import end');
     }
 
     public function export() {
 
         $this->hr();
 
-        if (empty($this->params['f'])) {
-            $this->trackInfo('Missing filename parameter');
-            $this->help();
-            return;
+        $this->trackInfo('Export start');
+
+        // prepare export
+        $objects = array();
+        if (isset($this->params['id'])) {
+            $objects[] = $this->params['id'];
+        } else {
+            $objects[] = 1; // default: object with id 1 - test
         }
 
-        if (empty($this->params['rootId'])) {
-            $this->trackInfo('Missing root parameter');
-            $this->help();
-            return;
+        if (isset($this->params['f'])) {
+            $this->options['export']['filename'] = $this->params['f'];
         }
 
-        $this->trackInfo('::: export start :::');
+        if (isset($this->params['m'])) {
+            $this->options['export']['destMediaRoot'] = $this->params['m'];
+        }
+
+        if (isset($this->params['t'])) {
+            $this->options['export']['returnType'] = $this->params['t'];
+        }
 
         if (isset($this->params['v'])) {
-            $this->options['import']['logDebug'] = true;
+            $this->options['export']['logDebug'] = true;
         }
 
-        // 1. get data for rootId
-        $rootId = $this->params['rootId'];
-        $beObject = ClassRegistry::init('BEObject');
-        if (
-            !(
-                $o = $beObject->find(
-                        'first',
-                        array(
-                            'conditions' => array(
-                                'BEObject.id' => $rootId,
-                                'BEObject.object_type_id' => array(
-                                    Configure::read('objectTypes.area.id'),
-                                    Configure::read('objectTypes.section.id')
-                                )
-                            )
-                        )
-                    )
-                )
-            ) {
-            $this->trackInfo('Error during root search, for rootId ' . $rootId);
-            return;
-        }
-
-        if (empty($o)) {
-            $this->trackInfo('Area or publication with id ' . $rootId . ' not found');
-        }
-
-        // TODO: fill object arrays, ecc.
-        // 'tree' / 'objects' / 'relations'
-
-        // 2. do export
-        $objects = array(
-            0 => $o
-        );
+        // do export
         $beFormat = ClassRegistry::init('BEFormat');
         $result = $beFormat->export($objects, $this->options['export']);
 
-        // 3. save data to file
-        // TODO: implement
-
-        // 4. end
+        // end
         $this->trackInfo('');
-        $this->trackInfo('::: export end :::');
+        $this->trackInfo('Export end');
     }
 
     public function help() {
@@ -136,7 +111,7 @@ class FormatShell extends BeditaBaseShell {
         $this->out('format script shell usage:');
         $this->out('');
         $this->out('./cake.sh format import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh format export -rootId <rootId> -f <filename> [-v]');
+        $this->out('./cake.sh format export [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
         $this->out('');
     }
 
@@ -154,22 +129,5 @@ class FormatShell extends BeditaBaseShell {
         }
         $this->hr();
     }
-
-    // private function viewResult($result, $logLevel) {
-    //  $this->trackInfo( '::: result :::' );
-    //  debug($result['log']);exit;
-    //  foreach ($result['log'] as $key => $log) {
-    //      debug($this->logLevels[$key]);
-    //      if (array_key_exists($key,$this->logLevels) && $this->logLevels[$key] <= $logLevel) {
-    //          $this->hr();
-    //          $this->out($key);
-    //          $this->hr();
-    //          foreach ($log as $msg) {
-    //              $this->out($msg);
-    //          }
-    //      }
-    //      $this->hr();
-    //  }
-    // }
 }
 ?>
