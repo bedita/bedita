@@ -894,7 +894,7 @@ class Tree extends BEAppModel
         // Check if it's root.
         $check = $this->find('count', array(
             'contain' => array(),
-            'conditions' => array('id' = $id, 'area_id' = $id, 'parent_id' => null),
+            'conditions' => array('id' => $id, 'area_id' => $id, 'parent_id' => null),
         ));
         if (!$check) {
             throw new BeditaException(__('Object is not root', true), array('id' => $id));
