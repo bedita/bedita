@@ -72,7 +72,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Enables calling methods for object types as /documents, /events, etc... delegate the action to slef::objects()
+     * Enables calling methods for object types as /documents, /events, etc... delegating the action to self::objects()
      *
      * @param string $method name of the method to be invoked
      * @param array $arguments list of arguments passed to the function
@@ -159,10 +159,6 @@ abstract class ApiBaseController extends FrontendController {
         } else {
 
         }
-    }
-
-    protected function objectType($objectType) {
-        die();
     }
 
     /**
