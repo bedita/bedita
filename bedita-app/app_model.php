@@ -1464,6 +1464,9 @@ class BeditaCollectionModel extends BEAppObjectModel {
 				)
 	);
 
+	public function deleteCollection($id) {
+		return ClassRegistry::init('Tree')->removeBranch($id);
+	}
 }
 
 /**
