@@ -6,7 +6,7 @@
 <script>
 $(document).ready(function(){
 	
-	$("A.googlemaptest").css("cursor","pointer").click(function(){
+    $('.googlemaptest').css('cursor', 'pointer').click(function(){
 		if ( ( $(".lat").val() == "" ) ) {
 			alert ("latitude value is required"); return;
 		} 
@@ -47,7 +47,7 @@ $(document).ready(function(){
             });
         });
     } catch (err) {
-        $('.geocodeme').attr('disabled', 'disabled');
+        $('.geocodeme, .googlemaptest').attr('disabled', 'disabled');
         console.warn('Google CDN unreachable. Some functionalities have been disabled.');
     }
 });
@@ -106,7 +106,7 @@ $(document).ready(function(){
 *}
 <tr>
 	<td></td>
-	<td colspan="3"><input type="button" class="geocodeme" value="{t}Find and fill latlong coords{/t}" /> <a target="_blank" class="BEbutton googlemaptest">{t}Test on GoogleMaps{/t}</a></td>
+	<td colspan="3"><input type="button" class="geocodeme" value="{t}Find and fill latlong coords{/t}" /> <input type="button" class="googlemaptest" value="{t}Test on GoogleMaps{/t}" /></td>
 </tr>
 
 </table>
