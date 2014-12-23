@@ -61,6 +61,7 @@ abstract class ApiBaseController extends FrontendController {
      * Merge self::defaultEndPoints, self::endPoints and object types whitelist end points
      */
     public function __construct() {
+        $this->components[] = 'ApiFormatter';
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
@@ -135,7 +136,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->action = $methodName;
         call_user_func_array(array($this, $methodName), $args);
 
-        $this->buildResponse();
+        $this->response();
     }
 
     /**
@@ -154,7 +155,7 @@ abstract class ApiBaseController extends FrontendController {
             if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
                 throw new BeditaException('Object type mismatch');
             }
-            $this->responseData['data']['object'] = $object;
+            $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
         // @todo list of objects
         } else {
 
@@ -162,11 +163,11 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Build repsonse data for client
+     * Build response data for client
      *
      * @return void
      */
-    protected function buildResponse() {
+    protected function response() {
         $this->setBaseResponse();
         $this->set('data', $this->responseData);
         $this->render('/pages/json');
