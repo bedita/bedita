@@ -307,12 +307,84 @@ class BEFormat extends BEAppModel
                 'relations' => array()
             );
 
-            // 1. config: [] [TODO]
-            // 1.1 config.customProperties: [] [TODO]
-            // 2. tree: [] [TODO]
+            $this->trackDebug('1 config');
+            $this->trackDebug('1.1 config.customProperties:');
+            $properties = ClassRegistry::init('Property')->find('all', array(
+                'contain' => 'PropertyOption'
+            ));
+            $propertiesNew = array();
+            if (!empty($properties)) {
+                foreach ($properties as $property) {
+                    $propertyNew = array();
+                    $propertyNew['id'] = $property['id'];
+                    $propertyNew['name'] = $property['name'];
+                    $propertyNew['objectType'] = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
+                    $propertyNew['dataType'] = $property['property_type'];
+                    if (!empty($property['multiple_choice'])) {
+                        $propertyNew['multipleChoice'] = $property['multiple_choice'];
+                    }
+                    if (!empty($property['PropertyOption'])) {
+                        $propertyNew['options'] = array();
+                        foreach ($property['PropertyOption'] as $propertyOption) {
+                            $propertyNew['options'][] = $propertyOption['property_option'];
+                        }
+                    }
+                    $propertiesNew[] = $propertyNew;
+                }
+            }
+            $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
+
+            // $objects contain ids. they can be areas/sections or objects (document, etc.)
+            // if objects are areas/sections => roots, otherwise roots is empty
+            $treeModels = array('Area', 'Section');
+            $extractTreeData = true;
+            $conf = Configure::getInstance();
+            foreach ($objects as $objectId) {
+                $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
+                if (isset($conf->objectTypes[$objectTypeId])) {
+                    $model = $conf->objectTypes[$objectTypeId]['model'];
+                } else {
+                    $model = $conf->objectTypesExt[$objectTypeId]['model'];
+                }
+                $this->export['destination']['byType']['ARRAY']['objects'][$objectId] = ClassRegistry::init($model)->findById($objectId);
+                if (!in_array($model, $treeModels)) {
+                    $extractTreeData = false;
+                }
+            }
+
+            $this->trackDebug('2. tree:');
+            if ($extractTreeData) {
+                $this->trackDebug('2.1 roots:');
+                $this->export['destination']['byType']['ARRAY']['tree']['roots'] = $objects;
+
+                $this->trackDebug('2.2 sections:');
+                foreach ($objects as $parent) {
+                    $filter = array(
+                        'object_type_id' => $conf->objectTypes['section']['id']
+                    );
+                    $sections = $this->findObjects($parent, null, 'on', $filter, 'priority');
+                    if (!empty($sections['items'])) {
+                        foreach ($sections['items'] as $section) {
+                            $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = array(
+                                'id' => $section['id'],
+                                'parent' => $parent
+                            );
+                            $this->export['destination']['byType']['ARRAY']['objects'][$section['id']] = ClassRegistry::init('Section')->findById($section['id']);                         
+                       }
+                    }
+                }
+            }
+
+            $this->trackDebug('3. objects: [TODO]');
             // 3. objects: [] [TODO]
+
+            $this->trackDebug('4. relations: [TODO]');
             // 4. relations: [] [TODO]
+
+            $this->trackDebug('5. media [TODO]');
             // 5. media [TODO]
+
+            $this->trackDebug('6. other [TODO]');
             // 6. other [TODO]
 
             if ($this->export['returnType'] == 'JSON') {

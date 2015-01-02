@@ -26,6 +26,7 @@ class FormatShell extends BeditaBaseShell {
             // 'preservePaths'
         ),
         'export' => array(
+            // 'destMediaRoot' => ''
         )
     );
 
@@ -100,6 +101,8 @@ class FormatShell extends BeditaBaseShell {
         // do export
         $beFormat = ClassRegistry::init('BEFormat');
         $result = $beFormat->export($objects, $this->options['export']);
+
+        debug($result);
 
         // end
         $this->trackInfo('');
