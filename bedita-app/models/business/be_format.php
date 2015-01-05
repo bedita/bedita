@@ -73,7 +73,12 @@ class BEFormat extends BEAppModel
             'byType' => array()
         ),
         'returnType' => 0, // JSON
-        'logLevel' => 2 // INFO
+        'logLevel' => 2, // INFO
+        'objectUnsetFields' => array(
+            'UserCreated',
+            'UserModified',
+            'User'
+        )
     );
 
     protected $result = array(
@@ -156,12 +161,12 @@ class BEFormat extends BEAppModel
         try {
 
             // 1. Validate
-            $this->trackInfo('1. validate start');
+            $this->trackInfo('1 validate start');
             $this->validate($data, $options);
-            $this->trackInfo('1. validate OK');
+            $this->trackInfo('1 validate OK');
 
             // 2. Importing
-            $this->trackInfo('2. import start');
+            $this->trackInfo('2 import start');
 
             // 2.1 import config
             $this->trackInfo('2.1 import config');
@@ -249,14 +254,14 @@ class BEFormat extends BEAppModel
             // 2.? [...] [TODO]
             $this->trackInfo('2.? [...] [TODO]');
 
-            $this->trackInfo('2. import OK');
+            $this->trackInfo('2 import OK');
         } catch(Exception $e) {
 
             $this->trackError('ERROR: ' . $e->getMessage());
 
         }
         // 3. result
-        $this->trackInfo('3. result');
+        $this->trackInfo('3 result');
         // 3.1 format / process result (?) [TODO]
         $this->trackDebug('3.1 format / process result (?) [TODO]');
         // 3.2 return result
@@ -346,13 +351,15 @@ class BEFormat extends BEAppModel
                 } else {
                     $model = $conf->objectTypesExt[$objectTypeId]['model'];
                 }
-                $this->export['destination']['byType']['ARRAY']['objects'][$objectId] = ClassRegistry::init($model)->findById($objectId);
+                $obj = ClassRegistry::init($model)->findById($objectId);
+                $obj = $this->prepareObjectForExport(&$obj);
+                $this->export['destination']['byType']['ARRAY']['objects'][$objectId] = $obj;
                 if (!in_array($model, $treeModels)) {
                     $extractTreeData = false;
                 }
             }
 
-            $this->trackDebug('2. tree:');
+            $this->trackDebug('2 tree:');
             if ($extractTreeData) {
                 $this->trackDebug('2.1 roots:');
                 $this->export['destination']['byType']['ARRAY']['tree']['roots'] = $objects;
@@ -369,16 +376,46 @@ class BEFormat extends BEAppModel
                                 'id' => $section['id'],
                                 'parent' => $parent
                             );
-                            $this->export['destination']['byType']['ARRAY']['objects'][$section['id']] = ClassRegistry::init('Section')->findById($section['id']);                         
+                            $obj = ClassRegistry::init('Section')->findById($section['id']);;
+                            $obj = $this->prepareObjectForExport(&$obj);
+                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
                        }
                     }
                 }
             }
 
-            $this->trackDebug('3. objects: [TODO]');
-            // 3. objects: [] [TODO]
+            $this->trackDebug('3 objects:');
+            $tree = ClassRegistry::init('Tree');
+            $filter = array(
+                'NOT' => array(
+                    'object_type_id' => array(
+                        Configure::read('objectTypes.area.id'),
+                        Configure::read('objectTypes.section.id')
+                    )
+                )
+            );
+            foreach ($this->export['destination']['byType']['ARRAY']['tree']['roots'] as $rootId) {
+                $this->trackDebug('... extracting objects inside rootId ' . $rootId);
+                $descendants = $tree->getDescendants($rootId, null, null, $filter);
+                if (!empty($descendants['items'])) {
+                    foreach ($descendants['items'] as $obj) {
+                        $obj = $this->prepareObjectForExport(&$obj);
+                        $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                    }
+                }
+            }
+            foreach ($this->export['destination']['byType']['ARRAY']['tree']['sections'] as $section) {
+                $this->trackDebug('... extracting objects inside sectionId ' . $section['id']);
+                $descendants = $tree->getDescendants($section['id'], null, null, $filter);
+                if (!empty($descendants['items'])) {
+                    foreach ($descendants['items'] as $obj) {
+                        $obj = $this->prepareObjectForExport(&$obj);
+                        $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                    }
+                }
+            }
 
-            $this->trackDebug('4. relations: [TODO]');
+            $this->trackDebug('4. relations:');
             // 4. relations: [] [TODO]
 
             $this->trackDebug('5. media [TODO]');
@@ -1106,6 +1143,95 @@ class BEFormat extends BEAppModel
         }
         $this->import['saveMap']['relations'][$objRelModel->id][] = $relationData;
         $this->trackDebug('- saving relation ' . $counter . ': ' . $relation['switch'] . ' ... DONE');
+    }
+
+    /* object utils */
+
+    /**
+     * clean object and prepare relation data
+     * 
+     * remove empty data (or null)
+     * remove meaningless data for export (i.e. user, stats, etc. @see $this->export['objectUnsetFields'])
+     * 
+     * @param  array $object data
+     * @param  boolean $firstLevel object level of recursion is first
+     * @return array $object data
+     */
+    private function prepareObjectForExport($object, $firstLevel = true) {
+        if (!empty($object['id'])) {
+            $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
+        }    
+        $cleanObj = array();
+        foreach ($object as $key => $value) {
+            if (!in_array($key, $this->export['objectUnsetFields'])) {
+                if (!empty($value)) {
+                    if (is_array($value)) {
+                        $cleanObj[$key] = $this->prepareObjectForExport(&$value, false);
+                    } else {
+                        $cleanObj[$key] = $value;
+                    }                    
+                }
+            }
+            if ($firstLevel && $key == 'id') {
+                $objRel = ClassRegistry::init('ObjectRelation');
+                $relations = $objRel->find('all',
+                    array(
+                        'conditions' => array(
+                            'ObjectRelation.id' => $value
+                        )
+                    )
+                );
+                if (!empty($relations)) {
+                    foreach ($relations as $r) {
+                        $relation = $r['ObjectRelation'];
+                        if (!in_array($relation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
+                            $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
+                        }
+                        $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = array(
+                            'idLeft' => $relation['id'],
+                            'idRight' => $relation['object_id'],
+                            'priority' => $relation['priority'],
+                            'params' => $relation['params']
+                        );
+                        if (!in_array($relation['object_id'], array_keys($this->export['destination']['byType']['ARRAY']['objects']))) {
+                            $conf = Configure::getInstance();
+                            $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($relation['object_id']);
+                            if (isset($conf->objectTypes[$objectTypeId])) {
+                                $model = $conf->objectTypes[$objectTypeId]['model'];
+                            } else {
+                                $model = $conf->objectTypesExt[$objectTypeId]['model'];
+                            }
+                            $relatedObj = ClassRegistry::init($model)->findById($relation['object_id']);
+                            $relatedObj = $this->prepareObjectForExport($relatedObj, false);
+                            $this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']] = $relatedObj;
+
+                            $rightObjRelations = $objRel->find('all',
+                                array(
+                                    'conditions' => array(
+                                        'ObjectRelation.id' => $relation['object_id']
+                                    )
+                                )
+                            );
+                            if (!empty($rightObjRelations)) {
+                                foreach ($rightObjRelations as $rRel) {
+                                    $rightRelation = $rRel['ObjectRelation'];
+                                    if (!in_array($rightRelation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
+                                        $this->export['destination']['byType']['ARRAY']['relations'][$rightRelation['switch']] = array();
+                                    }
+                                    $this->export['destination']['byType']['ARRAY']['relations'][$rightRelation['switch']][] = array(
+                                        'idLeft' => $rightRelation['id'],
+                                        'idRight' => $rightRelation['object_id'],
+                                        'priority' => $rightRelation['priority'],
+                                        'params' => $rightRelation['params']
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $cleanObj;
     }
 
     /* file utils */
