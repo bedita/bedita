@@ -68,7 +68,7 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 				
 			// save parent/s
 			$run = true ;
-            if (empty($data['id'])) {
+            if (empty($model->data[$model->name]['id'])) {
                 $model->$name->create();
             } else {
                 // Avoid default values.
