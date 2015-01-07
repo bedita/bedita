@@ -1111,11 +1111,12 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 		}
 
 		$beObject->create();
-        if ($res = $beObject->save($data, $validate, $fieldList)) {
+        if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
 
 		$data2["id"] = $beObject->id;
+		$this->create(null);
 		$res = parent::save($data2, $validate, $fieldList);
 		//$res = Model::save($data, $validate, $fieldList) ;
 		//$res = ClassRegistry::init("Model")->save($data2, $validate, $fieldList);
