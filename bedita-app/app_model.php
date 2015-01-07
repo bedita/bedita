@@ -1110,7 +1110,11 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			}
 		}
 
-		$beObject->create();
+        if (empty($data['id']) && empty($data['BEObject']['id']) && empty($data[$this->name]['id'])) {
+            $beObject->create();
+        } else {
+            $beObject->create(null);
+        }
         if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
