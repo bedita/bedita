@@ -82,18 +82,6 @@ if (!defined("BEDITA_CORE_PATH")) {
 	define('BEDITA_LOCAL_CFG_PATH', BEDITA_CORE_PATH . DS .'config' . DS . 'local');
 	enableSubFoldersOn(BEDITA_CORE_PATH .DS . 'controllers', $additionalPaths["controllers"], $excludedDirs);
 	
-	function shutdownTransation() {
-		if(Configure::read("bedita.transaction") != null) {
-			App::import('Component','Transaction');
-			$Transaction = new TransactionComponent();
-			$Transaction->init() ;
-			$Transaction->rollback() ;
-		}
-	}
-	
-	// Register transaction shutdown function
-	register_shutdown_function('shutdownTransation');
-	
 	// load BEdita configuration
 	// bedita.ini.php, bedita.cfg.php
 	require_once(CONFIGS . 'bedita.ini.php');	
@@ -115,6 +103,33 @@ if (!defined("BEDITA_CORE_PATH")) {
 	// frontend.ini.php, includes bedita.ini/cfg/sys
 	require_once(CONFIGS . 'frontend.ini.php');
 }
+
+function shutdownBEditaApp() {
+    if (BACKEND_APP && Configure::read('bedita.transaction') != null) {
+        App::import('Component','Transaction');
+        $Transaction = new TransactionComponent();
+        $Transaction->init() ;
+        $Transaction->rollback() ;
+    }
+
+    $error = error_get_last();
+    if (!empty($error) && $error['type'] == E_ERROR) {
+        $msg = $error['message'] . ' in ' . $error['file'] . ' on line ' . $error['line'];
+        $controller = null;
+        if (class_exists('AppController')) {
+            $controller = AppController::currentController();
+            if (!empty($controller)) {
+                $controller->handleError($msg, $msg);
+            }
+        }
+        if (empty($controller) && class_exists('CakeLog')) {
+            CakeLog::write('error', $msg);
+        }
+    }
+}
+
+// Register shutdown function to track cake errors
+register_shutdown_function('shutdownBEditaApp');
 
 Configure::write($config);
 

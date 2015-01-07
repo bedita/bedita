@@ -125,7 +125,14 @@
 	</td>
 
 	<td class="commands">
-
+		{if !empty($objRelated.uri)}
+		{if (substr($objRelated.uri,0,7) == 'http://') or (substr($objRelated.uri,0,8) == 'https://')}
+	        {assign var="uri" value=$objRelated.uri}
+	    {else}
+	        {assign_concat var="uri" 1=$conf->mediaUrl 2=$objRelated.uri}
+	    {/if}
+		<a class="BEbutton" href="{$uri}" target="_blank" >{t}view file{/t}</a>
+		{/if}
 		<a class="BEbutton showmore">+</a>
 		<a class="BEbutton golink" target="_blank" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
 		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	

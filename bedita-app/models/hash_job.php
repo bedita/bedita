@@ -66,9 +66,12 @@ class HashJob extends BEAppModel {
 					$this->saveField("status", "expired");
 					$results[$key]["HashJob"]["status"] = "expired";
 				}
-				if (!empty($val["HashJob"]["params"])) {
-					$results[$key]["HashJob"] = array_merge($results[$key]["HashJob"], unserialize($val["HashJob"]["params"]));
-				}
+                if (!empty($val['HashJob']['params'])) {
+                    $params = @unserialize($val['HashJob']['params']);
+                    if ($params !== false && is_array($params)) {
+                        $results[$key]['HashJob'] = array_merge($results[$key]['HashJob'], $params);
+                    }
+                }
 			}
 		}
 		return $results;

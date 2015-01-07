@@ -55,7 +55,7 @@ $(document).ready(function() {
 
 <!-- /////////////////////////////// -->
 
-<div class="dashboard">
+<div class="dashboard dashboard-modules">
 	
 	{if !empty($moduleList)}
 	<ul class="modules">
@@ -73,7 +73,7 @@ $(document).ready(function() {
 
 <!-- /////////////////////////////// -->
 
-<div class="dashboard">
+<div class="dashboard dashboard-tools">
 	<div class="tab"><h2>{t}quick item{/t}</h2></div>
 	{$view->element('quick_item')}
 
@@ -192,7 +192,7 @@ $(document).ready(function() {
 </div>
 
 
-<div class="dashboard">
+<div class="dashboard dashboard-tree">
 
     {if isset($moduleList.areas) && !empty($tree)}    
 	<div class="publishingtree">

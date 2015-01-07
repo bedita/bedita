@@ -122,10 +122,12 @@ class AppController extends Controller
         return $url;
     }
 	
-    public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
+    public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
         $this->log($eventMsg . $url);
-        $this->log($errTrace, 'exception');
+        if (!empty($errTrace)) {
+            $this->log($errTrace, 'exception');
+        }
 		// end transactions if necessary
 		if(isset($this->Transaction)) {
 			if($this->Transaction->started())
