@@ -50,11 +50,46 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
+     * The POST data in request
+     *
+     * @var array
+     */
+    private $postData = array();
+
+    /**
      * An array of filter to apply to objects
      *
      * @var array
      */
     protected $filter = array();
+
+    /**
+     * The request method invoked
+     *
+     * @var string
+     */
+    protected $requestMethod = null;
+
+    /**
+     * The generic exception message in the response
+     *
+     * @var string
+     */
+    protected $defaultExceptionMessage = 'Generic error.';
+
+    /**
+     * An array of http status codes linked with exception messages
+     *
+     * @var array
+     */
+    protected $codeToMessages = array(
+        400 => 'Bad Request.',
+        401 => 'Unauthorized.',
+        403 => 'Forbidden.',
+        404 => 'Object not found.',
+        405 => 'Method not allowed.',
+        409 => 'Conflict between request and method.'
+    );
 
     /**
      * Constructor
@@ -90,6 +125,29 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Normalize POST data
+     *
+     * This function searches for POST data in the global var $_POST and in 'php://input' alias file
+     * Some Javascript XHR wrappers POSTs data are passed through 'php://input'
+     *
+     * @return array
+     */
+    private function _handlePOST() {
+        if (!empty($_POST)) {
+            $postdata = $_POST;
+        } else {
+            try {
+                $postdata = file_get_contents('php://input');
+                $postdata = json_decode($postdata, true);
+            } catch(Excpetion $ex) {
+                $postdata = array();
+            }
+        }
+
+        return $postdata;
+    }
+
+    /**
      * Set View and response (json)
      *
      * If method is overridden in ApiController remember to call parent::beforeCheckLogin()
@@ -111,8 +169,12 @@ abstract class ApiBaseController extends FrontendController {
     private function setBaseResponse() {
         $this->responseData['url'] = $this->params['url']['url'];
         $urlParams = array_slice($this->params['url'], 1);
-        $this->responseData['params'] = array_merge($this->params['pass'], $urlParams, $this->params['named']);
+        $passParams = array_slice($this->params['pass'], 1);
+        $getParams = array_slice($_GET, 0);
+        unset($getParams['url']);
+        $this->responseData['params'] = array_merge($passParams, $urlParams, $this->params['named'], $getParams);
         $this->responseData['api'] = $this->action;
+        $this->responseData['method'] = $this->requestMethod;
     }
 
     /**
@@ -126,17 +188,57 @@ abstract class ApiBaseController extends FrontendController {
     public function route() {
         $args = func_get_args();
         $name = array_shift($args);
+        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
         // generic methodName
         $methodName = str_replace(".", "_", $name);
         // avoid to call methods that aren't end points
         if (!in_array($methodName, $this->endPoints)) {
-            throw new BeditaException(__('Call undefined api end point', true));
+            $this->action = $methodName;
+            throw new BeditaException($this->getDefaultCodeMessage(405), true, self::ERROR, 405);
         }
-
+        if ($this->requestMethod == 'POST') {
+            $this->postData = $this->_handlePOST();
+        }
         $this->action = $methodName;
-        call_user_func_array(array($this, $methodName), $args);
+        call_user_func_array(array($this, Inflector::camelize(strtolower($this->requestMethod) . '_' . $methodName)), $args);
 
         $this->response();
+    }
+
+    /**
+     * handle Exceptions
+     *
+     * @param Exception $ex
+     * @return void
+     */
+    public static function handleExceptions(BeditaException $ex) {
+        $currentController = AppController::currentController();
+        $code = $ex->getHttpCode();
+        if (empty($code)) {
+            $code = 500;
+        }
+        http_response_code($code);
+        $currentController->responseData['error'] = array(
+            'code' => $code,
+            'message' => $ex->getMessage()
+        );
+        $currentController->response();
+    }
+
+    /**
+     * Return a specific or generic message for the http status code provided.
+     *
+     * The method checks if a specific message is set for the provided code, otherwise return the generic one
+     *
+     * @param int $code the http status code
+     * @return string
+     */
+    protected function getDefaultCodeMessage($code) {
+        if (isset($this->codeToMessages[$code])) {
+            return $this->codeToMessages[$code];
+        } else {
+            return $this->defaultExceptionMessage;
+        }
     }
 
     /**
@@ -147,7 +249,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int|string $name an object id or nickname
      * @return void
      */
-    protected function objects($name = null) {
+    protected function getObjects($name = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $object = $this->loadObj($id);
