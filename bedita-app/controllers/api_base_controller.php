@@ -32,7 +32,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects');
+    private $defaultEndPoints = array('objects', 'session');
 
     /**
      * Other end points specified in the frontend app
@@ -194,14 +194,21 @@ abstract class ApiBaseController extends FrontendController {
         // avoid to call methods that aren't end points
         if (!in_array($methodName, $this->endPoints)) {
             $this->action = $methodName;
-            throw new BeditaException($this->getDefaultCodeMessage(405), true, self::ERROR, 405);
+            $this->throwException(405);
+        } else {
+            if ($this->requestMethod == 'POST') {
+                $this->postData = $this->_handlePOST();
+            }
+            $this->action = $methodName;
+            $specificMethodName = Inflector::camelize(strtolower($this->requestMethod) . '_' . $methodName);
+            if (method_exists($this, $specificMethodName)) {
+                call_user_func_array(array($this, $specificMethodName), $args);
+            } else if (method_exists($this, $methodName)) {
+                call_user_func_array(array($this, $methodName), $args);
+            } else {
+                $this->throwException(405);
+            }
         }
-        if ($this->requestMethod == 'POST') {
-            $this->postData = $this->_handlePOST();
-        }
-        $this->action = $methodName;
-        call_user_func_array(array($this, Inflector::camelize(strtolower($this->requestMethod) . '_' . $methodName)), $args);
-
         $this->response();
     }
 
@@ -211,7 +218,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param Exception $ex
      * @return void
      */
-    public static function handleExceptions(BeditaException $ex) {
+    protected function handleException(BeditaException $ex) {
         $currentController = AppController::currentController();
         $code = $ex->getHttpCode();
         if (empty($code)) {
@@ -222,7 +229,21 @@ abstract class ApiBaseController extends FrontendController {
             'code' => $code,
             'message' => $ex->getMessage()
         );
-        $currentController->response();
+    }
+
+    /**
+     * create a BEditaExceptions and handle it
+     *
+     * @param int $code the http status code
+     * @param string $message a custom message
+     * @return void
+     */
+    public function throwException($code, $message = null) {
+        if (empty($message)) {
+            $message = $this->getDefaultCodeMessage($code);
+        }
+        $ex = new BeditaException($message, true, self::ERROR, $code);
+        $this->handleException($ex);
     }
 
     /**
@@ -249,18 +270,132 @@ abstract class ApiBaseController extends FrontendController {
      * @param int|string $name an object id or nickname
      * @return void
      */
-    protected function getObjects($name = null) {
+    protected function objects($name = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $object = $this->loadObj($id);
             // check if id correspond to object type requested (if any)
             if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
-                throw new BeditaException('Object type mismatch');
+                $this->throwException(500, 'Object type mismatch');
             }
             $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
         // @todo list of objects
         } else {
 
+        }
+    }
+
+    /**
+     * session end point method
+     *
+     * Using a given action or a request method (POST, GET, DELETE), creates/checks/deletes an user session
+     *
+     * @param string action (create|check|delete)
+     * @return void
+     */
+    protected function session($action = null) {
+        if (empty($action)) {
+            switch ($this->requestMethod) {
+                case 'GET':
+                    $action = 'check';
+                    break;
+                case 'POST':
+                    $action = 'create';
+                    break;
+                case 'DELETE':
+                    $action = 'delete';
+                    break;
+                default:
+                    $action = null;
+                    break;
+            }
+        }
+        switch ($action) {
+            case 'create':
+                $this->createSession();
+                break;
+            case 'check':
+                $this->checkSession();
+                break;
+            case 'delete':
+                $this->closeSession();
+                break;
+            default:
+                $this->throwException(405);
+                break;
+        }
+    }
+
+    protected function createSession() {
+        if ($this->requestMethod !== 'POST') {
+            $this->throwException(409);
+            return;
+        }
+        $data = $this->postData;
+        // try to login user if POST data are corrected
+        if (!empty($data) && !empty($data['username'])) {
+            $userid     = (isset($data['username']))  ? $data['username'] : '';
+            $password   = (isset($data['password']))  ? $data['password'] : '';
+            $authType   = (isset($data["auth_type"])) ? $data['auth_type'] : 'bedita';
+
+            if (Configure::read("staging") === true || BACKEND_APP) {
+                $frontendGroupsCanLogin = array();
+            } else {
+                $confGroups = Configure::read("authorizedGroups");
+                $frontendGroupsCanLogin = (!empty($confGroups))? $confGroups :
+                    ClassRegistry::init("Group")->getList(array("backend_auth" => 0));
+            }
+
+            if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin, $authType)) {
+                $this->throwException(401, 'Wrong username/password.');
+            } else {
+                $this->eventInfo("FRONTEND logged in publication");
+            }
+            $this->responseData['data'] = array(
+                'accessToken' => $this->Session->id(),
+                'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime)
+            );
+        } else {
+            $this->throwException(400, 'Missing Data');
+        }
+    }
+
+    protected function checkSession() {
+        if ($this->requestMethod !== 'GET') {
+            $this->throwException(409);
+            return;
+        }
+        if (!empty($_GET) && !empty($_GET['accessToken'])) {
+            $this->BeAuth->startSession($_GET['accessToken']);
+            if ($this->Session->valid()) {
+                $this->responseData['data'] = array(
+                    'accessToken' => $this->Session->id(),
+                    'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime),
+                    'valid' => true
+                );
+            } else {
+                $this->throwException(401, 'Invalid or expired session.');
+            }
+        } else {
+            $this->throwException(400, 'Missing data');
+        }
+    }
+
+    protected function closeSession() {
+        if ($this->requestMethod !== 'DELETE') {
+            $this->throwException(409);
+            return;
+        }
+        if (!empty($_GET) && !empty($_GET['accessToken'])) {
+            $this->BeAuth->startSession($_GET['accessToken']);
+            if ($this->Session->valid()) {
+                $this->BeAuth->logout();
+                $this->responseData['data'] = array('logout' => true);
+            } else {
+                $this->throwException(401, 'Invalid or expired session');
+            }   
+        } else {
+            $this->throwException(400, 'Missing data');
         }
     }
 
