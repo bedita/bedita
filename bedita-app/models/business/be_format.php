@@ -75,9 +75,14 @@ class BEFormat extends BEAppModel
         'returnType' => 0, // JSON
         'logLevel' => 2, // INFO
         'objectUnsetFields' => array(
+            'user_created',
+            'user_modified',
+            'valid',
+            'ip_created',
             'UserCreated',
             'UserModified',
-            'User'
+            'User',
+            'ObjectProperty'
         )
     );
 
@@ -121,12 +126,13 @@ class BEFormat extends BEAppModel
      * $options = array(
      *    'logDebug' => true, // can be true|false
      *    'saveMode' => 0, // can be 0 (MERGE), 1 (NEW), 2 (OVERRIDE), 3 (IGNORE), 4 (UPDATE)
-     *)
+     *    'sourceMediaRoot' => '/media/source/path', // default /TMP/media-import
+     * )
      * 
      * 1. Validating input data
      * 2. Importing data to BEdita
      * 3. Return result object
-    */
+     */
     
     public function import(&$data, $options = array()) {
 
@@ -271,6 +277,19 @@ class BEFormat extends BEAppModel
         return $this->result;
     }
 
+    /**
+     * Export BEdita objects data to JSON or other format
+     * 
+     * @param  array &$objects  ids of root elements (publication|section) or ids of objects (document|event|...)
+     * @param  array $options   export parameters
+     * @return mixed object     json|array|other (file?)
+     * 
+     * $options = array(
+     *    'logDebug' => true, // can be true|false
+     *    'destMediaRoot' => '/media/dest/path', // default /TMP/media-export
+     *    'returnType' => 'JSON' // default 'JSON' - can be 'ARRAY'
+     * )
+     */
     public function export(array &$objects, $options = array()) {
 
         $this->logFile = 'export';
@@ -309,7 +328,8 @@ class BEFormat extends BEAppModel
                 'config' => array(),
                 'tree' => array(),
                 'objects' => array(),
-                'relations' => array()
+                'relations' => array(),
+                'media' => array()
             );
 
             $this->trackDebug('1 config');
@@ -351,14 +371,27 @@ class BEFormat extends BEAppModel
                 } else {
                     $model = $conf->objectTypesExt[$objectTypeId]['model'];
                 }
-                $obj = ClassRegistry::init($model)->findById($objectId);
+
+                $objModel = ClassRegistry::init($model);
+                $objModel->contain(
+                    array(
+                        "BEObject" => array(
+                            "ObjectProperty", 
+                            "LangText",
+                            "Annotation",
+                            "Category",
+                            //"RelatedObject",
+                            "GeoTag"
+                        )
+                    )
+                );
+                $obj = $objModel->findById($objectId);
                 $obj = $this->prepareObjectForExport(&$obj);
                 $this->export['destination']['byType']['ARRAY']['objects'][$objectId] = $obj;
                 if (!in_array($model, $treeModels)) {
                     $extractTreeData = false;
                 }
             }
-
             $this->trackDebug('2 tree:');
             if ($extractTreeData) {
                 $this->trackDebug('2.1 roots:');
@@ -376,15 +409,29 @@ class BEFormat extends BEAppModel
                                 'id' => $section['id'],
                                 'parent' => $parent
                             );
-                            $obj = ClassRegistry::init('Section')->findById($section['id']);;
+                            $objModel = ClassRegistry::init('Section');
+                            $objModel->contain(
+                                array(
+                                    "BEObject" => array(
+                                        "ObjectProperty", 
+                                        "LangText",
+                                        "Annotation",
+                                        "Category",
+                                        //"RelatedObject",
+                                        "GeoTag"
+                                    )
+                                )
+                            );
+                            $obj = $objModel->findById($section['id']);
                             $obj = $this->prepareObjectForExport(&$obj);
                             $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
                        }
                     }
                 }
+            } else {
+                $this->trackDebug('... skip roots and sections');
             }
-
-            $this->trackDebug('3 objects:');
+            $this->trackDebug('3 objects + 4 relations');
             $tree = ClassRegistry::init('Tree');
             $filter = array(
                 'NOT' => array(
@@ -394,44 +441,55 @@ class BEFormat extends BEAppModel
                     )
                 )
             );
-            foreach ($this->export['destination']['byType']['ARRAY']['tree']['roots'] as $rootId) {
-                $this->trackDebug('... extracting objects inside rootId ' . $rootId);
-                $descendants = $tree->getDescendants($rootId, null, null, $filter);
-                if (!empty($descendants['items'])) {
-                    foreach ($descendants['items'] as $obj) {
-                        $obj = $this->prepareObjectForExport(&$obj);
-                        $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+            if (!empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
+                foreach ($this->export['destination']['byType']['ARRAY']['tree']['roots'] as $rootId) {
+                    $this->trackDebug('... extracting objects inside rootId ' . $rootId);
+                    $descendants = $tree->getDescendants($rootId, null, null, $filter);
+                    if (!empty($descendants['items'])) {
+                        foreach ($descendants['items'] as $obj) {
+                            $obj = $this->prepareObjectForExport(&$obj);
+                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                        }
                     }
                 }
             }
-            foreach ($this->export['destination']['byType']['ARRAY']['tree']['sections'] as $section) {
-                $this->trackDebug('... extracting objects inside sectionId ' . $section['id']);
-                $descendants = $tree->getDescendants($section['id'], null, null, $filter);
-                if (!empty($descendants['items'])) {
-                    foreach ($descendants['items'] as $obj) {
-                        $obj = $this->prepareObjectForExport(&$obj);
-                        $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+            if (!empty($this->export['destination']['byType']['ARRAY']['tree']['sections'])) {
+                foreach ($this->export['destination']['byType']['ARRAY']['tree']['sections'] as $section) {
+                    $this->trackDebug('... extracting objects inside sectionId ' . $section['id']);
+                    $descendants = $tree->getDescendants($section['id'], null, null, $filter);
+                    if (!empty($descendants['items'])) {
+                        foreach ($descendants['items'] as $obj) {
+                            $obj = $this->prepareObjectForExport(&$obj);
+                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                        }
                     }
                 }
             }
 
-            $this->trackDebug('4. relations:');
-            // 4. relations: [] [TODO]
+            $this->trackDebug('5. media');
+            if (!empty($this->export['destination']['byType']['ARRAY']['media'])) {
 
-            $this->trackDebug('5. media [TODO]');
-            // 5. media [TODO]
+                $this->export['srcMediaRoot'] = Configure::read('mediaRoot');
 
-            $this->trackDebug('6. other [TODO]');
+                if (!file_exists($this->export['srcMediaRoot'])) {
+                    throw new BeditaException('srcMediaRoot folder "' . $this->export['srcMediaRoot'] . '" not found');
+                }
+
+                if (!file_exists($this->export['destMediaRoot'])) {
+                    throw new BeditaException('destMediaRoot folder "' . $this->export['destMediaRoot'] . '" not found');
+                }
+
+                foreach ($this->export['destination']['byType']['ARRAY']['media'] as $objectId => $uri) {
+                    $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);                    
+                    $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
+                }
+            }
+
             // 6. other [TODO]
 
             if ($this->export['returnType'] == 'JSON') {
 
                 $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
-
-            } else if ($this->export['returnType'] == 'FILE') {
-
-                // TODO: implement
-                // $this->export['destination']['byType']['FILE'] = ... file ...
 
             }
         
@@ -894,7 +952,7 @@ class BEFormat extends BEAppModel
             // 6.2 destination folder
             $this->import['destination']['media']['root'] = Configure::read('mediaRoot');
 
-            // 6.2.1 existence [TODO]
+            // 6.2.1 existence
             if (!file_exists($this->import['destination']['media']['root'])) {
                 if (!mkdir($this->import['destination']['media']['root'])) {
                     throw new BeditaException('destination folder "' . $this->import['destination']['media']['root'] . '" not found: failure on creating it');
@@ -1162,17 +1220,71 @@ class BEFormat extends BEAppModel
             $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
         }    
         $cleanObj = array();
+        if (isset($object['SearchText'])) {
+            debug($object);exit;
+        }
+        if ($firstLevel) {
+            if (isset($object['LangText'])) {
+                // TODO: arrange lang text data
+                unset($object['LangText']);
+            }
+            if (isset($object['Annotation'])) {
+                // TODO: arrange annotation data
+                unset($object['Annotation']);
+            }
+            if (isset($object['GeoTag'])) {
+                // TODO: arrange geotag data
+                unset($object['GeoTag']);
+            }
+            if (isset($object['customProperties'])) {
+                $cproperties = array();
+                foreach ($object['customProperties'] as $cplabel => $cpvalue) {
+                    $cproperty = array(
+                        'name' => $cplabel
+                    );
+                    if (!is_array($cpvalue)) {
+                        $cproperty['value'] = $cpvalue;
+                    } else {
+                        if (sizeof($cpvalue) == 1) {
+                            $cproperty['value'] = $cpvalue[0];
+                        } else {
+                            $cproperty['value'] = $cpvalue;
+                        }
+                    }
+                    $cproperties[] = $cproperty;   
+                }
+                // override 'customProperties' and unset 'ObjectProperty'
+                $object['customProperties'] = $cproperties;
+                unset($object['ObjectProperty']);
+            }
+            if (isset($object['Category'])) {
+                $categories = array();
+                foreach ($object['Category'] as $category) {
+                    $categories[] = (!empty($category['label'])) ? $category['label'] : $category['name'];
+                }
+                $object['categories'] = $categories;
+                unset($object['Category']);
+            }
+            if (isset($object['Tag'])) {
+                $tags = array();
+                foreach ($object['Tag'] as $tag) {
+                    $tags[] = (!empty($tag['label'])) ? $tag['label'] : $tag['name'];
+                }
+                $object['tags'] = $tags;
+                unset($object['Tag']);
+            }
+        }
         foreach ($object as $key => $value) {
             if (!in_array($key, $this->export['objectUnsetFields'])) {
                 if (!empty($value)) {
-                    if (is_array($value)) {
+                    if (is_array($value)) {                        
                         $cleanObj[$key] = $this->prepareObjectForExport(&$value, false);
                     } else {
                         $cleanObj[$key] = $value;
                     }                    
                 }
             }
-            if ($firstLevel && $key == 'id') {
+            if ($firstLevel && $key === 'id') {
                 $objRel = ClassRegistry::init('ObjectRelation');
                 $relations = $objRel->find('all',
                     array(
@@ -1201,7 +1313,20 @@ class BEFormat extends BEAppModel
                             } else {
                                 $model = $conf->objectTypesExt[$objectTypeId]['model'];
                             }
-                            $relatedObj = ClassRegistry::init($model)->findById($relation['object_id']);
+                            $relatedObjModel = ClassRegistry::init($model);
+                            $relatedObjModel->contain(
+                                array(
+                                    "BEObject" => array(
+                                        "ObjectProperty", 
+                                        "LangText",
+                                        "Annotation",
+                                        "Category",
+                                        //"RelatedObject",
+                                        "GeoTag"
+                                    )
+                                )
+                            );
+                            $relatedObj = $relatedObjModel->findById($relation['object_id']);
                             $relatedObj = $this->prepareObjectForExport($relatedObj, false);
                             $this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']] = $relatedObj;
 
@@ -1229,6 +1354,8 @@ class BEFormat extends BEAppModel
                         }
                     }
                 }
+            } else if ($key === 'uri') { // map object id with media uri
+                $this->export['destination']['byType']['ARRAY']['media'][$object['id']] = $value;
             }
         }
         return $cleanObj;
@@ -1237,30 +1364,31 @@ class BEFormat extends BEAppModel
     /* file utils */
 
     /**
-     * Copy $name to $destPath using BEdita media logic (it's not a direct copy of the file)
-     * Return new relative path for file
+     * Copy $source (from $sourceBasePath) to $destBasePath, creating subfolders if necessary
      * 
-     * @param  string $source file
-     * @param  string $destPath folder
-     * @return string new relative path to file
+     * @param  string $sourceBasePath folder
+     * @param  string $destBasePath folder
+     * @param  string $source path to file (file name included)
      */
-    private function copyFileToBEMedia($source, $destPath) {
+    private function copyFileToFolder($sourceBasePath, $destBasePath, $source) {
         $tmp = explode(DS, $source);
+        $dirs = array();
+        $dirsString = "";
+        foreach($tmp as $dir) {
+            if (!empty($dir)) {
+                $dirsString.= DS . $dir;
+                $dirs[] = $dir;
+            }
+        }
+
         $name = array_pop($tmp);
-        $md5 = md5($name);
-        preg_match("/(\w{2})(\w{2})/", $md5, $dirs);
-        array_shift($dirs);
         $pointPosition = strrpos($name,".");
         $filename = $tmpname = substr($name, 0, $pointPosition);
         $ext = substr($name, $pointPosition);
-        $dirsString = implode(DS, $dirs);
         $counter = 1;
-        while(file_exists($destPath . DS . $dirsString . DS . $filename . $ext)) {
-            $filename = $tmpname . "-" . $counter++;
-        }
 
         // creating directories
-        $d = Configure::read('mediaRoot');
+        $d = $destBasePath;
         $dirs = array_reverse($dirs);
         while (($current = array_pop($dirs))) {
             $d.= DS . $current;
@@ -1273,17 +1401,17 @@ class BEFormat extends BEAppModel
 
         // save new name (passed by reference)
         $name = $filename . $ext;
-        $destination = $destPath . DS . $dirsString . DS . $name;
-        if (!copy($source, $destination)) {
-            throw new BeditaException('Error copying file "' . $source . '" to "' . $destination);
+        $destination = $destBasePath . DS . $dirsString . DS . $name;
+        if (!copy($sourceBasePath . DS . $source, $destination)) {
+            throw new BeditaException('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
         }
-        return DS . $dirsString . DS . $name;
     }
 
     /* private logging functions */
 
     private function trackError($message) {
         $this->trackResult('ERROR', $message);
+        echo $message . "\n";
     }
 
     private function trackWarn($message) {
