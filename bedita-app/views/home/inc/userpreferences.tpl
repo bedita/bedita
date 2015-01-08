@@ -12,7 +12,7 @@
 			<input type="hidden" name="data[User][id]" value="{$BEAuthUser.id}"/>
 			<input type="hidden" name="data[User][userid]" value="{$BEAuthUser.userid}"/>
 			<input type="hidden" name="data[User][valid]" value="{$BEAuthUser.valid}"/>
-			<input type="text" id="realname" style="width:100%" name="data[User][realname]" value="{$BEAuthUser.realname}"  />
+			<input type="text" id="realname" style="width:100%" name="data[User][realname]" value="{$BEAuthUser.realname|escape}"  />
 			</td>
 		</tr>
 		<tr>

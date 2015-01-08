@@ -20,7 +20,7 @@
 
 	<div class="toolbar" style="padding-top:20px">
 	
-		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname}</h1><br>
+		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname|escape}</h1><br>
 		<span style="white-space: nowrap">
 		{t}Created on{/t} <a>{$BEAuthUser.created|date_format:$conf->dateTimePattern}</a>
 		/
