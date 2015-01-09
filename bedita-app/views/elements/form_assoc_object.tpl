@@ -64,10 +64,10 @@
 	</td>
 
 	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
-		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true|escape}</h4>
 		<div class="show_on_more">
 			{if !empty($rel) && !empty($relationParamsArray)}
-			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}"><br>
+			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''|escape}"><br>
 			{/if}
 			<label>id:</label> {$objRelated.id}<br>
 			<label>nickname:</label> {$objRelated.nickname}<br>
@@ -117,7 +117,7 @@
 				{/foreach}
 				{if (in_array($objRelated.object_type_id, $conf->objectTypes['multimedia']['id']) || $objRelated.object_type_id == $conf->objectTypes['gallery']['id'])}
 				<label>{t}description{/t}</label>
-				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''|escape}</textarea>
 				{/if}
 			{/if}
 		{/if}

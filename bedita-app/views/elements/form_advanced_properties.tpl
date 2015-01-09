@@ -59,11 +59,11 @@
 
 	<tr>
 		<th>{t}publisher{/t}:</th>
-		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''}" /></td>
+		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''|escape}" /></td>
 	</tr>
 	<tr>
 		<th>&copy; {t}rights{/t}:</th>
-		<td><input type="text" name="data[rights]" value="{$object.rights|default:''}" /></td>
+		<td><input type="text" name="data[rights]" value="{$object.rights|default:''|escape}" /></td>
 	</tr>
 	<tr>
 		<th>{t}license{/t}:</th>
