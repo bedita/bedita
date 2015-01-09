@@ -70,7 +70,15 @@ class BEFormat extends BEAppModel
 
     protected $export = array(
         'destination' => array(
-            'byType' => array()
+            'byType' => array(
+                'ARRAY' => array(
+                    'config' => array(),
+                    'tree' => array(),
+                    'objects' => array(),
+                    'relations' => array()
+                ),
+                'JSON' => '' // string
+            )
         ),
         'returnType' => 0, // JSON
         'logLevel' => 2, // INFO
@@ -81,9 +89,20 @@ class BEFormat extends BEAppModel
             'ip_created',
             'UserCreated',
             'UserModified',
-            'User',
-            'ObjectProperty'
-        )
+            'User'
+        ),
+        'contain' => array(
+            'BEObject' => array(
+                'RelatedObject',
+                'ObjectProperty',
+                'LangText',
+                'Annotation',
+                'Category',
+                'GeoTag'
+            )
+        ),
+        'media' => array(),
+        'customProperties' => array()
     );
 
     protected $result = array(
@@ -323,42 +342,8 @@ class BEFormat extends BEAppModel
         echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
 
         try {
-            // Fill object arrays: 'config' / 'tree' / 'objects' / 'relations'
-            $this->export['destination']['byType']['ARRAY'] = array(
-                'config' => array(),
-                'tree' => array(),
-                'objects' => array(),
-                'relations' => array(),
-                'media' => array()
-            );
-
-            $this->trackDebug('1 config');
-            $this->trackDebug('1.1 config.customProperties:');
-            $properties = ClassRegistry::init('Property')->find('all', array(
-                'contain' => 'PropertyOption'
-            ));
-            $propertiesNew = array();
-            if (!empty($properties)) {
-                foreach ($properties as $property) {
-                    $propertyNew = array();
-                    $propertyNew['id'] = $property['id'];
-                    $propertyNew['name'] = $property['name'];
-                    $propertyNew['objectType'] = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
-                    $propertyNew['dataType'] = $property['property_type'];
-                    if (!empty($property['multiple_choice'])) {
-                        $propertyNew['multipleChoice'] = $property['multiple_choice'];
-                    }
-                    if (!empty($property['PropertyOption'])) {
-                        $propertyNew['options'] = array();
-                        foreach ($property['PropertyOption'] as $propertyOption) {
-                            $propertyNew['options'][] = $propertyOption['property_option'];
-                        }
-                    }
-                    $propertiesNew[] = $propertyNew;
-                }
-            }
-            $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
-
+            
+            $this->trackDebug('1 areas/sections or objects - data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)
             // if objects are areas/sections => roots, otherwise roots is empty
             $treeModels = array('Area', 'Section');
@@ -371,27 +356,17 @@ class BEFormat extends BEAppModel
                 } else {
                     $model = $conf->objectTypesExt[$objectTypeId]['model'];
                 }
-
                 $objModel = ClassRegistry::init($model);
                 $objModel->contain(
-                    array(
-                        "BEObject" => array(
-                            "ObjectProperty", 
-                            "LangText",
-                            "Annotation",
-                            "Category",
-                            //"RelatedObject",
-                            "GeoTag"
-                        )
-                    )
+                    $this->export['contain']
                 );
                 $obj = $objModel->findById($objectId);
-                $obj = $this->prepareObjectForExport(&$obj);
-                $this->export['destination']['byType']['ARRAY']['objects'][$objectId] = $obj;
+                $this->prepareObjectForExport(&$obj);
                 if (!in_array($model, $treeModels)) {
                     $extractTreeData = false;
                 }
             }
+
             $this->trackDebug('2 tree:');
             if ($extractTreeData) {
                 $this->trackDebug('2.1 roots:');
@@ -411,63 +386,51 @@ class BEFormat extends BEAppModel
                             );
                             $objModel = ClassRegistry::init('Section');
                             $objModel->contain(
-                                array(
-                                    "BEObject" => array(
-                                        "ObjectProperty", 
-                                        "LangText",
-                                        "Annotation",
-                                        "Category",
-                                        //"RelatedObject",
-                                        "GeoTag"
-                                    )
-                                )
+                                $this->export['contain']
                             );
                             $obj = $objModel->findById($section['id']);
-                            $obj = $this->prepareObjectForExport(&$obj);
-                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                            $this->prepareObjectForExport(&$obj);
                        }
                     }
                 }
             } else {
                 $this->trackDebug('... skip roots and sections');
             }
+
             $this->trackDebug('3 objects + 4 relations');
-            $tree = ClassRegistry::init('Tree');
-            $filter = array(
-                'NOT' => array(
-                    'object_type_id' => array(
-                        Configure::read('objectTypes.area.id'),
-                        Configure::read('objectTypes.section.id')
-                    )
-                )
-            );
             if (!empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
-                foreach ($this->export['destination']['byType']['ARRAY']['tree']['roots'] as $rootId) {
-                    $this->trackDebug('... extracting objects inside rootId ' . $rootId);
-                    $descendants = $tree->getDescendants($rootId, null, null, $filter);
-                    if (!empty($descendants['items'])) {
-                        foreach ($descendants['items'] as $obj) {
-                            $obj = $this->prepareObjectForExport(&$obj);
-                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
-                        }
-                    }
-                }
+                $this->prepareObjectsForExportByParents($this->export['destination']['byType']['ARRAY']['tree']['roots']);
             }
             if (!empty($this->export['destination']['byType']['ARRAY']['tree']['sections'])) {
-                foreach ($this->export['destination']['byType']['ARRAY']['tree']['sections'] as $section) {
-                    $this->trackDebug('... extracting objects inside sectionId ' . $section['id']);
-                    $descendants = $tree->getDescendants($section['id'], null, null, $filter);
-                    if (!empty($descendants['items'])) {
-                        foreach ($descendants['items'] as $obj) {
-                            $obj = $this->prepareObjectForExport(&$obj);
-                            $this->export['destination']['byType']['ARRAY']['objects'][$obj['id']] = $obj;
+                $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
+                $this->prepareObjectsForExportByParents($parents);
+            }
+
+            $this->trackDebug('4 config');
+            $this->trackDebug('4.1 config.customProperties:');
+            if (!empty($this->export['customProperties'])) {
+                foreach ($this->export['customProperties'] as $property) {
+                    $propertyNew = array();
+                    $propertyNew['id'] = $property['id'];
+                    $propertyNew['name'] = $property['name'];
+                    $propertyNew['objectType'] = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
+                    $propertyNew['dataType'] = $property['property_type'];
+                    if (!empty($property['multiple_choice'])) {
+                        $propertyNew['multipleChoice'] = $property['multiple_choice'];
+                    }
+                    if (!empty($property['PropertyOption'])) {
+                        $propertyNew['options'] = array();
+                        foreach ($property['PropertyOption'] as $propertyOption) {
+                            $propertyNew['options'][] = $propertyOption['property_option'];
                         }
                     }
+                    $propertiesNew[] = $propertyNew;
                 }
+                $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
             }
 
             $this->trackDebug('5. media');
-            if (!empty($this->export['destination']['byType']['ARRAY']['media'])) {
+            if (!empty($this->export['media'])) {
 
                 $this->export['srcMediaRoot'] = Configure::read('mediaRoot');
 
@@ -479,13 +442,11 @@ class BEFormat extends BEAppModel
                     throw new BeditaException('destMediaRoot folder "' . $this->export['destMediaRoot'] . '" not found');
                 }
 
-                foreach ($this->export['destination']['byType']['ARRAY']['media'] as $objectId => $uri) {
+                foreach ($this->export['media'] as $objectId => $uri) {
                     $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);                    
                     $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
                 }
             }
-
-            // 6. other [TODO]
 
             if ($this->export['returnType'] == 'JSON') {
 
@@ -1205,6 +1166,95 @@ class BEFormat extends BEAppModel
 
     /* object utils */
 
+    private function cleanObjectFields($object) {
+        foreach ($this->export['objectUnsetFields'] as $unsetKey) {
+            if (isset($object[$unsetKey])) {
+                unset($object[$unsetKey]);
+            }
+        }
+        foreach ($object as $key => $value) {
+            if (empty($value)) {
+                unset($object[$key]);
+            }
+        }
+    }
+
+    private function rearrangeObjectFields($object) {
+        if (isset($object['RelatedObject'])) {
+            foreach ($object['RelatedObject'] as $relation) {
+                if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
+                    $object['relatedObjectIds'][] = $relation['object_id'];
+                }
+                if (!in_array($relation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
+                    $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
+                }
+                $r = array(
+                    'idLeft' => $relation['id'],
+                    'idRight' => $relation['object_id'],
+                    'priority' => $relation['priority']
+                );
+                if (!empty($relation['params'])) {
+                    $r['params'] = $relation['params'];
+                }
+                $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
+            }
+            unset($object['RelatedObject']);
+        }
+        if (isset($object['LangText'])) {
+            // TODO: arrange lang text data
+            unset($object['LangText']);
+        }
+        if (isset($object['Annotation'])) {
+            // TODO: arrange annotation data
+            unset($object['Annotation']);
+        }
+        if (isset($object['GeoTag'])) {
+            // TODO: arrange geotag data
+            unset($object['GeoTag']);
+        }
+        if (isset($object['ObjectProperty'])) {
+            foreach ($object['ObjectProperty'] as $cproperty) {
+                $this->export['customProperties'][$cproperty['id']] = $cproperty;
+            }
+            unset($object['ObjectProperty']);
+        }
+        if (isset($object['customProperties'])) {
+            $cproperties = array();
+            foreach ($object['customProperties'] as $cplabel => $cpvalue) {
+                $cproperty = array(
+                    'name' => $cplabel
+                );
+                if (!is_array($cpvalue)) {
+                    $cproperty['value'] = $cpvalue;
+                } else {
+                    if (sizeof($cpvalue) == 1) {
+                        $cproperty['value'] = $cpvalue[0];
+                    } else {
+                        $cproperty['value'] = $cpvalue;
+                    }
+                }
+                $cproperties[] = $cproperty;
+            }
+            $object['customProperties'] = $cproperties;
+        }
+        if (isset($object['Category'])) {
+            $categories = array();
+            foreach ($object['Category'] as $category) {
+                $categories[] = (!empty($category['label'])) ? $category['label'] : $category['name'];
+            }
+            $object['categories'] = $categories;
+            unset($object['Category']);
+        }
+        if (isset($object['Tag'])) {
+            $tags = array();
+            foreach ($object['Tag'] as $tag) {
+                $tags[] = (!empty($tag['label'])) ? $tag['label'] : $tag['name'];
+            }
+            $object['tags'] = $tags;
+            unset($object['Tag']);
+        }
+    }
+
     /**
      * clean object and prepare relation data
      * 
@@ -1212,153 +1262,96 @@ class BEFormat extends BEAppModel
      * remove meaningless data for export (i.e. user, stats, etc. @see $this->export['objectUnsetFields'])
      * 
      * @param  array $object data
-     * @param  boolean $firstLevel object level of recursion is first
      * @return array $object data
      */
-    private function prepareObjectForExport($object, $firstLevel = true) {
-        if (!empty($object['id'])) {
-            $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
-        }    
-        $cleanObj = array();
-        if (isset($object['SearchText'])) {
-            debug($object);exit;
+    private function prepareObjectForExport($object) {
+        $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
+
+        // 1 parse data, unset unused fields and remove entries for empty values, recursively
+        $this->trackDebug('... cleanObjectFields for object id ' . $object['id']);
+        $this->cleanObjectFields(&$object);
+
+        // 2 parse and rearrange object data
+        $this->trackDebug('... rearrangeObjectFields for object id ' . $object['id']);
+        $this->rearrangeObjectFields(&$object);
+
+        // 3 set object for result
+        $relatedObjectIds = array();
+        if (!empty($object['relatedObjectIds'])) {
+            $relatedObjectIds = $object['relatedObjectIds'];
+            unset($object['relatedObjectIds']);
         }
-        if ($firstLevel) {
-            if (isset($object['LangText'])) {
-                // TODO: arrange lang text data
-                unset($object['LangText']);
-            }
-            if (isset($object['Annotation'])) {
-                // TODO: arrange annotation data
-                unset($object['Annotation']);
-            }
-            if (isset($object['GeoTag'])) {
-                // TODO: arrange geotag data
-                unset($object['GeoTag']);
-            }
-            if (isset($object['customProperties'])) {
-                $cproperties = array();
-                foreach ($object['customProperties'] as $cplabel => $cpvalue) {
-                    $cproperty = array(
-                        'name' => $cplabel
-                    );
-                    if (!is_array($cpvalue)) {
-                        $cproperty['value'] = $cpvalue;
-                    } else {
-                        if (sizeof($cpvalue) == 1) {
-                            $cproperty['value'] = $cpvalue[0];
-                        } else {
-                            $cproperty['value'] = $cpvalue;
-                        }
-                    }
-                    $cproperties[] = $cproperty;   
+        $this->export['destination']['byType']['ARRAY']['objects'][$object['id']] = $object;
+
+        // 4 set related objects
+        $this->trackDebug('... load related objects');
+        if (!empty($relatedObjectIds)) {
+            $conf = Configure::getInstance();
+            foreach ($relatedObjectIds as $relatedObjectId) {
+                $objModel = ClassRegistry::init('BEObject');
+                $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
+                if (isset($conf->objectTypes[$objectTypeId])) {
+                    $model = $conf->objectTypes[$objectTypeId]['model'];
+                } else {
+                    $model = $conf->objectTypesExt[$objectTypeId]['model'];
                 }
-                // override 'customProperties' and unset 'ObjectProperty'
-                $object['customProperties'] = $cproperties;
-                unset($object['ObjectProperty']);
-            }
-            if (isset($object['Category'])) {
-                $categories = array();
-                foreach ($object['Category'] as $category) {
-                    $categories[] = (!empty($category['label'])) ? $category['label'] : $category['name'];
-                }
-                $object['categories'] = $categories;
-                unset($object['Category']);
-            }
-            if (isset($object['Tag'])) {
-                $tags = array();
-                foreach ($object['Tag'] as $tag) {
-                    $tags[] = (!empty($tag['label'])) ? $tag['label'] : $tag['name'];
-                }
-                $object['tags'] = $tags;
-                unset($object['Tag']);
+                $relatedObjModel = ClassRegistry::init($model);
+                $relatedObjModel->contain(
+                    $this->export['contain']
+                );
+                $relatedObj = $relatedObjModel->findById($relatedObjectId);
+                $this->prepareObjectForExport(&$relatedObj);
             }
         }
-        foreach ($object as $key => $value) {
-            if (!in_array($key, $this->export['objectUnsetFields'])) {
-                if (!empty($value)) {
-                    if (is_array($value)) {                        
-                        $cleanObj[$key] = $this->prepareObjectForExport(&$value, false);
-                    } else {
-                        $cleanObj[$key] = $value;
-                    }                    
-                }
-            }
-            if ($firstLevel && $key === 'id') {
-                $objRel = ClassRegistry::init('ObjectRelation');
-                $relations = $objRel->find('all',
-                    array(
-                        'conditions' => array(
-                            'ObjectRelation.id' => $value
+
+        // 5 set media uris        
+        if (!empty($object['uri'])) { // map object id with media uri
+            $this->export['media'][$object['id']] = $object['uri'];
+        }
+    }
+
+    private function prepareObjectsForExportByParents($parents) {
+        $tree = ClassRegistry::init('Tree');
+        $tree->bindModel(
+            array('belongsTo' => array('BEObject' => array('foreignKey' => 'id'))),
+            false
+        );
+        $conf = Configure::getInstance();
+        foreach ($parents as $parentId) {
+            $this->trackDebug('... extracting objects inside rootId ' . $parentId);
+            $children = $tree->find('all',
+                array(
+                    'fields' => array('Tree.id', 'BEObject.object_type_id'),
+                    'conditions' => array(
+                        'parent_id' => $parentId,
+                        'NOT' => array(
+                            'object_type_id' => array(
+                                Configure::read('objectTypes.area.id'),
+                                Configure::read('objectTypes.section.id')
+                            )
                         )
                     )
-                );
-                if (!empty($relations)) {
-                    foreach ($relations as $r) {
-                        $relation = $r['ObjectRelation'];
-                        if (!in_array($relation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
-                            $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
-                        }
-                        $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = array(
-                            'idLeft' => $relation['id'],
-                            'idRight' => $relation['object_id'],
-                            'priority' => $relation['priority'],
-                            'params' => $relation['params']
-                        );
-                        if (!in_array($relation['object_id'], array_keys($this->export['destination']['byType']['ARRAY']['objects']))) {
-                            $conf = Configure::getInstance();
-                            $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($relation['object_id']);
-                            if (isset($conf->objectTypes[$objectTypeId])) {
-                                $model = $conf->objectTypes[$objectTypeId]['model'];
-                            } else {
-                                $model = $conf->objectTypesExt[$objectTypeId]['model'];
-                            }
-                            $relatedObjModel = ClassRegistry::init($model);
-                            $relatedObjModel->contain(
-                                array(
-                                    "BEObject" => array(
-                                        "ObjectProperty", 
-                                        "LangText",
-                                        "Annotation",
-                                        "Category",
-                                        //"RelatedObject",
-                                        "GeoTag"
-                                    )
-                                )
-                            );
-                            $relatedObj = $relatedObjModel->findById($relation['object_id']);
-                            $relatedObj = $this->prepareObjectForExport($relatedObj, false);
-                            $this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']] = $relatedObj;
-
-                            $rightObjRelations = $objRel->find('all',
-                                array(
-                                    'conditions' => array(
-                                        'ObjectRelation.id' => $relation['object_id']
-                                    )
-                                )
-                            );
-                            if (!empty($rightObjRelations)) {
-                                foreach ($rightObjRelations as $rRel) {
-                                    $rightRelation = $rRel['ObjectRelation'];
-                                    if (!in_array($rightRelation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
-                                        $this->export['destination']['byType']['ARRAY']['relations'][$rightRelation['switch']] = array();
-                                    }
-                                    $this->export['destination']['byType']['ARRAY']['relations'][$rightRelation['switch']][] = array(
-                                        'idLeft' => $rightRelation['id'],
-                                        'idRight' => $rightRelation['object_id'],
-                                        'priority' => $rightRelation['priority'],
-                                        'params' => $rightRelation['params']
-                                    );
-                                }
-                            }
-                        }
+                )
+            );
+            if (!empty($children)) {
+                foreach ($children as $child) {
+                    $objectId = $child['Tree']['id'];
+                    $objectTypeId = $child['BEObject']['object_type_id'];
+                    if (isset($conf->objectTypes[$objectTypeId])) {
+                        $model = $conf->objectTypes[$objectTypeId]['model'];
+                    } else {
+                        $model = $conf->objectTypesExt[$objectTypeId]['model'];
                     }
+                    $objModel = ClassRegistry::init($model);
+                    $objModel->contain(
+                        $this->export['contain']
+                    );
+                    $obj = $objModel->findById($objectId);
+                    $this->prepareObjectForExport(&$obj);
                 }
-            } else if ($key === 'uri') { // map object id with media uri
-                $this->export['destination']['byType']['ARRAY']['media'][$object['id']] = $value;
             }
         }
-        return $cleanObj;
+        $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
     /* file utils */
