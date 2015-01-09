@@ -55,14 +55,14 @@
 		<th>{t}created on{/t}:</th>
 		<td>{$object.created|date_format:$conf->dateTimePattern}</td>
 		<th>{if isset($object.UserCreated.id)}{t}from{/t}:{/if}</th>
-		<td>{if isset($object.UserCreated.id)}{$object.UserCreated.userid}{/if}</td>
+		<td>{if isset($object.UserCreated.id)}{$object.UserCreated.userid|escape}{/if}</td>
 	</tr>
 
 	<tr>
 		<th>{t}modified on{/t}:</th>
 		<td>{$object.modified|date_format:$conf->dateTimePattern}</td>
 		<th>{if isset($object.UserModified.id)}{t}from{/t}:{/if}</th>
-		<td>{if isset($object.UserModified.id)}{$object.UserModified.userid}{/if}</td>
+		<td>{if isset($object.UserModified.id)}{$object.UserModified.userid|escape}{/if}</td>
 	</tr>
 	
 	<tr>

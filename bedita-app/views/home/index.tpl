@@ -167,7 +167,7 @@ $(document).ready(function() {
 		{foreach from=$connectedUser[i] key=usr item=usrdata}
 		<li>
 		{if isset($moduleList.admin)}
-		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}admin/viewUser/{$usrdata.id}">{$usr}</a>
+		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}users/viewUser/{$usrdata.id}">{$usr|escape}</a>
 		{else}		
 		<a title="{$usrdata.realname}" href="#">{$usr}</a>
 		{/if}
@@ -180,7 +180,7 @@ $(document).ready(function() {
 	<ul id="lastnotes" class="bordered">
 		{foreach from=$lastNotes item="note"}
 			<li><a href="{$html->url('/')}view/{$note.ReferenceObject.id}">
-				<span class="listrecent {$conf->objectTypes.{$note.ReferenceObject.object_type_id}.name}">&nbsp;</span>{$note.realname|default:$note.userid}, 
+				<span class="listrecent {$conf->objectTypes.{$note.ReferenceObject.object_type_id}.name}">&nbsp;</span>{$note.realname|default:$note.userid|escape}, 
 				{t}on{/t} "<i>{$note.ReferenceObject.title|strip_tags|truncate:36:'~':true|default:'[no title]'}'</i>"
 			</a></li>
 		{foreachelse}

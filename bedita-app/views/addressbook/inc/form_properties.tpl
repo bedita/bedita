@@ -16,7 +16,7 @@
 		<td>
 			<span id="user_name">
 				{if !empty($object.User)}
-					<a href="{$html->url('/users/viewUser/')}{$object.User.0.id}">{$object.User.0.userid|default:''}</a>
+					<a href="{$html->url('/users/viewUser/')}{$object.User.0.id}">{$object.User.0.userid|default:''|escape}</a>
 				{else}
 					{t}no user data{/t}
 				{/if}

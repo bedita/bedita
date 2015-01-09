@@ -2,7 +2,7 @@
 <tr>
 	<td>
 		<input type="hidden" name="data[users][{$u.id}]" value="{$u.id}" />
-		<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid}</a>
+		<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid|escape}</a>
 	</td>
 	<td>
 		{$u.realname}

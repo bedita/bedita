@@ -43,7 +43,7 @@
 					{if !empty($userdetail.id)}<input type="hidden" name="data[User][id]" value="{$userdetail.id}"/>{/if}
 				</th>
 				<td>
-					<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid}" onkeyup="cutBlank(this);" 
+					<input type="text" id="username" name="data[User][userid]" value="{$userdetail.userid|escape}" onkeyup="cutBlank(this);" 
 						class="{ required:true,lettersnumbersonly:true,minLength:6}" 
 						title="{t 1='6'}User name is required (at least %1 chars, without white spaces and special chars){/t}"/>
 

@@ -10,8 +10,8 @@
         <tbody>
         {foreach from=$users item=u}
             <tr>
-                <td style="text-align:right"><input type="checkbox" class="ucheck" value="{$u.User.id}" rel="{$u.User.userid}" name="usertoassociate"/></td>
-                <td>{$u.User.userid}</td>
+                <td style="text-align:right"><input type="checkbox" class="ucheck" value="{$u.User.id}" rel="{$u.User.userid|escape}" name="usertoassociate"/></td>
+                <td>{$u.User.userid|escape}</td>
                 <td>{$u.User.realname}</td>
             </tr>
         {/foreach}

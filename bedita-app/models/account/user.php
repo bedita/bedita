@@ -197,6 +197,13 @@ class User extends BEAppModel
 		return $results;
 	}
 	
+	public function beforeValidate() {
+		App::import('Sanitize');
+		if (!empty($this->data['User']['realname'])) {
+			$this->data['User']['realname'] = Sanitize::stripAll($this->data['User']['realname']);
+		}
+	}
+
 	function beforeSave() {
 		if (isset($this->data["User"]["email"])) {
 			if (empty($this->data["User"]["email"])) {
