@@ -27,6 +27,10 @@
  */
 abstract class ApiBaseController extends FrontendController {
 
+    public $uses = array();
+
+    protected $loginRedirect = null;
+
     /**
      * The default end points
      *
@@ -121,7 +125,7 @@ abstract class ApiBaseController extends FrontendController {
             return call_user_func_array(array($this, 'objects'), $arguments);
         }
 
-        // missing end point action throw exception
+        $this->throwException(405);
     }
 
     /**
@@ -132,19 +136,20 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @return array
      */
-    private function _handlePOST() {
-        if (!empty($_POST)) {
-            $postdata = $_POST;
+    private function handlePOST() {
+        if (!empty($this->params['form'])) {
+            $postdata = $this->params['form'];
         } else {
             try {
                 $postdata = file_get_contents('php://input');
-                $postdata = json_decode($postdata, true);
+                $this->params['form'] = json_decode($postdata, true);
+                if (!empty(json_last_error())) {
+                    $this->params['form'] = array();
+                }
             } catch(Excpetion $ex) {
-                $postdata = array();
+                $this->params['form'] = array();
             }
         }
-
-        return $postdata;
     }
 
     /**
@@ -157,6 +162,38 @@ abstract class ApiBaseController extends FrontendController {
     protected function beforeCheckLogin() {
         $this->view = 'View';
         $this->RequestHandler->respondAs('json');
+        $this->requestMethod = strtolower(env('REQUEST_METHOD'));
+
+        $token = null;
+        //@todo clean and move to component?
+        if (function_exists('apache_request_headers')) {
+            $h = apache_request_headers();
+            if (!empty($h['Authorization'])) {
+                $token = $h['Authorization'];
+            }
+        } elseif (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+            $token = $_SERVER['HTTP_AUTHORIZATION'];
+        } elseif (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            // fastcgi + rewrite rule
+            $token = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+            //$this->log("Http header token " . $token, LOG_DEBUG);
+        } elseif (!empty($_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'])) {
+            // fastcgi + rewrite rule
+            $token = $_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'];
+            //$this->log("Http header token " . $token, LOG_DEBUG);
+        }
+
+        // @todo remove token pass in named
+        if (!empty($this->params["named"]["token"])) {
+            $token = $this->params["named"]["token"];
+            //$this->log("URL token " . $token, LOG_DEBUG);
+        } elseif (!empty($this->params["url"]["accessToken"])) {
+            $token = $this->params["url"]["accessToken"];
+        }
+
+        if ($token) {
+            $this->BeAuth->startSession($token);
+        }
     }
 
     /**
@@ -188,7 +225,6 @@ abstract class ApiBaseController extends FrontendController {
     public function route() {
         $args = func_get_args();
         $name = array_shift($args);
-        $this->requestMethod = $_SERVER['REQUEST_METHOD'];
         // generic methodName
         $methodName = str_replace(".", "_", $name);
         // avoid to call methods that aren't end points
@@ -196,17 +232,15 @@ abstract class ApiBaseController extends FrontendController {
             $this->action = $methodName;
             $this->throwException(405);
         } else {
-            if ($this->requestMethod == 'POST') {
-                $this->postData = $this->_handlePOST();
+            if ($this->requestMethod == 'post') {
+                $this->handlePOST();
             }
             $this->action = $methodName;
-            $specificMethodName = Inflector::camelize(strtolower($this->requestMethod) . '_' . $methodName);
+            $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
             if (method_exists($this, $specificMethodName)) {
                 call_user_func_array(array($this, $specificMethodName), $args);
-            } else if (method_exists($this, $methodName)) {
-                call_user_func_array(array($this, $methodName), $args);
             } else {
-                $this->throwException(405);
+                call_user_func_array(array($this, $methodName), $args);
             }
         }
         $this->response();
@@ -286,116 +320,49 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * session end point method
+     * Create user session
      *
-     * Using a given action or a request method (POST, GET, DELETE), creates/checks/deletes an user session
-     *
-     * @param string action (create|check|delete)
      * @return void
      */
-    protected function session($action = null) {
-        if (empty($action)) {
-            switch ($this->requestMethod) {
-                case 'GET':
-                    $action = 'check';
-                    break;
-                case 'POST':
-                    $action = 'create';
-                    break;
-                case 'DELETE':
-                    $action = 'delete';
-                    break;
-                default:
-                    $action = null;
-                    break;
-            }
-        }
-        switch ($action) {
-            case 'create':
-                $this->createSession();
-                break;
-            case 'check':
-                $this->checkSession();
-                break;
-            case 'delete':
-                $this->closeSession();
-                break;
-            default:
-                $this->throwException(405);
-                break;
-        }
-    }
-
-    protected function createSession() {
-        if ($this->requestMethod !== 'POST') {
-            $this->throwException(409);
-            return;
-        }
-        $data = $this->postData;
-        // try to login user if POST data are corrected
-        if (!empty($data) && !empty($data['username'])) {
-            $userid     = (isset($data['username']))  ? $data['username'] : '';
-            $password   = (isset($data['password']))  ? $data['password'] : '';
-            $authType   = (isset($data["auth_type"])) ? $data['auth_type'] : 'bedita';
-
-            if (Configure::read("staging") === true || BACKEND_APP) {
-                $frontendGroupsCanLogin = array();
-            } else {
-                $confGroups = Configure::read("authorizedGroups");
-                $frontendGroupsCanLogin = (!empty($confGroups))? $confGroups :
-                    ClassRegistry::init("Group")->getList(array("backend_auth" => 0));
-            }
-
-            if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin, $authType)) {
-                $this->throwException(401, 'Wrong username/password.');
-            } else {
-                $this->eventInfo("FRONTEND logged in publication");
-            }
+    protected function postSession() {
+        if ($this->logged) {
             $this->responseData['data'] = array(
                 'accessToken' => $this->Session->id(),
                 'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime)
             );
         } else {
-            $this->throwException(400, 'Missing Data');
+            $this->throwException(401);
         }
     }
 
-    protected function checkSession() {
-        if ($this->requestMethod !== 'GET') {
-            $this->throwException(409);
-            return;
-        }
-        if (!empty($_GET) && !empty($_GET['accessToken'])) {
-            $this->BeAuth->startSession($_GET['accessToken']);
-            if ($this->Session->valid()) {
-                $this->responseData['data'] = array(
-                    'accessToken' => $this->Session->id(),
-                    'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime),
-                    'valid' => true
-                );
-            } else {
-                $this->throwException(401, 'Invalid or expired session.');
-            }
+    /**
+     * Check user session
+     *
+     * @return void
+     */
+    protected function getSession() {
+         if ($this->Session->valid()) {
+            $this->responseData['data'] = array(
+                'accessToken' => $this->Session->id(),
+                'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime),
+                'valid' => true
+            );
         } else {
-            $this->throwException(400, 'Missing data');
+            $this->throwException(401, 'Invalid or expired session.');
         }
     }
 
-    protected function closeSession() {
-        if ($this->requestMethod !== 'DELETE') {
-            $this->throwException(409);
-            return;
-        }
-        if (!empty($_GET) && !empty($_GET['accessToken'])) {
-            $this->BeAuth->startSession($_GET['accessToken']);
-            if ($this->Session->valid()) {
-                $this->BeAuth->logout();
-                $this->responseData['data'] = array('logout' => true);
-            } else {
-                $this->throwException(401, 'Invalid or expired session');
-            }   
+    /**
+     * Destroy session
+     *
+     * @return void
+     */
+    protected function deleteSession() {
+        if ($this->Session->valid()) {
+            $this->BeAuth->logout(false);
+            $this->responseData['data'] = array('logout' => true);
         } else {
-            $this->throwException(400, 'Missing data');
+            $this->throwException(401, 'Invalid or expired session');
         }
     }
 
