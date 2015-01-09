@@ -343,7 +343,7 @@ class BEFormat extends BEAppModel
 
         try {
             
-            $this->trackDebug('1 areas/sections or objects - data');
+            $this->trackDebug('1 area/section/other objects data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)
             // if objects are areas/sections => roots, otherwise roots is empty
             $treeModels = array('Area', 'Section');
@@ -361,7 +361,7 @@ class BEFormat extends BEAppModel
                     $this->export['contain']
                 );
                 $obj = $objModel->findById($objectId);
-                $this->prepareObjectForExport(&$obj);
+                $this->prepareObjectForExport($obj);
                 if (!in_array($model, $treeModels)) {
                     $extractTreeData = false;
                 }
@@ -389,7 +389,7 @@ class BEFormat extends BEAppModel
                                 $this->export['contain']
                             );
                             $obj = $objModel->findById($section['id']);
-                            $this->prepareObjectForExport(&$obj);
+                            $this->prepareObjectForExport($obj);
                        }
                     }
                 }
@@ -680,7 +680,8 @@ class BEFormat extends BEAppModel
         foreach ($this->objMinimalSet as $field) {
             foreach ($this->import['source']['data']['objects'] as $object) {
                 if (empty($object[$field])) {
-                    throw new BeditaException('missing field ' . $field . ' for object');
+                    $objDesc = (!empty($object['id'])) ? $object['id'] : '';
+                    throw new BeditaException('missing field ' . $field . ' for object ' . $objDesc);
                 }
             }
         }
@@ -1166,7 +1167,7 @@ class BEFormat extends BEAppModel
 
     /* object utils */
 
-    private function cleanObjectFields($object) {
+    private function cleanObjectFields(array &$object) {
         foreach ($this->export['objectUnsetFields'] as $unsetKey) {
             if (isset($object[$unsetKey])) {
                 unset($object[$unsetKey]);
@@ -1179,7 +1180,7 @@ class BEFormat extends BEAppModel
         }
     }
 
-    private function rearrangeObjectFields($object) {
+    private function rearrangeObjectFields(array &$object) {
         if (isset($object['RelatedObject'])) {
             foreach ($object['RelatedObject'] as $relation) {
                 if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
@@ -1264,16 +1265,20 @@ class BEFormat extends BEAppModel
      * @param  array $object data
      * @return array $object data
      */
-    private function prepareObjectForExport($object) {
+    private function prepareObjectForExport(array &$object) {
         $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
+        
+        if (!empty($object['object_type_id'])) {
+            $object['objectType'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
+        }
 
         // 1 parse data, unset unused fields and remove entries for empty values, recursively
         $this->trackDebug('... cleanObjectFields for object id ' . $object['id']);
-        $this->cleanObjectFields(&$object);
+        $this->cleanObjectFields($object);
 
         // 2 parse and rearrange object data
         $this->trackDebug('... rearrangeObjectFields for object id ' . $object['id']);
-        $this->rearrangeObjectFields(&$object);
+        $this->rearrangeObjectFields($object);
 
         // 3 set object for result
         $relatedObjectIds = array();
@@ -1300,7 +1305,7 @@ class BEFormat extends BEAppModel
                     $this->export['contain']
                 );
                 $relatedObj = $relatedObjModel->findById($relatedObjectId);
-                $this->prepareObjectForExport(&$relatedObj);
+                $this->prepareObjectForExport($relatedObj);
             }
         }
 
@@ -1347,7 +1352,7 @@ class BEFormat extends BEAppModel
                         $this->export['contain']
                     );
                     $obj = $objModel->findById($objectId);
-                    $this->prepareObjectForExport(&$obj);
+                    $this->prepareObjectForExport($obj);
                 }
             }
         }
