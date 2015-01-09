@@ -167,9 +167,9 @@ $(document).ready(function() {
 		{foreach from=$connectedUser[i] key=usr item=usrdata}
 		<li>
 		{if isset($moduleList.admin)}
-		<a title="{$usrdata.realname} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}users/viewUser/{$usrdata.id}">{$usr|escape}</a>
+		<a title="{$usrdata.realname|escape} | {$usrdata.userAgent} | {$usrdata.ipNumber}" href="{$html->url('/')}users/viewUser/{$usrdata.id}">{$usr|escape}</a>
 		{else}		
-		<a title="{$usrdata.realname}" href="#">{$usr}</a>
+		<a title="{$usrdata.realname|escape}" href="#">{$usr}</a>
 		{/if}
 		</li>
 		{/foreach}

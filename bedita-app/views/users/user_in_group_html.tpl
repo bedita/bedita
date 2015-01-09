@@ -5,7 +5,7 @@
 		<a href="{$html->url('/users/viewUser/')}{$u.id}">{$u.userid|escape}</a>
 	</td>
 	<td>
-		{$u.realname}
+		{$u.realname|escape}
 	</td>
 	<td>
 		{$u.email}

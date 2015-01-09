@@ -12,7 +12,7 @@
             <tr>
                 <td style="text-align:right"><input type="checkbox" class="ucheck" value="{$u.User.id}" rel="{$u.User.userid|escape}" name="usertoassociate"/></td>
                 <td>{$u.User.userid|escape}</td>
-                <td>{$u.User.realname}</td>
+                <td>{$u.User.realname|escape}</td>
             </tr>
         {/foreach}
         </tbody>

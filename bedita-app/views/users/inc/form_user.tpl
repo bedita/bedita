@@ -96,7 +96,7 @@
 			<tr>
 				<th><label id="lrealname" for="realname">{t}Real name{/t}</label></th>
 				<td>
-					<input type="text" id="realname" name="data[User][realname]" value="{$userdetail.realname}"
+					<input type="text" id="realname" name="data[User][realname]" value="{$userdetail.realname|escape}"
 						class="{ required:true,minLength:6}" title="{t 1='6'}Real name is required (at least %1 alphanumerical chars){/t}"/>&nbsp;</td>
 			</tr>
 			<tr>
