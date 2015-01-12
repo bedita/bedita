@@ -31,18 +31,29 @@
 class User extends BEAppModel
 {
 
-	var $validate = array(
-		'userid' => array(
-			'rule' => 'notEmpty'
-		),
-		'passwd' => array(
-			'rule' => 'notEmpty'
-		),
-		'email' => array(
-			'rule' => 'email',
-			'allowEmpty' => true
-		)
-	);
+    var $validate = array(
+        'userid' => array(
+            'useridRule1' => array(
+                'rule' => 'notEmpty',
+                'message' => 'User ID can not be empty',
+            ),
+            'useridRule2' => array(
+                'rule' => array('minLength', 2),
+                'message' => 'User ID must be at least 2 (two) characters long',
+            ),
+            'useridRule3' => array(
+                'rule' => 'useridValidation',
+                'message' => 'User ID can not contain illegal characters',
+            ),
+        ),
+        'passwd' => array(
+            'rule' => 'notEmpty',
+        ),
+        'email' => array(
+            'rule' => 'email',
+            'allowEmpty' => true,
+        )
+    );
 
 	var $externalServiceValidate  = array(
 		'userid' => array(
@@ -75,8 +86,14 @@ class User extends BEAppModel
 		'UserProperty'
 	);
 
-	private $hBTM = null; 
-	
+	private $hBTM = null;
+
+    public function useridValidation($values) {
+        $value = array_shift($values);  // Get value.
+
+        return preg_match('/^[[:print:]]+$/', $value) && preg_match('/^[^<>\|&\'"]+$/', $value);
+    }
+
 	public function passwordValidation(array &$userData) {
 		$res = true;
 		$validationRegExp = Configure::read("loginPolicy.passwordRule");
