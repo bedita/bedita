@@ -372,7 +372,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function response() {
+        $this->RequestHandler->respondAs('json');
         $this->setBaseResponse();
+        ksort($this->responseData);
         $this->set('data', $this->responseData);
         $this->render('/pages/json');
     }
