@@ -262,8 +262,9 @@ class BeFrontHelper extends AppHelper {
 		));
 
 		
-		$mapOGtagsToFields = array(
-			'og:app_id' => 'id',
+		$mapOGtagsToFields = array (
+		/* TODO diventa fb:app_id, id di un'applicazione facebook da gestire in conf		
+			'og:app_id' => 'id', */
 			'og:updated_time' => 'modified'
 		);
 
