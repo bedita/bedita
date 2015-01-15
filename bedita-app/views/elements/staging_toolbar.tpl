@@ -82,7 +82,7 @@
 		
 		{/if}
 <tr  style="border-top:1px solid gray">
-			<th>creator:</th><td>{$current.UserCreated.realname|default:$current.UserCreated.userid}</td>
+			<th>creator:</th><td>{$current.UserCreated.realname|default:$current.UserCreated.userid|escape}</td>
 		</tr>
 		<tr>
 			<th>modified on:</th><td>{$current.modified|date_format:"%d %b %Y %H:%M:%S"}</td>

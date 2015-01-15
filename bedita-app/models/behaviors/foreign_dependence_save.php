@@ -68,7 +68,12 @@ class ForeignDependenceSaveBehavior extends ModelBehavior {
 				
 			// save parent/s
 			$run = true ;
-			$model->$name->create();
+            if (empty($model->data[$model->name]['id'])) {
+                $model->$name->create();
+            } else {
+                // Avoid default values.
+                $model->$name->create(null);
+            }
 			if(!$res = $model->$name->save($data)) {
 				$model->validationErrors = $model->$name->validationErrors ;
 				// If first element has been created already, performe delete and return

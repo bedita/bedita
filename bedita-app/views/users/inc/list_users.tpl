@@ -43,8 +43,8 @@ $(document).ready(function(){
 	{foreach from=$users item=u}
 	<tr class="obj">
 		<td><a href="{$html->url('/users/viewUser/')}{$u.User.id}">{$u.User.id}</a></td>
-		<td>{$u.User.userid}</td>
-		<td>{$u.User.realname}</td>
+		<td>{$u.User.userid|escape}</td>
+		<td>{$u.User.realname|escape}</td>
 		<td>{$u.User.email}</td>
 		<td>{if $u.User.valid=='1'}{t}No{/t}{else}{t}Yes{/t}{/if}</td>
 		<td>{$u.User.created|date_format:$conf->dateTimePattern}</td>
@@ -52,7 +52,7 @@ $(document).ready(function(){
         <td>{$u.User.auth_type|default:'BEdita'}</td>
 		<td class="go">
 			{if $module_modify eq '1' && $BEAuthUser.userid ne $u.User.userid}
-			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid}',{$u.User.id},{$u.User.related_obj|default:0},{$u.User.valid});"/>
+			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid|escape}',{$u.User.id},{$u.User.related_obj|default:0},{$u.User.valid});"/>
 			{/if}
 		</td>
 	{/foreach}

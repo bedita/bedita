@@ -298,11 +298,11 @@
 		</tr>
 		<tr>
 			<th>{t}created by{/t}:</th>
-			<td>{$object_master.UserCreated.userid}</td>
+			<td>{$object_master.UserCreated.userid|escape}</td>
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
-			<td>{$object_master.UserModified.userid}</td>
+			<td>{$object_master.UserModified.userid|escape}</td>
 		</tr>
 	</table>
 

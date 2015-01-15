@@ -1110,12 +1110,17 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			}
 		}
 
-		$beObject->create();
-		if (!$res = $beObject->save($data, $validate, $fieldList)) {
+        if (empty($data['id']) && empty($data['BEObject']['id']) && empty($data[$this->name]['id'])) {
+            $beObject->create();
+        } else {
+            $beObject->create(null);
+        }
+        if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
 
 		$data2["id"] = $beObject->id;
+		$this->create(null);
 		$res = parent::save($data2, $validate, $fieldList);
 		//$res = Model::save($data, $validate, $fieldList) ;
 		//$res = ClassRegistry::init("Model")->save($data2, $validate, $fieldList);
@@ -1464,6 +1469,9 @@ class BeditaCollectionModel extends BEAppObjectModel {
 				)
 	);
 
+	public function deleteCollection($id) {
+		return ClassRegistry::init('Tree')->removeBranch($id);
+	}
 }
 
 /**
