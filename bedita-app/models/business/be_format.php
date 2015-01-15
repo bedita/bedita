@@ -190,6 +190,23 @@ class BEFormat extends BEAppModel
             $this->validate($data, $options);
             $this->trackInfo('1 validate OK');
 
+            $sectionsByParent = array();
+            foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+                if (empty($sectionsByParent[$section['parent']])) {
+                    $sectionsByParent[$section['parent']] = array();
+                }
+                $sectionsByParent[$section['parent']][] = $section;
+            }
+
+            $orderedSections = array();
+            foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
+                if (!empty($sectionsByParent[$rootId])) {
+                    $sections = $sectionsByParent[$rootId];
+                    $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sections);
+                }
+            }
+            $this->import['source']['data']['tree']['sections'] = $orderedSections;
+
             // 2. Importing
             $this->trackInfo('2 import start');
 
@@ -231,25 +248,35 @@ class BEFormat extends BEAppModel
                 }
             }
 
+            // order sections to save parents first
+            // TODO: implement
+
             // 2.2.2 save other section(s)
             $this->trackDebug('2.2.2 save other section(s)');
             foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+
+                $newParentId = $this->import['saveMap'][$section['parent']];
                 // 2.2.2.1 save section(s) with policy 'NEW'
-                $this->trackDebug('2.2.2.1 save section(s) with policy \'NEW\'');
+                $this->trackDebug('2.2.2.1 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with policy \'NEW\'');
                 // 2.2.2.2 save section(s) with other policies [TODO]
-                $this->trackDebug('2.2.2.2 save section(s) with other policies [TODO]');
-                $this->saveSection($section);
+                $this->trackDebug('2.2.2.2 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with other policies [TODO]');
+
+                $this->saveSection($section, $newParentId);
             }
 
             $this->trackInfo('2.3 save objects');
 
             if (!empty($this->import['media'])) {
-            $this->trackInfo('2.3.1 copy media');
+                $this->trackInfo('2.3.1 copy media');
                 $streamModel = ClassRegistry::init('Stream');
                 foreach ($this->import['media'] as $id => &$media) {
-                    $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
-                    $beFull = $this->import['destination']['media']['root'] . $beUri;
-                    $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                    try {
+                        $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
+                        $beFull = $this->import['destination']['media']['root'] . $beUri;
+                        $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                    } catch(Exception $e) {
+                        $this->trackWarn($e->getMessage());
+                    }
                 }
             }
 
@@ -338,6 +365,12 @@ class BEFormat extends BEAppModel
         if (!empty($options['destMediaRoot'])) {
             $this->export['destMediaRoot'] = $options['destMediaRoot'];
         }
+
+        if (!empty($options['filename'])) {
+            $this->export['filename'] = $options['filename'];
+            echo "\n" . 'Export options - filename: "' . $this->export['filename'] . '"';
+        }
+
         echo "\n" . 'Export options - destMediaRoot: "' . $this->export['destMediaRoot'] . '"';
         echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
 
@@ -377,12 +410,12 @@ class BEFormat extends BEAppModel
                     $filter = array(
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
-                    $sections = $this->findObjects($parent, null, 'on', $filter, 'priority');
+                    $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
                     if (!empty($sections['items'])) {
                         foreach ($sections['items'] as $section) {
                             $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = array(
                                 'id' => $section['id'],
-                                'parent' => $parent
+                                'parent' => $section['parent_id']
                             );
                             $objModel = ClassRegistry::init('Section');
                             $objModel->contain(
@@ -452,12 +485,21 @@ class BEFormat extends BEAppModel
 
                 $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
 
+                if (!empty($this->export['filename'])) {
+
+                    if (!file_put_contents($this->export['filename'], $this->export['destination']['byType']['JSON'])) {
+                        throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
+                    }
+                }
             }
-        
+
             $this->trackInfo('export OK');
+            echo 'Export OK' . "\n";
+
+
         } catch(Exception $e) {
 
-                $this->trackError('ERROR: ' . $e->getMessage());
+            $this->trackError('ERROR: ' . $e->getMessage());
 
         }
 
@@ -686,7 +728,12 @@ class BEFormat extends BEAppModel
             }
         }
 
+        $this->import['expectedParentIds'] = array();
+        $treeObjectTypes = array('area', 'section');
         foreach ($this->import['source']['data']['objects'] as $object) {
+            if (!empty($object['id']) && !empty($object['objectType']) && in_array($object['objectType'], $treeObjectTypes)) {
+                $this->import['expectedParentIds'][] = $object['id'];
+            }
             // 3.3 objectType existence
             if (!in_array($object['objectType'], $this->import['objects']['types'])) {
                 $ot = Configure::read('objectTypes.' . $object['objectType'] . '.id');
@@ -769,6 +816,12 @@ class BEFormat extends BEAppModel
         foreach ($this->import['tree']['parents'] as $parentId) {
             if (!in_array($parentId, $this->import['tree']['ids'])) {
                 throw new BeditaException('parent id ' . $parentId . ' not found in tree');
+            }
+        }
+        // expected area/section - elements inside objects... should be in tree too
+        foreach ($this->import['expectedParentIds'] as $elemId) {
+            if (!in_array($elemId, $this->import['tree']['ids'])) {
+                throw new BeditaException('element ' . $elemId . ' not found in specified tree source');
             }
         }
 
@@ -871,7 +924,7 @@ class BEFormat extends BEAppModel
                     $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
 
                     if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                         throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
+                        throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
                     }
                 }
             } else {
@@ -881,14 +934,19 @@ class BEFormat extends BEAppModel
                         $objTypeRight = $this->import['objects']['typeById'][$r['idRight']];
                         $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
 
+                        $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
                         $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
                         $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
                         $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
                         $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
 
-                        if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                             throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
-                        }                        
+                        if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
+                            if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
+                                $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                                // not blocking... to avoid errors for huge database validation
+                                // throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                            }
+                        }
                     }
                 }
             }
@@ -1166,6 +1224,18 @@ class BEFormat extends BEAppModel
     }
 
     /* object utils */
+
+    private function orderSections(array $orderedSections, array $sectionsByParent, array $sections) {
+        if (!empty($sections)) {
+            foreach ($sections as $section) {
+                $orderedSections[$section['id']] = $section;
+                if (!empty($sectionsByParent[$section['id']])) {
+                    $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sectionsByParent[$section['id']]);
+                }
+            }
+        }
+        return $orderedSections;
+    }
 
     private function cleanObjectFields(array &$object) {
         foreach ($this->export['objectUnsetFields'] as $unsetKey) {

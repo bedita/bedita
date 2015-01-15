@@ -102,8 +102,6 @@ class FormatShell extends BeditaBaseShell {
         $beFormat = ClassRegistry::init('BEFormat');
         $result = $beFormat->export($objects, $this->options['export']);
 
-        debug($result);
-
         // end
         $this->trackInfo('');
         $this->trackInfo('Export end');
