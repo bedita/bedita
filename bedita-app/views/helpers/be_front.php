@@ -240,11 +240,13 @@ class BeFrontHelper extends AppHelper {
 			'content' => $path
 		));
 
-		// TODO: og:image
-// 		$html .= "\n" . $this->Html->meta(array(
-// 			'property' => 'og:image',
-// 			'content' => ?
-// 		));
+		// TODO: alternative og:image if poster is empty and there is a multimedia image in relations 
+		if (!empty($object['relations']['poster'])) {
+	 		$html .= "\n" . $this->Html->meta(array(
+				'property' => 'og:image',
+				'content' => Configure::read('mediaUrl') . $object['relations']['poster'][0]['uri']
+			));
+		}
 
 		// og:description
 		$content = $this->get_description();
