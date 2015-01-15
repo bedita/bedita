@@ -242,10 +242,13 @@ class BeFrontHelper extends AppHelper {
 
 		// TODO: alternative og:image if poster is empty and there is a multimedia image in relations 
 		if (!empty($object['relations']['poster'])) {
+			$imgUri = Configure::read('mediaUrl') . $object['relations']['poster'][0]['uri'];
 	 		$html .= "\n" . $this->Html->meta(array(
 				'property' => 'og:image',
-				'content' => Configure::read('mediaUrl') . $object['relations']['poster'][0]['uri']
+				'content' => $imgUri
 			));
+
+			$html .= "\n" . '<link rel="image_src" type="image/jpeg" href="' . $imgUri . '" />';
 		}
 
 		// og:description
