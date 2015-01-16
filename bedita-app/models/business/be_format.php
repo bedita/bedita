@@ -190,23 +190,6 @@ class BEFormat extends BEAppModel
             $this->validate($data, $options);
             $this->trackInfo('1 validate OK');
 
-            $sectionsByParent = array();
-            foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-                if (empty($sectionsByParent[$section['parent']])) {
-                    $sectionsByParent[$section['parent']] = array();
-                }
-                $sectionsByParent[$section['parent']][] = $section;
-            }
-
-            $orderedSections = array();
-            foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
-                if (!empty($sectionsByParent[$rootId])) {
-                    $sections = $sectionsByParent[$rootId];
-                    $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sections);
-                }
-            }
-            $this->import['source']['data']['tree']['sections'] = $orderedSections;
-
             // 2. Importing
             $this->trackInfo('2 import start');
 
@@ -225,7 +208,7 @@ class BEFormat extends BEAppModel
             }
 
             // 2.1.? [...] [TODO]
-            $this->trackInfo('2.1.? [...] [TODO]');
+            //$this->trackInfo('2.1.? [...] [TODO]');
 
             // 2.2 save areas/sections
             $this->trackInfo('2.2 save areas/sections');
@@ -237,9 +220,9 @@ class BEFormat extends BEAppModel
                 $rootData = $this->import['source']['data']['objects'][$rootId];
                 $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
                 // 2.2.1.1 save area(s) with policy 'NEW'
-                $this->trackDebug('2.2.1.1 save area(s) with policy \'NEW\'');
+                $this->trackDebug('2.2.1.1 save area/section(s) with policy (old id ' . $rootId . ') \'NEW\'');
                 // 2.2.1.2 save area(s) with other policies [TODO]
-                $this->trackDebug('2.2.1.2 save area(s) with other policies [TODO]');
+                $this->trackDebug('2.2.1.2 save area/section(s) with other policies (old id ' . $rootId . ') [TODO]');
                 if ($rootObjType == 'area') {
                     $this->saveArea($rootData);
                 } else if ($rootObjType == 'section') {
@@ -248,19 +231,14 @@ class BEFormat extends BEAppModel
                 }
             }
 
-            // order sections to save parents first
-            // TODO: implement
-
             // 2.2.2 save other section(s)
             $this->trackDebug('2.2.2 save other section(s)');
             foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-
                 $newParentId = $this->import['saveMap'][$section['parent']];
                 // 2.2.2.1 save section(s) with policy 'NEW'
                 $this->trackDebug('2.2.2.1 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with policy \'NEW\'');
                 // 2.2.2.2 save section(s) with other policies [TODO]
                 $this->trackDebug('2.2.2.2 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with other policies [TODO]');
-
                 $this->saveSection($section, $newParentId);
             }
 
@@ -275,7 +253,8 @@ class BEFormat extends BEAppModel
                         $beFull = $this->import['destination']['media']['root'] . $beUri;
                         $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
                     } catch(Exception $e) {
-                        $this->trackWarn($e->getMessage());
+                        $this->trackError($e->getMessage());
+                        //$this->trackWarn($e->getMessage());
                     }
                 }
             }
@@ -304,18 +283,22 @@ class BEFormat extends BEAppModel
             }
 
             // 2.? [...] [TODO]
-            $this->trackInfo('2.? [...] [TODO]');
+            //$this->trackInfo('2.? [...] [TODO]');
 
             $this->trackInfo('2 import OK');
+            echo 'Import OK' . "\n";
+
+
         } catch(Exception $e) {
 
             $this->trackError('ERROR: ' . $e->getMessage());
 
         }
+
         // 3. result
         $this->trackInfo('3 result');
         // 3.1 format / process result (?) [TODO]
-        $this->trackDebug('3.1 format / process result (?) [TODO]');
+        //$this->trackDebug('3.1 format / process result (?) [TODO]');
         // 3.2 return result
         $this->trackDebug('3.2 return result');
 
@@ -437,6 +420,14 @@ class BEFormat extends BEAppModel
             if (!empty($this->export['destination']['byType']['ARRAY']['tree']['sections'])) {
                 $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
                 $this->prepareObjectsForExportByParents($parents);
+            }
+
+            // set position for objects
+            $treeTypes = array('area', 'section');
+            foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
+                if (!in_array($object['objectType'], $treeTypes)) {
+                    $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
+                }
             }
 
             $this->trackDebug('4 config');
@@ -805,6 +796,25 @@ class BEFormat extends BEAppModel
                 }
             }
         }
+
+        // order sections
+        $sectionsByParent = array();
+        foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+            if (empty($sectionsByParent[$section['parent']])) {
+                $sectionsByParent[$section['parent']] = array();
+            }
+            $sectionsByParent[$section['parent']][] = $section;
+        }
+
+        $orderedSections = array();
+        foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
+            if (!empty($sectionsByParent[$rootId])) {
+                $sections = $sectionsByParent[$rootId];
+                $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sections);
+            }
+        }
+        $this->import['source']['data']['tree']['sections'] = $orderedSections;
+
         foreach ($this->import['source']['data']['tree']['sections'] as $section) {
             $this->import['tree']['ids'][] = $section['id'];
             if (!in_array($section['parent'], $this->import['tree']['parents'])) {
@@ -1172,10 +1182,16 @@ class BEFormat extends BEAppModel
                 $tree = ClassRegistry::init('Tree');
                 foreach ($object['parents'] as $parentId) {
                     $beParentId = $this->import['saveMap'][$parentId];
-                    $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... START');
-                    $tree->appendChild($model->id,$beParentId);
-                    $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... END');
+                    if (!empty($beParentId)) {
+                        $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... START');
+                        $tree->appendChild($model->id,$beParentId);
+                        $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... END');
+                    } else {
+                        $this->trackDebug('-- bedita object not found in import saveMap for id ' . $parentId);
+                    }
                 }
+            } else {
+                $this->trackDebug('-- empty tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id . ' ...');
             }
             $this->trackDebug('- saving object ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... END');
         }
@@ -1385,6 +1401,23 @@ class BEFormat extends BEAppModel
         }
     }
 
+    private function parentsForObjId($objId, $rootIds) {
+        $tree = ClassRegistry::init('Tree');
+        $parents = $tree->find('list',
+            array(
+                'fields' => array('parent_id'),
+                'conditions' => array(
+                    'id' => $objId,
+                    'area_id' => $rootIds
+                )
+            )
+        );
+        if (empty($parents)) {
+            return array();
+        }
+        return array_values($parents);
+    }
+
     private function prepareObjectsForExportByParents($parents) {
         $tree = ClassRegistry::init('Tree');
         $tree->bindModel(
@@ -1471,7 +1504,9 @@ class BEFormat extends BEAppModel
         $name = $filename . $ext;
         $destination = $destBasePath . DS . $dirsString . DS . $name;
         if (!copy($sourceBasePath . DS . $source, $destination)) {
-            throw new BeditaException('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
+            $this->trackError('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
+            //$this->trackWarn('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
+            //throw new BeditaException('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
         }
     }
 
