@@ -116,7 +116,7 @@ class CommentsController extends ModulesController {
         $moduleRedirect = array(
             'banIp' => array(
                 'OK' => "/comments/view/{$this->data['id']}",
-                'ERROR'' => '/comments/view'
+                'ERROR' => '/comments/view'
             )
         );
         return $this->moduleForward($action, $result, $moduleRedirect);
