@@ -12,7 +12,7 @@
 
 <div class="head">
 
-	<h1>{$object.title|default:''}</h1>
+	<h1>{$object.title|default:''|escape}</h1>
 
 </div> 
 

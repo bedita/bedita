@@ -86,7 +86,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 
 			</td>
 			<td style="min-width:300px">
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape|truncate:64|default:"<i>[no title]</i>"}</a>
 				<div class="description" id="desc_{$objects[i].id}">
 					{$view->element('list_objects_detail', ['object' => $objects[i]])}
 				</div>
@@ -105,9 +105,9 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 					<td class="custom-property-cell">
 					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
 						{if is_array($objects[i].customProperties[$p.name])}
-							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
+							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."|escape}
 						{else}
-							{$objects[i].customProperties[$p.name]|truncate:80:"..."}
+							{$objects[i].customProperties[$p.name]|truncate:80:"..."|escape}
 						{/if}
 					{else}
 						-

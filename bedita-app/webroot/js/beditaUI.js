@@ -639,8 +639,12 @@ $(document).ready(function(){
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
-            escapeMarkup: function(m) { return m; },
+            escapeMarkup: function(m) {
+                return m;
+            },
             formatResult: function(state) {
+                // escape html tags
+                state.text = $('<div/>').html(state.text).text();
                 if ($(state.element).is('.pubOption')) {
                     return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
                 } else {
@@ -682,6 +686,17 @@ var toggleSelectTree = function(ev) {
             }
         });
     }
+}
+
+/*...........................................    
+
+   A[download] links
+
+...........................................*/
+
+var a = document.createElement('a');
+if (typeof a.download == 'undefined') {
+    $('A[download]').remove();
 }
 
 /*...........................................

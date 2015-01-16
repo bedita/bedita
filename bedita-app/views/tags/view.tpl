@@ -24,7 +24,7 @@ $(document).ready( function ()
 
 	<h2>
 		{if $tag}
-			Tag	“<em style="color:#FFFFFF; line-height:2em">{$tag.label}</em>”
+			Tag	“<em style="color:#FFFFFF; line-height:2em">{$tag.label|escape}</em>”
 		{else}
 			{t}New tag{/t}
 		{/if}

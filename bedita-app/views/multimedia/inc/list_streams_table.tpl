@@ -72,7 +72,7 @@
 		</td>
 		
 		<td>{$objects[i].id}</td>
-		<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title}</a></td>
+		<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape}</a></td>
 		<td>{$objects[i].name}</td>
 		<td>{$objects[i].mediatype}</td>
 		<td>{math equation="x/y" x=$objects[i].file_size|default:0 y=1024 format="%d"|default:""} KB</td>

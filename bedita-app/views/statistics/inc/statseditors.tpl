@@ -12,7 +12,7 @@
 			{foreach from=$objectsForUser key="user_id" item="user"}
 			<tr>
 				<td class="label" onclick="window.location.href='/admin/viewUser/{$user.id}'" style="cursor:pointer; border-right:1px solid gray; border-bottom:0px solid gray">
-					<a href="{$html->url('/')}/admin/viewUser/{$user.id}">{$user.realname|default:$user.userid}</a>
+					<a href="{$html->url('/')}/admin/viewUser/{$user.id}">{$user.realname|default:$user.userid|escape}</a>
 				</td>
 			{strip}
 			<td style="text-align:right; text-align:center; border-right:1px solid gray; border-bottom:0px solid gray"> {$totalObjectsForUser[$user_id]} </td>

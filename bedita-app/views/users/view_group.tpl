@@ -7,7 +7,7 @@
 {include file="inc/menuleft.tpl" method="viewGroup"}
 
 <div class="head">
-    <h1>{if !empty($group)}{t}Group{/t} "{$group.Group.name}"{else}<i>[{t}New group{/t}]</i>{/if}</h1>
+    <h1>{if !empty($group)}{t}Group{/t} "{$group.Group.name|escape}"{else}<i>[{t}New group{/t}]</i>{/if}</h1>
 </div>
 
 {include file="inc/menucommands.tpl" method="viewGroup" fixed=true}

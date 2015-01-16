@@ -77,10 +77,10 @@ $(document).ready(function(){
 			</td>
 
 			<td style="min-width:200px">
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape|truncate:64|default:"<i>[no title]</i>"}</a>
 				<div class="description" id="desc_{$objects[i].id}">
 					nickname:{$objects[i].nickname}<br />
-					{$objects[i].description}
+					{$objects[i].description|escape}
 				</div>
 			</td>
 			<td class="checklist detail" style="text-align:left;">
@@ -91,7 +91,7 @@ $(document).ready(function(){
 				</a>
 			</td>
 
-			<td>{$objects[i].company_name|default:''}</td>
+			<td>{$objects[i].company_name|default:''|escape}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			<td>{$objects[i].modified|date_format:$conf->dateTimePattern}</td>
 			<td style="text-align:center">{if empty($objects[i].obj_userid)}{t}no{/t}{else}{t}yes{/t}{/if}</td>
@@ -100,17 +100,17 @@ $(document).ready(function(){
 			{if !empty($properties)}
 				{foreach $properties as $p}
 					<td class="custom-property-cell">
-						<p>
-						{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
-							{if is_array($objects[i].customProperties[$p.name])}
-								{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
-							{else}
-								{$objects[i].customProperties[$p.name]|truncate:80:"..."}
-							{/if}
-						{else}
-							-
-						{/if}
-						</p>
+                        <p>
+					    {if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
+						    {if is_array($objects[i].customProperties[$p.name])}
+							    {$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."|escape}
+						    {else}
+							    {$objects[i].customProperties[$p.name]|truncate:80:"..."|escape}
+						    {/if}
+					    {else}
+						    -
+					    {/if}
+                        </p>
 					</td>
 				{/foreach}
 			{/if}

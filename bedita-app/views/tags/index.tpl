@@ -50,7 +50,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 				<input type="checkbox" name="tags_selected[{$tag.id}]" class="objectCheck" title="{$tag.id}" value="{$tag.id}"/>
 			</td>
 			<td>
-				<a href="{$html->url('view/')}{$tag.id}">{$tag.label}</a>
+				<a href="{$html->url('view/')}{$tag.id}">{$tag.label|escape}</a>
 
 			</td>
 			<td>{$tag.status}</td>
@@ -71,7 +71,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 				{foreach from=$tags item=tag}
 				<span class="obj {$tag.status}">
 					<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{$html->url('view/')}{$tag.id}">
-						{$tag.label}
+						{$tag.label|escape}
 					</a>
 				</span>
 				{/foreach}

@@ -19,7 +19,7 @@
 	
 	<div class="toolbar" style="white-space:nowrap">
 	{if !empty($sectionSel)} 
-		<h2>{$moduleName} for “ <span style="color:white" class="evidence">{$sectionSel.title}</span> ”</h2>
+		<h2>{$moduleName} for “ <span style="color:white" class="evidence">{$sectionSel.title|escape}</span> ”</h2>
 	{/if}
 	</div>
 

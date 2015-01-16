@@ -52,7 +52,7 @@
 	
 	<ul class="info_file_item bordered">
 		<li>
-			{$item.title|default:'<i>[no title]</i>'}
+			{$item.title|escape|default:'<i>[no title]</i>'}
 		</li>
 {if !empty($item.width)}
 		<li>

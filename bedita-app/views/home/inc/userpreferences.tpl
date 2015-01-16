@@ -3,16 +3,16 @@
 		
 		<tr>
 			<td><label class="simple">userid</label></td>
-			<td><input type="text" style="width:100%" readonly=1 value="{$BEAuthUser.userid}" /></td>
+			<td><input type="text" style="width:100%" readonly=1 value="{$BEAuthUser.userid|escape}" /></td>
 		</tr>	
 
 		<tr>
 			<td><label class="simple" id="lrealname" for="realname">{t}name{/t}</label></td>
 			<td>
 			<input type="hidden" name="data[User][id]" value="{$BEAuthUser.id}"/>
-			<input type="hidden" name="data[User][userid]" value="{$BEAuthUser.userid}"/>
+			<input type="hidden" name="data[User][userid]" value="{$BEAuthUser.userid|escape}"/>
 			<input type="hidden" name="data[User][valid]" value="{$BEAuthUser.valid}"/>
-			<input type="text" id="realname" style="width:100%" name="data[User][realname]" value="{$BEAuthUser.realname}"  />
+			<input type="text" id="realname" style="width:100%" name="data[User][realname]" value="{$BEAuthUser.realname|escape}"  />
 			</td>
 		</tr>
 		<tr>

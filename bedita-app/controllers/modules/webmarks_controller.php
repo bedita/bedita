@@ -30,6 +30,7 @@ class WebmarksController extends ModulesController {
 
 	var $uses = array('BEObject', 'Link', 'Tree','Category','Area') ;
 	protected $moduleName = 'webmarks';
+	protected $categorizableModels = array('Link');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {    	
 		$conf  = Configure::getInstance() ;
@@ -88,32 +89,6 @@ class WebmarksController extends ModulesController {
 
 	public function categories() {
 		$this->showCategories($this->Link);
-	}
-
-	public function saveCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["label"])) 
-			throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
-		$this->eventInfo("category [" .$this->data["label"] . "] saved");
-	}
-	
-	public function deleteCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["id"])) 
-			throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->delete($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
-		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
 	}
 
 	public function checkUrl() {

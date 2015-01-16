@@ -5,7 +5,7 @@
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
 	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
+	<input type="hidden" name="data[title]" value="{$object.title|default:''|escape}"/>
 
 	<table class="areaform" border=0 style="margin-bottom:10px">
 
@@ -191,7 +191,7 @@
 	<tr>
 		<th>{t}Code{/t}:</th>
 		<td colspan="2">
-			<textarea name="data[stats_code]" class="autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+			<textarea name="data[stats_code]" class="autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''|escape}</textarea>
 		</td>
 	</tr>
 	</table>
@@ -202,6 +202,8 @@
 
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
+
+    {$view->element('form_advanced_properties', ['el' => $object])}
 
 	{$view->element('form_custom_properties')}
 	

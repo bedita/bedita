@@ -728,7 +728,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 
-.head H1 {margin-top: 37px;}
+.head H1 {margin-top: 37px;max-width: 532px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;line-height: 1.3em;display: inline-block;vertical-align: bottom;}
 
 
 
@@ -994,7 +994,7 @@ TR.trick {
 .boxed.relationList .commands {
 	text-align: right;
 	border-top:1px solid #999;
-	height: 35px;
+	min-height: 35px;
 	line-height: 29px;
 }
 
@@ -2301,7 +2301,7 @@ LI.welcome {
 
 .dashboardcontainer {
 	margin: 0px 0px 0px 160px;
-	/* overflow: hidden; */
+	overflow: hidden;
 }
 
 .dashboard {
@@ -2310,10 +2310,13 @@ LI.welcome {
 	width: 290px;
 }
 
-.dashboard:first-child {
+.dashboard.dashboard-tools {
+	clear: left;
+}
+
+.dashboard.dashboard-modules {
 	float: left;
 	width: auto;
-	max-width: 600px;
 	margin: 20px 0px 10px 0px;
 	min-width: 300px;
 }
@@ -3084,6 +3087,15 @@ input[type=submit].auth_button_google {
     height: 40px;
     position: relative;
     margin: 100px auto;
+    text-align: center;
+}
+
+#loading > *, .loader > *, .modaloader > * {
+	color: white;
+	z-index: 1;
+	position: relative;
+	line-height: 40px;
+	text-shadow: 0 0 5px #333;
 }
 
 #loading:before, .loader:before, .modaloader:before, #loading:after, .loader:after, .modaloader:after {
@@ -3124,4 +3136,24 @@ input[type=submit].auth_button_google {
 
 #loading, .loader {
 	display: none;
+}
+
+@media screen and (min-width: 1280px) {
+    .dashboard.dashboard-modules {
+    	max-width: 450px;
+    }
+
+    .dashboard.dashboard-tools {
+    	clear: none;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+    .dashboard.dashboard-modules {
+    	max-width: 600px;
+    }
+
+    .dashboard.dashboard-tools {
+    	clear: none;
+    }
 }

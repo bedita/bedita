@@ -9,7 +9,7 @@
 	</div>
 	
 	<br style="clear:both" />
-	<h1>{$object.title|default:'<i>no title</i>'}</h1>
+	<h1>{$object.title|escape|default:'<i>no title</i>'}</h1>
 	
 <ul>
 {foreach from=$object key=k item=v}

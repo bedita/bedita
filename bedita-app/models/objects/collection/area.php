@@ -84,6 +84,21 @@ class Area extends BeditaCollectionModel
 			'rule' => 'notEmpty',
 			'required' => true
 		),
+		'public_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
+		),
+		'staging_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
+		),
+		'email' => array(
+			'rule' => 'email',
+			'message' => 'email not valid',
+			'allowEmpty' => true
+		)
 	);
 
 	function afterSave($created) {

@@ -187,7 +187,7 @@ $(document).ready(function(){
 				</td>
 				
 				{* <td>{$mobj.id}</td> *}
-				<td>{$mobj.title|default:""}</td>
+				<td>{$mobj.title|escape|default:""}</td>
 				{* <td>{$mobj.name|default:""|truncate:24:"..."}</td> *}
 				<td>{$mobj.file_size|default:""|filesize}</td>
 				

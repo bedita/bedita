@@ -26,7 +26,7 @@
 {if $session->read("userToChangePwd")}
 
 	<div class="login">
-	{t}Hi{/t} {$session->read("userToChangePwd.User.realname")},<br/>
+	{t}Hi{/t} {$session->read("userToChangePwd.User.realname|escape")},<br/>
 	{t}to change your password fill the following form{/t}
 	<form action="#" method="post" name="loginForm" id="loginForm" class="cmxform" style="padding-left:5px;">
 		<fieldset>

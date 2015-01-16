@@ -74,7 +74,14 @@ class AdminController extends ModulesController {
 				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
 			}
 			try {
-				$data = ClassRegistry::init("Utility")->call($this->params["form"]["operation"], array('log' => true));
+                $operation = $this->params['form']['operation'];
+                $options = array('log' => true);
+                if ($operation === 'cleanupCache') {
+                    $options['frontendsToo'] = true;
+                    $cleanAll = $this->params['form']['cleanAll'];
+                    $options['cleanAll'] = ($cleanAll == 'true');
+                }
+                $data = ClassRegistry::init('Utility')->call($operation, $options);
 				// render info/warn message
 				if (!empty($data['log'])) {
 					$this->set('detail', nl2br($data['log']));

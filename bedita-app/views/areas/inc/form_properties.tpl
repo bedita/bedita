@@ -12,7 +12,7 @@
 
 			<tr>
 				<th>{t}title{/t}:</th>
-				<td><input type="text" id="titleBEObject" style="width:100%" name="data[title]" value="{$object.title|default:""}"/></td>
+				<td><input type="text" id="titleBEObject" style="width:100%" name="data[title]" value="{$object.title|default:""|escape}"/></td>
 			</tr>
 			<tr>
 				<th>{t}status{/t}:</th>

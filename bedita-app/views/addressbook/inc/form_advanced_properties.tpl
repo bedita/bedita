@@ -17,7 +17,7 @@
 	{if ($object)}
 		<tr>
 			<th>{t}created by{/t}:</th>
-			<td>{$object.UserCreated.userid}</td>
+			<td>{$object.UserCreated.userid|escape}</td>
 		</tr>	
 		<tr>
 			<th>{t}created on{/t}:</th>
@@ -29,7 +29,7 @@
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
-			<td>{$object.UserModified.userid}</td>
+			<td>{$object.UserModified.userid|escape}</td>
 		</tr>
 		
 	{/if}

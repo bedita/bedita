@@ -127,10 +127,12 @@ class AppController extends Controller {
         return $url;
     }
 
-    public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
+    public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
         $this->log($eventMsg . $url);
-        $this->log($errTrace, 'exception');
+        if (!empty($errTrace)) {
+            $this->log($errTrace, 'exception');
+        }
         // end transactions if necessary
         if(isset($this->Transaction)) {
             if($this->Transaction->started())
@@ -762,11 +764,16 @@ class AppController extends Controller {
 
         $name = Inflector::underscore($beModel->name);
 
-        $categoryModel = ClassRegistry::init('Category');
-        $tagList = array();
-        if (!empty($this->params['form']['tags']))
-            $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
-        $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+        $categoryModel = ClassRegistry::init("Category");
+		$tagList = array();
+
+        if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
+            if (!empty($this->params['form']['tags'])) {
+                $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
+            }
+
+            $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+        }
 
         $fixed = false;
         if(!$new) {
@@ -880,6 +887,13 @@ class AppController extends Controller {
  *
  */
 abstract class ModulesController extends AppController {
+
+	/**
+	 * Controller-specific categorizable models.
+	 *
+	 * @var array
+	 */
+	protected $categorizableModels = array();
 
     protected function checkWriteModulePermission() {
         if (isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {
@@ -1376,8 +1390,10 @@ abstract class ModulesController extends AppController {
     }
 
     protected function showCategories(BEAppModel $beModel) {
-        $conf  = Configure::getInstance() ;
-        $type = $conf->objectTypes[Inflector::underscore($beModel->name)]['id'];
+        $type = Configure::read('objectTypes.' . Inflector::underscore($beModel->name) . '.id');
+        if (is_null($type)) {
+            return;
+        }
         $categoryModel = ClassRegistry::init('Category');
         $this->set('categories', $categoryModel->find('all', array(
             'conditions' => array('Category.object_type_id' => $type), 'order' => 'label'
@@ -1390,7 +1406,72 @@ abstract class ModulesController extends AppController {
                                         )
                                     )
                                 );
-    }
+	}
+
+    /**
+	 * Saves a category. Controllers should specify the list of categorizable models in $categorizableModels property.
+	 */
+	public function saveCategories() {
+		$this->checkWriteModulePermission();
+
+		$Category = ClassRegistry::init('Category');
+
+		if(empty($this->data['label'])) {
+			throw new BeditaException(__('No data', true));
+		}
+
+		// Object type ID checks.
+		if (!in_array(Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model'), $this->categorizableModels)) {
+			// Object type not categorizable in current controller.
+			throw new BeditaException(__('Object type not allowed', true));
+		}
+		if (array_key_exists('id', $this->data)) {
+			// Existing category.
+			$cat = $Category->findById($this->data['id']);
+			if ($cat['object_type_id'] != $this->data['object_type_id']) {
+				// Trying to change object_type_id of category.
+				throw new BeditaException(__('Cannot change object type for category', true));
+			}
+		}
+
+		$this->Transaction->begin();
+		if(!$Category->save($this->data)) {
+			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
+		}
+		$this->Transaction->commit();
+
+		$this->userInfoMessage(__('Category saved', true) . ' - ' . $this->data['label']);
+		$this->eventInfo('Category [' .$this->data['label'] . '] saved');
+	}
+
+	/**
+	 * Deletes a category. Controllers should specify the list of categorizable models in $categorizableModels property.
+	 */
+	public function deleteCategories() {
+		$this->checkWriteModulePermission();
+
+		$Category = ClassRegistry::init('Category');
+
+		if(empty($this->data['id'])) {
+			throw new BeditaException(__('No data', true));
+		}
+
+		// Object type ID checks.
+		$cat = $Category->findById($this->data['id']);
+		if (!in_array(Configure::read('objectTypes.' . $cat['object_type_id'] . '.model'), $this->categorizableModels)) {
+			// Object type not categorizable in current controller.
+			throw new BeditaException(__('Object type not allowed', true));
+		}
+
+		$this->Transaction->begin();
+		if(!$Category->delete($this->data['id'])) {
+			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
+		}
+		$this->Transaction->commit();
+
+		$this->userInfoMessage(__('Category deleted', true) . ' - ' . $cat['label']);
+		$this->eventInfo('Category ' . $this->data['id'] . '-' . $cat['label'] . ' deleted');
+	}
 
     /**
      * return array of object types belong to module
