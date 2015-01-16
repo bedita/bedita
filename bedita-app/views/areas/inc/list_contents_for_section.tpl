@@ -62,7 +62,7 @@
 	</td>
 
 	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
-		<h4>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		<h4>{$objRelated.title|escape|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
 		{if !empty($rel)}
 		<input type="text" style="display:none" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}">
 		{/if}

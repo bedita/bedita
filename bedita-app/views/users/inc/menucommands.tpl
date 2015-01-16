@@ -36,7 +36,7 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 				<input class="bemaincommands" 
 				{if ($group.Group.immutable == 1)}disabled=disabled{/if}
 				type="button" name="deleteGroup" value="{t}Delete{/t}" 
-				onclick="javascript:delGroupDialog('{$group.Group.name}',{$group.Group.id});"/>
+				onclick="javascript:delGroupDialog('{$group.Group.name|escape}',{$group.Group.id});"/>
 			{/if}
 			
 		{/if}

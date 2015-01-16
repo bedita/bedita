@@ -77,7 +77,7 @@ $(document).ready(function(){
 			</td>
 
 			<td style="min-width:200px">
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"|escape}</a>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape|truncate:64|default:"<i>[no title]</i>"}</a>
 				<div class="description" id="desc_{$objects[i].id}">
 					nickname:{$objects[i].nickname}<br />
 					{$objects[i].description|escape}

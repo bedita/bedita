@@ -57,7 +57,7 @@
 	<ul class="info_file_item bordered" style="line-height:1em;">
 
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">
-			{$item.title|default:'<i>[no title]</i>'}
+			{$item.title|escape|default:'<i>[no title]</i>'}
 		</li>
 {if strtolower($item.ObjectType.name|default:'') == "image"}
 		<li style="line-height:1.2em; height:1.2em; overflow:hidden">

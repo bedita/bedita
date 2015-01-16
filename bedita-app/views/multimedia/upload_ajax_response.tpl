@@ -6,7 +6,7 @@
                 <thead>
                     <tr>
                         <th colspan="2" style="padding: 5px 0px 5px 10px; margin-bottom:1px; font-weight:bold;">
-                            <p>{t}Another multimedia object named{/t} "{$objectTitle}" {t}already contains the file uploaded{/t}.
+                            <p>{t}Another multimedia object named{/t} "{$objectTitle|escape}" {t}already contains the file uploaded{/t}.
                             <p>{t}Choose one of the following operations{/t}</p>
                         </th>
                     </tr>
@@ -37,7 +37,7 @@
                             <input type="button" value='{t}Go to{/t}' name="goto" id="goto" data-href="{$html->url('/multimedia/view/')}{$objectId}"/>
                         </td>
                         <td>
-                            {t}go to multimedia object "{$objectTitle}"{/t}
+                            {t}go to multimedia object "{$objectTitle|escape}"{/t}
                         </td>
                     </tr>
                 </tbody>
@@ -48,7 +48,7 @@
                 <input type="button" value="{t}Cancel{/t}" id="fileExistsCancel" />
             </div>
         {else}
-            <h2 style="padding: 10px;">Error: {$errorMsg}</h2>
+            <h2 style="padding: 10px;">Error: {$errorMsg|escape}</h2>
         {/if}
     </div>
 

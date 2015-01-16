@@ -102,9 +102,9 @@ class BeFrontHelper extends AppHelper {
 			else $sec = $this->_section['title'];
 		}
 		if($order=='asc') {
-			return $sec . " - " . $pub;
+			return h($sec . " - " . $pub);
 		}
-		return $pub . " - " . $sec;
+		return h($pub . " - " . $sec);
 	}
 
 	/**
@@ -122,7 +122,7 @@ class BeFrontHelper extends AppHelper {
 		if(empty($content)) {
 			return "";
 		}
-		return $this->Html->meta("description", strip_tags($content));
+		return $this->Html->meta("description", h(strip_tags($content)));
 	}
 
 	/**
@@ -154,14 +154,14 @@ class BeFrontHelper extends AppHelper {
 		));
 		$html .= "\n" . $this->Html->meta(array(
 			"name" => "DC.title",
-			"content" => $title
+			"content" => h($title)
 		));
 		$content = $this->get_description();
 		if(!empty($content)) {
 			//$html.= "\n" . '<meta name="DC.description" 	content="' . strip_tags($content) . '" />';
 			$html .= "\n" . $this->Html->meta(array(
 				"name" => "DC.description",
-				"content" => strip_tags($content)
+				"content" => h(strip_tags($content))
 			));
 		}
 
@@ -186,7 +186,7 @@ class BeFrontHelper extends AppHelper {
 			if (!empty($content)) {
 				$html.= "\n" . $this->Html->meta(array(
 					"name" => $dcTag,
-					"content" => strip_tags($content)
+					"content" => h(strip_tags($content))
 				));
 			}
 		}
@@ -207,7 +207,7 @@ class BeFrontHelper extends AppHelper {
 		// og:title
 		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:title',
-			'content' => $title
+			'content' => h($title)
 		));
 
 		// og:type
@@ -256,14 +256,14 @@ class BeFrontHelper extends AppHelper {
 		if(!empty($content)) {
 			$html .= "\n" . $this->Html->meta(array(
 				'property' => 'og:description',
-				'content' => strip_tags($content)
+				'content' => h(strip_tags($content))
 			));
 		}
 
 		// og:site_name
 		$html .= "\n" . $this->Html->meta(array(
 			'property' => 'og:site_name',
-			'content' => $this->_publication['public_name']
+			'content' => h($this->_publication['public_name'])
 		));
 
 		
@@ -278,7 +278,7 @@ class BeFrontHelper extends AppHelper {
 			if (!empty($content)) {
 				$html.= "\n" . $this->Html->meta(array(
 					'property' => $ogTag,
-					'content' => strip_tags($content)
+					'content' => h(strip_tags($content))
 				));
 			}
 		}
@@ -299,7 +299,7 @@ class BeFrontHelper extends AppHelper {
 		if(!empty($content)) {
 			$html.= "\n" . $this->Html->meta(array(
 				"name" => "author",
-				"content" => $this->_publication['creator']
+				"content" => h($this->_publication['creator'])
 			));
 		}
 		$html.= "\n" . $this->Html->meta(array(
@@ -548,7 +548,7 @@ class BeFrontHelper extends AppHelper {
 			$liClasses .= " " . $options["activeClass"];
 		}
 		$htmlBranch = "<li class='" . $liClasses . "'>" .
-			"<a href='" . $this->Html->url($section["canonicalPath"]) . "' title='" . $section["title"] . "'>" . $section["title"] . "</a>";
+			"<a href='" . $this->Html->url($section["canonicalPath"]) . "' title='" . h($section["title"]) . "'>" . h($section["title"]) . "</a>";
 
 		if (!empty($section["sections"])) {
 			$htmlBranch .= "<ul class='" . $options["ulClass"] . "'>";

@@ -64,7 +64,7 @@
 	</td>
 
 	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
-		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true|escape}</h4>
+		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|escape|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
 		<div class="show_on_more">
 			{if !empty($rel) && !empty($relationParamsArray)}
 			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''|escape}"><br>
