@@ -41,6 +41,16 @@
 			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
 		{/if}
 
+		{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
+		{assign_associative var="bkgparams" URLonly=true}
+		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{else}
+			{if !empty($objRelated.thumbnail) && $ObjectType.name=="video"}
+			{assign_associative var="bkgparams" URLonly=true}
+			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated, $bkgparams)}">
+			{/if}
+		{/if}
+			
 		{if !empty($rel)}
 		<input type="hidden" class="mod" name="data[RelatedObject][{$rel}][{$objRelated.id}][modified]" value="0" />
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
