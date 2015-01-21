@@ -97,7 +97,7 @@ class AuthenticationsController extends AppController {
 	}
 
     protected function forward($action, $result) {
-        $moduleRedirect = array(
+        $redirect = array(
             'logout' => array(
                 'OK' => '/',
                 'ERROR' => '/authentications/logout'
@@ -111,7 +111,10 @@ class AuthenticationsController extends AppController {
                 'ERROR' => '/'
             )
         );
-        return $this->moduleForward($action, $result, $moduleRedirect);
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        };
+        return false;
     }
 
 	private function loginEvent($level, $user, $msg) {
