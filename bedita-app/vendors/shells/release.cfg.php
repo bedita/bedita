@@ -6,6 +6,7 @@ $rel["releaseCodeName"] = "corylus";
 $rel["removeFiles"]= array(
     "bedita-app".DS."vendors".DS."shells".DS."deploy.php",
     "bedita-app".DS."vendors".DS."shells".DS."release.cfg.php",
+    'frontends' . DS . 'empty',
 );
 
 $rel["removeDirs"]= array(
@@ -40,17 +41,33 @@ $rel["createDirs"] = array(
     "addons" . DS . "vendors",
 );
 
-$rel["renameFiles"] = array();
+$rel['renameFiles'] = array(
+    'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php',
+    'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php',
+    'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php',
+
+    'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php',
+    'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php',
+    'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php',
+
+    'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php',
+    'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php',
+    'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php',
+
+    'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php',
+    'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php',
+    'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php',
+);
 
 $rel["createFiles"] = array();
 
 $rel["moveDirs"] = array();
 
 $rel['frontends'] = array(
+    'boilerplate' => 'https://github.com/bedita/boilerplate.git',
     'bootstrap' => 'https://github.com/bedita/bootstrap.git',
-    'web-starter-kit' => 'https://github.com/bedita/web-starter-kit.git',
     'responsive' => 'https://github.com/bedita/responsive.git',
-    'boilerplate' => 'https://github.com/bedita/boilerplate.git'
+    'web-starter-kit' => 'https://github.com/bedita/web-starter-kit.git',
 );
 
 $rel["versionFileName"] = "bedita-app" . DS . "config" . DS . "bedita.version.php";
