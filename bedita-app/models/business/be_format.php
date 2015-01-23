@@ -168,19 +168,19 @@ class BEFormat extends BEAppModel
         $this->logLevel = $this->import['logLevel'];
 
         $this->trackInfo('START');
-        echo "\n" . 'Import options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
+        echo "\n" . 'Format Import options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
 
         // setting save mode - default NEW
         if (!empty($options['saveMode'])) {
             $this->import['saveMode'] = $options['saveMode'];
         }
-        echo "\n" . 'Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')';
+        echo "\n" . 'Format Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')';
 
         $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import'; // default 
         if (!empty($options['sourceMediaRoot'])) {
             $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
         }
-        echo "\n" . 'Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"';
+        echo "\n" . 'Format Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"';
         echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
 
         try {
@@ -286,7 +286,7 @@ class BEFormat extends BEAppModel
             //$this->trackInfo('2.? [...] [TODO]');
 
             $this->trackInfo('2 import OK');
-            echo 'Import OK' . "\n";
+            echo 'Format Import OK' . "\n";
 
 
         } catch(Exception $e) {
@@ -334,7 +334,7 @@ class BEFormat extends BEAppModel
         $this->logLevel = $this->export['logLevel'];
         $this->trackInfo('START');
 
-        echo "\n" . 'Export options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
+        echo "\n" . 'Format Export options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
 
         // setting returnType - default json string
         if (!empty($options['returnType'])) {
@@ -342,7 +342,7 @@ class BEFormat extends BEAppModel
         } else {
             $this->export['returnType'] = 'JSON';
         }
-        echo "\n" . 'Export options - returnType: ' . $this->export['returnType'] . ' (' . $this->export['returnType'] . ')';
+        echo "\n" . 'Format Export options - returnType: ' . $this->export['returnType'] . ' (' . $this->export['returnType'] . ')';
 
         $this->export['destMediaRoot'] = 'TMP' . DS . 'media-export'; // default 
         if (!empty($options['destMediaRoot'])) {
@@ -351,10 +351,10 @@ class BEFormat extends BEAppModel
 
         if (!empty($options['filename'])) {
             $this->export['filename'] = $options['filename'];
-            echo "\n" . 'Export options - filename: "' . $this->export['filename'] . '"';
+            echo "\n" . 'Format Export options - filename: "' . $this->export['filename'] . '"';
         }
 
-        echo "\n" . 'Export options - destMediaRoot: "' . $this->export['destMediaRoot'] . '"';
+        echo "\n" . 'Format Export options - destMediaRoot: "' . $this->export['destMediaRoot'] . '"';
         echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
 
         try {
@@ -425,7 +425,7 @@ class BEFormat extends BEAppModel
             // set position for objects
             $treeTypes = array('area', 'section');
             foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
-                if (!in_array($object['objectType'], $treeTypes)) {
+                if (!in_array($object['objectType'], $treeTypes) && !empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
                     $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
                 }
             }
@@ -485,7 +485,7 @@ class BEFormat extends BEAppModel
             }
 
             $this->trackInfo('export OK');
-            echo 'Export OK' . "\n";
+            echo 'Format Export OK' . "\n";
 
 
         } catch(Exception $e) {
@@ -544,13 +544,13 @@ class BEFormat extends BEAppModel
      * 6.1.1 existence
      * 6.1.2 permits [TODO]
      * 6.2 destination folder
-     * 6.2.1 existence [TODO]
-     * 6.2.2 space available [TODO]
+     * 6.2.1 existence
+     * 6.2.2 space available
      * 6.3 files
      * 6.3.1 existence (base folder + objects[i].uri) [TODO]
      * 6.3.2 extension allowed [TODO]
      * 6.3.3 dimension allowed [TODO]
-     * 6.3.4 all files dimension < space available [TODO]
+     * 6.3.4 all files dimension < space available
      * ...
      * 7 [...] [TODO]
      *
