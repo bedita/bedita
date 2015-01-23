@@ -289,7 +289,7 @@ class User extends BEAppModel
         if (!$hasCardAssoc) {
             $Card = ClassRegistry::init('Card');
             $data = null;
-            if (isset($this->data['User']['_cardToAssoc']) && $this->data['User']['_cardToAssoc'] != null) {
+            if (BACKEND_APP && isset($this->data['User']['_cardToAssoc']) && $this->data['User']['_cardToAssoc'] != null) {
                 // Fetch data of chosen card.
                 $data = $Card->find('first', array(
                     'conditions' => array('Card.id' => $this->data['User']['_cardToAssoc']),
