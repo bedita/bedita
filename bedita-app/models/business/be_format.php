@@ -694,7 +694,7 @@ class BeFormat extends BEAppModel
                             throw new BeditaException('object.customProperties.name "' . $customProperty['name'] . '" not defined in config.customProperties');
                         }
                         // value
-                        if (empty($customProperty['value'])) {
+                        if (!isset($customProperty['value'])) {
                             throw new BeditaException('object.customProperties.value not found for object ' . $object['id']);
                         }
                     }
