@@ -127,7 +127,7 @@ function refreshNoteList(delButton) {
 			<li style="padding-left:5px;" class="{$item.status} {$item.ticket_status}">
 				<a href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.id}">
 				<span title="{$item.ObjectType.name}" class="listrecent {$item.ObjectType.module_name}" style="margin:0 10px 0 0">&nbsp;</span>
-				{$item.title|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
+				{$item.title|escape|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
 			</li>
 		{/foreach}
 			<li style="padding-left:5px;">

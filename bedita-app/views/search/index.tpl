@@ -80,7 +80,7 @@ function delObjects() {
 			<td>
 				<input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/>
 				&nbsp;&nbsp;
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label|escape}</a>
 				
 			</td>
 			<td>{$objects[i].status}</td>

@@ -14,10 +14,10 @@
 	<tr rel="{$html->url('/newsletter/viewMailTemplate/')}{$template.id}">
 
 		<td>
-			{$template.title}
+			{$template.title|escape}
 		</td>
 		<td>
-			{$template.Area.title}							
+			{$template.Area.title|escape}							
 		</td>
 		<td>
 			{$template.sender|default:null}

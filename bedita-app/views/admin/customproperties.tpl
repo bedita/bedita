@@ -59,7 +59,7 @@ $(document).ready(function() {
 			<tr name="pop">
 
 				<td>
-					<input type="text" name="data[Property][name]" value="{$p.name}" />
+					<input type="text" name="data[Property][name]" value="{$p.name|escape}" />
 				</td>
 				<td style="vertical-align:middle">
                     {if !empty($p.object_type_id)}
@@ -93,7 +93,7 @@ $(document).ready(function() {
 							{/if}
 						{/foreach}
 					{/if}
-					<input class="optionsfields" ctype="text" value="{$options}" name="data[options]" />
+					<input class="optionsfields" ctype="text" value="{$options|escape}" name="data[options]" />
 				</td>
 	 			<td>
 	 				<span class="optionsfields">

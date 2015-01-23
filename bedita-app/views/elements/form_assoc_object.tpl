@@ -41,6 +41,16 @@
 			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
 		{/if}
 
+		{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
+		{assign_associative var="bkgparams" URLonly=true}
+		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{else}
+			{if !empty($objRelated.thumbnail) && $ObjectType.name=="video"}
+			{assign_associative var="bkgparams" URLonly=true}
+			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated, $bkgparams)}">
+			{/if}
+		{/if}
+			
 		{if !empty($rel)}
 		<input type="hidden" class="mod" name="data[RelatedObject][{$rel}][{$objRelated.id}][modified]" value="0" />
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
@@ -64,16 +74,16 @@
 	</td>
 
 	<td class="assoc_obj_title"{if !empty($rel)} data-inputname="data[RelatedObject][{$rel}][{$objRelated.id}][title]"{/if}>
-		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
+		<h4{if !empty($rel) && !empty($relationParamsArray)} class="editable"{/if}>{$objRelated.title|escape|default:'<i>[no title]</i>'|truncate:60:'~':true}</h4>
 		<div class="show_on_more">
 			{if !empty($rel) && !empty($relationParamsArray)}
-			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''}"><br>
+			<input type="text" placeholder="{t}title{/t}" name="data[RelatedObject][{$rel}][{$objRelated.id}][title]" value="{$objRelated.title|default:''|escape}"><br>
 			{/if}
-			<label>id:</label> {$objRelated.id}<br>
-			<label>nickname:</label> {$objRelated.nickname}<br>
+			<span><label>id:</label> {$objRelated.id}</span><br>
+			<span><label>nickname:</label> {$objRelated.nickname}</span><br>
 
 			{if !empty($rel) &&  $rel == "question"}
-			<label>type:</label> {$objRelated.question_type|default:''}<br>
+			<span><label>type:</label> {$objRelated.question_type|default:''}</span><br>
 			{/if}
 		</div>
 	</td> 
@@ -117,7 +127,7 @@
 				{/foreach}
 				{if (in_array($objRelated.object_type_id, $conf->objectTypes['multimedia']['id']) || $objRelated.object_type_id == $conf->objectTypes['gallery']['id'])}
 				<label>{t}description{/t}</label>
-				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''}</textarea>
+				<textarea name="data[RelatedObject][{$rel}][{$objRelated.id}][description]">{$objRelated.description|default:''|escape}</textarea>
 				{/if}
 			{/if}
 		{/if}
@@ -125,7 +135,14 @@
 	</td>
 
 	<td class="commands">
-
+		{if !empty($objRelated.uri)}
+		{if (substr($objRelated.uri,0,7) == 'http://') or (substr($objRelated.uri,0,8) == 'https://')}
+	        {assign var="uri" value=$objRelated.uri}
+	    {else}
+	        {assign_concat var="uri" 1=$conf->mediaUrl 2=$objRelated.uri}
+	    {/if}
+		<a class="BEbutton" href="{$uri}" target="_blank" >{t}view file{/t}</a>
+		{/if}
 		<a class="BEbutton showmore">+</a>
 		<a class="BEbutton golink" target="_blank" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
 		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	

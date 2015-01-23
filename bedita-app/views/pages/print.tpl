@@ -1,6 +1,6 @@
 <div class="standardreport">
 	
-	<div class="modules" style="float:left"><label class="bedita">{$conf->userVersion}<br /><br />{$conf->projectName|default:''}</label></div>
+	<div class="modules" style="float:left"><label class="bedita">BEdita {$conf->version}<br /><br />{$conf->projectName|default:''}</label></div>
 	<div class="modules" style="float:left">
 		<label class="{$object.ObjectType.module_name|default:''}">
 			{$object.ObjectType.name|default:''}
@@ -9,7 +9,7 @@
 	</div>
 	
 	<br style="clear:both" />
-	<h1>{$object.title|default:'<i>no title</i>'}</h1>
+	<h1>{$object.title|escape|default:'<i>no title</i>'}</h1>
 	
 <ul>
 {foreach from=$object key=k item=v}

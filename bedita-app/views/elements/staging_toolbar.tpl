@@ -55,7 +55,7 @@
 	<table>
 		<tr>
 			<th>current content [{$current.lang}] :</th>
-			<td><a title="nickname: {$current.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$current.id}">{$current.title|truncate:64|default:"[no title]"}</a></td>
+			<td><a title="nickname: {$current.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$current.id}">{$current.title|escape|truncate:64|default:"[no title]"}</a></td>
 		</tr>
 		{foreach from=$current.languages item=tit key=lang}
 		{if $lang != $current.lang}
@@ -75,14 +75,14 @@
 		{foreach from=$related item=r}
 		<tr>
 			<th>{$relname}:</th>
-			<td><a title="nickname: {$r.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$r.id}">{$r.title|truncate:64|default:"[no title]"}</a></td>
+			<td><a title="nickname: {$r.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$r.id}">{$r.title|escape|truncate:64|default:"[no title]"}</a></td>
 		</tr>
 		{/foreach}
 		{/foreach}
 		
 		{/if}
 <tr  style="border-top:1px solid gray">
-			<th>creator:</th><td>{$current.UserCreated.realname|default:$current.UserCreated.userid}</td>
+			<th>creator:</th><td>{$current.UserCreated.realname|default:$current.UserCreated.userid|escape}</td>
 		</tr>
 		<tr>
 			<th>modified on:</th><td>{$current.modified|date_format:"%d %b %Y %H:%M:%S"}</td>
@@ -130,7 +130,7 @@
 	<table>
 		<tr>
 			<th>current section:</th>
-			<td><a title="nickname: {$section.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$section.id}">{$section.title|truncate:64|default:"[no title]"}</a></td>
+			<td><a title="nickname: {$section.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$section.id}">{$section.title|escape|truncate:64|default:"[no title]"}</a></td>
 		</tr>
 		{if !empty($section.childContents)}
 		<tr>
@@ -140,7 +140,7 @@
 		{foreach from=$section.childContents item=con}
 		<tr>
 			<th>child content:</th>
-			<td><a title="nickname: {$con.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$con.id}">{$con.title|truncate:64|default:"[no title]"}</a></td>
+			<td><a title="nickname: {$con.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$con.id}">{$con.title|escape|truncate:64|default:"[no title]"}</a></td>
 		</tr>
 		{/foreach}
 		{/if}
@@ -152,7 +152,7 @@
 		{foreach from=$section.childSections item=sec}
 		<tr>
 			<th>child section:</th>
-			<td><a title="nickname: {$sec.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$sec.id}">{$sec.title|truncate:64|default:"[no title]"}</a></td>
+			<td><a title="nickname: {$sec.nickname}" target="_blank" href="{$conf->beditaUrl}/view/{$sec.id}">{$sec.title|escape|truncate:64|default:"[no title]"}</a></td>
 		</tr>
 		{/foreach}
 		{/if}

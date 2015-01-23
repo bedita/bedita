@@ -34,7 +34,7 @@
 {$view->element('modulesmenu')}
 
 <div class="primacolonna">
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>	
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>	
 </div>
 
 <div id="messagesDiv" style="margin-top:110px">

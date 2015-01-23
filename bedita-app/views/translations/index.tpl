@@ -98,9 +98,9 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 				<input type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
-				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
+				{$mtitle|escape|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
 			</td>
-			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|escape|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
 			<td>
 				<span class="listrecent {$conf->objectTypes[$ot].name|lower}">&nbsp;</span>
 				{$conf->objectTypes[$ot].model}

@@ -140,7 +140,7 @@ class BeLib {
 	 * @return string
 	 */
 	public function friendlyUrlString($value, $keep = "") {
-		if(is_null($value)) {
+		if (empty($value)) {
 			$value = "";
 		}
 		if (is_numeric($value)) {

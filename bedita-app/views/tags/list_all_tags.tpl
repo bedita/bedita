@@ -29,7 +29,7 @@
 {if !empty($listTags)}
 	{foreach from=$listTags item="tag"}
 		<span class="obj {$tag.status}">
-			<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{if !empty($href)}{$html->url('/tags/view/')}{$tag.id}{else}javascript: void(0);{/if}">{$tag.label}</a>
+			<a title="{$tag.weight}" class="{$tag.class|default:""}" href="{if !empty($href)}{$html->url('/tags/view/')}{$tag.id}{else}javascript: void(0);{/if}">{$tag.label|escape}</a>
 		</span>
 	{/foreach}
 {else}

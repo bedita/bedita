@@ -138,7 +138,7 @@ available options:
 					{foreach $categories as $catId => $catLabel}
 						{strip}
 						<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
-							{$catLabel}
+							{$catLabel|escape}
 						</option>
 						{/strip}
 					{/foreach}

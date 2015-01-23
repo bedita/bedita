@@ -531,7 +531,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @see bedita-app/AppController#handleError()
 	 */
-	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
+	public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams=array()) {
         $url = self::usedUrl();
         $userid = '';
         if (!empty($this->BeAuth->user['userid'])) {

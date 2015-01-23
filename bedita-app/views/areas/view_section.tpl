@@ -29,7 +29,7 @@
 	
 	{else}
 	
-		{$object.title|default:"no title"}
+		{$object.title|escape|default:"no title"}
 	
 	{/if}
 </h1>	
