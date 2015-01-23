@@ -297,12 +297,12 @@ class User extends BEAppModel
             }
             if (empty($data)) {
                 // Initialize new card.
-                $name = explode(' ', $this->data['User']['realname'], 2);
+                $name = explode(' ', isset($this->data['User']['realname']) ? $this->data['User']['realname'] : '', 2);
                 $data = array(
                     'id' => null,
                     'name' => (count($name) > 0) ? $name[0] : '',
                     'surname' => (count($name) > 1) ? $name[1] : '',
-                    'email' => $this->data['User']['email'],
+                    'email' => isset($this->data['User']['email']) ? $this->data['User']['email'] : '',
                     'status' => 'on',
                     'ObjectUser' => array(),
                 );
