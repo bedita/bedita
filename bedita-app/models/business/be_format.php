@@ -19,7 +19,7 @@
  *------------------------------------------------------------------->8-----
  */
 
-class BEFormat extends BEAppModel
+class BeFormat extends BEAppModel
 {
     public $useTable = false;
 

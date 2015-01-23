@@ -60,7 +60,7 @@ class FormatShell extends BeditaBaseShell {
         //$inputData = json_decode($inputData,true);
         
         // 2. do import
-        $beFormat = ClassRegistry::init('BEFormat');
+        $beFormat = ClassRegistry::init('BeFormat');
         $result = $beFormat->import($inputData, $this->options['import']);
 
         // 3. end
@@ -99,7 +99,7 @@ class FormatShell extends BeditaBaseShell {
         }
 
         // do export
-        $beFormat = ClassRegistry::init('BEFormat');
+        $beFormat = ClassRegistry::init('BeFormat');
         $result = $beFormat->export($objects, $this->options['export']);
 
         // end
