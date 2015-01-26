@@ -25,7 +25,7 @@ Menu a SX valido per tutte le pagine del controller.
 		$("#collision").hide();
 
 		var optionsForm = { 
-			error: showResponse,  // post-submit callback  
+			error: showError,  // post-submit callback  
 			success: showResponse,  // post-submit callback  
 			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
 			url: "{$html->url('/multimedia/saveAjax')}",
@@ -97,12 +97,15 @@ Menu a SX valido per tutte le pagine del controller.
 			// redirect after saveAjax
 			} else if ($(data).attr('data-redirect-url')) {
 				location.href = $(data).attr('data-redirect-url');
-			// trigger error
-			} else {
-				var html = $(data).text();
-				$("#collision").empty().append(html);
-				$("#collision").show();
 			}
+		}
+
+		function showError(jqXHR, textStatus, errorThrown) {
+			// trigger error
+			var html = jqXHR.responseText;
+			$("#collision").empty().append(html);
+			$("#collision").show();
+			$("div.insidecol .loader").remove();
 		}
 
 	});

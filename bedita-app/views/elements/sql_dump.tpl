@@ -5,7 +5,7 @@
  * cake/views/elements/sql_dump.ctp reported for Smarty
  *
 *}
-{if (!class_exists('ConnectionManager') || $conf->debug < 2)}
+{if (!class_exists('ConnectionManager') || $conf->debug|default:0 < 2)}
 	{* do nothing *}
 {else}
 	

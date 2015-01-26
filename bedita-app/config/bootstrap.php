@@ -201,3 +201,14 @@ if (!empty($proxyOpts)) {
     }
     stream_context_set_default($aContext);
 }
+
+// setup exception handler
+$exception = Configure::read('Exception.handler');
+App::import('Lib', $exception['class']);
+if (class_exists($exception['class'])) {
+    $exceptionHandler = array($exception['class'], $exception['method']);
+} else {
+    App::import('Lib', 'BeExceptionHandler');
+    $exceptionHandler = 'BeExceptionHandler::handleException';
+}
+set_exception_handler($exceptionHandler);

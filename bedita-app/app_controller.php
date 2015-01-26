@@ -28,9 +28,24 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    var $helpers    = array('Javascript', 'Html', 'Form', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
-    var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler', 'BeHash', 'SessionFilter');
-    var $uses = array('EventLog') ;
+    public $helpers = array('Javascript', 'Html', 'Form', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+
+    public $components = array(
+        'BeAuth',
+        'BeTree',
+        'BeCustomProperty',
+        'Transaction',
+        'Cookie',
+        'Session',
+        'RequestHandler',
+        'ResponseHandler',
+        'BeHash',
+        'SessionFilter'
+    );
+
+    public $uses = array('EventLog') ;
+
+    public $view = 'Smarty';
 
     protected $moduleName = NULL;
     protected $moduleList = NULL;
@@ -95,28 +110,6 @@ class AppController extends Controller {
 
     public static function currentController() {
         return self::$current;
-    }
-
-    public static function handleExceptions(BeditaException $ex) {
-        include_once (APP . 'app_error.php');
-        if ($ex instanceof BeditaAjaxException) {
-            return new AppError('handleAjaxException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result, 'output' => $ex->getOutputType(),'headers' => $ex->getHeaders()), $ex->errorTrace());
-        } elseif (self::currentController()->RequestHandler->isAjax()) {
-            return new AppError('handleAjaxException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result, 'output' => 'beditaMsg'), $ex->errorTrace());
-        }
-        return new AppError('handleException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result), $ex->errorTrace());
-    }
-
-    public static function defaultError(Exception $ex) {
-        include_once (APP . 'app_error.php');
-        $errTrace =  get_class($ex).' -  '. $ex->getMessage().'\nFile: '.$ex->getFile().
-                    ' - line: '.$ex->getLine().'\nTrace:\n'.$ex->getTraceAsString();
-        $messages = array('details' => $ex->getMessage(), 'msg' => $ex->getMessage(), 'result' => self::ERROR);
-        $handleMethod = ($ex instanceof SmartyException)? 'handleSmartyException' : 'handleException';
-        return new AppError($handleMethod, $messages, $errTrace);
     }
 
 	public static function usedUrl() {
@@ -194,7 +187,6 @@ class AppController extends Controller {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
         self::$current = $this;
-        $this->view = 'Smarty';
         $conf = Configure::getInstance();
         $this->set('conf',  $conf);
 
