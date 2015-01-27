@@ -209,6 +209,6 @@ if (class_exists($exception['class'])) {
     $exceptionHandler = array($exception['class'], $exception['method']);
 } else {
     App::import('Lib', 'BeExceptionHandler');
-    $exceptionHandler = 'BeExceptionHandler::handleException';
+    $exceptionHandler = 'BeExceptionHandler::handleExceptions';
 }
 set_exception_handler($exceptionHandler);
