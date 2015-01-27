@@ -245,6 +245,28 @@ class BeditaMethodNotAllowedException extends BeditaException {
 }
 
 /**
+ * Represents an HTTP 409 error.
+ */
+class BeditaConflictException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Conflict' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 409
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 409) {
+        if (empty($message)) {
+            $message = 'Conflict';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
  * Represents an HTTP 500 error.
  */
 class BeditaInternalErrorException extends BeditaException {
