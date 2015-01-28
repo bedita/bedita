@@ -80,7 +80,15 @@ class AppError extends ErrorHandler {
 		'url' => null
 	);
 
+	/**
+	 * The layout to use (default is 'error')
+	 *
+	 * @var string
+	 */
+	protected $layout = 'error';
+
 	function __construct($method, $messages, Exception $exception = null) {
+		$this->setLayout();
 		try {
 			$this->debugLevel = Configure::read('debug');
 			Configure::write('debug', 1);
@@ -119,7 +127,7 @@ class AppError extends ErrorHandler {
             $this->log($this->errorTrace, 'exception');
 			$this->sendMail($this->errorTrace);
 			$this->controller->set($messages);
-			$this->controller->render(null, 'error', VIEWS . 'errors/error500.tpl');
+			$this->controller->render(null, $this->layout, $this->getViewFile());
 			echo $this->controller->output;
 			$this->_stop();
 		}
@@ -129,6 +137,48 @@ class AppError extends ErrorHandler {
 		if(isset($this->debugLevel)) {
 			Configure::write('debug', $this->debugLevel); // restore level
 		}
+	}
+
+	/**
+	 * Check if Controller has basic initialization
+	 *
+	 * * Check if params are defined
+	 * * Check if RequestHandler and ResponseHandler components are initialized
+	 *
+	 * @return void
+	 */
+	private function checkController() {
+		if (empty($this->controller->params)) {
+			$this->controller->params = Router::getParams();
+		}
+		$components = array('RequestHandler', 'ResponseHandler');
+		foreach ($components as $name) {
+			if (empty($this->controller->$name) && App::import('Component', $name)) {
+				$completeName = $name . 'Component';
+				$this->controller->$name = new $completeName();
+				if ($name == 'ResponseHandler') {
+					$this->controller->$name->RequestHandler = $this->controller->RequestHandler;
+				}
+				$this->controller->$name->initialize($this->controller);
+				$this->controller->$name->startup($this->controller);
+			} else {
+				$this->log('AppError: Fail to load ' . $name . ' component.');
+			}
+		}
+	}
+
+	/**
+	 * Set the layout to use
+	 * If Request is ajax set ajax layout
+	 *
+	 * @param string $layout
+	 * @return void
+	 */
+	protected function setLayout($layout = 'error') {
+		if (env('HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest') {
+			$layout = 'ajax';
+		}
+        $this->layout = $layout;
 	}
 
 	/**
@@ -151,9 +201,31 @@ class AppError extends ErrorHandler {
 		));
 	}
 
+	/**
+	 * Return the error template to use
+	 * The template depends from http status code triggered from Exception
+	 *
+	 * First it checks if exists 'views/errors/error' . self::exception::httpCode() . '.tpl' (or .ctp)
+	 * If it not exists then it return the more general 'views/errors/error.tpl' (or .ctp)
+	 *
+	 * @return string
+	 */
+	protected function getViewFile() {
+		$baseFileName = 'error';
+		$httpCode = (method_exists($this->exception, 'getHttpCode')) ? $this->exception->getHttpCode() : '';
+		$ext = ($this->controller->view == 'Smarty') ? '.tpl' : '.ctp';
+		$fileName = VIEWS . 'errors/' . $baseFileName . $httpCode . $ext;
+		if (file_exists($fileName)) {
+			return $fileName;
+		} else {
+			return VIEWS . 'errors/' . $baseFileName . $ext;
+		}
+	}
+
 	public function handleException(array $messages) {
+		$this->checkController();
 		if ($this->controller->RequestHandler->isAjax() && BACKEND_APP) {
-			$messages['output'] = ($this->controller->ResponseHandler->type == 'json') ? 'json' : 'beditaMsg';
+			$messages['output'] = ($this->controller->ResponseHandler->getType() == 'json') ? 'json' : 'beditaMsg';
 			$messages['headers'] = array('HTTP/1.1 500 Internal Server Error');
 			return $this->handleAjaxException($messages);
 		}
@@ -165,13 +237,17 @@ class AppError extends ErrorHandler {
 			$this->controller->handleError($this->error['details'], $this->error['message'], $this->errorTrace);
 			$this->controller->setResult($messages['result']);
 			$this->setError();
-			$this->controller->render($this->controller->action);
+			if (BACKEND_APP) {
+				$this->controller->render($this->controller->action);
+			} else {
+				$this->controller->render(null, $this->layout, $this->getViewFile());
+			}
 			$this->controller->afterFilter();
 		} else {
-			// @todo Errore di default 404 ??? 
+			$this->setError();
             $this->log($messages['details'] . $url);
             $this->log($this->errorTrace, 'exception');
-			$this->controller->render(null, "error", VIEWS."errors/error404.tpl");
+			$this->controller->render(null, $this->layout,  $this->getViewFile());
 			$this->sendMail($this->errorTrace);
 		}
 		echo $this->controller->output;
@@ -237,6 +313,11 @@ class AppError extends ErrorHandler {
 		echo $viewObj->render(null, "ajax", VIEWS."errors/error_ajax.tpl");
 	}
 	
+	/**
+	 * @deprecated
+	 * @param array $messages
+	 * @return void
+	 */
 	public function handleExceptionRuntime(array $messages) {
 		$current = AppController::currentController();
 		if(isset($current)) {
@@ -248,9 +329,14 @@ class AppError extends ErrorHandler {
 		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
-		echo $viewObj->render(null, "error", VIEWS."errors/error500.tpl");				
+		echo $viewObj->render(null, $this->layout, VIEWS."errors/error500.tpl");				
 	}
 	
+	/**
+	 * @deprecated
+	 * @param array $messages
+	 * @return void
+	 */
 	public function handleExceptionFrontend(array $messages) {
 		$current = AppController::currentController();
 		if(isset($current)) {
@@ -262,9 +348,14 @@ class AppError extends ErrorHandler {
 		$this->restoreDebugLevel();
 		App::import('View', "Smarty");
 		$viewObj = new SmartyView($this->controller);
-		echo $viewObj->render(null, "error", VIEWS."errors/error404.tpl");				
+		echo $viewObj->render(null, $this->layout, VIEWS."errors/error404.tpl");				
 	}
 	
+	/**
+	 * @deprecated
+	 * @param array $messages
+	 * @return void
+	 */
 	public function handleExceptionFrontAccess(array $messages) {
 		if (isset($messages['headers']) && $messages['headers'] !== null) {
 			if (empty($messages['headers'])) {
@@ -320,6 +411,7 @@ class AppError extends ErrorHandler {
 	}
 	
 	function __outputMessage($template) {
+		$this->checkController();
 		$tpl = "";
 		if (empty($this->controller->viewVars["conf"])) {
 			$this->controller->set('conf', Configure::getInstance());
@@ -357,7 +449,7 @@ class AppError extends ErrorHandler {
 		}
 		$this->restoreDebugLevel();
 		$this->setError();
-		$this->controller->render(null, "error", VIEWS."errors/" . $tpl);
+		$this->controller->render(null, $this->layout, VIEWS."errors/" . $tpl);
 		$this->controller->afterFilter();
 		echo $this->controller->output;
 	}

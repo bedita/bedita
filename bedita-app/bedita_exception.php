@@ -335,6 +335,7 @@ class BeditaServiceUnavailableException extends BeditaException {
 
 /**
  * Runtime exception (default http status code 500)
+ * @deprecated use instead BeditaInternalErrorException
  */
 class BeditaRuntimeException extends BeditaException {
     public function __construct($message, $details = NULL, $res = self::ERROR, $code = 500) {
@@ -504,6 +505,9 @@ class BeditaPublicationException extends BeditaException {
 	}
 }
 
+/**
+ * @deprecated
+ */
 class BeditaFrontAccessException extends BeditaException {
 	
 	private $errorType;

@@ -20,10 +20,14 @@
  */
 
 /**
- * Xml View
+ * Xml View used to create XML response
  */
 class XmlView extends View {
 
+    /**
+     * [__construct description]
+     * @param [type] $controller [description]
+     */
     public function __construct($controller) {
         parent::__construct($controller);
         $this->viewPath = 'pages/xml';
@@ -36,10 +40,28 @@ class XmlView extends View {
     }
 
     public function render($action = null, $layout = null, $file = null) {
-        if (count($this->viewVars['data'] > 1)) {
-            $this->viewVars['data'] = array('response' => $this->viewVars['data']);
+        if (!empty($this->viewVars['_serialize'])) {
+            $this->serialize($this->viewVars['_serialize']);
+            return parent::render('xml', 'xml/default');
         }
-        return parent::render('xml', 'ajax');
+        return parent::render($action, 'xml/default', $file);
+    }
+
+    protected function serialize($serialize) {
+        $rootNode = isset($this->viewVars['_rootNode']) ? $this->viewVars['_rootNode'] : 'response';
+        $data = array();
+        if (!is_array($serialize)) {
+            $serialize = array($serialize);
+        }
+        foreach ($serialize as $varName) {
+            if (array_key_exists($varName, $this->viewVars)) {
+                $data[$varName] = $this->viewVars[$varName];
+            }
+        }
+        if (count($data) > 1 || empty($data[$rootNode])) {
+            $data = array($rootNode => $data);
+        }
+        $this->viewVars['data'] = $data;
     }
 
 }

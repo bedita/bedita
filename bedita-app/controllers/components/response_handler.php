@@ -20,10 +20,10 @@
  */
 
 /**
- * Response handler component for handling ajax and json/xml response
- * Also help to set headers for the client
+ * Response handler component
  *
- * Setup the right View class to use and prepare data for view
+ * Handle json/xml response preparing data to serialize and setting up the right View class to use.
+ * Help to set headers for the client too.
  *
  */
 class ResponseHandlerComponent extends Object {
@@ -43,28 +43,37 @@ class ResponseHandlerComponent extends Object {
     public $controller = null;
 
     /**
+     * Determines whether or not callbacks will be fired on this component
+     * i.e. self::initialize(), self::startup(), self::beforeRender()
+     *
+     * @var boolean
+     */
+    public $enabled = true;
+
+    /**
+     * The response type as 'json', 'xml'
+     * @var string|null
+     */
+    protected $type = null;
+
+    /**
      * The types that are automatically handled.
      * For these types the right content type and the right View class are set.
+     * Moreover all view variables found in '_serialize' key will be prepared to be serialized in the right View
      *
      * @var array
      */
     private $typesHandled = array('json', 'xml');
 
     /**
-     * The response type as 'json', 'xml'
-     * @var string|null
-     */
-    public $type = null;
-
-    /**
      * Xml format (tags or attributes)
      *
      * @var string
      */
-    private $xmlFormat = 'tags';
+    public $xmlFormat = 'tags';
 
     /**
-     * Initialize self::type from $settings or from request ACCEPT header or from extension
+     * Initialize self::type from $settings or from extension or from request ACCEPT header
      *
      * @param Controller $controller
      * @param array $settings
@@ -74,7 +83,7 @@ class ResponseHandlerComponent extends Object {
         $this->controller = &$controller;
         $this->_set($settings);
         if ($this->RequestHandler->isAjax()) {
-           // $this->controller->layout = 'ajax';
+           $this->controller->layout = 'ajax';
         }
         if (!$this->type || !in_array($this->type, $this->typesHandled)) {
             $action = $controller->params['action'];
@@ -87,8 +96,10 @@ class ResponseHandlerComponent extends Object {
             } else {
                 if ($this->RequestHandler->accepts('json')) {
                     $this->type = 'json';
-                } elseif ($this->RequestHandler->accepts('xml')) {
+                } elseif ($this->RequestHandler->prefers('xml')) {
                     $this->type = 'xml';
+                } else {
+                    $this->type = null;
                 }
             }
         }
@@ -111,14 +122,33 @@ class ResponseHandlerComponent extends Object {
      * @return void
      */
     public function beforeRender($controller) {
-        if ($this->type && in_array($this->type, $this->typesHandled)) {
+        if ($this->type) {
             $this->RequestHandler->respondAs($this->type);
             $type = Inflector::camelize($this->type);
             $this->controller->view = $type;
             if (method_exists($this, 'setup' . $type)) {
                 $this->{'setup' . $type}();
             }
-            $this->setData();
+        }
+    }
+
+    /**
+     * Return the response type set
+     *
+     * @return string|null
+     */
+    public function getType() {
+        return $this->type;
+    }
+
+    /**
+     * Set the response type that will be used in self::beforeRender()
+     *
+     * @param string $type
+     */
+    public function setType($type) {
+        if (in_array($type, $this->typesHandled)) {
+            $this->type = $type;
         }
     }
 
@@ -157,29 +187,7 @@ class ResponseHandlerComponent extends Object {
      * @return void
      */
     private function setupXml() {
-        $availableFormat = array('attributes', 'tags');
-        $paramsNamed = $this->controller->params['named'];
-        if (!empty($paramsNamed['format']) && in_array($paramsNamed['format'], $availableFormat)) {
-            $options = array('format' => $paramsNamed['format']);
-        } else {
-            $options = array('format' => $this->xmlFormat);
-        }
-        $this->controller->set('options', $options);
+        $this->controller->set('options', array('format' => $this->xmlFormat));
     }
 
-    /**
-     * Set 'data' View var with all var set in '_serialize' array
-     */
-    private function setData() {
-        $data = array();
-        $viewVars = $this->controller->viewVars;
-        if (!empty($viewVars['_serialize'])) {
-            foreach ($viewVars['_serialize'] as $varName) {
-                if (array_key_exists($varName, $viewVars)) {
-                    $data[$varName] = $viewVars[$varName];
-                }
-            }
-        }
-        $this->controller->set('data', $data);
-    }
 }

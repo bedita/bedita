@@ -122,20 +122,28 @@ class AppController extends Controller {
 
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
-        $this->log($eventMsg . $url);
+        $userid = '';
+        if (!empty($this->BeAuth->user['userid'])) {
+            $userid = ' - ' . $this->BeAuth->user['userid'];
+        }
+        $this->log($eventMsg . $userid . $url);
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
         }
         // end transactions if necessary
-        if(isset($this->Transaction)) {
-            if($this->Transaction->started())
+        if (isset($this->Transaction)) {
+            if ($this->Transaction->started()) {
                 $this->Transaction->rollback();
+            }
         }
-        $this->eventError($eventMsg);
-        $layout = (!isset($usrMsgParams['layout']))? 'message' : $usrMsgParams['layout'];
-        $params = (!isset($usrMsgParams['params']))? array('class' => 'error') : $usrMsgParams['params'];
-        $params['detail'] = $eventMsg;
-        $this->userErrorMessage($userMsg, $layout, $params);
+
+        if (BACKEND_APP) {
+            $this->eventError($eventMsg);
+            $layout = (!isset($usrMsgParams['layout']))? 'message' : $usrMsgParams['layout'];
+            $params = (!isset($usrMsgParams['params']))? array('class' => 'error') : $usrMsgParams['params'];
+            $params['detail'] = $eventMsg;
+            $this->userErrorMessage($userMsg, $layout, $params);
+        }
     }
 
     public function setResult($r) {

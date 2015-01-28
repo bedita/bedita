@@ -30,7 +30,24 @@ class JsonView extends View {
     }
 
     public function render($action = null, $layout = null, $file = null) {
-        return parent::render('json', 'ajax');
+        if (!empty($this->viewVars['_serialize'])) {
+            $this->serialize($this->viewVars['_serialize']);
+            return parent::render('json', 'ajax');
+        }
+        return parent::render($action, 'ajax', $file);
+    }
+
+    protected function serialize($serialize) {
+        $data = array();
+        if (!is_array($serialize)) {
+            $serialize = array($serialize);
+        }
+        foreach ($serialize as $varName) {
+            if (array_key_exists($varName, $this->viewVars)) {
+                $data[$varName] = $this->viewVars[$varName];
+            }
+        }
+        $this->viewVars['data'] = $data;
     }
 
 }
