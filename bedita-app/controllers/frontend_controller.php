@@ -490,7 +490,7 @@ abstract class FrontendController extends AppController {
 			);
 
 			include_once (APP . 'app_error.php');
-			return new AppError('handleExceptionFrontAccess', $params, $ex->errorTrace());
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
 		} elseif ($ex instanceof BeditaRuntimeException) {
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionRuntime',
@@ -499,7 +499,7 @@ abstract class FrontendController extends AppController {
 		} elseif ($ex instanceof SmartyException) {
 			include_once (APP . 'app_error.php');
 			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
-			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $trace);
+			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $ex);
 		} elseif ($ex instanceof BeditaAjaxException) {
 			include_once (APP . 'app_error.php');
 			$params = array(
@@ -513,7 +513,7 @@ abstract class FrontendController extends AppController {
 			if ($params['headers'] === null) {
 				$params['headers'] = array("HTTP/1.1 500 Internal Server Error");
 			}
-			return new AppError("handleAjaxException", $params, $ex->errorTrace());
+			return new AppError("handleAjaxException", $params, $ex);
 		} else {
 
 			if($ex instanceof BeditaException) {
@@ -529,7 +529,7 @@ abstract class FrontendController extends AppController {
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontend',
 					array('details' => $details, 'msg' => $ex->getMessage(),
-					'result' => $result), $errTrace);
+					'result' => $result), $ex);
 
 		}
 	}
