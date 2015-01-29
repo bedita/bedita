@@ -19,7 +19,7 @@
  *------------------------------------------------------------------->8-----
  */
 
-class BeFormat extends BEAppModel
+class DataTransfer extends BEAppModel
 {
     public $useTable = false;
 
@@ -72,7 +72,9 @@ class BeFormat extends BEAppModel
         'destination' => array(
             'byType' => array(
                 'ARRAY' => array(
-                    'config' => array(),
+                    'config' => array(
+                        'objectTypes' => array()
+                    ),
                     'tree' => array(),
                     'objects' => array(),
                     'relations' => array()
@@ -369,9 +371,12 @@ class BeFormat extends BEAppModel
                 $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
                 if (isset($conf->objectTypes[$objectTypeId])) {
                     $model = $conf->objectTypes[$objectTypeId]['model'];
-                } else {
+                } else if (isset($conf->objectTypesExt[$objectTypeId])) {
                     $model = $conf->objectTypesExt[$objectTypeId]['model'];
+                } else {
+                    throw new BeditaException('Model not found per objecttypeId "' . $objectTypeId . '"');
                 }
+
                 $objModel = ClassRegistry::init($model);
                 $objModel->contain(
                     $this->export['contain']
@@ -1327,7 +1332,13 @@ class BeFormat extends BEAppModel
         if (isset($object['Category'])) {
             $categories = array();
             foreach ($object['Category'] as $category) {
-                $categories[] = (!empty($category['label'])) ? $category['label'] : $category['name'];
+                $c = array(
+                    'name' => $category['name']
+                );
+                if (!empty($category['label'])) {
+                    $c['label'] = $category['label'];
+                }
+                $categories[] = $c;
             }
             $object['categories'] = $categories;
             unset($object['Category']);
@@ -1383,8 +1394,10 @@ class BeFormat extends BEAppModel
                 $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
                 if (isset($conf->objectTypes[$objectTypeId])) {
                     $model = $conf->objectTypes[$objectTypeId]['model'];
-                } else {
+                } else if (isset($conf->objectTypesExt[$objectTypeId])) {
                     $model = $conf->objectTypesExt[$objectTypeId]['model'];
+                } else {
+                    throw new BeditaException('Model not found per objecttypeId "' . $objectTypeId . '"');
                 }
                 $relatedObjModel = ClassRegistry::init($model);
                 $relatedObjModel->contain(
@@ -1495,7 +1508,7 @@ class BeFormat extends BEAppModel
             $d.= DS . $current;
             if (!file_exists($d) && !is_dir($d)) {
                 if (!mkdir($d)) {
-                    throw new BeditaException('Error creating dir "' . $current . '"');    
+                    throw new BeditaException('Error creating dir "' . $current . '"');
                 }
             }
         }

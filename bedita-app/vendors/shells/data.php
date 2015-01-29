@@ -11,7 +11,7 @@
 require_once APP . DS . 'vendors' . DS . 'shells'. DS . 'bedita_base.php';
 
 /** * format shell script */
-class FormatShell extends BeditaBaseShell {
+class DataShell extends BeditaBaseShell {
 
     private $logLevels = array(
         'ERROR' => 0,
@@ -60,8 +60,8 @@ class FormatShell extends BeditaBaseShell {
         //$inputData = json_decode($inputData,true);
         
         // 2. do import
-        $beFormat = ClassRegistry::init('BeFormat');
-        $result = $beFormat->import($inputData, $this->options['import']);
+        $dataTransfer = ClassRegistry::init('DataTransfer');
+        $result = $dataTransfer->import($inputData, $this->options['import']);
 
         // 3. end
         $this->trackInfo('');
@@ -99,8 +99,8 @@ class FormatShell extends BeditaBaseShell {
         }
 
         // do export
-        $beFormat = ClassRegistry::init('BeFormat');
-        $result = $beFormat->export($objects, $this->options['export']);
+        $dataTransfer = ClassRegistry::init('DataTransfer');
+        $result = $dataTransfer->export($objects, $this->options['export']);
 
         // end
         $this->trackInfo('');
@@ -111,8 +111,8 @@ class FormatShell extends BeditaBaseShell {
         $this->hr();
         $this->out('format script shell usage:');
         $this->out('');
-        $this->out('./cake.sh format import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh format export [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
+        $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
+        $this->out('./cake.sh data export [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
         $this->out('');
     }
 
