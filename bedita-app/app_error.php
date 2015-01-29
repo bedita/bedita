@@ -227,7 +227,7 @@ class AppError extends ErrorHandler {
 		if ($this->controller->RequestHandler->isAjax() && BACKEND_APP) {
 			$messages['output'] = ($this->controller->ResponseHandler->getType() == 'json') ? 'json' : 'beditaMsg';
 			$messages['headers'] = array('HTTP/1.1 500 Internal Server Error');
-			return $this->handleAjaxException($messages);
+			return $this->handleBeditaAjaxException($messages);
 		}
 		$this->restoreDebugLevel();
 		$url = AppController::usedUrl();
@@ -277,7 +277,7 @@ class AppError extends ErrorHandler {
 	 *       		'headers' => server headers (usually header error): if it's not set or === null no headers error will be sent
 	 *         															if it's set and empty use "HTTP/1.1 500 Internal Server Error"
 	 */
-	public function handleAjaxException(array $messages) {
+	public function handleBeditaAjaxException(array $messages) {
 		if (empty($messages['output'])) {
 			$messages['output'] = $this->exception->getOutputType();
 		}

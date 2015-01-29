@@ -479,6 +479,26 @@ abstract class FrontendController extends AppController {
 		if ($ex instanceof BeditaPublicationException) {
 			$currentController = AppController::currentController();
 			echo $currentController->render(false, $ex->getLayout());
+		} elseif ($ex instanceof BeditaUnauthorizedException) {
+			$params = array(
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
+				'result' => $ex->result,
+				'errorType' => self::UNLOGGED,
+				'headers' => array('HTTP/1.1 401 Unauthorized')
+			);
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
+		} elseif ($ex instanceof BeditaForbiddenException) {
+			$params = array(
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
+				'result' => $ex->result,
+				'errorType' => self::UNAUTHORIZED,
+				'headers' => array('HTTP/1.1 403 Unauthorized')
+			);
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
 		} elseif ($ex instanceof BeditaFrontAccessException) {
 			$errorType = $ex->getErrorType();
 			$params = array(
@@ -513,7 +533,7 @@ abstract class FrontendController extends AppController {
 			if ($params['headers'] === null) {
 				$params['headers'] = array("HTTP/1.1 500 Internal Server Error");
 			}
-			return new AppError("handleAjaxException", $params, $ex);
+			return new AppError("handleBeditaAjaxException", $params, $ex);
 		} else {
 
 			if($ex instanceof BeditaException) {
