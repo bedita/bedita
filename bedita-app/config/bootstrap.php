@@ -202,13 +202,23 @@ if (!empty($proxyOpts)) {
     stream_context_set_default($aContext);
 }
 
-// setup exception handler
-$exception = Configure::read('Exception.handler');
-App::import('Lib', $exception['class']);
-if (class_exists($exception['class'])) {
-    $exceptionHandler = array($exception['class'], $exception['method']);
-} else {
-    App::import('Lib', 'BeExceptionHandler');
-    $exceptionHandler = 'BeExceptionHandler::handleExceptions';
+$isCli = (php_sapi_name() === 'cli');
+
+if (!$isCli) {
+    // setup exception handler
+    $exception = Configure::read('Exception.handler');
+    if (!empty($exception['class']) && !empty($exception['method'])) {
+        App::import('Lib', $exception['class']);
+        if (class_exists($exception['class'])) {
+            $exceptionHandler = array($exception['class'], $exception['method']);
+        }
+    }
+
+    // default exception handler
+    if (empty($exceptionHandler)) {
+        App::import('Lib', 'BeExceptionHandler');
+        $exceptionHandler = 'BeExceptionHandler::handleExceptions';
+    }
+
+    set_exception_handler($exceptionHandler);
 }
-set_exception_handler($exceptionHandler);
