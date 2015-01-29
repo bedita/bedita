@@ -515,7 +515,7 @@ abstract class FrontendController extends AppController {
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionRuntime',
 					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-					'result' => $ex->result), $ex->errorTrace());
+					'result' => $ex->result), $ex);
 		} elseif ($ex instanceof SmartyException) {
 			include_once (APP . 'app_error.php');
 			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
