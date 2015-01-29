@@ -30,7 +30,7 @@ $config = array() ;
 $config['projectName'] = 'BEdita 3.5'; // override in bedita.cfg
 
 // BEdita version - Semantic Versioning http://semver.org
-$config['version'] = '3.5.0'; // don't override -- admin/system
+$config['version'] = '3.5.1'; // don't override -- admin/system
 
 // majorVersion deprecated, keep for retrocomp
 $config['majorVersion'] = $config['version']; // don't override
