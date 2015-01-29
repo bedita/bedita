@@ -37,10 +37,6 @@ class BeExceptionHandler extends Object {
             $name = 'SmartyException';
         }
         $method = 'handle' . $name;
-        if (method_exists('BeErrorHandler', $method)) {
-            return self::$method($exception, $options);
-        }
-
         self::appError($method, $options, $exception);
     }
 
