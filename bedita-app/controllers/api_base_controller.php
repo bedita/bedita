@@ -29,6 +29,10 @@ abstract class ApiBaseController extends FrontendController {
 
     public $uses = array();
 
+    public $components = array(
+        'ResponseHandler' => array('type' => 'json')
+    );
+
     protected $loginRedirect = null;
 
     /**
@@ -125,7 +129,7 @@ abstract class ApiBaseController extends FrontendController {
             return call_user_func_array(array($this, 'objects'), $arguments);
         }
 
-        $this->throwException(405);
+        throw new BeditaMethodNotAllowedException();
     }
 
     /**
@@ -160,8 +164,6 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function beforeCheckLogin() {
-        $this->view = 'View';
-        $this->RequestHandler->respondAs('json');
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
 
         $token = null;
@@ -230,7 +232,7 @@ abstract class ApiBaseController extends FrontendController {
         // avoid to call methods that aren't end points
         if (!in_array($methodName, $this->endPoints)) {
             $this->action = $methodName;
-            $this->throwException(405);
+            throw new BeditaMethodNotAllowedException();
         } else {
             if ($this->requestMethod == 'post') {
                 $this->handlePOST();
@@ -244,40 +246,6 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
         $this->response();
-    }
-
-    /**
-     * handle Exceptions
-     *
-     * @param Exception $ex
-     * @return void
-     */
-    protected function handleException(BeditaException $ex) {
-        $currentController = AppController::currentController();
-        $code = $ex->getHttpCode();
-        if (empty($code)) {
-            $code = 500;
-        }
-        http_response_code($code);
-        $currentController->responseData['error'] = array(
-            'code' => $code,
-            'message' => $ex->getMessage()
-        );
-    }
-
-    /**
-     * create a BEditaExceptions and handle it
-     *
-     * @param int $code the http status code
-     * @param string $message a custom message
-     * @return void
-     */
-    public function throwException($code, $message = null) {
-        if (empty($message)) {
-            $message = $this->getDefaultCodeMessage($code);
-        }
-        $ex = new BeditaException($message, true, self::ERROR, $code);
-        $this->handleException($ex);
     }
 
     /**
@@ -310,7 +278,7 @@ abstract class ApiBaseController extends FrontendController {
             $object = $this->loadObj($id);
             // check if id correspond to object type requested (if any)
             if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
-                $this->throwException(500, 'Object type mismatch');
+                throw new BeditaInternalErrorException('Object type mismatch');
             }
             $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
         // @todo list of objects
@@ -331,7 +299,7 @@ abstract class ApiBaseController extends FrontendController {
                 'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime)
             );
         } else {
-            $this->throwException(401);
+            throw new BeditaUnauthorizedException();
         }
     }
 
@@ -348,7 +316,7 @@ abstract class ApiBaseController extends FrontendController {
                 'valid' => true
             );
         } else {
-            $this->throwException(401, 'Invalid or expired session.');
+            throw new BeditaUnauthorizedException('Invalid or expired session.');
         }
     }
 
@@ -362,7 +330,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->BeAuth->logout(false);
             $this->responseData['data'] = array('logout' => true);
         } else {
-            $this->throwException(401, 'Invalid or expired session');
+            throw new BeditaUnauthorizedException('Invalid or expired session');
         }
     }
 
@@ -372,11 +340,10 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function response() {
-        $this->RequestHandler->respondAs('json');
         $this->setBaseResponse();
         ksort($this->responseData);
-        $this->set('data', $this->responseData);
-        $this->render('/pages/json');
+        $this->set($this->responseData);
+        $this->set('_serialize', array_keys($this->responseData));
     }
 
 }
