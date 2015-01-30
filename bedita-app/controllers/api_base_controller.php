@@ -36,14 +36,14 @@ abstract class ApiBaseController extends FrontendController {
     protected $loginRedirect = null;
 
     /**
-     * The default end points
+     * The default endpoints
      *
      * @var array
      */
     private $defaultEndPoints = array('objects', 'session');
 
     /**
-     * Other end points specified in the frontend app
+     * Other endpoints specified in the frontend app
      * They will be merged with self::defaultEndPoints()
      *
      * @var array
@@ -80,7 +80,7 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Constructor
-     * Merge self::defaultEndPoints, self::endPoints and object types whitelist end points
+     * Merge self::defaultEndPoints, self::endPoints and object types whitelist endpoints
      */
     public function __construct() {
         $this->components[] = 'ApiFormatter';
@@ -136,8 +136,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Set View and response (json)
-     *
+     * Start Session if authorization token is found
      * If method is overridden in ApiController remember to call parent::beforeCheckLogin()
      *
      * @return void
@@ -199,7 +198,7 @@ abstract class ApiBaseController extends FrontendController {
      * Any Api request has to pass from this method (see frontend app routes.php)
      * Override FrontendController::route()
      *
-     * The method checks for valid api end points and call method or fallback to self::__call()
+     * The method checks for valid api endpoints and call method or fallback to self::__call()
      *
      * @return void
      */
@@ -208,7 +207,7 @@ abstract class ApiBaseController extends FrontendController {
         $name = array_shift($args);
         // generic methodName
         $methodName = str_replace(".", "_", $name);
-        // avoid to call methods that aren't end points
+        // avoid to call methods that aren't endpoints
         if (!in_array($methodName, $this->endPoints)) {
             $this->action = $methodName;
             throw new BeditaMethodNotAllowedException();
@@ -228,7 +227,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * objects end point method
+     * objects endpoint method
      *
      * If $name is passed try to load an object with that id or nickname
      *
