@@ -40,7 +40,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'session', 'me');
+    private $defaultEndPoints = array('objects', 'session', 'me', 'poster');
 
     /**
      * Other endpoints specified in the frontend app
@@ -193,10 +193,9 @@ abstract class ApiBaseController extends FrontendController {
     private function setBaseResponse() {
         $this->responseData['url'] = $this->params['url']['url'];
         $urlParams = array_slice($this->params['url'], 1);
-        $passParams = array_slice($this->params['pass'], 1);
         $getParams = array_slice($_GET, 0);
         unset($getParams['url']);
-        $this->responseData['params'] = array_merge($passParams, $urlParams, $this->params['named'], $getParams);
+        $this->responseData['params'] = array_merge($urlParams, $this->params['named'], $getParams);
         $this->responseData['api'] = $this->action;
         $this->responseData['method'] = $this->requestMethod;
     }
@@ -267,7 +266,7 @@ abstract class ApiBaseController extends FrontendController {
             if ($cardId !== false) {
                 $this->objects($cardId);
             } else {
-                throw new BeditaNotFoundException();    
+                throw new BeditaNotFoundException(); 
             }
         } else {
             throw new BeditaBadRequestException();
@@ -285,6 +284,53 @@ abstract class ApiBaseController extends FrontendController {
             $this->profile($user['id']);
         } else {
             throw new BeditaUnauthorizedException();
+        }
+    }
+
+    protected function poster($id = null) {
+        if (!empty($id)) {
+            $objectModel = ClassRegistry::init('BEObject');
+            $obj = $objectModel->field('id', array(
+                'OR' => array(
+                    'id' => $id,
+                    'nickname' => $id
+                )
+            ));
+            if (!empty($obj)) {
+                $poster = $objectModel->getPoster($obj);
+                if ($poster !== false) {
+                    $thumbConf = array();
+                    if (!empty($this->params['url'])) {
+                        $acceptConf = array(
+                            'width' => true,
+                            'height' => true,
+                            'preset' => true
+                        );
+                        $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
+                        if (isset($thumbConf['preset'])) {
+                            $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
+                            if (!empty($presetConf)) {
+                                $thumbConf = $presetConf;
+                            }
+                        }
+                        $thumbConf['URLonly'] = true;
+                    }
+
+                    try {
+                        $beThumb = BeLib::getObject('BeThumb');
+                        $poster['uri'] = $beThumb->image($poster, $thumbConf);
+                        $this->responseData['data'] = $poster;
+                    } catch(Excpetion $ex) {
+                        $this->responseData['data'] = array();
+                    }
+                } else {
+                    $this->responseData['data'] = array();
+                }
+            } else {
+                throw new BeditaNotFoundException();
+            }
+        } else {
+            throw new BeditaBadRequestException();
         }
     }
 
