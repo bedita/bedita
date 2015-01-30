@@ -235,20 +235,42 @@ abstract class ApiBaseController extends FrontendController {
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
+     * @param string $kinship
      * @return void
      */
-    protected function objects($name = null) {
+    protected function objects($name = null, $kinship  = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-            $object = $this->loadObj($id);
-            // check if id correspond to object type requested (if any)
-            if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
-                throw new BeditaInternalErrorException('Object type mismatch');
+            $kinshipTypes = array('ancestors', 'parents', 'children', 'descendants', 'siblings');
+            if (!empty($kinship)) {
+                if (!in_array($kinship, $kinshipTypes)) {
+                    throw new BeditaBadRequestException();
+                } else {
+                    $method = 'load' . Inflector::camelize($kinship);
+                    $this->{$method}($id);
+                }
+            } else {
+                $object = $this->loadObj($id);
+                // check if id correspond to object type requested (if any)
+                if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
+                    throw new BeditaInternalErrorException('Object type mismatch');
+                }
+                $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
             }
-            $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
         // @todo list of objects
         } else {
 
+        }
+    }
+
+    protected function loadChildren($id) {
+        $objects = $this->loadSectionObjects($id);
+        if (empty($objects['childContents'])) {
+            $this->responseData['data'] = array();
+        } else {
+            $objectsData = $this->ApiFormatter->formatObjects($objects['childContents']);
+            $this->responseData['data'] = $objectsData;
+            $this->responseData['paging'] = $objects['toolbar'];
         }
     }
 

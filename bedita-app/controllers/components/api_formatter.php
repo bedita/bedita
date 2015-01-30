@@ -79,7 +79,11 @@ class ApiFormatterComponent extends Object {
             foreach ($object['relations'] as $relation => $relatedObjects) {
                 $result['object']['relations'][$relation] = array();
                 foreach ($relatedObjects as $relObj) {
-                    $result['object']['relations'][$relation][] = $relObj['id'];
+                    $result['object']['relations'][$relation][] = array(
+                        'idRight' => (int) $relObj['id'],
+                        'params' => $relObj['params'],
+                        'priority' => (int) $relObj['priority']
+                    );
                     $relObjFormatted = $this->formatObject($relObj, $options);
                     $result['related'][$relObj['id']] = $relObjFormatted['object'];
                     if (!empty($relObjFormatted['related'])) {
@@ -108,7 +112,7 @@ class ApiFormatterComponent extends Object {
     public function formatObjects(array $objects, $options = array()) {
         $result = array('objects' => array(), 'related' => array());
         foreach ($objects as $obj) {
-            $objectFormatted = $this->formatObject($object, $options);
+            $objectFormatted = $this->formatObject($obj, $options);
             $result['objects'][] = $objectFormatted['object'];
             $result['related'] += $objectFormatted['related'];
         }

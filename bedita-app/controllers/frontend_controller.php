@@ -1497,7 +1497,7 @@ abstract class FrontendController extends AppController {
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
 		$dir = (isset($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
-		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
+		$dim = (!empty($options["dim"]))? $options["dim"] : null;
 
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
