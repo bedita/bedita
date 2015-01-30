@@ -72,9 +72,7 @@ class DataTransfer extends BEAppModel
         'destination' => array(
             'byType' => array(
                 'ARRAY' => array(
-                    'config' => array(
-                        'objectTypes' => array()
-                    ),
+                    'config' => array(),
                     'tree' => array(),
                     'objects' => array(),
                     'relations' => array()
