@@ -228,22 +228,6 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Return a specific or generic message for the http status code provided.
-     *
-     * The method checks if a specific message is set for the provided code, otherwise return the generic one
-     *
-     * @param int $code the http status code
-     * @return string
-     */
-    protected function getDefaultCodeMessage($code) {
-        if (isset($this->codeToMessages[$code])) {
-            return $this->codeToMessages[$code];
-        } else {
-            return $this->defaultExceptionMessage;
-        }
-    }
-
-    /**
      * objects end point method
      *
      * If $name is passed try to load an object with that id or nickname
