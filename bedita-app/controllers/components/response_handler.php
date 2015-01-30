@@ -159,10 +159,12 @@ class ResponseHandlerComponent extends Object {
      * @return void
      */
     public function sendStatus($status) {
-        $httpCode = $this->controller->httpCodes($status);
-        if (!empty($httpCode)) {
-            $header = 'HTTP/1.1 ' . $status . ' ' . $httpCode[$status];
-            $this->sendHeader($header);
+        if (!empty($status)) {
+            $httpCode = $this->controller->httpCodes($status);
+            if (!empty($httpCode)) {
+                $header = 'HTTP/1.1 ' . $status . ' ' . $httpCode[$status];
+                $this->sendHeader($header);
+            }
         }
     }
 
