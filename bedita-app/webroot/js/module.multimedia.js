@@ -150,7 +150,7 @@ $(window).load(function() {
 
             areaObj.set('title', $el.find('.assoc_obj_title h4').text());
             areaObj.set('link', $el.attr('data-beid'));
-            areaObj.set('background', $el.find('.rel_uri').val());
+            areaObj.set('background', $el.find('.rel_uri').val() || 'none');
 
             FlatLanderEditor.FlatlanderEditorInstance.appendArea(areaObj);
             FlatLanderEditor.trigger('areacreated', areaObj);
@@ -193,7 +193,7 @@ $(window).load(function() {
             $(args).attr('data-flatlanderarea-id', area.get('id')).find('.relparams input').bind('change.fl keyup.fl', onRelationInputChange);
             area.set('title', $(args).find('.assoc_obj_title h4').text());
             area.set('link', $(args).attr('data-beid'));
-            area.set('background', $(args).find('.rel_uri').val());
+            area.set('background', $(args).find('.rel_uri').val() || 'none');
 
             area.bind('change', function() {
                 onAreaChange(area);

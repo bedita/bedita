@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-05-12 13:33:51\n"
+"POT-Creation-Date: 2015-01-16 16:19:24\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -241,12 +241,6 @@ msgstr "Tarjetas borradas"
 msgid "Categories"
 msgstr "Categorías"
 
-msgid "Category deleted"
-msgstr "Categoría borrada"
-
-msgid "Category saved"
-msgstr "Categoría guardada"
-
 msgid "Change Password"
 msgstr "Cambiar Contraseña"
 
@@ -263,6 +257,9 @@ msgid "Check url"
 msgstr "Verifica url"
 
 msgid "Choose one of the following operations"
+msgstr ""
+
+msgid "Clean all cache files (also object cache)"
 msgstr ""
 
 msgid "Clone"
@@ -601,6 +598,9 @@ msgstr ""
 msgid "Error removing group"
 msgstr "Error en la eliminación del grupo"
 
+msgid "Error removing permissions for group"
+msgstr ""
+
 msgid "Error saving avatar data"
 msgstr ""
 
@@ -642,6 +642,9 @@ msgstr "Error guardando nota"
 
 msgid "Error saving options"
 msgstr "Error guardando opciones"
+
+msgid "Error saving permissions for group"
+msgstr ""
 
 msgid "Error saving status for item: "
 msgstr "Error guardando estado para el elemento"
@@ -1008,6 +1011,9 @@ msgstr ""
 msgid "Media already exists in the system"
 msgstr "Media ya existente en el sistema"
 
+msgid "Media file is missing"
+msgstr ""
+
 msgid "Media root"
 msgstr "Media root"
 
@@ -1315,8 +1321,9 @@ msgstr "Ningun árbol encontrado"
 msgid "No user data"
 msgstr "Ningun dato de usuario"
 
-msgid "No user with access privileges found"
-msgstr "Ningún usuario con privilegios de acceso encontrado"
+msgid ""
+"No user with access privileges found or user uses an external authentication"
+msgstr ""
 
 msgid "No valid export filter has been selected"
 msgstr ""
@@ -1782,6 +1789,9 @@ msgstr "Traducciones"
 msgid "UPDATE"
 msgstr ""
 
+msgid "URL"
+msgstr ""
+
 msgid "URL not valid"
 msgstr "URL invalido"
 
@@ -1971,7 +1981,7 @@ msgstr "Acceso"
 msgid "access server log statistics"
 msgstr "Acceder a las estadísticas de registro del servidor"
 
-msgid "active"
+msgid "active from"
 msgstr ""
 
 msgid "add"
@@ -2105,9 +2115,6 @@ msgstr "rebotar al correo (bounce)"
 
 msgid "browse your disk"
 msgstr "buscar en su disco"
-
-msgid "business name"
-msgstr ""
 
 msgid "card(s) associated to mailgroup"
 msgstr "tarjeta(s) asociada a grupo de correo"
@@ -2310,8 +2317,8 @@ msgstr "descargar"
 msgid "draft"
 msgstr "borrador"
 
-msgid "duration in minutes"
-msgstr "duración en minutos"
+msgid "duration in seconds"
+msgstr ""
 
 msgid "e-mail"
 msgstr ""
@@ -2537,6 +2544,9 @@ msgstr "latitud"
 
 msgid "left to right"
 msgstr "izquierda a derecha"
+
+msgid "legal form"
+msgstr ""
 
 msgid "license"
 msgstr "licencia"
@@ -2833,9 +2843,6 @@ msgstr "orden"
 
 msgid "order by"
 msgstr "ordenar por"
-
-msgid "organization"
-msgstr "organización"
 
 msgid "original filename"
 msgstr "nombre original del archivo"
@@ -3309,6 +3316,9 @@ msgstr "ver"
 msgid "view all"
 msgstr "ver todos"
 
+msgid "view file"
+msgstr ""
+
 msgid "visibility"
 msgstr "visibilidad"
 
@@ -3353,6 +3363,21 @@ msgstr "los 5 artículos recientes"
 
 msgid "your message"
 msgstr "su mensaje"
+
+#~ msgid "Category deleted"
+#~ msgstr "Categoría borrada"
+
+#~ msgid "Category saved"
+#~ msgstr "Categoría guardada"
+
+#~ msgid "No user with access privileges found"
+#~ msgstr "Ningún usuario con privilegios de acceso encontrado"
+
+#~ msgid "duration in minutes"
+#~ msgstr "duración en minutos"
+
+#~ msgid "organization"
+#~ msgstr "organización"
 
 #~ msgid "Add multiple items"
 #~ msgstr "Añadir elementos múltiplos"

@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita 3.4 setup | Finish</title>
+	<title>BEdita 3.5 setup | Finish</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>
 </head>
 <body>
 
-<h1>BEdita 3.4 setup</h1>
+<h1>BEdita 3.5 setup</h1>
 
 {assign var="page" value=4}
 
@@ -34,7 +34,6 @@
         <p><span class="WARN">[WARNING]</span> Error writing configuration in <code>bedita.cfg.php</code>. You can continue and edit <code>$config['beditaUrl']</code> manually.
     {/if}
     <p>Now it's time to... <input style="float:right;" type="submit" value="Start with BEdita" onclick="javascript:document.getElementById('p').value = 5;" /></p>
-    }
 {/if}
 
 {*<input type="hidden" id="p" name="page" value="4"/>

@@ -40,7 +40,7 @@ $(document).ready(function(){
 	<textarea name="tags" class="autogrowarea" style="display:block; margin-bottom:10px; width:470px" id="tagsArea">
 	{if !empty($object.Tag)}
 		{foreach from=$object.Tag item="tag" name="ft"}
-			{$tag.label}{if !$smarty.foreach.ft.last}, {/if}
+			{$tag.label|escape}{if !$smarty.foreach.ft.last}, {/if}
 		{/foreach}
 	{/if}
 	</textarea>

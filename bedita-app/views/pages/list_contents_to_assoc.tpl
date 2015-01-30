@@ -52,7 +52,8 @@ $(document).ready(function() {
 		</thead>
 	<tbody>
 
-		{$view->element('form_assoc_object', ['objsRelated' => $objectsToAssoc.items])}
+		{assign_associative var="params" presentation="thumb" width='64'}
+		{include file="../elements/form_assoc_object.tpl" objsRelated=$objectsToAssoc.items}
 
 	</tbody>
 	</table>

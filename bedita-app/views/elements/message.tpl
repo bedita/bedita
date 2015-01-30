@@ -11,7 +11,7 @@
 		<h2>{t}Error{/t}</h2>
 	{/if}
 	<p style="display:block; margin-top:10px; min-height: 30px; overflow: visible; word-wrap: break-word;">
-		{$message}
+		{$message|escape}
 	</p>
 	<hr />
 	{if !empty($detail)}
@@ -24,7 +24,7 @@
 	
 {if !empty($detail)}
 <div class="messageDetail shadow" style="display:none">	
-	<p style="font-family:monospace;">{$detail}</p>
+	<p style="font-family:monospace;">{$detail|escape}</p>
 	<hr />
 	<a class="closemessage" href="javascript:void(0)">
 		{t}close{/t}</a>	

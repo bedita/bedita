@@ -29,8 +29,10 @@
  * $Id$
  */
 
+
  class SoapTestData extends BeditaTestData {
-	var $data =  array(
+
+    var $data =  array(
 
 		"services" => array("googlesearch", "googlesearch2"),
 

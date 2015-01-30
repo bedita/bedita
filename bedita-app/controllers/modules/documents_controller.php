@@ -88,64 +88,6 @@ class DocumentsController extends ModulesController {
 	public function categories() {
 		$this->showCategories($this->Document);
 	}
-
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"cloneObject"	=> 	array(
-							"OK"	=> "/documents/view/".@$this->Document->id,
-							"ERROR"	=> "/documents/view/".@$this->Document->id
-							),
-			"view"	=> 	array(
-							"ERROR"	=> "/documents"
-							),
-			"save"	=> 	array(
-							"OK"	=> "/documents/view/".@$this->Document->id,
-							"ERROR"	=> $this->referer()
-							),
-			"saveCategories" 	=> array(
-							"OK"	=> "/documents/categories",
-							"ERROR"	=> "/documents/categories"
-							),
-			"deleteCategories" 	=> array(
-							"OK"	=> "/documents/categories",
-							"ERROR"	=> "/documents/categories"
-							),
-			"delete" =>	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> $this->referer()
-							),
-			"deleteSelected" =>	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"moveItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"removeItemsFromAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"changeStatusObjects"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							)
-			);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
 }
 
 ?>

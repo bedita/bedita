@@ -14,4 +14,4 @@
 	<meta name="author" content="ChannelWeb srl - Chialab srl" />
 	<meta name="description" content="BEdita, semantic content management" lang="{$currLang2}" />
 	<meta name="keywords" content="BEdita" />
-	<meta name="generator" content="{$conf->userVersion}" />
+	<meta name="generator" content="BEdita {$conf->version}" />

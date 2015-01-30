@@ -195,6 +195,31 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
 
 /**
  ** ******************************************
+ **  Exceptions Configuration
+ ** ******************************************
+ */
+
+/**
+ * Configure the Exception handler used for uncaught exceptions. By default,
+ * BeExceptionHandler::handleException() is used.
+ *
+ * To use your custom exception handler class put it in app/libs/errors directory
+ *
+ * Options:
+ *
+ * - `handler` The Exceptions handler. It must contain
+ *  - `class` The Exceptions handler class name
+ *  - `method` The Exceptions handler class method
+ */
+// $config['Exception'] = array(
+//     'handler' => array(
+//         'class' => 'BeExceptionHandler',
+//         'method' => 'handleExceptions' // it must be static
+//     )
+// );
+
+/**
+ ** ******************************************
  **  External Authentication Services Params
  ** ******************************************
  */

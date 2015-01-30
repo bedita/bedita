@@ -74,6 +74,8 @@ var select2optionsSimple = {
 var select2optionsTree = {
 	escapeMarkup: function(m) { return m; },
 	formatResult: function(state) {
+		// escape html tags
+        state.text = $('<div/>').html(state.text).text();
 		if ($(state.element).is('.pubOption')) {
 			return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
 		} else {

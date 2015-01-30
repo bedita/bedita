@@ -254,16 +254,11 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function accessDenied($type) {
 		$headers = array();
-		if ($type == self::UNLOGGED && !strstr($this->here,"/login")) { // 401
-			$message = __("You have to be logged to access that item",true);
-			$this->userInfoMessage($message);
-			$headers = array("HTTP/1.1 401 Unauthorized");
+		if ($type == self::UNLOGGED && !strstr($this->here, '/login')) { // 401
+			throw new BeditaUnauthorizedException(__('You have to be logged to access that item', true));
 		} elseif ($type == self::UNAUTHORIZED) { // 403
-			$message = __("You aren't authorized to access that item",true);
-			$this->userErrorMessage($message);
-			$headers = array("HTTP/1.1 403 Forbidden");
+			throw new BeditaForbiddenException(__('You are not authorized to access that item', true));
 		}
-		throw new BeditaFrontAccessException(null, array("errorType" => $type,"headers" => $headers));
 	}
 
 	/**
@@ -312,11 +307,10 @@ abstract class FrontendController extends AppController {
 			$this->publication = $this->loadObj(Configure::read("frontendAreaId"), false);
 			$this->status = $statusSaved;
 			$this->set('publication', $this->publication);
-			if (Configure::read("draft") == false or ($pubStatus == "off")) {
-				throw new BeditaPublicationException("Publication not ON", array("layout" => $pubStatus));
+			if (Configure::read("draft") == false || $pubStatus == "off") {
+				$this->renderPublicationOff($pubStatus);
 			}
 		}
-
 		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
 
 		// set publication data for template
@@ -337,6 +331,19 @@ abstract class FrontendController extends AppController {
 		$this->historyItem["area_id"] = $this->publication["id"];
 
 		$this->checkPublicationPermissions();
+	}
+
+	/**
+	 * Render off.tpl (or draft.tpl) layout when publication is off (or draft)
+	 *
+	 * @param string $status the status to render
+	 * @return void
+	 */
+	protected function renderPublicationOff($status) {
+		$this->set('_serialize', array('publication'));
+		$this->render(false, $status);
+		echo $this->output;
+		$this->_stop();
 	}
 
     protected function checkPublicationPermissions() {
@@ -427,7 +434,7 @@ abstract class FrontendController extends AppController {
 	public function lang($lang, $forward = null) {
 
 		if (empty($lang)) {
-			throw new BeditaException("No lang selected");
+			throw new BeditaBadRequestException("No lang selected");
 		}
 
 		$conf = Configure::getInstance();
@@ -478,6 +485,7 @@ abstract class FrontendController extends AppController {
 	/**
 	 * handle Exceptions
 	 *
+	 * @deprecated
 	 * @param Exception $ex
 	 * @return AppError
 	 */
@@ -486,6 +494,26 @@ abstract class FrontendController extends AppController {
 		if ($ex instanceof BeditaPublicationException) {
 			$currentController = AppController::currentController();
 			echo $currentController->render(false, $ex->getLayout());
+		} elseif ($ex instanceof BeditaUnauthorizedException) {
+			$params = array(
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
+				'result' => $ex->result,
+				'errorType' => self::UNLOGGED,
+				'headers' => array('HTTP/1.1 401 Unauthorized')
+			);
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
+		} elseif ($ex instanceof BeditaForbiddenException) {
+			$params = array(
+				'details' => $ex->getDetails(),
+				'msg' => $ex->getMessage(),
+				'result' => $ex->result,
+				'errorType' => self::UNAUTHORIZED,
+				'headers' => array('HTTP/1.1 403 Unauthorized')
+			);
+			include_once (APP . 'app_error.php');
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
 		} elseif ($ex instanceof BeditaFrontAccessException) {
 			$errorType = $ex->getErrorType();
 			$params = array(
@@ -497,16 +525,16 @@ abstract class FrontendController extends AppController {
 			);
 
 			include_once (APP . 'app_error.php');
-			return new AppError('handleExceptionFrontAccess', $params, $ex->errorTrace());
+			return new AppError('handleExceptionFrontAccess', $params, $ex);
 		} elseif ($ex instanceof BeditaRuntimeException) {
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionRuntime',
 					array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-					'result' => $ex->result), $ex->errorTrace());
+					'result' => $ex->result), $ex);
 		} elseif ($ex instanceof SmartyException) {
 			include_once (APP . 'app_error.php');
 			$trace = $ex->getFile()." - line: ". $ex->getLine()." \nTrace:\n". $ex->getTraceAsString();
-			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $trace);
+			return new AppError('handleExceptionRuntime', array('msg' => $ex->getMessage(), 'details' => ''), $ex);
 		} elseif ($ex instanceof BeditaAjaxException) {
 			include_once (APP . 'app_error.php');
 			$params = array(
@@ -520,7 +548,7 @@ abstract class FrontendController extends AppController {
 			if ($params['headers'] === null) {
 				$params['headers'] = array("HTTP/1.1 500 Internal Server Error");
 			}
-			return new AppError("handleAjaxException", $params, $ex->errorTrace());
+			return new AppError("handleBeditaAjaxException", $params, $ex);
 		} else {
 
 			if($ex instanceof BeditaException) {
@@ -536,27 +564,10 @@ abstract class FrontendController extends AppController {
 			include_once (APP . 'app_error.php');
 			return new AppError('handleExceptionFrontend',
 					array('details' => $details, 'msg' => $ex->getMessage(),
-					'result' => $result), $errTrace);
+					'result' => $result), $ex);
 
 		}
 	}
-
-	/**
-	 * handle error, logging if log level is 'debug'
-	 *
-	 * @see bedita-app/AppController#handleError()
-	 */
-	public function handleError($eventMsg, $userMsg, $errTrace, $usrMsgParams=array()) {
-        $url = self::usedUrl();
-        $userid = '';
-        if (!empty($this->BeAuth->user['userid'])) {
-            $userid = ' - ' . $this->BeAuth->user['userid'];
-        }
-        $this->log($eventMsg . $userid. $url);
-        if (!empty($errTrace)) {
-            $this->log($errTrace, 'exception');
-        }
-    }
 
 	/**
 	* Get tree starting from specified section or area
@@ -574,7 +585,7 @@ abstract class FrontendController extends AppController {
 		$result = array();
 		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
 		if (empty($parent_id)) {
-			throw new BeditaException(__("Error loading sections tree. Missing parent" . ": " . $parentName, true));
+			throw new BeditaBadRequestException(__('Error loading sections tree. Missing parent', true)  . ': ' . $parentName);
 		}
 
         $sections = array();
@@ -795,8 +806,9 @@ abstract class FrontendController extends AppController {
 	public function sitemapXml() {
 		$this->sitemap(true);
 		$this->layout = null;
-		$this->view = "Smarty";
-		header("Content-type: text/xml; charset=utf-8");
+		$this->view = 'Smarty';
+		$this->ResponseHandler->enabled = false;
+		$this->RequestHandler->respondAs('xml');
 	}
 
 	/**
@@ -862,7 +874,9 @@ abstract class FrontendController extends AppController {
 					$urlset[$i]['lastmod'] = substr($v["modified"], 0, 10);
 
 				}
-				$urlset[$i]['menu'] = $v["menu"];
+				if (isset($v["menu"])) {
+					$urlset[$i]['menu'] = $v["menu"];
+				}
 				$i++;
 			}
 			$this->set('urlset',$urlset);
@@ -902,7 +916,7 @@ abstract class FrontendController extends AppController {
 				$this->accessDenied($s);
 			}
 			if ($s['syndicate'] === "off") {
-				throw new BeditaException(__("Content not found", true));
+				throw new BeditaNotFoundException(__("Content not found", true));
 			}
 
 			$this->setCanonicalPath($s);
@@ -943,8 +957,6 @@ abstract class FrontendController extends AppController {
 			}
 		}
 		$this->set('items', $rssItems);
-		
-		//pr($rssItems); exit;
 
 		$this->view = 'View';
 		// add RSS helper if not present
@@ -1069,12 +1081,9 @@ abstract class FrontendController extends AppController {
 	 * @return string|int $name, nickname or id
 	 */
 	public function json($name) {
+		$this->ResponseHandler->setType('json');
 		$this->route($name);
-		header("Content-Type: application/json");
-		$this->view = 'View';
-		$this->layout = null;
-		$this->action = "json";
-		$this->set("data", $this->viewVars["section"]);
+		$this->set('_serialize', 'section');
 	}
 
 	/**
@@ -1087,8 +1096,12 @@ abstract class FrontendController extends AppController {
 	 * @param string|int $name, nickname or id
 	 */
 	public function xml($name) {
+		$this->outputXML();
 		$this->route($name);
-		$this->outputXML(array("section" => $this->viewVars["section"]));
+		$this->set(array(
+			'_serialize' => 'section',
+			'_rootNode' => 'section'
+		));
 	}
 
 	/**
@@ -1101,32 +1114,32 @@ abstract class FrontendController extends AppController {
 	 * @param string|int $name, nickname or id
 	 */
 	public function xmlobject($name) {
+		$this->outputXML();
 		$object = (is_numeric($name))? $this->loadObj($name) : $this->loadObjByNick($name);
 		if ($object === self::UNLOGGED || $object === self::UNAUTHORIZED) {
+			$this->ResponseHandler->setType('xml');
 			$this->accessDenied($object);
 		}
-		$this->outputXML(array("object" => $object));
+		$this->set(array(
+			'object' => $object,
+			'_serialize' => 'object',
+			'_rootNode' => 'object'
+		));
 	}
 
 	/**
 	 * prepare to XML output
 	 *
-	 * @param array $data
 	 */
-	private function outputXML($data) {
-		$this->RequestHandler->setContent("xml", "text/xml");
-		$this->RequestHandler->respondAs("xml", array("charset" => "utf-8"));
-		$this->RequestHandler->renderAs($this, "xml");
-		$availableFormat = array("attributes", "tags");
-		if (!empty($this->passedArgs["format"]) && in_array($this->passedArgs["format"],$availableFormat)) {
-			$options = array("format" => $this->passedArgs["format"]);
+	private function outputXML() {
+		$availableFormat = array('attributes', 'tags');
+		if (!empty($this->passedArgs['format']) && in_array($this->passedArgs['format'], $availableFormat)) {
+			$format = $this->passedArgs['format'];
 		} else {
-			$options = array("format" => $this->xmlFormat);
+			$format = $this->xmlFormat;
 		}
-		$this->set("options", $options);
-		$this->set("data", $data);
-		$this->action = "xml";
-		$this->view = 'View';
+		$this->ResponseHandler->setType('xml');
+		$this->ResponseHandler->xmlFormat = $format;
 	}
 
 	/**
@@ -1193,8 +1206,11 @@ abstract class FrontendController extends AppController {
 	 * @return array object detail
 	 */
 	public function loadObj($obj_id, $blockAccess=true) {
-		if($obj_id === null) {
-			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
+		if ($obj_id === null) {
+			throw new BeditaInternalErrorException(
+				__('Missing object id', true),
+				'FrontendController::loadObj() require an object id'
+			);
 		}
 
 		// use object cache
@@ -1289,7 +1305,7 @@ abstract class FrontendController extends AppController {
     							);
     		
     		if (empty($obj)) {
-    			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
+    			throw new BeditaNotFoundException(__("Content not found", true) . ' id: ' . $obj_id);
     		}
     		// #304 status filter for Category and Tag
     		if(!empty($obj['Category'])) {
@@ -1321,7 +1337,7 @@ abstract class FrontendController extends AppController {
         }
 
         if (!$this->checkPubblicationDate($obj)) {
-			throw new BeditaException(__("Content not found", true) . ' id: ' . $obj_id);
+			throw new BeditaNotFoundException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
@@ -1452,8 +1468,11 @@ abstract class FrontendController extends AppController {
 	 */
 	public function loadSectionObjects($parent_id, $options=array()) {
 
-		if(empty($parent_id)) {
-			throw new BeditaException("Bad data");
+		if (empty($parent_id)) {
+			throw new BeditaInternalErrorException(
+				__('Missing parent_id', true),
+				'FrontendController::loadSectionObjects() requires a parent id'
+			);
 		}
 
 		$this->checkParentStatus($parent_id);
@@ -1563,8 +1582,12 @@ abstract class FrontendController extends AppController {
 	 * @param string|id $name, id or content nickname
 	 */
 	public function content($name) {
-		if(empty($name))
-			throw new BeditaException(__("Content not found", true));
+		if (empty($name)) {
+			throw new BeditaBadRequestException(
+				__('Missing content unique name or id', true),
+				'FrontendController::content() requires unique name or id'
+			);
+		}
 
 		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 
@@ -1574,7 +1597,7 @@ abstract class FrontendController extends AppController {
 
 
 		if ($section_id === false) {
-			throw new BeditaException(__("Content not found", true));
+			throw new BeditaNotFoundException(__('Content not found', true) . ' $name: ' . $name);
 		}
 
 		// if content has more parent get the first one found
@@ -1626,7 +1649,9 @@ abstract class FrontendController extends AppController {
 				return call_user_func_array(array($this, "section"), $args);
 			// check that contentName is a child of secName
 			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {
-				throw new BeditaException(__("Content " . $contentName . " doesn't belong to " . $secName, true));
+				throw new BeditaNotFoundException(
+					__("Content " . $contentName . " doesn't belong to " . $secName, true)
+				);
 			}
 			$contentNameFilter = BeLib::getInstance()->variableFromNickname($contentName);
 		}
@@ -1782,7 +1807,7 @@ abstract class FrontendController extends AppController {
 	 *    example: www.example.com/my-nickname => calls PagesController::myNickname() method if it exists
 	 * 5. if first url argument is a valid nickname => calls the appropriate FrontendController::section() or FrontendController::content() method
 	 * 6. throw exception and 404 http error
-	 * @throws BeditaException
+	 * @throws BeditaBadRequestException, BeditaNotFoundException
 	 */
 	public function route() {
 		$args = func_get_args();
@@ -1799,8 +1824,8 @@ abstract class FrontendController extends AppController {
 		$methodName = str_replace(".", "_", $name); // example: sitemap.xml => sitemap_xml
 		$methodName = BeLib::getInstance()->variableFromNickname($methodName);
 		// #396 controller protected methods -> make them public, avoid direct call from url
-		if(in_array($methodName, Configure::read("defaultReservedMethods"))) {
-		    throw new BeditaException(__("Reserved method called from url", true));
+		if (in_array($methodName, Configure::read("defaultReservedMethods"))) {
+		    throw new BeditaBadRequestException(__("Reserved method called from url", true));
 		}
 
 		$reflectionClass = new ReflectionClass($this);
@@ -1871,7 +1896,7 @@ abstract class FrontendController extends AppController {
 			}
 		} catch (ReflectionException $ex) {
 			// launch 404 error
-			throw new BeditaException(__("Content not found", true), $ex->getMessage());
+			throw new BeditaNotFoundException(__("Content not found", true), $ex->getMessage());
 		}
 
 	}
@@ -1950,7 +1975,7 @@ abstract class FrontendController extends AppController {
 	 * @param string $service_type
 	 * @param string $hash
 	 * @return void
-	 * @throws BeditaRuntimeException
+	 * @throws BeditaInternalErrorException
 	 */
 	public function hashjob($service_type=null, $hash=null) {
 		try {
@@ -1963,7 +1988,7 @@ abstract class FrontendController extends AppController {
 			$this->eventError($ex->getDetails());
 		} catch (BeditaException $ex) {
 			$this->Transaction->rollback();
-			throw new BeditaRuntimeException($ex->getMessage(), $ex->getDetails());
+			throw new BeditaInternalErrorException($ex->getMessage(), $ex->getDetails());
 		}
 	}
 
@@ -1994,7 +2019,7 @@ abstract class FrontendController extends AppController {
 		$parents = explode("/", trim($path,"/"));
 		if (!empty($parents[0])) {
 			if($parents[0] != $this->publication["id"]) {
-				throw new BeditaException("Wrong publication: " . $parents[0]);
+				throw new BeditaNotFoundException("Wrong publication: " . $parents[0]);
 			}
 			$oldSectionBindings = null;
 			if(!empty($this->modelBindings["Section"])) {
@@ -2210,7 +2235,7 @@ abstract class FrontendController extends AppController {
 	 * @param array $options search options (see loadObjectsByCategory)
 	 * @param string $type, "tag" (default), or "category"
 	 * @return array
-	 * @throws BeditaException
+	 * @throws BeditaNotFoundException, BeditaBadRequestException
 	 */
 	private function loadObjectsByTagCategory($name, $options=array(), $type = "tag") {
 		$section_id = null;
@@ -2224,33 +2249,35 @@ abstract class FrontendController extends AppController {
 		}
 
 		$filter = (!empty($options["filter"]))? $options["filter"] : false;
-		if($type === "tag") {
+		if ($type === "tag") {
 			$detail = ClassRegistry::init("Category")->find("first", array(
 						"conditions" => array("name" => $name, "object_type_id IS NULL", "status" => $this->status)
 					)
 				);
 
-			if (empty($detail))
-				throw new BeditaException(__("No tag found", true). " - $name");
+			if (empty($detail)) {
+				throw new BeditaNotFoundException(__("No tag found", true). " - $name");
+			}
 
 			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["tag"] = $name;
 
-		} else if ($type === "category"){
+		} elseif ($type === "category"){
 
 			$detail = ClassRegistry::init("Category")->find("first", array(
 						"conditions" => array("name" => $name, "object_type_id IS NOT NULL", "status" => $this->status)
 					)
 				);
 
-			if (empty($detail))
-				throw new BeditaException(__("No category found", true) . " - $name");
+			if (empty($detail)) {
+				throw new BeditaNotFoundException(__("No category found", true) . " - $name");
+			}
 
 			$options = array_merge($this->tagOptions, $options, $this->params["named"]);
 			$filter["category"] = $name;
 
 		} else {
-			throw new BeditaException(__("Unsupported type", true). " - $type");
+			throw new BeditaBadRequestException(__("Unsupported type", true). " - $type");
 		}
 
 		$s = $this->BEObject->getStartQuote();
@@ -2345,10 +2372,13 @@ abstract class FrontendController extends AppController {
 	 * @param array $options, specific options (pagination, filter) that override annotationOptions attribute
 	 * @return array of annotations
 	 */
-	protected function loadAnnotations($annotationType, $objectName, $options=array()) {
+	protected function loadAnnotations($annotationType, $objectName, $options = array()) {
 
 		if (empty($annotationType) || empty($objectName))
-			throw new BeditaException(__("Annotation type or object_id missing", true));
+			throw new BeditaBadRequestException(
+				__("Annotation type or object_id missing", true),
+				'FrontendController::loadAnnotations() requires $annotationType and $objectName'
+			);
 
 		$object_id = (is_numeric($objectName))? $objectName : $this->BEObject->getIdFromNickname($objectName);
 
@@ -2375,18 +2405,22 @@ abstract class FrontendController extends AppController {
 	 * force download of media object
 	 *
 	 * @param $name id or object nickname
-	 * @throws BeditaException
+	 * @throws BeditaBadRequestException, BeditaNotFoundException
 	 */
 	public function download($name) {
-		if(empty($name))
-			throw new BeditaException(__("Content not found", true));
+		if (empty($name)) {
+			throw new BeditaBadRequestException(
+				__('Missing object unique name or id', true),
+				'FrontendController::download() requires $name'
+			);
+		}
 
 		$id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
 		$object_type_id = $this->BEObject->findObjectTypeId($id);
 		// verify type
 		$conf = Configure::getInstance();
-		if(($object_type_id === false) || !in_array($object_type_id, $conf->objectTypes['multimedia']['id']))
-			throw new BeditaException(__("Content not found", true));
+		if (($object_type_id === false) || !in_array($object_type_id, $conf->objectTypes['multimedia']['id']))
+			throw new BeditaNotFoundException(__('Content not found', true) . ' id: ' . $id);
 
 		$obj = $this->loadObj($id);
 		if ($obj === self::UNLOGGED || $obj === self::UNAUTHORIZED) {
@@ -2404,8 +2438,8 @@ abstract class FrontendController extends AppController {
 			'fields' => array('object_id')));
 		// check if multimedia is on the tree
 		$isOnTree = ClassRegistry::init("Tree")->isOnTree($id, $this->publication["id"]);
-		if($relatedObjectId === false && $isOnTree === false) {
-			throw new BeditaException(__("Content not found", true));
+		if ($relatedObjectId === false && $isOnTree === false) {
+			throw new BeditaNotFoundException(__('Content not found', true));
 		}
 
 		// media with provider or file on filesystem? TODO: use DS??
@@ -2476,28 +2510,31 @@ abstract class FrontendController extends AppController {
 			// sanitize from scripts
 			$this->data = BeLib::getInstance()->stripData($this->data);
 
-			if(!isset($this->Comment)) {
+			if (!isset($this->Comment)) {
 				$this->Comment = $this->loadModelByType("Comment");
 			}
 			$this->data["title"] = substr($this->data["description"],0,30) . "...";
 			// for comment status check contents.comments
 			$beObject = ClassRegistry::init("BEObject");
 			$commentsFlag = $beObject->field("comments", array("id" => $this->data['object_id']));
-			if($commentsFlag == 'moderated') {
+			if ($commentsFlag == 'moderated') {
 				 $this->data["status"] = "draft";
 				 $userMsgOK = "Your message has been sent and it's waiting approval.";
 			} else if ($commentsFlag == 'on'){
 				 $this->data["status"] = 'on';
 				 $userMsgOK = "Your message has been saved.";
 			} else {
-				 throw new BeditaException(__("Post comment disabled", true));
+				 throw new BeditaForbiddenException(__('Post comment disabled', true));
 			}
 
 			try {
 				// check IP
 				$bannedIP = ClassRegistry::init("BannedIp");
-        		if($bannedIP->isBanned($_SERVER['REMOTE_ADDR'])) {
-					throw new BeditaException(__("Error saving comment", true));
+        		if ($bannedIP->isBanned($_SERVER['REMOTE_ADDR'])) {
+					throw new BeditaForbiddenException(
+						__('Error saving comment because the IP is banned', true),
+						'IP banned: ' . $_SERVER['REMOTE_ADDR']
+					);
         		}
 
 				// check captcha if not logged
@@ -2606,7 +2643,7 @@ abstract class FrontendController extends AppController {
 		}
 		try {
 			if (empty($modelName) && empty($this->data["object_type_id"])) {
-				throw new BeditaException(__("no object type defined",true));
+				throw new BeditaBadRequestException(__("no object type defined",true));
 			}
 			$modelName = (empty($modelName))? Configure::read("objectTypes.".$this->data["object_type_id"].".model") : $modelName;
 			$objectModel = ClassRegistry::init($modelName);
@@ -2646,7 +2683,7 @@ abstract class FrontendController extends AppController {
 			} elseif (!empty($this->data["id"])) {
 				$object_type_id = $this->BEObject->findObjectTypeId($this->data["id"]);
 			} else {
-				throw new BeditaException(__("no object type defined",true));
+				throw new BeditaBadRequestException(__("no object type defined",true));
 			}
 			$modelName = Configure::read("objectTypes.".$object_type_id.".model");
 			$this->{$modelName} = ClassRegistry::init($modelName);
@@ -2663,10 +2700,10 @@ abstract class FrontendController extends AppController {
 	/**
 	 * check parents status of $section_id
 	 *
-	 * if one or more parents haven't status IN $this->status array throw a BeditaException
+	 * if one or more parents haven't status IN $this->status array throw a BeditaNotFoundException
 	 *
 	 * @param int $section_id
-	 * @throws BeditaException
+	 * @throws BeditaNotFoundException
 	 */
 	private function checkParentStatus($section_id) {
 		$parent_path = $this->Tree->field("parent_path", array("id" => $section_id));
@@ -2682,8 +2719,9 @@ abstract class FrontendController extends AppController {
 				)
 			);
 
-			if ($countParent != $countParentStatus)
-				throw new BeditaException(__("Content not found", true));
+			if ($countParent != $countParentStatus) {
+				throw new BeditaNotFoundException(__("Content not found", true));
+			}
 		}
 	}
 

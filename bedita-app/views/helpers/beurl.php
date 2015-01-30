@@ -190,7 +190,7 @@ class BeurlHelper extends AppHelper {
 			$title .= ucfirst($this->Tr->t($currentModule["label"], true)) . " | ";
 		}
 		$title .= $projectName . " | BEdita";
-		return $title;
+		return h($title);
 	}
 
 }

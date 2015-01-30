@@ -77,7 +77,14 @@ class StatisticsController extends ModulesController {
 		// count objects' relations
 		$this->countRelations(array_merge($params, array("id" => $id)));
 		
-		$this->set('tree', $this->BeTree->getSectionsTree());
+		$user = $this->BeAuth->getUserSession();
+		$expandBranch = array();
+        if (!empty($id)) {
+            $expandBranch[] = $id;
+        }
+        $treeModel = ClassRegistry::init("Tree");
+        $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+		$this->set('tree', $tree);
 		
 		// publications
 		$area = $this->loadModelByType("Area");

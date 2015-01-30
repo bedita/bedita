@@ -39,7 +39,7 @@ $(document).ready(function(){
 
 			<tr>
 				<td>
-					<input type="text" style="width:220px" name="data[label]" value="{$cat.label}" class="js-label"/>
+					<input type="text" style="width:220px" name="data[label]" value="{$cat.label|escape}" class="js-label"/>
 				</td>
 
 				<td>
