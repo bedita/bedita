@@ -79,27 +79,6 @@ abstract class ApiBaseController extends FrontendController {
     protected $requestMethod = null;
 
     /**
-     * The generic exception message in the response
-     *
-     * @var string
-     */
-    protected $defaultExceptionMessage = 'Generic error.';
-
-    /**
-     * An array of http status codes linked with exception messages
-     *
-     * @var array
-     */
-    protected $codeToMessages = array(
-        400 => 'Bad Request.',
-        401 => 'Unauthorized.',
-        403 => 'Forbidden.',
-        404 => 'Object not found.',
-        405 => 'Method not allowed.',
-        409 => 'Conflict between request and method.'
-    );
-
-    /**
      * Constructor
      * Merge self::defaultEndPoints, self::endPoints and object types whitelist end points
      */
