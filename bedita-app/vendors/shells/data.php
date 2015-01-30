@@ -109,17 +109,11 @@ class DataShell extends BeditaBaseShell {
 
     public function help() {
         $this->hr();
-        $this->out('format script shell usage:');
+        $this->out('data script shell usage:');
         $this->out('');
         $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
         $this->out('./cake.sh data export [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
         $this->out('');
-    }
-
-    public function test() {
-        $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
-        debug($allRelations);
-
     }
 
     private function trackInfo($s, $param = null) {
