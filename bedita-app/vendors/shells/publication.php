@@ -56,9 +56,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         }
         $this->trackInfo('Options: ' . $optionsString);
 
-        // do stuff
         try {
-            
             $this->createPublication();           
         } catch(BeditaException $e) {
             $this->trackInfo('Exception: ' . $e->getMessage());
@@ -124,7 +122,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         $this->hr();
         $this->out('publication script shell usage:');
         $this->out('');
-        $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-sections>]');
+        $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-number-of-sections>] [-nd <leafs-number-of-documents>]');
         $this->out('');
     }
 
