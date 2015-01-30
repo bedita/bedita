@@ -40,7 +40,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'session');
+    private $defaultEndPoints = array('objects', 'session', 'me');
 
     /**
      * Other end points specified in the frontend app
@@ -120,9 +120,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return array
      */
     private function handlePOST() {
-        if (!empty($this->params['form'])) {
-            $postdata = $this->params['form'];
-        } else {
+        if (empty($this->params['form'])) {
             try {
                 $postdata = file_get_contents('php://input');
                 $this->params['form'] = json_decode($postdata, true);
@@ -144,6 +142,9 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function beforeCheckLogin() {
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
+        if ($this->requestMethod == 'post') {
+            $this->handlePOST();
+        }
 
         $token = null;
         //@todo clean and move to component?
@@ -174,6 +175,12 @@ abstract class ApiBaseController extends FrontendController {
 
         if ($token) {
             $this->BeAuth->startSession($token);
+        } else {
+            if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
+                $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
+                unset($this->params['form']['username']);
+                unset($this->params['form']['password']);
+            }
         }
     }
 
@@ -213,9 +220,6 @@ abstract class ApiBaseController extends FrontendController {
             $this->action = $methodName;
             throw new BeditaMethodNotAllowedException();
         } else {
-            if ($this->requestMethod == 'post') {
-                $this->handlePOST();
-            }
             $this->action = $methodName;
             $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
             if (method_exists($this, $specificMethodName)) {
@@ -247,6 +251,41 @@ abstract class ApiBaseController extends FrontendController {
         // @todo list of objects
         } else {
 
+        }
+    }
+
+    /**
+     * user profile end point method
+     *
+     * @param int|string $userid an user id or userid
+     * @return void
+     */
+    protected function profile($userid = null) {
+        if (!empty($userid)) {
+            $id = is_numeric($userid) ? intval($userid) : $userid;
+            $userModel = ClassRegistry::init('User');
+            $cardId = $userModel->findCardId($userid);
+            if ($cardId !== false) {
+                $this->objects($cardId);
+            } else {
+                throw new BeditaNotFoundException();    
+            }
+        } else {
+            throw new BeditaBadRequestException();
+        }
+    }
+
+    /**
+     * logged user profile end point method
+     *
+     * @return void
+     */
+    protected function me() {
+        if ($this->logged) {
+            $user = $this->BeAuth->getUserSession();
+            $this->profile($user['id']);
+        } else {
+            throw new BeditaUnauthorizedException();
         }
     }
 
