@@ -169,7 +169,7 @@ class BeditaUnauthorizedException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 401
      */
-    public function __construct($message, $details = null, $res = self::ERROR, $code = 401) {
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 401) {
         if (empty($message)) {
             $message = 'Unauthorized';
         }
@@ -191,7 +191,7 @@ class BeditaForbiddenException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 403
      */
-    public function __construct($message, $details = null, $res = self::ERROR, $code = 403) {
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 403) {
         if (empty($message)) {
             $message = 'Forbidden';
         }
@@ -213,7 +213,7 @@ class BeditaNotFoundException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 404
      */
-    public function __construct($message, $details = null, $res = self::ERROR, $code = 404) {
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 404) {
         if (empty($message)) {
             $message = 'Not Found';
         }
@@ -323,7 +323,7 @@ class BeditaServiceUnavailableException extends BeditaException {
      * @param $res The result status
      * @param int $code Status code, defaults to 503
      */
-    public function __construct($message, $details = null, $res = self::ERROR, $code = 503) {
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 503) {
         if (empty($message)) {
             $message = 'Service Unavailable';
         }
@@ -338,7 +338,7 @@ class BeditaServiceUnavailableException extends BeditaException {
  * @deprecated use instead BeditaInternalErrorException
  */
 class BeditaRuntimeException extends BeditaException {
-    public function __construct($message, $details = NULL, $res = self::ERROR, $code = 500) {
+    public function __construct($message = null, $details = NULL, $res = self::ERROR, $code = 500) {
         parent::__construct($message, $details, $res, $code);
     }
 }
@@ -352,7 +352,7 @@ class BeditaAjaxException extends BeditaException
 
 	private $headers = null;
 	
-	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
+	public function __construct($message = null, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["output"])) {
 			$this->outputType = $details["output"];
 		}
