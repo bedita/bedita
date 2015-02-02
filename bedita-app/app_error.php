@@ -68,6 +68,7 @@ class AppError extends ErrorHandler {
 	 * 'details' => null, // the error details
 	 * 'moreInfo' => null, // the url to look for more information
 	 * 'url' => null // the url that has caused the error
+	 * ```
 	 *
 	 * @var array
 	 */
@@ -144,6 +145,8 @@ class AppError extends ErrorHandler {
 	 *
 	 * * Check if params are defined
 	 * * Check if RequestHandler and ResponseHandler components are initialized
+	 * * Add BeFront helper in frontend apps
+	 * * Add $conf to viewVars if missing
 	 *
 	 * @return void
 	 */
@@ -153,17 +156,29 @@ class AppError extends ErrorHandler {
 		}
 		$components = array('RequestHandler', 'ResponseHandler');
 		foreach ($components as $name) {
-			if (empty($this->controller->$name) && App::import('Component', $name)) {
-				$completeName = $name . 'Component';
-				$this->controller->$name = new $completeName();
-				if ($name == 'ResponseHandler') {
-					$this->controller->$name->RequestHandler = $this->controller->RequestHandler;
+			if (empty($this->controller->$name)) {
+				if (App::import('Component', $name)) {
+					$completeName = $name . 'Component';
+					$this->controller->$name = new $completeName();
+					if ($name == 'ResponseHandler') {
+						$this->controller->$name->RequestHandler = $this->controller->RequestHandler;
+					}
+					$this->controller->$name->initialize($this->controller);
+					$this->controller->$name->startup($this->controller);
+				} else {
+					$this->log('AppError: Fail to load ' . $name . ' component.');
 				}
-				$this->controller->$name->initialize($this->controller);
-				$this->controller->$name->startup($this->controller);
-			} else {
-				$this->log('AppError: Fail to load ' . $name . ' component.');
 			}
+		}
+
+		// add BeFrontHelper for frontend app
+		if (!BACKEND_APP && !in_array('BeFront', $this->controller->helpers)) {
+			$this->controller->helpers[] = 'BeFront';
+		}
+
+		// assure to have $conf in viewVars
+		if (empty($this->controller->viewVars['conf'])) {
+			$this->controller->set('conf', Configure::getInstance());
 		}
 	}
 
@@ -213,12 +228,11 @@ class AppError extends ErrorHandler {
 	protected function getViewFile() {
 		$baseFileName = 'error';
 		$httpCode = (method_exists($this->exception, 'getHttpCode')) ? $this->exception->getHttpCode() : '';
-		$ext = ($this->controller->view == 'Smarty') ? '.tpl' : '.ctp';
-		$fileName = VIEWS . 'errors/' . $baseFileName . $httpCode . $ext;
+		$fileName = VIEWS . 'errors/' . $baseFileName . $httpCode . $this->controller->ext;
 		if (file_exists($fileName)) {
 			return $fileName;
 		} else {
-			return VIEWS . 'errors/' . $baseFileName . $ext;
+			return VIEWS . 'errors/' . $baseFileName . $this->controller->ext;
 		}
 	}
 
@@ -245,7 +259,7 @@ class AppError extends ErrorHandler {
 			$this->controller->afterFilter();
 		} else {
 			$this->setError();
-            $this->log($messages['details'] . $url);
+            $this->log($this->error['details'] . $url);
             $this->log($this->errorTrace, 'exception');
 			$this->controller->render(null, $this->layout,  $this->getViewFile());
 			$this->sendMail($this->errorTrace);
@@ -413,9 +427,6 @@ class AppError extends ErrorHandler {
 	function __outputMessage($template) {
 		$this->checkController();
 		$tpl = "";
-		if (empty($this->controller->viewVars["conf"])) {
-			$this->controller->set('conf', Configure::getInstance());
-		}
 		$vars = array();
 		$vars['url'] = $this->error['url'] = $this->getUrl();
 		$this->error['message'] = $this->getMessage();
