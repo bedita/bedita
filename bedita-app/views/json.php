@@ -30,7 +30,7 @@ class JsonView extends View {
     }
 
     public function render($action = null, $layout = null, $file = null) {
-        if (!empty($this->viewVars['_serialize'])) {
+        if (isset($this->viewVars['_serialize'])) {
             $this->serialize($this->viewVars['_serialize']);
             return parent::render('json', 'ajax');
         }
