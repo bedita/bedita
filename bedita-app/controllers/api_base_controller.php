@@ -263,6 +263,12 @@ abstract class ApiBaseController extends FrontendController {
         }
     }
 
+    /**
+     * Load children of object $id
+     *
+     * @param int $id
+     * @return void
+     */
     protected function loadChildren($id) {
         $objects = $this->loadSectionObjects($id);
         if (empty($objects['childContents'])) {
@@ -270,7 +276,7 @@ abstract class ApiBaseController extends FrontendController {
         } else {
             $objectsData = $this->ApiFormatter->formatObjects($objects['childContents']);
             $this->responseData['data'] = $objectsData;
-            $this->responseData['paging'] = $objects['toolbar'];
+            $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
         }
     }
 

@@ -120,6 +120,32 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Starting from BEdita toolbar it returns the paging item as
+     *
+     * ```
+     * 'page' => int, // the current page
+     * 'totalPages' => int, // the total number of pages
+     * 'total' => int, // the total number of items
+     * 'limit' => int|null // the maximum number of items in the response
+     * ```
+     *
+     * @param array $toolbar
+     * @return array
+     */
+    public function formatPaging(array $toolbar) {
+        if (empty($toolbar)) {
+            return array();
+        }
+        $paging = array(
+            'page' => (int) $toolbar['page'],
+            'totalPages' => (int) $toolbar['pages'],
+            'total' => (int) $toolbar['size'],
+            'limit' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null
+        );
+        return $paging;
+    }
+
+    /**
      * Clean BEdita object array from useless fields
      * Use self::objectFieldsToRemove()
      *
