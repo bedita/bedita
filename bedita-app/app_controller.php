@@ -47,6 +47,8 @@ class AppController extends Controller {
 
     public $view = 'Smarty';
 
+    public $ext = '.tpl';
+
     protected $moduleName = NULL;
     protected $moduleList = NULL;
     protected $modulePerms = NULL;

@@ -308,7 +308,7 @@ abstract class FrontendController extends AppController {
 			$this->status = $statusSaved;
 			$this->set('publication', $this->publication);
 			if (Configure::read("draft") == false || $pubStatus == "off") {
-				$this->renderPublicationOff($pubStatus);
+				$this->publicationDisabled($pubStatus);
 			}
 		}
 		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
@@ -334,12 +334,12 @@ abstract class FrontendController extends AppController {
 	}
 
 	/**
-	 * Render off.tpl (or draft.tpl) layout when publication is off (or draft)
+	 * Render off.tpl (or draft.tpl) layout when publication is disabled (off or draft)
 	 *
 	 * @param string $status the status to render
 	 * @return void
 	 */
-	protected function renderPublicationOff($status) {
+	protected function publicationDisabled($status) {
 		$this->set('_serialize', array('publication'));
 		$this->render(false, $status);
 		echo $this->output;
