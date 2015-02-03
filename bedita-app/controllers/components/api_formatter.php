@@ -44,7 +44,20 @@ class ApiFormatterComponent extends Object {
         'UserCreated',
         'ObjectProperty',
         'RelatedObject',
-        'bindings'
+        'bindings',
+        'fixed'
+    );
+
+    /**
+     * Contain field transformation
+     *
+     * @var array
+     */
+    protected $transformers = array(
+        'object' => array(
+            'publication_date' => 'datetime',
+            'customProperties' => array() // do nothing set to array to underscore/pluralize field
+        )
     );
 
     /**
@@ -53,8 +66,104 @@ class ApiFormatterComponent extends Object {
      * @param Controller $controller
      * @return void
      */
-    public function initialize(&$controller) {
+    public function initialize(Controller $controller) {
         $this->controller = $controller;
+    }
+
+    /**
+     * Transform the item passed using a transformer
+     * The transformer must be an array of 'fields' => 'type' or 'key' => array('field1' => 'type') for example
+     *
+     * ```
+     * array(
+     *     'id' => 'integer',
+     *     'start_date' => 'datetime',
+     *     'Category' => array(
+     *         'id' => 'integer',
+     *         ...
+     *     )
+     * )
+     * ```
+     *
+     * @param array $transformer the transformer array
+     * @param array &$item the item to transform
+     * @return void
+     */
+    protected function transformItem(array $transformer, array &$item) {
+        if (!empty($item[0]) && is_array($item[0])) {
+            foreach ($item as &$i) {
+                $this->transformItem($transformer, $i);
+            }
+        } else {
+            foreach ($transformer as $field => $type) {
+                if (isset($item[$field])) {
+                    if (is_array($type)) {
+                        // underscore and pluralize $field
+                        $newField = Inflector::pluralize(Inflector::underscore($field));
+                        $item[$newField] = $item[$field];
+                        unset($item[$field]);
+                        $this->transformItem($transformer[$field], $item[$newField]);
+                    } else {
+                        switch ($type) {
+                            case 'integer':
+                                $item[$field] = (int) $item[$field];
+                                break;
+
+                            case 'float':
+                                $item[$field] = (float) $item[$field];
+                                break;
+
+                            case 'boolean':
+                                $item[$field] = (bool) $item[$field];
+                                break;
+
+                            case 'date':
+                            case 'datetime':
+                                if (!empty($item[$field])) {
+                                    $datetime = new DateTime($item[$field]);
+                                    $item[$field] = $datetime->format(DateTime::ISO8601);
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public function transform($subject, array &$item) {
+        if (!empty($this->transformers[$subject])) {
+            $this->transformItem($this->transformers[$subject], $item);
+        }
+    }
+
+    /**
+     * Transform a BEdita object type casting fields to the right type
+     * Use BEAppObjectModel::apiTransformer() to get the transformer and merge it with self::transformers['object']
+     *
+     * The transformer is cached
+     *
+     * @param array &$object
+     * @return void
+     */
+    public function transformObject(array &$object) {
+        $Object = ClassRegistry::init($object['object_type']);
+        debug($Object->BEObject->getColumnTypes());exit;
+        $modelName = $Object->name;
+        $transformer = array();
+        if (!isset($this->transformers[$modelName])) {
+            // try to load from cache
+            $cacheName = 'apiTransformer' . $modelName;
+            $transformer = Cache::read($cacheName);
+            if (empty($transformer)) {
+                $transformer = $Object->apiTransformer();
+                $transformer = array_merge($this->transformers['object'], $transformer);
+                Cache::write($cacheName, $transformer);
+            }
+        } else {
+            $transformer = $this->transformers[$modelName];
+        }
+        $this->transformItem($transformer, $object);
     }
 
     /**
@@ -73,6 +182,7 @@ class ApiFormatterComponent extends Object {
      * @return array
      */
     public function formatObject(array $object, $options = array()) {
+        $this->transformObject($object);
         $this->cleanObject($object);
         $result = array('object' => $object, 'related' => array());
         if (!empty($object['relations'])) {
@@ -80,7 +190,7 @@ class ApiFormatterComponent extends Object {
                 $result['object']['relations'][$relation] = array();
                 foreach ($relatedObjects as $relObj) {
                     $result['object']['relations'][$relation][] = array(
-                        'idRight' => (int) $relObj['id'],
+                        'id_right' => (int) $relObj['id'],
                         'params' => $relObj['params'],
                         'priority' => (int) $relObj['priority']
                     );
