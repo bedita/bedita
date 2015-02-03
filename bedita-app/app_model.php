@@ -383,7 +383,11 @@ class BEAppModel extends AppModel {
 				$order = "{$s}BEObject{$e}." . $order;
 			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
 			if(!empty($otherOrder)) {
-				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
+			    if (!empty($filter["query"])) {
+			        $ordClausole = "ORDER BY " . $otherOrder .", " . $ordItem;
+			    } else {
+			        $ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
+			    }
 			} else {
 				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
 			}
