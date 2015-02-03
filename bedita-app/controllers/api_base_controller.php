@@ -238,7 +238,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $kinship
      * @return void
      */
-    protected function objects($name = null, $kinship  = null) {
+    protected function objects($name = null, $kinship = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $kinshipTypes = array('ancestors', 'parents', 'children', 'descendants', 'siblings');
