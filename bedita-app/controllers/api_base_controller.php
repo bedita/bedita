@@ -269,8 +269,8 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadChildren($id) {
-        $objects = $this->loadSectionObjects($id);
+    protected function loadChildren($id, array $options = array()) {
+        $objects = $this->loadSectionObjects($id, $options);
         if (empty($objects['childContents'])) {
             $this->responseData['data'] = array();
         } else {
@@ -278,6 +278,35 @@ abstract class ApiBaseController extends FrontendController {
             $this->responseData['data'] = $objectsData;
             $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
         }
+    }
+
+    /**
+     * Load descendants of object $id
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadDescendants($id) {
+        $this->loadChildren($id, array(
+            'filter' => array('descendants' => true)
+        ));
+    }
+
+    /**
+     * Load siblings of object $id
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadSiblings($id) {
+        // get only first parent?
+        $parentIds = ClassRegistry::init('Tree')->getParents($id, $this->publication['id'], $this->getStatus());
+        if (empty($parentIds)) {
+            throw new BeditaNotFoundException('The object ' . $id . ' have no parents');
+        }
+        $this->loadChildren($parentIds[0], array(
+            'filter' => array('NOT' => array('BEObject.id' => $id))
+        ));
     }
 
     /**
