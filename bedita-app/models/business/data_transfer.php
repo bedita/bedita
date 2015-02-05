@@ -284,7 +284,7 @@ class DataTransfer extends BEAppModel
         $this->logLevel = (!empty($options['logLevel'])) ? $options['logLevel'] : $this->logLevels['INFO'];
         // return type - default JSON
         $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
-        $this->export['filename'] = $options['filename'];
+        $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
         $this->trackInfo('START');
         try {
             $this->trackDebug('1 area/section/other objects data');
