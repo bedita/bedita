@@ -154,49 +154,24 @@ class DataTransfer extends BEAppModel
      */
     
     public function import(&$data, $options = array()) {
-
         $this->logFile = 'import';
-
-        // setting log level - default INFO
-        if (!empty($options['logDebug'])) {
-            if ($options['logDebug'] == true) {
-                $this->import['logLevel'] = $this->logLevels['DEBUG']; // DEBUG
-            } else {
-                $this->import['logLevel'] = $this->logLevels['INFO'];; // INFO
-            }
-        }
-        $this->logLevel = $this->import['logLevel'];
-
-        $this->trackInfo('START');
-        echo "\n" . 'Format Import options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
-
+        // setting logLevel - default INFO
+        $this->logLevel = (!empty($options['logLevel'])) ? $options['logLevel'] : $this->logLevels['INFO'];
         // setting save mode - default NEW
-        if (!empty($options['saveMode'])) {
-            $this->import['saveMode'] = $options['saveMode'];
-        }
-        echo "\n" . 'Format Import options - saveMode: ' . $this->import['saveMode'] . ' (' . array_search($this->import['saveMode'], $this->saveModes, true) . ')';
-
-        $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import'; // default 
-        if (!empty($options['sourceMediaRoot'])) {
-            $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
-        }
-        echo "\n" . 'Format Import options - sourceMediaRoot: "' . $this->import['sourceMediaRoot'] . '"';
-        echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
-
+        $this->import['saveMode'] = (!empty($options['saveMode'])) ? $options['saveMode'] : $this->saveModes['NEW'];
+        // setting sourceMediaRoot - default TMP/media-import
+        $this->import['sourceMediaRoot'] = (!empty($options['sourceMediaRoot'])) ? $options['sourceMediaRoot'] : 'TMP' . DS . 'media-import';
+        $this->trackInfo('START');
         try {
-
             // 1. Validate
             $this->trackInfo('1 validate start');
             $this->validate($data, $options);
             $this->trackInfo('1 validate OK');
-
             // 2. Importing
             $this->trackInfo('2 import start');
-
             // 2.1 import config
             $this->trackInfo('2.1 import config');
             if (!empty($this->import['source']['data']['config'])) {
-
                 // 2.1.1 import custom properties
                 $this->trackInfo('2.1.1 import custom properties');
                 if (!empty($this->import['source']['data']['config']['customProperties'])) {
@@ -206,15 +181,12 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-
             // 2.1.? [...] [TODO]
             //$this->trackInfo('2.1.? [...] [TODO]');
-
             // 2.2 save areas/sections
             $this->trackInfo('2.2 save areas/sections');
             // 2.2.1 save roots (areas/sections)
             $this->trackInfo('2.2.1 save roots (areas/sections)');
-
             $rootIds = $this->import['tree']['roots'];
             foreach ($rootIds as $rootId) {
                 $rootData = $this->import['source']['data']['objects'][$rootId];
@@ -230,7 +202,6 @@ class DataTransfer extends BEAppModel
                     $this->saveSection($rootData, $parentId);
                 }
             }
-
             // 2.2.2 save other section(s)
             $this->trackDebug('2.2.2 save other section(s)');
             foreach ($this->import['source']['data']['tree']['sections'] as $section) {
@@ -241,9 +212,7 @@ class DataTransfer extends BEAppModel
                 $this->trackDebug('2.2.2.2 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with other policies [TODO]');
                 $this->saveSection($section, $newParentId);
             }
-
             $this->trackInfo('2.3 save objects');
-
             if (!empty($this->import['media'])) {
                 $this->trackInfo('2.3.1 copy media');
                 $streamModel = ClassRegistry::init('Stream');
@@ -258,50 +227,40 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-
             foreach ($this->import['source']['data']['objects'] as &$object) {
                 $this->saveObject($object);
             }
-
             // 2.4 save relations
-            $this->trackInfo('2.4 save relations');
-            // cycle over json["relations"] items: creating bedita relations
-            $relationKeys = array_keys($this->import['source']['data']['relations']);
-            $relationStructureOne = is_int($relationKeys[0]);
-
-            $counter = 1;
-            if ($relationStructureOne) {
-                foreach ($this->import['source']['data']['relations'] as &$relation) {
-                    $this->saveRelation($relation, $counter++);
-                }
-            } else {
-                foreach ($this->import['source']['data']['relations'] as $switch => &$relations) {
-                    foreach ($relations as &$relation) {
+            if (!empty($this->import['source']['data']['relations'])) {
+                $this->trackInfo('2.4 save relations');
+                // cycle over json["relations"] items: creating bedita relations
+                $relationKeys = array_keys($this->import['source']['data']['relations']);
+                $relationStructureOne = is_int($relationKeys[0]);
+                $counter = 1;
+                if ($relationStructureOne) {
+                    foreach ($this->import['source']['data']['relations'] as &$relation) {
                         $this->saveRelation($relation, $counter++);
+                    }
+                } else {
+                    foreach ($this->import['source']['data']['relations'] as $switch => &$relations) {
+                        foreach ($relations as &$relation) {
+                            $this->saveRelation($relation, $counter++);
+                        }
                     }
                 }
             }
-
             // 2.? [...] [TODO]
             //$this->trackInfo('2.? [...] [TODO]');
-
             $this->trackInfo('2 import OK');
-            echo 'Format Import OK' . "\n";
-
-
         } catch(Exception $e) {
-
             $this->trackError('ERROR: ' . $e->getMessage());
-
         }
-
         // 3. result
         $this->trackInfo('3 result');
         // 3.1 format / process result (?) [TODO]
         //$this->trackDebug('3.1 format / process result (?) [TODO]');
         // 3.2 return result
         $this->trackDebug('3.2 return result');
-
         $this->trackInfo('END');
         return $this->result;
     }
@@ -320,45 +279,14 @@ class DataTransfer extends BEAppModel
      * )
      */
     public function export(array &$objects, $options = array()) {
-
         $this->logFile = 'export';
-
-        // setting log level - default ERROR
-        if (!empty($options['logDebug'])) {
-            if ($options['logDebug'] == true) {
-                $this->export['logLevel'] = 3; // DEBUG
-            } else {
-                $this->export['logLevel'] = 0; // ERROR
-            }
-        }
-        $this->logLevel = $this->export['logLevel'];
+        // setting logLevel - default INFO
+        $this->logLevel = (!empty($options['logLevel'])) ? $options['logLevel'] : $this->logLevels['INFO'];
+        // return type - default JSON
+        $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
+        $this->export['filename'] = $options['filename'];
         $this->trackInfo('START');
-
-        echo "\n" . 'Format Export options - logLevel: ' . $this->logLevel . ' (' . array_search($this->logLevel, $this->logLevels) . ')';
-
-        // setting returnType - default json string
-        if (!empty($options['returnType'])) {
-            $this->export['returnType'] = $options['returnType'];
-        } else {
-            $this->export['returnType'] = 'JSON';
-        }
-        echo "\n" . 'Format Export options - returnType: ' . $this->export['returnType'] . ' (' . $this->export['returnType'] . ')';
-
-        $this->export['destMediaRoot'] = 'TMP' . DS . 'media-export'; // default 
-        if (!empty($options['destMediaRoot'])) {
-            $this->export['destMediaRoot'] = $options['destMediaRoot'];
-        }
-
-        if (!empty($options['filename'])) {
-            $this->export['filename'] = $options['filename'];
-            echo "\n" . 'Format Export options - filename: "' . $this->export['filename'] . '"';
-        }
-
-        echo "\n" . 'Format Export options - destMediaRoot: "' . $this->export['destMediaRoot'] . '"';
-        echo "\n" . 'See ' . $this->logFile . '.log for details' . "\n\n";
-
         try {
-            
             $this->trackDebug('1 area/section/other objects data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)
             // if objects are areas/sections => roots, otherwise roots is empty
@@ -385,7 +313,6 @@ class DataTransfer extends BEAppModel
                     $extractTreeData = false;
                 }
             }
-
             $this->trackDebug('2 tree:');
             if ($extractTreeData) {
                 $this->trackDebug('2.1 roots:');
@@ -415,7 +342,6 @@ class DataTransfer extends BEAppModel
             } else {
                 $this->trackDebug('... skip roots and sections');
             }
-
             $this->trackDebug('3 objects + 4 relations');
             if (!empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
                 $this->prepareObjectsForExportByParents($this->export['destination']['byType']['ARRAY']['tree']['roots']);
@@ -424,7 +350,6 @@ class DataTransfer extends BEAppModel
                 $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
                 $this->prepareObjectsForExportByParents($parents);
             }
-
             // set position for objects
             $treeTypes = array('area', 'section');
             foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
@@ -432,7 +357,6 @@ class DataTransfer extends BEAppModel
                     $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
                 }
             }
-
             $this->trackDebug('4 config');
             $this->trackDebug('4.1 config.customProperties:');
             if (!empty($this->export['customProperties'])) {
@@ -455,50 +379,33 @@ class DataTransfer extends BEAppModel
                 }
                 $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
             }
-
             $this->trackDebug('5. media');
             if (!empty($this->export['media'])) {
-
                 $this->export['srcMediaRoot'] = Configure::read('mediaRoot');
-
                 if (!file_exists($this->export['srcMediaRoot'])) {
                     throw new BeditaException('srcMediaRoot folder "' . $this->export['srcMediaRoot'] . '" not found');
                 }
-
                 if (!file_exists($this->export['destMediaRoot'])) {
                     throw new BeditaException('destMediaRoot folder "' . $this->export['destMediaRoot'] . '" not found');
                 }
-
                 foreach ($this->export['media'] as $objectId => $uri) {
                     $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);                    
                     $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
                 }
             }
-
-            if ($this->export['returnType'] == 'JSON') {
-
+            if ($this->export['returnType'] === 'JSON') {
                 $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
-
                 if (!empty($this->export['filename'])) {
-
                     if (!file_put_contents($this->export['filename'], $this->export['destination']['byType']['JSON'])) {
                         throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
                     }
                 }
             }
-
             $this->trackInfo('export OK');
-            echo 'Format Export OK' . "\n";
-
-
         } catch(Exception $e) {
-
             $this->trackError('ERROR: ' . $e->getMessage());
-
         }
-
         $this->trackInfo('END');
-
         return $this->export['destination']['byType'][$this->export['returnType']];
     }
 
@@ -561,19 +468,15 @@ class DataTransfer extends BEAppModel
      * @param $options array
      */
     public function validate(&$data, $options = array()) {
-
         if (!is_array($data)) {
             // 1 json
             $this->import['source']['string'] = $data;
-
             // 1.1 not empty
             if (empty($this->import['source']['string'])) {
                 throw new BeditaException('empty json string');
             }
-
             $this->import['source']['string'] = trim($this->import['source']['string']);
             $this->import['source']['data'] = json_decode($this->import['source']['string'], true);
-
             // 1.2 valid (json_decode / json_last_error)
             if (empty($this->import['source']['data'])) {
                 throw new BeditaException('json string not valid: json_last_error error code ' . $this->jsonLastErrorMsg());
@@ -584,21 +487,17 @@ class DataTransfer extends BEAppModel
                 throw new BeditaException('empty input data');
             }
         }
-
         // convert source objects to alternative structure
         $this->import['source']['data']['objects'] = Set::combine($this->import['source']['data'], 'objects.{n}.id', 'objects.{n}');
         $this->import['objects']['ids'] = array_keys($this->import['source']['data']['objects']);
         $this->import['media'] = array();
         $this->import['config'] = array();
-
         // 2 config
         if (!empty($this->import['source']['data']['config'])) {
-
             // 2.1 custom properties
             if (!empty($this->import['source']['data']['config']['customProperties'])) {
                 $this->import['config']['properties'] = array();
                 foreach ($this->import['source']['data']['config']['customProperties'] as $customProperty) {
-
                     // 2.1.1 fields not empty: name, objectType, dataType
                     if (empty($customProperty['name'])) {
                         throw new BeditaException('config.customProperties: missing name field');
@@ -609,13 +508,11 @@ class DataTransfer extends BEAppModel
                     if (empty($customProperty['dataType'])) {
                         throw new BeditaException('config.customProperties: missing dataType field');
                     }
-
                     // 2.1.2 valid objectType
                     $objTypeId = Configure::read('objectTypes.' . $customProperty['objectType'] . '.id');
                     if (empty($objTypeId)) {
                         throw new BeditaException('config.customProperties: objectType ' . $customProperty['objectType'] . ' not found');
                     }
-
                     // 2.1.3 dataType can be 'number', 'date', 'text', 'options'
                     if (!in_array($customProperty['dataType'],$this->customPropertyDataTypes)) {
                         throw new BeditaException('config.customProperties: dataType ' . $customProperty['dataType'] . ' not allowed | dataType should be number, date, text or options');
@@ -633,19 +530,15 @@ class DataTransfer extends BEAppModel
                     );
                     if (!empty($property)) {
                         $this->import['config']['properties'][$customProperty['name']] = $property;
-
                         // 2.1.5 conflict
-
                         // object_type_id
                         if ($property['object_type_id'] != $objTypeId) {
                             throw new BeditaException('config.customProperties.object_type_id "' . $objTypeId . '"" different from system custom property object_type_id "' . $property['object_type_id'] . '" for property ' . $customProperty['name']);
                         }
-                        
                         // property_type
                         if ($property['property_type'] != $customProperty['dataType']) {
                             throw new BeditaException('config.customProperties.dataType "' . $customProperty['dataType'] . '" different from system custom property property_type "' . $property['property_type'] . '" for property ' . $customProperty['name']);
                         }
-
                         // multiple_choice
                         $multipleChoice = (!empty($property['multiple_choice']) && ($property['multiple_choice'] == true));
                         $multipleChoiceImport = (!empty($customProperty['multipleChoice']) && ($customProperty['multipleChoice'] == true));
@@ -684,7 +577,6 @@ class DataTransfer extends BEAppModel
         if ( !empty($this->import['source']['data']) && !empty($this->import['source']['data']['objects'])) {
             foreach ($this->import['source']['data']['objects'] as $object) {
                 if (!empty($object['customProperties'])) {
-                    
                     if (empty($this->import['config']['properties'])) {
                         throw new BeditaException('object.customProperties defined, but config.customProperties not defined');
                     }
@@ -704,14 +596,11 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         // 3 objects consistence validation
-
         // 3.1 non empty
         if (empty($this->import['source']['data']) || empty($this->import['source']['data']['objects'])) {
             throw new BeditaException('empty objects set');
         }
-
         // 3.2 necessary fields (defined in $this->objMinimalSet)
         foreach ($this->objMinimalSet as $field) {
             foreach ($this->import['source']['data']['objects'] as $object) {
@@ -721,7 +610,6 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         $this->import['expectedParentIds'] = array();
         $treeObjectTypes = array('area', 'section');
         foreach ($this->import['source']['data']['objects'] as $object) {
@@ -737,15 +625,12 @@ class DataTransfer extends BEAppModel
                 $this->import['objects']['types'][] = $object['objectType'];
             }
             $this->import['objects']['typeById'][$object['id']] = $object['objectType'];
-
             // populate media uri array
             if (!empty($object['id']) && !empty($object['uri'])) {
                 $this->import['media'][$object['id']]['uri'] = $object['uri'];
             }
-
             // 3.4 specific validation by objectType
             // TODO: implement it / idea: use model reflection (i.e. if <modelClass> has method 'validateBeforeImport' then invoke it)
-
             // 3.5 categories
             if (!empty($object['categories'])) {
                 foreach ($object['categories'] as $category) {
@@ -755,24 +640,19 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         // 4 tree consistency
-
         // 4.1 tree not empty
         if (empty($this->import['source']['data']['tree'])) {
             throw new BeditaException('missing tree in source json data');
         }
-
         // 4.2 tree roots not empty
         if (empty($this->import['source']['data']['tree']['roots'])) {
             throw new BeditaException('missing tree roots in source json data');
         }
         $rootIds = $this->import['source']['data']['tree']['roots'];
-
         $this->import['tree']['roots'] = $rootIds;
         $this->import['tree']['ids'] = $rootIds;
         $this->import['tree']['parents'] = $rootIds;
-
         // 4.3 valid root ids => if more than one, all must be all of the same type (area or section) / if type is section => options[root_section_id]
         $rootObjTypes = array();
         foreach ($rootIds as $rootId) {
@@ -799,7 +679,6 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         // order sections
         $sectionsByParent = array();
         foreach ($this->import['source']['data']['tree']['sections'] as $section) {
@@ -808,7 +687,6 @@ class DataTransfer extends BEAppModel
             }
             $sectionsByParent[$section['parent']][] = $section;
         }
-
         $orderedSections = array();
         foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
             if (!empty($sectionsByParent[$rootId])) {
@@ -817,14 +695,12 @@ class DataTransfer extends BEAppModel
             }
         }
         $this->import['source']['data']['tree']['sections'] = $orderedSections;
-
         foreach ($this->import['source']['data']['tree']['sections'] as $section) {
             $this->import['tree']['ids'][] = $section['id'];
             if (!in_array($section['parent'], $this->import['tree']['parents'])) {
                 $this->import['tree']['parents'][] = $section['parent'];
             }
         }
-
         // 4.4 valid parent ids => parents elements must be a subcollection of tree elements
         foreach ($this->import['tree']['parents'] as $parentId) {
             if (!in_array($parentId, $this->import['tree']['ids'])) {
@@ -837,23 +713,19 @@ class DataTransfer extends BEAppModel
                 throw new BeditaException('element ' . $elemId . ' not found in specified tree source');
             }
         }
-
         // 4.5 id referenced in tree must be referenced in objects too
         foreach ($this->import['tree']['ids'] as $treeId) {
             if (!in_array($treeId, $this->import['objects']['ids'])) {
                 throw new BeditaException('tree id ' . $treeId . ' not found in objects');
             }
         }
-
         // 5 relations
         if (!empty($this->import['source']['data']['relations'])) {
-
             // 5.1 necessary fields (defined in $this->relMinimalSet)
             // relation structure 1: flat array / i.e. array(<relation item>, <relation item>, ...)
             // relation structure 2: group by switch / i.e. array(<relation switch> => array(<relation item>, <relation item>, ...), <relation switch> => array(<relation item>, <relation item>, ...), ...)
             $relationKeys = array_keys($this->import['source']['data']['relations']);
             $relationStructureOne = is_int($relationKeys[0]);
-
             foreach ($this->relMinimalSet as $field) {
                 if ($relationStructureOne) {
                     foreach ($this->import['source']['data']['relations'] as $relation) {
@@ -889,14 +761,12 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-
             // 5.2 id referenced in relations must be referenced in objects too
             foreach ($this->import['relations']['ids'] as $relId) {
                 if (!in_array($relId, $this->import['objects']['ids'])) {
                     throw new BeditaException('relation id (left/right) ' . $relId . ' not found in objects');
                 }
             }
-
             // 5.3 switch must be a valid relation name + valid relation objects (existence of objects and right connection)
             $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
             foreach ($allRelations as $switch => $a) {
@@ -915,14 +785,12 @@ class DataTransfer extends BEAppModel
                     );
                 }
             }
-
             $this->import['allRelationsKeys'] = array_keys($this->import['allRelations']);
             foreach ($this->import['relations']['switches'] as $switch) {
                 if (!in_array($switch, $this->import['allRelationsKeys'])) {
                     throw new BeditaException('relation switch ' . $switch . ' not found in bedita relations');
                 }
             }
-
             // 5.4 objectType(s) must be valid for specified relation switch
             if ($relationStructureOne) {
                 foreach ($this->import['source']['data']['relations'] as $relation) {
@@ -930,12 +798,10 @@ class DataTransfer extends BEAppModel
                     $objTypeRight = $this->import['objects']['typeById'][$relation['idRight']];
                     $switch = $relation['switch'];
                     $symmetric = $this->import['allRelations'][$switch]['symmetric'];
-
                     $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['left']);
                     $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['right']);
                     $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['right']);
                     $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
-
                     if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
                         throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
                     }
@@ -946,13 +812,11 @@ class DataTransfer extends BEAppModel
                         $objTypeLeft = $this->import['objects']['typeById'][$r['idLeft']];
                         $objTypeRight = $this->import['objects']['typeById'][$r['idRight']];
                         $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
-
                         $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
                         $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
                         $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
                         $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
                         $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
-
                         if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
                             if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
                                 $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
@@ -964,7 +828,6 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         // 6.media
         if (!empty($this->import['media'])) {
             // 6.1 source folder (sourceMediaRoot)
@@ -972,29 +835,22 @@ class DataTransfer extends BEAppModel
             if (!file_exists($this->import['sourceMediaRoot'])) {
                 throw new BeditaException('sourceMediaRoot folder "' . $this->import['sourceMediaRoot'] . '" not found');
             }
-
             $this->import['source']['media']['root'] = $this->import['sourceMediaRoot'];
-
             // ... not for remote folders
             $folder =& new Folder($this->import['source']['media']['root'], true);
             $this->import['source']['media']['size'] = $folder->dirSize();
-
             // 6.1.2 permits [TODO]
             // ...
-
             // 6.2 destination folder
             $this->import['destination']['media']['root'] = Configure::read('mediaRoot');
-
             // 6.2.1 existence
             if (!file_exists($this->import['destination']['media']['root'])) {
                 if (!mkdir($this->import['destination']['media']['root'])) {
                     throw new BeditaException('destination folder "' . $this->import['destination']['media']['root'] . '" not found: failure on creating it');
                 }
             }
-
             // 6.2.2 space available
             $this->import['destination']['media']['space'] = disk_free_space($this->import['destination']['media']['root']);
-
             // 6.3 files
             foreach ($this->import['media'] as $id => &$media) {
                 $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
@@ -1005,14 +861,11 @@ class DataTransfer extends BEAppModel
                     $media['base'] = $this->import['sourceMediaRoot'];
                     $media['full'] = $filePath;
                 }
-
                 // 6.3.2 extension allowed [TODO]
                 // ...
-
                 // 6.3.3 dimension allowed [TODO]
                 // ...
             }
-
             // 6.3.4 all files dimension < space available
             // space required => $this->import['source']['media']['size']
             // space available => $this->import['destination']['media']['space']
@@ -1135,7 +988,6 @@ class DataTransfer extends BEAppModel
                     $object['Category'] = $this->saveCategory($category['name'], $object['objectType']);
                 }
             }
-
             if (!empty($object['tags'])) {
                 $this->trackDebug('2.3.5 save object.tags');
                 $tagListString = '';
@@ -1148,7 +1000,6 @@ class DataTransfer extends BEAppModel
                     $object['Category'] = array_merge($object['Category'], $tags);    
                 }
             }
-
             $newObject = array_merge($this->objDefaults, $object);
             unset($newObject['id']);
             $model = ClassRegistry::init(Inflector::camelize($object['objectType']));
@@ -1157,9 +1008,7 @@ class DataTransfer extends BEAppModel
                 throw new BeditaException('error saving ' . $object['objectType'] . ' (import id ' . $object['id'] . ')');
             }
             if (!empty($object['customProperties'])) {
-
                 $this->trackDebug('2.3.6 save object.customProperties');
-
                 $this->trackDebug('- saving custom properties for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
                 $object['ObjectProperty'] = array();
                 foreach ($object['customProperties'] as $customProperty) {
@@ -1178,7 +1027,6 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-
             $this->import['saveMap'][$object['id']] = $model->id;
             $this->trackDebug('- saving ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... object saved');
             if (!empty($object['parents'])) {
@@ -1362,19 +1210,15 @@ class DataTransfer extends BEAppModel
      */
     private function prepareObjectForExport(array &$object) {
         $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
-        
         if (!empty($object['object_type_id'])) {
             $object['objectType'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
         }
-
         // 1 parse data, unset unused fields and remove entries for empty values, recursively
         $this->trackDebug('... cleanObjectFields for object id ' . $object['id']);
         $this->cleanObjectFields($object);
-
         // 2 parse and rearrange object data
         $this->trackDebug('... rearrangeObjectFields for object id ' . $object['id']);
         $this->rearrangeObjectFields($object);
-
         // 3 set object for result
         $relatedObjectIds = array();
         if (!empty($object['relatedObjectIds'])) {
@@ -1382,7 +1226,6 @@ class DataTransfer extends BEAppModel
             unset($object['relatedObjectIds']);
         }
         $this->export['destination']['byType']['ARRAY']['objects'][$object['id']] = $object;
-
         // 4 set related objects
         $this->trackDebug('... load related objects');
         if (!empty($relatedObjectIds)) {
@@ -1405,7 +1248,6 @@ class DataTransfer extends BEAppModel
                 $this->prepareObjectForExport($relatedObj);
             }
         }
-
         // 5 set media uris        
         if (!empty($object['uri'])) { // map object id with media uri
             $this->export['media'][$object['id']] = $object['uri'];
@@ -1492,13 +1334,11 @@ class DataTransfer extends BEAppModel
                 $dirs[] = $dir;
             }
         }
-
         $name = array_pop($tmp);
         $pointPosition = strrpos($name,".");
         $filename = $tmpname = substr($name, 0, $pointPosition);
         $ext = substr($name, $pointPosition);
         $counter = 1;
-
         // creating directories
         $d = $destBasePath;
         $dirs = array_reverse($dirs);
@@ -1510,7 +1350,6 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
-
         // save new name (passed by reference)
         $name = $filename . $ext;
         $destination = $destBasePath . DS . $dirsString . DS . $name;
@@ -1525,7 +1364,6 @@ class DataTransfer extends BEAppModel
 
     private function trackError($message) {
         $this->trackResult('ERROR', $message);
-        echo $message . "\n";
     }
 
     private function trackWarn($message) {
