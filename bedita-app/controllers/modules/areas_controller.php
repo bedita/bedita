@@ -440,8 +440,16 @@ class AreasController extends ModulesController {
                 'OK'	=> "/areas/view/{$this->Section->id}",
                 'ERROR'	=> $this->referer()
             ),
+            'delete'	=> 	array(
+                'OK'	=> '/areas',
+                'ERROR'	=> $this->referer()
+            ),
             'deleteSection'	=> 	array(
-                'OK'	=> './',
+                'OK'	=> '/areas',
+                'ERROR'	=> $this->referer()
+            ),
+            'deleteArea'	=> 	array(
+                'OK'	=> '/areas',
                 'ERROR'	=> $this->referer()
             ),
             'import'	=> 	array(
