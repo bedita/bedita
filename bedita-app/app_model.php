@@ -40,21 +40,24 @@ class BEAppModel extends AppModel {
 
     public $actsAs = array();
 
-	/**
-	 * Merge record result in one array
-	 *
-	 * @param array record	record data
-	 * @return array		record merged to single array
-	 */
-	function am($record) {
-		$tmp = array() ;
-		foreach ($record as $key => $val) {
-			if(is_array($val)) $tmp = array_merge($tmp, $val) ;
-			else $tmp[$key] = $val ;
-		}
-
-		return $tmp ;
-	}
+    /**
+     * Merge record result in one array
+     *
+     * @param array $record record data
+     * @param array $preservedKeys keys to be left untouched
+     * @return array record merged to single array
+     */
+    function am($record, $preservedKeys = array()) {
+        $tmp = array();
+        foreach ($record as $key => $val) {
+            if (!in_array($key, $preservedKeys) && is_array($val)) {
+                $tmp = array_merge($tmp, $val);
+            } else {
+                $tmp[$key] = $val;
+            }
+        }
+        return $tmp;
+    }
 
 	protected function setupDbParams() {
     	if(empty($this->driver)) {
@@ -438,7 +441,7 @@ class BEAppModel extends AppModel {
 		$s = $this->getStartQuote();
 		$e = $this->getEndQuote();
 
-		$beObjFields = $this->fieldsString("BEObject");
+		$beObjFields = $this->fieldsString("BEObject", null, !empty($filter['ignoreFields']) ? $filter['ignoreFields'] : array());
 		$fields = 'DISTINCT ' . $beObjFields;
 		$from = "{$s}objects{$e} as {$s}BEObject{$e}";
 		$conditions = array();
@@ -598,13 +601,14 @@ class BEAppModel extends AppModel {
 			$ordClausole = "ORDER BY {$otherOrder}";
 		}
 
-		$limit = (!empty($dim))? $this->getLimitClausole($dim, $limitPage) : '';
-		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
+        $limit = (!empty($dim))? $this->getLimitClausole($dim, $limitPage) : '';
+        $query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
 
-		// #CUSTOM QUERY
-		$tmp = $this->query($query);
+        // #CUSTOM QUERY
+        $recordset = array();
+        $recordset['items'] = $this->query($query);
 
-		if ($tmp === false) {
+		if ($recordset['items'] === false) {
 			throw new BeditaException(__("Error finding objects", true));
         }
 
@@ -622,47 +626,24 @@ class BEAppModel extends AppModel {
             $size = $searchCount;
         }
 
-		$recordset = array(
-			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $size) );
+        $recordset['toolbar'] = $this->toolbar($page, $dim, $size);
 
 		// reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
-            foreach ($tmp as $item) {
+            foreach ($recordset['items'] as $item) {
                 $obj = $this->am($item);
                 $id = $obj["id"];
                 $tmpOrder[$rankOrder[$id]] = $obj;
             }
             ksort($tmpOrder);
-            $tmp = array_values($tmpOrder);
+            $recordset['items'] = array_values($tmpOrder);
         }
-		
-		for ($i =0; $i < count($tmp); $i++) {
-			$tmpToAdd = array();
 
-			if (!empty($tmp[$i]["RelatedObject"])) {
-				$tmpToAdd["RelatedObject"] = $tmp[$i]["RelatedObject"];
-				unset($tmp[$i]["RelatedObject"]);
-			}
-
-			if (!empty($tmp[$i]["ReferenceObject"])) {
-				$tmpToAdd["ReferenceObject"] = $tmp[$i]["ReferenceObject"];
-				unset($tmp[$i]["ReferenceObject"]);
-			}
-
-			if (!empty($tmp[$i]["DateItem"])) {
-				$tmpToAdd["DateItem"] = $tmp[$i]["DateItem"];
-				unset($tmp[$i]["DateItem"]);
-			}
-
-			if (!empty($tmp[$i]["ObjectProperty"])) {
-				$tmpToAdd["ObjectProperty"] = $tmp[$i]["ObjectProperty"];
-				unset($tmp[$i]["ObjectProperty"]);
-			}
-
-			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
-		}
+        foreach ($recordset['items'] as &$t) {
+            $t = $this->am($t, array('RelatedObject', 'ReferenceObject', 'DateItem', 'ObjectProperty'));
+        }
+        reset($recordset['items']);
 
         // after filter callbacks
         if (!empty($afterFilter)) {
