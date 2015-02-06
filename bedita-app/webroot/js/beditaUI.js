@@ -401,7 +401,10 @@ $(document).ready(function(){
 
         // default options for modal
         var defaultOptions = {
-            success: function() {}
+            title: '',
+            destination: '',
+            requestData: {},
+            success: function() {},
         };
 
         if (typeof options == 'undefined' || !$.isPlainObject(options)) {
@@ -415,24 +418,24 @@ $(document).ready(function(){
 
         var h = 1500;
 
-        var destination = $(this).attr("rel");
-        var title = $(this).attr("title");
+        var destination = options.destination || $(this).attr("rel");
+        var title = options.title || $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
         $("#modaloverlay").show().fadeTo("fast", 0.8);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
-        if ($(this).attr("rel")) {
+        if (destination) {
             $("#modal #modalmain").empty().append('<div class="loader"></div>');
             $("#modal #modalmain").find('.loader').show();
-            $("#modalmain").load(destination, function(response, status, xhr) {
+            $("#modalmain").load(destination, options.requestData, function(response, status, xhr) {
                 $("#modal #modalmain").find('.loader').hide();
                 options.success();
             });
         }
 
-        if ($(this).attr("title")) {
+        if (title) {
             $("#modalheader .caption").html(title);
         }
 

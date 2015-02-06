@@ -665,8 +665,7 @@ class UsersController extends ModulesController {
         }
         return $modules;
     }
-      
-      
+
     protected function forward($action, $result) {
         $moduleRedirect = array(
             'viewUser' =>   array(
