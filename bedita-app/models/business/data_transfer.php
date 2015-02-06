@@ -285,6 +285,7 @@ class DataTransfer extends BEAppModel
         // return type - default JSON
         $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
         $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
+        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : "";
         $this->trackInfo('START');
         try {
             $this->trackDebug('1 area/section/other objects data');
@@ -394,7 +395,11 @@ class DataTransfer extends BEAppModel
                 }
             }
             if ($this->export['returnType'] === 'JSON') {
-                $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
+                if (phpversion() >= '5.4') {
+                    $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY'], JSON_PRETTY_PRINT);
+                } else {
+                    $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
+                }
                 if (!empty($this->export['filename'])) {
                     if (!file_put_contents($this->export['filename'], $this->export['destination']['byType']['JSON'])) {
                         throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
