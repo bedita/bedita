@@ -195,7 +195,9 @@ class BeEmbedMediaHelper extends AppHelper {
 			$obj['uri'] = $this->_conf["url"] . $obj["uri"];
 		}
 		$URLonly = (!empty($params["URLonly"]))? true : false;
-		if ($params["presentation"] == "thumb") {
+		if ($URLonly) {
+			return $obj['uri'];
+		} elseif ($params["presentation"] == "thumb") {
 			if (empty($htmlAttributes["alt"])) {
 				$htmlAttributes["alt"] = $obj["title"];
 			}

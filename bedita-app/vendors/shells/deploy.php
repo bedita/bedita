@@ -186,15 +186,6 @@ class DeployShell extends BeditaBaseShell {
 			}
 		}
 		
-		foreach ($rel["renameFiles"] as $from => $to) {
-			$p1 = $exportPath.DS.$from;
-			$p2 = $exportPath.DS.$to;
-			$this->out("rename: $p1 => $p2");
-			if(!rename($p1, $p2)) {
-	        	throw new Exception("Error renaming " . $p1. " to " .$p2);
-			};
-		}
-		
     	foreach ($rel["createFiles"] as $f) {
 			$p = $exportPath.DS.$f;
 			$this->out("create file: " . $p);
@@ -229,7 +220,17 @@ class DeployShell extends BeditaBaseShell {
             $folder->delete($frontendPath . DS . '.git');
             $this->out('Frontend ' . $frontendName . ' added.');
         }
-		
+
+        // Rename some files.
+        foreach ($rel['renameFiles'] as $from => $to) {
+            $p1 = $exportPath . DS . $from;
+            $p2 = $exportPath . DS . $to;
+            $this->out("rename: {$p1} => {$p2}");
+            if (!rename($p1, $p2)) {
+                throw new Exception("Error renaming {$p1} to {$p2}");
+            }
+        }
+        
 		// create version file
 		// release name is : base name + major version (like 3.0.beta1) + codename + git abbreviated sha1 checksum
 		$codeName = empty($rel["releaseCodeName"]) ? "" : $rel["releaseCodeName"];
