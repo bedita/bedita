@@ -79,6 +79,12 @@ class DataShell extends BeditaBaseShell {
         // 2. do import
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->import($inputData, $this->options['import']);
+        if (!empty($result['log']['ERROR'])) {
+            foreach ($result['log']['ERROR'] as $error) {
+                $this->out($error);
+            }
+        }
+        
         // 3. end
         $this->trackInfo('');
         $this->trackInfo('Import end');
@@ -120,6 +126,11 @@ class DataShell extends BeditaBaseShell {
         // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->export($objects, $this->options['export']);
+        if (!empty($result['log']['ERROR'])) {
+            foreach ($result['log']['ERROR'] as $error) {
+                $this->out($error);
+            }
+        }
         // end
         $this->trackInfo('');
         $this->trackInfo('Export end');
