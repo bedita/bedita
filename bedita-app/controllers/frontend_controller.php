@@ -1211,8 +1211,11 @@ abstract class FrontendController extends AppController {
 
 				// even with check no perms found, set auth true
 				$authorized = true;
+				$freeAccess = true;
 
 			} else {
+				// perms are set (no free object)
+				$freeAccess = false;
 
 				// divide perms by type (blocking or not)
 				$permsWithBlock = array();
@@ -1252,6 +1255,7 @@ abstract class FrontendController extends AppController {
 
 		} else {
 			$authorized = true;
+			$freeAccess = true;
 		}
 
 		if (!isset($this->objectCache[$obj_id])) {
@@ -1377,6 +1381,8 @@ abstract class FrontendController extends AppController {
 
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
+		// object with/without permission set on it
+		$obj['free_access'] = $freeAccess;
 
 		// add bindings used
 		$obj['bindings'] = $bindings;

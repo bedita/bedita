@@ -676,10 +676,16 @@ class AppController extends Controller {
                     $objDetail['object_type'] = $modelClass;
                     $userdata = (!empty($options['user']))? $options['user'] : array();
                     $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
-                    if ($frontendAccess == "denied" && empty($this->showUnauthorized)) {
+                    if ($frontendAccess == 'denied' && empty($this->showUnauthorized)) {
                         continue;
                     }
-                    $objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
+                    if ($frontendAccess == 'free') {
+                        $objDetail['free_access'] = true;
+                        $objDetail['authorized'] = true;
+                    } else {
+                        $objDetail['free_access'] = false;
+                        $objDetail['authorized'] = ($frontendAccess == 'full') ? true : false;
+                    }
                 }
 
                 $objDetail['priority'] = $obj['priority'];
