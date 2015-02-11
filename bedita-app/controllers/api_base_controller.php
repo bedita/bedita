@@ -251,6 +251,12 @@ abstract class ApiBaseController extends FrontendController {
                 }
             } else {
                 $object = $this->loadObj($id);
+                if ($object == parent::UNLOGGED) {
+                    throw new BeditaUnauthorizedException();
+                }
+                if ($object == parent::UNAUTHORIZED) {
+                    throw new BeditaForbiddenException();
+                }
                 // check if id correspond to object type requested (if any)
                 if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
                     throw new BeditaInternalErrorException('Object type mismatch');
