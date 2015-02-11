@@ -674,17 +674,22 @@ class AppController extends Controller {
                 // if frontend app add object_type and check frontend obj permission
                 if (!BACKEND_APP) {
                     $objDetail['object_type'] = $modelClass;
-                    $userdata = (!empty($options['user']))? $options['user'] : array();
-                    $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
-                    if ($frontendAccess == 'denied' && empty($this->showUnauthorized)) {
-                        continue;
-                    }
-                    if ($frontendAccess == 'free') {
+                    if (!$this->skipCheck) {
+                        $userdata = (!empty($options['user']))? $options['user'] : array();
+                        $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
+                        if ($frontendAccess == 'denied' && empty($this->showUnauthorized)) {
+                            continue;
+                        }
+                        if ($frontendAccess == 'free') {
+                            $objDetail['free_access'] = true;
+                            $objDetail['authorized'] = true;
+                        } else {
+                            $objDetail['free_access'] = false;
+                            $objDetail['authorized'] = ($frontendAccess == 'full') ? true : false;
+                        }
+                    } else {
                         $objDetail['free_access'] = true;
                         $objDetail['authorized'] = true;
-                    } else {
-                        $objDetail['free_access'] = false;
-                        $objDetail['authorized'] = ($frontendAccess == 'full') ? true : false;
                     }
                 }
 
