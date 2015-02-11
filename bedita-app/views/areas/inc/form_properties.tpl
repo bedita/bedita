@@ -34,11 +34,11 @@
 				<td><label>{t}reside in{/t}:</label></td>
 				<td>
 					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
-					{if !empty($parent_id)}
-						{$beTree->option($tree, $parent_id)}
-					{else}
-						{$beTree->option($tree)}
-					{/if}
+						{if !empty($parent_id)}
+							{$beTree->option($tree, $parent_id)}
+						{else}
+							{$beTree->option($tree)}
+						{/if}
 					</select>
 					
 					{if $object|default:false && ($object.fixed == 1)}

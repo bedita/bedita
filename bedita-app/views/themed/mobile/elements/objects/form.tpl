@@ -40,6 +40,7 @@
 				<label for="data[destination][]">{t}select position{/t}:</label>
 				<select id="data[destination][]" name="data[destination][]" multiple="multiple" data-native-menu="false">
 					{assign_associative var="params" parentIds=$parents}
+					<option value="">{t}None{/t}</option>
 					{$beTree->optionsMobile($tree, $params)}
 				</select>
 			</li>
