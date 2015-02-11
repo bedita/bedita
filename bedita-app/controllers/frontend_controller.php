@@ -766,6 +766,11 @@ abstract class FrontendController extends AppController {
 	 * if any section was found load publication as home page section
 	 */
 	public function homePage() {
+        if (file_exists(APP . 'views' . DS . 'pages' . DS . 'home_page.tpl')) {
+            $this->render('home_page');
+            return;
+        }
+
 		$filter = array("object_type_id" => Configure::read("objectTypes.section.id"));
 		$child = $this->BeTree->getChildren($this->publication["id"], $this->getStatus(), $filter, null, true, 1, 1);
 		$homePageSectionId = (empty($child["items"]))? $this->publication["id"] : $child["items"][0]["id"];
