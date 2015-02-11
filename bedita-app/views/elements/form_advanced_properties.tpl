@@ -4,12 +4,13 @@
 <fieldset id="advancedproperties" class="multimediaiteminside">
 
 <table class="bordered">
-<tr>
+	{if !empty($object.id)}
+	<tr>
 		<th>{t}id{/t}:</th>
-		<td>
-			{$object.id}
-		</td>
+		<td>{$object.id}</td>
 	</tr>
+	{/if}
+	{if !empty($object.nickname)}
 	<tr>
 		<th>{t}unique name{/t}:</th>
 		<td>
@@ -17,7 +18,7 @@
 			{$object.nickname}
 		</td>
 	</tr>
-
+	{/if}
 	{if ($object)}
 		
 		{if !empty($object.Alias)}
