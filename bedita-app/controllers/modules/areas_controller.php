@@ -113,7 +113,7 @@ class AreasController extends ModulesController {
 
 	}
 
-	public function view($id) {
+	public function view($id = null) {
 		$this->action = "index";
 		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
 		$modelName = Configure::read("objectTypes.".$objectTypeId.".model");
@@ -124,7 +124,16 @@ class AreasController extends ModulesController {
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->loadChildren($id, "priority", $dir);
 		$this->set("objectType", Configure::read("objectTypes.".$objectTypeId.".name"));
-		$this->set('parent_id', $this->Tree->getParent($id));
+		$parentId = null;
+		if (empty($id) && !empty($this->params['named']['id'])) {
+			$id = $this->params['named']['id'];
+		}
+		if (!empty($id)) {
+			$parentId = $this->Tree->getParent($id);
+		} else if (!empty($this->params['named']['branch'])) {
+			$parentId = $this->params['named']['branch'];
+		}
+		$this->set('parent_id', $parentId);
 	}
 
 	/**
@@ -177,10 +186,20 @@ class AreasController extends ModulesController {
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
 	}
 
-	function viewSection() {
+	function viewSection($id = null) {
 		$sec = null;
 		$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
 		$this->set('tree',$this->BeTree->getSectionsTree());
+		$parentId = null;
+		if (empty($id) && !empty($this->params['named']['id'])) {
+			$id = $this->params['named']['id'];
+		}
+		if (!empty($id)) {
+			$parentId = $this->Tree->getParent($id);
+		} else if (!empty($this->params['named']['branch'])) {
+			$parentId = $this->params['named']['branch'];
+		}
+		$this->set('parent_id', $parentId);
 	}
 
 
