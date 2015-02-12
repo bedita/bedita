@@ -246,6 +246,25 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
+            $orderedObjects = array();
+            $counter = 1;
+            foreach ($this->import['source']['data']['objects'] as &$object) {
+                if (!empty($object['parents'])) {
+                    foreach ($object['parents'] as $parent) {
+                        $orderedObjects[$object['id']] = str_pad($parent['id'], 20, '0', STR_PAD_LEFT) . '-' . str_pad($parent['priority'], 20, '0', STR_PAD_LEFT);
+                    }
+                } else {
+                    $orderedObjects[$object['id']] = str_pad($counter++, 25, '0', STR_PAD_LEFT) . '-' . str_pad('0', 25, '0', STR_PAD_LEFT);
+                }
+            }
+            asort($orderedObjects);
+            $sortObjects = array();
+            $orderedIds = array_keys($orderedObjects);
+            foreach ($orderedIds as $objectId) {
+                $sortObjects[$objectId] = $this->import['source']['data']['objects'][$objectId];
+            }
+            $this->import['source']['data']['objects'] = $sortObjects;
+            // order objects by parent id / priority
             foreach ($this->import['source']['data']['objects'] as &$object) {
                 $this->saveObject($object);
             }
@@ -1055,11 +1074,15 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('- saving ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... object saved');
             if (!empty($object['parents'])) {
                 $tree = ClassRegistry::init('Tree');
-                foreach ($object['parents'] as $parentId) {
+                foreach ($object['parents'] as $parent) {
+                    $parentId = $parent['id'];
                     $beParentId = $this->import['saveMap'][$parentId];
                     if (!empty($beParentId)) {
                         $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... START');
-                        $tree->appendChild($model->id,$beParentId);
+                        $tree->appendChild($model->id, $beParentId);
+                        if (!empty($parent['priority'])) {
+                            $tree->setPriority($model->id, $parent['priority'], $beParentId);
+                        }
                         $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... END');
                     } else {
                         $this->trackDebug('-- bedita object not found in import saveMap for id ' . $parentId);
@@ -1283,17 +1306,26 @@ class DataTransfer extends BEAppModel
         $tree = ClassRegistry::init('Tree');
         $parents = $tree->find('list',
             array(
-                'fields' => array('parent_id'),
+                'fields' => array(
+                    'parent_id',
+                    'priority'
+                ),
                 'conditions' => array(
                     'id' => $objId,
                     'area_id' => $rootIds
                 )
             )
         );
-        if (empty($parents)) {
-            return array();
+        $result = array();
+        if (!empty($parents)) {
+            foreach ($parents as $parent_id => $priority) {
+                $result[] = array(
+                    'id' => $parent_id,
+                    'priority' => $priority
+                );
+            }
         }
-        return array_values($parents);
+        return $result;
     }
 
     private function prepareObjectsForExportByParents($parents) {
