@@ -488,20 +488,6 @@ class Tree extends BEAppModel
 		if (!empty($id)) {
 			$filter["Tree.area_id"] = $id;
 		}
-        $filter['ignoreFields'] = array(
-            'description',
-            'valid',
-            'ip_created',
-            'user_created',
-            'user_modified',
-            'rights',
-            'license',
-            'creator',
-            'publisher',
-            'note',
-            'fixed',
-            'comments',
-        );
 
 		$res = $this->findObjects(null, $userid, $status, $filter, "parent_path, priority, title", true, 1, null, true);
 
