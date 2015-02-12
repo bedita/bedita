@@ -23,6 +23,8 @@ class DataTransfer extends BEAppModel
 {
     public $useTable = false;
 
+    private $maxRelationLevels = 2;
+    
     protected $objDefaults = array(
         'status' => 'on',
         'user_created' => '1',
@@ -1253,9 +1255,10 @@ class DataTransfer extends BEAppModel
      * remove meaningless data for export (i.e. user, stats, etc. @see $this->export['objectUnsetFields'])
      * 
      * @param  array $object data
+     * @param  int $level, recursion level
      * @return array $object data
      */
-    private function prepareObjectForExport(array &$object) {
+    private function prepareObjectForExport(array &$object, $level = 0) {
         $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
         if (!empty($object['object_type_id'])) {
             $object['objectType'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
@@ -1273,28 +1276,40 @@ class DataTransfer extends BEAppModel
             unset($object['relatedObjectIds']);
         }
         $this->export['destination']['byType']['ARRAY']['objects'][$object['id']] = $object;
-        // 4 set related objects
-        $this->trackDebug('... load related objects');
-        if (!empty($relatedObjectIds)) {
-            $conf = Configure::getInstance();
-            foreach ($relatedObjectIds as $relatedObjectId) {
-                $objModel = ClassRegistry::init('BEObject');
-                $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
-                if (isset($conf->objectTypes[$objectTypeId])) {
-                    $model = $conf->objectTypes[$objectTypeId]['model'];
-                } else if (isset($conf->objectTypesExt[$objectTypeId])) {
-                    $model = $conf->objectTypesExt[$objectTypeId]['model'];
-                } else {
-                    throw new BeditaException('Model not found per objecttypeId "' . $objectTypeId . '"');
+        
+        // check recursion level for relations
+        if ($level < $this->maxRelationLevels) {
+            $nextLevel = $level + 1;
+            // 4 set related objects
+            $this->trackDebug('... load related objects');
+            if (!empty($relatedObjectIds)) {
+                $conf = Configure::getInstance();
+                foreach ($relatedObjectIds as $relatedObjectId) {
+                    if (!empty($this->export['destination']['byType']['ARRAY']['objects'][$relatedObjectId])) {
+                        $this->trackResult('WARN', 'object id: ' . $relatedObjectId . ' already exported');
+                        continue;
+                    }
+                    
+                    $objModel = ClassRegistry::init('BEObject');
+                    $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
+                    if (isset($conf->objectTypes[$objectTypeId])) {
+                        $model = $conf->objectTypes[$objectTypeId]['model'];
+                    } else if (isset($conf->objectTypesExt[$objectTypeId])) {
+                        $model = $conf->objectTypesExt[$objectTypeId]['model'];
+                    } else {
+                        throw new BeditaException('Model not found for object type Id "' . $objectTypeId . '"');
+                    }
+                    $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
+                    $relatedObjModel = ClassRegistry::init($model);
+                    $relatedObjModel->contain(
+                        $this->export[$containLabel]
+                    );
+                    $relatedObj = $relatedObjModel->findById($relatedObjectId);
+                    $this->prepareObjectForExport($relatedObj, $nextLevel);
                 }
-                $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
-                $relatedObjModel = ClassRegistry::init($model);
-                $relatedObjModel->contain(
-                    $this->export[$containLabel]
-                );
-                $relatedObj = $relatedObjModel->findById($relatedObjectId);
-                $this->prepareObjectForExport($relatedObj);
             }
+        } else {
+            $this->trackDebug('... related objects not loaded - recursion level ' . $level);
         }
         // 5 set media uris        
         if (!empty($object['uri'])) { // map object id with media uri
