@@ -24,6 +24,7 @@
 	<div class="tab"><h2>{t}Create a new custom relation{/t}</h2></div>
 
 	<form method="post" action="{$html->url('/admin/saveCustomRelation')}">
+		{$beForm->csrf()}
 		<table class="bordered">
 			<tr>
 				<th style="vertical-align:top"><label>{t}source{/t}</label></th>
@@ -105,6 +106,7 @@
 	<div class="tab"><h2>{$keyname|escape}</h2></div>
 
 	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">
+		{$beForm->csrf()}
 		<table class="bordered">
 			<tr>
 				<th style="vertical-align:top"><label>{t}source{/t}</label></th>

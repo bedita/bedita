@@ -32,7 +32,7 @@ class DocumentsController extends ModulesController {
 	var $name = 'Documents';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeLangText', 'BeFileHandler');
+	var $components = array('BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Document', 'Tree','Category') ;
 	protected $moduleName = 'documents';

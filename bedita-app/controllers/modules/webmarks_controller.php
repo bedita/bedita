@@ -26,7 +26,7 @@ class WebmarksController extends ModulesController {
 	var $name = 'Webmarks';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeLangText', 'BeFileHandler');
+	var $components = array('BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Link', 'Tree','Category','Area') ;
 	protected $moduleName = 'webmarks';

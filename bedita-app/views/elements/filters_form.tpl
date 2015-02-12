@@ -18,7 +18,7 @@ available options:
 *}
 
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
-
+	{$beForm->csrf()}
 	<input type="hidden" name="cleanFilter" value=""/>
 
 	<table class="filters"  style="width:100%">

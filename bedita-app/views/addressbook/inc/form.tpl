@@ -4,6 +4,7 @@
 
 
 <form action="{$html->url('/addressbook/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	
 	{include file="../inc/form_card_details.tpl"}

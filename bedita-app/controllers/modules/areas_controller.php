@@ -33,7 +33,7 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';

@@ -32,7 +32,12 @@ class PagesController extends AppController {
     
     public $uses = array();
     public $helpers = array('BeTree');
-    public $components = array('BeUploadToObj');
+    public $components = array(
+        'BeUploadToObj',
+        'BeSecurity' => array(
+            'disableActions' => array('loadNote', 'loadObjectToAssoc', 'loadUsersGroupsAjax')
+        )
+    );
 
     protected function beforeCheckLogin() {
         if($this->action === 'changeLang') { // skip auth check, on lang change

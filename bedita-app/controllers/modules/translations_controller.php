@@ -32,7 +32,7 @@ class TranslationsController extends ModulesController {
 
 	var $helpers 	= array('BeTree','BeToolbar');
 	var $uses = array("BEObject","LangText");
-	var $components = array("BeLangText");
+	var $components = array("BeLangText", 'BeSecurity');
 	protected $moduleName = 'translations';
 	
 	public function index($order = "", $dir = true, $page = 1, $dim = 20) {

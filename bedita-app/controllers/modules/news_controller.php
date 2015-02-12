@@ -32,7 +32,7 @@
 class NewsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeSecurity');
 	var $uses = array('BEObject','ShortNews','Category','Area') ;
 	protected $moduleName = 'news';
 	protected $categorizableModels = array('ShortNews');

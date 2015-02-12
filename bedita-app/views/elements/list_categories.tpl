@@ -36,6 +36,7 @@ $(document).ready(function(){
 		
 		{foreach from=$categories item="cat" name="fc"}
 		<form id="form_{$cat.id}" method="post" action="{$html->url('saveCategories')}">
+			{$beForm->csrf()}
 
 			<tr>
 				<td>
@@ -62,7 +63,7 @@ $(document).ready(function(){
 
 						<option value="">--</option>
 						{foreach from=$areasList key="area_id" item="public_name"}
-							<option value="{$area_id}"{if $area_id == $cat.area_id} selected{/if}>{$public_name}</option>
+							<option value="{$area_id}"{if $area_id == $cat.area_id} selected{/if}>{$public_name|escape}</option>
 						{/foreach}
 	
 					</select>
@@ -91,6 +92,7 @@ $(document).ready(function(){
 		<div class="tab"><h2>{t}Add new category{/t}</h2></div>	
 		
 		<form method="post" id="addCat" action="{$html->url('saveCategories')}">
+		{$beForm->csrf()}
 		
 		<table class="indexlist">
 			<thead>
@@ -112,7 +114,7 @@ $(document).ready(function(){
 						<select style="width:180px" name="data[area_id]">
 							<option value="">--</option>
 							{foreach from=$areasList key="area_id" item="public_name"}
-							<option value="{$area_id}">{$public_name}</option>
+							<option value="{$area_id}">{$public_name|escape}</option>
 							{/foreach}
 						</select>
 				</td>

@@ -1,5 +1,6 @@
 	{strip}
 	<form action="{$html->url('/')}{$submiturl}/save" method="post" name="updateForm" id="updateForm" class="cmxform">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 		<ul data-role="listview">

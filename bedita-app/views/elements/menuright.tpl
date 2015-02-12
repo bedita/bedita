@@ -49,6 +49,8 @@ function showNoteResponse(data) {
 function refreshNoteList(delButton) {
 	var div = delButton.parents("div:first");
 	var postdata = { id: delButton.attr("rel")};
+	// add csrf token if exists
+	addCsrfToken(postdata, '#saveNote');
 	if (confirm(confirmDelNoteMsg)) {
 		$.ajax({ 
 			type: "POST",
@@ -96,6 +98,7 @@ function refreshNoteList(delButton) {
 		</tr>
 		</table>
 		<form id="saveNote" action="{$html->url('/pages/saveNote')}" method="post">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[object_id]" value="{$object.id}"/>
 		<textarea id="notetext" name="data[description]" class="autogrowarea editornotes"></textarea>
 		<input type="submit" style="margin-bottom:10px; margin-top:5px" value="{t}send{/t}" />

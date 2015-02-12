@@ -845,6 +845,20 @@ function getFlashVersion(){
     return false;
 }
 
+function addCsrfToken(postData, searchIn) {
+    if (!postData) {
+        postData = {};
+    }
+    if (!postData.data) {
+        postData.data = {};
+    }
+    $item = (searchIn) ? $(searchIn) : $('body');
+    var csrfToken = $item.find('input[name=data\\[_csrfToken\\]\\[key\\]]:first').val();
+    if (csrfToken) {
+        postData.data._csrfToken = {key: csrfToken};
+    }
+    return postData;
+}
 
 /**
  * Handle a list of items

@@ -37,7 +37,8 @@ class AdminController extends ModulesController {
 			)
 		),
 		'BeSystem',
-		'BeMail'
+		'BeMail',
+		'BeSecurity'
 	);
 	public $helpers = array('Paginator', 'Text');
 	public $paginate = array(
@@ -50,6 +51,8 @@ class AdminController extends ModulesController {
 		// disable Security component for method not in requirePost
 		if (!in_array($this->action, $this->Security->requirePost)) {
 			$this->Security->validatePost = false;
+		} else {
+			$this->BeSecurity->validatePost = false;
 		}
 	}
 

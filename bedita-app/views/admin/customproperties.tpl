@@ -55,7 +55,7 @@ $(document).ready(function() {
 		</tr>
 		{foreach from=$properties item="p"}
 			<form id="form_{$p.id}" action="{$html->url('/admin/saveCustomProperties')}" method="post">
-			
+			{$beForm->csrf()}
 			<tr name="pop">
 
 				<td>
@@ -118,7 +118,7 @@ $(document).ready(function() {
 
 	
 	<form action="{$html->url('/admin/saveCustomProperties')}" method="post">
-
+	{$beForm->csrf()}
 	<h2 style="margin:30px 0 15px 0" >{t}Create a new custom property{/t}</h2>
 	<table class="indexlist">
 		<tr>

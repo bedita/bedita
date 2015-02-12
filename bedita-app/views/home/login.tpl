@@ -20,6 +20,7 @@
 
 <div class="login">
 	<form name="login" action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
+	{$beForm->csrf()}
 	<fieldset>
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
@@ -36,6 +37,7 @@
 	
 	<div id="pswforget" style="margin-top:20px; display:none">
 		<form method="post" action="{$html->url('/authentications/recoverUserPassword')}">
+		{$beForm->csrf()}
 		<input class="big" style="width:280px" type="text" placeholder="{t}Write your email here{/t}" name="data[email]"/>
 		<input class="bemaincommands" type="submit" value="{t}Send{/t}"/>
 		{if isset($conf->projectAdmin)}
@@ -47,6 +49,7 @@
 	<label>{t}Or use one of this external auth service{/t}</label><br />
 	{foreach from=$externalAuthServices item=service}
 	<form name="login" action="{$html->url('/authentications/login')}" class="auth_form" method="post">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[login][auth_type]" value="{$service.name}">
 		<input type="submit" class="auth_button auth_button_{$service.name|lower}" value="{$service.name}">
 	</form>

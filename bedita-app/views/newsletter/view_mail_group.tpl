@@ -102,6 +102,7 @@ $(document).ready(function() {
 <div class="main">	
 
 <form method="post" id="updateForm" action="{$html->url('saveMailGroups')}">	
+{$beForm->csrf()}
 
 {include file="inc/list_details.tpl"}
 

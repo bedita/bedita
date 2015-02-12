@@ -1,4 +1,12 @@
 <script type="text/javascript">
+
+	function delGroupDialog(name) {
+		if (!confirm("{t}Do you really want to remove group{/t} " + name + "?")) {
+			return false;
+		}
+		return true;
+	}
+
 	$(document).ready(function(){
 		openAtStart("#groupFormProp, #usersInGroup");
 
@@ -16,6 +24,7 @@
 </script>
 
 <form action="{$html->url('/users/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
+{$beForm->csrf()}
 <style scoped>
 	table.group_objects {
 		margin-bottom:10px;

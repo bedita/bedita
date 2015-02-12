@@ -33,6 +33,7 @@ $(document).ready( function ()
 </div>
 
 <form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 
 {include file="inc/menucommands.tpl" fixed=true}
 

@@ -21,7 +21,7 @@
 	{assign_concat var="actionForm" 1="save" 2=$objectType|capitalize|default:"Area"}
 	
 	<form action="{$html->url('/areas/')}{$actionForm}" method="post" name="updateForm" id="updateForm" class="cmxform">
-
+	{$beForm->csrf()}
 	<div id="loading" style="position:absolute; left:320px; top:110px; ">&nbsp;</div>
 
 	<div class="main full">

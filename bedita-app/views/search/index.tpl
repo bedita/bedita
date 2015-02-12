@@ -55,6 +55,7 @@ function delObjects() {
 <div class="main">
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>

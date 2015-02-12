@@ -1,5 +1,6 @@
-<!--	
+{*
 <form action="{$html->url('/pages/printme')}" target="print" method="post">
+{$beForm->csrf()}
 <input type="hidden" name="id" value="{$object.id|default:''}"/>
 
 <div class="tab"><h2>{t}Print{/t}</h2></div>
@@ -30,4 +31,4 @@
 </fieldset>
 
 </form>
--->
+*}

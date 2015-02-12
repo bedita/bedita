@@ -26,6 +26,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 <div class="main">
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<table class="indexlist js-header-float">
 

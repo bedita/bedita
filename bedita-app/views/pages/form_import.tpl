@@ -1,5 +1,6 @@
 
 <form action="{$html->url('/areas/import')}" method="post" name="importForm" id="importForm" enctype="multipart/form-data">
+{$beForm->csrf()}
 
 <input type="hidden" name="data[sectionId]" value="{$objectId|default:''}"/>
 

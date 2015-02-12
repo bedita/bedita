@@ -3,6 +3,7 @@
 *}
 
 <form action="{$html->url('/documents/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	{$view->element('form_title_subtitle')}

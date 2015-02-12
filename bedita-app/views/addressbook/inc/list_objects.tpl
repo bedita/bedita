@@ -41,6 +41,7 @@ $(document).ready(function(){
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]"/>
 

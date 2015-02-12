@@ -43,6 +43,7 @@ $(document).ready(function() {
 	<div class="tab stayopen"><h2>{t}All modules{/t}</h2></div>
 
 	<form action="{$html->url('/admin/sortModules')}" id="sortModules" method="post">
+	{$beForm->csrf()}
 
 	<ul class="modules block" id="plugged">
 	{foreach from=$moduleList key=k item=mod}

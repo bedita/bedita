@@ -22,6 +22,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]"/>
 

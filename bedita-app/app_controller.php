@@ -28,7 +28,7 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    var $helpers    = array('Javascript', 'Html', 'Form', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+    var $helpers    = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
     var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler', 'BeHash', 'SessionFilter');
     var $uses = array('EventLog') ;
 
@@ -905,6 +905,12 @@ abstract class ModulesController extends AppController {
 	 * @var array
 	 */
 	protected $categorizableModels = array();
+
+    // @todo uncomment once all module plugin will be updated to use BeSecurity
+    // public function __construct() {
+    //     $this->components[] = 'BeSecurity';
+    //     parent::__construct();
+    // }
 
     protected function checkWriteModulePermission() {
         if (isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {

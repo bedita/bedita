@@ -49,6 +49,7 @@ $(document).ready(function() {
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					{$beForm->csrf()}
 					<input type="hidden" name="path" value="{$ot.path}">
 					<input type="hidden" name="enabledPath" value="{$ot.enabledPath}">
 					<input type="hidden" name="name" value="{$ot.name}">
@@ -84,6 +85,7 @@ $(document).ready(function() {
 						<td style="color: red;">{$ot.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						{$beForm->csrf()}
 						<td>
 						<input type="hidden" name="path" value="{$ot.path}">
 						<input type="hidden" name="enabledPath" value="{$ot.enabledPath}">
@@ -120,6 +122,7 @@ $(document).ready(function() {
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					{$beForm->csrf()}
 					<input type="hidden" name="path" value="{$a.path}">
 					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
 					<input type="hidden" name="name" value="{$a.name}">
@@ -154,6 +157,7 @@ $(document).ready(function() {
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						{$beForm->csrf()}
 						<td>
 						<input type="hidden" name="path" value="{$a.path}">
 						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
@@ -190,6 +194,7 @@ $(document).ready(function() {
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					{$beForm->csrf()}
 					<input type="hidden" name="path" value="{$a.path}">
 					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
 					<input type="hidden" name="name" value="{$a.name}">
@@ -224,6 +229,7 @@ $(document).ready(function() {
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						{$beForm->csrf()}
 						<td>
 						<input type="hidden" name="path" value="{$a.path}">
 						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
@@ -259,6 +265,7 @@ $(document).ready(function() {
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					{$beForm->csrf()}
 					<input type="hidden" name="path" value="{$a.path}">
 					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
 					<input type="hidden" name="name" value="{$a.name}">
@@ -293,6 +300,7 @@ $(document).ready(function() {
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						{$beForm->csrf()}
 						<td>
 						<input type="hidden" name="path" value="{$a.path}">
 						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
@@ -327,6 +335,7 @@ $(document).ready(function() {
 				<tr>
 					<td>
 					<form action="{$html->url('/admin/disableAddon')}" method="post">
+					{$beForm->csrf()}
 					<input type="hidden" name="path" value="{$a.path}">
 					<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
 					<input type="hidden" name="name" value="{$a.name}">
@@ -361,6 +370,7 @@ $(document).ready(function() {
 						<td style="color: red;">{$a.file}:</td><td style="color: red;">{t}file is already used, please change it to avoid malfunctioning{/t}</td>
 					{else}
 					<form action="{$html->url('/admin/enableAddon')}" method="post">
+						{$beForm->csrf()}
 						<td>
 						<input type="hidden" name="path" value="{$a.path}">
 						<input type="hidden" name="enabledPath" value="{$a.enabledPath}">
