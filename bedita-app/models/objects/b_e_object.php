@@ -708,7 +708,7 @@ class BEObject extends BEAppModel {
      * @return bool Current User's administrator permissions.
      */
     private function _isCurrentUserAdmin() {
-        return in_array('administrator', ClassRegistry::init('User')->getGroups($this->_getIDCurrentUser()));
+        return !is_null(Configure::read('beditaTestUserId')) || in_array('administrator', ClassRegistry::init('User')->getGroups($this->_getIDCurrentUser()));
     }
 
 	/**
