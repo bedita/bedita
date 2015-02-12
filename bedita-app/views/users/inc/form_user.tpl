@@ -217,6 +217,7 @@
 					{foreach from=$formGroups key=gname item=u}
 					<tr>
 						<td>
+							{$gname = $gname|escape}
 							<input type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}	onclick="javascript:localUpdateGroupsChecked(this);" />
 							&nbsp;
 							<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>
