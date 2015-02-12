@@ -89,6 +89,8 @@ class DataTransfer extends BEAppModel
             'user_modified',
             'valid',
             'ip_created',
+            'object_type_id',
+            'ObjectType',
             'UserCreated',
             'UserModified',
             'User'
@@ -1193,8 +1195,8 @@ class DataTransfer extends BEAppModel
         }
     }
 
-    private function rearrangeObjectFields(array &$object) {
-        if (isset($object['RelatedObject'])) {
+    private function rearrangeObjectFields(array &$object, $level) {
+        if (isset($object['RelatedObject']) && $level < $this->maxRelationLevels) {
             foreach ($object['RelatedObject'] as $relation) {
                 if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
                     $object['relatedObjectIds'][] = $relation['object_id'];
@@ -1212,8 +1214,9 @@ class DataTransfer extends BEAppModel
                 }
                 $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
             }
-            unset($object['RelatedObject']);
         }
+        unset($object['RelatedObject']);
+
         if (isset($object['LangText'])) {
             // TODO: arrange lang text data
             unset($object['LangText']);
@@ -1295,7 +1298,7 @@ class DataTransfer extends BEAppModel
         $this->cleanObjectFields($object);
         // 2 parse and rearrange object data
         $this->trackDebug('... rearrangeObjectFields for object id ' . $object['id']);
-        $this->rearrangeObjectFields($object);
+        $this->rearrangeObjectFields($object, $level);
         // 3 set object for result
         $relatedObjectIds = array();
         if (!empty($object['relatedObjectIds'])) {
@@ -1325,6 +1328,10 @@ class DataTransfer extends BEAppModel
                         $model = $conf->objectTypesExt[$objectTypeId]['model'];
                     } else {
                         throw new BeditaException('Model not found for object type Id "' . $objectTypeId . '"');
+                    }
+                    if ($model === 'Section' || $model === 'Area') {
+                        $this->trackResult('WARN', 'unable to export related type: ' . $model . ' tree info may be missing');
+                        continue;
                     }
                     $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
                     $relatedObjModel = ClassRegistry::init($model);
