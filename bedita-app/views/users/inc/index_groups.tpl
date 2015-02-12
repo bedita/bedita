@@ -29,7 +29,7 @@ $(document).ready(function(){
 	{foreach from=$groups|default:'' item=g}
 	<tr class="rowList {if ($g.Group.id == $group.Group.id)}on{/if}">	
 		<td>
-			<a href="{$html->url('/users/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a>
+			<a href="{$html->url('/users/viewGroup/')}{$g.Group.id}">{$g.Group.name|escape}</a>
 		</td>
 		<td>
 			{if $g.Group.backend_auth}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}
@@ -45,7 +45,7 @@ $(document).ready(function(){
 		{else}
 			<td class="go" style="text-align:center">
 				<input type="button" name="deleteGroup" value="{t}Delete{/t}" 
-				onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
+				onclick="javascript:delGroupDialog('{$g.Group.name|escape}',{$g.Group.id});"/>
 			</td>
 		{/if}
 		
