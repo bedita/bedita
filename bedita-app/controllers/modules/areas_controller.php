@@ -189,7 +189,11 @@ class AreasController extends ModulesController {
 	function viewSection($id = null) {
 		$sec = null;
 		$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
-		$this->set('tree',$this->BeTree->getSectionsTree());
+
+        // #578 - Memory exhausted when attempting to create new Section.
+        $user = $this->BeAuth->getUserSession();
+        $this->set('tree', $this->Tree->getAllRoots($user['userid'], null, array('count_permission' => true), array()));
+
 		$parentId = null;
 		if (empty($id) && !empty($this->params['named']['id'])) {
 			$id = $this->params['named']['id'];
