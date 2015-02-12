@@ -17,7 +17,7 @@
             <tr>
                 <th>{t}status{/t}:</th>
                 <td id="status">
-                    {if $object.fixed}
+                    {if $object.fixed|default:0}
                         {t}This object is fixed - some data is readonly{/t}
                         <br />
                         {html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;" disabled="disabled"}
