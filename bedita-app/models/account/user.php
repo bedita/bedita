@@ -330,4 +330,19 @@ class User extends BEAppModel
 		}
 		return true;
 	}
+
+    /**
+    * Returns a list of Groups User belongs to.
+    *
+    * @param int $id User's ID (currently loaded user if omitted).
+    * @return array ID-name list of Groups User belongs to.
+    */
+    public function getGroups ($id = null) {
+        if (!is_null($id)) {
+            $this->id = $id;
+            $this->read();
+        }
+
+        return Set::combine($this->data['Group'], '{n}.id', '{n}.name');
+    }
 }
