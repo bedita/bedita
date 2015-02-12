@@ -97,8 +97,13 @@ class DataShell extends BeditaBaseShell {
         $objects = array();
         if (isset($this->params['id'])) {
             $objects[] = $this->params['id'];
+            $this->options['export']['all'] = false;
         } else {
-            $objects[] = 1; // default: object with id 1 - test
+            $this->options['export']['all'] = true;
+        }
+        if (isset($this->params['types'])) {
+            $this->options['export']['types'] = $this->params['types'];
+            echo "\n" . 'Format Export options - types: ' . $this->options['export']['types'] . ' (' . $this->options['export']['types'] . ')';
         }
         if (isset($this->params['f'])) {
             $this->options['export']['filename'] = $this->params['f'];
@@ -141,7 +146,7 @@ class DataShell extends BeditaBaseShell {
         $this->out('data script shell usage:');
         $this->out('');
         $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh data export [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
+        $this->out('./cake.sh data export [-all] [-types <type1,type2,...>] [-id <objectId>] [-f <filename>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
         $this->out('');
     }
 

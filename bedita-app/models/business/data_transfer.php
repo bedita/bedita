@@ -324,8 +324,35 @@ class DataTransfer extends BEAppModel
         $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
         $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
         $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : 'TMP' . DS . 'media-export';
+        $this->export['all'] = (!empty($options['all'])) ? $options['all'] : true;
+        $this->export['types'] = (!empty($options['types'])) ? $options['types'] : NULL;
         $this->trackInfo('START');
         try {
+            $this->export['objectTypeIds'] = array();
+            if ($this->export['types'] != NULL) { // specific types
+                $types = explode(',', $this->export['types']);
+                foreach ($types as $type) {
+                    $ot = Configure::read('objectTypes.' . $type . '.id');
+                    if (!$ot) {
+                        throw new BeditaException('Object type "' . $type . '" not found');
+                    }
+                    $this->export['objectTypeIds'][] = $ot;
+                }
+            }
+            if (empty($objects) && ($this->export['all'] === true) ) {
+                $objModel = ClassRegistry::init('BEObject');
+                $objModel->create();
+                if (empty($this->export['objectTypeIds'])) { // only areas
+                    $this->export['objectTypeIds'][] = Configure::read('objectTypes.area.id');
+                }
+                $objIds = $objModel->find('list', array(
+                    'fields' => array('id'),
+                    'conditions' => array(
+                        'object_type_id' => $this->export['objectTypeIds']
+                    )
+                ));
+                $objects = array_keys($objIds);
+            }
             $this->trackDebug('1 area/section/other objects data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)
             // if objects are areas/sections => roots, otherwise roots is empty
@@ -1337,18 +1364,22 @@ class DataTransfer extends BEAppModel
         $conf = Configure::getInstance();
         foreach ($parents as $parentId) {
             $this->trackDebug('... extracting objects inside rootId ' . $parentId);
+            $conditions = array(
+                'parent_id' => $parentId,
+                'NOT' => array(
+                    'object_type_id' => array(
+                        Configure::read('objectTypes.area.id'),
+                        Configure::read('objectTypes.section.id')
+                    )
+                )
+            );
+            if (!empty($this->export['objectTypeIds'])) {
+                $conditions['object_type_id'] = $this->export['objectTypeIds'];
+            }
             $children = $tree->find('all',
                 array(
                     'fields' => array('Tree.id', 'BEObject.object_type_id'),
-                    'conditions' => array(
-                        'parent_id' => $parentId,
-                        'NOT' => array(
-                            'object_type_id' => array(
-                                Configure::read('objectTypes.area.id'),
-                                Configure::read('objectTypes.section.id')
-                            )
-                        )
-                    )
+                    'conditions' => $conditions
                 )
             );
             if (!empty($children)) {
