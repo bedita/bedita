@@ -23,7 +23,7 @@
 			{if !empty($groups)}
 			{foreach from=$groups item="group"}
 				{if $group.MailGroup.id != $item.id}
-				<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name}</option>
+				<option value="{$group.MailGroup.id}">{$group.MailGroup.group_name|escape}</option>
 				{/if}
 			{/foreach}
 			{/if}
