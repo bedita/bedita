@@ -390,7 +390,7 @@ class BeTreeHelper extends AppHelper {
 	 */
 	public function option($tree, $selId=null, $numInd=1, $indentation="&nbsp;&nbsp;&nbsp;&nbsp;") {
 
-		$output = "<option value=\"\"> None </option>";
+		$output = "";
 
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {

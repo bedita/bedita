@@ -487,6 +487,11 @@ class BEObject extends BEAppModel {
 			$data['title'] = trim($data['title']);
 		}
 
+        if (isset($data['fixed']) && !$this->_isCurrentUserAdmin()) {
+            // #590 - Prevent non-admin Users to be able to change fixed property.
+            unset($data['fixed']);
+        }
+
 		// set language -- disable for comments?
 		if(!isset($data['lang'])) {
 			$data['lang'] = $this->_getDefaultLang();
@@ -696,7 +701,16 @@ class BEObject extends BEAppModel {
 		
 		return $userId;
 	}
-	
+
+    /**
+     * Checks whether current User is in Group `administrator` or not.
+     *
+     * @return bool Current User's administrator permissions.
+     */
+    private function _isCurrentUserAdmin() {
+        return !is_null(Configure::read('beditaTestUserId')) || in_array('administrator', ClassRegistry::init('User')->getGroups($this->_getIDCurrentUser()));
+    }
+
 	/**
 	 * torna un array con la variabile archiviata in un array
 	 */

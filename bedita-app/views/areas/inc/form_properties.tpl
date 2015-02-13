@@ -14,31 +14,37 @@
 				<th>{t}title{/t}:</th>
 				<td><input type="text" id="titleBEObject" style="width:100%" name="data[title]" value="{$object.title|default:""|escape}"/></td>
 			</tr>
-			<tr>
-				<th>{t}status{/t}:</th>
-				<td id="status">
-				{if $object.fixed|default:'' == 1}
-					{t}This object is fixed - some data is readonly{/t}
-					<input type="hidden" name="data[status]" value="{$object.status}" />
-				{else}
-					{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
-				{/if}	
-				{if in_array('administrator',$BEAuthUser.groups)}
-					&nbsp;&nbsp;&nbsp; <b>fixed</b>:&nbsp;&nbsp;<input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
-				{else}
-					<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}" />
-				{/if}				
-				</td>
-			</tr>
+            <tr>
+                <th>{t}status{/t}:</th>
+                <td id="status">
+                    {if $object.fixed|default:0}
+                        {t}This object is fixed - some data is readonly{/t}
+                        <br />
+                        {html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;" disabled="disabled"}
+                    {else}
+                        {html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;"}
+                    {/if}
+
+                    {if in_array('administrator', $BEAuthUser.groups)}
+                        &nbsp;&nbsp;&nbsp;
+                        <b>fixed</b>:
+                        &nbsp;&nbsp;
+                        <input type="hidden" name="data[fixed]" value="0" />
+                        <input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
+                    {else}
+                        <input type="hidden" name="data[fixed]" value="{$object.fixed}" />
+                    {/if}
+                </td>
+            </tr>
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
 				<td>
 					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
-					{if !empty($parent_id)}
-						{$beTree->option($tree, $parent_id)}
-					{else}
-						{$beTree->option($tree)}
-					{/if}
+						{if !empty($parent_id)}
+							{$beTree->option($tree, $parent_id)}
+						{else}
+							{$beTree->option($tree)}
+						{/if}
 					</select>
 					
 					{if $object|default:false && ($object.fixed == 1)}
