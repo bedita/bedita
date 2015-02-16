@@ -643,7 +643,7 @@ $(document).ready(function(){
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
             escapeMarkup: function(m) {
-                return m;
+                return $('<div/>').html(m).text();
             },
             formatResult: function(state) {
                 // escape html tags
