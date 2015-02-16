@@ -127,7 +127,7 @@ class BeLib {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Modify a string to get friendly url version.
 	 * With a regexp you can choose which characters to preserve.
@@ -146,9 +146,9 @@ class BeLib {
 		if (is_numeric($value)) {
 			$value = "n" . $value;
 		}
-		
-		$value = htmlentities( strtolower($value), ENT_NOQUOTES, "UTF-8" );
-		
+
+		$value = strtolower(htmlentities($value, ENT_NOQUOTES | ENT_IGNORE, "UTF-8"));
+
 		// replace accent, uml, tilde,... with letter after & in html entities
 		$value = preg_replace("/&(.)(uml);/", "$1e", $value);
 		$value = preg_replace("/&(.)(acute|grave|cedil|circ|ring|tilde|uml);/", "$1", $value);
@@ -158,10 +158,11 @@ class BeLib {
 		$value = preg_replace($regExp, "-", html_entity_decode($value,ENT_NOQUOTES,"UTF-8" ) ) ;
 		// replace two or more consecutive dashes with one dash
 		$value = preg_replace("/[\-]{2,}/", "-", $value);
+
 		// trim dashes in the beginning and in the end of nickname
 		return trim($value,"-");	
 	}
-	
+
 	/**
 	 * Strip scripts, images, whitespace or all together on $data
 	 * using Sanitize::stripScripts, Sanitize::stripImages, Sanitize::stripWhitespace, Sanitize::stripAll methods
