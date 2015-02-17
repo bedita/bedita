@@ -160,7 +160,7 @@ abstract class FrontendController extends AppController {
 	 * @return mixed
 	 */
 	protected function checkLogin() {
-		if ($this->skipCheck) {
+		if ($this->skipCheck || $this->logged) {
 			return;
 		}
 		if(!$this->BeAuth->isLogged()) {
