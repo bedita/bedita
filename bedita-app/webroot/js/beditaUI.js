@@ -679,7 +679,7 @@ var toggleSelectTree = function(ev) {
             url: url,
             success: function(data) {
                 data = $.trim(data);
-                var ntree = $(data).slice(2);
+                var ntree = $(data).slice(1);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
