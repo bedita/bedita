@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-01-16 16:19:24\n"
+"POT-Creation-Date: 2015-02-17 16:13:31\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1017,6 +1017,9 @@ msgstr ""
 msgid "Missing data"
 msgstr ""
 
+msgid "Missing data group to remove"
+msgstr ""
+
 msgid "Missing email to send recover instructions"
 msgstr ""
 
@@ -1114,6 +1117,9 @@ msgid "Multimedia provider is not managed"
 msgstr ""
 
 msgid "My permissions groups"
+msgstr ""
+
+msgid "NO"
 msgstr ""
 
 msgid "Name"
@@ -1269,6 +1275,9 @@ msgstr ""
 msgid "No questionnaires found"
 msgstr ""
 
+msgid "No results found"
+msgstr ""
+
 msgid "No subscribers"
 msgstr ""
 
@@ -1312,6 +1321,9 @@ msgid "No webmarks found"
 msgstr ""
 
 msgid "No, use custom list"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not Authorized"
@@ -1411,6 +1423,9 @@ msgid "Personal data"
 msgstr ""
 
 msgid "Please check"
+msgstr ""
+
+msgid "Please choose an existing card, or create a new one."
 msgstr ""
 
 msgid "Please enter a valid date in the %1 format"
@@ -1546,6 +1561,9 @@ msgid "Section deleted"
 msgstr ""
 
 msgid "Section saved"
+msgstr ""
+
+msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
 msgstr ""
 
 msgid "Select a category"
@@ -1912,6 +1930,9 @@ msgid "Wrong username/password or session expired"
 msgstr ""
 
 msgid "X"
+msgstr ""
+
+msgid "YES"
 msgstr ""
 
 msgid "Yes"
@@ -2293,6 +2314,9 @@ msgid "email"
 msgstr ""
 
 msgid "email2"
+msgstr ""
+
+msgid "emails"
 msgstr ""
 
 msgid "empty all"
