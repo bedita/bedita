@@ -267,16 +267,21 @@ class BeConfigure {
      * @return int ObjectType ID, or `null` if none found.
      */
     public function getObjectTypeId($modelName) {
-        $modelName = Inflector::underscore($modelName);
-        $otid = Configure::read("objectTypes.{$modelName}.id");
+        $uModelName = Inflector::underscore($modelName);
+        $otid = Configure::read("objectTypes.{$uModelName}.id");
         if (empty($otid)) {
             // Not found in config. Searching database..
-            $otid = ClassRegistry::init('ObjectType')->field('id', array(
-                'name' => $modelName,
+            $res = ClassRegistry::init('ObjectType')->find('first', array(
+                'conditions' => array('name' => $uModelName),
             ));
-            if ($otid) {
+            if ($res) {
+                $res = $res['ObjectType'];
+                $otid = $res['id'];
+
                 // Save for later use.
-                Configure::write("objectTypes.{$modelName}.id", (int) $otid);
+                $res['model'] = $modelName;
+                Configure::write("objectTypes.{$uModelName}", $res);
+                Configure::write("objectTypes.{$otid}", $res);
             }
         }
         return $otid ?: null;  // Ensure `null` is returned in case no ID has been found.
