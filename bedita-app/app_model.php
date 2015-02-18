@@ -832,9 +832,9 @@ class BEAppObjectModel extends BEAppModel {
 
 	function save($data = null, $validate = true, $fieldList = array()) {
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-            $data['BEObject']['object_type_id'] = BeConfigure::getObjectTypeId($this->name);
+            $data['BEObject']['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-            $data['object_type_id'] = BeConfigure::getObjectTypeId($this->name);
+            $data['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		}
 
 		// Se c'e' la chiave primaria vuota la toglie
@@ -1096,9 +1096,9 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 		}
 
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-            $data['BEObject']['object_type_id'] = BeConfigure::getObjectTypeId($this->name);
+            $data['BEObject']['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-            $data['object_type_id'] = BeConfigure::getObjectTypeId($this->name);
+            $data['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		}
 
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
