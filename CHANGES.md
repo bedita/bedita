@@ -31,6 +31,7 @@
 * [#561](https://github.com/bedita/bedita/issues/561) default JSON import/export logic
 * [#571](https://github.com/bedita/bedita/issues/571) release script: frontends *.php.sample has to be moved to *.php
 * [#519](https://github.com/bedita/bedita/issues/519) module forward method refactor
+* [#598](https://github.com/bedita/bedita/issues/598) BeAppModel should look in DB for ObjectType ID if not present in configuration
 
 
 ## Version 3.5.0 - Corylus
