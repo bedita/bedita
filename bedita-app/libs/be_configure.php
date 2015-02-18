@@ -260,6 +260,30 @@ class BeConfigure {
 		return $defaultObjRel;
 	}
 
+    /**
+     * Tries to read ObjectType ID for given model from config, or from database as a fallback.
+     *
+     * @param string $modelName Model name.
+     * @return int ObjectType ID, or `null` if none found.
+     */
+    public function getObjectTypeId($modelName) {
+        $uModelName = Inflector::underscore($modelName);
+        $otid = Configure::read("objectTypes.{$uModelName}.id");
+        if (empty($otid)) {
+            // Not found in config. Searching database..
+            $res = ClassRegistry::init('ObjectType')->find('first', array(
+                'conditions' => array('name' => $uModelName),
+            ));
+            if ($res) {
+                $res = $res['ObjectType'];
+                $otid = $res['id'];
 
+                // Save for later use.
+                $res['model'] = $modelName;
+                Configure::write("objectTypes.{$uModelName}", $res);
+                Configure::write("objectTypes.{$otid}", $res);
+            }
+        }
+        return $otid ?: null;  // Ensure `null` is returned in case no ID has been found.
+    }
 }
-?>
