@@ -720,3 +720,12 @@ Multimedia custom css
 .multimediaToTag img{
     width:100%;
 }
+
+/**** ajax save loader ***/
+.loader + #saveBEObject {
+    display: none;
+}
+
+.insidecol .loader {
+    margin: 20px auto;
+}

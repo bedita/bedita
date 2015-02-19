@@ -7,20 +7,13 @@ Menu a SX valido per tutte le pagine del controller.
 
 {if !empty($view->action) && $view->action == "view"}
 
-<style>
-	.loader + #saveBEObject {
-		display: none;
-	}
-
-	.insidecol .loader {
-		margin: 20px auto;
-	}
-</style>
-
 <script type="text/javascript">
 	var urlView = '{$html->url("/multimedia/view/")}' ;
 
-	$(document).ready(function() { 
+	$(document).ready(function() {
+
+		var commandArea = $('div.insidecol');
+		var loader = $('<div class="loader" style="display: block"><span>0%</span></div>');
 
 		$("#collision").hide();
 
@@ -30,14 +23,14 @@ Menu a SX valido per tutte le pagine del controller.
 			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
 			url: "{$html->url('/multimedia/saveAjax')}",
 			beforeSend: function() {
-		        $("div.insidecol #saveBEObject").before('<div class="loader" style="display: block"><span>0%</span></div>');
+		        $('#saveBEObject', commandArea).before(loader);
 		    },
 		    uploadProgress: function(event, position, total, percentComplete) {
 		        var percentVal = percentComplete + '%';
-		        $("div.insidecol .loader span").text(percentVal);
+		        $('span', loader).text(percentVal);
 		    },
 			complete: function(xhr) {
-				$("div.insidecol .loader span").remove();
+				$('span', loader).remove();
 			}
 		};
 	
@@ -90,6 +83,7 @@ Menu a SX valido per tutte le pagine del controller.
 		function showResponse(data) {
 			// reset post data passed if save is performed in modal
 			optionsForm.data = {};
+			loader.remove();
 			// file already exists
 			if ($(data).attr('data-file-exists')) {
 				$("#collision").BEmodal();
@@ -99,9 +93,11 @@ Menu a SX valido per tutte le pagine del controller.
 				location.href = $(data).attr('data-redirect-url');
 			// trigger error
 			} else {
-				var html = $(data).text();
-				$("#collision").empty().append(html);
-				$("#collision").show();
+				var html = data;
+				if (typeof data != 'string' && data.responseText) {
+					html = data.responseText;
+				}
+				$('#collision').empty().append(html).show();
 			}
 		}
 
