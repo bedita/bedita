@@ -27,6 +27,35 @@ App::import('Helper', 'Html');
  */
 class BeHtmlHelper extends HtmlHelper {
     /**
+     * Parses a URL involving Router.
+     *
+     * @see Router::parse()
+     * @param mixed $url URL.
+     * @param array $mergeParams Array of URL parameters to be merged to URL.
+     * @return mixed Parsed URL.
+     */
+    private function parse ($url = null, array $mergeParams = null) {
+        if (!is_array($url) && !preg_match('/^(https?|mailto|s?ftps?)/i', $url)) {
+            $url = Router::parse($url);
+            pr($url);
+            if (array_key_exists('named', $url)) {
+                // TODO: Handle named params.
+                //$url = array_merge($url, $url['named']);
+                unset($url['named']);
+            }
+            if (array_key_exists('pass', $url)) {
+                $url = array_merge($url, $url['pass']);
+                unset($url['pass']);
+            }
+            unset($url['plugin']);
+        }
+        if (is_array($url) && !empty($mergeParams)) {
+            $url = array_merge($mergeParams, $url);
+        }
+        return $url;
+    }
+
+    /**
      * Returns a formatted link, forcing Router to be involved in URL generation.
      *
      * @see HtmlHelper::link()
@@ -34,10 +63,11 @@ class BeHtmlHelper extends HtmlHelper {
      * @param mixed $url URL.
      * @param array $options Additional HTML attributes.
      * @param mixed $confirmMessage JS confirm message.
+     * @param array $mergeParams Array of URL parameters to be merged to URL.
      * @return string HTML tag `<a>`.
      */
-    public function link ($title, $url = null, array $options = array(), $confirmMessage = false) {
-        return parent::link($title, $this->url($url), $options, $confirmMessage);
+    public function link ($title, $url = null, array $options = null, $confirmMessage = false, array $mergeParams = null) {
+        return parent::link($title, $this->parse($url, $mergeParams), $options, $confirmMessage);
     }
 
     /**
@@ -46,18 +76,10 @@ class BeHtmlHelper extends HtmlHelper {
      * @see Helper::url()
      * @param mixed $url URL.
      * @param boolean $full Full URL.
+     * @param array $mergeParams Array of URL parameters to be merged to URL.
      * @return string URL.
      */
-    public function url ($url = null, $full = false) {
-        if (!is_array($url) && !preg_match('/^(https?|mailto|s?ftps?)/i', $url)) {
-            $url = Router::parse($url);
-            if (array_key_exists('pass', $url)) {
-                $url = array_merge($url, $url['pass']);
-                unset($url['pass']);
-            }
-            unset($url['plugin']);
-        }
-
-        return parent::url($url, $full);
+    public function url ($url = null, $full = false, array $mergeParams = null) {
+        return parent::url($this->parse($url, $mergeParams), $full);
     }
 }
