@@ -33,7 +33,7 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';
@@ -184,6 +184,7 @@ class AreasController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		$this->set('object', null);
 	}
 
 	function viewSection($id = null) {
@@ -204,6 +205,7 @@ class AreasController extends ModulesController {
 			$parentId = $this->params['named']['branch'];
 		}
 		$this->set('parent_id', $parentId);
+		$this->set('object', null);
 	}
 
 

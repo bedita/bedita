@@ -41,7 +41,7 @@
 
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-	
+	{$beForm->csrf()}
 	{include file="inc/form_area.tpl"}
 	
 </div>

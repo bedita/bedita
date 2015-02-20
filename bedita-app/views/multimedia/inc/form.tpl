@@ -4,6 +4,7 @@
 *}
 
 <form action="{$html->url('/multimedia/saveAjax')}" enctype="multipart/form-data" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input  type="hidden" name="data[id]" value="{$object.id|default:''}" />
 <input  type="hidden" name="data[object_type_id]" value="{$object.object_type_id|default:''}" />
 <input  type="hidden" name="data[uri]" value="{$object.uri}" />

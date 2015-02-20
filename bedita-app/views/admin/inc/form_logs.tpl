@@ -22,6 +22,7 @@
 </script>
 
 <form method="post" action="" id="{$idForm}">
+{$beForm->csrf()}
 
 <div class="tab"><h2>{t}{$titleTab}{/t}</h2></div>
 

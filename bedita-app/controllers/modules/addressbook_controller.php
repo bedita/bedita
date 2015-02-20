@@ -26,7 +26,7 @@ class AddressbookController extends ModulesController {
 	
 	var $name = 'Addressbook';
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';

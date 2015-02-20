@@ -6,6 +6,7 @@
 
 	<div data-role="content">	
 	<form action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform" style="padding-left:5px;">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
 		
 		<label class="block" id="luserid" for="userid">{t}Username{/t}</label>

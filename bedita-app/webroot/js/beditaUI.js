@@ -643,7 +643,7 @@ $(document).ready(function(){
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
             escapeMarkup: function(m) {
-                return m;
+                return $('<div/>').html(m).text();
             },
             formatResult: function(state) {
                 // escape html tags
@@ -679,7 +679,7 @@ var toggleSelectTree = function(ev) {
             url: url,
             success: function(data) {
                 data = $.trim(data);
-                var ntree = $(data).slice(2);
+                var ntree = $(data).slice(1);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
@@ -845,6 +845,20 @@ function getFlashVersion(){
     return false;
 }
 
+function addCsrfToken(postData, searchIn) {
+    if (!postData) {
+        postData = {};
+    }
+    if (!postData.data) {
+        postData.data = {};
+    }
+    $item = (searchIn) ? $(searchIn) : $('body');
+    var csrfToken = $item.find('input[name=data\\[_csrfToken\\]\\[key\\]]:first').val();
+    if (csrfToken) {
+        postData.data._csrfToken = {key: csrfToken};
+    }
+    return postData;
+}
 
 /**
  * Handle a list of items

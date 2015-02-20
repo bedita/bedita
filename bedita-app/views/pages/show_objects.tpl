@@ -72,7 +72,9 @@ var select2optionsSimple = {
  * to leave out of dom ready to have visibility in nested items
  */
 var select2optionsTree = {
-	escapeMarkup: function(m) { return m; },
+	escapeMarkup: function(m) {
+		return $('<div/>').html(m).text();
+	},
 	formatResult: function(state) {
 		// escape html tags
         state.text = $('<div/>').html(state.text).text();

@@ -105,7 +105,13 @@
 				{if $object.duration >= 31536000}{$objectDuration = floor($object.duration / 31536000)|cat:"y "|cat:$objectDuration}{/if} {* years *}
 			{/if}
 			<input type="text" name="data[duration]" value="{$objectDuration|default:""}" />
-			<span>Examples: <code style="background-color:rgba(255,255,255,.5)">30</code>, <code style="background-color:rgba(255,255,255,.5)">1:30</code>, <code style="background-color:rgba(255,255,255,.5)">6:30:00</code>, <code style="background-color:rgba(255,255,255,.5)">1y 2w 3d 4h 5m 6s</code>.
+			<span>
+				Examples:
+				<code style="background-color:rgba(255,255,255,.5)">30</code>,
+				<code style="background-color:rgba(255,255,255,.5)">1:30</code>,
+				<code style="background-color:rgba(255,255,255,.5)">6:30:00</code>,
+				<code style="background-color:rgba(255,255,255,.5)">1y 2w 3d 4h 5m 6s</code>.
+			</span>
 		</td>
 	</tr>
 </table>

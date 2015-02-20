@@ -300,6 +300,7 @@ class User extends BEAppModel
                 $name = explode(' ', isset($this->data['User']['realname']) ? $this->data['User']['realname'] : '', 2);
                 $data = array(
                     'id' => null,
+                    'title' => !empty($this->data['User']['realname']) ? $this->data['User']['realname'] : $this->data['User']['userid'],
                     'name' => (count($name) > 0) ? $name[0] : '',
                     'surname' => (count($name) > 1) ? $name[1] : '',
                     'email' => isset($this->data['User']['email']) ? $this->data['User']['email'] : '',

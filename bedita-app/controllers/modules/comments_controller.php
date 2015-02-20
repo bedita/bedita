@@ -31,7 +31,7 @@
 class CommentsController extends ModulesController {
 	
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeLangText');
+	var $components = array('BeTree', 'BeLangText', 'BeSecurity');
 	var $uses = array('Comment');
 	
 	protected $moduleName = 'comments';

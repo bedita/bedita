@@ -38,13 +38,13 @@ $(document).ready(function() {
 			{foreach from=$groupsByArea item="groups" key="pub"}
 				<ul>
 					<li style="padding:2px;">
-						<b>{$pub|upper}</b>
+						<b>{$pub|escape|upper}</b>
 						<ul style="margin:0px">
 						{foreach from=$groups item="group" name="fc"}
 							<li style="padding:2px;">
 							<input type="checkbox" 
 							{if ($object.mail_status == "sent")}disabled=1{/if}
-							name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name}
+							name="data[MailGroup][]" value="{$group.id}"{if !empty($group.MailMessage)} checked{/if}/> {$group.group_name|escape}
 							</li>
 						{/foreach}
 						</ul>

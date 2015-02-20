@@ -1,5 +1,40 @@
 # ChangeLog
 
+## Version 3.5.1 - Corylus
+
+### User-visible changes
+
+* [#589](https://github.com/bedita/bedita/issues/589) New section can not be saved in position "None"
+* [#590](https://github.com/bedita/bedita/issues/590) Non-administrators backend users are able remove "fixed" property
+* [#575](https://github.com/bedita/bedita/issues/575) Area view - 'publisher' and 'rights' compare twice
+* [#588](https://github.com/bedita/bedita/issues/588) Remove "fixed" property
+* [#572](https://github.com/bedita/bedita/issues/572) Fatal Error on logout
+* [#600](https://github.com/bedita/bedita/issues/600) Handle Multimeda `saveAjax` errors
+
+### Frontend changes
+
+* [#587](https://github.com/bedita/bedita/issues/587) Handle homePage tpl
+* [#585](https://github.com/bedita/bedita/issues/585) Enhancement of showUnauthorized data
+* [#537](https://github.com/bedita/bedita/issues/537) Automatic Card creation. - Always new Card when in frontend context
+
+### Developer-visible changes
+
+* [#573](https://github.com/bedita/bedita/issues/573) Automatically create Card when creating a new User
+* [#579](https://github.com/bedita/bedita/issues/579) beEmbedMedia->object video does not use URLonly when passed
+* [#596](https://github.com/bedita/bedita/issues/596) Error on saving categories with non ascii characters
+* [#597](https://github.com/bedita/bedita/issues/597) Some parts of backend are exposed to CSRF attacks
+* [#593](https://github.com/bedita/bedita/issues/593) Data JSON export - recursion errors
+* [#584](https://github.com/bedita/bedita/issues/584) JSON export enhancement - 'types' and 'all' options
+* [#578](https://github.com/bedita/bedita/issues/578) Memory exhausted when creating new Section in large BE installations
+* [#583](https://github.com/bedita/bedita/issues/583) section priority order/value in import and export
+* [#591](https://github.com/bedita/bedita/issues/591) Security: XSS attack on Newsletter mail groups
+* [#586](https://github.com/bedita/bedita/issues/586) SQL upgrade from 3.2.x to >= 3.3.x
+* [#561](https://github.com/bedita/bedita/issues/561) default JSON import/export logic
+* [#571](https://github.com/bedita/bedita/issues/571) release script: frontends *.php.sample has to be moved to *.php
+* [#519](https://github.com/bedita/bedita/issues/519) module forward method refactor
+* [#598](https://github.com/bedita/bedita/issues/598) BeAppModel should look in DB for ObjectType ID if not present in configuration
+
+
 ## Version 3.5.0 - Corylus
 
 ### User-visible changes

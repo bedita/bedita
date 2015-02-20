@@ -396,10 +396,14 @@ class DataTransfer extends BEAppModel
                     $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
                     if (!empty($sections['items'])) {
                         foreach ($sections['items'] as $section) {
-                            $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = array(
+                            $sectionItem = array(
                                 'id' => $section['id'],
                                 'parent' => $section['parent_id']
                             );
+                            if (!empty($section['priority'])) {
+                                $sectionItem['priority'] = $section['priority'];
+                            }
+                            $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = $sectionItem;
                             $objModel = ClassRegistry::init('Section');
                             $objModel->contain(
                                 $this->export['contain']
@@ -754,24 +758,19 @@ class DataTransfer extends BEAppModel
             }
         }
         // order sections
-        $sectionsByParent = array();
-        foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-            if (empty($sectionsByParent[$section['parent']])) {
-                $sectionsByParent[$section['parent']] = array();
-            }
-            $sectionsByParent[$section['parent']][] = $section;
-        }
+        $this->updateTreeForImport();
         $orderedSections = array();
-        foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
-            if (!empty($sectionsByParent[$rootId])) {
-                $sections = $sectionsByParent[$rootId];
-                $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sections);
+        foreach ($this->import['treeLevels'] as $levelName => $sections) {
+            if ($levelName != 'level-0') {
+                foreach ($sections as $sectionId => $section) {
+                    $orderedSections[$sectionId] = $section;
+                }
             }
         }
         $this->import['source']['data']['tree']['sections'] = $orderedSections;
         foreach ($this->import['source']['data']['tree']['sections'] as $section) {
             $this->import['tree']['ids'][] = $section['id'];
-            if (!in_array($section['parent'], $this->import['tree']['parents'])) {
+            if (!empty($section['parent']) && !in_array($section['parent'], $this->import['tree']['parents'])) {
                 $this->import['tree']['parents'][] = $section['parent'];
             }
         }
@@ -1170,16 +1169,37 @@ class DataTransfer extends BEAppModel
 
     /* object utils */
 
-    private function orderSections(array $orderedSections, array $sectionsByParent, array $sections) {
-        if (!empty($sections)) {
-            foreach ($sections as $section) {
-                $orderedSections[$section['id']] = $section;
-                if (!empty($sectionsByParent[$section['id']])) {
-                    $orderedSections = $this->orderSections($orderedSections, $sectionsByParent, $sectionsByParent[$section['id']]);
-                }
-            }
+    private function updateTreeForImport($level = 0) {
+        if ($level === 0) {
+            $this->import['treeLevels'] = array();
+            $this->import['treeLevels']['level-0'] = array();
+            foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
+                $this->import['treeLevels']['level-0'][$rootId] = array('id' => $rootId);
+            };
         }
-        return $orderedSections;
+        if (!empty($this->import['treeLevels']['level-' . $level])) {
+            $nextLevel = $level + 1;
+
+            foreach ($this->import['treeLevels']['level-' . $level] as $parent => $data) {
+                $orderByPriority = false;
+                foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+                    if ($section['parent'] == $parent) {
+                        $this->import['treeLevels']['level-' . $nextLevel][$section['id']] = $section;
+                        if (!empty($section['priority'])) {
+                            $orderByPriority = true;
+                        }
+                    }
+                }
+                if ($orderByPriority) {
+                    usort($this->import['treeLevels']['level-' . $level], function ($item1, $item2) {
+                        return ($item1['priority'] === $item2['priority']) ? 0 : ($item1['priority'] > $item2['priority']);
+                    });
+                    $this->import['treeLevels']['level-' . $level] = Set::combine($this->import['treeLevels']['level-' . $level], '{n}.id', '{n}');
+                }                
+            }
+
+            $this->updateTreeForImport($level+1);
+        }
     }
 
     private function cleanObjectFields(array &$object) {
