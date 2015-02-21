@@ -9,6 +9,7 @@
 * [#575](https://github.com/bedita/bedita/issues/575) Area view - 'publisher' and 'rights' compare twice
 * [#588](https://github.com/bedita/bedita/issues/588) Remove "fixed" property
 * [#572](https://github.com/bedita/bedita/issues/572) Fatal Error on logout
+* [#600](https://github.com/bedita/bedita/issues/600) Handle Multimeda `saveAjax` errors
 
 ### Frontend changes
 
