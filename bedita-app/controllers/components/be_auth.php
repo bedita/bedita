@@ -764,11 +764,14 @@ class BeAuthComponent extends Object {
     }
 
     /**
-     * Get session key if present, false otherwise
+     * Get user session data if present, false otherwise
      * 
      * @return mixed string|boolean
      */
     public function getUserSession() {
+        if (!empty($this->user)) {
+            return $this->user;
+        }
         return ($this->checkSessionKey())? $this->Session->read($this->sessionKey) : false; 
     } 
 
