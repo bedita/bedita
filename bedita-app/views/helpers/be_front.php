@@ -286,61 +286,71 @@ class BeFrontHelper extends AppHelper {
 		return $html;
 	}
 
+	/**
+	 *	return html of common web-app metadata
+	 *
+	 *	@param string $title, the application name
+	 *	@param array $icons, an array of icons to use when the application is pinned in user home screen
+	 *	@param string $statusBar, hex string color for status and navigation bars
+	 *	@param string $tileColor, hex string for application name color (Windows)
+	 *	@param string $feed, the nickname of the section to use as feed
+	 *
+	 *	@return string
+	 */
 	public function metaWebApp($title = false, $icons = false, $statusBar = false, $tileColor = '#000', $feed = false) {
 		$html = '';
 
 		if (!empty($title)) {
 			$html.= "\n" . $this->Html->meta(array(
-				"name" => "application-name",
-				"content" => $title
+				'name' => 'application-name',
+				'content' => $title
 			));
 		}
 
 		$html.= "\n" . $this->Html->meta(array(
-			"name" => "msapplication-config",
-			"content" => 'none'
+			'name' => 'msapplication-config',
+			'content' => 'none'
 		));
 
 		$html.= "\n" . $this->Html->meta(array(
-			"name" => "msapplication-starturl",
-			"content" => $this->Html->url('/')
+			'name' => 'msapplication-starturl',
+			'content' => $this->Html->url('/')
 		));
 
 		$html.= "\n" . $this->Html->meta(array(
-			"name" => "msapplication-TileColor",
-			"content" => $tileColor
+			'name' => 'msapplication-TileColor',
+			'content' => $tileColor
 		));
 
 		if (!empty($statusBar)) {
 			$html.= "\n" . $this->Html->meta(array(
-				"name" => "msapplication-navbutton-color",
-				"content" => $statusBar
+				'name' => 'msapplication-navbutton-color',
+				'content' => $statusBar
 			));
 		}
 
 		$html.= "\n" . $this->Html->meta(array(
-			"name" => "mobile-web-app-capable",
-			"content" => "yes"
+			'name' => 'mobile-web-app-capable',
+			'content' => 'yes'
 		));
 
 		$html.= "\n" . $this->Html->meta(array(
-			"name" => "apple-mobile-web-app-capable",
-			"content" => "yes"
+			'name' => 'apple-mobile-web-app-capable',
+			'content' => 'yes'
 		));
 
 		if (!empty($statusBar)) {
 			$html.= "\n" . $this->Html->meta(array(
-				"name" => "apple-mobile-web-app-status-bar-style",
-				"content" => $statusBar
+				'name' => 'apple-mobile-web-app-status-bar-style',
+				'content' => $statusBar
 			));
 		}
 
 		if (!empty($icons)) {
-			$beThumb = BeLib::getObject("BeThumb");
 			$default = null;
 			if (!empty($icons['default'])) {
 				$default = $icons['default'];
-				$html.= "\n" . "<link rel='apple-touch-icon' href='$default' />";
+				$html.= "\n" . '<link rel="apple-touch-icon" href="' . $default . '" />';
 				unset($icons['default']);
 			}
 
@@ -361,7 +371,7 @@ class BeFrontHelper extends AppHelper {
 				}
 
 				if (!empty($ico)) {
-					$html.= "\n" . "<link rel='apple-touch-icon' sizes='$value' href='$ico' />";
+					$html.= "\n" . '<link rel="apple-touch-icon" sizes="' . $value . '" href="' . $ico . '" />';
 				} else {
 					array_push($missing, $value);
 				}
@@ -369,8 +379,8 @@ class BeFrontHelper extends AppHelper {
 
 			if (!empty($default)) {
 				$html.= "\n" . $this->Html->meta(array(
-					"name" => "msapplication-TileImage",
-					"content" => $default
+					'name' => 'msapplication-TileImage',
+					'content' => $default
 				));
 			}
 
@@ -407,8 +417,8 @@ class BeFrontHelper extends AppHelper {
 
 					if ($windowsMeta) {
 						$html.= "\n" . $this->Html->meta(array(
-							"name" => $windowsMeta,
-							"content" => $ico
+							'name' => $windowsMeta,
+							'content' => $ico
 						));
 					}
 				} else {
@@ -420,13 +430,13 @@ class BeFrontHelper extends AppHelper {
 		if (!empty($feed)) {
 			$feed = $this->Html->url('/rss/' . $feed);
 			$html.= "\n" . $this->Html->meta(array(
-				"name" => "msapplication-notification",
-				"content" => "frequency=30;polling-uri=$feed&amp;id=1; cycle=1"
+				'name' => 'msapplication-notification',
+				'content' => 'frequency=30;polling-uri=$feed&amp;id=1; cycle=1'
 			));
 
 			$html.= "\n" . $this->Html->meta(array(
-				"name" => "msapplication-badge",
-				"content" => "frequency=30;polling-uri=$feed&amp;id=1; cycle=1"
+				'name' => 'msapplication-badge',
+				'content' => 'frequency=30;polling-uri=$feed&amp;id=1; cycle=1'
 			));
 		}
 
