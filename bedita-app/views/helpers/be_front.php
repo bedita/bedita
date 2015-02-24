@@ -431,12 +431,12 @@ class BeFrontHelper extends AppHelper {
 			$feed = $this->Html->url('/rss/' . $feed);
 			$html.= "\n" . $this->Html->meta(array(
 				'name' => 'msapplication-notification',
-				'content' => 'frequency=30;polling-uri=$feed&amp;id=1; cycle=1'
+				'content' => 'frequency=30;polling-uri=' . $feed . '&amp;id=1; cycle=1'
 			));
 
 			$html.= "\n" . $this->Html->meta(array(
 				'name' => 'msapplication-badge',
-				'content' => 'frequency=30;polling-uri=$feed&amp;id=1; cycle=1'
+				'content' => 'frequency=30;polling-uri=' . $feed . '&amp;id=1; cycle=1'
 			));
 		}
 
