@@ -28,9 +28,26 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    var $helpers    = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
-    var $components = array('BeAuth', 'BeTree', 'BeCustomProperty', 'Transaction', 'Cookie', 'Session', 'RequestHandler', 'BeHash', 'SessionFilter');
-    var $uses = array('EventLog') ;
+    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+
+    public $components = array(
+        'BeAuth',
+        'BeTree',
+        'BeCustomProperty',
+        'Transaction',
+        'Cookie',
+        'Session',
+        'RequestHandler',
+        'ResponseHandler',
+        'BeHash',
+        'SessionFilter'
+    );
+
+    public $uses = array('EventLog') ;
+
+    public $view = 'Smarty';
+
+    public $ext = '.tpl';
 
     protected $moduleName = NULL;
     protected $moduleList = NULL;
@@ -97,28 +114,6 @@ class AppController extends Controller {
         return self::$current;
     }
 
-    public static function handleExceptions(BeditaException $ex) {
-        include_once (APP . 'app_error.php');
-        if ($ex instanceof BeditaAjaxException) {
-            return new AppError('handleAjaxException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result, 'output' => $ex->getOutputType(),'headers' => $ex->getHeaders()), $ex->errorTrace());
-        } elseif (self::currentController()->RequestHandler->isAjax()) {
-            return new AppError('handleAjaxException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result, 'output' => 'beditaMsg'), $ex->errorTrace());
-        }
-        return new AppError('handleException', array('details' => $ex->getDetails(), 'msg' => $ex->getMessage(),
-                'result' => $ex->result), $ex->errorTrace());
-    }
-
-    public static function defaultError(Exception $ex) {
-        include_once (APP . 'app_error.php');
-        $errTrace =  get_class($ex).' -  '. $ex->getMessage().'\nFile: '.$ex->getFile().
-                    ' - line: '.$ex->getLine().'\nTrace:\n'.$ex->getTraceAsString();
-        $messages = array('details' => $ex->getMessage(), 'msg' => $ex->getMessage(), 'result' => self::ERROR);
-        $handleMethod = ($ex instanceof SmartyException)? 'handleSmartyException' : 'handleException';
-        return new AppError($handleMethod, $messages, $errTrace);
-    }
-
 	public static function usedUrl() {
         $url = !empty($_GET['url']) ? $_GET['url'] : (!empty($_POST['url']) ? $_POST['url'] : '');
         if (!empty($url)) {
@@ -129,20 +124,28 @@ class AppController extends Controller {
 
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
-        $this->log($eventMsg . $url);
+        $userid = '';
+        if (!empty($this->BeAuth->user['userid'])) {
+            $userid = ' - ' . $this->BeAuth->user['userid'];
+        }
+        $this->log($eventMsg . $userid . $url);
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
         }
         // end transactions if necessary
-        if(isset($this->Transaction)) {
-            if($this->Transaction->started())
+        if (isset($this->Transaction)) {
+            if ($this->Transaction->started()) {
                 $this->Transaction->rollback();
+            }
         }
-        $this->eventError($eventMsg);
-        $layout = (!isset($usrMsgParams['layout']))? 'message' : $usrMsgParams['layout'];
-        $params = (!isset($usrMsgParams['params']))? array('class' => 'error') : $usrMsgParams['params'];
-        $params['detail'] = $eventMsg;
-        $this->userErrorMessage($userMsg, $layout, $params);
+
+        if (BACKEND_APP) {
+            $this->eventError($eventMsg);
+            $layout = (!isset($usrMsgParams['layout']))? 'message' : $usrMsgParams['layout'];
+            $params = (!isset($usrMsgParams['params']))? array('class' => 'error') : $usrMsgParams['params'];
+            $params['detail'] = $eventMsg;
+            $this->userErrorMessage($userMsg, $layout, $params);
+        }
     }
 
     public function setResult($r) {
@@ -194,7 +197,6 @@ class AppController extends Controller {
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
         self::$current = $this;
-        $this->view = 'Smarty';
         $conf = Configure::getInstance();
         $this->set('conf',  $conf);
 
