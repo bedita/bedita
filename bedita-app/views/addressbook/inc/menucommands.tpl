@@ -31,14 +31,14 @@ Menu a SX valido per tutte le pagine del controller.
 						var nameArr =  cloneTitle.split(",");
 						$("input[name='data[person][name]']").val(nameArr[0]);
 						$("input[name='data[person][surname]']").val(nameArr[1]);
-						$("#updateForm").prop("action", "{$html->url('/')}addressbook/cloneObject");
+						$("#updateForm").prop("action", "{$html->url('/')}{$moduleName}/cloneObject");
 						$("#updateForm").submit();
 					}
 				} else {
 					var cloneTitle = prompt("{t}name{/t}", $("input[name='data[cmp][company_name]']").val() + "-copy");
 					if (cloneTitle) {
 						$("input[name='data[cmp][company_name]']").val(cloneTitle);
-						$("#updateForm").prop("action", "{$html->url('/')}addressbook/cloneObject");
+						$("#updateForm").prop("action", "{$html->url('/')}{$moduleName}/cloneObject");
 						$("#updateForm").submit();
 					}
 				}
