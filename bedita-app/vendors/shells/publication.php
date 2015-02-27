@@ -76,6 +76,9 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         if (isset($this->params['tpf'])) {
             $this->options['titlePostFix'] = $this->params['tpf'];
         }
+        if (isset($this->params['uri'])) {
+        	$this->options['uri'] = $this->params['uri'];
+        }
         $optionsString = '';
         foreach ($this->options as $key => $value) {
             $optionsString .= ' | ' . $key . ': ' . $value;
@@ -120,7 +123,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         }
     }
 
-    private function createObject($parentId, $objectType = 'Document', $nickname = 'document-1', $title = null) {
+    private function createObject($parentId, $objectType = 'Document', $nickname = 'document-1', $title = null, $uri = null) {
         $data = array(
             'name' => $objectType . ' ' . $nickname,
             'title' => ($title!=null) ? $title : $objectType . ' ' . $nickname,
@@ -128,6 +131,9 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         );
         if ($parentId != null) {
             $data['parent_id'] = $parentId;
+        }
+        if ($uri != null) {
+        	$data['uri'] = $uri;
         }
         $data = array_merge($data, $this->objDefaults);
         $model = ClassRegistry::init($objectType);
@@ -148,15 +154,19 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         $numElems = $params['number'];
         for($i=0; $i<$numElems; $i++) {
             $index = $i+1;
-            $title = $this->options['objectType'] . ' ' . $index;
-            if (!empty($this->options['titlePostFix'])) {
-                $title.= ' ' . $this->options['titlePostFix'];
+            $title = $params['objectType'] . ' ' . $index;
+            if (!empty($params['titlePostFix'])) {
+                $title.= ' ' . $params['titlePostFix'];
             }
             $nickname = strtolower($params['objectType']) . '-' . $index;
-            if (!empty($this->options['titlePostFix'])) {
-                $nickname.= '-' . strtolower($this->options['titlePostFix']);
+            if (!empty($params['titlePostFix'])) {
+                $nickname.= '-' . strtolower($params['titlePostFix']);
             }
-            $this->createObject($parentId, $params['objectType'], $nickname, $title);
+            $uri = null;
+            if (!empty($params['uri'])) {
+            	$uri = $params['uri'];
+            }
+            $this->createObject($parentId, $params['objectType'], $nickname, $title, $uri);
         }
     }
 
@@ -165,7 +175,7 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         $this->out('publication script shell usage:');
         $this->out('');
         $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-number-of-sections>] [-nd <leafs-number-of-documents>]');
-        $this->out('./cake.sh publication createContents [-t <type>] [-n <number>] [-pid <parentId>] [-tpf <titlePostFix>]');
+        $this->out('./cake.sh publication createContents [-t <type>] [-n <number>] [-pid <parentId>] [-tpf <titlePostFix>] [-uri <uriInsideMediaFolder>]');
         $this->out('');
     }
 
