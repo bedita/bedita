@@ -33,38 +33,63 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
     private $objectFakeId = 1;
 
     public function create() {
-
         $this->hr();
-
         $this->trackInfo('Create start');
-
         if (isset($this->params['d'])) {
             $this->options['depth'] = $this->params['d'];
         }
-
         if (isset($this->params['ns'])) {
             $this->options['sublevel-sections'] = $this->params['ns'];
         }
-
         if (isset($this->params['nd'])) {
             $this->options['leaf-documents'] = $this->params['nd'];
         }
-
         $optionsString = '';
         foreach ($this->options as $key => $value) {
             $optionsString .= ' | ' . $key . ': ' . $value;
         }
         $this->trackInfo('Options: ' . $optionsString);
-
         try {
-            $this->createPublication();           
+            $this->createPublication();
         } catch(BeditaException $e) {
             $this->trackInfo('Exception: ' . $e->getMessage());
         }
-
-        // end
         $this->trackInfo('Create end');
     }
+
+    public function createContents() {
+        $this->hr();
+        $this->trackInfo('Create contents start');
+        if (isset($this->params['t'])) {
+            $this->options['objectType'] = $this->params['t'];
+        } else {
+            $this->options['objectType'] = 'Document';
+        }
+        if (isset($this->params['n'])) {
+            $this->options['number'] = $this->params['n'];
+        } else {
+            $this->options['number'] = 1;
+        }
+        if (isset($this->params['pid'])) {
+            $this->options['parentId'] = $this->params['pid'];
+        }
+        if (isset($this->params['tpf'])) {
+            $this->options['titlePostFix'] = $this->params['tpf'];
+        }
+        $optionsString = '';
+        foreach ($this->options as $key => $value) {
+            $optionsString .= ' | ' . $key . ': ' . $value;
+        }
+        $this->trackInfo('Options: ' . $optionsString);
+        try {
+            $this->createMulti($this->options);
+        } catch(BeditaException $e) {
+            $this->trackInfo('Exception: ' . $e->getMessage());
+        }
+        $this->trackInfo('Create contents end');
+    }
+
+    /* private methods */
 
     private function createPublication() {
         $depth = 1;
@@ -95,10 +120,10 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         }
     }
 
-    private function createObject($parentId, $objectType = 'Document', $nickname = 'document-1') {
+    private function createObject($parentId, $objectType = 'Document', $nickname = 'document-1', $title = null) {
         $data = array(
             'name' => $objectType . ' ' . $nickname,
-            'title' => $objectType . ' ' . $nickname,
+            'title' => ($title!=null) ? $title : $objectType . ' ' . $nickname,
             'nickname' => $nickname
         );
         if ($parentId != null) {
@@ -118,11 +143,29 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         return $model->id;
     }
 
+    private function createMulti($params) {
+        $parentId = (!empty($params['parentId'])) ? $params['parentId'] : null;
+        $numElems = $params['number'];
+        for($i=0; $i<$numElems; $i++) {
+            $index = $i+1;
+            $title = $this->options['objectType'] . ' ' . $index;
+            if (!empty($this->options['titlePostFix'])) {
+                $title.= ' ' . $this->options['titlePostFix'];
+            }
+            $nickname = strtolower($params['objectType']) . '-' . $index;
+            if (!empty($this->options['titlePostFix'])) {
+                $nickname.= '-' . strtolower($this->options['titlePostFix']);
+            }
+            $this->createObject($parentId, $params['objectType'], $nickname, $title);
+        }
+    }
+
     public function help() {
         $this->hr();
         $this->out('publication script shell usage:');
         $this->out('');
         $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-number-of-sections>] [-nd <leafs-number-of-documents>]');
+        $this->out('./cake.sh publication createContents [-t <type>] [-n <number>] [-pid <parentId>] [-tpf <titlePostFix>]');
         $this->out('');
     }
 
