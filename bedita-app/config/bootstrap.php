@@ -217,7 +217,7 @@ if (!$isCli) {
     // default exception handler
     if (empty($exceptionHandler)) {
         App::import('Lib', 'BeExceptionHandler');
-        $exceptionHandler = 'BeExceptionHandler::handleExceptions';
+        $exceptionHandler = array('BeExceptionHandler', 'handleExceptions');
     }
 
     set_exception_handler($exceptionHandler);
