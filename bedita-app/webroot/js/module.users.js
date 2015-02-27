@@ -134,4 +134,22 @@ $(document).ready(function() {
         var page = $(this).attr('rel');
         loadUsersToAdd(page);
     });
+
+    // save/delete group from user/group view
+    $('.bemaincommands').click(function(e) {
+        e.preventDefault();
+        var buttonName = $(this).prop('name');
+        if (buttonName == 'saveUser') {
+            $('#userForm').submit();
+        } else if (buttonName == 'saveGroup') {
+            $('#groupForm').submit();
+        } else if (buttonName == 'deleteGroup') {
+            var groupName = $('#groupname').val();
+            // delGroupDialog is defined in tpl
+            if (delGroupDialog(groupName)) {
+                $('#groupForm').prop('action', BEDITA.base + 'users/removeGroup');
+                $('#groupForm').submit();
+            }
+        }
+    });
 });

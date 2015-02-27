@@ -114,6 +114,7 @@ $(document).ready(function() {
 	<div class="tab"><h2>{t}search{/t}</h2></div>
 	<div id="search">
 		<form id="homeSearch" action="{$html->url('/home/search')}" method="post">
+			{$beForm->csrf()}
 			<input type="text" placeholder="{t}search word{/t}" style="width:100%; margin-bottom:5px; padding:5px; " name="filter[query]" id="searchstring" value="{$view->SessionFilter->read('query')}"/>
 			<br />
 			<input type="checkbox" {if !$view->SessionFilter->check() || $view->SessionFilter->check('substring')}checked="checked"{/if} id="substring" name="filter[substring]" /> {t}substring{/t}

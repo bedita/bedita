@@ -11,8 +11,16 @@ function addItem() {
 	var linkTitle=$("#linkTitle").val();
 	var linkUrl=$("#linkUrl").val();
 	var target=$("#linkTarget").val();
+
+	var postData = {
+		'title': linkTitle,
+		'url': linkUrl,
+		'target': target
+	};
+
+	postData = addCsrfToken(postData);
 	
-	$(emptyLI).load(urlBaseAddLink, { 'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
+	$(emptyLI).load(urlBaseAddLink, postData, function () {
 		
 		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 	

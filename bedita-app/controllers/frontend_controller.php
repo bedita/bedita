@@ -160,7 +160,7 @@ abstract class FrontendController extends AppController {
 	 * @return mixed
 	 */
 	protected function checkLogin() {
-		if ($this->skipCheck) {
+		if ($this->skipCheck || $this->logged) {
 			return;
 		}
 		if(!$this->BeAuth->isLogged()) {
@@ -787,16 +787,29 @@ abstract class FrontendController extends AppController {
 		$this->set($tplVar, $publications);
 	}
 
-	/**
-	 * find first active section and load it as home page section
-	 * if any section was found load publication as home page section
-	 */
-	public function homePage() {
-		$filter = array("object_type_id" => Configure::read("objectTypes.section.id"));
-		$child = $this->BeTree->getChildren($this->publication["id"], $this->getStatus(), $filter, null, true, 1, 1);
-		$homePageSectionId = (empty($child["items"]))? $this->publication["id"] : $child["items"][0]["id"];
-		$this->action = 'section';
-		$this->section($homePageSectionId);
+    /**
+     * Gets the ID of the first section in the current publication.
+     *
+     * @return int First section's ID.
+     */
+    private function getFirstSection() {
+        $filter = array('object_type_id' => Configure::read('objectTypes.section.id'));
+        $child = $this->BeTree->getChildren($this->publication['id'], $this->getStatus(), $filter, null, true, 1, 1);
+        return (empty($child['items'])) ? $this->publication['id'] : $child['items'][0]['id'];
+    }
+
+    /**
+     * find first active section and load it as home page section
+     * if any section was found load publication as home page section
+     */
+    public function homePage() {
+        $homePageSectionId = $this->getFirstSection();
+        $this->action = 'section';
+        $this->section($homePageSectionId);
+
+        if (file_exists(VIEWS . 'pages' . DS . 'home_page.tpl')) {
+            $this->render('home_page');
+        }
 	}
 
 	/**
@@ -1242,8 +1255,11 @@ abstract class FrontendController extends AppController {
 
 				// even with check no perms found, set auth true
 				$authorized = true;
+				$freeAccess = true;
 
 			} else {
+				// perms are set (no free object)
+				$freeAccess = false;
 
 				// divide perms by type (blocking or not)
 				$permsWithBlock = array();
@@ -1283,6 +1299,7 @@ abstract class FrontendController extends AppController {
 
 		} else {
 			$authorized = true;
+			$freeAccess = true;
 		}
 
 		if (!isset($this->objectCache[$obj_id])) {
@@ -1408,6 +1425,8 @@ abstract class FrontendController extends AppController {
 
 		$obj['object_type'] = $modelType;
 		$obj['authorized'] = $authorized;
+		// object with/without permission set on it
+		$obj['free_access'] = $freeAccess;
 
 		// add bindings used
 		$obj['bindings'] = $bindings;

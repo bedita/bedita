@@ -58,9 +58,12 @@ CKEDITOR.plugins.add('beditacontentblock', {
 				return false;
 			});
 			
-			$('*',editor.document.$).live('keyup', function() {
-				checkButtonState();
-			});
+//			$('*',editor.document.$).live('keyup', function() {
+//				checkButtonState();
+//			});
+            $(document).on('keyup', editor.document.$ + ' *', function() {
+                checkButtonState();
+            });
 			
 			editor.on('mode', function(event) {
 				data = editor.getData();

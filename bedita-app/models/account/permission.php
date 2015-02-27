@@ -205,42 +205,54 @@ class Permission extends BEAppModel
 		return $this->checkPermissionByUser($perms, $userData);
 	}
 	
-	public function frontendAccess($objectId, array &$userData) {
-		if(empty($userData)) { // not logged
-			$perms = $this->isPermissionSet($objectId, array(
-				Configure::read("objectPermissions.frontend_access_with_block")
-			));
-			if(!empty($perms)) { // A) access denied => object has at least one perm 'frontend_access_with_block'
-				return "denied";
+    /**
+     * Return frontend level access to an object
+     *
+     * Possible returned values are:
+     *
+     * * 'free' if the object has not frontend_access perms
+     * * 'denied' if the object isn't accessible (frontend_access_with_block perms set and user groups haven't that permission on that object)
+     * * 'partial' if the object is accessible in preview (frontend_access_without_block perms set and user groups haven't that permission on that object)
+     * * 'full' if the object has perms and user groups have that permission on that object
+     *
+     * @param int $objectId
+     * @param array &$userData user data as
+     *                         ```
+     *                         array(
+     *                             'id' => ..,
+     *                             'userid' => ...,
+     *                             'groups' => array('administrator', 'frontend',...)
+     *                         )
+     *                         ```
+     * @return string
+     */
+	public function frontendAccess($objectId, array &$userData = array()) {
+		$accessWithBlock = Configure::read('objectPermissions.frontend_access_with_block');
+		$accessWithoutBlock = Configure::read('objectPermissions.frontend_access_without_block');
+		$perms = $this->isPermissionSet($objectId, array($accessWithBlock, $accessWithoutBlock));
+
+		// full access because no perms are set
+		if (empty($perms)) {
+			return 'free';
+		}
+
+		if (!empty($userData)) {
+			// full access => one perm for user group
+			if ($this->checkPermissionByUser($perms, $userData)) {
+			    return 'full';
 			}
-			$perms = $this->isPermissionSet($objectId, array(
-				Configure::read("objectPermissions.frontend_access_without_block")
-			));
-			if(!empty($perms)) { // B) partial access => object has at least one perm 'frontend_access_without_block'
-				return "partial";
-			}
-			// C) full access => no perms on object
-			return "full";
 		}
-		// logged
-		$perms = $this->isPermissionSet($objectId, array(
-			Configure::read("objectPermissions.frontend_access_with_block"),
-			Configure::read("objectPermissions.frontend_access_without_block")
-		));
-		// A) full access => empty perms or one perm for user group
-		if(empty($perms) || $this->checkPermissionByUser($perms,$userData)) {
-		    return "full";
+
+		$flags = Set::extract('/Permission/flag', $perms);
+
+		// access denied => object has at least one perm 'frontend_access_with_block'
+		if (in_array($accessWithBlock, $flags)) {
+			return 'denied';
 		}
-		$perms = $this->isPermissionSet($objectId, array(
-			Configure::read("objectPermissions.frontend_access_with_block")
-		));
-		// B) access denied => perms for groups [others than user's groups], at least one frontend_access_with_block perm
-		if(!empty($perms)) {
-		    return "denied";
-		}
-		// C) access partial => perms for groups [others than user's groups], all frontend_access_without_block perm
-		return "partial";
+		// partial access => object has at least one perm 'frontend_access_without_block'
+		return 'partial';
 	}
+
 	/**
 	 * check if user or user groups are in $perms array
 	 * 

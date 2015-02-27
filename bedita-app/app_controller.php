@@ -28,7 +28,7 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    public $helpers = array('Javascript', 'Html', 'Form', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
 
     public $components = array(
         'BeAuth',
@@ -676,12 +676,23 @@ class AppController extends Controller {
                 // if frontend app add object_type and check frontend obj permission
                 if (!BACKEND_APP) {
                     $objDetail['object_type'] = $modelClass;
-                    $userdata = (!empty($options['user']))? $options['user'] : array();
-                    $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
-                    if ($frontendAccess == "denied" && empty($this->showUnauthorized)) {
-                        continue;
+                    if (!$this->skipCheck) {
+                        $userdata = (!empty($options['user']))? $options['user'] : array();
+                        $frontendAccess = $permission->frontendAccess($objDetail['id'], $userdata);
+                        if ($frontendAccess == 'denied' && empty($this->showUnauthorized)) {
+                            continue;
+                        }
+                        if ($frontendAccess == 'free') {
+                            $objDetail['free_access'] = true;
+                            $objDetail['authorized'] = true;
+                        } else {
+                            $objDetail['free_access'] = false;
+                            $objDetail['authorized'] = ($frontendAccess == 'full') ? true : false;
+                        }
+                    } else {
+                        $objDetail['free_access'] = true;
+                        $objDetail['authorized'] = true;
                     }
-                    $objDetail["authorized"] = ($frontendAccess == "full")? 1 : 0;
                 }
 
                 $objDetail['priority'] = $obj['priority'];
@@ -896,6 +907,12 @@ abstract class ModulesController extends AppController {
 	 * @var array
 	 */
 	protected $categorizableModels = array();
+
+    // @todo uncomment once all module plugin will be updated to use BeSecurity
+    // public function __construct() {
+    //     $this->components[] = 'BeSecurity';
+    //     parent::__construct();
+    // }
 
     protected function checkWriteModulePermission() {
         if (isset($this->moduleName) && !($this->modulePerms & BEDITA_PERMS_MODIFY)) {

@@ -93,7 +93,7 @@ $(document).ready(function() {
 
 <div class="head">
 	
-	<h1>{t}{$item.group_name|escape|default:"New List"}{/t}</h1>
+	<h1>{$item.group_name|escape|default:"New List"}</h1>
 	
 </div>
 
@@ -102,6 +102,7 @@ $(document).ready(function() {
 <div class="main">	
 
 <form method="post" id="updateForm" action="{$html->url('saveMailGroups')}">	
+{$beForm->csrf()}
 
 {include file="inc/list_details.tpl"}
 

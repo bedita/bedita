@@ -35,6 +35,7 @@
 <div class="mainfull">
 	
 	<form action="{$html->url('/home/editProfile')}" id="editProfile" method="post">
+		{$beForm->csrf()}
 		
 		<div style="width:260px; float:left">
 		

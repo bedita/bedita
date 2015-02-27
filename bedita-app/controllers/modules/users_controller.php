@@ -33,6 +33,8 @@ class UsersController extends ModulesController {
     public $uses = array('User', 'Group');
     
     public $helpers = array('Paginator');
+
+    public $components = array('BeSecurity');
      
     public $paginate = array(
         'User' => array(
@@ -245,18 +247,19 @@ class UsersController extends ModulesController {
         }
     }
     
-    function removeUser($id) {
+    function removeUser() {
         $this->checkWriteModulePermission();
-        if(isset($id)) {
+        if (isset($this->data['id'])) {
+            $id = $this->data['id'];
             $u = $this->isUserEditable($id);
             if ($u === false) {
                 throw new BeditaException(__("You are not allowed to remove this user", true));
             }
-            if(empty($u)) {
+            if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
             $userid = $u['User']['userid'];
-            if($userid === $this->BeAuth->user["userid"]) {
+            if ($userid === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-remove forbidden",true));
             }
             $this->BeAuth->removeUser($userid);
@@ -264,9 +267,10 @@ class UsersController extends ModulesController {
         }
     }
 
-    function blockUser($id) {
+    function blockUser() {
         $this->checkWriteModulePermission();
-        if (isset($id)) {
+        if (isset($this->data['id'])) {
+            $id = $this->data['id'];
             if ($id === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-block forbidden",true));
             }
@@ -638,8 +642,12 @@ class UsersController extends ModulesController {
 
     }
       
-    function removeGroup($id) {
+    function removeGroup() {
         $this->checkWriteModulePermission();
+        if (!isset($this->data['Group']['id'])) {
+            throw new BeditaException(__('Missing data group to remove', true));
+        }
+        $id = $this->data['Group']['id'];
         $groupName = $this->Group->field("name", array("id" => $id));
         $this->Transaction->begin();
         $this->BeAuth->removeGroup($groupName);
@@ -665,8 +673,7 @@ class UsersController extends ModulesController {
         }
         return $modules;
     }
-      
-      
+
     protected function forward($action, $result) {
         $moduleRedirect = array(
             'viewUser' =>   array(

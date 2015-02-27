@@ -26,7 +26,7 @@
 class EventsController extends ModulesController {
 
 	public $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
-	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeSecurity');
 	public $uses = array('BEObject','Event','Category','Area','Tree', 'DateItem');
 
 	// default calendar: 7 days

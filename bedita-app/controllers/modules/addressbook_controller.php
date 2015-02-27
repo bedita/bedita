@@ -26,7 +26,7 @@ class AddressbookController extends ModulesController {
 	
 	var $name = 'Addressbook';
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';
@@ -150,6 +150,58 @@ class AddressbookController extends ModulesController {
 			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
 		}
 	}
+
+    // #573 - Automatic Card creation.
+    /**
+     * Returns a JSON object with an array of "similar" Cards to the given User data, excluding Cards already related to another User.
+     * 
+     * A Card is considered "similar" to a User if any of the following conditions are `true`:
+     *  1. `Card.email = User.email`
+     *  2. `Card.email2 = User.email`
+     *  3. `Card.name` is a substring of `User.realname` *AND* `Card.surname` is a substring of `User.realname`
+     */
+    public function similarCards() {
+        // Prepare data.
+        $userId = (isset($this->params['form']['id']) && is_numeric($this->params['form']['id'])) ? $this->params['form']['id'] : 0;
+        $name = Sanitize::escape($this->params['form']['name'], 'default');  // Needs manual escape!! See query conditions few lines below for potential threat.
+        $email = $this->params['form']['email'];
+
+        // Search for similar Cards.
+        $cards = $this->Card->find('all', array(
+            'fields' => array('Card.id', 'Card.name', 'Card.surname', 'Card.email', 'Card.email2'),
+            'contain' => array(),
+            'joins' => array(
+                array(
+                    'table' => 'object_users',
+                    'alias' => 'ObjectUser',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'ObjectUser.object_id = Card.id',
+                        'ObjectUser.switch' => 'card',
+                        'ObjectUser.user_id <>' => $userId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'ObjectUser.user_id' => null,
+                'OR' => array(
+                    // See if email address matches.
+                    'Card.email' => $email,
+                    'Card.email2' => $email,
+                    // See if full name matches somehow.
+                    'AND' => array(
+                        "'{$name}' LIKE CONCAT('%', Card.name, '%')",  // `$name` MUST be properly escaped!
+                        "'{$name}' LIKE CONCAT('%', Card.surname, '%')",  // (same here)
+                    ),
+                ),
+            ),
+            'limit' => 25,  // Keeping our feet on the ground.
+        ));
+
+        // Output as JSON.
+        $this->layout = 'ajax';
+        $this->set('cards', $cards);
+    }
 
     protected function forward($action, $result) {
         $moduleRedirect = array(

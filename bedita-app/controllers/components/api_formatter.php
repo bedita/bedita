@@ -148,7 +148,6 @@ class ApiFormatterComponent extends Object {
      */
     public function transformObject(array &$object) {
         $Object = ClassRegistry::init($object['object_type']);
-        debug($Object->BEObject->getColumnTypes());exit;
         $modelName = $Object->name;
         $transformer = array();
         if (!isset($this->transformers[$modelName])) {

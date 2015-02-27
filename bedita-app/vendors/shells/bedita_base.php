@@ -48,8 +48,17 @@ class BeditaBaseShell extends Shell {
      * @return void
      */
     public function handleExceptions(Exception $exception) {
+        $shellMethod = ' - shell ' . $this->name . '::' . $this->command;
+        $this->log($exception->getMessage() . $shellMethod, 'error');
+        if ($exception instanceof BeditaException) {
+            $errorTrace = $exception->errorTrace();
+        } else {
+            $errorTrace = get_class($exception) . ' - ' . $exception->getMessage()
+            . " \nFile: " . $exception->getFile() . ' - line: ' . $exception->getLine()
+            . " \nTrace:\n" . $exception->getTraceAsString();
+        }
+        $this->log($errorTrace, 'exception');
         $this->error($exception->getMessage());
-        // @todo log error?
     }
 
     /**

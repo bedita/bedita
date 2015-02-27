@@ -33,7 +33,7 @@ class HomeController extends AppController {
 
 	var $uses = array('BEObject', 'Tree') ;
 	var $helpers 	= array('BeTree');
-	var $components = array('BeUploadToObj');
+	var $components = array('BeUploadToObj', 'BeSecurity');
 
 
 	public function index() {

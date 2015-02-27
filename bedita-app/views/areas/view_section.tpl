@@ -39,7 +39,7 @@
 
 <div class="main">
 	<form action="{$html->url('/areas/saveSection')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-	
+	{$beForm->csrf()}
 	{if (!empty($object))}
 
 		<div class="tab"><h2>{t}Properties{/t}</h2></div>

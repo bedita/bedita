@@ -1,4 +1,5 @@
 <form action="{$html->url('/comments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 <input type="hidden" name="data[title]" value="{$object.title|default:''}" />
 <input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />

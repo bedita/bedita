@@ -31,7 +31,7 @@
 class GalleriesController extends ModulesController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeSecurity');
     var $uses = array('BEObject', 'Gallery', 'Tree', 'Category') ;
 	protected $moduleName = 'galleries';
 	protected $categorizableModels = array('Gallery');

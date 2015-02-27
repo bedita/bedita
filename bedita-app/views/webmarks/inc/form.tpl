@@ -20,6 +20,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 {$view->element('texteditor')}
 
 <form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 {* title and description *}

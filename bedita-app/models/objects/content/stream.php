@@ -319,4 +319,47 @@ class Stream extends BEAppModel
         return $objects;
     }
 
+    /**
+     * Copy $name to $destPath using BEdita media logic (it's not a direct copy of the file)
+     * Create md5-named subfolders for file
+     * 
+     * Return new relative path to file
+     * 
+     * @param  string $source file
+     * @param  string $destPath folder
+     * @return string new relative path to file
+     */
+	public function copyFileToMediaFolder($source, $destPath) {
+        $tmp = explode(DS, $source);
+        $name = array_pop($tmp);
+        $md5 = md5($name);
+        preg_match("/(\w{2})(\w{2})/", $md5, $dirs);
+        array_shift($dirs);
+        $pointPosition = strrpos($name,".");
+        $filename = $tmpname = substr($name, 0, $pointPosition);
+        $ext = substr($name, $pointPosition);
+        $dirsString = implode(DS, $dirs);
+        $counter = 1;
+        while(file_exists($destPath . DS . $dirsString . DS . $filename . $ext)) {
+            $filename = $tmpname . "-" . $counter++;
+        }
+        // creating directories
+        $d = $destPath;
+        $dirs = array_reverse($dirs);
+        while (($current = array_pop($dirs))) {
+            $d.= DS . $current;
+            if (!file_exists($d) && !is_dir($d)) {
+                if (!mkdir($d)) {
+                    throw new BeditaException('Error creating dir "' . $current . '"');    
+                }
+            }
+        }
+        $name = $filename . $ext;
+        $destination = $destPath . DS . $dirsString . DS . $name;
+        // copying file
+        if (!copy($source, $destination)) {
+            throw new BeditaException('Error copying file "' . $source . '" to "' . $destination);
+        }
+        return DS . $dirsString . DS . $name;
+    }
 }

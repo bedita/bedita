@@ -30,7 +30,7 @@
  */
 class StreamsController extends AppController {
 	
-	var $components = array('BeTree','BeFileHandler');
+	var $components = array('BeTree','BeFileHandler', 'BeSecurity');
 	var $uses = array('BEObject', 'Stream');
 	var $helpers 	= array('BeTree', 'BeToolbar');
 	

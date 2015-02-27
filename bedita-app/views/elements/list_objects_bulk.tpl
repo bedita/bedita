@@ -53,7 +53,8 @@
 		&nbsp;{t}to{/t}:&nbsp;
 
 		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-		{$beTree->option($tree)}
+			<option value="">{t}None{/t}</option>
+			{$beTree->option($tree)}
 		</select>
 
 		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />

@@ -208,11 +208,11 @@ class BeEmbedMediaHelper extends AppHelper {
 					$output = $this->Html->image($img, $htmlAttributes);
 				}
 			}
+		} elseif ($params["presentation"] == "link" || $URLonly) {
+			$src = $this->MediaProvider->sourceEmbed($obj);
+			$output = (!empty($URLonly))? $src : $this->Html->link($obj['title'], $src, $htmlAttributes);
 		} elseif ($params["presentation"] == "full") {
 			$output = $this->MediaProvider->embed($obj, $params, $htmlAttributes);
-		} elseif ($params["presentation"] == "link") {
-			$src = $this->MediaProvider->sourceEmbed($obj);
-			$output = (!empty($URLonly))? $src : $this->Html->link($obj['title'],$src, $htmlAttributes);
 		}
 		
 		if (empty($output)) {

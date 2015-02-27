@@ -45,6 +45,7 @@ $(document).ready(function() {
 	{foreach from=$moduleList key=k item=mod}
 		<li class="{$mod.name} {$mod.status}">
 			<form action="{$html->url('/admin/toggleModule')}" method="post">
+			{$beForm->csrf()}
 			{t}{$mod.label}{/t}
 			
 			{if $mod.name != "admin" && $mod.name != "users"}

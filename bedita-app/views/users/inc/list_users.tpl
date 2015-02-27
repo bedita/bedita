@@ -13,12 +13,33 @@ $(document).ready(function(){
 	$("#changeDim, #changePage").change(function() {
 		document.location = $(this).val();
 	});
+
+	$('.indexlist form').submit(function(e) {
+		var submitButton = $(this).find('input[type=submit]');
+		var userid = submitButton.attr('data-userid');
+		var id = submitButton.attr('data-id');
+		var objectRelated = parseInt(submitButton.attr('data-related-object'));
+		var valid = parseInt(submitButton.attr('data-valid'));
+
+		if (objectRelated) {
+			if (!valid) {
+				alert("{t}User cannot be removed, he/she did create or modify some contents. It's alredy blocked{/t} ");
+				return false;
+			}
+			if (!confirm("{t}User cannot be removed, he/she did create or modify some contents. Do you want to block{/t} " + userid + "?")) {
+				return false;
+			}
+			$(this).prop('action', BEDITA.base + 'users/blockUser');
+		} else {
+			if (!confirm("{t}Do you really want to remove user{/t} " + userid + "?")) {
+				return false;
+			}
+		}
+	});
 });
 //-->
 </script>	
 
-
-<form action="{$html->url('/users/users')}" method="post" name="userForm" id="userForm">
 {assign var='label_id' value=$tr->t('id',true)}
 {assign var='label_userid' value=$tr->t('User',true)}
 {assign var='label_realname' value=$tr->t('name',true)}
@@ -51,8 +72,16 @@ $(document).ready(function(){
 		<td>{$u.User.last_login|date_format:$conf->dateTimePattern}</td>
         <td>{$u.User.auth_type|default:'BEdita'}</td>
 		<td class="go">
-			{if $module_modify eq '1' && $BEAuthUser.userid ne $u.User.userid}
-			<input type="button" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" onclick="javascript:delUserDialog('{$u.User.userid|escape}',{$u.User.id},{$u.User.related_obj|default:0},{$u.User.valid});"/>
+			{if $module_modify == '1' && $BEAuthUser.userid != $u.User.userid}
+				<form action="{$html->url('/users/removeUser')}" method="post">
+				{$beForm->csrf()}
+				<input type="hidden" name="data[id]" value="{$u.User.id}"/>
+				<input type="submit" name="removeUser" value="{t}Remove{/t}" id="user_{$u.User.id}" 
+					data-userid="{$u.User.userid|escape}"
+					data-id="{$u.User.id}"
+					data-related-object="{$u.User.related_obj|default:0}"
+					data-valid="{$u.User.valid}"/>
+				</form>
 			{/if}
 		</td>
 	{/foreach}
@@ -102,5 +131,3 @@ $(document).ready(function(){
 	</div>
 		
 {/if}
-
-</form>

@@ -401,7 +401,10 @@ $(document).ready(function(){
 
         // default options for modal
         var defaultOptions = {
-            success: function() {}
+            title: '',
+            destination: '',
+            requestData: {},
+            success: function() {},
         };
 
         if (typeof options == 'undefined' || !$.isPlainObject(options)) {
@@ -415,24 +418,24 @@ $(document).ready(function(){
 
         var h = 1500;
 
-        var destination = $(this).attr("rel");
-        var title = $(this).attr("title");
+        var destination = options.destination || $(this).attr("rel");
+        var title = options.title || $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
         $("#modaloverlay").show().fadeTo("fast", 0.8);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
-        if ($(this).attr("rel")) {
+        if (destination) {
             $("#modal #modalmain").empty().append('<div class="loader"></div>');
             $("#modal #modalmain").find('.loader').show();
-            $("#modalmain").load(destination, function(response, status, xhr) {
+            $("#modalmain").load(destination, options.requestData, function(response, status, xhr) {
                 $("#modal #modalmain").find('.loader').hide();
                 options.success();
             });
         }
 
-        if ($(this).attr("title")) {
+        if (title) {
             $("#modalheader .caption").html(title);
         }
 
@@ -640,7 +643,7 @@ $(document).ready(function(){
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
             escapeMarkup: function(m) {
-                return m;
+                return $('<div/>').html(m).text();
             },
             formatResult: function(state) {
                 // escape html tags
@@ -676,7 +679,7 @@ var toggleSelectTree = function(ev) {
             url: url,
             success: function(data) {
                 data = $.trim(data);
-                var ntree = $(data).slice(2);
+                var ntree = $(data).slice(1);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
@@ -842,6 +845,20 @@ function getFlashVersion(){
     return false;
 }
 
+function addCsrfToken(postData, searchIn) {
+    if (!postData) {
+        postData = {};
+    }
+    if (!postData.data) {
+        postData.data = {};
+    }
+    $item = (searchIn) ? $(searchIn) : $('body');
+    var csrfToken = $item.find('input[name=data\\[_csrfToken\\]\\[key\\]]:first').val();
+    if (csrfToken) {
+        postData.data._csrfToken = {key: csrfToken};
+    }
+    return postData;
+}
 
 /**
  * Handle a list of items

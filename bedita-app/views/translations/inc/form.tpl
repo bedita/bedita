@@ -3,6 +3,7 @@
 *}
 
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 <input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 

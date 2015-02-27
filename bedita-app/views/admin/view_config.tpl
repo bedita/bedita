@@ -59,7 +59,7 @@
 <div class="mainfull">
 
 	<form action="{$html->url('/admin/saveConfig')}" method="post" name="configForm" id="configForm">
-
+		{$beForm->csrf()}
 		<div class="tab"><h2>{t}System configuration{/t}</h2></div>
 
 		<fieldset id="system_config">

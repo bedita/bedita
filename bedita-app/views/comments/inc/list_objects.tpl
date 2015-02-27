@@ -14,7 +14,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
-
+	{$beForm->csrf()}
 	<input type="hidden" name="data[id]"/>
 
 	<table class="indexlist js-header-float">

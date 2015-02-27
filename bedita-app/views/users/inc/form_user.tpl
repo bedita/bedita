@@ -1,7 +1,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("input[type=password]").val("");
-		
+
 		$("#authselect").change(function() {
 			var au = $(this).val();
 			if (au != "") {
@@ -13,15 +13,60 @@
 				$("#defaultAuth").show();
 			};
 		});
-		
+
+        $('#userForm').on('submit', function (ev, proceed) {
+            // #573 - Automatic Card creation.
+            if (proceed || !$(this).find('#userCardToAssoc').length) {
+                // Actual form submission.
+                return true;
+            }
+            ev.preventDefault();
+
+            var $that = $(this),
+                $modal = $('#modalmain'),
+                id = $('input[name="data[User][id]"]').val(),
+                name = $('input[name="data[User][realname]"]').val(),
+                email = $('input[name="data[User][email]"]').val();
+
+            var reqData = {
+                'id': id,
+                'name': name,
+                'email': email,
+            };
+
+            addCsrfToken(reqData, '#userForm');
+
+            $that.BEmodal({
+                title: '',
+                destination: '{$html->url(['controller' => 'addressbook', 'action' => 'similarCards'])}',
+                requestData: reqData
+            });
+
+            $modal
+            .on('click', '#createCard', function (ev) {
+                // Continues with user saving & new card creation.
+                $that.trigger('submit', [/* proceed = */ true]);
+            })
+            .on('click', '#cardToUser', function (ev) {
+                // Continues with user saving & existing card association.
+                var val = $modal.find('input[name="cardtoassociate"]:checked').val();
+                if (!val) {
+                    window.alert('{t}Please choose an existing card, or create a new one.{/t}');
+                    return false;
+                }
+                $that.find('#userCardToAssoc').val(val);
+                $that.trigger('submit', [/* proceed = */ true]);
+            });
+        });
 	});
 </script>
 
 <form action="{$html->url('/users/saveUser')}" method="post" name="userForm" id="userForm" class="cmxform">
-			
+{$beForm->csrf()}
+
 <div class="tab"><h2>{t}User details{/t}</h2></div>
 
-<fieldset id="details">	
+<fieldset id="details">
 
 		<table class="bordered">
 
@@ -147,14 +192,14 @@
 			<tr>
 				<th>{t}addressbook details{/t}</th>
 				<td>
-					{if !empty($objectUser.card)}
-						<a href="{$html->url('/')}addressbook/view/{$objectUser.card.0.id}">YES</a>
-					{else}
-						NO
-					{/if}	
+                    {if !empty($objectUser.card)}
+                        <a href="{$html->url('/')}addressbook/view/{$objectUser.card.0.id}">{t}YES{/t}</a>
+                    {else}
+                        <input type="hidden" name="data[User][_cardToAssoc]" id="userCardToAssoc" value="" />
+                        {t}NO{/t}
+                    {/if}
 				</td>
 			</tr>
-
 		{/if}
 
 </table>
@@ -177,6 +222,7 @@
 					{foreach from=$formGroups key=gname item=u}
 					<tr>
 						<td>
+							{$gname = $gname|escape}
 							<input type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}	onclick="javascript:localUpdateGroupsChecked(this);" />
 							&nbsp;
 							<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>

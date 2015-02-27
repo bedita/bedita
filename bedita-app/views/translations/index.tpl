@@ -21,6 +21,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 <div class="mainfull">
 
 	<form method="post" action="{$html->url('/translations/index')}" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>

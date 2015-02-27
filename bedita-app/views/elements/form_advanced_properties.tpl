@@ -4,12 +4,13 @@
 <fieldset id="advancedproperties" class="multimediaiteminside">
 
 <table class="bordered">
-<tr>
+	{if !empty($object.id)}
+	<tr>
 		<th>{t}id{/t}:</th>
-		<td>
-			{$object.id}
-		</td>
+		<td>{$object.id}</td>
 	</tr>
+	{/if}
+	{if !empty($object.nickname)}
 	<tr>
 		<th>{t}unique name{/t}:</th>
 		<td>
@@ -17,7 +18,7 @@
 			{$object.nickname}
 		</td>
 	</tr>
-
+	{/if}
 	{if ($object)}
 		
 		{if !empty($object.Alias)}
@@ -56,15 +57,19 @@
 		</tr>
 		
 	{/if}
-
+	{if empty($excludedParts) || !in_array('publisher',$excludedParts)}
 	<tr>
 		<th>{t}publisher{/t}:</th>
 		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''|escape}" /></td>
 	</tr>
+	{/if}
+	{if empty($excludedParts) || !in_array('rights',$excludedParts)}
 	<tr>
 		<th>&copy; {t}rights{/t}:</th>
 		<td><input type="text" name="data[rights]" value="{$object.rights|default:''|escape}" /></td>
 	</tr>
+	{/if}
+	{if empty($excludedParts) || !in_array('license',$excludedParts)}
 	<tr>
 		<th>{t}license{/t}:</th>
 		<td>
@@ -79,6 +84,7 @@
 			</select>
 		</td>
 	</tr>
+	{/if}
 </table>
 
 </fieldset>

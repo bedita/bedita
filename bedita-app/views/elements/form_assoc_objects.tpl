@@ -65,7 +65,7 @@ $(document).ready(function() {
 </script>
 
 {$view->set("object_type_id",$object_type_id)}
-
+{if !empty($availabeRelations)}
 {foreach $availabeRelations as $rel => $relLabel}
 
 {* ticket github #539 - if defined a relationView in config model, include that view, generic relation view otherwise *}
@@ -121,3 +121,4 @@ $(document).ready(function() {
 {/if}
 
 {/foreach}
+{/if}

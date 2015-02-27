@@ -7,37 +7,30 @@ Menu a SX valido per tutte le pagine del controller.
 
 {if !empty($view->action) && $view->action == "view"}
 
-<style>
-	.loader + #saveBEObject {
-		display: none;
-	}
-
-	.insidecol .loader {
-		margin: 20px auto;
-	}
-</style>
-
 <script type="text/javascript">
 	var urlView = '{$html->url("/multimedia/view/")}' ;
 
-	$(document).ready(function() { 
+	$(document).ready(function() {
+
+		var commandArea = $('div.insidecol');
+		var loader = $('<div class="loader" style="display: block"><span>0%</span></div>');
 
 		$("#collision").hide();
 
 		var optionsForm = { 
-			error: showError,  // post-submit callback  
+			error: showResponse,  // post-submit callback  
 			success: showResponse,  // post-submit callback  
 			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
 			url: "{$html->url('/multimedia/saveAjax')}",
 			beforeSend: function() {
-		        $("div.insidecol #saveBEObject").before('<div class="loader" style="display: block"><span>0%</span></div>');
+		        $('#saveBEObject', commandArea).before(loader);
 		    },
 		    uploadProgress: function(event, position, total, percentComplete) {
 		        var percentVal = percentComplete + '%';
-		        $("div.insidecol .loader span").text(percentVal);
+		        $('span', loader).text(percentVal);
 		    },
 			complete: function(xhr) {
-				$("div.insidecol .loader span").remove();
+				$('span', loader).remove();
 			}
 		};
 	
@@ -90,6 +83,7 @@ Menu a SX valido per tutte le pagine del controller.
 		function showResponse(data) {
 			// reset post data passed if save is performed in modal
 			optionsForm.data = {};
+			loader.remove();
 			// file already exists
 			if ($(data).attr('data-file-exists')) {
 				$("#collision").BEmodal();
@@ -97,15 +91,14 @@ Menu a SX valido per tutte le pagine del controller.
 			// redirect after saveAjax
 			} else if ($(data).attr('data-redirect-url')) {
 				location.href = $(data).attr('data-redirect-url');
-			}
-		}
-
-		function showError(jqXHR, textStatus, errorThrown) {
 			// trigger error
-			var html = jqXHR.responseText;
-			$("#collision").empty().append(html);
-			$("#collision").show();
-			$("div.insidecol .loader").remove();
+			} else {
+				var html = data;
+				if (typeof data != 'string' && data.responseText) {
+					html = data.responseText;
+				}
+				$('#collision').empty().append(html).show();
+			}
 		}
 
 	});

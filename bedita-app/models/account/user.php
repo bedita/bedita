@@ -65,10 +65,10 @@ class User extends BEAppModel
 		)
 	);
 
-	protected $modelBindings = array( 
+	protected $modelBindings = array(
 		"detailed" =>  array("Group", "ObjectUser", "Permission", "UserProperty"),
 		"default" => array("Group", "ObjectUser", "UserProperty"),
-		"minimum" => array()		
+		"minimum" => array()
 	);
 	
 	var $hasAndBelongsToMany = array('Group');
@@ -100,7 +100,7 @@ class User extends BEAppModel
 		if(!empty($validationRegExp) && !empty($userData["passwd"])) {
 			$res = preg_match($validationRegExp, $userData["passwd"]);
 			// change validation message on error??
-		}		
+		}
 		return $res;
 	}
 
@@ -108,11 +108,11 @@ class User extends BEAppModel
         $this->hBTM = $this->hasAndBelongsToMany;
     	$this->unbindModel(array('hasAndBelongsToMany' => array('Group')), false);
     }
-    	
+
     function rebindGroups() {
         $this->bindModel(array('hasAndBelongsToMany' => $this->hBTM));
     }
-        
+
     /**
 	 * Compact and reformat result
 	 * 		id => ; passwd => ; realname => ; userid => ; groups => array({1..N} nomi_grupppi) : UserProperty => array()
@@ -181,7 +181,7 @@ class User extends BEAppModel
 								)
 							);
 				if (!empty($property)) {
-					foreach ($property as $keyProp => $prop) {					
+					foreach ($property as $keyProp => $prop) {
 						foreach ($u["UserProperty"] as $k => $value) {
 							if ($value["property_id"] == $prop["id"]) {
 								
@@ -264,7 +264,6 @@ class User extends BEAppModel
 	 */
 	function afterSave() {
 		if (!empty($this->data['UserProperty'])) {
-			
 			$this->UserProperty->deleteAll(array('user_id' => $this->id));
 			foreach($this->data['UserProperty'] as $prop) {
 				$this->UserProperty->create();
@@ -272,9 +271,54 @@ class User extends BEAppModel
 				if (!$this->UserProperty->save($prop))
 					throw new BeditaException(__("Error saving user", true), "Error saving hasMany user property");
 			}
-			
 		}
-			
+
+        // #573 - Automatic Card creation.
+        $hasCardAssoc = $this->find('count', array(
+            'contain' => array(),
+            'joins' => array(
+                array(
+                    'table' => 'object_users',
+                    'alias' => 'ObjectUser',
+                    'type' => 'INNER',
+                    'conditions' => array('ObjectUser.user_id = User.id', 'ObjectUser.switch' => 'card'),
+                ),
+            ),
+            'conditions' => array('User.id' => $this->id),
+        ));
+        if (!$hasCardAssoc) {
+            $Card = ClassRegistry::init('Card');
+            $data = null;
+            if (BACKEND_APP && isset($this->data['User']['_cardToAssoc']) && $this->data['User']['_cardToAssoc'] != null) {
+                // Fetch data of chosen card.
+                $data = $Card->find('first', array(
+                    'conditions' => array('Card.id' => $this->data['User']['_cardToAssoc']),
+                ));
+            }
+            if (empty($data)) {
+                // Initialize new card.
+                $name = explode(' ', isset($this->data['User']['realname']) ? $this->data['User']['realname'] : '', 2);
+                $data = array(
+                    'id' => null,
+                    'title' => !empty($this->data['User']['realname']) ? $this->data['User']['realname'] : $this->data['User']['userid'],
+                    'name' => (count($name) > 0) ? $name[0] : '',
+                    'surname' => (count($name) > 1) ? $name[1] : '',
+                    'email' => isset($this->data['User']['email']) ? $this->data['User']['email'] : '',
+                    'status' => 'on',
+                    'ObjectUser' => array(),
+                );
+                $Card->create();
+            }
+            $data['ObjectUser']['card'] = array(
+                // Association data.
+                array(
+                    'user_id' => $this->id,
+                    'object_id' => $data['id'],
+                    'switch' => 'card',
+                ),
+            );
+            $Card->save($data);  // Save card and association.
+        }
 	}
 
 	function beforeDelete() {
@@ -288,7 +332,24 @@ class User extends BEAppModel
 		return true;
 	}
 
-	/**
+    /**
+    * Returns a list of Groups User belongs to.
+    *
+    * @param int $id User's ID (currently loaded user if omitted).
+    * @return array ID-name list of Groups User belongs to.
+    */
+    public function getGroups ($id = null) {
+        if (!is_null($id)) {
+            $this->id = $id;
+            $this->read();
+        }
+        if (empty($this->data['Group'])) {
+            return array();
+        }
+        return Set::combine($this->data['Group'], '{n}.id', '{n}.name');
+    }
+
+    /**
      * get associated card id
      *
      * If a $userid is specified, it returns the associated Card Object Id (if it exists)
@@ -314,6 +375,4 @@ class User extends BEAppModel
         }
         return false;
 	}
-
 }
-?>

@@ -21,7 +21,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 
 <form method="post" action="" id="formObject">
-
+	{$beForm->csrf()}
 	<div id="viewthumb">
 	<table class="indexlist">
 	{capture name="theader"}
