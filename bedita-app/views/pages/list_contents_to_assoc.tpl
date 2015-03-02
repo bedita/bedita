@@ -10,14 +10,12 @@ $(document).ready(function() {
         $selectAll = $table.find('input[type="checkbox"][name="selectAll"]'),
         $allSelects = $table.find('input[type="checkbox"].objectCheck');
 
-    console.log($table, $selectAll, $allSelects);
+    $('#contents_nav a').click(function() {
+        loadObjToAssoc($(this).attr('rel'));
+    });
 
-	$('#contents_nav a').click(function() {
-		loadObjToAssoc($(this).attr('rel'));
-	});
-
-    $table.tablesorter({ 'headers': { 0: { 'sorter': false } } });  // Disable sorter on first column.
-	$('#objtable thead TH').css('cursor', 'pointer');
+    $table.tablesorter({ 'headers': { 0: { 'sorter': false } } });  // #605 Select all - Disable sorter on first column.
+    $table.find('thead th').css('cursor', 'pointer');
 
     $selectAll.click(function () {
         // #605 Select all.
@@ -29,8 +27,8 @@ $(document).ready(function() {
             }
         });
     });
-	$allSelects.click(function() {
-        // #605 Select all.
+    $allSelects.click(function() {
+        // #605 Select all - Update "select all" checkbox when checking sub-checkboxes.
         var total = $allSelects.length,
             checked = $allSelects.filter(':checked').length;
         $selectAll.prop('checked', checked == total).prop('indeterminate', checked > 0 && checked < total);
@@ -49,7 +47,7 @@ $(document).ready(function() {
 			addLabel += ' ' + countIds + ' items';
 		}
 		$('#addButton').val(addLabel);
-	});
+    });
 
 });
 //-->
