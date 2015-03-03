@@ -18,7 +18,6 @@
 	{$html->script("libs/jquery/jquery-2.1.0.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
 	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
-	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
 	<link rel="stylesheet" href="{$html->webroot}js/libs/select2/select2.css" />
