@@ -584,11 +584,11 @@ class BEAppModel extends AppModel {
         }
 
 		$ordClausole = "";
-		if (is_string($order) && strlen($order)) {
+        if (is_string($order) && preg_match('/^[a-z0-9_-]+$/i', $order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
-				$order = "{$s}BEObject{$e}." . $order;
-			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+				$order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
+            $ordItem = "{$s}{$order}{$e} " . ((!$dir)? "DESC " : "");
 			if (!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
 			} else {
