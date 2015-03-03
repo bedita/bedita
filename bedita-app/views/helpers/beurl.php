@@ -48,7 +48,7 @@ class BeurlHelper extends AppHelper {
 			if(!$pos || $pos > 0) 
 				$newUrl = "/" . $newUrl;
 		}
-		return $newUrl ;
+		return $newUrl;
 	}
 
 	/**
