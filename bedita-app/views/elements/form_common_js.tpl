@@ -144,6 +144,8 @@ $(document).ready(function(){
 	    buttonText: '{t}Open Calendar{/t}',
 	    dateFormat: '{$conf->dateFormatValidation|replace:'yyyy':'yy'}',
 		firstDay: 1,
+		nextText: "&rsaquo;&rsaquo;",
+		prevText: "&lsaquo;&lsaquo;",
 	    beforeShow: customRange
 	}, $.datepicker.regional['{$currLang}']);
 	
