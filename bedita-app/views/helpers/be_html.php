@@ -37,9 +37,10 @@ class BeHtmlHelper extends HtmlHelper {
     private function parse ($url = null, array $mergeParams = null) {
         if (!is_array($url) && !preg_match('/^(https?|mailto|s?ftps?)/i', $url)) {
             $url = Router::parse($url);
-            if (array_key_exists('named', $url)) {
-                // TODO: Handle named params.
-                //$url = array_merge($url, $url['named']);
+            if (array_key_exists('named', $url) && is_array($url['named'])) {
+                foreach ($url['named'] as $key => $val) {
+                    array_push($url, $key . ':' . urlencode($val));
+                }
                 unset($url['named']);
             }
             if (array_key_exists('pass', $url)) {
