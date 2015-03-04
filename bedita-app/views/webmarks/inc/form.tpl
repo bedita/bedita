@@ -92,6 +92,8 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 {$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.link.id}])}
 
+{$view->element('form_custom_properties')}
+
 {$view->element('form_tags')}
 
 {$view->element('form_versions')}
