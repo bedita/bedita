@@ -415,10 +415,13 @@ abstract class FrontendController extends AppController {
 	 * @throws BeditaException
 	 */
     protected function lang($lang) {
-
 		if (empty($lang)) {
 			throw new BeditaBadRequestException("No lang selected");
 		}
+
+        if ($lang == $this->currLang) {
+            return;
+        }
 
 		$conf = Configure::getInstance();
 		if (!array_key_exists($lang, $conf->frontendLangs)) {

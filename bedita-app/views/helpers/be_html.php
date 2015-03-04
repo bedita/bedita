@@ -49,7 +49,7 @@ class BeHtmlHelper extends HtmlHelper {
             unset($url['plugin']);
         }
         if (is_array($url) && !empty($mergeParams)) {
-            $url = array_merge($mergeParams, $url);
+            $url = array_merge($url, $mergeParams);
         }
         return $url;
     }
