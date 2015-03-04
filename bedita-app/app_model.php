@@ -588,7 +588,7 @@ class BEAppModel extends AppModel {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
 				$order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
-            $ordItem = "{$s}{$order}{$e} " . ((!$dir)? "DESC " : "");
+            $ordItem = $order . ((!$dir)? "DESC " : "");
 			if (!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
 			} else {
