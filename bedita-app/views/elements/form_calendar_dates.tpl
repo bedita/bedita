@@ -6,7 +6,7 @@
 	display:none;
 }
 .daterow:last-child .dateadd {
-	display:inline;
+	display:inline-block;
 }
 .daterow:first-child .dateremove {
 	display:none;
@@ -106,26 +106,25 @@ $(document).ready(function(){
     <input size=5 type="text"  id=""  class="timeEnd" name="" value="" />
 
     <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
-    <a href="javascript:void(0)" style="margin-left:160px"  class="BEbutton dateadd">+</a>
+    <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
     
 </div>
 
-{$days=["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]}
 
 {if !empty($object.DateItem)}
 {foreach name=dd from=$object.DateItem|@sortby:'start_date' item=d key=key}
 
-{$dayStart = ""}
-{$dayEnd = ""}
-{if !empty($d.start_date)}
-    {$dayStart = $d.start_date|date_format:$conf->datePattern}
-{/if}
-{if !empty($d.start_date)}
-    {$dayEnd = $d.end_date|date_format:$conf->datePattern}
-{/if}
+    {$dayStart = ""}
+    {$dayEnd = ""}
+    {if !empty($d.start_date)}
+        {$dayStart = $d.start_date|date_format:$conf->datePattern}
+    {/if}
+    {if !empty($d.start_date)}
+        {$dayEnd = $d.end_date|date_format:$conf->datePattern}
+    {/if}
 
 <div class="daterow">
-	<label>{t}start{/t}:</label>
+	<label>{if $d@total > 1}<span class="rownumber">{$d@iteration}</span>{/if}{t}start{/t}:</label>
 	<input size=10 type="text" id="eventStart_{$key}" class="dateinput eventStart" name="data[DateItem][{$key}][start_date]" 
 	value="{$dayStart}"/>
 	<input size=5 type="text"  id="timeStart_{$key}"  class="timeStart" name="data[DateItem][{$key}][timeStart]" 
@@ -137,10 +136,8 @@ $(document).ready(function(){
 	<input size=5 type="text"  id="timeEnd_{$key}"  class="timeEnd" name="data[DateItem][{$key}][timeEnd]" 
 	value="{if !empty($d.end_date)}{$d.end_date|date_format:'%H:%M'}{/if}" />
 
-	<a href="javascript:void(0)" class="BEbutton dateremove">X</a>
-
     {if !empty($d.start_date) && !empty($d.end_date) && $dayStart != $dayEnd}
-    <div style="margin:0px 30px 0 10px; display:inline-block;">
+    <div>
         <label>{t}every day{/t}:</label>
         <input type="radio" id="everyY_{$key}" name="data[DateItem][{$key}][always]" 
            class="radioAlways" value="true" 
@@ -150,32 +147,34 @@ $(document).ready(function(){
            {if !empty($d.days)}checked="checked"{/if}/>{t}no{/t}
     </div>
     {/if}
+
+	<a href="javascript:void(0)" class="BEbutton dateremove">x</a>
     <a href="javascript:void(0)" class="BEbutton dateadd">+</a>
 
 
     {if !empty($d.start_date) && !empty($d.end_date) && $dayStart != $dayEnd}
-	<div class="date_exceptions"  {if empty($d.days)}style="display:none;"{/if}>    
-
-	    <label>{t}days{/t}:</label>
-	    {if empty($d.days)}
-	        {$dd = []}
-	    {else}
-	        {$dd = $d.days}
-	    {/if}
-	   {foreach $days as $num => $d}
-	        <input type="checkbox" id="dayChk_{$key}_{$num}" 
-	            name="data[DateItem][{$key}][days][]" value="{$num}" 
-	            {if in_array($num, $dd)}checked="checked"{/if}
-	            {if empty($dd)}disabled="disabled"{/if}/> {t}{$d}{/t} &nbsp;&nbsp;
-	   {/foreach}
-	</div>
+    <div class="date_exceptions"  {if empty($d.days)}style="display:none;"{/if}>
+        <label>{t}days{/t}:</label>
+        {if empty($d.days)}
+            {$recordDays = []}
+        {else}
+            {$recordDays = $d.days}
+        {/if}
+        {$days=["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]}
+        {foreach $days as $i => $day}
+            <input type="checkbox" id="dayChk_{$key}_{$i}" 
+                name="data[DateItem][{$key}][days][]" value="{$i}" 
+                {if in_array($i, $recordDays)}checked="checked"{/if}
+                {if empty($recordDays)}disabled="disabled"{/if}/> {t}{$day}{/t} &nbsp;&nbsp;
+        {/foreach}
+    </div>
 	{/if}    
 
 </div>
 
-
 {/foreach}
 {else}
+
 <div class="daterow">
     <label>{t}start{/t}:</label>
     <input size=10 type="text" id="eventStart_0" class="dateinput eventStart" name="data[DateItem][0][start_date]" 
@@ -189,7 +188,7 @@ $(document).ready(function(){
     <input size=5 type="text"  id="timeEnd_0"  class="timeEnd" name="data[DateItem][0][timeEnd]" 
     value="" />
 
-    <a href="javascript:void(0)" class="BEbutton dateremove">X</a>
+    <a href="javascript:void(0)" class="BEbutton dateremove">x</a>
 </div>
 {/if}
 
