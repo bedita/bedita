@@ -2512,6 +2512,7 @@ Table.graph .value {
 	text-align:right;
 }
 
+
 .daterow {
 	padding-bottom:8px; 
 	margin-bottom:8px;
@@ -2522,9 +2523,19 @@ Table.graph .value {
     padding-bottom: 0;
 }
 
+.newdaterow .dateinput,
+.daterow .dateinput {
+	width: 6.1em;
+}
+.newdaterow .timeinput,
+.daterow .timeinput {
+	width: 3.6em;
+}
+
 .newdaterow input[type=text], .daterow img,
 .daterow input[type=text], .daterow img {
 	margin-right: .7em !important;
+	text-align: right;
 }
 .newdaterow img,
 .daterow img {
