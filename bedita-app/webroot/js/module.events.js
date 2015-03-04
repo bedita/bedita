@@ -14,7 +14,7 @@ $(document).ready(function(){
 
     var numDates = $('.daterow').length;
 
-    $(".dateremove").click(function (){
+    $(".dateremove").click(function () {
 		var row = $(this).parent(".daterow");
 		if ($(".daterow").size() > 1) {
 	        $(row).remove();			
@@ -24,6 +24,9 @@ $(document).ready(function(){
             row.find(".eventEnd").val("");
             row.find(".timeEnd").val("");
 		}
+
+		row = $(this).parent(".newdaterow");
+		$(row).remove();			
 	});
 
 	$(".dateadd").click(function (){

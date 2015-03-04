@@ -2,12 +2,15 @@
 {$html->script('libs/jquery/plugins/jquery.timepicker.min')}
 
 <style scoped>
+.newdaterow .dateadd,
 .daterow .dateadd, .dummydaterow {
 	display:none;
 }
+.newdaterow:last-child .dateadd,
 .daterow:last-child .dateadd {
 	display:inline-block;
 }
+.newdaterow:first-child .dateremove,
 .daterow:first-child .dateremove {
 	display:none;
 }
