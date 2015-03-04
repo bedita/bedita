@@ -38,7 +38,7 @@
 
             $that.BEmodal({
                 title: '',
-                destination: '{$html->url(['controller' => 'addressbook', 'action' => 'similarCards'])}',
+                destination: '{$html->url(['controller' => 'pages', 'action' => 'similarCards'])}',
                 requestData: reqData
             });
 
@@ -190,10 +190,10 @@
 
 		{if !$userDeleted|default:false}
 			<tr>
-				<th>{t}addressbook details{/t}</th>
+				<th>{t}card details{/t}</th>
 				<td>
                     {if !empty($objectUser.card)}
-                        <a href="{$html->url('/')}addressbook/view/{$objectUser.card.0.id}">{t}YES{/t}</a>
+                        <a href="{$html->url('/view/')}{$objectUser.card.0.id}">{t}YES{/t}</a>
                     {else}
                         <input type="hidden" name="data[User][_cardToAssoc]" id="userCardToAssoc" value="" />
                         {t}NO{/t}

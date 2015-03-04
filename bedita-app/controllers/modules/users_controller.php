@@ -199,7 +199,7 @@ class UsersController extends ModulesController {
             }
 
             $this->data['User']['passwd'] = trim($this->data['User']['passwd']);
-            $this->BeAuth->createUser($this->data, $userGroups);
+            $this->User->id = $this->BeAuth->createUser($this->data, $userGroups);
             $this->eventInfo("user ".$this->data['User']['userid']." created");
             $this->userInfoMessage(__("User created",true));
         } else {
