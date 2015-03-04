@@ -567,11 +567,11 @@ class BEAppModel extends AppModel {
 			}
 		}
 
-		// if $order is empty and not performing search then set a default order
-		if (empty($order) && empty($filter["query"])) {
-			$order = "{$s}BEObject{$e}.{$s}id{$e}";
-			$dir = false;
-		}
+        // if $order is empty and not performing search then set a default order
+        if ((empty($order) || !preg_match('/^[a-z0-9`., _-]+$/i', trim($order))) && empty($filter['query'])) {
+            $order = "{$s}BEObject{$e}.{$s}id{$e}";
+            $dir = false;
+        }
 
 		// build sql conditions
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
@@ -584,7 +584,7 @@ class BEAppModel extends AppModel {
         }
 
 		$ordClausole = "";
-        if (is_string($order) && preg_match('/^[a-z0-9_-]+$/i', $order)) {
+        if (is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
 				$order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
