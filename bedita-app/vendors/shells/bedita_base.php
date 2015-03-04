@@ -23,12 +23,6 @@ App::import('Lib', 'BeLib');
 
 /**
  * Base class for bedita shell scripts: provides common filesystem related methods.
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class BeditaBaseShell extends Shell {
 
@@ -36,6 +30,36 @@ class BeditaBaseShell extends Shell {
      * Verbose mode.
      */
     private $verbose = false;
+
+    /**
+     * Call parent::__construct and set up exception handler
+     *
+     * @param ShellDispatcher $dispatch
+     */
+    public function __construct($dispatch) {
+        parent::__construct($dispatch);
+        set_exception_handler(array($this, 'handleExceptions'));
+    }
+
+    /**
+     * Handle Exceptions
+     *
+     * @param Exception $exception
+     * @return void
+     */
+    public function handleExceptions(Exception $exception) {
+        $shellMethod = ' - shell ' . $this->name . '::' . $this->command;
+        $this->log($exception->getMessage() . $shellMethod, 'error');
+        if ($exception instanceof BeditaException) {
+            $errorTrace = $exception->errorTrace();
+        } else {
+            $errorTrace = get_class($exception) . ' - ' . $exception->getMessage()
+            . " \nFile: " . $exception->getFile() . ' - line: ' . $exception->getLine()
+            . " \nTrace:\n" . $exception->getTraceAsString();
+        }
+        $this->log($errorTrace, 'exception');
+        $this->error($exception->getMessage());
+    }
 
     /**
      * Initializes the Shell

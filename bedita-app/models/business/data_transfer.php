@@ -1039,6 +1039,10 @@ class DataTransfer extends BEAppModel
             if (!$model->save($newSection)) {
                 throw new BeditaException('error saving section (import id ' . $section['id'] . ')');
             }
+            if (!empty($section['priority'])) {
+                $tree = ClassRegistry::init('Tree');
+                $tree->setPriority($model->id, $section['priority'], $newSection['parent_id']);
+            }
             $this->import['saveMap'][$section['id']] = $model->id;
             $this->trackDebug('-- saving section ' . $section['id'] . ' with BEdita Section id ' . $model->id . ' ... END');
         }

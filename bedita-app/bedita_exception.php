@@ -22,12 +22,19 @@
 /**
  * Bedita exceptions definitions, loaded from bootstrap.php
  *
+ * In general BEdita errors are interpreted as 500 http code errors.
+ *
  */
 class BeditaException extends Exception {
 
 	public $result;
 
-	public $httpCode = null;
+    /**
+     * The http status code (if any)
+     *
+     * @var int
+     */
+	protected $httpCode = null;
 
 	protected $errorDetails; // details for log file
 
@@ -40,9 +47,17 @@ class BeditaException extends Exception {
 
 	const ERROR = 'ERROR';
 
-	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Unexpected error, operation failed' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 500
+     */
+	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 500) {
    		if(empty($message)) {
-   			$message = __("Unexpected error, operation failed",true);
+   			$message = __('Unexpected error, operation failed', true);
    		}
    		$this->errorDetails = $message;
    		if (!empty($details)) {
@@ -62,7 +77,7 @@ class BeditaException extends Exception {
    			}
    		}
    		$this->result = $res;
-   		if($code != 0) {
+   		if ($code >= 100 && $code < 600) {
    			$this->httpCode = $code;
    		}
         parent::__construct($message, $code);
@@ -90,7 +105,8 @@ class BeditaException extends Exception {
     /**
      * Handling http status code header, according to $this->httpCode (if not set or code not handled, return null)
      * Http codes handled: 401, 403, 404, 500
-     * 
+     *
+     * @deprecated
      * @return string|null
      */
     public function getHeader() {
@@ -119,13 +135,214 @@ class BeditaException extends Exception {
 }
 
 /**
+ * Represents an HTTP 400 error
+ */
+class BeditaBadRequestException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Bad Request' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 400
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 400) {
+        if (empty($message)) {
+            $message = 'Bad Request';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 401 error
+ */
+class BeditaUnauthorizedException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Unauthorized' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 401
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 401) {
+        if (empty($message)) {
+            $message = 'Unauthorized';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 403 error
+ */
+class BeditaForbiddenException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Forbidden' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 403
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 403) {
+        if (empty($message)) {
+            $message = 'Forbidden';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 404 error
+ */
+class BeditaNotFoundException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Not Found' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 404
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 404) {
+        if (empty($message)) {
+            $message = 'Not Found';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 405 error.
+ */
+class BeditaMethodNotAllowedException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Method Not Allowed' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 405
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 405) {
+        if (empty($message)) {
+            $message = 'Method Not Allowed';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 409 error.
+ */
+class BeditaConflictException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Conflict' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 409
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 409) {
+        if (empty($message)) {
+            $message = 'Conflict';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 500 error.
+ */
+class BeditaInternalErrorException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Internal Server Error' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 500
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 500) {
+        if (empty($message)) {
+            $message = 'Internal Server Error';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 501 error
+ */
+class BeditaNotImplementedException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Not implemented' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 500
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 501) {
+        if (empty($message)) {
+            $message = 'Not Implemented';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
+ * Represents an HTTP 503 error
+ */
+class BeditaServiceUnavailableException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Not implemented' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 503
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 503) {
+        if (empty($message)) {
+            $message = 'Service Unavailable';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+
+/**
  * Runtime exception (default http status code 500)
+ * @deprecated use instead BeditaInternalErrorException
  */
 class BeditaRuntimeException extends BeditaException {
-	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 500) {
-		parent::__construct($message, $details, $res, $code);
-	}
+    public function __construct($message = null, $details = NULL, $res = self::ERROR, $code = 500) {
+        parent::__construct($message, $details, $res, $code);
+    }
 }
+
 /**
  * 
  */
@@ -135,14 +352,14 @@ class BeditaAjaxException extends BeditaException
 
 	private $headers = null;
 	
-	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 0) {
+	public function __construct($message = null, $details = NULL, $res  = self::ERROR, $code = 0) {
 		if (!empty($details["output"])) {
 			$this->outputType = $details["output"];
 		}
 		if (!empty($details["headers"])) {
 			$this->headers = $details["headers"];
 		}
-		parent::__construct($message,$details,$res,$code);
+		parent::__construct($message, $details, $res, $code);
 	}
 	
 	public function getOutputType() {
@@ -159,14 +376,14 @@ class BeditaAjaxException extends BeditaException
  */
 class BEditaIOException extends BeditaException
 {
-} ;
+}
 
 /**
  * 		BEditaAllowURLException		// Remote files not allowed
  */
 class BEditaAllowURLException extends BeditaException
 {
-} ;
+}
 
 /**
  * 		BEditaFileExistException
@@ -288,6 +505,9 @@ class BeditaPublicationException extends BeditaException {
 	}
 }
 
+/**
+ * @deprecated
+ */
 class BeditaFrontAccessException extends BeditaException {
 	
 	private $errorType;
@@ -317,42 +537,4 @@ class BeditaFrontAccessException extends BeditaException {
 	public function getHeaders() {
 		return $this->headers;
 	}
-}
-
-/**
- * Exception for http status code 401 Unauthorized
- */
-class BeditaUnauthorizedException extends BeditaException {
-	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 401) {
-		parent::__construct($message, $details, $res, $code);
-	}
-}
-
-/**
- * Exception for http status code 403 Forbidden
- */
-class BeditaForbiddenException extends BeditaException {
-	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 403) {
-		parent::__construct($message, $details, $res, $code);
-	}
-}
-
-/**
- * Exception for http status code 404 Not Found
- */
-class BeditaNotFoundException extends BeditaException {
-	public function __construct($message, $details = NULL, $res = self::ERROR, $code = 404) {
-		parent::__construct($message, $details, $res, $code);
-	}
-}
-
-/**
- * Exception for http status code 503 Service Unavailable
- */
-class BeditaServiceUnavailableException extends BeditaException {
-
-    public function __construct($message, $details = NULL, $res = self::ERROR, $code = 503) {
-        parent::__construct($message, $details, $res, $code);
-    }
-
 }

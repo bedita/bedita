@@ -343,7 +343,9 @@ class User extends BEAppModel
             $this->id = $id;
             $this->read();
         }
-
+        if (empty($this->data['Group'])) {
+            return array();
+        }
         return Set::combine($this->data['Group'], '{n}.id', '{n}.name');
     }
 }

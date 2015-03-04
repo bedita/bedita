@@ -3,7 +3,7 @@
 *}
 
 
-<form action="{$html->url('/addressbook/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+<form action="{$html->url('/')}{$moduleName}/save" method="post" name="updateForm" id="updateForm" class="cmxform">
 {$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	

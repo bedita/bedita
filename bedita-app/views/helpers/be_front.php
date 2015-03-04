@@ -287,13 +287,173 @@ class BeFrontHelper extends AppHelper {
 	}
 
 	/**
+	 *	return html of common web-app metadata
+	 *
+	 *	@param string $title, the application name
+	 *	@param array $icons, an array of icons to use when the application is pinned in user home screen
+	 *	@param string $statusBar, hex string color for status and navigation bars
+	 *	@param string $tileColor, hex string for application name color (Windows)
+	 *	@param string $feed, the nickname of the section to use as feed
+	 *
+	 *	@return string
+	 */
+	public function metaWebApp($title = false, $icons = false, $statusBar = false, $tileColor = '#000', $feed = false) {
+		$html = '';
+
+		if (!empty($title)) {
+			$html.= "\n" . $this->Html->meta(array(
+				'name' => 'application-name',
+				'content' => $title
+			));
+		}
+
+		$html.= "\n" . $this->Html->meta(array(
+			'name' => 'msapplication-config',
+			'content' => 'none'
+		));
+
+		$html.= "\n" . $this->Html->meta(array(
+			'name' => 'msapplication-starturl',
+			'content' => $this->Html->url('/')
+		));
+
+		$html.= "\n" . $this->Html->meta(array(
+			'name' => 'msapplication-TileColor',
+			'content' => $tileColor
+		));
+
+		if (!empty($statusBar)) {
+			$html.= "\n" . $this->Html->meta(array(
+				'name' => 'msapplication-navbutton-color',
+				'content' => $statusBar
+			));
+		}
+
+		$html.= "\n" . $this->Html->meta(array(
+			'name' => 'mobile-web-app-capable',
+			'content' => 'yes'
+		));
+
+		$html.= "\n" . $this->Html->meta(array(
+			'name' => 'apple-mobile-web-app-capable',
+			'content' => 'yes'
+		));
+
+		if (!empty($statusBar)) {
+			$html.= "\n" . $this->Html->meta(array(
+				'name' => 'apple-mobile-web-app-status-bar-style',
+				'content' => $statusBar
+			));
+		}
+
+		if (!empty($icons)) {
+			$default = null;
+			if (!empty($icons['default'])) {
+				$default = $icons['default'];
+				$html.= "\n" . '<link rel="apple-touch-icon" href="' . $default . '" />';
+				unset($icons['default']);
+			}
+
+			$appleIcons = array('76x76', '120x120', '152x152');
+			$missing = array();
+
+			foreach ($appleIcons as $value) {
+				if (!empty($icons[$value])) {
+					$ico = $icons[$value];
+				} else if (!empty($default) && file_exists(WWW_ROOT . DS . $default)) {
+					$pathInfo = pathinfo(WWW_ROOT . DS . $default);
+					if (!empty($pathInfo)) {
+						$use = str_replace('.' . $pathInfo['extension'], '-' . $value . '.' . $pathInfo['extension'], $default);
+						if (file_exists(WWW_ROOT . DS . $use)) {
+							$ico = $use;
+						}
+					}
+				}
+
+				if (!empty($ico)) {
+					$html.= "\n" . '<link rel="apple-touch-icon" sizes="' . $value . '" href="' . $ico . '" />';
+				} else {
+					array_push($missing, $value);
+				}
+			}
+
+			if (!empty($default)) {
+				$html.= "\n" . $this->Html->meta(array(
+					'name' => 'msapplication-TileImage',
+					'content' => $default
+				));
+			}
+
+			$windowsIcons = array('70x70', '150x150', '310x310', '310x150');
+			foreach ($windowsIcons as $value) {
+				$ico = false;
+				if (empty($icons[$value])) {
+					if (!empty($default) && file_exists(WWW_ROOT . DS . $default)) {
+						$pathInfo = pathinfo(WWW_ROOT . DS . $default);
+						if (!empty($pathInfo)) {
+							$use = str_replace('.' . $pathInfo['extension'], '-' . $value . '.' . $pathInfo['extension'], $default);
+							if (file_exists(WWW_ROOT . DS . $use)) {
+								$ico = $use;
+							}
+						}
+					}
+				} else {
+					$ico = $icons[$value];
+				}
+
+				if (!empty($ico)) {
+					switch ($value) {
+						case '70x70':
+						case '150x150':
+						case '310x310':
+							$windowsMeta = 'msapplication-square' . $value . 'logo';
+							break;
+						case '310x150':
+							$windowsMeta = 'msapplication-wide' . $value . 'logo';
+						default:
+							$windowsMeta = false;
+							break;
+					}
+
+					if ($windowsMeta) {
+						$html.= "\n" . $this->Html->meta(array(
+							'name' => $windowsMeta,
+							'content' => $ico
+						));
+					}
+				} else {
+					array_push($missing, $value);
+				}
+			}
+		}
+
+		if (!empty($feed)) {
+			$feed = $this->Html->url('/rss/' . $feed);
+			$html.= "\n" . $this->Html->meta(array(
+				'name' => 'msapplication-notification',
+				'content' => 'frequency=30;polling-uri=' . $feed . '&amp;id=1; cycle=1'
+			));
+
+			$html.= "\n" . $this->Html->meta(array(
+				'name' => 'msapplication-badge',
+				'content' => 'frequency=30;polling-uri=' . $feed . '&amp;id=1; cycle=1'
+			));
+		}
+
+		return $html;
+	}
+
+	/**
 	 * return all html meta
 	 * all meta = description, author, content, generator
 	 *
-	 * @see HtmlHelper
-	 * @return string
+     * @param string $docType If not passed, tries to load `docType` from config. If this fails too, `xhtml-strict` is used.
+     * @return string
+     * @see HtmlHelper
 	 */
-	public function metaAll() {
+    public function metaAll($docType = null) {
+        $docType = $docType ?: Configure::read('docType') ?: 'xhtml-strict';
+
 		$html = "\n" . $this->metaDescription();
 		$content = $this->get_value_for_field("license");
 		if(!empty($content)) {
@@ -302,10 +462,12 @@ class BeFrontHelper extends AppHelper {
 				"content" => h($this->_publication['creator'])
 			));
 		}
-		$html.= "\n" . $this->Html->meta(array(
-			"http-equiv" => "Content-Style-Type",
-			"content" => "text/css"
-		));
+        if ($docType != 'html5') {
+            $html .= "\n" . $this->Html->meta(array(
+                'http-equiv' => 'Content-Style-Type',
+                'content' => 'text/css',
+            ));
+        }
 		$html.= "\n" . $this->Html->meta(array(
 			"name" => "generator",
 			"content" => 'BEdita ' . $this->_conf->version
