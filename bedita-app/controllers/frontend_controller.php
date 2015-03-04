@@ -1803,12 +1803,17 @@ abstract class FrontendController extends AppController {
 	 * @throws BeditaBadRequestException, BeditaNotFoundException
 	 */
 	public function route() {
-        if(!empty($this->params['lang']) && array_key_exists($this->params['lang'], Configure::read('frontendLangs'))) {
+        $args = func_get_args();
+		if (count($args) >= 2 && $args[0] == 'lang') {
+			// #517 - SEO-friendly I18n - Retrocompatibility.
+			$this->params['lang'] = $args[1];
+			$args = array_slice($args, 2);
+		}
+        if (!empty($this->params['lang']) && array_key_exists($this->params['lang'], Configure::read('frontendLangs'))) {
             // #517 - SEO-friendly I18n.
             $this->lang($this->params['lang'], null);
         }
 
-        $args = func_get_args();
         if(count($args) === 0 || empty($args[0])) {
              $args[0] = "homePage";
         }
