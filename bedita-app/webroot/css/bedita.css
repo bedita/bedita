@@ -604,13 +604,18 @@ NAV.modulesmenu {
 	background-image: none !important;
 }
 
-.modulesmenu .searchtrigger {
-	background: #ccc url(../img/iconSearch.png) center no-repeat;
-		margin-right:20px;
+.searchobjects, .searchobjectsbyid {
+	display:none; z-index:100; position:absolute; left: 735px; top:50px;
 }
+.searchobjectsbyid { left: 828px; }
 
-.searchobjects {
-	display:none; z-index:100; position:absolute; left:735px; top:50px;
+.modulesmenu .searchtrigger {
+	margin-right:20px;
+	background: #ccc url(../img/iconSearch.png) center no-repeat;
+}
+.modulesmenu .searchbyidtrigger {
+	margin-left: 5px;
+	background: #ccc url(../img/iconSearchById.png) center no-repeat;
 }
 
 .searchobjects input[type=text]{

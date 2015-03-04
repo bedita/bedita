@@ -582,7 +582,13 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
+        $(".searchobjectsbyid").hide();
         $(".searchobjects").toggle();
+    });
+
+    $(".searchbyidtrigger").click(function() {
+        $(".searchobjects").hide();
+        $(".searchobjectsbyid").toggle();
     });
 
 /*...........................................

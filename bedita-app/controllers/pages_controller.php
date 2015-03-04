@@ -694,4 +694,46 @@ class PagesController extends AppController {
         $this->set('cards', $cards);
         $this->render('/addressbook/similar_cards');
     }
+
+    /**
+     * Go to a specific object by Id or nickname as POST parameters
+     *
+     * @return void
+     */
+    public function gotoObjectById() {
+        
+        $objectId = $this->params['form']['objectId'];
+        $count = ClassRegistry::init('BEObject')->find('count', array(
+            'conditions' => array(
+                'OR' => array(
+                    'id' => $objectId,
+                    'nickname' => $objectId
+                )
+            ),
+            'contain' => array()
+        ));
+
+        if ($count) {
+            $this->redirect('/view/' . $objectId);
+        } else {
+            throw new BeditaNotFoundException("Object not found");
+        }
+    }
+
+    /** 
+     * Controller forward
+     * @see AppController::forward()
+     */
+    protected function forward($action, $result) {
+        $referer = $this->referer();
+        $redirect = array(
+            'gotoObjectById' =>  array(
+                'ERROR' => $referer
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result] ;
+        }
+    }
+
 }
