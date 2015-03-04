@@ -7,7 +7,7 @@
 	<meta name="robots" content="noindex,nofollow"/>
 	<meta name="viewport" content="width=device-width">
 	
-	{include file="inc/meta.tpl"}
+	{include file='./inc/meta.tpl'}
 
 	{$view->element('json_meta_config')}
 

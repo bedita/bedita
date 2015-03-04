@@ -584,7 +584,7 @@ class BeAuthComponent extends Object {
         if ($notify) {
             $user->Behaviors->detach('Notify');
         }
-        return $user->id;
+        return $user->getLastInsertID();
     }
 
     /**

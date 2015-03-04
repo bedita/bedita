@@ -2512,11 +2512,57 @@ Table.graph .value {
 	text-align:right;
 }
 
+
 .daterow {
-	padding-bottom:5px; 
-	margin-bottom:5px;
-    border-bottom: 1px solid gray;
+	padding-bottom:8px; 
+	margin-bottom:8px;
+    border-bottom: 1px solid #a0a0a0;
 }
+.daterow:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.newdaterow {
+	margin-top: 1em;
+}
+
+.newdaterow .dateinput,
+.daterow .dateinput {
+	width: 6.1em;
+}
+.newdaterow .timeinput,
+.daterow .timeinput {
+	width: 3.6em;
+}
+
+.newdaterow input[type=text], .daterow img,
+.daterow input[type=text], .daterow img {
+	margin-right: .7em !important;
+	text-align: right;
+}
+.newdaterow img,
+.daterow img {
+	margin-left: -.35em !important;
+}
+.newdaterow div,
+.daterow div {
+	display: inline-block;
+	margin-right: .7em;
+}
+
+.daterow .rownumber {
+	display: inline-block;
+	min-width: 22px;
+	margin-right: 1em;
+	padding: 0.675em;
+	background-color: #333;
+	border-radius: .5em;
+	font-size: .825em;
+	line-height: 1em;
+	color: #EEE;
+	text-align: center;
+}
+
 
 /*...........................................    
 
