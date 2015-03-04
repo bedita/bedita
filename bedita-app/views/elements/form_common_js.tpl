@@ -23,7 +23,7 @@ var formFieldToCheckData = null;
  * and/or without parent with class ignore
  * and exclude also richtext items (check done calling onChangeHandler() function)
  */
-var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not('[class^=mce]'):not('[class^=richtext]'):not(.ignore :input)";
+var formFieldToCheckSelector = "form#updateForm :input:not('[class^=mce],.objectCheck,.ignore'):not('[class^=richtext]'):not(.ignore :input)";
 
 $(window).on('load', function() {
 	formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
