@@ -1,8 +1,8 @@
 {$view->element('modulesmenu', ['substringSearch' => false])}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
-{include file="inc/menucommands.tpl"}
+{include file = './inc/menucommands.tpl'}
 
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
@@ -12,6 +12,6 @@
 
 <div class="mainfull">
 
-	{include file="inc/list_users.tpl" method="index"}
+	{include file = './inc/list_users.tpl' method = 'index'}
 	
 </div>

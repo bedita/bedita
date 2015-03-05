@@ -17,9 +17,9 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 {$view->element('modulesmenu', ['substringSearch' => false])}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
-{include file="inc/menucommands.tpl"}
+{include file = './inc/menucommands.tpl'}
 
 {include file="inc/toolbar.tpl"}
 

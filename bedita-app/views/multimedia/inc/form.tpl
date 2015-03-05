@@ -21,7 +21,7 @@
 
 {$view->element('form_tree')}
 
-{include file="inc/form_mediatype.tpl"}
+{include file = './form_mediatype.tpl'}
 
 {if $object.Category == "spreadsheet" or $object.Category == "text" or $object.Category == "formula"}
 
