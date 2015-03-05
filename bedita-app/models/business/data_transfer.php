@@ -425,6 +425,38 @@ class DataTransfer extends BEAppModel
                 $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
                 $this->prepareObjectsForExportByParents($parents);
             }
+            // remove duplicated relations and inverse
+            $uniqueRelationsMap = array();
+            $uniqueRelations = array();
+            $inverseRelations = array();
+            $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+            foreach ($this->export['destination']['byType']['ARRAY']['relations'] as $switch => $relations) {
+                $inverse = (!empty($allRelations[$switch]['inverse'])) ? $allRelations[$switch]['inverse'] : NULL;
+                if (($inverse != $switch) && !in_array($inverse, $inverseRelations)) {
+                    $inverseRelations[$inverse] = $inverse;
+                }
+                foreach ($relations as $relation) {
+                    $key = $relation['idLeft'] . '-' . $relation['idRight'] . '-' . $switch;
+                    if (empty($uniqueRelationsMap[$key])) {
+                        $keyInv = $relation['idRight'] . '-' . $relation['idLeft'] . '-' . $switch;
+                        if (empty($uniqueRelationsMap[$keyInv])) {
+                            $uniqueRelationsMap[$key] = $key;
+                            $uniqueRelationsMap[$keyInv] = $keyInv;
+                            $uniqueRelations[$switch][] = $relation;
+                        } else {
+                            $this->trackDebug('... relation duplication ' . $keyInv . ' - removed');
+                        }
+                    } else {
+                        $this->trackDebug('... relation duplication ' . $key . ' - removed');
+                    }
+                }
+            }
+            foreach ($uniqueRelations as $switch => $r) {
+                if (in_array($switch, $inverseRelations)) {
+                    unset($uniqueRelations[$switch]);
+                }
+            }
+            $this->export['destination']['byType']['ARRAY']['relations'] = $uniqueRelations;
             // set position for objects
             $treeTypes = array('area', 'section');
             foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
@@ -863,7 +895,8 @@ class DataTransfer extends BEAppModel
             $this->import['allRelationsKeys'] = array_keys($this->import['allRelations']);
             foreach ($this->import['relations']['switches'] as $switch) {
                 if (!in_array($switch, $this->import['allRelationsKeys'])) {
-                    throw new BeditaException('relation switch ' . $switch . ' not found in bedita relations');
+                    $this->trackWarn('relation switch ' . $switch . ' not found in bedita relations');
+                    //throw new BeditaException('relation switch ' . $switch . ' not found in bedita relations');
                 }
             }
             // 5.4 objectType(s) must be valid for specified relation switch
@@ -872,13 +905,15 @@ class DataTransfer extends BEAppModel
                     $objTypeLeft = $this->import['objects']['typeById'][$relation['idLeft']];
                     $objTypeRight = $this->import['objects']['typeById'][$relation['idRight']];
                     $switch = $relation['switch'];
-                    $symmetric = $this->import['allRelations'][$switch]['symmetric'];
-                    $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['left']);
-                    $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['right']);
-                    $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['right']);
-                    $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
-                    if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                        throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
+                    if (!empty($this->import['allRelations'][$switch])) {
+                        $symmetric = $this->import['allRelations'][$switch]['symmetric'];
+                        $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['left']);
+                        $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['right']);
+                        $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['right']);
+                        $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
+                        if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
+                            throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
+                        }
                     }
                 }
             } else {
@@ -886,17 +921,19 @@ class DataTransfer extends BEAppModel
                     foreach ($rr as $r) {
                         $objTypeLeft = $this->import['objects']['typeById'][$r['idLeft']];
                         $objTypeRight = $this->import['objects']['typeById'][$r['idRight']];
-                        $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
-                        $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
-                        $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
-                        $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
-                        $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
-                        $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
-                        if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
-                            if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                                $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
-                                // not blocking... to avoid errors for huge database validation
-                                // throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                        if (!empty($this->import['allRelations'][$relationName])) {
+                            $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
+                            $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
+                            $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
+                            $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
+                            $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
+                            $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
+                            if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
+                                if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
+                                    $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                                    // not blocking... to avoid errors for huge database validation
+                                    // throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                                }
                             }
                         }
                     }
@@ -1112,8 +1149,8 @@ class DataTransfer extends BEAppModel
                 $tree = ClassRegistry::init('Tree');
                 foreach ($object['parents'] as $parent) {
                     $parentId = $parent['id'];
-                    $beParentId = $this->import['saveMap'][$parentId];
-                    if (!empty($beParentId)) {
+                    if (!empty($this->import['saveMap'][$parentId])) {
+                        $beParentId = $this->import['saveMap'][$parentId];
                         $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... START');
                         $tree->appendChild($model->id, $beParentId);
                         if (!empty($parent['priority'])) {
@@ -1149,10 +1186,13 @@ class DataTransfer extends BEAppModel
             'id' => $this->import['saveMap'][$relation['idLeft']],
             'objectId' => $this->import['saveMap'][$relation['idRight']],
             'switch' => $relation['switch'],
-            'inverse' => $this->import['allRelations'][$relation['switch']]['inverse'],
+            'inverse' => NULL,
             'priority' => NULL,
             'params' => array()
         );
+        if (!empty($this->import['allRelations'][$relation['switch']]['inverse'])) {
+        	$relation['inverse'] = $this->import['allRelations'][$relation['switch']]['inverse'];
+        }
         if (!empty($relation['priority'])) {
             $relationData['priority'] = $relation['priority'];
         }
@@ -1160,14 +1200,34 @@ class DataTransfer extends BEAppModel
             $relationData['params'] = $relation['params'];
         }
         $objRelModel = ClassRegistry::init('ObjectRelation');
-        if (!@$objRelModel->createRelationAndInverse(
-                $relationData['id'],
-                $relationData['objectId'],
-                $relationData['switch'],
-                $relationData['inverse'],
-                $relationData['priority'],
-                $relationData['params']) ) {
-            throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+        if ($objRelModel->relationExists($relationData['id'], $relationData['objectId'], $relationData['switch'])) {
+            $this->trackDebug('- relation exists - SKIP');
+        } else {
+            if ($relationData['inverse'] === $relationData['switch']) {
+                if ($objRelModel->relationExists($relationData['objectId'], $relationData['id'], $relationData['switch'])) {
+                    $this->trackDebug('- inverse relation exists - SKIP');
+                } else {
+                    if (!@$objRelModel->createRelation(
+                            $relationData['id'],
+                            $relationData['objectId'],
+                            $relationData['switch'],
+                            $relationData['priority'],
+                            true,
+                            $relationData['params']) ) {
+                                throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+                       }
+                }
+            } else {
+                if (!@$objRelModel->createRelationAndInverse(
+                        $relationData['id'],
+                        $relationData['objectId'],
+                        $relationData['switch'],
+                        $relationData['inverse'],
+                        $relationData['priority'],
+                        $relationData['params']) ) {
+                            throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+                 }
+            }
         }
         $this->import['saveMap']['relations'][$objRelModel->id][] = $relationData;
         $this->trackDebug('- saving relation ' . $counter . ': ' . $relation['switch'] . ' ... DONE');

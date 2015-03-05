@@ -187,7 +187,7 @@ class ObjectRelation extends BEAppModel
         }
         return true;
     }
-    
+
 	/**
      * Get current priority for a specific relation
 	 * @param int $id
