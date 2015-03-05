@@ -20,7 +20,7 @@
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="view"}
+{include file = './inc/menuleft.tpl' method = 'view'}
 
 <div class="head">
 	
@@ -30,11 +30,11 @@
 
 {assign var=objIndex value=0}
 
-{include file="inc/menucommands.tpl" method="view" fixed = true}
+{include file = './inc/menucommands.tpl' method = 'view' fixed = true}
 
 <div class="main">
 		
-	{include file="inc/form.tpl"}	
+	{include file = './inc/form.tpl'}	
 
 </div>
 
