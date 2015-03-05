@@ -3,7 +3,7 @@
 
 	<nav class="modulesmenu">
 		<a title="{t}search{/t}" class="searchtrigger"></a>
-		<a title="{t}id or nickname{/t}" class="searchbyidtrigger"></a>
+		<a title="{t}id or unique name{/t}" class="searchbyidtrigger"></a>
 	{strip}
 	{if !empty($moduleListInv)}
 	{foreach from=$moduleListInv key=k item=mod}
@@ -27,10 +27,10 @@
 		<input type="submit" value="{t}GO{/t}"/>
 	</form>
 
-	<!-- {* search by id or nickname *} -->
+	<!-- {* search by id or nickname (unique name) *} -->
 	<form class="searchobjectsbyid" action="{$html->url('/')}pages/gotoObjectById" method="post">
 		{$beForm->csrf()}
-		<input type="text" placeholder="{t}id or nickname{/t}" name="objectId" value=""/>
+		<input type="text" placeholder="{t}id or unique name{/t}" name="objectId" value=""/>
 		<input type="submit" value="{t}GO{/t}"/>
 	</form>
 
