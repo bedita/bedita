@@ -1,7 +1,7 @@
 CKEDITOR.plugins.add('beditacontentblock', {
 
 	init: function(editor) {
-		
+
 		editor.addCommand('insertBEditaContentBlock', {
 			exec: function(editor) {
 				if (editor.mode == "source") {
@@ -19,7 +19,7 @@ CKEDITOR.plugins.add('beditacontentblock', {
 			command: 'insertBEditaContentBlock',
 			icon: this.path + 'images/more.gif'
 		});
-		
+
 		var path = this.path;
 		var contentBlockPlaceHolder = '<!--bedita content block-->';
 		var htmlContentBlockPlaceHolder = '<img class="beContentBlock" src="' + path + 'images/trans.gif" />';
@@ -35,7 +35,7 @@ CKEDITOR.plugins.add('beditacontentblock', {
 			editor.setData(data);
 			checkButtonState();
 		};
-		
+
 		var checkButtonState = function() {
 			data = editor.getData();
 			var i = data.match(pathImage) || [];
@@ -48,7 +48,7 @@ CKEDITOR.plugins.add('beditacontentblock', {
 
 		editor.on('instanceReady', function(event) {
 			initTextArea();
-			
+
 			editor.on('beforeSetMode', function(event) {
 				data = editor.getData();
 				if (editor.mode == "wysiwyg") {
@@ -57,14 +57,11 @@ CKEDITOR.plugins.add('beditacontentblock', {
 				}
 				return false;
 			});
-			
-//			$('*',editor.document.$).live('keyup', function() {
-//				checkButtonState();
-//			});
-            $(document).on('keyup', editor.document.$ + ' *', function() {
+
+            $(editor.document.$).on('keyup', 'body', function() {
                 checkButtonState();
             });
-			
+
 			editor.on('mode', function(event) {
 				data = editor.getData();
 				if (editor.mode == "wysiwyg") {
