@@ -1,10 +1,10 @@
 /**
- * BeditaUI - javascript UI functions and methods 
+ * BeditaUI - javascript UI functions and methods
  * @param {Object} ".modules *[rel]"
  */
 
 
-/*...........................................    
+/*...........................................
 
    General functions
 
@@ -12,25 +12,25 @@
 
 
 /*
-* Date - force two date pickers to work as a date range 
+* Date - force two date pickers to work as a date range
 */
 
 function customRange(input)
 {
-    return {minDate: (input.id == 'end' ? $('#start').datepicker( "getDate" ) : null), 
-            maxDate: (input.id == 'start' ? $('#end').datepicker( "getDate" )  : null)}; 
+    return {minDate: (input.id == 'end' ? $('#start').datepicker( "getDate" ) : null),
+            maxDate: (input.id == 'start' ? $('#end').datepicker( "getDate" )  : null)};
 }
 
 
 /*
  * Extend JQuery
  */
- 
- /*...........................................    
+
+ /*...........................................
 
    Base addon functions
 
-...........................................*/   
+...........................................*/
 
 
 jQuery.fn.toggleText = function(a, b) {
@@ -64,7 +64,7 @@ jQuery.fn.extend({
             }
             if (params.formId) {
                 $("#" + params.formId).attr("action", params.action);
-                $("#" + params.formId).submit(); 
+                $("#" + params.formId).submit();
             } else {
                 $(this).parents("form").attr("action", params.action);
                 $(this).parents("form").submit();
@@ -81,20 +81,20 @@ jQuery.fn.extend({
         if(window.priorityOrder === undefined) {
             priorityOrder = "asc";
         }
-                    
+
         if(priorityOrder == "desc") {
 
             priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : $(this).find("input[name*='[priority]']:first").val() );
-            
+
             $(this).find("input[name*='[priority]']:enabled").each(function(index)
             {
                 $(this).val(priority--).trigger('change')                           // update priority
                 .hide().fadeIn(100).fadeOut(100).fadeIn('fast');
             });
-            
+
         } else {
             priority = parseInt( (arguments.length > 0 && typeof(arguments[0]) != 'object' && typeof(arguments[0]) != 'undefined')? arguments[0] : 1 );
-            
+
             $(this).find("input[name*='[priority]']:enabled").each(function(index)
             {
                 $(this).val(priority++).trigger('change')           // update priority
@@ -118,16 +118,16 @@ jQuery.fn.extend({
         } else if (type == "warn") {
             $_this.show();
         }
-            
+
         $_this.find(".closemessage").click(function() {
             $_this.hide();
         });
-        
+
         $_this.find(".messagedetail").click(function() {
             $(this).next().toggle();
         });
     },
-    
+
     preBind: function(type, data, fn) {
         return this.each(function () {
             var $this = $(this);
@@ -148,7 +148,7 @@ jQuery.fn.extend({
 
 $(document).ready(function(){
 
-/*...........................................    
+/*...........................................
 
    primacolonna
 
@@ -158,13 +158,13 @@ $(document).ready(function(){
         $("BODY").toggleClass("leftmenuopen");
     });
 
-    
-/*...........................................    
+
+/*...........................................
 
    moduloni
 
-...........................................*/   
-    
+...........................................*/
+
     $(".modules *[rel]").css("cursor","pointer").mouseover(function () {
 
             $(this).css("background-repeat","repeat");
@@ -174,23 +174,21 @@ $(document).ready(function(){
             $(this).css("background-repeat","repeat-x");
 
         }).click(function () {
-            
-            if ($(this).hasClass("bedita")) {
-                //
-            } else {
+
+            if (!$(this).hasClass("bedita")) {
                 window.location = $(this).attr("rel");
             }
     });
 
-/*...........................................    
+/*...........................................
 
    menu TOP moduli
 
 ...........................................*/
 
-    $(".modulesmenu a").mouseover(function (e) {        
+    $(".modulesmenu a").mouseover(function (e) {
 
-        var rightpos = e.clientX;   
+        var rightpos = e.clientX;
 
         $(this).addClass("over");
 
@@ -204,7 +202,7 @@ $(document).ready(function(){
 
         $(".modulesmenucaption").toggle();
 
-        $(".modulesmenucaption A").text("be");      
+        $(".modulesmenucaption A").text("be");
 
     }).click(function () {
         if ($(this).attr("href")) {
@@ -212,12 +210,12 @@ $(document).ready(function(){
         }
     });
 
-/*...........................................    
+/*...........................................
 
    current module box fixed
 
 ...........................................*/
-    
+
     if ($('.secondacolonna.fixed').length>0) {
         var fixedColumn = $('.secondacolonna.fixed');
         $(window).scroll(function(){
@@ -229,7 +227,7 @@ $(document).ready(function(){
         });
     }
 
-/*...........................................    
+/*...........................................
 
    gray TABs
 
@@ -238,42 +236,42 @@ $(document).ready(function(){
     var currentclassmodule = BEDITA.currentModule.name || '';
 
     jQuery.fn.BEtabstoggle = function() {
-        $(this).toggleClass("open").next().slideToggle('fast', function() { $(window).trigger('resize') }).toggleClass('open').trigger('slideToggle'); 
+        $(this).toggleClass("open").next().slideToggle('fast', function() { $(window).trigger('resize') }).toggleClass('open').trigger('slideToggle');
         $("h2", this).toggleClass("open").toggleClass(BEDITA.currentModule.name || '');
-    
+
     };
 
     jQuery.fn.BEtabsopen = function() {
-            
-        $(this).addClass("open").next().slideDown('fast', function() { $(window).trigger('resize') }).addClass('open').trigger('slideDown');   
+
+        $(this).addClass("open").next().slideDown('fast', function() { $(window).trigger('resize') }).addClass('open').trigger('slideDown');
         $("h2",this).addClass("open").addClass(BEDITA.currentModule.name || '');
-    
+
     };
 
     jQuery.fn.BEtabsclose = function() {
-            
-        $(this).removeClass("open").next().slideUp('fast', function() { $(window).trigger('resize') }).removeClass('open').trigger('slideUp');   
+
+        $(this).removeClass("open").next().slideUp('fast', function() { $(window).trigger('resize') }).removeClass('open').trigger('slideUp');
         $("h2",this).removeClass("open").removeClass(BEDITA.currentModule.name || '');
-    
+
     };
-    
+
     $(document).on('click', '.tab:not(.stayopen), .trigger', function () {
         $(this).BEtabstoggle();
     });
 
-    
+
     $(".tab.stayopen H2").addClass("open").addClass(BEDITA.currentModule.name || '');
 
-    
-/*...........................................    
+
+/*...........................................
 
    horizontal TABs
 
 ...........................................*/
-    
+
     $(".htabcontainer .htabcontent:first-child").show();
     $(".htab TD:first-child,.htab LI:first-child").addClass("on");
-    
+
     $(".htab TD, .htab LI").click(function() {
 
         var trigged           = $(this).attr("rel");
@@ -285,10 +283,9 @@ $(document).ready(function(){
 
         $("TD,LI",containermenu).removeClass("on");
         $(this).addClass("on");
-    
-      });
+    });
 
-/*...........................................    
+/*...........................................
 
    tabelle e stati dei TR e click
 
@@ -321,14 +318,14 @@ $(document).ready(function(){
 
     }).mouseout(function(){
 
-        $("TD",this).removeClass("over");   
+        $("TD",this).removeClass("over");
 
     });
 
 
 
     $(".indexlist TR:has(input.objectCheck:checked)").addClass("overChecked");
-    
+
     $(".indexlist input.objectCheck").change(function(){
 
         $(this).parents("TR").toggleClass("overChecked");
@@ -336,37 +333,37 @@ $(document).ready(function(){
     });
 
 
-    
+
     $(".indexlist TR[rel]").not('.idtrigger').click(function() {
-        
+
         window.location = ($(this).attr("rel"));
     });
 
 /*
     $(".indexlist THEAD TH").click(function() {
-        
-        $(this).toggleClass("on");  
-        
+
+        $(this).toggleClass("on");
+
     });
 */
-    
 
-/*...........................................    
+
+/*...........................................
 
    multimediaitem icon toolbar
 
 ...........................................*/
 
     $(".multimediaitemToolbar.viewlist").click(function () {
-        
+
         $(".vlist, .imagebox, .info_file_item").toggle();
-        
+
         $('.multimediaitem').css("float","none");
-        
+
         $('.vlist').css("white-space","nowrap");
-    
+
     });
-    
+
     $(".multimediaitemToolbar.viewsmall").click(function () {
         $("#viewlist").hide();
         $("#viewthumb").show();
@@ -380,7 +377,7 @@ $(document).ready(function(){
     });
 
     $("#mediatypes LI").click(function () {
-    
+
         $("#mediatypes LI").removeClass("on");
         $(this).addClass("on");
         var valore = $("input", this).attr("value");
@@ -394,7 +391,7 @@ $(document).ready(function(){
         $("#mediatypes LI").addClass("on");
     });
 
-/*...........................................    
+/*...........................................
 
    modal
 
@@ -404,7 +401,10 @@ $(document).ready(function(){
 
         // default options for modal
         var defaultOptions = {
-            success: function() {}
+            title: '',
+            destination: '',
+            requestData: {},
+            success: function() {},
         };
 
         if (typeof options == 'undefined' || !$.isPlainObject(options)) {
@@ -418,24 +418,24 @@ $(document).ready(function(){
 
         var h = 1500;
 
-        var destination = $(this).attr("rel");
-        var title = $(this).attr("title");
+        var destination = options.destination || $(this).attr("rel");
+        var title = options.title || $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
         $("#modaloverlay").show().fadeTo("fast", 0.8);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
-        if ($(this).attr("rel")) {
+        if (destination) {
             $("#modal #modalmain").empty().append('<div class="loader"></div>');
             $("#modal #modalmain").find('.loader').show();
-            $("#modalmain").load(destination, function(response, status, xhr) {
+            $("#modalmain").load(destination, options.requestData, function(response, status, xhr) {
                 $("#modal #modalmain").find('.loader').hide();
                 options.success();
             });
         }
 
-        if ($(this).attr("title")) {
+        if (title) {
             $("#modalheader .caption").html(title);
         }
 
@@ -487,13 +487,13 @@ $(document).ready(function(){
     }
 
     $(".modalbutton").click(function () {
-    
+
         $(this).BEmodal();
 
     });
 
 
-/*...........................................    
+/*...........................................
 
    bottons
 
@@ -515,16 +515,16 @@ $(document).ready(function(){
         });
         form.submit();
     });
-        
-/*...........................................    
+
+/*...........................................
 
    autogrow
 
 ...........................................*/
-    
+
     $('.autogrowarea').autosize();
-                        
-/*...........................................    
+
+/*...........................................
 
    bulk actions
 
@@ -534,31 +534,27 @@ $(document).ready(function(){
     $('.selecteditems').text($(".objectCheck:checked").length);
     $(".selectAll").bind("click", function(e) {
         var status = this.checked;
-        $(".objectCheck").each(function() { 
-            this.checked = status; 
+        $(".objectCheck").each(function() {
+            this.checked = status;
             if (this.checked) $(this).parents('TR').addClass('overChecked');
             else $(this).parents('TR').removeClass('overChecked');
         });
         $('.selecteditems').text($(".objectCheck:checked").length);
-    }) ;
+    });
+
     $(".objectCheck").bind("click", function(e) {
         var status = true;
-        $(".objectCheck").each(function() { 
+        $(".objectCheck").each(function() {
             if (!this.checked) return status = false;
         });
         $(".selectAll").each(function() { this.checked = status;});
-        $('.selecteditems').text($(".objectCheck:checked").length);
-    }) ;
+        $('.selecteditems')
+            .text($(".objectCheck:checked").length)
+            .closest('.tab')
+            .BEtabsopen();
+    });
 
-/*...........................................    
-
-   help
-
-...........................................*/
-
-
-
-/*...........................................    
+/*...........................................
 
    editor notes
 
@@ -568,8 +564,7 @@ $(document).ready(function(){
         $(this).next().slideToggle('fast');
     });
 
-
-/*...........................................    
+/*...........................................
 
    accessories
 
@@ -580,37 +575,35 @@ $(document).ready(function(){
         $("#"+trigged+"").toggle();
     });
 
-/*...........................................    
+/*...........................................
 
    search
 
 ...........................................*/
 
     $(".searchtrigger").click(function() {
+        $(".searchobjectsbyid").hide();
         $(".searchobjects").toggle();
     });
 
-/*...........................................    
+    $(".searchbyidtrigger").click(function() {
+        $(".searchobjects").hide();
+        $(".searchobjectsbyid").toggle();
+    });
+
+/*...........................................
 
    filter tab
 
 ...........................................*/
+
     $(".tab.filteractive").click();
 
-
-/*...........................................    
-
-   versin / history
-
-...........................................*/
-
-
-/*...........................................    
+/*...........................................
 
   modulelist menu
 
 ...........................................*/
-
 
     $('.primacolonna .modules label.bedita').click(function(e) {
         if ($('.modulesmenu_d').length) {
@@ -639,37 +632,31 @@ $(document).ready(function(){
             "left": leftshift+160+"px",
             "top":  topshift+20+"px"
         }).show();
-        
-      }, 
+
+      },
       function () {
         $(".sub_modulesmenu_d").hide();
       }
     );
 
+/*...........................................
 
-/*...........................................    
-
-   statusInfo
-
-...........................................*/
-
-    //var objstatus = $(".secondacolonna .modules label").attr("class");
-
-/*...........................................    
-
-   form enhancement / depend on libs/jquery.bsmselect
+   form enhancement / depend on libs/jquery.select2
 
 ...........................................*/
 
-    //$('select[multiple]').chosen({width: '95%'});
     $("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
         dropdownAutoWidth:true
     });
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
-            escapeMarkup: function(m) { return m; },
+            escapeMarkup: function(m) {
+                return $('<div/>').html(m).text();
+            },
             formatResult: function(state) {
+                // escape html tags
+                state.text = $('<div/>').html(state.text).text();
                 if ($(state.element).is('.pubOption')) {
                     return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
                 } else {
@@ -683,8 +670,9 @@ $(document).ready(function(){
                 }
             }
         });
-
 });
+
+/* end of document ready() */
 
 var toggleSelectTree = function(ev) {
     ev.preventDefault();
@@ -700,7 +688,7 @@ var toggleSelectTree = function(ev) {
             url: url,
             success: function(data) {
                 data = $.trim(data);
-                var ntree = $(data).slice(2);
+                var ntree = $(data).slice(1);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
@@ -712,23 +700,31 @@ var toggleSelectTree = function(ev) {
     }
 }
 
-/* end of document ready() */
-
-
 /*...........................................    
+
+   A[download] links
+
+...........................................*/
+
+var a = document.createElement('a');
+if (typeof a.download == 'undefined') {
+    $('A[download]').remove();
+}
+
+/*...........................................
 
    keyboard binding
 
 ...........................................*/
 
-document.onkeydown = function(e){   
+document.onkeydown = function(e){
     if (e == null) { // ie
         keycode = event.keyCode;
     } else { // mozilla
         keycode = e.which;
     }
-    
-    if(keycode == 27){ // 
+
+    if (keycode == 27) {
         
         if ($('.tab').next().is(":visible")) {
             $('.tab').BEtabsclose();
@@ -741,24 +737,24 @@ document.onkeydown = function(e){
         } else {
             $('.tab2').BEtabsopen();
         }
-        
-    } else if(keycode == 109){ // 
-        
+
+    } else if(keycode == 109){ //
+
         //$('.tab').BEtabsopen();
         //helptrigger
-        
-    } else if(keycode == 122){ // 
-        
+
+    } else if(keycode == 122){ //
+
         //$('.helptrigger').click();
-    
-    
-    } else if(keycode == 188){ // 
-        
+
+    } else if(keycode == 188){ //
+
     }
-    //alert(keycode);
+
+    //console.log(keycode);
 };
 
-/*...........................................    
+/*...........................................
 
    objects list
 
@@ -767,7 +763,7 @@ document.onkeydown = function(e){
 $(document).on('click', '.showmore', function() {
     var container = $(this).closest('.obj');
     $(this).toggleText('+', '-');
-    //mette il modified a 1 
+    //mette il modified a 1
     var mod = $('.mod', container).val();
     if (mod > 0) {
         $('.mod',container).val(0);
@@ -775,12 +771,12 @@ $(document).on('click', '.showmore', function() {
     else {
         $('.mod',container).val(1);
     }
-    //e mostra la textarea del titolo al posto del titolo 
+    //e mostra la textarea del titolo al posto del titolo
     container.toggleClass('show_more');
 });
 
 
-/*...........................................    
+/*...........................................
 
    openAtStart
 
@@ -791,7 +787,7 @@ function openAtStart(defaultOpen) {
 
         var title = "tabs." + BEDITA.currentModule.name + "." + BEDITA.action;
         var openAtStart = localStorage.getItem(title);
-        
+
         if (openAtStart == null) {
             openAtStart = defaultOpen;
         }
@@ -821,7 +817,7 @@ function openAtStart(defaultOpen) {
     }
 }
 
-/*...........................................    
+/*...........................................
 
    utility
 
@@ -830,34 +826,48 @@ function openAtStart(defaultOpen) {
 function capitaliseFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
-      
-      
-function getFlashVersion(){ 
-    // ie 
-    try { 
-        try { 
-            // avoid fp6 minor version lookup issues 
-            // see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/ 
-            var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6'); 
-            try { 
-                axo.AllowScriptAccess = 'always'; 
+
+
+function getFlashVersion(){
+    // ie
+    try {
+        try {
+            // avoid fp6 minor version lookup issues
+            // see: http://blog.deconcept.com/2006/01/11/getvariable-setvariable-crash-internet-explorer-flash-6/
+            var axo = new ActiveXObject('ShockwaveFlash.ShockwaveFlash.6');
+            try {
+                axo.AllowScriptAccess = 'always';
             } catch(e) {
                 return '6,0,0';
-            } 
-        } catch(e) {} 
-        return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1]; 
-    // other browsers 
-    } catch(e) { 
-        try { 
-            if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){ 
-                return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1]; 
-            } 
-        } catch(e) {} 
-    } 
+            }
+        } catch(e) {}
+        return new ActiveXObject('ShockwaveFlash.ShockwaveFlash').GetVariable('$version').replace(/\D+/g, ',').match(/^,?(.+),?$/)[1];
+    // other browsers
+    } catch(e) {
+        try {
+            if(navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin){
+                return (navigator.plugins["Shockwave Flash 2.0"] || navigator.plugins["Shockwave Flash"]).description.replace(/\D+/g, ",").match(/^,?(.+),?$/)[1];
+            }
+        } catch(e) {}
+    }
 
-    return false; 
-} 
+    return false;
+}
 
+function addCsrfToken(postData, searchIn) {
+    if (!postData) {
+        postData = {};
+    }
+    if (!postData.data) {
+        postData.data = {};
+    }
+    $item = (searchIn) ? $(searchIn) : $('body');
+    var csrfToken = $item.find('input[name=data\\[_csrfToken\\]\\[key\\]]:first').val();
+    if (csrfToken) {
+        postData.data._csrfToken = {key: csrfToken};
+    }
+    return postData;
+}
 
 /**
  * Handle a list of items

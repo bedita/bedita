@@ -20,7 +20,7 @@
 		<td>{if $s.mail_html}{t}yes{/t}{else}{t}no{/t}{/if}</td>
 		<td>{t}{$s.mail_status}{/t}</td>
 		<td>{$s.created|date_format:$conf->datePattern}</td>
-		<td><a href="{$html->url('/addressbook/view/')}{$s.id}">› {t}details{/t}</a></td>
+		<td><a href="{$html->url('/view/')}{$s.id}">› {t}details{/t}</a></td>
 	</tr>
 	{/foreach}
 	

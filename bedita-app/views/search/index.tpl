@@ -46,15 +46,16 @@ function delObjects() {
 
 {include file="modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file = './inc/menuleft.tpl' method = 'index'}
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file = './inc/menucommands.tpl' method = 'index'}
 
 {include file="../toolbar.tpl"}
 
 <div class="main">
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]"/>
 	<input type="hidden" name="objects_selected" id="objects_selected"/>
@@ -80,7 +81,7 @@ function delObjects() {
 			<td>
 				<input type="checkbox" name="object_chk" class="objectCheck" title="{$objects[i].id}"/>
 				&nbsp;&nbsp;
-				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label}</a>
+				<a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].label|escape}</a>
 				
 			</td>
 			<td>{$objects[i].status}</td>

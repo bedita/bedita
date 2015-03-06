@@ -96,28 +96,27 @@ class AuthenticationsController extends AppController {
 		}
 	}
 
-	protected function forward($action, $esito) {
-	 	$REDIRECT = array(
-	 			"logout"	=> 	array(
-	 									"OK"	=> "/",
-	 									"ERROR"	=> "/authentications/logout" 
-	 								),
-	 			"changePasswd"	=> 	array(
-	 									"OK"	=> "/",
-	 									"ERROR"	=> "/authentications/logout" 
-	 								),
-	 			"login"	=> 	array(
-	 									"OK"	=> "/",
-	 									"ERROR"	=> "/" 
-	 								)
-	 	);
-	 	
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	
-	 	return false;
-	 }
-	 
-	
+    protected function forward($action, $result) {
+        $redirect = array(
+            'logout' => array(
+                'OK' => '/',
+                'ERROR' => '/authentications/logout'
+            ),
+            'changePasswd' => array(
+                'OK' => '/',
+                'ERROR' => '/authentications/logout'
+            ),
+            'login' => array(
+                'OK' => '/',
+                'ERROR' => '/'
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        };
+        return false;
+    }
+
 	private function loginEvent($level, $user, $msg) {
 		$event = array('EventLog'=>array("log_level"=>$level, 
 			"userid"=>$user,"msg"=>$msg, "context"=>strtolower($this->name)));

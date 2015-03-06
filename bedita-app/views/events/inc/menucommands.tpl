@@ -5,7 +5,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
-		{assign var="back" value=$session->read("backFromView")}
+		{assign var="back" value=$session->read("backFromView")|escape}
 	{else}
 		{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
 	{/if}
@@ -17,6 +17,7 @@ Menu a SX valido per tutte le pagine del controller.
 {if empty($categories)}
 	{if !empty($view->action) && $view->action == "calendar"}	
 		<form id="calendar_from" style="padding:10px" name="calendar_from" method="get">
+			{$beForm->csrf()}
 			<label>{t}start from{/t}:</label> 
 			<fieldset style="line-height:2.5em; margin:10px 0 10px 0;  padding-bottom:0px; display:block">
 				{$time=$startTime|default:$smarty.now|date_format:'%s'}

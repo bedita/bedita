@@ -31,7 +31,7 @@
 class CommentsController extends ModulesController {
 	
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeLangText');
+	var $components = array('BeTree', 'BeLangText', 'BeSecurity');
 	var $uses = array('Comment');
 	
 	protected $moduleName = 'comments';
@@ -112,32 +112,13 @@ class CommentsController extends ModulesController {
 		$this->eventInfo("Comments $objectsListDeleted deleted");
 	} 
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"save"	=> 	array(
-							"OK"	=> "/comments/view/{$this->Comment->id}",
-							"ERROR"	=> "/comments/view" 
-							),
-			"delete" =>	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> $this->referer() 
-							),
-			"deleteSelected" =>	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-			"banIp"	=> 	array(
-							"OK"	=> "/comments/view/{$this->data['id']}",
-							"ERROR"	=> "/comments/view" 
-							), 
-			"changeStatusObjects"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							)
-		);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
-	
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'banIp' => array(
+                'OK' => "/comments/view/{$this->data['id']}",
+                'ERROR' => '/comments/view'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 }
-?>

@@ -6,17 +6,17 @@
 		<h2>
 			{if !empty($title)}
 			
-				{$title}
+				{$title|escape}
 			
 			{elseif !empty($sectionSel)}
 			
 				{t}{$itemName|default:$moduleName}{/t} in “ 
-				<span style="color:white" class="evidence">{$sectionSel.title}</span> ”
+				<span style="color:white" class="evidence">{$sectionSel.title|escape}</span> ”
 			
 			{elseif !empty($pubSel)}
 				
 				{t}{$itemName|default:$moduleName}{/t} in “ 
-				<span style="color:white" class="evidence">{$pubSel.title}</span> ”
+				<span style="color:white" class="evidence">{$pubSel.title|escape}</span> ”
 			
 			{else}
 			

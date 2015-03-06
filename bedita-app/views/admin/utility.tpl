@@ -16,12 +16,14 @@
 				var chk = $("#cleanAll").is(':checked');
 				var startText = $_this.text();
 				$_this.text(loadingtext).removeClass("execute").addClass("loading");
+				var postData = {
+					operation: op,
+					cleanAll: chk
+				};
+				postData = addCsrfToken(postData);
 				$.ajax({
 					url: "{$html->url('/admin/utility')}",
-					data: {
-						operation: op,
-						cleanAll: chk
-					},
+					data: postData,
 					dataType: "json",
 					type: "post",
 					error: function(jqXHR, textStatus, errorThrown) {

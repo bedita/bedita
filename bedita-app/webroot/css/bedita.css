@@ -604,13 +604,18 @@ NAV.modulesmenu {
 	background-image: none !important;
 }
 
-.modulesmenu .searchtrigger {
-	background: #ccc url(../img/iconSearch.png) center no-repeat;
-		margin-right:20px;
+.searchobjects, .searchobjectsbyid {
+	display:none; z-index:100; position:absolute; left: 735px; top:50px;
 }
+.searchobjectsbyid { left: 828px; }
 
-.searchobjects {
-	display:none; z-index:100; position:absolute; left:735px; top:50px;
+.modulesmenu .searchtrigger {
+	margin-right:20px;
+	background: #ccc url(../img/iconSearch.png) center no-repeat;
+}
+.modulesmenu .searchbyidtrigger {
+	margin-left: 5px;
+	background: #ccc url(../img/iconSearchById.png) center no-repeat;
 }
 
 .searchobjects input[type=text]{
@@ -728,7 +733,7 @@ UL.menuleft + UL.menuleft {
 ...........................................*/
 
 
-.head H1 {margin-top: 37px;}
+.head H1 {margin-top: 37px;max-width: 532px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;line-height: 1.3em;display: inline-block;vertical-align: bottom;}
 
 
 
@@ -994,7 +999,7 @@ TR.trick {
 .boxed.relationList .commands {
 	text-align: right;
 	border-top:1px solid #999;
-	height: 35px;
+	min-height: 35px;
 	line-height: 29px;
 }
 
@@ -1389,11 +1394,12 @@ TABLE.indexlist H4{
 	/*padding-top: 10px; padding-bottom: 10px;*/
 }
 
-.indexlist TD.custom-property-cell {
+.indexlist TD.custom-property-cell P {
     max-width: 160px;
-    word-break: break-word;
+    word-break: break-all;
     text-overflow: ellipsis;
-    max-height: 65px;
+    max-height: 20px;
+	overflow:hidden;
 }
 
 .indexlist .show_on_more {
@@ -1629,6 +1635,7 @@ TABLE.noborder TD, TABLE.noborder TH {
 	height:auto;
 }
 
+
 .multimediaitem.list .imagebox, .multimediaitem.list textarea {
 	display:none;
 }
@@ -1641,6 +1648,8 @@ TABLE.noborder TD, TABLE.noborder TH {
 	color:gray;
 	padding:0px; 
 	border-top:1px solid silver;
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .multimediaitem input, .multimediaitem textarea {
@@ -2508,11 +2517,57 @@ Table.graph .value {
 	text-align:right;
 }
 
+
 .daterow {
-	padding-bottom:5px; 
-	margin-bottom:5px;
-    border-bottom: 1px solid gray;
+	padding-bottom:8px; 
+	margin-bottom:8px;
+    border-bottom: 1px solid #a0a0a0;
 }
+.daterow:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+.newdaterow {
+	margin-top: 1em;
+}
+
+.newdaterow .dateinput,
+.daterow .dateinput {
+	width: 6.1em;
+}
+.newdaterow .timeinput,
+.daterow .timeinput {
+	width: 3.6em;
+}
+
+.newdaterow input[type=text], .daterow img,
+.daterow input[type=text], .daterow img {
+	margin-right: .7em !important;
+	text-align: right;
+}
+.newdaterow img,
+.daterow img {
+	margin-left: -.35em !important;
+}
+.newdaterow div,
+.daterow div {
+	display: inline-block;
+	margin-right: .7em;
+}
+
+.daterow .rownumber {
+	display: inline-block;
+	min-width: 22px;
+	margin-right: 1em;
+	padding: 0.675em;
+	background-color: #333;
+	border-radius: .5em;
+	font-size: .825em;
+	line-height: 1em;
+	color: #EEE;
+	text-align: center;
+}
+
 
 /*...........................................    
 
@@ -3083,6 +3138,15 @@ input[type=submit].auth_button_google {
     height: 40px;
     position: relative;
     margin: 100px auto;
+    text-align: center;
+}
+
+#loading > *, .loader > *, .modaloader > * {
+	color: white;
+	z-index: 1;
+	position: relative;
+	line-height: 40px;
+	text-shadow: 0 0 5px #333;
 }
 
 #loading:before, .loader:before, .modaloader:before, #loading:after, .loader:after, .modaloader:after {

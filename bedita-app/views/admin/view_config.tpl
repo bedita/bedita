@@ -59,7 +59,7 @@
 <div class="mainfull">
 
 	<form action="{$html->url('/admin/saveConfig')}" method="post" name="configForm" id="configForm">
-
+		{$beForm->csrf()}
 		<div class="tab"><h2>{t}System configuration{/t}</h2></div>
 
 		<fieldset id="system_config">
@@ -72,7 +72,7 @@
 				<tr>
 					<th style="text-transform:none">{t}BEdita url{/t}:</th>
 					<td>
-						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl}" style="width: 480px;"/>
+						<input type="text" name="sys[beditaUrl]" value="{$conf->beditaUrl|escape}" style="width: 480px;"/>
 					</td>
 					{if !empty($bedita_url_err)}
 					<td>
@@ -83,7 +83,7 @@
 				<tr>
 					<th>{t}Media root{/t}:</th>
 					<td>
-						<input type="text" name="sys[mediaRoot]" value="{$conf->mediaRoot}" style="width: 480px;"/>
+						<input type="text" name="sys[mediaRoot]" value="{$conf->mediaRoot|escape}" style="width: 480px;"/>
 					</td>
 					{if !empty($media_root_err)}
 					<td>
@@ -95,7 +95,7 @@
 				<tr>
 					<th>{t}Media url{/t}:</th>
 					<td>
-						<input type="text" name="sys[mediaUrl]" value="{$conf->mediaUrl}" style="width: 480px;"/>
+						<input type="text" name="sys[mediaUrl]" value="{$conf->mediaUrl|escape}" style="width: 480px;"/>
 					</td>
 					{if !empty($media_url_err)}
 					<td>
@@ -175,7 +175,7 @@
 				<tr>
 					<th>{t}Project name{/t}:</th>
 					<td>
-						<input type="text" name="cfg[projectName]" value="{$conf->projectName}" style="width: 300px;"/>
+						<input type="text" name="cfg[projectName]" value="{$conf->projectName|escape}" style="width: 300px;"/>
 					</td>
 				</tr>
                 <tr>
@@ -183,7 +183,7 @@
                     <td>
                         <textarea name="cfg[colophon]" 
                             style="font-size:0.8em; color:gray; width:470px;">
-                            {$conf->colophon|default:''}
+                            {$conf->colophon|default:''|escape}
                         </textarea>
                     </td>
                 </tr>
@@ -271,17 +271,17 @@
 				<tr>
 					<th rowspan=4 style="padding-top:10px; vertical-align:top"><b>{t}Smtp Options{/t}</b>:</th>
 					<th>{t}port{/t}:</th>
-					<td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''}" /></td>
+					<td><input type="text" name="sys[smtpOptions][port]" value="{$conf->smtpOptions.port|default:''|escape}" /></td>
 					<th>{t}timeout{/t}:</th>
-					<td><input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''}" /></td>
+					<td><input type="text" name="sys[smtpOptions][timeout]" value="{$conf->smtpOptions.timeout|default:''|escape}" /></td>
 				</tr>
 				<tr>
 					<th>{t}host{/t}:</th>
-					<td colspan="3"><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''}" /></td>
+					<td colspan="3"><input type="text" name="sys[smtpOptions][host]" value="{$conf->smtpOptions.host|default:''|escape}" /></td>
 				</tr>
 				<tr>
 					<th>{t}username{/t}:</th>
-					<td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''}" autocomplete="off"/></td>
+					<td><input type="text" name="sys[smtpOptions][username]" value="{$conf->smtpOptions.username|default:''|escape}" autocomplete="off"/></td>
 					<th>{t}password{/t}:</th>
 					<td><input type="password" name="sys[smtpOptions][password]" autocomplete="off"/></td>
 				</tr>
@@ -295,13 +295,13 @@
 				<tr>
 					<th rowspan=2 style="padding-top:10px; vertical-align:top"><b>{t}Mail support{/t}</b>:</th>
 					<th>{t}from{/t}:</th>
-					<td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''}" /></td>
+					<td><input type="text" name="sys[mailSupport][from]" value="{$conf->mailSupport.from|default:''|escape}" /></td>
 					<th>{t}to{/t}:</th>
-					<td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''}" /></td>
+					<td><input type="text" name="sys[mailSupport][to]" value="{$conf->mailSupport.to|default:''|escape}" /></td>
 				</tr>
 				<tr>
 					<th>{t}subject{/t}:</th>
-					<td><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''}" /></td>
+					<td><input type="text" name="sys[mailSupport][subject]" value="{$conf->mailSupport.subject|default:''|escape}" /></td>
 				</tr>
 			</table>
 		</fieldset>

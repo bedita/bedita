@@ -1,5 +1,6 @@
 	{strip}
 	<form action="{$html->url('/')}{$submiturl}/save" method="post" name="updateForm" id="updateForm" class="cmxform">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 		<ul data-role="listview">
@@ -40,6 +41,7 @@
 				<label for="data[destination][]">{t}select position{/t}:</label>
 				<select id="data[destination][]" name="data[destination][]" multiple="multiple" data-native-menu="false">
 					{assign_associative var="params" parentIds=$parents}
+					<option value="">{t}None{/t}</option>
 					{$beTree->optionsMobile($tree, $params)}
 				</select>
 			</li>

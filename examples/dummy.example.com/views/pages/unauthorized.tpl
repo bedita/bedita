@@ -1,1 +1,0 @@
-Hi <b>{$BEAuthUser.realname}</b> you're not authorized to access to this item.

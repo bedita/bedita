@@ -33,13 +33,13 @@ class MultimediaController extends ModulesController {
     var $name = 'Multimedia';
 
     var $helpers    = array('BeTree', 'BeToolbar', 'ImageInfo');
-    var $components = array('BeFileHandler', 'BeUploadToObj');
+    var $components = array('BeFileHandler', 'BeUploadToObj', 'BeSecurity');
 
     // This controller does not use a model
     var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
     protected $moduleName = 'multimedia';
 
-    function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 20) {
+    function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 50) {
         $conf  = Configure::getInstance() ;
         $this->setup_args(
             array("id", "integer", &$id),
@@ -389,53 +389,14 @@ class MultimediaController extends ModulesController {
         $this->layout = 'ajax';
     }
 
-    protected function forward($action, $esito) {
-
-        $REDIRECT = array(
-            "cloneObject"   =>  array(
-                            "OK"    => "/multimedia/view/".@$this->Stream->id,
-                            "ERROR" => "/multimedia/view/".@$this->Stream->id 
-                            ),
-            "save"  =>  array(
-                            "OK"    => "/multimedia/view/".@$this->Stream->id,
-                            "ERROR" => "/multimedia/view/".@$this->data['id'] 
-                            ),
-            "saveAjax" =>   array(
-                            "OK"    => self::VIEW_FWD.'upload_ajax_response',
-                            "ERROR" => self::VIEW_FWD.'upload_ajax_response'
-                            ),
-            "view"  =>  array(
-                            "ERROR" => "/multimedia"
-                            ),
-            "delete"    =>  array(
-                            "OK"    => $this->fullBaseUrl . $this->Session->read('backFromView'),
-                            "ERROR" => $this->referer()
-                            ),
-            "deleteSelected" => array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "addItemsToAreaSection" =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "moveItemsToAreaSection"    =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "removeItemsFromAreaSection"    =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "changeStatusObjects"   =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            )
-                        );
-        if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-        return false ;
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'saveAjax'	=> 	array(
+                'OK'	=> self::VIEW_FWD.'upload_ajax_response',
+                'ERROR'	=> self::VIEW_FWD.'upload_ajax_response'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
     }
 
 }
-
-?>

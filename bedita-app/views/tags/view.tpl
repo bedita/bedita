@@ -18,13 +18,13 @@ $(document).ready( function ()
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="head">
 
 	<h2>
 		{if $tag}
-			Tag	“<em style="color:#FFFFFF; line-height:2em">{$tag.label}</em>”
+			Tag	“<em style="color:#FFFFFF; line-height:2em">{$tag.label|escape}</em>”
 		{else}
 			{t}New tag{/t}
 		{/if}
@@ -33,6 +33,7 @@ $(document).ready( function ()
 </div>
 
 <form action="{$html->url('/tags/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 
 {include file="inc/menucommands.tpl" fixed=true}
 

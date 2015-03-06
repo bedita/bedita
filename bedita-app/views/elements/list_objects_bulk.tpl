@@ -53,7 +53,8 @@
 		&nbsp;{t}to{/t}:&nbsp;
 
 		<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
-		{$beTree->option($tree)}
+			<option value="">{t}None{/t}</option>
+			{$beTree->option($tree)}
 		</select>
 
 		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />
@@ -73,8 +74,8 @@
 		&nbsp;<select id="objCategoryAssoc" class="objCategoryAssociation" name="data[category]" placeholder='{t}select a category{/t}' data-placeholder='{t}select a category{/t}'>
 		<option></option>
 		{foreach from=$categories item='category' key='key'}
-		{if !empty($named_arr.category) && ($key == $named_arr.category)}{assign var='filter_category_name' value=$category}{/if}
-		<option value="{$key}">{$category}</option>
+		{if !empty($named_arr.category) && ($key == $named_arr.category)}{assign var='filter_category_name' value=$category|escape}{/if}
+		<option value="{$key}">{$category|escape}</option>
 		{/foreach}
 		</select>
 		&nbsp;<input id="assocObjectsCategory" type="button" value="{t}Add association{/t}" class="opButton"/>

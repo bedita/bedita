@@ -1,10 +1,11 @@
 <form action="{$html->url('/comments/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 <input type="hidden" name="data[title]" value="{$object.title|default:''}" />
 <input type="hidden" name="data[nickname]" value="{$object.nickname|default:''}" />
 <input type="hidden" name="data[object_id]" value="{$object.ReferenceObject.id}" />
 
-<div class="tab"><h2>comment#{$object.id} on {$object.ReferenceObject.title}</h2></div>
+<div class="tab"><h2>comment#{$object.id} on {$object.ReferenceObject.title|escape}</h2></div>
 
 <fieldset id="details">
 <table class="bordered">
@@ -23,7 +24,7 @@
 	
 		<th>{t}Text{/t}:</th>
 		<td colspan="3">
-		<textarea style="height:120px; width:380px;" name="data[description]">{$object.description|default:''}</textarea>
+		<textarea style="height:120px; width:380px;" name="data[description]">{$object.description|default:''|escape}</textarea>
 		</td>
 	
 	</tr>
@@ -32,7 +33,7 @@
 	
 		<th>{t}Author{/t}:</th>
 		<td colspan="3">
-		<input type="text" name="data[author]" value="{$object.author|default:''}"/>
+		<input type="text" name="data[author]" value="{$object.author|default:''|escape}"/>
 		</td>
 	
 	</tr>
@@ -44,7 +45,7 @@
 			{assign var="o" value=$object.ReferenceObject}
 			<a href="{$html->url('/')}view/{$o.id}"><span title="{$conf->objectTypes[$o.object_type_id].name}" 
 				class="listrecent {$conf->objectTypes[$o.object_type_id].module_name}">&nbsp;</span>
-				{$o.title|default:'<i>[no title]</i>'}
+				{$o.title|default:'<i>[no title]</i>'|escape}
 			</a>
 		</td>
 	
@@ -55,14 +56,14 @@
 		<th>{t}created on{/t}:</th>
 		<td>{$object.created|date_format:$conf->dateTimePattern}</td>
 		<th>{if isset($object.UserCreated.id)}{t}from{/t}:{/if}</th>
-		<td>{if isset($object.UserCreated.id)}{$object.UserCreated.userid}{/if}</td>
+		<td>{if isset($object.UserCreated.id)}{$object.UserCreated.userid|escape}{/if}</td>
 	</tr>
 
 	<tr>
 		<th>{t}modified on{/t}:</th>
 		<td>{$object.modified|date_format:$conf->dateTimePattern}</td>
 		<th>{if isset($object.UserModified.id)}{t}from{/t}:{/if}</th>
-		<td>{if isset($object.UserModified.id)}{$object.UserModified.userid}{/if}</td>
+		<td>{if isset($object.UserModified.id)}{$object.UserModified.userid|escape}{/if}</td>
 	</tr>
 	
 	<tr>

@@ -63,7 +63,7 @@
 		<tr>
 			<td colspan=5>
 				{t}Version{/t} <b>{$version.revision}</b> / <b>{$totRevision}</b>, 
-				{t}created by{/t} <b>{$user.realname|default:''} [{$user.userid|default:''}]</b>
+				{t}created by{/t} <b>{$user.realname|default:''|escape} [{$user.userid|default:''|escape}]</b>
 				{t}on{/t} <span class='evidence'>{$version.created|date_format:$conf->dateTimePattern}</span>
 				
 				<!-- <input type='button' class='BEbutton' id='restoreall' style='margin-left:10px' value='{t}restore all{/t}' /> -->

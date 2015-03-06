@@ -37,7 +37,8 @@ class AdminController extends ModulesController {
 			)
 		),
 		'BeSystem',
-		'BeMail'
+		'BeMail',
+		'BeSecurity'
 	);
 	public $helpers = array('Paginator', 'Text');
 	public $paginate = array(
@@ -50,6 +51,8 @@ class AdminController extends ModulesController {
 		// disable Security component for method not in requirePost
 		if (!in_array($this->action, $this->Security->requirePost)) {
 			$this->Security->validatePost = false;
+		} else {
+			$this->BeSecurity->validatePost = false;
 		}
 	}
 
@@ -777,89 +780,88 @@ class AdminController extends ModulesController {
 		BeLib::getObject("BeConfigure")->cacheConfig();
 		$this->userInfoMessage(__("Relation deleted", true));
 	}
-	
-	protected function forward($action, $esito) {
-			$REDIRECT = array(
-				"deleteAllMailUnsent" => 	array(
-								"OK"	=> '/admin/emailInfo',
-								"ERROR"	=> '/admin/emailInfo'
-							),
-				"deleteAllMailLogs" => 	array(
-								"OK"	=> '/admin/emailLogs',
-								"ERROR"	=> '/admin/emailLogs'
-							),
-				"deleteMailJob" => 	array(
-								"OK"	=> '/admin/emailInfo',
-								"ERROR"	=> '/admin/emailInfo'
-							),
-				"deleteMailLog" => 	array(
-								"OK"	=> '/admin/emailLogs',
-								"ERROR"	=> '/admin/emailLogs'
-							),
-				"emptyFile" => 	array(
-								"OK"	=> '/admin/systemLogs',
-								"ERROR"	=> '/admin/systemLogs'
-							),
-				"emptySystemLog" => 	array(
-								"OK"	=> '/admin/systemLogs',
-								"ERROR"	=> '/admin/systemLogs'
-							),
-	 	 		"deleteEventLog" => 	array(
- 								"OK"	=> '/admin/systemEvents',
-	 							"ERROR"	=> '/admin/systemEvents'
-	 						),
-				"saveCustomProperties" =>	array(
-					 			"OK"	=> '/admin/customproperties',
-								"ERROR"	=> '/admin/customproperties'
-							),
-				"deleteCustomProperties" =>	array(
-					 			"OK"	=> '/admin/customproperties',
-								"ERROR"	=> '/admin/customproperties'
-							),
-				"plugModule" => array(
-								"OK" => "/admin/pluginModules",
-								"ERROR" => "/admin/pluginModules",
-							),
-				"toggleModule" => array(
-								"OK" => $this->referer(),
-								"ERROR" => $this->referer(),
-							),
-				"unplugModule" => array(
-								"OK" => "/admin/pluginModules",
-								"ERROR" => "/admin/pluginModules",
-							),
-				"enableAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"disableAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"updateAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"saveConfig" => 	array(
-	 							"OK"	=> "/admin/viewConfig",
-	 							"ERROR"	=> "/admin/viewConfig"
-	 						),
-	 			"testSmtp" => 	array(
-	 							"OK"	=> "/admin/viewConfig",
-	 							"ERROR"	=> "/admin/viewConfig"
-	 						),
-	 			"saveCustomRelation" => 	array(
-	 							"OK"	=> "/admin/customRelations",
-	 							"ERROR"	=> "/admin/customRelations"
-	 						),
-	 			"deleteCustomRelation" => 	array(
-	 							"OK"	=> "/admin/customRelations",
-	 							"ERROR"	=> "/admin/customRelations"
-	 						)
-	 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	}
+
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'deleteAllMailUnsent' => array(
+                'OK' => '/admin/emailInfo',
+                'ERROR' => '/admin/emailInfo'
+            ),
+            'deleteAllMailLogs' => array(
+                'OK' => '/admin/emailLogs',
+                'ERROR' => '/admin/emailLogs'
+            ),
+            'deleteMailJob' => array(
+                'OK' => '/admin/emailInfo',
+                'ERROR' => '/admin/emailInfo'
+            ),
+            'deleteMailLog' => array(
+                'OK' => '/admin/emailLogs',
+                'ERROR' => '/admin/emailLogs'
+            ),
+            'emptyFile' => array(
+                'OK' => '/admin/systemLogs',
+                'ERROR' => '/admin/systemLogs'
+            ),
+            'emptySystemLog' => array(
+                'OK' => '/admin/systemLogs',
+                'ERROR' => '/admin/systemLogs'
+            ),
+            'deleteEventLog' => array(
+                'OK' => '/admin/systemEvents',
+                'ERROR' => '/admin/systemEvents'
+            ),
+            'saveCustomProperties' => array(
+                'OK' => '/admin/customproperties',
+                'ERROR' => '/admin/customproperties'
+            ),
+            'deleteCustomProperties' => array(
+                'OK' => '/admin/customproperties',
+                'ERROR' => '/admin/customproperties'
+            ),
+            'plugModule' => array(
+                'OK' => '/admin/pluginModules',
+                'ERROR' => '/admin/pluginModules'
+            ),
+            'toggleModule' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            ),
+            'unplugModule' => array(
+                'OK' => '/admin/pluginModules',
+                'ERROR' => '/admin/pluginModules'
+            ),
+            'enableAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'disableAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'updateAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'saveConfig' => array(
+                'OK' => '/admin/viewConfig',
+                'ERROR' => '/admin/viewConfig'
+            ),
+            'testSmtp' => array(
+                'OK' => '/admin/viewConfig',
+                'ERROR' => '/admin/viewConfig'
+            ),
+            'saveCustomRelation' => array(
+                'OK' => '/admin/customRelations',
+                'ERROR' => '/admin/customRelations'
+            ),
+            'deleteCustomRelation' => array(
+                'OK' => '/admin/customRelations',
+                'ERROR' => '/admin/customRelations'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
 

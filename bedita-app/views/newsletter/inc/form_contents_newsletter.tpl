@@ -179,10 +179,10 @@
 		<option value="">--</option>
 		{foreach from=$templateByArea item="pub"}
 			{if !empty($pub.MailTemplate)}
-				<option value="">{$pub.title|upper}</option>
+				<option value="">{$pub.title|escape|upper}</option>
 			{/if}
 			{foreach from=$pub.MailTemplate item="temp"}
-				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
+				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title|escape}</option>
 			{/foreach}
 		{/foreach}
 	</select>
@@ -203,7 +203,7 @@
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:610px">{$object.abstract|default:null}</textarea>
+			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:610px">{$object.abstract|escape|default:null}</textarea>
 		</div>
 		
 	</div>

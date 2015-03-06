@@ -5,7 +5,7 @@
 
 {if !empty($BEAuthUser.userid)}
 	<li>
-		<a href="{$html->url('/home/profile/')}">{t}User{/t}: <span class="on">{$BEAuthUser.realname}</span></a>
+		<a href="{$html->url('/home/profile/')}">{t}User{/t}: <span class="on">{$BEAuthUser.realname|escape}</span></a>
 	</li>
 {/if}
 

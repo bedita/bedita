@@ -7,7 +7,7 @@
 			</td>
 			<td>
 				<input type="hidden" name="data[MailGroup][id]" value="{$item.id|default:''}" />
-				<input type="text" style="width:360px;" id="groupname" name="data[MailGroup][group_name]" value="{$item.group_name|default:''}" />
+				<input type="text" style="width:360px;" id="groupname" name="data[MailGroup][group_name]" value="{$item.group_name|escape|default:''}" />
 			</td>
 		</tr>
 		<tr>
@@ -17,7 +17,7 @@
 			<td>{assign var='mailgroup_area_id' value=$item.area_id|default:''}
 				<select style="width:220px" name="data[MailGroup][area_id]">
 					{foreach from=$areasList key="area_id" item="public_name"}
-					<option value="{$area_id}"{if $area_id == $mailgroup_area_id} selected{/if}>{$public_name}</option>
+					<option value="{$area_id}"{if $area_id == $mailgroup_area_id} selected{/if}>{$public_name|escape}</option>
 					{/foreach}
 				</select>
 			</td>

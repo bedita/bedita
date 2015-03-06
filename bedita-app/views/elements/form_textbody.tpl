@@ -10,7 +10,7 @@
 {if ($shortText) or (!empty($object.abstract))}
 
 		<label>{t}short text{/t}:</label>
-		<textarea name="data[abstract]" class="mce abstract">{$object.abstract|default:''}</textarea>
+		<textarea name="data[abstract]" class="mce abstract">{$object.abstract|default:''|escape}</textarea>
 		<label for="body">{t}long text{/t}:</label>
 {/if}	
 		<div id="bodyDropTarget" class="dropTarget">
@@ -31,5 +31,5 @@
 			</div>
 		</div>
 
-		<textarea name="data[body]" class="mce body">{$object.body|default:''}</textarea>
+		<textarea name="data[body]" class="mce body">{$object.body|default:''|escape}</textarea>
 </fieldset>

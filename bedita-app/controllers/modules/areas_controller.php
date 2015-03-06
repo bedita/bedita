@@ -33,7 +33,7 @@ class AreasController extends ModulesController {
 	var $name = 'Areas';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeUploadToObj', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Area', 'Section', 'Tree', 'User', 'Group', 'ObjectType','Category') ;
 	protected $moduleName = 'areas';
@@ -113,7 +113,7 @@ class AreasController extends ModulesController {
 
 	}
 
-	public function view($id) {
+	public function view($id = null) {
 		$this->action = "index";
 		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
 		$modelName = Configure::read("objectTypes.".$objectTypeId.".model");
@@ -124,7 +124,16 @@ class AreasController extends ModulesController {
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->loadChildren($id, "priority", $dir);
 		$this->set("objectType", Configure::read("objectTypes.".$objectTypeId.".name"));
-		$this->set('parent_id', $this->Tree->getParent($id));
+		$parentId = null;
+		if (empty($id) && !empty($this->params['named']['id'])) {
+			$id = $this->params['named']['id'];
+		}
+		if (!empty($id)) {
+			$parentId = $this->Tree->getParent($id);
+		} else if (!empty($this->params['named']['branch'])) {
+			$parentId = $this->params['named']['branch'];
+		}
+		$this->set('parent_id', $parentId);
 	}
 
 	/**
@@ -175,12 +184,28 @@ class AreasController extends ModulesController {
 		$this->User->displayField = 'userid';
 		$this->set("usersList", $this->User->find('list', array("order" => "userid")));
 		$this->set("groupsList", $this->Group->find('list', array("order" => "name")));
+		$this->set('object', null);
 	}
 
-	function viewSection() {
+	function viewSection($id = null) {
 		$sec = null;
 		$this->set('objectProperty', $this->BeCustomProperty->setupForView($sec, Configure::read("objectTypes.section.id"))) ;
-		$this->set('tree',$this->BeTree->getSectionsTree());
+
+        // #578 - Memory exhausted when attempting to create new Section.
+        $user = $this->BeAuth->getUserSession();
+        $this->set('tree', $this->Tree->getAllRoots($user['userid'], null, array('count_permission' => true), array()));
+
+		$parentId = null;
+		if (empty($id) && !empty($this->params['named']['id'])) {
+			$id = $this->params['named']['id'];
+		}
+		if (!empty($id)) {
+			$parentId = $this->Tree->getParent($id);
+		} else if (!empty($this->params['named']['branch'])) {
+			$parentId = $this->params['named']['branch'];
+		}
+		$this->set('parent_id', $parentId);
+		$this->set('object', null);
 	}
 
 
@@ -430,52 +455,37 @@ class AreasController extends ModulesController {
 		$this->showCategories($this->Section);
 	}
 	
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"saveArea"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Area->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"saveSection"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Section->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"delete"	=> 	array(
-									"OK"	=> "./",
-									"ERROR"	=> "/areas/view/" . @$this->data["id"]
-								),
-			"deleteSection"	=> 	array(
-									"OK"	=> "./",
-									"ERROR"	=> $this->referer()
-								),
-			"import"	=> 	array(
-									"OK"	=> "/areas/view/{$this->Section->id}",
-									"ERROR"	=> $this->referer()
-								),
-			"saveCategories" 	=> array(
-							"OK"	=> "/areas/categories",
-							"ERROR"	=> "/areas/categories"
-							),
-			"deleteCategories" 	=> array(
-							"OK"	=> "/areas/categories",
-							"ERROR"	=> "/areas/categories"
-							),
-			"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-			"export"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							)
-		) ;
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'saveArea' => array(
+                'OK'	=> "/areas/view/{$this->Area->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'saveSection'	=> 	array(
+                'OK'	=> "/areas/view/{$this->Section->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'delete'	=> 	array(
+                'OK'	=> '/areas',
+                'ERROR'	=> $this->referer()
+            ),
+            'deleteSection'	=> 	array(
+                'OK'	=> '/areas',
+                'ERROR'	=> $this->referer()
+            ),
+            'deleteArea'	=> 	array(
+                'OK'	=> '/areas',
+                'ERROR'	=> $this->referer()
+            ),
+            'import'	=> 	array(
+                'OK'	=> "/areas/view/{$this->Section->id}",
+                'ERROR'	=> $this->referer()
+            ),
+            'export'	=> 	array(
+                'OK'	=> $this->referer(),
+                'ERROR'	=> $this->referer()
+            ),
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 }
-
-?>

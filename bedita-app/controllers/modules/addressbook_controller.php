@@ -20,19 +20,13 @@
  */
 
 /**
- * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * AddressBook Module Controller
  */
 class AddressbookController extends ModulesController {
 	
 	var $name = 'Addressbook';
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';
@@ -157,65 +151,14 @@ class AddressbookController extends ModulesController {
 		}
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"cloneObject"	=> 	array(
-							"OK"	=> "/addressbook/view/".@$this->Card->id,
-							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
-							),
-			"save"	=> 	array(
-							"OK"	=> "/addressbook/view/".@$this->Card->id,
-							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
-							), 
-			"delete" =>	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> "/addressbook/view/".@$this->params['pass'][0]
-							),
-			"deleteSelected" =>	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-			"changeStatusObjects"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),			
- 			"saveCategories" 	=> array(
- 							"OK"	=> "/addressbook/categories",
- 							"ERROR"	=> "/addressbook/categories"
- 									),
- 			"deleteCategories" 	=> array(
- 							"OK"	=> "/addressbook/categories",
- 							"ERROR"	=> "/addressbook/categories"
- 									),
-			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
- 									),
-			"moveItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
- 									),
- 			"removeItemsFromAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-			"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			),
-			"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			),
-			"addToMailgroup"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			)
-		);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'addToMailgroup'	=> 	array(
+                'OK'	=> $this->referer(),
+                'ERROR'	=> $this->referer()
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
-
-?>

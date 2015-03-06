@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2014-05-12 13:33:51\n"
+"POT-Creation-Date: 2015-02-17 16:13:31\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -231,12 +231,6 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-msgid "Category deleted"
-msgstr ""
-
-msgid "Category saved"
-msgstr ""
-
 msgid "Change Password"
 msgstr ""
 
@@ -253,6 +247,9 @@ msgid "Check url"
 msgstr ""
 
 msgid "Choose one of the following operations"
+msgstr ""
+
+msgid "Clean all cache files (also object cache)"
 msgstr ""
 
 msgid "Clone"
@@ -585,6 +582,9 @@ msgstr ""
 msgid "Error removing group"
 msgstr ""
 
+msgid "Error removing permissions for group"
+msgstr ""
+
 msgid "Error saving avatar data"
 msgstr ""
 
@@ -625,6 +625,9 @@ msgid "Error saving note"
 msgstr ""
 
 msgid "Error saving options"
+msgstr ""
+
+msgid "Error saving permissions for group"
 msgstr ""
 
 msgid "Error saving status for item: "
@@ -990,6 +993,9 @@ msgstr ""
 msgid "Media already exists in the system"
 msgstr ""
 
+msgid "Media file is missing"
+msgstr ""
+
 msgid "Media root"
 msgstr ""
 
@@ -1009,6 +1015,9 @@ msgid "Message template"
 msgstr ""
 
 msgid "Missing data"
+msgstr ""
+
+msgid "Missing data group to remove"
 msgstr ""
 
 msgid "Missing email to send recover instructions"
@@ -1108,6 +1117,9 @@ msgid "Multimedia provider is not managed"
 msgstr ""
 
 msgid "My permissions groups"
+msgstr ""
+
+msgid "NO"
 msgstr ""
 
 msgid "Name"
@@ -1263,6 +1275,9 @@ msgstr ""
 msgid "No questionnaires found"
 msgstr ""
 
+msgid "No results found"
+msgstr ""
+
 msgid "No subscribers"
 msgstr ""
 
@@ -1293,7 +1308,7 @@ msgstr ""
 msgid "No user data"
 msgstr ""
 
-msgid "No user with access privileges found"
+msgid "No user with access privileges found or user uses an external authentication"
 msgstr ""
 
 msgid "No valid export filter has been selected"
@@ -1306,6 +1321,9 @@ msgid "No webmarks found"
 msgstr ""
 
 msgid "No, use custom list"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not Authorized"
@@ -1405,6 +1423,9 @@ msgid "Personal data"
 msgstr ""
 
 msgid "Please check"
+msgstr ""
+
+msgid "Please choose an existing card, or create a new one."
 msgstr ""
 
 msgid "Please enter a valid date in the %1 format"
@@ -1540,6 +1561,9 @@ msgid "Section deleted"
 msgstr ""
 
 msgid "Section saved"
+msgstr ""
+
+msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
 msgstr ""
 
 msgid "Select a category"
@@ -1755,6 +1779,9 @@ msgstr ""
 msgid "UPDATE"
 msgstr ""
 
+msgid "URL"
+msgstr ""
+
 msgid "URL not valid"
 msgstr ""
 
@@ -1905,6 +1932,9 @@ msgstr ""
 msgid "X"
 msgstr ""
 
+msgid "YES"
+msgstr ""
+
 msgid "Yes"
 msgstr ""
 
@@ -1932,7 +1962,7 @@ msgstr ""
 msgid "access server log statistics"
 msgstr ""
 
-msgid "active"
+msgid "active from"
 msgstr ""
 
 msgid "add"
@@ -2065,9 +2095,6 @@ msgid "bounce to email"
 msgstr ""
 
 msgid "browse your disk"
-msgstr ""
-
-msgid "business name"
 msgstr ""
 
 msgid "card(s) associated to mailgroup"
@@ -2271,7 +2298,7 @@ msgstr ""
 msgid "draft"
 msgstr ""
 
-msgid "duration in minutes"
+msgid "duration in seconds"
 msgstr ""
 
 msgid "e-mail"
@@ -2287,6 +2314,9 @@ msgid "email"
 msgstr ""
 
 msgid "email2"
+msgstr ""
+
+msgid "emails"
 msgstr ""
 
 msgid "empty all"
@@ -2497,6 +2527,9 @@ msgid "latitude"
 msgstr ""
 
 msgid "left to right"
+msgstr ""
+
+msgid "legal form"
 msgstr ""
 
 msgid "license"
@@ -2791,9 +2824,6 @@ msgid "order"
 msgstr ""
 
 msgid "order by"
-msgstr ""
-
-msgid "organization"
 msgstr ""
 
 msgid "original filename"
@@ -3262,6 +3292,9 @@ msgid "view"
 msgstr ""
 
 msgid "view all"
+msgstr ""
+
+msgid "view file"
 msgstr ""
 
 msgid "visibility"

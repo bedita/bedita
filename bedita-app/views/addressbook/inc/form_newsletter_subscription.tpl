@@ -13,11 +13,11 @@
 			{if !empty($groupsByArea)}
 				{foreach from=$groupsByArea item="groups" key="pub"}
 					<ul>
-					{$pub}
+					{$pub|escape}
 					{foreach from=$groups item="group" name="fc"}
 					{assign var="index" value=$smarty.foreach.fc.index}
 						<li>
-						<input type="checkbox" name="data[joinGroup][{$index}][mail_group_id]" value="{$group.id}"{if !empty($group.subscribed)} checked{/if}/> {$group.group_name}
+						<input type="checkbox" name="data[joinGroup][{$index}][mail_group_id]" value="{$group.id}"{if !empty($group.subscribed)} checked{/if}/> {$group.group_name|escape}
 						<input type="hidden" name="data[joinGroup][{$index}][id]" value="{$group.MailGroupCard.id|default:""}" />
 						<input type="hidden" name="data[joinGroup][{$index}][status]" value="{$group.MailGroupCard.status|default:"confirmed"}" />
 						</li>

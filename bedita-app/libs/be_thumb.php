@@ -224,7 +224,8 @@ class BeThumb {
 
 	    // check uri
 	    if (empty($data['uri'])) {
-	        $this->triggerError("Missing image 'uri'");
+	        $source = !empty($data['id']) ? ' - obj id: ' . $data['id'] : '';
+	        $this->triggerError("Missing image 'uri'" . $source);
 	        $data['error'] = 'notFund';
 	        return false;
 	    }

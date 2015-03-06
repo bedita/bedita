@@ -117,16 +117,14 @@ $(document).ready(function(){
 
 			<tr>
 				<th nowrap><span class="labelperson">{t}birthdate{/t}</span><span class="labelcompany">{t}active from{/t}</span>:</th>
-				<td style="width:185px"><input type="text" class="dateinput" name="data[birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
+				<td style="width:210px"><input type="text" class="dateinput" name="data[birthdate]" value="{if !empty($object.birthdate)}{$object.birthdate|date_format:$conf->datePattern}{/if}"/></td>
                 {$hideFields = $conf->hideFields.addressbook|default:[]}
                 {if !in_array('deathdate', $hideFields)}
-                    <th><span class="labelperson">{t}deathdate{/t}:</span><span class="labelcompany">{t}to{/t}:</span></th>
+                    <th style="width:140px; text-align: right;"><span class="labelperson">{t}deathdate{/t}:</span><span class="labelcompany">{t}to{/t}:</span></th>
                     <td><input type="text" class="dateinput" name="data[deathdate]" value="{if !empty($object.deathdate)}{$object.deathdate|date_format:$conf->datePattern}{/if}"/></td>
                 {/if}
             </tr>
 		</table>
-
-
 
 </fieldset>
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-05-12 13:33:51\n"
+"POT-Creation-Date: 2015-02-17 16:04:47\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -251,12 +251,6 @@ msgstr "Karten gelöscht"
 msgid "Categories"
 msgstr "Kategorien"
 
-msgid "Category deleted"
-msgstr "Kategorie gelöscht"
-
-msgid "Category saved"
-msgstr "Kategorie gespeichert"
-
 msgid "Change Password"
 msgstr "Passwort ändern"
 
@@ -273,6 +267,9 @@ msgid "Check url"
 msgstr "Prüfe URL"
 
 msgid "Choose one of the following operations"
+msgstr ""
+
+msgid "Clean all cache files (also object cache)"
 msgstr ""
 
 msgid "Clone"
@@ -614,6 +611,9 @@ msgstr "Fehler beim Löschen der Verbindung Mailgruppenkarte"
 msgid "Error removing group"
 msgstr "Fehler beim Löschen der Gruppe"
 
+msgid "Error removing permissions for group"
+msgstr ""
+
 msgid "Error saving avatar data"
 msgstr ""
 
@@ -655,6 +655,9 @@ msgstr "Fehler beim Speichern der Notiz"
 
 msgid "Error saving options"
 msgstr "Fehler beim Speichern der Optionen"
+
+msgid "Error saving permissions for group"
+msgstr ""
 
 msgid "Error saving status for item: "
 msgstr "Fehler beim Speichern des Zustands für das Element:"
@@ -1019,6 +1022,9 @@ msgstr ""
 msgid "Media already exists in the system"
 msgstr "Medium existiert bereits im Dateisystem"
 
+msgid "Media file is missing"
+msgstr ""
+
 msgid "Media root"
 msgstr ""
 
@@ -1039,6 +1045,9 @@ msgstr "Nachrichtentemplate"
 
 msgid "Missing data"
 msgstr "Fehlende Daten"
+
+msgid "Missing data group to remove"
+msgstr ""
 
 msgid "Missing email to send recover instructions"
 msgstr "Fehlende Emailadresse, um Wiederherstellungsanleitung zu senden"
@@ -1146,6 +1155,9 @@ msgid "Multimedia provider is not managed"
 msgstr "Multimediaanbieter wird nicht verwaltet"
 
 msgid "My permissions groups"
+msgstr ""
+
+msgid "NO"
 msgstr ""
 
 msgid "Name"
@@ -1304,6 +1316,9 @@ msgstr "Keine Veröffentlichung gesetzt"
 msgid "No questionnaires found"
 msgstr "Keine Umfragen gefunden"
 
+msgid "No results found"
+msgstr ""
+
 msgid "No subscribers"
 msgstr "Keine Abonnenten"
 
@@ -1334,8 +1349,9 @@ msgstr "Kein Baum gefunden"
 msgid "No user data"
 msgstr "Keine Benutzerdaten"
 
-msgid "No user with access privileges found"
-msgstr "Kein Benutzer mit Zugangsrechten gefunden"
+msgid ""
+"No user with access privileges found or user uses an external authentication"
+msgstr ""
 
 msgid "No valid export filter has been selected"
 msgstr ""
@@ -1347,6 +1363,9 @@ msgid "No webmarks found"
 msgstr "Keine Lesezeichen gefunden"
 
 msgid "No, use custom list"
+msgstr ""
+
+msgid "None"
 msgstr ""
 
 msgid "Not Authorized"
@@ -1446,6 +1465,9 @@ msgid "Personal data"
 msgstr ""
 
 msgid "Please check"
+msgstr ""
+
+msgid "Please choose an existing card, or create a new one."
 msgstr ""
 
 msgid "Please enter a valid date in the %1 format"
@@ -1586,6 +1608,9 @@ msgstr "Sektion gelöscht"
 
 msgid "Section saved"
 msgstr "Sektion gespeichert"
+
+msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
+msgstr ""
 
 msgid "Select a category"
 msgstr "Wähle eine Kategorie"
@@ -1811,6 +1836,9 @@ msgstr "Übersetzungen"
 msgid "UPDATE"
 msgstr ""
 
+msgid "URL"
+msgstr ""
+
 msgid "URL not valid"
 msgstr "URL ist nicht valide"
 
@@ -1980,6 +2008,9 @@ msgstr "Falscher Benutzername/Passwort oder abgelaufene Sitzung"
 msgid "X"
 msgstr "X"
 
+msgid "YES"
+msgstr ""
+
 msgid "Yes"
 msgstr "Ja"
 
@@ -2010,7 +2041,7 @@ msgstr "zugreifen"
 msgid "access server log statistics"
 msgstr "auf serverlog statistiken zugreifen"
 
-msgid "active"
+msgid "active from"
 msgstr ""
 
 msgid "add"
@@ -2144,9 +2175,6 @@ msgstr "zu Email springen"
 
 msgid "browse your disk"
 msgstr "deine Festplatte durchsuchen"
-
-msgid "business name"
-msgstr ""
 
 msgid "card(s) associated to mailgroup"
 msgstr "Karte(n), die mit der Mailgruppe verbunden sind"
@@ -2349,8 +2377,8 @@ msgstr "herunterladen"
 msgid "draft"
 msgstr "Entwurf"
 
-msgid "duration in minutes"
-msgstr "Dauer in Minuten"
+msgid "duration in seconds"
+msgstr ""
 
 msgid "e-mail"
 msgstr ""
@@ -2366,6 +2394,9 @@ msgstr "Email"
 
 msgid "email2"
 msgstr "Email 2"
+
+msgid "emails"
+msgstr ""
 
 msgid "empty all"
 msgstr ""
@@ -2579,6 +2610,9 @@ msgstr "Länge"
 
 msgid "left to right"
 msgstr "links nach rechts"
+
+msgid "legal form"
+msgstr ""
 
 msgid "license"
 msgstr "Lizenz"
@@ -2873,9 +2907,6 @@ msgstr "Reihenfolge"
 
 msgid "order by"
 msgstr "ordnen nach"
-
-msgid "organization"
-msgstr "Reihenfolge"
 
 msgid "original filename"
 msgstr ""
@@ -3347,6 +3378,9 @@ msgstr "anzeigen"
 msgid "view all"
 msgstr ""
 
+msgid "view file"
+msgstr ""
+
 msgid "visibility"
 msgstr ""
 
@@ -3391,6 +3425,21 @@ msgstr "deine 5 letzten Elemente"
 
 msgid "your message"
 msgstr "deine Nachricht"
+
+#~ msgid "Category deleted"
+#~ msgstr "Kategorie gelöscht"
+
+#~ msgid "Category saved"
+#~ msgstr "Kategorie gespeichert"
+
+#~ msgid "No user with access privileges found"
+#~ msgstr "Kein Benutzer mit Zugangsrechten gefunden"
+
+#~ msgid "duration in minutes"
+#~ msgstr "Dauer in Minuten"
+
+#~ msgid "organization"
+#~ msgstr "Reihenfolge"
 
 #~ msgid "Add multiple items"
 #~ msgstr "Multiple Elemente hinzufügen"

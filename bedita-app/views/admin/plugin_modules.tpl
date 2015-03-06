@@ -74,6 +74,7 @@ $(document).ready(function() {
 		<li class="{$mod.name} {$mod.status}">
 			{t}{$mod.label}{/t}
 			<form action="{$html->url('/admin/plugModule')}" method="post">
+			{$beForm->csrf()}
 			<input type="hidden" value="{$mod.id}" name="data[id]"/>
 			<input type="hidden" value="{$mod.name}" name="pluginName"/>
 			{if $mod.status == "on"}
@@ -99,6 +100,7 @@ $(document).ready(function() {
 		<li>
 			{t}{$mod.publicName}{/t}<div style="font-size:.9em">version {$mod.version}</div>
 			<form action="{$html->url('/admin/plugModule')}" method="post">
+			{$beForm->csrf()}
 			<input type="hidden" value="{$mod.pluginName}" name="pluginName"/>
 			<input type="submit" value="{t}plug-in{/t}"/>
 			</form>

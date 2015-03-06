@@ -99,12 +99,13 @@ img.ui-datepicker-trigger {
 	float: left;
 }
 .ui-datepicker-header {
-	padding: 0px 0 4px 0px;
+	padding: 0;
 	background: #333;
 	text-align: center;
 	font-weight: normal;
 	height: 1.3em;
 	text-transform:lowercase !important;
+	line-height: .91em;
 }
 .ui-datepicker-header select {
 	border: 0px;
@@ -167,6 +168,20 @@ img.ui-datepicker-trigger {
 	text-align: center;
 }
 
+a.ui-datepicker-prev { text-align: left; padding-left: .45em !important;}
+a.ui-datepicker-next { padding-right: .2em !important;}
+
+
+/* clearfix */
+.ui-helper-clearfix:before,
+.ui-helper-clearfix:after {
+    content: " ";
+    display: table;
+}
+.ui-helper-clearfix:after { clear: both; }
+.ui-helper-clearfix { *zoom: 1; }
+
+
 /* ________ Datepicker Links _______
 
 ** Reset link properties and then override them with !important */
@@ -176,6 +191,9 @@ img.ui-datepicker-trigger {
 	padding: 0;
 	background: none;
 	color: #000;
+}
+#ui-datepicker-div .ui-datepicker-header a {
+	color: #eee;
 }
 .ui-datepicker-inline .ui-datepicker-links a {
 	padding: 0 5px !important;

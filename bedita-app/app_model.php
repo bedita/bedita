@@ -171,12 +171,31 @@ class BEAppModel extends AppModel {
 		}
 	}
 
+	/**
+	 * Check duration format in $this->data[ModelName][$key] -> set to null if empty/invalid.
+	 * 
+	 * @param string key
+	 */
 	protected function checkDuration($key) {
 		$data = &$this->data[$this->name];
-		if(empty($data[$key]) || !is_numeric($data[$key])) {
+
+		if (!array_key_exists($key, $data)) {
+			// Avoid E_NOTICE if PHP's error_reporting & 8 == true.
 			$data[$key] = null;
+			return;
+		}
+		$data[$key] = preg_replace("/[^a-z0-9\:\.]/i", "", $data[$key]);  // cleans string.
+		$matches = array();
+		if (!empty($data[$key]) && preg_match("/^(?:(?P<y>\d+)y)?(?:(?P<w>\d+)w)?(?:(?P<d>\d+)d)?(?:(?P<h>\d+)h)?(?:(?P<m>\d+)m)?(?:(?P<s>\d+)s)?$/i", $data[$key], $matches)) {
+			// y w d h m s
+			$matches = array_merge(array('y' => 0, 'w' => 0, 'd' => 0, 'h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ((($matches['y'] * 365 + $matches['w'] * 7 + $matches['d']) * 24 + $matches['h']) * 60 + $matches['m']) * 60 + $matches['s'];
+		} elseif (!empty($data[$key]) && preg_match("/^(?:(?:(?P<h>\d+)?\:)?(?P<m>\d+)?\:)?(?P<s>\d+)?$/", $data[$key], $matches)) {
+			// hh:mm:ss
+			$matches = array_merge(array('h' => 0, 'm' => 0, 's' => 0), $matches);
+			$data[$key] = ($matches['h'] * 60 + $matches['m']) * 60 + $matches['s'];
 		} else {
-			$data[$key] = $data[$key]*60;
+			$data[$key] = null;
 		}
 	}
 
@@ -548,11 +567,11 @@ class BEAppModel extends AppModel {
 			}
 		}
 
-		// if $order is empty and not performing search then set a default order
-		if (empty($order) && empty($filter["query"])) {
-			$order = "{$s}BEObject{$e}.{$s}id{$e}";
-			$dir = false;
-		}
+        // if $order is empty and not performing search then set a default order
+        if ((empty($order) || !preg_match('/^[a-z0-9`., _-]+$/i', trim($order))) && empty($filter['query'])) {
+            $order = "{$s}BEObject{$e}.{$s}id{$e}";
+            $dir = false;
+        }
 
 		// build sql conditions
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
@@ -565,11 +584,11 @@ class BEAppModel extends AppModel {
         }
 
 		$ordClausole = "";
-		if (is_string($order) && strlen($order)) {
+        if (is_string($order) && strlen($order)) {
 			$beObject = ClassRegistry::init("BEObject");
 			if ($beObject->hasField($order))
-				$order = "{$s}BEObject{$e}." . $order;
-			$ordItem = "{$order} " . ((!$dir)? " DESC " : "");
+				$order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
+            $ordItem = $order . ((!$dir)? "DESC " : "");
 			if (!empty($otherOrder)) {
 				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
 			} else {
@@ -812,12 +831,10 @@ class BEAppObjectModel extends BEAppModel {
 	}
 
 	function save($data = null, $validate = true, $fieldList = array()) {
-		$conf = Configure::getInstance() ;
-
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
+            $data['BEObject']['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-			$data['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
+            $data['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		}
 
 		// Se c'e' la chiave primaria vuota la toglie
@@ -1013,7 +1030,7 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"note" => 2
 	);
@@ -1070,8 +1087,6 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 	);
 
 	public function save($data = null, $validate = true, $fieldList = array()) {
-		$conf = Configure::getInstance() ;
-
 		$data2 = $data;
 
 		foreach($data2 as $key => $value) {
@@ -1081,9 +1096,9 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 		}
 
 		if(isset($data['BEObject']) && empty($data['BEObject']['object_type_id'])) {
-			$data['BEObject']['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
+            $data['BEObject']['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		} else if(!isset($data['object_type_id']) || empty($data['object_type_id'])) {
-			$data['object_type_id'] = $conf->objectTypes[Inflector::underscore($this->name)]["id"] ;
+            $data['object_type_id'] = BeLib::getObject('BeConfigure')->getObjectTypeId($this->name);
 		}
 
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey])) {
@@ -1110,12 +1125,17 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			}
 		}
 
-		$beObject->create();
-		if (!$res = $beObject->save($data, $validate, $fieldList)) {
+        if (empty($data['id']) && empty($data['BEObject']['id']) && empty($data[$this->name]['id'])) {
+            $beObject->create();
+        } else {
+            $beObject->create(null);
+        }
+        if (!$res = $beObject->save($data, $validate, $fieldList)) {
 			return $res;
 		}
 
 		$data2["id"] = $beObject->id;
+		$this->create(null);
 		$res = parent::save($data2, $validate, $fieldList);
 		//$res = Model::save($data, $validate, $fieldList) ;
 		//$res = ClassRegistry::init("Model")->save($data2, $validate, $fieldList);
@@ -1133,7 +1153,7 @@ class BeditaContentModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"creator" => 6,
 		"description" => 6,
 		"subject" => 4,
@@ -1156,7 +1176,7 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"body" => 4,
 		"author" => 3,
@@ -1200,7 +1220,7 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"subject" => 4,
 		"abstract" => 4,
@@ -1279,7 +1299,7 @@ class BeditaStreamModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"subject" => 4,
 		"abstract" => 4,
@@ -1368,7 +1388,7 @@ class BeditaProductModel extends BEAppObjectModel {
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"abstract" => 4,
 		"body" => 4,
@@ -1464,6 +1484,9 @@ class BeditaCollectionModel extends BEAppObjectModel {
 				)
 	);
 
+	public function deleteCollection($id) {
+		return ClassRegistry::init('Tree')->removeBranch($id);
+	}
 }
 
 /**

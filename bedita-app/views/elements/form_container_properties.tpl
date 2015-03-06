@@ -58,11 +58,11 @@ $(document).ready(function(){
 	<table class="tableForm" border="0">
 	<tr>
 		<td class="label">{t}created{/t}:</td><td>{$object.created|date_format:$conf->datePattern}</td>
-		<td class="label">{t}from{/t}:</td><td>{$object.UserCreated.userid|default:""}</td>
+		<td class="label">{t}from{/t}:</td><td>{$object.UserCreated.userid|default:""|escape}</td>
 	</tr>
 	<tr>
 		<td class="label">{t}last modified{/t}:</td><td>{$object.modified|date_format:$conf->datePattern}</td>
-		<td class="label">{t}from{/t}:</td><td>{$object.UserModified.userid|default:""}</td>
+		<td class="label">{t}from{/t}:</td><td>{$object.UserModified.userid|default:""|escape}</td>
 	</tr>
 	<tr>
 		<td class="label">{t}IP{/t}:</td><td>{$object.ip_created}</td>

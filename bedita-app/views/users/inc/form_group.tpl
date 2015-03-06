@@ -1,4 +1,12 @@
 <script type="text/javascript">
+
+	function delGroupDialog(name) {
+		if (!confirm("{t}Do you really want to remove group{/t} " + name + "?")) {
+			return false;
+		}
+		return true;
+	}
+
 	$(document).ready(function(){
 		openAtStart("#groupFormProp, #usersInGroup");
 
@@ -16,6 +24,7 @@
 </script>
 
 <form action="{$html->url('/users/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
+{$beForm->csrf()}
 <style scoped>
 	table.group_objects {
 		margin-bottom:10px;
@@ -34,7 +43,7 @@
 		<table>
 			<tr>
 				<th><label id="lgroupname" for="groupname">{t}Group Name{/t}</label></th>
-				<td><input {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if} style="width:300px;" type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''}" onkeyup="cutBlank(this);"/>
+				<td><input {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if} style="width:300px;" type="text" id="groupname" name="data[Group][name]" value="{$group.Group.name|default:''|escape}" onkeyup="cutBlank(this);"/>
 				</td>
 				<td>
 					<input {if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if} type="checkbox" name="data[Group][backend_auth]" value="1"

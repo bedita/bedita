@@ -3,6 +3,7 @@
 *}
 
 <form action="{$html->url('/translations/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 <input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
 
@@ -55,15 +56,15 @@
 	<div class="tab2"><h2>{t}Title{/t}</h2></div>
 	<fieldset id="ttitle" rel="title">
 		<label>{t}title{/t}:</label><br />
-		<input type="text" id="title" name="data[LangText][1][text]" value="{if !empty($object_translation.title)}{$object_translation.title}{/if}"/><br />
+		<input type="text" id="title" name="data[LangText][1][text]" value="{if !empty($object_translation.title)}{$object_translation.title|escape}{/if}"/><br />
 		<input type="hidden" name="data[LangText][1][name]" value="title"/>
-		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title}"/>{/if}
+		{if !empty($object_translation.id.title)}<input type="hidden" name="data[LangText][1][id]" value="{$object_translation.id.title|escape}"/>{/if}
 
 		{if !empty($object_master.public_name)}
 		<label>{t}public name{/t}:</label><br />
-		<input type="text" name="data[LangText][2][text]" value="{if !empty($object_translation.public_name)}{$object_translation.public_name}{/if}"/>
+		<input type="text" name="data[LangText][2][text]" value="{if !empty($object_translation.public_name)}{$object_translation.public_name|escape}{/if}"/>
 		<input type="hidden" name="data[LangText][2][name]" value="public_name"/>
-		{if !empty($object_translation.id.public_name)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.public_name}"/>{/if}
+		{if !empty($object_translation.id.public_name)}<input type="hidden" name="data[LangText][2][id]" value="{$object_translation.id.public_name|escape}"/>{/if}
 		{/if}
 
 		{if !empty($object_master.description)}
@@ -80,16 +81,16 @@
 	<fieldset id="tlong_desc_langs_container" rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="data[LangText][4][text]" style="height:200px" class="mce">{if !empty($object_translation.abstract)}{$object_translation.abstract}{/if}</textarea>
+		<textarea name="data[LangText][4][text]" style="height:200px" class="mce">{if !empty($object_translation.abstract)}{$object_translation.abstract|escape}{/if}</textarea>
 		<input type="hidden" name="data[LangText][4][name]" value="abstract"/>
-		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.abstract}"/>{/if}
+		{if !empty($object_translation.id.abstract)}<input type="hidden" name="data[LangText][4][id]" value="{$object_translation.id.abstract|escape}"/>{/if}
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="data[LangText][5][text]" style="height:400px" class="mce">{if !empty($object_translation.body)}{$object_translation.body}{/if}</textarea>
+		<textarea name="data[LangText][5][text]" style="height:400px" class="mce">{if !empty($object_translation.body)}{$object_translation.body|escape}{/if}</textarea>
 		<input type="hidden" name="data[LangText][5][name]" value="body"/>
-		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.body}"/>{/if}
+		{if !empty($object_translation.id.body)}<input type="hidden" name="data[LangText][5][id]" value="{$object_translation.id.body|escape}"/>{/if}
 		{/if}
 	</fieldset>
 	{/if}
@@ -129,20 +130,20 @@
 				{if !empty($image.LangText[$image.id][$object_translated_lang].status)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].status}"/>{/if}
 
 				{assign var='l1' value=$lang_text_index++}
-				{assign var='image_title' value=$image.LangText.title[$object_translated_lang]|default:''}
+				{assign var='image_title' value=$image.LangText.title[$object_translated_lang]|escape|default:''}
 				<label>{t}Title{/t}</label>
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="title"/>
 				<input type="text" name="data[LangText][{$l1}][text]" style="width:210px !important" value="{$image_title}" />
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if $image.LangText}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].title|default:''}"/>{/if}
+				{if $image.LangText}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].title|escape|default:''}"/>{/if}
 				
 				{assign var='l1' value=$lang_text_index++}
-				{assign var='image_description' value=$image.LangText.description[$object_translated_lang]|default:''}
+				{assign var='image_description' value=$image.LangText.description[$object_translated_lang]|escape|default:''}
 				<label>{t}Description{/t}</label>
 				<input type="hidden" name="data[LangText][{$l1}][name]" value="description"/>
 				<textarea style="height:38px; width:210px !important" name="data[LangText][{$l1}][text]">{$image_description}</textarea>
 				<input type="hidden" name="data[LangText][{$l1}][object_id]" value="{$image.id}"/>
-				{if !empty($image.LangText)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].description|default:''}"/>{/if}
+				{if !empty($image.LangText)}<input type="hidden" name="data[LangText][{$l1}][id]" value="{$image.LangText[$image.id][$object_translated_lang].description|escape|default:''}"/>{/if}
 			
 			</td>
 		</tr>
@@ -176,17 +177,17 @@
 		<tr>
 			<th>{t}created by{/t}:</th>
 			<td>
-				{if !empty($object_translation.created_by)}{$object_translation.created_by}{else}-{/if}
-				<input type="hidden" name="data[LangText][8][text]" value="{if !empty($object_translation.created_by)}{$object_translation.created_by}{/if}"/>
+				{if !empty($object_translation.created_by)}{$object_translation.created_by|escape}{else}-{/if}
+				<input type="hidden" name="data[LangText][8][text]" value="{if !empty($object_translation.created_by)}{$object_translation.created_by|escape}{/if}"/>
 				<input type="hidden" name="data[LangText][8][name]" value="created_by"/>
-				{if !empty($object_translation.id.created_by)}<input type="hidden" name="data[LangText][8][id]" value="{$object_translation.id.created_by}"/>{/if}
+				{if !empty($object_translation.id.created_by)}<input type="hidden" name="data[LangText][8][id]" value="{$object_translation.id.created_by|escape}"/>{/if}
 			</td>
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
 			<td>
-				{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{else}-{/if}
-				<input type="hidden" name="data[LangText][9][text]" value="{if !empty($object_translation.modified_by)}{$object_translation.modified_by}{/if}"/>
+				{if !empty($object_translation.modified_by)}{$object_translation.modified_by|escape}{else}-{/if}
+				<input type="hidden" name="data[LangText][9][text]" value="{if !empty($object_translation.modified_by)}{$object_translation.modified_by|escape}{/if}"/>
 				<input type="hidden" name="data[LangText][9][name]" value="modified_by"/>
 				{if !empty($object_translation.id.modified_by)}<input type="hidden" name="data[LangText][9][id]" value="{$object_translation.id.modified_by}"/>{/if}
 			</td>
@@ -218,16 +219,16 @@
 	<div class="tab2"><h2>{t}Original Title{/t}</h2></div>
 	<fieldset rel="title">
 		<label>{t}title{/t}:</label><br />
-		<input type="text" id="title_master" name="" value="{$object_master.title}" readonly="readonly"/><br />
+		<input type="text" id="title_master" name="" value="{$object_master.title|escape}" readonly="readonly"/><br />
 
 		{if !empty($object_master.public_name)}
 		<label>{t}public name{/t}:</label><br />
-		<input type="text" name="" value="{$object_master.public_name}"/>
+		<input type="text" name="" value="{$object_master.public_name|escape}"/>
 		{/if}
 
 		{if !empty($object_master.description)}
 		<label>{t}description{/t}:</label><br />
-		<textarea class="mceSimple" name="">{$object_master.description}</textarea>
+		<textarea class="mceSimple" name="">{$object_master.description|escape}</textarea>
 		{/if}
 	</fieldset>
 
@@ -237,12 +238,12 @@
 	<fieldset rel="long_desc_langs_container">
 		{if !empty($object_master.abstract)}
 		<label>{t}short text{/t}:</label><br />
-		<textarea name="" style="height:200px" class="mce">{$object_master.abstract}</textarea>
+		<textarea name="" style="height:200px" class="mce">{$object_master.abstract|escape}</textarea>
 		<br />
 		{/if}
 		{if !empty($object_master.body)}
 		<label>{t}long text{/t}:</label><br />
-		<textarea name="" style="height:400px" class="mce">{$object_master.body}</textarea>
+		<textarea name="" style="height:400px" class="mce">{$object_master.body|escape}</textarea>
 		{/if}
 	</fieldset>
 	{/if}
@@ -274,9 +275,9 @@
 			</td>
 			<td>
 				<label>{t}title{/t}</label>
-				<input type="text" style="width:210px !important" name="" value="{$image.title}" />
+				<input type="text" style="width:210px !important" name="" value="{$image.title|escape}" />
 				<label>{t}description{/t}</label>
-				<textarea style="height:38px; width:210px !important" name="">{$image.description}</textarea>
+				<textarea style="height:38px; width:210px !important" name="">{$image.description|escape}</textarea>
 			</td>
 		</tr>
 		{/foreach}
@@ -298,11 +299,11 @@
 		</tr>
 		<tr>
 			<th>{t}created by{/t}:</th>
-			<td>{$object_master.UserCreated.userid}</td>
+			<td>{$object_master.UserCreated.userid|escape}</td>
 		</tr>
 		<tr>
 			<th>{t}last modified by{/t}:</th>
-			<td>{$object_master.UserModified.userid}</td>
+			<td>{$object_master.UserModified.userid|escape}</td>
 		</tr>
 	</table>
 

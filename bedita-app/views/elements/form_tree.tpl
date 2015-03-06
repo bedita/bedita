@@ -8,7 +8,8 @@ $(document).ready(function(){
 //-->
 </script>
 
-<div class="tab"><h2 {if empty($parents)}class="empty"{/if}>{t}{if empty($tpl_title)}Position{else}{$tpl_title}{/if}{/t}</h2></div>
+{$relcount = $parents|@count|default:0}
+<div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}{if empty($tpl_title)}Position{else}{$tpl_title}{/if}{/t} {if $relcount > 0}&nbsp;<span class="relnumb">{$relcount}</span>{/if}</h2></div>
 
 <fieldset id="whereto">
 

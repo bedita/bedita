@@ -32,7 +32,7 @@ class NewsletterController extends ModulesController {
 
 	var $name = 'Newsletter';
 	var $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeMail');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeMail', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Card', 'MailGroup', 'MailMessage', 'MailTemplate', 'MailGroupCard', 'MailJob') ;
 
@@ -722,64 +722,61 @@ class NewsletterController extends ModulesController {
 		$this->MailGroup->id = $mail_group_id;
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"cloneObject"	=> 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer()
-							),
-			"cloneTemplate"	=> 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,
-							"ERROR"	=> $this->referer()
-							),
-			"save"	=> 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer()
-							),
-			"sendNewsletter" => 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer()
-							),
-			"testNewsletter" => 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailMessage->id,
-							"ERROR"	=> $this->referer()
-							),
-			"delete" =>	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> $this->referer()
-							),
-			"saveTemplate"	=> 	array(
-							"OK"	=> "/newsletter/view/".@$this->MailTemplate->id,
-							"ERROR"	=> $this->referer()
-							),
-			"saveMailGroups"=> array(
-							"OK"	=> "/newsletter/viewMailGroup/" . @$this->MailGroup->id,
-							"ERROR"	=> "/newsletter/viewMailGroup/" . @$this->MailGroup->id
-							),
-			"deleteMailGroups"=> array(
-							"OK"	=> "/newsletter/mailGroups",
-							"ERROR"	=> "/newsletter/mailGroups"
-							),
-			"addCardToGroup" => array(
-							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
-							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
-							),
-			"changeCardStatus" => array(
-							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
-							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
-							),
-			"unlinkCard" 	=> array(
-							"OK"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id,
-							"ERROR"	=> "/newsletter/listSubscribers/" . $this->MailGroup->id
-							),
-			"viewInvoice" 	=> array(
-							"ERROR"	=> "/newsletter/invoices"
-							)
-		);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            "cloneObject" => array(
+                "OK" => "/newsletter/view/" . @$this->MailMessage->id,
+                "ERROR" => $this->referer()
+            ),
+            "cloneTemplate" => array(
+                "OK" => "/newsletter/view/" . @$this->MailTemplate->id,
+                "ERROR" => $this->referer()
+            ),
+            "save" => array(
+                "OK" => "/newsletter/view/" . @$this->MailMessage->id,
+                "ERROR" => $this->referer()
+            ),
+            "sendNewsletter" => array(
+                "OK" => "/newsletter/view/" . @$this->MailMessage->id,
+                "ERROR" => $this->referer()
+            ),
+            "testNewsletter" => array(
+                "OK" => "/newsletter/view/" . @$this->MailMessage->id,
+                "ERROR" => $this->referer()
+            ),
+            "delete" => array(
+                "OK" => $this->fullBaseUrl . $this->Session->read('backFromView'),
+                "ERROR" => $this->referer()
+            ),
+            "saveTemplate" => array(
+                "OK" => "/newsletter/view/" . @$this->MailTemplate->id,
+                "ERROR" => $this->referer()
+            ),
+            "saveMailGroups" => array(
+                "OK" => "/newsletter/viewMailGroup/" . @$this->MailGroup->id,
+                "ERROR" => "/newsletter/viewMailGroup/" . @$this->MailGroup->id
+            ),
+            "deleteMailGroups" => array(
+                "OK" => "/newsletter/mailGroups",
+                "ERROR" => "/newsletter/mailGroups"
+            ),
+            "addCardToGroup" => array(
+                "OK" => "/newsletter/listSubscribers/" . $this->MailGroup->id,
+                "ERROR" => "/newsletter/listSubscribers/" . $this->MailGroup->id
+            ),
+            "changeCardStatus" => array(
+                "OK" => "/newsletter/listSubscribers/" . $this->MailGroup->id,
+                "ERROR" => "/newsletter/listSubscribers/" . $this->MailGroup->id
+            ),
+            "unlinkCard" => array(
+                "OK" => "/newsletter/listSubscribers/" . $this->MailGroup->id,
+                "ERROR" => "/newsletter/listSubscribers/" . $this->MailGroup->id
+            ),
+            "viewInvoice" => array(
+                "ERROR" => "/newsletter/invoices"
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
-
-?>

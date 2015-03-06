@@ -575,7 +575,7 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $name, file name
 	 * @return string, path
 	 */
-	public function getPathTargetFile(&$name)  {
+	public function getPathTargetFile(&$name, $prefix = null)  {
 		
 		$md5 = md5($name) ;
 		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
@@ -586,6 +586,9 @@ class BeFileHandlerComponent extends Object {
 		$filename = $tmpname = substr($name, 0, $pointPosition);
 		$ext = substr($name, $pointPosition);
 		$mediaRoot = Configure::read("mediaRoot");
+		if ($prefix != null) {
+			$mediaRoot.= DS . $prefix;
+		}
 		$dirsString = implode(DS, $dirs);
 		$counter = 1;
 		while(file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {

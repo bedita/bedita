@@ -6,18 +6,33 @@ Menu a SX valido per tutte le pagine del controller.
 *}
 
 {if !empty($view->action) && $view->action == "view"}
+
 <script type="text/javascript">
 	var urlView = '{$html->url("/multimedia/view/")}' ;
 
-	$(document).ready(function() { 
+	$(document).ready(function() {
+
+		var commandArea = $('div.insidecol');
+		var loader = $('<div class="loader" style="display: block"><span>0%</span></div>');
 
 		$("#collision").hide();
+
 		var optionsForm = { 
 			error: showResponse,  // post-submit callback  
 			success: showResponse,  // post-submit callback  
 			dataType: 'html',        // 'xml', 'script', or 'json' (expected server response type)
-			url: "{$html->url('/multimedia/saveAjax')}"
-		} ;
+			url: "{$html->url('/multimedia/saveAjax')}",
+			beforeSend: function() {
+		        $('#saveBEObject', commandArea).before(loader);
+		    },
+		    uploadProgress: function(event, position, total, percentComplete) {
+		        var percentVal = percentComplete + '%';
+		        $('span', loader).text(percentVal);
+		    },
+			complete: function(xhr) {
+				$('span', loader).remove();
+			}
+		};
 	
 		$("div.insidecol input[name='saveMedia']").click(function() { 
 			if ( $('#concurrenteditors #editorsList').children().size() > 0 ) { 
@@ -68,6 +83,7 @@ Menu a SX valido per tutte le pagine del controller.
 		function showResponse(data) {
 			// reset post data passed if save is performed in modal
 			optionsForm.data = {};
+			loader.remove();
 			// file already exists
 			if ($(data).attr('data-file-exists')) {
 				$("#collision").BEmodal();
@@ -77,9 +93,11 @@ Menu a SX valido per tutte le pagine del controller.
 				location.href = $(data).attr('data-redirect-url');
 			// trigger error
 			} else {
-				var html = $(data).text();
-				$("#collision").empty().append(html);
-				$("#collision").show();
+				var html = data;
+				if (typeof data != 'string' && data.responseText) {
+					html = data.responseText;
+				}
+				$('#collision').empty().append(html).show();
 			}
 		}
 
@@ -91,7 +109,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	{if !empty($view->action) && $view->action != "index"}
-		{assign var="back" value=$session->read("backFromView")}
+		{assign var="back" value=$session->read("backFromView")|escape}
 	{else}
 		{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
 	{/if}

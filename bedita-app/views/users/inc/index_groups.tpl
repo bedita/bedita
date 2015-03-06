@@ -1,5 +1,3 @@
-<form action="{$html->url('/users/saveGroup')}" method="post" name="groupForm" id="groupForm" class="cmxform">
-
 <script type="text/javascript">
 $(document).ready(function(){
 
@@ -9,6 +7,14 @@ $(document).ready(function(){
 	
 	$("#changeDim, #changePage").change(function() {
 		document.location = $(this).val();
+	});
+
+	$('.indexlist form').submit(function(e) {
+		var submitButton = $(this).find('input[type=submit]');
+		var name = submitButton.attr('data-name');
+		if (!confirm("{t}Do you really want to remove group{/t} " + name + "?")) {
+			return false;
+		}
 	});
 });
 </script>
@@ -29,7 +35,7 @@ $(document).ready(function(){
 	{foreach from=$groups|default:'' item=g}
 	<tr class="rowList {if ($g.Group.id == $group.Group.id)}on{/if}">	
 		<td>
-			<a href="{$html->url('/users/viewGroup/')}{$g.Group.id}">{$g.Group.name}</a>
+			<a href="{$html->url('/users/viewGroup/')}{$g.Group.id}">{$g.Group.name|escape}</a>
 		</td>
 		<td>
 			{if $g.Group.backend_auth}{t}Authorized{/t}{else}{t}Not Authorized{/t}{/if}
@@ -44,8 +50,11 @@ $(document).ready(function(){
 			</td>
 		{else}
 			<td class="go" style="text-align:center">
-				<input type="button" name="deleteGroup" value="{t}Delete{/t}" 
-				onclick="javascript:delGroupDialog('{$g.Group.name}',{$g.Group.id});"/>
+				<form action="{$html->url('/users/removeGroup')}" method="post">
+				{$beForm->csrf()}
+				<input type="hidden" name="data[Group][id]" value="{$g.Group.id}"/>
+				<input type="submit" name="removeGroup" value="{t}Delete{/t}" data-name="{$g.Group.name|escape}"/>
+				</form>
 			</td>
 		{/if}
 		
@@ -96,4 +105,3 @@ $(document).ready(function(){
 	</div>
 		
 {/if}
-</form>

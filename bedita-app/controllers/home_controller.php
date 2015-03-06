@@ -33,7 +33,7 @@ class HomeController extends AppController {
 
 	var $uses = array('BEObject', 'Tree') ;
 	var $helpers 	= array('BeTree');
-	var $components = array('BeTree', 'BeUploadToObj');
+	var $components = array('BeUploadToObj', 'BeSecurity');
 
 
 	public function index() {
@@ -202,18 +202,20 @@ class HomeController extends AppController {
 	}
 
 
-	protected function forward($action, $esito) {
- 	 	$REDIRECT = array(
-			"editProfile" => array(
- 							"OK"	=> "/home/profile",
- 							"ERROR"	=> "/home/profile"
- 						),
-			"view" => array(
- 							"ERROR"	=> "/home/index"
- 						)
- 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	 }
-}
+    protected function forward($action, $result) {
+        $redirect = array(
+            'editProfile' => array(
+                'OK' => '/home/profile',
+                'ERROR' => '/home/profile'
+            ),
+            'view' => array(
+                'ERROR' => '/home/index'
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        }
+        return false;
+    }
 
+}

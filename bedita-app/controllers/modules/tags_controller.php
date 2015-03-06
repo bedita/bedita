@@ -32,7 +32,7 @@
 class TagsController extends ModulesController {
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree');
+	var $components = array('BeTree', 'BeSecurity');
 	var $uses = array('Category') ;
 	
 	protected $moduleName = 'tags';
@@ -158,33 +158,15 @@ class TagsController extends ModulesController {
 		}
 		$this->Transaction->commit();
 	}
-	
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"save"	=> 	array(
-								"OK"	=> "/tags/view/{$this->Category->id}",
-								"ERROR"	=> $this->referer() 
-						),
-			"delete"	=> 	array(
-								"OK"	=> "/tags",
-								"ERROR"	=> $this->referer()
-							),
-			"deleteSelected" =>	array(
-								"OK"	=> $this->referer(),
-								"ERROR"	=> $this->referer() 
-								),
-			"addMultipleTags" => array(
-								"OK"	=> $this->referer(),
-								"ERROR"	=> $this->referer() 
-						),
-			"changeStatus" => array(
-								"OK"	=> $this->referer(),
-								"ERROR"	=> $this->referer() 
-						)
-		) ;
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
-}
 
-?>
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'addMultipleTags' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
+
+}

@@ -14,7 +14,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
-
+	{$beForm->csrf()}
 	<input type="hidden" name="data[id]"/>
 
 	<table class="indexlist js-header-float">
@@ -41,8 +41,8 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 			<td class="checklist">
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
-			<td>{$objects[i].ReferenceObject.title}</td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape|truncate:64|default:"<i>[no title]</i>"}</a></td>
+			<td>{$objects[i].ReferenceObject.title|escape}</td>
 			<td>{$objects[i].status}</td>
 			<td>{$objects[i].created|date_format:$conf->dateTimePattern}</td>
 			<td>{$objects[i].email|default:''}</td>

@@ -33,6 +33,8 @@ class UsersController extends ModulesController {
     public $uses = array('User', 'Group');
     
     public $helpers = array('Paginator');
+
+    public $components = array('BeSecurity');
      
     public $paginate = array(
         'User' => array(
@@ -197,7 +199,7 @@ class UsersController extends ModulesController {
             }
 
             $this->data['User']['passwd'] = trim($this->data['User']['passwd']);
-            $this->BeAuth->createUser($this->data, $userGroups);
+            $this->User->id = $this->BeAuth->createUser($this->data, $userGroups);
             $this->eventInfo("user ".$this->data['User']['userid']." created");
             $this->userInfoMessage(__("User created",true));
         } else {
@@ -245,18 +247,19 @@ class UsersController extends ModulesController {
         }
     }
     
-    function removeUser($id) {
+    function removeUser() {
         $this->checkWriteModulePermission();
-        if(isset($id)) {
+        if (isset($this->data['id'])) {
+            $id = $this->data['id'];
             $u = $this->isUserEditable($id);
             if ($u === false) {
                 throw new BeditaException(__("You are not allowed to remove this user", true));
             }
-            if(empty($u)) {
+            if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
             $userid = $u['User']['userid'];
-            if($userid === $this->BeAuth->user["userid"]) {
+            if ($userid === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-remove forbidden",true));
             }
             $this->BeAuth->removeUser($userid);
@@ -264,9 +267,10 @@ class UsersController extends ModulesController {
         }
     }
 
-    function blockUser($id) {
+    function blockUser() {
         $this->checkWriteModulePermission();
-        if (isset($id)) {
+        if (isset($this->data['id'])) {
+            $id = $this->data['id'];
             if ($id === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-block forbidden",true));
             }
@@ -638,8 +642,12 @@ class UsersController extends ModulesController {
 
     }
       
-    function removeGroup($id) {
+    function removeGroup() {
         $this->checkWriteModulePermission();
+        if (!isset($this->data['Group']['id'])) {
+            throw new BeditaException(__('Missing data group to remove', true));
+        }
+        $id = $this->data['Group']['id'];
         $groupName = $this->Group->field("name", array("id" => $id));
         $this->Transaction->begin();
         $this->BeAuth->removeGroup($groupName);
@@ -665,47 +673,41 @@ class UsersController extends ModulesController {
         }
         return $modules;
     }
-      
-      
-    protected function forward($action, $esito) {
-        $REDIRECT = array(
-            "viewUser" =>   array(
-                "ERROR" => $this->referer()
+
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'viewUser' =>   array(
+                'ERROR' => $this->referer()
             ),
-            "viewGroup" =>  array(
-                "ERROR" => '/users/groups'
+            'viewGroup' =>  array(
+                'ERROR' => '/users/groups'
             ),
-            "saveUser" =>   array(
-                "OK"    => "/users/viewUser/" . @$this->User->id,
-                "ERROR" => $this->referer() 
+            'saveUser' =>   array(
+                'OK'    => '/users/viewUser/' . @$this->User->id,
+                'ERROR' => $this->referer() 
             ),
-            "removeUser" =>     array(
-                "OK"    => "/users",
-                "ERROR" => "/users" 
+            'removeUser' =>     array(
+                'OK'    => '/users',
+                'ERROR' => '/users' 
             ),
-            "blockUser" =>  array(
-                "OK"    => "/users",
-                "ERROR" => "/users" 
+            'blockUser' =>  array(
+                'OK'    => '/users',
+                'ERROR' => '/users' 
             ),
-            "saveGroup" =>  array(
-                "OK"    => "/users/viewGroup/" . @$this->Group->id,
-                "ERROR" => $this->referer() 
+            'saveGroup' =>  array(
+                'OK'    => '/users/viewGroup/' . @$this->Group->id,
+                'ERROR' => $this->referer() 
             ),
-            "removeGroup" =>    array(
-                "OK"    => "/users/groups",
-                "ERROR" => "/users/groups" 
+            'removeGroup' =>    array(
+                'OK'    => '/users/groups',
+                'ERROR' => '/users/groups' 
             ),
-            "saveUserAjax" =>   array(
-                "OK"    => self::VIEW_FWD.'save_user_ajax_response',
-                "ERROR" => self::VIEW_FWD.'save_user_ajax_response'
+            'saveUserAjax' =>   array(
+                'OK'    => self::VIEW_FWD.'save_user_ajax_response',
+                'ERROR' => self::VIEW_FWD.'save_user_ajax_response'
             )
         );
-        if(isset($REDIRECT[$action][$esito])) {
-            return $REDIRECT[$action][$esito];
-        }
-        return false;
+        return $this->moduleForward($action, $result, $moduleRedirect);
     }
-    
-}
 
-?>
+}

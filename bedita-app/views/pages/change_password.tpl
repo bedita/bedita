@@ -1,5 +1,5 @@
 <div class="primacolonna">
-	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:$conf->userVersion}</label></div>
+	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>
 
 
 	<div class="insidecol colophon">
@@ -26,9 +26,10 @@
 {if $session->read("userToChangePwd")}
 
 	<div class="login">
-	{t}Hi{/t} {$session->read("userToChangePwd.User.realname")},<br/>
+	{t}Hi{/t} {$session->read("userToChangePwd.User.realname|escape")},<br/>
 	{t}to change your password fill the following form{/t}
 	<form action="#" method="post" name="loginForm" id="loginForm" class="cmxform" style="padding-left:5px;">
+		{$beForm->csrf()}
 		<fieldset>
 
 			<label class="block" for="passwd">{t}Password{/t}</label>

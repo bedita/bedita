@@ -1,1 +1,0 @@
-<h3>Hi, this is an empty but working BEdita HTML5 frontend</h3>

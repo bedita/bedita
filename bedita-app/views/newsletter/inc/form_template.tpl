@@ -97,6 +97,7 @@
 {/if}
 
 <form action="{$html->url('/newsletter/saveTemplate')}" method="post" name="updateForm" id="updateForm" class="">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 	<div class="tab"><h2>{t}Configuration{/t}</h2></div>
@@ -111,7 +112,7 @@
 				<select name="data[destination][]" id="changeCss">
 				<option value="">--</option>
 				{foreach from=$tree item="t"}
-					<option rel="{$t.public_url|default:null}" value="{$t.id}"{if $t.id == $pub.id|default:null} selected{/if}>{$t.title}</option>
+					<option rel="{$t.public_url|default:null}" value="{$t.id}"{if $t.id == $pub.id|default:null} selected{/if}>{$t.title|escape}</option>
 				{/foreach}
 				</select>
 				{/if}
@@ -120,7 +121,7 @@
 		<tr>
 			<td>{t}title{/t}</td>
 			<td>
-				<input type="text" 	name="data[title]" value="{$object.title|default:null}" />
+				<input type="text" 	name="data[title]" value="{$object.title|escape|default:null}" />
 			</td>
 		</tr>
 		<tr>

@@ -83,12 +83,18 @@ class DeleteObjectBehavior extends ModelBehavior {
         $model->table = (isset($configure) && is_string($configure)) ? $configure : $model->table;
 
         // Delete object references on tree as well
-        $tree = ClassRegistry::init('Tree');
-        if (!$tree->deleteAll(array('id' => $model->id))) {
-            throw new BeditaException(__('Error deleting tree', true));
+        $Tree = ClassRegistry::init('Tree');
+        $ok = true;
+        if ($model instanceof BeditaCollectionModel) {
+            $ok = $model->deleteCollection($model->id);
+        } else {
+            $parentIds = $Tree->getParents($model->id);
+            foreach ($parentIds as $parentId) {
+                $ok = $Tree->removeChild($model->id, $parentId) && $ok;
+            }
         }
-        if (!$tree->deleteAll(array("object_path LIKE '%/" . $model->id . "/%'"))) {
-            throw new BeditaException(__('Error deleting children tree', true));
+        if (!$ok) {
+            throw new BeditaException(__('Error deleting tree references', true));
         }
 
         $st = ClassRegistry::init('SearchText');

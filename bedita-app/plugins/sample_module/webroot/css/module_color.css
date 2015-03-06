@@ -1,5 +1,0 @@
-/* linked in every BEdita's page. It has to contain only the module color */
-
-@CHARSET "UTF-8";
-
-.sample_module {background-color: #8E236B !important;}

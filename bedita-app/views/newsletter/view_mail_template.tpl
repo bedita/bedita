@@ -28,7 +28,7 @@
 
 <div class="head">
 	
-	<h1>{t}{$object.title|default:"New Template"}{/t}</h1>
+	<h1>{t}{$object.title|escape|default:"New Template"}{/t}</h1>
 	
 </div>
 

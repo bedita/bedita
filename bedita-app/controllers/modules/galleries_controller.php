@@ -31,7 +31,7 @@
 class GalleriesController extends ModulesController {
 	var $name = 'Galleries';
 	var $helpers 	= array('Beurl', 'BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeSecurity');
     var $uses = array('BEObject', 'Gallery', 'Tree', 'Category') ;
 	protected $moduleName = 'galleries';
 	protected $categorizableModels = array('Gallery');
@@ -76,60 +76,4 @@ class GalleriesController extends ModulesController {
 	public function categories() {
 		$this->showCategories($this->Gallery);
 	}
-
-	protected function forward($action, $esito) {
-		$REDIRECT = array("cloneObject"	=> 	array(
-							"OK"	=> "/galleries/view/".@$this->Gallery->id,
-							"ERROR"	=> "/galleries/view/".@$this->Gallery->id 
-							),
-						"save"	=> 	array(
-							"OK"	=> "./view/{$this->Gallery->id}",
-							"ERROR"	=> "./view/{$this->Gallery->id}"
-							),
-						"saveCategories" 	=> array(
-							"OK"	=> "/galleries/categories",
-							"ERROR"	=> "/galleries/categories"
-							),
-						"deleteCategories" 	=> array(
-							"OK"	=> "/galleries/categories",
-							"ERROR"	=> "/galleries/categories"
-							),
-						"delete"	=> 	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> $this->referer()
-							),
-						"deleteSelected" =>	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-						"addItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-						"moveItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-						"removeItemsFromAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-						"changeStatusObjects"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-						"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							),
-						"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer()
-							)
-						);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito];
-		return false;
-	}
 }
-
-?>

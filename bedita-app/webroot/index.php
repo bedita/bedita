@@ -97,13 +97,6 @@
 	if (isset($_GET['url']) && $_GET['url'] === 'favicon.ico') {
 		return;
 	} else {
-		$Dispatcher=new Dispatcher();
-		try {
-			$Dispatcher->dispatch();
-		} catch (BeditaException $ex) {
-			AppController::handleExceptions($ex);
-		} catch (Exception $e) {
-			AppController::defaultError($e);
-		}
+		$Dispatcher = new Dispatcher();
+		$Dispatcher->dispatch();
 	}
-?>

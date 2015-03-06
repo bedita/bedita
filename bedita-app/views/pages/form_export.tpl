@@ -1,5 +1,6 @@
 
 <form action="{$html->url('/areas/export')}" method="post" name="exportForm" id="exportForm">
+{$beForm->csrf()}
 
 <input type="hidden" name="data[id]" value="{$objectId|default:''}"/>
 

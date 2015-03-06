@@ -11,8 +11,16 @@ function addItem() {
 	var linkTitle=$("#linkTitle").val();
 	var linkUrl=$("#linkUrl").val();
 	var target=$("#linkTarget").val();
+
+	var postData = {
+		'title': linkTitle,
+		'url': linkUrl,
+		'target': target
+	};
+
+	postData = addCsrfToken(postData);
 	
-	$(emptyLI).load(urlBaseAddLink, { 'title': linkTitle, 'url':linkUrl, 'target':target }, function () {
+	$(emptyLI).load(urlBaseAddLink, postData, function () {
 		
 		$("#listExistingLinks").append(this).fixItemsPriority() ; 
 	
@@ -59,10 +67,13 @@ $(document).ready(function() {
 	<input type="hidden" name="data[RelatedObject][link][0][switch]" value="link" />
 
 
-	<table border="0" class="condensed" style="margin-left:-5px; margin-top:-10px;">
+	<table border="0" class="indexlist" >
 		<thead>
 			<tr>
-				<th></th><th>{t}title{/t}</th><th>url</th>
+				<th></th>
+				<th>{t}title{/t}</th>
+				<th>url</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody id="listExistingLinks">
@@ -87,7 +98,7 @@ $(document).ready(function() {
 				</td>
 				<td><input type="text" class="new" style="width:140px" name="linkTitle" id="linkTitle" /></td>
 				<td><input type="text" class="new" style="width:230px" name="linkUrl" id="linkUrl" /></td>
-				<td><input type="button" value="{t}add{/t}" id="addLink"/></td>
+				<td style="text-align: right"><input type="button" value="{t}add{/t}" id="addLink"/></td>
 		
 			</tr>
 		</tfoot>	

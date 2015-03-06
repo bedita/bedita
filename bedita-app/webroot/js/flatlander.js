@@ -325,13 +325,11 @@ FlatlanderArea = function(el, workspace) {
 
 	this.set = function(k, v, preventUpload) {
 		var obj = this;
-		if (v!=undefined) {
+		if (k && typeof k == 'string') {
 			obj.attr[k] = v;
-		} else {
-			if (k) {
-	 			for (var j in k) {
-					obj.attr[j] = k[j];
-				}
+		} else if (k && typeof k == 'object') {
+ 			for (var j in k) {
+				obj.attr[j] = k[j];
 			}
 		}
 

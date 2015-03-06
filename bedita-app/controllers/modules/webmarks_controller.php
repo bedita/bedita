@@ -26,7 +26,7 @@ class WebmarksController extends ModulesController {
 	var $name = 'Webmarks';
 
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeLangText', 'BeFileHandler');
+	var $components = array('BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject', 'Link', 'Tree','Category','Area') ;
 	protected $moduleName = 'webmarks';
@@ -134,67 +134,14 @@ class WebmarksController extends ModulesController {
 		return trim($objectsListDesc, ",");
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-				"cloneObject"	=> 	array(
-										"OK"	=> "/webmarks/view/{$this->Link->id}",
-										"WARN"	=> "/webmarks/view/{$this->Link->id}", 
-										"ERROR"	=> "/webmarks/view/{$this->Link->id}" 
-										),
-				"save"	=> 	array(
-										"OK"	=> "/webmarks/view/{$this->Link->id}",
-										"WARN"	=> "/webmarks/view/{$this->Link->id}", 
-										"ERROR"	=> "/webmarks/view/" 
-									),
-				"delete" =>	array(
-										"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-										"ERROR"	=> $this->referer() 
-									),
-				"deleteSelected" =>	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-									),
-				"saveCategories" 	=> array(
-										"OK"	=> "/webmarks/categories",
-										"ERROR"	=> "/webmarks/categories"
-										),
-				"deleteCategories" 	=> array(
-										"OK"	=> "/webmarks/categories",
-										"ERROR"	=> "/webmarks/categories"
-										),
-				"addItemsToAreaSection"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"moveItemsToAreaSection"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"removeItemsFromAreaSection"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"changeStatusObjects"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"checkMultiUrl"		=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"assocCategory"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										),
-				"disassocCategory"	=> 	array(
-										"OK"	=> $this->referer(),
-										"ERROR"	=> $this->referer() 
-										)
-		) ;
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'checkMultiUrl' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
-
-?>
