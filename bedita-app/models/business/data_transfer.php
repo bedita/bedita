@@ -357,6 +357,13 @@ class DataTransfer extends BEAppModel
                     )
                 ));
                 $objects = array_keys($objIds);
+            } else { // verify objects existence
+                foreach ($objects as $objectId) {
+                     $o = ClassRegistry::init('BEObject')->findById($objectId);
+                     if (empty($o)) {
+                     	throw new BeditaException('Object with id "' . $objectId . '" not found');
+                     }
+                }
             }
             $this->trackDebug('1 area/section/other objects data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)

@@ -95,10 +95,10 @@ class DataShell extends BeditaBaseShell {
         $this->trackInfo('Export start');
         // prepare export
         $objects = array();
-            if (empty($this->params['f'])) {
-        	$this->trackInfo('Missing filename parameter');
-        	$this->help();
-        	return;
+        if (empty($this->params['f'])) {
+            $this->trackInfo('Missing filename parameter');
+            $this->help();
+            return;
         } else {
             $this->options['export']['filename'] = $this->params['f'];
             echo "\n" . 'Format Export options - filename: "' . $this->options['export']['filename'] . '"';
