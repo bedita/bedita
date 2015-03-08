@@ -51,6 +51,9 @@ class AddressbookController extends ModulesController {
 		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
+
+		include CONFIGS . 'countries.iso.php';
+		$this->set('country_list_iso', $config['countryList']);
 	}
 
 	function save() {
