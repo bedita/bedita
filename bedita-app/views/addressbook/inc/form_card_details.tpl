@@ -43,27 +43,10 @@ $(document).ready(function(){
 
 </script>
 
-<style>
-
-#companychoice TD {
-	height:60px; 
-	padding-right:20px;
-	padding-left:10px;
-	text-transform: uppercase;
-	border-left:1px solid gray; 
-}
-
-#companychoice TD:first-child {
-	border-left:0px solid gray; 
-}
-
-</style>
 
 <div class="tab"><h2>{t}Card{/t}</h2></div>
 
 <fieldset id="card">
-
-
 
 		<table id="companychoice">
 			<tr>
