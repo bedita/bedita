@@ -44,13 +44,14 @@ function submitSubscribers(url) {
 		arrVal[index] = $(this).val();
 	});
 	
-	$.post(url,
-		{
-			'objects_selected[]': arrVal,
-			'operation': $("select[name=operation]").val(),
-			'destination': $("select[name=destination]").val(),
-			'newStatus': $("select[name=newStatus]").val()
-		},
+    var postData = {
+            'objects_selected[]': arrVal,
+            'operation': $("select[name=operation]").val(),
+            'destination': $("select[name=destination]").val(),
+            'newStatus': $("select[name=newStatus]").val()
+        };
+    postData = addCsrfToken(postData, '#updateForm');
+    $.post(url, postData,
 		function(htmlcode) {
 			$("#subscribers").html(htmlcode);
 			$("#loaderListSubscribers").hide();
