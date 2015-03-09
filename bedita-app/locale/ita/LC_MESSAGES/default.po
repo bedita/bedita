@@ -1602,8 +1602,11 @@ msgstr "Selezionare una categoria"
 msgid "Select a destination to 'copy to'"
 msgstr "Seleziona una destinazione per il 'copy to'"
 
+msgid "mailgroup"
+msgstr "Lista newsletter"
+
 msgid "Select a mailgroup"
-msgstr "Selezionare un mailgroup"
+msgstr "Selezionare una lista della newsletter"
 
 msgid "Select a status"
 msgstr "Selezionare uno status"
@@ -2146,7 +2149,7 @@ msgid "browse your disk"
 msgstr "sfoglia, cerca nel disco"
 
 msgid "card(s) associated to mailgroup"
-msgstr "schede associate a mailgroup"
+msgstr "schede associate a lista newsletter"
 
 msgid "cards"
 msgstr "schede"
