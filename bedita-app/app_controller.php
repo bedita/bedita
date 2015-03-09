@@ -28,7 +28,7 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'Perms', 'BeEmbedMedia', 'SessionFilter');
 
     public $components = array(
         'BeAuth',
