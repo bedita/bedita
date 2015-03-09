@@ -171,9 +171,20 @@ class AppError extends ErrorHandler {
 			}
 		}
 
-		// add BeFrontHelper for frontend app
-		if (!BACKEND_APP && !in_array('BeFront', $this->controller->helpers)) {
-			$this->controller->helpers[] = 'BeFront';
+		if (BACKEND_APP) {
+			// check backend helpers
+			$checkHelpers = array('Beurl', 'BeForm', 'Session', 'SessionFilter');
+			// assure to use Smarty view
+			$this->controller->view = 'Smarty';
+		} else {
+			// check frontend helpers
+			$checkHelpers = array('BeFront');
+		}
+
+		foreach ($checkHelpers as $helperName) {
+			if (!in_array($helperName, $this->controller->helpers)) {
+				$this->controller->helpers[] = $helperName;
+			}
 		}
 
 		// assure to have $conf in viewVars
