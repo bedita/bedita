@@ -125,6 +125,10 @@
 			</td>
 		</tr>
 		<tr>
+			<td>{t}sender name{/t}</td>
+			<td><input type="text" name="data[sender_name]" value="{$object.sender_name|default:null}"/></td>
+		</tr>
+		<tr>
 			<td>{t}sender email{/t}</td>
 			<td><input type="text" name="data[sender]" value="{$object.sender|default:null}"/></td>
 		</tr>
