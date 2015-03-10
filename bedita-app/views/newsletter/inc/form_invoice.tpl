@@ -23,6 +23,10 @@ $(document).ready(function() {
 	// set correct send message in button at start
 	var currentMsg = $('#sendNewsletter').val();
 	var changeSendButton = function() {
+		if (!$('#sendNewsletter').length) {
+			return false;
+		}
+
 		if (($( "input[name='data[start_sending]']" ).val() == "") || ($( "input[name='data[start_sending_time]']" ).val() == "")) {
 			$('#sendNewsletter').val(currentMsg + " " + messageNow);
 		} else {
