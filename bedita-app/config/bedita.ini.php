@@ -562,7 +562,7 @@ $config['searchFields'] = array() ;
 /**
  * Default css filename for newsletter templates
  */
-$config['newsletterCss'] = "base.css";
+$config['newsletterCss'] = "newsletter.css";
 
 /**
  * default timeout in minutes to assume mail jobs blocked and try to resend
