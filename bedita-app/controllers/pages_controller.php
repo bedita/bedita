@@ -701,22 +701,25 @@ class PagesController extends AppController {
      * @return void
      */
     public function gotoObjectById() {
-        
-        $objectId = $this->params['form']['objectId'];
-        $count = ClassRegistry::init('BEObject')->find('count', array(
-            'conditions' => array(
-                'OR' => array(
-                    'id' => $objectId,
-                    'nickname' => $objectId
-                )
-            ),
-            'contain' => array()
-        ));
+        $objectId = '';
+        $count = 0;
+        if (!empty($this->params['url']['objectId'])) {
+            $objectId = $this->params['url']['objectId'];
+            $count = ClassRegistry::init('BEObject')->find('count', array(
+                'conditions' => array(
+                    'OR' => array(
+                        'id' => $objectId,
+                        'nickname' => $objectId
+                    )
+                ),
+                'contain' => array()
+            ));
+        }
 
         if ($count) {
             $this->redirect('/view/' . $objectId);
         } else {
-            throw new BeditaNotFoundException("Object not found");
+            throw new BeditaNotFoundException('Object with ID ' . $objectId . ' not found');
         }
     }
 

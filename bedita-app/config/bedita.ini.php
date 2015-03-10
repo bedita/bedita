@@ -154,7 +154,7 @@ $config['richtexteditor'] = array(
 );
 
 // Application messages - temporary messages duration
-$config['msgPause'] = 3000;		// milliseconds
+$config['msgPause'] = 5000;		// milliseconds
 
 // bedita user for unit test
 $config['unitTestUserId'] = 1;

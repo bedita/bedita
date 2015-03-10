@@ -133,11 +133,9 @@ $(document).ready(function(){
 		<th>{t}country{/t}:</th>
 		<td>
 			<select type="text" name="data[country]" id="country">
+				<option value=""> -- </option>
 				{foreach $country_list_iso as $country}
 				  <option value="{$country}" {if $object.country == $country}selected{/if}>{$country}</option>
-				  {*if !in_array($val,$object_master_langs)}
-				  <option value="{$val}" {if $val=="eng"}selected{/if}>{$label}</option>
-				  {/if*}
 				{/foreach}
 			</select>
 		</td>

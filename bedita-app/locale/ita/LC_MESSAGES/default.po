@@ -1197,11 +1197,26 @@ msgstr "Newsletter"
 msgid "Newsletters "
 msgstr "Newsletters "
 
+msgid "Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at"
+msgstr "Attenzione. Ogni modifica che fai potrebbe non essere applicata se non salvi in tempo. La newsletter sta per essere inviata in meno di un'ora, alle"
+
+msgid "schedule date and time"
+msgstr "date e ora di invio"
+
 msgid "Newsletters sent this month"
 msgstr "Newsletter inviate questo mese"
 
-msgid "Newsletters sent this year"
-msgstr "Newsletter inviate quest'anno"
+msgid "Save & queue newsletter"
+msgstr "Salva e accoda newsletter"
+
+msgid "Test newsletter"
+msgstr "Prova newsletter"
+
+msgid "now"
+msgstr "ora"
+
+msgid "Do you want to save and SEND this newsletter now? (mails are being sent as soon as possible)"
+msgstr "Vuoi salvare e inviare la newsletter immediatamente? (la procedura di invio inizierà subito)"
 
 msgid "No"
 msgstr "No"
@@ -1607,6 +1622,12 @@ msgstr "Lista newsletter"
 
 msgid "Select a mailgroup"
 msgstr "Selezionare una lista della newsletter"
+
+msgid "Missing sender email"
+msgstr "Manca l'indirizzo email del mittente"
+
+msgid "Missing send time"
+msgstr "Manca l'ora di invio"
 
 msgid "Select a status"
 msgstr "Selezionare uno status"

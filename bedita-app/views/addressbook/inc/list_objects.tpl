@@ -1,7 +1,5 @@
 <script type="text/javascript">
 <!--
-var message = "{t}Are you sure that you want to delete the item?{/t}" ;
-var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var urls = Array();
 	urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
 	urls['changestatusSelected'] = "{$html->url('changeStatusObjects/')}";
@@ -11,6 +9,9 @@ var urls = Array();
 	urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 	urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
 	urls['addToMailgroup'] = "{$html->url('addToMailgroup/')}";
+
+var message = "{t}Are you sure that you want to delete the item?{/t}" ;
+var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
 var no_items_checked_msg = "{t}No items selected{/t}";
 var sel_status_msg = "{t}Select a status{/t}";
 var sel_category_msg = "{t}Select a category{/t}";
@@ -145,11 +146,12 @@ $(document).ready(function(){
 	<select id="objMailgroupAssoc" name="data[mailgroup]">
 		<option value="">--</option>
 		{foreach from=$mailgroups item='mailgroup' key='key'}
-			<option value="{$mailgroup.id}">{$mailgroup.group_name}</option>
+			<option value="{$mailgroup.id}">{$mailgroup.group_name|escape}</option>
 		{/foreach}
 	</select>
 
-	<input id="assocObjectsMailgroup" type="button" value="{t}Add association{/t}" /> / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />
+	<input id="assocObjectsMailgroup" type="button" value="{t}Add association{/t}" />
+	{bedev} / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />{/bedev}
 </div>
 {/if}	
 

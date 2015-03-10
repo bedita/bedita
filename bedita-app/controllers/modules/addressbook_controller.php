@@ -126,6 +126,7 @@ class AddressbookController extends ModulesController {
 	public function addToMailgroup() {
 		$this->checkWriteModulePermission();
 		$counter = 0;
+		$missingEmail = 0;
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$mailgroup = $this->data['mailgroup'];
@@ -146,11 +147,19 @@ class AddressbookController extends ModulesController {
 						$MailGroupObj->save($data);
 						$counter++;
 					}
+				} else {
+					$missingEmail++;
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage("$counter" . __("card(s) associated to mailgroup", true) . " - " . $mailgroup);
-			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
+
+			$userMsg = '';
+			if ($missingEmail > 0) {
+				$userMsg = $missingEmail . ' ' . __('cards without email not added to mailgroup', true) . ', ';
+			}
+			$userMsg .= $counter . ' ' . __("card(s) associated to mailgroup", true);
+			$this->userInfoMessage($userMsg);
+			$this->eventInfo("$counter card(s) associated to mailgroup id: " . $mailgroup);
 		}
 	}
 
