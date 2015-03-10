@@ -50,7 +50,7 @@ $(document).ready(function() {
 		}
 
 		// confirm and set datetime now for send
-		if (($( "input[name='data[start_sending]']" ).val() == "") && ($( "input[name='data[start_sending_time]']" ).val() == "")) {
+		if (($( "input[name='data[start_sending]']" ).val() == "")) {
 
 			// prepare current time & date
 			var roundMinutes = 1000 * 60 * 5; // round 5 minutes
@@ -65,9 +65,6 @@ $(document).ready(function() {
 				$('#timeStart').val(tString);
 				$("#updateForm").prop("action", sendNewsletterUrl).submit();
 			}
-		} else if ($( "input[name='data[start_sending_time]']" ).val() == "") {
-			alert("{t}Missing send time{/t}");
-			return false;
 		} else {
 			$("#updateForm").prop("action", sendNewsletterUrl).submit();
 		}
@@ -139,14 +136,13 @@ $(document).ready(function() {
 		<input type="button" id="testNewsletter" value="{t}Test newsletter{/t}" {if !($object.id|default:false)}disabled="disabled"{/if}/> 
 		{if (empty($object) || ($object.mail_status!='sent' && $object.mail_status != 'injob'))}
 		&nbsp;&nbsp;
-		{if ($object.mail_status == "sent")}
-			<p style="color:#FFF; padding:4px">
-			{t}Newsletter sent. To schedule another invoice, please clone this object.{/t}
-			</p>
-		{else}
-			<input type="button" id="sendNewsletter" value="{t}Save & queue newsletter{/t}" disabled />
-		{/if}
-		
+			{if ($object.mail_status == "sent")}
+				<p style="color:#FFF; padding:4px">
+				{t}Newsletter sent. To schedule another invoice, please clone this object.{/t}
+				</p>
+			{elseif $object.mail_status != 'pending' && $object.mail_status != 'injob'}
+				<input type="button" id="sendNewsletter" value="{t}Save & queue newsletter{/t}" disabled />
+			{/if}
 		{/if}
 	</div>
 	
