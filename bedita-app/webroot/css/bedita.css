@@ -2068,6 +2068,57 @@ A.BEbutton.golink:before {
 	vertical-align: top;
 }
 
+.filters {
+	overflow:auto;
+}
+.filters .cell {
+	white-space: nowrap;
+	border-right:1px solid #999;
+	padding:5px 10px 5px 5px;
+	vertical-align: middle;
+	float:left;
+	min-height: 42px;
+}
+
+.filters .cell label {
+	display:inline-block;
+	vertical-align: middle;
+	padding-right:5px;
+}
+
+.filters .cell.word #search {
+	width: 290px;
+}
+.filters .cell.position {
+	clear:both;
+	float:none;
+	border:0px;
+}
+
+.filters .cell.position .areaSectionAssociation {
+	max-width:440px;
+}
+
+.filters .formbuttons {
+	margin-top:5px;
+	padding:10px 5px 10px 5px;
+	clear:both;
+	width: 100%;
+	border-right:0px solid #999;
+}
+
+.filters .formbuttons input {
+	background-color: #666;
+	color:#F2F2F2;
+	min-width:100px;
+	margin-right:20px;
+}
+
+.filters .formbuttons input:hover {
+	background-color: #F2F2F2;
+	color:#666;
+}
+
 /*...........................................    
 
     Ajax
