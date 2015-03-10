@@ -146,7 +146,7 @@ $(document).ready(function(){
 	<select id="objMailgroupAssoc" name="data[mailgroup]">
 		<option value="">--</option>
 		{foreach from=$mailgroups item='mailgroup' key='key'}
-			<option value="{$mailgroup.id}">{$mailgroup.group_name}</option>
+			<option value="{$mailgroup.id}">{$mailgroup.group_name|escape}</option>
 		{/foreach}
 	</select>
 
