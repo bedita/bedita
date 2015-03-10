@@ -167,10 +167,10 @@
 *}
 
 	<hr />
-
+	{bedev}
 	<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/pages/showObjects/0/0/0/leafs')}" style="width:200px" />
-
 	&nbsp;&nbsp;
+	{/bedev}
 	
 	
 	<label>{t}use template{/t}:</label>

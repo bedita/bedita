@@ -1197,6 +1197,9 @@ msgstr "Newsletter"
 msgid "Newsletters "
 msgstr "Newsletters "
 
+msgid "Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at"
+msgstr "Attenzione. Ogni modifica che fai potrebbe non essere applicata se non salvi in tempo. La newsletter sta per essere inviata in meno di un'ora, alle"
+
 msgid "schedule date and time"
 msgstr "date e ora di invio"
 
