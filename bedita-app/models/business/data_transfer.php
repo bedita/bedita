@@ -974,18 +974,20 @@ class DataTransfer extends BEAppModel
             $this->import['destination']['media']['space'] = disk_free_space($this->import['destination']['media']['root']);
             // 6.3 files
             foreach ($this->import['media'] as $id => &$media) {
-                $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
-                // 6.3.1 existence (base folder + objects[i].uri) [TODO]
-                if (!file_exists($filePath)) {
-                    throw new BeditaException('file "' . $filePath . '" not found (object id "' . $id . '")');
-                } else {
-                    $media['base'] = $this->import['sourceMediaRoot'];
-                    $media['full'] = $filePath;
+                if (!empty($media['uri']) && $media['uri'][0] == '/') {
+                    $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
+                    // 6.3.1 existence (base folder + objects[i].uri) [TODO]
+                    if (!file_exists($filePath)) {
+                        throw new BeditaException('file "' . $filePath . '" not found (object id "' . $id . '")');
+                    } else {
+                        $media['base'] = $this->import['sourceMediaRoot'];
+                        $media['full'] = $filePath;
+                    }
+                    // 6.3.2 extension allowed [TODO]
+                    // ...
+                    // 6.3.3 dimension allowed [TODO]
+                // ...
                 }
-                // 6.3.2 extension allowed [TODO]
-                // ...
-                // 6.3.3 dimension allowed [TODO]
-                // ...
             }
             // 6.3.4 all files dimension < space available
             // space required => $this->import['source']['media']['size']
