@@ -55,7 +55,7 @@
 			</tr>
 			<tr>
 					<th>{t}description{/t}:</th>
-					<td><textarea style="width:100%" class="mceSimple" name="data[description]">{$object.description|default:""}</textarea></td>
+					<td><textarea style="width:100%" class="mceSimple" name="data[description]">{$object.description|default:""|escape}</textarea></td>
 			</tr>
 			<tr>
 				<th>{t}unique name{/t}<br />({t}url name{/t}):</th>

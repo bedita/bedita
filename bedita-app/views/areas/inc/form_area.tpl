@@ -106,14 +106,14 @@
 	<tr>
 		<th>{t}public url{/t}:</th>
 		<td>
-			<input type="text" name="data[public_url]" value="{$object.public_url|default:''}""/>
+			<input type="text" name="data[public_url]" value="{$object.public_url|default:''|escape}""/>
 		</td>
 	</tr>
 	
 	<tr>
 		<th>{t}staging url{/t}:</th>
 		<td>
-			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''}""/>
+			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''|escape}""/>
 		</td>
 	</tr>
 	<tr>
@@ -186,9 +186,9 @@
 	<tr>
 		<th>{t}Provider URL{/t}:</th>
 		<td>
-			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''}"/>
+			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''|escape}"/>
 			{if isset($object.stats_provider_url)}
-			<a href="{$object.stats_provider_url}" target="_blank">
+			<a href="{$object.stats_provider_url|escape}" target="_blank">
 			› access statistics
 			</a>
 			{/if}
