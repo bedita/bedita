@@ -270,15 +270,23 @@
 				}
 				if($admin_data_ok) {
 					$userdata = array(
-						'id' => '1',
-						'realname' => trim($_POST['data']['admin']['user']),
-						'userid' => trim($_POST['data']['admin']['user']),
-						'passwd' => md5(trim($_POST['data']['admin']['password']))
+						'User' => array(
+							'realname' => trim($_POST['data']['admin']['user']),
+							'userid' => trim($_POST['data']['admin']['user']),
+							'passwd' => md5(trim($_POST['data']['admin']['password'])),
+						),
+						'Group' => array(
+							'id' => 1,
+						),
 					);
+					if (!empty($_POST['data']['admin']['_overwrite'])) {
+						// #540 - Overwrite User with ID = 1.
+						$userdata['User']['id'] = 1;
+					}
 					if(!$this->_saveuser($userdata)) {
 						$this->smarty->assign('usercreationerr',true);
 					} else {
-						$this->smarty->assign('userid', $userdata['userid']);
+						$this->smarty->assign('userid', $userdata['User']['userid']);
 						$this->smarty->assign('usercreationok',true);
 						$this->start(self::PAGE_FINISH);
 						return;

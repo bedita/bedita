@@ -21,7 +21,13 @@
 <fieldset>
 
 <h3>Administrator</h3>
-<p>Please insert username and password for the administrator user </p> 
+<p>
+	{* #540 - Prevent overwriting of system user. *}
+	<span class="INFO">[INFO]</span>: a system user <code>bedita</code> with password <code>bedita</code> has already been set up.
+	You can choose to <b>add</b> another administrator or <b>replace</b> the system user.
+</p>
+<p>Please insert username and password for the administrator user.</p>
+
 <table>
 <tr>
 	<td><label>Admin user</label>*:</td>
@@ -38,6 +44,10 @@
 	<td><label>Confirm password</label>*:</td>
 	<td><input tabindex="3" type="password" name="data[admin][cpassword]"/></td>
 	{if !empty($cpassworderr)}<td><span class="ERROR">Password and Confirm password must match</span></td>{/if}
+</tr>
+<tr>
+	<td><label>Overwrite system user</label>:</td>
+	<td><input tabindex="4" type="checkbox" name="data[admin][_overwrite]" /></td>
 </tr>
 {/if}
 </table>
@@ -92,8 +102,8 @@
 <input type="hidden" name="p_from" value="2"/>
 <input type="hidden" id="p" name="page" value="3"/>
 <div id="buttons">
-    <input tabindex="4" type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
-    <input tabindex="5" type="submit" style="float:right;" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
+    <input tabindex="5" type="submit" style="float:right;" value="Next >" onclick="javascript:document.getElementById('p').value = 3;" />
+    <input tabindex="6" type="submit" style="float:right;" value="< Back" onclick="javascript:document.getElementById('p').value = 2;" />
     <div style="clear:both"></div>
 </div>
 
