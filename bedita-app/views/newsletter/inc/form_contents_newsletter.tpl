@@ -4,6 +4,17 @@
 	{if !empty($relObjects.template)}
 		urlAddObjToAss += "/{$relObjects.template.0.id}";
 	{/if}
+	var cssTemplate = false;
+	var cssDefault = false;
+	var cssInit = false;
+
+	{if !empty($conf->newsletterCss)}
+		cssDefault = cssInit = "{$html->url('/css')}/{$conf->newsletterCss}";
+	{/if}
+
+	{if !empty($cssUrl)}
+		cssTemplate = cssInit = "{$cssUrl}";
+	{/if}
 </script>
 
 {if !empty($conf->richtexteditor.name) && $conf->richtexteditor.name == "tinymce"}
@@ -118,8 +129,10 @@
 
 	$(document).ready(function() {
 		$(document).on('instanceReady.ckeditor', '#htmltextarea', function(event,editor) {
-			var linkElement = $(editor.document.$).find('link');
-			linkElement.attr('href', "{$cssUrl|default:$html->url('/css/newsletter.css')}");
+			if (cssInit) {
+				var linkElement = $(editor.document.$).find('link');
+				linkElement.attr('href', cssInit);
+			}
 		});
 		
 		$("#changeTemplate").change(function() {
@@ -135,16 +148,18 @@
 			var	cssBaseUrl = $(this).find("option:selected").attr("rel");
 			var cssPath;
 			if (cssBaseUrl === undefined || cssBaseUrl == '') {
-				cssPath = "{$html->url('/css/newsletter.css')}";
+				cssPath = cssDefault;
 			} else {
-				cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+				if (cssDefault) {
+					cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+				}
 			}
-			changeCKeditorCss(cssPath);
+			if (cssPath) {
+				changeCKeditorCss(cssPath);
+			}
 		});
 	});
-
 	</script>
-
 {/if}
 
 
@@ -175,9 +190,12 @@
 	
 	<label>{t}use template{/t}:</label>
 	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />
-	<select name="data[RelatedObject][template][1][id]" id="changeTemplate">
+	<select name="data[RelatedObject][template][1][id]" id="changeTemplate" style="width: 20em;">
 		<option value="">--</option>
-		{foreach from=$templateByArea item="pub"}
+		{foreach $templateNotOnTree as $t}
+			<option rel="" value="{$t.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $t.id} selected{/if}>{$t.title|escape}</option>
+		{/foreach}
+		{foreach from=$templateOnTree item="pub"}
 			{if !empty($pub.MailTemplate)}
 				<option value="">{$pub.title|escape|upper}</option>
 			{/if}
