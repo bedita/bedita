@@ -26,6 +26,10 @@
 	<span class="INFO">[INFO]</span>: a system user <code>bedita</code> with password <code>bedita</code> has already been set up.
 	You can choose to <b>add</b> another administrator or <b>replace</b> the system user.
 </p>
+<p>
+	{* #618 - Add informations about system user to setup. *}
+	Please note that the system user (user with <code>ID = 1</code>) <b>will not be deletable</b>, and will be also used as default author for contents created or edited by system tasks.
+</p>
 <p>Please insert username and password for the administrator user.</p>
 
 <table>

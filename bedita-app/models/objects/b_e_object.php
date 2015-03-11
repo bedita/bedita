@@ -31,7 +31,6 @@ class BEObject extends BEAppModel {
 	var $useTable	= "objects" ;
 	
 	private $defaultIp = "::1"; // default IP addr for saved objects
-	private $defaultUserId = 1; // default user id, e.g.: objects created by shell scripts don't have proper user
 	
 	var $validate = array(
 //		'title' => array(
@@ -678,29 +677,36 @@ class BEObject extends BEAppModel {
 		}
 		return $IP ;
 	}
-	
-	private function _getIDCurrentUser() {
-		// read user data from session or from configure
-		$conf = Configure::getInstance();
-		$userId=$this->defaultUserId; 
 
-		if(isset($conf->beditaTestUserId)) {
-			$userId = $conf->beditaTestUserId; // unit tests
-		} else {
-			
-			if(class_exists("CakeSession")) {
-				$session = new CakeSession() ;
-				if($session->valid() === false)
-					return null;
-				$user = $session->read($conf->session["sessionUserKey"]) ; 
-				if(!isset($user["id"])) 
-					return null ;
-				$userId = $user["id"];
-			}
-		}
-		
-		return $userId;
-	}
+    /**
+     * Returns the current user ID. If a unit test is running, the test user ID is returned instead.
+     *
+     * @return int Current User's ID, or test User's ID. Defaults to system User's ID.
+     * @see BeSystem::systemUserId()
+     */
+    private function _getIDCurrentUser() {
+        $conf = Configure::getInstance();
+        $systemUserId = BeLib::getObject('BeSystem')->systemUserId();
+
+        if (isset($conf->beditaTestUserId)) {
+            // Unit tests.
+            return $conf->beditaTestUserId;
+        } elseif (class_exists('CakeSession')) {
+            $session = new CakeSession() ;
+            if ($session->valid() === false) {
+                return $systemUserId;
+            }
+
+            $user = $session->read($conf->session['sessionUserKey']); 
+            if (!isset($user['id'])) {
+                return $systemUserId;
+            }
+
+            return $user['id'];
+        }
+
+        return $systemUserId;
+    }
 
     /**
      * Checks whether current User is in Group `administrator` or not.
