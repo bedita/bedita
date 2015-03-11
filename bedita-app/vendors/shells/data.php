@@ -57,7 +57,12 @@ class DataShell extends BeditaBaseShell {
         $this->trackInfo('Import start');
         if (isset($this->params['m'])) {
             $this->options['import']['sourceMediaRoot'] = $this->params['m'];
+        } else {
+            $this->options['import']['sourceMediaRoot'] = TMP . 'media-import';
         }
+        $this->out('Using sourceMediaRoot: ' . $this->options['import']['sourceMediaRoot']);
+        $this->checkDir($this->options['import']['sourceMediaRoot']);
+
         if (isset($this->params['v'])) {
             $this->options['import']['logDebug'] = true;
         }
@@ -68,12 +73,11 @@ class DataShell extends BeditaBaseShell {
             }
         }
         $logLevel = $this->options['import']['logLevel'];
-        echo "\n" . 'Format Import options - logLevel: ' . $logLevel . ' (' . array_search($logLevel, $this->logLevels) . ')';
-        echo "\n" . 'Format Import options - saveMode: ' . $this->options['import']['saveMode'] . ' (' . array_search($this->options['import']['saveMode'], $this->saveModes, true) . ')';
-        if (!empty($this->options['import']['sourceMediaRoot'])) {
-            echo "\n" . 'Format Import options - sourceMediaRoot: "' . $this->options['import']['sourceMediaRoot'] . '"';
-        }
-        echo "\n" . 'See import.log for details' . "\n\n";
+        $this->out('Using logLevel: ' . $logLevel . ' (' . array_search($logLevel, $this->logLevels) . ')');
+        $this->out('Using saveMode: ' . $this->options['import']['saveMode'] . 
+            ' (' . array_search($this->options['import']['saveMode'], $this->saveModes, true) . ')');
+        $this->out('See bedita-app/tmp/logs/import.log for details');
+        $this->out('');
         // debug: uncomment to test import from array 
         //$inputData = json_decode($inputData,true);
         // 2. do import
@@ -113,7 +117,8 @@ class DataShell extends BeditaBaseShell {
         }
         if (isset($this->params['types'])) {
             $this->options['export']['types'] = $this->params['types'];
-            $this->out('Using types: ' . $this->options['export']['types'] . ' (' . $this->options['export']['types'] . ')');
+            $this->out('Using types: ' . $this->options['export']['types'] 
+                . ' (' . $this->options['export']['types'] . ')');
         }
         if (isset($this->params['m'])) {
             $this->options['export']['destMediaRoot'] = $this->params['m'];
@@ -125,7 +130,8 @@ class DataShell extends BeditaBaseShell {
 
         if (isset($this->params['t'])) {
             $this->options['export']['returnType'] = $this->params['t'];
-            $this->out('Using returnType: ' . $this->options['export']['returnType'] . ' (' . $this->options['export']['returnType'] . ')');
+            $this->out('Using returnType: ' . $this->options['export']['returnType'] 
+                . ' (' . $this->options['export']['returnType'] . ')');
         }
         if (isset($this->params['v'])) {
             $this->options['export']['logDebug'] = true;
@@ -139,7 +145,8 @@ class DataShell extends BeditaBaseShell {
         $logLevel = $this->options['export']['logLevel'];
         $this->out('Using logLevel: ' . $logLevel . ' (' . array_search($logLevel, $this->logLevels) . ')');
         $this->out('See bedita-app/tmp/logs/export.log for details');
-        // do export
+        $this->out('');
+                // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->export($objects, $this->options['export']);
         if (!empty($result['log']['ERROR'])) {
