@@ -208,17 +208,34 @@ class BeditaBaseShell extends Shell {
     }
 
     protected function checkExportFile($expFile) {
-    	if(file_exists($expFile)) {
-			$res = $this->in("$expFile exists, overwrite? [y/n]");
-			if($res == "y") {
-				if(!unlink($expFile)){
-					throw new Exception("Error deleting $expFile");
-				}
-			} else {
-				$this->out("Export aborted. Bye.");
-				exit;
-			}
-		}
+        if (file_exists($expFile)) {
+            $res = $this->in("$expFile exists, overwrite? [y/n]");
+            if($res == 'y') {
+                if(!unlink($expFile)){
+                    throw new Exception("Error deleting $expFile");
+                }
+            } else {
+                $this->out('Export aborted. Bye.');
+                exit;
+            }
+        }
+    }
+
+    protected function checkDir($dir) {
+        if (!file_exists($dir)) {
+            $res = $this->in("$dir doesn't exist, create? [y/n]");
+            if($res == 'y') {
+                if(!mkdir($dir)){
+                    throw new Exception("Error creating $dir");
+                }
+            } else {
+                $this->out('Operation aborted. Bye.');
+                exit;
+            }
+        } elseif (!is_dir($dir)) {
+            $this->out("$dir is not a directory. Exiting.");
+            exit;
+        }
     }
 
     protected function __clean($path, $removeDirs=true) {

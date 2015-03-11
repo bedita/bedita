@@ -100,8 +100,10 @@ class DataShell extends BeditaBaseShell {
             $this->help();
             return;
         } else {
-            $this->options['export']['filename'] = $this->params['f'];
-            echo "\n" . 'Format Export options - filename: "' . $this->options['export']['filename'] . '"';
+            $filename = $this->params['f'];
+            $this->options['export']['filename'] = $filename;
+            $this->out('Using filename: "' . $filename . '"');
+            $this->checkExportFile($filename);
         }
         if (isset($this->params['id'])) {
             $objects[] = $this->params['id'];
@@ -111,14 +113,19 @@ class DataShell extends BeditaBaseShell {
         }
         if (isset($this->params['types'])) {
             $this->options['export']['types'] = $this->params['types'];
-            echo "\n" . 'Format Export options - types: ' . $this->options['export']['types'] . ' (' . $this->options['export']['types'] . ')';
+            $this->out('Using types: ' . $this->options['export']['types'] . ' (' . $this->options['export']['types'] . ')');
         }
         if (isset($this->params['m'])) {
             $this->options['export']['destMediaRoot'] = $this->params['m'];
+        } else {
+            $this->options['export']['destMediaRoot'] = TMP . 'media-export';
         }
+        $this->checkDir($this->options['export']['destMediaRoot']);
+        $this->out('Using destMediaRoot: ' . $this->options['export']['destMediaRoot']);
+
         if (isset($this->params['t'])) {
             $this->options['export']['returnType'] = $this->params['t'];
-            echo "\n" . 'Format Export options - returnType: ' . $this->options['export']['returnType'] . ' (' . $this->options['export']['returnType'] . ')';
+            $this->out('Using returnType: ' . $this->options['export']['returnType'] . ' (' . $this->options['export']['returnType'] . ')');
         }
         if (isset($this->params['v'])) {
             $this->options['export']['logDebug'] = true;
@@ -130,8 +137,8 @@ class DataShell extends BeditaBaseShell {
             }
         }
         $logLevel = $this->options['export']['logLevel'];
-        echo "\n" . 'Format Export options - logLevel: ' . $logLevel . ' (' . array_search($logLevel, $this->logLevels) . ')';
-        echo "\n" . 'See export.log for details' . "\n\n";
+        $this->out('Using logLevel: ' . $logLevel . ' (' . array_search($logLevel, $this->logLevels) . ')');
+        $this->out('See bedita-app/tmp/logs/export.log for details');
         // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->export($objects, $this->options['export']);
