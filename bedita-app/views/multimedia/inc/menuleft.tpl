@@ -9,7 +9,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="primacolonna">
 		
 	
-	   <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>
+	   <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''|escape}</label></div>
 		
 		
 

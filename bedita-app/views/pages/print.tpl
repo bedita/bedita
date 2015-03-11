@@ -1,6 +1,6 @@
 <div class="standardreport">
 	
-	<div class="modules" style="float:left"><label class="bedita">BEdita {$conf->version}<br /><br />{$conf->projectName|default:''}</label></div>
+	<div class="modules" style="float:left"><label class="bedita">BEdita {$conf->version}<br /><br />{$conf->projectName|default:''|escape}</label></div>
 	<div class="modules" style="float:left">
 		<label class="{$object.ObjectType.module_name|default:''}">
 			{$object.ObjectType.name|default:''}

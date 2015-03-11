@@ -72,6 +72,7 @@ class AdminController extends ModulesController {
 	 * @throws BeditaAjaxException
 	 */
 	public function utility() {
+		$this->checkWriteModulePermission();
 		if ($this->params["isAjax"]) {
 			if (empty($this->params["form"]["operation"])) {
 				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
@@ -172,6 +173,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function emptyFile() {
+		$this->checkWriteModulePermission();
 		$this->BeSystem->emptyFile($this->data["fileToEmpty"]);
 		$this->systemLogs(10);
 	}
@@ -466,6 +468,7 @@ class AdminController extends ModulesController {
 	 * If addon is a BEdita object type create also a row on object_types table
 	 */
 	public function enableAddon() {
+		$this->checkWriteModulePermission();
 	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -491,6 +494,7 @@ class AdminController extends ModulesController {
 	 * If addon is a BEdita object type remove also the row on object_types table
 	 */
 	public function disableAddon() {
+		$this->checkWriteModulePermission();
 	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -514,6 +518,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function updateAddon() {
+		$this->checkWriteModulePermission();
 		if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -604,6 +609,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function saveConfig() {
+		$this->checkWriteModulePermission();
 		// sys and cfg array
 		$sys = $this->params["form"]["sys"];
 
@@ -668,8 +674,11 @@ class AdminController extends ModulesController {
 
 		// check if configs already set
 		foreach ($cfg as $k => $v) {
-			if(!empty($conf->$k) && ($conf->$k === $v)) {
+			if (!empty($conf->$k) && ($conf->$k === $v)) {
 				unset($cfg[$k]);
+			} else {
+				// sanitize from script
+				$cfg[$k] = Sanitize::stripScripts($v);
 			}
 		}
 
@@ -694,6 +703,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function saveCustomRelation() {
+		$this->checkWriteModulePermission();
 		$formData = $this->data;
 		$beLib = BeLib::getInstance();
 		$relName = $beLib->friendlyUrlString($formData['name']);
@@ -760,6 +770,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function deleteCustomRelation() {
+		$this->checkWriteModulePermission();
 		if (empty($this->data['name'])) {
 			throw new BeditaException(__('Missing relation name to delete', true));
 		}
