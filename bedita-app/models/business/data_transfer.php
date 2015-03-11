@@ -105,7 +105,7 @@ class DataTransfer extends BEAppModel
                 'GeoTag'
             )
         ),
-        'contain-media' => array(
+        'contain-stream' => array(
             'BEObject' => array(
                 'RelatedObject',
                 'ObjectProperty',
@@ -120,12 +120,10 @@ class DataTransfer extends BEAppModel
         'customProperties' => array()
     );
 
-    protected $mediaModels = array(
+    protected $streamModels = array(
         'Image',
         'Video',
-        'Audio',
         'Application',
-        'BEFile'
     );
 
     protected $result = array(
@@ -317,7 +315,7 @@ class DataTransfer extends BEAppModel
      * 
      * $options = array(
      *    'logDebug' => true, // can be true|false
-     *    'destMediaRoot' => '/media/dest/path', // default /TMP/media-export
+     *    'destMediaRoot' => '/media/dest/path', // default TMP/media-export
      *    'returnType' => 'JSON' // default 'JSON' - can be 'ARRAY'
      * )
      */
@@ -328,7 +326,7 @@ class DataTransfer extends BEAppModel
         // return type - default JSON
         $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
         $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
-        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : 'TMP' . DS . 'media-export';
+        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : TMP . 'media-export';
         $this->export['all'] = (!empty($options['all'])) ? $options['all'] : true;
         $this->export['types'] = (!empty($options['types'])) ? $options['types'] : NULL;
         $this->trackInfo('START');
@@ -503,8 +501,12 @@ class DataTransfer extends BEAppModel
                     throw new BeditaException('destMediaRoot folder "' . $this->export['destMediaRoot'] . '" not found');
                 }
                 foreach ($this->export['media'] as $objectId => $uri) {
-                    $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);
-                    $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
+                    if (!empty($uri) && $uri[0] == '/') {
+                        $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);
+                        $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
+                    } else {
+                        $this->trackDebug('remote uri: ' . $uri . ' not saved to filesystem');
+                    }
                 }
             }
             if ($this->export['returnType'] === 'JSON') {
@@ -1426,7 +1428,7 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'unable to export related type: ' . $model . ' tree info may be missing');
                         continue;
                     }
-                    $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
+                    $containLabel = $this->containLabel($model);
                     $relatedObjModel = ClassRegistry::init($model);
                     $relatedObjModel->contain(
                         $this->export[$containLabel]
@@ -1506,7 +1508,7 @@ class DataTransfer extends BEAppModel
                     } else {
                         $model = $conf->objectTypesExt[$objectTypeId]['model'];
                     }
-                    $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
+                    $containLabel = $this->containLabel($model);
                     $objModel = ClassRegistry::init($model);
                     $objModel->contain(
                         $this->export[$containLabel]
@@ -1519,8 +1521,12 @@ class DataTransfer extends BEAppModel
         $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
-    private function isMedia($model) {
-        return in_array($model, $this->mediaModels);
+    private function containLabel($model) {
+        if (in_array($model, $this->streamModels)) {
+            return 'contain-stream';
+        } else {
+            return 'contain';
+        }
     }
 
     /* file utils */
