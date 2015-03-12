@@ -60,6 +60,7 @@ class DataShell extends BeditaBaseShell {
         } else {
             $this->options['import']['sourceMediaRoot'] = TMP . 'media-import';
         }
+        $this->out('Using file: ' . $this->params['f']);
         $this->out('Using sourceMediaRoot: ' . $this->options['import']['sourceMediaRoot']);
         $this->checkDir($this->options['import']['sourceMediaRoot']);
 
@@ -152,7 +153,7 @@ class DataShell extends BeditaBaseShell {
         $this->trackInfo('Export end');
     }
 
-    private function showResults(array &$results, $type = 'ERROR') {
+    private function showResults(array &$result, $type = 'ERROR') {
         if (!empty($result['log'][$type])) {
             foreach ($result['log'][$type] as $msg) {
                 $this->out($msg);
