@@ -239,9 +239,13 @@ class DataTransfer extends BEAppModel
                 $streamModel = ClassRegistry::init('Stream');
                 foreach ($this->import['media'] as $id => &$media) {
                     try {
-                        $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
-                        $beFull = $this->import['destination']['media']['root'] . $beUri;
-                        $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                        if (!empty($media['full'])) {
+                            $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
+                            $beFull = $this->import['destination']['media']['root'] . $beUri;
+                            $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                        } else {
+                            $this->trackWarn('missing media file for object ' . $id . ' - uri: ' . $media['uri']);
+                        }
                     } catch(Exception $e) {
                         $this->trackError($e->getMessage());
                         //$this->trackWarn($e->getMessage());
