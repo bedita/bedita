@@ -337,6 +337,7 @@ class DataTransfer extends BEAppModel
         $this->trackInfo('START');
         try {
             $this->export['objectTypeIds'] = array();
+            $this->export['objectTypes'] = array();
             if ($this->export['types'] != NULL) { // specific types
                 $types = explode(',', $this->export['types']);
                 foreach ($types as $type) {
@@ -345,6 +346,7 @@ class DataTransfer extends BEAppModel
                         throw new BeditaException('Object type "' . $type . '" not found');
                     }
                     $this->export['objectTypeIds'][] = $ot;
+                    $this->export['objectTypes'][] = $type;
                 }
             }
             if ($this->export['relations'] != NULL) { // specific relations
@@ -481,21 +483,24 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('4.1 config.customProperties:');
             if (!empty($this->export['customProperties'])) {
                 foreach ($this->export['customProperties'] as $property) {
-                    $propertyNew = array();
-                    $propertyNew['id'] = $property['id'];
-                    $propertyNew['name'] = $property['name'];
-                    $propertyNew['objectType'] = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
-                    $propertyNew['dataType'] = $property['property_type'];
-                    if (!empty($property['multiple_choice'])) {
-                        $propertyNew['multipleChoice'] = $property['multiple_choice'];
-                    }
-                    if (!empty($property['PropertyOption'])) {
-                        $propertyNew['options'] = array();
-                        foreach ($property['PropertyOption'] as $propertyOption) {
-                            $propertyNew['options'][] = $propertyOption['property_option'];
+                    $objectType = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
+                    if ( ($this->export['types'] == NULL) || in_array(strtolower($objectType), $this->export['objectTypes']) ) {
+                        $propertyNew = array();
+                        $propertyNew['id'] = $property['id'];
+                        $propertyNew['name'] = $property['name'];
+                        $propertyNew['objectType'] = $objectType;
+                        $propertyNew['dataType'] = $property['property_type'];
+                        if (!empty($property['multiple_choice'])) {
+                            $propertyNew['multipleChoice'] = $property['multiple_choice'];
                         }
+                        if (!empty($property['PropertyOption'])) {
+                            $propertyNew['options'] = array();
+                            foreach ($property['PropertyOption'] as $propertyOption) {
+                                $propertyNew['options'][] = $propertyOption['property_option'];
+                            }
+                        }
+                        $propertiesNew[] = $propertyNew;
                     }
-                    $propertiesNew[] = $propertyNew;
                 }
                 $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
             }
