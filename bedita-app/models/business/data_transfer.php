@@ -1615,9 +1615,9 @@ class DataTransfer extends BEAppModel
         $this->result['log']['ALL'][] = $level . ': ' . $message;
         if ($this->logLevels[$level] <= $this->logLevel) {
             $this->result['log']['filtered'][] = $message;
-            $this->log($message, strtolower($level));
-            if (!empty($this->logFile)) {
-                $this->log($message, $this->logFile);
+            $this->log($level . ': ' . $message, $this->logFile);
+            if ($level == 'ERROR') {
+                $this->log('DataTransfer: ' . $message, 'ERROR');
             }
         }
     }
