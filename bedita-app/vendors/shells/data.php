@@ -64,6 +64,9 @@ class DataShell extends BeditaBaseShell {
         $this->out('Using sourceMediaRoot: ' . $this->options['import']['sourceMediaRoot']);
         $this->checkDir($this->options['import']['sourceMediaRoot']);
 
+        // setting file type.
+        $this->options['import']['type'] = pathinfo($this->params['f'], PATHINFO_EXTENSION);
+
         if (isset($this->params['v'])) {
             $this->options['import']['logDebug'] = true;
         }
@@ -175,7 +178,7 @@ class DataShell extends BeditaBaseShell {
         $this->out('data script shell usage:');
         $this->out('');
         $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
+        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
         $this->out('');
     }
 
