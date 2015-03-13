@@ -1,0 +1,33 @@
+// add mathjax plugin
+var extraPlugins;
+
+extraPlugins = BEDITA.richtextConf.configFull.extraPlugins || '';
+extraPlugins = extraPlugins.split(',');
+extraPlugins.push('mathjax');
+BEDITA.richtextConf.configFull.extraPlugins = extraPlugins.join(',');
+
+extraPlugins = BEDITA.richtextConf.configNormal.extraPlugins || '';
+extraPlugins = extraPlugins.split(',');
+extraPlugins.push('mathjax');
+BEDITA.richtextConf.configNormal.extraPlugins = extraPlugins.join(',');
+
+// add mathjax button
+var toolbar;
+
+toolbar = BEDITA.richtextConf.configFull.toolbar;
+for (var i = 0; i < toolbar.length; i++) {
+	var t = toolbar[i];
+	if (t && t.name && t.name == 'insert') {
+		toolbar[i].items = toolbar[i].items || [];
+		toolbar[i].items.push('Mathjax');
+	}
+}
+
+toolbar = BEDITA.richtextConf.configNormal.toolbar;
+for (var i = 0; i < toolbar.length; i++) {
+	var t = toolbar[i];
+	if (t && t.name && t.name == 'insert') {
+		toolbar[i].items = toolbar[i].items || [];
+		toolbar[i].items.push('Mathjax');
+	}
+}

@@ -65,6 +65,7 @@
 
 # /bedita-app/webroot/js/libs/richtexteditors/conf/local
 /bedita-app/webroot/js/libs/richtexteditors/conf/local/*
+!/bedita-app/webroot/js/libs/richtexteditors/conf/local/*.sample
 
 # /bedita-app/plugins/debug_kit
 /bedita-app/plugins/debug_kit
