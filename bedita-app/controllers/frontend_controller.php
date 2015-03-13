@@ -204,6 +204,7 @@ abstract class FrontendController extends AppController {
 				if (!empty($redirect)) {
 					$this->redirect($redirect);
 				}
+				$this->logged = true;
 				return true;
 			}
 			$this->logged = false;
