@@ -13,4 +13,8 @@
 	{if !empty($conf->richtexteditor.conf)}
 		{$html->script("libs/richtexteditors/conf/"|cat:$conf->richtexteditor.conf, false)}
 	{/if}
+	
+	{if !empty($conf->richtexteditor.local)}
+		{$html->script("libs/richtexteditors/conf/local/"|cat:$conf->richtexteditor.local, false)}
+	{/if}
 {/if}

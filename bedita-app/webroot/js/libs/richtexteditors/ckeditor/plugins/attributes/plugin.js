@@ -3,7 +3,9 @@ CKEDITOR.plugins.add( 'attributes', {
     	editor.ui.addButton( 'Attr',
 			{
 				label : 'Attr',
-				command : 'editAttr'
+				command : 'editAttr',
+				icon: this.path + 'icons/attributes.png',
+				toolbar: 'attributes,10'
 			}
 		);
 		

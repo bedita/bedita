@@ -1,6 +1,6 @@
 /*
-Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
+Copyright (c) 2003-2015, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.md or http://ckeditor.com/license
 */
 
 body
@@ -21,7 +21,7 @@ body
 .cke_editable
 {
 	font-size: 13px;
-	line-height: 1.6em;
+	line-height: 1.6;
 }
 
 blockquote
@@ -64,7 +64,7 @@ ol,ul,dl
 h1,h2,h3,h4,h5,h6
 {
 	font-weight: normal;
-	line-height: 1.2em;
+	line-height: 1.2;
 }
 
 hr
@@ -73,120 +73,62 @@ hr
 	border-top: 1px solid #ccc;
 }
 
-img.right {
-    border: 1px solid #ccc;
-    float: right;
-    margin-left: 15px;
-    padding: 5px;
+img.right
+{
+	border: 1px solid #ccc;
+	float: right;
+	margin-left: 15px;
+	padding: 5px;
 }
 
-img.left {
-    border: 1px solid #ccc;
-    float: left;
-    margin-right: 15px;
-    padding: 5px;
-}
-
-img:hover {
-	opacity: .9;
-	filter: alpha(opacity = 90);
+img.left
+{
+	border: 1px solid #ccc;
+	float: left;
+	margin-right: 15px;
+	padding: 5px;
 }
 
 pre
 {
 	white-space: pre-wrap; /* CSS 2.1 */
 	word-wrap: break-word; /* IE7 */
+	-moz-tab-size: 4;
+	-o-tab-size: 4;
+	-webkit-tab-size: 4;
+	tab-size: 4;
 }
 
-dfn {
-	color:#009933;
+.marker
+{
+	background-color: Yellow;
 }
 
-dfn.glossario {
-	text-decoration:underline;
+span[lang]
+{
+	font-style: italic;
 }
 
-A.placeholder, A.placeref, A[target=modal] {
-	text-decoration:none;
+figure
+{
+	text-align: center;
+	border: solid 1px #ccc;
+	border-radius: 2px;
+	background: rgba(0,0,0,0.05);
+	padding: 10px;
+	margin: 10px 20px;
+	display: inline-block;
 }
 
-A.placeholder:before {
-	content: ' ⌘';
-	color:red;
+figure > figcaption
+{
+	text-align: center;
+	display: block; /* For IE8 */
 }
 
-A.placeref:before {
-	content: ' ⌘';
-	color:orange;
-}
-
-A[target=modal]:before {
-	content: ' ⌘';
-	color:blue;
-}
-
-A.placeholder:after, A.placeref:after, A[target=modal]:after {
-	background-size: contain;
-	content: ' ⌘';
-	color:transparent;
-	background-repeat: no-repeat;
-	font-size: 1.5em;
-	margin-left: 5px;
-	text-decoration: none;
-}
-
-dl, dt, dd {
-	padding:0;
-	margin:0;
-}
-
-dl dt {
-	font-weight:bold
-}
-
-dd {
-	padding-left:20px;
-}
-
-samp, code {
-	color:orange;
-}
-
-P.dittico {
-	-moz-column-count: 2;
-	-webkit-column-count: 2;
-	column-count: 2;
-}
-
-P.trittico {
-	-moz-column-count: 3;
-	-webkit-column-count: 3;
-	column-count: 3;
-}
-
-P.dittico, P.trittico {
-	-moz-column-gap: 20px;
-	-moz-column-rule-color:  #666;
-	-moz-column-rule-style:  solid;
-	-moz-column-rule-width:  1px;
-	-webkit-column-gap : 20px;
-	-webkit-column-rule-color:  #666;
-	-webkit-column-rule-style: dotted ;
-	-webkit-column-rule-width:  1px;
-	column-gap : 20px;
-	column-rule-color:  #666;
-	column-rule-style: dotted ;
-	column-rule-width:  1px;
-}
-
-.column-break {	
-	display:block;
-	-webkit-column-break-after:always;	
-	-moz-column-break-after:always;	
-	column-break-after:always;
-	border-bottom:1px dotted red;
-}
-
-.formula {
-	background-color: #ffffcc;
+a > img {
+	padding: 1px;
+	margin: 1px;
+	border: none;
+	outline: 1px solid #0782C1;
 }
