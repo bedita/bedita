@@ -333,6 +333,7 @@ class DataTransfer extends BEAppModel
         $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : TMP . 'media-export';
         $this->export['all'] = (!empty($options['all'])) ? $options['all'] : true;
         $this->export['types'] = (!empty($options['types'])) ? $options['types'] : NULL;
+        $this->export['relations'] = (!empty($options['relations'])) ? $options['relations'] : NULL;
         $this->trackInfo('START');
         try {
             $this->export['objectTypeIds'] = array();
@@ -345,6 +346,9 @@ class DataTransfer extends BEAppModel
                     }
                     $this->export['objectTypeIds'][] = $ot;
                 }
+            }
+            if ($this->export['relations'] != NULL) { // specific relations
+                $this->export['relations'] = explode(',', $this->export['relations']);
             }
             if (empty($objects) && ($this->export['all'] === true) ) {
                 $objModel = ClassRegistry::init('BEObject');
@@ -363,7 +367,7 @@ class DataTransfer extends BEAppModel
                 foreach ($objects as $objectId) {
                      $o = ClassRegistry::init('BEObject')->findById($objectId);
                      if (empty($o)) {
-                     	throw new BeditaException('Object with id "' . $objectId . '" not found');
+                         throw new BeditaException('Object with id "' . $objectId . '" not found');
                      }
                 }
             }
@@ -990,7 +994,7 @@ class DataTransfer extends BEAppModel
                     // 6.3.2 extension allowed [TODO]
                     // ...
                     // 6.3.3 dimension allowed [TODO]
-                	// ...
+                    // ...
                 }
             }
             // 6.3.4 all files dimension < space available
@@ -1206,7 +1210,7 @@ class DataTransfer extends BEAppModel
             'params' => array()
         );
         if (!empty($this->import['allRelations'][$relation['switch']]['inverse'])) {
-        	$relation['inverse'] = $this->import['allRelations'][$relation['switch']]['inverse'];
+            $relation['inverse'] = $this->import['allRelations'][$relation['switch']]['inverse'];
         }
         if (!empty($relation['priority'])) {
             $relationData['priority'] = $relation['priority'];
@@ -1299,21 +1303,23 @@ class DataTransfer extends BEAppModel
     private function rearrangeObjectFields(array &$object, $level) {
         if (isset($object['RelatedObject']) && $level < $this->maxRelationLevels) {
             foreach ($object['RelatedObject'] as $relation) {
-                if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
-                    $object['relatedObjectIds'][] = $relation['object_id'];
+                if ($this->export['relations'] == NULL || in_array($relation['switch'], $this->export['relations'])) {
+                    if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
+                        $object['relatedObjectIds'][] = $relation['object_id'];
+                    }
+                    if (!in_array($relation['switch'], array_keys($this->export['destination']['byType']['ARRAY']['relations']))) {
+                        $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
+                    }
+                    $r = array(
+                        'idLeft' => $relation['id'],
+                        'idRight' => $relation['object_id'],
+                        'priority' => $relation['priority']
+                    );
+                    if (!empty($relation['params'])) {
+                        $r['params'] = $relation['params'];
+                    }
+                    $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
                 }
-                if (!in_array($relation['switch'], array_keys($this->export['destination']['byType']['ARRAY']['relations']))) {
-                    $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
-                }
-                $r = array(
-                    'idLeft' => $relation['id'],
-                    'idRight' => $relation['object_id'],
-                    'priority' => $relation['priority']
-                );
-                if (!empty($relation['params'])) {
-                    $r['params'] = $relation['params'];
-                }
-                $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
             }
         }
         unset($object['RelatedObject']);
@@ -1420,7 +1426,6 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'object id: ' . $relatedObjectId . ' already exported');
                         continue;
                     }
-                    
                     $objModel = ClassRegistry::init('BEObject');
                     $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
                     if (isset($conf->objectTypes[$objectTypeId])) {
@@ -1657,9 +1662,13 @@ class DataTransfer extends BEAppModel
             $this->trackInfo($objType . ': ' . $count);
         }
         $relations = $this->export['destination']['byType']['ARRAY']['relations'];
-        $this->trackInfo('relations exported ...');
-        foreach ($relations as $switch => $r) {
-        	$this->trackInfo($switch . ': ' . sizeof($r));
+        if (!empty($relations)) {
+            $this->trackInfo('relations exported ...');
+            foreach ($relations as $switch => $r) {
+                $this->trackInfo($switch . ': ' . sizeof($r));
+            }
+        } else {
+            $this->trackInfo('relations exported: none');
         }
     }
 
