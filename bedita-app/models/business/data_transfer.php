@@ -1692,6 +1692,22 @@ class DataTransfer extends BEAppModel
         foreach ($objTypeCounter as $objType => $count) {
             $this->trackInfo($objType . ': ' . $count);
         }
+        $relationCounter = array();
+        if (!empty($this->import['saveMap']['relations'])) {
+            $relations = $this->import['saveMap']['relations'];
+            $this->trackInfo('relations imported ...');
+            foreach ($relations as $r) {
+                if (empty($relationCounter[$r['switch']])) {
+                    $relationCounter[$r['switch']] = 0;
+                }
+                $relationCounter[$r['switch']]++;
+            }
+            foreach ($relationCounter as $relName => $count) {
+                $this->trackInfo($relName . ': ' . $count);
+            }
+        } else {
+            $this->trackInfo('relations imported: none');
+        }
     }
 }
 ?>
