@@ -154,7 +154,7 @@ $config['richtexteditor'] = array(
 );
 
 // Application messages - temporary messages duration
-$config['msgPause'] = 3000;		// milliseconds
+$config['msgPause'] = 5000;		// milliseconds
 
 // bedita user for unit test
 $config['unitTestUserId'] = 1;
@@ -562,7 +562,7 @@ $config['searchFields'] = array() ;
 /**
  * Default css filename for newsletter templates
  */
-$config['newsletterCss'] = "base.css";
+$config['newsletterCss'] = "newsletter.css";
 
 /**
  * default timeout in minutes to assume mail jobs blocked and try to resend

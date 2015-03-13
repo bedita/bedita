@@ -125,6 +125,10 @@
 			</td>
 		</tr>
 		<tr>
+			<td>{t}sender name{/t}</td>
+			<td><input type="text" name="data[sender_name]" value="{$object.sender_name|default:null}"/></td>
+		</tr>
+		<tr>
 			<td>{t}sender email{/t}</td>
 			<td><input type="text" name="data[sender]" value="{$object.sender|default:null}"/></td>
 		</tr>
@@ -170,7 +174,7 @@
 		<div class="htabcontent" id="html">
 			<textarea id="htmltextarea" name="data[body]" style="height:300px" class="richtextNewsletterTemplate">
 			{strip}
-			{if !empty($object.body)}
+			{if !empty($object)}
 				{$object.body}
 			{else}
 				<h1>[$newsletterTitle]</h1>
@@ -196,7 +200,7 @@
 		
 		<div class="htabcontent" id="txt">
 			<textarea name="data[abstract]" style="height:300px; border:1px solid silver; width:450px" class="autogrowarea">
-{if !empty($object.abstract)}
+{if !empty($object)}
 {$object.abstract}
 {else}
 [$newsletterTitle]

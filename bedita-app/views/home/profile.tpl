@@ -14,7 +14,7 @@
 </style>
 {/literal}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="head">
 
@@ -30,7 +30,7 @@
 	 
 </div>
 
-{include file="inc/menucommands.tpl" method="profile" fixed=true}
+{include file = './inc/menucommands.tpl' method = 'profile' fixed = true}
 
 <div class="mainfull">
 	
@@ -41,7 +41,7 @@
 		
 			<div class="tab"><h2>{t}Personal data{/t}</h2></div>
 
-			{include file="inc/userpreferences.tpl"}
+			{include file = './inc/userpreferences.tpl'}
 		
 		</div>
 

@@ -548,7 +548,10 @@ $(document).ready(function(){
             if (!this.checked) return status = false;
         });
         $(".selectAll").each(function() { this.checked = status;});
-        $('.selecteditems').text($(".objectCheck:checked").length);
+        $('.selecteditems')
+            .text($(".objectCheck:checked").length)
+            .closest('.tab')
+            .BEtabsopen();
     });
 
 /*...........................................
@@ -579,7 +582,13 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
+        $(".searchobjectsbyid").hide();
         $(".searchobjects").toggle();
+    });
+
+    $(".searchbyidtrigger").click(function() {
+        $(".searchobjects").hide();
+        $(".searchobjectsbyid").toggle();
     });
 
 /*...........................................

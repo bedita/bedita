@@ -447,10 +447,13 @@ class BeFrontHelper extends AppHelper {
 	 * return all html meta
 	 * all meta = description, author, content, generator
 	 *
-	 * @see HtmlHelper
-	 * @return string
+     * @param string $docType If not passed, tries to load `docType` from config. If this fails too, `xhtml-strict` is used.
+     * @return string
+     * @see HtmlHelper
 	 */
-	public function metaAll() {
+    public function metaAll($docType = null) {
+        $docType = $docType ?: Configure::read('docType') ?: 'xhtml-strict';
+
 		$html = "\n" . $this->metaDescription();
 		$content = $this->get_value_for_field("license");
 		if(!empty($content)) {
@@ -459,10 +462,12 @@ class BeFrontHelper extends AppHelper {
 				"content" => h($this->_publication['creator'])
 			));
 		}
-		$html.= "\n" . $this->Html->meta(array(
-			"http-equiv" => "Content-Style-Type",
-			"content" => "text/css"
-		));
+        if ($docType != 'html5') {
+            $html .= "\n" . $this->Html->meta(array(
+                'http-equiv' => 'Content-Style-Type',
+                'content' => 'text/css',
+            ));
+        }
 		$html.= "\n" . $this->Html->meta(array(
 			"name" => "generator",
 			"content" => 'BEdita ' . $this->_conf->version

@@ -761,6 +761,9 @@ class BeThumb {
 	 * @param string $errorMsg
 	 */
 	private function triggerError($errorMsg) {
+        if (!class_exists('CakeLog')) {
+            return;
+        }
 		CakeLog::write('error', get_class($this) . ": " . $errorMsg);
 	}
 

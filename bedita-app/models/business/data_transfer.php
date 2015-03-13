@@ -105,7 +105,7 @@ class DataTransfer extends BEAppModel
                 'GeoTag'
             )
         ),
-        'contain-media' => array(
+        'contain-stream' => array(
             'BEObject' => array(
                 'RelatedObject',
                 'ObjectProperty',
@@ -120,12 +120,10 @@ class DataTransfer extends BEAppModel
         'customProperties' => array()
     );
 
-    protected $mediaModels = array(
+    protected $streamModels = array(
         'Image',
         'Video',
-        'Audio',
         'Application',
-        'BEFile'
     );
 
     protected $result = array(
@@ -241,9 +239,13 @@ class DataTransfer extends BEAppModel
                 $streamModel = ClassRegistry::init('Stream');
                 foreach ($this->import['media'] as $id => &$media) {
                     try {
-                        $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
-                        $beFull = $this->import['destination']['media']['root'] . $beUri;
-                        $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                        if (!empty($media['full'])) {
+                            $beUri = $streamModel->copyFileToMediaFolder($media['full'], $this->import['destination']['media']['root']);
+                            $beFull = $this->import['destination']['media']['root'] . $beUri;
+                            $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
+                        } else {
+                            $this->trackWarn('missing media file for object ' . $id . ' - uri: ' . $media['uri']);
+                        }
                     } catch(Exception $e) {
                         $this->trackError($e->getMessage());
                         //$this->trackWarn($e->getMessage());
@@ -304,6 +306,7 @@ class DataTransfer extends BEAppModel
         // 3.2 return result
         $this->trackDebug('3.2 return result');
         $this->trackInfo('END');
+        $this->importInfo();
         return $this->result;
     }
 
@@ -316,7 +319,7 @@ class DataTransfer extends BEAppModel
      * 
      * $options = array(
      *    'logDebug' => true, // can be true|false
-     *    'destMediaRoot' => '/media/dest/path', // default /TMP/media-export
+     *    'destMediaRoot' => '/media/dest/path', // default TMP/media-export
      *    'returnType' => 'JSON' // default 'JSON' - can be 'ARRAY'
      * )
      */
@@ -327,9 +330,10 @@ class DataTransfer extends BEAppModel
         // return type - default JSON
         $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
         $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
-        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : 'TMP' . DS . 'media-export';
+        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : TMP . 'media-export';
         $this->export['all'] = (!empty($options['all'])) ? $options['all'] : true;
         $this->export['types'] = (!empty($options['types'])) ? $options['types'] : NULL;
+        $this->export['relations'] = (!empty($options['relations'])) ? $options['relations'] : NULL;
         $this->trackInfo('START');
         try {
             $this->export['objectTypeIds'] = array();
@@ -342,6 +346,9 @@ class DataTransfer extends BEAppModel
                     }
                     $this->export['objectTypeIds'][] = $ot;
                 }
+            }
+            if ($this->export['relations'] != NULL) { // specific relations
+                $this->export['relations'] = explode(',', $this->export['relations']);
             }
             if (empty($objects) && ($this->export['all'] === true) ) {
                 $objModel = ClassRegistry::init('BEObject');
@@ -356,6 +363,13 @@ class DataTransfer extends BEAppModel
                     )
                 ));
                 $objects = array_keys($objIds);
+            } else { // verify objects existence
+                foreach ($objects as $objectId) {
+                     $o = ClassRegistry::init('BEObject')->findById($objectId);
+                     if (empty($o)) {
+                         throw new BeditaException('Object with id "' . $objectId . '" not found');
+                     }
+                }
             }
             $this->trackDebug('1 area/section/other objects data');
             // $objects contain ids. they can be areas/sections or objects (document, etc.)
@@ -424,6 +438,38 @@ class DataTransfer extends BEAppModel
                 $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
                 $this->prepareObjectsForExportByParents($parents);
             }
+            // remove duplicated relations and inverse
+            $uniqueRelationsMap = array();
+            $uniqueRelations = array();
+            $inverseRelations = array();
+            $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+            foreach ($this->export['destination']['byType']['ARRAY']['relations'] as $switch => $relations) {
+                $inverse = (!empty($allRelations[$switch]['inverse'])) ? $allRelations[$switch]['inverse'] : NULL;
+                if (($inverse != $switch) && !in_array($inverse, $inverseRelations)) {
+                    $inverseRelations[$inverse] = $inverse;
+                }
+                foreach ($relations as $relation) {
+                    $key = $relation['idLeft'] . '-' . $relation['idRight'] . '-' . $switch;
+                    if (empty($uniqueRelationsMap[$key])) {
+                        $keyInv = $relation['idRight'] . '-' . $relation['idLeft'] . '-' . $switch;
+                        if (empty($uniqueRelationsMap[$keyInv])) {
+                            $uniqueRelationsMap[$key] = $key;
+                            $uniqueRelationsMap[$keyInv] = $keyInv;
+                            $uniqueRelations[$switch][] = $relation;
+                        } else {
+                            $this->trackDebug('... relation duplication ' . $keyInv . ' - removed');
+                        }
+                    } else {
+                        $this->trackDebug('... relation duplication ' . $key . ' - removed');
+                    }
+                }
+            }
+            foreach ($uniqueRelations as $switch => $r) {
+                if (in_array($switch, $inverseRelations)) {
+                    unset($uniqueRelations[$switch]);
+                }
+            }
+            $this->export['destination']['byType']['ARRAY']['relations'] = $uniqueRelations;
             // set position for objects
             $treeTypes = array('area', 'section');
             foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
@@ -463,8 +509,12 @@ class DataTransfer extends BEAppModel
                     throw new BeditaException('destMediaRoot folder "' . $this->export['destMediaRoot'] . '" not found');
                 }
                 foreach ($this->export['media'] as $objectId => $uri) {
-                    $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);                    
-                    $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
+                    if (!empty($uri) && $uri[0] == '/') {
+                        $this->copyFileToFolder($this->export['srcMediaRoot'], $this->export['destMediaRoot'], $uri);
+                        $this->trackDebug('... saving ' . $this->export['destMediaRoot'] . $uri);
+                    } else {
+                        $this->trackDebug('remote uri: ' . $uri . ' not saved to filesystem');
+                    }
                 }
             }
             if ($this->export['returnType'] === 'JSON') {
@@ -484,6 +534,7 @@ class DataTransfer extends BEAppModel
             $this->trackError('ERROR: ' . $e->getMessage());
         }
         $this->trackInfo('END');
+        $this->exportInfo();
         return $this->export['destination']['byType'][$this->export['returnType']];
     }
 
@@ -861,7 +912,8 @@ class DataTransfer extends BEAppModel
             $this->import['allRelationsKeys'] = array_keys($this->import['allRelations']);
             foreach ($this->import['relations']['switches'] as $switch) {
                 if (!in_array($switch, $this->import['allRelationsKeys'])) {
-                    throw new BeditaException('relation switch ' . $switch . ' not found in bedita relations');
+                    $this->trackWarn('relation switch ' . $switch . ' not found in bedita relations');
+                    //throw new BeditaException('relation switch ' . $switch . ' not found in bedita relations');
                 }
             }
             // 5.4 objectType(s) must be valid for specified relation switch
@@ -870,13 +922,15 @@ class DataTransfer extends BEAppModel
                     $objTypeLeft = $this->import['objects']['typeById'][$relation['idLeft']];
                     $objTypeRight = $this->import['objects']['typeById'][$relation['idRight']];
                     $switch = $relation['switch'];
-                    $symmetric = $this->import['allRelations'][$switch]['symmetric'];
-                    $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['left']);
-                    $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['right']);
-                    $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['right']);
-                    $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
-                    if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                        throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
+                    if (!empty($this->import['allRelations'][$switch])) {
+                        $symmetric = $this->import['allRelations'][$switch]['symmetric'];
+                        $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['left']);
+                        $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['right']);
+                        $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$switch]['right']);
+                        $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$switch]['left']);
+                        if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
+                            throw new BeditaException('relation switch ' . $switch . ' object not allowed (idLeft: ' . $relation['idLeft'] . ', idRight: ' . $relation['idRight'] . ')');
+                        }
                     }
                 }
             } else {
@@ -884,17 +938,19 @@ class DataTransfer extends BEAppModel
                     foreach ($rr as $r) {
                         $objTypeLeft = $this->import['objects']['typeById'][$r['idLeft']];
                         $objTypeRight = $this->import['objects']['typeById'][$r['idRight']];
-                        $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
-                        $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
-                        $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
-                        $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
-                        $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
-                        $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
-                        if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
-                            if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
-                                $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
-                                // not blocking... to avoid errors for huge database validation
-                                // throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                        if (!empty($this->import['allRelations'][$relationName])) {
+                            $symmetric = $this->import['allRelations'][$relationName]['symmetric'];
+                            $relationLeftEmpty = empty($this->import['allRelations'][$relationName]['left']);
+                            $cdl = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['left']);
+                            $cdr = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['right']);
+                            $cil = $this->relationAllowed($objTypeLeft, $this->import['allRelations'][$relationName]['right']);
+                            $cir = $this->relationAllowed($objTypeRight, $this->import['allRelations'][$relationName]['left']);
+                            if (!$relationLeftEmpty) { // left empty => relation allowed with every type of objects
+                                if ( !($cdl && $cdr) && !($symmetric && ($cil && $cir)) ) {
+                                    $this->trackWarn('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                                    // not blocking... to avoid errors for huge database validation
+                                    // throw new BeditaException('relation switch ' . $relationName . ' object not allowed (idLeft: ' . $r['idLeft'] . ', idRight: ' . $r['idRight'] . ')');
+                                }
                             }
                         }
                     }
@@ -926,18 +982,20 @@ class DataTransfer extends BEAppModel
             $this->import['destination']['media']['space'] = disk_free_space($this->import['destination']['media']['root']);
             // 6.3 files
             foreach ($this->import['media'] as $id => &$media) {
-                $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
-                // 6.3.1 existence (base folder + objects[i].uri) [TODO]
-                if (!file_exists($filePath)) {
-                    throw new BeditaException('file "' . $filePath . '" not found (object id "' . $id . '")');
-                } else {
-                    $media['base'] = $this->import['sourceMediaRoot'];
-                    $media['full'] = $filePath;
+                if (!empty($media['uri']) && $media['uri'][0] == '/') {
+                    $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
+                    // 6.3.1 existence (base folder + objects[i].uri) [TODO]
+                    if (!file_exists($filePath)) {
+                        $this->trackWarn('file "' . $filePath . '" not found (object id "' . $id . '")');
+                    } else {
+                        $media['base'] = $this->import['sourceMediaRoot'];
+                        $media['full'] = $filePath;
+                    }
+                    // 6.3.2 extension allowed [TODO]
+                    // ...
+                    // 6.3.3 dimension allowed [TODO]
+                    // ...
                 }
-                // 6.3.2 extension allowed [TODO]
-                // ...
-                // 6.3.3 dimension allowed [TODO]
-                // ...
             }
             // 6.3.4 all files dimension < space available
             // space required => $this->import['source']['media']['size']
@@ -1110,8 +1168,8 @@ class DataTransfer extends BEAppModel
                 $tree = ClassRegistry::init('Tree');
                 foreach ($object['parents'] as $parent) {
                     $parentId = $parent['id'];
-                    $beParentId = $this->import['saveMap'][$parentId];
-                    if (!empty($beParentId)) {
+                    if (!empty($this->import['saveMap'][$parentId])) {
+                        $beParentId = $this->import['saveMap'][$parentId];
                         $this->trackDebug('-- saving tree record for ' . $object['objectType'] . ' ' . $object['id'] . ' (BEdita id ' . $model->id . ') - (position - import parent id ' . $parentId . ' / BEdita parent id ' . $beParentId . ') ... START');
                         $tree->appendChild($model->id, $beParentId);
                         if (!empty($parent['priority'])) {
@@ -1147,10 +1205,13 @@ class DataTransfer extends BEAppModel
             'id' => $this->import['saveMap'][$relation['idLeft']],
             'objectId' => $this->import['saveMap'][$relation['idRight']],
             'switch' => $relation['switch'],
-            'inverse' => $this->import['allRelations'][$relation['switch']]['inverse'],
+            'inverse' => NULL,
             'priority' => NULL,
             'params' => array()
         );
+        if (!empty($this->import['allRelations'][$relation['switch']]['inverse'])) {
+            $relation['inverse'] = $this->import['allRelations'][$relation['switch']]['inverse'];
+        }
         if (!empty($relation['priority'])) {
             $relationData['priority'] = $relation['priority'];
         }
@@ -1158,14 +1219,34 @@ class DataTransfer extends BEAppModel
             $relationData['params'] = $relation['params'];
         }
         $objRelModel = ClassRegistry::init('ObjectRelation');
-        if (!@$objRelModel->createRelationAndInverse(
-                $relationData['id'],
-                $relationData['objectId'],
-                $relationData['switch'],
-                $relationData['inverse'],
-                $relationData['priority'],
-                $relationData['params']) ) {
-            throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+        if ($objRelModel->relationExists($relationData['id'], $relationData['objectId'], $relationData['switch'])) {
+            $this->trackDebug('- relation exists - SKIP');
+        } else {
+            if ($relationData['inverse'] === $relationData['switch']) {
+                if ($objRelModel->relationExists($relationData['objectId'], $relationData['id'], $relationData['switch'])) {
+                    $this->trackDebug('- inverse relation exists - SKIP');
+                } else {
+                    if (!@$objRelModel->createRelation(
+                            $relationData['id'],
+                            $relationData['objectId'],
+                            $relationData['switch'],
+                            $relationData['priority'],
+                            true,
+                            $relationData['params']) ) {
+                                throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+                       }
+                }
+            } else {
+                if (!@$objRelModel->createRelationAndInverse(
+                        $relationData['id'],
+                        $relationData['objectId'],
+                        $relationData['switch'],
+                        $relationData['inverse'],
+                        $relationData['priority'],
+                        $relationData['params']) ) {
+                            throw new BeditaException('Error saving relation ' . $relation['switch'] . ' idLeft ' . $relation['idLeft'] . ' idRight ' . $relation['idRight'] );
+                 }
+            }
         }
         $this->import['saveMap']['relations'][$objRelModel->id][] = $relationData;
         $this->trackDebug('- saving relation ' . $counter . ': ' . $relation['switch'] . ' ... DONE');
@@ -1222,21 +1303,23 @@ class DataTransfer extends BEAppModel
     private function rearrangeObjectFields(array &$object, $level) {
         if (isset($object['RelatedObject']) && $level < $this->maxRelationLevels) {
             foreach ($object['RelatedObject'] as $relation) {
-                if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
-                    $object['relatedObjectIds'][] = $relation['object_id'];
+                if ($this->export['relations'] == NULL || in_array($relation['switch'], $this->export['relations'])) {
+                    if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
+                        $object['relatedObjectIds'][] = $relation['object_id'];
+                    }
+                    if (!in_array($relation['switch'], array_keys($this->export['destination']['byType']['ARRAY']['relations']))) {
+                        $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
+                    }
+                    $r = array(
+                        'idLeft' => $relation['id'],
+                        'idRight' => $relation['object_id'],
+                        'priority' => $relation['priority']
+                    );
+                    if (!empty($relation['params'])) {
+                        $r['params'] = $relation['params'];
+                    }
+                    $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
                 }
-                if (!in_array($relation['switch'], $this->export['destination']['byType']['ARRAY']['relations'])) {
-                    $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']] = array();
-                }
-                $r = array(
-                    'idLeft' => $relation['id'],
-                    'idRight' => $relation['object_id'],
-                    'priority' => $relation['priority']
-                );
-                if (!empty($relation['params'])) {
-                    $r['params'] = $relation['params'];
-                }
-                $this->export['destination']['byType']['ARRAY']['relations'][$relation['switch']][] = $r;
             }
         }
         unset($object['RelatedObject']);
@@ -1343,7 +1426,6 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'object id: ' . $relatedObjectId . ' already exported');
                         continue;
                     }
-                    
                     $objModel = ClassRegistry::init('BEObject');
                     $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
                     if (isset($conf->objectTypes[$objectTypeId])) {
@@ -1357,7 +1439,7 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'unable to export related type: ' . $model . ' tree info may be missing');
                         continue;
                     }
-                    $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
+                    $containLabel = $this->containLabel($model);
                     $relatedObjModel = ClassRegistry::init($model);
                     $relatedObjModel->contain(
                         $this->export[$containLabel]
@@ -1437,7 +1519,7 @@ class DataTransfer extends BEAppModel
                     } else {
                         $model = $conf->objectTypesExt[$objectTypeId]['model'];
                     }
-                    $containLabel = ($this->isMedia($model)) ? 'contain-media' : 'contain';
+                    $containLabel = $this->containLabel($model);
                     $objModel = ClassRegistry::init($model);
                     $objModel->contain(
                         $this->export[$containLabel]
@@ -1450,8 +1532,12 @@ class DataTransfer extends BEAppModel
         $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
-    private function isMedia($model) {
-        return in_array($model, $this->mediaModels);
+    private function containLabel($model) {
+        if (in_array($model, $this->streamModels)) {
+            return 'contain-stream';
+        } else {
+            return 'contain';
+        }
     }
 
     /* file utils */
@@ -1557,6 +1643,50 @@ class DataTransfer extends BEAppModel
                  break;
         }
         return $msg;
+    }
+
+    private function exportInfo() {
+        if (!empty($this->export['filename'])) {
+            $this->trackInfo('file created: ' . $this->export['filename']);
+        }
+        $objects = $this->export['destination']['byType']['ARRAY']['objects'];
+        $this->trackInfo('objects exported: ' . sizeof($objects));
+        $objTypeCounter = array();
+        foreach ($objects as $o) {
+            if (empty($objTypeCounter[$o['objectType']])) {
+                $objTypeCounter[$o['objectType']] = 0;
+            }
+            $objTypeCounter[$o['objectType']]++;
+        }
+        foreach ($objTypeCounter as $objType => $count) {
+            $this->trackInfo($objType . ': ' . $count);
+        }
+        $relations = $this->export['destination']['byType']['ARRAY']['relations'];
+        if (!empty($relations)) {
+            $this->trackInfo('relations exported ...');
+            foreach ($relations as $switch => $r) {
+                $this->trackInfo($switch . ': ' . sizeof($r));
+            }
+        } else {
+            $this->trackInfo('relations exported: none');
+        }
+    }
+
+    private function importInfo() {
+        $this->trackInfo('objects imported: ' . sizeOf($this->import['saveMap']));
+        $objTypeCounter = array();
+        $objects = $this->import['source']['data']['objects'];
+        foreach($objects as $object) {
+            if (in_array($object['id'], array_keys($this->import['saveMap']))) {
+                if (empty($objTypeCounter[$object['objectType']])) {
+                    $objTypeCounter[$object['objectType']] = 0;
+                }
+                $objTypeCounter[$object['objectType']]++;
+            }
+        }
+        foreach ($objTypeCounter as $objType => $count) {
+            $this->trackInfo($objType . ': ' . $count);
+        }
     }
 }
 ?>

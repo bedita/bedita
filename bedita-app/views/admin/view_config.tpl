@@ -181,10 +181,12 @@
                 <tr>
                     <th>{t}Colophon widget{/t}:</th>
                     <td>
+                    	{strip}
                         <textarea name="cfg[colophon]" 
                             style="font-size:0.8em; color:gray; width:470px;">
                             {$conf->colophon|default:''|escape}
                         </textarea>
+                        {/strip}
                     </td>
                 </tr>
 			</table>

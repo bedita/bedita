@@ -145,18 +145,29 @@ class NewsletterController extends ModulesController {
 		$areaModel = ClassRegistry::init("Area");
 		$pub = $areaModel->find("all", array("contain" => array("BEObject")));
 		$filter["object_type_id"] = Configure::read("objectTypes.mail_template.id");
+
+		$pubTemplateIds = array();
 		foreach ($pub as $key => $p) {
 			$temp = $this->BeTree->getChildren($p["id"], null, $filter);
 			$pub[$key]["MailTemplate"] = $temp["items"];
+			$pubTemplateIds = array_merge($pubTemplateIds, Set::extract('/MailTemplate/id', $pub));
 			// set cssUrl to use with template
 			if (!empty($this->viewVars["relObjects"]["template"])) {
 				foreach ($temp["items"] as $t) {
-					if ($t["id"] == $this->viewVars["relObjects"]["template"][0]["id"])
+					if ($t["id"] == $this->viewVars["relObjects"]["template"][0]["id"]) {
 						$this->set("cssUrl", $p["public_url"] . "/css/" . Configure::read("newsletterCss"));
+					}
 				}
 			}
 		}
-		$this->set("templateByArea", $pub);
+
+		$template = $this->BeTree->getChildren(null, null, array(
+				'NOT' => array('BEObject.id' => $pubTemplateIds),
+				'object_type_id' => Configure::read("objectTypes.mail_template.id")
+			));
+
+		$this->set("templateNotOnTree", $template['items']);
+		$this->set("templateOnTree", $pub);
 	 }
 
 	function viewInvoice($id) {

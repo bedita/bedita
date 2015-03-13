@@ -51,6 +51,9 @@ class AddressbookController extends ModulesController {
 		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
+
+		include CONFIGS . 'countries.iso.php';
+		$this->set('country_list_iso', $config['countryList']);
 	}
 
 	function save() {
@@ -123,6 +126,7 @@ class AddressbookController extends ModulesController {
 	public function addToMailgroup() {
 		$this->checkWriteModulePermission();
 		$counter = 0;
+		$missingEmail = 0;
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$mailgroup = $this->data['mailgroup'];
@@ -143,65 +147,21 @@ class AddressbookController extends ModulesController {
 						$MailGroupObj->save($data);
 						$counter++;
 					}
+				} else {
+					$missingEmail++;
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage("$counter" . __("card(s) associated to mailgroup", true) . " - " . $mailgroup);
-			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
+
+			$userMsg = '';
+			if ($missingEmail > 0) {
+				$userMsg = $missingEmail . ' ' . __('cards without email not added to mailgroup', true) . ', ';
+			}
+			$userMsg .= $counter . ' ' . __("card(s) associated to mailgroup", true);
+			$this->userInfoMessage($userMsg);
+			$this->eventInfo("$counter card(s) associated to mailgroup id: " . $mailgroup);
 		}
 	}
-
-    // #573 - Automatic Card creation.
-    /**
-     * Returns a JSON object with an array of "similar" Cards to the given User data, excluding Cards already related to another User.
-     * 
-     * A Card is considered "similar" to a User if any of the following conditions are `true`:
-     *  1. `Card.email = User.email`
-     *  2. `Card.email2 = User.email`
-     *  3. `Card.name` is a substring of `User.realname` *AND* `Card.surname` is a substring of `User.realname`
-     */
-    public function similarCards() {
-        // Prepare data.
-        $userId = (isset($this->params['form']['id']) && is_numeric($this->params['form']['id'])) ? $this->params['form']['id'] : 0;
-        $name = Sanitize::escape($this->params['form']['name'], 'default');  // Needs manual escape!! See query conditions few lines below for potential threat.
-        $email = $this->params['form']['email'];
-
-        // Search for similar Cards.
-        $cards = $this->Card->find('all', array(
-            'fields' => array('Card.id', 'Card.name', 'Card.surname', 'Card.email', 'Card.email2'),
-            'contain' => array(),
-            'joins' => array(
-                array(
-                    'table' => 'object_users',
-                    'alias' => 'ObjectUser',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'ObjectUser.object_id = Card.id',
-                        'ObjectUser.switch' => 'card',
-                        'ObjectUser.user_id <>' => $userId,
-                    ),
-                ),
-            ),
-            'conditions' => array(
-                'ObjectUser.user_id' => null,
-                'OR' => array(
-                    // See if email address matches.
-                    'Card.email' => $email,
-                    'Card.email2' => $email,
-                    // See if full name matches somehow.
-                    'AND' => array(
-                        "'{$name}' LIKE CONCAT('%', Card.name, '%')",  // `$name` MUST be properly escaped!
-                        "'{$name}' LIKE CONCAT('%', Card.surname, '%')",  // (same here)
-                    ),
-                ),
-            ),
-            'limit' => 25,  // Keeping our feet on the ground.
-        ));
-
-        // Output as JSON.
-        $this->layout = 'ajax';
-        $this->set('cards', $cards);
-    }
 
     protected function forward($action, $result) {
         $moduleRedirect = array(

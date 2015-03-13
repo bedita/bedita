@@ -23,7 +23,7 @@
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="head">
 	<h1>{if !empty($object)}{$object.title|escape|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
@@ -38,11 +38,11 @@
 	{/if}
 </div>
 
-{include file="inc/menucommands.tpl" fixed=true}
+{include file = './inc/menucommands.tpl' fixed = true}
 
 <div class="main">
 
-	{include file="inc/form.tpl"}	
+	{include file = './inc/form.tpl'}	
 
 </div>
 

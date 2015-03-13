@@ -3,7 +3,7 @@
 {$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
 <div class="primacolonna">
-	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>
+	 <div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''|escape}</label></div>
 	<div class="insidecol colophon">	
 		{$view->element('colophon')}
 	    {$conf->colophon|default:''}
@@ -22,7 +22,7 @@
 	<form name="login" action="{$html->url('/authentications/login')}" method="post" name="loginForm" id="loginForm" class="cmxform">
 	{$beForm->csrf()}
 	<fieldset>
-		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()}" id="loginURLOK" />
+		<input type="hidden" name="data[login][URLOK]" value="{$beurl->here()|escape}" id="loginURLOK" />
 		
 		<label class="block" id="luserid" for="userid">{t}Username{/t}</label>
 		<input class="big" tabindex="1" type="text" name="data[login][userid]" id="userid" class="{literal}{ required:true}{/literal}" title="{t}Username is required{/t}"/>

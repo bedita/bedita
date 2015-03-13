@@ -49,7 +49,7 @@ $(document).ready(function() {
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="dashboardcontainer">
 

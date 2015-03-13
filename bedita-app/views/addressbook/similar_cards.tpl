@@ -1,7 +1,7 @@
 <div class="bodybg">
     <div id="loadUsersInModal" class="loader"><span></span></div>
     <div id="listUsers">
-        {include file='./inc/form_cards_to_assoc.tpl'}
+        {include file = './inc/form_cards_to_assoc.tpl'}
     </div>
 </div>
 

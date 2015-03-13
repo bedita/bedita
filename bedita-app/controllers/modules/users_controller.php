@@ -199,7 +199,7 @@ class UsersController extends ModulesController {
             }
 
             $this->data['User']['passwd'] = trim($this->data['User']['passwd']);
-            $this->BeAuth->createUser($this->data, $userGroups);
+            $this->User->id = $this->BeAuth->createUser($this->data, $userGroups);
             $this->eventInfo("user ".$this->data['User']['userid']." created");
             $this->userInfoMessage(__("User created",true));
         } else {
@@ -258,6 +258,7 @@ class UsersController extends ModulesController {
             if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
+
             $userid = $u['User']['userid'];
             if ($userid === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-remove forbidden",true));
@@ -275,7 +276,10 @@ class UsersController extends ModulesController {
                 throw new BeditaException(__("Auto-block forbidden",true));
             }
 
-            $u = $this->User->findById($id);
+            $u = $this->isUserEditable($id);
+            if ($u === false) {
+                throw new BeditaException(__("You are not allowed to block this user", true));
+            }
             if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
@@ -301,6 +305,12 @@ class UsersController extends ModulesController {
      * @return mixed 
      */
     protected function isUserEditable($id) {
+        // #618 - Remove ability to delete system user.
+        if ($id == BeLib::getObject('BeSystem')->systemUserId()) {
+            return false;
+            throw new BeditaException(__('Error deleting User', true), __('System User cannot be deleted!', true));
+        }
+
         $userToEdit = $this->User->findById($id);
         if (!empty($userToEdit)) {
             $sessionUser = $this->BeAuth->getUserSession();

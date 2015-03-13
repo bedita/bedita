@@ -6,7 +6,7 @@ Menu a SX valido per tutte le pagine del controller.
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 
 	{if !empty($method) && $method != "index"}
-		{assign var="back" value=$session->read("backFromView")}
+		{assign var="back" value=$session->read("backFromView")|escape}
 	{else}
 		{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
 	{/if}

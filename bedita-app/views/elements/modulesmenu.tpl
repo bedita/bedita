@@ -3,6 +3,7 @@
 
 	<nav class="modulesmenu">
 		<a title="{t}search{/t}" class="searchtrigger"></a>
+		<a title="{t}id or unique name{/t}" class="searchbyidtrigger"></a>
 	{strip}
 	{if !empty($moduleListInv)}
 	{foreach from=$moduleListInv key=k item=mod}
@@ -25,5 +26,12 @@
 		<input type="text" placeholder="{t}search{/t} {$searchDestination|default:''}" name="filter[query]" value="{$view->SessionFilter->read('query')}"/>
 		<input type="submit" value="{t}GO{/t}"/>
 	</form>
+
+	<!-- {* search by id or nickname (unique name) *} -->
+	<form class="searchobjectsbyid" action="{$html->url('/')}pages/gotoObjectById" method="get">
+		<input type="text" placeholder="{t}id or unique name{/t}" name="objectId" value=""/>
+		<input type="submit" value="{t}GO{/t}"/>
+	</form>
+
 </div>
 {$view->element('modulesmenu_dyn')}

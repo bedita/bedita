@@ -1,0 +1,38 @@
+/**
+Newsletter custom css
+@author		xho@channelweb.it
+*/
+
+#invoice input[type=button] {
+	padding: 0 1.5em;
+}
+
+#invoice input[type=text] {
+	width: 7em;
+	text-align: right;
+}
+
+#invoice .sendbuttons {
+	background-color: #fff;
+	padding: 20px;
+	text-align: center;
+}
+
+
+#invoice #timeStart {
+	width: 4em;
+	margin-left: .5em;
+}
+
+#invoice th:first-child { width: 35%; }
+#invoice th:last-child { width: 10%; }
+
+#invoice ul {
+	margin: 0;
+}
+
+#invoice li {
+	padding: .25em 0;
+}
+
+#invoice label { font-weight: normal; cursor: pointer; }

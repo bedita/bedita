@@ -17,28 +17,28 @@ available options:
 -->
 *}
 
-<form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" method="post">
+<form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])}" 
+	method="post">
 	{$beForm->csrf()}
 	<input type="hidden" name="cleanFilter" value=""/>
+{strip}
+	<div class="filters" style="width:100%">
 
-	<table class="filters"  style="width:100%">
 		{if !empty($filters.word)}
-		<tr>
-			<th><label>{t}search word{/t}:</label></th>
-			<td colspan="6">
-				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" style="width:255px" value="{$view->SessionFilter->read('query')}"/>&nbsp;
-				<input type="checkbox"
+			<div class="cell word">
+				<label>{t}search word{/t}:</label>
+				<input type="text" placeholder="{t}search word{/t}" name="filter[query]" id="search" value="{$view->SessionFilter->read('query')}"/>&nbsp;
+				<input type="checkbox" 
 					{if $view->SessionFilter->check('substring') || !$view->SessionFilter->check()}
 						checked="checked"
 					{/if} 
-					id="modalsubstring" name="filter[substring]" /> <label>{t}substring{/t}</label>
-			</td>
-		</tr>
+					id="modalsubstring" name="filter[substring]" /> <span>{t}substring{/t}</span>
+			</div>
 		{/if}
+
 		{if !empty($filters.language)}
-		<tr>
-			<th><label>{t}language{/t}:</label></th>
-			<td>
+			<div class="cell lang">
+				<label>{t}language{/t}:</label>
 				<select name="filter[lang]" id="lang">
 					<option value="">{t}all{/t}</option>
 					{foreach $conf->langOptions as $val => $label}
@@ -49,13 +49,27 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
+			</div>
 		{/if}
+
+		{if !empty($filters.tree)}
+			<div class="cell position">
+				<label>{t}on position{/t}:</label>
+					<select style="" name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
+						<option value="">{t}None{/t}</option>
+						{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
+					</select>
+					{if !empty($filters.treeDescendants)}
+						&nbsp;<input type="checkbox" name="filter[descendants]"
+							{if $view->SessionFilter->check('descendants')}checked="checked"{/if} />
+							<span>{t}descendants{/t}</span>
+					{/if}
+			</div>
+		{/if}
+
 		{if !empty($filters.type)}
-		<tr>
-			<th><label>{t}type{/t}:</label></th>
-			<td>
+			<div class="cell type">
+				<label>{t}type{/t}:</label>
 				<select name="filter[object_type_id]" id="objectType">
 					<option value="">{t}all{/t}</option>
 					{foreach from=$objectTypeIds item=type_id}
@@ -68,29 +82,12 @@ available options:
 						{/if}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
-		{/if}
-		{if !empty($filters.tree)}
-		<tr>
-			<th><label>{t}on position{/t}:</label></th>
-			<td>
-				<select name="filter[parent_id]" id="parent_id" class="areaSectionAssociation">
-					<option value="">{t}None{/t}</option>
-					{$beTree->option($tree, $view->SessionFilter->read('parent_id'))}
-				</select>
-				{if !empty($filters.treeDescendants)}
-					&nbsp;<input type="checkbox" name="filter[descendants]"
-						{if $view->SessionFilter->check('descendants')}checked="checked"{/if} /> <label>{t}descendants{/t}</label>
-				{/if}
-			</td>
-		</tr>
+			</div>
 		{/if}
 
 		{if !empty($filters.relations)}
-		<tr>
-			<th><label>{t}relations{/t}:</label></th>
-			<td>
+			<div class="cell relations">
+				<label>{t}relations{/t}:</label>
 				{$availableRelations = $availableRelations|default:[]}
 				<select name="filter[relation]" id="relation">
 					<option value="">{t}all{/t}</option>
@@ -107,33 +104,30 @@ available options:
 					&nbsp;
 					<input type="checkbox" name="filter[tree_related_object]"
 						{if $view->SessionFilter->check('tree_related_object')}checked="checked"{/if} />
-						<label>{t}with items located on above position{/t}</label>
+						<span>{t}with items located on above position{/t}</span>
 				{/if}
-			</td>
-		</tr>
+			</div>
 		{/if}
 
 		{if !empty($filters.mediaTypes)}
-		<tr>
-			<th><label>{t}media type{/t}:</label></th>
-			<td>
-				<select name="filter[category]">
-					<option value="">{t}all{/t}</option>
-					{foreach $conf->mediaTypes as $mediaType}
-						{strip}
-						<option value="{$mediaType}" {if $view->SessionFilter->read('category') == $mediaType}selected="selected"{/if}>
-							{$mediaType}
-						</option>
-						{/strip}
-					{/foreach}
-				</select>
-			</td>
-		</tr>
+			<div class="cell mediatype">
+				<label>{t}media type{/t}:</label>
+					<select name="filter[category]">
+						<option value="">{t}all{/t}</option>
+						{foreach $conf->mediaTypes as $mediaType}
+							{strip}
+							<option value="{$mediaType}" {if $view->SessionFilter->read('category') == $mediaType}selected="selected"{/if}>
+								{$mediaType}
+							</option>
+							{/strip}
+						{/foreach}
+					</select>
+			</div>
 		{/if}
+
 		{if !empty($filters.categories)}
-		<tr>
-			<th><label>{t}categories{/t}:</label></th>
-			<td>
+			<div class="cell categories">
+				<label>{t}categories{/t}:</label>
 				<select name="filter[category]">
 					<option value="">{t}all{/t}</option>
 					{foreach $categories as $catId => $catLabel}
@@ -144,14 +138,12 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
+			</div>
 		{/if}
 
 		{if !empty($filters.customProp)}
-		<tr>
-			<th><label>{t}properties{/t}:</label></th>
-			<td>
+			<div class="cell customprop">
+				<label>{t}properties{/t}:</label>
 				<select name="filter[custom_property]">
 					<option value="">{t}all{/t}</option>
 					{foreach $properties as $prop}
@@ -165,18 +157,14 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
-			</td>
-		</tr>
+			</div>
 		{/if}
-
 		
-		<tr>
-			<th></th>
-			<td colspan="10">
-				<input type="submit" id="searchButton" style="width:150px" value=" {t}find it{/t} ">
-				<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">
-			</td>
-		</tr>
-	</table>
+		<div class="formbuttons">
+			<input type="submit" id="searchButton" value=" {t}find it{/t} ">
+			<input type="button" id="cleanFilters" value=" {t}reset filters{/t} ">
+		</div>
 
+	</div>
+{/strip}
 </form>
