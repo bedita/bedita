@@ -84,8 +84,10 @@ class DataShell extends BeditaBaseShell {
         // 2. do import
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->import($inputData, $this->options['import']);
-        $this->showResults($result, 'ERROR');
-        $this->showResults($result, 'WARN');
+        if (is_array($result)) {
+	        $this->showResults($result, 'ERROR');
+	        $this->showResults($result, 'WARN');
+        }
         // 3. end
         $this->trackInfo('');
         $this->trackInfo('Import end');
@@ -146,8 +148,10 @@ class DataShell extends BeditaBaseShell {
                 // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->export($objects, $this->options['export']);
-        $this->showResults($result, 'ERROR');
-        $this->showResults($result, 'WARN');
+        if (is_array($result)) {
+            $this->showResults($result, 'ERROR');
+            $this->showResults($result, 'WARN');
+        }
         // end
         $this->trackInfo('');
         $this->trackInfo('Export end');

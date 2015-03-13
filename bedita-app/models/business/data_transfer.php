@@ -306,6 +306,7 @@ class DataTransfer extends BEAppModel
         // 3.2 return result
         $this->trackDebug('3.2 return result');
         $this->trackInfo('END');
+        $this->importInfo();
         return $this->result;
     }
 
@@ -529,6 +530,7 @@ class DataTransfer extends BEAppModel
             $this->trackError('ERROR: ' . $e->getMessage());
         }
         $this->trackInfo('END');
+        $this->exportInfo();
         return $this->export['destination']['byType'][$this->export['returnType']];
     }
 
@@ -1636,6 +1638,46 @@ class DataTransfer extends BEAppModel
                  break;
         }
         return $msg;
+    }
+
+    private function exportInfo() {
+        if (!empty($this->export['filename'])) {
+            $this->trackInfo('file created: ' . $this->export['filename']);
+        }
+        $objects = $this->export['destination']['byType']['ARRAY']['objects'];
+        $this->trackInfo('objects exported: ' . sizeof($objects));
+        $objTypeCounter = array();
+        foreach ($objects as $o) {
+            if (empty($objTypeCounter[$o['objectType']])) {
+                $objTypeCounter[$o['objectType']] = 0;
+            }
+            $objTypeCounter[$o['objectType']]++;
+        }
+        foreach ($objTypeCounter as $objType => $count) {
+            $this->trackInfo($objType . ': ' . $count);
+        }
+        $relations = $this->export['destination']['byType']['ARRAY']['relations'];
+        $this->trackInfo('relations exported ...');
+        foreach ($relations as $switch => $r) {
+        	$this->trackInfo($switch . ': ' . sizeof($r));
+        }
+    }
+
+    private function importInfo() {
+        $this->trackInfo('objects imported: ' . sizeOf($this->import['saveMap']));
+        $objTypeCounter = array();
+        $objects = $this->import['source']['data']['objects'];
+        foreach($objects as $object) {
+            if (in_array($object['id'], array_keys($this->import['saveMap']))) {
+                if (empty($objTypeCounter[$object['objectType']])) {
+                    $objTypeCounter[$object['objectType']] = 0;
+                }
+                $objTypeCounter[$object['objectType']]++;
+            }
+        }
+        foreach ($objTypeCounter as $objType => $count) {
+            $this->trackInfo($objType . ': ' . $count);
+        }
     }
 }
 ?>
