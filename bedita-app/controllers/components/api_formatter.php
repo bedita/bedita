@@ -49,14 +49,33 @@ class ApiFormatterComponent extends Object {
     );
 
     /**
-     * Contain field transformation
+     * Contain fields transformation as `field` => `type`
+     * It used for cast string in other types.
+     * Some special types act on fields instead of values. See below.
      *
+     * Possible types values are:
+     *
+     * - `date`
+     * - `datetime`
+     * - `integer`
+     * - `float`
+     * - `boolean`
+     *
+     * Special types:
+     *
+     * - `underscoreField` underscorize field. Note that the value of field remains unchanged
+     *
+     *
+     * The `object` key contains transformation merged with all BEdita objects
+     *
+     * @see self::transformObject(), self::transformItem()
      * @var array
      */
     protected $transformers = array(
         'object' => array(
             'publication_date' => 'datetime',
-            'customProperties' => array() // do nothing set to array to underscore/pluralize field
+            'customProperties' => 'underscoreField',
+            'canonicalPath' => 'underscoreField'
         )
     );
 
@@ -78,12 +97,15 @@ class ApiFormatterComponent extends Object {
      * array(
      *     'id' => 'integer',
      *     'start_date' => 'datetime',
-     *     'Category' => array(
+     *     'GeoTag' => array(
      *         'id' => 'integer',
      *         ...
      *     )
      * )
      * ```
+     *
+     * The keys that correspond to array as `GeoTag` will be underscorized and pluralized.
+     * So `GeoTag` become `geo_tags` in the $item array
      *
      * @param array $transformer the transformer array
      * @param array &$item the item to transform
@@ -102,7 +124,9 @@ class ApiFormatterComponent extends Object {
                         $newField = Inflector::pluralize(Inflector::underscore($field));
                         $item[$newField] = $item[$field];
                         unset($item[$field]);
-                        $this->transformItem($transformer[$field], $item[$newField]);
+                        if (is_array($item[$newField])) {
+                            $this->transformItem($transformer[$field], $item[$newField]);
+                        }
                     } else {
                         switch ($type) {
                             case 'integer':
@@ -123,6 +147,12 @@ class ApiFormatterComponent extends Object {
                                     $datetime = new DateTime($item[$field]);
                                     $item[$field] = $datetime->format(DateTime::ISO8601);
                                 }
+                                break;
+
+                            case 'underscoreField':
+                                $newField = Inflector::underscore($field);
+                                $item[$newField] = $item[$field];
+                                unset($item[$field]);
                                 break;
                         }
                     }
