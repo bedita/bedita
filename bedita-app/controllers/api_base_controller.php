@@ -437,7 +437,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function deleteSession() {
         if ($this->Session->valid()) {
-            $this->BeAuth->logout(false);
+            $this->logout(false);
             $this->responseData['data'] = array('logout' => true);
         } else {
             throw new BeditaUnauthorizedException('Invalid or expired session');
