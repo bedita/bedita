@@ -82,8 +82,14 @@ class DataTransfer extends BEAppModel
                 'JSON' => '' // string
             )
         ),
-        'returnType' => 0, // JSON
+
         'logLevel' => 2, // INFO
+        'returnType' => 'JSON',
+        'filename' => null,
+        'all' => true,
+        'types' => null,
+        'relations' => null,
+        
         'objectUnsetFields' => array(
             'user_created',
             'user_modified',
@@ -93,7 +99,8 @@ class DataTransfer extends BEAppModel
             'ObjectType',
             'UserCreated',
             'UserModified',
-            'User'
+            'User',
+            'Version',
         ),
         'contain' => array(
             'BEObject' => array(
@@ -175,6 +182,7 @@ class DataTransfer extends BEAppModel
      */
     
     public function import(&$data, $options = array()) {
+        $this->result = array();
         $this->logFile = 'import';
         // setting logLevel - default INFO
         $this->logLevel = (!empty($options['logLevel'])) ? $options['logLevel'] : $this->logLevels['INFO'];
@@ -325,16 +333,12 @@ class DataTransfer extends BEAppModel
      * )
      */
     public function export(array &$objects, $options = array()) {
+        $this->result = array();
         $this->logFile = 'export';
-        // setting logLevel - default INFO
-        $this->logLevel = (!empty($options['logLevel'])) ? $options['logLevel'] : $this->logLevels['INFO'];
-        // return type - default JSON
-        $this->export['returnType'] = (!empty($options['returnType'])) ? $options['returnType'] : 'JSON';
-        $this->export['filename'] = (!empty($options['filename'])) ? $options['filename'] : NULL;
-        $this->export['destMediaRoot'] = (!empty($options['destMediaRoot'])) ? $options['destMediaRoot'] : TMP . 'media-export';
-        $this->export['all'] = (!empty($options['all'])) ? $options['all'] : true;
-        $this->export['types'] = (!empty($options['types'])) ? $options['types'] : NULL;
-        $this->export['relations'] = (!empty($options['relations'])) ? $options['relations'] : NULL;
+        // set destMediaRoot default
+        $this->export['destMediaRoot'] = TMP . 'media-export';
+        $this->export = array_merge($this->export, $options);
+        $this->logLevel = $this->export['logLevel'];
         $this->trackInfo('START');
         try {
             $this->export['objectTypeIds'] = array();
@@ -392,7 +396,7 @@ class DataTransfer extends BEAppModel
 
                 $objModel = ClassRegistry::init($model);
                 $objModel->contain(
-                    $this->export['contain']
+                    $this->modelBinding($model, $objModel)
                 );
                 $obj = $objModel->findById($objectId);
                 $this->prepareObjectForExport($obj);
@@ -423,7 +427,7 @@ class DataTransfer extends BEAppModel
                             $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = $sectionItem;
                             $objModel = ClassRegistry::init('Section');
                             $objModel->contain(
-                                $this->export['contain']
+                                $this->modelBinding('Section', $objModel)
                             );
                             $obj = $objModel->findById($section['id']);
                             $this->prepareObjectForExport($obj);
@@ -546,11 +550,21 @@ class DataTransfer extends BEAppModel
         } catch(Exception $e) {
             $this->trackError('ERROR: ' . $e->getMessage());
         }
+
         $this->trackInfo('END');
         $this->exportInfo();
         return $this->export['destination']['byType'][$this->export['returnType']];
     }
 
+    /**
+     * Get last import/export operation result
+     * 
+     * @return array, with result info (errors, warnings, stats...)
+     */
+    public function getResult() {
+        return $this->result;
+    }
+    
     /**
      * Validation of data and related objects and semantics
      * 
@@ -1279,7 +1293,7 @@ class DataTransfer extends BEAppModel
                  }
             }
         }
-        $this->import['saveMap']['relations'][$objRelModel->id][] = $relationData;
+        $this->import['saveMap']['relations'][] = $relationData;
         $this->trackDebug('- saving relation ' . $counter . ': ' . $relation['switch'] . ' ... DONE');
     }
 
@@ -1470,10 +1484,9 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'unable to export related type: ' . $model . ' tree info may be missing');
                         continue;
                     }
-                    $containLabel = $this->containLabel($model);
                     $relatedObjModel = ClassRegistry::init($model);
                     $relatedObjModel->contain(
-                        $this->export[$containLabel]
+                        $this->modelBinding($model, $relatedObjModel)
                     );
                     $relatedObj = $relatedObjModel->findById($relatedObjectId);
                     $this->prepareObjectForExport($relatedObj, $nextLevel);
@@ -1550,10 +1563,9 @@ class DataTransfer extends BEAppModel
                     } else {
                         $model = $conf->objectTypesExt[$objectTypeId]['model'];
                     }
-                    $containLabel = $this->containLabel($model);
                     $objModel = ClassRegistry::init($model);
                     $objModel->contain(
-                        $this->export[$containLabel]
+                        $this->modelBinding($model, $objModel)
                     );
                     $obj = $objModel->findById($objectId);
                     $this->prepareObjectForExport($obj);
@@ -1563,11 +1575,20 @@ class DataTransfer extends BEAppModel
         $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
-    private function containLabel($model) {
-        if (in_array($model, $this->streamModels)) {
-            return 'contain-stream';
-        } else {
-            return 'contain';
+    /**
+     * Return the proper model binding for model.
+     *
+     * @param string $model Model name.
+     * @param BEAppModel $objModel Instantiated model object.
+     * @return array Model binding.
+     */
+    private function modelBinding($model, BEAppModel $objModel) {
+        try {
+            // Use detailed model binding, if present.
+            return $objModel->containLevel('detailed');
+        } catch (Exception $e) {
+            // Use default basic model bindings.
+            return $this->export[in_array($model, $this->streamModels) ? 'contain-stream' : 'contain'];
         }
     }
 
@@ -1703,9 +1724,11 @@ class DataTransfer extends BEAppModel
     private function exportInfo() {
         if (!empty($this->export['filename'])) {
             $this->trackInfo('file created: ' . $this->export['filename']);
+            $this->result['filename'] = $this->export['filename'];
         }
         $objects = $this->export['destination']['byType']['ARRAY']['objects'];
-        $this->trackInfo('objects exported: ' . sizeof($objects));
+        $this->result['objects'] = sizeof($objects);
+        $this->trackInfo('objects exported: ' . $this->result['objects']);
         $objTypeCounter = array();
         foreach ($objects as $o) {
             if (empty($objTypeCounter[$o['objectType']])) {
@@ -1714,6 +1737,7 @@ class DataTransfer extends BEAppModel
             $objTypeCounter[$o['objectType']]++;
         }
         foreach ($objTypeCounter as $objType => $count) {
+            $this->result['type'][$objType] = $count;
             $this->trackInfo($objType . ': ' . $count);
         }
         $relations = $this->export['destination']['byType']['ARRAY']['relations'];
@@ -1721,6 +1745,7 @@ class DataTransfer extends BEAppModel
             $this->trackInfo('relations exported ...');
             foreach ($relations as $switch => $r) {
                 $this->trackInfo($switch . ': ' . sizeof($r));
+                $this->result['relations'][$switch] = sizeof($r);
             }
         } else {
             $this->trackInfo('relations exported: none');
@@ -1728,7 +1753,8 @@ class DataTransfer extends BEAppModel
     }
 
     private function importInfo() {
-        $this->trackInfo('objects imported: ' . sizeOf($this->import['saveMap']));
+        $this->result['objects'] = sizeof($this->import['saveMap']);
+        $this->trackInfo('objects imported: ' . $this->result['objects']);
         $objTypeCounter = array();
         $objects = $this->import['source']['data']['objects'];
         foreach($objects as $object) {
@@ -1740,6 +1766,7 @@ class DataTransfer extends BEAppModel
             }
         }
         foreach ($objTypeCounter as $objType => $count) {
+            $this->result['type'][$objType] = $count;
             $this->trackInfo($objType . ': ' . $count);
         }
         $relationCounter = array();
@@ -1754,6 +1781,7 @@ class DataTransfer extends BEAppModel
             }
             foreach ($relationCounter as $relName => $count) {
                 $this->trackInfo($relName . ': ' . $count);
+                $this->result['relations'][$relName] = $count;
             }
         } else {
             $this->trackInfo('relations imported: none');
