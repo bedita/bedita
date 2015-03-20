@@ -137,9 +137,19 @@ class DataShell extends BeditaBaseShell {
 
         if (isset($this->params['t'])) {
             $this->options['export']['returnType'] = $this->params['t'];
-            $this->out('Using returnType: ' . $this->options['export']['returnType'] 
-                . ' (' . $this->options['export']['returnType'] . ')');
+        } else {
+            switch (strtolower(pathinfo($this->params['f'], PATHINFO_EXTENSION))) {
+                case 'xml':
+                    $this->options['export']['returnType'] = 'XML';
+                    break;
+                case 'json':
+                default:
+                    $this->options['export']['returnType'] = 'JSON';
+            }
         }
+        $this->out('Using returnType: ' . $this->options['export']['returnType'] 
+            . ' (' . $this->options['export']['returnType'] . ')');
+
         if (isset($this->params['v'])) {
             $this->options['export']['logDebug'] = true;
         }
