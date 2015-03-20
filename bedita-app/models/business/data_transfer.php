@@ -1378,8 +1378,24 @@ class DataTransfer extends BEAppModel
             unset($object['Annotation']);
         }
         if (isset($object['GeoTag'])) {
-            // TODO: arrange geotag data
-            unset($object['GeoTag']);
+            foreach ($object['GeoTag'] as &$geoTag) {
+                if (isset($geoTag['id'])) {
+                    unset($geoTag['id']);
+                }
+                if (isset($geoTag['object_id'])) {
+                    unset($geoTag['object_id']);
+                }
+            }
+        }
+        if (isset($object['DateItem'])) {
+            foreach ($object['DateItem'] as &$dateItem) {
+                if (isset($dateItem['id'])) {
+                    unset($dateItem['id']);
+                }
+                if (isset($dateItem['object_id'])) {
+                    unset($dateItem['object_id']);
+                }
+            }
         }
         if (isset($object['ObjectProperty'])) {
             foreach ($object['ObjectProperty'] as $cproperty) {
