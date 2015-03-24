@@ -77,6 +77,7 @@ class AddressbookShell extends BeditaBaseShell {
         
         if (isset($this->params['delimiter'])) {
             $options['delimiter'] = $this->params['delimiter'];
+            $this->out('Using delimiter: ' . $options['delimiter']);
         }
         $cardModel = ClassRegistry::init('Card');
         if($isCsv) {
