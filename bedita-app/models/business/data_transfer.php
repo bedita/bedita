@@ -101,6 +101,7 @@ class DataTransfer extends BEAppModel
             'UserModified',
             'User',
             'Version',
+            'Permission',
         ),
         'contain' => array(
             'BEObject' => array(
