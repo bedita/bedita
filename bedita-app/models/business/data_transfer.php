@@ -539,7 +539,7 @@ class DataTransfer extends BEAppModel
                     }
                 }
             } elseif ($this->export['returnType'] === 'XML') {
-                $this->export['destination']['byType']['XML'] = ClassRegistry::init('XmlJsonConverter')->toXmlString($this->export['destination']['byType']['ARRAY']);
+                $this->export['destination']['byType']['XML'] = BeLib::getObject('XmlJsonConverter')->toXmlString($this->export['destination']['byType']['ARRAY']);
                 if (!empty($this->export['filename'])) {
                     if (!file_put_contents($this->export['filename'], $this->export['destination']['byType']['XML'])) {
                         throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
@@ -639,7 +639,7 @@ class DataTransfer extends BEAppModel
             switch (strtoupper($type)) {
                 case 'XML':
                     // 1.2b valid XML (XmlJsonConverter::toArray() / libxml_get_errors)
-                    $this->import['source']['data'] = ClassRegistry::init('XmlJsonConverter')->toArray($this->import['source']['string']);
+                    $this->import['source']['data'] = BeLib::getObject('XmlJsonConverter')->toArray($this->import['source']['string']);
                     if (empty($this->import['source']['data'])) {
                         throw new BeditaException('xml string not valid: xml error ' . $this->xmlLastErrorMsg());
                     }

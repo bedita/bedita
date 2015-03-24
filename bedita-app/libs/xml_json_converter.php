@@ -19,19 +19,12 @@
  *------------------------------------------------------------------->8-----
  */
 
-class XmlJsonConverter extends BEAppModel
+class XmlJsonConverter
 {
     /**
      * Namespace URI
      */
     const BEDITA_NS_URI = 'http://bedita.com/bedita';
-
-    /**
-     * This model uses no table.
-     *
-     * @var boolean
-     */
-    public $useTable = false;
 
     /**
      * Set maximum recursion depth.
