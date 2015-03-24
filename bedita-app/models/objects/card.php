@@ -116,7 +116,8 @@ class Card extends BEAppObjectModel {
 			"Car Phone","Company Main Phone","Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
 			"Other Fax","Other Phone","Pager","Primary Phone","Radio Phone","TTY/TDD Phone","Telex",
 			"Assistant's Name","Birthday" => "birthdate","Manager's Name","Notes","Other Address PO Box","Spouse",
-			"Web Page" => "website", "Personal Web Page" => "website"
+			"Web Page" => "website", "Personal Web Page" => "website",
+ 	        'Mail Group' => 'mail_group'
 		);
  	
  	
@@ -187,37 +188,67 @@ class Card extends BEAppObjectModel {
 		if(!empty($options)) {
 			$defaults = array_merge($defaults, $options);
 		}
-		
 		$row = 1;
 		$handle = fopen($csvFile, "r");
 		// read header
-		$csvKeys = fgetcsv($handle, 1000, ",");
+		$delimiter = empty($options['delimiter']) ? ',' : $options['delimiter'];
+		$csvKeys = fgetcsv($handle, 1000, $delimiter);
 		$numKeys = count($csvKeys);
 		$keys = array();
 		$beFields = array_values($this->csvFields);
-		foreach ($csvKeys as $f) {
-			$k = null;
-			if(!empty($this->csvFields[$f])) {
-				$k = $this->csvFields[$f];
-			} else if(in_array(strtolower($f), $beFields)) {
-				$k = strtolower($f);
-			}
-			$keys[] = $k; 
-		}
-		
-		$data = array();
-		while (($fields = fgetcsv($handle, 1000, ",")) !== FALSE) {
-	    	$row++;
+        $customCsvFields = Configure::read('csvFields.card');
+        if (empty($customCsvFields)) {
+            $customCsvFields = array();
+        }
+        $customFieldNames = array_values($customCsvFields);
+        foreach ($csvKeys as $f) {
+            $f = trim($f);
+            $fieldNameLow = strtolower($f);
+            $k = null;
+            if(!empty($this->csvFields[$f])) {
+                $k = $this->csvFields[$f];
+            } else if(in_array($fieldNameLow, $beFields)) {
+                $k = $fieldNameLow;
+            } else if(!empty($customCsvFields[$fieldNameLow])) {
+                $k = $customCsvFields[$fieldNameLow];
+            }
+            if (empty($k)) {
+                $this->log('import CSV: field name not found ' . $f, 'warn');
+            }
+            $keys[] = $k; 
+        }
+
+        while (($fields = fgetcsv($handle, 1000, $delimiter)) !== false) {
+            $data = array();
+            $row++;
 			for ($c=0; $c < $numKeys; $c++) {
 				if(!empty($keys[$c]) && !empty($fields[$c])) {
-					$data[$keys[$c]] = $fields[$c]; 
+					$data[$keys[$c]] = trim($fields[$c]); 
 				}
 			}
 			$this->create();
 			$d = array_merge($defaults, $data);
-			if(!empty($d["surname"])) {
-				$d["title"] = ((!empty($d["name"])) ? $d["name"] : "" ) . " " . $d["surname"];
-			}
+            if(!empty($d['surname']) || !empty($d['name'])) {
+                $d['title'] = ((!empty($d['name'])) ? $d['name'] : '') . ' ' . 
+                    ((!empty($d['surname'])) ? $d['surname'] : '');
+            }
+            // check mail_groups field
+            if (!empty($d['mail_group'])) {
+                $mailGroups = explode(',', $d['mail_group']);
+                $count = 0;
+                foreach ($mailGroups as $mg) {
+                    $mg = trim($mg);
+                    if (!empty($options['mailGroups'][$mg])) {
+                        $mailGroupId = $options['mailGroups'][$mg];
+                        $d['joinGroup'][$count]['mail_group_id'] = $mailGroupId;
+                        $d['joinGroup'][$count]['status'] = 'confirmed';
+                        $count++;
+                    } else {
+                        $this->log('import CSV: mail group not found ' . $mg, 'warn');
+                    }
+                }
+            }
+
 			if(!$this->save($d)) {
 				throw new BeditaException(__("Error saving card"),  
 					print_r($data, true) . " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));

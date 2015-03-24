@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2010 ChannelWeb Srl, Chialab Srl
+ * Copyright 2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -23,63 +23,69 @@ require_once 'bedita_base.php';
 
 /**
  * Shell script to import/export/manipulate cards.
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * 
  */
 class AddressbookShell extends BeditaBaseShell {
 
-	public function import() {
-		if (!isset($this->params['f'])) {
-			$this->out("Input file is mandatory");
-			return;
-		}
-		
-		$options = array();
-		$mail_group_id = null;
-		if (isset($this->params['m'])) {
-			$mailgroup = ClassRegistry::init("MailGroup");
-			$mail_group_id = $mailgroup->field("id", array("group_name" => $this->params['m']));
-			if(empty($mail_group_id)) {
-				$this->out("Mail group " . $this->params['m'] . " not found: import aborted");
-				return false;
-			}
-			$options["joinGroup"][0]["mail_group_id"] = $mail_group_id;
-			$options["joinGroup"][0]["status"] = "confirmed";
-		}
+    public function import() {
+        if (!isset($this->params['f'])) {
+            $this->out('Input file is mandatory');
+            return;
+        }
 
-		$cardFile = $this->params['f'];
-		if(!file_exists($cardFile)) {
-			$this->out("$cardFile not found, bye");
-			return;
-		}
+        $options = array('mailGroups' => array());
+        $mail_group_id = null;
+        $mailgroup = ClassRegistry::init('MailGroup');
+        if (isset($this->params['m'])) {
+            $mail_group_id = $mailgroup->field('id', array('group_name' => $this->params['m']));
+            if (empty($mail_group_id)) {
+                $this->out('Mail group ' . $this->params['m'] . ' not found: import aborted');
+                return false;
+            }
+            $options['joinGroup'][0]['mail_group_id'] = $mail_group_id;
+            $options['joinGroup'][0]['status'] = 'confirmed';
+        } else {
+            $allMailGroups = $mailgroup->find('all');
+            if (!empty($allMailGroups)) {
+                foreach ($allMailGroups as $mg) {
+                    $options['mailGroups'][$mg['MailGroup']['group_name']] = $mg['MailGroup']['id'];
+                }
+            }
+        }
 
-		// categories
-		if (!isset($this->params['c'])) {
-			$this->out("No categories set");
-		} else {
-			$categories = trim($this->params['c']);
-			$catTmp = split(",", $categories);
-			$categoryModel = ClassRegistry::init("Category");
-			$cardTypeId = Configure::read("objectTypes.card.id");
-			$options["Category"] = $categoryModel->findCreateCategories($catTmp, $cardTypeId);
-		}
+        $cardFile = $this->params['f'];
+        if(!file_exists($cardFile)) {
+            $this->out("$cardFile not found, bye");
+            return;
+        }
 
-		$ext = strtolower(substr($cardFile, strrpos($cardFile, ".")+1));
-		$isCsv = ($ext == "csv");
-		$this->out("Importing file $cardFile using " . (($isCsv) ? "CSV" : "VCard") . " format");
-		
-		$cardModel = ClassRegistry::init("Card");
-		if($isCsv) {
-			$result = $cardModel->importCSVFile($cardFile, $options);
-		} else {
-			$result = $cardModel->importVCardFile($cardFile, $options);
-		}
-		$this->out("Done\nResult: " . print_r($result, true));		
-	}
+        // categories
+        if (!isset($this->params['c'])) {
+            $this->out('No categories set');
+        } else {
+            $categories = trim($this->params['c']);
+            $catTmp = split(',', $categories);
+            $categoryModel = ClassRegistry::init('Category');
+            $cardTypeId = Configure::read('objectTypes.card.id');
+            $options['Category'] = $categoryModel->findCreateCategories($catTmp, $cardTypeId);
+        }
+
+        
+        $ext = strtolower(substr($cardFile, strrpos($cardFile, ".")+1));
+        $isCsv = ($ext == 'csv');
+        $this->out("Importing file $cardFile using " . (($isCsv) ? 'CSV' : 'VCard') . ' format');
+        
+        if (isset($this->params['delimiter'])) {
+            $options['delimiter'] = $this->params['delimiter'];
+        }
+        $cardModel = ClassRegistry::init('Card');
+        if($isCsv) {
+            $result = $cardModel->importCSVFile($cardFile, $options);
+        } else {
+            $result = $cardModel->importVCardFile($cardFile, $options);
+        }
+        $this->out('Done\nResult: ' . print_r($result, true));		
+    }
 
 	public function export() {
 		if (!isset($this->params['f'])) {
@@ -132,11 +138,12 @@ class AddressbookShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('1. import: import vcf/vcard or microsoft outlook csv file, or generic csv file');
   		$this->out(' ');
-        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>]' );
+        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>] [-delimiter <delimiter>]' );
   		$this->out(' ');
   		$this->out("    -f <csv-cardfile>\t vcf/vcard or csv file to import");
   		$this->out("    -c <categories> \t comma separated <categories> to use on import (created if not exist)");
   		$this->out("    -m <mail-group-name> \t name of mail group to associate with imported cards");
+  		$this->out("    -delimiter <delimiter> \t CSV delimiter, default is ','");
   		$this->out(' ');
         $this->out('2. export: export to vcf/vcard or microsoft outlook csv file');
   		$this->out(' ');
