@@ -19,7 +19,7 @@
 	
 	<h1>
 		{if !empty($userdetail)}
-			{t}User{/t}	“<em style="color:#FFFFFF; line-height:2em">{$userdetail.realname|default:$userdetail.userid|escape}</em>”
+			{t}User{/t}	“<em style="color:#FFFFFF">{$userdetail.realname|default:$userdetail.userid|escape}</em>”
 		{else}
 			{t}New user{/t}
 		{/if}

@@ -69,8 +69,13 @@
 <fieldset id="details">
 
 		<table class="bordered">
-
-		{if !$userDeleted|default:false}
+             {if $userDeleted|default:false}
+            <tr>
+                <td colspan="2">
+                    This user was deleted, and modified on {$userdetail.modified|date_format:$conf->dateTimePattern}
+                </td>
+            </tr>
+            {/if}
 			<tr>
 				<th><label>{t}Authentication service{/t}</label></th>
 				<td>
@@ -171,9 +176,6 @@
 				
 			</tr>
 
-		{/if}
-
-
 		<tr>
 			<th>{t}last login{/t}</th>
 			<td>{$userdetail.last_login|date_format:$conf->dateTimePattern}</td>
@@ -187,8 +189,6 @@
 			<td>{$userdetail.modified|date_format:$conf->dateTimePattern}</td>
 		</tr>
 
-
-		{if !$userDeleted|default:false}
 			<tr>
 				<th>{t}card details{/t}</th>
 				<td>
@@ -200,14 +200,10 @@
                     {/if}
 				</td>
 			</tr>
-		{/if}
 
 </table>
 
 </fieldset>
-
-
-{if !$userDeleted|default:false}
 	
 	<div class="tab"><h2>{t}Groups{/t}</h2></div>
 
@@ -218,7 +214,6 @@
 		
 		<table class="bordered">	
 			{if !empty($formGroups)}
-
 					{foreach from=$formGroups key=gname item=u}
 					<tr>
 						<td>
@@ -226,11 +221,10 @@
 							<input type="checkbox" id="group_{$gname}" name="data[groups][{$gname}]" {if $u == 1}checked="checked"{/if}	onclick="javascript:localUpdateGroupsChecked(this);" />
 							&nbsp;
 							<label id="lgroup{$gname}" for="group{$gname}">{$gname}</label>
-						</td>
+                        </td>
 						<th>{if in_array($gname,$authGroups)} <span class="evidence">*</span> {/if}</th>
 					</tr>
 					{/foreach}
-
 			{/if}
 					<tr>
 						<td></td>
@@ -271,8 +265,43 @@
 	</fieldset>
 	{/if}
 
-	{include file="inc/form_user_custom_properties.tpl"}
+    {$relcount = $html->params.paging.Objects.count|default:0}
+    <div class="tab"><h2 {if empty($objectsCreated)}class="empty"{/if}>{t}Objects created{/t} &nbsp; 
+        {if $relcount > 0}
+            <span class="relnumb">
+                {$relcount}</span>{/if}
+    </h2></div>
+    
+    <fieldset id="objects_created"> 
 
-{/if}
+        <table class="indexlist bordered">    
+        {if !empty($objectsCreated)}
+        {foreach from=$objectsCreated item=item key=key}
+            {$object_type=$conf->objectTypes[$item.Objects.object_type_id].module_name}
+            <tr class="obj {$item.Objects.status|default:''}" data-beid="{$item.Objects.id}" data-benick="{$item.Objects.nickname}">
+                <td style="width:20px">
+                    <span class="listrecent {$object_type}">&nbsp;&nbsp;</span>
+                </td>
+                <td><a target="obj" href="{$html->url('/')}view/{$item.Objects.id}">{$item.Objects.title|default:$item.Objects.nickname}</a></td>
+                <td>
+                    {$item.Objects.id}
+                </td>
+            </tr>
+        {/foreach}
+        {else}
+            <tr><td><i>{t}No objects{/t}</i></td></tr>
+        {/if}
+        </table>
+
+        <div class="toolbar sans" style="text-align:right; padding:10px">
+            {$pager = $html->params.paging.Objects|default:''}
+            {t}page{/t} {$pager.page} &nbsp;{t}of{/t}&nbsp; {$pager.pageCount} 
+        </div>
+
+    </fieldset>
+      
+    {*dump var=$html->params.paging.Objects|default:''*}
+
+	{include file="inc/form_user_custom_properties.tpl"}
 
 </form>

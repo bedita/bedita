@@ -30,7 +30,7 @@
  */
 class UsersController extends ModulesController {
     
-    public $uses = array('User', 'Group');
+    public $uses = array('User', 'Group', 'Objects');
     
     public $helpers = array('Paginator');
 
@@ -46,9 +46,14 @@ class UsersController extends ModulesController {
             'limit' => 20,
             'page' => 1,
             'order' => array('created' => 'desc')
+        ),
+        'Objects' => array(
+            'limit' => 20,
+            'page' => 1,
+            'order' => array('created' => 'desc')
         )
     );
-    
+
     protected $moduleName = 'users';
     
     function index() {
@@ -379,6 +384,15 @@ class UsersController extends ModulesController {
                 $authGroups[] = $g['Group']['name'];
             }
         }
+
+// find objects created by user
+
+        $objectsCreated = $this->paginate('Objects', array(
+           'user_created =' . $userdetail['User']['id']
+        ));
+        $this->set('objectsCreated', @$objectsCreated);
+
+//
 
         $this->set('userdetail',  $userdetail['User']);
         if (is_array($userdetail["ObjectUser"])) {
