@@ -511,7 +511,6 @@ class DataTransfer extends BEAppModel
                 foreach ($this->export['customProperties'] as $property) {
                     $objectType = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
                     $propertyNew = array();
-                    $propertyNew['id'] = $property['id'];
                     $propertyNew['name'] = $property['name'];
                     $propertyNew['objectType'] = $objectType;
                     if(!empty($property['property_type'])) {
