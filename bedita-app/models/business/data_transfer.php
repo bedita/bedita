@@ -320,11 +320,12 @@ class DataTransfer extends BEAppModel
     }
 
     /**
-     * Export BEdita objects data to JSON/Array/XML or other format
+     * Export BEdita objects data to JSON, XML or other format
      * 
      * @param  array &$objects  ids of root elements (publication|section) or ids of objects (document|event|...)
      * @param  array $options   export parameters
-     * @return mixed content    json|array|XML... content exported in requested format
+     * @return mixed object     json|array|xml|other (file?)
+     * @see XmlJsonConverter::toXmlString()
      * 
      * $options = array(
      *    'logDebug' => true, // can be true|false
@@ -563,6 +564,13 @@ class DataTransfer extends BEAppModel
                         throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
                     }
                 }
+            } elseif ($this->export['returnType'] === 'XML') {
+                $this->export['destination']['byType']['XML'] = BeLib::getObject('XmlJsonConverter')->toXmlString($this->export['destination']['byType']['ARRAY']);
+                if (!empty($this->export['filename'])) {
+                    if (!file_put_contents($this->export['filename'], $this->export['destination']['byType']['XML'])) {
+                        throw new BeditaException('error saving data to file "' . $this->export['filename'] . '"');
+                    }
+                }
             }
             $this->trackInfo('export OK');
         } catch(Exception $e) {
@@ -586,9 +594,10 @@ class DataTransfer extends BEAppModel
     /**
      * Validation of data and related objects and semantics
      * 
-     * 1 if data is a string: check json
+     * 1 if data is a string
      * 1.1 if data is a string: not empty
-     * 1.2 if data is a string: valid (json_decode / json_last_error)
+     * 1.2a if data is a JSON string: valid (json_decode / json_last_error)
+     * 1.2b if data is an XML string: valid
      *
      * 2 config
      * 2.1 custom properties
@@ -640,20 +649,37 @@ class DataTransfer extends BEAppModel
      *
      * @param $data string|array
      * @param $options array
+     * @see XmlJsonConverter::toArray()
      */
     public function validate(&$data, $options = array()) {
         if (!is_array($data)) {
-            // 1 json
+            // 1 string
             $this->import['source']['string'] = $data;
             // 1.1 not empty
             if (empty($this->import['source']['string'])) {
-                throw new BeditaException('empty json string');
+                throw new BeditaException('empty string');
             }
             $this->import['source']['string'] = trim($this->import['source']['string']);
-            $this->import['source']['data'] = json_decode($this->import['source']['string'], true);
-            // 1.2 valid (json_decode / json_last_error)
-            if (empty($this->import['source']['data'])) {
-                throw new BeditaException('json string not valid: json_last_error error code ' . $this->jsonLastErrorMsg());
+
+            $type = (!empty($options['type'])) ? $options['type'] : 'JSON';
+            switch (strtoupper($type)) {
+                case 'XML':
+                    // 1.2b valid XML (XmlJsonConverter::toArray() / libxml_get_errors)
+                    $this->import['source']['data'] = BeLib::getObject('XmlJsonConverter')->toArray($this->import['source']['string']);
+                    if (empty($this->import['source']['data'])) {
+                        throw new BeditaException('xml string not valid: xml error ' . $this->xmlLastErrorMsg());
+                    }
+
+                    $this->import['source']['data'] = $this->import['source']['data']['bedita'];
+                    break;
+
+                case 'JSON':
+                default:
+                    // 1.2 valid JSON (json_decode / json_last_error)
+                    $this->import['source']['data'] = json_decode($this->import['source']['string'], true);
+                    if (empty($this->import['source']['data'])) {
+                        throw new BeditaException('json string not valid: json_last_error error code ' . $this->jsonLastErrorMsg());
+                    }
             }
         } else {
             $this->import['source']['data'] = $data;
@@ -1711,6 +1737,30 @@ class DataTransfer extends BEAppModel
                  break;
         }
         return $msg;
+    }
+
+    /**
+     * Formats last XML error in a simple, human-readable format.
+     *
+     * @return string
+     */
+    private function xmlLastErrorMsg() {
+        $msg = '';
+        $err = libxml_get_last_error();
+        switch ($err->level) {
+            case LIBXML_ERR_WARNING:
+                $msg .= " - Warning {$err->code}";
+                break;
+            case LIBXML_ERR_ERROR:
+                $msg .= " - Error {$err->code}";
+                break;
+            case LIBXML_ERR_FATAL:
+                $msg .= " - Fatal Error {$err->code}";
+                break;
+        }
+        $msg .= " (line {$err->line}; column {$err->column}): " . trim($err->message);
+        libxml_clear_errors();
+        return implode(PHP_EOL, $msg);
     }
 
     private function exportInfo() {
