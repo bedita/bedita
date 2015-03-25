@@ -179,8 +179,8 @@ class BeThumb {
             }
 		}
 		
-		// if svg skip and return image without any resize
-		if($data['mime_type'] === 'image/svg+xml') {
+		// if svg or animated gif skip and return image without any resize
+		if($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
 			if ($this->imageInfo["remote"]) {
 				return $this->imageInfo['path'];
 			} else {
@@ -200,7 +200,7 @@ class BeThumb {
 		// and the image it's not alredy cached
 		$cacheExists = file_exists($this->imageTarget['filepath']);
 		
-		if (!$cacheExists && $this->imageTarget['type'] != 'svg' ) {
+		if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() ) {
 			if ( !$this->resample() ) {
 				return $this->imgMissingFile;
 			}
@@ -767,6 +767,42 @@ class BeThumb {
 		CakeLog::write('error', get_class($this) . ": " . $errorMsg);
 	}
 
+    /**
+     * Check whether current image is an animated GIF.
+     *
+     * @return bool
+     * @see http://php.net/manual/en/function.imagecreatefromgif.php#59787
+     */
+    private function isAnimatedGif() {
+        if ($this->imageInfo['type'] != 'gif') {
+            return false;
+        }
+
+        $data = file_get_contents($this->imageInfo['filepath']);
+
+        $pointer = 0;
+        $frames = 0;
+        while ($frames < 2) {
+            $pos1 = strpos($data, "\x00\x21\xF9\x04", $pointer);
+            if ($pos1 === FALSE) {
+                break;
+            } else {
+                $pointer = $pos1 + 1;
+                $pos2 = min(strpos($data, "\x00\x2C", $pointer), strpos($data, "\x00\x21", $pointer));
+                if ($pos2 === FALSE) {
+                    break;
+                } else {
+                    if ($pos1 + 8 == $pos2) {
+                        $frames++;
+                    }
+                    $pointer = $pos2 + 1;
+                }
+            }
+        }
+
+        return $frames >= 2;
+    }
+
 	/***************************/
 	/* minor private functions */
 	/***************************/
@@ -789,7 +825,4 @@ class BeThumb {
 		}
 		return $mime_type;
 	}
-		
 }
-
-?>
