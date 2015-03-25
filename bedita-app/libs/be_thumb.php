@@ -768,6 +768,7 @@ class BeThumb {
 			include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
 			$this->knownMimeTypes = $config["mimeTypes"];
 		}
+		$ext = strtolower($ext);
 		if (!empty($ext) && array_key_exists($ext, $this->knownMimeTypes)) {
 				$mime_type = $this->knownMimeTypes[$ext];
 		}
