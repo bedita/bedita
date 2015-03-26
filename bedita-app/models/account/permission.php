@@ -365,16 +365,22 @@ class Permission extends BEAppModel
 	 * @return array $objects with added 'count_permission' key
 	 */
 	public function countPermissions(array $objects, array $options) {
-		foreach ($objects as &$obj) {
-			$conditions = array('object_id' => $obj['id']);
-			if (isset($options['flag'])) {
-				$conditions['flag'] = $options['flag'];
-			}
-			$obj['num_of_permission'] = $this->find('count', array(
-				'conditions' => $conditions
-			));
-		}
-		return $objects;
+        $conditions = array(
+            'object_id' => Set::classicExtract($objects, '{n}.id'),
+        );
+        if (isset($options['flag'])) {
+            $conditions['flag'] = $options['flag'];
+        }
+        $res = $this->find('all', array(
+            'contain' => array(),
+            'fields' => array('COUNT(id) AS count', 'object_id'),
+            'conditions' => $conditions,
+            'group' => array('object_id'),
+        ));
+        $res = Set::combine($res, '{n}.Permission.object_id', '{n}.0.count');
+        foreach ($objects as &$obj) {
+            $obj['num_of_permission'] = @$res[$obj['id']] ?: 0;
+        }
+        return $objects;
 	}
-
 }
