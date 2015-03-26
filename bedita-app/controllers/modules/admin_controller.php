@@ -157,10 +157,37 @@ class AdminController extends ModulesController {
 		$this->set("moduleList", $modules);
 	}
 
-	public function systemInfo() {
-		$this->beditaVersion();
-		$this->set('sys', $this->BeSystem->systemInfo());
-	}
+    /**
+     * Display system info, as well as warnings if some of the requirements aren't met.
+     */
+    public function systemInfo() {
+        Configure::load('requirements');
+
+        $this->beditaVersion();
+        $sys = $this->BeSystem->systemInfo();
+
+        $warnings = array();
+        $requirements = Configure::read('requirements');
+        $phpversion = !empty($sys['phpVersion']) ? $sys['phpVersion'] : phpversion();
+        if (version_compare($phpversion, $requirements['phpVersion']) < 0) {
+            array_push($warnings, 'phpVersion');
+        }
+        foreach ($requirements['phpExtensions'] as $ext) {
+            $loaded = !empty($sys['phpExtensions']) ? in_array($ext, $sys['phpExtensions']) : extension_loaded($ext);
+            if (!$loaded) {
+                array_push($warnings, $ext);
+            }
+        }
+        if (!empty($sys['db']) && !empty($sys['dbServer'])) {
+            if (!array_key_exists($sys['db'], $requirements['dbVersion'])) {
+                array_push($warnings, 'db');
+            } elseif (version_compare($sys['dbServer'], $requirements['dbVersion'][$sys['db']]) < 0) {
+                array_push($warnings, $sys['db']);
+            }
+        }
+
+        $this->set(compact('sys', 'warnings'));
+    }
 
 	public function systemEvents() {
 		$this->set('events', $this->paginate('EventLog'));
