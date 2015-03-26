@@ -88,56 +88,62 @@ class AddressbookShell extends BeditaBaseShell {
         $this->out('Done\nResult: ' . print_r($result, true));		
     }
 
-	public function export() {
-		if (!isset($this->params['f'])) {
-			$this->out("Output file is mandatory");
-			return;
-		}
+    public function export() {
+        if (!isset($this->params['f'])) {
+           $this->out('Output file is mandatory');
+            return;
+        }
 
-		$cardFile = $this->params['f'];
-    	$this->checkExportFile($cardFile);
-		
-		$isCsv = false; // default vcard
-		if(isset( $this->params['t'])) {
-    		$type = $this->params['t'];
-			if(strcasecmp("csv", $type) == 0) {
-				$isCsv = true;
-			} else if(strcasecmp("vcard", $type) != 0) {
-				$this->out("Unknown type $type");
-				return;
-			}
-		} else {
-			$ext = strtolower(substr($cardFile, strrpos($cardFile, ".")+1));
-			$isCsv = ($ext == "csv");
-		}
-		$this->out("Exporting to $cardFile using " . (($isCsv) ? "CSV" : "VCard") . " format");
-		
-		$cardModel = ClassRegistry::init("Card");
+        $cardFile = $this->params['f'];
+        $this->checkExportFile($cardFile);
 
-		$cardModel->contain();
-		$res = $cardModel->find('all',array("fields"=>array('id')));
-		$handle = fopen($cardFile, "w");		
-		if($isCsv) {
-			fwrite($handle, $cardModel->headerCSV() . "\n");
-		}
-		foreach ($res as $r) {
-			$cardModel->id = $r["id"];
-			if($isCsv) {
-				$res = $cardModel->exportCSV();
-			} else {
-				$res = $cardModel->exportVCard();
-			}
-			fwrite($handle, $res . "\n");
-		}
-		fclose($handle);
-		$this->out("$cardFile created.");		
-	}
-	
-	
+        $options = array();
+        $type = 'vcard'; // default
+        if (isset($this->params['t'])) {
+            $type = strtolower($this->params['t']);
+            if (!in_array($type, array('vcard', 'csv', 'custom'))) {
+                $this->out("Unknown type $type");
+                return;
+            }
+            if ($type == 'custom') {
+                $options['custom'] = true;
+            }
+        } else {
+            $ext = strtolower(substr($cardFile, strrpos($cardFile, '.')+1));
+            if ($ext == 'csv') {
+                $type = 'csv';
+            }
+        }
+        $this->out("Exporting to $cardFile using '$type' format");
+        if (isset($this->params['delimiter'])) {
+            $options['delimiter'] = $this->params['delimiter'];
+            $this->out('Using delimiter: ' . $options['delimiter']);
+        }
+        
+        $cardModel = ClassRegistry::init('Card');
+        $cardModel->contain();
+        $res = $cardModel->find('all', array('fields' => array('id')));
+        $handle = fopen($cardFile, 'w');
+        if($type !== 'vcard') {
+            fwrite($handle, $cardModel->headerCSV($options) . "\n");
+        }
+        foreach ($res as $r) {
+            $cardModel->id = $r['id'];
+            if($type !== 'vcard') {
+                $str = $cardModel->exportCSV($options);
+            } else {
+                $str = $cardModel->exportVCard();
+            }
+            fwrite($handle, $str . "\n");
+        }
+        fclose($handle);
+        $this->out("$cardFile created.");		
+    }
+
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
-        $this->out('1. import: import vcf/vcard or microsoft outlook csv file, or generic csv file');
+        $this->out('1. import: import vcf/vcard or microsoft outlook csv file, or custom csv file');
   		$this->out(' ');
         $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>] [-delimiter <delimiter>]' );
   		$this->out(' ');
@@ -148,10 +154,11 @@ class AddressbookShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('2. export: export to vcf/vcard or microsoft outlook csv file');
   		$this->out(' ');
-        $this->out('    Usage: export -f <csv-cardfile> [-t <type>]');
+        $this->out('    Usage: export -f <csv-cardfile> [-t <type>] [-delimiter <delimiter>]');
   		$this->out(' ');
   		$this->out("    -f <csv-cardfile>\t vcf/vcard or csv file to export");
-  		$this->out("    -t <type> \t 'vcard' or 'csv'");
+  		$this->out("    -t <type> \t 'vcard' (default), 'csv' or 'custom'");
+  		$this->out("    -delimiter <delimiter> \t CSV delimiter, default is ','");
   		$this->out(' ');
 	}
 

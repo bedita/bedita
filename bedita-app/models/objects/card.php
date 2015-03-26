@@ -120,6 +120,9 @@ class Card extends BEAppObjectModel {
  	        'Mail Group' => 'mail_group'
 		);
  	
+ 	// default CSV delimiter is ',' 
+ 	const DEFAULT_CSV_DELIMITER = ',';
+ 	private $csvDelimiter = self::DEFAULT_CSV_DELIMITER;
  	
 	function beforeValidate() {
 		
@@ -167,6 +170,15 @@ class Card extends BEAppObjectModel {
 		return true;
 	}
 	
+	
+    private function setupCsvDelimiter($options) {
+        if (!empty($options['delimiter'])) {
+            $this->csvDelimiter = $options['delimiter'];
+        } else {
+            $this->csvDelimiter = self::DEFAULT_CSV_DELIMITER;
+        }
+    }
+	
 	/**
 	 * Import a Microsoft Outlook/Outlook Express CSV file
 	 *
@@ -191,8 +203,8 @@ class Card extends BEAppObjectModel {
 		$row = 1;
 		$handle = fopen($csvFile, "r");
 		// read header
-		$delimiter = empty($options['delimiter']) ? ',' : $options['delimiter'];
-		$csvKeys = fgetcsv($handle, 1000, $delimiter);
+		$this->setupCsvDelimiter($options);
+		$csvKeys = fgetcsv($handle, 1000, $this->csvDelimiter);
 		$numKeys = count($csvKeys);
 		$keys = array();
 		$beFields = array_values($this->csvFields);
@@ -218,7 +230,7 @@ class Card extends BEAppObjectModel {
             $keys[] = $k; 
         }
 
-        while (($fields = fgetcsv($handle, 1000, $delimiter)) !== false) {
+        while (($fields = fgetcsv($handle, 1000, $this->csvDelimiter)) !== false) {
             $data = array();
             $row++;
 			for ($c=0; $c < $numKeys; $c++) {
@@ -258,44 +270,84 @@ class Card extends BEAppObjectModel {
 		return array("numSaved" => $row-1);		
 	}
 
-	/**
-	 * Export model data to Microsoft Outlook CSV format - single line 
-	 *
-	 */
-	public function exportCSV() {
-		$res = "";
-		$data = $this->findById($this->id);
-		$first = true;
-		foreach ($this->csvFields as $k=>$v) {
-			if(!$first)
-				$res .= ",";
-			$res .= (empty($v) || is_numeric($k)) ? "" : "\"". $data[$v] . "\"";
-			$first = false;
-		}
-		return $res;
-	}
+    /**
+     * Get Microsoft Outlook CSV header or custom CSV header
+     * 
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @return string, single line as string
+     */
+    public function headerCSV(array $options = null) {
+        $res = '';
+        $this->setupCsvDelimiter($options);
+        $fields = $this->csvFields;
+        $custom = !empty($options['custom']);
+        if ($custom) {
+            $fields = Configure::read('csvFields.card');
+            if (empty($fields)) {
+                $fields = array();
+            }
+        }
+        $first = true;
+        foreach ($fields as $k => $v) {
+            if (!$first) {
+                $res .= $this->csvDelimiter;
+            }
+            if ($v === 'mail_group') {
+                continue;
+            }
+            if (!$custom && is_numeric($k)) {
+                 $res .= "\"$v\"";
+            } else {
+                $res .= "\"$k\"";
+            }
+            $first = false;
+        }
+        return $res;
+    }
 
-	/**
-	 * Microsoft Outlook CSV header
-	 *
-	 * @return string
-	 */
-	public function headerCSV() {
-		$res = "";
-		$first = true;
-		foreach ($this->csvFields as $k=>$v) {
-			if(!$first)
-				$res .= ",";
-			if(is_numeric($k)) {
-				$res .= "\"$v\"";
-			} else {
-				$res .= "\"$k\"";
-			}
-			$first = false;
-		}
-		return $res;
-	}
-	
+    /**
+     * Export model data to Microsoft Outlook CSV format or custom CSV format
+     *
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @param array $data, object data to export
+     * @return string, single line as string
+     */
+    public function exportCSV(array $options = null, array $data = array()) {
+        $res = '';
+        if (empty ($data)) {
+            $data = $this->findById($this->id);
+        }
+        $this->setupCsvDelimiter($options);
+        $fields = $this->csvFields;
+        $custom = !empty($options['custom']);
+        if ($custom) {
+            $fields = Configure::read('csvFields.card');
+            if (empty($fields)) {
+                $fields = array();
+            }
+        }
+        $first = true;
+        foreach ($fields as $k => $v) {
+            if (!$first) {
+                $res .= $this->csvDelimiter;
+            }
+            if ($v === 'mail_group') {
+                continue;
+            }
+            if ($custom) {
+                $res .= (empty($data[$v]) ? '' : '"'. $data[$v] . '"');
+            } else {
+                $res .= (empty($v) || is_numeric($k)) ? '' : '"'. $data[$v] . '"';
+            }
+            $first = false;
+        }
+        return $res;
+    }
+
 	/**
 	 * Import a vCard/vcf file
 	 *
