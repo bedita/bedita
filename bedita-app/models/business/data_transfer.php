@@ -358,8 +358,9 @@ class DataTransfer extends BEAppModel
             if ($this->export['relations'] != NULL) { // specific relations
                 $this->export['relations'] = explode(',', $this->export['relations']);
             }
+            
+            $objModel = ClassRegistry::init('BEObject');
             if (empty($objects) && ($this->export['all'] === true) ) {
-                $objModel = ClassRegistry::init('BEObject');
                 $objModel->create();
                 if (empty($this->export['objectTypeIds'])) { // only areas
                     $this->export['objectTypeIds'][] = Configure::read('objectTypes.area.id');
@@ -373,28 +374,27 @@ class DataTransfer extends BEAppModel
                 $objects = array_keys($objIds);
             }
             // verify objects existence and set custom properties
+            $typeIds = array();
             foreach ($objects as $objectId) {
-                 $o = ClassRegistry::init('BEObject')->field(
-                     'object_type_id',
-                     array(
-                         'id'  => $objectId
-                     )
-                 );
+                 $o = $objModel->findObjectTypeId($objectId);
                  if (empty($o)) {
                      throw new BeditaException('Object with id "' . $objectId . '" not found');
                  } else {
-                     $p = ClassRegistry::init('Property')->find(
-                         'all', array(
-                             'conditions' => array(
-                                 'object_type_id'  => $o[0]
-                             ),
-                             'contain' => array('PropertyOption')
-                         )
-                     );
-                     if (!empty($p)) {
-                         foreach ($p as $cproperty) {
-                             $this->export['customProperties'][$cproperty['id']] = $cproperty;
-                             unset($this->export['customProperties'][$cproperty['id']]['id']);
+                     if (!in_array($o, $typeIds)) {
+                         $typeIds[] = $o;
+                         $p = ClassRegistry::init('Property')->find(
+                             'all', array(
+                                 'conditions' => array(
+                                     'object_type_id'  => $o
+                                 ),
+                                 'contain' => array('PropertyOption')
+                             )
+                         );
+                         if (!empty($p)) {
+                             foreach ($p as $cproperty) {
+                                 $this->export['customProperties'][$cproperty['id']] = $cproperty;
+                                 unset($this->export['customProperties'][$cproperty['id']]['id']);
+                             }
                          }
                      }
                  }
