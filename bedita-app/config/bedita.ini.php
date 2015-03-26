@@ -683,11 +683,6 @@ $config["geoTagOptions"] = array(
 require_once(BEDITA_CORE_PATH.DS.'config'.DS.'locales.php');
 
 /**
- * BEdita system requirements.
- */
-require_once(BEDITA_CORE_PATH . DS . 'config' . DS . 'requirements.php');
-
-/**
  * User configurations - handled in admin/config
  * ignore during install
  */

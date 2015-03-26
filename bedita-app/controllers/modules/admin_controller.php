@@ -161,6 +161,8 @@ class AdminController extends ModulesController {
      * Display system info, as well as warnings if some of the requirements aren't met.
      */
     public function systemInfo() {
+        Configure::load('requirements');
+
         $this->beditaVersion();
         $sys = $this->BeSystem->systemInfo();
 
