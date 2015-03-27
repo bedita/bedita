@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2010 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,13 +20,8 @@
  */
 
 /**
- * Addressbook card object
+ * Addressbook card model
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Card extends BEAppObjectModel {
 
@@ -348,6 +343,23 @@ class Card extends BEAppObjectModel {
         return $res;
     }
 
+    /**
+     * Generate CSV file content as string from cards data array
+     *
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @param array $data, object data to export
+     * @return string, requested CSV content
+     */
+    public function createCsvAsString(array $data, array $options = null) {
+        $str = $this->headerCSV($options) . "\n";
+        foreach ($data as $d) {
+            $str .= $this->exportCSV($options, $d) . "\n";
+        }
+        return $str;
+    }
+
 	/**
 	 * Import a vCard/vcf file
 	 *
@@ -437,7 +449,7 @@ class Card extends BEAppObjectModel {
 		}
 		return $res;
 	}
-	
+
 	private function parseVCards(&$lines) {
 		App::import('vendor', "VCard", true, array(), "vcard.php");		
 		$cards = array();
