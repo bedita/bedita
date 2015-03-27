@@ -170,10 +170,9 @@ class AddressbookController extends ModulesController {
     public function exportCsv() {
         $this->autoRender = false;
         $data = $this->loadDataFromSessionFilter();
-        $result = array(
-            'filename' => 'cards.csv',
-            'contentType' => 'text/csv'
-        );
+        $result = array();
+        $result['contentType'] = 'text/csv';
+        $result['filename'] = $this->name . '-[' . count($data) . ']-' . date('Y.m.d') . '.csv';
         $options = array();
         if (Configure::read('csvFields.card')) {
             $options['delimiter'] = ';';
