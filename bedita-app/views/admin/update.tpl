@@ -11,7 +11,6 @@
 </style>
 
 <div class="main">
-	{if !empty($folders)}
 	<div class="update-list">
 		{$beForm->csrf()}
 		<table class="indexlist js-header-float">
@@ -22,6 +21,7 @@
 					<th></th>
 				</tr>
 			</thead>
+			{if !empty($folders)}
 			{foreach from=$folders item=p}
 			<tr>
 				<td style="white-space: nowrap">{$p.name}</td>
@@ -46,10 +46,13 @@
 				<td style="text-align: right">{if $p.valid}<button class="ajax" rel="{$p.path}">{t}update{/t}</button>{/if}</td>
 			</tr>
 			{/foreach}
-				
+			{else}
+			<tr>
+				<td colspan="2">0 {t}projects found{/t}</td>
+			</tr>
+			{/if}
 		</table>
 	</div>
-	{/if}
 </div>
 
 <script type="text/javascript">
