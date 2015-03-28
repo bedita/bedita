@@ -150,7 +150,10 @@ class Svn implements RCS {
      */
     public function valid($path = null) {
         $status = $this->status($path);
-        return strpos($status, 'is not a working copy') === false;
+        if (strpos($status, 'is not a working copy') === false) {
+            return true;
+        }
+        return false;
     }
 
     /**

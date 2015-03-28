@@ -191,7 +191,11 @@ class Git implements RCS {
      * @return boolean: is a valid repository or not
      */
     public function valid($path = null) {
-        return !empty($this->branch($path));
+        $branch = $this->branch($path);
+        if (!empty($branch)) {
+            return true;
+        }
+        return false;
     }
 
     /**
