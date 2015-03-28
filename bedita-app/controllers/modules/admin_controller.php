@@ -157,7 +157,7 @@ class AdminController extends ModulesController {
 		} else {
 			$sel = array();
 			if ($type == 'core') {
-				$folders = [ROOT];
+				$folders = array(ROOT);
 			} elseif ($type == 'frontends') {
 				$folders = BeLib::getFrontendFolders();
 			} elseif ($type == 'modules') {
