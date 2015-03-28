@@ -114,6 +114,106 @@ class AdminController extends ModulesController {
 		}
 	}
 
+	public function update($type = 'core') {
+		$svnConf = Configure::read('rcs.svn');
+		if ($this->params["isAjax"]) {
+			if (empty($this->params['form']['operation'])) {
+				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
+			}
+			$data = array();
+			$rcs = ClassRegistry::init('Revision')->getRepository($this->params['form']['operation']);
+			if ($rcs !== null) {
+				if ($rcs->type() == 'svn') {
+					if (!empty($svnConf)) {
+						$rcs->authorize($svnConf['username'], $svnConf['password']);
+					} else {
+						$data['error'] = true;
+						$data['message'] = 'Empty SVN credentials';
+					}
+				}
+				$res = $rcs->up();
+				if (!empty($res)) {
+					$data['message'] = $res[0];
+					if (count($res) > 1) {
+						$data['details'] = implode("\n", array_splice($res, 1));
+					}
+					if ($rcs->lastCommandCode !== 0) {
+						$data['error'] = true;
+					}
+				}
+			} else {
+				$data['error'] = true;
+				$data['message'] = 'Unable to find a revision control system';
+			}
+
+			if (empty($data['error'])) {
+				BeLib::remoteUpdateAddons($this->params['form']['operation']);
+			}
+
+			$this->view = 'View';
+			$this->action = 'json';
+			$this->RequestHandler->respondAs('json');
+			$this->set('data', $data);
+		} else {
+			$sel = array();
+			if ($type == 'core') {
+				$folders = [ROOT];
+			} elseif ($type == 'frontends') {
+				$folders = BeLib::getFrontendFolders();
+			} elseif ($type == 'modules') {
+				$folders = BeLib::getPluginModuleFolders();
+			} elseif ('addons') {
+				$folders = BeLib::getAddonFolders();
+			} else {
+				throw new BeditaException(__("Error: could not update this resource", true));
+			}
+			foreach ($folders as $key => $folder) {
+				$data = array(
+					'name' => array_pop(explode(DS, $folder)),
+					'path' => realpath($folder)
+				);
+				$revisionModel = ClassRegistry::init('Revision');
+				$rcs = $revisionModel->getRepository(realpath($folder));
+				if ($rcs !== null) {
+					if ($rcs->type() == 'svn') {
+						if (!empty($svnConf)) {
+							$rcs->authorize($svnConf['username'], $svnConf['password']);
+						} else {
+							$data['notice'] = 'Empty SVN credentials';
+						}
+					}
+					$data = array_merge($data, $revisionModel->getData($rcs), array('valid' => true));
+					if ($rcs->lastCommandCode != 0) {
+						if (empty($data['notice'])) {
+							$data['notice'] = '';
+						} else {
+							$data['notice'] .= "\n";
+						}
+						$data['notice'] .= implode("\n", $rcs->lastError);
+					}
+				} else {
+					$data['valid'] = false;
+				}
+				$sel[] = $data;
+			}
+
+			$this->set('folders', $sel);
+			$this->render('update');
+		}
+	}
+
+	public function updateFrontends() {
+		$this->update('frontends');
+	}
+
+	public function updateModules() {
+		$this->update('modules');
+	}
+
+	public function updateAddons() {
+		$this->update('addons');
+	}
+
 	/**
 	 * list core modules to choose which switch on/off
 	 *
