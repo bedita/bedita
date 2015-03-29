@@ -36,3 +36,10 @@ Newsletter custom css
 }
 
 #invoice label { font-weight: normal; cursor: pointer; }
+
+
+/* fix ckeditor maximize button, tab must be open */
+.fck-maximize-fix+fieldset {
+	display: block;
+}
+
