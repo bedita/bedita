@@ -64,6 +64,9 @@ class DataShell extends BeditaBaseShell {
         $this->out('Using sourceMediaRoot: ' . $this->options['import']['sourceMediaRoot']);
         $this->checkDir($this->options['import']['sourceMediaRoot']);
 
+        // setting file type.
+        $this->options['import']['type'] = pathinfo($this->params['f'], PATHINFO_EXTENSION);
+
         if (isset($this->params['v'])) {
             $this->options['import']['logDebug'] = true;
         }
@@ -84,11 +87,11 @@ class DataShell extends BeditaBaseShell {
         // 2. do import
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $result = $dataTransfer->import($inputData, $this->options['import']);
-        if (is_array($result)) {
-	        $this->showResults($result, 'ERROR');
-	        $this->showResults($result, 'WARN');
-        }
+        $this->showResults($result, 'ERROR');
+        $this->showResults($result, 'WARN');
         // 3. end
+        $this->trackInfo('');
+        $this->showResultsObjects($result);
         $this->trackInfo('');
         $this->trackInfo('Import end');
     }
@@ -134,9 +137,19 @@ class DataShell extends BeditaBaseShell {
 
         if (isset($this->params['t'])) {
             $this->options['export']['returnType'] = $this->params['t'];
-            $this->out('Using returnType: ' . $this->options['export']['returnType'] 
-                . ' (' . $this->options['export']['returnType'] . ')');
+        } else {
+            switch (strtolower(pathinfo($this->params['f'], PATHINFO_EXTENSION))) {
+                case 'xml':
+                    $this->options['export']['returnType'] = 'XML';
+                    break;
+                case 'json':
+                default:
+                    $this->options['export']['returnType'] = 'JSON';
+            }
         }
+        $this->out('Using returnType: ' . $this->options['export']['returnType'] 
+            . ' (' . $this->options['export']['returnType'] . ')');
+
         if (isset($this->params['v'])) {
             $this->options['export']['logDebug'] = true;
         }
@@ -152,12 +165,12 @@ class DataShell extends BeditaBaseShell {
         $this->out('');
                 // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
-        $result = $dataTransfer->export($objects, $this->options['export']);
-        if (is_array($result)) {
-            $this->showResults($result, 'ERROR');
-            $this->showResults($result, 'WARN');
-        }
-        // end
+        $dataTransfer->export($objects, $this->options['export']);
+        $result = $dataTransfer->getResult();
+        $this->showResults($result, 'ERROR');
+        $this->showResults($result, 'WARN');
+        $this->trackInfo('');
+        $this->showResultsObjects($result);
         $this->trackInfo('');
         $this->trackInfo('Export end');
     }
@@ -165,17 +178,38 @@ class DataShell extends BeditaBaseShell {
     private function showResults(array &$result, $type = 'ERROR') {
         if (!empty($result['log'][$type])) {
             foreach ($result['log'][$type] as $msg) {
-                $this->out($msg);
+                $this->out($type . ': ' . $msg);
             }
         }
     }
 
+    private function showResultsObjects(array &$result) {
+        if (!empty($result['filename'])) {
+            $this->out('File created: ' . $result['filename']);
+        }
+        if (!empty($result['objects'])) {
+            $this->out('Num of objects: ' . $result['objects']);
+            $types = '';
+            foreach ($result['type'] as $r => $v) {
+                $types .= $r . '(' . $v . ') ';
+            }
+            $this->out('Types: ' . $types);
+        }
+        if (!empty($result['relations'])) {
+            $rel = '';
+            foreach ($result['relations'] as $r => $v) {
+                $rel .= $r . '(' . $v . ') ';
+            }
+            $this->out('Relations: ' . $rel);
+        }
+    }
+    
     public function help() {
         $this->hr();
         $this->out('data script shell usage:');
         $this->out('');
         $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY] [-v]');
+        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
         $this->out('');
     }
 

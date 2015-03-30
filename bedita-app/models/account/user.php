@@ -274,6 +274,7 @@ class User extends BEAppModel
 		}
 
         // #573 - Automatic Card creation.
+        $uid = $this->id;
         $hasCardAssoc = $this->find('count', array(
             'contain' => array(),
             'joins' => array(
@@ -284,7 +285,7 @@ class User extends BEAppModel
                     'conditions' => array('ObjectUser.user_id = User.id', 'ObjectUser.switch' => 'card'),
                 ),
             ),
-            'conditions' => array('User.id' => $this->id),
+            'conditions' => array('User.id' => $uid),
         ));
         if (!$hasCardAssoc) {
             $Card = ClassRegistry::init('Card');
@@ -312,13 +313,14 @@ class User extends BEAppModel
             $data['ObjectUser']['card'] = array(
                 // Association data.
                 array(
-                    'user_id' => $this->id,
+                    'user_id' => $uid,
                     'object_id' => $data['id'],
                     'switch' => 'card',
                 ),
             );
             $Card->save($data);  // Save card and association.
         }
+        $this->id = $uid;
 	}
 
 	function beforeDelete() {

@@ -193,7 +193,8 @@ class AreasController extends ModulesController {
 
         // #578 - Memory exhausted when attempting to create new Section.
         $user = $this->BeAuth->getUserSession();
-        $this->set('tree', $this->Tree->getAllRoots($user['userid'], null, array('count_permission' => true), array()));
+        $expanded = (!empty($this->params['named']['branch'])) ? array($this->params['named']['branch']) : array();  // #632 - Create new section here issue.
+        $this->set('tree', $this->Tree->getAllRoots($user['userid'], null, array('count_permission' => true), $expanded));
 
 		$parentId = null;
 		if (empty($id) && !empty($this->params['named']['id'])) {

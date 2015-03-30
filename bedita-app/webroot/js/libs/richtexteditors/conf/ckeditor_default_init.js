@@ -127,7 +127,7 @@ $(window).load(function() {
 			{ name: 'editAttributes', items: [ 'Attr' ] },
 			{ name: 'editing', groups: [ 'find'], items: [ 'Find', 'Replace' ] },
 			{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
-			{ name: 'tools', items: [ /*'Maximize', */'ShowBlocks' ] },
+			{ name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
 			'/',
 			{ name: 'styles', items: [ 'Format' , 'Styles'] },
 			{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
