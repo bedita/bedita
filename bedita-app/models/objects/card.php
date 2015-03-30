@@ -173,97 +173,111 @@ class Card extends BEAppObjectModel {
             $this->csvDelimiter = self::DEFAULT_CSV_DELIMITER;
         }
     }
-	
-	/**
-	 * Import a Microsoft Outlook/Outlook Express CSV file
-	 *
-	 * @param string $csvFile, path to csv file file
-	 * @param array $options, default attributes array to use, 
-	 *  e.g. categories, "Category" => array (1,3,4..) - array of id-categories
-	 * @return results array, num of objects saved ("numSaved") and other data
-	 */
-	public function importCSVFile($csvFile, array $options = null) {
-		
-		$defaults = array( 
-			"status" => "on",
-			"user_created" => "1",
-			"user_modified" => "1",
-			"lang" => Configure::read("defaultLang"),
-			"ip_created" => "127.0.0.1",
-		);
-	
-		if(!empty($options)) {
-			$defaults = array_merge($defaults, $options);
-		}
-		$row = 1;
-		$handle = fopen($csvFile, "r");
-		// read header
-		$this->setupCsvDelimiter($options);
-		$csvKeys = fgetcsv($handle, 1000, $this->csvDelimiter);
-		$numKeys = count($csvKeys);
-		$keys = array();
-		$beFields = array_values($this->csvFields);
+
+    /**
+     * Import a Microsoft Outlook/Outlook Express CSV file
+     *
+     * @param string $csvFile,
+     *            path to csv file file
+     * @param array $options,
+     *            default attributes array to use,
+     *            e.g. categories, "Category" => array (1,3,4..) - array of id-categories
+     * @return results array, num of objects saved ('numSaved') and other data
+     */
+    public function importCSVFile($csvFile, array $options = null) {
+        $defaults = array(
+            'status' => 'on',
+            'user_created' => '1',
+            'user_modified' => '1',
+            'lang' => Configure::read('defaultLang'),
+            'ip_created' => '127.0.0.1'
+        );
+        $this->setupCsvDelimiter($options);
+        if (! empty($options)) {
+            unset($options['delimiter']);
+            $defaults = array_merge($defaults, $options);
+        }
+        $row = 1;
+        $res = array(
+            'numSaved' => 0
+        );
+        $handle = fopen($csvFile, 'r');
+        // read header
+        $csvKeys = fgetcsv($handle, 1000, $this->csvDelimiter);
+        $numKeys = count($csvKeys);
+        $keys = array();
+        $beFields = array_values($this->csvFields);
         $customCsvFields = Configure::read('csvFields.card');
         if (empty($customCsvFields)) {
             $customCsvFields = array();
         }
         $customFieldNames = array_values($customCsvFields);
+        $fieldFound = false;
         foreach ($csvKeys as $f) {
             $f = trim($f);
             $fieldNameLow = strtolower($f);
             $k = null;
-            if(!empty($this->csvFields[$f])) {
+            if (! empty($this->csvFields[$f])) {
                 $k = $this->csvFields[$f];
-            } else if(in_array($fieldNameLow, $beFields)) {
-                $k = $fieldNameLow;
-            } else if(!empty($customCsvFields[$fieldNameLow])) {
-                $k = $customCsvFields[$fieldNameLow];
-            }
+            } else 
+                if (in_array($fieldNameLow, $beFields)) {
+                    $k = $fieldNameLow;
+                } else 
+                    if (! empty($customCsvFields[$fieldNameLow])) {
+                        $k = $customCsvFields[$fieldNameLow];
+                    }
             if (empty($k)) {
                 $this->log('import CSV: field name not found ' . $f, 'warn');
+            } else {
+                $fieldFound = true;
             }
-            $keys[] = $k; 
+            $keys[] = $k;
+        }
+        if (!$fieldFound) {
+            fclose($handle);
+            $line = fgets(fopen($csvFile, 'r'));
+            throw new BeditaException('Bad CSV header in file ' . $csvFile, $line);
         }
 
         while (($fields = fgetcsv($handle, 1000, $this->csvDelimiter)) !== false) {
             $data = array();
-            $row++;
-			for ($c=0; $c < $numKeys; $c++) {
-				if(!empty($keys[$c]) && !empty($fields[$c])) {
-					$data[$keys[$c]] = trim($fields[$c]); 
-				}
-			}
-			$this->create();
-			$d = array_merge($defaults, $data);
-            if(!empty($d['surname']) || !empty($d['name'])) {
-                $d['title'] = ((!empty($d['name'])) ? $d['name'] : '') . ' ' . 
-                    ((!empty($d['surname'])) ? $d['surname'] : '');
+            $row ++;
+            for ($c = 0; $c < $numKeys; $c ++) {
+                if (! empty($keys[$c]) && ! empty($fields[$c])) {
+                    $data[$keys[$c]] = trim($fields[$c]);
+                }
+            }
+            $this->create();
+            $d = array_merge($defaults, $data);
+            if (! empty($d['surname']) || ! empty($d['name'])) {
+                $d['title'] = ((! empty($d['name'])) ? $d['name'] : '') . ' ' . ((! empty($d['surname'])) ? $d['surname'] : '');
             }
             // check mail_groups field
-            if (!empty($d['mail_group'])) {
+            if (! empty($d['mail_group'])) {
                 $mailGroups = explode(',', $d['mail_group']);
                 $count = 0;
                 foreach ($mailGroups as $mg) {
                     $mg = trim($mg);
-                    if (!empty($options['mailGroups'][$mg])) {
+                    if (! empty($options['mailGroups'][$mg])) {
                         $mailGroupId = $options['mailGroups'][$mg];
                         $d['joinGroup'][$count]['mail_group_id'] = $mailGroupId;
                         $d['joinGroup'][$count]['status'] = 'confirmed';
-                        $count++;
+                        $count ++;
                     } else {
                         $this->log('import CSV: mail group not found ' . $mg, 'warn');
                     }
                 }
             }
-
-			if(!$this->save($d)) {
-				throw new BeditaException(__("Error saving card"),  
-					print_r($data, true) . " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
-			}
-		}
-		fclose($handle);
-		return array("numSaved" => $row-1);		
-	}
+            
+            if (! $this->save($d)) {
+                throw new BeditaException(__('Error saving card'), print_r($data, true) . 
+                    " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
+            }
+        }
+        fclose($handle);
+        $res['numSaved'] = $row - 1;
+        return $res;
+    }
 
     /**
      * Get Microsoft Outlook CSV header or custom CSV header
