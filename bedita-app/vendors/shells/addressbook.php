@@ -70,7 +70,6 @@ class AddressbookShell extends BeditaBaseShell {
             $options['Category'] = $categoryModel->findCreateCategories($catTmp, $cardTypeId);
         }
 
-        
         $ext = strtolower(substr($cardFile, strrpos($cardFile, ".")+1));
         $isCsv = ($ext == 'csv');
         $this->out("Importing file $cardFile using " . (($isCsv) ? 'CSV' : 'VCard') . ' format');
@@ -79,13 +78,17 @@ class AddressbookShell extends BeditaBaseShell {
             $options['delimiter'] = $this->params['delimiter'];
             $this->out('Using delimiter: ' . $options['delimiter']);
         }
+        App::import('Component', 'Transaction');
+        $transaction = new TransactionComponent();
         $cardModel = ClassRegistry::init('Card');
         if($isCsv) {
             $result = $cardModel->importCSVFile($cardFile, $options);
         } else {
             $result = $cardModel->importVCardFile($cardFile, $options);
         }
-        $this->out('Done\nResult: ' . print_r($result, true));		
+        $this->out('Done');
+        $this->out('Result: ' . print_r($result, true));
+        $transaction->commit();
     }
 
     public function export() {
@@ -160,7 +163,7 @@ class AddressbookShell extends BeditaBaseShell {
   		$this->out("    -t <type> \t 'vcard' (default), 'csv' or 'custom'");
   		$this->out("    -delimiter <delimiter> \t CSV delimiter, default is ','");
   		$this->out(' ');
-	}
+    }
 
 }
 ?>
