@@ -198,9 +198,6 @@ class Card extends BEAppObjectModel {
             $defaults = array_merge($defaults, $options);
         }
         $row = 1;
-        $res = array(
-            'numSaved' => 0
-        );
         $handle = fopen($csvFile, 'r');
         // read header
         $csvKeys = fgetcsv($handle, 1000, $this->csvDelimiter);
@@ -275,7 +272,8 @@ class Card extends BEAppObjectModel {
             }
         }
         fclose($handle);
-        $res['numSaved'] = $row - 1;
+        $res = array();
+        $res['objects'] = $row - 1;
         return $res;
     }
 
@@ -422,7 +420,7 @@ class Card extends BEAppObjectModel {
 			$numSaved++;
 		}
 
-		return array("numSaved" => $numSaved);		
+		return array('objects' => $numSaved);		
 	}
 
 	/**
