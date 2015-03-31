@@ -1234,6 +1234,28 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
+            if (!empty($object['lang_texts'])) {
+                $this->trackDebug('2.3.7 save object.langTexts');
+                $this->trackDebug('- saving lang texts for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
+                $object['LangText'] = array();
+                $langTextModel = ClassRegistry::init('LangText');
+                foreach ($object['lang_texts'] as $lang => $fields) {
+                    foreach ($fields as $name => $text) {
+                        $langTxt = array(
+                            'object_id' => $model->id,
+                            'lang' => $lang,
+                            'name' => $name,
+                            'text' => $text,
+                        );
+                        $object['LangText'] = $langTxt;
+
+                        $langTextModel->create();
+                        if (!$langTextModel->save($langTxt)) {
+                            throw new BeditaException('error saving LangText for ' . $object['objectType'] . ' (import id ' . $object['id'] . ')');
+                        }
+                    }
+                }
+            }
             $this->import['saveMap'][$object['id']] = $model->id;
             $this->trackDebug('- saving ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id . ' ... object saved');
             if (!empty($object['parents'])) {
@@ -1397,7 +1419,20 @@ class DataTransfer extends BEAppModel
         unset($object['RelatedObject']);
 
         if (isset($object['LangText'])) {
-            // TODO: arrange lang text data
+            $langTexts = array();
+            foreach ($object['LangText'] as $name => $langTxt) {
+                if (is_numeric($name)) {
+                    continue;
+                }
+
+                foreach ($langTxt as $lang => $text) {
+                    if (!array_key_exists($lang, $langTexts)) {
+                        $langTexts[$lang] = array();
+                    }
+                    $langTexts[$lang][$name] = $text;
+                }
+            }
+            $object['lang_texts'] = $langTexts;
             unset($object['LangText']);
         }
         if (isset($object['GeoTag'])) {
