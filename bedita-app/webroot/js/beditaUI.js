@@ -717,13 +717,8 @@ if (typeof a.download == 'undefined') {
 
 ...........................................*/
 
-document.onkeydown = function(e){
-    if (e == null) { // ie
-        keycode = event.keyCode;
-    } else { // mozilla
-        keycode = e.which;
-    }
-
+$(document).on("keydown", function(e) {
+    var keycode = e.which;
     if (keycode == 27) {
         
         if ($('.tab').next().is(":visible")) {
@@ -738,21 +733,9 @@ document.onkeydown = function(e){
             $('.tab2').BEtabsopen();
         }
 
-    } else if(keycode == 109){ //
-
-        //$('.tab').BEtabsopen();
-        //helptrigger
-
-    } else if(keycode == 122){ //
-
-        //$('.helptrigger').click();
-
-    } else if(keycode == 188){ //
-
     }
+})
 
-    //console.log(keycode);
-};
 
 /*...........................................
 
@@ -796,7 +779,8 @@ function openAtStart(defaultOpen) {
             // avoid bad id selector
             var tabId = openTmp[i];
             if(tabId != '#' && tabId.length > 1) {
-                $(tabId).prev(".tab").BEtabstoggle();
+                //$(tabId).prev(".tab").BEtabstoggle();
+                $(tabId).prev(".tab").BEtabsopen();
             }
         }
 
