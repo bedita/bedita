@@ -165,21 +165,37 @@ class AddressbookController extends ModulesController {
 
 	
     /**
-     * Export objects to CSV, using current filter
+     * Export cards to CSV/vCard, using current filter
+     * 
+     * @param string, type of export 'csv' or 'vcard'
      */
-    public function exportCsv() {
+    public function exportToFile($type = 'csv') {
         $this->autoRender = false;
         $data = $this->loadDataFromSessionFilter();
         $result = array();
-        $result['contentType'] = 'text/csv';
-        $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.csv';
-        $options = array();
-        if (Configure::read('csvFields.card')) {
-            $options['delimiter'] = ';';
-            $options['custom'] = true;
+        $type = strtolower($type);
+        if ($type == 'csv') {
+            $result['contentType'] = 'text/csv';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.csv';
+            $options = array();
+            if (Configure::read('csvFields.card')) {
+                $options['delimiter'] = ';';
+                $options['custom'] = true;
+            }
+            $result['content'] = $this->Card->createCsvAsString($data, $options);
+            $result['size'] = strlen($result['content']);
+        } else if ($type = 'vcard') {
+            $result['contentType'] = 'text/vcard';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.vcf';
+            $content = '';
+            foreach ($data as $d) {
+                $content .= $this->Card->exportVCard($d) . "\n";
+            }
+            $result['content'] = $content;
+            $result['size'] = strlen($content);
+        } else {
+            throw new BeditaBadRequestException(_('Unsupported file type') . ' - ' . $type);
         }
-        $result['content'] = $this->Card->createCsvAsString($data, $options);
-        $result['size'] = strlen($result['content']);
 
         Configure::write('debug', 0);
         header('Content-Description: File Transfer');

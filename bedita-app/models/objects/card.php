@@ -428,9 +428,12 @@ class Card extends BEAppObjectModel {
 	/**
 	 * Export model data to VCard format 
 	 *
+	 * @param array, data to export - if missing current data are loaded, using $this->id 
 	 */
-	public function exportVCard() {
-		$data = $this->findById($this->id);
+	public function exportVCard(array $data = null) {
+        if (empty($data)) {
+            $data = $this->findById($this->id);
+        }
 		$res = "\nBEGIN:VCARD\nVERSION:3.0\n";
 		$data["vname"] = (empty($data["surname"]) ? "" : $data["surname"] . ";") .
 			(empty($data["name"]) ? "" : $data["name"]);
