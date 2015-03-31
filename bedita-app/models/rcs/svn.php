@@ -82,7 +82,8 @@ class Svn implements RCS {
         }
 
         $cmd = "svn checkout $url -b $path";
-        return $this->exec($cmd);
+        $res = $this->exec($cmd);
+        return $res;
     }
 
     /**
@@ -97,7 +98,7 @@ class Svn implements RCS {
         }
 
         $cmd = 'cd ' . $path . '; ';
-        $cmd .= 'svn up --username ' . $this->username . ' --password ' . $this->passwd . ' 2>&1';
+        $cmd .= 'svn up --username ' . $this->username . ' --password ' . $this->passwd;
         $res = $this->command($cmd);
         return $res;
     }
@@ -118,7 +119,7 @@ class Svn implements RCS {
         }
 
         $cmd = 'cd ' . $path . '; ';
-        $cmd .= 'svn status ' . $path . ' 2>&1';
+        $cmd .= 'svn status ' . $path;
         $status = $this->command($cmd);
         $status = (!empty($status))? implode("\n", $status) : null;
         return $status;
@@ -150,7 +151,7 @@ class Svn implements RCS {
      */
     public function valid($path = null) {
         $status = $this->status($path);
-        if (strpos($status, 'is not a working copy') === false) {
+        if ($this->lastCommandCode == 0 && strpos($status, 'is not a working copy') === false) {
             return true;
         }
         return false;
@@ -168,11 +169,11 @@ class Svn implements RCS {
         }
 
         $cmd = 'cd ' . $path . '; ';
-        $cmd .= 'svn log -l 1 --username ' . $this->username . ' --password ' . $this->passwd . ' 2>&1';
+        $cmd .= 'svn log -l 1 --username ' . $this->username . ' --password ' . $this->passwd;
         $output = $this->command($cmd);
         if (!empty($output)) {
             $data = explode(' | ', $output[1]);
-            if (!empty($data) && $this->lastCommandCode == 0) {
+            if (!empty($data)) {
                 return array(
                     'hash' => $data[0],
                     'date' => $data[2],
@@ -192,6 +193,7 @@ class Svn implements RCS {
      * @return array: the result of the exec
      */
     public function command($cmd) {
+        $cmd = $cmd . ' 2>&1';
         $this->lastCommand = $cmd;
         exec($cmd, $res, $this->lastCommandCode);
         if ($this->lastCommandCode != 0) {

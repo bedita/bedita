@@ -82,7 +82,8 @@ class Git implements RCS {
         }
 
         $cmd = "git clone $url -b $branch $path";
-        return $this->exec($cmd);
+        $res = $this->exec($cmd);
+        return $res;
     }
 
     /**
@@ -98,7 +99,7 @@ class Git implements RCS {
 
         $res = array();
         $currentBranch = $this->branch();
-        if ($currentBranch === false) {
+        if (empty($currentBranch)) {
             // no version control
             return null;
         } else {
@@ -109,8 +110,7 @@ class Git implements RCS {
                 $findFolder = $findFolder[0];
             }
             $isWriteable = is_writable($findFolder . DS . '.git' . DS . 'ORIG_HEAD');
-            $updateCmd = 'export DYLD_LIBRARY_PATH="/usr/lib/":$DYLD_LIBRARY_PATH &&'; //osx patch
-            $updateCmd .= ' cd ' . $path . '; git fetch origin; git merge origin/' . $currentBranch . ' 2>&1';
+            $updateCmd = 'cd ' . $path . '; git fetch origin; git merge origin/' . $currentBranch;
             $res = $this->command($updateCmd);
             return $res;
         }
@@ -192,7 +192,7 @@ class Git implements RCS {
      */
     public function valid($path = null) {
         $branch = $this->branch($path);
-        if (!empty($branch)) {
+        if (!empty($branch) && $this->lastCommandCode ==0) {
             return true;
         }
         return false;
@@ -249,6 +249,7 @@ class Git implements RCS {
      * @return array: the result of the exec
      */
     public function command($cmd) {
+        $cmd = 'export DYLD_LIBRARY_PATH="/usr/lib/":$DYLD_LIBRARY_PATH && ' . $cmd . ' 2>&1'; //osx patch
         $this->lastCommand = $cmd;
         exec($cmd, $res, $this->lastCommandCode);
         if ($this->lastCommandCode != 0) {
