@@ -102,6 +102,7 @@ class DataTransfer extends BEAppModel
             'User',
             'Version',
             'Permission',
+            'Annotation',
         ),
         'contain' => array(
             'BEObject' => array(
@@ -1398,10 +1399,6 @@ class DataTransfer extends BEAppModel
         if (isset($object['LangText'])) {
             // TODO: arrange lang text data
             unset($object['LangText']);
-        }
-        if (isset($object['Annotation'])) {
-            // TODO: arrange annotation data
-            unset($object['Annotation']);
         }
         if (isset($object['GeoTag'])) {
             foreach ($object['GeoTag'] as &$geoTag) {
