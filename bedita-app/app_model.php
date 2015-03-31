@@ -641,12 +641,12 @@ class BEAppModel extends AppModel {
 		// reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
-            foreach ($tmp as $item) {
+            foreach ($recordset['items'] as $item) {
                 $id = $item['id'];
                 $tmpOrder[$rankOrder[$id]] = $item;
             }
             ksort($tmpOrder);
-            $tmp = array_values($tmpOrder);
+            $recordset['items'] = array_values($tmpOrder);
         }
 
         // after filter callbacks
