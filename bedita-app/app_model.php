@@ -633,22 +633,20 @@ class BEAppModel extends AppModel {
 
         // Keys to be skipped when merging results. #639 - Associated models merged to main object results.
         $skipKeys = array('RelatedObject', 'ReferenceObject', 'DateItem', 'ObjectProperty');
+        foreach ($tmp as $item) {
+            // #639 - Associated models merged to main object results.
+            array_push($recordset['items'], $this->am($item, $skipKeys));
+        }
 
 		// reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
             foreach ($tmp as $item) {
-                $obj = $this->am($item, $skipKeys);  // #639 - Associated models merged to main object results.
-                $id = $obj["id"];
-                $tmpOrder[$rankOrder[$id]] = $obj;
+                $id = $item['id'];
+                $tmpOrder[$rankOrder[$id]] = $item;
             }
             ksort($tmpOrder);
             $tmp = array_values($tmpOrder);
-        }
-
-        foreach ($tmp as $item) {
-            // #639 - Associated models merged to main object results.
-            array_push($recordset['items'], $this->am($item, $skipKeys));
         }
 
         // after filter callbacks
