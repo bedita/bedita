@@ -121,8 +121,14 @@ class AdminController extends ModulesController {
 				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
 			}
 			$data = array();
-			$rcs = ClassRegistry::init('Revision')->getRepository($this->params['form']['operation']);
+			$data['info'] = array(
+				'name' => array_pop(explode(DS, $this->params['form']['operation'])),
+				'path' => realpath($this->params['form']['operation'])
+			);
+			$revisionModel = ClassRegistry::init('Revision');
+			$rcs = $revisionModel->getRepository($this->params['form']['operation']);
 			if ($rcs !== null) {
+				$data['info'] = array_merge($data['info'], $revisionModel->getData($rcs), array('valid' => true));
 				if ($rcs->type() == 'svn') {
 					if (!empty($svnConf)) {
 						$rcs->authorize($svnConf['username'], $svnConf['password']);
@@ -142,6 +148,7 @@ class AdminController extends ModulesController {
 					}
 				}
 			} else {
+				$data['info']['valid'] = false;
 				$data['error'] = true;
 				$data['message'] = 'Unable to find a revision control system';
 			}

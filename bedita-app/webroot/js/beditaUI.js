@@ -111,10 +111,12 @@ jQuery.fn.extend({
         if (type == "error") {
             $_this.show();
         } else if (type == "info") {
-            $_this
-                .show()
-                .animate({opacity: 1.0}, pause)
-                .fadeOut(1000);
+            $_this.show();
+            if (pause != -1) {
+                setTimeout(function() {
+                    $_this.fadeOut(1000);
+                });
+            }               
         } else if (type == "warn") {
             $_this.show();
         }
