@@ -24,10 +24,14 @@
 </ul>
 
 
+<ul class="menuleft insidecol bordered">
+	<li {if $view->action eq 'import'}class="on"{/if}>
+		<a href="{$html->url('/home/import')}">{t}Import Data{/t}</a>
+	</li>
+</ul>
+
+
 {$view->element('colophon')}
 
 {$conf->colophon|default:''}
-
-
-
 

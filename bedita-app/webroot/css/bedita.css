@@ -2440,6 +2440,20 @@ LI.welcome {
 #searchResult {
 	margin-top:10px;
 }
+
+
+/* import view */
+
+#data-source div {
+	margin: 0 0 10px;
+	padding: 10px 0;
+}
+.import-button-container {
+	text-align:center;
+	padding:10px;
+	border-top: 1px solid gray;
+}
+
 /*...........................................
  
 	 Specific template layout: publishing

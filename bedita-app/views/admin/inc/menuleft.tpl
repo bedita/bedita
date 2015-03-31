@@ -26,7 +26,6 @@ Menu a SX valido per tutte le pagine del controller.
 	
 	<ul class="menuleft insidecol bordered">
 		<li {if $view->action eq 'utility'}class="on"{/if}><a href="{$html->url('/admin/utility')}">{t}Utility{/t}</a></li>
-		{bedev}<li {if $view->action eq 'importData'}class="on"{/if}><a href="{$html->url('/admin/importData')}">{t}Import Data{/t}</a></li>{/bedev}
 	</ul>
 
 	<ul class="menuleft insidecol bordered">
