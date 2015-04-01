@@ -1,5 +1,3 @@
-
-
 {$view->element('form_common_js')}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
@@ -72,6 +70,12 @@
 	</table>
 </fieldset>	
 
+{if !empty($object)}
+
+	{include file="inc/sections.tpl"}
+	{include file="inc/contents.tpl"}
+
+{/if}
 
 <div class="tab"><h2>{t}More properties{/t}</h2></div>
 

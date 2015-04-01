@@ -12,7 +12,7 @@
 
 <div class="head">
 
-	<h1>{$object.title|default:''}</h1>
+	<h1>{$object.title|default:''|escape}</h1>
 
 </div> 
 
@@ -24,23 +24,14 @@
 
 	<div class="main">
 
-		{$relcount = $sections|@count|default:0}
-		<div class="tab"><h2 {if $relcount == 0}class="empty"{/if}>{t}Sections{/t} {if $relcount > 0} &nbsp; <span class="relnumb">{$relcount}</span>{/if}</h2></div>
-		<div id="areasectionsC">
-			{include file='./inc/list_sections.tpl'}
-		</div>
-
-		{$relcount = $objects|@count|default:0}
-		<div class="tab"><h2 {if $relcount == 0}class="empty"{/if}>{t}Contents{/t} {if $relcount > 0} &nbsp; <span class="relnumb">{$relcount}</span>{/if}</h2></div>
-		<div id="areacontentC">
-			{include file='./inc/list_content.tpl'}
-		</div>
-
 		{assign_concat var="formDetails" 1="./inc/form_" 2=$objectType 3=".tpl"}
 		{include file=$formDetails}
 
-	</div>
+		{$beForm->csrf()}
+		<div id="loading" style="position:absolute; left:320px; top:110px; ">&nbsp;</div>
 
+	</div>
+	
 	</form>
 
 	{$view->element('menuright')}
