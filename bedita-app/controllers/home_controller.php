@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -20,20 +20,14 @@
  */
 
 /**
- * BEdita main page
+ * BEdita dashboard Controller
  *
- *
- * @version			$Revision: 3903 $
- * @modifiedby 		$LastChangedBy: ste $
- * @lastmodified	$LastChangedDate: 2012-08-08 18:17:49 +0200 (Wed, 08 Aug 2012) $
- *
- * $Id: home_controller.php 3903 2012-08-08 16:17:49Z ste $
- *  */
+ **/
 class HomeController extends AppController {
 
-	var $uses = array('BEObject', 'Tree') ;
+	var $uses = array('BEObject', 'Tree');
 	var $helpers 	= array('BeTree');
-	var $components = array('BeUploadToObj', 'BeSecurity');
+	var $components = array('BeUploadToObj', 'BeSecurity', 'BeFileHandler');
 
 
 	public function index() {
@@ -224,53 +218,55 @@ class HomeController extends AppController {
 	public function import() {
 	}
 
-	/**
-	 * Import objects from file in current section
-	 */
-	public function importData() {
-/*
-		$this->checkWriteModulePermission();
-		$this->Transaction->begin();
-		if (!empty($this->params['form']['Filedata']['name'])) {
-			unset($this->data['url']);
-			$this->params['form']['forceupload'] = true;
-			$streamId = $this->BeUploadToObj->upload($this->data) ;
-		} elseif (!empty($this->data['url'])) {
-			$streamId = $this->BeUploadToObj->uploadFromURL($this->data) ;
-		}
-		$stream = ClassRegistry::init("Stream");
-		$path = $stream->field("uri", array("id" => $streamId));
 
-		if($this->data["type"] !== "auto") {
-			$filterClass = Configure::read("filters.import." . $this->data["type"]);
-		} else { // search matching mime types
-			$mimeType = $stream->field("mime_type", array("id" => $streamId));
-			$filterClass = Configure::read("filters.mime." . $mimeType . ".import");
-		}
+    private function checkImportPermission() {
+        // TODO: throws exception on missing permissions
+    }
 
-		$this->Section->id = $this->data['sectionId'];
-		if(!empty($filterClass)) {
-			$filterModel = ClassRegistry::init($filterClass);
-			$options = array("sectionId" => $this->data['sectionId']);
-			$result = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
-			$this->userInfoMessage(__("Objects imported", true).": ". $result["objects"]);
-			$this->eventInfo($result["objects"] . " objects imported in section " . $this->Section->id . " from " . $path);
-		} else {
-			$this->userErrorMessage(__("No import filter found for file type", true). " : ". $mimeType);
-			$this->eventError("Import filter not found for type " . $mimeType);
+    /**
+     * Import objects from file using selected filter class
+     */
+    public function importData() {
+        $this->checkImportPermission();
+        $this->Transaction->begin();
+        if (!empty($this->params['form']['Filedata']['name'])) {
+            unset($this->data['url']);
+            $this->params['form']['forceupload'] = true;
+            $streamId = $this->BeUploadToObj->upload($this->data);
+        } elseif (! empty($this->data['url'])) {
+            $streamId = $this->BeUploadToObj->uploadFromURL($this->data);
+        }
+        $stream = ClassRegistry::init('Stream');
+        $path = $stream->field('uri', array('id' => $streamId));
 
-		}
-		if(!$this->BeFileHandler->del($streamId)) {
-			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
-		}
-	 	$this->Transaction->commit() ;
-*/
-	 	$result = array (
-	 		'objects' => 10,
-	 	);
-
-	 	$this->set('result', $result);
-	}
+        if ($this->data['type'] !== 'auto') {
+            $filterClass = Configure::read('filters.import.' . $this->data['type']);
+        } else { // search matching mime types
+            $mimeType = $stream->field('mime_type', array('id' => $streamId));
+            $filterClass = Configure::read('filters.mime.' . $mimeType . '.import');
+        }
+        
+        $result = array('objects' => 0);
+        $options = array();
+        if (! empty($filterClass)) {
+            $filterModel = ClassRegistry::init($filterClass);
+            if (!empty($this->data['destinationId'])) {
+                $options['destinationId'] = $this->data['destinationId'];
+            }
+            $result = $filterModel->import(Configure::read('mediaRoot') . $path, $options);
+            $this->eventInfo($result['objects'] . ' objects imported from ' . $path);
+        } else {
+            $result['error'] = __('No import filter found for file type', true) . ' : ' . $mimeType;
+            $msg = 'Import filter not found for type ' . $mimeType;
+            $this->eventError($msg);
+            $this->log($msg, 'warn');
+        }
+        if (!$this->BeFileHandler->del($streamId)) {
+            throw new BeditaException(__('Error deleting object: ', true) . $streamId);
+        }
+        $this->Transaction->commit();
+        $this->set('result', $result);
+    }
 
 
 }
