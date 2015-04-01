@@ -23,7 +23,7 @@
 	{/foreach}
 </ul>
 
-{if !empty(array_intersect($BEAuthUser.groups, array('administrator', 'manager')))}
+{if $perms->userActionAccess($BEAuthUser, 'Home.import')}
 <ul class="menuleft insidecol bordered">
 	<li {if $view->action eq 'import'}class="on"{/if}>
 		<a href="{$html->url('/home/import')}">{t}Import Data{/t}</a>

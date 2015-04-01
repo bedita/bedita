@@ -215,12 +215,20 @@ class HomeController extends AppController {
     }
 
 
-	public function import() {
-	}
+    public function import() {
+        $this->checkImportPermission();
+    }
 
 
     private function checkImportPermission() {
-        // TODO: throws exception on missing permissions
+        $actionPerms = Configure::read('actionPermissions');
+        $action = 'Home.import';
+        $user = $this->BeAuth->getUserSession();
+        if (empty($actionPerms[$action]) || 
+            empty(array_intersect($user['groups'], $actionPerms[$action]))) {
+            $details = array('user' => $user['groups'], 'requested' => $actionPerms[$action]);
+            throw new BeditaUnauthorizedException(__('No permission access to this function', true), $details);
+        }
     }
 
     /**

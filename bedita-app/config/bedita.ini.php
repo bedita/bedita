@@ -290,6 +290,15 @@ $config["objectPermissions"] = array(
 
 
 /**
+ * Action access permissions, in this form
+ *  'ControllerName.actionName' => array('group1', 'group2')
+ */
+$config['actionPermissions'] = array(
+    'Home.import' => array('administrator', 'manager'),
+);
+
+
+/**
  * BEdita modules
  */
 $config['modules'] = array(
