@@ -274,6 +274,9 @@ class Card extends BEAppObjectModel {
         fclose($handle);
         $res = array();
         $res['objects'] = $row - 1;
+        if ($row < 2) {
+            $res['error'] = 'no cards found in imported file';
+        }
         return $res;
     }
 
@@ -419,9 +422,12 @@ class Card extends BEAppObjectModel {
 			}
 			$numSaved++;
 		}
-
-		return array('objects' => $numSaved);		
-	}
+        $res = array('objects' => $numSaved);
+        if (empty($cards)) {
+            $res['error'] = 'no cards found in imported file';
+        }
+        return $res;
+    }
 
 	/**
 	 * Export model data to VCard format 
