@@ -2465,9 +2465,17 @@ LI.welcome {
 	width: 100%;
 }
 
-.import .dz-drag-hover {
-	border: 2px dashed #666;
-	background-color: #aaa;
+.import-message {
+	margin: 20px 0;
+}
+
+.import-error {
+	background-color: #eee;
+	border-radius: 10px;
+	padding: 10px;
+}
+.import-error h2 {
+	margin-bottom: 10px;
 }
 
 

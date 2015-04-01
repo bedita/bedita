@@ -18,7 +18,10 @@
 <div class="mainfull import">
 
 	{if !empty($result.error)}
-		<div class="import-error">{$result.error}</div>
+		<div class="import-message import-error">
+			<h2>{t}Import error{/t}</h2>
+			<div>{$result.error}</div>
+		</div>
 	{/if}
 
 	<div class="tab"><h2>{t}Results{/t}</h2></div>
@@ -28,8 +31,8 @@
 			<p>{t}Number of imported objects:{/t} {$result.objects|default:'0'}</p>
 		</div>
 
-		<div>
-			<p>{$result.message|default:''}</p>
+		<div class="import-message">
+			{$result.message|default:''}
 		</div>
 	</fieldset>
 
