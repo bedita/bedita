@@ -17,13 +17,22 @@
 
 <div class="mainfull import">
 
+	{if !empty($result.error)}
+		<div class="import-error">{$result.error}</div>
+	{/if}
+
 	<div class="tab"><h2>{t}Results{/t}</h2></div>
 
 	<fieldset id="import-result">
-		
-	{dump var=$result}
+		<div>
+			<p>{t}Number of imported objects:{/t} {$result.objects|default:'0'}</p>
+		</div>
 
+		<div>
+			<p>{$result.message|default:''}</p>
+		</div>
 	</fieldset>
+
 {* <!-- EXAMPLE REPORT 
 		<div id="import" style="display:none">
 		<label>Objects ready to import:</label>
