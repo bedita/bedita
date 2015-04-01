@@ -57,7 +57,7 @@
 
 			<div class="import-file">
 				{t}Select file{/t}:
-				<input type="file" name="file" disabled />
+				<input type="file" name="Filedata" disabled />
 			</div>
 
 			<div class="import-button-container">

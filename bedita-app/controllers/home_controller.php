@@ -228,8 +228,7 @@ class HomeController extends AppController {
 	 * Import objects from file in current section
 	 */
 	public function importData() {
-		echo 'import';
-		exit;
+/*
 		$this->checkWriteModulePermission();
 		$this->Transaction->begin();
 		if (!empty($this->params['form']['Filedata']['name'])) {
@@ -265,6 +264,12 @@ class HomeController extends AppController {
 			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
 		}
 	 	$this->Transaction->commit() ;
+*/
+	 	$result = array (
+	 		'objects' => 10,
+	 	);
+
+	 	$this->set('result', $result);
 	}
 
 
