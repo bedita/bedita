@@ -175,7 +175,7 @@ class DataShell extends BeditaBaseShell {
         $this->trackInfo('Export end');
     }
 
-    private function showResults(array &$result, $type = 'ERROR') {
+    private function showResults(array $result, $type = 'ERROR') {
         if (!empty($result['log'][$type])) {
             foreach ($result['log'][$type] as $msg) {
                 $this->out($type . ': ' . $msg);
@@ -183,7 +183,7 @@ class DataShell extends BeditaBaseShell {
         }
     }
 
-    private function showResultsObjects(array &$result) {
+    private function showResultsObjects(array $result) {
         if (!empty($result['filename'])) {
             $this->out('File created: ' . $result['filename']);
         }
