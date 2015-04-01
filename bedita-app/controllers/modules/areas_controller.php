@@ -327,81 +327,77 @@ class AreasController extends ModulesController {
 		}
 	}
 
-	/**
-	 * Export section objects to a specific file format
-	 */
-	public function export() {
-		$this->autoRender = false;
-		$modelType = $this->BEObject->getType($this->data["id"]);
-		$this->viewObject($this->{$modelType}, $this->data["id"]);
-		if(empty($this->data["type"])) {
-			throw new BeditaException(__("No valid export filter has been selected", true));
-		}
-		
-		$filterClass = Configure::read("filters.export." . $this->data["type"]);
-		$filterModel = ClassRegistry::init($filterClass);
-		$objects = array($this->viewVars["object"]);
-		$options["filename"] = $this->data["filename"];
-		$result = $filterModel->export($objects, $options);
+    /**
+     * Export section objects to a specific file format
+     */
+    public function export() {
+        $this->autoRender = false;
+        if (empty($this->data['type'])) {
+            throw new BeditaException(__('No valid export filter has been selected', true));
+        }
+        $filterClass = Configure::read("filters.export.{$this->data['type']}");
 
-		Configure::write('debug', 0);
-		// TODO: optimizations!!! use cake tools
-		header('Content-Description: File Transfer');
-		header("Content-type: " . $result["contentType"]);
-		header('Content-Disposition: attachment; filename='.$this->data["filename"]);
-		header('Content-Transfer-Encoding: binary');
-		header('Expires: 0');
-		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-		header('Pragma: public');
-		header('Content-Length: ' . $result["size"]);
-		ob_clean();
-   		flush();
-		echo $result["content"];
-		exit();
-	}
+        $filterModel = ClassRegistry::init($filterClass);
+        $objects = array($this->data['id']);
+        $result = $filterModel->export($objects);
 
-	/**
-	 * Import objects from file in current section
-	 */
-	public function import() {
-		$this->checkWriteModulePermission();
-		$this->Transaction->begin();
-		if (!empty($this->params['form']['Filedata']['name'])) {
-			unset($this->data['url']);
-			$this->params['form']['forceupload'] = true;
-			$streamId = $this->BeUploadToObj->upload($this->data) ;
-		} elseif (!empty($this->data['url'])) {
-			$streamId = $this->BeUploadToObj->uploadFromURL($this->data) ;
-		}
-		$stream = ClassRegistry::init("Stream");
-		$path = $stream->field("uri", array("id" => $streamId));
+        Configure::write('debug', 0);
+        // TODO: optimizations!!! use cake tools
+        header('Content-Description: File Transfer');
+        header("Content-Type: {$result['contentType']}");
+        header("Content-Disposition: attachment; filename={$this->data['filename']}");
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header("Content-Length: {$result['size']}");
+        ob_clean();
+        flush();
+        echo $result['content'];
+        exit;
+    }
 
-		if($this->data["type"] !== "auto") {
-			$filterClass = Configure::read("filters.import." . $this->data["type"]);
-		} else { // search matching mime types
-			$mimeType = $stream->field("mime_type", array("id" => $streamId));
-			$filterClass = Configure::read("filters.mime." . $mimeType . ".import");
-		}
+    /**
+     * Import objects from file in current section
+     */
+    public function import() {
+        $this->checkWriteModulePermission();
 
-		$this->Section->id = $this->data['sectionId'];
-		if(!empty($filterClass)) {
-			$filterModel = ClassRegistry::init($filterClass);
-			$options = array("sectionId" => $this->data['sectionId']);
-			$result = $filterModel->import(Configure::read("mediaRoot") . $path, $options);
-			$this->userInfoMessage(__("Objects imported", true).": ". $result["objects"]);
-			$this->eventInfo($result["objects"] . " objects imported in section " . $this->Section->id . " from " . $path);
-		} else {
-			$this->userErrorMessage(__("No import filter found for file type", true). " : ". $mimeType);
-			$this->eventError("Import filter not found for type " . $mimeType);
+        $this->Transaction->begin();
+        if (!empty($this->params['form']['Filedata']['name'])) {
+            unset($this->data['url']);
+            $this->params['form']['forceupload'] = true;
+            $streamId = $this->BeUploadToObj->upload($this->data);
+        } elseif (!empty($this->data['url'])) {
+            $streamId = $this->BeUploadToObj->uploadFromURL($this->data);
+        }
+        $stream = ClassRegistry::init('Stream');
+        $path = $stream->field('uri', array('id' => $streamId));
 
-		}
-		if(!$this->BeFileHandler->del($streamId)) {
-			throw new BeditaException(__("Error deleting object: ", true) . $streamId);
-		}
-	 	$this->Transaction->commit() ;
-	}
+        if ($this->data['type'] !== 'auto') {
+            $filterClass = Configure::read("filters.import.{$this->data['type']}");
+        } else {
+            // search matching mime types
+            $mimeType = $stream->field('mime_type', array('id' => $streamId));
+            $filterClass = Configure::read("filters.mime.{$mimeType}.import");
+        }
 
-
+        $this->Section->id = $this->data['sectionId'];
+        if (!empty($filterClass)) {
+            $filterModel = ClassRegistry::init($filterClass);
+            $options = array('sectionId' => $this->data['sectionId']);
+            $result = $filterModel->import(Configure::read('mediaRoot') . $path, $options);
+            $this->userInfoMessage(__('Objects imported', true) . ': ' . $result['objects']);
+            $this->eventInfo("{$result['objects']} objects imported in section {$this->Section->id} from {$path}");
+        } else {
+            $this->userErrorMessage(__('No import filter found for file type', true) . ' : ' . $mimeType);
+            $this->eventError('Import filter not found for type ' . $mimeType);
+        }
+        if (!$this->BeFileHandler->del($streamId)) {
+            throw new BeditaException(__('Error deleting object: ', true) . $streamId);
+        }
+        $this->Transaction->commit();
+    }
 
 	private function deleteArea() {
 		$this->checkWriteModulePermission();
