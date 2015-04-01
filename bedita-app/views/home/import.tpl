@@ -1,6 +1,23 @@
 <script type="text/javascript">
     $(document).ready(function(){
 		openAtStart("#data-source, #data-options");
+
+		$('.import-type input[type=radio]').click(function() {
+			$('.import-file input[type=file]').prop( "disabled", false );
+
+			var htmlOptions = '{t}Selected filter has no options{/t}.';
+			var importOptions;
+			// TODO
+			if(importOptions) {
+				options = '';
+			}
+			$('#data-options').html(htmlOptions);
+		});
+		/* drag&drop disabled, file upload should be managed in controller for preview
+		var myDropzone = new Dropzone(".import .mainhalf", {
+			url: "/home/importLoadFile"}
+		);
+		*/
     });
 </script>
 
@@ -15,34 +32,42 @@
 	<h1>{t}Import data{/t}</h1>
 </div>
 
-
 <div class="mainfull import">
+<form action="{$html->url('/home/importData')}" method="post" name="importData" enctype="multipart/form-data">
+{$beForm->csrf()}
 
 	<div class="mainhalf">
 		
 		<div class="tab"><h2>{t}Source data{/t}</h2></div>
 
 		<fieldset id="data-source">
-			<div>
-				{t}Select file{/t}: <input type="file" />
+			<div class="import-type">
+				Import data type:
+				<ul>
+					{foreach $conf->filters.import as $filter => $val}
+					<li>
+						<input name="data[type]" type="radio" value="{$filter}" id="select-{$filter}" />
+						<label for="select-{$filter}">{$filter}</label> &nbsp;
+					</li>					
+					{/foreach}
+				</ul>
 			</div>
 
-			<div>
-				Import data type: <br>
-				{foreach $conf->filters.import as $filter => $val}
-					<input name="data[type]" type="radio" value="{$filter}" id="select-{$filter}" />
-					<label for="select-{$filter}">{$filter}</label> &nbsp;
-				{/foreach}
+			<hr>
+
+			<div class="import-file">
+				{t}Select file{/t}:
+				<input type="file" name="file" disabled />
 			</div>
 
 			<div class="import-button-container">
-				<input type="button" value="import" />
+				<input type="submit" value="load" />
 			</div>
 		</fieldset>
 
 	</div>
 
-{* SAMPLE RESPONSE			
+{* SAMPLE RESPONSE			<!--
 <div id="import" style="display:none">
 	<label>Objects ready to import:</label>
 	<ul>
@@ -57,8 +82,7 @@
 		<li>Qui ilò full log</li>
 	</ul>
 </div>
-*}
-
+--> *}
 	
 	<div class="mainhalf">
 		<div class="tab"><h2>{t}Import options{/t}</h2></div>
@@ -67,7 +91,7 @@
 			<p>Seleziona un filtro di  importazione nei Dati sorgente.</p>
 		</fieldset>
 
-		{* SAMPLE OPTIONS
+		{* SAMPLE OPTIONS <!--
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">
 				<option>--</option>
 				<option>Selezione della sezione dell'albero in cui importare</option>
@@ -81,8 +105,8 @@
 			<div id="finalimport" style="display:none; padding:10px 0px 10px 0px; margin:10px 0px 10px 0px; border-top:1px solid gray">
 				<input type="submit" style="padding:10px" value="start import" />
 			</div>
-		*}
+		--> *}
 	</div>
-	
+</form>
 </div>
 

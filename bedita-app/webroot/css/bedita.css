@@ -2445,14 +2445,31 @@ LI.welcome {
 /* import view */
 
 #data-source div {
-	margin: 0 0 10px;
-	padding: 10px 0;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
 }
 .import-button-container {
 	text-align:center;
 	padding:10px;
 	border-top: 1px solid gray;
 }
+.import li {
+	margin: 5px 0;
+}
+.import label {
+	font-weight: normal;
+	cursor: pointer;
+}
+.import input[type=file] {
+	margin-top: 5px;
+	width: 100%;
+}
+
+.import .dz-drag-hover {
+	border: 2px dashed #666;
+	background-color: #aaa;
+}
+
 
 /*...........................................
  
