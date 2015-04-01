@@ -38,7 +38,7 @@
 
 	<div class="mainhalf">
 		
-		<div class="tab"><h2>{t}Source data{/t}</h2></div>
+		<div class="tab stayopen"><h2>{t}Source data{/t}</h2></div>
 
 		<fieldset id="data-source">
 			<div class="import-type">
@@ -67,25 +67,9 @@
 
 	</div>
 
-{* SAMPLE RESPONSE			<!--
-<div id="import" style="display:none">
-	<label>Objects ready to import:</label>
-	<ul>
-		<li>12 sections</li>
-		<li>46 dopcuments</li>
-		<li>18 media</li>
-	</ul>
-	<hr />
-	<label>Error log:</label>
-	<ul>
-		<li>12 media path not found</li>
-		<li>Qui ilò full log</li>
-	</ul>
-</div>
---> *}
-	
+
 	<div class="mainhalf">
-		<div class="tab"><h2>{t}Import options{/t}</h2></div>
+		<div class="tab stayopen"><h2>{t}Import options{/t}</h2></div>
 
 		<fieldset id="data-options">
 			<p>Seleziona un filtro di  importazione nei Dati sorgente.</p>

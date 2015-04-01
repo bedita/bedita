@@ -24,7 +24,7 @@
 		</div>
 	{/if}
 
-	<div class="tab"><h2>{t}Results{/t}</h2></div>
+	<div class="tab stayopen"><h2>{t}Results{/t}</h2></div>
 
 	<fieldset id="import-result">
 		<div>

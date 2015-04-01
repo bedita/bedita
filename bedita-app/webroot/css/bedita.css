@@ -388,6 +388,7 @@ UL.modules {
 
 ...........................................*/
 
+h2.home						{background-color:#333333 !important;}
 .areas, .area, .section 	{background-color:#626151 !important;}
 .documents, .document		{background-color:#ff6600 !important;}
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
