@@ -20,6 +20,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 {$view->element('texteditor')}
 
 <form action="{$html->url('/webmarks/save')}" method="post" name="updateForm" id="updateForm" class="cmxform">
+{$beForm->csrf()}
 <input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 
 {* title and description *}
@@ -30,14 +31,14 @@ var url="{$html->url('/webmarks/checkUrl')}";
 	<input type="hidden" name="data[id]" id="link_id" value="{$object.id|default:''}"/>
 	<label>{t}url{/t}:</label>
 	<br />
-	<input style="width:430px" type="text" id="url" name="data[url]" value="{$object.url|default:''}" />
+	<input style="width:430px" type="text" id="url" name="data[url]" value="{$object.url|default:''|escape}" />
 	{if !empty($object.url)}
-	&nbsp; <a style="font-weight:bold;" href="{$object.url}" target="_blank"> GO </a>
+	&nbsp; <a style="font-weight:bold;" href="{$html->url($object.url)}" target="_blank"> GO </a>
 	{/if}
 	<br />
 	<label>{t}title{/t}:</label>
 	<br />
-	<input style="width:460px" type="text" name="data[title]" value="{$object.title|default:''}" />
+	<input style="width:460px" type="text" name="data[title]" value="{$object.title|default:''|escape}" />
 	<br />
 	<label>{t}description{/t}:</label>
 	<br />
@@ -73,7 +74,7 @@ var url="{$html->url('/webmarks/checkUrl')}";
 					{foreach from=$relObjects.link item="o"}
 						<li>
 							<span class="listrecent {$o.ObjectType.module_name}" style="margin-left:0px">&nbsp;&nbsp;</span>
-							<a title="{$o.created}"  href="{$html->url('/')}{$o.ObjectType.module_name}/view/{$o.id}">{$o.title}</a>
+							<a title="{$o.created}"  href="{$html->url('/')}{$o.ObjectType.module_name}/view/{$o.id}">{$o.title|escape}</a>
 						</li>
 					{/foreach}
 				{else}
@@ -90,6 +91,8 @@ var url="{$html->url('/webmarks/checkUrl')}";
 {$view->element('form_categories')}
 
 {$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.link.id}])}
+
+{$view->element('form_custom_properties')}
 
 {$view->element('form_tags')}
 

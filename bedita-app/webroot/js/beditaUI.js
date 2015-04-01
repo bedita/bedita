@@ -401,7 +401,10 @@ $(document).ready(function(){
 
         // default options for modal
         var defaultOptions = {
-            success: function() {}
+            title: '',
+            destination: '',
+            requestData: {},
+            success: function() {},
         };
 
         if (typeof options == 'undefined' || !$.isPlainObject(options)) {
@@ -415,24 +418,24 @@ $(document).ready(function(){
 
         var h = 1500;
 
-        var destination = $(this).attr("rel");
-        var title = $(this).attr("title");
+        var destination = options.destination || $(this).attr("rel");
+        var title = options.title || $(this).attr("title");
 
         var myTop = $(window).scrollTop() + 20;
         $("#modaloverlay").show().fadeTo("fast", 0.8);
         $("#modal #modalmain").show();
         $("#modal").toggle()/*.css("top", myTop)*/;
 
-        if ($(this).attr("rel")) {
+        if (destination) {
             $("#modal #modalmain").empty().append('<div class="loader"></div>');
             $("#modal #modalmain").find('.loader').show();
-            $("#modalmain").load(destination, function(response, status, xhr) {
+            $("#modalmain").load(destination, options.requestData, function(response, status, xhr) {
                 $("#modal #modalmain").find('.loader').hide();
                 options.success();
             });
         }
 
-        if ($(this).attr("title")) {
+        if (title) {
             $("#modalheader .caption").html(title);
         }
 
@@ -545,7 +548,10 @@ $(document).ready(function(){
             if (!this.checked) return status = false;
         });
         $(".selectAll").each(function() { this.checked = status;});
-        $('.selecteditems').text($(".objectCheck:checked").length);
+        $('.selecteditems')
+            .text($(".objectCheck:checked").length)
+            .closest('.tab')
+            .BEtabsopen();
     });
 
 /*...........................................
@@ -576,7 +582,13 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
+        $(".searchobjectsbyid").hide();
         $(".searchobjects").toggle();
+    });
+
+    $(".searchbyidtrigger").click(function() {
+        $(".searchobjects").hide();
+        $(".searchobjectsbyid").toggle();
     });
 
 /*...........................................
@@ -639,8 +651,12 @@ $(document).ready(function(){
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
         .select2({
-            escapeMarkup: function(m) { return m; },
+            escapeMarkup: function(m) {
+                return $('<div/>').html(m).text();
+            },
             formatResult: function(state) {
+                // escape html tags
+                state.text = $('<div/>').html(state.text).text();
                 if ($(state.element).is('.pubOption')) {
                     return '<a rel="'+$(state.element).attr('rel')+'" onmouseup="toggleSelectTree(event)">> </a>'+state.text;
                 } else {
@@ -672,7 +688,7 @@ var toggleSelectTree = function(ev) {
             url: url,
             success: function(data) {
                 data = $.trim(data);
-                var ntree = $(data).slice(2);
+                var ntree = $(data).slice(1);
                 ntree.insertAfter(option);
                 var select = option.closest('select');
                 $('input.select2-input').val(option.first().text()).trigger('keyup-change');
@@ -684,19 +700,25 @@ var toggleSelectTree = function(ev) {
     }
 }
 
+/*...........................................    
+
+   A[download] links
+
+...........................................*/
+
+var a = document.createElement('a');
+if (typeof a.download == 'undefined') {
+    $('A[download]').remove();
+}
+
 /*...........................................
 
    keyboard binding
 
 ...........................................*/
 
-document.onkeydown = function(e){
-    if (e == null) { // ie
-        keycode = event.keyCode;
-    } else { // mozilla
-        keycode = e.which;
-    }
-
+$(document).on("keydown", function(e) {
+    var keycode = e.which;
     if (keycode == 27) {
         
         if ($('.tab').next().is(":visible")) {
@@ -711,21 +733,9 @@ document.onkeydown = function(e){
             $('.tab2').BEtabsopen();
         }
 
-    } else if(keycode == 109){ //
-
-        //$('.tab').BEtabsopen();
-        //helptrigger
-
-    } else if(keycode == 122){ //
-
-        //$('.helptrigger').click();
-
-    } else if(keycode == 188){ //
-
     }
+})
 
-    //console.log(keycode);
-};
 
 /*...........................................
 
@@ -769,7 +779,8 @@ function openAtStart(defaultOpen) {
             // avoid bad id selector
             var tabId = openTmp[i];
             if(tabId != '#' && tabId.length > 1) {
-                $(tabId).prev(".tab").BEtabstoggle();
+                //$(tabId).prev(".tab").BEtabstoggle();
+                $(tabId).prev(".tab").BEtabsopen();
             }
         }
 
@@ -827,6 +838,20 @@ function getFlashVersion(){
     return false;
 }
 
+function addCsrfToken(postData, searchIn) {
+    if (!postData) {
+        postData = {};
+    }
+    if (!postData.data) {
+        postData.data = {};
+    }
+    $item = (searchIn) ? $(searchIn) : $('body');
+    var csrfToken = $item.find('input[name=data\\[_csrfToken\\]\\[key\\]]:first').val();
+    if (csrfToken) {
+        postData.data._csrfToken = {key: csrfToken};
+    }
+    return postData;
+}
 
 /**
  * Handle a list of items

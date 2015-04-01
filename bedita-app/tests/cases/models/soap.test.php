@@ -47,6 +47,9 @@ class SoapTestCase extends BeditaTestCase {
  		foreach ($this->data["services"] as $service) {
 			pr("Test Service: " . $service);
 			
+			// load local wsld
+			$this->data[$service]['wsdl'] = MODEL_TESTS . $this->data[$service]['wsdl'];
+			
 			Configure::write("soap.$service", $this->data[$service]);
 
 			$this->SoapClientModel->setup($service);

@@ -22,6 +22,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]"/>
 
@@ -56,8 +57,8 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
-			<td>{$objects[i].url|default:''|truncate:48:'(...)':true:true}</td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"|escape}</a></td>
+			<td>{$objects[i].url|default:''|truncate:48:'(...)':true:true|escape}</td>
 			<td>{$objects[i].http_code|default:''}</td>
 			<td style="text-align:center">{$objects[i].status}</td>
 			{if !empty($properties)}
@@ -65,9 +66,9 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 					<td class="custom-property-cell">
 					{if !empty($objects[i].customProperties[$p.name]) && $p.object_type_id == $objects[i].object_type_id}
 						{if is_array($objects[i].customProperties[$p.name])}
-							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."}
+							{$objects[i].customProperties[$p.name]|@implode:", "|truncate:80:"..."|escape}
 						{else}
-							{$objects[i].customProperties[$p.name]|truncate:80:"..."}
+							{$objects[i].customProperties[$p.name]|truncate:80:"..."|escape}
 						{/if}
 					{else}
 						-
@@ -76,7 +77,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 				{/foreach}
 			{/if}
 			<td class="go">
-				<input type="button" value="{t}go{/t}" onclick="window.open('{$objects[i].url|default:''}','_blank')" />
+				<input type="button" value="{t}go{/t}" onclick="window.open('{$html->url($objects[i].url|default:'')}','_blank')" />
 			</td>
 
 			<td>{if $objects[i].num_of_editor_note|default:''}<img src="{$html->webroot}img/iconNotes.gif" alt="notes" />{/if}</td>

@@ -14,13 +14,13 @@
 </style>
 {/literal}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="head">
 
 	<div class="toolbar" style="padding-top:20px">
 	
-		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname}</h1><br>
+		<h1 style="display:inline; padding-right:20px;">{$BEAuthUser.realname|escape}</h1><br>
 		<span style="white-space: nowrap">
 		{t}Created on{/t} <a>{$BEAuthUser.created|date_format:$conf->dateTimePattern}</a>
 		/
@@ -30,17 +30,18 @@
 	 
 </div>
 
-{include file="inc/menucommands.tpl" method="profile" fixed=true}
+{include file = './inc/menucommands.tpl' method = 'profile' fixed = true}
 
 <div class="mainfull">
 	
 	<form action="{$html->url('/home/editProfile')}" id="editProfile" method="post">
+		{$beForm->csrf()}
 		
 		<div style="width:260px; float:left">
 		
 			<div class="tab"><h2>{t}Personal data{/t}</h2></div>
 
-			{include file="inc/userpreferences.tpl"}
+			{include file = './inc/userpreferences.tpl'}
 		
 		</div>
 

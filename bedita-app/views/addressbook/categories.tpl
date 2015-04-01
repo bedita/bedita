@@ -1,6 +1,6 @@
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl" method="categories"}
+{include file='./inc/menuleft.tpl' method='categories'}
 
 <div class="head">
 	
@@ -8,13 +8,12 @@
 
 </div>
 
-{include file="inc/menucommands.tpl" method="categories"}
+{include file='./inc/menucommands.tpl' method='categories'}
 
 
 <div class="mainfull">
 
-{assign_associative var="params" method="categories"}
-{$view->element('list_categories', $params)}
+{$view->element('list_categories', ['method' => 'categories'])}
 
 </div>
 

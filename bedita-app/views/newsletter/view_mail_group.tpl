@@ -44,13 +44,14 @@ function submitSubscribers(url) {
 		arrVal[index] = $(this).val();
 	});
 	
-	$.post(url,
-		{
-			'objects_selected[]': arrVal,
-			'operation': $("select[name=operation]").val(),
-			'destination': $("select[name=destination]").val(),
-			'newStatus': $("select[name=newStatus]").val()
-		},
+    var postData = {
+            'objects_selected[]': arrVal,
+            'operation': $("select[name=operation]").val(),
+            'destination': $("select[name=destination]").val(),
+            'newStatus': $("select[name=newStatus]").val()
+        };
+    postData = addCsrfToken(postData, '#updateForm');
+    $.post(url, postData,
 		function(htmlcode) {
 			$("#subscribers").html(htmlcode);
 			$("#loaderListSubscribers").hide();
@@ -93,7 +94,7 @@ $(document).ready(function() {
 
 <div class="head">
 	
-	<h1>{t}{$item.group_name|default:"New List"}{/t}</h1>
+	<h1>{$item.group_name|escape|default:"New List"}</h1>
 	
 </div>
 
@@ -102,6 +103,7 @@ $(document).ready(function() {
 <div class="main">	
 
 <form method="post" id="updateForm" action="{$html->url('saveMailGroups')}">	
+{$beForm->csrf()}
 
 {include file="inc/list_details.tpl"}
 

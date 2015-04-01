@@ -99,7 +99,7 @@ class BeTreeHelper extends AppHelper {
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
 				$selected = (in_array($publication['id'],$parentIds)) ? " selected" : "";
-				$output .= sprintf($this->tags['option'], $publication["id"], $selected, mb_strtoupper($publication["title"])) ;
+				$output .= sprintf($this->tags['option'], $publication["id"], $selected, h(mb_strtoupper($publication["title"]))) ;
 				if (!empty($publication["children"])) {
 					$options2 = array_merge( // Aumenta livello
 						$options,
@@ -151,7 +151,7 @@ class BeTreeHelper extends AppHelper {
 
 		foreach ($branch as $section) {
 			$selected = (in_array($section['id'],$parentIds)) ? " selected" : "";
-			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space.$section["title"]) ;
+			$res .= sprintf($this->tags['option'], $section["id"], $selected, $space . h($section["title"])) ;
 			if (!empty($section["children"])) {
 				$options2 = array_merge( // Aumenta livello
 					$options,
@@ -212,7 +212,7 @@ class BeTreeHelper extends AppHelper {
 
 			}
 
-			$res .= $section["title"] . "</a>";
+			$res .= h($section["title"]) . "</a>";
 			/*
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
@@ -281,7 +281,7 @@ class BeTreeHelper extends AppHelper {
 					$output .= sprintf($this->tags[$inputType], $publication['id'], $checked) ;
 				}
 
-				$output .= $publication['title'];
+				$output .= h($publication['title']);
 
 				$output .= '</a>';
 
@@ -342,7 +342,7 @@ class BeTreeHelper extends AppHelper {
 					$output .= '<li class="Section">';
 					$url = $public_url . $section['canonicalPath'];
 					$output .= '<a href="' . $url . '">';
-					$output .= $section['title'];
+					$output .= h($section['title']);
 					$output .= '</a>';
 					if(!empty($section['objects'])) {
 						$output .= '<ul class="contents">';
@@ -351,7 +351,7 @@ class BeTreeHelper extends AppHelper {
 							$output .= '<li class="' . Configure::read('objectTypes.' . $child['object_type_id'] . ".model") . '">';
 							$url = $public_url . $child['canonicalPath'];
 							$output .= '<a href="' . $url . '">';
-							$output .= $child['title'];
+							$output .= h($child['title']);
 							$output .= '</a>';
 							$output .= '</li>';
 						}
@@ -390,7 +390,7 @@ class BeTreeHelper extends AppHelper {
 	 */
 	public function option($tree, $selId=null, $numInd=1, $indentation="&nbsp;&nbsp;&nbsp;&nbsp;") {
 
-		$output = "<option value=\"\"> None </option>";
+		$output = "";
 
 		if (!empty($tree)) {
 			foreach ($tree as $publication) {
@@ -398,7 +398,7 @@ class BeTreeHelper extends AppHelper {
 				if (!empty($publication["children"])) {
 					$params .= ' data-loaded="true"';
 				}
-				$path = mb_strtoupper($publication["title"]);
+				$path = h(mb_strtoupper($publication["title"]));
 				$params .= ($selId == $publication["id"])? ' selected' : '';
 				$output .= sprintf($this->tags['option'], $publication["id"], $params, $path) ;
 				if (!empty($publication["children"])) {
@@ -470,7 +470,7 @@ class BeTreeHelper extends AppHelper {
 
 			}
 
-			$res .= $section["title"] . "</a>";
+			$res .= h($section["title"]) . "</a>";
 
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
@@ -517,7 +517,7 @@ class BeTreeHelper extends AppHelper {
 		foreach ($branch as $section) {
 			$params = ' class="depth' . $numInd . '"';
 			$params .= ($selId == $section['id'])? ' selected' : '';
-			$npath = $path . ' > ' . $section["title"];
+			$npath = $path . ' > ' . h($section["title"]);
 			$res .= sprintf($this->tags['option'], $section["id"], $params, $npath) ;
 			if (!empty($section["children"])) {
 				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation, $npath);

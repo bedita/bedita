@@ -78,6 +78,17 @@
 	}
 
 /**
+ * Check minimum PHP requirement.
+ */
+    if (file_exists(ROOT . DS . APP_DIR . DS . 'config' . DS . 'requirements.php')) {
+        $config = array();
+        require ROOT . DS . APP_DIR . DS . 'config' . DS . 'requirements.php';
+        if (isset($config['requirements']['phpVersion']) && version_compare(phpversion(), $config['requirements']['phpVersion']) < 0) {
+            trigger_error("PHP version is too old, please upgrade to {$config['requirements']['phpVersion']} at least", E_USER_ERROR);
+        }
+    }
+
+/**
 * 	Wizard install, if config/bedita.cfg.php does not exist.
 */
 	if (!file_exists(ROOT . DS . APP_DIR . DS. 'config' . DS . 'bedita.cfg.php')) {
@@ -97,13 +108,6 @@
 	if (isset($_GET['url']) && $_GET['url'] === 'favicon.ico') {
 		return;
 	} else {
-		$Dispatcher=new Dispatcher();
-		try {
-			$Dispatcher->dispatch();
-		} catch (BeditaException $ex) {
-			AppController::handleExceptions($ex);
-		} catch (Exception $e) {
-			AppController::defaultError($e);
-		}
+		$Dispatcher = new Dispatcher();
+		$Dispatcher->dispatch();
 	}
-?>

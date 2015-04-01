@@ -34,7 +34,7 @@
 		&nbsp;{t}to{/t}:  &nbsp;
 
 		<select id="areaSectionAssoc" style="width:320px" class="areaSectionAssociation" name="data[destination]">
-		{$beTree->option($tree)}
+			{$beTree->option($tree)}
 		</select>
 
 		<input type="hidden" name="data[source]" value="{$sectionSel.id|default:''}" />

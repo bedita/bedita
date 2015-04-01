@@ -13,13 +13,17 @@
 			if (confirm(confirmMsg)) {
 				$_this = $(this);
 				var op = $_this.attr("rel");
+				var chk = $("#cleanAll").is(':checked');
 				var startText = $_this.text();
 				$_this.text(loadingtext).removeClass("execute").addClass("loading");
+				var postData = {
+					operation: op,
+					cleanAll: chk
+				};
+				postData = addCsrfToken(postData);
 				$.ajax({
 					url: "{$html->url('/admin/utility')}",
-					data: {
-						operation: op
-					},
+					data: postData,
 					dataType: "json",
 					type: "post",
 					error: function(jqXHR, textStatus, errorThrown) {
@@ -62,7 +66,9 @@
 
 				<tr>
 					<th><b>{t}cleanup cache{/t}</b>:</th><td><button class="execute" rel="cleanupCache"> {t}GO{/t} </button></td>
-					<td>{t}delete all cached files from BEdita and frontends{/t}</td>
+					<td>{t}delete all cached files from BEdita and frontends{/t}
+					<input type="checkbox" id="cleanAll" autocomplete="off"/><label>{t}Clean all cache files (also object cache){/t}</label>
+					</td>
 				</tr>
 				<tr>
 					<th><b>{t}empty logs{/t}</b>:</th><td><button class="execute" rel="emptyLogs"> {t}GO{/t} </button></td>

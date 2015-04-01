@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,14 +20,9 @@
  */
 
 /**
- * Generic category
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
+ * Category model
  * 
- * $Id$
- */
+*/
 class Category extends BEAppModel {
 	var $actsAs = array(
 			'CompactResult' 		=> array()
@@ -562,5 +557,40 @@ class Category extends BEAppModel {
 	    }
 	    return $res;
 	}
+
+	/**
+     * append mediatype to objects array
+     *
+     * @param array $objects
+     * @param array $options
+     */
+    public function appendMediatype(array $objects, $options = array()) {
+        $this->Behaviors->disable('CompactResult');
+        $objectCategory = ClassRegistry::init('ObjectCategory');
+        foreach ($objects as &$obj) {
+            $categoryId = $objectCategory->field('category_id', array('object_id' => $obj['id']));
+            if (!empty($categoryId)) {
+                $obj['mediatype'] = $this->field('name', array('id' => $categoryId));
+            }
+        }
+        $this->Behaviors->enable('CompactResult');
+        return $objects;
+    }
+
+    /**
+     * Get category id from name and object type id
+     * 
+     * @param $name, string unique name of category
+     * @param $objectTypeId, int object type id
+     * @return proerty id on success, null if no proerty id was found
+     */
+    public function categoryId($name, $objectTypeId) {
+        $this->Behaviors->disable('CompactResult');
+        $res = $this->field('id', array(
+                'object_type_id' => $objectTypeId,
+                'name' => $name));
+        $this->Behaviors->enable('CompactResult');
+        return $res;
+    }
+
 }
-?>

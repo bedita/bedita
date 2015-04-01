@@ -48,7 +48,7 @@ class BeurlHelper extends AppHelper {
 			if(!$pos || $pos > 0) 
 				$newUrl = "/" . $newUrl;
 		}
-		return $newUrl ;
+		return $newUrl;
 	}
 
 	/**
@@ -73,6 +73,10 @@ class BeurlHelper extends AppHelper {
 		}
 		$pass["action"] = $action;
 		$pass["controller"] = $controller;
+        if (!empty($this->params['plugin']) && $this->params['plugin'] == $this->params['controller']) {
+            // #447 - Force 'plugin' parameter to be ignored by Router::url()
+            $pass['plugin'] = '';
+        }
 		$data = array_merge($pass, $paramsNamed);
 		$url = Router::url($data);
 		return $this->output($url);
@@ -186,7 +190,7 @@ class BeurlHelper extends AppHelper {
 			$title .= ucfirst($this->Tr->t($currentModule["label"], true)) . " | ";
 		}
 		$title .= $projectName . " | BEdita";
-		return $title;
+		return h($title);
 	}
 
 }

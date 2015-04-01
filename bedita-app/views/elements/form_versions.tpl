@@ -18,7 +18,7 @@
 			{$h.revision}
 		</td>
 		<td style="white-space:nowrap">{$h.created|date_format:$conf->dateTimePattern}</td>
-		<td>{$h.User.realname|default:''} [ {$h.User.userid|default:''} ]</td>
+		<td>{$h.User.realname|default:''|escape} [ {$h.User.userid|default:''|escape} ]</td>
 		<td style="text-align: right"><a class="modalbutton BEbutton" rel="{$html->url('/pages/revision')}/{$object.id}/{$h.revision}">  view  </a></td>
 	</tr>
 	<!-- {*

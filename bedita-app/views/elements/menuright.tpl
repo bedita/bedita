@@ -49,6 +49,8 @@ function showNoteResponse(data) {
 function refreshNoteList(delButton) {
 	var div = delButton.parents("div:first");
 	var postdata = { id: delButton.attr("rel")};
+	// add csrf token if exists
+	addCsrfToken(postdata, '#saveNote');
 	if (confirm(confirmDelNoteMsg)) {
 		$.ajax({ 
 			type: "POST",
@@ -96,6 +98,7 @@ function refreshNoteList(delButton) {
 		</tr>
 		</table>
 		<form id="saveNote" action="{$html->url('/pages/saveNote')}" method="post">
+		{$beForm->csrf()}
 		<input type="hidden" name="data[object_id]" value="{$object.id}"/>
 		<textarea id="notetext" name="data[description]" class="autogrowarea editornotes"></textarea>
 		<input type="submit" style="margin-bottom:10px; margin-top:5px" value="{t}send{/t}" />
@@ -127,7 +130,7 @@ function refreshNoteList(delButton) {
 			<li style="padding-left:5px;" class="{$item.status} {$item.ticket_status}">
 				<a href="{$html->url('/')}{$item.ObjectType.module_name}/view/{$item.id}">
 				<span title="{$item.ObjectType.name}" class="listrecent {$item.ObjectType.module_name}" style="margin:0 10px 0 0">&nbsp;</span>
-				{$item.title|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
+				{$item.title|escape|default:'<i>[no title]</i>'|truncate:30:'~':true}</a>
 			</li>
 		{/foreach}
 			<li style="padding-left:5px;">

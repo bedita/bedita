@@ -21,7 +21,7 @@
 		-->
 		<time class="hour">ore {$time}</time>
 		<h3 style="padding:5px;">
-			{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"}
+			{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"|escape}
 		</h3>
 		
 	</li></a>

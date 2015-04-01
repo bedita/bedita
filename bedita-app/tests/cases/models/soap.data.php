@@ -29,14 +29,16 @@
  * $Id$
  */
 
+
  class SoapTestData extends BeditaTestData {
-	var $data =  array(
+
+    var $data =  array(
 
 		"services" => array("googlesearch", "googlesearch2"),
 
 		"googlesearch" => array (
 			'useLib' => 'nusoap',
-		    'wsdl' => "http://www.soapclient.com/xml/googleSearch.wsdl",
+            'wsdl' => 'soap.google_search.wsdl',
 			'debugLevel' => 9,
 		),
 		
@@ -46,7 +48,7 @@
 		
 		"googlesearch2" => array (
 			'useLib' => 'soap',
-		    'wsdl' => "http://www.soapclient.com/xml/googleSearch.wsdl",
+		    'wsdl' => "soap.google_search.wsdl",
 			'debugLevel' => 9,
 		),
 		

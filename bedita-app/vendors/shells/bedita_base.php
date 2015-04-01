@@ -23,14 +23,55 @@ App::import('Lib', 'BeLib');
 
 /**
  * Base class for bedita shell scripts: provides common filesystem related methods.
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class BeditaBaseShell extends Shell {
+
+    /**
+     * Verbose mode.
+     */
+    private $verbose = false;
+
+    /**
+     * Call parent::__construct and set up exception handler
+     *
+     * @param ShellDispatcher $dispatch
+     */
+    public function __construct($dispatch) {
+        parent::__construct($dispatch);
+        set_exception_handler(array($this, 'handleExceptions'));
+    }
+
+    /**
+     * Handle Exceptions
+     *
+     * @param Exception $exception
+     * @return void
+     */
+    public function handleExceptions(Exception $exception) {
+        $shellMethod = ' - shell ' . $this->name . '::' . $this->command;
+        $this->log($exception->getMessage() . $shellMethod, 'error');
+        if ($exception instanceof BeditaException) {
+            $errorTrace = $exception->errorTrace();
+        } else {
+            $errorTrace = get_class($exception) . ' - ' . $exception->getMessage()
+            . " \nFile: " . $exception->getFile() . ' - line: ' . $exception->getLine()
+            . " \nTrace:\n" . $exception->getTraceAsString();
+        }
+        $this->log($errorTrace, 'exception');
+        $this->error($exception->getMessage());
+    }
+
+    /**
+     * Initializes the Shell
+     * Setup self::verbose param
+     */
+    public function initialize() {
+        parent::initialize();
+        // Verbose mode.
+        if (array_key_exists('verbose', $this->params) || array_key_exists('-verbose', $this->params)) {
+            $this->verbose = true;
+        }
+    }
 
 	/**
 	 * Init configuration for all bedita shells, called in startup()
@@ -49,7 +90,21 @@ class BeditaBaseShell extends Shell {
 		$this->initConfig();
 		// default debug = 1, get error/debug messages
 		Configure::write('debug', 1);
-	}
+        $this->Dispatch->clear();
+    }
+
+    function help() {
+        $this->out('  Default parameters:');
+        $this->out("    --verbose\tVerbose output");
+    }
+
+    public function title($title) {
+        $this->out();
+        $this->hr();
+        $this->out(' ' . strtoupper($title));
+        $this->hr();
+        $this->out();
+    }
 	
 	protected function check_sys_get_temp_dir() {
 		if ( !function_exists('sys_get_temp_dir') ) {
@@ -153,17 +208,34 @@ class BeditaBaseShell extends Shell {
     }
 
     protected function checkExportFile($expFile) {
-    	if(file_exists($expFile)) {
-			$res = $this->in("$expFile exists, overwrite? [y/n]");
-			if($res == "y") {
-				if(!unlink($expFile)){
-					throw new Exception("Error deleting $expFile");
-				}
-			} else {
-				$this->out("Export aborted. Bye.");
-				exit;
-			}
-		}
+        if (file_exists($expFile)) {
+            $res = $this->in("$expFile exists, overwrite? [y/n]");
+            if($res == 'y') {
+                if(!unlink($expFile)){
+                    throw new Exception("Error deleting $expFile");
+                }
+            } else {
+                $this->out('Export aborted. Bye.');
+                exit;
+            }
+        }
+    }
+
+    protected function checkDir($dir) {
+        if (!file_exists($dir)) {
+            $res = $this->in("$dir doesn't exist, create? [y/n]");
+            if($res == 'y') {
+                if(!mkdir($dir)){
+                    throw new Exception("Error creating $dir");
+                }
+            } else {
+                $this->out('Operation aborted. Bye.');
+                exit;
+            }
+        } elseif (!is_dir($dir)) {
+            $this->out("$dir is not a directory. Exiting.");
+            exit;
+        }
     }
 
     protected function __clean($path, $removeDirs=true) {
@@ -187,8 +259,20 @@ class BeditaBaseShell extends Shell {
             }
         }
         return ;
-    }    
-     
-}
+    }
 
-?>
+    /**
+     * Verbose output.
+     *
+     * @param string Message.
+     * @param integer New-lines.
+     * @see Shell::out()
+     */
+    protected function verbose($message = null, $newlines = 1) {
+        if (!$this->verbose) {
+            return;
+        }
+
+        return $this->out($message, $newlines);
+    }
+}

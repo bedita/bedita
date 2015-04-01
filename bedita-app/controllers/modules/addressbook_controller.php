@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,22 +20,17 @@
  */
 
 /**
- * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * AddressBook Module Controller
  */
 class AddressbookController extends ModulesController {
 	
 	var $name = 'Addressbook';
 	var $helpers 	= array('BeTree', 'BeToolbar');
-	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler');
+	var $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeFileHandler', 'BeSecurity');
 
 	var $uses = array('BEObject','Tree', 'Category', 'Card', 'MailGroup') ;
 	protected $moduleName = 'addressbook';
+	protected $categorizableModels = array('Card');
 	
     public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
@@ -56,6 +51,9 @@ class AddressbookController extends ModulesController {
 		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
+
+		include CONFIGS . 'countries.iso.php';
+		$this->set('country_list_iso', $config['countryList']);
 	}
 
 	function save() {
@@ -106,32 +104,6 @@ class AddressbookController extends ModulesController {
 		$this->showCategories($this->Card);
 	}
 
-	public function saveCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["label"])) 
- 	 	    throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
-		$this->eventInfo("category [" .$this->data["label"] . "] saved");
-	}
-	
-	public function deleteCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["id"])) 
- 	 	    throw new BeditaException( __("No data", true));
- 	 	$this->Transaction->begin() ;
-		if(!$this->Category->delete($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
-		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
-	}
-
 	public function cloneObject() {
 		unset($this->data['ObjectUser']);
 		parent::cloneObject();
@@ -154,6 +126,7 @@ class AddressbookController extends ModulesController {
 	public function addToMailgroup() {
 		$this->checkWriteModulePermission();
 		$counter = 0;
+		$missingEmail = 0;
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$mailgroup = $this->data['mailgroup'];
@@ -174,73 +147,91 @@ class AddressbookController extends ModulesController {
 						$MailGroupObj->save($data);
 						$counter++;
 					}
+				} else {
+					$missingEmail++;
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage("$counter" . __("card(s) associated to mailgroup", true) . " - " . $mailgroup);
-			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
+
+			$userMsg = '';
+			if ($missingEmail > 0) {
+				$userMsg = $missingEmail . ' ' . __('cards without email not added to mailgroup', true) . ', ';
+			}
+			$userMsg .= $counter . ' ' . __("card(s) associated to mailgroup", true);
+			$this->userInfoMessage($userMsg);
+			$this->eventInfo("$counter card(s) associated to mailgroup id: " . $mailgroup);
 		}
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"cloneObject"	=> 	array(
-							"OK"	=> "/addressbook/view/".@$this->Card->id,
-							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
-							),
-			"save"	=> 	array(
-							"OK"	=> "/addressbook/view/".@$this->Card->id,
-							"ERROR"	=> "/addressbook/view/".@$this->Card->id 
-							), 
-			"delete" =>	array(
-							"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-							"ERROR"	=> "/addressbook/view/".@$this->params['pass'][0]
-							),
-			"deleteSelected" =>	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-			"changeStatusObjects"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),			
- 			"saveCategories" 	=> array(
- 							"OK"	=> "/addressbook/categories",
- 							"ERROR"	=> "/addressbook/categories"
- 									),
- 			"deleteCategories" 	=> array(
- 							"OK"	=> "/addressbook/categories",
- 							"ERROR"	=> "/addressbook/categories"
- 									),
-			"addItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
- 									),
-			"moveItemsToAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
- 									),
- 			"removeItemsFromAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-			"assocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			),
-			"disassocCategory"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			),
-			"addToMailgroup"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-			)
-		);
-		if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-		return false ;
-	}
+	
+    /**
+     * Export cards to CSV/vCard, using current filter
+     * 
+     * @param string, type of export 'csv' or 'vcard'
+     */
+    public function exportToFile($type = 'csv') {
+        $this->autoRender = false;
+        $data = $this->loadDataFromSessionFilter();
+        $result = array();
+        $type = strtolower($type);
+        if ($type == 'csv') {
+            $result['contentType'] = 'text/csv';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.csv';
+            $options = array();
+            if (Configure::read('csvFields.card')) {
+                $options['delimiter'] = ';';
+                $options['custom'] = true;
+            }
+            $result['content'] = $this->Card->createCsvAsString($data, $options);
+            $result['size'] = strlen($result['content']);
+        } else if ($type = 'vcard') {
+            $result['contentType'] = 'text/vcard';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.vcf';
+            $content = '';
+            foreach ($data as $d) {
+                $content .= $this->Card->exportVCard($d) . "\n";
+            }
+            $result['content'] = $content;
+            $result['size'] = strlen($content);
+        } else {
+            throw new BeditaBadRequestException(_('Unsupported file type') . ' - ' . $type);
+        }
+
+        Configure::write('debug', 0);
+        header('Content-Description: File Transfer');
+        header('Content-type: ' . $result['contentType']);
+        header('Content-Disposition: attachment; filename='. $result['filename']);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . $result['size']);
+        ob_clean();
+        flush();
+        echo $result['content'];
+        exit();
+    }
+
+    private function loadDataFromSessionFilter() {
+        $filter = array();
+        $filter['object_type_id'] = Configure::read('objectTypes.card.id');
+        $filter['Card.*'] = '';
+        $filterKey = $this->name . '.index';
+        $this->SessionFilter->setup($filterKey);
+        $sessionFilter = $this->SessionFilter->setFromUrl();
+        $filter = array_merge($filter, $sessionFilter);
+        $objects = $this->BeTree->getChildren(null, null, $filter);
+        return $objects['items'];
+    }
+
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'addToMailgroup'	=> 	array(
+                'OK'	=> $this->referer(),
+                'ERROR'	=> $this->referer()
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
-
-?>

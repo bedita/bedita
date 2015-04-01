@@ -13,7 +13,7 @@
 {foreach from=$object.LangText.status item=i key=k}
 <tr>
 	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$conf->langOptions[$k]}</a></td>
-	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$object.LangText.title.$k|default:""}</a></td>
+	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$object.LangText.title.$k|default:""|escape}</a></td>
 	<td><a href="{$html->url('/translations/view/')}{$object.id}/{$k}">{$i}</a></td>
 </tr>
 {/foreach}

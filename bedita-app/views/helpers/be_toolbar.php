@@ -298,7 +298,7 @@ class BeToolbarHelper extends AppHelper {
 			$title = __($title, true);
 		}
 		
-		return '<a class="'.$class.'" href="' . $url . '">' . $title . '</a>';
+		return '<a class="'.$class.'" href="' . htmlentities($url) . '">' . $title . '</a>';
 		
 	}
 

@@ -1,6 +1,7 @@
 <div class="quickitem" id="addQuickItemWrap">
 	{$html->script('fragments/quick_item')}
 	<form id="addQuickItem"{if isset($ajax) && $ajax==true}class="ajaxSubmit"{/if} action="{$html->url('/pages/saveQuickItem')}" method="post" enctype="multipart/form-data">
+		{$beForm->csrf()}
 		<table style="width:100%">
 			<tr>
 				<td><label>{t}Title{/t}</label></td>
@@ -22,18 +23,23 @@
 				</td>
 			</tr>
 			<tr>
-				<td><label>{t}Position{/t}</label>
+				<td><label>{t}Position{/t}</label></td>
 				<td colspan="4" style="width:100%" >
 					<select class="areaSectionAssociation max-width:440px" name="data[destination]">
-					{$beTree->option($tree)}
+						<option value="">{t}None{/t}</option>
+						{$beTree->option($tree)}
 					</select>
 				</td>
 			</tr>
 			<tr id="quickitemFileContainer">
-				<td><label>{t}File{/t}</label>
-				<td colspan="5">
+				<td><label>{t}File{/t}</label></td>
+				<td colspan="4">
 					<input name="Filedata" type="file" style="width: 100%" />
 				</td>
+			</tr>
+			<tr>
+				<td><label>{t}URL{/t}</label></td>
+				<td colspan="4"><input type="url" name="data[url]" style="width: 100%" /></td>
 			</tr>
 			<tr>
 				<td><label>{t}Description{/t}</label></td>

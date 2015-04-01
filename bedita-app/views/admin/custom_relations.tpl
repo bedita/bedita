@@ -24,6 +24,7 @@
 	<div class="tab"><h2>{t}Create a new custom relation{/t}</h2></div>
 
 	<form method="post" action="{$html->url('/admin/saveCustomRelation')}">
+		{$beForm->csrf()}
 		<table class="bordered">
 			<tr>
 				<th style="vertical-align:top"><label>{t}source{/t}</label></th>
@@ -102,9 +103,10 @@
 
 {foreach $conf->objRelationType as $keyname => $item}
 
-	<div class="tab"><h2>{$keyname}</h2></div>
+	<div class="tab"><h2>{$keyname|escape}</h2></div>
 
 	<form id="{$keyname}" method="post" action="{$html->url('/admin/saveCustomRelation')}">
+		{$beForm->csrf()}
 		<table class="bordered">
 			<tr>
 				<th style="vertical-align:top"><label>{t}source{/t}</label></th>
@@ -138,19 +140,19 @@
 				<th><label>{t}name{/t}</label></th>
 				<td>
 					{$keyname}
-					<input type="hidden" name="data[name]" value="{$keyname}">
+					<input type="hidden" name="data[name]" value="{$keyname|escape}">
 				</td>
 				<th><label>{t}inverse name{/t}</label></th>
 				<td>
 					{$item.inverse|default:'-'}
-					<input type="hidden" name="data[inverse]" value="{$item.inverse|default:''}">
+					<input type="hidden" name="data[inverse]" value="{$item.inverse|default:''|escape}">
 				</td>
 			</tr>
 			<tr>
 				<th><label>{t}label{/t}</label></th>
-				<td><input type="text" name="data[label]" value="{$item.label|default:''}" /></td>
+				<td><input type="text" name="data[label]" value="{$item.label|default:''|escape}" /></td>
 				<th><label>{t}inverse label{/t}</label></th>
-				<td><input type="text" name="data[inverseLabel]" value="{$item.inverseLabel|default:''}"></td>
+				<td><input type="text" name="data[inverseLabel]" value="{$item.inverseLabel|default:''|escape}"></td>
 			</tr>
 			<tr>
 				<th><label>{t}hidden{/t}</label></th>
@@ -176,7 +178,7 @@
 								{/if}
 								<tr>
 									<td>
-										<input type="text" name="data[params][{$paramsIndex}][name]" value="{$name}" />
+										<input type="text" name="data[params][{$paramsIndex}][name]" value="{$name|escape}" />
 									</td>
 									<th>
 										<label>{t}type{/t}</label>
@@ -191,7 +193,7 @@
 										<label>{t}options{/t} *</label>
 									</th>
 									<td>
-										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options}{/if}" placeholder="{t}option{/t} 1,{t}option{/t} 2,..." />
+										<input type="text" class="js-params-options" name="data[params][{$paramsIndex}][options]" value="{if $type == 'options'}{$options|escape}{/if}" placeholder="{t}option{/t} 1,{t}option{/t} 2,..." />
 									</td>
 								</tr>
 							{/foreach}
@@ -225,7 +227,7 @@
 		<div style="text-align:right">* {t}comma separated values{/t}</div>
 
 		<input type="submit" style="margin:0px 10px 10px 70px;" value="{t}save{/t} '{$keyname}' {t}relation{/t}" />
-		<input type="button" class="js-del-relation" style="margin:0px 10px 20px 70px;" value=" {t}delete{/t} '{$keyname}' {t}relation{/t}" />
+		<input type="button" class="js-del-relation" style="margin:0px 10px 20px 70px;" value=" {t}delete{/t} '{$keyname|escape}' {t}relation{/t}" />
 	</form>
 {/foreach}
 

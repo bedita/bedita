@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2011 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -23,22 +23,19 @@
  * bedita.ini.php - settings, constants, variables for BEdita local installation
  *
  * @link			http://www.bedita.com
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 
 $config = array() ;
 
-$config["projectName"] = "BEdita 3.4"; // override in bedita.cfg
+$config['projectName'] = 'BEdita 3.5'; // override in bedita.cfg
 
-$config["userVersion"] = "BEdita 3.4"; // don't override
+// BEdita version - Semantic Versioning http://semver.org
+$config['version'] = '3.5.2'; // don't override -- admin/system
 
-$config["majorVersion"] = "3.4.0"; // don't override -- admin/system
+// majorVersion deprecated, keep for retrocomp
+$config['majorVersion'] = $config['version']; // don't override
 
-$config["codenameVersion"] = "Corylus"; // don't override -- admin/system
+$config['codenameVersion'] = 'Corylus'; // don't override -- admin/system
 
 // Multimedia - image file substituting missing content (as now used in BeThumb helper)
 $config['imgMissingFile'] = '/img/iconMissingImage_130x85.gif';
@@ -157,7 +154,7 @@ $config['richtexteditor'] = array(
 );
 
 // Application messages - temporary messages duration
-$config['msgPause'] = 3000;		// milliseconds
+$config['msgPause'] = 5000;		// milliseconds
 
 // bedita user for unit test
 $config['unitTestUserId'] = 1;
@@ -344,7 +341,7 @@ $config["defaultObjRelationType"] = array(
 			"label"
 		),
 		"inverse" => "attached_to",
-		"inverseLabel" => "attached_to",
+		"inverseLabel" => "attached to",
 	),
 	"link" => array(
 		"hidden" => true,
@@ -365,14 +362,14 @@ $config["defaultObjRelationType"] = array(
 			"label"
 		),
 		"inverse" => "downloadable_in",
-		"inverseLabel" => "downloadable_in",
+		"inverseLabel" => "downloadable in",
 	),
 	"mediamap" => array(
 		"left" => array("image"),
 		"right" => array(),
 		"inverse" => "mediamapped",
 		"label" => "mediamap",
-		"inverseLabel" => "mediamapped_by",
+		"inverseLabel" => "mediamapped by",
 		"params" => array(
 			"number",
 			"top",
@@ -399,6 +396,11 @@ $config["defaultObjRelationType"] = array(
 
 // Relations - local objects' relation types (override in bedita.cfg)
 $config["objRelationType"] = array ();
+
+// secondary relations to load in frontends - #515
+$config['frontendSecondaryRelations'] = array (
+        'attach' => array('mediamap', 'poster')
+);
 
 // Default reserved words [avoided in nickname creation]
 $config["defaultReservedWords"] = array("captchaImage", "category", "content",
@@ -497,9 +499,9 @@ $config['validate_resource'] = array(
 $config['media_providers'] = array(
 	"youtube"	=> array(
 		"regexp" => array(
-			'/^http:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
+			'/^http[s]?:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
+			'/^http[s]?:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
+			'/^http[s]?:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
 		),
 		"params" => array(
 			"width" 	=> 300,
@@ -560,7 +562,7 @@ $config['searchFields'] = array() ;
 /**
  * Default css filename for newsletter templates
  */
-$config['newsletterCss'] = "base.css";
+$config['newsletterCss'] = "newsletter.css";
 
 /**
  * default timeout in minutes to assume mail jobs blocked and try to resend

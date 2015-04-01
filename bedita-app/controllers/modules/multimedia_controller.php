@@ -33,7 +33,7 @@ class MultimediaController extends ModulesController {
     var $name = 'Multimedia';
 
     var $helpers    = array('BeTree', 'BeToolbar', 'MediaProvider', 'ImageInfo');
-    var $components = array('BeFileHandler', 'BeUploadToObj');
+    var $components = array('BeFileHandler', 'BeUploadToObj', 'BeSecurity');
 
     // This controller does not use a model
     var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
@@ -55,37 +55,48 @@ class MultimediaController extends ModulesController {
             $conf->objectTypes['video']["id"],
             $conf->objectTypes['application']["id"]
         );
-        $filter["mediatype"] = 1;
-        $filter["Stream.*"] = "";
         
         $filter["count_annotation"] = array("Comment","EditorNote");
         $filter["count_permission"] = true;
 
         $filter['afterFilter'] = array(
-            'className' => 'ObjectProperty',
-            'methodName' => 'objectsCustomProperties'
+            array(
+                'className' => 'ObjectProperty',
+                'methodName' => 'objectsCustomProperties'
+            ),
+            array(
+                'className' => 'Stream',
+                'methodName' => 'appendStreamFields'
+            ),
+            array(
+                'className' => 'ObjectRelation',
+                'methodName' => 'countRelations',
+                'options' => array(
+                    'relations' => array('attach', 'seealso', 'download')
+                )
+            ),
+            array(
+                'className' => 'Tree',
+                'methodName' => 'countUbiquity'
+            )
         );
+
+        if ($order == 'mediatype') {
+            $filter['mediatype'] = 1;
+        } else {
+            $filter['afterFilter'][] = array(
+                'className' => 'Category',
+                'methodName' => 'appendMediatype'
+            );
+        }
 
         $sessionFilter = $this->SessionFilter->setFromUrl();
         $filter = array_merge($filter, $sessionFilter);
         
         $bedita_items = $this->BeTree->getChildren($id, null, $filter, $order, $dir, $page, $dim)  ;
 
-        $relToCount =  array("attach", "seealso", "download");
         $objectRelation = ClassRegistry::init('ObjectRelation');
         $treeModel = ClassRegistry::init("Tree");
-        foreach ($bedita_items['items'] as $key => $value) {
-            $bedita_items['items'][$key]['ubiquity'] = $treeModel->find('count', array(
-                'conditions' => array('id' => $value['id'])
-            ));
-
-            // get relations count
-            foreach ($relToCount as $rel) {
-                $bedita_items['items'][$key]['num_of_relations_' . $rel] = $objectRelation->find('count', array(
-                    'conditions' => array('id' => $value['id'], 'switch' => $rel)
-                ));
-            }
-        }
 
         $properties = ClassRegistry::init('Property')->find("all", array(
             "conditions" => array("object_type_id" => $filter["object_type_id"]),
@@ -184,7 +195,15 @@ class MultimediaController extends ModulesController {
                 $this->set('elsewhere_hash',$results);
             }
             
-
+            // #536 check local file existence
+            if (!empty($obj['uri']) && ($obj['uri'][0] === '/' || $obj['uri'][0] === DS)) {
+                $path = Configure::read('mediaRoot') . $obj['uri'];
+                if (!file_exists($path)) {
+                    $url = Configure::read('mediaUrl') . $obj['uri'];
+                    $this->userErrorMessage(__('Media file is missing', true) . ' -  ' . $url);
+                    $this->eventError("multimedia missing file: " . $url);
+                }
+            }
 
             $this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
         } else {
@@ -370,53 +389,14 @@ class MultimediaController extends ModulesController {
         $this->layout = 'ajax';
     }
 
-    protected function forward($action, $esito) {
-
-        $REDIRECT = array(
-            "cloneObject"   =>  array(
-                            "OK"    => "/multimedia/view/".@$this->Stream->id,
-                            "ERROR" => "/multimedia/view/".@$this->Stream->id 
-                            ),
-            "save"  =>  array(
-                            "OK"    => "/multimedia/view/".@$this->Stream->id,
-                            "ERROR" => "/multimedia/view/".@$this->data['id'] 
-                            ),
-            "saveAjax" =>   array(
-                            "OK"    => self::VIEW_FWD.'upload_ajax_response',
-                            "ERROR" => self::VIEW_FWD.'upload_ajax_response'
-                            ),
-            "view"  =>  array(
-                            "ERROR" => "/multimedia"
-                            ),
-            "delete"    =>  array(
-                            "OK"    => $this->fullBaseUrl . $this->Session->read('backFromView'),
-                            "ERROR" => $this->referer()
-                            ),
-            "deleteSelected" => array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "addItemsToAreaSection" =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "moveItemsToAreaSection"    =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "removeItemsFromAreaSection"    =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            ),
-            "changeStatusObjects"   =>  array(
-                            "OK"    => $this->referer(),
-                            "ERROR" => $this->referer() 
-                            )
-                        );
-        if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-        return false ;
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'saveAjax'	=> 	array(
+                'OK'	=> self::VIEW_FWD.'upload_ajax_response',
+                'ERROR'	=> self::VIEW_FWD.'upload_ajax_response'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
     }
 
 }
-
-?>

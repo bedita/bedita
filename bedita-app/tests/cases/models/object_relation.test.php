@@ -30,7 +30,7 @@ class ObjectRelationTestCase extends BeditaTestCase {
     var $uses = array("Document", "ObjectRelation");
 
     function testRelationParams() {
-        $this->requiredData(array("doc1", "doc2", "relationParms", "relationNoParms"));
+        $this->requiredData(array("doc1", "doc2", "relationParms", "relationNoParms", "relationNewPrior", "relationNewParms"));
 
         // save document
         $result = $this->Document->save($this->data['doc1']) ;
@@ -58,12 +58,38 @@ class ObjectRelationTestCase extends BeditaTestCase {
         $doc2 = $this->Document->findById($idDoc2);
         foreach ($doc1["RelatedObject"] as $r) {
             if ($r['switch'] === $this->data['relationParms']['switch']) {
+                $this->assertEqual($r['priority'], $this->data['relationParms']['priority']);
                 $this->assertEqual($r['params'], $this->data['relationParms']['params']);
             }
         }
         foreach ($doc2["RelatedObject"] as $r) {
             if ($r['switch'] === $this->data['relationParms']['switch']) {
+                $this->assertEqual($r['priority'], $this->data['relationParms']['priority']);
                 $this->assertEqual($r['params'], $this->data['relationParms']['params']);
+            }
+        }
+
+        // update relation priority (both sides) and params (just once)
+        $this->ObjectRelation->updateRelationPriority($idDoc1, $idDoc2,
+                $this->data['relationParms']['switch'], $this->data['relationNewPrior']);
+        $this->ObjectRelation->updateRelationPriority($idDoc2, $idDoc1,
+                $this->data['relationParms']['switch'], $this->data['relationNewPrior']);
+        $this->ObjectRelation->updateRelationParams($idDoc1, $idDoc2,
+                $this->data['relationParms']['switch'], $this->data['relationNewParms']);
+
+        // reload document
+        $doc1 = $this->Document->findById($idDoc1);
+        $doc2 = $this->Document->findById($idDoc2);
+        foreach ($doc1["RelatedObject"] as $r) {
+            if ($r['switch'] === $this->data['relationParms']['switch']) {
+                $this->assertEqual($r['priority'], $this->data['relationNewPrior']);
+                $this->assertEqual($r['params'], $this->data['relationNewParms']);
+            }
+        }
+        foreach ($doc2["RelatedObject"] as $r) {
+            if ($r['switch'] === $this->data['relationParms']['switch']) {
+                $this->assertEqual($r['priority'], $this->data['relationNewPrior']);
+                $this->assertEqual($r['params'], $this->data['relationNewParms']);
             }
         }
 

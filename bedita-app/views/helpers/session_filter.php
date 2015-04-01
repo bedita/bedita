@@ -52,7 +52,7 @@ class SessionFilterHelper extends AppHelper {
         $view = ClassRegistry::getObject('view');
         if (!empty($view->viewVars['sessionFilterKey'])) {
             $this->sessionKey = $view->viewVars['sessionFilterKey'];
-        } else {
+        } elseif (!empty($view->params['controller']) && !empty($view->params['action'])) {
             $this->sessionKey = $this->sessionKeyPrefix . '.' . $view->params['controller'] . '.' . $view->params['action'];
         }
     }
@@ -73,6 +73,7 @@ class SessionFilterHelper extends AppHelper {
         } else {
             $value = $activeFilter;
         }
+        $value = Sanitize::clean($value, array('encode' => true, 'remove_html' => true));
         return $value;
     }
 

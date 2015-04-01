@@ -211,7 +211,6 @@ class SessionFilterComponent extends Object {
     /**
      * arrange data before insert in session
      * empty values are removed
-     * other values are sanitized
      *
      * @param  array  $filter
      */
@@ -219,8 +218,6 @@ class SessionFilterComponent extends Object {
         foreach ($filter as $key => &$value) {
             if (empty($value)) {
                 unset($filter[$key]);
-            } elseif (is_string($value)) {
-                $value = Sanitize::html($value, array('remove' => true));
             }
         }
     }
@@ -237,6 +234,18 @@ class SessionFilterComponent extends Object {
             $filter = $filter[$key];
         } elseif (!$filter) {
             $filter = array();
+        }
+        $filter = Sanitize::clean($filter, 
+            array('escape' => false, 'encode' => false));
+        // #532 add custom strip_tags - in Sanitize::clean withou 'encode' is not used
+        if (is_array($filter)) {
+            foreach ($filter as $k => $v) {
+                if (!is_array($v)) {
+                    $filter[$k] = strip_tags($v);
+                }
+            }
+        } else {
+            $filter = strip_tags($filter);
         }
         return $filter;
     }

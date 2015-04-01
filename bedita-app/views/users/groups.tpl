@@ -2,21 +2,6 @@
 {$html->script("libs/jquery/plugins/jquery.form", false)}
 {$html->script("libs/jquery/plugins/jquery.metadata", false)}
 
-<script type="text/javascript">
-<!--
-
-function viewGroup(objectid) {
-	document.location = "{$html->url('/users/viewGroup')}/" + objectid;
-}
-function delGroupDialog(name,objectid) {
-	if(!confirm("{t}Do you really want to remove group{/t} " + name + "?")) {
-		return false ;
-	}
-	document.location = "{$html->url('/users/removeGroup')}/" + objectid;
-}
-//-->
-</script>
-
 {$view->element('modulesmenu', ['searchDestination' => $view->action, 'substringSearch' => false])}
 
 {include file="inc/menuleft.tpl" method="groups"}

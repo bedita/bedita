@@ -25,13 +25,36 @@
 class AdminController extends ModulesController {
 
 	public $uses = array('MailJob','MailLog','MailMessage') ;
-	public $components = array('BeSystem','BeMail');
-	public $helpers = array('Paginator','Text');
+	public $components = array(
+		'Security' => array(
+			'requirePost' => array(
+				'deleteEventLog',
+				'emptySystemLog',
+				'deleteAllMailLogs',
+				'deleteAllMailUnsent',
+				'deleteMailLog',
+				'deleteMailJob'
+			)
+		),
+		'BeSystem',
+		'BeMail',
+		'BeSecurity'
+	);
+	public $helpers = array('Paginator', 'Text');
 	public $paginate = array(
 		'EventLog' => array('limit' => 20, 'page' => 1, 'order'=>array('created'=>'desc')),
 		'MailJob' => array('limit' => 10, 'page' => 1, 'order'=>array('created'=>'desc'))
 	);
 	protected $moduleName = 'admin';
+
+	protected function beditaBeforeFilter() {
+		// disable Security component for method not in requirePost
+		if (!in_array($this->action, $this->Security->requirePost)) {
+			$this->Security->validatePost = false;
+		} else {
+			$this->BeSecurity->validatePost = false;
+		}
+	}
 
 	public function index() {
 		$this->action = "systemEvents";
@@ -49,12 +72,20 @@ class AdminController extends ModulesController {
 	 * @throws BeditaAjaxException
 	 */
 	public function utility() {
+		$this->checkWriteModulePermission();
 		if ($this->params["isAjax"]) {
 			if (empty($this->params["form"]["operation"])) {
 				throw new BeditaAjaxException(__("Error: utility operation undefined", true), array("output" => "json"));
 			}
 			try {
-				$data = ClassRegistry::init("Utility")->call($this->params["form"]["operation"], array('log' => true));
+                $operation = $this->params['form']['operation'];
+                $options = array('log' => true);
+                if ($operation === 'cleanupCache') {
+                    $options['frontendsToo'] = true;
+                    $cleanAll = $this->params['form']['cleanAll'];
+                    $options['cleanAll'] = ($cleanAll == 'true');
+                }
+                $data = ClassRegistry::init('Utility')->call($operation, $options);
 				// render info/warn message
 				if (!empty($data['log'])) {
 					$this->set('detail', nl2br($data['log']));
@@ -126,10 +157,37 @@ class AdminController extends ModulesController {
 		$this->set("moduleList", $modules);
 	}
 
-	public function systemInfo() {
-		$this->beditaVersion();
-		$this->set('sys', $this->BeSystem->systemInfo());
-	}
+    /**
+     * Display system info, as well as warnings if some of the requirements aren't met.
+     */
+    public function systemInfo() {
+        Configure::load('requirements');
+
+        $this->beditaVersion();
+        $sys = $this->BeSystem->systemInfo();
+
+        $warnings = array();
+        $requirements = Configure::read('requirements');
+        $phpversion = !empty($sys['phpVersion']) ? $sys['phpVersion'] : phpversion();
+        if (version_compare($phpversion, $requirements['phpVersion']) < 0) {
+            array_push($warnings, 'phpVersion');
+        }
+        foreach ($requirements['phpExtensions'] as $ext) {
+            $loaded = !empty($sys['phpExtensions']) ? in_array($ext, $sys['phpExtensions']) : extension_loaded($ext);
+            if (!$loaded) {
+                array_push($warnings, $ext);
+            }
+        }
+        if (!empty($sys['db']) && !empty($sys['dbServer'])) {
+            if (!array_key_exists($sys['db'], $requirements['dbVersion'])) {
+                array_push($warnings, 'db');
+            } elseif (version_compare($sys['dbServer'], $requirements['dbVersion'][$sys['db']]) < 0) {
+                array_push($warnings, $sys['db']);
+            }
+        }
+
+        $this->set(compact('sys', 'warnings'));
+    }
 
 	public function systemEvents() {
 		$this->set('events', $this->paginate('EventLog'));
@@ -142,6 +200,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function emptyFile() {
+		$this->checkWriteModulePermission();
 		$this->BeSystem->emptyFile($this->data["fileToEmpty"]);
 		$this->systemLogs(10);
 	}
@@ -164,14 +223,22 @@ class AdminController extends ModulesController {
 
 	public function deleteMailJob($id) {
 		$this->checkWriteModulePermission();
+		if (empty($this->data['MailJob']['id'])) {
+			throw new BeditaException(__('Missing data', true));
+		}
+		$id = $this->data['MailJob']['id'];
 		$this->MailJob->delete($id);
 		$this->loadMailData();
 		$this->userInfoMessage(__("MailJob deleted", true) . " -  " . $id);
 		$this->eventInfo("mail job $id deleted");
 	}
 
-	public function deleteMailLog($id) {
+	public function deleteMailLog() {
 		$this->checkWriteModulePermission();
+		if (empty($this->data['MailLog']['id'])) {
+			throw new BeditaException(__('Missing data', true));
+		}
+		$id = $this->data['MailLog']['id'];
 		$this->MailLog->delete($id);
 		$this->loadMailLogData();
 		$this->userInfoMessage(__("MailLog deleted", true) . " -  " . $id);
@@ -428,6 +495,7 @@ class AdminController extends ModulesController {
 	 * If addon is a BEdita object type create also a row on object_types table
 	 */
 	public function enableAddon() {
+		$this->checkWriteModulePermission();
 	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -453,6 +521,7 @@ class AdminController extends ModulesController {
 	 * If addon is a BEdita object type remove also the row on object_types table
 	 */
 	public function disableAddon() {
+		$this->checkWriteModulePermission();
 	 	if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -476,6 +545,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function updateAddon() {
+		$this->checkWriteModulePermission();
 		if (empty($this->params["form"])) {
 	 		throw new BeditaException(__("Missing form data", true));
 	 	}
@@ -566,6 +636,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function saveConfig() {
+		$this->checkWriteModulePermission();
 		// sys and cfg array
 		$sys = $this->params["form"]["sys"];
 
@@ -630,8 +701,11 @@ class AdminController extends ModulesController {
 
 		// check if configs already set
 		foreach ($cfg as $k => $v) {
-			if(!empty($conf->$k) && ($conf->$k === $v)) {
+			if (!empty($conf->$k) && ($conf->$k === $v)) {
 				unset($cfg[$k]);
+			} else {
+				// sanitize from script
+				$cfg[$k] = Sanitize::stripScripts($v);
 			}
 		}
 
@@ -656,6 +730,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function saveCustomRelation() {
+		$this->checkWriteModulePermission();
 		$formData = $this->data;
 		$beLib = BeLib::getInstance();
 		$relName = $beLib->friendlyUrlString($formData['name']);
@@ -722,6 +797,7 @@ class AdminController extends ModulesController {
 	}
 
 	public function deleteCustomRelation() {
+		$this->checkWriteModulePermission();
 		if (empty($this->data['name'])) {
 			throw new BeditaException(__('Missing relation name to delete', true));
 		}
@@ -742,89 +818,88 @@ class AdminController extends ModulesController {
 		BeLib::getObject("BeConfigure")->cacheConfig();
 		$this->userInfoMessage(__("Relation deleted", true));
 	}
-	
-	protected function forward($action, $esito) {
-			$REDIRECT = array(
-				"deleteAllMailUnsent" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailInfo',
-								"ERROR"	=> self::VIEW_FWD.'emailInfo'
-							),
-				"deleteAllMailLogs" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailLogs',
-								"ERROR"	=> self::VIEW_FWD.'emailLogs'
-							),
-				"deleteMailJob" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailInfo',
-								"ERROR"	=> self::VIEW_FWD.'emailInfo'
-							),
-				"deleteMailLog" => 	array(
-								"OK"	=> self::VIEW_FWD.'emailLogs',
-								"ERROR"	=> self::VIEW_FWD.'emailLogs'
-							),
-				"emptyFile" => 	array(
-								"OK"	=> self::VIEW_FWD.'systemLogs',
-								"ERROR"	=> self::VIEW_FWD.'systemLogs'
-							),
-				"emptySystemLog" => 	array(
-								"OK"	=> self::VIEW_FWD.'systemLogs',
-								"ERROR"	=> self::VIEW_FWD.'systemLogs'
-							),
-	 	 		"deleteEventLog" => 	array(
- 								"OK"	=> self::VIEW_FWD.'systemEvents',
-	 							"ERROR"	=> self::VIEW_FWD.'systemEvents'
-	 						),
-				"saveCustomProperties" =>	array(
-					 			"OK"	=> '/admin/customproperties',
-								"ERROR"	=> '/admin/customproperties'
-							),
-				"deleteCustomProperties" =>	array(
-					 			"OK"	=> '/admin/customproperties',
-								"ERROR"	=> '/admin/customproperties'
-							),
-				"plugModule" => array(
-								"OK" => "/admin/pluginModules",
-								"ERROR" => "/admin/pluginModules",
-							),
-				"toggleModule" => array(
-								"OK" => $this->referer(),
-								"ERROR" => $this->referer(),
-							),
-				"unplugModule" => array(
-								"OK" => "/admin/pluginModules",
-								"ERROR" => "/admin/pluginModules",
-							),
-				"enableAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"disableAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"updateAddon" => array(
-								"OK" => "/admin/addons",
-								"ERROR" => "/admin/addons",
-							),
-				"saveConfig" => 	array(
-	 							"OK"	=> "/admin/viewConfig",
-	 							"ERROR"	=> "/admin/viewConfig"
-	 						),
-	 			"testSmtp" => 	array(
-	 							"OK"	=> "/admin/viewConfig",
-	 							"ERROR"	=> "/admin/viewConfig"
-	 						),
-	 			"saveCustomRelation" => 	array(
-	 							"OK"	=> "/admin/customRelations",
-	 							"ERROR"	=> "/admin/customRelations"
-	 						),
-	 			"deleteCustomRelation" => 	array(
-	 							"OK"	=> "/admin/customRelations",
-	 							"ERROR"	=> "/admin/customRelations"
-	 						)
-	 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	}
+
+    protected function forward($action, $result) {
+        $moduleRedirect = array(
+            'deleteAllMailUnsent' => array(
+                'OK' => '/admin/emailInfo',
+                'ERROR' => '/admin/emailInfo'
+            ),
+            'deleteAllMailLogs' => array(
+                'OK' => '/admin/emailLogs',
+                'ERROR' => '/admin/emailLogs'
+            ),
+            'deleteMailJob' => array(
+                'OK' => '/admin/emailInfo',
+                'ERROR' => '/admin/emailInfo'
+            ),
+            'deleteMailLog' => array(
+                'OK' => '/admin/emailLogs',
+                'ERROR' => '/admin/emailLogs'
+            ),
+            'emptyFile' => array(
+                'OK' => '/admin/systemLogs',
+                'ERROR' => '/admin/systemLogs'
+            ),
+            'emptySystemLog' => array(
+                'OK' => '/admin/systemLogs',
+                'ERROR' => '/admin/systemLogs'
+            ),
+            'deleteEventLog' => array(
+                'OK' => '/admin/systemEvents',
+                'ERROR' => '/admin/systemEvents'
+            ),
+            'saveCustomProperties' => array(
+                'OK' => '/admin/customproperties',
+                'ERROR' => '/admin/customproperties'
+            ),
+            'deleteCustomProperties' => array(
+                'OK' => '/admin/customproperties',
+                'ERROR' => '/admin/customproperties'
+            ),
+            'plugModule' => array(
+                'OK' => '/admin/pluginModules',
+                'ERROR' => '/admin/pluginModules'
+            ),
+            'toggleModule' => array(
+                'OK' => $this->referer(),
+                'ERROR' => $this->referer()
+            ),
+            'unplugModule' => array(
+                'OK' => '/admin/pluginModules',
+                'ERROR' => '/admin/pluginModules'
+            ),
+            'enableAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'disableAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'updateAddon' => array(
+                'OK' => '/admin/addons',
+                'ERROR' => '/admin/addons'
+            ),
+            'saveConfig' => array(
+                'OK' => '/admin/viewConfig',
+                'ERROR' => '/admin/viewConfig'
+            ),
+            'testSmtp' => array(
+                'OK' => '/admin/viewConfig',
+                'ERROR' => '/admin/viewConfig'
+            ),
+            'saveCustomRelation' => array(
+                'OK' => '/admin/customRelations',
+                'ERROR' => '/admin/customRelations'
+            ),
+            'deleteCustomRelation' => array(
+                'OK' => '/admin/customRelations',
+                'ERROR' => '/admin/customRelations'
+            )
+        );
+        return $this->moduleForward($action, $result, $moduleRedirect);
+    }
 
 }
 

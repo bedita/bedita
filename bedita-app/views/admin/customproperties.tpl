@@ -55,11 +55,11 @@ $(document).ready(function() {
 		</tr>
 		{foreach from=$properties item="p"}
 			<form id="form_{$p.id}" action="{$html->url('/admin/saveCustomProperties')}" method="post">
-			
+			{$beForm->csrf()}
 			<tr name="pop">
 
 				<td>
-					<input type="text" name="data[Property][name]" value="{$p.name}" />
+					<input type="text" name="data[Property][name]" value="{$p.name|escape}" />
 				</td>
 				<td style="vertical-align:middle">
                     {if !empty($p.object_type_id)}
@@ -93,7 +93,7 @@ $(document).ready(function() {
 							{/if}
 						{/foreach}
 					{/if}
-					<input class="optionsfields" ctype="text" value="{$options}" name="data[options]" />
+					<input class="optionsfields" ctype="text" value="{$options|escape}" name="data[options]" />
 				</td>
 	 			<td>
 	 				<span class="optionsfields">
@@ -118,7 +118,7 @@ $(document).ready(function() {
 
 	
 	<form action="{$html->url('/admin/saveCustomProperties')}" method="post">
-
+	{$beForm->csrf()}
 	<h2 style="margin:30px 0 15px 0" >{t}Create a new custom property{/t}</h2>
 	<table class="indexlist">
 		<tr>

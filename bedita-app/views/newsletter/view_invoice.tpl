@@ -17,7 +17,7 @@ $(document).ready(function() {
 
 <div class="head">
 
-	<h1>{t}Invoice{/t} <i>{$object.title}</i></h1>
+	<h1>{t}Invoice{/t} <i>{$object.title|escape}</i></h1>
 
 </div>
 

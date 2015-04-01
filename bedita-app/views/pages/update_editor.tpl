@@ -29,7 +29,7 @@
     <ul id="editorsList" style="margin-bottom:10px">
     {foreach from=$editors item="item"}
         <li rel="{$item.User.id}" style="border-bottom:1px solid gray">
-            <b>{$item.User.realname|default:$item.User.userid}</b>
+            <b>{$item.User.realname|default:$item.User.userid|escape}</b>
         </li>
     {/foreach}
     </ul>

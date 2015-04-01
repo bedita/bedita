@@ -100,7 +100,7 @@ class ModuleShell extends BeditaBaseShell {
 			}
 			
 			include $pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php";
-			$beditaVersion = Configure::read("majorVersion");
+			$beditaVersion = Configure::read('version');
 			if ($beditaVersion != $moduleSetup["BEditaVersion"]) {
 				$this->out("");
 				$this->out("WARNING: installed version and version required mismatched!");

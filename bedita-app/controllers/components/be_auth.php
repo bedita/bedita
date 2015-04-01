@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -22,13 +22,6 @@
  * User/group/authorization component:
  *  - login, session start
  *  - user/group creation/handling
- * 
- * @link            http://www.bedita.com
- * @version         $Revision$
- * @modifiedby      $LastChangedBy$
- * @lastmodified    $LastChangedDate$
- * 
- * $Id$
  */
 class BeAuthComponent extends Object {
     var $controller = null;
@@ -49,73 +42,126 @@ class BeAuthComponent extends Object {
      */
     function initialize(&$controller) {
         $conf = Configure::getInstance() ;      
-        $this->sessionKey = $conf->session["sessionUserKey"] ;
+        $this->sessionKey = $conf->session['sessionUserKey'];
         
-        $this->controller   = $controller;
-        $this->Session      = &$controller->Session;
+        $this->controller = $controller;
+        $this->Session = &$controller->Session;
 
-        if(!$this->Session->valid()) {
-            $this->log("Session not valid!");
+        $this->initExternalServices();
+        // autostart session
+        if (Configure::read('Session.start') === true) {
+            $this->startSession();
         }
-
-        $services = $this->getExternalServices();
-
-        if($this->checkSessionKey()) {
-            $this->user = $this->Session->read($this->sessionKey);
-        }
-
         $this->controller->set($this->sessionKey, $this->user);
     }
 
     /**
-     * Get external auth services components
+     * Start session if it isn't already started
+     * else check if it's valid
+     *
+     * @param string $sessionId the session id with which the session try to start (if not already started)
+     * @return boolean true if session started and valid
+     */
+    public function startSession($sessionId = null) {
+        if (!$this->Session->started()) {
+            $this->Session->activate();
+            if ($sessionId) {
+                $this->Session->id($sessionId);
+            }
+            $this->Session->startup($this->controller);
+
+            if (!$this->Session->valid()) {
+                $this->log('Session just started but not valid! ' . $this->Session->id . AppController::usedUrl());
+                return false;
+            }
+            $this->startupExternalServices();
+            if ($this->checkSessionKey()) {
+                $this->user = $this->Session->read($this->sessionKey);
+            }
+        } elseif (!$this->Session->valid()) {
+            $this->log('Session already started not valid! ' . $this->Session->id . AppController::usedUrl());
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Init external auth services components, reading 'extAuthParams' config
+     * Create components without components startup
+     */
+    protected function initExternalServices() {
+        $serviceNames = array();
+        $extAutParams = Configure::read('extAuthParams');
+        if (!empty($extAutParams)) {
+            $serviceNames = array_keys($extAutParams);
+        }
+
+//         $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
+//         if ($handle = opendir($defaultComponentPath)) {
+//             while (false !== ($entry = readdir($handle))) {
+//                 if (strpos($entry, 'be_auth_') === 0) {
+//                     $name = str_replace('be_auth_', '', $entry);
+//                     $name = str_replace('.php', '', $name);
+//                     array_push($components, Inflector::camelize($name));
+//                 }
+//             }
+
+//             closedir($handle);
+//         }
+//         $addons = ClassRegistry::init("Addon")->getAddons();
+//         if (!empty($addons['components']) && !empty($addons['components']['on'])) {
+//             $addonComponents = $addons['components']['on'];
+//             foreach ($addonComponents as $key => $component) {
+//                 if (strpos($component['name'], 'BeAuth') === 0) {
+//                     array_push($components, str_replace('BeAuth', '', $component['name']));
+//                 }
+//             }
+//         }
+        if (!empty($serviceNames)) {
+            foreach ($serviceNames as $service) {
+                //load component dynamically
+                $componentClass = 'BeAuth' . Inflector::camelize($service);
+                if (!App::import('Component', $componentClass)) {
+                    throw new BeditaException(__('External auth component not found: ', true) . $componentClass);
+                } else {
+                    $componentClass .= 'Component';
+                    $componentObject = new $componentClass();
+                    $this->extAuthComponents[$service] = $componentObject;
+                }
+            }
+        }
+    }
+
+    /**
+     * Get external auth services list
      */
     public function getExternalServices() {
-        $components = array();
-        $defaultComponentPath = BEDITA_CORE_PATH . DS . "controllers" . DS . 'components';
-        if ($handle = opendir($defaultComponentPath)) {
-            while (false !== ($entry = readdir($handle))) {
-                if (strpos($entry, 'be_auth_') === 0) {
-                    $name = str_replace('be_auth_', '', $entry);
-                    $name = str_replace('.php', '', $name);
-                    array_push($components, Inflector::camelize($name));
-                }
-            }
-
-            closedir($handle);
-        }
-        $addons = ClassRegistry::init("Addon")->getAddons();
-        if (!empty($addons['components']) && !empty($addons['components']['on'])) {
-            $addonComponents = $addons['components']['on'];
-            foreach ($addonComponents as $key => $component) {
-                if (strpos($component['name'], 'BeAuth') === 0) {
-                    array_push($components, str_replace('BeAuth', '', $component['name']));
-                }
-            }
-        }
         $services = array();
-        if (!empty($components)) {
-            foreach ($components as $key => $service) {
-                //load component dynamically
-                $componentClass = "BeAuth" . Inflector::camelize($service);
-                if(!App::import("Component", $componentClass)) {
-                    throw new BeditaException(__("External auth component not found: ", true) . $componentClass);
-                } else {
-                    $componentClass .= "Component";
-                    $componentObject = new $componentClass();
-                    if ($componentObject->startup($this->controller)) {
-                        $this->extAuthComponents[$service] = $componentObject;
-                        array_push($services, array(
-                            'name' => $service,
-                            'relatedBy' => $componentObject->relatedBy
-                        ));
-                    };
-                }
+        if (!empty($this->extAuthComponents)) {
+            foreach ($this->extAuthComponents as $service => $componentObject) {
+                $services[] = array(
+                    'name' => $service,
+                    'relatedBy' => $componentObject->relatedBy
+                );
             }
         }
         return $services;
     }
 
+    /**
+     * Startup external auth service components
+     */
+    protected function startupExternalServices() {
+        if (!empty($this->extAuthComponents)) {
+            foreach ($this->extAuthComponents as $service => $componentObject) {
+                if (!$componentObject->startup($this->controller)) {
+                    $this->log('External service startup failed: ' . $service);
+                }
+            }
+        }
+    }
+    
     /**
      * Check whether session key is valid
      */
@@ -123,24 +169,21 @@ class BeAuthComponent extends Object {
         $res = true;
         $extRes = false;
 
-        if(!isset($this->Session)) {
+        if (!isset($this->Session)) {
             $res = false;
-            $this->log("Session component not set!");
-        } else if(!$this->Session->valid()) {
+            $this->log('Session component not set!');
+        } elseif (!$this->Session->valid()) {
             $res = false;
-            $this->log("Session not valid!");
+            if ($this->Session->started()) {
+                $this->log('checkSessionKey: session not valid! ' . $this->Session->id . AppController::usedUrl());
+            }
         } 
 
         if ($res) {
 
-            if(!$this->Session->check($this->sessionKey)) {
+            if (!$this->Session->check($this->sessionKey)) {
                 $res = false;
-                if(BACKEND_APP) {
-                    $this->log("Session key does not exist");
-                }
             }
-
-            
 
             if (!$res) {
                 foreach ($this->extAuthComponents as $key => $component) {
@@ -200,10 +243,11 @@ class BeAuthComponent extends Object {
             $userModel->containLevel("default");
             $u = $userModel->find($conditions);
 
-            if(!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
-                return false ;
+            if (!$this->loginPolicy($userid, $u, $policy, $auth_group_name)) {
+                return false;
             }
         } else {
+            $this->startSession();
             $this->Session->write($this->sessionKey . 'Policy', $policy);
             $this->Session->write($this->sessionKey . 'AuthGroupName', $auth_group_name);
             return $this->externalLogin($authType);
@@ -286,6 +330,7 @@ class BeAuthComponent extends Object {
             }
             $this->logout();
             if ($this->userAuth != 'bedita') {
+                $this->startSession();
                 $this->Session->write('externalLoginRequestFailed', true);
             }
             return false;
@@ -328,9 +373,10 @@ class BeAuthComponent extends Object {
             }
         }
 
-        if($authorized === false) {
+        if ($authorized === false) {
             $this->log("User login not authorized: ".$userid);
             if ($this->userAuth != 'bedita') {
+                $this->startSession();
                 $this->Session->write('externalLoginRequestFailed', $userid);
             }
             // TODO: special message?? or not for security???
@@ -350,6 +396,7 @@ class BeAuthComponent extends Object {
         if(!$this->isValid) {
             $this->logout();
             if ($this->userAuth != 'bedita') {
+                $this->startSession();
                 $this->Session->write('externalLoginRequestFailed', $userid);
             }
             return false;
@@ -419,23 +466,28 @@ class BeAuthComponent extends Object {
      * @return boolean
      */
     public function isLogged() {
-        if ($this->checkSessionKey()) {
-            if(@empty($this->user)) $this->user = $this->Session->read($this->sessionKey);
+        if (Configure::read('Session.start') === false && isset($_COOKIE[Configure::read('Session.cookie')])) {
+            $this->startSession();
+        }
+        if ($this->Session->started() && $this->checkSessionKey()) {
+            if (empty($this->user)) {
+                $this->user = $this->Session->read($this->sessionKey);
+            }
             $this->controller->set($this->sessionKey, $this->user);
             // update session info
-            $this->Session->write(self::SESSION_INFO_KEY, array("userAgent" => $_SERVER['HTTP_USER_AGENT'], 
-                "ipNumber" => $_SERVER['REMOTE_ADDR'], "time" => time()));
-            
+            $this->Session->write(self::SESSION_INFO_KEY, array(
+                'userAgent' => $_SERVER['HTTP_USER_AGENT'],
+                'ipNumber' => $_SERVER['REMOTE_ADDR'],
+                'time' => time()
+            ));
             return true;
-        } else {
-            $this->user = null;
         }
-        
-        if(!isset($this->controller)) return false ;
-        
+        $this->user = null;
+        if (!isset($this->controller)) {
+            return false;
+        }
         $this->controller->set($this->sessionKey, $this->user);
-        
-        return false ;
+        return false;
     }
 
     /**
@@ -456,6 +508,13 @@ class BeAuthComponent extends Object {
         return $this->user;
     }
 
+    /**
+     * Get the current logged userid or empty string if no user is logged
+     */
+    public function userid() {
+        return !empty($this->user['userid']) ? $this->user['userid'] : '';
+    }
+    
     /**
      * Check whether user group is authorized
      * 
@@ -525,7 +584,7 @@ class BeAuthComponent extends Object {
         if ($notify) {
             $user->Behaviors->detach('Notify');
         }
-        return $user->id;
+        return $user->getLastInsertID();
     }
 
     /**
@@ -707,11 +766,14 @@ class BeAuthComponent extends Object {
     }
 
     /**
-     * Get session key if present, false otherwise
+     * Get user session data if present, false otherwise
      * 
      * @return mixed string|boolean
      */
     public function getUserSession() {
+        if (!empty($this->user)) {
+            return $this->user;
+        }
         return ($this->checkSessionKey())? $this->Session->read($this->sessionKey) : false; 
     } 
 
@@ -719,7 +781,9 @@ class BeAuthComponent extends Object {
      * Set session variables (i.e. userAgent, ipNumber, time, Config.language)
      */
     public function setSessionVars() {
-        if(isset($this->Session)) {
+        if (isset($this->Session)) {
+            // assure that session started
+            $this->startSession();
             // load history
             $historyConf = Configure::read("history");
             if (!empty($historyConf)) {
@@ -734,7 +798,7 @@ class BeAuthComponent extends Object {
             }
         }
 
-        if(isset($this->controller)) {
+        if (isset($this->controller)) {
             $this->controller->set($this->sessionKey, $this->user);
         }
     }
@@ -746,7 +810,7 @@ class BeAuthComponent extends Object {
      * @param array $historyConf
      */
     public function updateSessionHistory($historyItem, $historyConf) {
-        if (empty($historyItem) || empty($historyConf)) {
+        if (empty($historyItem) || empty($historyConf) || !$this->Session->started()) {
             return;
         }
         $history = $this->Session->read($this->sessionKey . ".History");

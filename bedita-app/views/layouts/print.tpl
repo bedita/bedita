@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
 	<title>BEdita | {$title_for_layout} | {$html->action}</title>
-	{include file="inc/meta.tpl"}
+	{include file = './inc/meta.tpl'}
 
 	{assign_associative var="cssOptions" media=all}
 	{$html->css("print", null, $cssOptions)}

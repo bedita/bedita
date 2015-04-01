@@ -3,21 +3,16 @@
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file= './inc/menuleft.tpl'}
 
-{include file="inc/menucommands.tpl"}
+{include file= './inc/menucommands.tpl'}
 
-{assign_associative var="params" itemName="cards"}
-{$view->element('toolbar', $params)}
-
-
+{$view->element('toolbar', ['itemName' => 'cards'])}
 
 <div class="mainfull">
 
-    {$view->element("filters")}
-
-	{include file="inc/list_objects.tpl"}
-	
+    {$view->element('filters')}
+    {include file= './inc/list_objects.tpl'}
 
 </div>
 

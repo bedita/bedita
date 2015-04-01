@@ -33,8 +33,8 @@ class Link extends BEAppObjectModel {
 	var $actsAs = array();
 
 	public $searchFields = array(
-		"title" => 8,
-		"nickname" => 10,
+		"title" => 10,
+		"nickname" => 8,
 		"description" => 5,
 		"url" => 8,
 		"note" => 2
@@ -44,6 +44,7 @@ class Link extends BEAppObjectModel {
 				"detailed" =>  array("BEObject" => array("ObjectType", 
 															"UserCreated", 
 															"UserModified", 
+															"ObjectProperty",
 															"RelatedObject",
 															"Category",
 															"Annotation",
@@ -55,7 +56,7 @@ class Link extends BEAppObjectModel {
 
 				"minimum" => array("BEObject" => array("ObjectType")),
 		
-				"frontend" => array("BEObject" => array("LangText","RelatedObject"))
+				"frontend" => array("BEObject" => array("LangText","RelatedObject","ObjectProperty"))
 		);
 		
 	public $objectTypesGroups = array("leafs");

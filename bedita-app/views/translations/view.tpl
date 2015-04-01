@@ -38,13 +38,13 @@ $(document).ready(function(){
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file= './inc/menuleft.tpl'}
 
 <div class="head">
 	{if !empty($object_translation.title)}
-	<h2 style="margin:5px 0 5px 0">{$object_translation.title|default:'<i>[no title]</i>'}</h2>{/if}
+	<h2 style="margin:5px 0 5px 0">{$object_translation.title|escape|default:'<i>[no title]</i>'}</h2>{/if}
 	{t}translation of{/t}
-	<h2 style="margin:5px 0 0 0">{$object_master.title|default:'<i>[no title]</i>'}</h2>
+	<h2 style="margin:5px 0 0 0">{$object_master.title|escape|default:'<i>[no title]</i>'}</h2>
 
 </div>
 

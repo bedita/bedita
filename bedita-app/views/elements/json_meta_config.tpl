@@ -12,10 +12,11 @@
 		'currLang2': '{$currLang2}',
 		'webroot': '{$session->webroot}',
 		'base': '{$html->url("/")}',
+		{if !empty($object.id)}'id': {$object.id},{/if}
 		'currentModule': {if !empty($currentModule)} {$currentModule|json_encode} {else}{ name: 'home' }{/if},
 		'action': '{$view->action|default:"index"}'
 	};
-	
+
 	{if !empty($allObjectsRelations)}
 		BEDITA.relations = {$allObjectsRelations|json_encode};
 	{/if}

@@ -76,5 +76,35 @@ class Annotation extends BEAppModel {
 		}
 	}
 
+	/**
+	 * passed an array of BEdita objects add 'num_of_annotation_name' key
+	 * with the number of annotation applied to objects
+	 *
+	 * @param  array $objects
+	 * @param  array $options list of options accepted
+	 *             - type: array of Annotation object as array('Comment', 'EditorNote')
+	 * @return array $objects
+	 */
+	public function countAnnotations(array $objects, array $options) {
+        if (!empty($options['type'])) {
+    		foreach ($objects as &$obj) {
+                foreach ($options['type'] as $annotationType) {
+                    $annotationModel = ClassRegistry::init($annotationType);
+                    $objectTypeName = Inflector::underscore($annotationModel->name);
+                    $numOf = 'num_of_' . $objectTypeName;
+                    $objectTypeId = Configure::read('objectTypes.' . $objectTypeName . '.id');
+        			$obj[$numOf] = $annotationModel->find('count', array(
+        				'conditions' => array(
+                            'object_id' => $obj['id'],
+                            'BEObject.object_type_id' => $objectTypeId
+                        ),
+                        'contain' => array('BEObject')
+        			));
+                }
+    		}
+        }
+		return $objects;
+	}
+
 }
 ?>

@@ -69,6 +69,9 @@ function loadUserGroupAjax(url) {
 }
 </script>
 
+{if empty($el)}
+ {$el = $object|default:[]}
+{/if}
 
 {$relcount = $el.Permission|@count|default:0}
 <div class="tab" id="permissionsTab">

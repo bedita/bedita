@@ -69,7 +69,16 @@ class DbadminShell extends BeditaBaseShell {
             $this->out("Index for object '$id' created.");
             return;
         }
-
+        if (!empty($this->params['type'])) {
+            $t = trim(strtolower($this->params['type']));
+            $objTypeId = Configure::read('objectTypes.' . $t . '.id');
+            if (empty($objTypeId)) {
+                $this->out('Object type not found: ' . $t);
+                return;
+            }
+            $options['type'] = $objTypeId;
+        }
+        
 		if (!empty($this->params['delete'])) {
 		    $options['delete'] = true;
 		}
@@ -959,12 +968,13 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
 		$this->out(' ');
-		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-delete] [-id <obj-id>] [-verbose] [-log]');
+		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-delete] [-id <obj-id>] [-type <object-type>] [-verbose] [-log]');
 		$this->out(' ');
         $this->out("    -engine \t search engine to use, e.g. ElasticSearch");
 		$this->out("    -delete \t delete index before rebuild");
         $this->out("    -id \t rebuild index for single object only");
-		$this->out("    -verbose \t show also successfully results");
+        $this->out("    -type \t rebuild index only for a single object type (like 'document', 'image'...)");
+        $this->out("    -verbose \t show also successfully results");
 		$this->out("    -log \t write errors on rebuildIndex.log file");
   		$this->out(' ');
  		$this->out("2. checkLangStatus: update lang texts 'status' using master object status");

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2014-05-09 11:38:21\n"
+"POT-Creation-Date: 2015-02-17 16:06:34\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -17,9 +17,8 @@ msgstr "(De)Seleziona tutto"
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
 
-msgid ""
-"A new version of the addon seems to be present. Do you want to update it?"
-msgstr "E' presente una nuova versione dell'addon. Vuoi aggiornarlo?"
+msgid "A new version of this is available. Do you want to update it?"
+msgstr "È disponibile una nuova versione del plugin. Vuoi aggiornarlo ora?"
 
 msgid "Access forbidden to object"
 msgstr "Accesso all'oggetto vietato"
@@ -130,7 +129,7 @@ msgstr "Sei sicuro che vuoi eliminarlo"
 
 msgid "Are you sure you want to procede? The operation can take several time"
 msgstr ""
-"Sei sicuro che vuoi procedere? L'operazione può impiegare parecchio tempo"
+"Sei sicuro di voler procedere? L'operazione può impiegare parecchio tempo"
 
 msgid "Area deleted"
 msgstr "Area eliminata"
@@ -243,12 +242,6 @@ msgstr "Schede eliminate"
 msgid "Categories"
 msgstr "Categorie"
 
-msgid "Category deleted"
-msgstr "Categoria eliminata"
-
-msgid "Category saved"
-msgstr "Categoria salvata"
-
 msgid "Change Password"
 msgstr "Modifica Password"
 
@@ -266,6 +259,9 @@ msgstr "Verifica url"
 
 msgid "Choose one of the following operations"
 msgstr "Scegli una delle seguenti operazioni"
+
+msgid "Clean all cache files (also object cache)"
+msgstr "Rimuovi tutto dalla cache (anche gli oggetti)"
 
 msgid "Clone"
 msgstr "Clona"
@@ -603,6 +599,9 @@ msgstr "Errore in eliminazione associazione fra scheda e gruppo di posta"
 msgid "Error removing group"
 msgstr "Errore in eliminazione gruppo"
 
+msgid "Error removing permissions for group"
+msgstr "Errore in eliminazione permessi di gruppo"
+
 msgid "Error saving avatar data"
 msgstr "Errore in salvataggio dati avatar"
 
@@ -644,6 +643,9 @@ msgstr "Errore in salvataggio dati nota"
 
 msgid "Error saving options"
 msgstr "Errore in salvataggio opzioni"
+
+msgid "Error saving permissions for group"
+msgstr "Errore in salvataggio permessi di gruppo"
 
 msgid "Error saving status for item: "
 msgstr "Errore in salvataggio status per elemento: "
@@ -1008,6 +1010,9 @@ msgstr "Gestisci relazioni"
 msgid "Media already exists in the system"
 msgstr "Media già esiste nel sistema"
 
+msgid "Media file is missing"
+msgstr "File multimediale non trovato"
+
 msgid "Media root"
 msgstr "Media root"
 
@@ -1028,6 +1033,9 @@ msgstr "Template messaggio"
 
 msgid "Missing data"
 msgstr "Dati mancanti"
+
+msgid "Missing data group to remove"
+msgstr "Mancano dati del gruppo da rimuovere"
 
 msgid "Missing email to send recover instructions"
 msgstr "Email non corretta per l'invio di istruzioni di recover"
@@ -1134,6 +1142,9 @@ msgstr "Il multimedia provider non è supportato"
 msgid "My permissions groups"
 msgstr "I miei gruppi"
 
+msgid "NO"
+msgstr "NO"
+
 msgid "Name"
 msgstr "Nome"
 
@@ -1175,7 +1186,7 @@ msgstr "Newsletter"
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
 msgstr ""
-"Newsletter inviata. Per programmare un altro invio clona questo elemento"
+"Newsletter inviata. Per programmare un altro invio clona questo elemento."
 
 msgid "Newsletter subscriptions"
 msgstr "Sottoscrizioni della Newsletter"
@@ -1186,11 +1197,26 @@ msgstr "Newsletter"
 msgid "Newsletters "
 msgstr "Newsletters "
 
+msgid "Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at"
+msgstr "Attenzione. Ogni modifica che fai potrebbe non essere applicata se non salvi in tempo. La newsletter sta per essere inviata in meno di un'ora, alle"
+
+msgid "schedule date and time"
+msgstr "date e ora di invio"
+
 msgid "Newsletters sent this month"
 msgstr "Newsletter inviate questo mese"
 
-msgid "Newsletters sent this year"
-msgstr "Newsletter inviate quest'anno"
+msgid "Save & queue newsletter"
+msgstr "Salva e accoda newsletter"
+
+msgid "Test newsletter"
+msgstr "Prova newsletter"
+
+msgid "now"
+msgstr "ora"
+
+msgid "Do you want to save and SEND this newsletter now? (mails are being sent as soon as possible)"
+msgstr "Vuoi salvare e inviare la newsletter immediatamente? (la procedura di invio inizierà subito)"
 
 msgid "No"
 msgstr "No"
@@ -1288,6 +1314,9 @@ msgstr "Pubblicazione non impostata"
 msgid "No questionnaires found"
 msgstr "Nessun questionario trovato"
 
+msgid "No results found"
+msgstr "Nessun risultato trovato"
+
 msgid "No subscribers"
 msgstr "Nessun iscritto"
 
@@ -1318,8 +1347,11 @@ msgstr "Nessun albero trovato"
 msgid "No user data"
 msgstr "Nessun dato utente"
 
-msgid "No user with access privileges found"
-msgstr "Nessun utente con privilegi di accesso trovato"
+msgid ""
+"No user with access privileges found or user uses an external authentication"
+msgstr ""
+"Utente con privilegi di accesso non trovato oppure si sta utilizzando un "
+"servizio d'autenticazione esterno"
 
 msgid "No valid export filter has been selected"
 msgstr "Nessun filtro di esportazione è stato selezionato"
@@ -1332,6 +1364,9 @@ msgstr "Nessun webmark trovato"
 
 msgid "No, use custom list"
 msgstr "No, utilizzare lista personalizzata"
+
+msgid "None"
+msgstr "Nessuno"
 
 msgid "Not Authorized"
 msgstr "Non Autorizzato"
@@ -1431,6 +1466,9 @@ msgstr "Dati personali"
 
 msgid "Please check"
 msgstr "Verificare"
+
+msgid "Please choose an existing card, or create a new one."
+msgstr "Per favore, scegli una scheda esistente o creane una nuova."
 
 msgid "Please enter a valid date in the %1 format"
 msgstr "Inserire una data valida nel formato %1"
@@ -1570,14 +1608,26 @@ msgstr "Sezione elimnata"
 msgid "Section saved"
 msgstr "Sezione salvata"
 
+msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
+msgstr "Errore di sicurezza: il token CSRF è invalido. Per favore prova a inviare i dati nuovamente"
+
 msgid "Select a category"
 msgstr "Selezionare una categoria"
 
 msgid "Select a destination to 'copy to'"
 msgstr "Seleziona una destinazione per il 'copy to'"
 
+msgid "mailgroup"
+msgstr "Lista newsletter"
+
 msgid "Select a mailgroup"
-msgstr "Selezionare un mailgroup"
+msgstr "Selezionare una lista della newsletter"
+
+msgid "Missing sender email"
+msgstr "Manca l'indirizzo email del mittente"
+
+msgid "Missing send time"
+msgstr "Manca l'ora di invio"
 
 msgid "Select a status"
 msgstr "Selezionare uno status"
@@ -1785,6 +1835,9 @@ msgstr "Traduzioni"
 msgid "UPDATE"
 msgstr "AGGIORNA"
 
+msgid "URL"
+msgstr "URL"
+
 msgid "URL not valid"
 msgstr "URL non valido"
 
@@ -1951,6 +2004,9 @@ msgstr "Errore in username/password o sessione scaduta"
 msgid "X"
 msgstr "X"
 
+msgid "YES"
+msgstr "SI"
+
 msgid "Yes"
 msgstr "Sì"
 
@@ -1978,8 +2034,8 @@ msgstr "accesso "
 msgid "access server log statistics"
 msgstr "accedi al log delle statistiche del server"
 
-msgid "active"
-msgstr "attivo"
+msgid "active from"
+msgstr "attivo dal"
 
 msgid "add"
 msgstr "aggiungi"
@@ -2113,11 +2169,8 @@ msgstr "rimanda all'email (bounce)"
 msgid "browse your disk"
 msgstr "sfoglia, cerca nel disco"
 
-msgid "business name"
-msgstr "ragione sociale"
-
 msgid "card(s) associated to mailgroup"
-msgstr "schede associate a mailgroup"
+msgstr "schede associate a lista newsletter"
 
 msgid "cards"
 msgstr "schede"
@@ -2319,8 +2372,8 @@ msgstr "download"
 msgid "draft"
 msgstr "bozza"
 
-msgid "duration in minutes"
-msgstr "durata in minuti"
+msgid "duration in seconds"
+msgstr "durata in secondi"
 
 msgid "e-mail"
 msgstr "e-mail"
@@ -2336,6 +2389,9 @@ msgstr "email"
 
 msgid "email2"
 msgstr "email2"
+
+msgid "emails"
+msgstr "email"
 
 msgid "empty all"
 msgstr "svuotare tutto"
@@ -2546,6 +2602,9 @@ msgstr "latitudine"
 
 msgid "left to right"
 msgstr "da sinistra a destra"
+
+msgid "legal form"
+msgstr "in vigore dal"
 
 msgid "license"
 msgstr "licenza"
@@ -2842,9 +2901,6 @@ msgstr "ordine"
 
 msgid "order by"
 msgstr "ordinamento per"
-
-msgid "organization"
-msgstr "organizzazione"
 
 msgid "original filename"
 msgstr "nome originale del file"
@@ -3323,6 +3379,9 @@ msgstr "visualizza"
 msgid "view all"
 msgstr "vedi tutto"
 
+msgid "view file"
+msgstr "apri file"
+
 msgid "visibility"
 msgstr "visibilità"
 
@@ -3368,378 +3427,23 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr "il tuo messaggio"
 
-#~ msgid "Add multiple items"
-#~ msgstr "Aggiungi elementi multipli"
+#~ msgid "Category deleted"
+#~ msgstr "Categoria eliminata"
 
-#~ msgid "Advanced editor"
-#~ msgstr "Editor avanzato"
+#~ msgid "Category saved"
+#~ msgstr "Categoria salvata"
 
-#~ msgid "Browse"
-#~ msgstr "Sfoglia"
+#~ msgid "No user with access privileges found"
+#~ msgstr "Nessun utente con privilegi di accesso trovato"
 
-#~ msgid "Cancel queue"
-#~ msgstr "Cancella coda"
+#~ msgid "active"
+#~ msgstr "attivo"
 
-#~ msgid "Create new user"
-#~ msgstr "Crea un nuovo utente"
+#~ msgid "business name"
+#~ msgstr "ragione sociale"
 
-#~ msgid "Errors during upload"
-#~ msgstr "Errore durante l'upload"
+#~ msgid "duration in minutes"
+#~ msgstr "durata in minuti"
 
-#~ msgid "Forgotten username or password?"
-#~ msgstr "Hai dimenticato l'utente o la password?"
-
-#~ msgid "If you have any problems try with browser upload"
-#~ msgstr "In caso di problemi provare con upload del browser "
-
-#~ msgid "Operations on above records"
-#~ msgstr "Operazioni sui record sopra selezionati"
-
-#~ msgid "Queue is empty"
-#~ msgstr "Coda vuota"
-
-#~ msgid "Relations"
-#~ msgstr "Relazioni"
-
-#~ msgid "Remove association"
-#~ msgstr "Rimuovi associazioni"
-
-#~ msgid "Remove selected from section"
-#~ msgstr "Rimuovi selezione dalla sezione"
-
-#~ msgid "Select a user from the list"
-#~ msgstr "Seleziona un utente dalla lista"
-
-#~ msgid "Select by type"
-#~ msgstr "Seleziona per tipo"
-
-#~ msgid "Upload end"
-#~ msgstr "Fine upload"
-
-#~ msgid "Upload queue"
-#~ msgstr "Coda di upload"
-
-#~ msgid "Uploading file"
-#~ msgstr "Upload in corso"
-
-#~ msgid "Use the multiple upload"
-#~ msgstr "Usa upload multiplo"
-
-#~ msgid "User login temporary blocked"
-#~ msgstr "Login utente temporaneamente bloccato"
-
-#~ msgid "Wrong username/password or no authorization"
-#~ msgstr "Errore in username/password o nessuna autorizzazione"
-
-#~ msgid "add by object ids"
-#~ msgstr "aggiungi per id oggetto"
-
-#~ msgid "always"
-#~ msgstr "sempre"
-
-#~ msgid "create and associate"
-#~ msgstr "crea e associa"
-
-#~ msgid "delete selected items"
-#~ msgstr "elimina gli elementi selezionati"
-
-#~ msgid "files queued"
-#~ msgstr "file in coda"
-
-#~ msgid "hidden from menu and canonical path"
-#~ msgstr "nascosto da menu e percorso canonico [canonical path]"
-
-#~ msgid "mailgroups"
-#~ msgstr "mailgroups"
-
-#~ msgid "ok"
-#~ msgstr "ok"
-
-#~ msgid "select from archive"
-#~ msgstr "seleziona dall'archivio"
-
-#~ msgid "upload new items"
-#~ msgstr "carica nuovi elementi"
-
-#~ msgid "Change this file with another"
-#~ msgstr "Sostituisci il file"
-
-#~ msgid "Find it"
-#~ msgstr "Trova"
-
-#~ msgid "Manage relations"
-#~ msgstr "Gestisci le relazioni"
-
-#~ msgid "No references"
-#~ msgstr "Nessuna relazione"
-
-#~ msgid "Referenced in"
-#~ msgstr "Referenziato in"
-
-#~ msgid "Relationships"
-#~ msgstr "Relazioni"
-
-#~ msgid "lock"
-#~ msgstr "blocca"
-
-#~ msgid "lock all"
-#~ msgstr "blocca tutti"
-
-#~ msgid "unlock"
-#~ msgstr "sblocca"
-
-#~ msgid "unlock all"
-#~ msgstr "sblocca tutti"
-
-#~ msgid "hide"
-#~ msgstr "nascondi"
-
-#~ msgid "hide all"
-#~ msgstr "nascondi tutti"
-
-#~ msgid "mail address"
-#~ msgstr "indirizzo di posta"
-
-#~ msgid "Questionnaires list"
-#~ msgstr "lista questionari"
-
-#~ msgid "word"
-#~ msgstr "parola"
-
-#~ msgid "define interactive areas"
-#~ msgstr "definisci nuove aree"
-
-#~ msgid "define interactive points"
-#~ msgstr "definisci nuovi tiranti"
-
-#~ msgid "edit interactive elements"
-#~ msgstr "modifica aree e tiranti"
-
-#~ msgid "preview interactive image"
-#~ msgstr "anteprima"
-
-#~ msgid "new interactive area"
-#~ msgstr "nuova area"
-
-#~ msgid "bordered area"
-#~ msgstr "area con bordo"
-
-#~ msgid "filled area"
-#~ msgstr "area piena"
-
-#~ msgid "hidden area"
-#~ msgstr "area nascosta"
-
-#~ msgid "arrange layers"
-#~ msgstr "gestisci livelli"
-
-#~ msgid "bring to front"
-#~ msgstr "porta sopra"
-
-#~ msgid "bring forward"
-#~ msgstr "porta davanti"
-
-#~ msgid "send backward"
-#~ msgstr "porta dietro"
-
-#~ msgid "send to back"
-#~ msgstr "porta sotto"
-
-#~ msgid "interactive pop-up positon"
-#~ msgstr "posizione del pop-up"
-
-#~ msgid "relative to area"
-#~ msgstr "relativa all'area"
-
-#~ msgid "relative to image"
-#~ msgstr "relativa all'immagine"
-
-#~ msgid "initial situation"
-#~ msgstr "situazione iniziale"
-
-#~ msgid "visible"
-#~ msgstr "visibile"
-
-#~ msgid "style"
-#~ msgstr "stile"
-
-#~ msgid "icon"
-#~ msgstr "icona"
-
-#~ msgid "Question"
-#~ msgstr "quesito"
-
-#~ msgid "Questions"
-#~ msgstr "quesiti"
-
-#~ msgid "Questions list"
-#~ msgstr "lista quesiti"
-
-#~ msgid "Create new question"
-#~ msgstr "Crea nuovo quesito"
-
-#~ msgid "friday"
-#~ msgstr "venerdì"
-
-#~ msgid "monday"
-#~ msgstr "lunedì"
-
-#~ msgid "reference"
-#~ msgstr "riferimento"
-
-#~ msgid "saturday"
-#~ msgstr "sabato"
-
-#~ msgid "sunday"
-#~ msgstr "domenica"
-
-#~ msgid "thursday"
-#~ msgstr "giovedì"
-
-#~ msgid "tuesday"
-#~ msgstr "martedì"
-
-#~ msgid "wednesday"
-#~ msgstr "mercoledì"
-
-#~ msgid "Multimedia items"
-#~ msgstr "Elementi multimediali"
-
-#~ msgid "Are you sure you want to procede? The operation may be slow"
-#~ msgstr "Sei sicuro di voler procedere? L'operazione potrebbe essere lenta"
-
-#~ msgid "Create new document"
-#~ msgstr "Nuovo documento"
-
-#~ msgid "Create new event"
-#~ msgstr "Nuovo evento"
-
-#~ msgid "Create new gallery"
-#~ msgstr "Nuova galleria"
-
-#~ msgid "Create news"
-#~ msgstr "Crea una news"
-
-#~ msgid "Error saving object type"
-#~ msgstr "Errore nel salvataggio del tipo di oggetto"
-
-#~ msgid "Modify"
-#~ msgstr "Modifica"
-
-#~ msgid "New card"
-#~ msgstr "Nuova scheda"
-
-#~ msgid "New link"
-#~ msgstr "Nuovo collegamento"
-
-#~ msgid "Select by template"
-#~ msgstr "Seleziona per template"
-
-#~ msgid "all recent items"
-#~ msgstr "elementi recenti"
-
-#~ msgid "create new (create new multimedia object and upload file)"
-#~ msgstr "creare nuovo (crea nuovo oggetto multimedia e f"
-
-#~ msgid "help"
-#~ msgstr "aiuto"
-
-#~ msgid ""
-#~ "overwrite (don't create new multimedia object, substitute file for "
-#~ "existing multimedia object)"
-#~ msgstr ""
-#~ "sovrascrivi (non crea nuovo oggetto multimedia, sostituisce file per "
-#~ "oggetto multimedia esistente)"
-
-#~ msgid "search string"
-#~ msgstr "stringa di ricerca"
-
-#~ msgid "set OFF"
-#~ msgstr "imposta OFF"
-
-#~ msgid "set ON"
-#~ msgstr "imposta ON"
-
-#~ msgid "welcome"
-#~ msgstr "benvenuto"
-
-#~ msgid "your profile and preferences"
-#~ msgstr "il tuo profilo e le tue preferenze"
-
-#~ msgid "Call to a protected or private method in a wrong context"
-#~ msgstr "Chiamata a un metodo privato o protetto in un contesto errato"
-
-#~ msgid "Error loading section: %d"
-#~ msgstr "Errore in caricamento sezione: %d"
-
-#~ msgid "Error saving area"
-#~ msgstr "Errore in salvataggio dati area"
-
-#~ msgid "Error saving section"
-#~ msgstr "Errore in salvataggio dati sezione"
-
-#~ msgid "Error: bad permissions"
-#~ msgstr "Errore: permessi non validi"
-
-#~ msgid "Immutable group %s"
-#~ msgstr "Gruppo non modificabile %s"
-
-#~ msgid "No publication"
-#~ msgstr "Nessuna pubblicazione"
-
-#~ msgid "Publication tree"
-#~ msgstr "Albero delle pubblicazioni"
-
-#~ msgid "Users of this group"
-#~ msgstr "Utenti di questo gruppo"
-
-#~ msgid "asc"
-#~ msgstr "asc"
-
-#~ msgid "desc"
-#~ msgstr "desc"
-
-#~ msgid "write"
-#~ msgstr "scrivi"
-
-#~ msgid "frontend access"
-#~ msgstr "accesso frontend"
-
-#~ msgid ""
-#~ "Are you sure that you want to delete the property? this will also delete "
-#~ "anyproperties data associated"
-#~ msgstr ""
-#~ "Sicuro di voler eliminare la property? saranno eliminati tutti i dati "
-#~ "associati alla property"
-
-#~ msgid ""
-#~ "Are you sure you want to cancel and reload this document? All "
-#~ "unsavedchanges will be lost"
-#~ msgstr ""
-#~ "Sicuro di ignorare le modifiche e ricaricare il documento? Tutte le "
-#~ "modifiche non salvate andranno perse"
-
-#~ msgid "OpenID Authentication Redirect"
-#~ msgstr "Redirect di autenticazione OpenID"
-
-#~ msgid ""
-#~ "User name is required (at least %1 chars, without white spaces and "
-#~ "specialchars)"
-#~ msgstr ""
-#~ "Nome utente richiesto (almeno %1 caratteri, senza spazi bianchi e "
-#~ "caratteri speciali)"
-
-#~ msgid "failed mails"
-#~ msgstr "mail non inviate"
-
-#~ msgid "mails for minute"
-#~ msgstr "mail al minuto"
-
-#~ msgid "pending mails"
-#~ msgstr "mail in attesa"
-
-#~ msgid "sent mails"
-#~ msgstr "mail spedite"
-
-#~ msgid "unsent mails"
-#~ msgstr "mail non spedite"
+#~ msgid "organization"
+#~ msgstr "organizzazione"

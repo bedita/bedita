@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2010 ChannelWeb Srl, Chialab Srl
+ * Copyright 2010-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,19 +20,14 @@
  */
 
 /**
- * Addressbook card object
+ * Addressbook card model
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Card extends BEAppObjectModel {
 
 	public $searchFields = array(
-		"title" => 8,
-		"nickname" => 10,
+		"title" => 10,
+		"nickname" => 8,
 		"description" => 4,
 		"website" => 6,
 		"email" => 6,
@@ -116,9 +111,13 @@ class Card extends BEAppObjectModel {
 			"Car Phone","Company Main Phone","Home Fax","Home Phone","Home Phone 2","ISDN","Mobile Phone",
 			"Other Fax","Other Phone","Pager","Primary Phone","Radio Phone","TTY/TDD Phone","Telex",
 			"Assistant's Name","Birthday" => "birthdate","Manager's Name","Notes","Other Address PO Box","Spouse",
-			"Web Page" => "website", "Personal Web Page" => "website"
+			"Web Page" => "website", "Personal Web Page" => "website",
+ 	        'Mail Group' => 'mail_group'
 		);
  	
+ 	// default CSV delimiter is ',' 
+ 	const DEFAULT_CSV_DELIMITER = ',';
+ 	private $csvDelimiter = self::DEFAULT_CSV_DELIMITER;
  	
 	function beforeValidate() {
 		
@@ -166,105 +165,215 @@ class Card extends BEAppObjectModel {
 		return true;
 	}
 	
-	/**
-	 * Import a Microsoft Outlook/Outlook Express CSV file
-	 *
-	 * @param string $csvFile, path to csv file file
-	 * @param array $options, default attributes array to use, 
-	 *  e.g. categories, "Category" => array (1,3,4..) - array of id-categories
-	 * @return results array, num of objects saved ("numSaved") and other data
-	 */
-	public function importCSVFile($csvFile, array $options = null) {
-		
-		$defaults = array( 
-			"status" => "on",
-			"user_created" => "1",
-			"user_modified" => "1",
-			"lang" => Configure::read("defaultLang"),
-			"ip_created" => "127.0.0.1",
-		);
 	
-		if(!empty($options)) {
-			$defaults = array_merge($defaults, $options);
-		}
-		
-		$row = 1;
-		$handle = fopen($csvFile, "r");
-		// read header
-		$csvKeys = fgetcsv($handle, 1000, ",");
-		$numKeys = count($csvKeys);
-		$keys = array();
-		$beFields = array_values($this->csvFields);
-		foreach ($csvKeys as $f) {
-			$k = null;
-			if(!empty($this->csvFields[$f])) {
-				$k = $this->csvFields[$f];
-			} else if(in_array(strtolower($f), $beFields)) {
-				$k = strtolower($f);
-			}
-			$keys[] = $k; 
-		}
-		
-		$data = array();
-		while (($fields = fgetcsv($handle, 1000, ",")) !== FALSE) {
-	    	$row++;
-			for ($c=0; $c < $numKeys; $c++) {
-				if(!empty($keys[$c]) && !empty($fields[$c])) {
-					$data[$keys[$c]] = $fields[$c]; 
-				}
-			}
-			$this->create();
-			$d = array_merge($defaults, $data);
-			if(!empty($d["surname"])) {
-				$d["title"] = ((!empty($d["name"])) ? $d["name"] : "" ) . " " . $d["surname"];
-			}
-			if(!$this->save($d)) {
-				throw new BeditaException(__("Error saving card"),  
-					print_r($data, true) . " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
-			}
-		}
-		fclose($handle);
-		return array("numSaved" => $row-1);		
-	}
+    private function setupCsvDelimiter($options) {
+        if (!empty($options['delimiter'])) {
+            $this->csvDelimiter = $options['delimiter'];
+        } else {
+            $this->csvDelimiter = self::DEFAULT_CSV_DELIMITER;
+        }
+    }
 
-	/**
-	 * Export model data to Microsoft Outlook CSV format - single line 
-	 *
-	 */
-	public function exportCSV() {
-		$res = "";
-		$data = $this->findById($this->id);
-		$first = true;
-		foreach ($this->csvFields as $k=>$v) {
-			if(!$first)
-				$res .= ",";
-			$res .= (empty($v) || is_numeric($k)) ? "" : "\"". $data[$v] . "\"";
-			$first = false;
-		}
-		return $res;
-	}
+    /**
+     * Import a Microsoft Outlook/Outlook Express CSV file
+     *
+     * @param string $csvFile,
+     *            path to csv file file
+     * @param array $options,
+     *            default attributes array to use,
+     *            e.g. categories, "Category" => array (1,3,4..) - array of id-categories
+     * @return results array, num of objects saved ('numSaved') and other data
+     */
+    public function importCSVFile($csvFile, array $options = null) {
+        $defaults = array(
+            'status' => 'on',
+            'user_created' => '1',
+            'user_modified' => '1',
+            'lang' => Configure::read('defaultLang'),
+            'ip_created' => '127.0.0.1'
+        );
+        $this->setupCsvDelimiter($options);
+        if (! empty($options)) {
+            unset($options['delimiter']);
+            $defaults = array_merge($defaults, $options);
+        }
+        $row = 1;
+        $res = array(
+            'numSaved' => 0
+        );
+        $handle = fopen($csvFile, 'r');
+        // read header
+        $csvKeys = fgetcsv($handle, 1000, $this->csvDelimiter);
+        $numKeys = count($csvKeys);
+        $keys = array();
+        $beFields = array_values($this->csvFields);
+        $customCsvFields = Configure::read('csvFields.card');
+        if (empty($customCsvFields)) {
+            $customCsvFields = array();
+        }
+        $customFieldNames = array_values($customCsvFields);
+        $fieldFound = false;
+        foreach ($csvKeys as $f) {
+            $f = trim($f);
+            $fieldNameLow = strtolower($f);
+            $k = null;
+            if (! empty($this->csvFields[$f])) {
+                $k = $this->csvFields[$f];
+            } else 
+                if (in_array($fieldNameLow, $beFields)) {
+                    $k = $fieldNameLow;
+                } else 
+                    if (! empty($customCsvFields[$fieldNameLow])) {
+                        $k = $customCsvFields[$fieldNameLow];
+                    }
+            if (empty($k)) {
+                $this->log('import CSV: field name not found ' . $f, 'warn');
+            } else {
+                $fieldFound = true;
+            }
+            $keys[] = $k;
+        }
+        if (!$fieldFound) {
+            fclose($handle);
+            $line = fgets(fopen($csvFile, 'r'));
+            throw new BeditaException('Bad CSV header in file ' . $csvFile, $line);
+        }
 
-	/**
-	 * Microsoft Outlook CSV header
-	 *
-	 * @return string
-	 */
-	public function headerCSV() {
-		$res = "";
-		$first = true;
-		foreach ($this->csvFields as $k=>$v) {
-			if(!$first)
-				$res .= ",";
-			if(is_numeric($k)) {
-				$res .= "\"$v\"";
-			} else {
-				$res .= "\"$k\"";
-			}
-			$first = false;
-		}
-		return $res;
-	}
-	
+        while (($fields = fgetcsv($handle, 1000, $this->csvDelimiter)) !== false) {
+            $data = array();
+            $row ++;
+            for ($c = 0; $c < $numKeys; $c ++) {
+                if (! empty($keys[$c]) && ! empty($fields[$c])) {
+                    $data[$keys[$c]] = trim($fields[$c]);
+                }
+            }
+            $this->create();
+            $d = array_merge($defaults, $data);
+            if (! empty($d['surname']) || ! empty($d['name'])) {
+                $d['title'] = ((! empty($d['name'])) ? $d['name'] : '') . ' ' . ((! empty($d['surname'])) ? $d['surname'] : '');
+            }
+            // check mail_groups field
+            if (! empty($d['mail_group'])) {
+                $mailGroups = explode(',', $d['mail_group']);
+                $count = 0;
+                foreach ($mailGroups as $mg) {
+                    $mg = trim($mg);
+                    if (! empty($options['mailGroups'][$mg])) {
+                        $mailGroupId = $options['mailGroups'][$mg];
+                        $d['joinGroup'][$count]['mail_group_id'] = $mailGroupId;
+                        $d['joinGroup'][$count]['status'] = 'confirmed';
+                        $count ++;
+                    } else {
+                        $this->log('import CSV: mail group not found ' . $mg, 'warn');
+                    }
+                }
+            }
+            
+            if (! $this->save($d)) {
+                throw new BeditaException(__('Error saving card'), print_r($data, true) . 
+                    " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
+            }
+        }
+        fclose($handle);
+        $res['numSaved'] = $row - 1;
+        return $res;
+    }
+
+    /**
+     * Get Microsoft Outlook CSV header or custom CSV header
+     * 
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @return string, single line as string
+     */
+    public function headerCSV(array $options = null) {
+        $res = '';
+        $this->setupCsvDelimiter($options);
+        $fields = $this->csvFields;
+        $custom = !empty($options['custom']);
+        if ($custom) {
+            $fields = Configure::read('csvFields.card');
+            if (empty($fields)) {
+                $fields = array();
+            }
+        }
+        $first = true;
+        foreach ($fields as $k => $v) {
+            if (!$first) {
+                $res .= $this->csvDelimiter;
+            }
+            if ($v === 'mail_group') {
+                continue;
+            }
+            if (!$custom && is_numeric($k)) {
+                 $res .= "\"$v\"";
+            } else {
+                $res .= "\"$k\"";
+            }
+            $first = false;
+        }
+        return $res;
+    }
+
+    /**
+     * Export model data to Microsoft Outlook CSV format or custom CSV format
+     *
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @param array $data, object data to export
+     * @return string, single line as string
+     */
+    public function exportCSV(array $options = null, array $data = array()) {
+        $res = '';
+        if (empty ($data)) {
+            $data = $this->findById($this->id);
+        }
+        $this->setupCsvDelimiter($options);
+        $fields = $this->csvFields;
+        $custom = !empty($options['custom']);
+        if ($custom) {
+            $fields = Configure::read('csvFields.card');
+            if (empty($fields)) {
+                $fields = array();
+            }
+        }
+        $first = true;
+        foreach ($fields as $k => $v) {
+            if (!$first) {
+                $res .= $this->csvDelimiter;
+            }
+            if ($v === 'mail_group') {
+                continue;
+            }
+            if ($custom) {
+                $res .= (empty($data[$v]) ? '' : '"'. $data[$v] . '"');
+            } else {
+                $res .= (empty($v) || is_numeric($k)) ? '' : '"'. $data[$v] . '"';
+            }
+            $first = false;
+        }
+        return $res;
+    }
+
+    /**
+     * Generate CSV file content as string from cards data array
+     *
+     * @param array $options, may contain 
+     *      - 'delimiter' => '<char delimiter to use>' default is ','
+     *      - 'custom' => true (use custom format) default false
+     * @param array $data, object data to export
+     * @return string, requested CSV content
+     */
+    public function createCsvAsString(array $data, array $options = null) {
+        $str = $this->headerCSV($options) . "\n";
+        foreach ($data as $d) {
+            $str .= $this->exportCSV($options, $d) . "\n";
+        }
+        return $str;
+    }
+
 	/**
 	 * Import a vCard/vcf file
 	 *
@@ -319,9 +428,12 @@ class Card extends BEAppObjectModel {
 	/**
 	 * Export model data to VCard format 
 	 *
+	 * @param array, data to export - if missing current data are loaded, using $this->id 
 	 */
-	public function exportVCard() {
-		$data = $this->findById($this->id);
+	public function exportVCard(array $data = null) {
+        if (empty($data)) {
+            $data = $this->findById($this->id);
+        }
 		$res = "\nBEGIN:VCARD\nVERSION:3.0\n";
 		$data["vname"] = (empty($data["surname"]) ? "" : $data["surname"] . ";") .
 			(empty($data["name"]) ? "" : $data["name"]);
@@ -354,7 +466,7 @@ class Card extends BEAppObjectModel {
 		}
 		return $res;
 	}
-	
+
 	private function parseVCards(&$lines) {
 		App::import('vendor', "VCard", true, array(), "vcard.php");		
 		$cards = array();

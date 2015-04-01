@@ -32,7 +32,12 @@ class PagesController extends AppController {
     
     public $uses = array();
     public $helpers = array('BeTree');
-    public $components = array('BeUploadToObj');
+    public $components = array(
+        'BeUploadToObj',
+        'BeSecurity' => array(
+            'disableActions' => array('loadNote', 'loadObjectToAssoc', 'loadUsersGroupsAjax')
+        )
+    );
 
     protected function beforeCheckLogin() {
         if($this->action === 'changeLang') { // skip auth check, on lang change
@@ -561,9 +566,13 @@ class PagesController extends AppController {
             $this->Transaction->begin();
             // if it's multimedia object and a file was loaded
             $multimediaIds = Configure::read('objectTypes.multimedia.id');
-            if (in_array($this->data['object_type_id'], $multimediaIds) && !empty($this->params['form']['Filedata'])) {
+            if (in_array($this->data['object_type_id'], $multimediaIds) && (!empty($this->params['form']['Filedata']) || !empty($this->data['url']))) {
                 try {
-                    $this->data['id'] = $this->BeUploadToObj->upload();
+                    if (!empty($this->params['form']['Filedata'])) {
+                        $this->data['id'] = $this->BeUploadToObj->upload();
+                    } else {
+                        $this->data['id'] = $this->BeUploadToObj->uploadFromURL($this->data);
+                    }
                 } catch (BEditaFileExistException $ex) {
                     // prepare data to touch multimedia object (to show it on top of object list)
                     // or to create new one if title and description are different
@@ -633,6 +642,101 @@ class PagesController extends AppController {
             }
         }
     }
-}
 
-?>
+    // #573 - Automatic Card creation.
+    /**
+     * Returns a JSON object with an array of "similar" Cards to the given User data, excluding Cards already related to another User.
+     * 
+     * A Card is considered "similar" to a User if any of the following conditions are `true`:
+     *  1. `Card.email = User.email`
+     *  2. `Card.email2 = User.email`
+     *  3. `Card.name` is a substring of `User.realname` *AND* `Card.surname` is a substring of `User.realname`
+     */
+    public function similarCards() {
+        // Prepare data.
+        $userId = (isset($this->params['form']['id']) && is_numeric($this->params['form']['id'])) ? $this->params['form']['id'] : 0;
+        $name = Sanitize::escape($this->params['form']['name'], 'default');  // Needs manual escape!! See query conditions few lines below for potential threat.
+        $email = $this->params['form']['email'];
+
+        // Search for similar Cards.
+        $cards = ClassRegistry::init('Card')->find('all', array(
+            'fields' => array('Card.id', 'Card.name', 'Card.surname', 'Card.email', 'Card.email2'),
+            'contain' => array(),
+            'joins' => array(
+                array(
+                    'table' => 'object_users',
+                    'alias' => 'ObjectUser',
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'ObjectUser.object_id = Card.id',
+                        'ObjectUser.switch' => 'card',
+                        'ObjectUser.user_id <>' => $userId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'ObjectUser.user_id' => null,
+                'OR' => array(
+                    // See if email address matches.
+                    'Card.email' => $email,
+                    'Card.email2' => $email,
+                    // See if full name matches somehow.
+                    'AND' => array(
+                        "'{$name}' LIKE CONCAT('%', Card.name, '%')",  // `$name` MUST be properly escaped!
+                        "'{$name}' LIKE CONCAT('%', Card.surname, '%')",  // (same here)
+                    ),
+                ),
+            ),
+            'limit' => 25,  // Keeping our feet on the ground.
+        ));
+
+        $this->layout = 'ajax';
+        $this->set('cards', $cards);
+        $this->render('/addressbook/similar_cards');
+    }
+
+    /**
+     * Go to a specific object by Id or nickname as POST parameters
+     *
+     * @return void
+     */
+    public function gotoObjectById() {
+        $objectId = '';
+        $count = 0;
+        if (!empty($this->params['url']['objectId'])) {
+            $objectId = $this->params['url']['objectId'];
+            $count = ClassRegistry::init('BEObject')->find('count', array(
+                'conditions' => array(
+                    'OR' => array(
+                        'id' => $objectId,
+                        'nickname' => $objectId
+                    )
+                ),
+                'contain' => array()
+            ));
+        }
+
+        if ($count) {
+            $this->redirect('/view/' . $objectId);
+        } else {
+            throw new BeditaNotFoundException('Object with ID ' . $objectId . ' not found');
+        }
+    }
+
+    /** 
+     * Controller forward
+     * @see AppController::forward()
+     */
+    protected function forward($action, $result) {
+        $referer = $this->referer();
+        $redirect = array(
+            'gotoObjectById' =>  array(
+                'ERROR' => $referer
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result] ;
+        }
+    }
+
+}

@@ -22,7 +22,7 @@
             </tr>
             <tr>
                 <th>{t}original filename{/t}:</th>
-                <td colspan="3">{$object.original_name|default:""}</td>
+                <td colspan="3">{$object.original_name|escape|default:""}</td>
             </tr>
             <tr>
                 <th>{t}mime type{/t}:</th>
@@ -61,7 +61,7 @@
         {/if}
 
 
-        {if ($object.ObjectType.name == "image")}
+        {if $object.ObjectType.name == "image" && $object.mime_type != 'image/svg+xml'}
             
             <tr>
                 <th nowrap>{t}Human readable type{/t}:</th>

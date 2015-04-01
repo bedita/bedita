@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2010 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -20,13 +20,6 @@
  */
 
 /**
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
- */
-/**
  * Cleanup task
  */
 class CleanupTask extends BeditaBaseShell {
@@ -36,7 +29,7 @@ class CleanupTask extends BeditaBaseShell {
 	
 	public function execute() {
 		$this->hr();
-        $this->out("BEdita core cleanup: " . TMP);     
+        $this->out('BEdita core cleanup: ' . TMP);     
 		$this->hr();
         $this->cleanUpTmpDir(TMP);
         if (isset($this->params['frontend'])) {
@@ -54,22 +47,25 @@ class CleanupTask extends BeditaBaseShell {
 	        }
 		}
 		$this->hr();
-		if (isset($this->params['media'])) {
-			$this->removeMediaFiles();
-		}
         $this->out("Done");        
 	}
 
 	private function cleanUpTmpDir($basePath) {
 		$Utility = ClassRegistry::init('Utility');
-		if($basePath !== TMP) {
-			if(!file_exists($basePath)) {
+		if ($basePath !== TMP) {
+			if( !file_exists($basePath)) {
 				$this->out("Directory $basePath not found");
 				return;
 			}
 		}
 		$this->out('Cleaning dir: '.$basePath);
-		$res = $Utility->call('cleanupCache', array('basePath' => $basePath, 'frontendsToo' => false));
+		$cleanAll = isset($this->params['all']);
+        if ($cleanAll) {
+            $this->out('Cleaning all folders in '. $basePath . 'cache !!');
+        }
+		$options = array('basePath' => $basePath, 'frontendsToo' => false, 
+		    'cleanAll' => $cleanAll);
+		$res = $Utility->call('cleanupCache', $options);
 		if (!$this->outputCleaningErrors($res)) {
 			$this->out('Cache cleaned.');
 			$this->out('Smarty compiled/cache cleaned.');
@@ -165,17 +161,6 @@ class CleanupTask extends BeditaBaseShell {
 			}
 			
 		}
-	}
-	
-	
-	private function removeMediaFiles() {
-		$mediaRoot = Configure::read("mediaRoot");
-		$folder= new Folder($mediaRoot);
-		$dirs = $folder->read();
-		foreach ($dirs[0] as $d) {
-			$folder->delete($mediaRoot . DS. $d);
-		}
-		$this->out('Media files cleaned.');
 	}
 
 }

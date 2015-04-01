@@ -21,7 +21,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 
 <form method="post" action="" id="formObject">
-
+	{$beForm->csrf()}
 	<div id="viewthumb">
 	<table class="indexlist">
 	{capture name="theader"}
@@ -61,7 +61,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 				<table border=0 padding="0" spacing="0" style="width:100%">
 				<tr>
 					<td colspan=4 class="vlist">{$item.id}</td>
-					<td colspan=4 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title}</a></td>
+					<td colspan=4 class="vlist"><a href="{$html->url('view/')}{$item.id}">{$item.title|escape}</a></td>
 					<td colspan=4 class="vlist">{$item.name}</td>
 					<td colspan=4 class="vlist">{$item.mediatype}</td>
 					<td colspan=4 class="vlist">{math equation="x/y" x=$item.file_size|default:0 y=1024 format="%d"|default:""} KB</td>

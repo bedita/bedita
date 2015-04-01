@@ -4,6 +4,17 @@
 	{if !empty($relObjects.template)}
 		urlAddObjToAss += "/{$relObjects.template.0.id}";
 	{/if}
+	var cssTemplate = false;
+	var cssDefault = false;
+	var cssInit = false;
+
+	{if !empty($conf->newsletterCss)}
+		cssDefault = cssInit = "{$html->url('/css')}/{$conf->newsletterCss}";
+	{/if}
+
+	{if !empty($cssUrl)}
+		cssTemplate = cssInit = "{$cssUrl}";
+	{/if}
 </script>
 
 {if !empty($conf->richtexteditor.name) && $conf->richtexteditor.name == "tinymce"}
@@ -118,8 +129,10 @@
 
 	$(document).ready(function() {
 		$(document).on('instanceReady.ckeditor', '#htmltextarea', function(event,editor) {
-			var linkElement = $(editor.document.$).find('link');
-			linkElement.attr('href', "{$cssUrl|default:$html->url('/css/newsletter.css')}");
+			if (cssInit) {
+				var linkElement = $(editor.document.$).find('link');
+				linkElement.attr('href', cssInit);
+			}
 		});
 		
 		$("#changeTemplate").change(function() {
@@ -135,20 +148,27 @@
 			var	cssBaseUrl = $(this).find("option:selected").attr("rel");
 			var cssPath;
 			if (cssBaseUrl === undefined || cssBaseUrl == '') {
-				cssPath = "{$html->url('/css/newsletter.css')}";
+				cssPath = cssDefault;
 			} else {
-				cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+				if (cssDefault) {
+					cssPath =  cssBaseUrl + "/css/{$conf->newsletterCss}";
+				}
 			}
-			changeCKeditorCss(cssPath);
+			if (cssPath) {
+				changeCKeditorCss(cssPath);
+			}
 		});
+
+		// if fieldset is visible, tab should have open class (fck-maximize-fix) 
+		// REMOVE OR REVIEW WHEN UPGRADING CKEDITOR
+		$('.tab.fck-maximize-fix:not(.open)+fieldset:visible').css('display', 'none');
+		$(document).off("keydown"); //disable Esc keybinding
 	});
-
 	</script>
-
 {/if}
 
 
-<div class="tab"><h2>{t}Compile{/t}</h2></div>
+<div class="tab fck-maximize-fix"><h2>{t}Compile{/t}</h2></div>
 
 <fieldset id="contents">
 	
@@ -157,32 +177,26 @@
 	<input type="text" id="title" name="data[title]" class="required"
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
 
-{*
-<!--
 	<hr />
-	<label>{t}Subject{/t}: </label>
-
-	<input type="hidden" id="subject" name="data[subject]" value="" id="subjectBEObject"/>
--->	
-*}
-
-	<hr />
-
+	{bedev}
 	<input class="modalbutton" type="button" value="{t}Get contents{/t}" rel="{$html->url('/pages/showObjects/0/0/0/leafs')}" style="width:200px" />
-
 	&nbsp;&nbsp;
+	{/bedev}
 	
 	
 	<label>{t}use template{/t}:</label>
 	<input type="hidden" name="data[RelatedObject][template][0][switch]" value="template" />
-	<select name="data[RelatedObject][template][1][id]" id="changeTemplate">
+	<select name="data[RelatedObject][template][1][id]" id="changeTemplate" style="width: 20em;">
 		<option value="">--</option>
-		{foreach from=$templateByArea item="pub"}
+		{foreach $templateNotOnTree as $t}
+			<option rel="" value="{$t.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $t.id} selected{/if}>{$t.title|escape}</option>
+		{/foreach}
+		{foreach from=$templateOnTree item="pub"}
 			{if !empty($pub.MailTemplate)}
-				<option value="">{$pub.title|upper}</option>
+				<option value="">{$pub.title|escape|upper}</option>
 			{/if}
 			{foreach from=$pub.MailTemplate item="temp"}
-				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title}</option>
+				<option rel="{$pub.public_url}" value="{$temp.id}"{if !empty($relObjects.template) && $relObjects.template.0.id == $temp.id} selected{/if}>&nbsp;&nbsp;&nbsp;{$temp.title|escape}</option>
 			{/foreach}
 		{/foreach}
 	</select>
@@ -203,7 +217,7 @@
 		</div>
 		
 		<div class="htabcontent" id="txt">
-			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:610px">{$object.abstract|default:null}</textarea>
+			<textarea id="txtarea" name="data[abstract]" style="height:350px; border:1px solid silver; width:610px">{$object.abstract|escape|default:null}</textarea>
 		</div>
 		
 	</div>

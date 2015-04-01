@@ -21,6 +21,7 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 <div class="mainfull">
 
 	<form method="post" action="{$html->url('/translations/index')}" id="formObject">
+	{$beForm->csrf()}
 
 	<input type="hidden" name="data[id]" value="{$object_translation.id.status|default:''}"/>
 	<input type="hidden" name="data[master_id]" value="{$object_master.id|default:''}"/>
@@ -98,9 +99,9 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 				<input type="checkbox" name="object_chk" class="objectCheck" title="{$translations[i].LangText.id}" />
 			</td>
 			<td>
-				{$mtitle|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
+				{$mtitle|escape|default:'<i>[no title]</i>'|truncate:38:true} &nbsp;
 			</td>
-			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
+			<td><a href="{$html->url('view/')}{$oid}/{$olang}">{$translations[i].LangText.title|escape|default:'<i>[no title]</i>'|truncate:38:true}</a></td>
 			<td>
 				<span class="listrecent {$conf->objectTypes[$ot].name|lower}">&nbsp;</span>
 				{$conf->objectTypes[$ot].model}

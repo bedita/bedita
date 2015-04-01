@@ -1,5 +1,145 @@
 # ChangeLog
 
+## Version 3.5.1 - Corylus
+
+### User-visible changes
+
+* [#589](https://github.com/bedita/bedita/issues/589) New section can not be saved in position "None"
+* [#590](https://github.com/bedita/bedita/issues/590) Non-administrators backend users are able remove "fixed" property
+* [#575](https://github.com/bedita/bedita/issues/575) Area view - 'publisher' and 'rights' compare twice
+* [#588](https://github.com/bedita/bedita/issues/588) Remove "fixed" property
+* [#572](https://github.com/bedita/bedita/issues/572) Fatal Error on logout
+* [#600](https://github.com/bedita/bedita/issues/600) Handle Multimeda `saveAjax` errors
+
+### Frontend changes
+
+* [#587](https://github.com/bedita/bedita/issues/587) Handle homePage tpl
+* [#585](https://github.com/bedita/bedita/issues/585) Enhancement of showUnauthorized data
+* [#537](https://github.com/bedita/bedita/issues/537) Automatic Card creation. - Always new Card when in frontend context
+
+### Developer-visible changes
+
+* [#573](https://github.com/bedita/bedita/issues/573) Automatically create Card when creating a new User
+* [#579](https://github.com/bedita/bedita/issues/579) beEmbedMedia->object video does not use URLonly when passed
+* [#596](https://github.com/bedita/bedita/issues/596) Error on saving categories with non ascii characters
+* [#597](https://github.com/bedita/bedita/issues/597) Some parts of backend are exposed to CSRF attacks
+* [#593](https://github.com/bedita/bedita/issues/593) Data JSON export - recursion errors
+* [#584](https://github.com/bedita/bedita/issues/584) JSON export enhancement - 'types' and 'all' options
+* [#578](https://github.com/bedita/bedita/issues/578) Memory exhausted when creating new Section in large BE installations
+* [#583](https://github.com/bedita/bedita/issues/583) section priority order/value in import and export
+* [#591](https://github.com/bedita/bedita/issues/591) Security: XSS attack on Newsletter mail groups
+* [#586](https://github.com/bedita/bedita/issues/586) SQL upgrade from 3.2.x to >= 3.3.x
+* [#561](https://github.com/bedita/bedita/issues/561) default JSON import/export logic
+* [#571](https://github.com/bedita/bedita/issues/571) release script: frontends *.php.sample has to be moved to *.php
+* [#519](https://github.com/bedita/bedita/issues/519) module forward method refactor
+* [#598](https://github.com/bedita/bedita/issues/598) BeAppModel should look in DB for ObjectType ID if not present in configuration
+
+
+## Version 3.5.0 - Corylus
+
+### User-visible changes
+
+* [#559](https://github.com/bedita/bedita/issues/559) Some UI functions not working when offline
+* [#490](https://github.com/bedita/bedita/issues/490) Create multimedia object with large files doesn't show any feedback to user
+* [#510](https://github.com/bedita/bedita/issues/510) Dashboard Publication box ends up at the bottom of the page on certain resolutions
+* [#539](https://github.com/bedita/bedita/issues/539) custom views for object relations in backend 
+* [#535](https://github.com/bedita/bedita/issues/535) Every click generates "save warning" in events
+* [#528](https://github.com/bedita/bedita/issues/528) empty relation params displayed as '[' backend UI
+* [#518](https://github.com/bedita/bedita/issues/518) show preview as default
+* [#520](https://github.com/bedita/bedita/issues/520) - list objects: custom details and elements
+* [#512](https://github.com/bedita/bedita/issues/512) toolbar pagination: "prev" page link before "next"
+* [#509](https://github.com/bedita/bedita/issues/509) admin: user custom properties display error
+* [#508](https://github.com/bedita/bedita/issues/508) add TIFF and other image formats support
+* [#506](https://github.com/bedita/bedita/issues/506) / Section and area view should display all available relations
+* [#500](https://github.com/bedita/bedita/issues/500) Addressbook module detail view has many UI problems
+* object position: count num of places in tab
+* addressbook: fix list objects custom prop height
+* height of message Div don't affect clicks anymore
+* multimedia list: default 50 items / added filename in list view and some small fix
+* let user select nicknames and id from sortable objects
+
+### Frontend changes
+
+* [#530](https://github.com/bedita/bedita/issues/530) Use Cake cache reading objects
+* [#401](https://github.com/bedita/bedita/issues/401) Bad error message "Error: Session key does not exist" 
+* [#546](https://github.com/bedita/bedita/issues/546) Handle user session when it is configured to not automatically start
+* [#516](https://github.com/bedita/bedita/issues/516) release script: include new frontends in package
+* [#493](https://github.com/bedita/bedita/issues/493) review debug.example.com reference frontend
+* [#515](https://github.com/bedita/bedita/issues/515) frontend: load secondary relations via config
+* [#491](https://github.com/bedita/bedita/issues/491) frontend examples/reference revision
+* [#431](https://github.com/bedita/bedita/issues/431) ShowUnauthorized = true, don't affect attached media
+* facebook metadata: link rel=image_src, fix og:image and remove og:app_id
+
+### Developer-visible changes
+
+* [#566](https://github.com/bedita/bedita/issues/566) Validate/escape db fields to avoid XSS attack
+* [#567](https://github.com/bedita/bedita/issues/567) Add validation rule on userid field
+* [#563](https://github.com/bedita/bedita/issues/563) Standard verbose mode
+* [#565](https://github.com/bedita/bedita/pull/565) #482 Objects' saving fix.
+* [#482](https://github.com/bedita/bedita/issues/482) Saving objects without passing "status"
+* [#564](https://github.com/bedita/bedita/issues/564) Deleting tree branch. - Added root check.
+* [#559](https://github.com/bedita/bedita/issues/559) Some UI functions not working when offline
+* [#447](https://github.com/bedita/bedita/issues/447) BeurlHelper::getUrl() wrongs to build url for BEdita Modules Plugin
+* [#503](https://github.com/bedita/bedita/issues/503) add link to media file in multimedia items
+* [#519](https://github.com/bedita/bedita/issues/519) module forward method refactor
+* [#487](https://github.com/bedita/bedita/issues/487) search priority: "title" field more important than "nickname"
+* [#538](https://github.com/bedita/bedita/issues/538) log: remove stack trace from error.log and add exception parameter to log otherwise
+* [#560](https://github.com/bedita/bedita/issues/560) hash jobs: use simple values as params
+* [#548](https://github.com/bedita/bedita/issues/548) add new related object by URL
+* [#530](https://github.com/bedita/bedita/issues/530) Use Cake cache reading objects
+* [#553](https://github.com/bedita/bedita/issues/553) missing media type creating new image object
+* [#557](https://github.com/bedita/bedita/pull/557) Issue/555 categories fix
+* [#555](https://github.com/bedita/bedita/issues/555) Backend users can create/edit/delete any category from any backend module
+* [#554](https://github.com/bedita/bedita/issues/554) advanced properties view missing for sections/publications
+* [#552](https://github.com/bedita/bedita/issues/552) error in setup and admin / custom relations - 'Wrong PHP code'
+* [#536](https://github.com/bedita/bedita/issues/536) multimedia: missing file should cause warning to user
+* [#549](https://github.com/bedita/bedita/issues/549) Zoom level of geotag not working on google maps
+* [#454](https://github.com/bedita/bedita/issues/454) external pluggable authentication system: OAuth implementation
+* [#551](https://github.com/bedita/bedita/pull/551) #546 managed no automatic session start
+* [#516](https://github.com/bedita/bedita/issues/516) release script: include new frontends in package
+* [#546](https://github.com/bedita/bedita/issues/546) Handle user session when it is configured to not automatically start
+* [#547](https://github.com/bedita/bedita/pull/547) Issue/545 update relations params
+* [#545](https://github.com/bedita/bedita/issues/545) Relations: updating relations parameters
+* [#544](https://github.com/bedita/bedita/issues/544) Duration: input field has to handle minutes and seconds 
+* [#541](https://github.com/bedita/bedita/issues/541) Filter "count_relations" groups all rows in result
+* [#543](https://github.com/bedita/bedita/issues/543) SVG presentation in be_thumb
+* [#542](https://github.com/bedita/bedita/issues/542) shell: dbadmin rebuildIndex -> select object type
+* [#525](https://github.com/bedita/bedita/issues/525) Error overriding multimedia file
+* [#539](https://github.com/bedita/bedita/issues/539) custom views for object relations in backend 
+* [#532](https://github.com/bedita/bedita/issues/532) searching words with accented letters/quotes is not working
+* [#533](https://github.com/bedita/bedita/issues/533) Duplicate results on query filter 
+* [#531](https://github.com/bedita/bedita/issues/531) Invalidate objects cache from backend
+* [#529](https://github.com/bedita/bedita/issues/529) SQL optimizations on BEAppModel::findObjects
+* [#494](https://github.com/bedita/bedita/issues/494) shell: init new frontend from reference
+* [#493](https://github.com/bedita/bedita/issues/493) review debug.example.com reference frontend
+* [#522](https://github.com/bedita/bedita/issues/522) remove unused $config['userVersion']
+* [#518](https://github.com/bedita/bedita/issues/518) fix epic editor default options
+* [#515](https://github.com/bedita/bedita/issues/515) frontend: load secondary relations via config
+* [#284](https://github.com/bedita/bedita/issues/284) versioning: error if "user_created" null
+* [#513](https://github.com/bedita/bedita/issues/513) permissions: element without params as default
+* [#511](https://github.com/bedita/bedita/issues/511) hash jobs: override default messages with local instance messages
+and frontend messages (if present)
+* [#495](https://github.com/bedita/bedita/issues/495) Investigate on multiple vulnerabilities
+* [#507](https://github.com/bedita/bedita/issues/507) Relation label clears gallery description
+* [#508](https://github.com/bedita/bedita/issues/508) add TIFF and other image formats support
+* [#506](https://github.com/bedita/bedita/issues/506) / Section and area view should display all available relations
+* [#486](https://github.com/bedita/bedita/issues/486) String search result pagination doesn't work
+* [#492](https://github.com/bedita/bedita/issues/492) Adding "poster" relation to handle thumbnails/previews/cover of BEobjects
+* [#500](https://github.com/bedita/bedita/issues/500) Addressbook module detail view has many UI problems
+* [#497](https://github.com/bedita/bedita/issues/497) Remove obsolete help online code
+* [#149](https://github.com/bedita/bedita/issues/149) addressbook: company_name, is_user in obj list
+* [#496](https://github.com/bedita/bedita/issues/496) recover password error - backend
+* [#491](https://github.com/bedita/bedita/issues/491) frontend examples/reference revision
+* [#483](https://github.com/bedita/bedita/issues/483) Bulk action change status does not work
+* shell: bedita checkApp check frontend.cfg.php presence
+* add HTTPS in youtube matching reg exp
+* add BeditaServiceUnavailableException (503)
+* shell dbadmin: clonePublication add section categories
+* enhance error log in case of 'unlogged' or 'unauthorized' access in FrontendController::getPath()
+* update cakephp to 1.3.19
+* reverse ckeditor update, restored 4.0.1
+
+
 ## Version 3.4.0 - Corylus
 
 ### User-visible changes

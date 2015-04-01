@@ -45,7 +45,7 @@
 				<td>
 					<input type="hidden" name="data[ObjectProperty][{$countProperty}][property_type]" value="{$prop.property_type}" />
 					<input type="hidden" name="data[ObjectProperty][{$countProperty}][property_id]" value="{$prop.id}" />
-					<textarea name="data[ObjectProperty][{$countProperty++}][property_value]" class="autogrowarea" style="overflow: hidden; width: 320px; line-height:1.2em;">{$prop.value.property_value|default:""}</textarea>
+					<textarea name="data[ObjectProperty][{$countProperty++}][property_value]" class="autogrowarea" style="overflow: hidden; width: 320px; line-height:1.2em;">{$prop.value.property_value|default:""|escape}</textarea>
 				</td>
 			{elseif $prop.property_type == "number"}
 				<td>

@@ -353,7 +353,7 @@ class BeditaShell extends BeditaBaseShell {
 		fclose($handle);
 		
 		$this->out("Creating metadata....");
-		file_put_contents($tmpBasePath."version.txt", Configure::read("majorVersion"));
+		file_put_contents($tmpBasePath."version.txt", Configure::read('version'));
        	if(!copy(APP."config".DS."bedita.cfg.php", $tmpBasePath . "bedita.cfg.php")) {
        		throw new Exception("Error copying bedita.cfg.php file");
        	}
@@ -581,14 +581,17 @@ class BeditaShell extends BeditaBaseShell {
         if (!$frontend) {
         	// config/bedita.cfg.php
 	        $this->checkAppFile($appPath.DS."config".DS."bedita.cfg.php");
+        } else {
+            // config/frontend.cfg.php
+            $this->checkAppFile($appPath . DS . 'config' . DS . 'frontend.cfg.php');
         }
         // index.php
         $this->checkAppFile($appPath.DS."index.php");
         // webroot/index.php
         $this->checkAppFile($appPath.DS."webroot".DS."index.php");
         if (!$frontend) {
-	        // webroot/test.php
-	        $this->checkAppFile($appPath.DS."webroot".DS."test.php");
+            // webroot/test.php
+            $this->checkAppFile($appPath.DS."webroot".DS."test.php");
         }
         // tmp/cache
         $this->checkAppDirPerms($appPath.DS."tmp".DS."cache");
@@ -1004,11 +1007,11 @@ class BeditaShell extends BeditaBaseShell {
   		$this->out(' ');
   		$this->out('2. cleanup: cleanup cache, compile, log files');
         $this->out(' ');
-        $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-media]');
+        $this->out('    Usage: cleanup [-frontend <frontend path>] [-logs] [-all]');
         $this->out(' ');
         $this->out("    -frontend \t clean files in <frontend path> [use frontend /app path]");
         $this->out("    -logs \t clean log files");
-        $this->out("    -media  \t clean media files in 'mediaRoot' (default no)");
+        $this->out("    -all  \t clean all dirs in tmp/cache dir, not just 'models', 'persistent' and 'views' (default no)");
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');

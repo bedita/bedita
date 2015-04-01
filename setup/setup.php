@@ -270,15 +270,23 @@
 				}
 				if($admin_data_ok) {
 					$userdata = array(
-						'id' => '1',
-						'realname' => trim($_POST['data']['admin']['user']),
-						'userid' => trim($_POST['data']['admin']['user']),
-						'passwd' => md5(trim($_POST['data']['admin']['password']))
+						'User' => array(
+							'realname' => trim($_POST['data']['admin']['user']),
+							'userid' => trim($_POST['data']['admin']['user']),
+							'passwd' => md5(trim($_POST['data']['admin']['password'])),
+						),
+						'Group' => array(
+							'id' => 1,
+						),
 					);
+					if (!empty($_POST['data']['admin']['_overwrite'])) {
+						// #540 - Overwrite User with ID = 1.
+						$userdata['User']['id'] = 1;
+					}
 					if(!$this->_saveuser($userdata)) {
 						$this->smarty->assign('usercreationerr',true);
 					} else {
-						$this->smarty->assign('userid', $userdata['userid']);
+						$this->smarty->assign('userid', $userdata['User']['userid']);
 						$this->smarty->assign('usercreationok',true);
 						$this->start(self::PAGE_FINISH);
 						return;
@@ -309,8 +317,13 @@
 				$p = strrpos($_SERVER['REQUEST_URI'], "/");
 				$url1 = substr($_SERVER['REQUEST_URI'], 0, $p);
 				$url2 = str_replace("index.php", "", substr($_SERVER['REQUEST_URI'], $p));
-				$beUrl = "http://" . $_SERVER['HTTP_HOST'] . $url1 . $url2;
-				$this->besys->writeConfigFile($confFile, array('beditaUrl' => $beUrl), true);
+				$beUrl = rtrim("http://" . $_SERVER['HTTP_HOST'] . $url1 . $url2, '/');
+				try {
+					$this->besys->writeConfigFile($confFile, array('beditaUrl' => $beUrl), true);
+				} catch (Exception $ex) {
+					// fail to write bedita.cfg
+					$this->smarty->assign('configWriteFail', true);
+				}
 			}
 			$this->smarty->assign('steps',$this->steps);
 			$this->smarty->display('finish.tpl');

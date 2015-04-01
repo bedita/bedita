@@ -1,2 +1,2 @@
 <?php
-echo $xml->serialize($data, $options); 
+echo $xml->serialize($data, $options);

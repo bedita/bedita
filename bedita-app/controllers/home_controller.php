@@ -33,7 +33,7 @@ class HomeController extends AppController {
 
 	var $uses = array('BEObject', 'Tree') ;
 	var $helpers 	= array('BeTree');
-	var $components = array('BeTree', 'BeUploadToObj');
+	var $components = array('BeUploadToObj', 'BeSecurity');
 
 
 	public function index() {
@@ -106,16 +106,18 @@ class HomeController extends AppController {
 	 * @param integer $id - object id to view
 	 */
 	public function view($id) {
+		$objectId = $this->BEObject->objectId($id);
 
-		$this->action = "index";
-		$id = $this->BEObject->objectId($id);
-		$typeId = $this->BEObject->findObjectTypeId($id);
+		if (empty($objectId)) {
+			throw new BeditaNotFoundException('Object not found');
+		}
+		$typeId = $this->BEObject->findObjectTypeId($objectId);
 		$conf  = Configure::getInstance();
 		if(!isset($conf->objectTypes[$typeId]["module_name"])) {
 	 		throw new BeditaException(__("No module found for object", true));
 		}
 		$module = $conf->objectTypes[$typeId]["module_name"];
-		$this->redirect("/".$module . "/view/" . $id);
+		$this->redirect("/".$module . "/view/" . $objectId);
 	}
 
 
@@ -202,18 +204,20 @@ class HomeController extends AppController {
 	}
 
 
-	protected function forward($action, $esito) {
- 	 	$REDIRECT = array(
-			"editProfile" => array(
- 							"OK"	=> "/home/profile",
- 							"ERROR"	=> "/home/profile"
- 						),
-			"view" => array(
- 							"ERROR"	=> "/home/index"
- 						)
- 			);
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false;
-	 }
-}
+    protected function forward($action, $result) {
+        $redirect = array(
+            'editProfile' => array(
+                'OK' => '/home/profile',
+                'ERROR' => '/home/profile'
+            ),
+            'view' => array(
+                'ERROR' => '/home/index'
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        }
+        return false;
+    }
 
+}

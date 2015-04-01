@@ -21,8 +21,8 @@
 	<tr>
 		<td style="white-space:nowrap">{$e.EventLog.created}</td>
 		<td class="{$e.EventLog.log_level}">{$e.EventLog.log_level}</td>
-		<td>{$e.EventLog.userid}</td>
-		<td>{$e.EventLog.msg}</td>
+		<td>{$e.EventLog.userid|escape}</td>
+		<td>{$e.EventLog.msg|escape}</td>
 		<td>{$e.EventLog.context}</td>
 	</tr>
 	{/foreach}

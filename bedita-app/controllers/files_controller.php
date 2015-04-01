@@ -32,7 +32,7 @@ class FilesController extends AppController {
 
 	var $helpers 	= array('Html');
 	var $uses		= array('Stream','BEObject') ;
-	var $components = array('Transaction', 'BeUploadToObj', 'RequestHandler');
+	var $components = array('Transaction', 'BeUploadToObj', 'RequestHandler', 'BeSecurity');
 
 	function upload() {
 		try {
@@ -132,20 +132,21 @@ class FilesController extends AppController {
 		}
 	}
 
-	protected function forward($action, $esito) {
-		$REDIRECT = array(
-			"uploadAjax" =>	array(
-	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
-		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
-		 	),
-		 	"uploadAjaxMediaProvider" => array(
-	 			"OK"	=> self::VIEW_FWD.'upload_ajax_response',
-		 		"ERROR"	=> self::VIEW_FWD.'upload_ajax_response'
-		 	)
-       );
-       if(isset($REDIRECT[$action][$esito]))
-          return $REDIRECT[$action][$esito] ;
-       return false;
-     }
+    protected function forward($action, $result) {
+        $redirect = array(
+            'uploadAjax' => array(
+                'OK' => self::VIEW_FWD . 'upload_ajax_response',
+                'ERROR' => self::VIEW_FWD . 'upload_ajax_response'
+            ),
+            'uploadAjaxMediaProvider' => array(
+                'OK' => self::VIEW_FWD . 'upload_ajax_response',
+                'ERROR' => self::VIEW_FWD . 'upload_ajax_response'
+            )
+        );
+        if (isset($redirect[$action][$result])) {
+            return $redirect[$action][$result];
+        }
+        return false;
+    }
+
 }
-?>

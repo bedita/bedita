@@ -38,6 +38,9 @@ class SessionFilterComponentTest extends BeditaTestCase {
 
     public $SessionFilter = null;
 
+    public function __construct () {
+        parent::__construct('SessionFilter', dirname(__FILE__)) ;
+    }
 
     public function  testSetup() {
         $this->controller = new DummyTestController();
@@ -65,6 +68,7 @@ class SessionFilterComponentTest extends BeditaTestCase {
         // read
         foreach ($this->data['add'] as $key => $val) {
             $sessionValue = $this->SessionFilter->read($key);
+            $val = Sanitize::clean($val, array('encode' => true, 'remove_html' => true));
             $this->assertEqual($sessionValue, $val);
         }
         // delete
@@ -78,12 +82,18 @@ class SessionFilterComponentTest extends BeditaTestCase {
         // addBulk
         $this->SessionFilter->addBulk($this->data['add']);
         $this->assertEqual($this->SessionFilter->read(), $this->data['add']);
+        foreach ($this->data['add'] as $key => $val) {
+            $this->assertTrue($this->SessionFilter->delete($key));
+        }
 
         // addSanitized
         $this->requiredData(array('addSanitized'));
-        $this->SessionFilter->add(key($this->data['addSanitized']), current($this->data['addSanitized']));
-        $filterValue = $this->SessionFilter->read(key($this->data['addSanitized']));
-        $expected = 'Title my text';
+        $this->SessionFilter->addBulk($this->data['addSanitized']);
+        $filterValue = $this->SessionFilter->read();
+        $expected = array(
+            'query' => 'Title my text',
+            'BEObject.title' => "alert('hello') object title"
+        );
         $this->assertEqual($filterValue, $expected);
 
         // clean
@@ -119,9 +129,5 @@ class SessionFilterComponentTest extends BeditaTestCase {
         $this->assertTrue($this->SessionFilter->cleanAll());
         $this->assertEqual($this->SessionFilter->read(), array());
         $this->assertNull($this->controller->Session->read('beditaFilter'));
-    }
-
-    public function __construct () {
-        parent::__construct('SessionFilter', dirname(__FILE__)) ;
     }
 }

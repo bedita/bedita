@@ -65,8 +65,15 @@ $(document).ready(function() {
 </script>
 
 {$view->set("object_type_id",$object_type_id)}
-
+{if !empty($availabeRelations)}
 {foreach $availabeRelations as $rel => $relLabel}
+
+{* ticket github #539 - if defined a relationView in config model, include that view, generic relation view otherwise *}
+{if !empty($allObjectsRelations[$rel]['relationView']) && file_exists($allObjectsRelations[$rel]['relationView'])}
+
+{include file=$allObjectsRelations[$rel]['relationView']}
+
+{else}
 
 {$relcount = $relObjects.$rel|@count|default:0}
 <div class="tab">
@@ -111,5 +118,7 @@ $(document).ready(function() {
 	value="  {t}connect new items{/t}  " />
 	
 </div>
+{/if}
 
 {/foreach}
+{/if}

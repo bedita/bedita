@@ -8,7 +8,7 @@
 
 <fieldset id="properties">	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
-	<input type="hidden" name="data[title]" value="{$object.title|default:''}"/>
+	<input type="hidden" name="data[title]" value="{$object.title|default:''|escape}"/>
 
 	<table class="areaform" border=0 style="margin-bottom:10px">
 
@@ -30,22 +30,28 @@
 				<textarea class="mceSimple" name="data[description]">{$object.description|default:''|escape:'html'|escape:'quotes'}</textarea>
 			</td>
 		</tr>
-		<tr>
-			<th>{t}status{/t}:</th>
-			<td id="status">
-			{if $object.fixed|default:'' == 1}
-				{t}This object is fixed - some data is readonly{/t}
-				<input type="hidden" name="data[status]" value="{$object.status}" />
-			{else}
-				{html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator=" "}
-			{/if}	
-			{if in_array('administrator',$BEAuthUser.groups)}
-				&nbsp;&nbsp;&nbsp; <b>fixed</b>:&nbsp;&nbsp;<input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
-			{else}
-				<input type="hidden" name="data[fixed]" value="{$object.fixed|default:0}" />
-			{/if}		
-			</td>
-		</tr>
+        <tr>
+            <th>{t}status{/t}:</th>
+            <td id="status">
+                {if $object.fixed}
+                    {t}This object is fixed - some data is readonly{/t}
+                    <br />
+                    {html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;" disabled="disabled"}
+                {else}
+                    {html_radios name="data[status]" options=$conf->statusOptions selected=$object.status|default:$conf->defaultStatus separator="&nbsp;"}
+                {/if}
+
+                {if in_array('administrator', $BEAuthUser.groups)}
+                    &nbsp;&nbsp;&nbsp;
+                    <b>fixed</b>:
+                    &nbsp;&nbsp;
+                    <input type="hidden" name="data[fixed]" value="0" />
+                    <input type="checkbox" name="data[fixed]" value="1" {if !empty($object.fixed)}checked{/if} />
+                {else}
+                    <input type="hidden" name="data[fixed]" value="{$object.fixed}" />
+                {/if}
+            </td>
+        </tr>
 		<tr>
 			<th>syndicate:</th>
 			<td>
@@ -103,14 +109,14 @@
 	<tr>
 		<th>{t}public url{/t}:</th>
 		<td>
-			<input type="text" name="data[public_url]" value="{$object.public_url|default:''}""/>
+			<input type="text" name="data[public_url]" value="{$object.public_url|default:''|escape}""/>
 		</td>
 	</tr>
 	
 	<tr>
 		<th>{t}staging url{/t}:</th>
 		<td>
-			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''}""/>
+			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''|escape}""/>
 		</td>
 	</tr>
 	<tr>
@@ -150,19 +156,19 @@
 		
 	</tr>
 	<tr>
-				<td> <label>{t}license{/t}:</label></td>
-				<td>
-					<select name="data[license]">
-						<option value="">--</option>
-						{foreach from=$conf->defaultLicenses item=lic key=code}
-							<option value="{$code}" {if $object.license==$code}selected="selected"{/if}>{$lic.title}</option>
-						{/foreach}
-						{foreach from=$conf->cfgLicenses item=lic key=code}
-							<option value="{$code}" {if $object.license==$code}selected="selected"{/if}>{$lic.title}</option>
-						{/foreach}
-					</select>
-				</td>
-			</tr>
+		<td> <label>{t}license{/t}:</label></td>
+		<td>
+			<select name="data[license]">
+				<option value="">--</option>
+				{foreach from=$conf->defaultLicenses item=lic key=code}
+					<option value="{$code}" {if $object.license==$code}selected="selected"{/if}>{$lic.title}</option>
+				{/foreach}
+				{foreach from=$conf->cfgLicenses item=lic key=code}
+					<option value="{$code}" {if $object.license==$code}selected="selected"{/if}>{$lic.title}</option>
+				{/foreach}
+			</select>
+		</td>
+	</tr>
 	</table>
 
 </div>
@@ -183,9 +189,9 @@
 	<tr>
 		<th>{t}Provider URL{/t}:</th>
 		<td>
-			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''}"/>
+			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''|escape}"/>
 			{if isset($object.stats_provider_url)}
-			<a href="{$object.stats_provider_url}" target="_blank">
+			<a href="{$object.stats_provider_url|escape}" target="_blank">
 			› access statistics
 			</a>
 			{/if}
@@ -194,7 +200,7 @@
 	<tr>
 		<th>{t}Code{/t}:</th>
 		<td colspan="2">
-			<textarea name="data[stats_code]" class="autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''}</textarea>
+			<textarea name="data[stats_code]" class="autogrowarea" style="font-size:0.8em; color:gray; width:470px;">{$object.stats_code|default:''|escape}</textarea>
 		</td>
 	</tr>
 	</table>
@@ -205,6 +211,9 @@
 
 	{assign_associative var="params" object=$object|default:null}
 	{$view->element('form_translations', $params)}
+
+	{assign var='excludedParts' value=','|explode:"publisher,rights,license"}
+    {$view->element('form_advanced_properties', ['el' => $object, 'excludedParts' => $excludedParts])}
 
 	{$view->element('form_custom_properties')}
 	

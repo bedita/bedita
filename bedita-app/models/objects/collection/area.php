@@ -38,7 +38,7 @@ class Area extends BeditaCollectionModel
 
 	public $searchFields = array(
 		"title" => 10,
-		"nickname" => 10,
+		"nickname" => 8,
 		"description" => 6,
 		"public_name" => 10,
 		"public_url" => 8,
@@ -84,6 +84,26 @@ class Area extends BeditaCollectionModel
 			'rule' => 'notEmpty',
 			'required' => true
 		),
+		'public_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
+		),
+		'staging_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
+		),
+		'email' => array(
+			'rule' => 'email',
+			'message' => 'email not valid',
+			'allowEmpty' => true
+		),
+		'stats_provider_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
+		)
 	);
 
 	function afterSave($created) {

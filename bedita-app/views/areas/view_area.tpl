@@ -30,7 +30,7 @@
 	
 	{else}
 	
-		{$object.title|default:"no title"}
+		{$object.title|escape|default:"no title"}
 	
 	{/if}
 </h1>	
@@ -41,7 +41,7 @@
 
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
-	
+	{$beForm->csrf()}
 	{include file="inc/form_area.tpl"}
 	
 </div>

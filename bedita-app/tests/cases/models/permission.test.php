@@ -174,41 +174,68 @@ class PermissionTestCase extends BeditaTestCase {
 		$this->Area->create();
 		$this->_insert($this->Area, $this->data['min']) ;
 		$dataChild = array_merge($this->data['min'], array('parent_id' => $this->Area->id));
-		$this->_insert($this->Section, $dataChild) ;
-		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck']) ;
-	
+		$this->_insert($this->Section, $dataChild);
+
 		$user = ClassRegistry::init("User");
 		$userData = array();
 		$userData["id"]= $user->field('id', array('userid'=>"bedita"));
 		$userData["groups"] = array("frontend");
 
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		// no perms set on object => retrun 'free'
+		$result = $this->Permission->frontendAccess($this->Section->id);
+		$this->assertEqual($result, 'free');
+
+		// no perms set on object, user passed => retrun free
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
+		$this->assertEqual($result, 'free');
+
+		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck']) ;
+
+		// perms set, no user passed
+		$result = $this->Permission->frontendAccess($this->Section->id);
+		$this->assertEqual($result, 'denied');
+
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"denied");
 
 		$userData["groups"] = array("reader");
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"full");
 		
 		$userData["groups"] = array("editor");
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"full");
 		
 		$this->Section->create();
 		$this->_insert($this->Section, $dataChild) ;
-		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck2']) ;
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck2']);
+
+		// access without user => 'partial'
+		$result = $this->Permission->frontendAccess($this->Section->id);
+		$this->assertEqual($result, 'partial');
+		
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"full");
 		
 		$userData["groups"] = array("frontend");
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"partial");
 		
 		$this->Section->create();
 		$this->_insert($this->Section, $dataChild) ;
 		$this->Permission->add($this->Section->id, $this->data['permsFrontendCheck3']) ;
+
+		// access without user => 'denied'
+		$result = $this->Permission->frontendAccess($this->Section->id);
+		$this->assertEqual($result, 'denied');
+
 		$userData["groups"] = array("frontend");
-		$result = $this->Permission->frontendAccess($this->Section->id,$userData);
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
 		$this->assertEqual($result,"denied");
+
+		$userData["groups"] = array('editor');
+		$result = $this->Permission->frontendAccess($this->Section->id, $userData);
+		$this->assertEqual($result, 'full');
 
 		$this->Transaction->rollback() ;
 	}

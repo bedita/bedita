@@ -135,6 +135,14 @@ class BuildFilterBehavior extends ModelBehavior {
         'comment_object_id' => 'Comment.object_id'
     );
 
+	/**
+	 * Force BEAppModel::findObjects() to use 'GROUP BY' clausole
+	 * its value is returned in self::getSqlItems()
+	 *
+	 * @var boolean
+	 */
+    private $useGroupBy = false;
+
 	function setup(&$model, $settings=array()) {
     	$this->model = $model;
 		if(empty($this->sQ)) {
@@ -157,106 +165,147 @@ class BuildFilterBehavior extends ModelBehavior {
 		$e = $this->endQuote;
 		
 		$beObject = ClassRegistry::init("BEObject");
-		
+		$bool = array('and', 'or', 'not');
 		// #CUSTOM QUERY -- all class methods
 		foreach ($this->filter as $key => $val) {
 			
-			$filterExtension = explode(".", $key);
-			$filterClassName = null;
-			$filterMethodName = null;
-			if (count($filterExtension) > 1) {
-				$filterClassName = $filterExtension[0];
-				$filterMethodName = $filterExtension[1];
-			}
+			// if key is in $bool, conditions will be built by cake
+			if (in_array(strtolower($key), $bool)) {
+				// wrong data type passed, skip it
+				if (!is_array($val)) {
+					continue;
+				}
+				if (empty($this->conditions[$key])) {
+					$this->conditions[$key] = array();
+				}
+				$this->conditions[$key] += $val;
+			} else {
 
-			// if exists $filterClassNameBehavior::$filterMethodName()
-			if ($filterClassName && App::import('Behavior', $filterClassName) 
-					&& is_subclass_of($filterClassName . 'Behavior', get_class($this))
-					&& method_exists($filterClassName . 'Behavior', $filterMethodName)) {
-				
-				// attach behavior
-				if (!$this->model->Behaviors->attached($filterClassName)) {
-					$this->model->Behaviors->attach($filterClassName);
+				$filterExtension = explode(".", $key);
+				$filterClassName = null;
+				$filterMethodName = null;
+				if (count($filterExtension) > 1) {
+					$filterClassName = $filterExtension[0];
+					$filterMethodName = $filterExtension[1];
 				}
-				
-				$items = $this->model->Behaviors->$filterClassName->$filterMethodName($val);
-				if (!empty($items["fields"])) {
-					$this->fields .= ", " . $items["fields"];
-				}
-				if (!empty($items["fromStart"])) {
-					$this->from = $items["fromStart"] . $this->from;
-				}
-				if (!empty($items["fromEnd"])) {
-					$this->from .= ", " . $items["fromEnd"];
-				}
-				if (!empty($items["conditions"])) {
-					$this->conditions = array_merge($this->conditions, $items["conditions"]);
-				}
-				if (!empty($items["group"])) {
-					$this->group .= $items["group"];
-				}
-				if (!empty($items["order"])) {
-					$this->order .= $items["order"];
-				}
-			
-			// else if exists specific method
-			} elseif (method_exists($this, $key . "Filter")) {
-				$this->{$key . "Filter"}($s, $e, $val);
 
-			// else if $key is a BEobject field or if it is in the form Model.field
-			} elseif ($beObject->hasField($key) || strstr($key, ".")) {
-			
-				if ($beObject->hasField($key)) {
-					$key = "{$s}BEObject{$e}." . $s . $key . $e;
-				} else {
+				// if exists $filterClassNameBehavior::$filterMethodName()
+				if ($filterClassName && App::import('Behavior', $filterClassName) 
+						&& is_subclass_of($filterClassName . 'Behavior', get_class($this))
+						&& method_exists($filterClassName . 'Behavior', $filterMethodName)) {
 					
-					if (strstr($key, ".*")) {
-						$mod = str_replace(".*", "", $key);
-						$this->group .= "," . $this->model->fieldsString($mod);
-						$key = $s . $mod . $e . ".*";
-					} else {
-						$key = $s . str_replace(".", "{$e}.{$s}", $key) . $e;
-						$this->group .= "," . $key;
-					}					
-				}
-				
-				$this->fields .= ", " . $key;
-
-				// if $val is array then it build 'IN' or 'NOT IN' condition
-				if (is_array($val)) {
-					$firstKey = strtolower(key($val));
-					if ($firstKey == "not") {
-						$operator = "NOT IN";
-						$listValue = (is_array($val["NOT"]))? "('" . implode("','", $val["NOT"]) . "')" : "('" . $val["NOT"] . "')";
-					} else {
-						$operator = "IN";
-						$listValue = "('" . implode("','", $val) . "')";
+					// attach behavior
+					if (!$this->model->Behaviors->attached($filterClassName)) {
+						$this->model->Behaviors->attach($filterClassName);
 					}
-					$this->conditions[] = $key . " " . $operator . " " . $listValue;
-				} elseif ($val !== "" && $val !== null) {
-					$this->conditions[] = (preg_match("/^[<|>]/", $val))? "(".$key." ".$val.")" : $key . "='" . $val . "'";
-				}
-	
-				if (count($arr = explode(".", $key)) == 2 ) {
-					$modelName = str_replace(array($s, $e) ,"",$arr[0]);
-					if (!strstr($modelName,"BEObject") && $modelName != "Content") {
-						$model = ClassRegistry::init($modelName);
-						$f_str = $s. $model->useTable . $e. " as " . $s. $model->alias . $e. "";
-						// create join with BEObject
-						if (empty($this->from) || !strstr($this->from, $f_str)) {
-							$this->from .= ", " . $f_str;
-							if (empty($model->hasOne["BEObject"]) && $model->hasField("object_id") && $model->alias != "ObjectRelation")
-								$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e}={$s}" . $model->alias . "{$e}.{$s}object_id{$e}";
-							else
-								$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e}={$s}" . $model->alias . "{$e}.{$s}id{$e}";							
+					
+					$items = $this->model->Behaviors->$filterClassName->$filterMethodName($val);
+					if (!empty($items["fields"])) {
+						$this->fields .= ", " . $items["fields"];
+					}
+					if (!empty($items["fromStart"])) {
+						$this->from = $items["fromStart"] . $this->from;
+					}
+					if (!empty($items["fromEnd"])) {
+						$this->from .= ", " . $items["fromEnd"];
+					}
+					if (!empty($items["conditions"])) {
+						$this->conditions = array_merge($this->conditions, $items["conditions"]);
+					}
+					if (!empty($items["group"])) {
+						$this->group .= $items["group"];
+					}
+					if (!empty($items["order"])) {
+						$this->order .= $items["order"];
+					}
+				
+				// else if exists specific method
+				} elseif (method_exists($this, $key . "Filter")) {
+					$this->{$key . "Filter"}($s, $e, $val);
+
+				} else {
+
+					$op = null;
+					if (preg_match('/(.+)\s+(<=|>=|<>|<|>|like|LIKE)$/', $key, $matches)) {
+						$key = $matches[1];
+						$op = ' ' . $matches[2];
+					}
+
+					// else if $key is a BEobject field or if it is in the form Model.field
+					if ($beObject->hasField($key) || strstr($key, '.')) {
+				
+						if ($beObject->hasField($key)) {
+							$this->fields .= ', ' . "{$s}BEObject{$e}." . $s . $key . $e;
+							$key = 'BEObject.' . $key;
+						} else {
+							
+							if (strstr($key, '.*')) {
+								$mod = str_replace('.*', '', $key);
+								$f = $this->model->fieldsString($mod);
+								$this->group .= ',' . $f;
+								//$key = $s . $mod . $e . ".*";
+								$this->fields .= ', ' . $f;
+							} else {
+								$f = $s . str_replace('.', "{$e}.{$s}", $key) . $e;
+								$this->group .= ',' . $f;
+								$this->fields .= ', ' . $f;
+							}					
+						}
+						
+						//$this->fields .= ", " . $key;
+
+						// if there is an operator in the $key defers to cake the build conditions
+						if ($op !== null) {
+							$this->conditions[$key . $op] = $val;
+						} else {
+
+							// if $val is array then it build 'IN' or 'NOT IN' condition
+							if (is_array($val)) {
+								$firstKey = strtolower(key($val));
+								if ($firstKey == 'not') {
+									if (empty($this->conditions['NOT'])) {
+										$this->conditions['NOT'] = array();
+									}
+									$this->conditions['NOT'] += array($key => $val['NOT']);
+								} else {
+									$this->conditions[$key] = $val;
+								}
+							} elseif ($val !== '' && $val !== null) {
+								$this->conditions[$key] = $val;
+							}
+						}
+
+						$arr = explode('.', $key);
+						if (count($arr) == 2) {
+							$modelName = str_replace(array($s, $e), '', $arr[0]);
+							if (!strstr($modelName, 'BEObject') && $modelName != 'Content') {
+								$model = ClassRegistry::init($modelName);
+								if ($model) {
+									$f_str = $s. $model->useTable . $e. ' as ' . $s. $model->alias . $e;
+									// create join with BEObject
+									if (empty($this->from) || !strstr($this->from, $f_str)) {
+										$this->from .= ', ' . $f_str;
+										if (empty($model->hasOne['BEObject']) && $model->hasField('object_id') && $model->alias != 'ObjectRelation') {
+											$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} = {$s}" . $model->alias . "{$e}.{$s}object_id{$e}";
+										} else {
+											$this->conditions[] = "{$s}BEObject{$e}.{$s}id{$e} = {$s}" . $model->alias . "{$e}.{$s}id{$e}";
+										}
+									}
+								}
+							}
 						}
 					}
-					
 				}
-				
 			}
 		}
-		return array($this->fields, $this->from ,$this->conditions, $this->group, $this->order);
+		return array(
+			'fields' => $this->fields,
+			'from' => $this->from,
+			'conditions' => $this->conditions,
+			'group' => $this->group,
+			'order' => $this->order,
+			'useGroupBy' => $this->useGroupBy
+		);
 	}
 	
 	/**
@@ -265,11 +314,12 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param array $filter 
 	 */
 	private function initVars(array $filter) {
-		$this->fields = "";
-		$this->from = "";
+		$this->fields = '';
+		$this->from = '';
 		$this->conditions = array();
-		$this->group = "";
-		$this->order = "";
+		$this->group = '';
+		$this->order = '';
+		$this->useGroupBy = false;
 
 		foreach ($filter as $key => $value) {
             if (array_key_exists($key, $this->map)) {
@@ -305,6 +355,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->fields .= ", {$s}ObjectUser{$e}.{$s}user_id{$e} AS obj_userid";
 		$from = " LEFT OUTER JOIN {$s}object_users{$e} AS {$s}ObjectUser{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}ObjectUser{$e}.{$s}object_id{$e}";
 		if(!empty($value)) {
+			$value = Sanitize::escape($value);
 			$from .= " AND {$s}ObjectUser{$e}.{$s}switch{$e} = '$value'";
 		}
 		//$from .= " LEFT OUTER JOIN {$s}users{$e} AS {$s}UserOU{$e} ON {$s}ObjectUser{$e}.{$s}user_id{$e}={$s}UserOU{$e}.{$s}id{$e}";
@@ -341,7 +392,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$annotationModel = ClassRegistry::init($annotationType);
 			$refObj_type_id = Configure::read("objectTypes." . Inflector::underscore($annotationModel->name) . ".id");
 			$numOf = "num_of_" . Inflector::underscore($annotationModel->name);
-			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$this->fields .= ", " . $numOf;  // Same as issue #541.
 			$from = " LEFT OUTER JOIN (
 						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}" . $annotationModel->name . "{$e}.{$s}id{$e}) AS " . $numOf ."
 						FROM {$s}objects{$e} AS {$s}BEObject{$e} 
@@ -357,6 +408,8 @@ class BuildFilterBehavior extends ModelBehavior {
 			
 			$this->from = $from . $this->from;
 		}
+
+		$this->useGroupBy = true;
 	}
 	
 	/**
@@ -401,9 +454,11 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 
 		// #MYSQL
-		App::import('Sanitize');
-		$searchString = Sanitize::html($queryConf['searchString'], array('remove' => true));
-
+        App::import('Sanitize');
+        $searchString = Sanitize::clean($queryConf['searchString'], 
+            array('escape' => false, 'encode' => false, 'remove_html' => true));
+        $searchString = addslashes($searchString);
+		
 		$sType = $queryConf['searchType'];
 
 		if ($sType == "fulltext") {
@@ -438,6 +493,8 @@ class BuildFilterBehavior extends ModelBehavior {
 				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
 			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
+
+		$this->useGroupBy = true;
 	}
 		
 	
@@ -450,6 +507,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 */
 	protected function categoryFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
+		$value = Sanitize::escape($value);
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
@@ -467,6 +525,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 */
 	protected function tagFilter($s, $e, $value) {
 		$cat_field = (is_numeric($value))? "id" : "name";
+		$value = Sanitize::escape($value);
 		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
 			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
 		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
@@ -535,7 +594,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				if(!$first) {
 					$in .= ", ";
 				}
-				$in .= $v;
+				$in .= Sanitize::escape($v);
 				$first = false; 
 			}
 			$this->conditions[] = "{$s}ReferenceObject{$e}.{$s}object_type_id{$e} IN ($in)";
@@ -551,6 +610,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * @param integer $value, mail_group_id
 	 */
 	protected function mail_groupFilter($s, $e, $value) {
+		$value = Sanitize::escape($value);
 		$this->from .= ", {$s}mail_group_cards{$e} AS {$s}MailGroupCard{$e}";
 		$this->conditions[] = "{$s}MailGroupCard{$e}.{$s}mail_group_id{$e}='" . $value . "' 
 					AND {$s}MailGroupCard{$e}.{$s}card_id{$e}={$s}BEObject{$e}.{$s}id{$e}";
@@ -609,6 +669,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		unset($value['join']);
 		if (!empty($value)) {
 			foreach ($value as $k => $v) {
+				$v = Sanitize::escape($v);
 				$from .= " AND {$s}ObjectProperty{$e}.{$s}{$k}{$e}='" . $v ."'";
 			}
 		}
@@ -638,6 +699,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		unset($value['join']);
 		if (!empty($value)) {
 			foreach ($value as $k => $v) {
+				$v = Sanitize::escape($v);
 				$from .= " AND {$s}DateItem{$e}.{$s}{$k}{$e}='" . $v ."'";
 			}
 		}
@@ -668,9 +730,10 @@ class BuildFilterBehavior extends ModelBehavior {
 			$object_type_id = $this->filter["BEObject.object_type_id"];
 		}
 		foreach ($value as $relation) {
+			$relation = Sanitize::escape($relation);
 			$numOf =  "num_of_relations_" . $relation;
 			$alias = "Relation" . Inflector::camelize($relation);
-			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$this->fields .= ", " . $numOf;  // Issue #541.
 			$from = " LEFT OUTER JOIN (
 						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}{$alias}{$e}.{$s}id{$e}) AS " . $numOf ."
 						FROM {$s}objects{$e} AS {$s}BEObject{$e} 
@@ -791,5 +854,3 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 	}
 }
- 
-?>

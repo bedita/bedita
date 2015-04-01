@@ -179,9 +179,13 @@ class BeThumb {
             }
 		}
 		
-		// if svg skip and return image without any resize
-		if($data['mime_type'] === 'image/svg+xml') { 
-			return Configure::read('mediaUrl') . $this->imageInfo['path'];
+		// if svg or animated gif skip and return image without any resize
+		if($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
+			if ($this->imageInfo["remote"]) {
+				return $this->imageInfo['path'];
+			} else {
+				return Configure::read('mediaUrl') . $this->imageInfo['path'];
+			}
 		}
 		
 		// test source file available
@@ -196,7 +200,7 @@ class BeThumb {
 		// and the image it's not alredy cached
 		$cacheExists = file_exists($this->imageTarget['filepath']);
 		
-		if (!$cacheExists && $this->imageTarget['type'] != 'svg' ) {
+		if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() ) {
 			if ( !$this->resample() ) {
 				return $this->imgMissingFile;
 			}
@@ -219,8 +223,9 @@ class BeThumb {
 	public function setupImageInfo(array &$data) {
 
 	    // check uri
-	    if(empty($data['uri'])) {
-	        $this->triggerError("Missing image 'uri'");
+	    if (empty($data['uri'])) {
+	        $source = !empty($data['id']) ? ' - obj id: ' . $data['id'] : '';
+	        $this->triggerError("Missing image 'uri'" . $source);
 	        $data['error'] = 'notFund';
 	        return false;
 	    }
@@ -244,7 +249,9 @@ class BeThumb {
 		// relative path (local files and remote uri)
 		$this->imageInfo['path'] = $data['path'];
 		
+		// thumbnail setup
 		$pathParts =  pathinfo($data['path']);
+
 		// complete file name
 		$this->imageInfo['filename'] = $pathParts['basename'];
 		// file name without extension
@@ -267,7 +274,7 @@ class BeThumb {
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
 		$this->imageInfo['cacheDirectory'] = $mediaRoot . $this->imageInfo['cachePath'];
-		if(!$this->checkCacheDirectory()) {
+		if (!$this->checkCacheDirectory()) {
 			$this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
 	        $data['error'] = 'fileSys';
 			return false;
@@ -287,6 +294,11 @@ class BeThumb {
 		}
 		$this->imageInfo['mime_type'] = $data['mime_type'];
 		$this->imageInfo['type'] = $this->supportedTypes[$data['mime_type']];		
+
+		// if SVG skip thumbnail and other info
+		if ($data['mime_type'] === 'image/svg+xml') { 
+			return true;
+		}
 
 		if (empty($data['width']) || empty($data['height']) ) {
 
@@ -749,8 +761,47 @@ class BeThumb {
 	 * @param string $errorMsg
 	 */
 	private function triggerError($errorMsg) {
+        if (!class_exists('CakeLog')) {
+            return;
+        }
 		CakeLog::write('error', get_class($this) . ": " . $errorMsg);
 	}
+
+    /**
+     * Check whether current image is an animated GIF.
+     *
+     * @return bool
+     * @see http://php.net/manual/en/function.imagecreatefromgif.php#59787
+     */
+    private function isAnimatedGif() {
+        if ($this->imageInfo['type'] != 'gif') {
+            return false;
+        }
+
+        $data = file_get_contents($this->imageInfo['filepath']);
+
+        $pointer = 0;
+        $frames = 0;
+        while ($frames < 2) {
+            $pos1 = strpos($data, "\x00\x21\xF9\x04", $pointer);
+            if ($pos1 === FALSE) {
+                break;
+            } else {
+                $pointer = $pos1 + 1;
+                $pos2 = min(strpos($data, "\x00\x2C", $pointer), strpos($data, "\x00\x21", $pointer));
+                if ($pos2 === FALSE) {
+                    break;
+                } else {
+                    if ($pos1 + 8 == $pos2) {
+                        $frames++;
+                    }
+                    $pointer = $pos2 + 1;
+                }
+            }
+        }
+
+        return $frames >= 2;
+    }
 
 	/***************************/
 	/* minor private functions */
@@ -768,12 +819,10 @@ class BeThumb {
 			include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
 			$this->knownMimeTypes = $config["mimeTypes"];
 		}
+		$ext = strtolower($ext);
 		if (!empty($ext) && array_key_exists($ext, $this->knownMimeTypes)) {
 				$mime_type = $this->knownMimeTypes[$ext];
 		}
 		return $mime_type;
 	}
-		
 }
-
-?>

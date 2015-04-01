@@ -22,21 +22,18 @@ Menu comandi, seconda colonna da SX valido per tutte le pagine del controller.
 
 		{if $view->action == "viewUser" && !$userDeleted|default:false}
 		
-			<input class="bemaincommands" type="button" name="save" onClick="$('#userForm').submit()" 
-			value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
+			<input class="bemaincommands" type="button" name="saveUser" value="{if isset($userdetail)}{t}Save{/t}{else}{t}create{/t}{/if}" />
 
 		{elseif $view->action == "viewGroup"}
 
 			<input class="bemaincommands" 
 			{if (!empty($group) && $group.Group.immutable == 1)}disabled=disabled{/if}
-			type="button" name="save" onClick="$('#groupForm').submit()" 
-			value="{if isset($group)}{t}save{/t}{else}{t}create group{/t}{/if}" />
+			type="button" name="saveGroup" value="{if isset($group)}{t}save{/t}{else}{t}create group{/t}{/if}" />
 
 			{if ($module_modify eq '1' && !empty($group))}
 				<input class="bemaincommands" 
 				{if ($group.Group.immutable == 1)}disabled=disabled{/if}
-				type="button" name="deleteGroup" value="{t}Delete{/t}" 
-				onclick="javascript:delGroupDialog('{$group.Group.name}',{$group.Group.id});"/>
+				type="button" name="deleteGroup" value="{t}Delete{/t}"/>
 			{/if}
 			
 		{/if}

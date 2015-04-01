@@ -135,7 +135,7 @@ class DeployShell extends BeditaBaseShell {
 
 		$this->out("Git clone command:\n> $gitClone");
     	$res = system($gitClone);
-		if(empty($res)) {
+		if($res === false) {
 	        $this->out("Error in git clone. Bye.");
 			return;
 		}
@@ -152,7 +152,7 @@ class DeployShell extends BeditaBaseShell {
 		$this->out("Export command: $gitExport");
 
 		$res = system($gitExport);
-		if (!empty($res)) {
+		if ($res === false) {
 			$this->out("Failed to export git code. Bye.");
 			return;
 		}
@@ -186,15 +186,6 @@ class DeployShell extends BeditaBaseShell {
 			}
 		}
 		
-		foreach ($rel["renameFiles"] as $from => $to) {
-			$p1 = $exportPath.DS.$from;
-			$p2 = $exportPath.DS.$to;
-			$this->out("rename: $p1 => $p2");
-			if(!rename($p1, $p2)) {
-	        	throw new Exception("Error renaming " . $p1. " to " .$p2);
-			};
-		}
-		
     	foreach ($rel["createFiles"] as $f) {
 			$p = $exportPath.DS.$f;
 			$this->out("create file: " . $p);
@@ -211,11 +202,39 @@ class DeployShell extends BeditaBaseShell {
 	        	throw new Exception("Error moving " . $pathFrom. " to " .$pathTo);
 			}
 		}
-		
+
+        // add frontends to package
+        $this->out('');
+        $this->out('Adding frontends:');
+        $frontendsBasePath = $exportPath . DS . 'frontends' . DS;
+        foreach ($rel['frontends'] as $frontendName => $frontendUrl) {
+            $frontendPath = $frontendsBasePath . $frontendName;
+            $gitClone = "git clone $frontendUrl $frontendPath";
+            $this->out('');
+            $this->out("Git clone command:\n> $gitClone");
+            $res = system($gitClone);
+            if ($res === false) {
+                $this->out("Error cloning $frontendName. Bye.");
+                return;
+            }
+            $folder->delete($frontendPath . DS . '.git');
+            $this->out('Frontend ' . $frontendName . ' added.');
+        }
+
+        // Rename some files.
+        foreach ($rel['renameFiles'] as $from => $to) {
+            $p1 = $exportPath . DS . $from;
+            $p2 = $exportPath . DS . $to;
+            $this->out("rename: {$p1} => {$p2}");
+            if (!rename($p1, $p2)) {
+                throw new Exception("Error renaming {$p1} to {$p2}");
+            }
+        }
+        
 		// create version file
 		// release name is : base name + major version (like 3.0.beta1) + codename + git abbreviated sha1 checksum
 		$codeName = empty($rel["releaseCodeName"]) ? "" : $rel["releaseCodeName"];
-		$releaseName = Configure::read("majorVersion") . "." . $codeName . "." . $gitRelease;
+		$releaseName = Configure::read('version') . "." . $codeName . "." . $gitRelease;
 		$versionFileContent="<?php\n\$config['Bedita.version'] = '". $releaseName . "';\n?>";
 		$handle = fopen($exportPath.DS.$rel["versionFileName"], 'w');
 		fwrite($handle, $versionFileContent);
@@ -223,9 +242,9 @@ class DeployShell extends BeditaBaseShell {
 		
 		$releaseFile = $releaseDir. DS . $rel["releaseBaseName"] . "-" . $releaseName . ".tar";
 		
-    	if(file_exists($releaseFile)) {
+    	if (file_exists($releaseFile)) {
 			$res = $this->in("$releaseFile exists, overwrite? [y/n]");
-			if($res == "y") {
+			if ($res == "y") {
 				if(!unlink($releaseFile)){
 					throw new Exception("Error deleting $releaseFile");
 				}
@@ -293,7 +312,7 @@ class DeployShell extends BeditaBaseShell {
     	chdir(APP);
 		$versionFile = APP . 'config' . DS . 'bedita.version.php';
     	Configure::load("bedita.ini"); // reload new bedita.ini, may be changed by svn up
-		$beditaVersion = Configure::read("majorVersion") . "." . $revision;
+		$beditaVersion = Configure::read('version') . "." . $revision;
 		$handle = fopen($versionFile, 'w');
 		fwrite($handle, "<?php\n\$config['Bedita.version'] = '".$beditaVersion. "';\n?>");
 		fclose($handle);
@@ -660,7 +679,7 @@ class DeployShell extends BeditaBaseShell {
         $this->out($this->nl(1) . 'Change log will be placed in ' . $filePath);
 
         $file = new File($filePath, true);
-        $version = '## Version ' . Configure::read('majorVersion') . ' - ' . Configure::read('codenameVersion') . "\n";
+        $version = '## Version ' . Configure::read('version') . ' - ' . Configure::read('codenameVersion') . "\n";
         $file->write($version);
         foreach ($changes as $group => $changesGroup) {
             switch ($group) {

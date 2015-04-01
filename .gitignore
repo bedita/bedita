@@ -44,27 +44,8 @@
 # /bedita-app/tests/cases/components/
 /bedita-app/tests/cases/components/*.localdata.php
 
-# /bedita-app/tmp/
-/bedita-app/tmp/*.php.backup
-/bedita-app/tmp/import
-
-# /bedita-app/tmp/cache/
-/bedita-app/tmp/cache/cake_*
-
-# /bedita-app/tmp/cache/models/
-/bedita-app/tmp/cache/models/*
-
-# /bedita-app/tmp/cache/persistent/
-/bedita-app/tmp/cache/persistent/*
-
-# /bedita-app/tmp/cache/views/
-/bedita-app/tmp/cache/views/*
-
-# /bedita-app/tmp/logs/
-/bedita-app/tmp/logs/*
-
-# /bedita-app/tmp/smarty/compile/
-/bedita-app/tmp/smarty/compile/*
+# /bedita-app/tmp
+/bedita-app/tmp
 
 # /bedita-app/vendors/shells/
 /bedita-app/vendors/shells/be_test.php
@@ -84,6 +65,9 @@
 
 # /bedita-app/webroot/js/libs/richtexteditors/conf/local
 /bedita-app/webroot/js/libs/richtexteditors/conf/local/*
+
+# /bedita-app/plugins/debug_kit
+/bedita-app/plugins/debug_kit
 
 # /bedita-doc/api/
 /bedita-doc/api/html

@@ -87,7 +87,7 @@ class Module extends BEAppModel {
 		if (empty($setup["BEditaMinVersion"])) {
 			throw new BeditaException(__("Missing minimum BEdita version required to instal module" . " " . $pluginName, true));
 		}
-		preg_match('/^\d{1,}(\.\d){1,}/', Configure::read("majorVersion"), $matches);
+		preg_match('/^\d{1,}(\.\d){1,}/', Configure::read('version'), $matches);
 		$beditaVersion = $matches[0];
 		if ($setup["BEditaMinVersion"] > $beditaVersion) {
 			throw new BeditaException(__($pluginName . " " . "require at least BEdita " . $setup["BEditaMinVersion"], true));

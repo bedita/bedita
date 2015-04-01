@@ -37,6 +37,11 @@ if (!class_exists('BeditaException')) {
  */
 class BeSystem {
 
+    /**
+     * System user ID, created on setup.
+     */
+    const SYSTEM_USER_ID = 1;
+
 	/**
 	 * Check whether directory $dirPath exists
 	 * 
@@ -117,15 +122,31 @@ class BeSystem {
 	 * cleanup cached files
 	 * 
 	 * @param string $basePath, base path on which build cake cache dir and smarty cache dir
-	 * @param type $frontendsToo, true (defualt) to delete also all frontends cached files
+	 * @param bool $frontendsToo, true (default) to delete also all frontends cached files
+	 * @param bool $cleanAll, false (default) clean all folders in tmp/cache not just 'models', 'persistent' and 'views'
 	 * @return array, it contains
 	 *				'failed' => array of errors, empty if no errors occured
-	 *				'success'  => array of file deleted
+	 *				'success'  => array deleted files
 	 */
-	public function cleanupCache($basePath = TMP, $frontendsToo = true) {
-		$cakeCacheDir = $basePath . DS . 'cache';
-		$smartyCacheDir = $basePath . DS . 'smarty';
-		$results = $this->cleanUpDir($cakeCacheDir, true);
+	public function cleanupCache($basePath = TMP, $frontendsToo = true, $cleanAll = false) {
+		$cakeCacheDir = $basePath . 'cache';
+		$smartyCacheDir = $basePath . 'smarty';
+		
+        $results = array();
+        if ($cleanAll) {
+            $results = $this->cleanUpDir($cakeCacheDir, true);
+        } else {
+            $results = $this->cleanUpDir($cakeCacheDir, false, false);
+            $defaultDirs = array('models', 'persistent', 'views');
+            foreach ($defaultDirs as $dir) {
+                $tmpDir = $cakeCacheDir . DS . $dir;
+                $resTmp = $this->cleanUpDir($tmpDir, true);
+                foreach ($results as $key => $val) {
+                    $results[$key] = array_merge($results[$key], $resTmp[$key]);
+                }
+            }
+        }
+		
 		if (file_exists($smartyCacheDir)) {
 			$resSmarty = $this->cleanUpDir($smartyCacheDir, true);
 			foreach ($results as $key => $val) {
@@ -135,10 +156,23 @@ class BeSystem {
 		Cache::clear();
 		if ($frontendsToo) {
 			$folder= new Folder(BEDITA_FRONTENDS_PATH);
-	        $dirs = $folder->read(true, true, true);
-	        foreach ($dirs[0] as $d) {
-	        	if($d[0] !== ".") {
-	            	$resCake = $this->cleanUpDir($d . DS . "tmp" . DS . "cache", true);
+            $dirs = $folder->read(true, true, true);
+            foreach ($dirs[0] as $d) {
+                if($d[0] !== '.') {
+                    $cakeCacheDir = $d . DS . 'tmp' . DS . 'cache';
+                    if ($cleanAll) {
+                        $resCake = $this->cleanUpDir($cakeCacheDir, true);
+                    } else {
+                        $resCake = $this->cleanUpDir($cakeCacheDir, false, false);
+                        $defaultDirs = array('models', 'persistent', 'views');
+                        foreach ($defaultDirs as $dir) {
+                            $tmpDir = $cakeCacheDir . DS . $dir;
+                            $resTmp = $this->cleanUpDir($tmpDir, true);
+                            foreach ($resCake as $key => $val) {
+                                $resCake[$key] = array_merge($resCake[$key], $resTmp[$key]);
+                            }
+                        }
+                    }
 					if (file_exists($d . DS . "tmp" . DS . "smarty")) {
 						$resSmarty = $this->cleanUpDir($d . DS . "tmp" . DS . "smarty", true);
 					}
@@ -173,9 +207,11 @@ class BeSystem {
 			$f = new File($file);
 			if ($f->name != "empty") {
 				if (!$f->delete()) {
+                    CakeLog::write('warn', 'cleanup - unable to delete file ' . $file);
 					$results['failed'][] = array('error' => __("Error deleting file", true) . " " . $file);
 				} else {
-					$results['success'][] = $file . " " . __('deleted', true);
+                    CakeLog::write('cleanup', 'file ' . $file . ' removed');
+				    $results['success'][] = $file . " " . __('deleted', true);
 				}
 			}
 		}
@@ -184,7 +220,10 @@ class BeSystem {
 			foreach ($list[0] as $d) {
 				if ($d[0] != '.') { // don't delete hidden dirs (.svn,...)
 					if (!$folder->delete($d)) {
-						$results['failed'][] = __("Error deleting dir", true) . " " . $d;
+                        CakeLog::write('warn', 'cleanup - unable to delete folder ' . $d);
+					    $results['failed'][] = __("Error deleting dir", true) . " " . $d;
+					} else {
+                        CakeLog::write('cleanup', 'dir' . $d . ' removed');
 					}
 				}
 			}
@@ -304,21 +343,14 @@ class BeSystem {
 		}
 				
 		if (!empty($fileLines)) {
-			//eval php code: join array in php string without php opening/closing tags
-			$code = array_slice($fileLines, 1, count($fileLines)-2);
-			// remove define() [constant definition] to avoid notice because they can be already defined
-			foreach ($code as $k => $c) {
-				if (strpos($c, "define(") !== false) {
-					unset($code[$k]);
-				}
+			// check php validity
+			$checkResponse = $this->checkCodeSyntax($fileLines);
+			if ($checkResponse !== true) {
+				throw new BeditaException(
+					__("Wrong PHP code generated", true),
+					array(__('See exception.log for more info', true))
+				);
 			}
-			
-			$codeString = implode("", $code);
-			
-			if (strpos($fileLines[0], "<?php") === false || strpos($fileLines[count($fileLines)-1], "?>") === false || eval($codeString) === false) {
-				throw new BeditaException(__("Wrong PHP code generated", true), $fileLines);
-			}
-			
 			// write to file
 			if (file_put_contents($filepath, $fileLines, LOCK_EX) === false) {
 				// restore backupped file
@@ -332,7 +364,63 @@ class BeSystem {
 		return true;
 	}
 	
-	
+	/**
+	 * Check for syntax error in file
+	 *
+	 * To check syntax it uses 'php -l' command (cli)
+	 *
+	 * @param string $fileName the complete file name
+	 * @return boolean true on check success
+	 */
+	public function checkFileSyntax($fileName) {
+		$cli = PHP_BINDIR . DS . 'php';
+		$cmd = $cli . ' -l ' . $fileName .' 2>&1';
+		exec($cmd, $outputAndErrors, $return);
+		if ($return === 0) {
+			return true;
+		} else {
+			CakeLog::write('error', 'Syntax error checking ' . $fileName);
+			CakeLog::write('exception', 'BeSystem::checkFileSyntax(): ' . print_r($outputAndErrors, true));
+			return false;
+		}
+	}
+
+	/**
+	 * Return true if no syntax errors are present in $sourceCode.
+	 *
+	 * To check syntax it uses BeSystem::checkFileSyntax()
+	 * Since 'php -l' works against files a temporary file is created in (bedita-app/tmp) and removed only if the check is correct.
+	 * If BeSystem::checkFileSyntax() or file creation fails the method returns false
+	 *
+	 * @see BeSystem::checkFileSyntax()
+	 * @param array|string $sourceCode the source code to test
+	 * @param boolean $addPHPtag true to add '<?php' at the begin of $sourceCode
+	 * @return boolean
+	 */
+	public function checkCodeSyntax($sourceCode, $addPHPtag = false) {
+		if ($addPHPtag) {
+			if (is_array($sourceCode)) {
+				array_unshift($sourceCode, '<?php');
+			} else {
+				$sourceCode = '<?php ' .$sourceCode;
+			}
+		}
+		$tmpFileName = (is_array($sourceCode)) ? md5(implode('', $sourceCode)) : md5($sourceCode);
+		$tmpFile = TMP . $tmpFileName . '.php';
+		if (file_put_contents($tmpFile, $sourceCode, LOCK_EX) === false) {
+			CakeLog::write('error', 'Fail to create temporary file to lint');
+			return false;
+		}
+		$checkResponse = $this->checkFileSyntax($tmpFile);
+		if ($checkResponse === true) {
+			// remove temporary file
+			if (!unlink($tmpFile)) {
+				CakeLog::write('warn', 'Error removing temporary file ' . $tmpFile);
+			}
+		}
+		return $checkResponse;
+	}
+
 	/**
 	 * parse file as array (returned from file() php function) and replace/insert var defined in $params
 	 * 
@@ -478,5 +566,14 @@ class BeSystem {
 		$newline .= " = " . var_export($params["varValue"], true) . ";" . PHP_EOL;
 		return $newline;
 	}
+
+    /**
+     * Get system user ID.
+     *
+     * @return int
+     * @see BeSystem::SYSTEM_USER_ID
+     */
+    public function systemUserId () {
+        return self::SYSTEM_USER_ID;
+    }
 }
-?>

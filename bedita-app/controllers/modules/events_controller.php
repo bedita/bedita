@@ -26,12 +26,13 @@
 class EventsController extends ModulesController {
 
 	public $helpers 	= array('BeTree', 'BeToolbar', 'Paginator');
-	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText');
+	public $components = array('BeTree', 'BeCustomProperty', 'BeLangText', 'BeSecurity');
 	public $uses = array('BEObject','Event','Category','Area','Tree', 'DateItem');
 
 	// default calendar: 7 days
 	protected $calendarDays = 7;
 	protected $moduleName = 'events';
+	protected $categorizableModels = array('Event');
 	
 	public function index($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
 		$conf  = Configure::getInstance() ;
@@ -134,96 +135,5 @@ class EventsController extends ModulesController {
 	public function categories() {
 		$this->showCategories($this->Event);
 	}
-
-	public function saveCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["label"])) 
- 	 	    throw new BeditaException( __("No data", true));
-		$this->Transaction->begin() ;
-		if(!$this->Category->save($this->data)) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category saved", true)." - ".$this->data["label"]);
-		$this->eventInfo("category [" .$this->data["label"] . "] saved");
-	}
-	
-	public function deleteCategories() {
-		$this->checkWriteModulePermission();
-		if(empty($this->data["id"])) 
- 	 	    throw new BeditaException( __("No data", true));
- 	 	$this->Transaction->begin() ;
-		if(!$this->Category->delete($this->data["id"])) {
-			throw new BeditaException(__("Error saving tag", true), $this->Category->validationErrors);
-		}
-		$this->Transaction->commit();
-		$this->userInfoMessage(__("Category deleted", true) . " -  " . $this->data["label"]);
-		$this->eventInfo("Category " . $this->data["id"] . "-" . $this->data["label"] . " deleted");
-	}
-
-
-	protected function forward($action, $esito) {
-	  	$REDIRECT = array(
-				"cloneObject"	=> 	array(
-										"OK"	=> "/events/view/{$this->Event->id}",
-										"ERROR"	=> "/events/view/{$this->Event->id}" 
-										),
-                "view"              =>  array(
-                                            "ERROR" => "/events"
-                                        ), 
-				"save"				=> 	array(
-	 										"OK"	=> "/events/view/{$this->Event->id}",
-	 										"ERROR"	=> "/events" 
-	 									), 
-	 			"delete" 			=>	array(
-	 										"OK"	=> $this->fullBaseUrl . $this->Session->read('backFromView'),
-	 										"ERROR"	=> $this->referer()
-	 									), 
-				"deleteSelected" =>	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-									),
-	 			"saveCategories" 	=> array(
-	 										"OK"	=> "/events/categories",
-	 										"ERROR"	=> "/events/categories"
-	 									),
-	 			"deleteCategories" 	=> array(
-	 										"OK"	=> "/events/categories",
-	 										"ERROR"	=> "/events/categories"
-	 									),
-				"deleteSelected" =>	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										),
-				"addItemsToAreaSection"	=> 	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										),
-				"moveItemsToAreaSection"	=> 	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										),
-				"removeItemsFromAreaSection"	=> 	array(
-							"OK"	=> $this->referer(),
-							"ERROR"	=> $this->referer() 
-							),
-				"changeStatusObjects"	=> 	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										),
-				"assocCategory"	=> 	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										),
-				"disassocCategory"	=> 	array(
-											"OK"	=> $this->referer(),
-											"ERROR"	=> $this->referer() 
-										)
-	 		) ;
-	 	if(isset($REDIRECT[$action][$esito])) return $REDIRECT[$action][$esito] ;
-	 	return false ;
-	 }
-
 }
 
-?>

@@ -20,23 +20,17 @@
  */
 
 /**
- * Basical object
+ * BEObject class
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class BEObject extends BEAppModel
-{
-	var $actsAs = array();
+class BEObject extends BEAppModel {
+
+	public $actsAs = array('Cacheable');
 	
 	var $name = 'BEObject';
 	var $useTable	= "objects" ;
 	
 	private $defaultIp = "::1"; // default IP addr for saved objects
-	private $defaultUserId = 1; // default user id, e.g.: objects created by shell scripts don't have proper user
 	
 	var $validate = array(
 //		'title' => array(
@@ -52,8 +46,11 @@ class BEObject extends BEAppModel
 			'rule' => 'notEmpty'
 		),
 		'ip_created' => array(
-			'rule' => 'notEmpty'
-		)
+			'rule' => 'ip'
+		),
+        'status' => array(
+            'rule' => array('inList', array('on', 'off', 'draft'))
+        ),
 	) ;
 
 	var $belongsTo = array(
@@ -242,26 +239,31 @@ class BEObject extends BEAppModel
 	}
 
 	function beforeSave() {
+        $data;
+        if(isset($this->data[$this->name])) 
+            $data = &$this->data[$this->name] ;
+        else 
+            $data = &$this->data ;
+
 		// format custom properties and searchable text fields
 		$labels = array('SearchText');
 		foreach ($labels as $label) {
-		  if(!isset($this->data[$this->name][$label])) 
-			continue ;
-			
-		  if(is_array($this->data[$this->name][$label]) && count($this->data[$this->name][$label])) {
-		      $tmps = array() ;
-		      foreach($this->data[$this->name][$label]  as $k => $v) {
-					$this->_value2array($k, $v, $arr) ;
-					$tmps[] = $arr ;
+            if(!isset($data[$label]))
+                continue;
 
-				}
-			$this->data[$this->name][$label] = $tmps ;
-		  }
+            if(is_array($data[$label]) && count($data[$label])) {
+                $tmps = array();
+                foreach($data[$label]  as $k => $v) {
+                    $this->_value2array($k, $v, $arr);
+                    array_push($tmps, $arr);
+                }
+                $data[$label] = $tmps;
+            }
 		}
 
 		// empty GeoTag array if no value is in
-		if (!empty($this->data[$this->name]['GeoTag'])) {
-			foreach ($this->data[$this->name]['GeoTag'] as $key => $geotag) {
+		if (!empty($data['GeoTag'])) {
+			foreach ($data['GeoTag'] as $key => $geotag) {
 				$concat = '';
 				$geoTagFields = array('title', 'address', 'latitude', 'longitude');
 				foreach ($geoTagFields as $field) {
@@ -270,13 +272,14 @@ class BEObject extends BEAppModel
 					}
 				}
 				if (strlen($concat) == 0) {
-					unset($this->data[$this->name]['GeoTag'][$key]);
+					unset($data['GeoTag'][$key]);
 				}
 			}
 		}
 
 		$this->unbindModel(array("hasMany"=>array("LangText","Version")));
 		$this->unbindModel(array("hasAndBelongsToMany"=>array("User")));
+
 		return true;
 	}
 	
@@ -483,6 +486,11 @@ class BEObject extends BEAppModel
 			$data['title'] = trim($data['title']);
 		}
 
+        if (isset($data['fixed']) && !$this->_isCurrentUserAdmin()) {
+            // #590 - Prevent non-admin Users to be able to change fixed property.
+            unset($data['fixed']);
+        }
+
 		// set language -- disable for comments?
 		if(!isset($data['lang'])) {
 			$data['lang'] = $this->_getDefaultLang();
@@ -515,12 +523,19 @@ class BEObject extends BEAppModel
 				}
 				$data['nickname'] = $currObj['BEObject']['nickname'];
 				$data['status'] = $currObj['BEObject']['status'];
-			} elseif (empty($data['nickname']) && !empty($currObj['BEObject']['nickname'])) {
-				$data["nickname"] = $currObj['BEObject']['nickname'];
-			} else {
-				$data['nickname'] = $this->_getDefaultNickname($data['nickname']);
-			}
+            } else {
+                // Check if nickname has changed.
+                if (empty($data['nickname']) && !empty($currObj['BEObject']['nickname'])) {
+                    $data['nickname'] = $currObj['BEObject']['nickname'];
+                } else {
+                    $data['nickname'] = $this->_getDefaultNickname($data['nickname']);
+                }
 
+                // Check if status has changed.
+                if (empty($data['status']) && !empty($currObj['BEObject']['status'])) {
+                    $data['status'] = $currObj['BEObject']['status'];
+                }
+            }
 		} else {
 			$title = isset($data['title']) ? $data['title'] : null;
 			$tmpName = !empty($data['nickname']) ? $data['nickname'] : $title;
@@ -540,7 +555,7 @@ class BEObject extends BEAppModel
 		// Se c'e' la chiave primaria vuota la toglie
 		if(isset($data[$this->primaryKey]) && empty($data[$this->primaryKey]))
 			unset($data[$this->primaryKey]) ;
-			
+		
 		return true ;
 	}
 
@@ -662,30 +677,46 @@ class BEObject extends BEAppModel
 		}
 		return $IP ;
 	}
-	
-	private function _getIDCurrentUser() {
-		// read user data from session or from configure
-		$conf = Configure::getInstance();
-		$userId=$this->defaultUserId; 
 
-		if(isset($conf->beditaTestUserId)) {
-			$userId = $conf->beditaTestUserId; // unit tests
-		} else {
-			
-			if(class_exists("CakeSession")) {
-				$session = new CakeSession() ;
-				if($session->valid() === false)
-					return null;
-				$user = $session->read($conf->session["sessionUserKey"]) ; 
-				if(!isset($user["id"])) 
-					return null ;
-				$userId = $user["id"];
-			}
-		}
-		
-		return $userId;
-	}
-	
+    /**
+     * Returns the current user ID. If a unit test is running, the test user ID is returned instead.
+     *
+     * @return int Current User's ID, or test User's ID. Defaults to system User's ID.
+     * @see BeSystem::systemUserId()
+     */
+    private function _getIDCurrentUser() {
+        $conf = Configure::getInstance();
+        $systemUserId = BeLib::getObject('BeSystem')->systemUserId();
+
+        if (isset($conf->beditaTestUserId)) {
+            // Unit tests.
+            return $conf->beditaTestUserId;
+        } elseif (class_exists('CakeSession')) {
+            $session = new CakeSession();
+            if (!$session->started() || $session->valid() === false) {
+                return $systemUserId;
+            }
+
+            $user = $session->read($conf->session['sessionUserKey']); 
+            if (!isset($user['id'])) {
+                return $systemUserId;
+            }
+
+            return $user['id'];
+        }
+
+        return $systemUserId;
+    }
+
+    /**
+     * Checks whether current User is in Group `administrator` or not.
+     *
+     * @return bool Current User's administrator permissions.
+     */
+    private function _isCurrentUserAdmin() {
+        return !is_null(Configure::read('beditaTestUserId')) || in_array('administrator', ClassRegistry::init('User')->getGroups($this->_getIDCurrentUser()));
+    }
+
 	/**
 	 * torna un array con la variabile archiviata in un array
 	 */
@@ -748,6 +779,5 @@ class BEObject extends BEAppModel
 	function getNicknameFromId($id) {
 		return $this->field("nickname", array("id" => $id));
 	}
-		
 }
 ?>

@@ -12,7 +12,7 @@ urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}
 {$html->script('fragments/list_objects.js', false)}
 
 <form method="post" action="" id="formObject">
-
+	{$beForm->csrf()}
 	<input type="hidden" name="data[id]"/>
 
 	<table class="indexlist js-header-float">
@@ -40,7 +40,7 @@ urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}
 				<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objects[i].id}" value="{$objects[i].id}" />
 			{/if}
 			</td>
-			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|truncate:64|default:"<i>[no title]</i>"}</a></td>
+			<td><a href="{$html->url('view/')}{$objects[i].id}">{$objects[i].title|escape|truncate:64|default:"<i>[no title]</i>"}</a></td>
 			<td>{$objects[i].id}</td>
 
 			{if !empty($objects[i].mail_status) && $objects[i].mail_status == "injob"}

@@ -21,19 +21,19 @@
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file = './inc/menuleft.tpl'}
 
 <div class="head">
-    <h1>{if !empty($object)}{$object.title|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
+    <h1>{if !empty($object)}{$object.title|escape:'html'|default:"<i>[no title]</i>"}{else}<i>[{t}New item{/t}]</i>{/if}</h1>
 </div>
 
 {assign var=objIndex value=0}
 
-{include file="inc/menucommands.tpl" fixed = true}
+{include file = './inc/menucommands.tpl' fixed = true}
 
 
 <div class="main">
-    {include file="inc/form.tpl"}
+    {include file = './inc/form.tpl'}
 </div>
 
 {$view->element('menuright')}

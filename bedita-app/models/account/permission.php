@@ -205,42 +205,54 @@ class Permission extends BEAppModel
 		return $this->checkPermissionByUser($perms, $userData);
 	}
 	
-	public function frontendAccess($objectId, array &$userData) {
-		if(empty($userData)) { // not logged
-			$perms = $this->isPermissionSet($objectId, array(
-				Configure::read("objectPermissions.frontend_access_with_block")
-			));
-			if(!empty($perms)) { // A) access denied => object has at least one perm 'frontend_access_with_block'
-				return "denied";
+    /**
+     * Return frontend level access to an object
+     *
+     * Possible returned values are:
+     *
+     * * 'free' if the object has not frontend_access perms
+     * * 'denied' if the object isn't accessible (frontend_access_with_block perms set and user groups haven't that permission on that object)
+     * * 'partial' if the object is accessible in preview (frontend_access_without_block perms set and user groups haven't that permission on that object)
+     * * 'full' if the object has perms and user groups have that permission on that object
+     *
+     * @param int $objectId
+     * @param array &$userData user data as
+     *                         ```
+     *                         array(
+     *                             'id' => ..,
+     *                             'userid' => ...,
+     *                             'groups' => array('administrator', 'frontend',...)
+     *                         )
+     *                         ```
+     * @return string
+     */
+	public function frontendAccess($objectId, array &$userData = array()) {
+		$accessWithBlock = Configure::read('objectPermissions.frontend_access_with_block');
+		$accessWithoutBlock = Configure::read('objectPermissions.frontend_access_without_block');
+		$perms = $this->isPermissionSet($objectId, array($accessWithBlock, $accessWithoutBlock));
+
+		// full access because no perms are set
+		if (empty($perms)) {
+			return 'free';
+		}
+
+		if (!empty($userData)) {
+			// full access => one perm for user group
+			if ($this->checkPermissionByUser($perms, $userData)) {
+			    return 'full';
 			}
-			$perms = $this->isPermissionSet($objectId, array(
-				Configure::read("objectPermissions.frontend_access_without_block")
-			));
-			if(!empty($perms)) { // B) partial access => object has at least one perm 'frontend_access_without_block'
-				return "partial";
-			}
-			// C) full access => no perms on object
-			return "full";
 		}
-		// logged
-		$perms = $this->isPermissionSet($objectId, array(
-			Configure::read("objectPermissions.frontend_access_with_block"),
-			Configure::read("objectPermissions.frontend_access_without_block")
-		));
-		// A) full access => empty perms or one perm for user group
-		if(empty($perms) || $this->checkPermissionByUser($perms,$userData)) {
-		    return "full";
+
+		$flags = Set::extract('/Permission/flag', $perms);
+
+		// access denied => object has at least one perm 'frontend_access_with_block'
+		if (in_array($accessWithBlock, $flags)) {
+			return 'denied';
 		}
-		$perms = $this->isPermissionSet($objectId, array(
-			Configure::read("objectPermissions.frontend_access_with_block")
-		));
-		// B) access denied => perms for groups [others than user's groups], at least one frontend_access_with_block perm
-		if(!empty($perms)) {
-		    return "denied";
-		}
-		// C) access partial => perms for groups [others than user's groups], all frontend_access_without_block perm
-		return "partial";
+		// partial access => object has at least one perm 'frontend_access_without_block'
+		return 'partial';
 	}
+
 	/**
 	 * check if user or user groups are in $perms array
 	 * 
@@ -268,20 +280,43 @@ class Permission extends BEAppModel
 	}
 	
 	/**
-	 * check if a permission over an object is set 
-	 * 
-	 * @param $objectId
-	 * @param $flag permission
+	 * check if a permission over an object is set
+	 *
+	 * @param integer $objectId
+	 * @param array|integer $flag permission
 	 * @return array of perms with users and groups or false if no permission is setted
 	 */
 	public function isPermissionSet($objectId, $flag) {
-		$result = $this->find('all', array(
-				"conditions" => array("object_id" => $objectId, "flag" => $flag)
-			)
-		);
+		if (!is_array($flag)) {
+			$flag = array($flag);
+		}
+		// if frontend app (not staging) and object cache is active
+		if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+			$beObjectCache = BeLib::getObject('BeObjectCache');
+			$options = array();
+			$perms = $beObjectCache->read($objectId, $options, 'perms');
+			if (!$perms && !is_array($perms)) {
+				$perms = $this->find('all', array(
+					'conditions' => array('object_id' => $objectId)
+				));
+				$beObjectCache->write($objectId, $options, $perms, 'perms');
+			}
+			// search $flag inside $perms
+			$result = array();
+			if (!empty($perms)) {
+				foreach ($perms as $p) {
+					if (in_array($p['Permission']['flag'], $flag)) {
+						$result[] = $p;
+					}
+				}
+			}
+		} else {
+			$result = $this->find('all', array(
+				'conditions' => array('object_id' => $objectId, 'flag' => $flag)
+			));
+		}
 
-		$ret = (!empty($result))? $result : false;
-		
+		$ret = (!empty($result)) ? $result : false;
 		return $ret;
 	}
 	
@@ -310,7 +345,6 @@ class Permission extends BEAppModel
 		}
 	}	
 
-
 	/**
 	 * Load all object permissions
 	 *
@@ -321,5 +355,26 @@ class Permission extends BEAppModel
 		return $this->find('all', array("conditions" => array("object_id" => $objectId)));
 	}
 
+	/**
+	 * passed an array of BEdita objects add 'count_permission' key
+	 * with the number of permissions applied to objects
+	 *
+	 * @param  array $objects
+	 * @param  array $options
+	 *         		- flag: if specified count permission with that flag
+	 * @return array $objects with added 'count_permission' key
+	 */
+	public function countPermissions(array $objects, array $options) {
+		foreach ($objects as &$obj) {
+			$conditions = array('object_id' => $obj['id']);
+			if (isset($options['flag'])) {
+				$conditions['flag'] = $options['flag'];
+			}
+			$obj['num_of_permission'] = $this->find('count', array(
+				'conditions' => $conditions
+			));
+		}
+		return $objects;
+	}
+
 }
-?>
