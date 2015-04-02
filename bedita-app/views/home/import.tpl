@@ -37,18 +37,17 @@
 {$beForm->csrf()}
 
 	<div class="mainhalf">
-		
-		<div class="tab stayopen"><h2>{t}Source data{/t}</h2></div>
 
+		<div class="tab stayopen"><h2>{t}Source data{/t}</h2></div>
 		<fieldset id="data-source">
 			<div class="import-type">
 				Import data type:
 				<ul>
-					{foreach $conf->filters.import as $filter => $val}
+					{foreach $filters as $filter => $filterData}
 					<li>
 						<input name="data[type]" type="radio" value="{$filter}" id="select-{$filter}" />
-						<label for="select-{$filter}">{$filter}</label> &nbsp;
-					</li>					
+						<label for="select-{$filter}">{$filterData.label}</label> &nbsp;
+					</li>
 					{/foreach}
 				</ul>
 			</div>
@@ -74,6 +73,12 @@
 		<fieldset id="data-options">
 			<p>Seleziona un filtro di  importazione nei Dati sorgente.</p>
 		</fieldset>
+
+		{foreach $filters as $filter => $filterData}
+			<div id="filterOptions-{$filter}">
+				Options for {$filter}: {dump var=$filterData.options}
+			</div>
+		{/foreach}
 
 		{* SAMPLE OPTIONS <!--
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">

@@ -35,8 +35,8 @@ class PermsHelper extends AppHelper {
      */
     public function userActionAccess($authUser, $action) {
         $actionPerms = Configure::read('actionPermissions');
-        if (!empty($actionPerms[$action]) && 
-            !empty(array_intersect($authUser['groups'], $actionPerms[$action]))) {
+        $c = array_intersect($authUser['groups'], $actionPerms[$action]);
+        if (!empty($actionPerms[$action]) && !empty($c)) {
             return true;
         } else {
             return false;

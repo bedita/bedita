@@ -224,11 +224,32 @@ class HomeController extends AppController {
         $actionPerms = Configure::read('actionPermissions');
         $action = 'Home.import';
         $user = $this->BeAuth->getUserSession();
-        if (empty($actionPerms[$action]) || 
-            empty(array_intersect($user['groups'], $actionPerms[$action]))) {
+        $c = array_intersect($user['groups'], $actionPerms[$action]);
+        if (empty($actionPerms[$action]) || empty($c)) {
             $details = array('user' => $user['groups'], 'requested' => $actionPerms[$action]);
             throw new BeditaUnauthorizedException(__('No permission access to this function', true), $details);
         }
+		$ff = array();
+        $filters = Configure::read('filters.import');
+        foreach($filters as $filter => $className) {
+        	// load filter model dinamically
+        	$filterModel = ClassRegistry::init($className);
+        	if (!empty($filterModel)) {
+        		if (!empty($filterModel->label)) {
+        			$ff[$className]['label'] = $filterModel->label;
+        		}
+        		if (!empty($filterModel->options)) {
+        			$ff[$className]['options'] = $filterModel->options;
+        		}
+        	}
+        	if (empty($ff[$className]['label'])) {
+        		$ff[$className]['label'] = $filter;
+        	}
+        	if (empty($ff[$className]['options'])) {
+        		$ff[$className]['options'] = array();
+        	}
+        }
+        $this->set('filters',$ff);
     }
 
     /**
