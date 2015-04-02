@@ -231,6 +231,29 @@ class ApiFormatterComponent extends Object {
                 }
             }
         }
+
+        // format children
+        if (!empty($object['children'])) {
+            $result['object']['children'] = array(
+                'contents' => array(),
+                'sections' => array()
+            );
+
+            foreach (array('contents', 'sections') as $type) {
+                $typeKey = 'child' . ucfirst($type);
+                if (!empty($object['children'][$typeKey])) {
+                    foreach ($object['children'][$typeKey] as $child) {
+                        $result['object']['children'][$type][] = (int) $child['id'];
+                        $typeFormatted = $this->formatObject($child, $options);
+                        $result['related'][$child['id']] = $typeFormatted['object'];
+                        if (!empty($typeFormatted['related'])) {
+                            $result['related'] += $typeFormatted['related'];
+                        }
+                    }
+                    unset($object['children'][$typeKey]);
+                }
+            }
+        }
         return $result;
     }
 

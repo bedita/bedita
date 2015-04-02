@@ -272,6 +272,15 @@ abstract class ApiBaseController extends FrontendController {
                 if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }
+
+                $collections = array(
+                    Configure::read('objectTypes.area.id'),
+                    Configure::read('objectTypes.section.id')
+                );
+                if (in_array($object['object_type_id'], $collections)) {
+                    $object['children'] = $this->loadSectionObjects($object['id']);
+                }
+
                 $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
             }
         // @todo list of objects
