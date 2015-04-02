@@ -147,6 +147,11 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function beforeCheckLogin() {
+        // Cross origin check.
+        if (!$this->checkOrigin()) {
+            throw new BeditaForbiddenException('Unallowed Origin');
+        }        
+
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
         if ($this->requestMethod == 'post') {
             $this->handlePOST();
@@ -474,4 +479,40 @@ abstract class ApiBaseController extends FrontendController {
         $this->set('_serialize', array_keys($this->responseData));
     }
 
+    /**
+     * Checks if an origin is allowed.
+     * Allowed origins are set in `$conf['api']['allowedOrigins']`.
+     * Use `*` to allow any origin. Use `http://*.example.com` to allow any third-level subdomain,
+     * use `http://**.example.com` to allow any subdomain, sub-subdomain, ...
+     *
+     * @return bool
+     */
+    private function checkOrigin() {
+        $allowed = Configure::read('api.allowedOrigins');
+        if (!is_array($allowed)) {
+            $allowed = array($allowed);
+        }
+        if (empty($allowed) || in_array('*', $allowed)) {
+            $this->ResponseHandler->sendHeader('Access-Control-Allow-Origin', '*');
+            return true;
+        }
+
+        $parsed = parse_url(array_key_exists('HTTP_ORIGIN', $_SERVER) ? $_SERVER['HTTP_ORIGIN'] : null);
+        $origin = isset($parsed['scheme']) ? $parsed['scheme'] . '://' : '';
+        $origin .= isset($parsed['host']) ? $parsed['host'] : '';
+
+        $replace = array(
+            '\*\*\.' => '(([a-z0-9_\-]+\.)*[a-z0-9_\-]+\.)?',
+            '\*\.' => '([a-z0-9_\-]+\.)?',
+        );
+        foreach ($allowed as $allow) {
+            $regex = '/^' . str_replace(array_keys($replace), array_values($replace), preg_quote($allow, '/')) . '$/i';
+            if (preg_match($regex, $origin)) {
+                $this->ResponseHandler->sendHeader('Access-Control-Allow-Origin', $origin);
+                $this->ResponseHandler->sendHeader('Vary', 'Origin');
+                return true;
+            }
+        }
+        return false;
+    }
 }
