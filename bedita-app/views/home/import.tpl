@@ -76,7 +76,35 @@
 
 		{foreach $filters as $filter => $filterData}
 			<div id="filterOptions-{$filter}">
-				Options for {$filter}: {dump var=$filterData.options}
+				{foreach $filterData.options as $filterOption}
+				<p>
+					<label>{$filterOption.label|default:$filter}</label>
+					{if $filterOption.dataType == 'boolean'}
+						<input type="checkbox" {if !empty($filterOption.defaultValue) && $filterOption.defaultValue}checked="checked"{/if} />
+					{elseif $filterOption.dataType == 'number'}
+						<input type="text" {if !empty($filterOption.defaultValue)}value="{$filterOption.defaultValue}"{/if} />
+					{elseif $filterOption.dataType == 'text'}
+						<input type="text" {if !empty($filterOption.defaultValue)}value="{$filterOption.defaultValue}"{/if} />
+					{elseif $filterOption.dataType == 'options'}
+						{if !empty($filterOption.multipleChoice) && $filterOption.multipleChoice}
+							{foreach $filterOption.values as $optionVal => $optionLabel}
+								<input type="checkbox" {if !empty($filterOption.defaultValue) && ($filterOption.defaultValue == $optionVal )}checked="checked"{/if} /> {$optionLabel}
+							{/foreach}
+						{else}
+							<select>
+							{foreach $filterOption.values as $optionVal => $optionLabel}
+								<option value="{$optionVal}" {if !empty($filterOption.defaultValue) && ($filterOption.defaultValue == $optionVal )}selected="selected"{/if}>{$optionLabel}</option>
+							{/foreach}
+							</select>
+						{/if}
+					{/if}
+				</p>
+				{/foreach}
+				{*
+				{$filterOption.defaultValue}
+				{$filterOption.mandatory}
+				{$filterOption.multipleChoice}
+				*}
 			</div>
 		{/foreach}
 
