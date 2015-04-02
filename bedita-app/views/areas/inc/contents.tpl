@@ -1,6 +1,6 @@
 <script type="text/javascript">
 <!--
-var urlAddObjToAssLeafs = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs/areas.inc.list_contents_for_section";
+var urlAddObjToAssLeafs = "{$html->url('/pages/loadObjectToAssoc')}/{$object.id|default:0}/leafs";
 var pageUrl = "{$beurl->getUrl('object_type_id')}";
 //-->
 </script>
@@ -21,7 +21,7 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
                         <em>{t}no items{/t}</em>
                     </td>
                 </tr>
-                {include file="../../elements/form_assoc_object.tpl" objsRelated=$objects}
+                {$view->element('form_assoc_object',['objsRelated' => $objects])}
             </tbody>
         </table>
     </div>
@@ -37,7 +37,7 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
         {include file="inc/toolbar.tpl"}
     </div>
 {/if}
-        
+
     {include file="inc/tools_commands.tpl" type="all"}
 
 </div>  
