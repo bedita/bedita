@@ -1213,13 +1213,16 @@ abstract class FrontendController extends AppController {
 	 *					false => if user unlogged dosen't block the action and the object returned (array)
 	 *							will have a key named "authorized" set to false
 	 *							if user is logged but not authorized the object returned (array)
+	 * @param array $options
+	 *				a set of options for the method:
+	 *				- bindingLevel: the requested model binding level to use
 	 *
 	 *	note: if FrontendController::showUnauthorized is set to true and the user is logged
 	 *			then all unauthorized object will have set "authorized" to false regardless object permission
 	 *
 	 * @return array object detail
 	 */
-	public function loadObj($obj_id, $blockAccess=true) {
+	public function loadObj($obj_id, $blockAccess=true, $options = array()) {
 		if ($obj_id === null) {
 			throw new BeditaInternalErrorException(
 				__('Missing object id', true),
@@ -1230,7 +1233,11 @@ abstract class FrontendController extends AppController {
 		// use object cache
 		if(isset($this->objectCache[$obj_id])) {
 			$modelType = $this->objectCache[$obj_id]["object_type"];
-			$bindings = $this->setObjectBindings($modelType);
+			if (!empty($options['bindingLevel'])) {
+				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
+			} else {
+				$bindings = $this->setObjectBindings($modelType);
+			}
 			$bindingsDiff = array_diff($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
 			// cached object is used only if its bindings contain more data or equal than those of the request
 			if (!empty($bindingsDiff) || ($this->objectCache[$obj_id]["bindings"]["bindings_list"] == $bindings["bindings_list"])) {
@@ -1305,7 +1312,11 @@ abstract class FrontendController extends AppController {
 
 		if (!isset($this->objectCache[$obj_id])) {
 			$modelType = $this->BEObject->getType($obj_id);
-			$bindings = $this->setObjectBindings($modelType);
+			if (!empty($options['bindingLevel'])) {
+				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
+			} else {
+				$bindings = $this->setObjectBindings($modelType);
+			}
 		}
 
         $obj = null;
