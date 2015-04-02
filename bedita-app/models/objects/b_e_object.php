@@ -835,8 +835,12 @@ class BEObject extends BEAppModel {
             ));
 
             if (!empty($obj)) {
+            	$posterId = $id;
+            	if (!empty($obj['RelatedObject']['object_id'])) {
+            		$posterId = $obj['RelatedObject']['object_id'];
+            	}
                 return array(
-                    'id' => $obj['RelatedObject']['object_id'],
+                    'id' => $posterId,
                     'uri' => $obj['Stream']['uri']
                 );
             }
