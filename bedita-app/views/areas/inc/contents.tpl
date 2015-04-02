@@ -5,7 +5,8 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
 //-->
 </script>
 
-{$relcount = $objects|@count|default:0}
+{$relcount = $beToolbar->size()}
+
 <div class="tab"><h2 {if $relcount == 0}class="empty"{/if}>{t}Contents{/t} {if $relcount > 0} &nbsp; <span class="relnumb">{$relcount}</span>{/if}</h2></div>
 
 <fieldset id="areacontentC">
@@ -26,7 +27,7 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
         </table>
     </div>
 
-{if $relcount > 5}      
+{if ($beToolbar->size() > 5)}      
     <div id="contents_nav_leafs" style="margin:0px 0 10px 0px; padding:10px 0px 10px 0px; overflow:hidden; border-bottom:1px solid gray" class="ignore">  
         <div style="padding-left:0px; float:left;">
         {t}show{/t}
