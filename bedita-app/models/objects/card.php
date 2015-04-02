@@ -180,8 +180,9 @@ class Card extends BEAppObjectModel {
      * @param string $csvFile,
      *            path to csv file file
      * @param array $options,
-     *            default attributes array to use,
-     *            e.g. categories, "Category" => array (1,3,4..) - array of id-categories
+     *            default attributes/array to use, 
+     *              e.g. categories, 'Category' => array (1,3,4..) - array of id-categories
+     *            'overwritePolicy' - card with same email exists, values = 'skip'(default), 'overwrite', 'new'
      * @return results array, num of objects saved ('numSaved') and other data
      */
     public function importCSVFile($csvFile, array $options = null) {
@@ -193,8 +194,13 @@ class Card extends BEAppObjectModel {
             'ip_created' => '127.0.0.1'
         );
         $this->setupCsvDelimiter($options);
-        if (! empty($options)) {
+        $overwritePolicy = 'skip';
+        if (!empty($options)) {
             unset($options['delimiter']);
+            if (!empty($options['overwritePolicy'])) {
+                $overwritePolicy = $options['overwritePolicy'];
+                unset($options['overwritePolicy']);
+            }
             $defaults = array_merge($defaults, $options);
         }
         $row = 1;
@@ -236,6 +242,7 @@ class Card extends BEAppObjectModel {
             throw new BeditaException('Bad CSV header in file ' . $csvFile, $line);
         }
 
+        $numSaved = $numSkip = $numOver = $numSameEmail = 0;
         while (($fields = fgetcsv($handle, 1000, $this->csvDelimiter)) !== false) {
             $data = array();
             $row ++;
@@ -244,10 +251,10 @@ class Card extends BEAppObjectModel {
                     $data[$keys[$c]] = trim($fields[$c]);
                 }
             }
-            $this->create();
             $d = array_merge($defaults, $data);
             if (! empty($d['surname']) || ! empty($d['name'])) {
-                $d['title'] = ((! empty($d['name'])) ? $d['name'] : '') . ' ' . ((! empty($d['surname'])) ? $d['surname'] : '');
+                $d['title'] = ((! empty($d['name'])) ? $d['name'] : '') . ' ' 
+                    . ((! empty($d['surname'])) ? $d['surname'] : '');
             }
             // check mail_groups field
             if (! empty($d['mail_group'])) {
@@ -265,18 +272,46 @@ class Card extends BEAppObjectModel {
                     }
                 }
             }
-            
-            if (! $this->save($d)) {
-                throw new BeditaException(__('Error saving card'), print_r($data, true) . 
-                    " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
+
+            $saveCard = true;
+            $id = null;
+            if (!empty($d['email'])) {
+                $id = $this->field('id', array('email' => $d['email']));
+            }
+            if (!empty($id)) {
+                $numSameEmail++;
+                if ($overwritePolicy != 'new') {
+                    if ($overwritePolicy == 'skip') {
+                        $saveCard = false;
+                        $numSkip++;
+                    } elseif ($overwritePolicy == 'overwrite') {
+                        $d['id'] = $id;
+                    } else {
+                        throw new BeditaException('Bad overwritePolicy option: ' . $overwritePolicy);
+                    }
+                }
+            }
+
+            if ($saveCard) {
+                $this->create();
+                if (! $this->save($d)) {
+                    throw new BeditaException(__('Error saving card'), print_r($d, true) . 
+                        " \nrow: $row \nvalidation: " . print_r($this->validationErrors, true));
+                }
+                $numSaved++;
+                if ($overwritePolicy == 'overwrite' && !empty($id)) {
+                    $numOver++;
+                }
             }
         }
         fclose($handle);
         $res = array();
-        $res['objects'] = $row - 1;
+        $res['objects'] = $numSaved;
         if ($row < 2) {
             $res['error'] = 'no cards found in imported file';
         }
+        $res['message'] = 'cards with same email: ' . $numSameEmail 
+        . ' - skipped: ' . $numSkip . ' - modified: ' . $numOver;
         return $res;
     }
 
