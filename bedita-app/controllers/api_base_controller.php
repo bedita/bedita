@@ -23,7 +23,7 @@
  * ApiBaseController class
  *
  * Abstract Base Api Controller
- * It must to be extened from ApiController in frontend apps
+ * It must to be extended by ApiController in frontend apps
  */
 abstract class ApiBaseController extends FrontendController {
 
@@ -41,6 +41,13 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     private $defaultEndPoints = array('objects', 'session', 'me', 'poster');
+
+    /**
+     * Default allowed model bindings
+     *
+     * @var array
+     */
+    private $defaultModelBindings = array('default', 'frontend', 'minimum');
 
     /**
      * Other endpoints specified in the frontend app
@@ -250,7 +257,11 @@ abstract class ApiBaseController extends FrontendController {
                     $this->{$method}($id);
                 }
             } else {
-                $object = $this->loadObj($id);
+                $options = array();
+                if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->defaultModelBindings)) {
+                    $options['bindingLevel'] = $this->params['url']['binding'];
+                }
+                $object = $this->loadObj($id, true, $options);
                 if ($object == parent::UNLOGGED) {
                     throw new BeditaUnauthorizedException();
                 }
@@ -342,7 +353,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function me() {
-        if ($this->logged) {
+        if ($this->Session->valid()) {
             $user = $this->BeAuth->getUserSession();
             $this->profile($user['id']);
         } else {
@@ -381,6 +392,7 @@ abstract class ApiBaseController extends FrontendController {
 
                     try {
                         $beThumb = BeLib::getObject('BeThumb');
+                        $poster['id'] = (int) $poster['id']; 
                         $poster['uri'] = $beThumb->image($poster, $thumbConf);
                         $this->responseData['data'] = $poster;
                     } catch(Excpetion $ex) {
@@ -403,11 +415,8 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function postSession() {
-        if ($this->logged) {
-            $this->responseData['data'] = array(
-                'accessToken' => $this->Session->id(),
-                'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime)
-            );
+        if ($this->Session->valid()) {
+            $this->getSession();
         } else {
             throw new BeditaUnauthorizedException();
         }
@@ -419,7 +428,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function getSession() {
-         if ($this->Session->valid()) {
+        if ($this->Session->valid()) {
             $this->responseData['data'] = array(
                 'accessToken' => $this->Session->id(),
                 'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime),
