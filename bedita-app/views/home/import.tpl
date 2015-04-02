@@ -1,30 +1,21 @@
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
 		openAtStart("#data-source, #data-options");
+		$('.import-file input[type=file]').prop( "disabled", true );
 
-		$('.import-type input[type=radio]').click(function() {
+		$('.import-type input[type=radio]').click(function(e) {
 			$('.import-file input[type=file]').prop( "disabled", false );
-
-			var htmlOptions = '{t}Selected filter has no options{/t}.';
-			var importOptions;
-			// TODO
-			if(importOptions) {
-				options = '';
-			}
-			$('#data-options').html(htmlOptions);
+			var sel = $(".import-type input[type='radio']:checked").val();
+			$('#data-options>div').hide();
+			$('#' + sel + '-options').show();
+			console.log(sel);
 		});
-		/* drag&drop disabled, file upload should be managed in controller for preview
-		var myDropzone = new Dropzone(".import .mainhalf", {
-			url: "/home/importLoadFile"}
-		);
-		*/
     });
 </script>
 
+
 {$view->element('modulesmenu')}
-
 {include file="inc/menuleft.tpl"}
-
 {include file="inc/menucommands.tpl"}
 
 
@@ -41,18 +32,16 @@
 		<div class="tab stayopen"><h2>{t}Source data{/t}</h2></div>
 		<fieldset id="data-source">
 			<div class="import-type">
-				Import data type:
+				{t}Import file type:{/t}
 				<ul>
-					{foreach $filters as $filter => $filterData}
+					{foreach $filters as $filterType => $filter}
 					<li>
-						<input name="data[type]" type="radio" value="{$filter}" id="select-{$filter}" />
-						<label for="select-{$filter}">{$filterData.label}</label> &nbsp;
+						<input name="data[type]" type="radio" value="{$filterType}" id="select-{$filterType}">
+						<label for="select-{$filterType}">{$filter.label|default:$filterType}</label> &nbsp;
 					</li>
 					{/foreach}
 				</ul>
 			</div>
-
-			<hr>
 
 			<div class="import-file">
 				{t}Select file{/t}:
@@ -60,7 +49,7 @@
 			</div>
 
 			<div class="import-button-container">
-				<input type="submit" value="load" />
+				<input type="submit" value=" load " />
 			</div>
 		</fieldset>
 
@@ -68,45 +57,81 @@
 
 
 	<div class="mainhalf">
-		<div class="tab stayopen"><h2>{t}Import options{/t}</h2></div>
+		<div class="tab stayopen"><h2>{t}Import options{/t} <span style="display: none">for {$filter.label}</span></h2></div>
 
 		<fieldset id="data-options">
-			<p>Seleziona un filtro di  importazione nei Dati sorgente.</p>
-		</fieldset>
+			<div>{t}Select an import filter in Source data{/t}</div>
 
-		{foreach $filters as $filter => $filterData}
-			<div id="filterOptions-{$filter}">
-				{foreach $filterData.options as $filterOption}
-				<p>
-					<label>{$filterOption.label|default:$filter}</label>
-					{if $filterOption.dataType == 'boolean'}
-						<input type="checkbox" {if !empty($filterOption.defaultValue) && $filterOption.defaultValue}checked="checked"{/if} />
-					{elseif $filterOption.dataType == 'number'}
-						<input type="text" {if !empty($filterOption.defaultValue)}value="{$filterOption.defaultValue}"{/if} />
-					{elseif $filterOption.dataType == 'text'}
-						<input type="text" {if !empty($filterOption.defaultValue)}value="{$filterOption.defaultValue}"{/if} />
-					{elseif $filterOption.dataType == 'options'}
-						{if !empty($filterOption.multipleChoice) && $filterOption.multipleChoice}
-							{foreach $filterOption.values as $optionVal => $optionLabel}
-								<input type="checkbox" {if !empty($filterOption.defaultValue) && ($filterOption.defaultValue == $optionVal )}checked="checked"{/if} /> {$optionLabel}
-							{/foreach}
-						{else}
-							<select>
-							{foreach $filterOption.values as $optionVal => $optionLabel}
-								<option value="{$optionVal}" {if !empty($filterOption.defaultValue) && ($filterOption.defaultValue == $optionVal )}selected="selected"{/if}>{$optionLabel}</option>
-							{/foreach}
+			{foreach $filters as $filterType => $filter}
+			<div id="{$filterType}-options" style="display: none;">
+
+			{if !empty($filter.options)}
+
+                {foreach $filter.options as $optionName => $option}
+                <div class="filter-option">
+                    <p>{$option.label|default:$optionName}:</p>
+
+
+					{if $option.dataType == 'boolean'}
+                        <input type="checkbox" name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                            {if !empty($option.defaultValue)}checked="checked"{/if}>
+                        <label for="{$optionName}-{$optionValue}">{$option.label|default:$optionName}</label>
+
+
+                    {elseif $option.dataType == 'number' || $option.dataType == 'text'}
+                        <label for="{$optionName}-{$optionValue}">{$option.label|default:$optionName}:</label>
+                        <br>
+                        <input type="text" name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                            {if !empty($option.defaultValue)}value="{$option.defaultValue}"{/if}>
+
+
+					{elseif $option.dataType == 'options'}
+
+						{* if number of options is > 3 use a select *}
+						{if count($option.values) > 3}
+							<select name="{$optionName}" {if !empty($option.multipleChoice)}multiple{/if}>
+                                {if empty($option.mandatory)}
+                                    <option>--</option>
+                                {/if}
+                                {foreach $option.values as $optionValue => $optionLabel}
+    								<option value="{$optionValue}" {if !empty($option.defaultValue) && ($option.defaultValue == $optionValue)}selected="selected"{/if}>{$optionLabel}</option>
+    							{/foreach}
 							</select>
-						{/if}
+                        {else}
+                            <ul>
+                                {foreach $option.values as $optionValue => $optionLabel}
+                                <li>
+                                    <input type="{if !empty($option.multipleChoice)}checkbox{else}radio{/if}"
+                                        name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                                        {if !empty($option.defaultValue) && ($option.defaultValue == $optionValue)}checked="checked"{/if}>
+                                    <label for="{$optionName}-{$optionValue}">{$optionLabel}</label>
+                                </li>
+                                {/foreach}
+                            </ul>
+                        {/if}
+
+
 					{/if}
-				</p>
-				{/foreach}
+                </div>
+                {/foreach}
+
 				{*
-				{$filterOption.defaultValue}
-				{$filterOption.mandatory}
-				{$filterOption.multipleChoice}
+                TO DO da gestire via JS {$option.mandatory}
+
+                {$option.defaultValue}
+				{$option.multipleChoice}
 				*}
+
+			{else}
+                <div class="filter-option">
+    				<p>{$filter.label|default:$filterType} {t}filter has no options{/t}</p>
+                </div>
+			{/if}
+
 			</div>
-		{/foreach}
+			{/foreach}
+
+		</fieldset>
 
 		{* SAMPLE OPTIONS <!--
 			<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[destination]">

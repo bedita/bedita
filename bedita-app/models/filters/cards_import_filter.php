@@ -29,11 +29,11 @@ class CardsImportFilter extends BeditaImportFilter
 
     protected $typeName = 'csv-vcard';
     protected $mimeTypes = array('text/csv', 'text/vcard');
-    public $label = 'CSV/vCard import filter';
+    public $label = 'CSV or vCard';
 
     public $options = array(
         'overwritePolicy' => array(
-            'label' => 'If a card with same email exists',
+            'label' => 'If a card with the same email already exists',
             'dataType' => 'options', // number|date|text|options
             'values' => array(
                 'overwrite' => 'overwrite the card',
@@ -45,7 +45,7 @@ class CardsImportFilter extends BeditaImportFilter
             'multipleChoice' => false
         ),
         'invalidEmail' => array(
-            'label' => 'If email is not valid',
+            'label' => 'If an email is not valid',
             'dataType' => 'options', // number|date|text|options
             'values' => array(
                 'import' => 'import',

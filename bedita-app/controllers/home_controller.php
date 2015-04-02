@@ -217,18 +217,7 @@ class HomeController extends AppController {
 
     public function import() {
         $this->checkImportPermission();
-    }
 
-
-    private function checkImportPermission() {
-        $actionPerms = Configure::read('actionPermissions');
-        $action = 'Home.import';
-        $user = $this->BeAuth->getUserSession();
-        $c = array_intersect($user['groups'], $actionPerms[$action]);
-        if (empty($actionPerms[$action]) || empty($c)) {
-            $details = array('user' => $user['groups'], 'requested' => $actionPerms[$action]);
-            throw new BeditaUnauthorizedException(__('No permission access to this function', true), $details);
-        }
 		$ff = array();
         $filters = Configure::read('filters.import');
         foreach($filters as $filter => $className) {
@@ -249,7 +238,19 @@ class HomeController extends AppController {
         		$ff[$className]['options'] = array();
         	}
         }
-        $this->set('filters',$ff);
+        $this->set('filters', $ff);
+    }
+
+
+    private function checkImportPermission() {
+        $actionPerms = Configure::read('actionPermissions');
+        $action = 'Home.import';
+        $user = $this->BeAuth->getUserSession();
+        $c = array_intersect($user['groups'], $actionPerms[$action]);
+        if (empty($actionPerms[$action]) || empty($c)) {
+            $details = array('user' => $user['groups'], 'requested' => $actionPerms[$action]);
+            throw new BeditaUnauthorizedException(__('No permission access to this function', true), $details);
+        }
     }
 
     /**
