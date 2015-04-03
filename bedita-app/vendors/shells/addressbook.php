@@ -28,7 +28,7 @@ require_once 'bedita_base.php';
 class AddressbookShell extends BeditaBaseShell {
 
     public function import() {
-        if (!isset($this->params['f'])) {
+        if(!isset($this->params['f'])) {
             $this->out('Input file is mandatory');
             return;
         }
@@ -77,6 +77,10 @@ class AddressbookShell extends BeditaBaseShell {
         if (isset($this->params['delimiter'])) {
             $options['delimiter'] = $this->params['delimiter'];
             $this->out('Using delimiter: ' . $options['delimiter']);
+        }
+        if (isset($this->params['overwritePolicy'])) {
+            $options['overwritePolicy'] = $this->params['overwritePolicy'];
+            $this->out('Using overwritePolicy: ' . $options['overwritePolicy']);
         }
         App::import('Component', 'Transaction');
         $transaction = new TransactionComponent();
@@ -148,12 +152,13 @@ class AddressbookShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('1. import: import vcf/vcard or microsoft outlook csv file, or custom csv file');
   		$this->out(' ');
-        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>] [-delimiter <delimiter>]' );
+        $this->out('    Usage: import -f <csv-cardfile> [-c <categories>] [-m <mail-group-name>] [-delimiter <delimiter>] [-overwritePolicy <policy>]' );
   		$this->out(' ');
   		$this->out("    -f <csv-cardfile>\t vcf/vcard or csv file to import");
   		$this->out("    -c <categories> \t comma separated <categories> to use on import (created if not exist)");
   		$this->out("    -m <mail-group-name> \t name of mail group to associate with imported cards");
   		$this->out("    -delimiter <delimiter> \t CSV delimiter, default is ','");
+  		$this->out("    -overwritePolicy <policy> \t 'skip'(default), 'overwrite', 'new'");
   		$this->out(' ');
         $this->out('2. export: export to vcf/vcard or microsoft outlook csv file');
   		$this->out(' ');
