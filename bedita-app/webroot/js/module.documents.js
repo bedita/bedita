@@ -20,36 +20,7 @@ $(window).load(function() {
 	var editorTopPosition = '';
 	var editorHeight = '';
 	var textToReplace = '';
-	
-	$(document).bind('instanceReady.ckeditor', function(e,editor){
-		if (editor.name == 'data[body]') {
-			listenMode(editor);
-		}
-		$(".cke_button_image").attr('onclick','');
-		$(".cke_button_image").bind('click', function() {
-			openModal();
-		});
-	});
 
-	function openModal(){
-		if($('#multimediaModal').size()==0){
-
-			$_modal = $('<div id="multimediaModal" class="modalWindow">')
-			$_modal.css({
-				position: 'fixed',
-				top: '100px',
-				left: '400px',
-				width: '600px',
-				zIndex: 1000,
-				backgroundColor: '#ffffff'
-			});
-
-			$_modal.html($('#multimedia').html())
-			$('body').append($_modal);
-		} else {
-			$('#multimediaModal').toggle();
-		}
-	}
 	function showBodyDropTarget(e) {
 		var $_editor = $('#cke_data\\[body\\]');
 		var height = parseInt($_editor.outerHeight());
@@ -62,8 +33,6 @@ $(window).load(function() {
 			marginBottom: -height,
 			display: 'table'
 		})
-		textToReplace = CKEDITOR.instances['data[body]'].getSelection();
-		textToReplace = textToReplace == null ? '' : textToReplace.getSelectedText();
 		caretPosition = CKEDITOR.instances['data[body]'].getSelection().getRanges()[0]
 		//if(textToReplace.length>0){
 			$('#bodyDropTarget .allowed')
@@ -82,74 +51,15 @@ $(window).load(function() {
 		//}
 	};
 	
-	function hideBodyDropTarget(e,draggedElement){
+	function hideBodyDropTarget(e, draggedElement){
 		$('#bodyDropTarget').hide().find('div').hide();
 		for(var targetName in targets){
-			if(targets[targetName].hover){
-				var attributesList = $.parseJSON($('.dropSubTarget[rel="'+targetName+'"]').attr('data-attributes'));
-				var htmlAttributes = '';
-				for(var attributeName in attributesList){
-					htmlAttributes += ' ' + attributeName + '="' + attributesList[attributeName] + '"';
-				}
-				var optionsList = $.parseJSON($('.dropSubTarget[rel="'+targetName+'"]').attr('data-options'));
-				var title = $(draggedElement.item).find('.assoc_obj_title > h4').text();
+			if(targets[targetName].hover) {
 				var nickname = $(draggedElement.item).find('.rel_nickname').val();
-
-				if(typeof optionsList.selection !== 'undefined' && optionsList.selection == 'required'){
-					if(textToReplace == ''){
-						textToReplace = (title != '') ? title : nickname;
-					}
-				}
-				
-				if (textToReplace == '') {
-					textToReplace = '&#8203;';
-				}
-				
-				element = ' <a href="'+nickname+'" '+htmlAttributes+'>' + textToReplace + '</a>';
-
-				var editorElement = document.createElement('a');
-				editorElement.innerHTML = element;
-				CKEDITOR.instances['data[body]'].insertHtml(element);
-				setPlaceCss(CKEDITOR.instances['data[body]']);
+				CKEDITOR.instances['data[body]'].execCommand('addPlaceholder', { id: nickname });
 			}
 		}
-		textToReplace = '';
-		
-		//}
 	};
-	
-	function listenMode(editor) {		
-		editor.on('change',function(){
-			setPlaceCss(this);
-		});
-		
-		editor.on('mode', function(event) {
-			if (editor.mode == "wysiwyg") {
-				setPlaceCss(this);
-			}
-		});
-		
-		setPlaceCss(editor);
-		
-		$(document).on('keyup', '*', function() {
-			setPlaceCss(editor);
-		});
-	}
-	
-	function setPlaceCss(editor) {
-		var jph = $('iframe.cke_wysiwyg_frame').contents().find('A.placeholder, A.plaref, A[target=modal]');
-		var style = '<style id="placeholderCss">';
-		if (editor.mode == "wysiwyg") {
-			jph.each(function() {
-				var href = $(this).attr('href');
-				var src = $('#relationType_attach .obj[data-benick="'+href+'"]').find('img').prop('src');
-				style+=' A[href='+href+']:after{ background-image: url("'+src+'") } ';
-			});
-		}
-		style+='</style>';
-		$('iframe.cke_wysiwyg_frame').contents().find('head').find('#placeholderCss').remove();
-		$('iframe.cke_wysiwyg_frame').contents().find('head').append(style);
-	}
 	
 	function checkDragDropTarget(e){
 		var mouseX = e.pageX;

@@ -17,4 +17,11 @@
 	{if !empty($conf->richtexteditor.local)}
 		{$html->script("libs/richtexteditors/conf/local/"|cat:$conf->richtexteditor.local, false)}
 	{/if}
+
+	<script type="text/javascript">
+		BEDITA.richtextConf = BEDITA.richtextConf || {};
+		BEDITA.richtextConf.attachMedia = BEDITA.richtextConf.attachMedia || {};
+		BEDITA.richtextConf.attachMedia.title = '{t}connect new items{/t}';
+		BEDITA.richtextConf.attachMedia.page = '{$html->url('/pages/showObjects/')}0/attach/{$object.object_type_id}';
+	</script>
 {/if}

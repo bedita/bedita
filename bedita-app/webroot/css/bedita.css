@@ -3079,6 +3079,7 @@ img.smallicon {
 	font-size: 24px;
 	line-height: 40px;
 	color: black;
+	width: 100%;
 }
 .dropSubTarget.allowed p + p {
 	position: absolute;

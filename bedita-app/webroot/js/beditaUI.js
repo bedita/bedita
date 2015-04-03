@@ -397,8 +397,7 @@ $(document).ready(function(){
 
 ...........................................*/
 
-    jQuery.fn.BEmodal = function(options) {
-
+    BEmodal = function(options) {
         // default options for modal
         var defaultOptions = {
             title: '',
@@ -418,8 +417,8 @@ $(document).ready(function(){
 
         var h = 1500;
 
-        var destination = options.destination || $(this).attr("rel");
-        var title = options.title || $(this).attr("title");
+        var destination = options.destination;
+        var title = options.title;
 
         var myTop = $(window).scrollTop() + 20;
         $("#modaloverlay").show().fadeTo("fast", 0.8);
@@ -448,12 +447,6 @@ $(document).ready(function(){
         $("#modalheader .toggle").unbind('click').bind('click', function () {
             $("#modal #modalmain").toggle();
         });
-    /*
-        $("#modalheader .full").click(function () {
-
-        });
-    */
-        //$("#modal").draggable();
 
         //prevent mousewheel propagation
         $(document).on('DOMMouseScroll mousewheel', '#modal .bodybg', function(ev) {
@@ -483,6 +476,15 @@ $(document).ready(function(){
                 return prevent();
             }
         });
+    }
+
+    jQuery.fn.BEmodal = function(options) {
+
+        options = options || {};
+        options.destination = options.destination || $(this).attr("rel");
+        options.title = options.title || $(this).attr("title");
+
+        new BEmodal(options);
 
     }
 

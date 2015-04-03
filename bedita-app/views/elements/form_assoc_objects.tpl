@@ -16,13 +16,20 @@ function addObjToAssocRelated(url, postdata) {
 	$.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
 		var newTrs = $(html);
+		var id = newTrs.attr('data-beid');
 		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tbody");
-		tbody.append( newTrs );
-		$("#relationType_" + postdata.relation).fixItemsPriority();
-		$(".relationList table.indexlist").find("tbody:first").sortable("refresh");
-		newTrs.each(function() {
-			$(document).trigger('relation_' + postdata.relation + ':added', $(this));
-		});
+		if (tbody.find('[data-beid="' + id + '"]').length) {
+			newTrs.each(function() {
+				$(document).trigger('relation_' + postdata.relation + ':refused', $(this));
+			});
+		} else {
+			tbody.append(newTrs);
+			$("#relationType_" + postdata.relation).fixItemsPriority();
+			$(".relationList table.indexlist").find("tbody:first").sortable("refresh");
+			newTrs.each(function() {
+				$(document).trigger('relation_' + postdata.relation + ':added', $(this));
+			});
+		}
 		relatedRefreshButton();
 	});
 }
