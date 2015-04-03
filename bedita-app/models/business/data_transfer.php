@@ -355,6 +355,17 @@ class DataTransfer extends BEAppModel
                     $this->export['objectTypeIds'][] = $ot;
                     $this->export['objectTypes'][] = $type;
                 }
+                if (!empty($this->export['related-types'])) {
+                    $rtypes = explode(',', $this->export['related-types']);
+                    foreach ($rtypes as $rtype) {
+                        $rot = Configure::read('objectTypes.' . $rtype . '.id');
+                        if (!$rot) {
+                            throw new BeditaException('Object type "' . $rtype . '" not found');
+                        }
+                        $this->export['relatedObjectTypeIds'][] = $rot;
+                        $this->export['relatedObjectTypes'][] = $rtype;
+                    }
+                }
             }
             if ($this->export['relations'] != NULL) { // specific relations
                 $this->export['relations'] = explode(',', $this->export['relations']);
@@ -377,10 +388,24 @@ class DataTransfer extends BEAppModel
             // verify objects existence and set custom properties
             $typeIds = array();
             foreach ($objects as $objectId) {
-                 $o = $objModel->findObjectTypeId($objectId);
+                 $o = $this->objectTypeId($objectId);
                  if (empty($o)) {
                      throw new BeditaException('Object with id "' . $objectId . '" not found');
                  } else {
+                     if (!empty($this->export['id'])) {
+                         $ot = Configure::read('objectTypes.' . $o . '.name');
+                         if (empty($this->export['relatedObjectTypeIds'])) {
+                             $this->export['relatedObjectTypeIds'] = array();
+                             $this->export['relatedObjectTypes'] = array();
+                         }
+                         $this->export['relatedObjectTypeIds'][] = $o;
+                         $this->export['relatedObjectTypes'][] = $ot;
+                         if ($ot == 'area') {
+                             $ot = Configure::read('objectTypes.section.id');
+                             $this->export['relatedObjectTypeIds'][] = $ot;
+                             $this->export['relatedObjectTypes'][] = 'section';
+                         }
+                     }
                      if (!in_array($o, $typeIds)) {
                          $typeIds[] = $o;
                          $p = ClassRegistry::init('Property')->find(
@@ -1397,6 +1422,10 @@ class DataTransfer extends BEAppModel
     private function rearrangeObjectFields(array &$object, $level) {
         if (isset($object['RelatedObject']) && $level < $this->maxRelationLevels) {
             foreach ($object['RelatedObject'] as $relation) {
+                $relationObjectTypeId = $this->objectTypeId($relation['object_id']);
+                if (!$this->objectTypeAllowed($relation['object_id'], $relationObjectTypeId)) {
+                    continue;
+                }
                 if ($this->export['relations'] == NULL || in_array($relation['switch'], $this->export['relations'])) {
                     if (empty($this->export['destination']['byType']['ARRAY']['objects'][$relation['object_id']])) {
                         $object['relatedObjectIds'][] = $relation['object_id'];
@@ -1518,6 +1547,9 @@ class DataTransfer extends BEAppModel
         $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
         if (!empty($object['object_type_id'])) {
             $object['objectType'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
+            if (!$this->objectTypeAllowed($object['id'], $object['object_type_id'])) {
+                return;
+            }
         }
         // 1 parse data, unset unused fields and remove entries for empty values, recursively
         $this->trackDebug('... cleanObjectFields for object id ' . $object['id']);
@@ -1545,8 +1577,10 @@ class DataTransfer extends BEAppModel
                         $this->trackResult('WARN', 'object id: ' . $relatedObjectId . ' already exported');
                         continue;
                     }
-                    $objModel = ClassRegistry::init('BEObject');
-                    $objectTypeId = $objModel->findObjectTypeId($relatedObjectId);
+                    $objectTypeId = $this->objectTypeId($relatedObjectId);
+                    if (!$this->objectTypeAllowed($relatedObjectId, $objectTypeId)) {
+                        continue;
+                    }
                     if (isset($conf->objectTypes[$objectTypeId])) {
                         $model = $conf->objectTypes[$objectTypeId]['model'];
                     } else if (isset($conf->objectTypesExt[$objectTypeId])) {
@@ -1649,6 +1683,28 @@ class DataTransfer extends BEAppModel
         $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
+    private function objectTypeAllowed($objId, $objectTypeId) {
+        if ($this->export['types'] != NULL && !empty($this->export['exclude-other-types'])) {
+            // if 'exclude-other-types' then verify object type is one of 'types'
+            if (!in_array($objectTypeId, $this->export['objectTypeIds'])) {
+                // if 'related-types' then verify object type is one of 'related-types'
+                if (!empty($this->export['relatedObjectTypeIds'])) {
+                    if (in_array($objectTypeId, $this->export['relatedObjectTypeIds'])) {
+                        return true;
+                    }
+                }
+                $ot = Configure::read('objectTypes.' . $objectTypeId . '.name');;
+                $this->trackInfo('Object type "' . $ot . '" not allowed "');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function objectTypeId($objId) {
+        $objModel = ClassRegistry::init('BEObject');
+        return $objModel->findObjectTypeId($objId);
+    }
     /**
      * Return the proper model binding for model.
      *

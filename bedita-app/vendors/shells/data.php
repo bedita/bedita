@@ -113,6 +113,7 @@ class DataShell extends BeditaBaseShell {
         }
         if (isset($this->params['id'])) {
             $objects[] = $this->params['id'];
+            $this->options['export']['id'] = $this->params['id'];
             $this->options['export']['all'] = false;
         } else {
             $this->options['export']['all'] = true;
@@ -121,6 +122,12 @@ class DataShell extends BeditaBaseShell {
             $this->options['export']['types'] = $this->params['types'];
             $this->out('Using types: ' . $this->options['export']['types'] 
                 . ' (' . $this->options['export']['types'] . ')');
+            if (isset($this->params['-exclude-other-types'])) {
+                $this->options['export']['exclude-other-types'] = true;
+            }
+            if (isset($this->params['-related-types'])) {
+                $this->options['export']['related-types'] = $this->params['-related-types'];
+            }
         }
         if (isset($this->params['relations'])) {
             $this->options['export']['relations'] = $this->params['relations'];
@@ -209,7 +216,7 @@ class DataShell extends BeditaBaseShell {
         $this->out('data script shell usage:');
         $this->out('');
         $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
+        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...> [--exclude-other-types] [--related-types <type1,type2>]] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
         $this->out('');
     }
 
