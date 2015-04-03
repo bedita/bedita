@@ -647,6 +647,14 @@ $(document).ready(function(){
 
     $("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
         dropdownAutoWidth:true
+    }).on('select2-blur', function (e) {
+        var select = this;
+        for ( var i = 0, l = select.options.length, o; i < l; i++ ) {
+            if (select.options[i].selected) {
+                return true;
+            }
+        }
+        $(this).select2('val', select.options[0].value);
     });
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
