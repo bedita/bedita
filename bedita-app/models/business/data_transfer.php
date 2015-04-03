@@ -492,6 +492,19 @@ class DataTransfer extends BEAppModel
                 $parents = Set::extract('/id',$this->export['destination']['byType']['ARRAY']['tree']['sections']);
                 $this->prepareObjectsForExportByParents($parents);
             }
+            if ($this->export['all'] === true) {
+                $this->trackDebug('... extracting orphans (objects not in tree)');
+                $orphanIds = $this->orphans(array_keys($this->export['destination']['byType']['ARRAY']['objects']));
+                foreach ($orphanIds as $objId) {
+                    $objModel = ClassRegistry::init('BEObject');
+                    $obj = $objModel->findById($objId);
+                    if (!empty($obj)) {
+                        $this->prepareObjectForExport($obj['BEObject']);
+                    } else {
+                        $this->trackDebug('... object ' . $objId . 'not found');
+                    }
+                }
+            }
             // remove duplicated relations and inverse
             $uniqueRelationsMap = array();
             $uniqueRelations = array();
@@ -1396,6 +1409,12 @@ class DataTransfer extends BEAppModel
                 }
                 if ($orderByPriority) {
                     usort($this->import['treeLevels']['level-' . $level], function ($item1, $item2) {
+                        if (empty($item1['priority'])) {
+                            $item1['priority'] = 0;
+                        }
+                        if (empty($item2['priority'])) {
+                            $item2['priority'] = 0;
+                        }
                         return ($item1['priority'] === $item2['priority']) ? 0 : ($item1['priority'] > $item2['priority']);
                     });
                     $this->import['treeLevels']['level-' . $level] = Set::combine($this->import['treeLevels']['level-' . $level], '{n}.id', '{n}');
@@ -1705,6 +1724,23 @@ class DataTransfer extends BEAppModel
         $objModel = ClassRegistry::init('BEObject');
         return $objModel->findObjectTypeId($objId);
     }
+
+    private function orphans($objsToSkip = array()) {
+        $treeModel = ClassRegistry::init('Tree');
+        $objsInTree = $treeModel->find('list', array(
+            'fields' => array('id')
+        ));
+        $objsInTree = array_values($objsInTree);
+        $objsInTree = array_merge($objsToSkip);
+        $objModel = ClassRegistry::init('BEObject');
+        return $objModel->find('list', array(
+            'fields' => array('id'),
+            'condition' => array(
+                'NOT' => array('BEObject.id' => $objsInTree)
+            )
+        ));
+    }
+
     /**
      * Return the proper model binding for model.
      *
