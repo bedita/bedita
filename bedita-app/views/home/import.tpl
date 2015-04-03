@@ -1,7 +1,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
 		openAtStart("#data-source, #data-options");
-		$('.import-file input[type=file]').prop( "disabled", true );
+        $('.import-file input[type=file]').prop( "disabled", true );
+        $('.import input[type=submit]').prop( "disabled", true );
 
 		$('.import-type input[type=radio]').click(function(e) {
 			$('.import-file input[type=file]').prop( "disabled", false );
@@ -10,6 +11,12 @@
 			$('#' + sel + '-options').show();
 			console.log(sel);
 		});
+
+        $('.import-file input[type=file]').change(function() {
+            if ($('.import-file input[type=file]').val()) {
+                $('.import input[type=submit]').prop( "disabled", false );
+            }
+        });
     });
 </script>
 
@@ -49,7 +56,7 @@
 			</div>
 
 			<div class="import-button-container">
-				<input type="submit" value=" load " />
+				<input type="submit" value=" load " disabled />
 			</div>
 		</fieldset>
 
