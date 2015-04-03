@@ -73,7 +73,7 @@
 
 
 					{if $option.dataType == 'boolean'}
-                        <input type="checkbox" name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                        <input type="checkbox" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}-{$optionValue}"
                             {if !empty($option.defaultValue)}checked="checked"{/if}>
                         <label for="{$optionName}-{$optionValue}">{$option.label|default:$optionName}</label>
 
@@ -81,7 +81,7 @@
                     {elseif $option.dataType == 'number' || $option.dataType == 'text'}
                         <label for="{$optionName}-{$optionValue}">{$option.label|default:$optionName}:</label>
                         <br>
-                        <input type="text" name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                        <input type="text" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}-{$optionValue}"
                             {if !empty($option.defaultValue)}value="{$option.defaultValue}"{/if}>
 
 
@@ -89,7 +89,7 @@
 
 						{* if number of options is > 3 use a select *}
 						{if count($option.values) > 3}
-							<select name="{$optionName}" {if !empty($option.multipleChoice)}multiple{/if}>
+							<select name="data[{$optionName}]" {if !empty($option.multipleChoice)}multiple{/if}>
                                 {if empty($option.mandatory)}
                                     <option>--</option>
                                 {/if}
@@ -102,7 +102,7 @@
                                 {foreach $option.values as $optionValue => $optionLabel}
                                 <li>
                                     <input type="{if !empty($option.multipleChoice)}checkbox{else}radio{/if}"
-                                        name="{$optionName}" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                                        name="data[{$optionName}]" value="{$optionValue}" id="{$optionName}-{$optionValue}"
                                         {if !empty($option.defaultValue) && ($option.defaultValue == $optionValue)}checked="checked"{/if}>
                                     <label for="{$optionName}-{$optionValue}">{$optionLabel}</label>
                                 </li>

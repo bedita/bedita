@@ -270,7 +270,7 @@ class HomeController extends AppController {
         $path = $stream->field('uri', array('id' => $streamId));
 
         if ($this->data['type'] !== 'auto') {
-            $filterClass = Configure::read('filters.import.' . $this->data['type']);
+            $filterClass = $this->data['type'];
         } else { // search matching mime types
             $mimeType = $stream->field('mime_type', array('id' => $streamId));
             $filterClass = Configure::read('filters.mime.' . $mimeType . '.import');
@@ -280,8 +280,17 @@ class HomeController extends AppController {
         $options = array();
         if (! empty($filterClass)) {
             $filterModel = ClassRegistry::init($filterClass);
+            $optionsNames = array();
+            if (!empty($filterModel->options)) {
+                $optionsNames = array_keys($filterModel->options);
+            }
             if (!empty($this->data['destinationId'])) {
                 $options['destinationId'] = $this->data['destinationId'];
+            }
+            foreach ($optionsNames as $opName) {
+                if (!empty($this->data[$opName])) {
+                    $options[$opName] = $this->data[$opName];
+                }
             }
             $result = $filterModel->import(Configure::read('mediaRoot') . $path, $options);
             $this->eventInfo($result['objects'] . ' objects imported from ' . $path);
