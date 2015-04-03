@@ -24,15 +24,20 @@
 		</div>
 	{/if}
 
-	<div class="tab stayopen"><h2>{t}Results{/t}</h2></div>
+	<div class="tab stayopen"><h2>{t}Import result{/t}</h2></div>
 
 	<fieldset id="import-result">
-		<div>
-			<p>{t}Number of imported objects:{/t} {$result.objects|default:'0'}</p>
-		</div>
-
 		<div class="import-message">
-			{$result.message|default:''}
+			{if empty($result.error)}
+				{if !empty($result.objects)}
+					<h2>{t}Import successfull{/t}</h2>
+					<p>{t}Number of imported objects:{/t} {$result.objects|default:'0'}</p>
+				{else}
+					<h2>{t}No object was imported{/t}</h2>
+				{/if}
+			{/if}
+
+			<p>{$result.message|default:''}</p>
 		</div>
 	</fieldset>
 

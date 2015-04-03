@@ -2476,6 +2476,9 @@ LI.welcome {
 .import-message {
 	margin: 20px 0;
 }
+.import-message h2 {
+	margin-bottom: 10px;
+}
 
 .import-error {
 	background-color: #eee;

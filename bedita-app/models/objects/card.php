@@ -310,8 +310,8 @@ class Card extends BEAppObjectModel {
         if ($row < 2) {
             $res['error'] = 'no cards found in imported file';
         }
-        $res['message'] = 'cards with same email: ' . $numSameEmail 
-        . ' - skipped: ' . $numSkip . ' - modified: ' . $numOver;
+        $res['message'] = $numSameEmail . ' cards with the same email were found. '
+        . ' Skipped: ' . $numSkip . ', modified: ' . $numOver . '.';
         return $res;
     }
 

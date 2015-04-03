@@ -43,7 +43,8 @@ class CardsImportFilter extends BeditaImportFilter
             'defaultValue' => 'skip', // can be 'overwrite', 'new', 'skip'
             'mandatory' => true,
             'multipleChoice' => false
-        ),
+        )
+        /*,
         'invalidEmail' => array(
             'label' => 'If an email is not valid',
             'dataType' => 'options', // number|date|text|options
@@ -55,6 +56,7 @@ class CardsImportFilter extends BeditaImportFilter
             'mandatory' => true,
             'multipleChoice' => false
         )
+        */
     );
 
     /**
