@@ -692,8 +692,8 @@ class BEObject extends BEAppModel {
             // Unit tests.
             return $conf->beditaTestUserId;
         } elseif (class_exists('CakeSession')) {
-            $session = new CakeSession() ;
-            if ($session->valid() === false) {
+            $session = new CakeSession();
+            if (!$session->started() || $session->valid() === false) {
                 return $systemUserId;
             }
 

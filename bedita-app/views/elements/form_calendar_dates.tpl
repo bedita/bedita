@@ -51,7 +51,7 @@
     {if !empty($d.start_date)}
         {$dayStart = $d.start_date|date_format:$conf->datePattern}
     {/if}
-    {if !empty($d.start_date)}
+    {if !empty($d.end_date)}
         {$dayEnd = $d.end_date|date_format:$conf->datePattern}
     {/if}
 

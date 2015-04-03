@@ -158,12 +158,17 @@
 				changeCKeditorCss(cssPath);
 			}
 		});
+
+		// if fieldset is visible, tab should have open class (fck-maximize-fix) 
+		// REMOVE OR REVIEW WHEN UPGRADING CKEDITOR
+		$('.tab.fck-maximize-fix:not(.open)+fieldset:visible').css('display', 'none');
+		$(document).off("keydown"); //disable Esc keybinding
 	});
 	</script>
 {/if}
 
 
-<div class="tab"><h2>{t}Compile{/t}</h2></div>
+<div class="tab fck-maximize-fix"><h2>{t}Compile{/t}</h2></div>
 
 <fieldset id="contents">
 	
@@ -171,15 +176,6 @@
 	{assign_concat var="default" 1="Newsletter | " 2=$smarty.now|date_format:"%B %Y"}
 	<input type="text" id="title" name="data[title]" class="required"
 	value="{$object.title|default:$default|escape:'html'|escape:'quotes'}" id="titleBEObject"/>
-
-{*
-<!--
-	<hr />
-	<label>{t}Subject{/t}: </label>
-
-	<input type="hidden" id="subject" name="data[subject]" value="" id="subjectBEObject"/>
--->	
-*}
 
 	<hr />
 	{bedev}

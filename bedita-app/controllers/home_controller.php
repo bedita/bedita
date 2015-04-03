@@ -106,16 +106,18 @@ class HomeController extends AppController {
 	 * @param integer $id - object id to view
 	 */
 	public function view($id) {
+		$objectId = $this->BEObject->objectId($id);
 
-		$this->action = "index";
-		$id = $this->BEObject->objectId($id);
-		$typeId = $this->BEObject->findObjectTypeId($id);
+		if (empty($objectId)) {
+			throw new BeditaNotFoundException('Object not found');
+		}
+		$typeId = $this->BEObject->findObjectTypeId($objectId);
 		$conf  = Configure::getInstance();
 		if(!isset($conf->objectTypes[$typeId]["module_name"])) {
 	 		throw new BeditaException(__("No module found for object", true));
 		}
 		$module = $conf->objectTypes[$typeId]["module_name"];
-		$this->redirect("/".$module . "/view/" . $id);
+		$this->redirect("/".$module . "/view/" . $objectId);
 	}
 
 
