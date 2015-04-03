@@ -499,15 +499,14 @@ class BEObject extends BEAppModel {
 		if(!isset($data['ip_created']) && !isset($data['id'])) {
 			$data['ip_created'] = $this->_getDefaultIP();
 		}
-		// user created? - only for new objects
-		if(empty($data['user_created']) && !isset($data['id'])) {
-			$data['user_created'] = $this->_getIDCurrentUser();
-		}
-		// user modified
-		if(!isset($data['user_modified'])) {
-			$data['user_modified'] = $this->_getIDCurrentUser();
-		}
-		
+
+        // #650 set always user_modified = current user, set user_created only on new objects
+        $currentUserId = $this->_getIDCurrentUser();
+        $data['user_modified'] = $currentUserId;
+        if (!isset($data['id'])) {
+            $data['user_created'] = $currentUserId;
+        }
+
 		// nickname: verify nick and status change, object not fixed
 		if(isset($data['id'])) {
 			$currObj = $this->find("first", array(
