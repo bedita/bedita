@@ -773,40 +773,38 @@ $(document).on('click', '.showmore', function() {
 
 ...........................................*/
 
-function openAtStart(defaultOpen) {
-    if ('localStorage' in window && window['localStorage'] !== null) {
+function openAtStart(openTabs) {
+    var title = 'tabs.' + BEDITA.currentModule.name + '.' + BEDITA.action,
+        openTabs = ('localStorage' in window && window['localStorage'] !== null) ? (localStorage.getItem(title) || openTabs) : openTabs;
 
-        var title = "tabs." + BEDITA.currentModule.name + "." + BEDITA.action;
-        var openAtStart = localStorage.getItem(title);
-
-        if (openAtStart == null) {
-            openAtStart = defaultOpen;
+    openTabs = openTabs.split(',');
+    for (var i = 0; i < openTabs.length; i++) {
+        // avoid bad id selector
+        var tabId = openTabs[i];
+        if (tabId != '#' && tabId.length > 1) {
+            $(tabId).prev('.tab, .tab2').click();
         }
-        var openTmp = openAtStart.split(',');
-        for(var i=0; i < openTmp.length; i++) {
-            // avoid bad id selector
-            var tabId = openTmp[i];
-            if(tabId != '#' && tabId.length > 1) {
-                //$(tabId).prev(".tab").BEtabstoggle();
-                $(tabId).prev(".tab").BEtabsopen();
+    }
+
+    if (!('localStorage' in window) || window['localStorage'] === null) {
+        console.warn('LocalStorage disabled!');
+        return;
+    }
+    $(window).unload(function() {
+        var openTabs = [];
+        $('.tab, .tab2').each(function(i) {
+            if (!$(this).next().is(':visible')) {
+                return;
             }
-        }
 
-        $(window).unload(function(){
-            openAtStart = new Array();
-            $(".tab").each(function(i){
-                if ($(this).next().is(":visible")) {
-                    idAttr = $(this).next().attr("id");
-                    if(idAttr != "") {
-                        openAtStart.push("#" + idAttr);
-                    }
-                }
-            });
-
-            localStorage.setItem(title, openAtStart);
+            var idAttr = $(this).next().attr('id');
+            if (idAttr != '' && typeof idAttr !== 'undefined') {
+                openTabs.push('#' + idAttr);
+            }
         });
 
-    }
+        localStorage.setItem(title, openTabs);
+    });
 }
 
 /*...........................................
