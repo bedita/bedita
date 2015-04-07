@@ -1469,7 +1469,7 @@ class DataTransfer extends BEAppModel
         if (isset($object['LangText'])) {
             $langTexts = array();
             foreach ($object['LangText'] as $name => $langTxt) {
-                if (is_numeric($name)) {
+                if (is_numeric($name) || in_array($name, array('created_by', 'modified_by'))) {
                     continue;
                 }
 
@@ -1477,6 +1477,11 @@ class DataTransfer extends BEAppModel
                     if (!array_key_exists($lang, $langTexts)) {
                         $langTexts[$lang] = array();
                     }
+
+                    if (is_numeric($text) && in_array($name, array('created_on', 'modified_on'))) {
+                        $text = date('Y-m-d H:i:s', $text);  // Format timestamp using MySQL date format.
+                    }
+
                     $langTexts[$lang][$name] = $text;
                 }
             }
