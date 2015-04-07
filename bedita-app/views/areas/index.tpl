@@ -4,7 +4,7 @@
 {$html->script("libs/jquery/ui/jquery.ui.sortable.min", true)}
 {$html->script("libs/jquery/plugins/jquery.selectboxes.pack", false)}
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu',['searchDestination' => 'results'])}
 
 {include file="inc/menuleft.tpl"}
 

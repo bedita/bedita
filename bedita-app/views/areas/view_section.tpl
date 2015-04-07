@@ -15,7 +15,7 @@
 	});
 </script>
 
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu',['searchDestination' => 'results'])}
 
 {include file="inc/menuleft.tpl" method="viewSection"}
 

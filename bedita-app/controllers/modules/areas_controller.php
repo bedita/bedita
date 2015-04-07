@@ -136,6 +136,14 @@ class AreasController extends ModulesController {
 		$this->set('parent_id', $parentId);
 	}
 
+	public function results($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
+    	$conf  = Configure::getInstance() ;
+		$filter['object_type_id'] = $conf->objectTypes['section']['id'];
+		$filter['count_annotation'] = array('Comment', 'EditorNote');
+		$this->paginatedList(@$id, $filter, $order, $dir, $page, $dim);
+		$this->loadCategories($filter['object_type_id']);
+		//pr($this->params); exit;
+	 }
 	/**
 	 * load paginated contents and no paginated sections of $id publication/section
 	 *
