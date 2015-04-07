@@ -11,7 +11,6 @@
 	</div> 		
 
 	<div class="insidecol">
-		<input class="bemaincommands" type="button" name="save" onClick="$('#editProfile').submit()" value="{t}save{/t}" />
 	</div>
 
 </div>

@@ -4,11 +4,10 @@
     });
 </script>
 
+
 {$view->element('modulesmenu')}
-
-{include file="inc/menuleft.tpl"}
-
-{include file="inc/menucommands.tpl"}
+{include file = './inc/menuleft.tpl'}
+{include file = './inc/menucommands.tpl'}
 
 
 <div class="head">
