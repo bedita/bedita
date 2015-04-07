@@ -97,7 +97,8 @@ CKEDITOR.plugins.add( 'bedita', {
 		editor.ui.addButton( 'MediaAttach',
 			{
 				label : 'Inser Media',
-				command : 'attachMedia'
+				command : 'attachMedia',
+				icon: this.path + 'icons/media.png',
 			}
 		);
 		
