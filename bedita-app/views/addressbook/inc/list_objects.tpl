@@ -9,6 +9,8 @@ var urls = Array();
 	urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
 	urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
 	urls['addToMailgroup'] = "{$html->url('addToMailgroup/')}";
+    urls['exportCsv'] = "{$html->url('exportToFile/csv')}";
+    urls['exportVcard'] = "{$html->url('exportToFile/vcard')}";
 
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
@@ -19,8 +21,8 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 var sel_mailgroup_msg = "{t}Select a mailgroup{/t}";
 
 $(document).ready(function(){
-<!--
-	$("#assocObjectsMailgroup").click(function(e) {
+
+    $("#assocObjectsMailgroup").click(function(e) {
 		e.preventDefault();
 		var mailgroup = $('#objMailgroupAssoc').val();
 		if (count_check_selected() < 1) {
@@ -36,6 +38,19 @@ $(document).ready(function(){
 			$("#formObject").submit() ;
 		}
 	});
+	
+    $('#exportCsv').click(function(e) {
+        e.preventDefault();
+        $('#formObject').prop('action', urls['exportCsv']) ;
+        $('#formObject').submit() ;
+    });
+
+    $('#exportVcard').click(function(e) {
+        e.preventDefault();
+        $('#formObject').prop('action', urls['exportVcard']) ;
+        $('#formObject').submit() ;
+    });
+
 });
 //-->
 </script>
@@ -154,5 +169,13 @@ $(document).ready(function(){
 	{bedev} / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />{/bedev}
 </div>
 {/if}	
+
+<div class="tab">
+    <h2>{t}Export{/t} <span class="evidence">{$beToolbar->size()} </span>{t}cards{/t}</h2>
+</div>
+<div>
+    <input id="exportCsv" type="button" value="{t}Export to CSV{/t}" />
+    <input id="exportVcard" type="button" value="{t}Export to vCard{/t}" />
+</div>
 
 </form>

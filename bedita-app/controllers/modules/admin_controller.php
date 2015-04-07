@@ -61,10 +61,6 @@ class AdminController extends ModulesController {
 		$this->systemEvents();
 	}
 
-	public function importData() {
-		// TODO
-	}
-
 	/**
 	 * http request load utility page
 	 * ajax request try to execute the utility operation defined in $this->params["form"]["operation"]

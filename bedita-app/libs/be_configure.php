@@ -284,6 +284,6 @@ class BeConfigure {
                 Configure::write("objectTypes.{$otid}", $res);
             }
         }
-        return $otid ?: null;  // Ensure `null` is returned in case no ID has been found.
+        return $otid ? $otid : null;  // Ensure `null` is returned in case no ID has been found.
     }
 }

@@ -191,6 +191,11 @@ class MultimediaController extends ModulesController {
 
             //check if hash is present elsewhere
             if (!empty($obj['hash_file'])) {
+                if (empty($obj['uri'])) {
+                    //#630 add usr/event msg
+                    $this->userErrorMessage(__('Media file expected, hash value is present', true) . ' -  ' . $obj['hash_file']);
+                    $this->eventError('multimedia file expected for hash: ' . $obj['hash_file']);
+                }
                 $results = $this->Image->query("SELECT * FROM streams INNER JOIN objects ON objects.id = streams.id WHERE hash_file='".$obj['hash_file']."'  AND streams.id != ".$obj['id']."");
                 $this->set('elsewhere_hash',$results);
             }

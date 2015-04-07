@@ -23,11 +23,15 @@
 	{/foreach}
 </ul>
 
+{if $perms->userActionAccess($BEAuthUser, 'Home.import')}
+<ul class="menuleft insidecol bordered">
+	<li {if $view->action eq 'import' || $view->action eq 'importData'}class="on"{/if}>
+		<a href="{$html->url('/home/import')}">{t}Import Data{/t}</a>
+	</li>
+</ul>
+{/if}
 
 {$view->element('colophon')}
 
 {$conf->colophon|default:''}
-
-
-
 
