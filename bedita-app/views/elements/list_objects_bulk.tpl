@@ -1,8 +1,8 @@
 {strip}
 {if !empty($objects)}
 <div style="white-space:nowrap; padding: 0 4px">
-	<input type="checkbox" class="selectAll" id="selectAll"/>
-	&nbsp;<label for="selectAll">{t}(un)select all{/t}</label>
+	<input type="checkbox" class="selectAll" {if !empty($context)}data-context="{$context}" {/if}id="selectAll{if !empty($context)}-{$context}{/if}"/>
+	&nbsp;<label for="selectAll{if !empty($context)}-{$context}{/if}">{t}(un)select all{/t}</label>
 	&nbsp;&nbsp;&nbsp;
 	{if !isset($bulk_tags) || $bulk_tags==false}
 		{t}Go to page{/t}: {$beToolbar->changePageSelect('pagSelectBottom')}
@@ -22,7 +22,7 @@
 <br />
 
 <div class="tab">
-	<h2>{t}Operations on{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2>
+	<h2>{t}Operations on{/t} <span class="selecteditems evidence"{if !empty($context)} data-context="{$context}"{/if}></span> {t}selected records{/t}</h2>
 </div>
 <div>
 	{if !isset($bulk_status) || $bulk_status==true}
