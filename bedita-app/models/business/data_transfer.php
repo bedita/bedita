@@ -212,36 +212,40 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-            // 2.1.? [...] [TODO]
-            //$this->trackInfo('2.1.? [...] [TODO]');
-            // 2.2 save areas/sections
-            $this->trackInfo('2.2 save areas/sections');
-            // 2.2.1 save roots (areas/sections)
-            $this->trackInfo('2.2.1 save roots (areas/sections)');
-            $rootIds = $this->import['tree']['roots'];
-            foreach ($rootIds as $rootId) {
-                $rootData = $this->import['source']['data']['objects'][$rootId];
-                $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
-                // 2.2.1.1 save area(s) with policy 'NEW'
-                $this->trackDebug('2.2.1.1 save area/section(s) with policy (old id ' . $rootId . ') \'NEW\'');
-                // 2.2.1.2 save area(s) with other policies [TODO]
-                $this->trackDebug('2.2.1.2 save area/section(s) with other policies (old id ' . $rootId . ') [TODO]');
-                if ($rootObjType == 'area') {
-                    $this->saveArea($rootData);
-                } else if ($rootObjType == 'section') {
-                    $parentId = $options['section_root_id'];
-                    $this->saveSection($rootData, $parentId);
+            if (!empty($this->import['tree']['roots'])) {
+                // 2.1.? [...] [TODO]
+                //$this->trackInfo('2.1.? [...] [TODO]');
+                // 2.2 save areas/sections
+                $this->trackInfo('2.2 save areas/sections');
+                // 2.2.1 save roots (areas/sections)
+                $this->trackInfo('2.2.1 save roots (areas/sections)');
+                $rootIds = $this->import['tree']['roots'];
+                foreach ($rootIds as $rootId) {
+                    $rootData = $this->import['source']['data']['objects'][$rootId];
+                    $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
+                    // 2.2.1.1 save area(s) with policy 'NEW'
+                    $this->trackDebug('2.2.1.1 save area/section(s) with policy (old id ' . $rootId . ') \'NEW\'');
+                    // 2.2.1.2 save area(s) with other policies [TODO]
+                    $this->trackDebug('2.2.1.2 save area/section(s) with other policies (old id ' . $rootId . ') [TODO]');
+                    if ($rootObjType == 'area') {
+                        $this->saveArea($rootData);
+                    } else if ($rootObjType == 'section') {
+                        $parentId = $options['section_root_id'];
+                        $this->saveSection($rootData, $parentId);
+                    }
                 }
             }
-            // 2.2.2 save other section(s)
-            $this->trackDebug('2.2.2 save other section(s)');
-            foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-                $newParentId = $this->import['saveMap'][$section['parent']];
-                // 2.2.2.1 save section(s) with policy 'NEW'
-                $this->trackDebug('2.2.2.1 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with policy \'NEW\'');
-                // 2.2.2.2 save section(s) with other policies [TODO]
-                $this->trackDebug('2.2.2.2 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with other policies [TODO]');
-                $this->saveSection($section, $newParentId);
+            if (!empty($this->import['source']['data']['tree']['sections'])) {
+                // 2.2.2 save other section(s)
+                $this->trackDebug('2.2.2 save other section(s)');
+                foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+                    $newParentId = $this->import['saveMap'][$section['parent']];
+                    // 2.2.2.1 save section(s) with policy 'NEW'
+                    $this->trackDebug('2.2.2.1 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with policy \'NEW\'');
+                    // 2.2.2.2 save section(s) with other policies [TODO]
+                    $this->trackDebug('2.2.2.2 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with other policies [TODO]');
+                    $this->saveSection($section, $newParentId);
+                }
             }
             $this->trackInfo('2.3 save objects');
             if (!empty($this->import['media'])) {
@@ -880,77 +884,88 @@ class DataTransfer extends BEAppModel
             }
         }
         // 4 tree consistency
-        // 4.1 tree not empty
-        if (empty($this->import['source']['data']['tree'])) {
-            throw new BeditaException('missing tree in source json data');
-        }
-        // 4.2 tree roots not empty
-        if (empty($this->import['source']['data']['tree']['roots'])) {
-            throw new BeditaException('missing tree roots in source json data');
-        }
-        $rootIds = $this->import['source']['data']['tree']['roots'];
-        $this->import['tree']['roots'] = $rootIds;
-        $this->import['tree']['ids'] = $rootIds;
-        $this->import['tree']['parents'] = $rootIds;
-        // 4.3 valid root ids => if more than one, all must be all of the same type (area or section) / if type is section => options[root_section_id]
-        $rootObjTypes = array();
-        foreach ($rootIds as $rootId) {
-            if (empty($this->import['source']['data']['objects'][$rootId])) {
-                throw new BeditaException('root id ' . $rootId . ' not referenced in objects');
-            }
-            $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
-            if (empty($rootObjType)) {
-                throw new BeditaException('missing root object type for root id ' . $rootId);
-            }
-            if (empty($rootObjTypes)) {
-                $rootObjTypes[] = $rootObjType;
-            } else if(!in_array($rootObjType, $rootObjTypes)) {
-                $rootObjTypes[] = $rootObjType;
-            }
-            if (sizeof($rootObjTypes) > 1) {
-                throw new BeditaException('all tree roots elements must be of the same type (area|section)');
-            }
-            if ($rootObjType != 'area' && $rootObjType != 'section') {
-                throw new BeditaException('root object type [' . $rootObjType . '] not valid: must be area or section');
-            } else if ($rootObjType == 'section') {
-                if (empty($options['section_root_id'])) {
-                    throw new BeditaException('missing $options[section_root_id] for root section');
+        $noParents = true;
+        // #625 - empty tree, objects without 'parents' allowed
+        if (!empty($this->import['source']['data']['objects'])) {
+            foreach ($this->import['source']['data']['objects'] as $o) {
+                if (!empty($o['parents'])) {
+                    $noParents = false;
                 }
             }
         }
-        // order sections
-        $this->updateTreeForImport();
-        $orderedSections = array();
-        foreach ($this->import['treeLevels'] as $levelName => $sections) {
-            if ($levelName != 'level-0') {
-                foreach ($sections as $sectionId => $section) {
-                    $orderedSections[$sectionId] = $section;
+        if (!$noParents) {
+            // 4.1 tree not empty
+            if (empty($this->import['source']['data']['tree'])) {
+                throw new BeditaException('missing tree in source json data');
+            }
+            // 4.2 tree roots not empty
+            if (empty($this->import['source']['data']['tree']['roots'])) {
+                throw new BeditaException('missing tree roots in source json data');
+            }
+            $rootIds = $this->import['source']['data']['tree']['roots'];
+            $this->import['tree']['roots'] = $rootIds;
+            $this->import['tree']['ids'] = $rootIds;
+            $this->import['tree']['parents'] = $rootIds;
+            // 4.3 valid root ids => if more than one, all must be all of the same type (area or section) / if type is section => options[root_section_id]
+            $rootObjTypes = array();
+            foreach ($rootIds as $rootId) {
+                if (empty($this->import['source']['data']['objects'][$rootId])) {
+                    throw new BeditaException('root id ' . $rootId . ' not referenced in objects');
+                }
+                $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
+                if (empty($rootObjType)) {
+                    throw new BeditaException('missing root object type for root id ' . $rootId);
+                }
+                if (empty($rootObjTypes)) {
+                    $rootObjTypes[] = $rootObjType;
+                } else if(!in_array($rootObjType, $rootObjTypes)) {
+                    $rootObjTypes[] = $rootObjType;
+                }
+                if (sizeof($rootObjTypes) > 1) {
+                    throw new BeditaException('all tree roots elements must be of the same type (area|section)');
+                }
+                if ($rootObjType != 'area' && $rootObjType != 'section') {
+                    throw new BeditaException('root object type [' . $rootObjType . '] not valid: must be area or section');
+                } else if ($rootObjType == 'section') {
+                    if (empty($options['section_root_id'])) {
+                        throw new BeditaException('missing $options[section_root_id] for root section');
+                    }
                 }
             }
-        }
-        $this->import['source']['data']['tree']['sections'] = $orderedSections;
-        foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-            $this->import['tree']['ids'][] = $section['id'];
-            if (!empty($section['parent']) && !in_array($section['parent'], $this->import['tree']['parents'])) {
-                $this->import['tree']['parents'][] = $section['parent'];
+            // order sections
+            $this->updateTreeForImport();
+            $orderedSections = array();
+            foreach ($this->import['treeLevels'] as $levelName => $sections) {
+                if ($levelName != 'level-0') {
+                    foreach ($sections as $sectionId => $section) {
+                        $orderedSections[$sectionId] = $section;
+                    }
+                }
             }
-        }
-        // 4.4 valid parent ids => parents elements must be a subcollection of tree elements
-        foreach ($this->import['tree']['parents'] as $parentId) {
-            if (!in_array($parentId, $this->import['tree']['ids'])) {
-                throw new BeditaException('parent id ' . $parentId . ' not found in tree');
+            $this->import['source']['data']['tree']['sections'] = $orderedSections;
+            foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+                $this->import['tree']['ids'][] = $section['id'];
+                if (!empty($section['parent']) && !in_array($section['parent'], $this->import['tree']['parents'])) {
+                    $this->import['tree']['parents'][] = $section['parent'];
+                }
             }
-        }
-        // expected area/section - elements inside objects... should be in tree too
-        foreach ($this->import['expectedParentIds'] as $elemId) {
-            if (!in_array($elemId, $this->import['tree']['ids'])) {
-                throw new BeditaException('element ' . $elemId . ' not found in specified tree source');
+            // 4.4 valid parent ids => parents elements must be a subcollection of tree elements
+            foreach ($this->import['tree']['parents'] as $parentId) {
+                if (!in_array($parentId, $this->import['tree']['ids'])) {
+                    throw new BeditaException('parent id ' . $parentId . ' not found in tree');
+                }
             }
-        }
-        // 4.5 id referenced in tree must be referenced in objects too
-        foreach ($this->import['tree']['ids'] as $treeId) {
-            if (!in_array($treeId, $this->import['objects']['ids'])) {
-                throw new BeditaException('tree id ' . $treeId . ' not found in objects');
+            // expected area/section - elements inside objects... should be in tree too
+            foreach ($this->import['expectedParentIds'] as $elemId) {
+                if (!in_array($elemId, $this->import['tree']['ids'])) {
+                    throw new BeditaException('element ' . $elemId . ' not found in specified tree source');
+                }
+            }
+            // 4.5 id referenced in tree must be referenced in objects too
+            foreach ($this->import['tree']['ids'] as $treeId) {
+                if (!in_array($treeId, $this->import['objects']['ids'])) {
+                    throw new BeditaException('tree id ' . $treeId . ' not found in objects');
+                }
             }
         }
         // 5 relations
