@@ -49,6 +49,7 @@ class AreasController extends ModulesController {
 			$id = $this->params["named"]["id"];
 		}
 		// if empty $id try to get first publication.id
+/*		
 		if (empty($id)) {
 
 			$pubIds = $this->BEObject->find('list', array(
@@ -106,9 +107,11 @@ class AreasController extends ModulesController {
 
 			}
 		}
-
+*/
 		if (!empty($id)) {
 			$this->view($id);
+		} else {
+			$this->redirect("results");
 		}
 
 	}
@@ -142,8 +145,8 @@ class AreasController extends ModulesController {
 		$filter['count_annotation'] = array('Comment', 'EditorNote');
 		$this->paginatedList(@$id, $filter, $order, $dir, $page, $dim);
 		$this->loadCategories($filter['object_type_id']);
-		//pr($this->params); exit;
 	 }
+	 
 	/**
 	 * load paginated contents and no paginated sections of $id publication/section
 	 *
