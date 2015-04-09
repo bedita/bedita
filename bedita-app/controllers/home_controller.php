@@ -71,18 +71,7 @@ class HomeController extends AppController {
 		$this->set("noFooter", true);
 		$this->set("bodyClass", "home");
 
-		// get publications
-		$treeModel = ClassRegistry::init("Tree");
-		$user = $this->BeAuth->getUserSession();
-		$expandBranch = array();
-		if (!empty($filter['parent_id'])) {
-			$expandBranch[] = $filter['parent_id'];
-		} elseif (!empty($id)) {
-			$expandBranch[] = $id;
-		}
-		$tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
-
-		$this->set('tree', $tree);
+		$this->loadTreeData();
 	 }
 
 	/**
@@ -239,6 +228,7 @@ class HomeController extends AppController {
         	}
         }
         $this->set('filters', $ff);
+        $this->loadTreeData();
     }
 
 
@@ -307,5 +297,17 @@ class HomeController extends AppController {
         $this->set('result', $result);
     }
 
-
+    private function loadTreeData() {
+        // get publications
+        $treeModel = ClassRegistry::init('Tree');
+        $user = $this->BeAuth->getUserSession();
+        $expandBranch = array();
+        if (!empty($filter['parent_id'])) {
+            $expandBranch[] = $filter['parent_id'];
+        } elseif (!empty($id)) {
+            $expandBranch[] = $id;
+        }
+        $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
+        $this->set('tree', $tree);
+    }
 }

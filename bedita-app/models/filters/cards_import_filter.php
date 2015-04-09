@@ -45,6 +45,13 @@ class CardsImportFilter extends BeditaImportFilter
             'multipleChoice' => false
         )
         /*,
+        'destination' => array(
+            'label' => 'Import to',
+            'dataType' => 'tree',
+            //'defaultValue' => '1', // default position (area or section id) for data import
+            //'mandatory' => false, // defaultValue and mandatory true are together
+            'multipleChoice' => true, // if true, then multiple positions allowed
+        ),
         'invalidEmail' => array(
             'label' => 'If an email is not valid',
             'dataType' => 'options', // number|date|text|options
