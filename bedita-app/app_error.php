@@ -171,6 +171,9 @@ class AppError extends ErrorHandler {
 			}
 		}
 
+		// assure that ResponseHandler is enabled
+		$this->controller->ResponseHandler->enabled = true;
+
 		if (BACKEND_APP) {
 			// check backend helpers
 			$checkHelpers = array('Beurl', 'BeForm', 'Session', 'SessionFilter');
@@ -259,6 +262,7 @@ class AppError extends ErrorHandler {
 		$current = AppController::currentController();
 		if (isset($current)) {
 			$this->controller = $current;
+			$this->checkController();
 			$this->controller->handleError($this->error['details'], $this->error['message'], $this->errorTrace);
 			$this->controller->setResult($messages['result']);
 			$this->setError();
