@@ -265,7 +265,9 @@ class DataTransfer extends BEAppModel
                             $beFull = $this->import['destination']['media']['root'] . $beUri;
                             $this->import['source']['data']['objects'][$id]['uri'] = $beUri;
                         } else {
-                            $this->trackWarn('missing media file for object ' . $id . ' - uri: ' . $media['uri']);
+                            if (!filter_var($media['uri'], FILTER_VALIDATE_URL)) {
+                                $this->trackWarn('missing media file for object ' . $id . ' - uri: ' . $media['uri']);
+                            }
                         }
                     } catch(Exception $e) {
                         $this->trackError($e->getMessage());
