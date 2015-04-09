@@ -282,7 +282,13 @@ class Addon extends AppModel {
 	 * @return mixed, the folder string or false if folder doesn't found 
 	 */
 	public function getFolderByType($addonType) {
-		$path = BEDITA_ADDONS_PATH . DS . Inflector::pluralize($addonType);
+        $addonType = Inflector::pluralize($addonType);
+        switch ($addonType) {
+            case 'behaviors':
+                $addonType = 'models' . DS . 'behaviors';
+                break;
+        }
+		$path = BEDITA_ADDONS_PATH . DS . $addonType;
 		if (!BeLib::getObject("BeSystem")->checkAppDirPresence($path)) {
 			$path = false;
 		}
