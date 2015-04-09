@@ -191,7 +191,14 @@ class DataTransfer extends BEAppModel
         // setting save mode - default NEW
         $this->import['saveMode'] = (!empty($options['saveMode'])) ? $options['saveMode'] : $this->saveModes['NEW'];
         // setting sourceMediaRoot - default TMP/media-import
-        $this->import['sourceMediaRoot'] = (!empty($options['sourceMediaRoot'])) ? $options['sourceMediaRoot'] : 'TMP' . DS . 'media-import';
+        
+        if (!empty($options['sourceMediaRoot'])) { // media root
+            $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
+        } else if (!empty($options['sourceMediaUrl'])) { // media url
+            $this->import['sourceMediaUrl'] = $options['sourceMediaUrl'];
+        } else { // default media root
+            $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import';
+        }
         $this->trackInfo('START');
         try {
             // 1. Validate
@@ -579,7 +586,7 @@ class DataTransfer extends BEAppModel
                 $this->export['destination']['byType']['ARRAY']['config']['customProperties'] = $propertiesNew;
             }
             $this->trackDebug('5. media');
-            if (!empty($this->export['media'])) {
+            if (empty($this->export['no-media']) && !empty($this->export['media'])) {
                 $this->export['srcMediaRoot'] = Configure::read('mediaRoot');
                 if (!file_exists($this->export['srcMediaRoot'])) {
                     throw new BeditaException('srcMediaRoot folder "' . $this->export['srcMediaRoot'] . '" not found');
@@ -1084,15 +1091,26 @@ class DataTransfer extends BEAppModel
         }
         // 6.media
         if (!empty($this->import['media'])) {
-            // 6.1 source folder (sourceMediaRoot)
+            // 6.1 source folder (sourceMediaRoot or sourceMediaUrl)
             // 6.1.1 existence
-            if (!file_exists($this->import['sourceMediaRoot'])) {
-                throw new BeditaException('sourceMediaRoot folder "' . $this->import['sourceMediaRoot'] . '" not found');
+            if (!empty($this->import['sourceMediaUrl'])) {
+                if (!$this->urlExists($this->import['sourceMediaUrl'])) {
+                    throw new BeditaException('sourceMediaUrl url "' . $this->import['sourceMediaUrl'] . '" not found');
+                }
+                $this->import['source']['media']['root'] = $this->import['sourceMediaUrl'];
+                $this->import['source']['media']['isUrl'] = true;
+            } else {
+                if (!empty($this->import['sourceMediaRoot']) && !file_exists($this->import['sourceMediaRoot'])) {
+                    throw new BeditaException('sourceMediaRoot folder "' . $this->import['sourceMediaRoot'] . '" not found');
+                }
+                $this->import['source']['media']['root'] = $this->import['sourceMediaRoot'];
+                $this->import['source']['media']['isUrl'] = false;
             }
-            $this->import['source']['media']['root'] = $this->import['sourceMediaRoot'];
-            // ... not for remote folders
-            $folder =& new Folder($this->import['source']['media']['root'], true);
-            $this->import['source']['media']['size'] = $folder->dirSize();
+            if (!$this->import['source']['media']['isUrl']) {
+                // ... not for remote folders
+                $folder =& new Folder($this->import['source']['media']['root'], true);
+                $this->import['source']['media']['size'] = $folder->dirSize();
+            }
             // 6.1.2 permits [TODO]
             // ...
             // 6.2 destination folder
@@ -1106,29 +1124,54 @@ class DataTransfer extends BEAppModel
             // 6.2.2 space available
             $this->import['destination']['media']['space'] = disk_free_space($this->import['destination']['media']['root']);
             // 6.3 files
-            foreach ($this->import['media'] as $id => &$media) {
-                if (!empty($media['uri']) && $media['uri'][0] == '/') {
-                    $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
-                    // 6.3.1 existence (base folder + objects[i].uri) [TODO]
-                    if (!file_exists($filePath)) {
-                        $this->trackWarn('file "' . $filePath . '" not found (object id "' . $id . '")');
-                    } else {
-                        $media['base'] = $this->import['sourceMediaRoot'];
-                        $media['full'] = $filePath;
+            if (!$this->import['source']['media']['isUrl']) { // local files
+                foreach ($this->import['media'] as $id => &$media) {
+                    if (!empty($media['uri']) && $media['uri'][0] == '/') {
+                        $filePath = $this->import['sourceMediaRoot'] . $media['uri'];
+                        // 6.3.1 existence (base folder + objects[i].uri) [TODO]
+                        if (!file_exists($filePath)) {
+                            $this->trackWarn('file "' . $filePath . '" not found (object id "' . $id . '")');
+                        } else {
+                            $media['base'] = $this->import['sourceMediaRoot'];
+                            $media['full'] = $filePath;
+                        }
+                        // 6.3.2 extension allowed [TODO]
+                        // ...
+                        // 6.3.3 dimension allowed [TODO]
+                        // ...
                     }
-                    // 6.3.2 extension allowed [TODO]
-                    // ...
-                    // 6.3.3 dimension allowed [TODO]
-                    // ...
+                }
+                // 6.3.4 all files dimension < space available
+                // space required => $this->import['source']['media']['size']
+                // space available => $this->import['destination']['media']['space']
+                if ($this->import['source']['media']['size'] >= $this->import['destination']['media']['space']) {
+                    throw new BeditaException('not enought space on destination folder "' . $this->import['destination']['media']['root'] . '" - space required: ' . $this->import['source']['media']['size'] . ' / space available: ' . $this->import['destination']['media']['space']);
+                }
+            } else { // remote files
+                foreach ($this->import['media'] as $id => &$media) {
+                    if (!empty($media['uri']) && $media['uri'][0] == '/') {
+                        $fileUri = $this->import['sourceMediaUrl'] . $media['uri'];
+                        // 6.3.1 existence (base folder + objects[i].uri) [TODO]
+                        if (!$this->urlExists($fileUri)) {
+                            $this->trackWarn('file "' . $fileUri . '" not found (object id "' . $id . '")');
+                        } else {
+                            $media['base'] = $this->import['sourceMediaUrl'];
+                            $media['full'] = $fileUri;
+                        }
+                        // 6.3.2 extension allowed [TODO]
+                        // ...
+                        // 6.3.3 dimension allowed [TODO]
+                        // ...
+                    }
+                }
+                // 6.3.4 all files dimension < space available
+                // space required => $this->import['source']['media']['size']
+                // space available => $this->import['destination']['media']['space']
+                if (!empty($this->import['source']['media']['size']) && $this->import['source']['media']['size'] >= $this->import['destination']['media']['space']) {
+                    throw new BeditaException('not enought space on destination folder "' . $this->import['destination']['media']['root'] . '" - space required: ' . $this->import['source']['media']['size'] . ' / space available: ' . $this->import['destination']['media']['space']);
                 }
             }
-            // 6.3.4 all files dimension < space available
-            // space required => $this->import['source']['media']['size']
-            // space available => $this->import['destination']['media']['space']
-            if ($this->import['source']['media']['size'] >= $this->import['destination']['media']['space']) {
-                throw new BeditaException('not enought space on destination folder "' . $this->import['destination']['media']['root'] . '" - space required: ' . $this->import['source']['media']['size'] . ' / space available: ' . $this->import['destination']['media']['space']);
-            }
-        }        
+        }
     }
 
     /* private methods for relation management */
@@ -1823,6 +1866,11 @@ class DataTransfer extends BEAppModel
             //$this->trackWarn('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
             //throw new BeditaException('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
         }
+    }
+
+    private function urlExists($url) {
+        $headers = @get_headers($url);
+        return !strpos($headers[0], '404');
     }
 
     /* private logging functions */
