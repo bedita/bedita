@@ -755,6 +755,7 @@ class BEAppObjectModel extends BEAppModel {
 	var $recursive 	= 2 ;
 
 	var $actsAs 	= array(
+			'Callback',
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
 			'RevisionObject',
