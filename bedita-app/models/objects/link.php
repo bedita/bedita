@@ -39,26 +39,27 @@ class Link extends BEAppObjectModel {
 		"url" => 8,
 		"note" => 2
 	);
-	
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"ObjectProperty",
-															"RelatedObject",
-															"Category",
-															"Annotation",
-															"Alias",
-															"Version" => array("User.realname", "User.userid")
-														)),
 
-				"default" => array("BEObject" => array("ObjectType", "RelatedObject", "Category", "Annotation")),
+    protected $modelBindings = array(
+        'detailed' =>  array(
+            'BEObject' => array(
+                'ObjectType',
+                'LangText',
+                'UserCreated',
+                'UserModified',
+                'ObjectProperty',
+                'RelatedObject',
+                'Category',
+                'Annotation',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid'),
+            ),
+        ),
+        'default' => array('BEObject' => array('LangText', 'ObjectType', 'RelatedObject', 'Category', 'Annotation')),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array('BEObject' => array('LangText','RelatedObject','ObjectProperty')),
+    );
 
-				"minimum" => array("BEObject" => array("ObjectType")),
-		
-				"frontend" => array("BEObject" => array("LangText","RelatedObject","ObjectProperty"))
-		);
-		
 	public $objectTypesGroups = array("leafs");
 
 	public function beforeSave() {
@@ -122,4 +123,3 @@ class Link extends BEAppObjectModel {
 		return $title;
 	}
 }
-?>
