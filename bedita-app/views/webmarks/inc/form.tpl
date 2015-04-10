@@ -98,9 +98,9 @@ var url="{$html->url('/webmarks/checkUrl')}";
 
 {$view->element('form_tags')}
 
-{$view->element('form_advanced_properties')}
-
 {$view->element('form_translations')}
+
+{$view->element('form_advanced_properties')}
 
 {$view->element('form_versions')}
 
