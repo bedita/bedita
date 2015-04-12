@@ -62,7 +62,13 @@ class DataShell extends BeditaBaseShell {
         }
         $this->out('Using file: ' . $this->params['f']);
         $this->out('Using sourceMediaRoot: ' . $this->options['import']['sourceMediaRoot']);
-        $this->checkDir($this->options['import']['sourceMediaRoot']);
+        if ($this->isUrl($this->options['import']['sourceMediaRoot'])) {
+            $this->checkUrl($this->options['import']['sourceMediaRoot']);
+            $this->options['import']['sourceMediaUrl'] = $this->options['import']['sourceMediaRoot'];
+            unset($this->options['import']['sourceMediaRoot']);
+        } else {
+            $this->checkDir($this->options['import']['sourceMediaRoot']);
+        }
 
         // setting file type.
         $this->options['import']['type'] = pathinfo($this->params['f'], PATHINFO_EXTENSION);
@@ -113,6 +119,7 @@ class DataShell extends BeditaBaseShell {
         }
         if (isset($this->params['id'])) {
             $objects[] = $this->params['id'];
+            $this->options['export']['id'] = $this->params['id'];
             $this->options['export']['all'] = false;
         } else {
             $this->options['export']['all'] = true;
@@ -121,6 +128,12 @@ class DataShell extends BeditaBaseShell {
             $this->options['export']['types'] = $this->params['types'];
             $this->out('Using types: ' . $this->options['export']['types'] 
                 . ' (' . $this->options['export']['types'] . ')');
+            if (isset($this->params['-exclude-other-types'])) {
+                $this->options['export']['exclude-other-types'] = true;
+            }
+            if (isset($this->params['-related-types'])) {
+                $this->options['export']['related-types'] = $this->params['-related-types'];
+            }
         }
         if (isset($this->params['relations'])) {
             $this->options['export']['relations'] = $this->params['relations'];
@@ -131,6 +144,9 @@ class DataShell extends BeditaBaseShell {
             $this->options['export']['destMediaRoot'] = $this->params['m'];
         } else {
             $this->options['export']['destMediaRoot'] = TMP . 'media-export';
+        }
+        if (isset($this->params['-no-media'])) {
+            $this->options['export']['no-media'] = true;
         }
         $this->checkDir($this->options['export']['destMediaRoot']);
         $this->out('Using destMediaRoot: ' . $this->options['export']['destMediaRoot']);
@@ -208,8 +224,8 @@ class DataShell extends BeditaBaseShell {
         $this->hr();
         $this->out('data script shell usage:');
         $this->out('');
-        $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot>] [-v]');
-        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...>] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
+        $this->out('./cake.sh data import -f <filename> [-m <sourceMediaRoot|sourceMediaUrl>] [-v]');
+        $this->out('./cake.sh data export -f <filename> [-all] [-types <type1,type2,...> [--exclude-other-types] [--related-types <type1,type2>]] [-relations <relation1,relation2,...>] [-id <objectId>] [-m <destMediaRoot>] [--no-media] [-t <returnType> JSON|FILE|ARRAY|XML] [-v]');
         $this->out('');
     }
 

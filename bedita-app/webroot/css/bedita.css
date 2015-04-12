@@ -388,6 +388,7 @@ UL.modules {
 
 ...........................................*/
 
+h2.home						{background-color:#333333 !important;}
 .areas, .area, .section 	{background-color:#626151 !important;}
 .documents, .document		{background-color:#ff6600 !important;}
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
@@ -2440,6 +2441,55 @@ LI.welcome {
 #searchResult {
 	margin-top:10px;
 }
+
+
+/* import view */
+
+.import fieldset {
+	padding: 0 10px;
+}
+.import .filter-options:not(:first-child) { display: none; }
+
+.import #data-source>div, .import .filter-option, #data-options>div:first-child {
+	padding: 10px 0;
+}
+
+.import-button-container {
+	margin-top: 10px;
+	border-top: 1px solid gray;
+}
+
+.import li {
+	margin: 5px 0;
+}
+
+.import label {
+	font-weight: normal;
+	cursor: pointer;
+}
+
+.import input[type=file] {
+	margin-top: 5px;
+	width: 100%;
+}
+
+.import-message {
+	margin: 20px 0;
+}
+.import-message h2 {
+	margin-bottom: 10px;
+}
+
+.import-error {
+	background-color: #eee;
+	border-radius: 10px;
+	padding: 10px;
+}
+.import-error h2 {
+	margin-bottom: 10px;
+}
+
+
 /*...........................................
  
 	 Specific template layout: publishing

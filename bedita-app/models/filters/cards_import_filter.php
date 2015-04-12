@@ -27,9 +27,45 @@
 class CardsImportFilter extends BeditaImportFilter 
 {
 
-    protected $typeName = 'CSV/vCard cards';
+    protected $typeName = 'csv-vcard';
     protected $mimeTypes = array('text/csv', 'text/vcard');
-	
+    public $label = 'CSV or vCard';
+
+    public $options = array(
+        'overwritePolicy' => array(
+            'label' => 'If a card with the same email already exists',
+            'dataType' => 'options', // number|date|text|options
+            'values' => array(
+                'overwrite' => 'overwrite the card',
+                'new' => 'create a new card',
+                'skip' => 'skip'
+            ),
+            'defaultValue' => 'skip', // can be 'overwrite', 'new', 'skip'
+            'mandatory' => true,
+            'multipleChoice' => false
+        )
+        /*,
+        'destination' => array(
+            'label' => 'Import to',
+            'dataType' => 'tree',
+            //'defaultValue' => '1', // default position (area or section id) for data import
+            //'mandatory' => false, // defaultValue and mandatory true are together
+            'multipleChoice' => true, // if true, then multiple positions allowed
+        ),
+        'invalidEmail' => array(
+            'label' => 'If an email is not valid',
+            'dataType' => 'options', // number|date|text|options
+            'values' => array(
+                'import' => 'import',
+                'skip' => 'skip'
+            ),
+            'defaultValue' => 'skip', // can be 'import', 'skip'
+            'mandatory' => true,
+            'multipleChoice' => false
+        )
+        */
+    );
+
     /**
      * Import cards from CSV or vCard file
      * 

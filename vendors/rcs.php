@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009-2015 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,27 +20,32 @@
  */
 
 /**
- * Permission helper
+ * Revision Control System Model Interface
  */
-class PermsHelper extends AppHelper {
 
-    /**
-     * Check if user has permission on an action reading $config['actionPermission']
-     *
-     * @param array $authUser,
-     *            user data with groups (like $BEAuthuser)
-     * @param string $action,
-     *            action to check in the form 'ControllerName.actionName'
-     * @return boolean, true if user has access permissions, false otherwise
-     */
-    public function userActionAccess($authUser, $action) {
-        $actionPerms = Configure::read('actionPermissions');
-        $c = array_intersect($authUser['groups'], $actionPerms[$action]);
-        if (!empty($actionPerms[$action]) && !empty($c)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+interface RCS {
+
+	public function type();
+
+    public function startup($path);
+
+    public function authorize($user, $passwd);
+
+    public function cloneRemote($url, $path = null, $branch = 'master');
+
+    public function up($path);
+
+    public function status($path);
+
+    public function branch($path);
+
+    public function branches($path, $remote = false);
+
+    public function valid($path);
+
+    public function lastCommit($path);
+
+    public function command($cmd);
 
 }
+?>

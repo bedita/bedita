@@ -221,6 +221,20 @@ class BeditaBaseShell extends Shell {
         }
     }
 
+    protected function isUrl($str) {
+        return filter_var($str, FILTER_VALIDATE_URL);
+    }
+
+    protected function checkUrl($url) {
+        $headers = @get_headers($url);
+        if (strpos($headers[0], '404')) {
+            $this->out('Url not found');
+            exit;
+        } else {
+            $this->out('Url ok');
+        }
+    }
+
     protected function checkDir($dir) {
         if (!file_exists($dir)) {
             $res = $this->in("$dir doesn't exist, create? [y/n]");
