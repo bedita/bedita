@@ -422,7 +422,7 @@ class BeThumb {
 	    
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
-				'cache', "watermark", );
+				'cache', "watermark", 'quality');
 		extract ($params);
 
 		$imageConf = Configure::read('media.image');
@@ -444,6 +444,11 @@ class BeThumb {
 		} else {
 			$this->imageTarget['fillcolor'] = $imageConf['background'];
 		}
+
+        // Quality.
+        if (isset($quality)) {
+            $this->imageTarget['q'] = $quality;
+        }
 		
 		// cropmode
 		$this->imageTarget['cropmode'] = $imageConf['thumbCrop'];
@@ -560,7 +565,12 @@ class BeThumb {
 	        
     		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
     		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
-    		
+
+            if (array_key_exists('q', $this->imageTarget)) {
+                // Set quality.
+                $thumbnail->setOptions(array('jpegQuality' => $this->imageTarget['q']));
+            }
+
     		//set upscale
     		if ($this->imageTarget['upscale']) {
     			$thumbnail->setOptions(array("resizeUp" => true));
