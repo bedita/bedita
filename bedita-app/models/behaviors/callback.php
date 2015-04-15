@@ -101,7 +101,7 @@ class CallbackBehavior extends ModelBehavior {
         $this->config[$model->alias] = array_merge($this->stdConfig, $config);
 
         // Filter behaviors by their name, and attach them to model.
-        $behaviors = preg_grep("/^{$model->alias}/", $this->behaviors());
+        $behaviors = preg_grep("/^{$model->alias}\w+Callback$/", $this->behaviors());
         foreach ($behaviors as $beh) {
             if ($this->config[$model->alias]['callbackManager']) {
                 // Attach listeners using callback manager.
