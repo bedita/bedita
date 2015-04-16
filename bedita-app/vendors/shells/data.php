@@ -147,9 +147,11 @@ class DataShell extends BeditaBaseShell {
         }
         if (isset($this->params['-no-media'])) {
             $this->options['export']['no-media'] = true;
+            $this->out('Media files will not be exported');
+        } else {
+            $this->checkDir($this->options['export']['destMediaRoot']);
+            $this->out('Using destMediaRoot: ' . $this->options['export']['destMediaRoot']);
         }
-        $this->checkDir($this->options['export']['destMediaRoot']);
-        $this->out('Using destMediaRoot: ' . $this->options['export']['destMediaRoot']);
 
         if (isset($this->params['t'])) {
             $this->options['export']['returnType'] = $this->params['t'];
