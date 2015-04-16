@@ -80,13 +80,12 @@
 
 
                     {if $option.dataType == 'boolean'}
-                        <input type="checkbox" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}-{$optionValue}"
+                        <input type="checkbox" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}"
                             {if !empty($option.defaultValue)}checked="checked"{/if}>
 
                     {elseif $option.dataType == 'number' || $option.dataType == 'text'}
                         <br>
-                        <input type="text" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}-{$optionValue}"
-                            {if !empty($option.defaultValue)}value="{$option.defaultValue}"{/if}>
+                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:$optionName}" />
 
 
                     {elseif $option.dataType == 'options'}
