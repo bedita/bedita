@@ -897,7 +897,7 @@ class DataTransfer extends BEAppModel
         // #625 - empty tree, objects without 'parents' allowed
         if (!empty($this->import['source']['data']['objects'])) {
             foreach ($this->import['source']['data']['objects'] as $o) {
-                if (!empty($o['parents'])) {
+                if (!empty($o['parents']) || !empty($o['parent_id'])) {
                     $noParents = false;
                 }
             }
@@ -1242,6 +1242,9 @@ class DataTransfer extends BEAppModel
         $mode = $this->import['saveMode'];
         $this->trackDebug('- saving area ' . $area['id'] . ' with mode ' . $mode . ' ... START');
         $newArea = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$area['id']]);
+        if (empty($newArea['menu'])) {
+            $newArea['menu'] = '1';
+        }
         unset($newArea['id']);
         $model = ClassRegistry::init('Area');
         $model->create();
@@ -1260,6 +1263,9 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('-- saving section ' . $section['id'] . ' with mode ' . $mode . ' ... START');
             // TODO: manage different saving policies | now => direct save of NEW section
             $newSection = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$section['id']]);
+            if (empty($newSection['menu'])) {
+                $newSection['menu'] = '1';
+            }
             unset($newSection['id']);
             $newSection['parent_id'] = ($parendId != null) ? $parendId : $this->import['saveMap'][$section['parent']];
             $model = ClassRegistry::init('Section');
@@ -1900,7 +1906,7 @@ class DataTransfer extends BEAppModel
             $this->result['log']['filtered'][] = $message;
             $this->log($level . ': ' . $message, $this->logFile);
             if ($level == 'ERROR') {
-                $this->log('DataTransfer: ' . $message, 'ERROR');
+                $this->log('DataTransfer: ' . $message, 'error');
             }
         }
     }
