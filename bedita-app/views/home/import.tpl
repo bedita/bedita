@@ -85,7 +85,7 @@
 
                     {elseif $option.dataType == 'number' || $option.dataType == 'text'}
                         <br>
-                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:$optionName}" />
+                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="40" />
 
 
                     {elseif $option.dataType == 'options'}
