@@ -484,6 +484,9 @@ class DataTransfer extends BEAppModel
                             if (!empty($section['priority'])) {
                                 $sectionItem['priority'] = $section['priority'];
                             }
+                            if ($section['menu'] == 0) {
+                                $sectionItem['menu'] = $section['menu'];
+                            }
                             $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = $sectionItem;
                             $objModel = ClassRegistry::init('Section');
                             $objModel->contain(
@@ -552,9 +555,11 @@ class DataTransfer extends BEAppModel
             $this->export['destination']['byType']['ARRAY']['relations'] = $uniqueRelations;
             // set position for objects
             $treeTypes = array('area', 'section');
-            foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
-                if (!in_array($object['objectType'], $treeTypes) && !empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
-                    $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
+            if (!empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
+                foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
+                    if (!in_array($object['objectType'], $treeTypes)) {
+                        $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
+                    }
                 }
             }
             $this->trackDebug('4 config');
@@ -1242,8 +1247,10 @@ class DataTransfer extends BEAppModel
         $mode = $this->import['saveMode'];
         $this->trackDebug('- saving area ' . $area['id'] . ' with mode ' . $mode . ' ... START');
         $newArea = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$area['id']]);
-        if (empty($newArea['menu'])) {
+        if (!isset($area['menu'])) {
             $newArea['menu'] = '1';
+        } else {
+            $newArea['menu'] = $area['menu'];
         }
         unset($newArea['id']);
         $model = ClassRegistry::init('Area');
@@ -1263,8 +1270,10 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('-- saving section ' . $section['id'] . ' with mode ' . $mode . ' ... START');
             // TODO: manage different saving policies | now => direct save of NEW section
             $newSection = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$section['id']]);
-            if (empty($newSection['menu'])) {
+            if (!isset($section['menu'])) {
                 $newSection['menu'] = '1';
+            } else {
+                $newSection['menu'] = $section['menu'];
             }
             unset($newSection['id']);
             $newSection['parent_id'] = ($parendId != null) ? $parendId : $this->import['saveMap'][$section['parent']];
@@ -1701,25 +1710,30 @@ class DataTransfer extends BEAppModel
 
     private function parentsForObjId($objId, $rootIds) {
         $tree = ClassRegistry::init('Tree');
-        $parents = $tree->find('list',
+        $parents = $tree->find('all',
             array(
                 'fields' => array(
                     'parent_id',
-                    'priority'
+                    'priority',
+                    'menu'
                 ),
                 'conditions' => array(
-                    'id' => $objId,
-                    'area_id' => $rootIds
+                    'Tree.id' => $objId,
+                    'Tree.area_id' => $rootIds
                 )
             )
         );
         $result = array();
         if (!empty($parents)) {
-            foreach ($parents as $parent_id => $priority) {
-                $result[] = array(
-                    'id' => $parent_id,
-                    'priority' => $priority
+            foreach ($parents as $k => $v) {
+                $r = array(
+                    'id' => $v['Tree']['parent_id'],
+                    'priority' => $v['Tree']['priority']
                 );
+                if ($v['Tree']['menu'] != 0) {
+                    $r['menu'] = $v['Tree']['menu'];
+                }
+                $result[] = $r;
             }
         }
         return $result;
