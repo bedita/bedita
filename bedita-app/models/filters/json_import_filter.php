@@ -28,52 +28,17 @@ class JsonImportFilter extends BeditaImportFilter
     protected $typeName = 'BE-Json';
     protected $mimeTypes = array('text/json', 'application/json');
     public $label = 'JSON data';
-    
-//     public $options = array(
-//         'mediaUri' => array(
-//             'label' => 'Local path or remote url to media',
-//             'dataType' => 'text',
-//             'mandatory' => false,
-//             'defaultValue' => '',
-//             'multipleChoice' => false
-//         )
-//     );
+
     public $options = array(
-        'test1' => array(
-            'label' => 'Test 1 boolean',
-            'dataType' => 'boolean'
-        ),
-        'test2' => array(
-            'label' => 'Test 2 text',
-            'dataType' => 'text'
-        ),
-        'test3' => array(
-            'label' => 'Test 3 date',
-            'dataType' => 'date'
-        ),
-        'test4' => array(
-            'label' => 'Test 4 number',
-            'dataType' => 'number'
-        ),
-        'test5' => array(
-            'label' => 'Test 5 tree',
-            'dataType' => 'tree'
-        ),
-        'test6' => array(
-            'label' => 'Test 6 options',
-            'dataType' => 'options',
-            'values' => array(
-                '1' => 'one',
-                '2' => 'two',
-                '3' => 'three'
-            ),
-            'defaultValue' => '1', // can be '1', '2', '3'
-            'mandatory' => true,
+        'mediaUri' => array(
+            'label' => 'Local path or remote url to media',
+            'dataType' => 'text',
+            'mandatory' => false,
+            'defaultValue' => '',
             'multipleChoice' => false
-        ),
+        )
     );
 
-    
     /**
      * Import BE objects from JSON source string.
      *
