@@ -1347,12 +1347,12 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-            if (!empty($object['lang_texts'])) {
+            if (!empty($object['LangText'])) {
                 $this->trackDebug('2.3.7 save object.langTexts');
                 $this->trackDebug('- saving lang texts for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
                 $object['LangText'] = array();
                 $langTextModel = ClassRegistry::init('LangText');
-                foreach ($object['lang_texts'] as $lang => $fields) {
+                foreach ($object['LangText'] as $lang => $fields) {
                     foreach ($fields as $name => $text) {
                         $langTxt = array(
                             'object_id' => $model->id,
@@ -1560,8 +1560,7 @@ class DataTransfer extends BEAppModel
                     $langTexts[$lang][$name] = $text;
                 }
             }
-            $object['lang_texts'] = $langTexts;
-            unset($object['LangText']);
+            $object['LangText'] = $langTexts;
         }
         if (isset($object['GeoTag'])) {
             foreach ($object['GeoTag'] as &$geoTag) {
