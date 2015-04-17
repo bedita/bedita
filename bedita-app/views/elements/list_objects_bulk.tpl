@@ -88,8 +88,11 @@
 	{/if}
 
 	<hr />
-	<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 
+	{if isset($bulk_delete) && $bulk_delete==true}
+		<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
+	{/if}
+	
 	{if isset($bulk_tags) && $bulk_tags==true}
 	<hr />
 	<textarea name="addtaglist" id="addtaglist"></textarea>

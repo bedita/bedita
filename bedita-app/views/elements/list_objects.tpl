@@ -131,7 +131,13 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 
 <br />
 
-{$view->element('list_objects_bulk', ['bulk_tree' => true, 'bulk_categories' => true, 'context' => $context|default:''])}
+{$view->element('list_objects_bulk', [
+	'bulk_tree' => $bulk_tree|default:true, 
+	'bulk_categories' => $bulk_categories|default:true, 
+	'bulk_status' => $bulk_status|default:true,
+	'bulk_delete' => $bulk_delete|default:true, 
+	'context' => $context|default:''
+])}
 
 </form>
 

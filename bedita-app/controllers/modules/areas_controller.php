@@ -141,10 +141,15 @@ class AreasController extends ModulesController {
 
 	public function results($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
     	$conf  = Configure::getInstance() ;
-		$filter['object_type_id'] = $conf->objectTypes['section']['id'];
+        $filter["object_type_id"] = array(
+            $conf->objectTypes['area']["id"],
+            $conf->objectTypes['section']["id"],
+        );
 		$filter['count_annotation'] = array('Comment', 'EditorNote');
 		$this->paginatedList(@$id, $filter, $order, $dir, $page, $dim);
 		$this->loadCategories($filter['object_type_id']);
+
+		$this->set("objectTypeIds",$filter["object_type_id"]);
 	 }
 	 
 	/**

@@ -9,8 +9,15 @@
 
 <div class="mainfull">
 
-    {$view->element('filters')}
+    {$view->element('filters', [
+        'options' => [
+            'type' => true
+        ]
+    ])}
 
-    {$view->element('list_objects')}
+    {$view->element('list_objects', [
+        'bulk_tree' => false,
+        'bulk_delete' => false
+    ])}
     
 </div>

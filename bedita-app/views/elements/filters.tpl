@@ -9,13 +9,6 @@
             ]
         ]
     )}
-
-	<!--
-	filters tab in list objects. Included in
-	/documebnts/index.tpl
-	/multimedia/index.tpl
--->
-
 *}
 
 {$defaultOptions = [
