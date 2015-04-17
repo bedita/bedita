@@ -194,10 +194,10 @@ class DataTransfer extends BEAppModel
         
         if (!empty($options['sourceMediaRoot'])) { // media root
             $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
-        } else if (!empty($options['sourceMediaUrl'])) { // media url
-            $this->import['sourceMediaUrl'] = $options['sourceMediaUrl'];
+        } else if (!empty($options['sourceMediaUri'])) { // media url
+            $this->import['sourceMediaUri'] = $options['sourceMediaUri'];
         } else { // default media root
-            $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import';
+            $this->import['sourceMediaRoot'] = TMP . 'media-import';
         }
         $this->trackInfo('START');
         try {
@@ -1098,13 +1098,13 @@ class DataTransfer extends BEAppModel
         }
         // 6.media
         if (!empty($this->import['media'])) {
-            // 6.1 source folder (sourceMediaRoot or sourceMediaUrl)
+            // 6.1 source folder (sourceMediaRoot or sourceMediaUri)
             // 6.1.1 existence
-            if (!empty($this->import['sourceMediaUrl'])) {
-                if (!$this->urlExists($this->import['sourceMediaUrl'])) {
-                    throw new BeditaException('sourceMediaUrl url "' . $this->import['sourceMediaUrl'] . '" not found');
+            if (!empty($this->import['sourceMediaUri'])) {
+                if (!$this->urlExists($this->import['sourceMediaUri'])) {
+                    throw new BeditaException('sourceMediaUri url "' . $this->import['sourceMediaUri'] . '" not found');
                 }
-                $this->import['source']['media']['root'] = $this->import['sourceMediaUrl'];
+                $this->import['source']['media']['root'] = $this->import['sourceMediaUri'];
                 $this->import['source']['media']['isUrl'] = true;
             } else {
                 if (!empty($this->import['sourceMediaRoot']) && !file_exists($this->import['sourceMediaRoot'])) {
@@ -1157,12 +1157,12 @@ class DataTransfer extends BEAppModel
             } else { // remote files
                 foreach ($this->import['media'] as $id => &$media) {
                     if (!empty($media['uri']) && $media['uri'][0] == '/') {
-                        $fileUri = $this->import['sourceMediaUrl'] . $media['uri'];
+                        $fileUri = $this->import['sourceMediaUri'] . $media['uri'];
                         // 6.3.1 existence (base folder + objects[i].uri) [TODO]
                         if (!$this->urlExists($fileUri)) {
                             $this->trackWarn('file "' . $fileUri . '" not found (object id "' . $id . '")');
                         } else {
-                            $media['base'] = $this->import['sourceMediaUrl'];
+                            $media['base'] = $this->import['sourceMediaUri'];
                             $media['full'] = $fileUri;
                         }
                         // 6.3.2 extension allowed [TODO]
