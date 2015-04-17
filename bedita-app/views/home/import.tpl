@@ -1,3 +1,9 @@
+{$html->css("ui.datepicker", null, ['inline' => false])}
+{$html->script("libs/jquery/ui/jquery.ui.datepicker.min", false)}
+{if $currLang != "eng"}
+{$html->script("libs/jquery/ui/i18n/jquery.ui.datepicker-$currLang2.min.js", false)}
+{/if}
+
 <script type="text/javascript">
     $(document).ready(function() {
         openAtStart("#data-source, #data-options");
@@ -17,6 +23,20 @@
                 $('.import input[type=submit]').prop( "disabled", false );
             }
         });
+        $.datepicker.setDefaults({
+		speed: 'fast', 
+		showOn: 'both',
+		closeAtTop: false, 
+		buttonImageOnly: true, 
+	    buttonImage: '{$html->webroot}img/iconCalendar.gif', 
+	    buttonText: '{t}Open Calendar{/t}',
+	    dateFormat: '{$conf->dateFormatValidation|replace:'yyyy':'yy'}',
+		firstDay: 1,
+		nextText: "&rsaquo;&rsaquo;",
+		prevText: "&lsaquo;&lsaquo;",
+	    beforeShow: customRange
+	}, $.datepicker.regional['{$currLang}']);
+        $("input.dateinput").datepicker();
     });
 </script>
 
@@ -78,15 +98,21 @@
                 <div class="filter-option">
                     <p>{$option.label|default:$optionName}:</p>
 
-
                     {if $option.dataType == 'boolean'}
-                        <input type="checkbox" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}"
-                            {if !empty($option.defaultValue)}checked="checked"{/if}>
 
-                    {elseif $option.dataType == 'number' || $option.dataType == 'text'}
-                        <br>
-                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="40" />
+                        <input type="checkbox" name="data[{$optionName}]" value="{$optionName}" id="{$optionName}" {if !empty($option.defaultValue)}checked="checked"{/if}>
 
+                    {elseif $option.dataType == 'date'}
+
+                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{if !empty($option.defaultValue)}{$option.defaultValue|date_format:$conf->datePattern}{/if}" size="10" class="dateinput" />
+
+                    {elseif $option.dataType == 'number'}
+
+                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="12" class="numberinput" />
+
+                    {elseif $option.dataType == 'text'}
+
+                        <input type="text" name="data[{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="40" class="textinput" />
 
                     {elseif $option.dataType == 'options'}
 
