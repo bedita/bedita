@@ -103,6 +103,13 @@ class DataTransfer extends BEAppModel
             'Version',
             'Permission',
             'Annotation',
+            'area_id',
+            'object_path',
+            'parent_id',
+            'parent_path',
+            'priority',
+            'priority_order',
+            'syndicate'
         ),
         'contain' => array(
             'BEObject' => array(
@@ -472,6 +479,7 @@ class DataTransfer extends BEAppModel
                 $this->trackDebug('2.2 sections:');
                 foreach ($objects as $parent) {
                     $filter = array(
+                        'Section.*' => '',
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
                     $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
@@ -479,7 +487,9 @@ class DataTransfer extends BEAppModel
                         foreach ($sections['items'] as $section) {
                             $sectionItem = array(
                                 'id' => $section['id'],
-                                'parent' => $section['parent_id']
+                                'parent' => $section['parent_id'],
+                                'priority_order' => $section['priority_order'],
+                                'syndicate' => $section['syndicate']
                             );
                             if (!empty($section['priority'])) {
                                 $sectionItem['priority'] = $section['priority'];
