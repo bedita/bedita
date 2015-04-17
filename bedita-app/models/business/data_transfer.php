@@ -522,10 +522,14 @@ class DataTransfer extends BEAppModel
                 $this->trackDebug('... extracting orphans (objects not in tree)');
                 $orphanIds = $this->orphans(array_keys($this->export['destination']['byType']['ARRAY']['objects']));
                 foreach ($orphanIds as $objId) {
-                    $objModel = ClassRegistry::init('BEObject');
+                    $model = ClassRegistry::init('BEObject')->getType($objId);
+                    $objModel = ClassRegistry::init($model);
+                    $objModel->contain(
+                        $this->modelBinding($model, $objModel)
+                    );
                     $obj = $objModel->findById($objId);
                     if (!empty($obj)) {
-                        $this->prepareObjectForExport($obj['BEObject']);
+                        $this->prepareObjectForExport($obj);
                     } else {
                         $this->trackDebug('... object ' . $objId . 'not found');
                     }
@@ -574,6 +578,20 @@ class DataTransfer extends BEAppModel
             }
             $this->trackDebug('4 config');
             $this->trackDebug('4.1 config.customProperties:');
+            if ($this->export['all'] === true) {
+                $this->trackDebug('... extracting all custom properties');
+                $p = ClassRegistry::init('Property')->find(
+                    'all', array(
+                        'contain' => array('PropertyOption')
+                    )
+                );
+                if (!empty($p)) {
+                    foreach ($p as $cproperty) {
+                        $this->export['customProperties'][$cproperty['id']] = $cproperty;
+                        unset($this->export['customProperties'][$cproperty['id']]['id']);
+                    }
+                }
+            }
             if (!empty($this->export['customProperties'])) {
                 $propertiesNew = array();
                 foreach ($this->export['customProperties'] as $property) {
