@@ -141,7 +141,10 @@ class BeConfigure {
 		$configurations["filters"] = $filters;
 		
 		Cache::write('beConfig', $configurations);
-		
+
+        // Flush loaded models and classes, so that classes are re-instantiated with configuration already available.
+        ClassRegistry::flush();
+
 		return $configurations;
 	}
 	
