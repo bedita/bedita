@@ -135,7 +135,7 @@ $(window).load(function() {
 			setPlaceCss(editor);
 		});
 	}
-	
+
 	function setPlaceCss(editor) {
 		var jph = $('iframe.cke_wysiwyg_frame').contents().find('A.placeholder, A.plaref, A[target=modal]');
 		var style = '<style id="placeholderCss">';
@@ -150,7 +150,7 @@ $(window).load(function() {
 		$('iframe.cke_wysiwyg_frame').contents().find('head').find('#placeholderCss').remove();
 		$('iframe.cke_wysiwyg_frame').contents().find('head').append(style);
 	}
-	
+
 	function checkDragDropTarget(e){
 		var mouseX = e.pageX;
 		var mouseY = e.pageY;
@@ -175,7 +175,7 @@ $(window).load(function() {
 							$_target.removeClass('hover');
 							targets[targetName].hover = false;
 						}
-					}				
+					}
 				} else {
 					windowTopPosition = $(window).scrollTop();
 					for(var targetName in targets){
@@ -183,7 +183,7 @@ $(window).load(function() {
 						var offset =  $_target.offset();
 						targets[targetName].left = offset.left;
 						targets[targetName].top = offset.top;
-						
+
 						if (mouseX>offset.left
 							&& mouseX<offset.left+targets[targetName].width
 							&& mouseY>offset.top
@@ -205,29 +205,14 @@ $(window).load(function() {
 		}
 	};
 
+	/* Seems unused...
 	$("#reposItems").click( function () {
 		$("#loading").show();
 		$("#ajaxSubcontainer").show();
 		$("#ajaxSubcontainer").load(urlGetAllItemNoAssoc, function() {
 			$("#loading").hide();
 			$('.selecteditems').text($(".objectCheck:checked").length);
-			$(".selectAll").bind("click", function(e) {
-				var status = this.checked;
-				$(".objectCheck").each(function() { 
-					this.checked = status; 
-					if (this.checked) $(this).parents('TR').addClass('overChecked');
-					else $(this).parents('TR').removeClass('overChecked');
-				});
-				$('.selecteditems').text($(".objectCheck:checked").length);
-			}) ;
-			$(".objectCheck").bind("click", function(e) {
-				var status = true;
-				$(".objectCheck").each(function() { 
-					if (!this.checked) return status = false;
-				});
-				$(".selectAll").each(function() { this.checked = status;});
-				$('.selecteditems').text($(".objectCheck:checked").length);
-			}) ;
 		});
 	});
+	*/
 });

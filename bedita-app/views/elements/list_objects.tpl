@@ -25,7 +25,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 
 	<input type="hidden" name="data[id]"/>
 
-	<table class="indexlist js-header-float">
+	<table class="indexlist js-header-float"{if !empty($context)} data-context="{$context}"{/if}>
 	{capture name="theader"}
 		<thead>
 		<tr>
@@ -131,8 +131,13 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 
 <br />
 
-{assign_associative var="params" bulk_tree=true bulk_categories=true}
-{$view->element('list_objects_bulk', $params)}
+{$view->element('list_objects_bulk', [
+	'bulk_tree' => $bulk_tree|default:true, 
+	'bulk_categories' => $bulk_categories|default:true, 
+	'bulk_status' => $bulk_status|default:true,
+	'bulk_delete' => $bulk_delete|default:true, 
+	'context' => $context|default:''
+])}
 
 </form>
 

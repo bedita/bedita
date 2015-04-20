@@ -3,18 +3,15 @@ Template incluso.
 Menu comandi a SX valido per tutte le pagine del controller.
 *}
 
-
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
-	
 
 	{assign_concat var="back" 1=$html->url('/') 2=$currentModule.url}
-
 
 	<div class="modules">
 		<label class="{$moduleName}" rel="{$back}">{t}{$currentModule.label}{/t}</label>
 	</div> 
 	
-	{if !empty($view->action)}
+	{if ($view->action != 'results')}
 	
 	<div class="insidecol">
 		<input class="bemaincommands" type="button" value=" {t}save{/t} " name="save" id="saveBEObject" />
@@ -23,5 +20,3 @@ Menu comandi a SX valido per tutte le pagine del controller.
 	
 	{/if}
 </div>
-
-

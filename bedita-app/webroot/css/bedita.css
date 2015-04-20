@@ -1369,10 +1369,10 @@ TABLE.indexlist {
 	border-bottom: solid 1px #666;
 }
  
-TABLE.indexlist H4{
+TABLE.indexlist H4 {
 	vertical-align: middle;
 	display: inline-block;
-	min-height: 30px;
+	/* padding-top:5px; */
 }
   
 .indexlist thead {
@@ -1391,7 +1391,7 @@ TABLE.indexlist H4{
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
-	vertical-align: top;
+	vertical-align: middle;
 	/*padding-top: 10px; padding-bottom: 10px;*/
 }
 
@@ -1416,14 +1416,17 @@ TABLE.indexlist H4{
 }
 
 .indexlist TD:first-child  {
-	/* text-align:right; */
 	width:20px;
-	/* white-space:nowrap
- */}
+}
  
  .indexlist TD.priority-column  {
-	text-align:right;
-	white-space:nowrap
+	white-space:nowrap;
+	vertical-align:top;
+ }
+
+ .indexlist TD.priority-column img {
+	vertical-align: middle;
+	width: 30px;
  }
 
 .indexlist TD.assoc_obj_title  {
@@ -1455,6 +1458,7 @@ TABLE.indexlist H4{
 }
 
 .indexlist .filethumb {
+	padding:0px;
 }
 
 .indexlist .filethumb img {
@@ -1846,19 +1850,16 @@ input#titleBEObject {
 
 INPUT.priority {
 	text-align:center; 
-	margin: 5px 0;
-	width:20px;
-	height:20px;
-	border-radius:35px !important; 
+	width:22px;
+	height:22px;
+	border-radius:100%  !important;
 	font-size: 11px;
 	border-width:0px !important;
 	color:#FFF !important;
-	padding: 2px;
-	vertical-align: middle;
 }
 
 INPUT.objectCheck {
-	/* margin-top:5px; */
+	margin-right:5px;
 }
 
 INPUT[type=text],INPUT[type=password], textarea {	
@@ -2097,7 +2098,7 @@ A.BEbutton.golink:before {
 }
 
 .filters .cell.position .areaSectionAssociation {
-	max-width:440px;
+	max-width:436px;
 }
 
 .filters .formbuttons {

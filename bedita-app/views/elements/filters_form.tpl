@@ -75,7 +75,7 @@ available options:
 					{foreach from=$objectTypeIds item=type_id}
 						{if $type_id}
 						{strip}
-						<option value="{$type_id}">
+						<option value="{$type_id}" {if $view->SessionFilter->read('object_type_id') == $type_id}selected="selected"{/if}>
 							{$conf->objectTypes[$type_id].name|lower}
 						</option>
 						{/strip}
