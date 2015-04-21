@@ -21,12 +21,25 @@
 
 /**
  * Migration behavior to translate basic Cake callbacks to BeCallbackManager events.
+ *
+ * When this behavior is attached to a model `MyModel`, all enabled behaviors with a name like
+ * `MyModelSomethingCallbackBehavior` (where `Something` can be replaced with anything you want)
+ * will be automatically attached to `MyModel`'s events.
+ *
+ * If this behavior is attached with configuration key `callbackManager` explicitely set to false,
+ * callbacks behaviors will be attached using CakePHP's built in associations.
+ * Otherwise, public callback behaviors' methods will be treated as listeners for corresponding events,
+ * thus allowing finer control on event propagation and details, as well as detachment of
+ * single methods within a behavior.
+ *
+ * @see BeCallbackManager
  */
 class CallbackBehavior extends ModelBehavior {
     /**
      * Standard configuration.
      *
      * @var array
+     * @access private
      */
     private $stdConfig = array(
         'callbackManager' => true,
@@ -38,6 +51,7 @@ class CallbackBehavior extends ModelBehavior {
      * Configuration.
      *
      * @var array
+     * @access protected
      */
     protected $config = array();
 
@@ -45,6 +59,7 @@ class CallbackBehavior extends ModelBehavior {
      * Callback Manager.
      *
      * @var BeCallbackManager
+     * @access private
      */
     private $manager = null;
 
@@ -52,6 +67,7 @@ class CallbackBehavior extends ModelBehavior {
      * Behaviors list.
      *
      * @var array
+     * @access private
      */
     private $behaviors = null;
 
@@ -59,6 +75,7 @@ class CallbackBehavior extends ModelBehavior {
      * Initialize and return callback manager.
      *
      * @return BeCallbackManager
+     * @access private
      */
     private function manager() {
         if (is_null($this->manager)) {
@@ -71,6 +88,7 @@ class CallbackBehavior extends ModelBehavior {
      * Load and return behaviors list.
      *
      * @return array
+     * @access private
      */
     private function behaviors() {
         if (is_null($this->behaviors)) {
@@ -84,6 +102,7 @@ class CallbackBehavior extends ModelBehavior {
      *
      * @param Model $model Model.
      * @param array $config Configuration.
+     * @access public
      */
     public function setup(Model &$model, array $config = array()) {
         if (array_key_exists($model->alias, $this->config)) {
@@ -155,6 +174,7 @@ class CallbackBehavior extends ModelBehavior {
      * Detach callback behavior.
      *
      * @param Model $model Model.
+     * @access public
      */
     public function cleanup(Model &$model) {
         foreach ($this->config[$model->alias]['_behaviors'] as $beh) {
@@ -176,6 +196,7 @@ class CallbackBehavior extends ModelBehavior {
      * @param Model $model Model.
      * @param array $query Query.
      * @return mixed Result.
+     * @access public
      */
     public function beforeFind(Model &$model, array $query) {
         $evt = $this->manager()->trigger("{$model->alias}.BeforeFind", array(
@@ -192,6 +213,7 @@ class CallbackBehavior extends ModelBehavior {
      * @param mixed $results Results.
      * @param bool $primary Primary.
      * @return mixed Result.
+     * @access public
      */
     public function afterFind(Model &$model, $results, $primary) {
         $evt = $this->manager()->trigger("{$model->alias}.AfterFind", array(
@@ -207,6 +229,7 @@ class CallbackBehavior extends ModelBehavior {
      *
      * @param Model $model Model.
      * @return mixed Result.
+     * @access public
      */
     public function beforeValidate(Model &$model) {
         $evt = $this->manager()->trigger("{$model->alias}.BeforeValidate", array(
@@ -220,6 +243,7 @@ class CallbackBehavior extends ModelBehavior {
      *
      * @param Model $model Model.
      * @return mixed Result.
+     * @access public
      */
     public function beforeSave(Model &$model) {
         $evt = $this->manager()->trigger("{$model->alias}.BeforeSave", array(
@@ -234,6 +258,7 @@ class CallbackBehavior extends ModelBehavior {
      * @param Model $model Model.
      * @param bool $created Created.
      * @return mixed Result.
+     * @access public
      */
     public function afterSave(Model &$model, $created) {
         $evt = $this->manager()->trigger("{$model->alias}.AfterSave", array(
@@ -249,6 +274,7 @@ class CallbackBehavior extends ModelBehavior {
      * @param Model $model Model.
      * @param bool $cascade Cascade.
      * @return mixed Result.
+     * @access public
      */
     public function beforeDelete(Model &$model, $cascade = true) {
         $evt = $this->manager()->trigger("{$model->alias}.BeforeDelete", array(
@@ -263,6 +289,7 @@ class CallbackBehavior extends ModelBehavior {
      *
      * @param Model $model Model.
      * @return mixed Result.
+     * @access public
      */
     public function afterDelete(Model &$model) {
         $evt = $this->manager()->trigger("{$model->alias}.AfterDelete", array(

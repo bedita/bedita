@@ -27,15 +27,22 @@ class BeCallbackManager {
      * Array of currently attached listeners.
      *
      * @var array
+     * @access protected
      */
     protected $listeners = array();
 
     /**
      * Attaches a listener to an event.
      *
+     * Listeners can be either anonymous functions or pairs of class name / method name
+     * (`ClassRegistry::init()` will be used in this case to retreive object instance).
+     *
+     * @see ClassRegistry::init()
+     *
      * @param string $eventName Name of the event to be listened.
      * @param mixed $listener Callback or full qualified name of listener.
      * @return boolean Success.
+     * @access public
      */
     public function bind($eventName, $listener) {
         if (!array_key_exists($eventName, $this->listeners)) {
@@ -49,9 +56,14 @@ class BeCallbackManager {
     /**
      * Detaches a listener from an event.
      *
+     * If `$eventName` is `null`, the given `$listener` will be detached from any event it was attached to.
+     * If `$listener` is `null`, all listeners binded to the given `$eventName` will be detached from that event.
+     * If both parameters are empty, each end every listener is cleared from any event.
+     *
      * @param string $eventName Name of the event to be unbinded.
      * @param mixed $listener Callback or full qualified name of callback.
      * @return boolean Success.
+     * @access public
      */
     public function unbind($eventName = null, $listener = null) {
         if (!empty($eventName)) {
@@ -101,13 +113,19 @@ class BeCallbackManager {
     }
 
     /**
-     * Triggers a new event.
+     * Triggers a new event, calling all listeners binded to that event in the order they were added.
+     *
+     * Passing data as an array will result in callbacks associated to the triggered event being called
+     * with array elements as arguments in the order they appear in that array (as of `call_user_func_array()`).
+     * In addition to that, the `$event` object will be passed to those callbacks as *last* argument,
+     * thus allowing listeners to gain control on event propagation or modifying the event itself.
      *
      * @param string $eventName Name of the event to be triggered.
-     * @param mixed $eventData Data of the event.
+     * @param array $eventData Data of the event.
      * @return stdClass Class representing the event triggered, with `name`, `data`, `result` and `stopped` keys.
+     * @access public
      */
-    public function trigger($eventName, $eventData = null) {
+    public function trigger($eventName, array $eventData = array()) {
         $event = $this->initEvent($eventName, $eventData);
 
         if (!array_key_exists($event->name, $this->listeners)) {
@@ -132,10 +150,11 @@ class BeCallbackManager {
      * Initializes a new event.
      *
      * @param string $eventName Event name.
-     * @param mixed $eventData Event data.
+     * @param array $eventData Event data.
      * @return stdClass Event.
+     * @access private
      */
-    private function initEvent($eventName, $eventData) {
+    private function initEvent($eventName, array $eventData) {
         $event = new stdClass();
         $event->name = $eventName;
         $event->data = $eventData;
