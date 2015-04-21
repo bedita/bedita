@@ -1378,9 +1378,10 @@ class DataTransfer extends BEAppModel
             if (!empty($object['LangText'])) {
                 $this->trackDebug('2.3.7 save object.langTexts');
                 $this->trackDebug('- saving lang texts for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
+                $langTexts = $object['LangText'];
                 $object['LangText'] = array();
                 $langTextModel = ClassRegistry::init('LangText');
-                foreach ($object['LangText'] as $lang => $fields) {
+                foreach ($langTexts as $lang => $fields) {
                     foreach ($fields as $name => $text) {
                         $langTxt = array(
                             'object_id' => $model->id,
