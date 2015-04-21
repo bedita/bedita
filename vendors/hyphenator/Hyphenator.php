@@ -33,15 +33,27 @@ function charCodeAt($str, $num) {
 }
 
 function utf8_ord($ch) {
-  $len = strlen($ch);
-  if($len <= 0) return false;
-  $h = ord($ch{0});
-  if ($h <= 0x7F) return $h;
-  if ($h < 0xC2) return false;
-  if ($h <= 0xDF && $len>1) return ($h & 0x1F) <<  6 | (ord($ch{1}) & 0x3F);
-  if ($h <= 0xEF && $len>2) return ($h & 0x0F) << 12 | (ord($ch{1}) & 0x3F) << 6 | (ord($ch{2}) & 0x3F);          
-  if ($h <= 0xF4 && $len>3) return ($h & 0x0F) << 18 | (ord($ch{1}) & 0x3F) << 12 | (ord($ch{2}) & 0x3F) << 6 | (ord($ch{3}) & 0x3F);
-  return false;
+    $len = strlen($ch);
+    if($len <= 0) {
+        return false;
+    }
+    $h = ord($ch{0});
+    if ($h <= 0x7F) {
+        return $h;
+    }
+    if ($h < 0xC2) {
+        return false;
+    }
+    if ($h <= 0xDF && $len>1) {
+        return ($h & 0x1F) <<  6 | (ord($ch{1}) & 0x3F);
+    }
+    if ($h <= 0xEF && $len>2) {
+        return ($h & 0x0F) << 12 | (ord($ch{1}) & 0x3F) << 6 | (ord($ch{2}) & 0x3F);          
+    }
+    if ($h <= 0xF4 && $len>3) {
+        return ($h & 0x0F) << 18 | (ord($ch{1}) & 0x3F) << 12 | (ord($ch{2}) & 0x3F) << 6 | (ord($ch{3}) & 0x3F);
+    }
+    return false;
 }
 
 function utf8_charAt($str, $num) { 
@@ -120,6 +132,8 @@ class Hyphenator {
     public $enableReducedPatternSet = false;
 
     public $exceptions = array();
+
+    public $enableCache = true;
 
     /**
      * @member {number} Hyphenator~min
@@ -527,7 +541,7 @@ class Hyphenator {
 
         if ($word === '') {
             $hw = '';
-        } elseif ($this->enableCache && $lo->cache && !empty($lo->cache[$word])) { //the word is in the cache
+        } elseif ($this->enableCache && !empty($lo->cache) && !empty($lo->cache[$word])) { //the word is in the cache
             $hw = $lo->cache[$word];
         } elseif (strrpos($word, $this->hyphen) !== false) {
             //word already contains shy; -> leave at it is!
@@ -585,7 +599,7 @@ class Hyphenator {
                         $hp = $valueStore[$value];
                         while ($hp) {
                             $hp -= 1;
-                            if ($valueStore[$value + 1 + $hp] > $wwhp[$pstart + $hp]) {
+                            if (isset($valueStore[$value + 1 + $hp]) && isset($wwhp[$pstart + $hp]) && $valueStore[$value + 1 + $hp] > $wwhp[$pstart + $hp]) {
                                 $wwhp[$pstart + $hp] = $valueStore[$value + 1 + $hp];
                             }
                         }
