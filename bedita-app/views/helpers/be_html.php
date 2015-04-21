@@ -23,6 +23,8 @@
  * Html helper class
  *
  */
+App::import('Helper', 'Html');
+
 class BeHtmlHelper extends HtmlHelper {
 
     public function hyphen($text, $lang = null, $excludeSelectors = array('.formula'), $excludeSelectorDefaults = array('pre', 'code', 'embed', 'object', 'iframe', 'img', 'svg', 'video', 'audio', 'script', 'style', 'head', 'sub', 'sup')) {
