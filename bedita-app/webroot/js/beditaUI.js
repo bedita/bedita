@@ -532,28 +532,38 @@ $(document).ready(function(){
 
 ...........................................*/
 
+    $('.selecteditems').text($('.objectCheck:checked').length);
 
-    $('.selecteditems').text($(".objectCheck:checked").length);
-    $(".selectAll").bind("click", function(e) {
-        var status = this.checked;
-        $(".objectCheck").each(function() {
-            this.checked = status;
-            if (this.checked) $(this).parents('TR').addClass('overChecked');
-            else $(this).parents('TR').removeClass('overChecked');
+    $(document).on('click', '.selectAll', function () {
+        var $this = $(this),
+            status = $this.prop('checked'),
+            ctx = $this.attr('data-context'),
+            $allSelects = $((typeof ctx !== 'undefined') ? '[data-context="' + ctx + '"] .objectCheck' : '.objectCheck:not([data-context] .objectCheck)');
+
+        $this.prop('indeterminate', false);
+        $allSelects.each(function() {
+            if ($(this).prop('checked') != status) {
+                $(this).click();
+            }
         });
-        $('.selecteditems').text($(".objectCheck:checked").length);
     });
 
-    $(".objectCheck").bind("click", function(e) {
-        var status = true;
-        $(".objectCheck").each(function() {
-            if (!this.checked) return status = false;
-        });
-        $(".selectAll").each(function() { this.checked = status;});
-        $('.selecteditems')
-            .text($(".objectCheck:checked").length)
-            .closest('.tab')
-            .BEtabsopen();
+    $(document).on('click', '.objectCheck', function() {
+        var ctx = $(this).closest('[data-context]').attr('data-context'),
+            context = (typeof ctx !== 'undefined') ? ('[data-context="' + ctx + '"]') : ':not([data-context])',
+            $allSelects = $((typeof ctx !== 'undefined') ? '[data-context="' + ctx + '"] .objectCheck' : '.objectCheck:not([data-context] .objectCheck)'),
+            total = $allSelects.length,
+            checked = $allSelects.filter(':checked').length;
+
+        $('.selectAll' + context).prop('checked', checked == total).prop('indeterminate', checked > 0 && checked < total);
+        $tab = $('.selecteditems' + context)
+            .text(checked)
+            .closest('.tab');
+        if (checked) {
+            $tab.BEtabsopen();
+        } else {
+            $tab.BEtabsclose();
+        }
     });
 
 /*...........................................

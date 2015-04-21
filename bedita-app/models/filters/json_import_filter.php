@@ -28,7 +28,7 @@ class JsonImportFilter extends BeditaImportFilter
     protected $typeName = 'BE-Json';
     protected $mimeTypes = array('text/json', 'application/json');
     public $label = 'JSON data';
-    
+
     public $options = array(
         'mediaUri' => array(
             'label' => 'Local path or remote url to media',
@@ -39,7 +39,6 @@ class JsonImportFilter extends BeditaImportFilter
         )
     );
 
-    
     /**
      * Import BE objects from JSON source string.
      *

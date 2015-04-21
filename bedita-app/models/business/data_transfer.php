@@ -103,6 +103,13 @@ class DataTransfer extends BEAppModel
             'Version',
             'Permission',
             'Annotation',
+            'area_id',
+            'object_path',
+            'parent_id',
+            'parent_path',
+            'priority',
+            'priority_order',
+            'syndicate'
         ),
         'contain' => array(
             'BEObject' => array(
@@ -194,10 +201,10 @@ class DataTransfer extends BEAppModel
         
         if (!empty($options['sourceMediaRoot'])) { // media root
             $this->import['sourceMediaRoot'] = $options['sourceMediaRoot'];
-        } else if (!empty($options['sourceMediaUrl'])) { // media url
-            $this->import['sourceMediaUrl'] = $options['sourceMediaUrl'];
+        } else if (!empty($options['sourceMediaUri'])) { // media url
+            $this->import['sourceMediaUri'] = $options['sourceMediaUri'];
         } else { // default media root
-            $this->import['sourceMediaRoot'] = 'TMP' . DS . 'media-import';
+            $this->import['sourceMediaRoot'] = TMP . 'media-import';
         }
         $this->trackInfo('START');
         try {
@@ -472,6 +479,7 @@ class DataTransfer extends BEAppModel
                 $this->trackDebug('2.2 sections:');
                 foreach ($objects as $parent) {
                     $filter = array(
+                        'Section.*' => '',
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
                     $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
@@ -479,10 +487,15 @@ class DataTransfer extends BEAppModel
                         foreach ($sections['items'] as $section) {
                             $sectionItem = array(
                                 'id' => $section['id'],
-                                'parent' => $section['parent_id']
+                                'parent' => $section['parent_id'],
+                                'priority_order' => $section['priority_order'],
+                                'syndicate' => $section['syndicate']
                             );
                             if (!empty($section['priority'])) {
                                 $sectionItem['priority'] = $section['priority'];
+                            }
+                            if ($section['menu'] == 0) {
+                                $sectionItem['menu'] = $section['menu'];
                             }
                             $this->export['destination']['byType']['ARRAY']['tree']['sections'][] = $sectionItem;
                             $objModel = ClassRegistry::init('Section');
@@ -509,10 +522,14 @@ class DataTransfer extends BEAppModel
                 $this->trackDebug('... extracting orphans (objects not in tree)');
                 $orphanIds = $this->orphans(array_keys($this->export['destination']['byType']['ARRAY']['objects']));
                 foreach ($orphanIds as $objId) {
-                    $objModel = ClassRegistry::init('BEObject');
+                    $model = ClassRegistry::init('BEObject')->getType($objId);
+                    $objModel = ClassRegistry::init($model);
+                    $objModel->contain(
+                        $this->modelBinding($model, $objModel)
+                    );
                     $obj = $objModel->findById($objId);
                     if (!empty($obj)) {
-                        $this->prepareObjectForExport($obj['BEObject']);
+                        $this->prepareObjectForExport($obj);
                     } else {
                         $this->trackDebug('... object ' . $objId . 'not found');
                     }
@@ -552,13 +569,29 @@ class DataTransfer extends BEAppModel
             $this->export['destination']['byType']['ARRAY']['relations'] = $uniqueRelations;
             // set position for objects
             $treeTypes = array('area', 'section');
-            foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
-                if (!in_array($object['objectType'], $treeTypes) && !empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
-                    $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
+            if (!empty($this->export['destination']['byType']['ARRAY']['tree']['roots'])) {
+                foreach ($this->export['destination']['byType']['ARRAY']['objects'] as &$object) {
+                    if (!in_array($object['objectType'], $treeTypes)) {
+                        $object['parents'] = $this->parentsForObjId($object['id'], $this->export['destination']['byType']['ARRAY']['tree']['roots']);
+                    }
                 }
             }
             $this->trackDebug('4 config');
             $this->trackDebug('4.1 config.customProperties:');
+            if ($this->export['all'] === true) {
+                $this->trackDebug('... extracting all custom properties');
+                $p = ClassRegistry::init('Property')->find(
+                    'all', array(
+                        'contain' => array('PropertyOption')
+                    )
+                );
+                if (!empty($p)) {
+                    foreach ($p as $cproperty) {
+                        $this->export['customProperties'][$cproperty['id']] = $cproperty;
+                        unset($this->export['customProperties'][$cproperty['id']]['id']);
+                    }
+                }
+            }
             if (!empty($this->export['customProperties'])) {
                 $propertiesNew = array();
                 foreach ($this->export['customProperties'] as $property) {
@@ -897,7 +930,7 @@ class DataTransfer extends BEAppModel
         // #625 - empty tree, objects without 'parents' allowed
         if (!empty($this->import['source']['data']['objects'])) {
             foreach ($this->import['source']['data']['objects'] as $o) {
-                if (!empty($o['parents'])) {
+                if (!empty($o['parents']) || !empty($o['parent_id'])) {
                     $noParents = false;
                 }
             }
@@ -1093,13 +1126,13 @@ class DataTransfer extends BEAppModel
         }
         // 6.media
         if (!empty($this->import['media'])) {
-            // 6.1 source folder (sourceMediaRoot or sourceMediaUrl)
+            // 6.1 source folder (sourceMediaRoot or sourceMediaUri)
             // 6.1.1 existence
-            if (!empty($this->import['sourceMediaUrl'])) {
-                if (!$this->urlExists($this->import['sourceMediaUrl'])) {
-                    throw new BeditaException('sourceMediaUrl url "' . $this->import['sourceMediaUrl'] . '" not found');
+            if (!empty($this->import['sourceMediaUri'])) {
+                if (!$this->urlExists($this->import['sourceMediaUri'])) {
+                    throw new BeditaException('sourceMediaUri url "' . $this->import['sourceMediaUri'] . '" not found');
                 }
-                $this->import['source']['media']['root'] = $this->import['sourceMediaUrl'];
+                $this->import['source']['media']['root'] = $this->import['sourceMediaUri'];
                 $this->import['source']['media']['isUrl'] = true;
             } else {
                 if (!empty($this->import['sourceMediaRoot']) && !file_exists($this->import['sourceMediaRoot'])) {
@@ -1152,12 +1185,12 @@ class DataTransfer extends BEAppModel
             } else { // remote files
                 foreach ($this->import['media'] as $id => &$media) {
                     if (!empty($media['uri']) && $media['uri'][0] == '/') {
-                        $fileUri = $this->import['sourceMediaUrl'] . $media['uri'];
+                        $fileUri = $this->import['sourceMediaUri'] . $media['uri'];
                         // 6.3.1 existence (base folder + objects[i].uri) [TODO]
                         if (!$this->urlExists($fileUri)) {
                             $this->trackWarn('file "' . $fileUri . '" not found (object id "' . $id . '")');
                         } else {
-                            $media['base'] = $this->import['sourceMediaUrl'];
+                            $media['base'] = $this->import['sourceMediaUri'];
                             $media['full'] = $fileUri;
                         }
                         // 6.3.2 extension allowed [TODO]
@@ -1242,6 +1275,11 @@ class DataTransfer extends BEAppModel
         $mode = $this->import['saveMode'];
         $this->trackDebug('- saving area ' . $area['id'] . ' with mode ' . $mode . ' ... START');
         $newArea = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$area['id']]);
+        if (!isset($area['menu'])) {
+            $newArea['menu'] = '1';
+        } else {
+            $newArea['menu'] = $area['menu'];
+        }
         unset($newArea['id']);
         $model = ClassRegistry::init('Area');
         $model->create();
@@ -1260,6 +1298,11 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('-- saving section ' . $section['id'] . ' with mode ' . $mode . ' ... START');
             // TODO: manage different saving policies | now => direct save of NEW section
             $newSection = array_merge($this->objDefaults, $this->import['source']['data']['objects'][$section['id']]);
+            if (!isset($section['menu'])) {
+                $newSection['menu'] = '1';
+            } else {
+                $newSection['menu'] = $section['menu'];
+            }
             unset($newSection['id']);
             $newSection['parent_id'] = ($parendId != null) ? $parendId : $this->import['saveMap'][$section['parent']];
             $model = ClassRegistry::init('Section');
@@ -1332,12 +1375,13 @@ class DataTransfer extends BEAppModel
                     }
                 }
             }
-            if (!empty($object['lang_texts'])) {
+            if (!empty($object['LangText'])) {
                 $this->trackDebug('2.3.7 save object.langTexts');
                 $this->trackDebug('- saving lang texts for ' . $object['objectType'] . ' ' . $object['id'] . ' with BEdita id ' . $model->id);
+                $langTexts = $object['LangText'];
                 $object['LangText'] = array();
                 $langTextModel = ClassRegistry::init('LangText');
-                foreach ($object['lang_texts'] as $lang => $fields) {
+                foreach ($langTexts as $lang => $fields) {
                     foreach ($fields as $name => $text) {
                         $langTxt = array(
                             'object_id' => $model->id,
@@ -1545,8 +1589,7 @@ class DataTransfer extends BEAppModel
                     $langTexts[$lang][$name] = $text;
                 }
             }
-            $object['lang_texts'] = $langTexts;
-            unset($object['LangText']);
+            $object['LangText'] = $langTexts;
         }
         if (isset($object['GeoTag'])) {
             foreach ($object['GeoTag'] as &$geoTag) {
@@ -1695,25 +1738,30 @@ class DataTransfer extends BEAppModel
 
     private function parentsForObjId($objId, $rootIds) {
         $tree = ClassRegistry::init('Tree');
-        $parents = $tree->find('list',
+        $parents = $tree->find('all',
             array(
                 'fields' => array(
                     'parent_id',
-                    'priority'
+                    'priority',
+                    'menu'
                 ),
                 'conditions' => array(
-                    'id' => $objId,
-                    'area_id' => $rootIds
+                    'Tree.id' => $objId,
+                    'Tree.area_id' => $rootIds
                 )
             )
         );
         $result = array();
         if (!empty($parents)) {
-            foreach ($parents as $parent_id => $priority) {
-                $result[] = array(
-                    'id' => $parent_id,
-                    'priority' => $priority
+            foreach ($parents as $k => $v) {
+                $r = array(
+                    'id' => $v['Tree']['parent_id'],
+                    'priority' => $v['Tree']['priority']
                 );
+                if ($v['Tree']['menu'] != 0) {
+                    $r['menu'] = $v['Tree']['menu'];
+                }
+                $result[] = $r;
             }
         }
         return $result;
@@ -1900,7 +1948,7 @@ class DataTransfer extends BEAppModel
             $this->result['log']['filtered'][] = $message;
             $this->log($level . ': ' . $message, $this->logFile);
             if ($level == 'ERROR') {
-                $this->log('DataTransfer: ' . $message, 'ERROR');
+                $this->log('DataTransfer: ' . $message, 'error');
             }
         }
     }

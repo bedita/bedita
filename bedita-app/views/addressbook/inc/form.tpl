@@ -21,6 +21,8 @@
 	{$view->element('form_tree')}
 
 	{$view->element('form_tags')}
+
+	{$view->element('form_links')}
 	
 	{$view->element('form_geotag')}
 	

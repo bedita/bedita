@@ -119,6 +119,8 @@ class BeThumb {
 				"fillcolor"		=> "",
 				"cropmode"		=> "",
 				"upscale"		=> false,
+                'q' => 95,
+                'interlace' => false,
 		);
 	
 	}
@@ -422,7 +424,7 @@ class BeThumb {
 	    
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
-				'cache', "watermark", );
+				'cache', "watermark", 'quality', 'interlace');
 		extract ($params);
 
 		$imageConf = Configure::read('media.image');
@@ -444,7 +446,17 @@ class BeThumb {
 		} else {
 			$this->imageTarget['fillcolor'] = $imageConf['background'];
 		}
-		
+
+        // Quality.
+        if (isset($quality)) {
+            $this->imageTarget['q'] = $quality;
+        }
+
+        // Interlace.
+        if (isset($interlace)) {
+            $this->imageTarget['interlace'] = $interlace;
+        }
+
 		// cropmode
 		$this->imageTarget['cropmode'] = $imageConf['thumbCrop'];
 		
@@ -560,7 +572,12 @@ class BeThumb {
 	        
     		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
     		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
-    		
+
+            if (array_key_exists('q', $this->imageTarget)) {
+                // Set quality.
+                $thumbnail->setOptions(array('jpegQuality' => $this->imageTarget['q']));
+            }
+
     		//set upscale
     		if ($this->imageTarget['upscale']) {
     			$thumbnail->setOptions(array("resizeUp" => true));
@@ -606,6 +623,11 @@ class BeThumb {
             // add watermark
             if (isset($this->imageTarget['watermark'])) {
                 $thumbnail->wmark($this->imageTarget['filepath'], $this->imageTarget['watermark']);
+            }
+
+            // Interlace image.
+            if (!empty($this->imageTarget['interlace'])) {
+                $thumbnail->interlace(true);
             }
 
     		if ($thumbnail->save($this->imageTarget['filepath'], $this->imageTarget['type'])) {

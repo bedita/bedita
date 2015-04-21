@@ -442,8 +442,8 @@ class BeMailComponent extends Object {
 
 			$data["from"] = (!empty($mailParams["sender_name"]))? $mailMsgModel->getCompleteSender(null, $mailParams["sender"], $mailParams["sender_name"]) : $mailParams["sender"];
 			$data["replyTo"] = $mailParams["reply_to"];
-			$data["subject"] = $mailParams["subject"];
-			$data["mailType"] = "txt";
+			$data['subject'] = $mailParams['subject'];
+			$data['mailType'] = !empty($mailParams['mail_type']) ? $mailParams['mail_type'] : 'txt';
 			$data["body"] = $job["MailJob"]["mail_body"];
 			if(!empty($mailParams["signature"])) {
 				$data["body"] .= "\n\n--\n" . $mailParams["signature"];

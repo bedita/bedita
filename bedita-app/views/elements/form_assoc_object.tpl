@@ -3,7 +3,8 @@
 
 {foreach from=$objsRelated item="objRelated" key=key name="assocForeach"}
 
-{assign_associative var='ObjectType' name=$conf->objectTypes[$objRelated.object_type_id].module_name}
+{$objectTypeModule = $conf->objectTypes[$objRelated.object_type_id].module_name}
+{$objectType =$conf->objectTypes[$objRelated.object_type_id].name}
 
 {if !empty($rel)}
 	{if !empty($allObjectsRelations[$rel])}
@@ -19,55 +20,57 @@
 
 <tr class="obj {$objRelated.status|default:''}" data-beid="{$objRelated.id}" data-benick="{$objRelated.nickname}">
 	<td class="priority-column">
-		{if !empty($objRelated.start_date) && ($objRelated.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
-			
-			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png" style="height:28px; vertical-align: middle;">
-		
-		{elseif !empty($objRelated.end_date) && ($objRelated.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
-		
-			<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png" style="height:28px; vertical-align: middle;">
-		
-		{elseif (!empty($objRelated.start_date) && (($objRelated.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objRelated.end_date) && (($objRelated.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
-		
-			<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png" style="height:28px; vertical-align: middle;">
 
-		{/if}
-		
-		{if !empty($objRelated.num_of_permission)}
-			<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png" style="height:28px; vertical-align: middle;">
-		{/if}
-		
-		{if (!empty($objRelated.fixed))}
-			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" style="margin-top:8px; height:12px;" />
-		{/if}
-
-		{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
-		{assign_associative var="bkgparams" URLonly=true}
-		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
-		{else}
-			{if !empty($objRelated.thumbnail) && $ObjectType.name=="video"}
-			{assign_associative var="bkgparams" URLonly=true}
-			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated, $bkgparams)}">
-			{/if}
-		{/if}
-			
 		{if !empty($rel)}
 		<input type="hidden" class="mod" name="data[RelatedObject][{$rel}][{$objRelated.id}][modified]" value="0" />
 		<input type="hidden" class="id" name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][id]" value="{$objRelated.id|default:''}" />
-		<input type="text" class="priority {$ObjectType.name|default:''}" 
+		<input type="text" class="priority {$objectTypeModule|default:''}" 
 				name="data[RelatedObject][{$rel}][{$objRelated.id|default:""}][priority]" 
 				value="{$objRelated.priority|default:''}" size="3" maxlength="3"/>
 
 		{else}
-		<input style="margin-top: 0px; margin-right: 4px;" type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objRelated.id}" value="{$objRelated.id}" />
+		<input type="checkbox" name="objects_selected[]" class="objectCheck" title="{$objRelated.id}" value="{$objRelated.id}" />
 		<input type="hidden" class="id" name="reorder[{$objRelated.id}][id]" value="{$objRelated.id}" />
-		<input type="text" class="priority {$ObjectType.name}" name="reorder[{$objRelated.id}][priority]" value="{$objRelated.priority|default:""}" />
+		<input type="text" class="priority {$objectTypeModule}" name="reorder[{$objRelated.id}][priority]" value="{$objRelated.priority|default:""}" />
 		{/if}
 		<input type="hidden" class="rel_nickname" value="{$objRelated.nickname}">
+
+		{if (!empty($objRelated.fixed))}
+			<img title="{t}fixed object{/t}" src="{$html->webroot}img/iconFixed.png" />
+		{/if}
+
+		{if !empty($objRelated.start_date) && ($objRelated.start_date|date_format:"%Y%m%d") > ($smarty.now|date_format:"%Y%m%d")}
+			
+			<img title="{t}object scheduled in the future{/t}" src="{$html->webroot}img/iconFuture.png">
+		
+		{elseif !empty($objRelated.end_date) && ($objRelated.end_date|date_format:"%Y%m%d") < ($smarty.now|date_format:"%Y%m%d")}
+		
+			<img title="{t}object expired{/t}" src="{$html->webroot}img/iconPast.png">
+		
+		{elseif (!empty($objRelated.start_date) && (($objRelated.start_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d"))) or ( !empty($objRelated.end_date) && (($objRelated.end_date|date_format:"%Y%m%d") == ($smarty.now|date_format:"%Y%m%d")))}
+		
+			<img title="{t}object scheduled today{/t}" src="{$html->webroot}img/iconToday.png">
+
+		{/if}
+		
+		{if !empty($objRelated.num_of_permission)}
+			<img title="{t}permissions set{/t}" src="{$html->webroot}img/iconLocked.png">
+		{/if}
+
+		{if !empty($objRelated.uri) && $objectTypeModule=="multimedia"}
+		{assign_associative var="bkgparams" URLonly=true}
+		<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated,$bkgparams)}">
+		{else}
+			{if !empty($objRelated.thumbnail) && $objectType=="video"}
+			{assign_associative var="bkgparams" URLonly=true}
+			<input type="hidden" class="rel_uri" value="{$beEmbedMedia->object($objRelated, $bkgparams)}">
+			{/if}
+		{/if}
+
 	</td>
 
 	<td class="filethumb">
-	{if !empty($objRelated.uri) && $ObjectType.name=="multimedia"}
+	{if !empty($objRelated.uri) && $objectTypeModule=="multimedia"}
 		{assign_associative var="params" presentation="thumb" width='155'}
 		{$beEmbedMedia->object($objRelated,$params)}
 	{/if}
@@ -88,10 +91,10 @@
 		</div>
 	</td> 
 
-{if $ObjectType.name == "multimedia"}
-	{$calctype = $objRelated.Category.0.name|default:$ObjectType.name} 
+{if $objectTypeModule == "multimedia"}
+	{$calctype = $objRelated.Category.0.name|default:$objectTypeModule} 
 {else}
-	{$calctype = $ObjectType.name} 
+	{$calctype = $objectTypeModule} 
 {/if}
 
 	<td title="{$calctype}" class="obtype"><span class="icon-{$calctype}"></span></td>
@@ -145,11 +148,14 @@
 		{/if}
 		<a class="BEbutton showmore">+</a>
 		<a class="BEbutton golink" target="_blank" title="nickname:{$objRelated.nickname|default:''} id:{$objRelated.id}, {$objRelated.mime_type|default:''}" 
-		href="{$html->url('/')}{$ObjectType.name}/view/{$objRelated.id}"></a>	
+		href="{$html->url('/')}{$objectTypeModule}/view/{$objRelated.id}"></a>	
 		
+		{if ($removeButton|default:'' !== false)}
 		<a class="BEbutton remove">x</a>
+		{/if}
 
 	</td>
+
 </tr>
 {/foreach}
 {/strip}

@@ -16,6 +16,27 @@ class GdCustomBEdita extends GdThumb{
 
 	//do not remove, need to avoid to call parent constructor 
 	public function __construct (){}
+
+    /**
+     * Set image to be interlaced.
+     *
+     * @param bool $switch
+     * @param GdThumb $that
+     * @return GdThumb
+     **/
+    public function interlace($switch, &$that) {
+        $this->parentInstance = $that;
+        $this->oldImage = $this->parentInstance->getOldImage();
+        $this->currentDimensions = $this->parentInstance->getCurrentDimensions();
+        $this->workingImage = $this->parentInstance->getWorkingImage();
+        $this->options = $this->parentInstance->getOptions();
+
+        imageinterlace($this->oldImage, (bool) $switch);
+
+        $this->parentInstance->setOldImage($this->oldImage);
+
+        return $this->parentInstance;
+    }
     
 	
     public function resizeFill($width, $height, $background , &$that) {

@@ -365,7 +365,12 @@ function switchAutosave(action, triggerMsg) {
 			break;
 	}
 	if (triggerMsg !== false) {
-		$("#messagesDiv").load(submitUrl,{ msg:message,type:'info' });
+		var postData = {
+			msg: message,
+			type: 'info'
+		};
+		postData = addCsrfToken(postData);
+		$("#messagesDiv").load(submitUrl, postData);
 	}
 }
 
