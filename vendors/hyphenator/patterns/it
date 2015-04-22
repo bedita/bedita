@@ -1,4 +1,5 @@
 {
+	"min": 5,
 	"leftmin": 2,
 	"rightmin": 2,
 	"specialChars": "àéèìòù",
