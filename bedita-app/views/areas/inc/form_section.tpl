@@ -1,5 +1,10 @@
 {include file="inc/form_properties.tpl" fixed=false}
 
+{if !empty($object)}
+    {include file="inc/sections.tpl"}
+    {include file="inc/contents.tpl"}
+{/if}
+
 {$view->element('form_categories')}
 
 {$view->element('form_tags', ['object' => $object|default:null])}

@@ -40,21 +40,26 @@ class BEAppModel extends AppModel {
 
     public $actsAs = array();
 
-	/**
-	 * Merge record result in one array
-	 *
-	 * @param array record	record data
-	 * @return array		record merged to single array
-	 */
-	function am($record) {
-		$tmp = array() ;
-		foreach ($record as $key => $val) {
-			if(is_array($val)) $tmp = array_merge($tmp, $val) ;
-			else $tmp[$key] = $val ;
-		}
+    /**
+     * Merge record result array to top level, skipping specified keys.
+     *
+     * @param array $record Record data.
+     * @param array $skipKeys Keys to be skipped even if their value is an array.
+     * @return array Record merged to single array.
+     */
+    function am($record, array $skipKeys = array()) {
+        $tmp = array();
+        foreach ($record as $key => $val) {
+            if (is_array($val) && !in_array($key, $skipKeys)) {
+                // #639 - Associated models merged to main object results.
+                $tmp = array_merge($tmp, $val);
+            } else {
+                $tmp[$key] = $val;
+            }
+        }
 
-		return $tmp ;
-	}
+        return $tmp;
+    }
 
 	protected function setupDbParams() {
     	if(empty($this->driver)) {
@@ -626,43 +631,23 @@ class BEAppModel extends AppModel {
 			"items"		=> array(),
 			"toolbar"	=> $this->toolbar($page, $dim, $size) );
 
+        // Keys to be skipped when merging results. #639 - Associated models merged to main object results.
+        $skipKeys = array('RelatedObject', 'ReferenceObject', 'DateItem', 'ObjectProperty');
+        foreach ($tmp as $item) {
+            // #639 - Associated models merged to main object results.
+            array_push($recordset['items'], $this->am($item, $skipKeys));
+        }
+
 		// reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
-            foreach ($tmp as $item) {
-                $obj = $this->am($item);
-                $id = $obj["id"];
-                $tmpOrder[$rankOrder[$id]] = $obj;
+            foreach ($recordset['items'] as $item) {
+                $id = $item['id'];
+                $tmpOrder[$rankOrder[$id]] = $item;
             }
             ksort($tmpOrder);
-            $tmp = array_values($tmpOrder);
+            $recordset['items'] = array_values($tmpOrder);
         }
-		
-		for ($i =0; $i < count($tmp); $i++) {
-			$tmpToAdd = array();
-
-			if (!empty($tmp[$i]["RelatedObject"])) {
-				$tmpToAdd["RelatedObject"] = $tmp[$i]["RelatedObject"];
-				unset($tmp[$i]["RelatedObject"]);
-			}
-
-			if (!empty($tmp[$i]["ReferenceObject"])) {
-				$tmpToAdd["ReferenceObject"] = $tmp[$i]["ReferenceObject"];
-				unset($tmp[$i]["ReferenceObject"]);
-			}
-
-			if (!empty($tmp[$i]["DateItem"])) {
-				$tmpToAdd["DateItem"] = $tmp[$i]["DateItem"];
-				unset($tmp[$i]["DateItem"]);
-			}
-
-			if (!empty($tmp[$i]["ObjectProperty"])) {
-				$tmpToAdd["ObjectProperty"] = $tmp[$i]["ObjectProperty"];
-				unset($tmp[$i]["ObjectProperty"]);
-			}
-
-			$recordset['items'][] = array_merge($this->am($tmp[$i]), $tmpToAdd);
-		}
 
         // after filter callbacks
         if (!empty($afterFilter)) {
@@ -770,6 +755,7 @@ class BEAppObjectModel extends BEAppModel {
 	var $recursive 	= 2 ;
 
 	var $actsAs 	= array(
+			'Callback',
 			'CompactResult' 		=> array(),
 			'SearchTextSave',
 			'RevisionObject',

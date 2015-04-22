@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -51,6 +51,9 @@ class AddressbookController extends ModulesController {
 		}
 		$this->viewObject($this->Card, $id);
 		$this->set("groupsByArea", $this->MailGroup->getGroupsByArea(null, $id));
+
+		include CONFIGS . 'countries.iso.php';
+		$this->set('country_list_iso', $config['countryList']);
 	}
 
 	function save() {
@@ -123,6 +126,7 @@ class AddressbookController extends ModulesController {
 	public function addToMailgroup() {
 		$this->checkWriteModulePermission();
 		$counter = 0;
+		$missingEmail = 0;
 		if(!empty($this->params['form']['objects_selected'])) {
 			$objects_to_assoc = $this->params['form']['objects_selected'];
 			$mailgroup = $this->data['mailgroup'];
@@ -143,13 +147,82 @@ class AddressbookController extends ModulesController {
 						$MailGroupObj->save($data);
 						$counter++;
 					}
+				} else {
+					$missingEmail++;
 				}
 			}
 			$this->Transaction->commit() ;
-			$this->userInfoMessage("$counter" . __("card(s) associated to mailgroup", true) . " - " . $mailgroup);
-			$this->eventInfo("$counter card(s) associated to mailgroup " . $mailgroup);
+
+			$userMsg = '';
+			if ($missingEmail > 0) {
+				$userMsg = $missingEmail . ' ' . __('cards without email not added to mailgroup', true) . ', ';
+			}
+			$userMsg .= $counter . ' ' . __("card(s) associated to mailgroup", true);
+			$this->userInfoMessage($userMsg);
+			$this->eventInfo("$counter card(s) associated to mailgroup id: " . $mailgroup);
 		}
 	}
+
+	
+    /**
+     * Export cards to CSV/vCard, using current filter
+     * 
+     * @param string, type of export 'csv' or 'vcard'
+     */
+    public function exportToFile($type = 'csv') {
+        $this->autoRender = false;
+        $data = $this->loadDataFromSessionFilter();
+        $result = array();
+        $type = strtolower($type);
+        if ($type == 'csv') {
+            $result['contentType'] = 'text/csv';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.csv';
+            $options = array();
+            if (Configure::read('csvFields.card')) {
+                $options['delimiter'] = ';';
+                $options['custom'] = true;
+            }
+            $result['content'] = $this->Card->createCsvAsString($data, $options);
+            $result['size'] = strlen($result['content']);
+        } else if ($type = 'vcard') {
+            $result['contentType'] = 'text/vcard';
+            $result['filename'] = $this->name . '_n-' . count($data) . '_' . date('Y.m.d') . '.vcf';
+            $content = '';
+            foreach ($data as $d) {
+                $content .= $this->Card->exportVCard($d) . "\n";
+            }
+            $result['content'] = $content;
+            $result['size'] = strlen($content);
+        } else {
+            throw new BeditaBadRequestException(_('Unsupported file type') . ' - ' . $type);
+        }
+
+        Configure::write('debug', 0);
+        header('Content-Description: File Transfer');
+        header('Content-type: ' . $result['contentType']);
+        header('Content-Disposition: attachment; filename='. $result['filename']);
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . $result['size']);
+        ob_clean();
+        flush();
+        echo $result['content'];
+        exit();
+    }
+
+    private function loadDataFromSessionFilter() {
+        $filter = array();
+        $filter['object_type_id'] = Configure::read('objectTypes.card.id');
+        $filter['Card.*'] = '';
+        $filterKey = $this->name . '.index';
+        $this->SessionFilter->setup($filterKey);
+        $sessionFilter = $this->SessionFilter->setFromUrl();
+        $filter = array_merge($filter, $sessionFilter);
+        $objects = $this->BeTree->getChildren(null, null, $filter);
+        return $objects['items'];
+    }
 
     protected function forward($action, $result) {
         $moduleRedirect = array(

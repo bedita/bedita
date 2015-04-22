@@ -251,13 +251,14 @@ class UsersController extends ModulesController {
         $this->checkWriteModulePermission();
         if (isset($this->data['id'])) {
             $id = $this->data['id'];
-            $u = $this->isUserEditable($id);
+            $u = $this->isUserEditable($id, true);
             if ($u === false) {
                 throw new BeditaException(__("You are not allowed to remove this user", true));
             }
             if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
+
             $userid = $u['User']['userid'];
             if ($userid === $this->BeAuth->user["userid"]) {
                 throw new BeditaException(__("Auto-remove forbidden",true));
@@ -275,7 +276,10 @@ class UsersController extends ModulesController {
                 throw new BeditaException(__("Auto-block forbidden",true));
             }
 
-            $u = $this->User->findById($id);
+            $u = $this->isUserEditable($id, true);
+            if ($u === false) {
+                throw new BeditaException(__("You are not allowed to block this user", true));
+            }
             if (empty($u)) {
                 throw new BeditaException(__("Bad data",true));
             }
@@ -298,9 +302,15 @@ class UsersController extends ModulesController {
      * return user data if user in session can edit him
      * 
      * @param int $id
+     * @param bool $deletion
      * @return mixed 
      */
-    protected function isUserEditable($id) {
+    protected function isUserEditable($id, $deletion = false) {
+        // #618 - Remove ability to delete system user.
+        if ($deletion && $id == BeLib::getObject('BeSystem')->systemUserId()) {
+            throw new BeditaException(__('Error deleting User', true), __('System User cannot be deleted!', true));
+        }
+
         $userToEdit = $this->User->findById($id);
         if (!empty($userToEdit)) {
             $sessionUser = $this->BeAuth->getUserSession();
@@ -316,7 +326,7 @@ class UsersController extends ModulesController {
     function viewUser($id=NULL) {
 
         if(isset($id)) {
-            $userdetail = $this->isUserEditable($id);
+            $userdetail = $this->isUserEditable($id, false);
             if ($userdetail === false) {
                 throw new BeditaException(__("You are not allowed to edit this user", true));
             }

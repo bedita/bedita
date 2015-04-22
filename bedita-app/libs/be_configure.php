@@ -141,7 +141,10 @@ class BeConfigure {
 		$configurations["filters"] = $filters;
 		
 		Cache::write('beConfig', $configurations);
-		
+
+        // Flush loaded models and classes, so that classes are re-instantiated with configuration already available.
+        ClassRegistry::flush();
+
 		return $configurations;
 	}
 	
@@ -284,6 +287,6 @@ class BeConfigure {
                 Configure::write("objectTypes.{$otid}", $res);
             }
         }
-        return $otid ?: null;  // Ensure `null` is returned in case no ID has been found.
+        return $otid ? $otid : null;  // Ensure `null` is returned in case no ID has been found.
     }
 }

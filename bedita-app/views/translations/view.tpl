@@ -22,15 +22,12 @@
 </style>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	openAtStart("#ttitle,#tlong_desc_langs_container");
-	
-	$(".tab2").click(function () {	
-			var trigged = $(this).next().attr("rel") ;
-			//$(this).BEtabstoggle();
-			$("*[rel='"+trigged+"']").prev(".tab2").BEtabstoggle();
-	});
-	//$('textarea.autogrowarea').css("line-height","1.2em").autogrow();
+$(document).ready(function() {
+    $('.tab2').click(function () {
+        var trigged = $(this).next().attr('rel');
+        $('*[rel="' + trigged + '"]').prev('.tab2').BEtabstoggle();
+    });
+    openAtStart('#ttitle, #tlong_desc_langs_container');
 });
 </script>
 
@@ -38,7 +35,7 @@ $(document).ready(function(){
 
 {$view->element('modulesmenu')}
 
-{include file="inc/menuleft.tpl"}
+{include file= './inc/menuleft.tpl'}
 
 <div class="head">
 	{if !empty($object_translation.title)}
@@ -51,10 +48,10 @@ $(document).ready(function(){
 {assign var=objIndex value=0}
 
 
-{include file="inc/menucommands.tpl" fixed = true}
+{include file="inc/menucommands.tpl" fixed=true}
 
 
-<div class="mainfull" style="width:700px; padding:0px;">	
+<div class="mainfull" style="width:700px; padding:0px;">
 
 	{include file="inc/form.tpl"}
 

@@ -98,6 +98,11 @@ class Area extends BeditaCollectionModel
 			'rule' => 'email',
 			'message' => 'email not valid',
 			'allowEmpty' => true
+		),
+		'stats_provider_url' => array(
+			'rule' => 'url',
+			'message' => 'url not valid',
+			'allowEmpty' => true
 		)
 	);
 

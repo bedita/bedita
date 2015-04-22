@@ -37,6 +37,11 @@ if (!class_exists('BeditaException')) {
  */
 class BeSystem {
 
+    /**
+     * System user ID, created on setup.
+     */
+    const SYSTEM_USER_ID = 1;
+
 	/**
 	 * Check whether directory $dirPath exists
 	 * 
@@ -561,5 +566,14 @@ class BeSystem {
 		$newline .= " = " . var_export($params["varValue"], true) . ";" . PHP_EOL;
 		return $newline;
 	}
+
+    /**
+     * Get system user ID.
+     *
+     * @return int
+     * @see BeSystem::SYSTEM_USER_ID
+     */
+    public function systemUserId () {
+        return self::SYSTEM_USER_ID;
+    }
 }
-?>

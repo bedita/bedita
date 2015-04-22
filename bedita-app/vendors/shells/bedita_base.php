@@ -208,17 +208,48 @@ class BeditaBaseShell extends Shell {
     }
 
     protected function checkExportFile($expFile) {
-    	if(file_exists($expFile)) {
-			$res = $this->in("$expFile exists, overwrite? [y/n]");
-			if($res == "y") {
-				if(!unlink($expFile)){
-					throw new Exception("Error deleting $expFile");
-				}
-			} else {
-				$this->out("Export aborted. Bye.");
-				exit;
-			}
-		}
+        if (file_exists($expFile)) {
+            $res = $this->in("$expFile exists, overwrite? [y/n]");
+            if($res == 'y') {
+                if(!unlink($expFile)){
+                    throw new Exception("Error deleting $expFile");
+                }
+            } else {
+                $this->out('Export aborted. Bye.');
+                exit;
+            }
+        }
+    }
+
+    protected function isUrl($str) {
+        return filter_var($str, FILTER_VALIDATE_URL);
+    }
+
+    protected function checkUrl($url) {
+        $headers = @get_headers($url);
+        if (strpos($headers[0], '404')) {
+            $this->out('Url not found');
+            exit;
+        } else {
+            $this->out('Url ok');
+        }
+    }
+
+    protected function checkDir($dir) {
+        if (!file_exists($dir)) {
+            $res = $this->in("$dir doesn't exist, create? [y/n]");
+            if($res == 'y') {
+                if(!mkdir($dir)){
+                    throw new Exception("Error creating $dir");
+                }
+            } else {
+                $this->out('Operation aborted. Bye.');
+                exit;
+            }
+        } elseif (!is_dir($dir)) {
+            $this->out("$dir is not a directory. Exiting.");
+            exit;
+        }
     }
 
     protected function __clean($path, $removeDirs=true) {

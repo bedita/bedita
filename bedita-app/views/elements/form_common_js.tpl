@@ -23,7 +23,7 @@ var formFieldToCheckData = null;
  * and/or without parent with class ignore
  * and exclude also richtext items (check done calling onChangeHandler() function)
  */
-var formFieldToCheckSelector = "form#updateForm :input[class!='ignore']:not('[class^=mce]'):not('[class^=richtext]'):not(.ignore :input)";
+var formFieldToCheckSelector = "form#updateForm :input:not('[class^=mce],.objectCheck,.ignore'):not('[class^=richtext]'):not(.ignore :input)";
 
 $(window).on('load', function() {
 	formFieldToCheckData = jQuery.trim($(formFieldToCheckSelector).serialize());
@@ -34,10 +34,8 @@ $(document).ready(function(){
 
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
-		$('input[value="{$branch}"]').attr("checked",true);
-		
-		$('option[value="{$branch}"]').attr("selected",true);
-		
+		$('input[value="{$branch}"][name="data[destination][]"]').attr("checked",true);
+		$('option[value="{$branch}"][name="data[destination][]"]').attr("selected",true);
 		$("#whereto").prev(".tab").BEtabsopen();
 	{/if}
 
@@ -232,6 +230,7 @@ $(document).ready(function(){
 		
 {/if}
 
+{$oneHourFromNow = $smarty.now + 3600}
 {if ($object.mail_status|default:'' == "sent")}
 
 		$(".secondacolonna .modules label").addClass("sent").attr("title","sent message");
@@ -241,11 +240,11 @@ $(document).ready(function(){
 		$(".secondacolonna .modules label").addClass("injob").attr("title","in job");
 
 		//un'ora prima dell'invio avverte 
-{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($smarty.now+3600|date_format:"%Y-%m-%d %T")) )}
+{elseif ( (!empty($object.start_sending)) && ($object.start_sending < ($oneHourFromNow|date_format:"%Y-%m-%d %T")) )}
 		
 		$(".secondacolonna .modules label").addClass("pendingAlert").attr("title","shortly scheduled invoice");	
 		{if $object.start_sending > ($smarty.now|date_format:"%Y-%m-%d %T")}
-		alert('Attenzione! La newsletter sta per essere inviata oggi\nalle {$object.start_sending|date_format:'%H:%M'}\nogni modifica che fai potrebbe non essere applicata se non salvi in tempo');
+		alert("{t}Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at{/t} " +  "{$object.start_sending|date_format:'%H:%M'}.");
 		{/if}
 	
 {elseif ($object.mail_status|default:'' == "pending")}
@@ -366,7 +365,12 @@ function switchAutosave(action, triggerMsg) {
 			break;
 	}
 	if (triggerMsg !== false) {
-		$("#messagesDiv").load(submitUrl,{ msg:message,type:'info' });
+		var postData = {
+			msg: message,
+			type: 'info'
+		};
+		postData = addCsrfToken(postData);
+		$("#messagesDiv").load(submitUrl, postData);
 	}
 }
 

@@ -119,6 +119,8 @@ class BeThumb {
 				"fillcolor"		=> "",
 				"cropmode"		=> "",
 				"upscale"		=> false,
+                'q' => 95,
+                'interlace' => false,
 		);
 	
 	}
@@ -179,8 +181,8 @@ class BeThumb {
             }
 		}
 		
-		// if svg skip and return image without any resize
-		if($data['mime_type'] === 'image/svg+xml') {
+		// if svg or animated gif skip and return image without any resize
+		if($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
 			if ($this->imageInfo["remote"]) {
 				return $this->imageInfo['path'];
 			} else {
@@ -200,7 +202,7 @@ class BeThumb {
 		// and the image it's not alredy cached
 		$cacheExists = file_exists($this->imageTarget['filepath']);
 		
-		if (!$cacheExists && $this->imageTarget['type'] != 'svg' ) {
+		if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() ) {
 			if ( !$this->resample() ) {
 				return $this->imgMissingFile;
 			}
@@ -422,7 +424,7 @@ class BeThumb {
 	    
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
-				'cache', "watermark", );
+				'cache', "watermark", 'quality', 'interlace');
 		extract ($params);
 
 		$imageConf = Configure::read('media.image');
@@ -444,7 +446,17 @@ class BeThumb {
 		} else {
 			$this->imageTarget['fillcolor'] = $imageConf['background'];
 		}
-		
+
+        // Quality.
+        if (isset($quality)) {
+            $this->imageTarget['q'] = $quality;
+        }
+
+        // Interlace.
+        if (isset($interlace)) {
+            $this->imageTarget['interlace'] = $interlace;
+        }
+
 		// cropmode
 		$this->imageTarget['cropmode'] = $imageConf['thumbCrop'];
 		
@@ -560,7 +572,12 @@ class BeThumb {
 	        
     		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
     		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
-    		
+
+            if (array_key_exists('q', $this->imageTarget)) {
+                // Set quality.
+                $thumbnail->setOptions(array('jpegQuality' => $this->imageTarget['q']));
+            }
+
     		//set upscale
     		if ($this->imageTarget['upscale']) {
     			$thumbnail->setOptions(array("resizeUp" => true));
@@ -606,6 +623,11 @@ class BeThumb {
             // add watermark
             if (isset($this->imageTarget['watermark'])) {
                 $thumbnail->wmark($this->imageTarget['filepath'], $this->imageTarget['watermark']);
+            }
+
+            // Interlace image.
+            if (!empty($this->imageTarget['interlace'])) {
+                $thumbnail->interlace(true);
             }
 
     		if ($thumbnail->save($this->imageTarget['filepath'], $this->imageTarget['type'])) {
@@ -761,8 +783,47 @@ class BeThumb {
 	 * @param string $errorMsg
 	 */
 	private function triggerError($errorMsg) {
+        if (!class_exists('CakeLog')) {
+            return;
+        }
 		CakeLog::write('error', get_class($this) . ": " . $errorMsg);
 	}
+
+    /**
+     * Check whether current image is an animated GIF.
+     *
+     * @return bool
+     * @see http://php.net/manual/en/function.imagecreatefromgif.php#59787
+     */
+    private function isAnimatedGif() {
+        if ($this->imageInfo['type'] != 'gif') {
+            return false;
+        }
+
+        $data = file_get_contents($this->imageInfo['filepath']);
+
+        $pointer = 0;
+        $frames = 0;
+        while ($frames < 2) {
+            $pos1 = strpos($data, "\x00\x21\xF9\x04", $pointer);
+            if ($pos1 === FALSE) {
+                break;
+            } else {
+                $pointer = $pos1 + 1;
+                $pos2 = min(strpos($data, "\x00\x2C", $pointer), strpos($data, "\x00\x21", $pointer));
+                if ($pos2 === FALSE) {
+                    break;
+                } else {
+                    if ($pos1 + 8 == $pos2) {
+                        $frames++;
+                    }
+                    $pointer = $pos2 + 1;
+                }
+            }
+        }
+
+        return $frames >= 2;
+    }
 
 	/***************************/
 	/* minor private functions */
@@ -780,12 +841,10 @@ class BeThumb {
 			include(BEDITA_CORE_PATH.DS.'config'.DS.'mime.types.php');
 			$this->knownMimeTypes = $config["mimeTypes"];
 		}
+		$ext = strtolower($ext);
 		if (!empty($ext) && array_key_exists($ext, $this->knownMimeTypes)) {
 				$mime_type = $this->knownMimeTypes[$ext];
 		}
 		return $mime_type;
 	}
-		
 }
-
-?>

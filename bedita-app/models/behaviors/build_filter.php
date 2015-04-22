@@ -392,7 +392,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$annotationModel = ClassRegistry::init($annotationType);
 			$refObj_type_id = Configure::read("objectTypes." . Inflector::underscore($annotationModel->name) . ".id");
 			$numOf = "num_of_" . Inflector::underscore($annotationModel->name);
-			$this->fields .= ", SUM(" . $numOf . ") AS " . $numOf;
+			$this->fields .= ", " . $numOf;  // Same as issue #541.
 			$from = " LEFT OUTER JOIN (
 						SELECT DISTINCT {$s}BEObject{$e}.{$s}id{$e}, COUNT({$s}" . $annotationModel->name . "{$e}.{$s}id{$e}) AS " . $numOf ."
 						FROM {$s}objects{$e} AS {$s}BEObject{$e} 

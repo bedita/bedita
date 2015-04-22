@@ -383,7 +383,85 @@ class BeLib {
 		$variableName = Inflector::variable($variableName); // example => sitemapXml, myNickname
 		return $variableName;
 	}
-		
+
+    /**
+     * generate an array of frontend folders
+     * 
+     * @return array 
+     */
+    public function getFrontendFolders() {
+        $sel = array();
+        $folder = new Folder(BEDITA_FRONTENDS_PATH);
+        $ls = $folder->read();
+        foreach ($ls[0] as $dir) {
+            if($dir[0] !== '.' ) {
+                $sel[] = BEDITA_FRONTENDS_PATH. DS .$dir;
+            }
+        }
+        return $sel;
+    }
+
+    /**
+     * generate an array of addon folders
+     * 
+     * @return array 
+     */
+    public function getAddonFolders() {
+        $sel = array();
+        $folder = new Folder(BEDITA_ADDONS_PATH);
+        $ls = $folder->read();
+        foreach ($ls[0] as $dir) {
+            if($dir[0] !== '.' ) {
+                $sel[] = BEDITA_ADDONS_PATH. DS .$dir;
+            }
+        }
+        return $sel;
+    }
+
+    /**
+     * generate an array of plugin module folders
+     * 
+     * @return array 
+     */
+    public function getPluginModuleFolders() {
+        $sel = array();
+        $folder = new Folder(BEDITA_MODULES_PATH);
+        $ls = $folder->read();
+        foreach ($ls[0] as $dir) {
+            if($dir[0] !== '.' ) {
+                $sel[] = BEDITA_MODULES_PATH. DS .$dir;
+            }
+        }
+        return $sel;
+    }
+
+    /**
+     * update Addons after project update
+     * 
+     * @param string $path 
+     * @return array 
+     */
+    public function remoteUpdateAddons($path) {
+        // update enabled addons
+        if (strstr($path, BEDITA_ADDONS_PATH)) {
+            $folder = new Folder(BEDITA_ADDONS_PATH);
+            $type = trim(substr($path, strlen(BEDITA_ADDONS_PATH)), DS);
+            if ($type != "vendors") {
+                $Addon = ClassRegistry::init("Addon");
+                $enabledFolder = $Addon->getEnabledFolderByType($type);
+                $folder->cd($enabledFolder);
+                $list = $folder->read();
+                if (!empty($list[1])) {
+                    foreach ($list[1] as $addonFile) {
+                        if (strstr($addonFile, '.DS_Store') === false) {
+                            $Addon->update($addonFile, $type);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 ?>

@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -21,29 +21,37 @@
 
 /**
  * Property object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Property extends BEAppModel  {
-	
-	var $actsAs = array("CompactResult" => array("PropertyOption", "ObjectProperty", "UserProperty"));
- 	
-	var $hasMany = array(
-		"PropertyOption", 
-		"ObjectProperty", 
-		"UserProperty");
-	
-	var $validate = array(
-		'name' => array(
-			'rule' => "notEmpty"
-		)
-	);
-	
- 	
-}
+
+    public $actsAs = array('CompactResult' => 
+        array('PropertyOption', 'ObjectProperty', 'UserProperty'));
  
-?>
+    public $hasMany = array(
+        'PropertyOption', 
+        'ObjectProperty', 
+        'UserProperty');
+
+    public $validate = array(
+        'name' => array(
+          'rule' => 'notEmpty'
+        )
+    );
+
+    /**
+     * Get property id from name and object type id
+     * 
+     * @param $name, name of the property
+     * @param $name, name of the property
+     * @return proerty id on success, null if no proerty id was found
+     */
+    public function propertyId($name, $objectTypeId) {
+        $this->Behaviors->disable('CompactResult');
+        $res = $this->field('id', array(
+            'object_type_id' => $objectTypeId,
+            'name' => $name));
+        $this->Behaviors->enable('CompactResult');
+        return $res;
+    }
+
+}

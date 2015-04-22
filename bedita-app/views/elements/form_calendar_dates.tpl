@@ -22,11 +22,6 @@
 }
 </style>
 
-{assign var=numDates  value=count($object.DateItem)}
-<script type="text/javascript">
-
-
-</script>
 
 {$relcount = $object.DateItem|@count|default:0}
 <div class="tab"><h2 {if empty($relcount)}class="empty"{/if}>{t}Event calendar{/t} &nbsp; {if $relcount > 0}<span class="relnumb">{$relcount}</span>{/if}</h2></div>
@@ -56,7 +51,7 @@
     {if !empty($d.start_date)}
         {$dayStart = $d.start_date|date_format:$conf->datePattern}
     {/if}
-    {if !empty($d.start_date)}
+    {if !empty($d.end_date)}
         {$dayEnd = $d.end_date|date_format:$conf->datePattern}
     {/if}
 

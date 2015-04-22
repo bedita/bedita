@@ -7,8 +7,7 @@ Menu a SX valido per tutte le pagine del controller.
 
 <div class="primacolonna">
 		
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>
-		
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''|escape}</label></div>
 	
 	{if $module_modify eq '1'}
 	<ul class="menuleft insidecol">
@@ -28,8 +27,7 @@ Menu a SX valido per tutte le pagine del controller.
 		</li>
 	</ul>
 	{/if}
-
-		
+	
 	{if ($method != "viewArea" && $method != "viewSection") && !empty($tree)}
 	<div class="insidecol publishingtree">	
 		{assign_associative var="options" treeParams=['action' => 'index']}
@@ -38,10 +36,4 @@ Menu a SX valido per tutte le pagine del controller.
 	{/if}	
 
 	{$view->element('user_module_perms')}
-	
 </div>
-
-
-
-
-

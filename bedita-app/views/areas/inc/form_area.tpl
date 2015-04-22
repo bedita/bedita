@@ -1,9 +1,10 @@
-<fieldset id="properties">	
-
 {$view->element('form_common_js')}
 
 {assign var=object_lang value=$object.lang|default:$conf->defaultLang}
-	
+
+<div class="tab"><h2>{t}{$title|default:'Title and properties'}{/t}</h2></div>
+
+<fieldset id="properties">	
 	<input type="hidden" name="data[id]" value="{$object.id|default:''}"/>
 	<input type="hidden" name="data[title]" value="{$object.title|default:''|escape}"/>
 
@@ -67,8 +68,14 @@
 			</td>
 		</tr>
 	</table>
-	
+</fieldset>	
 
+{if !empty($object)}
+
+	{include file="inc/sections.tpl"}
+	{include file="inc/contents.tpl"}
+
+{/if}
 
 <div class="tab"><h2>{t}More properties{/t}</h2></div>
 
@@ -106,14 +113,14 @@
 	<tr>
 		<th>{t}public url{/t}:</th>
 		<td>
-			<input type="text" name="data[public_url]" value="{$object.public_url|default:''}""/>
+			<input type="text" name="data[public_url]" value="{$object.public_url|default:''|escape}""/>
 		</td>
 	</tr>
 	
 	<tr>
 		<th>{t}staging url{/t}:</th>
 		<td>
-			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''}""/>
+			<input type="text" name="data[staging_url]" value="{$object.staging_url|default:''|escape}""/>
 		</td>
 	</tr>
 	<tr>
@@ -186,9 +193,9 @@
 	<tr>
 		<th>{t}Provider URL{/t}:</th>
 		<td>
-			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''}"/>
+			<input type="text" name="data[stats_provider_url]" value="{$object.stats_provider_url|default:''|escape}"/>
 			{if isset($object.stats_provider_url)}
-			<a href="{$object.stats_provider_url}" target="_blank">
+			<a href="{$object.stats_provider_url|escape}" target="_blank">
 			› access statistics
 			</a>
 			{/if}

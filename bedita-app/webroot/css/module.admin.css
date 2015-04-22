@@ -1,4 +1,14 @@
 /**
 Superadmin custom css.
-@author		ste@channelweb.it
 */
+
+thead.warn th {
+    font-weight: bold;
+    background: #333;
+    color: gold;
+}
+tbody.warn td {
+    font-weight: bold;
+    background: #333;
+    color: white;
+}

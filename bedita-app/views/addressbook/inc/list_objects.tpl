@@ -1,16 +1,19 @@
 <script type="text/javascript">
 <!--
+var urls = Array();
+	urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
+	urls['changestatusSelected'] = "{$html->url('changeStatusObjects/')}";
+	urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}";
+	urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')}";
+	urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
+	urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
+	urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
+	urls['addToMailgroup'] = "{$html->url('addToMailgroup/')}";
+    urls['exportCsv'] = "{$html->url('exportToFile/csv')}";
+    urls['exportVcard'] = "{$html->url('exportToFile/vcard')}";
+
 var message = "{t}Are you sure that you want to delete the item?{/t}" ;
 var messageSelected = "{t}Are you sure that you want to delete selected items?{/t}" ;
-var urls = Array();
-urls['deleteSelected'] = "{$html->url('deleteSelected/')}";
-urls['changestatusSelected'] = "{$html->url('changeStatusObjects/')}";
-urls['copyItemsSelectedToAreaSection'] = "{$html->url('addItemsToAreaSection/')}";
-urls['moveItemsSelectedToAreaSection'] = "{$html->url('moveItemsToAreaSection/')}";
-urls['removeFromAreaSection'] = "{$html->url('removeItemsFromAreaSection/')}";
-urls['assocObjectsCategory'] = "{$html->url('assocCategory/')}";
-urls['disassocObjectsCategory'] = "{$html->url('disassocCategory/')}";
-urls['addToMailgroup'] = "{$html->url('addToMailgroup/')}";
 var no_items_checked_msg = "{t}No items selected{/t}";
 var sel_status_msg = "{t}Select a status{/t}";
 var sel_category_msg = "{t}Select a category{/t}";
@@ -19,7 +22,8 @@ var sel_mailgroup_msg = "{t}Select a mailgroup{/t}";
 
 $(document).ready(function(){
 
-	$("#assocObjectsMailgroup").click(function() {
+    $("#assocObjectsMailgroup").click(function(e) {
+		e.preventDefault();
 		var mailgroup = $('#objMailgroupAssoc').val();
 		if (count_check_selected() < 1) {
 			alert(no_items_checked_msg);
@@ -34,6 +38,19 @@ $(document).ready(function(){
 			$("#formObject").submit() ;
 		}
 	});
+	
+    $('#exportCsv').click(function(e) {
+        e.preventDefault();
+        $('#formObject').prop('action', urls['exportCsv']) ;
+        $('#formObject').submit() ;
+    });
+
+    $('#exportVcard').click(function(e) {
+        e.preventDefault();
+        $('#formObject').prop('action', urls['exportVcard']) ;
+        $('#formObject').submit() ;
+    });
+
 });
 //-->
 </script>
@@ -132,5 +149,33 @@ $(document).ready(function(){
 
 {assign_associative var="params" bulk_tree=true bulk_categories=true}
 {$view->element('list_objects_bulk', $params)}
+
+
+{if !empty($mailgroups) && !empty($moduleList.newsletter)}
+
+<div class="tab">
+	<h2>{t}Newsletter association for{/t} <span class="selecteditems evidence"></span> {t}selected records{/t}</h2>
+</div>
+<div>
+	{t}mailgroup{/t}:
+	<select id="objMailgroupAssoc" name="data[mailgroup]">
+		<option value="">--</option>
+		{foreach from=$mailgroups item='mailgroup' key='key'}
+			<option value="{$mailgroup.id}">{$mailgroup.group_name|escape}</option>
+		{/foreach}
+	</select>
+
+	<input id="assocObjectsMailgroup" type="button" value="{t}Add association{/t}" />
+	{bedev} / <input id="disassocObjectsMailgroup" type="button" value="{t}Remove association{/t}" />{/bedev}
+</div>
+{/if}	
+
+<div class="tab">
+    <h2>{t}Export{/t} <span class="evidence">{$beToolbar->size()} </span>{t}cards{/t}</h2>
+</div>
+<div>
+    <input id="exportCsv" type="button" value="{t}Export to CSV{/t}" />
+    <input id="exportVcard" type="button" value="{t}Export to vCard{/t}" />
+</div>
 
 </form>

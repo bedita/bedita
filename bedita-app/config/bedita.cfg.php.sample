@@ -293,3 +293,13 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * The custom config has to be the same for backend and frontend.
  */
 // $config['objectCakeCache'] = true;
+
+/**
+ * Revision control systems config
+ */
+// $config['rcs'] = array(
+//   'svn' => array(
+//     'username' => '',
+//     'password' => ''
+//   )
+// );

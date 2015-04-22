@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2009 ChannelWeb Srl, Chialab Srl
+ * Copyright 2009-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -20,78 +20,27 @@
  */
 
 /**
- * Object permission helper
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
- * 
- * BEDITA_PERMS_READ,			0x1
- * BEDITA_PERMS_MODIFY,			0x2
- * BEDITA_PERMS_READ_MODIFY,	BEDITA_PERMS_READ|BEDITA_PERMS_MODIFY
+ * Permission helper
  */
 class PermsHelper extends AppHelper {
 
-	/**
-	 * check whether user has read perms
-	 * 
-	 * @param string $user
-	 * @param array $groups
-	 * @param array $permissions
-	 * @return boolean
-	 */
-	public function isReadable($user,$groups,$permissions) {
-		$conf = Configure::getInstance();
-		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_READ);
-	}
+    /**
+     * Check if user has permission on an action reading $config['actionPermission']
+     *
+     * @param array $authUser,
+     *            user data with groups (like $BEAuthuser)
+     * @param string $action,
+     *            action to check in the form 'ControllerName.actionName'
+     * @return boolean, true if user has access permissions, false otherwise
+     */
+    public function userActionAccess($authUser, $action) {
+        $actionPerms = Configure::read('actionPermissions');
+        $c = array_intersect($authUser['groups'], $actionPerms[$action]);
+        if (!empty($actionPerms[$action]) && !empty($c)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	/**
-	 * check whether user has write perms
-	 * 
-	 * @param string $user
-	 * @param array $groups
-	 * @param array $permissions
-	 * @return boolean
-	 */
-	public function isWritable($user,$groups,$permissions) {
-		$conf = Configure::getInstance();
-		return $this->checkPerm($user,$groups,$permissions,$conf->BEDITA_PERMS_MODIFY);
-	}
-
-	/**
-	 * check user perms with bitwise AND operator.
-	 * perms are defined in bedita-app/config/bedita.ini.php
-	 * 
-	 * @param string $u user
-	 * @param array $g_arr
-	 * @param array $p_arr
-	 * @param number $p
-	 */
-	private function checkPerm($u,$g_arr,$p_arr,$p) {
-		if(empty($p_arr))
-			return true;
-		$res = false;
-		foreach($p_arr as $k => $v) {
-			if($v['switch']=='user' && $v['name']==$u) {
-				if($v['flag'] & $p) {
-					$res = true;
-				}
-			} else {
-				if(!empty($g_arr)) {
-					foreach($g_arr as $key => $gname) {
-						if($v['switch']=='group' && $v['name']==$gname) {
-							if($v['flag'] & $p) {
-								$res = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		return $res ;
-	}
 }
-
-?>

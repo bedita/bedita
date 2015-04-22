@@ -111,10 +111,12 @@ jQuery.fn.extend({
         if (type == "error") {
             $_this.show();
         } else if (type == "info") {
-            $_this
-                .show()
-                .animate({opacity: 1.0}, pause)
-                .fadeOut(1000);
+            $_this.show();
+            if (pause != -1) {
+                setTimeout(function() {
+                    $_this.fadeOut(1000);
+                });
+            }               
         } else if (type == "warn") {
             $_this.show();
         }
@@ -530,25 +532,38 @@ $(document).ready(function(){
 
 ...........................................*/
 
+    $('.selecteditems').text($('.objectCheck:checked').length);
 
-    $('.selecteditems').text($(".objectCheck:checked").length);
-    $(".selectAll").bind("click", function(e) {
-        var status = this.checked;
-        $(".objectCheck").each(function() {
-            this.checked = status;
-            if (this.checked) $(this).parents('TR').addClass('overChecked');
-            else $(this).parents('TR').removeClass('overChecked');
+    $(document).on('click', '.selectAll', function () {
+        var $this = $(this),
+            status = $this.prop('checked'),
+            ctx = $this.attr('data-context'),
+            $allSelects = $((typeof ctx !== 'undefined') ? '[data-context="' + ctx + '"] .objectCheck' : '.objectCheck:not([data-context] .objectCheck)');
+
+        $this.prop('indeterminate', false);
+        $allSelects.each(function() {
+            if ($(this).prop('checked') != status) {
+                $(this).click();
+            }
         });
-        $('.selecteditems').text($(".objectCheck:checked").length);
     });
 
-    $(".objectCheck").bind("click", function(e) {
-        var status = true;
-        $(".objectCheck").each(function() {
-            if (!this.checked) return status = false;
-        });
-        $(".selectAll").each(function() { this.checked = status;});
-        $('.selecteditems').text($(".objectCheck:checked").length);
+    $(document).on('click', '.objectCheck', function() {
+        var ctx = $(this).closest('[data-context]').attr('data-context'),
+            context = (typeof ctx !== 'undefined') ? ('[data-context="' + ctx + '"]') : ':not([data-context])',
+            $allSelects = $((typeof ctx !== 'undefined') ? '[data-context="' + ctx + '"] .objectCheck' : '.objectCheck:not([data-context] .objectCheck)'),
+            total = $allSelects.length,
+            checked = $allSelects.filter(':checked').length;
+
+        $('.selectAll' + context).prop('checked', checked == total).prop('indeterminate', checked > 0 && checked < total);
+        $tab = $('.selecteditems' + context)
+            .text(checked)
+            .closest('.tab');
+        if (checked) {
+            $tab.BEtabsopen();
+        } else {
+            $tab.BEtabsclose();
+        }
     });
 
 /*...........................................
@@ -579,7 +594,13 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
+        $(".searchobjectsbyid").hide();
         $(".searchobjects").toggle();
+    });
+
+    $(".searchbyidtrigger").click(function() {
+        $(".searchobjects").hide();
+        $(".searchobjectsbyid").toggle();
     });
 
 /*...........................................
@@ -638,6 +659,14 @@ $(document).ready(function(){
 
     $("select").not('.areaSectionAssociation, [name="filter[parent_id]"]').select2({
         dropdownAutoWidth:true
+    }).on('select2-blur', function (e) {
+        var select = this;
+        for ( var i = 0, l = select.options.length, o; i < l; i++ ) {
+            if (select.options[i].selected) {
+                return true;
+            }
+        }
+        $(this).select2('val', select.options[0].value);
     });
 
     $('select.areaSectionAssociation, [name="filter[parent_id]"]')
@@ -708,13 +737,8 @@ if (typeof a.download == 'undefined') {
 
 ...........................................*/
 
-document.onkeydown = function(e){
-    if (e == null) { // ie
-        keycode = event.keyCode;
-    } else { // mozilla
-        keycode = e.which;
-    }
-
+$(document).on("keydown", function(e) {
+    var keycode = e.which;
     if (keycode == 27) {
         
         if ($('.tab').next().is(":visible")) {
@@ -729,21 +753,9 @@ document.onkeydown = function(e){
             $('.tab2').BEtabsopen();
         }
 
-    } else if(keycode == 109){ //
-
-        //$('.tab').BEtabsopen();
-        //helptrigger
-
-    } else if(keycode == 122){ //
-
-        //$('.helptrigger').click();
-
-    } else if(keycode == 188){ //
-
     }
+})
 
-    //console.log(keycode);
-};
 
 /*...........................................
 
@@ -773,39 +785,38 @@ $(document).on('click', '.showmore', function() {
 
 ...........................................*/
 
-function openAtStart(defaultOpen) {
-    if ('localStorage' in window && window['localStorage'] !== null) {
+function openAtStart(openTabs) {
+    var title = 'tabs.' + BEDITA.currentModule.name + '.' + BEDITA.action,
+        openTabs = ('localStorage' in window && window['localStorage'] !== null) ? (localStorage.getItem(title) || openTabs) : openTabs;
 
-        var title = "tabs." + BEDITA.currentModule.name + "." + BEDITA.action;
-        var openAtStart = localStorage.getItem(title);
-
-        if (openAtStart == null) {
-            openAtStart = defaultOpen;
+    openTabs = openTabs.split(',');
+    for (var i = 0; i < openTabs.length; i++) {
+        // avoid bad id selector
+        var tabId = openTabs[i];
+        if (tabId != '#' && tabId.length > 1) {
+            $(tabId).prev('.tab, .tab2').click();
         }
-        var openTmp = openAtStart.split(',');
-        for(var i=0; i < openTmp.length; i++) {
-            // avoid bad id selector
-            var tabId = openTmp[i];
-            if(tabId != '#' && tabId.length > 1) {
-                $(tabId).prev(".tab").BEtabstoggle();
+    }
+
+    if (!('localStorage' in window) || window['localStorage'] === null) {
+        console.warn('LocalStorage disabled!');
+        return;
+    }
+    $(window).unload(function() {
+        var openTabs = [];
+        $('.tab, .tab2').each(function(i) {
+            if (!$(this).next().is(':visible')) {
+                return;
             }
-        }
 
-        $(window).unload(function(){
-            openAtStart = new Array();
-            $(".tab").each(function(i){
-                if ($(this).next().is(":visible")) {
-                    idAttr = $(this).next().attr("id");
-                    if(idAttr != "") {
-                        openAtStart.push("#" + idAttr);
-                    }
-                }
-            });
-
-            localStorage.setItem(title, openAtStart);
+            var idAttr = $(this).next().attr('id');
+            if (idAttr != '' && typeof idAttr !== 'undefined') {
+                openTabs.push('#' + idAttr);
+            }
         });
 
-    }
+        localStorage.setItem(title, openTabs);
+    });
 }
 
 /*...........................................

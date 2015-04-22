@@ -24,6 +24,11 @@ function addObjToAssocRelated(url, postdata) {
 			$(document).trigger('relation_' + postdata.relation + ':added', $(this));
 		});
 		relatedRefreshButton();
+
+		// execute select2 on new elements if available
+		if ( $.isFunction($.fn.select2) ) {
+			newTrs.find('select').select2();
+		}
 	});
 }
 

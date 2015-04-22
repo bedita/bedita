@@ -46,9 +46,9 @@ function delObjects() {
 
 {include file="modulesmenu.tpl"}
 
-{include file="inc/menuleft.tpl" method="index"}
+{include file = './inc/menuleft.tpl' method = 'index'}
 
-{include file="inc/menucommands.tpl" method="index"}
+{include file = './inc/menucommands.tpl' method = 'index'}
 
 {include file="../toolbar.tpl"}
 

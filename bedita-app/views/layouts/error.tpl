@@ -14,7 +14,6 @@
 	{$html->script("libs/jquery/jquery-2.1.0.min")}
 	{$html->script("libs/jquery/plugins/jquery.cookie")}
 	{$html->script("libs/jquery/plugins/jquery.autosize.min")}
-	{$html->script("libs/jquery/plugins/jquery.dimensions.min")}
 	{$html->script("beditaUI")}
 
 	{$beurl->addModuleScripts()}
@@ -34,7 +33,7 @@
 {$view->element('modulesmenu')}
 
 <div class="primacolonna">
-	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''}</label></div>	
+	<div class="modules"><label class="bedita" rel="{$html->url('/')}">{$conf->projectName|default:''|escape}</label></div>	
 </div>
 
 <div id="messagesDiv" style="margin-top:110px">

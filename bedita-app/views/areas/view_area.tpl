@@ -17,8 +17,7 @@
 	{/literal}
 </script>
 
-
-{$view->element('modulesmenu')}
+{$view->element('modulesmenu',['searchDestination' => 'results'])}
 
 {include file="inc/menuleft.tpl"}
 
@@ -38,7 +37,6 @@
 
 {include file="inc/menucommands.tpl" fixed=true}
 
-
 <div class="main">
 	<form action="{$html->url('/areas/saveArea')}" method="post" name="updateForm" id="updateForm" class="cmxform">
 	{$beForm->csrf()}
@@ -47,5 +45,3 @@
 </div>
 
 {$view->element('menuright')}
-
-

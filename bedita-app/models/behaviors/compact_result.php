@@ -131,18 +131,7 @@ class CompactResultBehavior extends ModelBehavior {
 		}
   }
 
-
-  private function _compact(&$result, &$model) {
-		$excludeKey = &$this->config[$model->name] ;
-		$ret = array() ;
-		foreach($excludeKey as $key) {
-			if(!isset($result[$key])) continue ;
-			$result[$model->name][$key] = &$result[$key] ;
-			unset($result[$key]) ;
-		}
-		
-		$result = $model->am($result) ;
-	}
-
+    private function _compact(&$result, &$model) {
+        $result = $model->am($result, $this->config[$model->name]);  // After improvements to BEAppModel::am() brought by #639.
+    }
 }
-?>

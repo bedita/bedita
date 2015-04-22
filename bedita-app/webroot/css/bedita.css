@@ -388,6 +388,7 @@ UL.modules {
 
 ...........................................*/
 
+h2.home						{background-color:#333333 !important;}
 .areas, .area, .section 	{background-color:#626151 !important;}
 .documents, .document		{background-color:#ff6600 !important;}
 .galleries, .gallery 		{background-color:#FFBF00 !important;}
@@ -604,13 +605,18 @@ NAV.modulesmenu {
 	background-image: none !important;
 }
 
-.modulesmenu .searchtrigger {
-	background: #ccc url(../img/iconSearch.png) center no-repeat;
-		margin-right:20px;
+.searchobjects, .searchobjectsbyid {
+	display:none; z-index:100; position:absolute; left: 735px; top:50px;
 }
+.searchobjectsbyid { left: 828px; }
 
-.searchobjects {
-	display:none; z-index:100; position:absolute; left:735px; top:50px;
+.modulesmenu .searchtrigger {
+	margin-right:20px;
+	background: #ccc url(../img/iconSearch.png) center no-repeat;
+}
+.modulesmenu .searchbyidtrigger {
+	margin-left: 5px;
+	background: #ccc url(../img/iconSearchById.png) center no-repeat;
 }
 
 .searchobjects input[type=text]{
@@ -1363,10 +1369,10 @@ TABLE.indexlist {
 	border-bottom: solid 1px #666;
 }
  
-TABLE.indexlist H4{
+TABLE.indexlist H4 {
 	vertical-align: middle;
 	display: inline-block;
-	min-height: 30px;
+	/* padding-top:5px; */
 }
   
 .indexlist thead {
@@ -1385,7 +1391,7 @@ TABLE.indexlist H4{
 
 .indexlist TD  {
 	border-bottom:1px solid #d8d8d8;
-	vertical-align: top;
+	vertical-align: middle;
 	/*padding-top: 10px; padding-bottom: 10px;*/
 }
 
@@ -1410,14 +1416,17 @@ TABLE.indexlist H4{
 }
 
 .indexlist TD:first-child  {
-	/* text-align:right; */
 	width:20px;
-	/* white-space:nowrap
- */}
+}
  
  .indexlist TD.priority-column  {
-	text-align:right;
-	white-space:nowrap
+	white-space:nowrap;
+	vertical-align:top;
+ }
+
+ .indexlist TD.priority-column img {
+	vertical-align: middle;
+	width: 30px;
  }
 
 .indexlist TD.assoc_obj_title  {
@@ -1449,6 +1458,7 @@ TABLE.indexlist H4{
 }
 
 .indexlist .filethumb {
+	padding:0px;
 }
 
 .indexlist .filethumb img {
@@ -1803,10 +1813,6 @@ input[type=radio] {
 	margin-right:5px; vertical-align:middle;
 }
 
-input[type=radio] {
-	margin-right:5px; vertical-align:middle;
-}
-
 INPUT[readonly] {
 	color:gray;
 	background-color:#dedede;
@@ -1844,19 +1850,16 @@ input#titleBEObject {
 
 INPUT.priority {
 	text-align:center; 
-	margin: 5px 0;
-	width:20px;
-	height:20px;
-	border-radius:35px !important; 
+	width:22px;
+	height:22px;
+	border-radius:100%  !important;
 	font-size: 11px;
 	border-width:0px !important;
 	color:#FFF !important;
-	padding: 2px;
-	vertical-align: middle;
 }
 
 INPUT.objectCheck {
-	/* margin-top:5px; */
+	margin-right:5px;
 }
 
 INPUT[type=text],INPUT[type=password], textarea {	
@@ -2065,6 +2068,57 @@ A.BEbutton.golink:before {
 
 .filters td {
 	vertical-align: top;
+}
+
+.filters {
+	overflow:auto;
+}
+.filters .cell {
+	white-space: nowrap;
+	border-right:1px solid #999;
+	padding:5px 10px 5px 5px;
+	vertical-align: middle;
+	float:left;
+	min-height: 42px;
+}
+
+.filters .cell label {
+	display:inline-block;
+	vertical-align: middle;
+	padding-right:5px;
+}
+
+.filters .cell.word #search {
+	width: 290px;
+}
+.filters .cell.position {
+	clear:both;
+	float:none;
+	border:0px;
+}
+
+.filters .cell.position .areaSectionAssociation {
+	max-width:436px;
+}
+
+.filters .formbuttons {
+	margin-top:5px;
+	padding:10px 5px 10px 5px;
+	clear:both;
+	width: 100%;
+	border-right:0px solid #999;
+}
+
+.filters .formbuttons input {
+	background-color: #666;
+	color:#F2F2F2;
+	min-width:100px;
+	margin-right:20px;
+}
+
+.filters .formbuttons input:hover {
+	background-color: #F2F2F2;
+	color:#666;
 }
 
 /*...........................................    
@@ -2388,6 +2442,55 @@ LI.welcome {
 #searchResult {
 	margin-top:10px;
 }
+
+
+/* import view */
+
+.import fieldset {
+	padding: 0 10px;
+}
+.import .filter-options:not(:first-child) { display: none; }
+
+.import #data-source>div, .import .filter-option, #data-options>div:first-child {
+	padding: 10px 0;
+}
+
+.import-button-container {
+	margin-top: 10px;
+	border-top: 1px solid gray;
+}
+
+.import li {
+	margin: 5px 0;
+}
+
+.import label {
+	font-weight: normal;
+	cursor: pointer;
+}
+
+.import input[type=file] {
+	margin-top: 5px;
+	width: 100%;
+}
+
+.import-message {
+	margin: 20px 0;
+}
+.import-message h2 {
+	margin-bottom: 10px;
+}
+
+.import-error {
+	background-color: #eee;
+	border-radius: 10px;
+	padding: 10px;
+}
+.import-error h2 {
+	margin-bottom: 10px;
+}
+
+
 /*...........................................
  
 	 Specific template layout: publishing

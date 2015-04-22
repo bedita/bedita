@@ -244,6 +244,10 @@ class TranslationsController extends ModulesController {
 
     protected function forward($action, $result) {
         $moduleRedirect = array(
+            'save' => array(
+                'OK' => '/translations',
+                'ERROR' => $this->referer(),
+            ),
             'deleteTranslations' => array(
                 'OK' => $this->referer(),
                 'ERROR' => $this->referer()

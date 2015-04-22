@@ -31,8 +31,7 @@ class BEObject extends BEAppModel {
 	var $useTable	= "objects" ;
 	
 	private $defaultIp = "::1"; // default IP addr for saved objects
-	private $defaultUserId = 1; // default user id, e.g.: objects created by shell scripts don't have proper user
-	
+
 	var $validate = array(
 //		'title' => array(
 //			'rule' => 'notEmpty'
@@ -434,21 +433,30 @@ class BEObject extends BEAppModel {
 						// #CUSTOM QUERY
 						$queriesInsert[] = "INSERT INTO {$table} ({$fields}) VALUES ({$obj_id}, {$this->id}, '{$inverseSwitch}', ". $inversePriority  .", {$params})" ;
 					}
-					
+
 					$modified = (isset($val['modified']))? ((boolean)$val['modified']) : false;
 					if ($modified && $obj_id) {
-						$title = isset($val['title'])? addslashes($val['title']) : "";
-						if($switch == 'link') {
-							// #CUSTOM QUERY
-							$queriesModified[] = "UPDATE objects  SET title = '{$title}' WHERE id = {$obj_id} ";
-							$link = ClassRegistry::init('Link');
-							$link->id = $obj_id;
-							$link->saveField('url',$val['url']);
-						} else {
-							$description = isset($val['description'])? addslashes($val['description']) : "";
-							// #CUSTOM QUERY
-							$queriesModified[] = "UPDATE objects  SET title = '{$title}', description = '{$description}' WHERE id = {$obj_id} " ;
-						}
+                        // Save tmp data.
+                        $tmp_id = $this->id;
+                        $tmp_data = $this->data;
+
+                        // Update related models.
+                        $this->data = array();
+                        $title = isset($val['title']) ? $val['title'] : '';
+                        $description = isset($val['description']) ? $val['description'] : '';
+                        if ($switch == 'link') {
+                            ClassRegistry::init('Link')->save(array(
+                                'id' => $obj_id,
+                                'title' => $title,
+                                'url' => $val['url'],
+                            ));
+                        } else {
+                            $this->updateTitleDescription($obj_id, $title, $description);
+                        }
+
+                        // Restore tmp data.
+                        $this->id = $tmp_id;
+                        $this->data = $tmp_data;
 					}
 				}
 			}
@@ -500,15 +508,14 @@ class BEObject extends BEAppModel {
 		if(!isset($data['ip_created']) && !isset($data['id'])) {
 			$data['ip_created'] = $this->_getDefaultIP();
 		}
-		// user created? - only for new objects
-		if(empty($data['user_created']) && !isset($data['id'])) {
-			$data['user_created'] = $this->_getIDCurrentUser();
-		}
-		// user modified
-		if(!isset($data['user_modified'])) {
-			$data['user_modified'] = $this->_getIDCurrentUser();
-		}
-		
+
+        // #650 set always user_modified = current user, set user_created only on new objects
+        $currentUserId = $this->_getIDCurrentUser();
+        $data['user_modified'] = $currentUserId;
+        if (!isset($data['id'])) {
+            $data['user_created'] = $currentUserId;
+        }
+
 		// nickname: verify nick and status change, object not fixed
 		if(isset($data['id'])) {
 			$currObj = $this->find("first", array(
@@ -588,20 +595,28 @@ class BEObject extends BEAppModel {
 		}
 		return Configure::getInstance()->objectTypes[$type_id]["model"] ;
 	}
-	
-	/**
-	* update title e description only.
-	**/
-	public function updateTitleDescription($id, $title, $description) {
-		if(@empty($id) || @empty($title)) return false ;
-		
-		$db 		= &ConnectionManager::getDataSource($this->useDbConfig);
-		// #CUSTOM QUERY
-		$db->query("UPDATE objects  SET title =  '".addslashes($title)."', description = '".addslashes($description)."' WHERE id = {$id} " ) ;
-		
-		return true ;
-	}	
-	
+
+    /**
+     * Update title and description only.
+     *
+     * @param int $id
+     * @param string $title
+     * @param string $description
+     * @return bool
+     **/
+    public function updateTitleDescription($id, $title, $description) {
+        if (empty($id)) {
+            return false;
+        }
+
+        $model = Configure::read('objectTypes.' . $this->findObjectTypeId($id) . '.model');
+        return ClassRegistry::init($model)->save(array(
+            'id' => $id,
+            'title' => $title,
+            'description' => $description,
+        ));
+    }
+
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////
 	
@@ -678,29 +693,36 @@ class BEObject extends BEAppModel {
 		}
 		return $IP ;
 	}
-	
-	private function _getIDCurrentUser() {
-		// read user data from session or from configure
-		$conf = Configure::getInstance();
-		$userId=$this->defaultUserId; 
 
-		if(isset($conf->beditaTestUserId)) {
-			$userId = $conf->beditaTestUserId; // unit tests
-		} else {
-			
-			if(class_exists("CakeSession")) {
-				$session = new CakeSession() ;
-				if($session->valid() === false)
-					return null;
-				$user = $session->read($conf->session["sessionUserKey"]) ; 
-				if(!isset($user["id"])) 
-					return null ;
-				$userId = $user["id"];
-			}
-		}
-		
-		return $userId;
-	}
+    /**
+     * Returns the current user ID. If a unit test is running, the test user ID is returned instead.
+     *
+     * @return int Current User's ID, or test User's ID. Defaults to system User's ID.
+     * @see BeSystem::systemUserId()
+     */
+    private function _getIDCurrentUser() {
+        $conf = Configure::getInstance();
+        $systemUserId = BeLib::getObject('BeSystem')->systemUserId();
+
+        if (isset($conf->beditaTestUserId)) {
+            // Unit tests.
+            return $conf->beditaTestUserId;
+        } elseif (class_exists('CakeSession')) {
+            $session = new CakeSession();
+            if (!$session->started() || $session->valid() === false) {
+                return $systemUserId;
+            }
+
+            $user = $session->read($conf->session['sessionUserKey']); 
+            if (!isset($user['id'])) {
+                return $systemUserId;
+            }
+
+            return $user['id'];
+        }
+
+        return $systemUserId;
+    }
 
     /**
      * Checks whether current User is in Group `administrator` or not.
