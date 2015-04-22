@@ -36,10 +36,12 @@ class BeHtmlTestCase extends BeditaTestCase {
     	echo '<h3>Expected</h3>';
     	$test = htmlentities($this->data['it']['test']);
     	$test = str_replace('&bull;', '&shy;', $test);
+        $test = html_entity_decode($test);
     	echo $test;
     	echo '<h3>Result</h3>';
-    	$result = htmlentities($this->BeHtmlHelper->hyphen($source, 'it'));
+    	$result = $this->BeHtmlHelper->hyphen($source, 'it');
     	echo $result;
+        $this->assertTrue($result == $test);
     }
 
 	public   function __construct () {
