@@ -390,7 +390,7 @@ class Hyphenator {
         $w = explode(', ', $exc);
         $r = array();
         for ($i = 0, $l = count($w); $i < $l; $i += 1) {
-            $key = preg_replace('/-/g', '', $w[$i]);
+            $key = str_replace('-', '', $w[$i]);
             if (!isset($r[$key])) {
                 $r[$key] = $w[$i];
             }
@@ -482,7 +482,10 @@ class Hyphenator {
                 $lo->exceptions = array();
             }
             $this->convertPatternsToArray($lo);
-            $wrd = '[\\w' . $lo->specialChars . chr(173) . chr(8204) . '-]{' . $this->min . ',}';
+            if (!isset($lo->min)) {
+                $lo->min = $this->min;
+            }
+            $wrd = '[\\w' . $lo->specialChars . chr(173) . chr(8204) . '-]{' . $lo->min . ',}';
             $lo->genRegExp = '/(' . $wrd . ')(?!([^<]+)?>)/i';
             $lo->prepared = true;
         }
@@ -539,15 +542,19 @@ class Hyphenator {
         $indexedTrie = &$lo->indexedTrie;
         $valueStore = &$lo->valueStore->keys;
 
+        $char = html_entity_decode($this->hyphen);
+
         if ($word === '') {
             $hw = '';
+        } else if (mb_strlen($word) < $lo->min) {
+            $hw = $word;
         } elseif ($this->enableCache && !empty($lo->cache) && !empty($lo->cache[$word])) { //the word is in the cache
             $hw = $lo->cache[$word];
-        } elseif (strrpos($word, $this->hyphen) !== false) {
+        } elseif (strrpos($word, $char) !== false) {
             //word already contains shy; -> leave at it is!
             $hw = $word;
         } elseif (!empty($lo->exceptions[$word])) { //the word is in the exceptions list
-            $hw = preg_replace('/-/g', $this->hyphen, $lo->exceptions);
+            $hw = str_replace('-', $char, $lo->exceptions[$word]);
         } else if (strpos($word, '-') !== false) {
             //word contains '-' -> hyphenate the parts separated with '-'
             $parts = explode('-', $word);
@@ -620,7 +627,6 @@ class Hyphenator {
                 }
             }
             $shift = 0;
-            $char = html_entity_decode($this->hyphen);
             $shiftRange = strlen($char);
             for ($hp = 0; $hp < $wordLength; $hp += 1) {
                 if ($hp >= $lo->leftmin && $hp <= ($wordLength - $lo->rightmin) && ($wwhp[$hp + 1] % 2) !== 0) {
@@ -651,19 +657,10 @@ class Hyphenator {
         if (empty($lo->prepared)) {
             $this->prepareLanguagesObj(lang);
         }
-        
         $target = html_entity_decode($target, ENT_NOQUOTES, 'UTF-8');
         $target = preg_replace_callback($lo->genRegExp, function($match) use ($lo, $lang) {
             return $this->hyphenateWord($lo, $lang, $match[0]);
         }, $target);
-        // preg_match_all($lo->genRegExp, $target, $matches);
-        // if (!empty($matches[0])) {
-        //     foreach ($matches[0] as $key => $match) {
-        //         $newWord = $this->hyphenateWord($lo, $lang, $match);
-        //         $target = str_replace($match, $newWord, $target);
-        //     }
-        // }
-
         return $target;
     }
 }
