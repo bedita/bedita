@@ -17,7 +17,7 @@
 
     {$view->element('list_objects', [
         'bulk_tree' => false,
-        'bulk_delete' => false
+        'bulk_hide_delete' => true
     ])}
     
 </div>

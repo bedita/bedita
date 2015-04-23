@@ -89,7 +89,7 @@
 
 	<hr />
 
-	{if isset($bulk_delete) && $bulk_delete==true}
+	{if !isset($bulk_hide_delete) || $bulk_hide_delete==false}
 		<input id="deleteSelected" type="button" value="{t}Delete selected items{/t}"/>
 	{/if}
 	

@@ -135,7 +135,7 @@ var sel_copy_to_msg = "{t}Select a destination to 'copy to'{/t}";
 	'bulk_tree' => $bulk_tree|default:true, 
 	'bulk_categories' => $bulk_categories|default:true, 
 	'bulk_status' => $bulk_status|default:true,
-	'bulk_delete' => $bulk_delete|default:true, 
+	'bulk_hide_delete' => $bulk_hide_delete|default:false, 
 	'context' => $context|default:''
 ])}
 
