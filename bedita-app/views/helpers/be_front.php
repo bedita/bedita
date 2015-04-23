@@ -32,7 +32,7 @@
  */
 class BeFrontHelper extends AppHelper {
 
-	var $helpers = array('Html');
+	var $helpers = array('Html', 'BeHtml');
 
 	private $_publication;
 	private $_section;
@@ -66,7 +66,7 @@ class BeFrontHelper extends AppHelper {
 	 */
 	public function lang() {
 		$res = "";
-		if(!empty($this->_currLang)) {
+		if (!empty($this->_currLang)) {
 			if(!empty($this->_conf->frontendLangs[$this->_currLang])
 					&& is_array($this->_conf->frontendLangs[$this->_currLang])) {
 				$res = $this->_conf->frontendLangs[$this->_currLang][0];
@@ -106,6 +106,43 @@ class BeFrontHelper extends AppHelper {
 		}
 		return h($pub . " - " . $sec);
 	}
+
+    /**
+     * Return meta alternate tags.
+     *
+     * @param mixed $langs Alternate language(s) for current resource. If omitted or `=== true`, all languages specified in `$configure->frontendLangs` will be loaded.
+     * @return string
+     */
+    public function metaAlternate ($langs = true) {
+        if (empty($langs) || empty($this->_conf->frontendLangs) || !is_array($this->_conf->frontendLangs)) {
+            // No alternate language.
+            return '';
+        }
+        if ($langs === true) {
+            // Output all available languages.
+            $langs = array_keys($this->_conf->frontendLangs);
+        }
+        if (!is_array($langs)) {
+            // Single alternate language.
+            $langs = array($langs);
+        }
+
+        array_push($langs, $this->_currLang);
+        $langs = array_unique($langs);
+
+        $meta = '';
+        foreach ($langs as $lang) {
+            if (!array_key_exists($lang, $this->_conf->frontendLangs)) {
+                continue;
+            }
+            $meta .= $this->Html->meta(array(
+                'rel' => 'alternate',
+                'hreflang' => $this->_conf->langsSystemMapRev[$lang],
+                'link' => $this->BeHtml->url($this->Html->here, true, array('lang' => $lang)),
+            ));
+        }
+        return $meta;
+    }
 
 	/**
 	 * return html meta description.

@@ -28,7 +28,7 @@ BeLib::getObject('BeConfigure')->initConfig();
  */
 class AppController extends Controller {
 
-    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'MediaProvider', 'Perms', 'BeEmbedMedia', 'SessionFilter', 'BeHtml');
 
     public $components = array(
         'BeAuth',
@@ -43,7 +43,7 @@ class AppController extends Controller {
         'SessionFilter'
     );
 
-    public $uses = array('EventLog') ;
+    public $uses = array('EventLog');
 
     public $view = 'Smarty';
 
