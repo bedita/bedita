@@ -596,6 +596,9 @@ class DataTransfer extends BEAppModel
                 $propertiesNew = array();
                 foreach ($this->export['customProperties'] as $property) {
                     $objectType = Configure::read('objectTypes.' . $property['object_type_id'] . '.name');
+                    if (!$this->objectTypeAllowed($property['object_type_id'])) {
+                        continue;
+                    }
                     $propertyNew = array();
                     $propertyNew['name'] = $property['name'];
                     $propertyNew['objectType'] = $objectType;
@@ -1546,7 +1549,7 @@ class DataTransfer extends BEAppModel
         if (isset($object['RelatedObject']) && $level < $this->maxRelationLevels) {
             foreach ($object['RelatedObject'] as $relation) {
                 $relationObjectTypeId = $this->objectTypeId($relation['object_id']);
-                if (!$this->objectTypeAllowed($relation['object_id'], $relationObjectTypeId)) {
+                if (!$this->objectTypeAllowed($relationObjectTypeId)) {
                     continue;
                 }
                 if ($this->export['relations'] == NULL || in_array($relation['switch'], $this->export['relations'])) {
@@ -1674,7 +1677,7 @@ class DataTransfer extends BEAppModel
         $this->trackDebug('... prepareObjectForExport for object id ' . $object['id']);
         if (!empty($object['object_type_id'])) {
             $object['objectType'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
-            if (!$this->objectTypeAllowed($object['id'], $object['object_type_id'])) {
+            if (!$this->objectTypeAllowed($object['object_type_id'])) {
                 return;
             }
         }
@@ -1705,7 +1708,7 @@ class DataTransfer extends BEAppModel
                         continue;
                     }
                     $objectTypeId = $this->objectTypeId($relatedObjectId);
-                    if (!$this->objectTypeAllowed($relatedObjectId, $objectTypeId)) {
+                    if (!$this->objectTypeAllowed($objectTypeId)) {
                         continue;
                     }
                     if (isset($conf->objectTypes[$objectTypeId])) {
@@ -1815,7 +1818,7 @@ class DataTransfer extends BEAppModel
         $tree->unbindModel(array('belongsTo' => array('BEObject')));
     }
 
-    private function objectTypeAllowed($objId, $objectTypeId) {
+    private function objectTypeAllowed($objectTypeId) {
         if ($this->export['types'] != NULL && !empty($this->export['exclude-other-types'])) {
             // if 'exclude-other-types' then verify object type is one of 'types'
             if (!in_array($objectTypeId, $this->export['objectTypeIds'])) {
@@ -1845,13 +1848,18 @@ class DataTransfer extends BEAppModel
         ));
         $objsInTree = array_values($objsInTree);
         $objsInTree = array_merge($objsToSkip);
+        $conditions = array(
+            'NOT' => array('BEObject.id' => $objsInTree)
+        );
+        if (!empty($this->export['types'])) {
+            $conditions['object_type_id'] = $this->export['objectTypeIds'];
+        }
         $objModel = ClassRegistry::init('BEObject');
-        return $objModel->find('list', array(
+        $result = $objModel->find('list', array(
             'fields' => array('id'),
-            'condition' => array(
-                'NOT' => array('BEObject.id' => $objsInTree)
-            )
+            'conditions' => $conditions
         ));
+        return $result;
     }
 
     /**
