@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -19,20 +19,29 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import(array(
+	'type' => 'File',
+	'name' => 'MediaProviderInterface',
+	'search' => array(BEDITA_CORE_PATH . DS .'views' . DS . 'helpers')
+));
+
 /**
  * Vimeo helper class
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class VimeoHelper extends AppHelper {
+class VimeoHelper extends AppHelper implements MediaProviderInterface {
 	
 	var $helpers = array("Html");
+
+	/**
+	 * Is vimeo video source available?
+	 *
+	 * @return boolean
+	 */
+	public function isSourceAvailable(array $obj) {
+		return false;
+	}
 	
-	function thumbnail(&$obj, $htmlAttributes, $URLonly) {
+	public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
 		$url = rawurlencode($obj["uri"]);
 		if (!$oEmbed = $this->oEmbedVideo($url)) {
 			return false;
@@ -48,7 +57,7 @@ class VimeoHelper extends AppHelper {
 	 * @param array $attributes
 	 * @return string html embed video
 	 */
-	function embed(&$obj, $attributes) {
+	public function embed(array $obj, array $attributes) {
 		$conf = Configure::getInstance();
 		$url = rawurlencode($obj["uri"]);
 		if (empty($attributes["width"]) && empty($attributes["height"])) {
@@ -68,13 +77,13 @@ class VimeoHelper extends AppHelper {
 	}
 	
 	/**
-	 * path to vimeo video (can't get flv from api)
+	 * path to vimeo video (can't get source from api)
 	 *
 	 * @param array $obj
-	 * @return string youtube path
+	 * @return string
 	 */
-	function sourceEmbed($obj) {
-		return $obj['uri'] ;
+	public function source(array $obj) {
+		return '';
 	}
 	
 }

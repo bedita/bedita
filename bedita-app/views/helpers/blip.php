@@ -19,20 +19,25 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import(array(
+	'type' => 'File',
+	'name' => 'MediaProviderInterface',
+	'search' => array(BEDITA_CORE_PATH . DS .'views' . DS . 'helpers')
+));
+
 /**
  * Blip tv helper class
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class BlipHelper extends AppHelper {
+class BlipHelper extends AppHelper implements MediaProviderInterface {
 	
 	var $helpers = array("Html");
 	private $blipComponent;
 	
+	public function isSourceAvailable(array $obj) {
+		return true;
+	}
+
 	/**
 	 * get blip thumbnail for object
 	 * 
@@ -40,7 +45,7 @@ class BlipHelper extends AppHelper {
 	 * @param array $htmlAttributes
 	 * @param boolean $URLonly
 	 */
-	public function thumbnail(&$obj, $htmlAttributes, $URLonly) {
+	public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
 		$this->initBlipComponent();
 		$this->blipComponent->getInfoVideo($obj['video_uid']);
 		
@@ -55,7 +60,7 @@ class BlipHelper extends AppHelper {
 	 * @param array $attributes
 	 * @return html embed video
 	 */
-	public function embed(&$obj, $attributes) {
+	public function embed(array $obj, array $attributes) {
 		$this->conf 	= Configure::getInstance() ;
 		if(!isset($this->conf->media_providers["blip"]["params"])) 
 			return "" ;
@@ -93,7 +98,7 @@ class BlipHelper extends AppHelper {
 	 * @param array $obj
 	 * @return string
 	 */
-	public function sourceEmbed(&$obj) {
+	public function source(array $obj) {
 		$this->initBlipComponent();
 		$info = $this->blipComponent->getInfoVideo($obj['video_uid']);
 		if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.m4v|^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info["mediaUrl"],$matched)) {
@@ -106,7 +111,7 @@ class BlipHelper extends AppHelper {
 			}
 		}
 
-		return "" ;
+		return '';
 	}
 	
 	/**

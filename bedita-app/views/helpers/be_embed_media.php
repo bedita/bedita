@@ -140,49 +140,18 @@ class BeEmbedMediaHelper extends AppHelper {
      */
     private function embed(&$obj, $params = array(), $attributes = array()) {
         $helper = $this->getProviderHelper($obj);
-        if (!$helper) {
-            $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
-            $BeEmbedHtml5 = $this->getHelper('BeEmbedHtml5');
-            return $BeEmbedHtml5->embed($obj, $params, $attributes);
-        }
-
-
-        /* provider helper to manage video/audio type don't exists
-        if (!$helper = $this->getProviderHelper($obj)){
-            $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl').$obj['uri'];
-            $beEmbedFlash = $this->getHelper('BeEmbedFlash');
-            return  $beEmbedFlash->embed($obj, $params, $attributes);
-        }
-
-        // provider helper exists and it's setted to use provider helper
-        if (!empty($params['useProviderPlayer'])) {
-            return $helper->embed($obj, $attributes);
-        } else {
-            // try to use internal player
-            $obj['uri'] = $this->sourceEmbed($obj);
-            $beEmbedFlash = $this->getHelper('BeEmbedFlash');
-            $res = $beEmbedFlash->embed($obj, $params, $attributes);
-            if ( $res === false ) {
-                $res =  $helper->embed($obj, $attributes) ;
+        // provider helper exists
+        if ($helper) {
+            if (!empty($params['useProviderPlayer']) || !$helper->isSourceAvailable($obj)) {
+                return $helper->embed($obj, $attributes);
             }
-            return $res;
-        }*/
-    }
-
-    /**
-     * get source url
-     *
-     * @param array $obj
-     * @return string
-     */
-    private function sourceEmbed(&$obj) {
-        $helper = $this->getProviderHelper($obj);
-        if (!$helper) {
-            return '';
+            $obj['uri'] = $helper->source($obj);
         }
-        return $helper->sourceEmbed($obj);
-    }
 
+        $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl') . $obj['uri'];
+        $BeEmbedHtml5 = $this->getHelper('BeEmbedHtml5');
+        return $BeEmbedHtml5->embed($obj, $params, $attributes);
+    }
 
     /**
      * produce html tag for image
@@ -215,8 +184,6 @@ class BeEmbedMediaHelper extends AppHelper {
         }
     }
 
-
-
     /**
      * html video output
      * return html or uri for video $obj, with options $params and html attributes $htmlAttributes
@@ -248,7 +215,7 @@ class BeEmbedMediaHelper extends AppHelper {
                 }
             }
         } elseif ($params['presentation'] == 'link' || $URLonly) {
-            $src = $this->MediaProvider->sourceEmbed($obj);
+            $src = $this->getSourceUrl($obj);
             $output = (!empty($URLonly))? $src : $this->Html->link($obj['title'], $src, $htmlAttributes);
         } elseif ($params['presentation'] == 'full') {
             $output = $this->embed($obj, $params, $htmlAttributes);
@@ -382,7 +349,6 @@ class BeEmbedMediaHelper extends AppHelper {
         return (!empty($model)) ? $model : '';
     }
 
-
     /**
      * Return image $obj uri
      * if $params['presentation'] == 'thumb', return image thumb (@see BeThumb Lib)
@@ -400,7 +366,6 @@ class BeEmbedMediaHelper extends AppHelper {
         return $src;
     }
 
-
     /**
      * get provider, if set
      *
@@ -408,11 +373,31 @@ class BeEmbedMediaHelper extends AppHelper {
      * @return mixed string|boolean
      */
     private function getProviderHelper(&$obj) {
-        if(empty($obj['provider'])) {
+        if (empty($obj['provider'])) {
             return false;
         }
         $helperName = Inflector::camelize($obj['provider']);
         return $this->getHelper($helperName);
+    }
+
+    /**
+     * Get source url.
+     * If $obj has a provider try to retrieve source url
+     * If provider doesn't provide source or $obj hasn't a provider use $obj['uri']
+     *
+     * @param array $obj
+     * @return string the complete url to media
+     */
+    private function getSourceUrl(array $obj) {
+        $helper = $this->getProviderHelper($obj);
+        if ($helper) {
+            $source = $helper->source($obj);
+            if (!empty($source)) {
+                $obj['uri'] = $source;
+            }
+        }
+        $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl') . $obj['uri'];
+        return $obj['uri'];
     }
 
     /**

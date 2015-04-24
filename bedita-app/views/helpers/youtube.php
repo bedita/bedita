@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -19,20 +19,25 @@
  *------------------------------------------------------------------->8-----
  */
 
+App::import(array(
+	'type' => 'File',
+	'name' => 'MediaProviderInterface',
+	'search' => array(BEDITA_CORE_PATH . DS .'views' . DS . 'helpers')
+));
+
 /**
  * youtube helper class
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class YoutubeHelper extends AppHelper {
+class YoutubeHelper extends AppHelper implements MediaProviderInterface {
 
 	var $helpers = array("Html");
 	
-	function thumbnail($obj, $htmlAttributes, $URLonly) {
+	public function isSourceAvailable(array $obj) {
+		return false;
+	}
+
+	public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
 		$this->conf = Configure::getInstance() ;
 		$src = sprintf($this->conf->media_providers["youtube"]["params"]["urlthumb"], $obj['video_uid']);
 		return (!$URLonly)? $this->Html->image($src, $htmlAttributes) : $src;
@@ -45,7 +50,7 @@ class YoutubeHelper extends AppHelper {
 	 * @param array $attributes
 	 * @return string html embed
 	 */
-	function embed($obj, $attributes) {
+	public function embed(array $obj, array $attributes) {
 		$this->conf 	= Configure::getInstance() ;
 		if(!isset($this->conf->media_providers["youtube"]["params"])) 
 			return "" ;
@@ -73,8 +78,8 @@ class YoutubeHelper extends AppHelper {
 	 * @param array $obj
 	 * @return string youtube url
 	 */
-	function sourceEmbed(array &$obj) {
-		return $obj['uri'] ;
+	public function source(array $obj) {
+		return '';
 	}
 	
 }
