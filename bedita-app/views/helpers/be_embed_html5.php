@@ -24,7 +24,7 @@
  */
 class BeEmbedHtml5Helper extends AppHelper {
 
-    public $helpers = array("Html");
+    public $helpers = array('Html');
 
     /**
      * embed generic flash object (video, swf, audio mp3)
@@ -37,22 +37,18 @@ class BeEmbedHtml5Helper extends AppHelper {
      */
     public function embed($obj, $params, $htmlAttributes ) {
         if (empty($obj['uri'])) {
-            return __("No file to embed");
+            return __('No file to embed');
         }
 
         $params = empty($params['params']) ? array() : $params['params'];
         $extension = $this->getFileExtension($obj['uri']);
 
-        if ($obj["object_type_id"] == Configure::read("objectTypes.audio.id") && $extension == 'mp3') {
-            $fileType = "audio";
-
+        if ($obj['object_type_id'] == Configure::read('objectTypes.audio.id') && $extension == 'mp3') {
+            $fileType = 'audio';
             return $this->embedAudio($obj['uri'], $params, $htmlAttributes);
-
         } else {
-            $fileType = "video";
-
+            $fileType = 'video';
             return $this->embedVideo($obj['uri'], $params, $htmlAttributes);
-
         }
     }
 
@@ -66,19 +62,21 @@ class BeEmbedHtml5Helper extends AppHelper {
         $beditaUrl = Configure::read('beditaUrl');
         $defaultParams = array(
             'features' => array('playpause', 'loop', 'current', 'progress', 'duration', 'volume')
-            );
+        );
 
         //defaults attributes
-        if (empty($attributes["width"]))
-            $attributes["width"] = Configure::read("media." . $fileType . ".width");
-        if (empty($attributes["height"]))
-            $attributes["height"] = Configure::read("media." . $fileType . ".height");
+        if (empty($attributes['width'])) {
+            $attributes['width'] = Configure::read('media.' . $fileType . '.width');
+        }
+        if (empty($attributes['height'])) {
+            $attributes['height'] = Configure::read('media.' . $fileType . '.height');
+        }
 
         $width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
         $height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
 
         if (empty($attributes['id'])) {
-            $attributes['id'] = "be_id_" . rand(10000, 11000) . rand(1, 10000);
+            $attributes['id'] = 'be_id_' . rand(10000, 11000) . rand(1, 10000);
         }
         if (!empty($attributes['src'])) {
             unset($attributes['src']);
@@ -91,9 +89,9 @@ class BeEmbedHtml5Helper extends AppHelper {
         } else {
             $params = array_merge($defaultParams, $params);
         }
-        $output = "";
-        $output .= $this->Html->script(Configure::read('beditaUrl') . "/js/libs/mediaelement/mediaelement-and-player.min.js",false);
-        $output .= $this->Html->css(Configure::read('beditaUrl') . "/js/libs/mediaelement/mediaelementplayer.css",false);
+        $output = '';
+        $output .= $this->Html->script(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelement-and-player.min.js',false);
+        $output .= $this->Html->css(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelementplayer.css',false);
         $output .= '<video src="'.$urlVideo.'" '.$attr.' controls="controls" >
                         <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
                         <object '.$attr.' type="application/x-shockwave-flash" data="flashmediaelement.swf">
@@ -119,7 +117,7 @@ class BeEmbedHtml5Helper extends AppHelper {
         $beditaUrl = Configure::read('beditaUrl');
 
         if (empty($attributes['id'])) {
-            $attributes['id'] = "be_id_" . rand(10000, 11000) . rand(1, 10000);
+            $attributes['id'] = 'be_id_' . rand(10000, 11000) . rand(1, 10000);
         }
         if (!empty($attributes['src'])) {
             unset($attributes['src']);
@@ -133,9 +131,9 @@ class BeEmbedHtml5Helper extends AppHelper {
             $params = array_merge($defaultParams, $params);
         }
 
-        $output = "";
-        $output .= $this->Html->script(Configure::read('beditaUrl') . "/js/libs/mediaelement/mediaelement-and-player.min.js",false);
-        $output .= $this->Html->css(Configure::read('beditaUrl') . "/js/libs/mediaelement/mediaelementplayer.css",false);
+        $output = '';
+        $output .= $this->Html->script(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelement-and-player.min.js',false);
+        $output .= $this->Html->css(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelementplayer.css',false);
 
         $output .= '<audio src="'.$urlAudio.'" '.$attr.'" controls="controls"></audio>';
         $output .= '<script>jQuery(document).ready(function($) {
@@ -143,8 +141,6 @@ class BeEmbedHtml5Helper extends AppHelper {
                     });</script>';
         return $output;
     }
-
-
 
     /**
      * get file extension
@@ -154,8 +150,9 @@ class BeEmbedHtml5Helper extends AppHelper {
      */
     private function getFileExtension($filePath) {
         $path_parts = pathinfo($filePath);
-        if (empty($path_parts['extension']))
+        if (empty($path_parts['extension'])) {
             return false;
+        }
 
         return strtolower($path_parts['extension']);
     }
