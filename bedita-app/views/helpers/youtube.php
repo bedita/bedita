@@ -33,10 +33,25 @@ class YoutubeHelper extends AppHelper implements MediaProviderInterface {
 
 	var $helpers = array("Html");
 	
+	/**
+	 * Is Youtube video source available?
+	 *
+	 * @param array $obj a representation of Video BEdita object
+	 * @return boolean
+	 */
 	public function isSourceAvailable(array $obj) {
 		return false;
 	}
 
+	/**
+	 * Return the thumbnail supplied by Youtube as <img> tag
+	 * If $URLonly is true return only the url to img
+	 *
+	 * @param array $obj a representation of Video BEdita object
+	 * @param array $htmlAttributes HTML attributes to set in <img> tag
+	 * @param boolean $URLonly
+	 * @return string
+	 */
 	public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
 		$this->conf = Configure::getInstance() ;
 		$src = sprintf($this->conf->media_providers["youtube"]["params"]["urlthumb"], $obj['video_uid']);
@@ -44,11 +59,11 @@ class YoutubeHelper extends AppHelper implements MediaProviderInterface {
 	}
 	
 	/**
-	 * embed youtube video
+	 * Embed Youtube video
 	 *
-	 * @param array $obj
-	 * @param array $attributes
-	 * @return string html embed
+	 * @param array $obj a representation of Video BEdita object
+	 * @param array $attributes HTML attributes
+	 * @return string|boolean
 	 */
 	public function embed(array $obj, array $attributes) {
 		$this->conf 	= Configure::getInstance() ;
@@ -73,15 +88,13 @@ class YoutubeHelper extends AppHelper implements MediaProviderInterface {
 	}
 	
 	/**
-	 * return object url
-	 * 
-	 * @param array $obj
-	 * @return string youtube url
+	 * Source it's not available so it returns an empty string
+	 *
+	 * @param array $obj a representation of Video BEdita object
+	 * @return string
 	 */
 	public function source(array $obj) {
 		return '';
 	}
 	
 }
- 
-?>

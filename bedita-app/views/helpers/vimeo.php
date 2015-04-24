@@ -33,14 +33,24 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
 	var $helpers = array("Html");
 
 	/**
-	 * Is vimeo video source available?
+	 * Is Vimeo video source available?
 	 *
+	 * @param array $obj a representation of Video BEdita object
 	 * @return boolean
 	 */
 	public function isSourceAvailable(array $obj) {
 		return false;
 	}
 	
+	/**
+	 * Return the thumbnail supplied by Vimeo as <img> tag
+	 * If $URLonly is true return only the url to img
+	 *
+	 * @param array $obj a representation of Video BEdita object
+	 * @param array $htmlAttributes HTML attributes to set in <img> tag
+	 * @param boolean $URLonly
+	 * @return string
+	 */
 	public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
 		$url = rawurlencode($obj["uri"]);
 		if (!$oEmbed = $this->oEmbedVideo($url)) {
@@ -51,11 +61,11 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
 	}
 	
 	/**
-	 * embed vimeo video
-	 * 
-	 * @param array $obj
-	 * @param array $attributes
-	 * @return string html embed video
+	 * Embed Vimeo video
+	 *
+	 * @param array $obj a representation of Video BEdita object
+	 * @param array $attributes HTML attributes
+	 * @return string|boolean
 	 */
 	public function embed(array $obj, array $attributes) {
 		$conf = Configure::getInstance();
@@ -77,9 +87,9 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
 	}
 	
 	/**
-	 * path to vimeo video (can't get source from api)
+	 * Source it's not available so it returns an empty string
 	 *
-	 * @param array $obj
+	 * @param array $obj a representation of Video BEdita object
 	 * @return string
 	 */
 	public function source(array $obj) {
@@ -87,5 +97,3 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
 	}
 	
 }
- 
-?>
