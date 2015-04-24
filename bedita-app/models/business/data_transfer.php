@@ -580,11 +580,21 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('4.1 config.customProperties:');
             if ($this->export['all'] === true) {
                 $this->trackDebug('... extracting all custom properties');
-                $p = ClassRegistry::init('Property')->find(
-                    'all', array(
-                        'contain' => array('PropertyOption')
-                    )
-                );
+                $p = array();
+                if (empty($this->export['types'])) {
+                    $p = ClassRegistry::init('Property')->find(
+                        'all', array(
+                            'contain' => array('PropertyOption')
+                        )
+                    );
+                } else {
+                    $p = ClassRegistry::init('Property')->find(
+                        'all', array(
+                            'conditions' => array('object_type_id' => $this->export['objectTypeIds']),
+                            'contain' => array('PropertyOption')
+                        )
+                    );
+                }
                 if (!empty($p)) {
                     foreach ($p as $cproperty) {
                         $this->export['customProperties'][$cproperty['id']] = $cproperty;
