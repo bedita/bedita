@@ -101,25 +101,29 @@ class BlipHelper extends AppHelper implements MediaProviderInterface {
     }
 
     /**
-     * Return the url to Blip tv video source if it's available else it returns an empty string
+     * Return an array with url to the source and related mime type
+     * If source is not available it returns an empty array
+     *
+     * The array returned is in the form
+     * ```
+     * array(
+     *     'url' => 'http://example.com/video.mpg',
+     *     'mime_type' => 'video/mpeg'
+     * )
+     * ```
      *
      * @param array $obj a representation of Video BEdita object
-     * @return string
+     * @return array
      */
     public function source(array $obj) {
+        $result = array();
         $this->initBlipComponent();
         $info = $this->blipComponent->getInfoVideo($obj['video_uid']);
-        if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.m4v|^http:\/\/blip.tv\/file\/get\/.*\.flv/",$info['mediaUrl'],$matched)) {
-            return $matched[0] ;
-        } elseif (!empty($info['additionalMedia'])) {
-            foreach ($info['additionalMedia'] as $media) {
-                if(preg_match("/^http:\/\/blip.tv\/file\/get\/.*\.m4v|^http:\/\/blip.tv\/file\/get\/.*\.flv/",$media['url'],$matched)) {
-                    return $matched[0] ;
-                }
-            }
+        if (!empty($info)) {
+            $result['url'] = $info['media']['url'];
+            $result['mime_type'] = $info['media']['mimeType'];
         }
-
-        return '';
+        return $result;
     }
 
     /**

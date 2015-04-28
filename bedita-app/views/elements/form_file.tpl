@@ -20,14 +20,17 @@
 			
 		{elseif strtolower(($object.ObjectType.name) == "video")}
 
-			{assign_associative var="params" presentation="full"}
-			{assign_associative var="htmlAttr" width=500 height=345}
-			{$beEmbedMedia->object($object,$params,$htmlAttr)}
+			{$params = ['presentation' => 'full']}
+			{$htmlAttr = ['width' => 500, 'height' => 345]}
+			{$mediaObject = $object}
+			{if !empty($relObjects.poster)}
+				{$mediaObject.relations = ['poster' => $relObjects.poster]}
+			{/if}
+			{$beEmbedMedia->object($mediaObject, $params, $htmlAttr)}
 			
 		{elseif strtolower($object.ObjectType.name) == "audio"}
 
-			{assign_associative var="htmlAttr" id="multimediaitemaudio"}
-			{$beEmbedMedia->object($object, null, $htmlAttr)}
+			{$beEmbedMedia->object($object, null, [])}
 			
 		{elseif strtolower($object.ObjectType.name) == "application"}
 			

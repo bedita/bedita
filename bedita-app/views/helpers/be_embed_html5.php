@@ -21,140 +21,220 @@
 
 /**
  * HTML5 embed helper
+ *
+ * Help to embed <video> and <audio> object using video.js
+ *
  */
 class BeEmbedHtml5Helper extends AppHelper {
 
-    public $helpers = array('Html');
+    /**
+     * Helpers used
+     *
+     * @var array
+     */
+    public $helpers = array('Html', 'BeEmbedMedia');
 
     /**
-     * embed generic flash object (video, swf, audio mp3)
-     * file extension supported: mp3, flv, m4v
+     * Array of id used in `<video>` and `<audio>` tags.
+     * It is used to avoid id collision
+     *
+     * @var array
+     */
+    protected $playerIds = array();
+
+    /**
+     * Embed generic video/audio object
+     *
+     * You can customize video.js using `$options['params']`.
+     * All `$options['params']` will be encoded and passed as object to video.js
      *
      * @param array $obj BEdita multimedia object
-     * @param array $params contains flashvars, params <param> tag
-     * @param array $htmlAttributes
-     * @return mixed string|boolean, html code of embed media, or false if file extension is not supported
+     * @param array $options contains configurations (used from video.js)
+     * @param array $attributes HTML attributes to add to <video> or <audio> tag
+     * @return mixed string, html code of embed media, or error message
      */
-    public function embed($obj, $params, $htmlAttributes ) {
+    public function embed(array $obj, array $options = array(), array $attributes = array()) {
         if (empty($obj['uri'])) {
-            return __('No file to embed');
+            return __('No file to embed', true);
         }
 
-        $params = empty($params['params']) ? array() : $params['params'];
-        $extension = $this->getFileExtension($obj['uri']);
+        $params = empty($options['params']) ? array() : $options['params'];
 
-        if ($obj['object_type_id'] == Configure::read('objectTypes.audio.id') && $extension == 'mp3') {
-            $fileType = 'audio';
-            return $this->embedAudio($obj['uri'], $params, $htmlAttributes);
+        if ($obj['object_type_id'] == Configure::read('objectTypes.audio.id')) {
+            return $this->embedAudio($obj, $params, $attributes);
+        } elseif ($obj['object_type_id'] == Configure::read('objectTypes.video.id')) {
+            return $this->embedVideo($obj, $params, $attributes);
         } else {
-            $fileType = 'video';
-            return $this->embedVideo($obj['uri'], $params, $htmlAttributes);
+            return __('Trying to embed a not valid object type');
         }
     }
 
     /**
-     * Embed Video
+     * Setup HTML attributes as width, height, poster, id, class, src
      *
-     * @param
-     * @return
+     * If $type is video and is only set width or height then calculate the missing dimension to fit 16/9.
+     * The 'id' is set as 'video_nickname' or 'audio_nickname' if $obj['nickname'] exists else video_ or audio_ are followed by an hash
+     * If the same $obj is embed many times 'video_nickname' or 'audio_nickname' is suffixed with an hash to avoid id collision
+     *
+     * If missing $obj['mime_type'] the $attributes['src'] is set.
+     * In this way it will be placed in `<video src="">` or `<audio src="">` and video.js will try to use it.
+     *
+     * @param array $obj BEdita Multimedia object
+     * @param array &$attributes HTML attributes
+     * @param string $type the media type you want to setup
+     * @return void
      */
-    private function embedVideo($urlVideo, $params, $attributes) {
-        $beditaUrl = Configure::read('beditaUrl');
-        $defaultParams = array(
-            'features' => array('playpause', 'loop', 'current', 'progress', 'duration', 'volume')
+    protected function setupAttributes(array $obj, array &$attributes = array(), $type = 'video') {
+        $posterParams = array(
+            'presentation' => 'thumb',
+            'mode' => 'fill',
+            'upscale' => true,
+            'URLonly' => true
         );
+        if ($type == 'video') {
+             // if no width and height set the default
+            if (empty($attributes['width']) && empty($attributes['height'])) {
+                $attributes['width'] = Configure::read('media.video.width');
+                $attributes['height'] = Configure::read('media.video.height');
+            // calculate height to fit 16/9
+            } elseif (empty($attributes['height'])) {
+                $attributes['height'] = $attributes['width'] * (9 / 16);
+            // calculate width to fit 16/9
+            } elseif (empty($attributes['width'])) {
+                $attributes['width'] = $attributes['height'] * (16 / 9);
+            }
 
-        //defaults attributes
-        if (empty($attributes['width'])) {
-            $attributes['width'] = Configure::read('media.' . $fileType . '.width');
+            $posterParams['width'] = $attributes['width'];
+            $posterParams['height'] = $attributes['width'];
+        } elseif ($type == 'audio') {
+            if (empty($attributes['width']) && empty($attributes['height'])) {
+                $attributes['width'] = Configure::read('media.audio.width');
+                if (empty($attributes['poster'])) {
+                    if (!empty($obj['relations']['poster'])) {
+                        $attributes['height'] =  $attributes['width'];
+                        $posterParams['longside'] = $attributes['width'];
+                    }
+                }
+            } else {
+                if (!empty($attributes['width']) && empty($attributes['height'])) {
+                    $posterParams['longside'] = $attributes['width'];
+                } elseif (empty($attributes['width']) && !empty($attributes['height'])) {
+                    $posterParams['longside'] = $attributes['height'];
+                } else {
+                    $posterParams['width'] = $attributes['width'];
+                    $posterParams['height'] = $attributes['height'];
+                }
+            }
         }
-        if (empty($attributes['height'])) {
-            $attributes['height'] = Configure::read('media.' . $fileType . '.height');
+
+        // set poster
+        if (empty($attributes['poster'])) {
+            if (!empty($obj['relations']['poster'])) {
+                $attributes['poster'] = $this->BeEmbedMedia->object($obj['relations']['poster'][0], $posterParams);
+            } elseif (!empty($obj['thumbnail'])) {
+                $attributes['poster'] = $obj['thumbnail'];
+            }
         }
 
-        $width = (!empty($attributes['width'])) ? $attributes['width'] : $this->widthDef;
-        $height = (!empty($attributes['height'])) ? $attributes['height'] : $this->heightDef;
-
+        // set id
         if (empty($attributes['id'])) {
-            $attributes['id'] = 'be_id_' . rand(10000, 11000) . rand(1, 10000);
+            $idPrefix = $type . '_';
+            if (isset($obj['nickname'])) {
+                $id = $baseId = $idPrefix . $obj['nickname'];
+            } else {
+                $baseId = $idPrefix;
+                $id = $baseId . md5(rand(10000, 11000) . rand(1, 10000));
+            }
+
+            while (in_array($id, $this->playerIds)) {
+                $id = $baseId . md5(rand(10000, 11000) . rand(1, 10000));
+            }
+
+            $this->playerIds[] = $id;
+            $attributes['id'] = $id;
         }
-        if (!empty($attributes['src'])) {
+
+        $class = 'video-js vjs-default-skin';
+        $attributes['class'] = (!empty($attributes['class'])) ? $class . ' ' . $attributes['class'] : $class;
+
+        if (empty($obj['mime_type'])) {
+            $attributes['src'] = $obj['uri'];
+        } elseif (isset($attributes['src'])) {
             unset($attributes['src']);
         }
-        $attr = $this->_parseAttributes($attributes);
-
-        //player params
-        if (empty($params)) {
-            $params = $defaultParams;
-        } else {
-            $params = array_merge($defaultParams, $params);
-        }
-        $output = '';
-        $output .= $this->Html->script(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelement-and-player.min.js',false);
-        $output .= $this->Html->css(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelementplayer.css',false);
-        $output .= '<video src="'.$urlVideo.'" '.$attr.' controls="controls" >
-                        <!-- Flash fallback for non-HTML5 browsers without JavaScript -->
-                        <object '.$attr.' type="application/x-shockwave-flash" data="flashmediaelement.swf">
-                            <param name="movie" value="flashmediaelement.swf" />
-                            <param name="flashvars" value="controls=true&file='.$urlVideo.'" />
-                            <!-- Image as a last resort -->
-                            <img src="myvideo.jpg" '.$attr.' title="No video playback capabilities" />
-                        </object>
-                    </video>';
-        $output .= '<script>jQuery(document).ready(function($) {
-                        $("video").mediaelementplayer('.json_encode($params).');
-                    });</script>';
-        return $output;
     }
 
     /**
-     * Embed Audio
+     * Embed Video using video.js
      *
-     * @param
-     * @return
+     * If `$data` is a string it must be the video url to embed
+     *
+     * @param array|string $data
+     * @param array $params configuration params for video.js
+     *                      It will be json encoded and placed in data-setup of video tag
+     * @param array $attributes HTML attributes
+     * @return string
      */
-    private function embedAudio($urlAudio, $params, $attributes) {
+    public function embedVideo($data, array $params = array(), array $attributes = array()) {
+        if (!is_array($data)) {
+            $data = array('uri' => $data);
+        }
+
+        $this->setupAttributes($data, $attributes, 'video');
+        $attr = $this->_parseAttributes($attributes);
+
+        if (!empty($data['mime_type'])) {
+            $type = ' type="' . $data['mime_type'] . '"';
+        }
+
         $beditaUrl = Configure::read('beditaUrl');
-
-        if (empty($attributes['id'])) {
-            $attributes['id'] = 'be_id_' . rand(10000, 11000) . rand(1, 10000);
-        }
-        if (!empty($attributes['src'])) {
-            unset($attributes['src']);
-        }
-        $attr = $this->_parseAttributes($attributes);
-
-        //player params
-        if (empty($params)) {
-            $params = $defaultParams;
-        } else {
-            $params = array_merge($defaultParams, $params);
-        }
-
         $output = '';
-        $output .= $this->Html->script(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelement-and-player.min.js',false);
-        $output .= $this->Html->css(Configure::read('beditaUrl') . '/js/libs/mediaelement/mediaelementplayer.css',false);
+        $output .= $this->Html->css($beditaUrl . '/js/libs/video-js/video-js.min.css', null, array('inline' => false));
+        $output .= $this->Html->script($beditaUrl . '/js/libs/video-js/video.js', false);
 
-        $output .= '<audio src="'.$urlAudio.'" '.$attr.'" controls="controls"></audio>';
-        $output .= '<script>jQuery(document).ready(function($) {
-                        $("audio").mediaelementplayer('.json_encode($params).');
-                    });</script>';
+        $output .= '<video ' . $attr . ' controls data-setup=' . json_encode($params) . '>';
+        if (isset($type)) {
+            $output .= '<source src="' . $data['uri'] . '"' . $type . '/>';
+        }
+        $output .= '<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
+                </video>';
         return $output;
     }
 
     /**
-     * get file extension
+     * Embed Audio using video.js
      *
-     * @param string $filePath
-     * @return mixed string|boolean, file extension or false (if extension is not recognized through pathinfo)
+     * If `$data` is a string it must be the audio url to embed
+     *
+     * @param array|string $data
+     * @param array $params configuration params for video.js
+     *                      It will be json encoded and placed in data-setup of audio tag
+     * @param array $attributes HTML attributes
+     * @return string
      */
-    private function getFileExtension($filePath) {
-        $path_parts = pathinfo($filePath);
-        if (empty($path_parts['extension'])) {
-            return false;
+    public function embedAudio($data, array $params = array(), array $attributes = array()) {
+        if (!is_array($data)) {
+            $data = array('uri' => $data);
         }
 
-        return strtolower($path_parts['extension']);
+        $this->setupAttributes($data, $attributes, 'audio');
+        $attr = $this->_parseAttributes($attributes);
+
+        if (!empty($data['mime_type'])) {
+            $type = ' type="' . $data['mime_type'] . '"';
+        }
+
+        $beditaUrl = Configure::read('beditaUrl');
+        $output = '';
+        $output .= $this->Html->css($beditaUrl . '/js/libs/video-js/video-js.min.css', false);
+        $output .= $this->Html->script($beditaUrl . '/js/libs/video-js/video.js', false);
+
+        $output .= '<audio ' . $attr . ' controls data-setup=' .json_encode($params) .'>';
+        if (isset($type)) {
+            $output .= '<source src="' . $data['uri'] . '"' . $type . '/>';
+        }
+        $output .= '</audio>';
+        return $output;
     }
 
 }

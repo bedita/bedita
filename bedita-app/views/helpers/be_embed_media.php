@@ -131,21 +131,23 @@ class BeEmbedMediaHelper extends AppHelper {
     }
 
     /**
-     * get embed video
+     * get embed video/audio
      *
      * @param array $obj
      * @param array $params
      * @param array $attributes
      * @return string html
      */
-    private function embed(&$obj, $params = array(), $attributes = array()) {
+    private function embed(array $obj, $params = array(), $attributes = array()) {
         $helper = $this->getProviderHelper($obj);
         // provider helper exists
         if ($helper) {
             if (!empty($params['useProviderPlayer']) || !$helper->isSourceAvailable($obj)) {
                 return $helper->embed($obj, $attributes);
             }
-            $obj['uri'] = $helper->source($obj);
+            $source = $helper->source($obj);
+            $obj['uri'] = $source['url'];
+            $obj['mime_type'] = $source['mime_type'];
         }
 
         $obj['uri'] = ($this->checkURL($obj['uri'])) ? $obj['uri'] : Configure::read('mediaUrl') . $obj['uri'];

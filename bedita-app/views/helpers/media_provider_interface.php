@@ -33,10 +33,19 @@ interface MediaProviderInterface {
     public function isSourceAvailable(array $object);
 
     /**
-     * Return the url to the source if it's available else it should return an empty string
+     * Return an array with url to the source and related mime type
+     * If source is not available it should return an empty array
+     *
+     * The array returned should be in the form
+     * ```
+     * array(
+     *     'url' => 'http://example.com/video.mpg',
+     *     'mime_type' => 'video/mpeg'
+     * )
+     * ```
      *
      * @param array $object a representation of BEdita object
-     * @return string
+     * @return array
      */
     public function source(array $object);
 

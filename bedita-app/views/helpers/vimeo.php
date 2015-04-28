@@ -87,13 +87,13 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
     }
 
     /**
-     * Source it's not available so it returns an empty string
+     * Source it's not available so it returns an empty array
      *
      * @param array $obj a representation of Video BEdita object
-     * @return string
+     * @return array
      */
     public function source(array $obj) {
-        return '';
+        return array();
     }
 
 }
