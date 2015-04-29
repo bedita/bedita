@@ -1811,8 +1811,11 @@ abstract class FrontendController extends AppController {
 		}
         if (!empty($this->params['lang']) && array_key_exists($this->params['lang'], Configure::read('frontendLangs'))) {
             // #517 - SEO-friendly I18n.
-            $this->lang($this->params['lang'], null);
+            $this->lang($this->params['lang']);
+        } else {
+            $this->lang(Configure::read('frontendLang'));
         }
+        $this->helpers['BeHtml'] = array('currLang' => $this->currLang);
 
         if(count($args) === 0 || empty($args[0])) {
              $args[0] = "homePage";
