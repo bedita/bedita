@@ -1435,44 +1435,59 @@ abstract class ModulesController extends AppController {
 		$this->checkWriteModulePermission();
 
 		$Category = ClassRegistry::init('Category');
+        $ExceptionClass = $this->params['isAjax'] ? 'BeditaAjaxException' : 'BeditaException';
+        $exceptionOptions = $this->params['isAjax'] ? array('output' => 'json') : array();
 
-		if(empty($this->data['label'])) {
-			throw new BeditaException(__('No data', true));
+		if (empty($this->data['label'])) {
+			throw new $ExceptionClass(__('No data', true), $exceptionOptions);
 		}
 
 		// Object type ID checks.
 		if (!in_array(Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model'), $this->categorizableModels)) {
 			// Object type not categorizable in current controller.
-			throw new BeditaException(__('Object type not allowed', true));
+			throw new $ExceptionClass(__('Object type not allowed', true), $exceptionOptions);
 		}
 		if (array_key_exists('id', $this->data)) {
 			// Existing category.
 			$cat = $Category->findById($this->data['id']);
 			if ($cat['object_type_id'] != $this->data['object_type_id']) {
 				// Trying to change object_type_id of category.
-				throw new BeditaException(__('Cannot change object type for category', true));
+				throw new $ExceptionClass(__('Cannot change object type for category', true), $exceptionOptions);
 			}
 		}
 
 		$this->Transaction->begin();
-		if(!$Category->save($this->data)) {
-			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
+		if (!$Category->save($this->data)) {
+			throw new $ExceptionClass(__('Error saving tag', true), $exceptionOptions + $Category->validationErrors);
 		}
 		$this->Transaction->commit();
 
-		$this->userInfoMessage(__('Category saved', true) . ' - ' . $this->data['label']);
-		$this->eventInfo('Category [' .$this->data['label'] . '] saved');
+        $this->eventInfo('Category [' .$this->data['label'] . '] saved');
+
+        $info = __('Category saved', true) . ' - ' . $this->data['label'];
+        if ($this->params['isAjax']) {
+            $this->layout = 'ajax';
+            $this->view = 'View';
+            $this->RequestHandler->respondAs('json');
+            $this->set('data', compact('info'));
+            $this->render('/pages/json');
+        } else {
+            $this->userInfoMessage($info);
+            $this->redirect('/'. $this->moduleName . '/categories');
+        }
 	}
 
 	/**
 	 * Deletes a category. Controllers should specify the list of categorizable models in $categorizableModels property.
+     *
+     * @deprecated
 	 */
 	public function deleteCategories() {
 		$this->checkWriteModulePermission();
 
 		$Category = ClassRegistry::init('Category');
 
-		if(empty($this->data['id'])) {
+		if (empty($this->data['ids'])) {
 			throw new BeditaException(__('No data', true));
 		}
 
@@ -1484,7 +1499,7 @@ abstract class ModulesController extends AppController {
 		}
 
 		$this->Transaction->begin();
-		if(!$Category->delete($this->data['id'])) {
+		if (!$Category->delete($this->data['id'])) {
 			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
 		}
 		$this->Transaction->commit();
@@ -1492,6 +1507,77 @@ abstract class ModulesController extends AppController {
 		$this->userInfoMessage(__('Category deleted', true) . ' - ' . $cat['label']);
 		$this->eventInfo('Category ' . $this->data['id'] . '-' . $cat['label'] . ' deleted');
 	}
+
+    /**
+     * Performs bulk actions on categories.
+     */
+    public function bulkCategories() {
+        $this->checkWriteModulePermission();
+
+        $Category = ClassRegistry::init('Category');
+
+        $action = null;
+        if (array_key_exists('merge', $this->data)) {
+            $action = 'merge';
+        } elseif (array_key_exists('delete', $this->data)) {
+            $action = 'delete';
+        } else {
+            throw new BeditaException(__('Unknown action'), array_keys($this->data));
+        }
+        if (empty($this->data['ids'])) {
+            throw new BeditaException(__('No data', true));
+        }
+
+        // Object type ID checks.
+        $objectTypeIds = Set::classicExtract($Category->find('all', array(
+            'contain' => array(),
+            'fields' => array('object_type_id'),
+            'conditions' => array('Category.id' => $this->data['ids'])
+        )), '{n}.object_type_id');
+        foreach (array_unique($objectTypeIds) as $otid) {
+            if (!in_array(Configure::read('objectTypes.' . $otid . '.model'), $this->categorizableModels)) {
+                // Object type not categorizable in current controller.
+                throw new BeditaException(__('Object type not allowed', true));
+            }
+        }
+
+        $this->Transaction->begin();
+        if ($action == 'merge') {
+            // Merge.
+            $mergeId = array_shift($this->data['ids']);  // Get first category and remove from array.
+            $objectIds = ClassRegistry::init('ObjectCategory')->find('list', array(
+                'fields' => array('ObjectCategory.object_id'),
+                'conditions' => array(
+                    'ObjectCategory.category_id' => $this->data['ids'],
+                ),
+            ));  // Find objects in other categories.
+            foreach ($objectIds as $id) {
+                // Merge to elected category.
+                if (!$Category->addObjectCategory($mergeId, $id)) {
+                    throw new BeditaException(__('Error merging categories'), true);
+                }
+            }
+        }
+        //*/
+        foreach ($this->data['ids'] as $id) {
+            // Delete.
+            if (!$Category->delete($id)) {
+                throw new BeditaException(__('Error deleting categories'), true);
+            }
+        }
+        /*/  // The following should be way faster but ain't working. Don't know why...
+        if (!$Category->deleteAll(array('Category.id' => $this->data['ids']), true, false)) {
+            // Delete.
+            throw new BeditaException(__('Error deleting categories'), true);
+        }
+        //*/
+        $this->Transaction->commit();
+
+        $msg = $action == 'merge' ? 'merged' : 'deleted';
+        $ids = implode(', ', $this->data['ids']);
+        $this->userInfoMessage(__('Categories ' . $msg, true) . ' - ' . $ids);
+        $this->eventInfo('Categories ' . $ids . ' ' . $msg);
+    }
 
     /**
      * return array of object types belong to module
@@ -1598,6 +1684,10 @@ abstract class ModulesController extends AppController {
                         'OK'    => $this->referer(),
                         'ERROR' => $this->referer()
                 ),
+                'bulkCategories'    => array(
+                        'OK'    => $categoriesUrl,
+                        'ERROR' => $categoriesUrl
+                ),
                 'changeStatusObjects'   =>  array(
                         'OK'    => $this->referer(),
                         'ERROR' => $this->referer()
@@ -1633,10 +1723,6 @@ abstract class ModulesController extends AppController {
                 'save'  =>  array(
                         'OK'    => $viewUrl,
                         'ERROR' => $referer
-                ),
-                'saveCategories'    => array(
-                        'OK'    => $categoriesUrl,
-                        'ERROR' => $categoriesUrl
                 ),
                 'view'  =>  array(
                         'ERROR' => '/'.$this->moduleName
