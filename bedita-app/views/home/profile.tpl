@@ -115,12 +115,8 @@
 			</fieldset>
 		</div>
 
-	</form>
-
-<!--
 		<hr />
-		<input type="submit" value="{t}save profile{/t}" />
 		<br style="clear:both" />
-	{dump var=$BEAuthUser}-->
-	
+		<input type="submit" value="{t}save profile{/t}" />
+	</form>
 </div>
