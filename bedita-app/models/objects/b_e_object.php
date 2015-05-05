@@ -509,11 +509,24 @@ class BEObject extends BEAppModel {
 			$data['ip_created'] = $this->_getDefaultIP();
 		}
 
-        // #650 set always user_modified = current user, set user_created only on new objects
-        $currentUserId = $this->_getIDCurrentUser();
-        $data['user_modified'] = $currentUserId;
+        // #650 set always user_modified = current user, set user_created only on new objects.
+        // Because of cakephp populate fields with default value on db
+        // user_created and user_modified are always set to 1 (systemUserId) if no value was set in $this->data array so
+        // 1. user_created will be populated if no 'id' is set and is empty $data['user_created'] or it's equal to $systemUserId.
+        //    In that case it will try to use session user
+        //    If 'id' isset then it unset $data['user_created'] if exists.
+        // 2. user_modified will be populated if is empty $data['user_modified'] or it's equal to $systemUserId.
+        //    In that case it will try to use session user
+        $systemUserId = BeLib::getObject('BeSystem')->systemUserId();
+        if (empty($data['user_modified']) || $data['user_modified'] == $systemUserId) {
+            $data['user_modified'] = $this->_getIDCurrentUser();
+        }
         if (!isset($data['id'])) {
-            $data['user_created'] = $currentUserId;
+            if (empty($data['user_created']) || $data['user_created'] == $systemUserId) {
+                $data['user_created'] = $this->_getIDCurrentUser();
+            }
+        } elseif (isset($data['user_created'])) {
+            unset($data['user_created']);
         }
 
 		// nickname: verify nick and status change, object not fixed
