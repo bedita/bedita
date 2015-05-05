@@ -562,7 +562,7 @@ class BEAppModel extends AppModel {
 			} else {
 				$conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
 			}
-			if (empty($order)) {
+			if (empty($order) && empty($filter['query'])) {
 				$order = "{$s}Tree{$e}.{$s}priority{$e}";
 				$section = ClassRegistry::init("Section");
 				$priorityOrder = $section->field("priority_order", array("id" => $id));
@@ -1469,7 +1469,7 @@ class BeditaCollectionModel extends BEAppObjectModel {
 					'foreignKey'	=> 'id',
 				)
 	);
-
+	
 	public function deleteCollection($id) {
 		return ClassRegistry::init('Tree')->removeBranch($id);
 	}
