@@ -461,13 +461,14 @@ class BuildFilterBehavior extends ModelBehavior {
 		
 		$sType = $queryConf['searchType'];
 
+		$orderPrefix = (!empty($this->order) ? ', ' : '');
 		if ($sType == "fulltext") {
 			if ($this->driver === "mysql") {
 				// #MYSQL
 				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $searchString . "') * SearchText.relevance ) AS points";
 				$this->from .= ", search_texts AS SearchText";
 				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $searchString . "')";
-				$this->order .= "points DESC ";
+				$this->order .= $orderPrefix . "points DESC ";
 			} elseif ($this->driver === "postgres") {
 				$expr = explode(" ", $searchString);
 				$ts = "";
@@ -480,7 +481,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
 				$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
 				$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
-				$this->order .= "points DESC ";
+				$this->order .= $orderPrefix . "points DESC ";
 				$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
 			}
 		
@@ -491,7 +492,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
 				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
 				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
-			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
+			$this->order .= $orderPrefix . "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 
 		$this->useGroupBy = true;
