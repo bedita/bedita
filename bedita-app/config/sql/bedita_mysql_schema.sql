@@ -492,7 +492,7 @@ CREATE TABLE objects (
   license VARCHAR(255) NULL COMMENT '???',
   creator VARCHAR(255) NULL COMMENT '???',
   publisher VARCHAR(255) NULL COMMENT '???',
-  note TEXT NULL COMMENT '???',
+  note MEDIUMTEXT NULL COMMENT '???',
   fixed TINYINT(1) DEFAULT 0 COMMENT '???',
   comments VARCHAR(10) DEFAULT 'off' COMMENT 'define if an object is commentable (on, off, moderated)',
   PRIMARY KEY(id),
