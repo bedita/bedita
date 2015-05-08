@@ -193,6 +193,16 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * set self::responseData['data'] array used as output data by self::response()
+     *
+     * @param array $data
+     * @param boolean $merge true if $data has to be merged with previous set
+     */
+    protected function setData(array $data = array(), $merge = false) {
+        $this->responseData['data'] = ($merge && isset($this->responseData['data'])) ? array_merge($this->responseData['data'], $data) : $data;
+    }
+
+    /**
      * Any Api request has to pass from this method (see frontend app routes.php)
      * Override FrontendController::route()
      *
@@ -266,7 +276,8 @@ abstract class ApiBaseController extends FrontendController {
                     $object['children'] = $this->loadSectionObjects($object['id']);
                 }
 
-                $this->responseData['data'] = $this->ApiFormatter->formatObject($object);
+                $object = $this->ApiFormatter->formatObject($object);
+                $this->setData($object);
             }
         // @todo list of objects
         } else {
@@ -283,10 +294,10 @@ abstract class ApiBaseController extends FrontendController {
     protected function loadChildren($id, array $options = array()) {
         $objects = $this->loadSectionObjects($id, $options);
         if (empty($objects['childContents'])) {
-            $this->responseData['data'] = array();
+            $this->setData();
         } else {
             $objectsData = $this->ApiFormatter->formatObjects($objects['childContents']);
-            $this->responseData['data'] = $objectsData;
+            $this->setData($objectsData);
             $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
         }
     }
@@ -388,12 +399,12 @@ abstract class ApiBaseController extends FrontendController {
                         $beThumb = BeLib::getObject('BeThumb');
                         $poster['id'] = (int) $poster['id'];
                         $poster['uri'] = $beThumb->image($poster, $thumbConf);
-                        $this->responseData['data'] = $poster;
-                    } catch(Excpetion $ex) {
-                        $this->responseData['data'] = array();
+                        $this->setData($poster);
+                    } catch (Exception $ex) {
+                        $this->setData();
                     }
                 } else {
-                    $this->responseData['data'] = array();
+                    $this->setData();
                 }
             } else {
                 throw new BeditaNotFoundException();
@@ -425,7 +436,7 @@ abstract class ApiBaseController extends FrontendController {
 
             $token = $this->BeAuthJwt->generateToken();
             $refreshToken = $this->BeAuthJwt->generateRefreshToken();
-            $this->responseData['data'] = array(
+            $data = array(
                 'access_token' => $token,
                 'expires_in' => $this->BeAuthJwt->config['expiresIn'],
                 'refresh_token' => $refreshToken
@@ -440,7 +451,7 @@ abstract class ApiBaseController extends FrontendController {
                 throw new BeditaUnauthorizedException('invalid refresh token');
             }
 
-            $this->responseData['data'] = array(
+            $data = array(
                 'access_token' => $token,
                 'expires_in' => $this->BeAuthJwt->config['expiresIn'],
                 'refresh_token' => $params['refresh_token']
@@ -448,6 +459,8 @@ abstract class ApiBaseController extends FrontendController {
         } else {
             throw new BeditaBadRequestException('invalid grant');
         }
+
+        $this->setData($data);
     }
 
     /**
@@ -461,10 +474,10 @@ abstract class ApiBaseController extends FrontendController {
         if (!$user) {
             throw new BeditaUnauthorizedException();
         }
-        $this->responseData['data'] = array(
+        $this->setData(array(
             'access_token' => $this->BeAuthJwt->getToken(),
             'expires_in' => $this->BeAuthJwt->expiresIn()
-        );
+        ));
     }
 
     /**
@@ -480,7 +493,7 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException();
         }
         if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
-            $this->responseData['data'] = array('logout' => true);
+            $this->setData(array('logout' => true));
         } else {
             throw new BeditaInternalErrorException();
         }
