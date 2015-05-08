@@ -30,7 +30,9 @@ abstract class ApiBaseController extends FrontendController {
     public $uses = array();
 
     public $components = array(
-        'ResponseHandler' => array('type' => 'json')
+        'ResponseHandler' => array('type' => 'json'),
+        'ApiFormatter',
+        'BeAuthJwt'
     );
 
     protected $loginRedirect = null;
@@ -40,7 +42,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'session', 'me', 'poster');
+    private $defaultEndPoints = array('objects', 'auth', 'me', 'poster');
 
     /**
      * Default allowed model bindings
@@ -90,7 +92,7 @@ abstract class ApiBaseController extends FrontendController {
      * Merge self::defaultEndPoints, self::endPoints and object types whitelist endpoints
      */
     public function __construct() {
-        $this->components[] = 'ApiFormatter';
+        Configure::write('Session.start', false);
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
@@ -134,64 +136,42 @@ abstract class ApiBaseController extends FrontendController {
                 if (!empty(json_last_error())) {
                     $this->params['form'] = array();
                 }
-            } catch(Excpetion $ex) {
+            } catch(Exception $ex) {
                 $this->params['form'] = array();
             }
         }
     }
 
     /**
-     * Start Session if authorization token is found
-     * If method is overridden in ApiController remember to call parent::beforeCheckLogin()
+     * Common operations that every call must do:
+     *
+     * - replace self::BeAuth with self::BeAuthJwt to work properly in FrontendController.
+     *   BeAuthComponent is not used in api context. JWT is used instead via BeAuthJwtComponent
+     * - check origin
+     * - setup self::requestMethod to http verb used
+     * - normalize post data
+     * - normalize authentication form fields
+     *
+     * If method is overridden in frontend ApiController remember to call parent::beforeCheckLogin()
      *
      * @return void
      */
     protected function beforeCheckLogin() {
+        $this->BeAuth = $this->BeAuthJwt;
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
-        }        
+        }
 
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
         if ($this->requestMethod == 'post') {
             $this->handlePOST();
         }
 
-        $token = null;
-        //@todo clean and move to component?
-        if (function_exists('apache_request_headers')) {
-            $h = apache_request_headers();
-            if (!empty($h['Authorization'])) {
-                $token = $h['Authorization'];
-            }
-        } elseif (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
-            $token = $_SERVER['HTTP_AUTHORIZATION'];
-        } elseif (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
-            // fastcgi + rewrite rule
-            $token = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
-            //$this->log("Http header token " . $token, LOG_DEBUG);
-        } elseif (!empty($_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'])) {
-            // fastcgi + rewrite rule
-            $token = $_SERVER['REDIRECT_REDIRECT_HTTP_AUTHORIZATION'];
-            //$this->log("Http header token " . $token, LOG_DEBUG);
-        }
-
-        // @todo remove token pass in named
-        if (!empty($this->params["named"]["token"])) {
-            $token = $this->params["named"]["token"];
-            //$this->log("URL token " . $token, LOG_DEBUG);
-        } elseif (!empty($this->params["url"]["accessToken"])) {
-            $token = $this->params["url"]["accessToken"];
-        }
-
-        if ($token) {
-            $this->BeAuth->startSession($token);
-        } else {
-            if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
-                $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
-                unset($this->params['form']['username']);
-                unset($this->params['form']['password']);
-            }
+        if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
+            $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
+            unset($this->params['form']['username']);
+            unset($this->params['form']['password']);
         }
     }
 
@@ -367,8 +347,8 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function me() {
-        if ($this->Session->valid()) {
-            $user = $this->BeAuth->getUserSession();
+        $user = $this->BeAuthJwt->identify();
+        if ($user) {
             $this->profile($user['id']);
         } else {
             throw new BeditaUnauthorizedException();
@@ -406,7 +386,7 @@ abstract class ApiBaseController extends FrontendController {
 
                     try {
                         $beThumb = BeLib::getObject('BeThumb');
-                        $poster['id'] = (int) $poster['id']; 
+                        $poster['id'] = (int) $poster['id'];
                         $poster['uri'] = $beThumb->image($poster, $thumbConf);
                         $this->responseData['data'] = $poster;
                     } catch(Excpetion $ex) {
@@ -424,46 +404,85 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Create user session
+     * Auth POST actions.
+     * Depending from 'grant_type':
+     * - if 'grant_type' is 'password' and credentials are good then generate 'access_token' (JWT) and refresh token
+     * - if 'grant_type' is 'refresh_token' it expects a 'refresh_token' and if it's valid renew 'access_token'
      *
      * @return void
      */
-    protected function postSession() {
-        if ($this->Session->valid()) {
-            $this->getSession();
-        } else {
-            throw new BeditaUnauthorizedException();
-        }
-    }
+    protected function postAuth() {
+        $params = $this->params['form'];
+        $grantType = (!empty($params['grant_type'])) ? $params['grant_type'] : 'password';
+        if ($grantType == 'password') {
+            if (empty($params['login']['username']) || empty($params['login']['password'])) {
+                throw new BeditaBadRequestException();
+            }
+            $user = $this->BeAuthJwt->identify();
+            if (!$user) {
+                throw new BeditaUnauthorizedException();
+            }
 
-    /**
-     * Check user session
-     *
-     * @return void
-     */
-    protected function getSession() {
-        if ($this->Session->valid()) {
+            $token = $this->BeAuthJwt->generateToken();
+            $refreshToken = $this->BeAuthJwt->generateRefreshToken();
             $this->responseData['data'] = array(
-                'accessToken' => $this->Session->id(),
-                'expiresIn' => $this->Session->cookieLifeTime - (time() - $this->Session->sessionTime),
-                'valid' => true
+                'access_token' => $token,
+                'expires_in' => $this->BeAuthJwt->config['expiresIn'],
+                'refresh_token' => $refreshToken
+            );
+        } elseif ($grantType == 'refresh_token') {
+            if (empty($params['refresh_token'])) {
+                throw new BeditaBadRequestException();
+            }
+
+            $token = $this->BeAuthJwt->renewToken($params['refresh_token']);
+            if (!$token) {
+                throw new BeditaUnauthorizedException('invalid refresh token');
+            }
+
+            $this->responseData['data'] = array(
+                'access_token' => $token,
+                'expires_in' => $this->BeAuthJwt->config['expiresIn'],
+                'refresh_token' => $params['refresh_token']
             );
         } else {
-            throw new BeditaUnauthorizedException('Invalid or expired session.');
+            throw new BeditaBadRequestException('invalid grant');
         }
     }
 
     /**
-     * Destroy session
+     * If user identified it responds with current access_token
+     * and the updated time to expiration
      *
      * @return void
      */
-    protected function deleteSession() {
-        if ($this->Session->valid()) {
-            $this->logout(false);
+    protected function getAuth() {
+        $user = $this->BeAuthJwt->identify();
+        if (!$user) {
+            throw new BeditaUnauthorizedException();
+        }
+        $this->responseData['data'] = array(
+            'access_token' => $this->BeAuthJwt->getToken(),
+            'expires_in' => $this->BeAuthJwt->expiresIn()
+        );
+    }
+
+    /**
+     * Revoke authentication removing refresh token
+     *
+     * @param int $userId the user id
+     * @param string $refreshToken the refresh token to revoke
+     * @return void
+     */
+    protected function deleteAuth($userId, $refreshToken) {
+        $user = $this->BeAuthJwt->identify();
+        if (!$user || $user['id'] != $userId) {
+            throw new BeditaBadRequestException();
+        }
+        if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
             $this->responseData['data'] = array('logout' => true);
         } else {
-            throw new BeditaUnauthorizedException('Invalid or expired session');
+            throw new BeditaInternalErrorException();
         }
     }
 
@@ -490,9 +509,9 @@ abstract class ApiBaseController extends FrontendController {
     private function checkOrigin() {
         $allowed = Configure::read('api.allowedOrigins');
         if (!is_array($allowed)) {
-            $allowed = array($allowed);
+            $allowed = (!empty($allowed)) ? array($allowed) : array('*');
         }
-        if (empty($allowed) || in_array('*', $allowed)) {
+        if (in_array('*', $allowed)) {
             $this->ResponseHandler->sendHeader('Access-Control-Allow-Origin', '*');
             return true;
         }

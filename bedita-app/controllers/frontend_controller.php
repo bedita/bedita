@@ -1291,7 +1291,7 @@ abstract class FrontendController extends AppController {
 						}
 					}
 				} else {
-					if ($permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
+					if ($permissionModel->checkPermissionByUser($perms, $this->BeAuth->getUserSession())) {
 						$authorized = true;
 					} else {
 						if (!empty($permsWithBlock)) {
@@ -1372,7 +1372,7 @@ abstract class FrontendController extends AppController {
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if(!empty($obj["RelatedObject"])) {
-			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
+			$userdata = (!$this->logged) ? array() : $this->BeAuth->getUserSession();
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
 
@@ -2578,7 +2578,7 @@ abstract class FrontendController extends AppController {
 					$this->Captcha->checkCaptcha();
 				// set User data
 				} else {
-					$userdata = $this->Session->read($this->BeAuth->sessionKey);
+					$userdata = $this->BeAuth->getUserSession();
 					$this->data["user_created"] = $userdata["id"];
 					$this->data["user_modified"] = $userdata["id"];
 					$this->data["author"] = (!empty($userdata["realname"]))? $userdata["realname"] : $userdata["userid"];
