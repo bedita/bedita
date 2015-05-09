@@ -117,8 +117,8 @@ $(document).ready(function() {
 <div class="tab"><h2>{t 1='<span class="selecteditems">0</span>' escape=no}Operations on %1 selected items{/t}</h2></div>
 <form method="post" id="bulk" action="{$html->url('bulkCategories')}">
     {$beForm->csrf()}
-    <input type="submit" name="data[delete]" value="{t}delete{/t}" id="bulkDelete" />
-    <input type="submit" name="data[merge]" value="{t}merge{/t}" id="bulkMerge" />
+    <input type="submit" style="width:140px; margin-right:20px" name="data[delete]" value="{t}delete{/t}" id="bulkDelete" />
+    <input type="submit" style="width:140px;" name="data[merge]" value="{t}merge{/t}" id="bulkMerge" />
 </form>
 
 <br />
