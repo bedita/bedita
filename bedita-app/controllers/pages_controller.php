@@ -283,6 +283,10 @@ class PagesController extends AppController {
             }
         }
 
+        // get Tags
+        $tags = ClassRegistry::init("Category");
+        $this->set("listTags",$tags->getTags(array("cloud" => false)));
+
         $this->set("objectsToAssoc", $objects);
         $this->set('tree', $tree);
         $this->set('availableRelations', $availableRelations);
@@ -291,7 +295,7 @@ class PagesController extends AppController {
         $this->set("object_type_id", $main_object_type_id);
         $this->set("objectType", $objectType);
         $this->set("objectTypeIds", $objectTypeIds);
-                
+
         if (!empty($this->params["form"])) {
             $this->render("list_contents_to_assoc");
         }
