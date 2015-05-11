@@ -22,7 +22,7 @@
 		'categories' => true,
 		'mediaTypes' => false,
 		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action,
-		'tags' => false
+		'tags' => true
 	]
 }
 

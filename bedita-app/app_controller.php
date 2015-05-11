@@ -1018,6 +1018,10 @@ abstract class ModulesController extends AppController {
             }
         }
 
+        // get Tags
+        $tags = ClassRegistry::init("Category");
+        $this->set("listTags",$tags->getTags(array("cloud" => false)));
+        
         // template data
         $this->set('tree', $tree);
         $this->set('sectionSel',$sectionSel);
