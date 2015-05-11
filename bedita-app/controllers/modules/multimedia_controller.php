@@ -125,11 +125,15 @@ class MultimediaController extends ModulesController {
         $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
+        // get Tags
+        $listTags = ClassRegistry::init("Category")->getTags(array("cloud" => false));
+
         // template data
         $this->set('tree', $tree);
         $this->set('objects', $bedita_items['items']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
+        $this->set('listTags', $listTags);
         $this->setSessionForObjectDetail($bedita_items['items']);
 
      }
