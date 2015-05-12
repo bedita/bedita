@@ -181,13 +181,17 @@ class ApiFormatterComponent extends Object {
         $modelName = $Object->name;
         $transformer = array();
         if (!isset($this->transformers[$modelName])) {
-            // try to load from cache
             $cacheName = 'apiTransformer' . $modelName;
-            $transformer = Cache::read($cacheName);
+            $debugMode = Configure::read('debug');
+            if (!$debugMode) {
+                $transformer = Cache::read($cacheName);
+            }
             if (empty($transformer)) {
                 $transformer = $Object->apiTransformer();
                 $transformer = array_merge($this->transformers['object'], $transformer);
-                Cache::write($cacheName, $transformer);
+                if (!$debugMode) {
+                    Cache::write($cacheName, $transformer);
+                }
             }
         } else {
             $transformer = $this->transformers[$modelName];
