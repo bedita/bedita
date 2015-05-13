@@ -1466,11 +1466,9 @@ abstract class ModulesController extends AppController {
 
         $info = __('Category saved', true) . ' - ' . $this->data['label'];
         if ($this->params['isAjax']) {
-            $this->layout = 'ajax';
-            $this->view = 'View';
-            $this->RequestHandler->respondAs('json');
-            $this->set('data', compact('info'));
-            $this->render('/pages/json');
+            $this->ResponseHandler->setType('json');
+            $this->set(compact('info'));
+            $this->set('_serialize', array('info'));
         } else {
             $this->userInfoMessage($info);
             $this->redirect('/'. $this->moduleName . '/categories');
