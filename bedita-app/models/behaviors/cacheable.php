@@ -183,7 +183,7 @@ class CacheableBehavior extends ModelBehavior {
         if (empty($objectIds) || !$this->on) {
             return;
         }
-        $this->resetObjectsToClean();
+        $this->resetObjectsToClean($model);
         $allObjectsToClean = array();
         foreach ($objectIds as $objectId) {
             $allObjectsToClean = array_merge($allObjectsToClean, $this->getObjectsToCleanById($model, $objectId));
