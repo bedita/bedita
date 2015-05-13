@@ -43,9 +43,26 @@ class ApiFormatterComponent extends Object {
     protected $objectFieldsToRemove = array(
         'UserCreated',
         'ObjectProperty',
+        'ObjectType',
         'RelatedObject',
         'bindings',
-        'fixed'
+        'fixed',
+        'Category' => array(
+            'object_type_id',
+            'status',
+            'priority',
+            'parent_id',
+            'parent_path'
+        ),
+        'Tag' => array(
+            'id',
+            'object_type_id',
+            'area_id',
+            'status',
+            'priority',
+            'parent_id',
+            'parent_path'
+        )
     );
 
     /**
@@ -215,8 +232,8 @@ class ApiFormatterComponent extends Object {
      * @return array
      */
     public function formatObject(array $object, $options = array()) {
-        $this->transformObject($object);
         $this->cleanObject($object);
+        $this->transformObject($object);
         $result = array('object' => $object, 'related' => array());
         if (!empty($object['relations'])) {
             foreach ($object['relations'] as $relation => $relatedObjects) {
@@ -315,11 +332,24 @@ class ApiFormatterComponent extends Object {
      * Clean BEdita object array from useless fields
      * Use self::objectFieldsToRemove()
      *
-     * @param array &$object [description]
+     * @param array &$object
      * @return void
      */
     public function cleanObject(array &$object) {
-        $object = array_diff_key($object, array_flip($this->objectFieldsToRemove));
+        foreach ($this->objectFieldsToRemove as $key => $value) {
+            if (is_array($value)) {
+                $fieldsToRemove = array_flip($value);
+                if (!empty($object[$key][0])) {
+                    foreach ($object[$key] as &$detail) {
+                        $detail = array_diff_key($detail, $fieldsToRemove);
+                    }
+                } elseif (isset($object[$key])) {
+                    $object[$key] = array_diff_key($object[$key], $fieldsToRemove);
+                }
+            } elseif (isset($object[$value])) {
+                unset($object[$value]);
+            }
+        }
     }
 
 }
