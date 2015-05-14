@@ -130,17 +130,6 @@ class BeAuthJwtComponent extends Object {
     }
 
     /**
-     * self::$user setter
-     *
-     * @param array $user
-     */
-    public function setUser(array $user) {
-        if (!empty($user)) {
-            $this->user = $user;
-        }
-    }
-
-    /**
      * Login user, it replaces BeAuthComponent::login() in api context
      *
      * @param string $userid the username
