@@ -145,6 +145,7 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Common operations that every call must do:
      *
+     * - save self::BeAuth to self::BeAuthSession (useful for require auth access_token via session)
      * - replace self::BeAuth with self::BeAuthJwt to work properly in FrontendController.
      *   BeAuthComponent is not used in api context. JWT is used instead via BeAuthJwtComponent
      * - check origin
@@ -157,6 +158,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function beforeCheckLogin() {
+        $this->BeAuthSession = $this->BeAuth;
         $this->BeAuth = $this->BeAuthJwt;
         // Cross origin check.
         if (!$this->checkOrigin()) {
@@ -345,7 +347,7 @@ abstract class ApiBaseController extends FrontendController {
             if ($cardId !== false) {
                 $this->objects($cardId);
             } else {
-                throw new BeditaNotFoundException(); 
+                throw new BeditaNotFoundException();
             }
         } else {
             throw new BeditaBadRequestException();
@@ -417,8 +419,11 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Auth POST actions.
      * Depending from 'grant_type':
-     * - if 'grant_type' is 'password' and credentials are good then generate 'access_token' (JWT) and refresh token
-     * - if 'grant_type' is 'refresh_token' it expects a 'refresh_token' and if it's valid renew 'access_token'
+     * - if 'grant_type' is 'password' (default) and credentials are good then generate 'access_token' (JWT) and refresh token
+     * - if 'grant_type' is 'refresh_token' it expects a 'refresh_token' param and if it's valid it renews 'access_token'
+     * - if 'grant_type' is 'session' try to validate user session and if it's valid return 'access_token' (JWT) and refresh token.
+     *   Useful in web context when the frontend is used either with classic web pages then with api. If user is already logged through
+     *   session it is easy to request access_token for consume api without require username and password again.
      *
      * @return void
      */
@@ -455,6 +460,20 @@ abstract class ApiBaseController extends FrontendController {
                 'access_token' => $token,
                 'expires_in' => $this->BeAuthJwt->config['expiresIn'],
                 'refresh_token' => $params['refresh_token']
+            );
+        } elseif ($grantType == 'session') {
+            $this->BeAuthSession->startSession();
+            if (empty($this->BeAuthSession->user)) {
+                throw new BeditaUnauthorizedException();
+            }
+
+            $this->BeAuthJwt->setUser($this->BeAuthSession->user);
+            $token = $this->BeAuthJwt->generateToken();
+            $refreshToken = $this->BeAuthJwt->generateRefreshToken();
+            $data = array(
+                'access_token' => $token,
+                'expires_in' => $this->BeAuthJwt->config['expiresIn'],
+                'refresh_token' => $refreshToken
             );
         } else {
             throw new BeditaBadRequestException('invalid grant');
