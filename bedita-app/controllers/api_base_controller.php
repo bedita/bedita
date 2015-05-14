@@ -60,6 +60,14 @@ abstract class ApiBaseController extends FrontendController {
     protected $endPoints = array();
 
     /**
+     * Endpoints blacklisted
+     * Useful for blacklisting self::defaultEndPoints or BEdita objects type as documents, events, ...
+     *
+     * @var array
+     */
+    protected $blacklistEndPoints = array();
+
+    /**
      * The response data for client
      *
      * @var array
@@ -89,7 +97,7 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Constructor
-     * Merge self::defaultEndPoints, self::endPoints and object types whitelist endpoints
+     * Merge self::defaultEndPoints, self::endPoints and remove self::blacklistEndPoints
      */
     public function __construct() {
         Configure::write('Session.start', false);
@@ -100,6 +108,7 @@ abstract class ApiBaseController extends FrontendController {
                 $this->endPoints[] = Inflector::pluralize($value['name']);
             }
         }
+        $this->endPoints = array_diff($this->endPoints, $this->blacklistEndPoints);
         parent::__construct();
     }
 
