@@ -215,18 +215,23 @@ abstract class ApiBaseController extends FrontendController {
         $name = array_shift($args);
         // generic methodName
         $methodName = str_replace(".", "_", $name);
-        // avoid to call methods that aren't endpoints
-        if (!in_array($methodName, $this->endPoints)) {
-            $this->action = $methodName;
-            throw new BeditaMethodNotAllowedException();
-        } else {
-            $this->action = $methodName;
-            $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
-            if (method_exists($this, $specificMethodName)) {
-                call_user_func_array(array($this, $specificMethodName), $args);
+        if (!empty($methodName)) {
+            // avoid to call methods that aren't endpoints
+            if (!in_array($methodName, $this->endPoints)) {
+                $this->action = $methodName;
+                throw new BeditaMethodNotAllowedException();
             } else {
-                call_user_func_array(array($this, $methodName), $args);
+                $this->action = $methodName;
+                $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
+                if (method_exists($this, $specificMethodName)) {
+                    call_user_func_array(array($this, $specificMethodName), $args);
+                } else {
+                    call_user_func_array(array($this, $methodName), $args);
+                }
             }
+        } else {
+            $this->responseData['maessage'] = 'Hello World!';
+            return $this->response(false);
         }
         $this->response();
     }
@@ -502,10 +507,13 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Build response data for client
      *
+     * @param boolean $setBase should set generic api response info
      * @return void
      */
-    protected function response() {
-        $this->setBaseResponse();
+    protected function response($setBase = true) {
+        if ($setBase) {
+            $this->setBaseResponse();
+        }
         ksort($this->responseData);
         $this->set($this->responseData);
         $this->set('_serialize', array_keys($this->responseData));
