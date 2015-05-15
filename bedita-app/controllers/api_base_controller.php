@@ -230,7 +230,7 @@ abstract class ApiBaseController extends FrontendController {
                 }
             }
         } else {
-            $this->responseData['maessage'] = 'Hello World!';
+            $this->responseData['message'] = 'Hello World!';
             return $this->response(false);
         }
         $this->response();
