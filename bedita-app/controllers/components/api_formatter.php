@@ -179,6 +179,13 @@ class ApiFormatterComponent extends Object {
         }
     }
 
+    /**
+     * Transform an item using a transformer from self::transformers
+     *
+     * @param string $subject the transformer name to use
+     * @param array &$item the item to transform
+     * @return void
+     */
     public function transform($subject, array &$item) {
         if (!empty($this->transformers[$subject])) {
             $this->transformItem($this->transformers[$subject], $item);
@@ -211,6 +218,8 @@ class ApiFormatterComponent extends Object {
                     Cache::write($cacheName, $transformer);
                 }
             }
+            // add transformer to self::transformers to reuse it in case
+            $this->transformers[$modelName] = $transformer;
         } else {
             $transformer = $this->transformers[$modelName];
         }
