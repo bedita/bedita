@@ -52,7 +52,8 @@ class ApiFormatterComponent extends Object {
             'status',
             'priority',
             'parent_id',
-            'parent_path'
+            'parent_path',
+            'url_label'
         ),
         'Tag' => array(
             'id',
