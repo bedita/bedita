@@ -331,7 +331,7 @@ class ApiFormatterComponent extends Object {
         }
         $paging = array(
             'page' => (int) $toolbar['page'],
-            'totalPages' => (int) $toolbar['pages'],
+            'total_pages' => (int) $toolbar['pages'],
             'total' => (int) $toolbar['size'],
             'limit' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null
         );
