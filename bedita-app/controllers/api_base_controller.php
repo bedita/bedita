@@ -61,11 +61,25 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Endpoints blacklisted
-     * Useful for blacklisting self::defaultEndPoints or BEdita objects type as documents, events, ...
+     * Useful for blacklisting self::defaultEndPoints
      *
      * @var array
      */
     protected $blacklistEndPoints = array();
+
+    /**
+     * White list of object types that have to be mapped to endpoints
+     * For example setting
+     *
+     * ```
+     * $whitelistObjectTypes = array('document', 'event')`;
+     * ```
+     *
+     * enable '/documents' and '/events' endpoints that filter objects respectively by document and event object type.
+     *
+     * @var array
+     */
+    protected $whitelistObjectTypes = array();
 
     /**
      * The response data for client
@@ -97,14 +111,18 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Constructor
-     * Merge self::defaultEndPoints, self::endPoints and remove self::blacklistEndPoints
+     * Setup endpoints available:
+     *
+     * - Merge self::defaultEndPoints, self::endPoints
+     * - Add to endpoints object types whitelisted
+     * - remove blacklisted endpoints (self::blacklistEndPoints)
      */
     public function __construct() {
         Configure::write('Session.start', false);
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
-            if (is_numeric($key)) {
+            if (is_numeric($key) && in_array($value['name'], $this->whitelistObjectTypes)) {
                 $this->endPoints[] = Inflector::pluralize($value['name']);
             }
         }
@@ -387,7 +405,7 @@ abstract class ApiBaseController extends FrontendController {
             if ($cardId !== false) {
                 $this->objects($cardId);
             } else {
-                throw new BeditaNotFoundException(); 
+                throw new BeditaNotFoundException();
             }
         } else {
             throw new BeditaBadRequestException();
