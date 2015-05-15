@@ -26,6 +26,30 @@ class AppModel extends Model {
 
 	public $actsAs = array('Containable');
 
+    /**
+     * Options used by default from self::apiTransformer()
+     * @var array
+     */
+    protected $apiTransformerOptions = array(
+        'castable' => array('integer', 'float', 'double', 'date', 'datetime', 'boolean')
+    );
+
+    /**
+     * Return an array of column types to transform (cast)
+     * Used to build consistent REST APIs
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the REST APIs should cast to
+     *
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer($options = array()) {
+        $options = array_merge($this->apiTransformerOptions, $options);
+        $columnTypes = $this->getColumnTypes();
+        return array_intersect($columnTypes, $options['castable']);
+    }
+
 }
 
 /**
@@ -1004,6 +1028,35 @@ class BEAppObjectModel extends BEAppModel {
 
     public function getTypeId() {
         return Configure::read("objectTypes.".Inflector::underscore($this->name).".id");
+    }
+
+    /**
+     * Return an array of column types to transform (cast) for generic BEdita object type
+     * Used to build consistent REST APIs
+     *
+     * In general it returns all castable fields from:
+     * - main Model table
+     * - tables that extend the object (ForeignDependenceSave)
+     * - GetTag, Category, Tag
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the REST APIs should cast to
+     *
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $options = array_merge($this->apiTransformerOptions, $options);
+        $transformer = parent::apiTransformer($options);
+        if (!empty($this->actsAs['ForeignDependenceSave'])) {
+            foreach ($this->actsAs['ForeignDependenceSave'] as $modelName) {
+                $object = array_intersect($this->$modelName->getColumnTypes(), $options['castable']);
+                $transformer = array_merge($transformer, $object);
+            }
+        }
+        $transformer['GeoTag'] = $this->BEObject->GeoTag->apiTransformer();
+        $transformer['Category'] = $transformer['Tag'] = $this->BEObject->Category->apiTransformer();
+        return $transformer;
     }
 }
 

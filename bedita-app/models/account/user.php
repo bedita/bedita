@@ -350,4 +350,31 @@ class User extends BEAppModel
         }
         return Set::combine($this->data['Group'], '{n}.id', '{n}.name');
     }
+
+    /**
+     * get associated card id
+     *
+     * If a $userid is specified, it returns the associated Card Object Id (if it exists)
+     * If a $userid is not found, or a related Card is not found, it returns FALSE
+     *
+     * @param int|string $userid an user id or userid
+     * @return int|boolean
+     */
+	function findCardId($userid = null) {
+		if (empty($userid) && !empty($this->id)) {
+			$userid = $this->id;
+		}
+		if (!empty($userid)) {
+            $id = is_numeric($userid) ? intval($userid) : $userid;
+            $cardSwitch = ClassRegistry::init("ObjectUser")->find("first", array(
+                "conditions" => array("user_id" => $id, "switch" => "card")
+            ));
+            if (!empty($cardSwitch) && !empty($cardSwitch['ObjectUser']) && !empty($cardSwitch['ObjectUser']['object_id'])) {
+                return $cardSwitch['ObjectUser']['object_id'];
+            } else {
+                return false;
+            }
+        }
+        return false;
+	}
 }

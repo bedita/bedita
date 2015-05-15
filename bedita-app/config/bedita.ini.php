@@ -416,7 +416,7 @@ $config["defaultReservedWords"] = array("captchaImage", "category", "content",
   "css", "download", "favicon.gif", "favicon.ico", "feed", "files", "georss",
   "georssatom", "hashjob", "homePage", "img", "js", "json", "kml", "lang", "login",
   "logout", "pages", "printme", "rss", "saveComment", "search", "section", "sitemap",
-  "sitemap.xml", "sitemap_xml", "subscribe", "swf", "tag", "webroot", "xml", "xmlobject","manifest.appcache");
+  "sitemap.xml", "sitemap_xml", "subscribe", "swf", "tag", "webroot", "xml", "xmlobject","manifest.appcache", 'api');
 
 // Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();

@@ -109,5 +109,27 @@ class GeoTag extends BEAppModel
 	private function geoConvert($str) {
 		return $str;
 	}
+
+	/**
+     * Return an array of column types to transform (cast)
+     * Used to build consistent REST APIs
+     *
+     * Add to table fields type the serialized gmaps_lookat field types
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the rest api would be cast to
+     *
+     * @see AppModel::apiTransformer()
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $transformer = parent::apiTransformer($options);
+        $transformer['gmaps_lookat'] = array(
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'zoom' => 'integer'
+        );
+        return $transformer;
+    }
 }
-?>

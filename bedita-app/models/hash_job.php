@@ -61,7 +61,7 @@ class HashJob extends BEAppModel {
 	public function afterFind($results) {
 		if (!empty($results)) {
 			foreach ($results as $key => $val) {
-				if ($val["HashJob"]["expired"] < date("Y-m-d H:i:s", time())) {
+				if (!empty($val["HashJob"]["expired"]) && $val["HashJob"]["expired"] < date("Y-m-d H:i:s", time())) {
 					$this->id = $val["HashJob"]["id"];
 					$this->saveField("status", "expired");
 					$results[$key]["HashJob"]["status"] = "expired";

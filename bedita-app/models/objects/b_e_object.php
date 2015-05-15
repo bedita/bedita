@@ -808,5 +808,73 @@ class BEObject extends BEAppModel {
 	function getNicknameFromId($id) {
 		return $this->field("nickname", array("id" => $id));
 	}
+
+    /**
+     * Get an image id and uri that can be used as a poster of the one represented by the $id
+     * Search in the relations expressed by $relations
+     * @param int|string $id
+     * @param array
+     * @return array
+     */
+    public function getPoster($id = null, $relations = array('poster', 'attach')) {
+        if (empty($id) && !empty($this->id)) {
+            $id = $this->id;
+        }
+        if (!empty($id)) {
+            $obj = ClassRegistry::init('BEObject')->find('first', array(
+                'contain' => array(),
+                'fields' => array(
+                    'RelatedObject.object_id',
+                    'Stream.uri',
+                    'Stream.mime_type',
+                    "IF(RelatedObject.switch = 'poster', 0, 1) AS FirstOrder",
+                    'IF(BEObject.object_type_id = ' . Configure::read('objectTypes.image.id') . ', 0, 1) AS SecondOrder',
+                    'IF(Stream.id, RelatedObject.priority, 99999) AS ThirdOrder'
+                ),
+                'joins' => array(
+                        array(
+                            'table' => 'object_relations',
+                            'alias' => 'RelatedObject',
+                            'type' => 'LEFT',
+                            'conditions' => array(
+                                'RelatedObject.id = BEObject.id',
+                                'RelatedObject.switch' => $relations,
+                            )
+                        ),
+                        array(
+                            'table' => 'streams',
+                            'alias' => 'Stream',
+                            'type' => 'LEFT',
+                            'conditions' => array(
+                                'OR' => array(
+                                    'Stream.id = BEObject.id',
+                                    'Stream.id = RelatedObject.object_id'
+                                ),
+                                "Stream.mime_type LIKE 'image%'"
+                            )
+                        )
+                    ),
+                'conditions' => array(
+                        'OR' => array(
+                            'BEObject.id' => $id,
+                            'BEObject.nickname' => $id
+                        )
+                    ),
+                'order' => array('FirstOrder ASC', 'SecondOrder ASC', 'ThirdOrder ASC')
+            ));
+
+            if (!empty($obj)) {
+            	$posterId = $id;
+            	if (!empty($obj['RelatedObject']['object_id'])) {
+            		$posterId = $obj['RelatedObject']['object_id'];
+            	}
+                return array(
+                    'id' => $posterId,
+                    'uri' => $obj['Stream']['uri']
+                );
+            }
+        }
+        return false;
+    }
 }
 ?>

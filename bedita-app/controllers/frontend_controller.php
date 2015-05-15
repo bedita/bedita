@@ -175,11 +175,24 @@ abstract class FrontendController extends AppController {
 			}
 			// try to login user if POST data are corrected
 			if (!empty($this->params["form"]["login"])) {
-				$userid 	= (isset($this->params["form"]["login"]["userid"])) ? $this->params["form"]["login"]["userid"] : "" ;
-				$password 	= (isset($this->params["form"]["login"]["passwd"])) ? $this->params["form"]["login"]["passwd"] : "" ;
+				$userid = null;
+				$password = null;
+
+				if (isset($this->params["form"]["login"]["userid"])) {
+					$userid = $this->params["form"]["login"]["userid"];
+				} elseif (isset($this->params["form"]["login"]["username"])) {
+					$userid = $this->params["form"]["login"]["username"];
+				}
+
+				if (isset($this->params["form"]["login"]["passwd"])) {
+					$password = $this->params["form"]["login"]["passwd"];
+				} elseif (isset($this->params["form"]["login"]["password"])) {
+					$password = $this->params["form"]["login"]["password"];
+				}
+
 				$authType 	= (isset($this->params["form"]["login"]["auth_type"])) ? $this->params["form"]["login"]["auth_type"] : "bedita" ;
 				$redirect 	= (!empty($this->params["form"]["backURL"]))? $this->params["form"]["backURL"] : $this->loginRedirect;
-				
+
 				if(!$this->BeAuth->login($userid, $password, null, $frontendGroupsCanLogin, $authType)) {
 					//$this->loginEvent('warn', $userid, "login not authorized");
 					$this->userErrorMessage(__("Wrong username/password or session expired", true));
@@ -188,7 +201,10 @@ abstract class FrontendController extends AppController {
 					$this->eventInfo("FRONTEND logged in publication");
 				}
 
-				$this->redirect($redirect);
+				if (!empty($redirect)) {
+					$this->redirect($redirect);
+				}
+				$this->logged = true;
 				return true;
 			}
 			$this->logged = false;
@@ -1197,13 +1213,16 @@ abstract class FrontendController extends AppController {
 	 *					false => if user unlogged dosen't block the action and the object returned (array)
 	 *							will have a key named "authorized" set to false
 	 *							if user is logged but not authorized the object returned (array)
+	 * @param array $options
+	 *				a set of options for the method:
+	 *				- bindingLevel: the requested model binding level to use
 	 *
 	 *	note: if FrontendController::showUnauthorized is set to true and the user is logged
 	 *			then all unauthorized object will have set "authorized" to false regardless object permission
 	 *
 	 * @return array object detail
 	 */
-	public function loadObj($obj_id, $blockAccess=true) {
+	public function loadObj($obj_id, $blockAccess=true, $options = array()) {
 		if ($obj_id === null) {
 			throw new BeditaInternalErrorException(
 				__('Missing object id', true),
@@ -1214,7 +1233,11 @@ abstract class FrontendController extends AppController {
 		// use object cache
 		if(isset($this->objectCache[$obj_id])) {
 			$modelType = $this->objectCache[$obj_id]["object_type"];
-			$bindings = $this->setObjectBindings($modelType);
+			if (!empty($options['bindingLevel'])) {
+				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
+			} else {
+				$bindings = $this->setObjectBindings($modelType);
+			}
 			$bindingsDiff = array_diff($this->objectCache[$obj_id]["bindings"]["bindings_list"], $bindings["bindings_list"]);
 			// cached object is used only if its bindings contain more data or equal than those of the request
 			if (!empty($bindingsDiff) || ($this->objectCache[$obj_id]["bindings"]["bindings_list"] == $bindings["bindings_list"])) {
@@ -1268,7 +1291,7 @@ abstract class FrontendController extends AppController {
 						}
 					}
 				} else {
-					if ($permissionModel->checkPermissionByUser($perms, $this->BeAuth->user)) {
+					if ($permissionModel->checkPermissionByUser($perms, $this->BeAuth->getUserSession())) {
 						$authorized = true;
 					} else {
 						if (!empty($permsWithBlock)) {
@@ -1289,7 +1312,11 @@ abstract class FrontendController extends AppController {
 
 		if (!isset($this->objectCache[$obj_id])) {
 			$modelType = $this->BEObject->getType($obj_id);
-			$bindings = $this->setObjectBindings($modelType);
+			if (!empty($options['bindingLevel'])) {
+				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
+			} else {
+				$bindings = $this->setObjectBindings($modelType);
+			}
 		}
 
         $obj = null;
@@ -1345,7 +1372,7 @@ abstract class FrontendController extends AppController {
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if(!empty($obj["RelatedObject"])) {
-			$userdata = (!$this->logged) ? array() : $this->Session->read($this->BeAuth->sessionKey);
+			$userdata = (!$this->logged) ? array() : $this->BeAuth->getUserSession();
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
 
@@ -1501,7 +1528,7 @@ abstract class FrontendController extends AppController {
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
 		$dir = (isset($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
-		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
+		$dim = (!empty($options["dim"]))? $options["dim"] : null;
 
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
@@ -2551,7 +2578,7 @@ abstract class FrontendController extends AppController {
 					$this->Captcha->checkCaptcha();
 				// set User data
 				} else {
-					$userdata = $this->Session->read($this->BeAuth->sessionKey);
+					$userdata = $this->BeAuth->getUserSession();
 					$this->data["user_created"] = $userdata["id"];
 					$this->data["user_modified"] = $userdata["id"];
 					$this->data["author"] = (!empty($userdata["realname"]))? $userdata["realname"] : $userdata["userid"];
