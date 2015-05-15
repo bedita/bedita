@@ -47,6 +47,10 @@ class ApiFormatterComponent extends Object {
         'RelatedObject',
         'bindings',
         'fixed',
+        'stats_code',
+        'stats_provider',
+        'stats_provider_url',
+        'ip_created',
         'Category' => array(
             'object_type_id',
             'status',
