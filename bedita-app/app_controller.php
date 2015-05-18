@@ -124,11 +124,12 @@ class AppController extends Controller {
 
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
-        $userid = '';
-        if (!empty($this->BeAuth->user['userid'])) {
-            $userid = ' - ' . $this->BeAuth->user['userid'];
+        $log = $eventMsg;
+        $userid = $this->BeAuth->userid();
+        if (!empty($userid)) {
+            $log .= ' - ' . $userid;
         }
-        $this->log($eventMsg . $userid . $url);
+        $this->log($log . $url);
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
         }
@@ -370,7 +371,10 @@ class AppController extends Controller {
     }
 
     protected function eventLog($level, $msg) {
-        $u = isset($this->BeAuth->user['userid'])? $this->BeAuth->user['userid'] : '-';
+        $u = $this->BeAuth->userid();
+        if (empty($u)) {
+            $u = '-';
+        }
         $event = array('EventLog'=>array('log_level'=>$level,
             'userid'=>$u, 'msg'=>$msg, 'context'=>strtolower($this->name)));
         $this->EventLog->create();
@@ -480,7 +484,7 @@ class AppController extends Controller {
         }
 
         // module list
-        $this->moduleList = ClassRegistry::init('PermissionModule')->getListModules($this->BeAuth->user['userid']);
+        $this->moduleList = ClassRegistry::init('PermissionModule')->getListModules($this->BeAuth->userid());
         $this->set('moduleList', $this->moduleList) ;
         $this->set('moduleListInv', array_reverse($this->moduleList)) ;
 
@@ -759,8 +763,9 @@ class AppController extends Controller {
 
     protected function checkObjectWritePermission($objectId) {
         $permission = ClassRegistry::init('Permission');
-        if(!$permission->isWritable($objectId, $this->BeAuth->user))
+        if (!$permission->isWritable($objectId, $this->BeAuth->getUser())) {
             throw new BeditaException(__('No write permissions on object', true));
+        }
     }
 
     protected function saveObject(BEAppModel $beModel) {

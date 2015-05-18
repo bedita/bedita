@@ -189,8 +189,9 @@ class MultimediaController extends ModulesController {
 
             $this->historyItem["object_id"] = $id;
             // concurrent access
-            if($this->modulePerms & BEDITA_PERMS_MODIFY) {
-                $objEditor->updateAccess($id, $this->BeAuth->user["id"]);
+            if ($this->modulePerms & BEDITA_PERMS_MODIFY) {
+                $user = $this->BeAuth->getUser();
+                $objEditor->updateAccess($id, $user['id']);
             }
 
             //check if hash is present elsewhere

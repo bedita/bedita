@@ -400,4 +400,12 @@ class BeAuthJwtComponent extends Object {
         return $this->user ? $this->user : array();
     }
 
+    /**
+     * Get the current identified user
+     * It replaces BeAuthComponent::getUser() in api context
+     */
+    public function getUser() {
+        return $this->getUserSession();
+    }
+
 }

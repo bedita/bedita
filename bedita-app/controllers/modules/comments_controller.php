@@ -69,7 +69,7 @@ class CommentsController extends ModulesController {
 			throw new BeditaException( __("No data", true));
 		$new = (empty($this->data['id'])) ? true : false ;
 		// Verify object permits
-//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) 
+//		if(!$new && !$this->Permission->verify($this->data['id'], $this->BeAuth->userid(), BEDITA_PERMS_MODIFY)) 
 //			throw new BeditaException(__("Error modifying permissions", true));
 		
 		$this->Transaction->begin() ;

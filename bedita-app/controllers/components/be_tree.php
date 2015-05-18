@@ -72,7 +72,7 @@ class BeTreeComponent extends Object {
 		$conf  = Configure::getInstance() ;
 		
 		// Get connected user
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		$userid = $this->controller->BeAuth->userid();
 		$filter = array(
 			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) ,
 			"count_permission" => true
@@ -91,7 +91,7 @@ class BeTreeComponent extends Object {
 		$conf  = Configure::getInstance() ;
 		
 		// Get connected user
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : '' ;
+		$userid = $this->controller->BeAuth->userid();
 		$filter = array(
 			"object_type_id" => array($conf->objectTypes['area']['id'],$conf->objectTypes['section']['id']) ,
 			"count_permission" => true
@@ -146,7 +146,10 @@ class BeTreeComponent extends Object {
 	public function getChildren($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
 		$conf  = Configure::getInstance() ;
 		// Get user connected
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
+		$userid = $this->controller->BeAuth->userid();
+		if (empty($userid)) {
+			$userid = null;
+		}
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
 		$objs = &  $this->Tree->getChildren($id, $userid, $status, $filter, $order, $dir, $page, $dim, $excludeIds) ;
 		return $objs ;
@@ -168,7 +171,10 @@ class BeTreeComponent extends Object {
 	public function getDescendants($id = null, $status = null, $filter = false, $order = null, $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
 		$conf  = Configure::getInstance() ;
 		// Get user data
-		$userid = (isset($this->controller->BeAuth->user["userid"])) ? $this->controller->BeAuth->user["userid"] : null ;
+		$userid = $this->controller->BeAuth->userid();
+		if (empty($userid)) {
+			$userid = null;
+		}
 		$filter = ($filter)? array_merge($this->filter, $filter) : $this->filter;
 		$objs = &  $this->Tree->getDescendants($id, $userid, $status, $filter, $order, $dir, $page, $dim, $excludeIds) ;
 		return $objs ;
