@@ -133,7 +133,8 @@ abstract class ApiBaseController extends FrontendController {
             try {
                 $postdata = file_get_contents('php://input');
                 $this->params['form'] = json_decode($postdata, true);
-                if (!empty(json_last_error())) {
+                $jsonError = json_last_error();
+                if (!empty($jsonError)) {
                     $this->params['form'] = array();
                 }
             } catch(Exception $ex) {
