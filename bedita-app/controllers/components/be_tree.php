@@ -48,12 +48,12 @@ class BeTreeComponent extends Object {
 	} 
 
 	/**
-	 * set filter parameters for controller
-	 * 
-	 * @param array object $controller
+	 * Initialize BeTree component
+	 *
+	 * @param Controller $controller
 	 */
-	function startup(&$controller) {
-		$this->controller 	= $controller;
+	function initialize(Controller $controller) {
+		$this->controller = $controller;
 	}
 
 	/**
