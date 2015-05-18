@@ -488,15 +488,10 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Revoke authentication removing refresh token
      *
-     * @param int $userId the user id
      * @param string $refreshToken the refresh token to revoke
      * @return void
      */
-    protected function deleteAuth($userId, $refreshToken) {
-        $user = $this->BeAuthJwt->identify();
-        if (!$user || $user['id'] != $userId) {
-            throw new BeditaBadRequestException();
-        }
+    protected function deleteAuth($refreshToken) {
         if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
             $this->setData(array('logout' => true));
         } else {

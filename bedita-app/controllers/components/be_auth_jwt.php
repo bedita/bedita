@@ -220,8 +220,8 @@ class BeAuthJwtComponent extends Object {
      * @return string|bool
      */
     public function generateRefreshToken() {
-        if (!$this->user) {
-            return false;
+        if (!$this->identify()) {
+            throw new BeditaUnauthorizedException();
         }
 
         $refreshToken = Security::generateAuthKey();
@@ -246,8 +246,8 @@ class BeAuthJwtComponent extends Object {
      * @return bool
      */
     public function revokeRefreshToken($refreshToken) {
-        if (!$this->user) {
-            return false;
+        if (!$this->identify()) {
+            throw new BeditaUnauthorizedException();
         }
 
         $hashJob = ClassRegistry::init('HashJob');
