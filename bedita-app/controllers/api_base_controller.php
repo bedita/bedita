@@ -165,9 +165,11 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->ResponseHandler->sendHeader('Access-Control-Allow-Methods', "POST, GET, PUT, DELETE, OPTIONS, HEAD");
-        $headers = getallheaders();
-        if (!empty($headers['Access-Control-Request-Headers'])) {
-            $this->ResponseHandler->sendHeader('Access-Control-Allow-Headers', $headers['Access-Control-Request-Headers']);
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (!empty($headers['Access-Control-Request-Headers'])) {
+                $this->ResponseHandler->sendHeader('Access-Control-Allow-Headers', $headers['Access-Control-Request-Headers']);
+            }
         }
 
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
