@@ -623,7 +623,9 @@ class BEObject extends BEAppModel {
         }
 
         $model = Configure::read('objectTypes.' . $this->findObjectTypeId($id) . '.model');
-        return ClassRegistry::init($model)->save(array(
+        $reg = ClassRegistry::getInstance();
+        $reg->removeObject($model);  // #292 - Avoid loop in some cases, if related object is of the same model as the parent.
+        return $reg->init($model)->save(array(
             'id' => $id,
             'title' => $title,
             'description' => $description,
