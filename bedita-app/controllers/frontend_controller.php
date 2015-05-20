@@ -341,7 +341,10 @@ abstract class FrontendController extends AppController {
 	 * @return void
 	 */
 	protected function publicationDisabled($status) {
-		$this->set('_serialize', array('publication'));
+		$type = $this->ResponseHandler->getType();
+		if (in_array($type, array('json', 'xml'))) {
+			throw new BeditaNotFoundException();
+		}
 		$this->render(false, $status);
 		echo $this->output;
 		$this->_stop();
