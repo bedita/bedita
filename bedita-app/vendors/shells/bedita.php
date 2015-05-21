@@ -929,13 +929,19 @@ class BeditaShell extends BeditaBaseShell {
 			$this->out("Missing -filter parameter");
 			return;
 		}
-		$this->out("Creating file : " . $expFile . " from object: " . $this->params["id"] 
-			. " using filter: " . $this->params["filter"]);
+
+        $defaultParams = array('app' => '', 'root' => '', 'working' => '', 'f' => '', 
+            'id' => '', 'filter' => '', 'webroot' => '');
+        $filterOptions = array_diff_key($this->params, $defaultParams);
+
+        $this->out("Creating file : " . $expFile . " from object: " . $this->params["id"] 
+        . " using filter: " . $this->params["filter"]);
+        $this->out('Filter options : ' . print_r($filterOptions, true));
+
+        $filterClass = Configure::read("filters.export." . $this->params["filter"]);
+        $filterModel = ClassRegistry::init($filterClass);
 		
-		$filterClass = Configure::read("filters.export." . $this->params["filter"]);
-		$filterModel = ClassRegistry::init($filterClass);
-		
-		$result = $filterModel->export($data);
+		$result = $filterModel->export($data, $filterOptions);
 		file_put_contents($expFile, $result["content"]);
 		$this->out("File created: " . $expFile . " - content type: " . $result["contentType"] 
 			. " size: " . $result["size"]);
