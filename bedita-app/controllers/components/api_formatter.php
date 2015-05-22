@@ -66,7 +66,8 @@ class ApiFormatterComponent extends Object {
             'status',
             'priority',
             'parent_id',
-            'parent_path'
+            'parent_path',
+            'url_label'
         )
     );
 
@@ -107,8 +108,108 @@ class ApiFormatterComponent extends Object {
      * @param Controller $controller
      * @return void
      */
-    public function initialize(Controller $controller) {
+    public function initialize(Controller $controller, array $settings = array()) {
         $this->controller = $controller;
+        if (isset($settings['objectFieldsToRemove']) && is_array($settings['objectFieldsToRemove'])) {
+            $this->objectFieldsToRemove($settings['objectFieldsToRemove'], true);
+        }
+
+        $confFields = Configure::read('api.formatting.fields');
+        if (!empty($confFields)) {
+            $this->objectFieldsToRemove($confFields);
+        }
+    }
+
+    /**
+     * Call without parameters to return the acutal self::objectFieldsToRemove
+     * Pass paramteres to setup new self::objectFieldsToRemove and return it
+     *
+     * If $override is true $confFields replaces self::objectFieldsToRemove
+     *
+     * If $override is false (default) then $confFields has to be an array like
+     *
+     * ```
+     * array(
+     *     'remove' => array(
+     *         'fieldToRemove_1',
+     *         'fieldToRemove_2',
+     *         'fieldOnWhichRemoveFields' => array(
+     *             'fieldToRemove_3',
+     *             'fieldToRemove_4'
+     *         )
+     *     ),
+     *     'keep' => array(
+     *         'fieldToKeep_1',
+     *         'fieldToKeep_2',
+     *         'fieldOnWhichKeepFields' => array(
+     *             'fieldToKeep_3'
+     *         )
+     *     )
+     * )
+     * ```
+     *
+     * All fields in 'remove' will be added to self::objectFieldsToRemove
+     * All fields in 'keep' will be removed from self::objectFieldsToRemove
+     *
+     * @param array $confFields
+     * @param boolean $override
+     * @return array
+     */
+    public function objectFieldsToRemove(array $confFields = array(), $override = false) {
+        if ($override) {
+            $this->objectFieldsToRemove = $confFields;
+            return $this->objectFieldsToRemove;
+        }
+
+        if (empty($confFields)) {
+            return $this->objectFieldsToRemove;
+        }
+
+        // add fields to remove
+        if (isset($confFields['remove']) && is_array($confFields['remove'])) {
+            foreach ($confFields['remove'] as $key => $field) {
+                if (is_array($field)) {
+                    if (is_string($key)) {
+                        if (isset($this->objectFieldsToRemove[$key])) {
+                            $this->objectFieldsToRemove[$key] = array_unique(array_merge($this->objectFieldsToRemove[$key], $field));
+                        } else {
+                            $this->objectFieldsToRemove[$key] = $field;
+                        }
+                    }
+                } else {
+                    if (isset($this->objectFieldsToRemove[$field])) {
+                        unset($this->objectFieldsToRemove[$field]);
+                    }
+                    if (!in_array($field, $this->objectFieldsToRemove)) {
+                        $this->objectFieldsToRemove[] = $field;
+                    }
+                }
+            }
+        }
+
+        // keep fields
+        if (isset($confFields['keep']) && is_array($confFields['keep'])) {
+            foreach ($confFields['keep'] as $key => $field) {
+                if (is_array($field)) {
+                    if (is_string($key)) {
+                        if (isset($this->objectFieldsToRemove[$key])) {
+                            $this->objectFieldsToRemove[$key] = array_values(
+                                array_diff($this->objectFieldsToRemove[$key], $field)
+                            );
+                        }
+                    }
+                } else {
+                    $found = array_search($field, $this->objectFieldsToRemove);
+                    if ($found !== false) {
+                        unset($this->objectFieldsToRemove[$found]);
+                    } elseif (isset($this->objectFieldsToRemove[$field])) {
+                        unset($this->objectFieldsToRemove[$field]);
+                    }
+                }
+            }
+        }
+
+        return $this->objectFieldsToRemove;
     }
 
     /**
