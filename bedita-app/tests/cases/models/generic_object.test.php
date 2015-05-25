@@ -41,6 +41,12 @@ class GenericObjectTestCase extends BeditaTestCase  {
 				$model = ClassRegistry::init($object["model"]);
 				$this->checkDuplicateBehavior($model);
 				pr("<hr/>");
+
+				// check 'Callback' behavior presence
+				$isIn = in_array('Callback', $model->actsAs);
+				$this->assertTrue($isIn);
+				$this->assertTrue($model->Behaviors->attached('Callback'));
+				$this->assertTrue($model->Behaviors->enabled('Callback'));
 			}
 		}
 	}

@@ -778,14 +778,14 @@ class _emptyAfterFindView {
 class BEAppObjectModel extends BEAppModel {
 	var $recursive 	= 2 ;
 
-	var $actsAs 	= array(
-			'Callback',
-			'CompactResult' 		=> array(),
-			'SearchTextSave',
-			'RevisionObject',
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
+	public $actsAs = array(
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave',
+        'RevisionObject',
+        'ForeignDependenceSave' => array('BEObject'),
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	var $hasOne= array(
@@ -1077,9 +1077,10 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 	public $useTable = 'objects';
 
 	public $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave',
-			'Notify'
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave',
+        'Notify'
 	);
 
 	public $hasOne= array();
@@ -1088,8 +1089,9 @@ class BeditaSimpleObjectModel extends BEAppObjectModel {
 class BeditaObjectModel extends BeditaSimpleObjectModel {
 
 	public $actsAs = array(
-		'CompactResult' => array(),
-		'SearchTextSave',
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave',
         'DeleteObject' => 'objects',
         'Notify'
 	);
@@ -1230,12 +1232,13 @@ class BeditaAnnotationModel extends BEAppObjectModel {
 			),
 	);
 
-	var $actsAs 	= array(
-			'CompactResult' 		=> array("ReferenceObject"),
-			'SearchTextSave',
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
+	public $actsAs = array(
+        'Callback',
+        'CompactResult'	=> array("ReferenceObject"),
+        'SearchTextSave',
+        'ForeignDependenceSave' => array('BEObject'),
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	protected $modelBindings = array(
@@ -1299,13 +1302,14 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 									"Content")
 	);
 
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array(),
-			'RevisionObject',
-			'ForeignDependenceSave' => array('BEObject', 'Content'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
+	public $actsAs = array(
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave' => array(),
+        'RevisionObject',
+        'ForeignDependenceSave' => array('BEObject', 'Content'),
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	var $hasOne= array(
@@ -1380,13 +1384,14 @@ class BeditaStreamModel extends BEAppObjectModel {
 	);
 
 
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array(),
-			'RevisionObject',
-			'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
+	public $actsAs = array(
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave' => array(),
+        'RevisionObject',
+        'ForeignDependenceSave' => array('BEObject', 'Content', 'Stream'),
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	var $hasOne= array(
@@ -1464,13 +1469,13 @@ class BeditaProductModel extends BEAppObjectModel {
 								"Product"),
 	);
 
-
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave'		=> array(),
-			'ForeignDependenceSave' => array('BEObject', 'Product'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
+	public $actsAs = array(
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave' => array(),
+        'ForeignDependenceSave' => array('BEObject', 'Product'),
+        'DeleteObject' => 'objects',
+        'Notify'
 	);
 
 	var $hasOne= array(
@@ -1498,15 +1503,17 @@ class BeditaProductModel extends BEAppObjectModel {
  */
 class BeditaCollectionModel extends BEAppObjectModel {
 
-	var $actsAs 	= array(
-			'CompactResult' 		=> array(),
-			'SearchTextSave',
-			'RevisionObject',
-			'ForeignDependenceSave' => array('BEObject'),
-			'DeleteDependentObject'	=> array('section'),
-			'DeleteObject' 			=> 'objects',
-			'Notify'
-	);
+	public $actsAs = array(
+        'Callback',
+        'CompactResult' => array(),
+        'SearchTextSave',
+        'RevisionObject',
+        'ForeignDependenceSave' => array('BEObject'),
+        'DeleteDependentObject'	=> array('section'),
+        'DeleteObject' => 'objects',
+        'Notify'
+    );
+
 	var $recursive 	= 2;
 
 	var $hasOne = array(
@@ -1622,5 +1629,3 @@ abstract class BeditaExportFilter extends BEAppModel {
 	}
 
 };
-
-?>
