@@ -250,10 +250,27 @@ abstract class ApiBaseController extends FrontendController {
                 }
             }
         } else {
-            $this->responseData['message'] = 'Hello World!';
+            $this->baseUrlResponse();
             return $this->response(false);
         }
         $this->response();
+    }
+
+    /**
+     * prepare response data for base api url
+     *
+     * default response: show list of available endpoints with urls
+     * override in subclasses for custom response
+     */
+    protected function baseUrlResponse() {
+        $baseUrl = Router::url($this->here, true);
+        $rPos = strrpos($baseUrl, '/');
+        if ($rPos !== (strlen($baseUrl) - 1)) {
+            $baseUrl .= '/';
+        }
+        foreach ($this->endPoints as $endPoint) {
+            $this->responseData[$endPoint] = $baseUrl . $endPoint;
+        }
     }
 
     /**
