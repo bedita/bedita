@@ -644,7 +644,7 @@ class AdminController extends ModulesController {
 			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully", true));
 		}
 
-		$this->eventInfo("addon ". $this->params["form"]["model"]." disable succesfully");
+        $this->eventInfo("addon {$this->params['form']['name']} disabled successfully");
 	}
 
 	public function updateAddon() {
