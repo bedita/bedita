@@ -263,7 +263,7 @@ abstract class ApiBaseController extends FrontendController {
      * override in subclasses for custom response
      */
     protected function baseUrlResponse() {
-        $baseUrl = Router::url($this->here, true);
+        $baseUrl = Router::url(null, true);
         $rPos = strrpos($baseUrl, '/');
         if ($rPos !== (strlen($baseUrl) - 1)) {
             $baseUrl .= '/';
