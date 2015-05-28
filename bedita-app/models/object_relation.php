@@ -251,14 +251,14 @@ class ObjectRelation extends BEAppModel
                 // rule on sideA / sideB
                 } else {
                     $addRelation = array();
-                    if (key_exists('left', $rule)) {
+                    if (array_key_exists('left', $rule)) {
                         if(is_array($rule['left']) && (in_array($objectType, $rule['left']) || (empty($rule['left'])))) {
                             $addRelation[$relation] = $relLabel;
                         } else if($rule['left'] === $objectType) {
                             $addRelation[$relation] = $relLabel;
                         }
                     }
-                    if (key_exists('right', $rule)) {
+                    if (array_key_exists('right', $rule)) {
                         if (!empty($rule['inverse'])) {
                             $rightRel = $rule['inverse'];
                             $rightRelLabel = (!empty($rule['inverseLabel']))? $rule['inverseLabel'] : $rule['inverse'];

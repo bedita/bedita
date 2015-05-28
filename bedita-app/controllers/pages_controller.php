@@ -137,7 +137,7 @@ class PagesController extends AppController {
                     $ot = $relTypes[$usedRelation][$objectTypeName];
                 } else {
                     $addRight = array();
-                    if (key_exists("left", $relTypes[$usedRelation])) {
+                    if (array_key_exists("left", $relTypes[$usedRelation])) {
                         // if 'left' is empty means that in the 'left' you have all objects in 'related' group => get right relations
                         // or if $objectTypeName is in the 'left' => get right relations
                         if (empty($relTypes[$usedRelation]["left"])
@@ -152,7 +152,7 @@ class PagesController extends AppController {
                     }
 
                     $addLeft = array();
-                    if (key_exists("right", $relTypes[$usedRelation])) {
+                    if (array_key_exists("right", $relTypes[$usedRelation])) {
                         // if 'right' is empty means that in the 'right' you have all objects in 'related' group => get left relations
                         // or if $objectTypeName is in the 'right' => get left relations
                         if (empty($relTypes[$usedRelation]["right"])

@@ -151,7 +151,7 @@ class SmartyView extends View {
 
 		// unset local var (like $params in View::element)
 		foreach ($___data_for_view as $key => $value) {
-			if (!key_exists($key, $prevSmartyVars) && !key_exists($key, $this->loaded)) {
+			if (!array_key_exists($key, $prevSmartyVars) && !array_key_exists($key, $this->loaded)) {
 				$this->_smarty->clearAssign($key);
 			}
 		}
