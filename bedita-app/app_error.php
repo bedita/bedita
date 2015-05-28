@@ -124,7 +124,7 @@ class AppError extends ErrorHandler {
 			// log error
 			$this->errorTrace = get_class($e). ": ". $e->getMessage()."\nFile: ".$e->getFile().
 				" - line: ".$e->getLine()."\nTrace:\n". $e->getTraceAsString();
-            $this->log($e->getMessage() . $url);
+            $this->log($e->getMessage() .  ' url: ' . $this->getUrl());
             $this->log($this->errorTrace, 'exception');
 			$this->sendMail($this->errorTrace);
 			$this->controller->set($messages);
@@ -483,7 +483,7 @@ class AppError extends ErrorHandler {
 	/**
 	 * Return the request url
 	 *
-	 * @return void
+	 * @return string|null
 	 */
 	public function getUrl() {
 		$url = env('REQUEST_URI');
