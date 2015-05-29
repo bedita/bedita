@@ -33,9 +33,13 @@ class BeHtmlHelper extends HtmlHelper {
         }
 
         App::Import('Vendor', 'simple_html_dom');
-        App::Import('Vendor', 'hyphenator/Hyphenator');
+        App::import('Vendor', 'Hyphenator', array('file' => 'hyphenator' . DS . 'Hyphenator.php'));
 
-        $hyphenator = ClassRegistry::init('Hyphenator');
+        $hyphenator = ClassRegistry::getObject('Hyphenator');
+        if (!$hyphenator) {
+            $hyphenator = new Hyphenator();
+            ClassRegistry::addObject('Hyphenator', $hyphenator);
+        }
 
         $excludeSelectors = array_merge($excludeSelectorDefaults, $excludeSelectors);
         $restore = array();

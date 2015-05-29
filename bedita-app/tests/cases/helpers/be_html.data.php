@@ -29,5 +29,3 @@ class BeHtmlTestData extends BeditaTestData {
 	);
 
 }
-
-?>

@@ -49,4 +49,3 @@ class BeHtmlTestCase extends BeditaTestCase {
 		$this->BeHtmlHelper = new BeHtmlHelper();
 	}
 }
-?>
