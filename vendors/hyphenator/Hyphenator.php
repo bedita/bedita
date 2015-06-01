@@ -658,8 +658,10 @@ class Hyphenator {
             $this->prepareLanguagesObj(lang);
         }
         $target = html_entity_decode($target, ENT_NOQUOTES, 'UTF-8');
-        $target = preg_replace_callback($lo->genRegExp, function($match) use ($lo, $lang) {
-            return $this->hyphenateWord($lo, $lang, $match[0]);
+        // trick for PHP 5.3 to pass $this in closure
+        $self = $this;
+        $target = preg_replace_callback($lo->genRegExp, function($match) use ($lo, $lang, $self) {
+            return $self->hyphenateWord($lo, $lang, $match[0]);
         }, $target);
         return $target;
     }
