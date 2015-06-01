@@ -542,7 +542,7 @@ class Hyphenator {
         $indexedTrie = &$lo->indexedTrie;
         $valueStore = &$lo->valueStore->keys;
 
-        $char = html_entity_decode($this->hyphen);
+        $char = html_entity_decode($this->hyphen, ENT_NOQUOTES, 'UTF-8');
 
         if ($word === '') {
             $hw = '';
@@ -666,5 +666,3 @@ class Hyphenator {
         return $target;
     }
 }
-
-?>
