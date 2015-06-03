@@ -534,7 +534,7 @@ $(document).ready(function(){
 
     $('.selecteditems').text($('.objectCheck:checked').length);
 
-    $(document).on('click', '.selectAll', function () {
+    $(document).on('click', '.selectAll', function() {
         var $this = $(this),
             status = $this.prop('checked'),
             ctx = $this.attr('data-context'),
