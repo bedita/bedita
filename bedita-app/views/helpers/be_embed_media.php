@@ -155,6 +155,12 @@ class BeEmbedMediaHelper extends AppHelper {
 			if (empty($htmlAttributes["alt"])) {
 				$htmlAttributes["alt"] = $obj["title"];
 			}
+			if (!empty($params["sizeAttributes"]) && strpos($src, $this->_conf['url']) === 0) {
+				$localSrc = $this->_conf['root'] . str_replace($this->_conf['url'], '', $src);
+				$size = getimagesize($localSrc);
+				$htmlAttributes["width"] = $size[0];
+				$htmlAttributes["height"] = $size[1];
+			}
 			return $this->Html->image($src, $htmlAttributes);
 		}
 	}
