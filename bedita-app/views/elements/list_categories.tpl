@@ -4,7 +4,7 @@
 var urlDelete = "{$html->url('deleteCategories/')}",
     messages = {
         'bulkDelete': "{t}Are you sure that you want to delete the selected item(s)?{/t}",
-        'bulkMerge': "{t}Are you sure that you want to merge the selected item(s)?{/t}",
+        'bulkMerge': "{t}Are you sure that you want to merge the selected item(s)? All contents related to one or more of the checked categories will be associated to the first category created within the selection, while other ones will be deleted.{/t}",
     };
 
 $(document).ready(function() {

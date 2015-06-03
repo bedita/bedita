@@ -1539,6 +1539,7 @@ abstract class ModulesController extends AppController {
             }
         }
 
+        $mergeInfo;
         $this->Transaction->begin();
         if ($action == 'merge') {
             // Merge.
@@ -1555,6 +1556,7 @@ abstract class ModulesController extends AppController {
                     throw new BeditaException(__('Error merging categories'), true);
                 }
             }
+            $mergeInfo = $Category->read('name', $mergeId);
         }
         //*/
         foreach ($this->data['ids'] as $id) {
@@ -1571,7 +1573,7 @@ abstract class ModulesController extends AppController {
         //*/
         $this->Transaction->commit();
 
-        $msg = $action == 'merge' ? 'merged' : 'deleted';
+        $msg = $action == 'merge' ? "merged to {$mergeInfo['name']}" : 'deleted';
         $ids = implode(', ', $this->data['ids']);
         $this->userInfoMessage(__('Categories ' . $msg, true) . ' - ' . $ids);
         $this->eventInfo('Categories ' . $ids . ' ' . $msg);
