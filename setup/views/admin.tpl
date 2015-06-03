@@ -23,7 +23,7 @@
 <h3>Administrator</h3>
 <p>
 	{* #540 - Prevent overwriting of system user. *}
-	<span class="INFO">[INFO]</span>: a system user <code>bedita</code> with password <code>bedita</code> has already been set up.
+	<span class="INFO">[INFO]</span>: a system user <code>{$existingUser}</code>{if $defaultPassword} with password <code>bedita</code>{/if} has already been set up.
 	You can choose to <b>add</b> another administrator or <b>replace</b> the system user.
 </p>
 <p>

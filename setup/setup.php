@@ -245,6 +245,8 @@
 			require_once(CORE_PATH . 'cake' . DS . 'bootstrap.php');
 			Configure::write('debug', 1);
 			$this->initSmarty();
+        	$this->smarty->assign('existingUser', ClassRegistry::init('User')->field('userid', array('id' => 1)));
+        	$this->smarty->assign('defaultPassword', (ClassRegistry::init('User')->field('passwd', array('id' => 1)) == md5('bedita')));
 			$this->smarty->assign('steps', $this->steps);
 			$config = Configure::getInstance();
 			$baseUrl = $config->read('App.baseUrl');
@@ -529,8 +531,7 @@
 		}
 
 		private function _saveuser($userdata) {
-			$userModel = ClassRegistry::init('User');
-			if (!$userModel->save($userdata)) {
+			if (!ClassRegistry::init('User')->save($userdata)) {
 				return false;
 			}
 			return true;
