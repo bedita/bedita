@@ -1,9 +1,12 @@
 <script type="text/javascript">
-var urlDelete = "{$html->url('deleteCategories/')}";
-var messages = {
-    'bulkDelete': "{t}Are you sure that you want to delete the selected item(s)?{/t}",
-    'bulkMerge': "{t}Are you sure that you want to merge the selected item(s)?{/t}",
-};
+'use strict';
+
+var urlDelete = "{$html->url('deleteCategories/')}",
+    messages = {
+        'bulkDelete': "{t}Are you sure that you want to delete the selected item(s)?{/t}",
+        'bulkMerge': "{t}Are you sure that you want to merge the selected item(s)?{/t}",
+    };
+
 $(document).ready(function() {
     $('#bulkDelete, #bulkMerge').bind('click', function() {
         return confirm(messages[$(this).prop('id')]);
@@ -33,8 +36,9 @@ $(document).ready(function() {
                 alert(err);
             })
             .done(function (data) {
-                if (!data.htmlMsg) {
-                    data.htmlMsg = '<div class="message info">' +
+                var htmlMsg = data.htmlMsg || null;
+                if (!htmlMsg) {
+                    htmlMsg = '<div class="message info">' +
                         '<h2>Info</h2>' +
                         '<p style="margin-top: 10px">' + data.info + '</p>' +
                         '<hr />' +
@@ -43,8 +47,8 @@ $(document).ready(function() {
                 }
 
                 $('#messagesDiv').empty()
-                    .html(data.htmlMsg)
-                    .triggerMessage(type, -1);
+                    .html(htmlMsg)
+                    .triggerMessage('info', -1);
             });
     });
 
