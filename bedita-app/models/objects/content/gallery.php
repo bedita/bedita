@@ -64,6 +64,13 @@ class Gallery extends BeditaContentModel {
                 'Annotation',
                 'ObjectProperty'
             )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText'
+                'Category'
+                'ObjectProperty'
+            )
         )
     );
 

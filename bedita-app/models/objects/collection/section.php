@@ -71,6 +71,14 @@ class Section extends BeditaCollectionModel
                 'ObjectProperty'
                 ),
             'Tree'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'ObjectProperty'
+                ),
+            'Tree'
         )
     );
 

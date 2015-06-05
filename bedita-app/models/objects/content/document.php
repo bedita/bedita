@@ -64,6 +64,14 @@ class Document extends BeditaContentModel {
                 'GeoTag',
                 'ObjectProperty'
             )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'GeoTag',
+                'ObjectProperty'
+            )
         )
     );
 

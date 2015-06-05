@@ -71,6 +71,12 @@ class Area extends BeditaCollectionModel
                 'RelatedObject',
                 'ObjectProperty'
             )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty'
+            )
         )
     );
 

@@ -72,6 +72,15 @@ class Image extends BeditaStreamModel {
             ),
             'Content',
             'Stream'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'Category'
+            ),
+            'Content',
+            'Stream'
         )
     );
 

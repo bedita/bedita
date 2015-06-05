@@ -47,7 +47,8 @@ class Comment extends BeditaAnnotationModel
             'ReferenceObject'
         ),
         'minimum' => array('BEObject' => array('ObjectType')),
-        'frontend' => array('BEObject' => array('RelatedObject', 'GeoTag'))
+        'frontend' => array('BEObject' => array('RelatedObject', 'GeoTag')),
+        'api' => array('BEObject' => array('GeoTag'))
     );
 
 	var $validate = array(

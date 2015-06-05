@@ -68,6 +68,15 @@ class Event extends BeditaContentModel {
                 'ObjectProperty'
             ),
             'DateItem'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText'
+                'Category',
+                'GeoTag',
+                'ObjectProperty'
+            ),
+            'DateItem'
         )
     );
 

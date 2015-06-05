@@ -63,6 +63,13 @@ class ShortNews extends BeditaContentModel {
                 'Category',
                 'ObjectProperty'
             )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'ObjectProperty'
+            )
         )
     );
 

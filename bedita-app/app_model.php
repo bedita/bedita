@@ -1138,6 +1138,13 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
                 'Category',
                 'RelatedObject'
             )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'Category'
+            )
         )
     );
 
@@ -1271,7 +1278,8 @@ class BeditaAnnotationModel extends BEAppObjectModel {
             ),
             'ReferenceObject'),
         'minimum' => array('BEObject' => array('ObjectType')),
-        'frontend' => array('BEObject', 'ReferenceObject')
+        'frontend' => array('BEObject', 'ReferenceObject'),
+        'api' => array('BEObject')
     );
 
 }
@@ -1331,6 +1339,14 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
                 'ObjectProperty',
                 'Category',
                 'RelatedObject'
+            ),
+            'Content'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'Category'
             ),
             'Content'
         )
@@ -1430,6 +1446,15 @@ class BeditaStreamModel extends BEAppObjectModel {
             ),
             'Content',
             'Stream'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'Category'
+            ),
+            'Content',
+            'Stream'
         )
     );
 
@@ -1525,6 +1550,15 @@ class BeditaProductModel extends BEAppObjectModel {
                 'RelatedObject',
                 'Category',
                 'Annotation',
+                'GeoTag'
+            ),
+            'Product'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty'
+                'Category',
                 'GeoTag'
             ),
             'Product'
