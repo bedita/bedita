@@ -322,9 +322,7 @@ class BEAppModel extends AppModel {
             'frontend' => 'minimum'
         );
         if (!isset($this->modelBindings[$level])) {
-            if (!array_key_exists($level, $fallbacks)) {
-                throw new BeditaException("Contain level not found: $level");
-            } else {
+            if (array_key_exists($level, $fallbacks)) {
                 // fallback
                 foreach ($fallbacks as $original => $fallback) {
                     if ($level == $original && isset($this->modelBindings[$fallback])) {
@@ -335,7 +333,7 @@ class BEAppModel extends AppModel {
             }
         }
 
-		if(!isset($this->modelBindings[$level])) {
+		if (!isset($this->modelBindings[$level])) {
 			throw new BeditaException("Contain level not found: $level");
 		}
 		$this->contain($this->modelBindings[$level]);
