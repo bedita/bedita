@@ -1104,28 +1104,42 @@ class BeditaObjectModel extends BeditaSimpleObjectModel {
 			)
 	);
 
-	protected $modelBindings = array(
-				"detailed" =>  array("BEObject" => array("ObjectType",
-															"UserCreated",
-															"UserModified",
-															"Permission",
-															"ObjectProperty",
-															"LangText",
-															"RelatedObject",
-															"Annotation",
-				                                            "Category"
-															)),
-				"default" => array("BEObject" => array("ObjectProperty",
-									"LangText", "ObjectType", "Annotation",
-									"Category", "RelatedObject" )),
-						
-				"minimum" => array("BEObject" => array("ObjectType")),
-			
-				"frontend" => array("BEObject" => array("ObjectProperty",
-					"LangText", "ObjectType", "Annotation",
-					"Category", "RelatedObject" )),
-						
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Annotation',
+                'Category'
+            )
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Annotation',
+                'Category',
+                'RelatedObject'
+            )
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Annotation',
+                'Category',
+                'RelatedObject'
+            )
+        )
+    );
 
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$data2 = $data;
@@ -1241,16 +1255,24 @@ class BeditaAnnotationModel extends BEAppObjectModel {
         'Notify'
 	);
 
-	protected $modelBindings = array(
-		"detailed" =>  array("BEObject" => array(
-									"ObjectType",
-									"UserCreated",
-									"Version" => array("User.realname", "User.userid")
-								), "ReferenceObject"),
-		"default" =>  array("BEObject" => array("ObjectType","UserCreated"), "ReferenceObject"),
-		"minimum" => array("BEObject" => array("ObjectType")),
-		"frontend" => array("BEObject", "ReferenceObject")
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'Version' => array('User.realname', 'User.userid')
+            ),
+            'ReferenceObject'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated'
+            ),
+            'ReferenceObject'),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array('BEObject', 'ReferenceObject')
+    );
 
 }
 
@@ -1272,35 +1294,47 @@ class BeditaSimpleStreamModel extends BEAppObjectModel {
 		"note" => 2
 	);
 
-	protected $modelBindings = array(
-				"detailed" => array("BEObject" => array("ObjectType",
-														"Permission",
-														"UserCreated",
-														"UserModified",
-														"RelatedObject",
-														"Annotation",
-														"Category",
-														"LangText",
-														"ObjectProperty",
-														"Alias",
-														"Version" => array("User.realname", "User.userid")
-													),
-									"Content"),
-				"default" => array("BEObject" => array(	"ObjectProperty",
-														"LangText",
-														"ObjectType",
-														"Annotation",
-														"Category"),
-									"Content"),
-				"minimum" => array("BEObject" => array("ObjectType","Category"), "Content"),
-
-				"frontend" => array("BEObject" => array("LangText",
-														"ObjectProperty",
-														"Category",
-														"RelatedObject"
-														),
-									"Content")
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'Permission',
+                'UserCreated',
+                'UserModified',
+                'RelatedObject',
+                'Annotation',
+                'Category',
+                'LangText',
+                'ObjectProperty',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid')
+            ),
+            'Content'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Annotation',
+                'Category'
+            ),
+            'Content'
+        ),
+        'minimum' => array(
+            'BEObject' => array('ObjectType', 'Category'),
+            'Content'
+        ),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'Category',
+                'RelatedObject'
+            ),
+            'Content'
+        )
+    );
 
 	public $actsAs = array(
         'Callback',
@@ -1352,36 +1386,52 @@ class BeditaStreamModel extends BEAppObjectModel {
 		"note" => 2
 	);
 
-	protected $modelBindings = array(
-				"detailed" => array("BEObject" => array("ObjectType",
-														"Permission",
-														"UserCreated",
-														"UserModified",
-														"RelatedObject",
-														"Category",
-														"ObjectProperty",
-														"LangText",
-														"Annotation",
-														"Alias",
-														"Version" => array("User.realname", "User.userid")
-														),
-									"Content", "Stream"),
-				"default" => array("BEObject" => array(	"ObjectProperty",
-														"LangText",
-														"ObjectType",
-				                                        "RelatedObject",
-														"Category",
-														"Annotation"),
-									"Content", "Stream"),
-				"minimum" => array("BEObject" => array("ObjectType","Category"),"Content", "Stream"),
-
-				"frontend" => array("BEObject" => array("LangText",
-														"ObjectProperty",
-														"Category",
-														"RelatedObject"
-														),
-									"Content", "Stream")
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'Permission',
+                'UserCreated',
+                'UserModified',
+                'RelatedObject',
+                'Category',
+                'ObjectProperty',
+                'LangText',
+                'Annotation',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid')
+            ),
+            'Content',
+            'Stream'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'RelatedObject',
+                'Category',
+                'Annotation'
+            ),
+            'Content',
+            'Stream'
+        ),
+        'minimum' => array(
+            'BEObject' => array('ObjectType', 'Category'),
+            'Content',
+            'Stream'
+        ),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'Category',
+                'RelatedObject'
+            ),
+            'Content',
+            'Stream'
+        )
+    );
 
 
 	public $actsAs = array(
@@ -1439,35 +1489,47 @@ class BeditaProductModel extends BEAppObjectModel {
 		"note" => 2
 	);
 
-	protected $modelBindings = array(
-			"detailed" => array("BEObject" => array("ObjectType",
-													"Permission",
-													"UserCreated",
-													"UserModified",
-													"RelatedObject",
-													"ObjectProperty",
-													"LangText",
-													"Category",
-													"Annotation",
-													"Alias",
-													"Version" => array("User.realname", "User.userid")
-												),
-								"Product"),
-			"default" => array("BEObject" => array(	"ObjectProperty",
-													"LangText",
-													"ObjectType"),
-								"Product"),
-			"minimum" => array("BEObject" => array("ObjectType"),"Product"),
-
-			"frontend" => array("BEObject" => array("LangText",
-													"ObjectProperty",
-													"RelatedObject",
-													"Category",
-													"Annotation",
-													"GeoTag"
-												),
-								"Product"),
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'Permission',
+                'UserCreated',
+                'UserModified',
+                'RelatedObject',
+                'ObjectProperty',
+                'LangText',
+                'Category',
+                'Annotation',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid')
+            ),
+            'Product'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType'
+            ),
+            'Product'
+        ),
+        'minimum' => array(
+            'BEObject' => array('ObjectType'),
+            'Product'
+        ),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty',
+                'RelatedObject',
+                'Category',
+                'Annotation',
+                'GeoTag'
+            ),
+            'Product'
+        )
+    );
 
 	public $actsAs = array(
         'Callback',

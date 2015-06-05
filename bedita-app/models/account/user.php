@@ -65,11 +65,11 @@ class User extends BEAppModel
 		)
 	);
 
-	protected $modelBindings = array(
-		"detailed" =>  array("Group", "ObjectUser", "Permission", "UserProperty"),
-		"default" => array("Group", "ObjectUser", "UserProperty"),
-		"minimum" => array()
-	);
+    protected $modelBindings = array(
+        'detailed' =>  array('Group', 'ObjectUser', 'Permission', 'UserProperty'),
+        'default' => array('Group', 'ObjectUser', 'UserProperty'),
+        'minimum' => array()
+    );
 	
 	var $hasAndBelongsToMany = array('Group');
 

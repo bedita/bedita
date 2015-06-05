@@ -21,54 +21,62 @@
 
 /**
  * Event content. Associated to items DateItem (event start_date and end_date) and GeoTag (event location)
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class Event extends BeditaContentModel
-{
+class Event extends BeditaContentModel {
+
     var $useTable = 'contents';
 
-	protected $modelBindings = array( 
-				"detailed" =>  array(
-								"BEObject" => array("ObjectType", 
-													"UserCreated", 
-													"UserModified", 
-													"Permission",
-													"ObjectProperty",
-													"LangText",
-													"RelatedObject",
-													"Annotation",
-													"Category",
-													"Alias",
-													"Version" => array("User.realname", "User.userid"),
-													"GeoTag"
-													),
-									"DateItem"),
-				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 
-								"ObjectType", "Category", "RelatedObject", "Annotation", "GeoTag"),
-								"DateItem"),
-				"minimum" => array("BEObject" => array("ObjectType")),
-		
-				"frontend" => array("BEObject" => array("LangText", 
-														"UserCreated", 
-														"RelatedObject", 
-														"Category", 
-														"Annotation",
-														"GeoTag",
-														"ObjectProperty"), 
-									"DateItem")
-	);
-    
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Annotation',
+                'Category',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
+            ),
+            'DateItem'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Category',
+                'RelatedObject',
+                'Annotation',
+                'GeoTag'
+            ),
+            'DateItem'
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'UserCreated',
+                'RelatedObject',
+                'Category',
+                'Annotation',
+                'GeoTag',
+                'ObjectProperty'
+            ),
+            'DateItem'
+        )
+    );
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem'),
 			'DeleteObject' 			=> 'objects',
 	);
-	
-	public $objectTypesGroups = array("leafs", "related", "tree");
+
+	public $objectTypesGroups = array('leafs', 'related', 'tree');
 
 	var $hasMany = array(
 			'DateItem' =>

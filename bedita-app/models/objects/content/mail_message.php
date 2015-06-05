@@ -21,12 +21,6 @@
 
 /**
  * Mail message content
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class MailMessage extends BeditaContentModel
 {
@@ -56,25 +50,32 @@ class MailMessage extends BeditaContentModel
 					'joinTable' => 'mail_group_messages'
 				)
 	);
-		
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permission",
-															"RelatedObject",
-															"Annotation",
-															"Version" => array("User.realname", "User.userid")
-															),
-									 "Content", "MailGroup"
-									),
-				"default" => array("BEObject" => array("ObjectType", "RelatedObject"), "Content"),
-									
-				"mailgroup" => array("MailGroup"),
 
-				"minimum" => array("BEObject" => array("ObjectType"), "Content")
-	);
-	
+    protected $modelBindings = array(
+        "detailed" => array(
+            "BEObject" => array(
+                "ObjectType",
+                "UserCreated",
+                "UserModified",
+                "Permission",
+                "RelatedObject",
+                "Annotation",
+                "Version" => array("User.realname", "User.userid")
+            ),
+            "Content",
+            "MailGroup"
+        ),
+        "default" => array(
+            "BEObject" => array("ObjectType", "RelatedObject"),
+            "Content"
+        ),
+        "mailgroup" => array("MailGroup"),
+        "minimum" => array(
+            "BEObject" => array("ObjectType"),
+            "Content"
+        )
+    );
+
 	var $validate = array(
 		"subject" => array(
 			"rule" 			=> array('custom', '/.+/') ,
@@ -144,4 +145,3 @@ class MailMessage extends BeditaContentModel
 		return $sender;
 	}
 }
-?>
