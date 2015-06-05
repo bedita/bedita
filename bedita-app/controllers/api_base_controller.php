@@ -45,11 +45,19 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultEndPoints = array('objects', 'auth', 'me', 'poster');
 
     /**
-     * Default allowed model bindings
+     * The default binding level
+     *
+     * @see FrontendController::defaultBindingLevel
+     * @var string
+     */
+    protected $defaultBindingLevel = 'api';
+
+    /**
+     * Allowed model bindings
      *
      * @var array
      */
-    private $defaultModelBindings = array('default', 'frontend', 'minimum');
+    protected $allowedModelBindings = array('default', 'frontend', 'minimum');
 
     /**
      * Other endpoints specified in the frontend app
@@ -313,7 +321,7 @@ abstract class ApiBaseController extends FrontendController {
                 }
             } else {
                 $options = array();
-                if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->defaultModelBindings)) {
+                if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->allowedModelBindings)) {
                     $options['bindingLevel'] = $this->params['url']['binding'];
                 }
                 $object = $this->loadObj($id, true, $options);

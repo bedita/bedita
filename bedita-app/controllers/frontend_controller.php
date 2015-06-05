@@ -146,6 +146,15 @@ abstract class FrontendController extends AppController {
 	 */
 	protected $showUnauthorized = false;
 
+	/**
+	 * The default binding level used loading objects
+	 * Bindings level are defined in the models
+	 *
+	 * @see BEAppModel::modelBindings
+	 * @var string
+	 */
+	protected $defaultBindingLevel = 'frontend';
+
 	const UNLOGGED = "unlogged";
 	const UNAUTHORIZED = "unauthorized";
 
@@ -1232,6 +1241,9 @@ abstract class FrontendController extends AppController {
 				'FrontendController::loadObj() require an object id'
 			);
 		}
+
+		$defaultOptions = array('bindingLevel' => $this->defaultBindingLevel);
+		$options = array_merge($defaultOptions, $options);
 
 		// use object cache
 		if(isset($this->objectCache[$obj_id])) {
