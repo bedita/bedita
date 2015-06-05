@@ -21,12 +21,6 @@
 
 /**
  * Comment annotation
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Comment extends BeditaAnnotationModel
 {
@@ -35,22 +29,28 @@ class Comment extends BeditaAnnotationModel
 	var $actsAs = array(); 
 
 	public $objectTypesGroups = array("nodashboard");
-	
-	protected $modelBindings = array( 
-		"detailed" =>  array("BEObject" => array(
-												"ObjectType",
-												"UserCreated",
-												"UserModified",
-												"RelatedObject",
-												"Version" => array("User.realname", "User.userid"),
-												"GeoTag"
-											), "ReferenceObject"),
-		"default" =>  array("BEObject" => array("ObjectType", "GeoTag"), "ReferenceObject"),
-		"minimum" => array("BEObject" => array("ObjectType")),
-		
-		"frontend" => array("BEObject" => array("RelatedObject", "GeoTag"))
-	);
-	
+
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'RelatedObject',
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
+            ),
+            'ReferenceObject'
+        ),
+        'default' => array(
+            'BEObject' => array('ObjectType', 'GeoTag'),
+            'ReferenceObject'
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array('BEObject' => array('RelatedObject', 'GeoTag')),
+        'api' => array('BEObject' => array('GeoTag'))
+    );
+
 	var $validate = array(
 			'author' => array(
 				'required' 		=> true
@@ -79,4 +79,3 @@ class Comment extends BeditaAnnotationModel
         }
    	}
 }
-?>
