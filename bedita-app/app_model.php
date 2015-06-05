@@ -322,12 +322,15 @@ class BEAppModel extends AppModel {
             'frontend' => 'minimum'
         );
         if (!isset($this->modelBindings[$level])) {
-            if (array_key_exists($level, $fallbacks)) {
-                // fallback
-                foreach ($fallbacks as $original => $fallback) {
-                    if ($level == $original && isset($this->modelBindings[$fallback])) {
-                        $level = $fallback;
-                        break;
+            // search fallback
+            $end = false;
+            while (!$end) {
+                if (!isset($fallbacks[$level])) {
+                    $end = true;
+                } else {
+                    $level = $fallbacks[$level];
+                    if (isset($this->modelBindings[$level])) {
+                        $end = true;
                     }
                 }
             }
