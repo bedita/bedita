@@ -317,16 +317,56 @@ class BEAppModel extends AppModel {
 	}
 
 	public function containLevel($level = "minimum") {
-		// try to fallback to default "minimum" modelBindings level if "frontend" level doesn't exist
-		if ($level == "frontend" && !isset($this->modelBindings[$level])) {
-			$level = "minimum";
-		}
+        $fallbacks = array(
+            'api' => 'frontend',
+            'frontend' => 'minimum'
+        );
+        if (!isset($this->modelBindings[$level])) {
+            if (!array_key_exists($level, $fallbacks)) {
+                throw new BeditaException("Contain level not found: $level");
+            } else {
+                // fallback
+                foreach ($fallbacks as $original => $fallback) {
+                    if ($level == $original && isset($this->modelBindings[$fallback])) {
+                        $level = $fallback;
+                        break;
+                    }
+                }
+            }
+        }
+
 		if(!isset($this->modelBindings[$level])) {
 			throw new BeditaException("Contain level not found: $level");
 		}
 		$this->contain($this->modelBindings[$level]);
 		return $this->modelBindings[$level];
 	}
+
+    /**
+     * Return self::modelBindings level
+     *
+     * @param string $level define the level to return. Leave empty to return all bindings level
+     * @return array|false return false if $level is not set
+     */
+    public function getBindingsLevel($level = null) {
+        if (empty($level)) {
+            return $this->modelBindings;
+        }
+        if (!isset($this->modelBindings[$level])) {
+            return false;
+        }
+        return $this->modelBindings[$level];
+    }
+
+    /**
+     * Set self::modelBindings level
+     *
+     * @param string $level the level name
+     * @param array $bindings array of model bindings
+     */
+    public function setBindingsLevel($level, array $bindings = array()) {
+        $this->modelBindings[$level] = $bindings;
+    }
 
 	public function fieldsString($modelName, $alias = null, $excludeFields = array()) {
 		$s = $this->getStartQuote();
@@ -1557,7 +1597,7 @@ class BeditaProductModel extends BEAppObjectModel {
         'api' => array(
             'BEObject' => array(
                 'LangText',
-                'ObjectProperty'
+                'ObjectProperty',
                 'Category',
                 'GeoTag'
             ),

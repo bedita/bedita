@@ -107,6 +107,28 @@ class GenericObjectTestCase extends BeditaTestCase  {
 		$this->assertFalse($res);
 	}
 
+	public function testBindingsLevel() {
+		$document = ClassRegistry::init('Document');
+		$bindingsLevel = $document->getBindingsLevel();
+		$levelNames = array_keys($bindingsLevel);
+		$expectedNames = array('detailed', 'default', 'minimum', 'frontend', 'api');
+		$this->assertEqual($levelNames, $expectedNames);
+
+		$bindingsLevel = $document->getBindingsLevel('foo');
+		$this->assertFalse($bindingsLevel);
+
+		$expected = array('BEObject' => array('RelatedObject'));
+		$newLevel = 'foo';
+		$document->setBindingsLevel($newLevel, $expected);
+		$result = $document->getBindingsLevel($newLevel);
+		$this->assertEqual($result, $expected);
+
+		$expectedNames[] = $newLevel;
+		$bindingsLevel = $document->getBindingsLevel();
+		$levelNames = array_keys($bindingsLevel);
+		$this->assertEqual($levelNames, $expectedNames);
+	}
+
 	private function insertAndCheck(Model $model, array &$d) {
 		$model->create();
 		$res = $model->save($d);

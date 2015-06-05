@@ -82,7 +82,7 @@ class Card extends BEAppObjectModel {
         ),
         'api' => array(
             'BEObject' => array(
-                'LangText'
+                'LangText',
                 'GeoTag',
                 'ObjectProperty',
                 'Category'
