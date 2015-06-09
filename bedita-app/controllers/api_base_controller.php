@@ -97,6 +97,26 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
+     * Pagination options used to paginate objects
+     * Default values are
+     *
+     *  ```
+     * 'page' => 1, // the page to load
+     * 'pageSize' => 20, // the dimension of the page
+     * 'maxPageSize' => 100 // the max page dimension in a request
+     * ```
+     *
+     * If 'page' or 'page_size' are in query url them override those default
+     *
+     * @var array
+     */
+    protected $paginationOptions = array(
+        'page' => 1,
+        'pageSize' => 20,
+        'maxPageSize' => 100
+    );
+
+    /**
      * The POST data in request
      *
      * @var array
@@ -179,6 +199,39 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Setup the pagination options self:paginationOptions
+     * Merging default with query url params
+     *
+     * @return void
+     */
+    private function setupPagination() {
+        $paramsUrl = $this->params['url'];
+        if (isset($paramsUrl['page'])) {
+            // check that 'page' is positive integer
+            $intVal = (int) $paramsUrl['page'];
+            $floatVal = (float) $paramsUrl['page'];
+            if (!is_numeric($paramsUrl['page']) || $paramsUrl['page'] < 1 || $intVal != $floatVal) {
+                throw new BeditaBadRequestException('page param must be a positive integer');
+            }
+            $this->paginationOptions['page'] = (int) $paramsUrl['page'];
+        }
+
+        if (isset($paramsUrl['page_size'])) {
+            // check that 'page_size' is positive integer
+            $intVal = (int) $paramsUrl['page_size'];
+            $floatVal = (float) $paramsUrl['page_size'];
+            if (!is_numeric($paramsUrl['page_size']) || $paramsUrl['page_size'] < 1 || $intVal != $floatVal) {
+                throw new BeditaBadRequestException('page_size param must be a positive integer');
+            }
+            $paramsUrl['page_size'] = (int) $paramsUrl['page_size'];
+        }
+        $this->paginationOptions['dim'] = (!empty($paramsUrl['page_size'])) ? $paramsUrl['page_size'] : $this->paginationOptions['pageSize'];
+        if ($this->paginationOptions['dim'] > $this->paginationOptions['maxPageSize']) {
+            throw new BeditaBadRequestException('Max page_size supported is ' . $this->paginationOptions['maxPageSize']);
+        }
+    }
+
+    /**
      * Common operations that every call must do:
      *
      * - replace self::BeAuth with self::BeAuthJwt to work properly in FrontendController.
@@ -213,6 +266,8 @@ abstract class ApiBaseController extends FrontendController {
         } elseif ($this->requestMethod == 'options' || $this->requestMethod == 'head') {
             $this->_stop();
         }
+
+        $this->setupPagination();
 
         if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
             $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
@@ -360,6 +415,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function loadChildren($id, array $options = array()) {
+        $options = array_merge($this->paginationOptions, $options);
         $objects = $this->loadSectionObjects($id, $options);
         if (empty($objects['childContents'])) {
             $this->setData();
