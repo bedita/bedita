@@ -1,4 +1,4 @@
-<div class="modulesmenutop">	
+<div class="modulesmenutop">
 	<div class="modulesmenucaption">go to: &nbsp;<a>be</a></div>
 
 	<nav class="modulesmenu">
@@ -28,7 +28,7 @@
 	</form>
 
 	<!-- {* search by id or nickname (unique name) *} -->
-	<form class="searchobjectsbyid" action="{$html->url('/')}pages/gotoObjectById" method="get">
+	<form style="visibility: hidden" class="searchobjectsbyid" action="{$html->url('/')}pages/gotoObjectById" method="get">
 		<input type="text" placeholder="{t}id or unique name{/t}" name="objectId" value=""/>
 		<input type="submit" value="{t}GO{/t}"/>
 	</form>

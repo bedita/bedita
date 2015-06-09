@@ -606,9 +606,18 @@ NAV.modulesmenu {
 }
 
 .searchobjects, .searchobjectsbyid {
-	display:none; z-index:100; position:absolute; left: 735px; top:50px;
+	/*display:none;*/
+    z-index:100;
+    position:absolute;
+    left: 735px;
+    top:50px;
 }
-.searchobjectsbyid { left: 828px; }
+
+.searchobjects {
+    display: none;
+}
+
+.searchobjectsbyid{ left: 828px; }
 
 .modulesmenu .searchtrigger {
 	margin-right:20px;
