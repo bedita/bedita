@@ -321,9 +321,10 @@ class ApiFormatterComponent extends Object {
      *
      * ```
      * 'page' => int, // the current page
-     * 'totalPages' => int, // the total number of pages
+     * 'page_size' => int|null, // the maximum number of items in the response
+     * 'page_count' => int, // the total number of items in the page
      * 'total' => int, // the total number of items
-     * 'limit' => int|null // the maximum number of items in the response
+     * 'total_pages' => int // the total number of pages
      * ```
      *
      * @param array $toolbar
@@ -333,18 +334,20 @@ class ApiFormatterComponent extends Object {
         if (empty($toolbar)) {
             return array();
         }
+        $pageCount = ($toolbar['end'] > 0) ? $toolbar['end'] - $toolbar['start'] + 1 : $toolbar['size'];
         $paging = array(
             'page' => (int) $toolbar['page'],
-            'total_pages' => (int) $toolbar['pages'],
+            'page_size' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null,
+            'page_count' => (int) $pageCount,
             'total' => (int) $toolbar['size'],
-            'limit' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null
+            'total_pages' => (int) $toolbar['pages']
         );
         return $paging;
     }
 
     /**
      * Clean BEdita object array from useless fields
-     * Use self::objectFieldsToRemove()
+     * Use self::objectFieldsToRemove
      *
      * @param array &$object
      * @return void
