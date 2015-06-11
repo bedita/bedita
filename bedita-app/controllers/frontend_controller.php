@@ -1228,13 +1228,15 @@ abstract class FrontendController extends AppController {
 	 * @param array $options
 	 *				a set of options for the method:
 	 *				- bindingLevel: the requested model binding level to use
+	 *				- explodeRelations: true (default) to explode the objects related.
+	 *									The main object model bindings set have to contain 'RelatedObject' association
 	 *
 	 *	note: if FrontendController::showUnauthorized is set to true and the user is logged
 	 *			then all unauthorized object will have set "authorized" to false regardless object permission
 	 *
 	 * @return array object detail
 	 */
-	public function loadObj($obj_id, $blockAccess=true, $options = array()) {
+	public function loadObj($obj_id, $blockAccess = true, $options = array()) {
 		if ($obj_id === null) {
 			throw new BeditaInternalErrorException(
 				__('Missing object id', true),
@@ -1242,7 +1244,10 @@ abstract class FrontendController extends AppController {
 			);
 		}
 
-		$defaultOptions = array('bindingLevel' => $this->defaultBindingLevel);
+		$defaultOptions = array(
+			'bindingLevel' => $this->defaultBindingLevel,
+			'explodeRelations' => true
+		);
 		$options = array_merge($defaultOptions, $options);
 
 		// use object cache
@@ -1386,7 +1391,7 @@ abstract class FrontendController extends AppController {
 
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
-		if(!empty($obj["RelatedObject"])) {
+		if ($options['explodeRelations'] && !empty($obj['RelatedObject'])) {
 			$userdata = (!$this->logged) ? array() : $this->BeAuth->getUserSession();
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
 			$obj['relations'] = $this->objectRelationArray($obj['RelatedObject'], $this->status, $relOptions);
@@ -1512,7 +1517,7 @@ abstract class FrontendController extends AppController {
 	 *
 	 * @return array
 	 */
-	public function loadSectionObjects($parent_id, $options=array()) {
+	public function loadSectionObjects($parent_id, $options = array()) {
 
 		if (empty($parent_id)) {
 			throw new BeditaInternalErrorException(
@@ -1581,9 +1586,15 @@ abstract class FrontendController extends AppController {
             }
         }
 
+        // setup options to use loading objects detail
+        $loadObjOptions = array();
+        if (isset($options['explodeRelations'])) {
+        	$loadObjOptions['explodeRelations'] = $options['explodeRelations'];
+        }
+
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
-				$obj = $this->loadObj($item['id']);
+				$obj = $this->loadObj($item['id'], $loadObjOptions);
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
 					if(empty($obj["canonicalPath"])) {
 						if(empty($options["sectionPath"])) {

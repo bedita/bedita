@@ -902,4 +902,64 @@ class Tree extends BEAppModel
 
     	return $this->removeBranch($id/*, null*/);
     }
+
+    /**
+     * Count contents children using $conditions if any
+     *
+     * @see self::countChildren()
+     * @param int $parentId the parent id
+     * @param array $conditions
+     * @return int
+     */
+    public function countChildrenContents($parentId, array $conditions = array()) {
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $this->bindModel(array(
+            'belongsTo' => array(
+                'BEObject' => array(
+                    'foreignKey' => 'id',
+                    'type' => 'inner'
+                )
+            )
+        ));
+        $conditions['NOT'] = array('BEObject.object_type_id' => $sectionObjectTypeId);
+        return $this->countChildren($parentId, $conditions);
+    }
+
+    /**
+     * Count sections children using $conditions if any
+     *
+     * * @see self::countChildren()
+     * @param int $parentId the parent id
+     * @param array $conditions
+     * @return int
+     */
+    public function countChildrenSections($parentId, array $conditions = array()) {
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $this->bindModel(array(
+            'belongsTo' => array(
+                'BEObject' => array(
+                    'foreignKey' => 'id',
+                    'type' => 'inner'
+                )
+            )
+        ));
+        $conditions['BEObject.object_type_id'] = $sectionObjectTypeId;
+        return $this->countChildren($parentId, $conditions);
+    }
+
+    /**
+     * Count children using $conditions if any
+     *
+     * @param int $parentId the parent id
+     * @param array $conditions
+     * @return int
+     */
+    public function countChildren($parentId, array $conditions = array()) {
+        $conditions['Tree.parent_id'] = $parentId;
+        $count = $this->find('count', array(
+            'conditions' => $conditions
+        ));
+        return $count;
+    }
+
 }

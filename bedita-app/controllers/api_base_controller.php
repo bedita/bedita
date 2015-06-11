@@ -138,6 +138,15 @@ abstract class ApiBaseController extends FrontendController {
     protected $requestMethod = null;
 
     /**
+     * The complete base url for API
+     * i.e. https://example.com/api/v1
+     * It is filled the first time self::baseUrl() is called
+     *
+     * @var string
+     */
+    private $fullApiBaseUrl = null;
+
+    /**
      * Constructor
      * Setup endpoints available:
      *
@@ -338,19 +347,33 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Return the full or partial API base url
+     * If $full is true set self::fullApiBaseUrl too and reuse it for the next time
+     *
+     * @param boolean $full if the url should be complete or partial
+     * @return string
+     */
+    public function baseUrl($full = true) {
+        if (!$full) {
+            return Configure::read('api.baseUrl');
+        }
+        if (!$this->fullApiBaseUrl) {
+            $baseUrl = Configure::read('api.baseUrl');
+            $url = Router::url($baseUrl, true);
+            $this->fullApiBaseUrl = trim($url, '/');
+        }
+        return $this->fullApiBaseUrl;
+    }
+
+    /**
      * prepare response data for base api url
      *
      * default response: show list of available endpoints with urls
      * override in subclasses for custom response
      */
     protected function baseUrlResponse() {
-        $baseUrl = Router::url(null, true);
-        $rPos = strrpos($baseUrl, '/');
-        if ($rPos !== (strlen($baseUrl) - 1)) {
-            $baseUrl .= '/';
-        }
         foreach ($this->endPoints as $endPoint) {
-            $this->responseData[$endPoint] = $baseUrl . $endPoint;
+            $this->responseData[$endPoint] = $this->baseUrl() . '/' . $endPoint;
         }
     }
 
@@ -375,7 +398,7 @@ abstract class ApiBaseController extends FrontendController {
                     $this->{$method}($id);
                 }
             } else {
-                $options = array();
+                $options = array('explodeRelations' => false);
                 if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->allowedModelBindings)) {
                     $options['bindingLevel'] = $this->params['url']['binding'];
                 }
@@ -391,15 +414,17 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }
 
+                $formatOptions = array('countRelations' => true);
+
                 $collections = array(
                     Configure::read('objectTypes.area.id'),
                     Configure::read('objectTypes.section.id')
                 );
                 if (in_array($object['object_type_id'], $collections)) {
-                    $object['children'] = $this->loadSectionObjects($object['id']);
+                    $formatOptions['countChildren'] = true;
                 }
 
-                $object = $this->ApiFormatter->formatObject($object);
+                $object = $this->ApiFormatter->formatObject($object, $formatOptions);
                 $this->setData($object);
             }
         // @todo list of objects
@@ -415,12 +440,16 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function loadChildren($id, array $options = array()) {
-        $options = array_merge($this->paginationOptions, $options);
+        $defaultOptions = array('explodeRelations' => false);
+        $options = array_merge($defaultOptions, $this->paginationOptions, $options);
         $objects = $this->loadSectionObjects($id, $options);
         if (empty($objects['childContents'])) {
             $this->setData();
         } else {
-            $objectsData = $this->ApiFormatter->formatObjects($objects['childContents']);
+            $objectsData = $this->ApiFormatter->formatObjects(
+                $objects['childContents'],
+                array('countRelations' => true)
+            );
             $this->setData($objectsData);
             $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
         }

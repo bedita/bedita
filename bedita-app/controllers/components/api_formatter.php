@@ -332,65 +332,128 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Count $object relations and return a formatted array as
+     *
+     * ```
+     * array(
+     *     'attach' => array(
+     *         'count' => 8,
+     *         'url' => 'https://example.com/api/v1/objects/1/relations/attach'
+     *     ),
+     *     'seealso' => array(
+     *         'count' => 2,
+     *         'url' => 'https://example.com/api/v1/objects/1/relations/seealso'
+     *     )
+     * )
+     * ```
+     *
+     * @param array $object the object on which to count the relations
+     * @return array
+     */
+    public function formatRelationsCount(array $object) {
+        $relations = array();
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        $countRel = $objectRelation->find('all', array(
+            'fields' => array('COUNT(id) as count', 'switch'),
+            'conditions' => array('id' => $object['id']),
+            'group' => 'switch'
+        ));
+        $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
+        if (!empty($countRel)) {
+            foreach ($countRel as $cDetail) {
+                $switch = $cDetail['ObjectRelation']['switch'];
+                $relations[$switch][] = array(
+                    'count' => (int) $cDetail[0]['count'],
+                    'url' => $url . $switch
+                );
+            }
+        }
+        return $relations;
+    }
+
+    /**
+     * Count $object children and return a formatted array as
+     *
+     * ```
+     * array(
+     *     'count' => 14, // total children
+     *     'url' => 'https://example.com/api/v1/objects/1/children',
+     *     'contents' => array(
+     *         'count' => 12, // contents children
+     *         'url' => 'https://example.com/api/v1/objects/1/contents'
+     *     ),
+     *     'sections' => array(
+     *         'count' => 2, // sections children
+     *         'url' => 'https://example.com/api/v1/objects/1/sections'
+     *     )
+     * )
+     * ```
+     *
+     * @param array $object the object on which to count children
+     * @return array
+     */
+    public function formatChildrenCount(array $object) {
+        $tree = ClassRegistry::init('Tree');
+        $conditions = array('BEObject.status' => $this->controller->getStatus());
+        $countContents = $tree->countChildrenContents($object['id'], $conditions);
+        $countSections = $tree->countChildrenSections($object['id'], $conditions);
+        $countChildren = $countContents + $countSections;
+        $url = $this->controller->baseUrl() . '/objects/' . $object['id'] . '/';
+
+        if ($countChildren == 0) {
+            return array();
+        }
+
+        $result = array(
+            'count' => (int) $countChildren,
+            'url' => $url . 'children'
+        );
+        if ($countContents > 0) {
+            $result['contents'] = array(
+                'count' => (int) $countContents,
+                'url' => $url . 'contents'
+            );
+        }
+        if ($countSections > 0) {
+            $result['sections'] = array(
+                'count' => (int) $countSections,
+                'url' => $url . 'sections'
+            );
+        }
+        return $result;
+    }
+
+    /**
      * Given an object return the formatted data ready for api response
      *
-     * The $result must be located in 'data' key of api response.
-     * It's in the form
+     * The $result is normally located in 'data' key of api response
+     * and it's in the form
      *
      * ```
-     * 'object' => array(...), // object data
-     * 'related' => array(...) // related object data
+     * 'object' => array(...) // object data
      * ```
+     *
+     * $options is used to personalize the object formatted.
+     * Possible values are:
+     *
+     * - 'countRelations' (default false) to add a count of relations with url to reach them
+     * - 'countChildren' (default false) to add a count of children with url to reach them
      *
      * @param array $object representation of a BEdita object
      * @param array $options
      * @return array
      */
     public function formatObject(array $object, $options = array()) {
+        $options += array('countRelations' => false, 'countChildren' => false);
         $this->cleanObject($object);
         $this->transformObject($object);
-        $result = array('object' => $object, 'related' => array());
-        if (!empty($object['relations'])) {
-            foreach ($object['relations'] as $relation => $relatedObjects) {
-                $result['object']['relations'][$relation] = array();
-                foreach ($relatedObjects as $relObj) {
-                    $result['object']['relations'][$relation][] = array(
-                        'id_right' => (int) $relObj['id'],
-                        'params' => $relObj['params'],
-                        'priority' => (int) $relObj['priority']
-                    );
-                    $relObjFormatted = $this->formatObject($relObj, $options);
-                    $result['related'][$relObj['id']] = $relObjFormatted['object'];
-                    if (!empty($relObjFormatted['related'])) {
-                        $result['related'] += $relObjFormatted['related'];
-                    }
-                }
-            }
+        if ($options['countRelations']) {
+            $object['relations'] = $this->formatRelationsCount($object);
         }
-
-        // format children
-        if (!empty($object['children'])) {
-            $result['object']['children'] = array(
-                'contents' => array(),
-                'sections' => array()
-            );
-
-            foreach (array('contents', 'sections') as $type) {
-                $typeKey = 'child' . ucfirst($type);
-                if (!empty($object['children'][$typeKey])) {
-                    foreach ($object['children'][$typeKey] as $child) {
-                        $result['object']['children'][$type][] = (int) $child['id'];
-                        $typeFormatted = $this->formatObject($child, $options);
-                        $result['related'][$child['id']] = $typeFormatted['object'];
-                        if (!empty($typeFormatted['related'])) {
-                            $result['related'] += $typeFormatted['related'];
-                        }
-                    }
-                    unset($object['children'][$typeKey]);
-                }
-            }
+        if ($options['countChildren']) {
+            $object['children'] = $this->formatChildrenCount($object);
         }
-        return $result;
+        return array('object' => $object);
     }
 
     /**
@@ -399,8 +462,9 @@ class ApiFormatterComponent extends Object {
      *
      * ```
      * 'objects' => array(...), // object data
-     * 'related' => array(...) // related object data
      * ```
+     *
+     * $options is used to personalize the object formatted.
      *
      * @see self::formatObject()
      * @param array $objects array of BEdita objects
@@ -408,11 +472,10 @@ class ApiFormatterComponent extends Object {
      * @return array
      */
     public function formatObjects(array $objects, $options = array()) {
-        $result = array('objects' => array(), 'related' => array());
+        $result = array('objects' => array());
         foreach ($objects as $obj) {
             $objectFormatted = $this->formatObject($obj, $options);
             $result['objects'][] = $objectFormatted['object'];
-            $result['related'] += $objectFormatted['related'];
         }
         return $result;
     }
