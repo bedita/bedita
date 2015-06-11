@@ -147,6 +147,25 @@ abstract class ApiBaseController extends FrontendController {
     private $fullApiBaseUrl = null;
 
     /**
+     * The allowed filters you can apply to /objects endpoint
+     * For example /objects/1/children search the children of object with id = 1
+     *
+     * Override in ApiController to limit or add functionality to /objects endpoint
+     * For example adding to array 'foo' search type and adding ApiController::loadFoo() you can call /objects/1/foo
+     *
+     * @var array
+     */
+    protected $allowedObjectsFilter = array(
+        'children',
+        'contents',
+        'sections',
+        'descendants',
+        'siblings',
+        //'ancestors',
+        //'parents'
+    );
+
+    /**
      * Constructor
      * Setup endpoints available:
      *
@@ -383,18 +402,18 @@ abstract class ApiBaseController extends FrontendController {
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
-     * @param string $kinship
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
      * @return void
      */
-    protected function objects($name = null, $kinship = null) {
+    protected function objects($name = null, $filterType = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-            $kinshipTypes = array('ancestors', 'parents', 'children', 'descendants', 'siblings');
-            if (!empty($kinship)) {
-                if (!in_array($kinship, $kinshipTypes)) {
-                    throw new BeditaBadRequestException();
+            if (!empty($filterType)) {
+                if (!in_array($filterType, $this->allowedObjectsFilter)) {
+                    $allowedFilter = implode(', ', $this->allowedObjectsFilter);
+                    throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
                 } else {
-                    $method = 'load' . Inflector::camelize($kinship);
+                    $method = 'load' . Inflector::camelize($filterType);
                     $this->{$method}($id);
                 }
             } else {
@@ -442,17 +461,51 @@ abstract class ApiBaseController extends FrontendController {
     protected function loadChildren($id, array $options = array()) {
         $defaultOptions = array('explodeRelations' => false);
         $options = array_merge($defaultOptions, $this->paginationOptions, $options);
-        $objects = $this->loadSectionObjects($id, $options);
-        if (empty($objects['childContents'])) {
+        // assure to have result in 'children' key
+        $options['itemsTogether'] = true;
+        $result = $this->loadSectionObjects($id, $options);
+        if (empty($result['children'])) {
             $this->setData();
         } else {
-            $objectsData = $this->ApiFormatter->formatObjects(
-                $objects['childContents'],
+            $objects = $this->ApiFormatter->formatObjects(
+                $result['children'],
                 array('countRelations' => true)
             );
-            $this->setData($objectsData);
-            $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
+            $this->setData($objects);
+            $this->responseData['paging'] = $this->ApiFormatter->formatPaging($result['toolbar']);
         }
+    }
+
+    /**
+     * Load sections children of object $id
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadSections($id) {
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $result = $this->loadChildren($id, array(
+            'filter' => array(
+                'object_type_id' => array($sectionObjectTypeId)
+            )
+        ));
+    }
+
+    /**
+     * Load contents children of object $id
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadContents($id) {
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $result = $this->loadChildren($id, array(
+            'filter' => array(
+                'NOT' => array(
+                    'object_type_id' => array($sectionObjectTypeId)
+                )
+            )
+        ));
     }
 
     /**

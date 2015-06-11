@@ -1617,7 +1617,9 @@ abstract class FrontendController extends AppController {
 					if (isset($options["setAuthorizedTo"])) {
 						$obj["authorized"] = $options["setAuthorizedTo"];
 					}
-					if ($this->sectionOptions["itemsByType"]) {
+					if (!empty($options['itemsTogether'])) {
+						$sectionItems['children'][] = $obj;
+					} elseif ($this->sectionOptions["itemsByType"]) {
 						$sectionItems[$obj['object_type']][] = $obj;
 					} else {
 						if ($obj["object_type"] == Configure::read("objectTypes.section.model"))
