@@ -124,7 +124,7 @@ class DateItem extends BEAppModel
         $this->checkDate('start_date');
         $this->checkDate('end_date');
         $data = &$this->data[$this->name];
-        if (empty($data['id']) && empty($data['start_date']) && empty($data['end_date'])) {
+        if (empty($data['id']) && empty($data['start_date']) && empty($data['end_date']) && empty($data['duration'])) {
             // Skip save if no (valid) data is present.
             $data = array();
             return true;
@@ -198,6 +198,34 @@ class DateItem extends BEAppModel
     }
 
     /**
+     * Add a DateItem to the calendar with respect of time order.
+     *
+     * @param array $calendar Calendar.
+     * @param array $dateItem DateItem to be added.
+     */
+    protected static function addToCalendar(array &$calendar, array $dateItem) {
+        $timestamp = strtotime($dateItem['DateItem']['start_date']);
+        $day = date('Y-m-d', $timestamp);
+
+        if (empty($calendar[$day])) {
+            $calendar[$day] = array();
+        }
+
+        $move = null;
+        $tot = count($calendar[$day]);
+        for ($i = 0; $i < $tot; $i++) {
+            if (!$move && strtotime($calendar[$day][$i]['DateItem']['start_date']) < $timestamp) {
+                continue;
+            }
+            $mv = $calendar[$day][$i];
+            $calendar[$day][$i] = $move ?: $dateItem;
+            $move = $mv;
+        }
+        array_push($calendar[$day], $move ?: $dateItem);
+        reset($calendar[$day]);
+    }
+
+    /**
      * Load calendar date items in the time window specified.
      * Returns array containing a list of object IDs with matching date items, and a list of DateItems for each day.
      *
@@ -236,7 +264,7 @@ class DateItem extends BEAppModel
 
         $objIds = array();
         $calendar = array();
-        foreach ($dateItems as &$di) {
+        foreach ($dateItems as $di) {
             if (empty($di['DateItem']['start_date'])) {
                 continue;
             }
@@ -263,32 +291,27 @@ class DateItem extends BEAppModel
             /**
              * Single-day date item.
              */
-            if (empty($end) || $sd != $ed) {
-                $day = date('Y-m-d', $s);
-                if (empty($calendar[$day])) {
-                    $calendar[$day] = array();
-                }
-                $calendar[$day][] = $di;
+            if (empty($end) || $sd == $ed) {
+                self::addToCalendar($calendar, $di);
                 continue;
             }
 
             /**
              * Recurring event.
              */
-            for ($time = $s; $time <= $e; $time = strtotime(date('Y-m-d') . ' + 1 day')) {
+            $time = $s;
+            while ($time <= $e) {
+                $day = date('Y-m-d', $time);
+                $time = strtotime($day . ' + 1 day');
                 if (!empty($di['DateItem']['days']) && !in_array(date('N', $time), $di['DateItem']['days'])) {
                     continue;
                 }
-                $day = date('Y-m-d', $time);
 
                 $newItem = $di;
                 $newItem['DateItem']['start_date'] = $day . ' ' . $st;
                 $newItem['DateItem']['end_date'] = $day . ' ' . $et;
 
-                if (empty($calendar[$day])) {
-                    $calendar[$day] = array();
-                }
-                $calendar[$day][] = $di;
+                self::addToCalendar($calendar, $newItem);
             }
         }
         return compact('objIds', 'calendar');
