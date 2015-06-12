@@ -251,12 +251,12 @@ abstract class ApiBaseController extends FrontendController {
             if (!is_numeric($paramsUrl['page_size']) || $paramsUrl['page_size'] < 1 || $intVal != $floatVal) {
                 throw new BeditaBadRequestException('page_size param must be a positive integer');
             }
-            $paramsUrl['page_size'] = (int) $paramsUrl['page_size'];
+            $this->paginationOptions['pageSize'] = (int) $paramsUrl['page_size'];
         }
-        $this->paginationOptions['dim'] = (!empty($paramsUrl['page_size'])) ? $paramsUrl['page_size'] : $this->paginationOptions['pageSize'];
-        if ($this->paginationOptions['dim'] > $this->paginationOptions['maxPageSize']) {
+        if ($this->paginationOptions['pageSize'] > $this->paginationOptions['maxPageSize']) {
             throw new BeditaBadRequestException('Max page_size supported is ' . $this->paginationOptions['maxPageSize']);
         }
+        $this->paginationOptions['dim'] = $this->paginationOptions['pageSize'];
     }
 
     /**
@@ -326,9 +326,20 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @param array $data
      * @param boolean $merge true if $data has to be merged with previous set
+     * @return void
      */
     protected function setData(array $data = array(), $merge = false) {
         $this->responseData['data'] = ($merge && isset($this->responseData['data'])) ? array_merge($this->responseData['data'], $data) : $data;
+    }
+
+    /**
+     * set self::responseData['paging'] array used by self::response() to output pagination data
+     *
+     * @param array $paginationData
+     * @return void
+     */
+    protected function setPaging(array $paginationData) {
+        $this->responseData['paging'] = $paginationData;
     }
 
     /**
@@ -472,7 +483,7 @@ abstract class ApiBaseController extends FrontendController {
                 array('countRelations' => true)
             );
             $this->setData($objects);
-            $this->responseData['paging'] = $this->ApiFormatter->formatPaging($result['toolbar']);
+            $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
         }
     }
 
