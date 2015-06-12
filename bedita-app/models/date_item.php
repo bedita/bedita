@@ -121,8 +121,6 @@ class DateItem extends BEAppModel
      * @return bool Returns `true`.
      */
     public function beforeValidate() {
-        $this->checkDate('start_date');
-        $this->checkDate('end_date');
         $data = &$this->data[$this->name];
         if (empty($data['id']) && empty($data['start_date']) && empty($data['end_date']) && empty($data['duration'])) {
             // Skip save if no (valid) data is present.
@@ -141,7 +139,6 @@ class DateItem extends BEAppModel
             $data['end_date'] .= ' ' . $data['timeEnd'];
         }
         $data['end_date'] = $this->prepareDate('end_date', $data['end_date']);
-        // $data = array_merge($data, $this->prepareDates(array_intersect_key($data, array('start_date' => 0, 'end_date' => 1))));
 
         /**
          * Prepare params.
@@ -301,12 +298,12 @@ class DateItem extends BEAppModel
              */
             $time = $s;
             while ($time <= $e) {
-                $day = date('Y-m-d', $time);
-                $time = strtotime($day . ' + 1 day');
+                $time = strtotime('+1 day', $time);
                 if (!empty($di['DateItem']['days']) && !in_array(date('N', $time), $di['DateItem']['days'])) {
                     continue;
                 }
 
+                $day = date('Y-m-d', $time);
                 $newItem = $di;
                 $newItem['DateItem']['start_date'] = $day . ' ' . $st;
                 $newItem['DateItem']['end_date'] = $day . ' ' . $et;
