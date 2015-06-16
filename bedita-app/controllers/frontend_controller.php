@@ -1553,24 +1553,7 @@ abstract class FrontendController extends AppController {
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
-			$filter['Content.*'] = '';
-			$filter['AND'][] = array(
-				'OR' => array(
-					'Content.start_date <=' => date('Y-m-d'),
-					'Content.start_date' => null
-				)
-			);
-		}
-		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
-			$filter['Content.*'] = '';
-			$filter['AND'][] = array(
-				'OR' => array(
-					'Content.end_date >=' => date('Y-m-d'),
-					'Content.end_date' => null
-				)
-			);
-		}
+		$this->setPublicationDateFilter($filter);
 
         $items = null;
         $cacheOpts = array();
@@ -1634,6 +1617,117 @@ abstract class FrontendController extends AppController {
 		return $sectionItems;
 
 	}
+
+    /**
+     * Load paginated collection of objects related to object $id by $relation
+     *
+     * $option can be used to customize the objects searched.
+     * Possible values are:
+     * - filter: additional filter to add to search
+     * - order: field used to sort collection (default 'priority')
+     * - dir: the sorting algorithm. true (default) for ASC, false for DESC
+     * - page: the page to show
+     * - dim: the dimension of the page
+     * - explodeRelations: explode the relations of related objects (default for compatibility with self::loadSectionObjects()) or not
+     *
+     * @param int $id the main object id
+     * @param string $relation the relation name
+     * @param array $options
+     * @return array
+     */
+    protected function loadRelatedObjects($id, $relation, $options) {
+        $defaultOptions = array(
+            'filter' => array(),
+            'order' => 'priority',
+            'dir' => true,
+            'page' => 1,
+            'dim' => null,
+            'explodeRelations' => true
+        );
+        $options = array_merge($defaultOptions, $options);
+        if (empty($options['filter']['joins'])) {
+            $options['filter']['joins'] = array();
+        }
+        $options['filter']['joins'][] = array(
+            'table' => 'object_relations',
+            'alias' => 'ObjectRelation',
+            'type' => 'INNER',
+            'conditions' => array(
+                'ObjectRelation.object_id = BEObject.id',
+                'ObjectRelation.switch' => $relation,
+                'ObjectRelation.id' => $id
+            )
+        );
+
+        $user = $this->BeAuth->getUser();
+        if (!$user) {
+            $user = array();
+        }
+        $objectsForbidden = ClassRegistry::init('Permission')->relatedObjectsNotAccessibile($id, $relation, $user);
+
+        if (!empty($objectsForbidden)) {
+            $options['filter']['BEObject.id'] = array('NOT' => $objectsForbidden);
+        }
+
+        extract($options, EXTR_SKIP);
+
+        // add rules for start and end pubblication date
+        $this->setPublicationDateFilter($filter);
+
+        $items = null;
+        $cacheOpts = array();
+        if ($this->BeObjectCache) {
+            $cacheOpts = array($id, $this->status, $filter, $order, $dir, $page, $dim);
+            $items = $this->BeObjectCache->read($id, $cacheOpts, 'relation-' . $relation);
+        }
+        if (empty($items)) {
+            $items = $this->BeTree->getChildren(null, $this->status, $filter, $order, $dir, $page, $dim);
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($id, $cacheOpts, $items, 'relation-' . $relation);
+            }
+        }
+
+        $relatedObjects = array('items' => array(), 'toolbar' => array());
+        if (!empty($items) && !empty($items['items'])) {
+            // setup options to use loading objects detail
+            $loadObjOptions = array('explodeRelations' => $options['explodeRelations']);
+            foreach ($items['items'] as $item) {
+                $obj = $this->loadObj($item['id'], $loadObjOptions);
+                if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
+                    $relatedObjects['items'][] = $obj;
+                }
+            }
+            $relatedObjects['toolbar'] = $items['toolbar'];
+        }
+        return $relatedObjects;
+    }
+
+    /**
+     * Add to $filter the rules relative to publication date
+     * In detail:
+     * - add rule to 'start_date'
+     * - add rule to 'end_date'
+     */
+    protected function setPublicationDateFilter(array &$filter) {
+        if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
+            $filter['Content.*'] = '';
+            $filter['AND'][] = array(
+                'OR' => array(
+                    'Content.start_date <=' => date('Y-m-d'),
+                    'Content.start_date' => null
+                )
+            );
+        }
+        if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
+            $filter['Content.*'] = '';
+            $filter['AND'][] = array(
+                'OR' => array(
+                    'Content.end_date >=' => date('Y-m-d'),
+                    'Content.end_date' => null
+                )
+            );
+        }
+    }
 
 	/**
 	 * find first section that contain content ($name) then call section method
@@ -1972,24 +2066,7 @@ abstract class FrontendController extends AppController {
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate['start'] == true && empty($this->searchOptions['filter']['Content.start_date'])) {
-			$this->searchOptions['filter']['Content.*'] = '';
-			$this->searchOptions['filter']['AND'][] = array(
-				'OR' => array(
-					'Content.start_date <=' => date('Y-m-d'),
-					'Content.start_date' => null
-				)
-			);
-		}
-		if ($this->checkPubDate['end'] == true && empty($this->searchOptions['filter']['Content.end_date'])) {
-			$this->searchOptions['filter']['Content.*'] = '';
-			$this->searchOptions['filter']['AND'][] = array(
-				'OR' => array(
-					'Content.end_date >=' => date('Y-m-d'),
-					'Content.end_date' => null
-				)
-			);
-		}
+        $this->setPublicationDateFilter($this->searchOptions['filter']);
 		$searchFilter = array();
 		if (!empty($this->params['form']['searchstring'])) {
 			$searchFilter['query'] = $this->params['form']['searchstring'];
@@ -2366,24 +2443,7 @@ abstract class FrontendController extends AppController {
 		$dim = (!empty($options["dim"]))? $options["dim"] : 100000;
 
 		// add rules for start and end pubblication date
-		if ($this->checkPubDate['start'] == true && empty($filter['Content.start_date'])) {
-			$filter['Content.*'] = '';
-			$filter['AND'][] = array(
-				'OR' => array(
-					'Content.start_date <=' => date('Y-m-d'),
-					'Content.start_date' => null
-				)
-			);
-		}
-		if ($this->checkPubDate['end'] == true && empty($filter['Content.end_date'])) {
-			$filter['Content.*'] = '';
-			$filter['AND'][] = array(
-				'OR' => array(
-					'Content.end_date >=' => date('Y-m-d'),
-					'Content.end_date' => null
-				)
-			);
-		}
+        $this->setPublicationDateFilter($filter);
 
 		$urlFilter = $this->SessionFilter->getFromUrl();
 		$this->SessionFilter->arrange($urlFilter);

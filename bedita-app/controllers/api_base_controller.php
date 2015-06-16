@@ -156,6 +156,7 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     protected $allowedObjectsFilter = array(
+        'relations',
         'children',
         'contents',
         'sections',
@@ -416,7 +417,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
      * @return void
      */
-    protected function objects($name = null, $filterType = null) {
+    protected function objects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             if (!empty($filterType)) {
@@ -425,7 +426,7 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
                 } else {
                     $method = 'load' . Inflector::camelize($filterType);
-                    $this->{$method}($id);
+                    $this->{$method}($id, $filterValue);
                 }
             } else {
                 $options = array('explodeRelations' => false);
@@ -546,6 +547,29 @@ abstract class ApiBaseController extends FrontendController {
         $this->loadChildren($parentIds[0], array(
             'filter' => array('NOT' => array('BEObject.id' => $id))
         ));
+    }
+
+    /**
+     * Load relations of object $id
+     *
+     * @param int $id the main object id
+     * @param string $relation the relation name
+     * @return void
+     */
+    protected function loadRelations($id, $relation) {
+        $defaultOptions = array('explodeRelations' => false);
+        $options = array_merge($defaultOptions, $this->paginationOptions);
+        $result = $this->loadRelatedObjects($id, $relation, $options);
+        if (empty($result['items'])) {
+            $this->setData();
+        } else {
+            $objects = $this->ApiFormatter->formatObjects(
+                $result['items'],
+                array('countRelations' => true)
+            );
+            $this->setData($objects);
+            $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+        }
     }
 
     /**

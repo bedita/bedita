@@ -377,4 +377,49 @@ class Permission extends BEAppModel
 		return $objects;
 	}
 
+    /**
+     * Return a list of object ids with permission 'frontend_access_with_block'
+     * related by $relation to main object $objectId
+     *
+     *
+     * If $user['groups'] is specified then it tests related objects against user groups and return a list
+     * without objects allowed to user.
+     *
+     * @param int $objectId the main object id
+     * @param string $relation the relation name
+     * @param array $user the user data on which check perms
+     * @return array
+     */
+    public function relatedObjectsNotAccessibile($objectId, $relation, array $user = array()) {
+        $conditions = array(
+            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+            'Permission.switch' => 'group',
+            'ObjectRelation.id' => $objectId,
+            'ObjectRelation.switch' => $relation,
+        );
+        if (!empty($user['groups'])) {
+            $groupList = ClassRegistry::init('Group')->getList(array(
+                'Group.name' => $user['groups']
+            ));
+            $conditions['NOT'] = array('Permission.ugid' => array_keys($groupList));
+        }
+        $permission = ClassRegistry::init('Permission');
+        $objectsForbidden = $this->find('list', array(
+            'fields' => array('Permission.id', 'Permission.object_id'),
+            'conditions' => $conditions,
+            'joins' => array(
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'ObjectRelation',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Permission.object_id = ObjectRelation.object_id',
+                    )
+                )
+            )
+        ));
+
+        return $objectsForbidden;
+    }
+
 }
