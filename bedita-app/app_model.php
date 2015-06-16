@@ -589,6 +589,7 @@ class BEAppModel extends AppModel {
 		$sqlItems = $this->getSqlItems($filter);
         $otherFields = $sqlItems['fields'];
         $otherFrom = $sqlItems['from'];
+        $otherJoins = $sqlItems['joins'];
         $otherConditions = $sqlItems['conditions'];
         $otherGroup = $sqlItems['group'];
         $otherOrder = $sqlItems['order'];
@@ -599,7 +600,7 @@ class BEAppModel extends AppModel {
         }
 
 		$conditions = array_merge($conditions, $otherConditions);
-		$from .= $otherFrom;
+		$from .= $otherJoins . $otherFrom;
 
 		if (!empty($id)) {
 			$treeFields = $this->fieldsString("Tree");
