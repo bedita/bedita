@@ -373,10 +373,7 @@ class ApiFormatterComponent extends Object {
 
         // count not accessible relations
         $permission = ClassRegistry::init('Permission');
-        $user = $this->controller->BeAuthJwt->identify();
-        if (empty($user)) {
-            $user = array();
-        }
+        $user = $this->controller->BeAuthJwt->getUser();
         $countForbidden = $permission->relatedObjectsNotAccessibile(
             $object['id'],
             array(
@@ -426,9 +423,33 @@ class ApiFormatterComponent extends Object {
      */
     public function formatChildrenCount(array $object) {
         $tree = ClassRegistry::init('Tree');
-        $conditions = array('BEObject.status' => $this->controller->getStatus());
-        $countContents = $tree->countChildrenContents($object['id'], $conditions);
-        $countSections = $tree->countChildrenSections($object['id'], $conditions);
+        $options = array(
+            'conditions' => array('BEObject.status' => $this->controller->getStatus()),
+            'joins' => array()
+        );
+        $countContents = $tree->countChildrenContents($object['id'], $options);
+        $countSections = $tree->countChildrenSections($object['id'], $options);
+
+        $permissionJoin = array(
+            'table' => 'permissions',
+            'alias' => 'Permission',
+            'type' => 'inner',
+            'conditions' => array(
+                'Permission.object_id = Tree.id',
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+            )
+        );
+        $user = $this->controller->BeAuthJwt->getUser();
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        }
+        $options['joins'][] = $permissionJoin;
+        $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
+        $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
+
+        $countContents -= $countContentsForbidden;
+        $countSections -= $countSectionsForbidden;
         $countChildren = $countContents + $countSections;
         $url = $this->controller->baseUrl() . '/objects/' . $object['id'] . '/';
 
@@ -483,7 +504,13 @@ class ApiFormatterComponent extends Object {
             $object['relations'] = $this->formatRelationsCount($object);
         }
         if ($options['countChildren']) {
-            $object['children'] = $this->formatChildrenCount($object);
+            $branches = array(
+                Configure::read('objectTypes.area.id'),
+                Configure::read('objectTypes.section.id')
+            );
+            if (in_array($object['object_type_id'], $branches)) {
+                $object['children'] = $this->formatChildrenCount($object);
+            }
         }
         return array('object' => $object);
     }

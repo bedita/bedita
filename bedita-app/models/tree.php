@@ -904,14 +904,19 @@ class Tree extends BEAppModel
     }
 
     /**
-     * Count contents children using $conditions if any
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
      *
      * @see self::countChildren()
      * @param int $parentId the parent id
-     * @param array $conditions
+     * @param array $options
      * @return int
      */
-    public function countChildrenContents($parentId, array $conditions = array()) {
+    public function countChildrenContents($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $this->bindModel(array(
             'belongsTo' => array(
@@ -921,19 +926,24 @@ class Tree extends BEAppModel
                 )
             )
         ));
-        $conditions['NOT'] = array('BEObject.object_type_id' => $sectionObjectTypeId);
-        return $this->countChildren($parentId, $conditions);
+        $options['conditions']['NOT']['BEObject.object_type_id'] = $sectionObjectTypeId;
+        return $this->countChildren($parentId, $options);
     }
 
     /**
-     * Count sections children using $conditions if any
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
      *
-     * * @see self::countChildren()
+     * @see self::countChildren()
      * @param int $parentId the parent id
-     * @param array $conditions
+     * @param array $options
      * @return int
      */
-    public function countChildrenSections($parentId, array $conditions = array()) {
+    public function countChildrenSections($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $this->bindModel(array(
             'belongsTo' => array(
@@ -943,22 +953,25 @@ class Tree extends BEAppModel
                 )
             )
         ));
-        $conditions['BEObject.object_type_id'] = $sectionObjectTypeId;
-        return $this->countChildren($parentId, $conditions);
+        $options['conditions']['BEObject.object_type_id'] = $sectionObjectTypeId;
+        return $this->countChildren($parentId, $options);
     }
 
     /**
-     * Count children using $conditions if any
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
      *
      * @param int $parentId the parent id
-     * @param array $conditions
+     * @param array $options
      * @return int
      */
-    public function countChildren($parentId, array $conditions = array()) {
-        $conditions['Tree.parent_id'] = $parentId;
-        $count = $this->find('count', array(
-            'conditions' => $conditions
-        ));
+    public function countChildren($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
+        $options['conditions']['Tree.parent_id'] = $parentId;
+        $count = $this->find('count', $options);
         return $count;
     }
 

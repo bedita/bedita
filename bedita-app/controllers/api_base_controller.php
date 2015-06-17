@@ -106,7 +106,7 @@ abstract class ApiBaseController extends FrontendController {
      * 'maxPageSize' => 100 // the max page dimension in a request
      * ```
      *
-     * If 'page' or 'page_size' are in query url them override those default
+     * If 'page' or 'page_size' are in query url then they override those default
      *
      * @var array
      */
@@ -426,7 +426,10 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
                 } else {
                     $method = 'load' . Inflector::camelize($filterType);
-                    $this->{$method}($id, $filterValue);
+                    $args = func_get_args();
+                    $args[0] = $id;
+                    unset($args[1]);
+                    call_user_func_array(array($this, $method), $args);
                 }
             } else {
                 $options = array('explodeRelations' => false);
@@ -445,17 +448,10 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }
 
-                $formatOptions = array('countRelations' => true);
-
-                $collections = array(
-                    Configure::read('objectTypes.area.id'),
-                    Configure::read('objectTypes.section.id')
+                $object = $this->ApiFormatter->formatObject(
+                    $object,
+                    array('countRelations' => true, 'countChildren' => true)
                 );
-                if (in_array($object['object_type_id'], $collections)) {
-                    $formatOptions['countChildren'] = true;
-                }
-
-                $object = $this->ApiFormatter->formatObject($object, $formatOptions);
                 $this->setData($object);
             }
         // @todo list of objects
@@ -465,23 +461,54 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Load children of object $id
+     * Get children of $parentId object, prepare and set response data
+     * The response is automatically paginated using self::paginationOptions
      *
-     * @param int $id
+     * @see FrontendController::loadSectionObjects()
+     * @param int $parentId the parent id
+     * @param array $options an array of options for filter results
      * @return void
      */
-    protected function loadChildren($id, array $options = array()) {
+    protected function responseChildren($parentId, array $options = array()) {
         $defaultOptions = array('explodeRelations' => false);
         $options = array_merge($defaultOptions, $this->paginationOptions, $options);
         // assure to have result in 'children' key
         $options['itemsTogether'] = true;
-        $result = $this->loadSectionObjects($id, $options);
+        // add conditions on not accessible objects (frontend_access_with_block)
+        // @todo move to ForntendController::loadSectionObjects()?
+        $user = $this->BeAuthJwt->getUser();
+        $permissionJoin = array(
+            'table' => 'permissions',
+            'alias' => 'Permission',
+            'type' => 'inner',
+            'conditions' => array(
+                'Permission.object_id = Tree.id',
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+            )
+        );
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        }
+        $objectsForbidden = ClassRegistry::init('Tree')->find('list', array(
+            'fields' => array('id'),
+            'joins' => array($permissionJoin),
+            'conditions' => array(
+                'Tree.parent_id' => $parentId
+            )
+        ));
+
+        if (!empty($objectsForbidden)) {
+            $options['filter']['NOT']['BEObject.id'] = array_values($objectsForbidden);
+        }
+
+        $result = $this->loadSectionObjects($parentId, $options);
         if (empty($result['children'])) {
             $this->setData();
         } else {
             $objects = $this->ApiFormatter->formatObjects(
                 $result['children'],
-                array('countRelations' => true)
+                array('countRelations' => true, 'countChildren' => true)
             );
             $this->setData($objects);
             $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
@@ -489,14 +516,30 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Load sections children of object $id
+     * Load children of object $id setting data for response
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadChildren($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $this->responseChildren($id);
+    }
+
+    /**
+     * Load sections children of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadSections($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
-        $result = $this->loadChildren($id, array(
+        $result = $this->responseChildren($id, array(
             'filter' => array(
                 'object_type_id' => array($sectionObjectTypeId)
             )
@@ -504,14 +547,17 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Load contents children of object $id
+     * Load contents children of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadContents($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
-        $result = $this->loadChildren($id, array(
+        $result = $this->responseChildren($id, array(
             'filter' => array(
                 'NOT' => array(
                     'object_type_id' => array($sectionObjectTypeId)
@@ -521,42 +567,51 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Load descendants of object $id
+     * Load descendants of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadDescendants($id) {
-        $this->loadChildren($id, array(
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $this->responseChildren($id, array(
             'filter' => array('descendants' => true)
         ));
     }
 
     /**
-     * Load siblings of object $id
+     * Load siblings of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadSiblings($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
         // get only first parent?
         $parentIds = ClassRegistry::init('Tree')->getParents($id, $this->publication['id'], $this->getStatus());
         if (empty($parentIds)) {
             throw new BeditaNotFoundException('The object ' . $id . ' have no parents');
         }
-        $this->loadChildren($parentIds[0], array(
+        $this->responseChildren($parentIds[0], array(
             'filter' => array('NOT' => array('BEObject.id' => $id))
         ));
     }
 
     /**
-     * Load relations of object $id
+     * Load relations of object $id setting data for response
      *
      * @param int $id the main object id
      * @param string $relation the relation name
      * @return void
      */
     protected function loadRelations($id, $relation) {
+        if (func_num_args() > 2) {
+            throw new BeditaBadRequestException();
+        }
         $defaultOptions = array('explodeRelations' => false);
         $options = array_merge($defaultOptions, $this->paginationOptions);
         $result = $this->loadRelatedObjects($id, $relation, $options);

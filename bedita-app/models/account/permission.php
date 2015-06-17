@@ -416,7 +416,9 @@ class Permission extends BEAppModel
         if (!empty($options['relation'])) {
             $conditions['ObjectRelation.switch'] = $options['relation'];
         }
-        if (!empty($user['groups'])) {
+        if (!empty($user['groupsIds'])) {
+            $conditions['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        } elseif (!empty($user['groups'])) {
             $groupList = ClassRegistry::init('Group')->getList(array(
                 'Group.name' => $user['groups']
             ));

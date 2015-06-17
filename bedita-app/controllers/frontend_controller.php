@@ -1544,7 +1544,7 @@ abstract class FrontendController extends AppController {
 		}
 		$sectionItems = array();
 
-		$filter = (!empty($options["filter"]))? $options["filter"] : false;
+		$filter = (!empty($options["filter"]))? $options["filter"] : array();
 		$order = (!empty($options["order"]))? $options["order"] : "priority";
 		$dir = (isset($options["dir"]))? $options["dir"] : ($priorityOrder == "asc");
 		$page = (!empty($options["page"]))? $options["page"] : 1;
@@ -1670,7 +1670,7 @@ abstract class FrontendController extends AppController {
         );
 
         if (!empty($objectsForbidden)) {
-            $options['filter']['BEObject.id'] = array('NOT' => $objectsForbidden);
+            $options['filter']['NOT']['BEObject.id'] = $objectsForbidden;
         }
 
         extract($options, EXTR_SKIP);
