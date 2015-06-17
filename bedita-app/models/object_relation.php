@@ -138,15 +138,31 @@ class ObjectRelation extends BEAppModel
             return $res;
         }
     }
-	
+
+    /**
+     * Check object relation existence
+     * @param int $id
+     * @param int $objectId
+     * @param string $switch
+     * @return true if relation exists, false otherwise
+     */
+    public function relationExists($id, $objectId, $switch) {
+        $actualId = $this->query("SELECT id FROM object_relations WHERE id={$id}
+        AND object_id={$objectId} AND switch='{$switch}'");
+        if (empty($actualId[0]['object_relations']['id'])) {
+            return false;
+        }
+        return true;
+    }
+
 	/**
-	 * 
-	 * check existence of relation between
-	 * @param unknown_type $id
-	 * @param unknown_type $objectId
-	 * @param unknown_type $switch
-	 */
-	public function relationPriority($id, $objectId, $switch) {
+     * Get current priority for a specific relation
+	 * @param int $id
+	 * @param int $objectId
+	 * @param string $switch
+	 * @return priority value or false if field is NULL or relation missing
+    */
+    public function relationPriority($id, $objectId, $switch) {
 		$pri = $this->query("SELECT priority FROM object_relations WHERE id={$id}
 									AND object_id={$objectId} AND switch='{$switch}'");
 		if(empty($pri[0]["object_relations"]["priority"])) {
