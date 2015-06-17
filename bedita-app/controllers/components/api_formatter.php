@@ -383,7 +383,7 @@ class ApiFormatterComponent extends Object {
             $user
         );
 
-        $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relation/';
+        $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
         if (!empty($countRel)) {
             foreach ($countRel as $cDetail) {
                 $count = $cDetail[0]['count'];

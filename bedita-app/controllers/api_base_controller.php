@@ -156,11 +156,11 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     protected $allowedObjectsFilter = array(
+        'relations',
         'children',
         'contents',
-        'descendants',
-        'relation',
         'sections',
+        'descendants',
         'siblings',
         //'ancestors',
         //'parents'
@@ -608,7 +608,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $relation the relation name
      * @return void
      */
-    protected function loadRelation($id, $relation) {
+    protected function loadRelations($id, $relation) {
         if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }
