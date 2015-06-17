@@ -608,22 +608,29 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $relation the relation name
      * @return void
      */
-    protected function loadRelations($id, $relation) {
+    protected function loadRelations($id, $relation = '') {
         if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }
-        $defaultOptions = array('explodeRelations' => false);
-        $options = array_merge($defaultOptions, $this->paginationOptions);
-        $result = $this->loadRelatedObjects($id, $relation, $options);
-        if (empty($result['items'])) {
-            $this->setData();
+        // count relations of object $id
+        if (empty($relation)) {
+            $relCount = $this->ApiFormatter->formatRelationsCount(array('id' => $id));
+            $this->setData($relCount);
+        // detail of related objects
         } else {
-            $objects = $this->ApiFormatter->formatObjects(
-                $result['items'],
-                array('countRelations' => true)
-            );
-            $this->setData($objects);
-            $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+            $defaultOptions = array('explodeRelations' => false);
+            $options = array_merge($defaultOptions, $this->paginationOptions);
+            $result = $this->loadRelatedObjects($id, $relation, $options);
+            if (empty($result['items'])) {
+                $this->setData();
+            } else {
+                $objects = $this->ApiFormatter->formatObjects(
+                    $result['items'],
+                    array('countRelations' => true)
+                );
+                $this->setData($objects);
+                $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+            }
         }
     }
 
