@@ -353,17 +353,49 @@ class ApiFormatterComponent extends Object {
     public function formatRelationsCount(array $object) {
         $relations = array();
         $objectRelation = ClassRegistry::init('ObjectRelation');
+        // count all relations
         $countRel = $objectRelation->find('all', array(
-            'fields' => array('COUNT(id) as count', 'switch'),
-            'conditions' => array('id' => $object['id']),
-            'group' => 'switch'
+            'fields' => array('COUNT(ObjectRelation.id) as count', 'ObjectRelation.switch'),
+            'conditions' => array('ObjectRelation.id' => $object['id']),
+            'group' => 'ObjectRelation.switch',
+            'joins' => array(
+                array(
+                    'table' => 'objects',
+                    'alias' => 'BEObject',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'ObjectRelation.object_id = BEObject.id',
+                        'BEObject.status' => $this->controller->getStatus()
+                    )
+                )
+            )
         ));
+
+        // count not accessible relations
+        $permission = ClassRegistry::init('Permission');
+        $user = $this->controller->BeAuthJwt->identify();
+        if (empty($user)) {
+            $user = array();
+        }
+        $countForbidden = $permission->relatedObjectsNotAccessibile(
+            $object['id'],
+            array(
+                'count' => true,
+                'status' => $this->controller->getStatus()
+            ),
+            $user
+        );
+
         $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
         if (!empty($countRel)) {
             foreach ($countRel as $cDetail) {
+                $count = $cDetail[0]['count'];
                 $switch = $cDetail['ObjectRelation']['switch'];
+                if (isset($countForbidden[$switch])) {
+                    $count -= $countForbidden[$switch];
+                }
                 $relations[$switch][] = array(
-                    'count' => (int) $cDetail[0]['count'],
+                    'count' => (int) $count,
                     'url' => $url . $switch
                 );
             }

@@ -1663,7 +1663,11 @@ abstract class FrontendController extends AppController {
         if (!$user) {
             $user = array();
         }
-        $objectsForbidden = ClassRegistry::init('Permission')->relatedObjectsNotAccessibile($id, $relation, $user);
+        $objectsForbidden = ClassRegistry::init('Permission')->relatedObjectsNotAccessibile(
+            $id,
+            array('relation' => $relation),
+            $user
+        );
 
         if (!empty($objectsForbidden)) {
             $options['filter']['BEObject.id'] = array('NOT' => $objectsForbidden);
