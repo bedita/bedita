@@ -835,6 +835,7 @@ class AdminController extends ModulesController {
 	public function saveCustomRelation() {
 		$this->checkWriteModulePermission();
 		$formData = $this->data;
+		unset($formData['_csrfToken']);
 		$beLib = BeLib::getInstance();
 		$relName = $beLib->friendlyUrlString($formData['name']);
 		if (empty($relName)) {
