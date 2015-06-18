@@ -1577,14 +1577,14 @@ abstract class FrontendController extends AppController {
 
 		if(!empty($items) && !empty($items['items'])) {
 			foreach($items['items'] as $index => $item) {
-				$obj = $this->loadObj($item['id'], $loadObjOptions);
+				$obj = $this->loadObj($item['id'], true, $loadObjOptions);
 				if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
 					if(empty($obj["canonicalPath"])) {
 						if(empty($options["sectionPath"])) {
 							if($findAltPath) {
 								$this->setCanonicalPath($obj);
 							} else {
-								$s = $this->loadObj($parent_id);
+								$s = $this->loadObj($parent_id, true, $loadObjOptions);
 								if ($s === self::UNAUTHORIZED || $s === self::UNLOGGED) {
 									return array();
 								}
@@ -1696,7 +1696,7 @@ abstract class FrontendController extends AppController {
             // setup options to use loading objects detail
             $loadObjOptions = array('explodeRelations' => $options['explodeRelations']);
             foreach ($items['items'] as $item) {
-                $obj = $this->loadObj($item['id'], $loadObjOptions);
+                $obj = $this->loadObj($item['id'], true, $loadObjOptions);
                 if ($obj !== self::UNAUTHORIZED && $obj !== self::UNLOGGED) {
                     $relatedObjects['items'][] = $obj;
                 }
