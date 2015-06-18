@@ -142,6 +142,34 @@ class ObjectRelation extends BEAppModel
 		return $this->query($qReverse);
 	}
 
+    /**
+     * delete a specific relation to an object
+     *
+     * @param int $id - object id
+     * @param string $switch - relation direct name
+     * @param string $inverseSwitch - relation inverse name, null if name ids the same
+     * @return bool
+     */
+    public function deleteObjectRelation($id, $switch, $inverseSwitch = null) {
+        // #CUSTOM QUERY - TODO: use cake, how??
+        $q = "DELETE FROM object_relations WHERE id={$id} AND switch='{$switch}'";
+        $res = $this->query($q);
+        if ($res === false) {
+            $this->log('Error executing query: ' . $q, 'error');
+            return $res;
+        }
+        if (empty($inverseSwitch)) {
+            $inverseSwitch = $switch;
+        }
+        $qReverse = "DELETE FROM object_relations WHERE object_id={$id} AND switch='{$inverseSwitch}'";
+        $res = $this->query($qReverse);
+        if ($res === false) {
+            $this->log('Error executing query: ' . $qReverse, 'error');
+        }
+        return $res;
+    }
+
+
     public function updateRelationPriority($id, $objectId, $switch, $priority){
         $q = "  UPDATE object_relations
                 SET priority={$priority}
