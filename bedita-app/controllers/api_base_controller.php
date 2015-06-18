@@ -420,6 +420,14 @@ abstract class ApiBaseController extends FrontendController {
     protected function objects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+            // check if object $id is on tree
+            $isOnTree = ClassRegistry::init('Tree')->isOnTree($id, $this->publication['id']);
+            if (!$isOnTree) {
+                throw new BeditaNotFoundException(
+                    null,
+                    'object ' . $name . ' does not exists or is not a children of ' . $this->publication['title']
+                );
+            }
             if (!empty($filterType)) {
                 if (!in_array($filterType, $this->allowedObjectsFilter)) {
                     $allowedFilter = implode(', ', $this->allowedObjectsFilter);
