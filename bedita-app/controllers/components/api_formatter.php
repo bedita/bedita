@@ -51,6 +51,11 @@ class ApiFormatterComponent extends Object {
         'stats_provider',
         'stats_provider_url',
         'ip_created',
+        'syndicate',
+        'priority_order',
+        'last_modified',
+        'map_priority',
+        'map_changefreq',
         'Category' => array(
             'object_type_id',
             'status',
@@ -586,7 +591,7 @@ class ApiFormatterComponent extends Object {
                 } elseif (isset($object[$key])) {
                     $object[$key] = array_diff_key($object[$key], $fieldsToRemove);
                 }
-            } elseif (isset($object[$value])) {
+            } elseif (array_key_exists($value, $object)) {
                 unset($object[$value]);
             }
         }
