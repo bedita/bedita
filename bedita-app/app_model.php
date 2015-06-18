@@ -76,7 +76,11 @@ class BEAppModel extends AppModel {
         foreach ($record as $key => $val) {
             if (is_array($val) && !in_array($key, $skipKeys)) {
                 // #639 - Associated models merged to main object results.
-                $tmp = array_merge($tmp, $val);
+                foreach ($val as $k => $v) {
+                    if (empty($tmp[$k]) || !empty($v)) {
+                        $tmp[$k] = $v;
+                    }
+                }
             } else {
                 $tmp[$key] = $val;
             }

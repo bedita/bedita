@@ -129,6 +129,66 @@ class GenericObjectTestCase extends BeditaTestCase  {
 		$this->assertEqual($levelNames, $expectedNames);
 	}
 
+    public function testAm() {
+        $test = array(
+            'BEObject' => array(
+                'id' => 1,
+                'title' => 'My title'
+            ),
+            'Content' => array(
+                'id' => '',
+                'body' => 'body'
+            ),
+            'field' => 'value'
+        );
+
+        $document = ClassRegistry::init('Document');
+        $result = $document->am($test);
+        $expected = array(
+            'id' => 1,
+            'title' => 'My title',
+            'body' => 'body',
+            'field' => 'value'
+        );
+        $this->assertEqual($result, $expected);
+
+        $result = $document->am($test, array('Content'));
+        $expected = array(
+            'id' => 1,
+            'title' => 'My title',
+            'Content' => array(
+                'id' => '',
+                'body' => 'body'
+            ),
+            'field' => 'value'
+        );
+        $this->assertEqual($result, $expected);
+
+        $test['Content']['id'] = 4;
+        $result = $document->am($test);
+        $expected = array(
+            'id' => 4,
+            'title' => 'My title',
+            'body' => 'body',
+            'field' => 'value'
+        );
+        $this->assertEqual($result, $expected);
+
+        $test['Stream'] = array('id' => null, 'uri' => '/my/path/');
+        $result = $document->am($test);
+        $expected = array(
+            'id' => 4,
+            'title' => 'My title',
+            'body' => 'body',
+            'field' => 'value',
+            'uri' => '/my/path/'
+        );
+        $this->assertEqual($result, $expected);
+
+        $result = $document->am($test, array('BEObject', 'Content', 'Stream'));
+        $this->assertEqual($result, $test);
+    }
+
 	private function insertAndCheck(Model $model, array &$d) {
 		$model->create();
 		$res = $model->save($d);
