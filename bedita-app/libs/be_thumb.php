@@ -175,7 +175,7 @@ class BeThumb {
         if (!$this->setupImagePath($data)) {
             return $this->imgMissingFile;
         }
-        if ($this->isExceedingSize($data['file_size'])) {
+        if (!empty($data['file_size']) && $this->isExceedingSize($data['file_size'])) {
             return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
         }
         if (!$this->setupImageInfo($data)) {
