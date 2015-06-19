@@ -47,15 +47,24 @@ class ApiFormatterComponent extends Object {
         'RelatedObject',
         'bindings',
         'fixed',
+        'valid',
+        'ip_created',
+        'pathSection',
+        // areas
         'stats_code',
         'stats_provider',
         'stats_provider_url',
-        'ip_created',
+        // sections
         'syndicate',
         'priority_order',
         'last_modified',
         'map_priority',
         'map_changefreq',
+        // trees fields
+        'area_id',
+        'object_path',
+        'priority',
+        'menu',
         'Category' => array(
             'object_type_id',
             'status',
@@ -103,7 +112,8 @@ class ApiFormatterComponent extends Object {
         'object' => array(
             'publication_date' => 'datetime',
             'customProperties' => 'underscoreField',
-            'canonicalPath' => 'underscoreField'
+            'canonicalPath' => 'underscoreField',
+            'parentAuthorized' => 'underscoreField'
         )
     );
 
