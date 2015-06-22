@@ -94,7 +94,7 @@ class ResponseHandlerComponent extends Object {
             if (in_array($ext, $this->typesHandled)) {
                 $this->type = $ext;
             } else {
-                if ($this->RequestHandler->accepts('json')) {
+                if ($this->RequestHandler->prefers('json')) {
                     $this->type = 'json';
                 } elseif ($this->RequestHandler->prefers('xml')) {
                     $this->type = 'xml';
