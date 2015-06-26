@@ -284,7 +284,7 @@ class PermissionModule extends BEAppModel
 		}
 
 		$modules = $this->Module->find("all", array(
-			"conditions" => array("status" => "on"),
+			"conditions" => array("status" => "on", 'module_type' => array('core', 'plugin')),
 			"order" => "priority ASC"
 		));
 

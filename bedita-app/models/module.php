@@ -38,9 +38,9 @@ class Module extends BEAppModel {
 	 * @return array ("plugged" => array(), "unplugged" => array() )  
 	 */
 	public function getPluginModules() {
-		$pluggedModulesList = $this->find("list", array(
-				"fields" => array("name", "id"),
-				"conditions" => array("module_type" => "plugin")
+		$pluggedModulesList = $this->find('list', array(
+				'fields' => array('name', 'id'),
+				'conditions' => array('module_type' => array('plugin', 'addon'))
 			)
 		);
 		
@@ -108,7 +108,7 @@ class Module extends BEAppModel {
 		$data["Module"]["label"] = (!empty($setup["publicName"]))? $setup["publicName"] : $pluginName;
 		$data["Module"]["url"] = $pluginName;
 		$data["Module"]["status"] = "on";
-		$data["Module"]["module_type"] = "plugin";
+		$data["Module"]["module_type"] = (!empty($setup['type']))? $setup['type'] : 'plugin';
 		$data["Module"]["priority"] = $this->field("priority", null, "priority DESC") + 1;
 		if (!$this->save($data)) {
 			throw new BeditaException(__("error saving module data", true));
