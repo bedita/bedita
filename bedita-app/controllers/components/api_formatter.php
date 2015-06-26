@@ -406,7 +406,7 @@ class ApiFormatterComponent extends Object {
                 if (isset($countForbidden[$switch])) {
                     $count -= $countForbidden[$switch];
                 }
-                $relations[$switch][] = array(
+                $relations[$switch] = array(
                     'count' => (int) $count,
                     'url' => $url . $switch
                 );
