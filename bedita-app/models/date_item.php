@@ -82,8 +82,11 @@ class DateItem extends BEAppModel
             return $date;
         }
 
-        if (!is_int($date) && ($dateTime = date_create_from_format(str_replace('%', '', Configure::read('datePattern') . ' G:i|'), $date))) {
-            $date = date_format($dateTime, 'Y-m-d H:i:s');
+        if (!is_int($date)) {
+            $pattern = str_replace('%', '', Configure::read('datePattern'));
+            if (($dateTime = date_create_from_format($pattern . ' G:i|', $date)) || ($dateTime = date_create_from_format($pattern . '|', $date))) {
+                $date = date_format($dateTime, 'Y-m-d H:i:s');
+            }
         }
 
         $type = $this->getColumnType($column);
