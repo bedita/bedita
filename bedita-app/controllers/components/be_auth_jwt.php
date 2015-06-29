@@ -166,7 +166,7 @@ class BeAuthJwtComponent extends Object {
             return false;
         }
 
-        $userModel->compact($u);
+        $userModel->compact($u, true);
 
         $this->user = $u;
         return true;
@@ -376,7 +376,7 @@ class BeAuthJwtComponent extends Object {
             return false;
         }
 
-        $userModel->compact($user);
+        $userModel->compact($user, true);
         return $user;
     }
 

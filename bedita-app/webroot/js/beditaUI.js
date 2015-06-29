@@ -594,13 +594,18 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
-        $(".searchobjectsbyid").hide();
+        $(".searchobjectsbyid").css("visibility","hidden");
         $(".searchobjects").toggle();
     });
 
     $(".searchbyidtrigger").click(function() {
         $(".searchobjects").hide();
-        $(".searchobjectsbyid").toggle();
+        var visibility = $(".searchobjectsbyid").css("visibility");
+        if(visibility == "hidden") {
+            $(".searchobjectsbyid").css("visibility","visible");
+        } else {
+            $(".searchobjectsbyid").css("visibility","hidden");
+        }
     });
 
 /*...........................................

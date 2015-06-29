@@ -45,11 +45,19 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultEndPoints = array('objects', 'auth', 'me', 'poster');
 
     /**
-     * Default allowed model bindings
+     * The default binding level
+     *
+     * @see FrontendController::defaultBindingLevel
+     * @var string
+     */
+    protected $defaultBindingLevel = 'api';
+
+    /**
+     * Allowed model bindings
      *
      * @var array
      */
-    private $defaultModelBindings = array('default', 'frontend', 'minimum');
+    protected $allowedModelBindings = array('default', 'frontend', 'minimum');
 
     /**
      * Other endpoints specified in the frontend app
@@ -89,6 +97,26 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
+     * Pagination options used to paginate objects
+     * Default values are
+     *
+     *  ```
+     * 'page' => 1, // the page to load
+     * 'pageSize' => 20, // the dimension of the page
+     * 'maxPageSize' => 100 // the max page dimension in a request
+     * ```
+     *
+     * If 'page' or 'page_size' are in query url then they override those default
+     *
+     * @var array
+     */
+    protected $paginationOptions = array(
+        'page' => 1,
+        'pageSize' => 20,
+        'maxPageSize' => 100
+    );
+
+    /**
      * The POST data in request
      *
      * @var array
@@ -108,6 +136,35 @@ abstract class ApiBaseController extends FrontendController {
      * @var string
      */
     protected $requestMethod = null;
+
+    /**
+     * The complete base url for API
+     * i.e. https://example.com/api/v1
+     * It is filled the first time self::baseUrl() is called
+     *
+     * @var string
+     */
+    private $fullApiBaseUrl = null;
+
+    /**
+     * The allowed filters you can apply to /objects endpoint
+     * For example /objects/1/children search the children of object with id = 1
+     *
+     * Override in ApiController to limit or add functionality to /objects endpoint
+     * For example adding to array 'foo' search type and adding ApiController::loadFoo() you can call /objects/1/foo
+     *
+     * @var array
+     */
+    protected $allowedObjectsFilter = array(
+        'relations',
+        'children',
+        'contents',
+        'sections',
+        'descendants',
+        'siblings',
+        //'ancestors',
+        //'parents'
+    );
 
     /**
      * Constructor
@@ -171,6 +228,39 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Setup the pagination options self:paginationOptions
+     * Merging default with query url params
+     *
+     * @return void
+     */
+    private function setupPagination() {
+        $paramsUrl = $this->params['url'];
+        if (isset($paramsUrl['page'])) {
+            // check that 'page' is positive integer
+            $intVal = (int) $paramsUrl['page'];
+            $floatVal = (float) $paramsUrl['page'];
+            if (!is_numeric($paramsUrl['page']) || $paramsUrl['page'] < 1 || $intVal != $floatVal) {
+                throw new BeditaBadRequestException('page param must be a positive integer');
+            }
+            $this->paginationOptions['page'] = (int) $paramsUrl['page'];
+        }
+
+        if (isset($paramsUrl['page_size'])) {
+            // check that 'page_size' is positive integer
+            $intVal = (int) $paramsUrl['page_size'];
+            $floatVal = (float) $paramsUrl['page_size'];
+            if (!is_numeric($paramsUrl['page_size']) || $paramsUrl['page_size'] < 1 || $intVal != $floatVal) {
+                throw new BeditaBadRequestException('page_size param must be a positive integer');
+            }
+            $this->paginationOptions['pageSize'] = (int) $paramsUrl['page_size'];
+        }
+        if ($this->paginationOptions['pageSize'] > $this->paginationOptions['maxPageSize']) {
+            throw new BeditaBadRequestException('Max page_size supported is ' . $this->paginationOptions['maxPageSize']);
+        }
+        $this->paginationOptions['dim'] = $this->paginationOptions['pageSize'];
+    }
+
+    /**
      * Common operations that every call must do:
      *
      * - replace self::BeAuth with self::BeAuthJwt to work properly in FrontendController.
@@ -206,6 +296,8 @@ abstract class ApiBaseController extends FrontendController {
             $this->_stop();
         }
 
+        $this->setupPagination();
+
         if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
             $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
             unset($this->params['form']['username']);
@@ -235,9 +327,20 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @param array $data
      * @param boolean $merge true if $data has to be merged with previous set
+     * @return void
      */
     protected function setData(array $data = array(), $merge = false) {
         $this->responseData['data'] = ($merge && isset($this->responseData['data'])) ? array_merge($this->responseData['data'], $data) : $data;
+    }
+
+    /**
+     * set self::responseData['paging'] array used by self::response() to output pagination data
+     *
+     * @param array $paginationData
+     * @return void
+     */
+    protected function setPaging(array $paginationData) {
+        $this->responseData['paging'] = $paginationData;
     }
 
     /**
@@ -275,19 +378,33 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Return the full or partial API base url
+     * If $full is true set self::fullApiBaseUrl too and reuse it for the next time
+     *
+     * @param boolean $full if the url should be complete or partial
+     * @return string
+     */
+    public function baseUrl($full = true) {
+        if (!$full) {
+            return Configure::read('api.baseUrl');
+        }
+        if (!$this->fullApiBaseUrl) {
+            $baseUrl = Configure::read('api.baseUrl');
+            $url = Router::url($baseUrl, true);
+            $this->fullApiBaseUrl = trim($url, '/');
+        }
+        return $this->fullApiBaseUrl;
+    }
+
+    /**
      * prepare response data for base api url
      *
      * default response: show list of available endpoints with urls
      * override in subclasses for custom response
      */
     protected function baseUrlResponse() {
-        $baseUrl = Router::url(null, true);
-        $rPos = strrpos($baseUrl, '/');
-        if ($rPos !== (strlen($baseUrl) - 1)) {
-            $baseUrl .= '/';
-        }
         foreach ($this->endPoints as $endPoint) {
-            $this->responseData[$endPoint] = $baseUrl . $endPoint;
+            $this->responseData[$endPoint] = $this->baseUrl() . '/' . $endPoint;
         }
     }
 
@@ -297,23 +414,34 @@ abstract class ApiBaseController extends FrontendController {
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
-     * @param string $kinship
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
      * @return void
      */
-    protected function objects($name = null, $kinship = null) {
+    protected function objects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-            $kinshipTypes = array('ancestors', 'parents', 'children', 'descendants', 'siblings');
-            if (!empty($kinship)) {
-                if (!in_array($kinship, $kinshipTypes)) {
-                    throw new BeditaBadRequestException();
+            // check if object $id is on tree
+            $isOnTree = ClassRegistry::init('Tree')->isOnTree($id, $this->publication['id']);
+            if (!$isOnTree) {
+                throw new BeditaNotFoundException(
+                    null,
+                    'object ' . $name . ' does not exists or is not a children of ' . $this->publication['title']
+                );
+            }
+            if (!empty($filterType)) {
+                if (!in_array($filterType, $this->allowedObjectsFilter)) {
+                    $allowedFilter = implode(', ', $this->allowedObjectsFilter);
+                    throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
                 } else {
-                    $method = 'load' . Inflector::camelize($kinship);
-                    $this->{$method}($id);
+                    $method = 'load' . Inflector::camelize($filterType);
+                    $args = func_get_args();
+                    $args[0] = $id;
+                    unset($args[1]);
+                    call_user_func_array(array($this, $method), $args);
                 }
             } else {
-                $options = array();
-                if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->defaultModelBindings)) {
+                $options = array('explodeRelations' => false);
+                if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->allowedModelBindings)) {
                     $options['bindingLevel'] = $this->params['url']['binding'];
                 }
                 $object = $this->loadObj($id, true, $options);
@@ -328,15 +456,10 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }
 
-                $collections = array(
-                    Configure::read('objectTypes.area.id'),
-                    Configure::read('objectTypes.section.id')
+                $object = $this->ApiFormatter->formatObject(
+                    $object,
+                    array('countRelations' => true, 'countChildren' => true)
                 );
-                if (in_array($object['object_type_id'], $collections)) {
-                    $object['children'] = $this->loadSectionObjects($object['id']);
-                }
-
-                $object = $this->ApiFormatter->formatObject($object);
                 $this->setData($object);
             }
         // @todo list of objects
@@ -346,49 +469,177 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Load children of object $id
+     * Get children of $parentId object, prepare and set response data
+     * The response is automatically paginated using self::paginationOptions
      *
-     * @param int $id
+     * @see FrontendController::loadSectionObjects()
+     * @param int $parentId the parent id
+     * @param array $options an array of options for filter results
      * @return void
      */
-    protected function loadChildren($id, array $options = array()) {
-        $objects = $this->loadSectionObjects($id, $options);
-        if (empty($objects['childContents'])) {
+    protected function responseChildren($parentId, array $options = array()) {
+        $defaultOptions = array('explodeRelations' => false);
+        $options = array_merge($defaultOptions, $this->paginationOptions, $options);
+        // assure to have result in 'children' key
+        $options['itemsTogether'] = true;
+        // add conditions on not accessible objects (frontend_access_with_block)
+        // @todo move to ForntendController::loadSectionObjects()?
+        $user = $this->BeAuthJwt->getUser();
+        $permissionJoin = array(
+            'table' => 'permissions',
+            'alias' => 'Permission',
+            'type' => 'inner',
+            'conditions' => array(
+                'Permission.object_id = Tree.id',
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+            )
+        );
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        }
+        $objectsForbidden = ClassRegistry::init('Tree')->find('list', array(
+            'fields' => array('id'),
+            'joins' => array($permissionJoin),
+            'conditions' => array(
+                'Tree.parent_id' => $parentId
+            )
+        ));
+
+        if (!empty($objectsForbidden)) {
+            $options['filter']['NOT']['BEObject.id'] = array_values($objectsForbidden);
+        }
+
+        $result = $this->loadSectionObjects($parentId, $options);
+        if (empty($result['children'])) {
             $this->setData();
         } else {
-            $objectsData = $this->ApiFormatter->formatObjects($objects['childContents']);
-            $this->setData($objectsData);
-            $this->responseData['paging'] = $this->ApiFormatter->formatPaging($objects['toolbar']);
+            $objects = $this->ApiFormatter->formatObjects(
+                $result['children'],
+                array('countRelations' => true, 'countChildren' => true)
+            );
+            $this->setData($objects);
+            $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
         }
     }
 
     /**
-     * Load descendants of object $id
+     * Load children of object $id setting data for response
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadChildren($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $this->responseChildren($id);
+    }
+
+    /**
+     * Load sections children of object $id setting data for response
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadSections($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $result = $this->responseChildren($id, array(
+            'filter' => array(
+                'object_type_id' => array($sectionObjectTypeId)
+            )
+        ));
+    }
+
+    /**
+     * Load contents children of object $id setting data for response
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function loadContents($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $result = $this->responseChildren($id, array(
+            'filter' => array(
+                'NOT' => array(
+                    'object_type_id' => array($sectionObjectTypeId)
+                )
+            )
+        ));
+    }
+
+    /**
+     * Load descendants of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadDescendants($id) {
-        $this->loadChildren($id, array(
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $this->responseChildren($id, array(
             'filter' => array('descendants' => true)
         ));
     }
 
     /**
-     * Load siblings of object $id
+     * Load siblings of object $id setting data for response
      *
      * @param int $id
      * @return void
      */
     protected function loadSiblings($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
         // get only first parent?
         $parentIds = ClassRegistry::init('Tree')->getParents($id, $this->publication['id'], $this->getStatus());
         if (empty($parentIds)) {
             throw new BeditaNotFoundException('The object ' . $id . ' have no parents');
         }
-        $this->loadChildren($parentIds[0], array(
+        $this->responseChildren($parentIds[0], array(
             'filter' => array('NOT' => array('BEObject.id' => $id))
         ));
+    }
+
+    /**
+     * Load relations of object $id setting data for response
+     *
+     * @param int $id the main object id
+     * @param string $relation the relation name
+     * @return void
+     */
+    protected function loadRelations($id, $relation = '') {
+        if (func_num_args() > 2) {
+            throw new BeditaBadRequestException();
+        }
+        // count relations of object $id
+        if (empty($relation)) {
+            $relCount = $this->ApiFormatter->formatRelationsCount(array('id' => $id));
+            $this->setData($relCount);
+        // detail of related objects
+        } else {
+            $defaultOptions = array('explodeRelations' => false);
+            $options = array_merge($defaultOptions, $this->paginationOptions);
+            $result = $this->loadRelatedObjects($id, $relation, $options);
+            if (empty($result['items'])) {
+                $this->setData();
+            } else {
+                $objects = $this->ApiFormatter->formatObjects(
+                    $result['items'],
+                    array('countRelations' => true)
+                );
+                $this->setData($objects);
+                $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+            }
+        }
     }
 
     /**

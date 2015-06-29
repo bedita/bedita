@@ -902,4 +902,77 @@ class Tree extends BEAppModel
 
     	return $this->removeBranch($id/*, null*/);
     }
+
+    /**
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
+     *
+     * @see self::countChildren()
+     * @param int $parentId the parent id
+     * @param array $options
+     * @return int
+     */
+    public function countChildrenContents($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $this->bindModel(array(
+            'belongsTo' => array(
+                'BEObject' => array(
+                    'foreignKey' => 'id',
+                    'type' => 'inner'
+                )
+            )
+        ));
+        $options['conditions']['NOT']['BEObject.object_type_id'] = $sectionObjectTypeId;
+        return $this->countChildren($parentId, $options);
+    }
+
+    /**
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
+     *
+     * @see self::countChildren()
+     * @param int $parentId the parent id
+     * @param array $options
+     * @return int
+     */
+    public function countChildrenSections($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
+        $sectionObjectTypeId = Configure::read('objectTypes.section.id');
+        $this->bindModel(array(
+            'belongsTo' => array(
+                'BEObject' => array(
+                    'foreignKey' => 'id',
+                    'type' => 'inner'
+                )
+            )
+        ));
+        $options['conditions']['BEObject.object_type_id'] = $sectionObjectTypeId;
+        return $this->countChildren($parentId, $options);
+    }
+
+    /**
+     * Count children using $options if any
+     * $options can contain every params used to customize Model::find()
+     *
+     * @param int $parentId the parent id
+     * @param array $options
+     * @return int
+     */
+    public function countChildren($parentId, array $options = array()) {
+        $options = array_merge(
+            array('conditions' => array()),
+            $options
+        );
+        $options['conditions']['Tree.parent_id'] = $parentId;
+        $count = $this->find('count', $options);
+        return $count;
+    }
+
 }

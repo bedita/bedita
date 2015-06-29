@@ -47,10 +47,24 @@ class ApiFormatterComponent extends Object {
         'RelatedObject',
         'bindings',
         'fixed',
+        'valid',
+        'ip_created',
+        'pathSection',
+        // areas
         'stats_code',
         'stats_provider',
         'stats_provider_url',
-        'ip_created',
+        // sections
+        'syndicate',
+        'priority_order',
+        'last_modified',
+        'map_priority',
+        'map_changefreq',
+        // trees fields
+        'area_id',
+        'object_path',
+        'priority',
+        'menu',
         'Category' => array(
             'object_type_id',
             'status',
@@ -98,7 +112,8 @@ class ApiFormatterComponent extends Object {
         'object' => array(
             'publication_date' => 'datetime',
             'customProperties' => 'underscoreField',
-            'canonicalPath' => 'underscoreField'
+            'canonicalPath' => 'underscoreField',
+            'parentAuthorized' => 'underscoreField'
         )
     );
 
@@ -332,65 +347,187 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Count $object relations and return a formatted array as
+     *
+     * ```
+     * array(
+     *     'attach' => array(
+     *         'count' => 8,
+     *         'url' => 'https://example.com/api/v1/objects/1/relations/attach'
+     *     ),
+     *     'seealso' => array(
+     *         'count' => 2,
+     *         'url' => 'https://example.com/api/v1/objects/1/relations/seealso'
+     *     )
+     * )
+     * ```
+     *
+     * @param array $object the object on which to count the relations
+     * @return array
+     */
+    public function formatRelationsCount(array $object) {
+        $relations = array();
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        // count all relations
+        $countRel = $objectRelation->find('all', array(
+            'fields' => array('COUNT(ObjectRelation.id) as count', 'ObjectRelation.switch'),
+            'conditions' => array('ObjectRelation.id' => $object['id']),
+            'group' => 'ObjectRelation.switch',
+            'joins' => array(
+                array(
+                    'table' => 'objects',
+                    'alias' => 'BEObject',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'ObjectRelation.object_id = BEObject.id',
+                        'BEObject.status' => $this->controller->getStatus()
+                    )
+                )
+            )
+        ));
+
+        // count not accessible relations
+        $permission = ClassRegistry::init('Permission');
+        $user = $this->controller->BeAuthJwt->getUser();
+        $countForbidden = $permission->relatedObjectsNotAccessibile(
+            $object['id'],
+            array(
+                'count' => true,
+                'status' => $this->controller->getStatus()
+            ),
+            $user
+        );
+
+        $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
+        if (!empty($countRel)) {
+            foreach ($countRel as $cDetail) {
+                $count = $cDetail[0]['count'];
+                $switch = $cDetail['ObjectRelation']['switch'];
+                if (isset($countForbidden[$switch])) {
+                    $count -= $countForbidden[$switch];
+                }
+                $relations[$switch] = array(
+                    'count' => (int) $count,
+                    'url' => $url . $switch
+                );
+            }
+        }
+        return $relations;
+    }
+
+    /**
+     * Count $object children and return a formatted array as
+     *
+     * ```
+     * array(
+     *     'count' => 14, // total children
+     *     'url' => 'https://example.com/api/v1/objects/1/children',
+     *     'contents' => array(
+     *         'count' => 12, // contents children
+     *         'url' => 'https://example.com/api/v1/objects/1/contents'
+     *     ),
+     *     'sections' => array(
+     *         'count' => 2, // sections children
+     *         'url' => 'https://example.com/api/v1/objects/1/sections'
+     *     )
+     * )
+     * ```
+     *
+     * @param array $object the object on which to count children
+     * @return array
+     */
+    public function formatChildrenCount(array $object) {
+        $tree = ClassRegistry::init('Tree');
+        $options = array(
+            'conditions' => array('BEObject.status' => $this->controller->getStatus()),
+            'joins' => array()
+        );
+        $countContents = $tree->countChildrenContents($object['id'], $options);
+        $countSections = $tree->countChildrenSections($object['id'], $options);
+
+        $permissionJoin = array(
+            'table' => 'permissions',
+            'alias' => 'Permission',
+            'type' => 'inner',
+            'conditions' => array(
+                'Permission.object_id = Tree.id',
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+            )
+        );
+        $user = $this->controller->BeAuthJwt->getUser();
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        }
+        $options['joins'][] = $permissionJoin;
+        $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
+        $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
+
+        $countContents -= $countContentsForbidden;
+        $countSections -= $countSectionsForbidden;
+        $countChildren = $countContents + $countSections;
+        $url = $this->controller->baseUrl() . '/objects/' . $object['id'] . '/';
+
+        if ($countChildren == 0) {
+            return array();
+        }
+
+        $result = array(
+            'count' => (int) $countChildren,
+            'url' => $url . 'children'
+        );
+        if ($countContents > 0) {
+            $result['contents'] = array(
+                'count' => (int) $countContents,
+                'url' => $url . 'contents'
+            );
+        }
+        if ($countSections > 0) {
+            $result['sections'] = array(
+                'count' => (int) $countSections,
+                'url' => $url . 'sections'
+            );
+        }
+        return $result;
+    }
+
+    /**
      * Given an object return the formatted data ready for api response
      *
-     * The $result must be located in 'data' key of api response.
-     * It's in the form
+     * The $result is normally located in 'data' key of api response
+     * and it's in the form
      *
      * ```
-     * 'object' => array(...), // object data
-     * 'related' => array(...) // related object data
+     * 'object' => array(...) // object data
      * ```
+     *
+     * $options is used to personalize the object formatted.
+     * Possible values are:
+     *
+     * - 'countRelations' (default false) to add a count of relations with url to reach them
+     * - 'countChildren' (default false) to add a count of children with url to reach them
      *
      * @param array $object representation of a BEdita object
      * @param array $options
      * @return array
      */
     public function formatObject(array $object, $options = array()) {
+        $options += array('countRelations' => false, 'countChildren' => false);
         $this->cleanObject($object);
         $this->transformObject($object);
-        $result = array('object' => $object, 'related' => array());
-        if (!empty($object['relations'])) {
-            foreach ($object['relations'] as $relation => $relatedObjects) {
-                $result['object']['relations'][$relation] = array();
-                foreach ($relatedObjects as $relObj) {
-                    $result['object']['relations'][$relation][] = array(
-                        'id_right' => (int) $relObj['id'],
-                        'params' => $relObj['params'],
-                        'priority' => (int) $relObj['priority']
-                    );
-                    $relObjFormatted = $this->formatObject($relObj, $options);
-                    $result['related'][$relObj['id']] = $relObjFormatted['object'];
-                    if (!empty($relObjFormatted['related'])) {
-                        $result['related'] += $relObjFormatted['related'];
-                    }
-                }
-            }
+        if ($options['countRelations']) {
+            $object['relations'] = $this->formatRelationsCount($object);
         }
-
-        // format children
-        if (!empty($object['children'])) {
-            $result['object']['children'] = array(
-                'contents' => array(),
-                'sections' => array()
+        if ($options['countChildren']) {
+            $branches = array(
+                Configure::read('objectTypes.area.id'),
+                Configure::read('objectTypes.section.id')
             );
-
-            foreach (array('contents', 'sections') as $type) {
-                $typeKey = 'child' . ucfirst($type);
-                if (!empty($object['children'][$typeKey])) {
-                    foreach ($object['children'][$typeKey] as $child) {
-                        $result['object']['children'][$type][] = (int) $child['id'];
-                        $typeFormatted = $this->formatObject($child, $options);
-                        $result['related'][$child['id']] = $typeFormatted['object'];
-                        if (!empty($typeFormatted['related'])) {
-                            $result['related'] += $typeFormatted['related'];
-                        }
-                    }
-                    unset($object['children'][$typeKey]);
-                }
+            if (in_array($object['object_type_id'], $branches)) {
+                $object['children'] = $this->formatChildrenCount($object);
             }
         }
-        return $result;
+        return array('object' => $object);
     }
 
     /**
@@ -399,8 +536,9 @@ class ApiFormatterComponent extends Object {
      *
      * ```
      * 'objects' => array(...), // object data
-     * 'related' => array(...) // related object data
      * ```
+     *
+     * $options is used to personalize the object formatted.
      *
      * @see self::formatObject()
      * @param array $objects array of BEdita objects
@@ -408,11 +546,10 @@ class ApiFormatterComponent extends Object {
      * @return array
      */
     public function formatObjects(array $objects, $options = array()) {
-        $result = array('objects' => array(), 'related' => array());
+        $result = array('objects' => array());
         foreach ($objects as $obj) {
             $objectFormatted = $this->formatObject($obj, $options);
             $result['objects'][] = $objectFormatted['object'];
-            $result['related'] += $objectFormatted['related'];
         }
         return $result;
     }
@@ -422,9 +559,10 @@ class ApiFormatterComponent extends Object {
      *
      * ```
      * 'page' => int, // the current page
-     * 'totalPages' => int, // the total number of pages
+     * 'page_size' => int|null, // the maximum number of items in the response
+     * 'page_count' => int, // the total number of items in the page
      * 'total' => int, // the total number of items
-     * 'limit' => int|null // the maximum number of items in the response
+     * 'total_pages' => int // the total number of pages
      * ```
      *
      * @param array $toolbar
@@ -434,18 +572,20 @@ class ApiFormatterComponent extends Object {
         if (empty($toolbar)) {
             return array();
         }
+        $pageCount = ($toolbar['end'] > 0) ? $toolbar['end'] - $toolbar['start'] + 1 : $toolbar['size'];
         $paging = array(
             'page' => (int) $toolbar['page'],
-            'total_pages' => (int) $toolbar['pages'],
+            'page_size' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null,
+            'page_count' => (int) $pageCount,
             'total' => (int) $toolbar['size'],
-            'limit' => (!empty($toolbar['dim'])) ? (int) $toolbar['dim'] : null
+            'total_pages' => (int) $toolbar['pages']
         );
         return $paging;
     }
 
     /**
      * Clean BEdita object array from useless fields
-     * Use self::objectFieldsToRemove()
+     * Use self::objectFieldsToRemove
      *
      * @param array &$object
      * @return void
@@ -461,7 +601,7 @@ class ApiFormatterComponent extends Object {
                 } elseif (isset($object[$key])) {
                     $object[$key] = array_diff_key($object[$key], $fieldsToRemove);
                 }
-            } elseif (isset($object[$value])) {
+            } elseif (array_key_exists($value, $object)) {
                 unset($object[$value]);
             }
         }

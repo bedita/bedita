@@ -169,88 +169,90 @@ class BeThumb {
 	 *
 	 */
 	public function image($data, $params = array()) {
-		
 		$this->reset();
-		
-		// setup internal imageInfo array
-		if (!$this->setupImageInfo($data)) {
-            if (!empty($data['error']) && $data['error'] == 'unsupported') {
-                return $this->imgUnsupported;
-            } else {
-                return $this->imgMissingFile;
-            }
-		}
-		
-		// if svg or animated gif skip and return image without any resize
-		if($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
-			if ($this->imageInfo["remote"]) {
-				return $this->imageInfo['path'];
-			} else {
-				return Configure::read('mediaUrl') . $this->imageInfo['path'];
-			}
-		}
-		
+
+        // Setup internal `imageInfo` array and perform basic filesize checks.
+        if (!$this->setupImagePath($data)) {
+            return $this->imgMissingFile;
+        }
+        if (!empty($data['file_size']) && $this->isExceedingSize($data['file_size'])) {
+            return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
+        }
+        if (!$this->setupImageInfo($data)) {
+            return (!empty($data['error']) && $data['error'] == 'unsupported') ? $this->imgUnsupported : $this->imgMissingFile;
+        }
+
+        // If image is of type SVG or animated GIF skip any elaboration and return original image.
+        if ($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
+            return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
+        }
+
 		// test source file available
 		if (!$this->imageInfo["remote"] && !$this->checkSourceFile()) {
 			return $this->imgMissingFile;
 		}
-		
+
 		// setup internal image target array
 		$this->setupImageTarget($params);
 
-		// Manage cache and resample if caching option is true
-		// and the image it's not alredy cached
-		$cacheExists = file_exists($this->imageTarget['filepath']);
-		
-		if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() ) {
-			if ( !$this->resample() ) {
-				return $this->imgMissingFile;
-			}
-		}
+        // Manage cache and resample if caching option is `true` and the image it's not already cached.
+        $cacheExists = file_exists($this->imageTarget['filepath']);
+        if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() && !$this->resample()) {
+            return $this->imgMissingFile;
+        }
 
 		// return HTML <img> tag
 		return $this->imageTarget['uri'];
 	}
 
-	/**
-	 * Setup internal imageInfo data array
-	 * On error $data['error'] is populated with:
-	 *    - 'notFund' if image is missing or unreachable
-	 *    - 'fileSys' on a local filesystem related error
-	 *    - 'unsupported' if image format is not supported 
-	 * 
-	 * @param array $data
-	 * @return true on success, false on error
-	 */
-	public function setupImageInfo(array &$data) {
+    /**
+     * Setup image path.
+     *
+     * @param array $data
+     * @return bool Success.
+     */
+    protected function setupImagePath(array &$data) {
+        // Check URI.
+        if (empty($data['uri'])) {
+            $source = !empty($data['id']) ? ' - obj id: ' . $data['id'] : '';
+            $this->triggerError("Missing image 'uri'" . $source);
+            $data['error'] = 'notFund';
+            return false;
+        }
 
-	    // check uri
-	    if (empty($data['uri'])) {
-	        $source = !empty($data['id']) ? ' - obj id: ' . $data['id'] : '';
-	        $this->triggerError("Missing image 'uri'" . $source);
-	        $data['error'] = 'notFund';
-	        return false;
-	    }
-	    
-	    // "uri" could have "/" seaparator on a system with "\" as separator
-	    $this->imageInfo["remote"] = ($data['uri'][0] !== "/" && $data['uri'][0] !== DS);
-	    if ($this->imageInfo["remote"]) {
-	        $uriParts = parse_url($data['uri']);
-	        if (!$uriParts || !in_array($uriParts["scheme"], array("http", "https"))) {
-	            $this->triggerError("'" . $data['uri'] . "' unsupported uri protocol (only http/https)");
-	            $data['error'] = 'notFund';
-	            return false;
-	        }
-	        if (empty($data['path'])) {
-	            $data['path'] = $uriParts["path"];
-	        }
-	    } else {
-	        $data['path'] = $data['uri'];
-	    }
-	     
-		// relative path (local files and remote uri)
-		$this->imageInfo['path'] = $data['path'];
-		
+        // `$data['uri']` could use `/` as path separator on systems using `\` as separator.
+        $this->imageInfo['remote'] = ($data['uri'][0] !== '/' && $data['uri'][0] !== DS);
+        if ($this->imageInfo['remote']) {
+            $uriParts = parse_url($data['uri']);
+            if (!$uriParts || !in_array($uriParts['scheme'], array('http', 'https'))) {
+                $this->triggerError("'{$data['uri']}' unsupported uri protocol (only http/https)");
+                $data['error'] = 'notFund';
+                return false;
+            }
+            if (empty($data['path'])) {
+                $data['path'] = $uriParts['path'];
+            }
+        } else {
+            $data['path'] = $data['uri'];
+        }
+
+        // Relative path (local files and remote URI).
+        $this->imageInfo['path'] = $data['path'];
+        return true;
+    }
+
+    /**
+     * Setup internal imageInfo data array
+     * On error $data['error'] is populated with:
+     *    - 'notFund' if image is missing or unreachable
+     *    - 'fileSys' on a local filesystem related error
+     *    - 'unsupported' if image format is not supported 
+     * 
+     * @param array $data
+     * @return true on success, false on error
+     */
+    public function setupImageInfo(array &$data) {
+
 		// thumbnail setup
 		$pathParts =  pathinfo($data['path']);
 
@@ -343,6 +345,7 @@ class BeThumb {
 	public function imagePathCached($imageFilePath = null) {
 	    if (!empty($imageFilePath)) {
 	        $data["uri"] = str_replace(Configure::read('mediaRoot'), "", $imageFilePath);
+            $this->setupImagePath($data);
 	        $this->setupImageInfo($data);
 	    }
 	    if ($this->imageInfo["remote"] && Configure::read("proxyOptions") != null) {
@@ -823,6 +826,17 @@ class BeThumb {
         }
 
         return $frames >= 2;
+    }
+
+    /**
+     * Check whether file size is exceeding size limits for image thumbnail generation.
+     *
+     * @param int $size File size.
+     * @return bool
+     */
+    protected function isExceedingSize($size) {
+        $maxSize = Configure::read('imgFilesizeLimit');
+        return (!empty($maxSize) && $size > $maxSize);
     }
 
 	/***************************/

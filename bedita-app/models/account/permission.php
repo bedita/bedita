@@ -377,4 +377,105 @@ class Permission extends BEAppModel
 		return $objects;
 	}
 
+    /**
+     * If $options['count'] = false (default) it returns a list of object ids with permission 'frontend_access_with_block'
+     * related to main object $objectId.
+     * Passing also $options['relation'] it also filters by relation name
+     *
+     * If $options['count'] = true it returns an array of count of objects with permission 'frontend_access_with_block'
+     * related to main object $objectId. and grouped by relation name
+     *
+     * Example:
+     * ```
+     * array(
+     *     'attach' => 14,
+     *     'seealso' => 7
+     * )
+     * ```
+     *
+     * If $user['groups'] is specified then it tests related objects against user groups and return a list
+     * without objects allowed to user or a count of objects not allowed to user
+     *
+     * @param int $objectId the main object id
+     * @param string $relation the relation name
+     * @param array $user the user data on which check perms
+     * @return array
+     */
+    public function relatedObjectsNotAccessibile($objectId, array $options = array(), array $user = array()) {
+        $defaultOptions = array(
+            'relation' => null,
+            'count' => false,
+            'status' => null
+        );
+        $options = array_merge($defaultOptions, $options);
+        $conditions = array(
+            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+            'Permission.switch' => 'group',
+            'ObjectRelation.id' => $objectId
+        );
+        if (!empty($options['relation'])) {
+            $conditions['ObjectRelation.switch'] = $options['relation'];
+        }
+        if (!empty($user['groupsIds'])) {
+            $conditions['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+        } elseif (!empty($user['groups'])) {
+            $groupList = ClassRegistry::init('Group')->getList(array(
+                'Group.name' => $user['groups']
+            ));
+            $conditions['NOT'] = array('Permission.ugid' => array_keys($groupList));
+        }
+
+        if ($options['count']) {
+            $findType = 'all';
+            $fields = array('COUNT(Permission.object_id) as count, ObjectRelation.switch');
+            $group = 'ObjectRelation.switch';
+        } else {
+            $findType = 'list';
+            $fields = array('Permission.id', 'Permission.object_id');
+            $group = '';
+        }
+
+        $joins = array(
+            array(
+                'table' => 'object_relations',
+                'alias' => 'ObjectRelation',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = ObjectRelation.object_id',
+                )
+            )
+        );
+
+        // is status is defined add join with objects
+        if (!empty($options['status'])) {
+            $joins[] = array(
+                'table' => 'objects',
+                'alias' => 'BEObject',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = BEObject.id',
+                    'BEObject.status' => $options['status']
+                )
+            );
+        }
+
+        $permission = ClassRegistry::init('Permission');
+        $objectsForbidden = $this->find($findType, array(
+            'fields' => $fields,
+            'conditions' => $conditions,
+            'joins' => $joins,
+            'group' => $group
+        ));
+
+        if ($options['count']) {
+            $relationsCount = array();
+            foreach ($objectsForbidden as $detail) {
+                $relationsCount[$detail['ObjectRelation']['switch']] = $detail[0]['count'];
+            }
+            return $relationsCount;
+        }
+
+        return $objectsForbidden;
+    }
+
 }

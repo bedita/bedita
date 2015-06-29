@@ -21,12 +21,6 @@
 
 /**
  * Section of website/publication
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 class Section extends BeditaCollectionModel
 {
@@ -39,29 +33,54 @@ class Section extends BeditaCollectionModel
         "note" => 2
     );
 
-	protected $modelBindings = array(
-				"detailed" =>  array("BEObject" => array("ObjectType",
-										"UserCreated",
-										"UserModified",
-										"Permission",
-										"ObjectProperty",
-										"LangText",
-										"RelatedObject",
-										"Alias",
-										"Annotation",
-										"Category",
-										"Version" => array("User.realname", "User.userid"),
-										"GeoTag"
-										), "Tree"
-									),
-
-       			"default" => array("BEObject" => array("ObjectProperty",
-									"LangText", "ObjectType", "Category", "RelatedObject", "GeoTag"), "Tree"),
-
-				"minimum" => array("BEObject" => array("ObjectType")),
-
-				"frontend" => array("BEObject" => array("LangText", "Category", "RelatedObject", "ObjectProperty"), "Tree")
-		);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Alias',
+                'Annotation',
+                'Category',
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
+            ),
+            'Tree'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Category',
+                'RelatedObject',
+                'GeoTag'
+            ),
+            'Tree'
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'RelatedObject',
+                'ObjectProperty'
+                ),
+            'Tree'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'ObjectProperty'
+                ),
+            'Tree'
+        )
+    );
 
 	var $validate = array(
 		'title'	=> array(
@@ -161,5 +180,23 @@ class Section extends BeditaCollectionModel
 		}
 	}
 
+    /**
+     * Return an array of column types to transform (cast) for generic BEdita object type
+     * Used to build consistent REST APIs
+     *
+     * In general it returns all castable fields from BEAppObjectModel::apiTransformer() and add transformer results from Tree
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the REST APIs should cast to
+     *
+     * @see BEAppObjectModel::apiTransformer()
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $transformer = parent::apiTransformer($options);
+        $transformer += $this->Tree->apiTransformer($options);
+        return $transformer;
+    }
+
 }
-?>

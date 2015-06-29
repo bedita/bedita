@@ -43,6 +43,15 @@ $config['imgMissingFile'] = '/img/iconMissingImage_130x85.gif';
 $config['imgUnsupported'] = '/img/iconset/image-large.png';
 
 /**
+ * File size limit (in bytes). If an image exceeds this limit, thumbnail won't be generated,
+ * and the script won't even try to open the file, avoiding memory issues.
+ * If set to `null`, no file size limit will be enforced.
+ *
+ * @var int|null
+ */
+$config['imgFilesizeLimit'] = 1024 * 1024 * 16;
+
+/**
  ** ******************************************
  **  Language and locale settings/defaults
  **  i18n - l10n

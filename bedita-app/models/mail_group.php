@@ -21,12 +21,6 @@
 
 /**
  * Mail group object
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class MailGroup extends BEAppModel 
 {
@@ -43,12 +37,12 @@ class MailGroup extends BEAppModel
 			"MailMessage" => array("joinTable" => "mail_group_messages")
 	
 		);
-	
-	protected $modelBindings = array( 
-				"detailed" => array("Area", "Card", "MailMessage"),
-				"default" => array("Area"),
-				"minimum" => array()		
-	);
+
+    protected $modelBindings = array(
+        'detailed' => array('Area', 'Card', 'MailMessage'),
+        'default' => array('Area'),
+        'minimum' => array()
+    );
 
 	/**
 	 * get mail groups divided by area
@@ -111,4 +105,3 @@ class MailGroup extends BEAppModel
 		return $areaModel->field("public_url", array("id" => $pub_id));
 	}
 }
-?>

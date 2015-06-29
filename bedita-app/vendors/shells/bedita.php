@@ -939,6 +939,10 @@ class BeditaShell extends BeditaBaseShell {
         $this->out('Filter options : ' . print_r($filterOptions, true));
 
         $filterClass = Configure::read("filters.export." . $this->params["filter"]);
+        if (empty($filterClass)) {
+            $this->out('Export filter class not found for: ' . $this->params['filter']);
+            return;
+        }
         $filterModel = ClassRegistry::init($filterClass);
 		
 		$result = $filterModel->export($data, $filterOptions);

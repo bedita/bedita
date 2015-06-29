@@ -65,11 +65,11 @@ class User extends BEAppModel
 		)
 	);
 
-	protected $modelBindings = array(
-		"detailed" =>  array("Group", "ObjectUser", "Permission", "UserProperty"),
-		"default" => array("Group", "ObjectUser", "UserProperty"),
-		"minimum" => array()
-	);
+    protected $modelBindings = array(
+        'detailed' =>  array('Group', 'ObjectUser', 'Permission', 'UserProperty'),
+        'default' => array('Group', 'ObjectUser', 'UserProperty'),
+        'minimum' => array()
+    );
 	
 	var $hasAndBelongsToMany = array('Group');
 
@@ -119,13 +119,16 @@ class User extends BEAppModel
 	 *
 	 * @param array $user
 	 */
-	function compact(&$user) {
+	function compact(&$user, $keepGroupsIds = false) {
 		unset($user['Permission']);
 		
 		$user['User']['groups'] = array();
 		if (!empty($user['Group'])) {
 			foreach ($user['Group'] as $group) {
 				$user['User']['groups'][] = $group['name'];
+                if ($keepGroupsIds) {
+                    $user['User']['groupsIds'][] = $group['id'];
+                }
 			}
 
 			unset($user['Group']);
