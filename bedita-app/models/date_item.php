@@ -82,6 +82,10 @@ class DateItem extends BEAppModel
             return $date;
         }
 
+        if (!is_int($date) && ($dateTime = date_create_from_format(str_replace('%', '', Configure::read('datePattern') . ' G:i|'), $date))) {
+            $date = date_format($dateTime, 'Y-m-d H:i:s');
+        }
+
         $type = $this->getColumnType($column);
         if ($type == 'datetime' && is_int($date)) {
             $date = date('Y-m-d H:i:s', $date);
@@ -131,11 +135,11 @@ class DateItem extends BEAppModel
         /**
          * Prepare start/end dates.
          */
-        if ($this->getColumnType('start_date') == 'datetime' && !empty($data['start_date']) && !empty($data['timeStart'])) {
+        if (!empty($data['start_date']) && !empty($data['timeStart'])) {
             $data['start_date'] .= ' ' . $data['timeStart'];
         }
         $data['start_date'] = $this->prepareDate('start_date', $data['start_date']);
-        if ($this->getColumnType('end_date') == 'datetime' && !empty($data['end_date']) && !empty($data['timeEnd'])) {
+        if (!empty($data['end_date']) && !empty($data['timeEnd'])) {
             $data['end_date'] .= ' ' . $data['timeEnd'];
         }
         $data['end_date'] = $this->prepareDate('end_date', $data['end_date']);
