@@ -252,12 +252,18 @@ class AdminController extends ModulesController {
 			$this->Transaction->commit();
 			$this->userInfoMessage(__("Modules sorted succesfully", true));
 		}
-		$modules = ClassRegistry::init("Module")->find("all", array(
-			"conditions" => array("status" => "on"),
-			"order" => "priority ASC"
-		));
+        $modules = ClassRegistry::init('Module')->find('all', array(
+            'conditions' => array(
+                'status' => 'on',
+                'module_type' => array(
+                    'core',
+                    'plugin'
+                )
+            ),
+            'order' => 'priority ASC'
+        ));
 		$modules = Set::classicExtract($modules,'{n}.Module');
-		$this->set("moduleList", $modules);
+		$this->set('moduleList', $modules);
 	}
 
     /**
