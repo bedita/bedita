@@ -378,12 +378,14 @@ class Permission extends BEAppModel
 	}
 
     /**
+     * Return information about frontend not accessible related objects to $objectId
+     *
      * If $options['count'] = false (default) it returns a list of object ids with permission 'frontend_access_with_block'
      * related to main object $objectId.
-     * Passing also $options['relation'] it also filters by relation name
+     * Passing also $options['relation'] it filters by relation name
      *
      * If $options['count'] = true it returns an array of count of objects with permission 'frontend_access_with_block'
-     * related to main object $objectId. and grouped by relation name
+     * related to main object $objectId and grouped by relation name
      *
      * Example:
      * ```
@@ -402,12 +404,12 @@ class Permission extends BEAppModel
      * @return array
      */
     public function relatedObjectsNotAccessibile($objectId, array $options = array(), array $user = array()) {
-        $defaultOptions = array(
+        $options += array(
             'relation' => null,
             'count' => false,
             'status' => null
         );
-        $options = array_merge($defaultOptions, $options);
+
         $conditions = array(
             'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
             'Permission.switch' => 'group',
@@ -416,23 +418,15 @@ class Permission extends BEAppModel
         if (!empty($options['relation'])) {
             $conditions['ObjectRelation.switch'] = $options['relation'];
         }
-        if (!empty($user['groupsIds'])) {
-            $conditions['NOT'] = array('Permission.ugid' => $user['groupsIds']);
-        } elseif (!empty($user['groups'])) {
-            $groupList = ClassRegistry::init('Group')->getList(array(
-                'Group.name' => $user['groups']
-            ));
-            $conditions['NOT'] = array('Permission.ugid' => array_keys($groupList));
-        }
 
         if ($options['count']) {
             $findType = 'all';
-            $fields = array('COUNT(Permission.object_id) as count, ObjectRelation.switch');
+            $fields = array('COUNT(DISTINCT(Permission.object_id)) as count, ObjectRelation.switch');
             $group = 'ObjectRelation.switch';
         } else {
             $findType = 'list';
             $fields = array('Permission.id', 'Permission.object_id');
-            $group = '';
+            $group = 'Permission.object_id';
         }
 
         $joins = array(
@@ -446,7 +440,7 @@ class Permission extends BEAppModel
             )
         );
 
-        // is status is defined add join with objects
+        // if status is defined add join with objects
         if (!empty($options['status'])) {
             $joins[] = array(
                 'table' => 'objects',
@@ -467,12 +461,42 @@ class Permission extends BEAppModel
             'group' => $group
         ));
 
+        // get objects allowed to user
+        $objectsAllowed = array();
+        if (!empty($user)) {
+            if (!empty($user['groupsIds'])) {
+                $conditions['Permission.ugid'] = $user['groupsIds'];
+            } elseif (!empty($user['groups'])) {
+                $groupList = ClassRegistry::init('Group')->getList(array(
+                    'Group.name' => $user['groups']
+                ));
+                $conditions['Permission.ugid'] = array_keys($groupList);
+            }
+            $objectsAllowed = $this->find($findType, array(
+                'fields' => $fields,
+                'conditions' => $conditions,
+                'joins' => $joins,
+                'group' => $group
+            ));
+        }
+
         if ($options['count']) {
             $relationsCount = array();
+            $objectsAllowed = Set::combine($objectsAllowed, '{n}.ObjectRelation.switch', '{n}.{n}.count');
             foreach ($objectsForbidden as $detail) {
-                $relationsCount[$detail['ObjectRelation']['switch']] = $detail[0]['count'];
+                $count = $detail[0]['count'];
+                $switch = $detail['ObjectRelation']['switch'];
+                if (!empty($objectsAllowed[$switch])) {
+                    $count -= $objectsAllowed[$switch][0];
+                }
+                $relationsCount[$detail['ObjectRelation']['switch']] = $count;
             }
             return $relationsCount;
+        } else {
+            $objectsForbidden = array_diff(
+                array_values($objectsForbidden),
+                array_values($objectsAllowed)
+            );
         }
 
         return $objectsForbidden;
