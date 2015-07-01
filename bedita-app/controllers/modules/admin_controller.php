@@ -20,7 +20,7 @@
  */
 
 /**
- * Administration: system info, eventlogs, plug/unplug module, addons, utility....
+ * Administration: system info, eventlogs, plug/unplug module, plugins, utility....
  */
 class AdminController extends ModulesController {
 
@@ -165,8 +165,6 @@ class AdminController extends ModulesController {
 				$folders = BeLib::getFrontendFolders();
 			} elseif ($type == 'modules') {
 				$folders = BeLib::getPluginModuleFolders();
-			} elseif ('addons') {
-				$folders = BeLib::getAddonFolders();
 			} else {
 				throw new BeditaException(__("Error: could not update this resource", true));
 			}
@@ -211,10 +209,6 @@ class AdminController extends ModulesController {
 
 	public function updateModules() {
 		$this->update('modules');
-	}
-
-	public function updateAddons() {
-		$this->update('addons');
 	}
 
 	/**
@@ -591,97 +585,6 @@ class AdminController extends ModulesController {
 		$this->userInfoMessage($this->params["form"]["pluginName"] . " " . __("unplugged succesfully",true));
 	}
 
-	/**
-	 * list all available addons
-	 * @return void
-	 */
-	public function addons() {
-		$this->set("addons", ClassRegistry::init("Addon")->getAddons());
-	}
-
-	/**
-	 * Enable addon copying the addon file in the related enabled folder.
-	 * If addon is a BEdita object type create also a row on object_types table
-	 */
-	public function enableAddon() {
-		$this->checkWriteModulePermission();
-	 	if (empty($this->params["form"])) {
-	 		throw new BeditaException(__("Missing form data", true));
-	 	}
-	 	$filePath = $this->params["form"]["path"] . DS . $this->params["form"]["file"];
-		$enabledPath = $this->params["form"]["path"] . DS . "enabled" .  DS . $this->params["form"]["file"];
-	 	$beLib = BeLib::getInstance();
-
-		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
-			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
-		}
-
-		$this->Transaction->begin();
-		ClassRegistry::init("Addon")->enable($this->params["form"]["file"],  $this->params["form"]["type"]);
-		$this->Transaction->commit();
-
-		$msg = $this->params["form"]["name"] . " " . __("addon plugged succesfully", true);
-		$this->userInfoMessage($msg);
-		$this->eventInfo($msg);
-	}
-
-	/**
-	 * Disable addon deleting the addon file from the related enabled folder.
-	 * If addon is a BEdita object type remove also the row on object_types table
-	 */
-	public function disableAddon() {
-		$this->checkWriteModulePermission();
-	 	if (empty($this->params["form"])) {
-	 		throw new BeditaException(__("Missing form data", true));
-	 	}
-
-		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
-			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
-		}
-
-		$this->Transaction->begin();
-		ClassRegistry::init("Addon")->disable($this->params["form"]["file"], $this->params["form"]["type"]);
-		$this->Transaction->commit();
-
-		// BEdita object type
-		if (!empty($this->params["form"]["objectType"])) {
-			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully, all related objects are been deleted",true));
-		} else {
-			$this->userInfoMessage($this->params["form"]["name"] . " " . __("disable succesfully", true));
-		}
-
-        $this->eventInfo("addon {$this->params['form']['name']} disabled successfully");
-	}
-
-	public function updateAddon() {
-		$this->checkWriteModulePermission();
-		if (empty($this->params["form"])) {
-	 		throw new BeditaException(__("Missing form data", true));
-	 	}
-
-		if (!BeLib::getObject("BeSystem")->checkWritable($this->params["form"]["path"] . DS . "enabled")) {
-			throw new BeditaException(__("enabled folder isn't writable", true), $this->params["form"]["path"] . DS . "enabled");
-		}
-
-		ClassRegistry::init("Addon")->update($this->params["form"]["file"], $this->params["form"]["type"]);
-		$this->userInfoMessage($this->params["form"]["name"] . " " . __("updated succesfully", true));
-		$this->eventInfo("addon ". $this->params["form"]["model"]." updated succesfully");
-	}
-
-	public function diffAddon() {
-		$Addon = ClassRegistry::init("Addon");
-		$addonPath = $Addon->getFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
-		$addonEnabledPath = $Addon->getEnabledFolderByType($this->params["named"]["type"]) . DS . $this->params["named"]["filename"];
-
-		$addon = file_get_contents($addonPath);
-		$addonEnabled = file_get_contents($addonEnabledPath);
-
-		App::import("Vendor", "finediff");
-		$opcodes = FineDiff::getDiffOpcodes($addonEnabled, $addon, FineDiff::$paragraphGranularity);
-		$diff = FineDiff::renderDiffToHTMLFromOpcodes($addonEnabled, $opcodes);
-		$this->set("diff", $diff);
-	}
-
 
 	public function viewConfig() {
 		include CONFIGS . 'langs.iso.php';
@@ -978,18 +881,6 @@ class AdminController extends ModulesController {
             'unplugModule' => array(
                 'OK' => '/admin/pluginModules',
                 'ERROR' => '/admin/pluginModules'
-            ),
-            'enableAddon' => array(
-                'OK' => '/admin/addons',
-                'ERROR' => '/admin/addons'
-            ),
-            'disableAddon' => array(
-                'OK' => '/admin/addons',
-                'ERROR' => '/admin/addons'
-            ),
-            'updateAddon' => array(
-                'OK' => '/admin/addons',
-                'ERROR' => '/admin/addons'
             ),
             'saveConfig' => array(
                 'OK' => '/admin/viewConfig',
