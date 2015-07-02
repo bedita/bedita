@@ -115,6 +115,18 @@ class BeObjectCache {
      */
     public function write($id, array &$options, array &$data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
+        // store index cache
+        if ($this->cacheConfig['Engine'] !== 'File') {
+            $cacheIdxKey = $id . '_index';
+            $cacheIdx = Cache::read($cacheIdxKey, 'objects');
+            if (empty($cacheIdx)) {
+                $cacheIdx = array();
+            }
+            if (!in_array($cacheName, $cacheIdx)) {
+                $cacheIdx[] = $cacheName;
+                Cache::write($cacheIdxKey, $cacheIdx, 'objects');
+            }
+        }
         $this->setCacheOptions($id);
         return Cache::write($cacheName, $data);
     }
@@ -125,12 +137,23 @@ class BeObjectCache {
      * @param  integer $id objectId
      */
     public function delete($id, array $options = null) {
-        $cachePath = $this->getPathById($id);
-        $prefix = (!empty($this->cacheConfig['prefix'])) ? $this->cacheConfig['prefix'] : 'cake_';
-        $wildCard = $cachePath . DS . $prefix . $id . '-*';
-        $toDelete = glob($wildCard);
-        if (!empty($toDelete)) {
-            array_map('unlink', $toDelete);
+        if ($this->cacheConfig['Engine'] == 'File') {
+            $cachePath = $this->getPathById($id);
+            $prefix = (!empty($this->cacheConfig['prefix'])) ? $this->cacheConfig['prefix'] : 'cake_';
+            $wildCard = $cachePath . DS . $prefix . $id . '-*';
+            $toDelete = glob($wildCard);
+            if (!empty($toDelete)) {
+                array_map('unlink', $toDelete);
+            }
+        } else {
+            $cacheIdxKey = $id . '_index';
+            $cacheIdx = Cache::read($cacheIdxKey, 'objects');
+            if (!empty($cacheIdx)) {
+                foreach ($cacheIdx as $cacheName) {
+                    Cache::delete($cacheName, 'objects');
+                }
+            }
+            Cache::delete($cacheIdxKey, 'objects');
         }
     }
 
