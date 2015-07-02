@@ -54,7 +54,7 @@ class BeObjectCache {
                 'path' => $this->baseCachePath
             );
         } else {
-            $this->cacheConfig = $cacheConf['objects'];
+            $this->cacheConfig = $cacheConf;
             if (!empty($this->cacheConfig['path'])) {
                 $this->baseCachePath = $this->cacheConfig['path'];
             }
