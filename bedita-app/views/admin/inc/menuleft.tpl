@@ -28,7 +28,6 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'update'}class="on"{/if}><a href="{$html->url('/admin/update')}">{t}Update BEdita{/t}</a></li>
 		<li {if $view->action eq 'updateFrontends'}class="on"{/if}><a href="{$html->url('/admin/updateFrontends')}">{t}Update frontends{/t}</a></li>
 		<li {if $view->action eq 'updateModules'}class="on"{/if}><a href="{$html->url('/admin/updateModules')}">{t}Update modules{/t}</a></li>
-		<li {if $view->action eq 'updateAddons'}class="on"{/if}><a href="{$html->url('/admin/updateAddons')}">{t}Update addons{/t}</a></li>
 		<li {if $view->action eq 'utility'}class="on"{/if}><a href="{$html->url('/admin/utility')}">{t}Utility{/t}</a></li>
 	</ul>
 
@@ -36,7 +35,6 @@ Menu a SX valido per tutte le pagine del controller.
 		<li {if $view->action eq 'coreModules'}class="on"{/if}><a href="{$html->url('/admin/coreModules')}">{t}Core Modules{/t}</a></li>
 		<li {if $view->action eq 'pluginModules'}class="on"{/if}><a href="{$html->url('/admin/pluginModules')}">{t}Plugin Modules{/t}</a></li>
 		<li {if $view->action eq 'sortModules'}class="on"{/if}><a href="{$html->url('/admin/sortModules')}">{t}Sort Modules{/t}</a></li>
-		<li {if $view->action eq 'addons'}class="on"{/if}><a href="{$html->url('/admin/addons')}">{t}Addons{/t}</a></li>
 	</ul>
 
 	<ul class="menuleft insidecol bordered">
