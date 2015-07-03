@@ -60,7 +60,7 @@ class MemcacheEngine extends CacheEngine {
  * @access public
  */
 	function init($settings = array()) {
-		if (!class_exists('Memcache')) {
+		if (!class_exists('Memcached')) {
 			return false;
 		}
 		parent::init(array_merge(array(
@@ -80,7 +80,7 @@ class MemcacheEngine extends CacheEngine {
 		}
 		if (!isset($this->__Memcache)) {
 			$return = false;
-			$this->__Memcache =& new Memcache();
+			$this->__Memcache =& new Memcached();
 			foreach ($this->settings['servers'] as $server) {
 				list($host, $port) = $this->_parseServerString($server);
 				if ($this->__Memcache->addServer($host, $port, $this->settings['persistent'])) {
@@ -136,7 +136,8 @@ class MemcacheEngine extends CacheEngine {
 		if ($duration > 30 * DAY) {
 			$duration = 0;
 		}
-		return $this->__Memcache->set($key, $value, $this->settings['compress'], $duration);
+		//CakeLog::write('cache', 'write memcache: ' . $key  . ' duration ' . $duration . ' value is ' . (empty($value) ? '' : 'NOT') . ' empty');
+		return $this->__Memcache->set($key, $value, $duration);
 	}
 
 /**
