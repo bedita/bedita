@@ -43,12 +43,13 @@
  *		controller file name: sample_module_controller.php
  */
 	$confCached = Cache::read('beConfig');
-	if (empty($confCached["plugged"]["modules"])) {
+	if (empty($confCached['plugged']['modules'])) {
+        App::import('Core', 'Folder');
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$list = $folder->read();
 		$listModules = $list[0];
 	} else {
-		$listModules = array_keys($confCached["plugged"]["modules"]);
+		$listModules = array_keys($confCached['plugged']['modules']);
 	}
 
 	foreach ($listModules as $moduleName) {
