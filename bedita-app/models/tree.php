@@ -566,16 +566,110 @@ class Tree extends BEAppModel
 	 * @param integer $area_id if defined check if the object is a descendant of a publication
 	 * @return boolean
 	 */
-	public function isOnTree($id, $area_id=null) {
-		$conditions["id"] = $id;
+	public function isOnTree($id, $area_id = null, $status = array()) {
+		$conditions['Tree.id'] = $id;
 		if (!empty($area_id)) {
-			$conditions["area_id"] = $area_id;
+			$conditions['Tree.area_id'] = $area_id;
 		}
-		$c = $this->find("count", array("conditions" => $conditions));
+        $joins = array();
+        if (!empty($status)) {
+            $conditions['BEObject.status'] = $status;
+            $joins = array(
+                array(
+                    'table' => 'objects',
+                    'alias' => 'BEObject',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'BEObject.id = Tree.id'
+                    )
+                )
+            );
+        }
+		$c = $this->find('count', array(
+            'fields' => 'DISTINCT Tree.id',
+            'conditions' => $conditions,
+            'joins' => $joins
+        ));
 		if ($c === 0) {
 			return false;
 		}
 		return true;
+	}
+
+    /**
+     * Return a list of a count (based on $option['count']) of related object to $id that are on tree
+     *
+     *  $options can contain
+     *  - 'area_id' to filter on publication
+     *  - 'status' to filter on object status
+     *  - 'count' (default false) to get a count or a list of object ids
+     *  - 'relation' to filter on relation name
+     *
+     * @param int $id the object id
+     * @param array $options
+     * @return array|int
+     */
+	public function relatedObjectsOnTree($id, array $options = array()) {
+        $options += array(
+            'area_id' => null,
+            'status' => array(),
+            'count' => false,
+            'relation' => null
+        );
+		if (!empty($options['area_id'])) {
+			$conditions['Tree.area_id'] = $options['area_id'];
+		}
+
+        $objectRelationJoin = array(
+            'table' => 'object_relations',
+            'alias' => 'ObjectRelation',
+            'type' => 'inner',
+            'conditions' => array(
+                'ObjectRelation.object_id = Tree.id',
+                'ObjectRelation.id' => $id
+            )
+        );
+        if (!empty($options['relation'])) {
+            $objectRelationJoin['conditions']['ObjectRelation.switch'] = $options['relation'];
+        }
+
+        $objectJoin = array();
+		if (!empty($options['status'])) {
+			$conditions['BEObject.status'] = $options['status'];
+            $objectJoin = array(
+                'table' => 'objects',
+                'alias' => 'BEObject',
+                'type' => 'inner',
+                'conditions' => array(
+                    'BEObject.id = Tree.id'
+                )
+            );
+		}
+        if ($options['count']) {
+            $findType = 'count';
+            $fields = 'DISTINCT Tree.id';
+            $group = '';
+        } else {
+            $findType = 'list';
+            $fields = array('Tree.id');
+            $group = 'Tree.id';
+        }
+
+		$objects = $this->find($findType, array(
+            'fields' => $fields,
+			'conditions' => $conditions,
+            'group' => $group,
+			'joins' => array(
+				$objectRelationJoin,
+				$objectJoin
+			)
+		));
+
+        if (!$options['count']) {
+            $objects = array_values($objects);
+        }
+
+		return $objects;
 	}
 
 	/**
@@ -913,10 +1007,6 @@ class Tree extends BEAppModel
      * @return int
      */
     public function countChildrenContents($parentId, array $options = array()) {
-        $options = array_merge(
-            array('conditions' => array()),
-            $options
-        );
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $this->bindModel(array(
             'belongsTo' => array(
@@ -940,10 +1030,6 @@ class Tree extends BEAppModel
      * @return int
      */
     public function countChildrenSections($parentId, array $options = array()) {
-        $options = array_merge(
-            array('conditions' => array()),
-            $options
-        );
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $this->bindModel(array(
             'belongsTo' => array(
@@ -966,9 +1052,9 @@ class Tree extends BEAppModel
      * @return int
      */
     public function countChildren($parentId, array $options = array()) {
-        $options = array_merge(
-            array('conditions' => array()),
-            $options
+        $options += array(
+            'fields' => 'DISTINCT (Tree.id)',
+            'conditions' => array()
         );
         $options['conditions']['Tree.parent_id'] = $parentId;
         $count = $this->find('count', $options);

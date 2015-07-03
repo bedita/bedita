@@ -1628,7 +1628,7 @@ abstract class FrontendController extends AppController {
      * - dir: the sorting algorithm. true (default) for ASC, false for DESC
      * - page: the page to show
      * - dim: the dimension of the page
-     * - explodeRelations: explode the relations of related objects (default for compatibility with self::loadSectionObjects()) or not
+     * - explodeRelations: explode the relations of related objects (default true for compatibility with self::loadSectionObjects()) or not
      *
      * @param int $id the main object id
      * @param string $relation the relation name
@@ -1638,7 +1638,7 @@ abstract class FrontendController extends AppController {
     protected function loadRelatedObjects($id, $relation, $options) {
         $defaultOptions = array(
             'filter' => array(),
-            'order' => 'priority',
+            'order' => 'ObjectRelation.priority',
             'dir' => true,
             'page' => 1,
             'dim' => null,
@@ -1681,7 +1681,7 @@ abstract class FrontendController extends AppController {
         $items = null;
         $cacheOpts = array();
         if ($this->BeObjectCache) {
-            $cacheOpts = array($id, $this->status, $filter, $order, $dir, $page, $dim);
+            $cacheOpts = array($id, $this->status, $filter, $order, $dir, $page, $dim, $objectsForbidden);
             $items = $this->BeObjectCache->read($id, $cacheOpts, 'relation-' . $relation);
         }
         if (empty($items)) {
@@ -1717,7 +1717,7 @@ abstract class FrontendController extends AppController {
             $filter['Content.*'] = '';
             $filter['AND'][] = array(
                 'OR' => array(
-                    'Content.start_date <=' => date('Y-m-d'),
+                    'Content.start_date <=' => date('Y-m-d H:m:s'),
                     'Content.start_date' => null
                 )
             );
@@ -1726,7 +1726,7 @@ abstract class FrontendController extends AppController {
             $filter['Content.*'] = '';
             $filter['AND'][] = array(
                 'OR' => array(
-                    'Content.end_date >=' => date('Y-m-d'),
+                    'Content.end_date >=' => date('Y-m-d H:m:s'),
                     'Content.end_date' => null
                 )
             );
@@ -2914,5 +2914,13 @@ abstract class FrontendController extends AppController {
 		$this->layout = 'ajax';
 		$this->set("hash",$manifestAppcache["hash"]);
 		$this->set("assets",$manifestAppcache["assets"]);
+	}
+
+	/**
+	 * Return the current frontend publication
+	 * @return array
+	 */
+	public function getPublication() {
+		return $this->publication;
 	}
 }

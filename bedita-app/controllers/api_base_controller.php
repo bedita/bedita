@@ -32,6 +32,7 @@ abstract class ApiBaseController extends FrontendController {
     public $components = array(
         'ResponseHandler' => array('type' => 'json'),
         'ApiFormatter',
+        'ApiValidator',
         'BeAuthJwt'
     );
 
@@ -165,6 +166,8 @@ abstract class ApiBaseController extends FrontendController {
         //'ancestors',
         //'parents'
     );
+
+    protected $writableObjects = array();
 
     /**
      * Constructor
@@ -415,18 +418,25 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @param int|string $name an object id or nickname
      * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
+     * @param string $filterValue define a value for $filterType
      * @return void
      */
     protected function objects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-            // check if object $id is on tree
-            $isOnTree = ClassRegistry::init('Tree')->isOnTree($id, $this->publication['id']);
-            if (!$isOnTree) {
-                throw new BeditaNotFoundException(
-                    null,
-                    'object ' . $name . ' does not exists or is not a children of ' . $this->publication['title']
-                );
+            if (empty($id)) {
+                throw new BeditaNotFoundException();
+            }
+            // check if object $id is reachable
+            if (!$this->ApiValidator->isObjectReachable($id)) {
+                // redo without checking permissions to know if it has to return 404
+                if (!$this->ApiValidator->isObjectReachable($id, false)) {
+                    throw new BeditaNotFoundException();
+                }
+                if (!$this->BeAuth->identify()) {
+                    throw new BeditaUnauthorizedException();
+                }
+                throw new BeditaForbiddenException('Object ' . $name . ' is forbidden');
             }
             if (!empty($filterType)) {
                 if (!in_array($filterType, $this->allowedObjectsFilter)) {
@@ -469,6 +479,114 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * POST /objects
+     *
+     * @param int|string $name an object id or nickname
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
+     * @param string $filterValue define a value for $filterType
+     * @return void
+     */
+    protected function postObjects($name = null, $filterType = null, $filterValue = null) {
+        $user = $this->BeAuthJwt->identify();
+        if (!$user) {
+            throw new BeditaUnauthorizedException();
+        }
+        if (empty($this->params['form']['object'])) {
+            throw new BeditaBadRequestException('Missing object data to save');
+        }
+
+        // save object
+        if (empty($name)) {
+            $this->data = $this->params['form']['object'];
+            if (empty($this->data['object_type'])) {
+                throw new BeditaBadRequestException('Missing object type');
+            }
+            $objectTypeConf = Configure::read('objectTypes.' . $this->data['object_type']);
+            if (empty($objectTypeConf)) {
+                throw new BeditaBadRequestException('Invalid object type');
+            }
+            $objectModel = $this->loadModelByType($objectTypeConf['model']);
+            $isNew = (empty($this->data['id'])) ? true : false;
+            $this->Transaction->begin();
+            $this->saveObject($objectModel);
+            $savedObjectId = $objectModel->id;
+            $this->Transaction->commit();
+            $this->objects($savedObjectId);
+            if ($isNew) {
+                $this->ResponseHandler->sendStatus(201);
+                $this->ResponseHandler->sendHeader('Location', $this->baseUrl(false) . 'objects/' . $savedObjectId);
+            }
+        } else {
+
+        }
+    }
+
+    /**
+     * Override AppController::saveObject()
+     *
+     * - set default $options different from AppController::saveObject()
+     * - set additional data (status, user_created, user_modified, object_type_id,...)
+     * - check object data through ApiValidator
+     * - format object data through ApiFormatter
+     * - save object using parent::saveObject()
+     * - save parents in case (remove old parents and add new one)
+     * - save relations in case
+     *
+     * @param BEAppModel $beModel
+     * @param array $options
+     * @return void
+     */
+    protected function saveObject(BEAppModel $beModel, array $options = array()) {
+        $user = $this->BeAuthJwt->identify();
+        if (!$user) {
+            throw new BeditaUnauthorizedException();
+        }
+        $options += array(
+            'handleTagList' => false,
+            'emptyPermission' => false,
+            'saveTree' => false
+        );
+
+        if (empty($this->data['object_type'])) {
+            throw new BeditaBadRequestException('Missing object type');
+        }
+        if (!in_array($this->data['object_type'], $this->writableObjects)) {
+            throw new BeditaBadRequestException('Save forbidden for object type ' . $this->data['object_type']);
+        }
+
+        $objectTypeConf = Configure::read('objectTypes.' . $this->data['object_type']);
+        $this->data['object_type_id'] = Configure::read('objectTypes.' . $this->data['object_type'] . '.id');
+        $this->data['status'] = 'on';
+        if (empty($this->data['id'])) {
+            $this->data['user_created'] = $user['id'];
+        }
+        $this->data['user_modified'] = $user['id'];
+
+        // validate and format data for save
+        $this->ApiValidator->checkObject($this->data);
+        $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
+        parent::saveObject($beModel, $options);
+
+        if (!empty($this->data['parents'])) {
+            ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['parents']);
+        }
+    }
+
+    protected function saveRelations($objectId, array $relations = array()) {
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        foreach ($relations as $name => $relData) {
+            // remove
+            if (empty($relData)) {
+                $objectRelation->deleteObjectRelation($objectId, $relData['related_id']);
+            }
+        }
+    }
+
+    protected function saveParents($objectId, $parents) {
+        ClassRegistry::init('Tree')->updateTree($objectId, $parents);
+    }
+
+    /**
      * Get children of $parentId object, prepare and set response data
      * The response is automatically paginated using self::paginationOptions
      *
@@ -483,7 +601,7 @@ abstract class ApiBaseController extends FrontendController {
         // assure to have result in 'children' key
         $options['itemsTogether'] = true;
         // add conditions on not accessible objects (frontend_access_with_block)
-        // @todo move to ForntendController::loadSectionObjects()?
+        // @todo move to FrontendController::loadSectionObjects()?
         $user = $this->BeAuthJwt->getUser();
         $permissionJoin = array(
             'table' => 'permissions',
@@ -495,16 +613,31 @@ abstract class ApiBaseController extends FrontendController {
                 'Permission.switch' => 'group',
             )
         );
-        if (!empty($user)) {
-            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
-        }
-        $objectsForbidden = ClassRegistry::init('Tree')->find('list', array(
-            'fields' => array('id'),
+        $fields = array('Tree.id');
+        $conditions = array('Tree.parent_id' => $parentId);
+        $group = 'Tree.id';
+
+        $tree = ClassRegistry::init('Tree');
+        $objectsForbidden = $tree->find('list', array(
+            'fields' => $fields,
             'joins' => array($permissionJoin),
-            'conditions' => array(
-                'Tree.parent_id' => $parentId
-            )
+            'conditions' => $conditions,
+            'group' => $group
         ));
+
+        // allowed to user
+        if (!empty($user)) {
+            $permissionJoin['conditions']['Permission.ugid'] = $user['groupsIds'];
+            $objectsAllowed = $tree->find('list', array(
+                'fields' => $fields,
+                'joins' => array($permissionJoin),
+                'conditions' => $conditions,
+                'group' => $group
+            ));
+            if (!empty($objectsAllowed)) {
+                $objectsForbidden = array_diff($objectsForbidden, $objectsAllowed);
+            }
+        }
 
         if (!empty($objectsForbidden)) {
             $options['filter']['NOT']['BEObject.id'] = array_values($objectsForbidden);

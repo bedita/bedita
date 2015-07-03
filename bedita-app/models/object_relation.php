@@ -329,4 +329,48 @@ class ObjectRelation extends BEAppModel
         return $objects;
     }
 
+    /**
+     * Check if relation $name is valid for object type $objectType
+     * Return true if it's valid, false otherwise
+     *
+     * @param string $name the relation name (it can be also the inverse name)
+     * @param string $objectType the object type name
+     * @return boolean
+     */
+    public function isValid($name, $objectType) {
+        $isValid = false;
+        $relations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+        $objectTypes = Configure::read('objectTypes');
+        if (empty($objectTypes[$objectType])) {
+            return false;
+        }
+        $inRelatedGroup = in_array($objectTypes[$objectType]['id'], $objectTypes['related']['id']);
+        // direct relation
+        if (!empty($relations[$name])) {
+            if (!empty($relations[$name]['inverse'])) {
+                $isValid = (empty($relations[$name]['left']) && $inRelatedGroup) || in_array($objectType, $relations[$name]['left']);
+            } else {
+                $isValidLeft = (empty($relations[$name]['left']) && $inRelatedGroup) || in_array($objectType, $relations[$name]['left']);
+                $isValidRight = (empty($relations[$name]['right']) && $inRelatedGroup) || in_array($objectType, $relations[$name]['right']);
+                $isValid = $isValidLeft || $isValidRight;
+            }
+        } else {
+            // check if $name is the inverse
+            $inverseFound = array();
+            foreach ($relations as $relName => $relData) {
+                if (!empty($relData['inverse']) && $relData['inverse'] == $name) {
+                    $inverseFound = $relData;
+                    break;
+                }
+            }
+            if (empty($inverseFound)) {
+                $isValid = false;
+            } else {
+                $isValid = (empty($inverseFound['right']) && $inRelatedGroup) || in_array($objectType, $inverseFound['right']);
+            }
+        }
+
+        return $isValid;
+    }
+
 }

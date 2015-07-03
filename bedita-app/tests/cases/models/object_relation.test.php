@@ -100,6 +100,14 @@ class ObjectRelationTestCase extends BeditaTestCase {
         $this->assertEqual($result, true);		
     }
 
+    public function testIsValid() {
+        $this->assertTrue($this->ObjectRelation->isValid('attach', 'document'));
+        $this->assertTrue($this->ObjectRelation->isValid('attached_to', 'image'));
+        $this->assertFalse($this->ObjectRelation->isValid('attached_to', 'document'));
+        $this->assertFalse($this->ObjectRelation->isValid('foo', 'document'));
+        $this->assertFalse($this->ObjectRelation->isValid('seealso', 'foo'));
+    }
+
      public   function __construct () {
         parent::__construct('ObjectRelation', dirname(__FILE__)) ;
     }

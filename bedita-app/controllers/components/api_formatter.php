@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2014 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014-2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -22,11 +22,10 @@
 /**
  * ApiFormatter class
  *
- * Format data to be consumed by client
+ * Format data to be consumed by client or to be saved
  *
  */
 class ApiFormatterComponent extends Object {
-
 
     /**
      * Controller instance
@@ -313,16 +312,15 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
-     * Transform a BEdita object type casting fields to the right type
-     * Use BEAppObjectModel::apiTransformer() to get the transformer and merge it with self::transformers['object']
+     * Return the BEdita object transformer
+     * Used to know the fields to cast and the type
      *
-     * The transformer is cached
-     *
-     * @param array &$object
-     * @return void
+     * @param array $object the BEdita object
+     * @return array
      */
-    public function transformObject(array &$object) {
-        $Object = ClassRegistry::init($object['object_type']);
+    public function getObjectTransformer(array $object) {
+        $modelName = Inflector::camelize($object['object_type']);
+        $Object = ClassRegistry::init($modelName);
         $modelName = $Object->name;
         $transformer = array();
         if (!isset($this->transformers[$modelName])) {
@@ -343,6 +341,20 @@ class ApiFormatterComponent extends Object {
         } else {
             $transformer = $this->transformers[$modelName];
         }
+        return $transformer;
+    }
+
+    /**
+     * Transform a BEdita object type casting fields to the right type
+     * Use BEAppObjectModel::apiTransformer() to get the transformer and merge it with self::transformers['object']
+     *
+     * The transformer is cached
+     *
+     * @param array &$object
+     * @return void
+     */
+    public function transformObject(array &$object) {
+        $transformer = $this->getObjectTransformer($object);
         $this->transformItem($transformer, $object);
     }
 
@@ -455,13 +467,16 @@ class ApiFormatterComponent extends Object {
                 'Permission.switch' => 'group',
             )
         );
-        $user = $this->controller->BeAuthJwt->getUser();
-        if (!empty($user)) {
-            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
-        }
         $options['joins'][] = $permissionJoin;
         $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
         $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
+
+        $user = $this->controller->BeAuthJwt->getUser();
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+            $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
+            $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
+        }
 
         $countContents -= $countContentsForbidden;
         $countSections -= $countSectionsForbidden;
@@ -513,6 +528,7 @@ class ApiFormatterComponent extends Object {
      */
     public function formatObject(array $object, $options = array()) {
         $options += array('countRelations' => false, 'countChildren' => false);
+        $object['object_type'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
@@ -605,6 +621,66 @@ class ApiFormatterComponent extends Object {
                 unset($object[$value]);
             }
         }
+    }
+
+    /**
+     * Arrange $object data to save
+     *
+     * - clean fields
+     * - transform date ISO8601 in SQL format
+     *
+     * @param array $object the $object data to save
+     * @return array
+     */
+    public function formatObjectForSave(array $object) {
+        if (!empty($object['relations'])) {
+            $object += $this->formatRelationsForSave($object['relations']);
+            unset($object['relations']);
+        }
+        if (!empty($object['categories'])) {
+
+        }
+        if (!empty($object['tags'])) {
+
+        }
+        if (!empty($object['geo_tags'])) {
+
+        }
+        if (!empty($object['date_items'])) {
+
+        }
+
+        $transformer = $this->getObjectTransformer($object);
+        foreach ($object as $key => $value) {
+            if (array_key_exists($key, $transformer)) {
+                if ($transformer[$key] == 'date') {
+                    $date = new DateTime(trim($value));
+                    $object[$key] = $date->format('Y-m-d');
+                } elseif ($transformer[$key] == 'datetime') {
+                    $date = new DateTime($value);
+                    $object[$key] = $date->format('Y-m-d H:i:s');
+                }
+            }
+        }
+        return $object;
+    }
+
+    public function formatRelationsForSave(array $relations) {
+        $relationsFormatted = array();
+        foreach ($relations as $name => $relList) {
+            $r = array(
+                0 => array('switch' => $name)
+            );
+            foreach ($relList as $key => $relData) {
+                $r[$relData['related_id']]['id'] = $relData['related_id'];
+                $r[$relData['related_id']]['priority'] = empty($relData['priority']) ? $key + 1 : $relData['priority'];
+                if (!empty($relData['params'])) {
+                    $r[$relData['related_id']]['params'] = $relData['params'];
+                }
+            }
+            $relationsFormatted[$name] = $r;
+        }
+        return array('RelatedObject' => $relationsFormatted);
     }
 
 }
