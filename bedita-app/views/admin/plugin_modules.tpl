@@ -70,20 +70,22 @@ $(document).ready(function() {
 	<div class="tab stayopen"><h2>{t}Plugged modules{/t}</h2></div>
 
 	<ul class="modules block" id="plugged">
-	{foreach from=$pluginModules.plugged item="mod"}
+	{foreach $pluginModules.plugged as $mod}
 		<li class="{$mod.name} {$mod.status}">
-			{t}{$mod.label}{/t}
+			{t}{$mod.label}{/t}{if $mod.module_type == 'addon'} (ADDON){/if}
 			<form action="{$html->url('/admin/plugModule')}" method="post">
 			{$beForm->csrf()}
 			<input type="hidden" value="{$mod.id}" name="data[id]"/>
 			<input type="hidden" value="{$mod.name}" name="pluginName"/>
-			{if $mod.status == "on"}
-				<input type="hidden" value="off" name="data[status]"/>
-				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn off{/t}"/>
-			{elseif $mod.status == "off"}
-				<input type="hidden" value="on" name="data[status]"/>
-				<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn on{/t}"/>
-			{/if}
+			{if $mod.module_type == 'plugin'}
+				{if $mod.status == "on"}
+					<input type="hidden" value="off" name="data[status]"/>
+					<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn off{/t}"/>
+				{elseif $mod.status == "off"}
+					<input type="hidden" value="on" name="data[status]"/>
+					<input type="button" rel="{$html->url('/admin/toggleModule')}" value="{t}turn on{/t}"/>
+				{/if}
+            {/if}
 			<input type="button" id="unplugButton" rel="{$html->url('/admin/unplugModule')}" value="{t}plug-out{/t}"/>
 			</form>
 		</li>
