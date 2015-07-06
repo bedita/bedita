@@ -526,9 +526,12 @@ class Permission extends BEAppModel
         );
         $tree = ClassRegistry::init('Tree');
         $parents = $tree->getParents($objectId, $options['area_id'], $options['status']);
-        if (empty($parents)) {
+        // no parents
+        if (empty($parents) && $options['stopIfMissingParents']) {
             $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
-            if ($objectTypeId != Configure::read('objectTypes.area.id')) {
+            $areaObjectTypeId = Configure::read('objectTypes.area.id');
+            // return false if object type is not area or if 'area_id' was passed and it's different from $objectId
+            if ($objectTypeId != $areaObjectTypeId || (!empty($options['area_id']) && $objectId != $options['area_id'])) {
                 return false;
             }
         }
@@ -556,9 +559,24 @@ class Permission extends BEAppModel
                 ));
                 $conditions['Permission.ugid'] = array_keys($groupList);
             }
+            $joins = array();
+            if (!empty($options['status'])) {
+                $joins = array(
+                    array(
+                        'table' => 'objects',
+                        'alias' => 'BEObject',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'BEObject.id = Permission.object_id',
+                            'BEObject.status' => $options['status']
+                        )
+                    )
+                );
+            }
             $countAllowed = $this->find('count', array(
                 'fields' => 'DISTINCT (Permission.object_id)',
-                'conditions' => $conditions
+                'conditions' => $conditions,
+                'joins' => $joins
             ));
 
             if (is_numeric($countAllowed)) {

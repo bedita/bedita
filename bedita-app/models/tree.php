@@ -623,7 +623,7 @@ class Tree extends BEAppModel
         $objectRelationJoin = array(
             'table' => 'object_relations',
             'alias' => 'ObjectRelation',
-            'type' => 'inner',
+            'type' => 'INNER',
             'conditions' => array(
                 'ObjectRelation.object_id = Tree.id',
                 'ObjectRelation.id' => $id
@@ -635,13 +635,13 @@ class Tree extends BEAppModel
 
         $objectJoin = array();
 		if (!empty($options['status'])) {
-			$conditions['BEObject.status'] = $options['status'];
             $objectJoin = array(
                 'table' => 'objects',
                 'alias' => 'BEObject',
-                'type' => 'inner',
+                'type' => 'INNER',
                 'conditions' => array(
-                    'BEObject.id = Tree.id'
+                    'BEObject.id = Tree.id',
+                    'BEObject.status' => $options['status']
                 )
             );
 		}

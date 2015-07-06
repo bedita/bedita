@@ -27,7 +27,6 @@
  */
 class ApiValidatorComponent extends Object {
 
-
     /**
      * Controller instance
      *
@@ -36,13 +35,38 @@ class ApiValidatorComponent extends Object {
     public $controller = null;
 
     /**
+     * List of object types writable
+     *
+     * @var array
+     */
+    protected $writableObjects = array();
+
+    /**
      * Initialize function
      *
      * @param Controller $controller
      * @return void
      */
     public function initialize(Controller $controller, array $settings = array()) {
-        $this->controller = $controller;
+        $this->controller = &$controller;
+        $this->_set($settings);
+        $validateConf = Configure::read('api.validation');
+        if (!empty($validateConf['writableObjects'])) {
+            $this->writableObjects = $validateConf['writableObjects'];
+        }
+    }
+
+    /**
+     * Return true if an object type is writable
+     *
+     * @param string $objectType the object type
+     * @return boolean
+     */
+    public function isObjectTypeWritable($objectType) {
+        if (is_numeric($objectType)) {
+            $objectType = Configure::read('objectTypes.' . $objectType . 'name');
+        }
+        return in_array($objectType, $this->writableObjects);
     }
 
     /**
@@ -60,12 +84,24 @@ class ApiValidatorComponent extends Object {
         }
 
         $beObject = ClassRegistry::init('BEObject');
-        // validate object_type_id
+
+        // validate object type
         if (!empty($object['id'])) {
             $objectTypeId = $beObject->findObjectTypeId($object['id']);
             if ($objectTypeId != $object['object_type_id']) {
-                throw new BeditaBadRequestException('Object type mismatch');
+                throw new BeditaBadRequestException(
+                    'Object type mismatch: object with id=' . $object['id'] . ' has not object_type_id=' . $object['object_type_id']
+                );
             }
+        }
+        $objectType = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
+        if (!empty($object['object_type']) && $object['object_type'] != $objectType) {
+            throw new BeditaBadRequestException(
+                'Object type mismatch: ' . $object['object_type'] . ' not correspond to ' . $object['object_type_id']
+            );
+        }
+        if (!$this->isObjectTypeWritable($objectType)) {
+            throw new BeditaBadRequestException($objectType . ' is not writable');
         }
 
         // prepare list of forbidden fields to avoid automatic save
@@ -82,12 +118,19 @@ class ApiValidatorComponent extends Object {
             }
         }
 
-        $objectType = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
-
+        $parentsEmpty = true;
+        $relationsEmpty = true;
         if (!empty($object['relations'])) {
             $this->checkRelations($object['relations'], $objectType);
+            foreach ($object['relations'] as $name => $relData) {
+                if (!empty($relData)) {
+                    $relationsEmpty = false;
+                    break;
+                }
+            }
         }
         if (!empty($object['parents'])) {
+            $parentsEmpty = false;
             $branches = array(
                 Configure::read('objectTypes.area.id'),
                 Configure::read('objectTypes.section.id')
@@ -97,6 +140,11 @@ class ApiValidatorComponent extends Object {
             }
             $this->checkObjectAccess($object['parents']);
         }
+
+        if ($parentsEmpty && $relationsEmpty) {
+            throw new BeditaBadRequestException('parents and relations can not both be empty');
+        }
+
         if (!empty($object['categories'])) {
 
         }
@@ -121,30 +169,33 @@ class ApiValidatorComponent extends Object {
      * @return boolean
      */
     public function isObjectReachable($objectId, $checkPermissions = true) {
+        $tree = ClassRegistry::init('Tree');
+        $publication = $this->controller->getPublication();
+        $isOnTree = $tree->isOnTree($objectId, $publication['id'], $this->controller->getStatus());
         // check position on tree and permission
         if ($checkPermissions) {
-            if (!$this->isObjectAccessible($objectId)) {
-                if (!$this->hasRelatedObjectsAccessible($objectId)) {
-                    return false;
-                }
+            if ($isOnTree && $this->isObjectAccessible($objectId)) {
+                return true;
             }
-            return true;
+            if ($this->hasRelatedObjectsAccessible($objectId)) {
+                return true;
+            }
+            return false;
         // check only position on tree
         } else {
-            $tree = ClassRegistry::init('Tree');
-            $publication = $this->controller->getPublication();
-            $isOnTree = $tree->isOnTree($objectId, $publication['id'], $this->controller->getStatus());
-            $isRelatedObjectsOnTree = $tree->relatedObjectsOnTree($objectId, array(
-                'area_id' => $publication['id'],
-                'status' => $this->controller->getStatus(),
-                'count' => true
-            ));
-            return $isOnTree || $isRelatedObjectsOnTree;
+            if ($isOnTree) {
+                return true;
+            }
+            return $tree->relatedObjectsOnTree($objectId, array(
+                    'area_id' => $publication['id'],
+                    'status' => $this->controller->getStatus(),
+                    'count' => true
+                ));
         }
     }
 
     /**
-     * Return true if at least an object related to $objectId is accessible, false otherwise
+     * Return true if at least an object related to $objectId is on tree and it's accessible, false otherwise
      * 'Accessible' is defined in self::isObjectAccessible()
      *
      * @param int $objectId the object id
@@ -162,13 +213,14 @@ class ApiValidatorComponent extends Object {
         foreach ($relatedObjects as $id) {
             if ($this->isObjectAccessible($id)) {
                 $result = true;
+                break;
             }
         }
         return $result;
     }
 
     /**
-     * Return true if object $id and its parents are accessible for authorized user, false otherwise.
+     * Return true if $objectId and its parents are accessible for authorized user, false otherwise.
      * 'Accessible' means without 'frontend_access_with_block' permission set for groups that the user doesn't belong.
      * If object hasn't parents is not accessible
      *
@@ -188,7 +240,7 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
-     * Check if object $id and its parents are accessible for authorized user.
+     * Check if $objectId and its parents are accessible for authorized user.
      * 'Accessible' is defined in self::isObjectAccessible()
      *
      * If check fails it throws a bad request exception
@@ -204,7 +256,7 @@ class ApiValidatorComponent extends Object {
         foreach ($objectId as $id) {
             if (!$this->isObjectAccessible($id)) {
                 throw new BeditaBadRequestException(
-                    'Object ' . $id . ' or one of its parents is forbidden to user ' . $this->controller->BeAuthJwt->userid()
+                    'Object ' . $id . ' or one of its parents is forbidden to user'
                 );
             }
         }

@@ -167,8 +167,6 @@ abstract class ApiBaseController extends FrontendController {
         //'parents'
     );
 
-    protected $writableObjects = array();
-
     /**
      * Constructor
      * Setup endpoints available:
@@ -498,15 +496,20 @@ abstract class ApiBaseController extends FrontendController {
         // save object
         if (empty($name)) {
             $this->data = $this->params['form']['object'];
-            if (empty($this->data['object_type'])) {
-                throw new BeditaBadRequestException('Missing object type');
+            $isNew = (empty($this->data['id'])) ? true : false;
+            if ($isNew) {
+                if (empty($this->data['object_type'])) {
+                    throw new BeditaBadRequestException('Missing object_type');
+                }
+                $confType = $this->data['object_type'];
+            } else {
+                $confType = $this->BEObject->findObjectTypeId($this->data['id']);
             }
-            $objectTypeConf = Configure::read('objectTypes.' . $this->data['object_type']);
+            $objectTypeConf = Configure::read('objectTypes.' . $confType);
             if (empty($objectTypeConf)) {
                 throw new BeditaBadRequestException('Invalid object type');
             }
             $objectModel = $this->loadModelByType($objectTypeConf['model']);
-            $isNew = (empty($this->data['id'])) ? true : false;
             $this->Transaction->begin();
             $this->saveObject($objectModel);
             $savedObjectId = $objectModel->id;
@@ -514,7 +517,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->objects($savedObjectId);
             if ($isNew) {
                 $this->ResponseHandler->sendStatus(201);
-                $this->ResponseHandler->sendHeader('Location', $this->baseUrl(false) . 'objects/' . $savedObjectId);
+                $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
             }
         } else {
 
@@ -547,15 +550,13 @@ abstract class ApiBaseController extends FrontendController {
             'saveTree' => false
         );
 
-        if (empty($this->data['object_type'])) {
-            throw new BeditaBadRequestException('Missing object type');
-        }
-        if (!in_array($this->data['object_type'], $this->writableObjects)) {
-            throw new BeditaBadRequestException('Save forbidden for object type ' . $this->data['object_type']);
+        if (empty($this->data['object_type_id'])) {
+            if (empty($this->data['object_type'])) {
+                throw new BeditaBadRequestException('Missing object type');
+            }
+            $this->data['object_type_id'] = Configure::read('objectTypes.' . $this->data['object_type'] . '.id');
         }
 
-        $objectTypeConf = Configure::read('objectTypes.' . $this->data['object_type']);
-        $this->data['object_type_id'] = Configure::read('objectTypes.' . $this->data['object_type'] . '.id');
         $this->data['status'] = 'on';
         if (empty($this->data['id'])) {
             $this->data['user_created'] = $user['id'];
