@@ -142,14 +142,14 @@ class ApiValidatorComponent extends Object {
         }
 
         if ($parentsEmpty && $relationsEmpty) {
-            throw new BeditaBadRequestException('parents and relations can not both be empty');
+            throw new BeditaBadRequestException('Parents and/or relations can not both be empty');
         }
 
         if (!empty($object['categories'])) {
-
+            $this->checkCategories($object['categories'], $object['object_type_id']);
         }
         if (!empty($object['tags'])) {
-
+            $this->checkTags($object['tags']);
         }
         if (!empty($object['geo_tags'])) {
 
@@ -326,6 +326,42 @@ class ApiValidatorComponent extends Object {
                     throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
                 }
             }
+        }
+    }
+
+    /**
+     * Check if an array of category names is valid for an object type id
+     *
+     * @throws BeditaBadRequesException
+     * @param array $tags a list of category names
+     * @param int $objectTypeId the object_type_id
+     * @return void
+     */
+    public function checkCategories(array $categories, $objectTypeId = null) {
+        $categoryCount = ClassRegistry::init('Category')->find('count', array(
+            'conditions' => array(
+                'name' => $categories,
+                'object_type_id' => $objectTypeId,
+                'status' => $this->controller->getStatus()
+            )
+        ));
+        if ($categoryCount != count($categories)) {
+            throw new BeditaBadRequestException('Some category does not exist. Categories must exist.');
+        }
+    }
+
+    /**
+     * Check if an array of tag names is valid.
+     *
+     * @throws BeditaBadRequestException
+     * @param array $tags a list of tag names
+     * @return void
+     */
+    public function checkTags(array $tags) {
+        try {
+            $this->checkCategories($tags);
+        } catch (BeditaBadRequestException $ex) {
+            throw new BeditaBadRequestException('Some tag does not exist. Tags must exist.');
         }
     }
 

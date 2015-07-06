@@ -638,10 +638,13 @@ class ApiFormatterComponent extends Object {
             unset($object['relations']);
         }
         if (!empty($object['categories'])) {
-
+            $object['Category'] = $this->formatCategoriesForSave($object['categories'], $object['object_type_id']);
+            unset($object['categories']);
         }
         if (!empty($object['tags'])) {
-
+            $tags = $this->formatTagsForSave($object['tags']);
+            $object['Category'] = (!empty($object['Category'])) ? array_merge($object['Category'], $tags) : $tags;
+            unset($object['tags']);
         }
         if (!empty($object['geo_tags'])) {
 
@@ -702,6 +705,42 @@ class ApiFormatterComponent extends Object {
             $relationsFormatted[$name] = $r;
         }
         return $relationsFormatted;
+    }
+
+    /**
+     * Arrange categories data for save.
+     * The data returned are suitable to saving an object.
+     * Return an array of ids
+     *
+     * @param array $categories an array of category names
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function formatCategoriesForSave(array $categories, $objectTypeId = null) {
+        $categoryModel = ClassRegistry::init('Category');
+        $categoryModel->Behaviors->disable('CompactResult');
+        $result = $categoryModel->find('list', array(
+            'fields' => array('name', 'id'),
+            'conditions' => array(
+                'name' => $categories,
+                'object_type_id' => $objectTypeId,
+                'status' => $this->controller->getStatus()
+            )
+        ));
+        $categoryModel->Behaviors->enable('CompactResult');
+        return array_values($result);
+    }
+
+    /**
+     * Arrange tags data for save.
+     * The data returned are suitable to saving an object.
+     * Return an array of ids
+     *
+     * @param array $tags an array of tag names
+     * @return array
+     */
+    public function formatTagsForSave(array $tags) {
+        return $this->formatCategoriesForSave($tags);
     }
 
 }
