@@ -634,7 +634,7 @@ class ApiFormatterComponent extends Object {
      */
     public function formatObjectForSave(array $object) {
         if (!empty($object['relations'])) {
-            $object += $this->formatRelationsForSave($object['relations']);
+            $object['RelatedObject'] = $this->formatRelationsForSave($object['relations']);
             unset($object['relations']);
         }
         if (!empty($object['categories'])) {
@@ -665,6 +665,27 @@ class ApiFormatterComponent extends Object {
         return $object;
     }
 
+    /**
+     * Arrange relations data to save.
+     * The data returned are suitable to saving an object
+     *
+     * The $relations array has to be in the form
+     * ```
+     * array(
+     *     'attach' => array(
+     *         array(
+     *             'related_id' => 1,
+     *             ...
+     *         ),
+     *         array(...)
+     *     ),
+     *     'seealso' => array(...)
+     * )
+     * ```
+     *
+     * @param array $relations array of relations
+     * @return array
+     */
     public function formatRelationsForSave(array $relations) {
         $relationsFormatted = array();
         foreach ($relations as $name => $relList) {
@@ -680,7 +701,7 @@ class ApiFormatterComponent extends Object {
             }
             $relationsFormatted[$name] = $r;
         }
-        return array('RelatedObject' => $relationsFormatted);
+        return $relationsFormatted;
     }
 
 }
