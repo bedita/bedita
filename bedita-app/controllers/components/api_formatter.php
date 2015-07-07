@@ -35,6 +35,13 @@ class ApiFormatterComponent extends Object {
     public $controller = null;
 
     /**
+     * Components used
+     *
+     * @var array
+     */
+    public $components = array('ApiValidator');
+
+    /**
      * Fields that must be removed from object/s
      *
      * @var array
@@ -281,8 +288,7 @@ class ApiFormatterComponent extends Object {
                             case 'date':
                             case 'datetime':
                                 if (!empty($item[$field])) {
-                                    $datetime = new DateTime($item[$field]);
-                                    $item[$field] = $datetime->format(DateTime::ISO8601);
+                                    $item[$field] = $this->dateFromDb($item[$field]);
                                 }
                                 break;
 
@@ -296,6 +302,29 @@ class ApiFormatterComponent extends Object {
                 }
             }
         }
+    }
+
+    /**
+     * Convert a date from db to ISO 8601 format
+     *
+     * @param string $date the date string to convert
+     * @return string
+     */
+    public function dateFromDb($date) {
+        $dateTime = new DateTime($date);
+        return $dateTime->format(DateTime::ISO8601);
+    }
+
+    /**
+     * Convert a date from ISO 8601 to $dbFormat
+     *
+     * @param string $date the ISO 8601 date string
+     * @param string $dbFormat the db format (default 'datetime' db type)
+     * @return string
+     */
+    public function dateToDb($date, $dbFormat = 'Y-m-d H:i:s') {
+        $dateTime = $this->ApiValidator->checkDate($date);
+        return $dateTime->format($dbFormat);
     }
 
     /**
@@ -657,11 +686,9 @@ class ApiFormatterComponent extends Object {
         foreach ($object as $key => $value) {
             if (array_key_exists($key, $transformer)) {
                 if ($transformer[$key] == 'date') {
-                    $date = new DateTime(trim($value));
-                    $object[$key] = $date->format('Y-m-d');
+                    $object[$key] = $this->dateToDb(trim($value), 'Y-m-d');
                 } elseif ($transformer[$key] == 'datetime') {
-                    $date = new DateTime($value);
-                    $object[$key] = $date->format('Y-m-d H:i:s');
+                    $object[$key] = $this->dateToDb(trim($value), 'Y-m-d H:i:s');
                 }
             }
         }

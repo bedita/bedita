@@ -395,4 +395,22 @@ class ApiValidatorComponent extends Object {
         }
     }
 
+    /**
+     * Check if $date is in the right $format
+     * If test passes it returns the DateTime object else it throws a BeditaBadRequestException
+     *
+     * @throws BeditaBadRequestException
+     * @param string $date the date string to check
+     * @param string $format the format against test $date (default ISO 8601)
+     * @return DateTime
+     */
+    public function checkDate($date, $format = DateTime::ISO8601) {
+        $dateTime = DateTime::createFromFormat($format, $date);
+        if (!$dateTime) {
+            $formatName = ($format == DateTime::ISO8601) ? 'ISO 8601' : $format;
+            throw new BeditaBadRequestException($date . ' has to be in the ' . $formatName . ' format');
+        }
+        return $dateTime;
+    }
+
 }
