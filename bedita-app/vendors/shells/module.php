@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -22,120 +22,197 @@
 require_once 'bedita_base.php';
 
 /**
- * Newsletter shell: methods to import/export newsletter data (for example phplist filters), 
- * other newsletter related utilities
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * Module shell: methods to plug/unplug/list modules
  */
 class ModuleShell extends BeditaBaseShell {
 
-	public function plug() {
-		$op = (empty($this->params["name"]))? "list" : "name";
-		$moduleModel = ClassRegistry::init("Module");
-		$pluggedModules = $moduleModel->find("list", array(
-				"fields" => array("id", "name"),
-				"conditions" => array("module_type" => "plugin")
-			)
-		);
-		
-		$pluginPaths = Configure::getInstance()->pluginPaths;
-		
-		if ($op == "list") {
-		
-			$unpluggedModules = array();
-			foreach ($pluginPaths as $pluginsBasePath) {
-				$folder = new Folder($pluginsBasePath);
-				$plugins = $folder->read(true, true);
-				foreach ($plugins[0] as $plugin) {
-					if (file_exists($pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
-						$unpluggedModules[] = $plugin;
-					}
-				}
-			}
-	
-			if (empty($unpluggedModules)) {
-				$this->out("No module to plug");
-				return;
-			}
-			
-			$this->out("Current unplugged modules on istance " . Configure::read("projectName") . ":");
-			$this->out("");
-			foreach ($unpluggedModules as $key => $um) {
-				$this->out(++$key . ". " . $um);
-			}
-			$this->out("");
-			$moduleToPlug = $this->in("Choose the module to plug. Digit the name or the corresponding number:");
-			
-			if (is_numeric($moduleToPlug) && !empty($unpluggedModules[$moduleToPlug-1])) {
-				$moduleToPlug = $unpluggedModules[$moduleToPlug-1];
-			}
-			if (empty($moduleToPlug) || !in_array($moduleToPlug, $unpluggedModules)) {
-				$this->out("Plugin doesn't exist");
-				return;
-			}
-			
-			$this->params["name"] = $moduleToPlug;
-			$this->plug();
-			
-		} elseif ($op == "name") {
-			$plugin = $this->params["name"];
-			$pluginsBasePath = false;
-			foreach ($pluginPaths as $pPath) {
-				if (file_exists($pPath . $plugin . DS . "config" . DS . "bedita_module_setup.php") && !in_array($plugin, $pluggedModules)) {
-					$pluginsBasePath = $pPath;	
-				}
-			}
-			if (!$pluginsBasePath) {
-				$this->out("Plugin doesn't exist");
-				return;
-			}
-			
-			if (in_array($plugin, $pluggedModules)) {
-				$this->out("Module " . $plugin . " is already installed.");
-				return;
-			}
-			
-			include $pluginsBasePath . $plugin . DS . "config" . DS . "bedita_module_setup.php";
-			$beditaVersion = Configure::read('version');
-			if ($beditaVersion != $moduleSetup["BEditaVersion"]) {
-				$this->out("");
-				$this->out("WARNING: installed version and version required mismatched!");
-				$this->out("BEdita version: " . $beditaVersion);
-				$this->out("BEdita version required by " . $plugin . ": " . $moduleSetup["BEditaVersion"]);
-				$command = $this->in("Do you want continue anyway?", array("yes", "no"), "no");
-				if ($command != "yes") {
-					$this->out("Bye");
-					return;
-				}
-			}
-			$this->out("");
-			$this->out("You are about to plug in the module " . $plugin . " version " . $moduleSetup["version"]);
-			$this->out("Module description: " . $moduleSetup["description"]);
-			$this->out("");
-			$command = $this->in("Do you wanto to proceed?", array("yes", "no"), "yes");
-			if ($command != "yes") {
-				$this->out("Bye");
-				return;
-			}
-			
-			if (!$moduleModel->plugModule($plugin, $moduleSetup)) {
-				$this->out("Failed installing module");
-				return;
-			}
-			
-			$this->out("Plugin " . $plugin . " installed successfully");
-		}
-	}
-	
-	public function unplug() {
-		
-	}
-	
-	
+    /**
+     * Overrides base startup(), don't call initConfig...
+     * @see BeditaBaseShell::startup()
+     */
+    function startup() {
+        Configure::write('debug', 1);
+    }
+
+    public function plug($plugin = null) {
+        $op = (empty($this->params["name"])) ? "list" : "name";
+        $moduleModel = ClassRegistry::init("Module");
+        $pluggedModules = $moduleModel->find("list", array(
+            "fields" => array(
+                "id",
+                "name"
+            ),
+            "conditions" => array(
+                "module_type" => "plugin"
+            )
+        ));
+        $pluginPaths = App::path('plugins');
+        
+        if (empty($plugin)) {
+            $plugin = $this->mandatoryArgument('name', 'use -name option');
+        }
+        $pluginsBasePath = false;
+        if (! empty($pluginPaths)) {
+            foreach ($pluginPaths as $pPath) {
+                if (file_exists($pPath . $plugin . DS . 'config' . DS . 'bedita_module_setup.php') && ! in_array($plugin, $pluggedModules)) {
+                    $pluginsBasePath = $pPath;
+                }
+            }
+        }
+        if (! $pluginsBasePath) {
+            $this->out("Plugin doesn't exist");
+            return;
+        }
+
+        if (in_array($plugin, $pluggedModules)) {
+            $this->out("Module " . $plugin . " is already installed.");
+            return;
+        }
+
+        include $pluginsBasePath . $plugin . DS . 'config' . DS . 'bedita_module_setup.php';
+        $beditaVersion = Configure::read('version');
+        if (empty($moduleSetup['BEditaMinVersion'])) {
+            $this->out('');
+            $this->out('WARNING: mandatory "BEditaMinVersion" parameter missing in module config - unable to plug!');
+            return;
+        }
+        if ($beditaVersion < $moduleSetup['BEditaMinVersion']) {
+            $this->out('');
+            $this->out("WARNING: installed version and version required mismatched!");
+            $this->out('BEdita version: ' . $beditaVersion);
+            $this->out('Min BEdita version required by ' . $plugin . ': ' . $moduleSetup['BEditaMinVersion']);
+            $command = $this->in('Do you want continue anyway?', array(
+                'y',
+                'n'
+            ), 'n');
+            if ($command != 'y') {
+                $this->out('Bye');
+                return;
+            }
+        }
+        $this->out('');
+        $this->out('You are about to plug in the module ' . $plugin . ' version ' . $moduleSetup['version']);
+        $this->out('Module description: ' . $moduleSetup['description']);
+        $this->out('');
+        $command = $this->in('Do you wanto to proceed?', array(
+            'y',
+            'n'
+        ), 'y');
+        if ($command != 'y') {
+            $this->out('Bye');
+            return;
+        }
+
+        if (! $moduleModel->plugModule($plugin, $moduleSetup)) {
+            $this->out('Module install failed!');
+            return;
+        }
+
+        $this->out('Plugin ' . $plugin . ' installed successfully');
+    }
+
+    public function show() {
+        $moduleModel = ClassRegistry::init('Module');
+        $pluggedModules = $moduleModel->find('list', array(
+            'fields' => array('id', 'name'),
+            'conditions' => array('module_type' => array('plugin', 'addon'))
+            )
+        );
+        $this->hr();
+        $this->out('Plugged modules: ');
+        $this->out('');
+        if (empty($pluggedModules)) {
+            $this->out('No module plugged');
+        } else {
+            foreach ($pluggedModules as $key => $mod) {
+                $this->out('  ' . $mod);
+            }
+        }
+        $this->hr();
+        $this->out('');
+
+        $pluginPaths = App::path('plugins');
+        $unpluggedModules = array();
+        if (! empty($pluginPaths)) {
+            foreach ($pluginPaths as $pluginsBasePath) {
+                $folder = new Folder($pluginsBasePath);
+                $plugins = $folder->read(true, true);
+                foreach ($plugins[0] as $plugin) {
+                    if (file_exists($pluginsBasePath . $plugin . DS . 'config' . DS . 'bedita_module_setup.php') && ! in_array($plugin, $pluggedModules)) {
+                        $unpluggedModules[] = $plugin;
+                    }
+                }
+            }
+        }
+
+        if (empty($unpluggedModules)) {
+            $this->out('No module to plug');
+            return;
+        }
+
+        $this->out('Available unplugged modules:');
+        $this->out('');
+        foreach ($unpluggedModules as $key => $um) {
+            $this->out(++$key . '. ' . $um);
+        }
+        $this->out('');
+        $moduleToPlug = $this->in('Choose module to plug. Digit name or corresponding number (enter to quit):');
+        if (empty($moduleToPlug)) {
+            $this->out('Bye');
+            return;
+        }
+        if (is_numeric($moduleToPlug) && !empty($unpluggedModules[$moduleToPlug-1])) {
+            $moduleToPlug = $unpluggedModules[$moduleToPlug-1];
+        }
+        if (!in_array($moduleToPlug, $unpluggedModules)) {
+            $this->out("Plugin doesn't exist");
+            return;
+        }
+        $this->plug($moduleToPlug);
+    }
+
+    public function unplug() {
+        $name = $this->mandatoryArgument('name', 'use -name option');
+        $moduleModel = ClassRegistry::init('Module');
+        $dirName = BEDITA_MODULES_PATH . DS . $name;
+        if (!file_exists($dirName)) {
+            throw new BeditaException(__('plugin folder not found ' . $dirName, true));
+        }
+        $fileName = $dirName . DS . 'config' . DS . 'bedita_module_setup.php';
+        if (!file_exists($fileName)) {
+            throw new BeditaException(__('config/bedita_module_setup.php not found', true));
+        }
+        include($fileName);
+        $id = $moduleModel->field('id', array('name' => $name));
+        if (empty($id)) {
+            $this->out('Module ' . $name . ' not found');
+            return;
+        }
+        $moduleModel->unplugModule($id, $moduleSetup);
+        $this->out('Module ' . $name . ' unplugged');
+    }
+
+    public function status() {
+        $name = $this->mandatoryArgument('name', 'use -name option');
+        $moduleModel = ClassRegistry::init('Module');
+        $status = $moduleModel->field('status', array('name' => $name));
+        if (empty($status)) {
+            $this->out('Module ' . $name . ' not found');
+            return;
+        }
+        $newStatus = ($status == 'on') ? 'off' : 'on';
+        $confirm = $this->in('Changing "' . $name . '" status from "' . 
+            $status . '" to "' . $newStatus . '" confirm? [y/n]' );
+        if (empty($confirm) || strtolower($confirm) !== 'y') {
+            $this->out('Module status unchanged');
+            return;
+        }
+        $id = $moduleModel->field('id', array('name' => $name));
+        $moduleModel->id = $id;
+        $moduleModel->saveField('status', $newStatus);
+        $this->out('Module status changed');
+    }
+
 	private function findPluginPath($pluginName) {
 		$res = null;
 		$pluginPaths = App::pluginPath($pluginName);
@@ -145,15 +222,9 @@ class ModuleShell extends BeditaBaseShell {
 		}
 		return $res;
 	}	
-	
-	
-	function schema() {
-		
-		$pluginName = $this->params["name"];
-		if(empty($pluginName)) {
-			$this->out("Plugin name is mandatory");
-			return;
-		}
+
+
+	public function schema() {
 		
 		$pluginPath = $this->findPluginPath($pluginName);
 		if($pluginPath == null) {
@@ -233,25 +304,34 @@ class ModuleShell extends BeditaBaseShell {
 		}
 		$this->out("Done");
 	}
-	
-	function help() {
+
+    function help() {
         $this->out('Available functions:');
-  		$this->out(' ');
-        $this->out('0. plug: initialize a new BEdita module plugin');
-  		$this->out('    Usage: plug [-list] [-name <module-plugin-name>]');
-  		$this->out(' ');
-  		$this->out("    -list \t list all pluggable module available (default)");
-  		$this->out("    -name <module-plugin-name>   \t name of plugin you want to install");
-  		$this->out(' ');
-        $this->out('1. unplug: todo');
-  		$this->out(' ');
-        $this->out('2. schema: generate schema files for a plugin');
-  		$this->out('    Usage: schema [-list] [-name <module-plugin-name>]');
-  		$this->out(' ');
-  		$this->out("    -name <module-plugin-name>   \t plugin name");
         $this->out(' ');
-	}
-	
+        $this->out('0. plug: plug a new module plugin');
+        $this->out('    Usage: plug -name <module-plugin-name>');
+        $this->out(' ');
+        $this->out("    -name <module-plugin-name>   \t name of plugin you want to install");
+        $this->out(' ');
+        $this->out('1. unplug: unplug module');
+        $this->out('    Usage: unplug -name <module-plugin-name>');
+        $this->out(' ');
+        $this->out("    -name <module-plugin-name>   \t plugin name to unplug");
+        $this->out(' ');
+        $this->out('2. schema: generate schema files for a plugin');
+        $this->out('    Usage: schema [-list] [-name <module-plugin-name>]');
+        $this->out(' ');
+        $this->out("    -name <module-plugin-name>   \t plugin name");
+        $this->out(' ');
+        $this->out('3. show: list all available modules and install selected plugin');
+        $this->out(' ');
+        $this->out('4. status: change module status');
+        $this->out('    Usage: status -name <module-plugin-name>');
+        $this->out(' ');
+        $this->out("    -name <module-plugin-name>   \t plugin name to activate/deactivate");
+        $this->out(' ');
+    }
+
 }
 
 ?>
