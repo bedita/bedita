@@ -422,20 +422,7 @@ abstract class ApiBaseController extends FrontendController {
     protected function objects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-            if (empty($id)) {
-                throw new BeditaNotFoundException();
-            }
-            // check if object $id is reachable
-            if (!$this->ApiValidator->isObjectReachable($id)) {
-                // redo without checking permissions to know if it has to return 404
-                if (!$this->ApiValidator->isObjectReachable($id, false)) {
-                    throw new BeditaNotFoundException();
-                }
-                if (!$this->BeAuth->identify()) {
-                    throw new BeditaUnauthorizedException();
-                }
-                throw new BeditaForbiddenException('Object ' . $name . ' is forbidden');
-            }
+            $this->ApiValidator->checkObjectReachable($id);
             if (!empty($filterType)) {
                 if (!in_array($filterType, $this->allowedObjectsFilter)) {
                     $allowedFilter = implode(', ', $this->allowedObjectsFilter);
@@ -520,7 +507,7 @@ abstract class ApiBaseController extends FrontendController {
                 $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
             }
         } else {
-
+            throw new BeditaMethodNotAllowedException();
         }
     }
 
