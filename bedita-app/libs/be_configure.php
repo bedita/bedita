@@ -62,9 +62,9 @@ class BeConfigure {
 			include BEDITA_ADDONS_PATH . DS . 'config' . DS . 'config.php';
 		}
 
-		$moduleModel = ClassRegistry::init("Module");
-		$modules = $moduleModel->find("all", array(
-				"conditions" => array("module_type" => "plugin")
+		$moduleModel = ClassRegistry::init('Module');
+		$modules = $moduleModel->find('all', array(
+				'conditions' => array('module_type' => array('plugin', 'addon'))
 			)
 		);
 		if (!empty($modules)) {
