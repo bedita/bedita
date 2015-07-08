@@ -679,16 +679,17 @@ class ApiFormatterComponent extends Object {
 
         }
         if (!empty($object['date_items'])) {
-
+            $object['DateItem'] = $this->formatDateItemsForSave($object['date_items']);
+            unset($object['date_items']);
         }
 
         $transformer = $this->getObjectTransformer($object);
         foreach ($object as $key => $value) {
             if (array_key_exists($key, $transformer)) {
                 if ($transformer[$key] == 'date') {
-                    $object[$key] = $this->dateToDb(trim($value), 'Y-m-d');
+                    $object[$key] = $this->dateToDb($value, 'Y-m-d');
                 } elseif ($transformer[$key] == 'datetime') {
-                    $object[$key] = $this->dateToDb(trim($value), 'Y-m-d H:i:s');
+                    $object[$key] = $this->dateToDb($value, 'Y-m-d H:i:s');
                 }
             }
         }
@@ -768,6 +769,22 @@ class ApiFormatterComponent extends Object {
      */
     public function formatTagsForSave(array $tags) {
         return $this->formatCategoriesForSave($tags);
+    }
+
+    /**
+     * Arrange date items for save:
+     * - format 'start_date' and 'end_date'
+     *
+     */
+    public function formatDateItemsForSave(array $dateItems) {
+        foreach ($dateItems as &$item) {
+            foreach ($item as $field => &$value) {
+                if (($field == 'start_date' || $field == 'end_date') && !empty($value)) {
+                    $value = $this->dateToDb($value, 'Y-m-d H:i:s');
+                }
+            }
+        }
+        return $dateItems;
     }
 
 }

@@ -106,10 +106,7 @@ class ApiValidatorComponent extends Object {
 
         // prepare list of forbidden fields to avoid automatic save
         $forbiddenFields = array_merge(
-            $beObject->hasOne,
-            $beObject->belongsTo,
-            $beObject->hasMany,
-            $beObject->hasAndBelongsToMany,
+            array_keys($beObject->getAssociated()),
             array('DateItem', 'destination')
         );
         foreach ($object as $key => $value) {
@@ -141,7 +138,8 @@ class ApiValidatorComponent extends Object {
             $this->checkObjectAccess($object['parents']);
         }
 
-        if ($parentsEmpty && $relationsEmpty) {
+        // if new object parents or relations cannot be empty
+        if (empty($object['id']) && $parentsEmpty && $relationsEmpty) {
             throw new BeditaBadRequestException('Parents and/or relations can not both be empty');
         }
 
@@ -155,7 +153,13 @@ class ApiValidatorComponent extends Object {
 
         }
         if (!empty($object['date_items'])) {
-
+            $modelName = Configure::read('objectTypes.' . $object['object_type_id'] . '.model');
+            $objectModel = ClassRegistry::init($modelName);
+            $associations = $objectModel->getAssociated();
+            if (!array_key_exists('DateItem', $associations)) {
+                throw new BeditaBadRequestException('date_items is invalid for ' . $objectType);
+            }
+            $this->checkDateItems($object['date_items']);
         }
     }
 
@@ -411,9 +415,58 @@ class ApiValidatorComponent extends Object {
         $dateTime = DateTime::createFromFormat($format, $date);
         if (!$dateTime) {
             $formatName = ($format == DateTime::ISO8601) ? 'ISO 8601' : $format;
-            throw new BeditaBadRequestException($date . ' has to be in the ' . $formatName . ' format');
+            throw new BeditaBadRequestException($date . ' has to be in valid ' . $formatName . ' format');
         }
         return $dateTime;
+    }
+
+    /**
+     * Check if $dateItems contains item with allowed and valid fields
+     * $dateItems is an array as
+     *
+     * ```
+     * array(
+     *     0 => array(
+     *         'start_date' => '2015-07-08T15:00:35+0200',
+     *         'end_date' => '2015-08-08T15:00:35+0200',
+     *         'params' => array(
+     *             'days' => array()
+     *         )
+     *     )
+     * )
+     * ```
+     *
+     * @param array $dateItems
+     * @return void
+     */
+    public function checkDateItems(array $dateItems) {
+        $validFields = array('id', 'start_date', 'end_date', 'params');
+        foreach ($dateItems as $item) {
+            foreach ($item as $field => $value) {
+                if (!in_array($field, $validFields)) {
+                    throw new BeditaBadRequesException($field . ' is invalid field for date_items');
+                }
+                if ($field == 'start_date' || $field == 'end_date') {
+                    if (!empty($value)) {
+                        $this->checkDate($value);
+                    } elseif ($value !== null) {
+                        throw new BeditaBadRequestException($field . ' has to be a valid date or null');
+                    }
+                } elseif ($field == 'params') {
+                    $validateParams = true;
+                    if ($value != null && !is_array($value)) {
+                        $validateParams = false;
+                    } elseif (is_array($value)) {
+                        if (count(array_keys($value)) > 1 || !array_key_exists('days', $value)) {
+                            $validateParams = false;
+                        }
+                    }
+                    if (!$validateParams) {
+                        throw new BeditaBadRequestException($field . ' has to be an object with just days key or null');
+                    }
+                }
+            }
+        }
     }
 
 }
