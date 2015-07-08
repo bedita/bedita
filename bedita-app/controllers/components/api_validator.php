@@ -159,7 +159,8 @@ class ApiValidatorComponent extends Object {
             if (!array_key_exists('DateItem', $associations)) {
                 throw new BeditaBadRequestException('date_items is invalid for ' . $objectType);
             }
-            $this->checkDateItems($object['date_items']);
+            $objectId = !empty($object['id']) ? $object['id'] : null;
+            $this->checkDateItems($object['date_items'], $objectId);
         }
     }
 
@@ -436,21 +437,39 @@ class ApiValidatorComponent extends Object {
      * )
      * ```
      *
+     * If $objectId is passed and 'id' is present in some date items then check if it's valid for $objectId
+     *
      * @param array $dateItems
+     * @param int $objectId
      * @return void
      */
-    public function checkDateItems(array $dateItems) {
-        $validFields = array('id', 'start_date', 'end_date', 'params');
+    public function checkDateItems(array $dateItems, $objectId = null) {
+        $validFields = array('start_date', 'end_date', 'params');
+        if (!empty($objectId)) {
+            $validFields[] = 'id';
+            $dateItemModel = ClassRegistry::init('DateItem');
+        }
         foreach ($dateItems as $item) {
             foreach ($item as $field => $value) {
                 if (!in_array($field, $validFields)) {
-                    throw new BeditaBadRequesException($field . ' is invalid field for date_items');
+                    throw new BeditaBadRequesException('date_items: ' . $field . ' is not valid');
                 }
-                if ($field == 'start_date' || $field == 'end_date') {
+                // check if id exists and corresponds to $objectId
+                if ($field == 'id') {
+                    $count = $dateItemModel->find('count', array(
+                        'conditions' => array(
+                            'id' => $value,
+                            'object_id' =>$objectId
+                        )
+                    ));
+                    if (empty($count)) {
+                        throw new BeditaBadRequestException('date_items: ' . $field . '=' . $value .' is not valid');
+                    }
+                } elseif ($field == 'start_date' || $field == 'end_date') {
                     if (!empty($value)) {
                         $this->checkDate($value);
                     } elseif ($value !== null) {
-                        throw new BeditaBadRequestException($field . ' has to be a valid date or null');
+                        throw new BeditaBadRequestException('date_items: ' . $field . ' has to be a valid date or null');
                     }
                 } elseif ($field == 'params') {
                     $validateParams = true;
@@ -462,7 +481,7 @@ class ApiValidatorComponent extends Object {
                         }
                     }
                     if (!$validateParams) {
-                        throw new BeditaBadRequestException($field . ' has to be an object with just days key or null');
+                        throw new BeditaBadRequestException('date_items: ' . $field . ' has to be an object with just days key or null');
                     }
                 }
             }
