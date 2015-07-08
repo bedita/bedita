@@ -337,6 +337,9 @@ class ApiValidatorComponent extends Object {
      */
     public function checkRelations(array $relations, $objectType = null) {
         $beObject = ClassRegistry::init('BEObject');
+        if (is_numeric($objectType)) {
+            $objectType = Configure::read('objectTypes.' . $objectType . '.name');
+        }
         foreach ($relations as $name => $data) {
             if ($objectType) {
                 if (!$this->isRelationValid($name, $objectType)) {

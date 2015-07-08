@@ -132,7 +132,7 @@ abstract class ApiBaseController extends FrontendController {
     protected $filter = array();
 
     /**
-     * The request method invoked
+     * The request method invoked (get, post, put, delete)
      *
      * @var string
      */
@@ -148,23 +148,34 @@ abstract class ApiBaseController extends FrontendController {
     private $fullApiBaseUrl = null;
 
     /**
-     * The allowed filters you can apply to /objects endpoint
-     * For example /objects/1/children search the children of object with id = 1
+     * The allowed filters you can apply to /objects endpoint.
+     * The filter is divided by request type 'get', 'post', 'put' and 'delete'
+     *
+     * For example GET /objects/1/children search the children of object with id = 1
      *
      * Override in ApiController to limit or add functionality to /objects endpoint
-     * For example adding to array 'foo' search type and adding ApiController::loadFoo() you can call /objects/1/foo
+     * For example adding to 'get' array 'foo' search type and adding ApiController::getObjectFoo() you can call /objects/1/foo
+     * All filters must have a corresponding class method built as self::requestMethod + Object + filter, for example:
+     * - getObjectChildren() map $allowedObjectsFilter['get']['children']
+     * - postObjectRelations() map $allowedObjectsFilter['post']['relations']
      *
      * @var array
      */
     protected $allowedObjectsFilter = array(
-        'relations',
-        'children',
-        'contents',
-        'sections',
-        'descendants',
-        'siblings',
-        //'ancestors',
-        //'parents'
+        'get' => array(
+            'relations',
+            'children',
+            'contents',
+            'sections',
+            'descendants',
+            'siblings',
+            //'ancestors',
+            //'parents'
+        ),
+        'post' => array(
+            'relations',
+            'children'
+        )
     );
 
     /**
@@ -415,7 +426,7 @@ abstract class ApiBaseController extends FrontendController {
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter[self::requestMethod]
      * @param string $filterValue define a value for $filterType
      * @return void
      */
@@ -424,16 +435,9 @@ abstract class ApiBaseController extends FrontendController {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $this->ApiValidator->checkObjectReachable($id);
             if (!empty($filterType)) {
-                if (!in_array($filterType, $this->allowedObjectsFilter)) {
-                    $allowedFilter = implode(', ', $this->allowedObjectsFilter);
-                    throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
-                } else {
-                    $method = 'load' . Inflector::camelize($filterType);
-                    $args = func_get_args();
-                    $args[0] = $id;
-                    unset($args[1]);
-                    call_user_func_array(array($this, $method), $args);
-                }
+                $args = func_get_args();
+                $args[0] = $id;
+                call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
             } else {
                 $options = array('explodeRelations' => false);
                 if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->allowedModelBindings)) {
@@ -464,11 +468,33 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Route calls made by /objects endpoint using $filterType and request method self::requestMethod
+     *
+     * @see self:objects() for param description
+     * @param int $id
+     * @param string $filterType
+     * @param string $filterValue
+     * @return void
+     */
+    private function routeObjectsFilterType($id, $filterType, $filterValue = null) {
+        $allowedFilterTypes = $this->allowedObjectsFilter[$this->requestMethod];
+        if (!in_array($filterType, $allowedFilterTypes)) {
+            $allowedFilter = implode(', ', $allowedFilterTypes);
+            throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
+        }
+        $method = $this->requestMethod . 'Object' . Inflector::camelize($filterType);
+        $args = func_get_args();
+        unset($args[1]);
+        return call_user_func_array(array($this, $method), $args);
+    }
+
+    /**
      * POST /objects
      *
-     * @param int|string $name an object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter
-     * @param string $filterValue define a value for $filterType
+     * @see self:objects() for param description
+     * @param int|string $name
+     * @param string $filterType
+     * @param string $filterValue
      * @return void
      */
     protected function postObjects($name = null, $filterType = null, $filterValue = null) {
@@ -476,13 +502,14 @@ abstract class ApiBaseController extends FrontendController {
         if (!$user) {
             throw new BeditaUnauthorizedException();
         }
-        if (empty($this->params['form']['object'])) {
-            throw new BeditaBadRequestException('Missing object data to save');
+
+        if (empty($this->data) && empty($this->params['form']['data'])) {
+            throw new BeditaBadRequestException('Missing data to save');
         }
+        $this->data = !empty($this->data) ? $this->data : $this->params['form']['data'];
 
         // save object
         if (empty($name)) {
-            $this->data = $this->params['form']['object'];
             $isNew = (empty($this->data['id'])) ? true : false;
             if ($isNew) {
                 if (empty($this->data['object_type'])) {
@@ -507,7 +534,16 @@ abstract class ApiBaseController extends FrontendController {
                 $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
             }
         } else {
-            throw new BeditaMethodNotAllowedException();
+            if (func_num_args() == 1) {
+                throw new BeditaBadRequestException();
+            }
+            $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+            $this->ApiValidator->checkObjectReachable($id);
+            $args = func_get_args();
+            $args[0] = $id;
+            $this->Transaction->begin();
+            call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
+            $this->Transaction->commit();
         }
     }
 
@@ -560,18 +596,67 @@ abstract class ApiBaseController extends FrontendController {
         }
     }
 
-    protected function saveRelations($objectId, array $relations = array()) {
+    /**
+     * Save relations $relationName between $objectId and related objects in $this->data
+     *
+     * @param int $objectId the main object id
+     * @param string $relationName the relation name (direct or inverse)
+     * @return void
+     */
+    protected function postObjectRelations($objectId, $relationName) {
+        $objectTypeId = $this->BEObject->findObjectTypeId($objectId);
+        $this->data = isset($this->data[0]) ? $this->data : array($this->data);
+        $this->ApiValidator->checkRelations(
+            array($relationName => $this->data),
+            $objectTypeId
+        );
+        $relations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+        $isInverse = !empty($relations[$relationName]) ? false : true;
         $objectRelation = ClassRegistry::init('ObjectRelation');
-        foreach ($relations as $name => $relData) {
-            // remove
-            if (empty($relData)) {
-                $objectRelation->deleteObjectRelation($objectId, $relData['related_id']);
+        $inverseName = $objectRelation->inverseOf($relationName);
+        $created = false;
+        foreach ($this->data as $relData) {
+            if (!$isInverse) {
+                $id = $objectId;
+                $relatedId = $relData['related_id'];
+            } else {
+                $id = $relData['related_id'];
+                $relatedId = $objectId;
+            }
+            $params = isset($relData['params']) ? $relData['params'] : array();
+            $priority = isset($relData['priority']) ? $relData['priority'] : null;
+            $exists = $objectRelation->relationExists($id, $relatedId, $relationName);
+            // create
+            if (!$exists) {
+                $result = $objectRelation->createRelationAndInverse($objectId, $relData['related_id'], $relationName, $inverseName, $priority, $params);
+                if ($result === false) {
+                    throw new BeditaInternalErrorException(
+                        'Error saving relation ' . $relationName . ' between ' . $objectId . ' and ' . $relData['related_id']
+                    );
+                }
+                $created = true;
+            // update
+            } else {
+                // update direct relation
+                $set = array();
+                if (array_key_exists('params', $relData)) {
+                    $set['params']  = $relData['params'];
+                }
+                if (array_key_exists('priority', $relData)) {
+                    $set['priority'] = $relData['priority'];
+                }
+                $result = $objectRelation->updateRelation($objectId, $relData['related_id'], $relationName, $set);
+                if ($result === false) {
+                    throw new BeditaInternalErrorException(
+                        'Error updating relation ' . $relationName . ' between ' . $objectId . ' and ' . $relData['related_id']
+                    );
+                }
             }
         }
-    }
-
-    protected function saveParents($objectId, $parents) {
-        ClassRegistry::init('Tree')->updateTree($objectId, $parents);
+        if ($created) {
+            $this->ResponseHandler->sendStatus(201);
+            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
+        }
     }
 
     /**
@@ -650,7 +735,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadChildren($id) {
+    protected function getObjectChildren($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -663,7 +748,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadSections($id) {
+    protected function getObjectSections($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -681,7 +766,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadContents($id) {
+    protected function getObjectContents($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -701,7 +786,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadDescendants($id) {
+    protected function getObjectDescendants($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -716,7 +801,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function loadSiblings($id) {
+    protected function getObjectSiblings($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -737,7 +822,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $relation the relation name
      * @return void
      */
-    protected function loadRelations($id, $relation = '') {
+    protected function getObjectRelations($id, $relation = '') {
         if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }

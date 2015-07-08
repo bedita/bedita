@@ -201,6 +201,64 @@ class ObjectRelation extends BEAppModel
     }
 
     /**
+     * Update a relation using an array of fields to update
+     * $set can contains 'params' and 'priority'
+     * If $set['params'] is defined then params is also updated in the inverse relation
+     *
+     * @param int $id the main object id
+     * @param int $objectId the related object id
+     * @param string $switch the relation name
+     * @param array $set array of fields to update
+     * @return boolean
+     */
+    public function updateRelation($id, $objectId, $switch, array $set) {
+        if (empty($set)) {
+            return false;
+        }
+        $updateData = array();
+        if (array_key_exists('params', $set)) {
+            if ($set['params'] === null) {
+                $updateData[] = "params=NULL";
+            } else {
+                if (!is_array($set['params'])) {
+                    return false;
+                }
+                $set['params'] = json_encode($set['params']);
+                $updateData[] = "params='{$set['params']}'";
+            }
+        }
+        if (array_key_exists('priority', $set)) {
+            if ($set['priority'] === null) {
+                $updateData[] = "priority=NULL";
+            } else {
+                $set['priority'] = Sanitize::escape($set['priority']);
+                $updateData[] = "priority='{$set['priority']}'";
+            }
+        }
+
+        if (empty($updateData)) {
+            return false;
+        }
+
+        $q = 'UPDATE object_relations SET ';
+        foreach ($updateData as $key => $value) {
+            $q .= ($key == 0) ? $value : ', ' . $value;
+        }
+        $q .= " WHERE id={$id} AND object_id={$objectId} AND switch='{$switch}'";
+        $result = $this->query($q);
+
+        // update params in inverse relation
+        if ($result !== false && array_key_exists('params', $set)) {
+            $switchInverse = $this->inverseOf($switch);
+            $q = "UPDATE object_relations
+                SET params='{$set['params']}'
+                WHERE id={$objectId} AND object_id={$id} AND switch='{$switchInverse}'";
+            $result = $this->query($q);
+        }
+        return $result;
+    }
+
+    /**
      * Check object relation existence
      * @param int $id
      * @param int $objectId
@@ -371,6 +429,32 @@ class ObjectRelation extends BEAppModel
         }
 
         return $isValid;
+    }
+
+    /**
+     * Return the inverse name of relation named $name
+     * Passing an array of relation ($relation) it searches inside that else search in all relations.
+     *
+     * @param string $name a direct or inverse relation name
+     * @param array $relations an array of relations on which search
+     * @return string|false
+     */
+    public function inverseOf($name, $relations = array()) {
+        if (empty($relations)) {
+            $relations = BeLib::getObject('BeConfigure')->mergeAllRelations();
+        }
+        $inverse = $name;
+        if (!empty($relations[$name])) {
+            $inverse = !empty($relations[$name]['inverse']) ? $relations[$name]['inverse'] : $name;
+        } else {
+            foreach ($relations as $directName => $relData) {
+                if (!empty($relData['inverse']) && $relData['inverse'] == $name) {
+                    $inverse = $directName;
+                    break;
+                }
+            }
+        }
+        return $inverse;
     }
 
 }
