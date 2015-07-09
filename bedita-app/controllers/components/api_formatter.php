@@ -796,6 +796,8 @@ class ApiFormatterComponent extends Object {
             foreach ($item as $field => &$value) {
                 if (($field == 'start_date' || $field == 'end_date') && !empty($value)) {
                     $value = $this->dateToDb($value, 'Y-m-d H:i:s');
+                } elseif ($field == 'days') {
+                    sort($value);
                 }
             }
         }

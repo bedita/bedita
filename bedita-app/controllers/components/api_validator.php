@@ -430,9 +430,7 @@ class ApiValidatorComponent extends Object {
      *     0 => array(
      *         'start_date' => '2015-07-08T15:00:35+0200',
      *         'end_date' => '2015-08-08T15:00:35+0200',
-     *         'params' => array(
-     *             'days' => array()
-     *         )
+     *         'days' => array(0, 2) // integer values from 0 (Sunday) to 6 (Saturday)
      *     ),
      *     1 => array()
      * )
@@ -446,7 +444,7 @@ class ApiValidatorComponent extends Object {
      * @return void
      */
     public function checkDateItems(array $dateItems, $objectId = null) {
-        $validFields = array('start_date', 'end_date', 'params');
+        $validFields = array('start_date', 'end_date', 'days');
         if (!empty($objectId)) {
             $validFields[] = 'id';
             $dateItemModel = ClassRegistry::init('DateItem');
@@ -457,7 +455,7 @@ class ApiValidatorComponent extends Object {
             }
             foreach ($item as $field => $value) {
                 if (!in_array($field, $validFields)) {
-                    throw new BeditaBadRequesException('date_items: ' . $field . ' is not valid');
+                    throw new BeditaBadRequestException('date_items: ' . $field . ' is not valid');
                 }
                 // check if id exists and corresponds to $objectId
                 if ($field == 'id') {
@@ -476,17 +474,15 @@ class ApiValidatorComponent extends Object {
                     } elseif ($value !== null) {
                         throw new BeditaBadRequestException('date_items: ' . $field . ' has to be a valid date or null');
                     }
-                } elseif ($field == 'params') {
-                    $validateParams = true;
-                    if ($value != null && !is_array($value)) {
-                        $validateParams = false;
-                    } elseif (is_array($value)) {
-                        if (count(array_keys($value)) > 1 || !array_key_exists('days', $value)) {
-                            $validateParams = false;
-                        }
-                    }
-                    if (!$validateParams) {
-                        throw new BeditaBadRequestException('date_items: ' . $field . ' has to be an object with just days key or null');
+                } elseif ($field == 'days') {
+                    $validateDays = true;
+                    $test = array_filter($value, function($v) {
+                        return (is_int($v) && $v >= 0 && $v <= 6);
+                    });
+                    if ($value !== $test) {
+                        throw new BeditaBadRequestException(
+                            'date_items: ' . $field . ' has to be an array of max seven positive integer values [0-6]'
+                        );
                     }
                 }
             }
