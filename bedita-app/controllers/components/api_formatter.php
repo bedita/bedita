@@ -90,6 +90,10 @@ class ApiFormatterComponent extends Object {
             'parent_id',
             'parent_path',
             'url_label'
+        ),
+        'DateItem' => array(
+            'object_id',
+            'params'
         )
     );
 
@@ -109,6 +113,7 @@ class ApiFormatterComponent extends Object {
      * Special types:
      *
      * - `underscoreField` underscorize field. Note that the value of field remains unchanged
+     * - `integerArray` cast to integer all array values
      *
      *
      * The `object` key contains transformation merged with all BEdita objects
@@ -253,6 +258,7 @@ class ApiFormatterComponent extends Object {
      * The keys that correspond to array as `GeoTag` will be underscorized and pluralized.
      * So `GeoTag` become `geo_tags` in the $item array
      *
+     * @see self::transformers comments to all 'type' possibility
      * @param array $transformer the transformer array
      * @param array &$item the item to transform
      * @return void
@@ -298,6 +304,12 @@ class ApiFormatterComponent extends Object {
                                 $newField = Inflector::underscore($field);
                                 $item[$newField] = $item[$field];
                                 unset($item[$field]);
+                                break;
+
+                            case 'integerArray':
+                                if (is_array($item[$field])) {
+                                    $item[$field] = array_map('intval', $item[$field]);
+                                }
                                 break;
                         }
                     }
