@@ -83,6 +83,10 @@ class DateItem extends BEAppModel
         }
 
         if (!is_int($date)) {
+            if (empty($date)) {
+                return null;
+            }
+
             $pattern = str_replace('%', '', Configure::read('datePattern'));
             if (($dateTime = date_create_from_format($pattern . ' G:i|', $date)) || ($dateTime = date_create_from_format($pattern . '|', $date))) {
                 $date = date_format($dateTime, 'Y-m-d H:i:s');
