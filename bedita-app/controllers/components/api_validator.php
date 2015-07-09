@@ -84,7 +84,7 @@ class ApiValidatorComponent extends Object {
         }
 
         $beObject = ClassRegistry::init('BEObject');
-
+        $objectId = null;
         // validate object type
         if (!empty($object['id'])) {
             $objectTypeId = $beObject->findObjectTypeId($object['id']);
@@ -93,6 +93,7 @@ class ApiValidatorComponent extends Object {
                     'Object type mismatch: object with id=' . $object['id'] . ' has not object_type_id=' . $object['object_type_id']
                 );
             }
+            $objectId = $object['id'];
         }
         $objectType = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
         if (!empty($object['object_type']) && $object['object_type'] != $objectType) {
@@ -150,7 +151,7 @@ class ApiValidatorComponent extends Object {
             $this->checkTags($object['tags']);
         }
         if (!empty($object['geo_tags'])) {
-
+            $this->checkGeoTags($object['geo_tags'], $objectId);
         }
         if (!empty($object['date_items'])) {
             $modelName = Configure::read('objectTypes.' . $object['object_type_id'] . '.model');
@@ -159,7 +160,6 @@ class ApiValidatorComponent extends Object {
             if (!array_key_exists('DateItem', $associations)) {
                 throw new BeditaBadRequestException('date_items is invalid for ' . $objectType);
             }
-            $objectId = !empty($object['id']) ? $object['id'] : null;
             $this->checkDateItems($object['date_items'], $objectId);
         }
     }
@@ -423,7 +423,7 @@ class ApiValidatorComponent extends Object {
 
     /**
      * Check if $dateItems contains item with allowed and valid fields
-     * $dateItems is an array as
+     * $dateItems has to be an array as
      *
      * ```
      * array(
@@ -433,12 +433,14 @@ class ApiValidatorComponent extends Object {
      *         'params' => array(
      *             'days' => array()
      *         )
-     *     )
+     *     ),
+     *     1 => array()
      * )
      * ```
      *
      * If $objectId is passed and 'id' is present in some date items then check if it's valid for $objectId
      *
+     * @throws BeditaBadRequestException
      * @param array $dateItems
      * @param int $objectId
      * @return void
@@ -450,6 +452,9 @@ class ApiValidatorComponent extends Object {
             $dateItemModel = ClassRegistry::init('DateItem');
         }
         foreach ($dateItems as $item) {
+            if (!is_array($item)) {
+                throw new BeditaBadRequestException('date_items: malformed data');
+            }
             foreach ($item as $field => $value) {
                 if (!in_array($field, $validFields)) {
                     throw new BeditaBadRequesException('date_items: ' . $field . ' is not valid');
@@ -482,6 +487,64 @@ class ApiValidatorComponent extends Object {
                     }
                     if (!$validateParams) {
                         throw new BeditaBadRequestException('date_items: ' . $field . ' has to be an object with just days key or null');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if $geoTags contains item with allowed and valid fields
+     * $geoTags has to be an array as
+     *
+     * ```
+     * array(
+     *     0 => array(
+     *         'latitude' => 43.503815,
+     *         'longitude' => '10.470861',
+     *         'address' => 'lorem ipsum',
+     *         'title' => 'title geo tag'
+     *     )
+     * )
+     * ```
+     *
+     * Since in backend only one GeoTag is handled the array has to be contain only one geotag data
+     *
+     * If $objectId is passed and 'id' is present in some date items then check if it's valid for $objectId
+     *
+     * @throws BeditaBadRequestException
+     * @param array $dateItems
+     * @param int $objectId
+     * @return void
+     */
+    public function checkGeoTags(array $geoTags, $objectId = null) {
+        $validFields = array('latitude', 'longitude', 'address', 'title');
+        if (!empty($objectId)) {
+            $validFields[] = 'id';
+            $geoTagModel = ClassRegistry::init('GeoTag');
+        }
+        $countItem = 1;
+        foreach ($geoTags as $item) {
+            if ($countItem++ > 1) {
+                throw new BeditaBadRequestException('geo_tags: just one geotag can be saved');
+            }
+            if (!is_array($item)) {
+                throw new BeditaBadRequestException('geo_tags: malformed data');
+            }
+            foreach ($item as $field => $value) {
+                if (!in_array($field, $validFields)) {
+                    throw new BeditaBadRequestException('geo_tags: ' . $field . ' is not valid');
+                }
+                // check if id exists and corresponds to $objectId
+                if ($field == 'id') {
+                    $count = $geoTagModel->find('count', array(
+                        'conditions' => array(
+                            'id' => $value,
+                            'object_id' =>$objectId
+                        )
+                    ));
+                    if (empty($count)) {
+                        throw new BeditaBadRequestException('geo_tags: ' . $field . '=' . $value .' is not valid');
                     }
                 }
             }

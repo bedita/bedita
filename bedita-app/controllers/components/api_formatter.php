@@ -676,7 +676,8 @@ class ApiFormatterComponent extends Object {
             unset($object['tags']);
         }
         if (!empty($object['geo_tags'])) {
-
+            $object['GeoTag'] = $object['geo_tags'];
+            unset($object['geo_tags']);
         }
         if (!empty($object['date_items'])) {
             $object['DateItem'] = $this->formatDateItemsForSave($object['date_items']);
