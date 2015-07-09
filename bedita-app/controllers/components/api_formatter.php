@@ -72,7 +72,9 @@ class ApiFormatterComponent extends Object {
         'priority',
         'menu',
         'Category' => array(
+            'id',
             'object_type_id',
+            'area_id',
             'status',
             'priority',
             'parent_id',
