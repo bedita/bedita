@@ -116,7 +116,7 @@ class BeObjectCache {
     public function write($id, array &$options, array &$data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
         // store index cache
-        if ($this->cacheConfig['Engine'] !== 'File') {
+        if ($this->cacheConfig['engine'] !== 'File') {
             $cacheIdxKey = $id . '_index';
             $cacheIdx = Cache::read($cacheIdxKey, 'objects');
             if (empty($cacheIdx)) {
@@ -137,7 +137,7 @@ class BeObjectCache {
      * @param  integer $id objectId
      */
     public function delete($id, array $options = null) {
-        if ($this->cacheConfig['Engine'] == 'File') {
+        if ($this->cacheConfig['engine'] == 'File') {
             $cachePath = $this->getPathById($id);
             $prefix = (!empty($this->cacheConfig['prefix'])) ? $this->cacheConfig['prefix'] : 'cake_';
             $wildCard = $cachePath . DS . $prefix . $id . '-*';
