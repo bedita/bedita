@@ -592,7 +592,15 @@ abstract class ApiBaseController extends FrontendController {
         parent::saveObject($beModel, $options);
 
         if (!empty($this->data['parents'])) {
-            ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['parents']);
+            $tree = ClassRegistry::init('Tree');
+            $tree->updateTree(
+                $beModel->id,
+                $this->data['parents'],
+                array(
+                    'area_id' => $this->publication['id'],
+                    'status' => $this->getStatus()
+                )
+            );
         }
     }
 
