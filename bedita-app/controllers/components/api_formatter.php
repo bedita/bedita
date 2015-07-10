@@ -362,7 +362,8 @@ class ApiFormatterComponent extends Object {
      * @return array
      */
     public function getObjectTransformer(array $object) {
-        $modelName = Inflector::camelize($object['object_type']);
+        $objectType = !empty($object['object_type']) ? $object['object_type'] : $object['object_type_id'];
+        $modelName = Configure::read('objectTypes.' . $objectType . '.model');
         $Object = ClassRegistry::init($modelName);
         $modelName = $Object->name;
         $transformer = array();

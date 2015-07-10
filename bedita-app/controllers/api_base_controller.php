@@ -575,9 +575,13 @@ abstract class ApiBaseController extends FrontendController {
 
         if (empty($this->data['object_type_id'])) {
             if (empty($this->data['object_type'])) {
-                throw new BeditaBadRequestException('Missing object type');
+                if (empty($this->data['id'])) {
+                    throw new BeditaBadRequestException('Missing object type or it can not be retrieved');
+                }
+                $this->data['object_type_id'] = $this->BEObject->findObjectTypeId($this->data['id']);
+            } else {
+                $this->data['object_type_id'] = Configure::read('objectTypes.' . $this->data['object_type'] . '.id');
             }
-            $this->data['object_type_id'] = Configure::read('objectTypes.' . $this->data['object_type'] . '.id');
         }
 
         $this->data['status'] = 'on';
