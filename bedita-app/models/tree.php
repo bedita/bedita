@@ -162,23 +162,23 @@ class Tree extends BEAppModel
 		
 
     /**
-    * Update tree position of object $id with new $destination array
-    *
-    * To update tree:
-    * - all parents are taken
-    * - ids in all parents that missing from $destination are removed
-    * - ids in $destination that missing from all parents are added
-    *
-    * With $options you can limit the parents taken
-    *
-    * Possible values are:
-    * - `area_id` to limit parents to some publication.
-    * - `status` to limit parents with specific status
-    *
-    * @param integer $id
-    * @param array $options
-    * @param array $destination
-    */
+     * Update tree position of object $id with new $destination array
+     *
+     * To update tree:
+     * - all parents are taken
+     * - ids in all parents that missing from $destination are removed
+     * - ids in $destination that missing from all parents are added
+     *
+     * With $options you can limit the parents taken
+     *
+     * Possible values are:
+     * - `area_id` to limit parents to some publication.
+     * - `status` to limit parents with specific status
+     *
+     * @param integer $id
+     * @param array $options
+     * @param array $destination
+     */
     public function updateTree($id, $destination, array $options = array()) {
         $options += array(
             'area_id' => null,
