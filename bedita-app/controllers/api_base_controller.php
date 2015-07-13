@@ -98,6 +98,23 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
+     * Set to true to leave response body empty
+     * Default is false and response body will be built as
+     * ```
+     * {
+     *     "api": "...",
+     *     "data": {},
+     *     "method": "...",
+     *     "params": [],
+     *     "url": "..."
+     * }
+     * ```
+     *
+     * @var boolean
+     */
+    protected $emptyResponseBody = false;
+
+    /**
      * Pagination options used to paginate objects
      * Default values are
      *
@@ -701,6 +718,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->ResponseHandler->sendStatus(201);
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
         }
+        $this->emptyResponseBody = true;
     }
 
     /**
@@ -1043,13 +1061,15 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Revoke authentication removing refresh token
+     * If refresh token was removed successufully a 204 NO CONTENT status code returns
      *
      * @param string $refreshToken the refresh token to revoke
      * @return void
      */
     protected function deleteAuth($refreshToken) {
         if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
-            $this->setData(array('logout' => true));
+           $this->ResponseHandler->sendStatus(204);
+           $this->emptyResponseBody = true;
         } else {
             throw new BeditaInternalErrorException();
         }
@@ -1057,11 +1077,15 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Build response data for client
+     * If self::emptyResponseBody is set to true stop all
      *
      * @param boolean $setBase should set generic api response info
      * @return void
      */
     protected function response($setBase = true) {
+        if ($this->emptyResponseBody) {
+            $this->_stop();
+        }
         if ($setBase) {
             $this->setBaseResponse();
         }
