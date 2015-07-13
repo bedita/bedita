@@ -217,24 +217,36 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Normalize POST data
+     * Normalize POST/PUT data
      *
-     * This function searches for POST data in the global var $_POST and in 'php://input' alias file
-     * Some Javascript XHR wrappers POSTs data are passed through 'php://input'
+     * This function searches for POST/PUT data in the global var $_POST and in 'php://input' alias file
+     * Some Javascript XHR wrappers POSTs, PUTs data are passed through 'php://input'
+     * If CONTENT_TYPE in request headers is 'application/x-www-form-urlencoded' then it parses string
+     * else it tries to json encode string
      *
      * @return array
      */
-    private function handlePOST() {
+    private function handleInputData() {
         if (empty($this->params['form'])) {
             try {
-                $postdata = file_get_contents('php://input');
-                $this->params['form'] = json_decode($postdata, true);
-                $jsonError = json_last_error();
-                if (!empty($jsonError)) {
-                    $this->params['form'] = array();
+                $contentType = env('CONTENT_TYPE');
+                $inputData = file_get_contents('php://input');
+                if ($contentType == 'application/x-www-form-urlencoded') {
+                    parse_str($inputData, $this->params['form']);
+                } else {
+                    $this->params['form'] = json_decode($inputData, true);
+                    $jsonError = json_last_error();
+                    if (!empty($jsonError)) {
+                        $this->params['form'] = array();
+                    }
                 }
             } catch(Exception $ex) {
                 $this->params['form'] = array();
+            }
+            // set self::data
+            if (!empty($this->params['form']['data'])) {
+                $this->data = $this->params['form']['data'];
+                unset($this->params['form']['data']);
             }
         }
     }
@@ -302,8 +314,8 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
-        if ($this->requestMethod == 'post') {
-            $this->handlePOST();
+        if ($this->requestMethod == 'post' || $this->requestMethod == 'put') {
+            $this->handleInputData();
         } elseif ($this->requestMethod == 'options' || $this->requestMethod == 'head') {
             $this->_stop();
         }
@@ -503,10 +515,9 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaUnauthorizedException();
         }
 
-        if (empty($this->data) && empty($this->params['form']['data'])) {
+        if (empty($this->data)) {
             throw new BeditaBadRequestException('Missing data to save');
         }
-        $this->data = !empty($this->data) ? $this->data : $this->params['form']['data'];
 
         // save object
         if (empty($name)) {
@@ -545,6 +556,27 @@ abstract class ApiBaseController extends FrontendController {
             call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
             $this->Transaction->commit();
         }
+    }
+
+    /**
+     * PUT /objects/:id
+     *
+     * @see self:objects() for param description
+     * @param int|string $name
+     * @param string $filterType
+     * @param string $filterValue
+     * @return void
+     */
+    protected function putObjects($name = null, $filterType = null, $filterValue = null) {
+        if (empty($name)) {
+            throw new BeditaMethodNotAllowedException('Unsupported endpoint for PUT request. It should be /objects/:id');
+        }
+        $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+        if (!empty($this->data['id']) && $this->data['id'] != $id) {
+            throw new BeditaBadRequestException();
+        }
+        $this->data['id'] = $id;
+        $this->postObjects();
     }
 
     /**
