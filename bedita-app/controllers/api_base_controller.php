@@ -98,23 +98,6 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
-     * Set to true to leave response body empty
-     * Default is false and response body will be built as
-     * ```
-     * {
-     *     "api": "...",
-     *     "data": {},
-     *     "method": "...",
-     *     "params": [],
-     *     "url": "..."
-     * }
-     * ```
-     *
-     * @var boolean
-     */
-    protected $emptyResponseBody = false;
-
-    /**
      * Pagination options used to paginate objects
      * Default values are
      *
@@ -718,7 +701,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->ResponseHandler->sendStatus(201);
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
         }
-        $this->emptyResponseBody = true;
+        $this->emptyResponse();
     }
 
     /**
@@ -1068,8 +1051,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function deleteAuth($refreshToken) {
         if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
-           $this->ResponseHandler->sendStatus(204);
-           $this->emptyResponseBody = true;
+           $this->emptyResponse(204);
         } else {
             throw new BeditaInternalErrorException();
         }
@@ -1077,21 +1059,31 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Build response data for client
-     * If self::emptyResponseBody is set to true stop all
      *
      * @param boolean $setBase should set generic api response info
      * @return void
      */
     protected function response($setBase = true) {
-        if ($this->emptyResponseBody) {
-            $this->_stop();
-        }
         if ($setBase) {
             $this->setBaseResponse();
         }
         ksort($this->responseData);
         $this->set($this->responseData);
         $this->set('_serialize', array_keys($this->responseData));
+    }
+
+    /**
+     * Send an empty response body to client stopping the request flow
+     * Optionally it can send an HTTP status code
+     *
+     * @param int $statusCode a status code to send to client
+     * @return void
+     */
+    protected function emptyResponse($statusCode = null) {
+        if (!empty($statusCode)) {
+            $this->ResponseHandler->sendStatus($statusCode);
+        }
+        $this->_stop();
     }
 
     /**
