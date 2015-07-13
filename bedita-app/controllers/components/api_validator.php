@@ -209,9 +209,15 @@ class ApiValidatorComponent extends Object {
         $isOnTree = $tree->isOnTree($objectId, $publication['id'], $this->controller->getStatus());
         // check position on tree and permission
         if ($checkPermissions) {
+            // first check permission on object itself
+            if (!$this->isObjectAccessible($objectId, false)) {
+                return false;
+            }
+            // check if it's on tree and also its parents are accessible
             if ($isOnTree && $this->isObjectAccessible($objectId)) {
                 return true;
             }
+            // if not, check if at least a related object is accessible
             if ($this->hasRelatedObjectsAccessible($objectId)) {
                 return true;
             }
@@ -255,22 +261,30 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
-     * Return true if $objectId and its parents are accessible for authorized user, false otherwise.
+     * Return true if $objectId is accessible for authorized user, false otherwise.
      * 'Accessible' means without 'frontend_access_with_block' permission set for groups that the user doesn't belong.
+     * When $parentsCheck is true permission on them is also checked
      * If object hasn't parents is not accessible
      *
      * @param int $objectId the object id
+     * @param boolean $parentsCheck if parents must be checked (default true)
      * @return boolean
      */
-    public function isObjectAccessible($objectId) {
+    public function isObjectAccessible($objectId, $parentsCheck = true) {
         $permission = ClassRegistry::init('Permission');
+        $user = $this->controller->BeAuthJwt->getUser();
+        if (!$parentsCheck) {
+            // if object itself is forbidden to user return false without any other check
+            $access = $permission->frontendAccess($objectId, $user);
+            return $access != 'denied';
+        }
         $publication = $this->controller->getPublication();
         return $permission->isObjectsAndParentsAccessible($objectId,
                     array(
                        'status' => $this->controller->getStatus(),
                        'area_id' => $publication['id']
                     ),
-                    $this->controller->BeAuthJwt->getUser()
+                    $user
                 );
     }
 

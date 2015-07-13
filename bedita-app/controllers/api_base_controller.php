@@ -580,6 +580,30 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * DELETE /objects/:id
+     *
+     * @see self:objects() for param description
+     * @param int|string $name
+     * @param string $filterType
+     * @param string $filterValue
+     * @return void
+     */
+    protected function deleteObjects($name = null, $filterType = null, $filterValue = null) {
+        if (empty($name)) {
+            throw new BeditaMethodNotAllowedException('Unsupported endpoint for DELETE request. It should be /objects/:id');
+        }
+        if (!empty($this->params['form']) || !empty($this->data)) {
+            throw new BeditaBadRequestException('DELETE do not support input data');
+        }
+        $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+        $this->ApiValidator->checkObjectReachable($id);
+        $modelName = $this->BEObject->getType($id);
+        $this->data['id'] = $id;
+        parent::deleteObjects($modelName);
+        $this->emptyResponse(204);
+    }
+
+    /**
      * Override AppController::saveObject()
      *
      * - set default $options different from AppController::saveObject()
