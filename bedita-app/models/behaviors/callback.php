@@ -26,6 +26,10 @@
  * `MyModelSomethingCallbackBehavior` (where `Something` can be replaced with anything you want)
  * will be automatically attached to `MyModel`'s events.
  *
+ * You can also attach a callback behavior to *all* object type using the `BEObject` reserved name:
+ * for instance, you might create a `BEObjectSomethingCallbackBehavior` to attach callback operations
+ * to every core and plugin object type at once.
+ *
  * If this behavior is attached with configuration key `callbackManager` explicitely set to false,
  * callbacks behaviors will be attached using CakePHP's built in associations.
  * Otherwise, public callback behaviors' methods will be treated as listeners for corresponding events,
@@ -120,7 +124,8 @@ class CallbackBehavior extends ModelBehavior {
         $this->config[$model->alias] = array_merge($this->stdConfig, $config);
 
         // Filter behaviors by their name, and attach them to model.
-        $behaviors = preg_grep("/^{$model->alias}\w+Callback$/", $this->behaviors());
+        // #723 - Use `BEObject` as a reserved name for wildcard callbacks.
+        $behaviors = preg_grep("/^(?:BEObject|{$model->alias})\w+Callback$/", $this->behaviors());
         foreach ($behaviors as $beh) {
             if ($this->config[$model->alias]['callbackManager']) {
                 // Attach listeners using callback manager.

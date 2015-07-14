@@ -442,8 +442,8 @@ class BEObject extends BEAppModel {
 
                         // Update related models.
                         $this->data = array();
-                        $title = isset($val['title']) ? $val['title'] : '';
-                        $description = isset($val['description']) ? $val['description'] : '';
+                        $title = isset($val['title']) ? $val['title'] : null;
+                        $description = isset($val['description']) ? $val['description'] : null;
                         if ($switch == 'link') {
                             ClassRegistry::init('Link')->save(array(
                                 'id' => $obj_id,
@@ -613,8 +613,8 @@ class BEObject extends BEAppModel {
      * Update title and description only.
      *
      * @param int $id
-     * @param string $title
-     * @param string $description
+     * @param string|null $title
+     * @param string|null $description
      * @return bool
      **/
     public function updateTitleDescription($id, $title, $description) {
@@ -625,11 +625,16 @@ class BEObject extends BEAppModel {
         $model = Configure::read('objectTypes.' . $this->findObjectTypeId($id) . '.model');
         $reg = ClassRegistry::getInstance();
         $reg->removeObject($model);  // #292 - Avoid loop in some cases, if related object is of the same model as the parent.
-        return $reg->init($model)->save(array(
+
+        // #722 - Avoid emptying title or description if field not submitted.
+        $data = array(
             'id' => $id,
             'title' => $title,
             'description' => $description,
-        ));
+        );
+        return $reg->init($model)->save(array_filter($data, function ($val) {
+            return !is_null($val);
+        }));
     }
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
