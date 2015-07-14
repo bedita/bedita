@@ -1799,7 +1799,11 @@ abstract class FrontendController extends AppController {
 			} else {
 				$content_id = $this->BEObject->getIdFromNickname($contentName);
 			}
-			$contentType = $this->BEObject->getType($content_id);
+			try {
+				$contentType = $this->BEObject->getType($content_id);
+			} catch (BeditaException $ex) {
+				throw new BeditaNotFoundException($ex->getMessage());
+			}
 			if ($contentType === "Section") {
 				$args = func_get_args();
 				array_shift($args);
