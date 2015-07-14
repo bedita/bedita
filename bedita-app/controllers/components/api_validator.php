@@ -382,6 +382,44 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
+     * Check if an array of (possible) children is valid for a parent id
+     *
+     * The $children array has to be in the form
+     * ```
+     * array(
+     *     array(
+     *         'child_id' => 1,
+     *         'priority' => 1
+     *     ),
+     *     array(...)
+     * )
+     * ```
+     *
+     * @throws BeditaBadRequesException
+     * @param array $children array of chidlren data
+     * @param int $parentId the parent object id
+     * @return void
+     */
+    public function checkChildren(array $children, $parentId) {
+        $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($parentId);
+        $objectType = Configure::read('objectTypes.' . $objectTypeId . '.name');
+        if ($objectType != 'section' && $objectType != 'area') {
+            throw new BeditaBadRequestException($objectType . ' can not have children');
+        }
+        foreach ($children as $key => $child) {
+            if (empty($child['child_id']) || !is_int($child['child_id'])) {
+                throw new BeditaBadRequestException('Missing child_id in children data or it is not an integer');
+            }
+            if (array_key_exists('priority', $child) && !is_int($child['priority'])) {
+                throw new BeditaBadRequestException('priority in children has to be an integer');
+            }
+            if (!$this->isObjectReachable($child['child_id'])) {
+                throw new BeditaBadRequestException($child['child_id'] . ' can not be children of ' . $parentId);
+            }
+        }
+    }
+
+    /**
      * Check if an array of category names is valid for an object type id
      *
      * @throws BeditaBadRequesException

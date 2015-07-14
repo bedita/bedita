@@ -691,6 +691,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function postObjectRelations($objectId, $relationName) {
+        if (func_num_args() > 2) {
+            throw new BeditaBadRequestException();
+        }
         $objectTypeId = $this->BEObject->findObjectTypeId($objectId);
         $this->data = isset($this->data[0]) ? $this->data : array($this->data);
         $this->ApiValidator->checkRelations(
@@ -749,6 +752,72 @@ abstract class ApiBaseController extends FrontendController {
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
         }
         $this->emptyResponse();
+    }
+
+    /**
+     * Save (insert or update) children ($this->data) of $objectId
+     *
+     * If you want to save only one child $this->data should be
+     * ```
+     * array(
+     *     'child_id' => 10,
+     *     'priority' => 1
+     * )
+     * ```
+     *
+     * If you want to save children $this->data should be
+     * ```
+     * array(
+     *     array(
+     *         'child_id' => 10,
+     *         'priority' => 1
+     *     ),
+     *     array(...)
+     * )
+     * ```
+     *
+     * @see ApiValidatorComponent::checkChildren() to see the right format
+     * @param int $objectId the object id
+     * @return void
+     */
+    protected function postObjectChildren($objectId) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+        $this->data = isset($this->data[0]) ? $this->data : array($this->data);
+        $this->ApiValidator->checkChildren($this->data, $objectId);
+        // append children
+        $this->Transaction->begin();
+        $tree = ClassRegistry::init('Tree');
+        $created = false;
+        foreach ($this->data as $key => $child) {
+            $row = $tree->find('first', array(
+                'conditions' => array(
+                    'parent_id' => $objectId,
+                    'id' => $child['child_id']
+                )
+            ));
+            // append child (insert)
+            if (empty($row)) {
+                if (!$tree->appendChild($child['child_id'], $objectId)) {
+                    throw new BeditaInternalErrorException('Error appending ' . $child['child_id'] . ' to ' . $objectId);
+                }
+                $created = true;
+            // update priority if any and different from current value
+            } elseif (!empty($child['priority']) && $child['priority'] != $row['Tree']['priority']) {
+                $row['Tree']['priority'] = $child['priority'];
+                if (!$tree->save($row)) {
+                    throw new BeditaInternalErrorException('Error updating priority ' . $priority . ' for child ' . $child['child_id']);
+                }
+            }
+        }
+        $this->Transaction->commit();
+        $status = null;
+        if ($created) {
+            $status = 201;
+            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/children');
+        }
+        $this->emptyResponse($status);
     }
 
     /**
