@@ -55,10 +55,19 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Allowed model bindings
+     * Used to get more or less fields and associations through GET /objects param 'binding'
+     * By default no one is permit but it is overridable in ApiController
+     *
+     * Example:
+     *```
+     * protected $allowedModelBindings = array('default', 'frontend', 'minimum');
+     * ```
+     *
+     * and call GET /objects/:name?binding=minimum
      *
      * @var array
      */
-    protected $allowedModelBindings = array('default', 'frontend', 'minimum');
+    protected $allowedModelBindings = array();
 
     /**
      * Other endpoints specified in the frontend app
