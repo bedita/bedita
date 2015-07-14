@@ -107,6 +107,15 @@ abstract class ApiBaseController extends FrontendController {
     protected $responseData = array();
 
     /**
+     * If response has to be built automatically at the end of the action
+     *
+     * @see self::response() set autoResponse to false
+     * @see self::route() if autoResponse is true call self::response()
+     * @var boolean
+     */
+    protected $autoResponse = true;
+
+    /**
      * Pagination options used to paginate objects
      * Default values are
      *
@@ -405,9 +414,12 @@ abstract class ApiBaseController extends FrontendController {
             }
         } else {
             $this->baseUrlResponse();
-            return $this->response(false);
+            return $this->response(array('setBase' => false));
         }
-        $this->response();
+
+        if ($this->autoResponse) {
+            $this->response();
+        }
     }
 
     /**
@@ -561,9 +573,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->ApiValidator->checkObjectReachable($id);
             $args = func_get_args();
             $args[0] = $id;
-            $this->Transaction->begin();
             call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
-            $this->Transaction->commit();
         }
     }
 
@@ -692,6 +702,7 @@ abstract class ApiBaseController extends FrontendController {
         $objectRelation = ClassRegistry::init('ObjectRelation');
         $inverseName = $objectRelation->inverseOf($relationName);
         $created = false;
+        $this->Transaction->begin();
         foreach ($this->data as $relData) {
             if (!$isInverse) {
                 $id = $objectId;
@@ -714,7 +725,7 @@ abstract class ApiBaseController extends FrontendController {
                 $created = true;
             // update
             } else {
-                // update direct relation
+                // update direct (params and priority) and inverse (only params) relation
                 $set = array();
                 if (array_key_exists('params', $relData)) {
                     $set['params']  = $relData['params'];
@@ -722,14 +733,17 @@ abstract class ApiBaseController extends FrontendController {
                 if (array_key_exists('priority', $relData)) {
                     $set['priority'] = $relData['priority'];
                 }
-                $result = $objectRelation->updateRelation($objectId, $relData['related_id'], $relationName, $set);
-                if ($result === false) {
-                    throw new BeditaInternalErrorException(
-                        'Error updating relation ' . $relationName . ' between ' . $objectId . ' and ' . $relData['related_id']
-                    );
+                if (array_key_exists('params', $set) || array_key_exists('priority', $set)) {
+                    $result = $objectRelation->updateRelation($objectId, $relData['related_id'], $relationName, $set);
+                    if ($result === false) {
+                        throw new BeditaInternalErrorException(
+                            'Error updating relation ' . $relationName . ' between ' . $objectId . ' and ' . $relData['related_id']
+                        );
+                    }
                 }
             }
         }
+        $this->Transaction->commit();
         if ($created) {
             $this->ResponseHandler->sendStatus(201);
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
@@ -1092,31 +1106,51 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Build response data for client
+     * $options array permits to customize the response.
+     * Possible values are:
+     * - 'emptyBody' true to send empty body to client (default false)
+     * - 'statusCode' the HTTP status code you want to send to client
+     * - 'setBase' false to avoid to set base response metadata (default true)
      *
-     * @param boolean $setBase should set generic api response info
+     * self::autoResponse is set to false
+     *
+     * @param array $options should set generic api response info
      * @return void
      */
-    protected function response($setBase = true) {
-        if ($setBase) {
-            $this->setBaseResponse();
+    protected function response(array $options = array()) {
+        $options += array(
+            'emptyBody' => false,
+            'statusCode' => null,
+            'setBase' => true
+        );
+        $this->autoResponse = false;
+        if ($options['statusCode'] && is_int($options['statusCode'])) {
+            $this->ResponseHandler->sendStatus($options['statusCode']);
         }
-        ksort($this->responseData);
-        $this->set($this->responseData);
-        $this->set('_serialize', array_keys($this->responseData));
+        if ($options['emptyBody']) {
+            $this->set('_serialize', null);
+        } else {
+            if ($options['setBase']) {
+                $this->setBaseResponse();
+            }
+            ksort($this->responseData);
+            $this->set($this->responseData);
+            $this->set('_serialize', array_keys($this->responseData));
+        }
     }
 
     /**
-     * Send an empty response body to client stopping the request flow
+     * Send an empty response body to client
      * Optionally it can send an HTTP status code
      *
      * @param int $statusCode a status code to send to client
      * @return void
      */
     protected function emptyResponse($statusCode = null) {
-        if (!empty($statusCode)) {
-            $this->ResponseHandler->sendStatus($statusCode);
-        }
-        $this->_stop();
+        $this->response(array(
+            'statusCode' => $statusCode,
+            'emptyBody' => true
+        ));
     }
 
     /**
