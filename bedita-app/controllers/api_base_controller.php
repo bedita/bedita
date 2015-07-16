@@ -454,7 +454,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * objects endpoint method
+     * GET /objects
      *
      * If $name is passed try to load an object with that id or nickname
      *
@@ -463,7 +463,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $filterValue define a value for $filterType
      * @return void
      */
-    protected function objects($name = null, $filterType = null, $filterValue = null) {
+    protected function getObjects($name = null, $filterType = null, $filterValue = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $this->ApiValidator->checkObjectReachable($id);
@@ -506,16 +506,15 @@ abstract class ApiBaseController extends FrontendController {
      * @see self:objects() for param description
      * @param int $id
      * @param string $filterType
-     * @param string $filterValue
      * @return void
      */
-    private function routeObjectsFilterType($id, $filterType, $filterValue = null) {
+    private function routeObjectsFilterType($id, $filterType) {
         $allowedFilterTypes = $this->allowedObjectsFilter[$this->requestMethod];
         if (!in_array($filterType, $allowedFilterTypes)) {
             $allowedFilter = implode(', ', $allowedFilterTypes);
             throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
         }
-        $method = $this->requestMethod . 'Object' . Inflector::camelize($filterType);
+        $method = $this->requestMethod . 'Objects' . Inflector::camelize($filterType);
         $args = func_get_args();
         unset($args[1]);
         return call_user_func_array(array($this, $method), $args);
@@ -531,8 +530,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function postObjects($name = null, $filterType = null, $filterValue = null) {
-        $user = $this->BeAuthJwt->identify();
-        if (!$user) {
+        if (!$this->BeAuthJwt->identify()) {
             throw new BeditaUnauthorizedException();
         }
 
@@ -567,7 +565,7 @@ abstract class ApiBaseController extends FrontendController {
             }
         } else {
             if (func_num_args() == 1) {
-                throw new BeditaBadRequestException();
+                throw new BeditaMethodNotAllowedException('POST /objects/:id is not supported');
             }
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $this->ApiValidator->checkObjectReachable($id);
@@ -587,6 +585,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function putObjects($name = null, $filterType = null, $filterValue = null) {
+        if (!$this->BeAuthJwt->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
         if (empty($name)) {
             throw new BeditaMethodNotAllowedException('Unsupported endpoint for PUT request. It should be /objects/:id');
         }
@@ -608,6 +609,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function deleteObjects($name = null, $filterType = null, $filterValue = null) {
+        if (!$this->BeAuthJwt->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
         if (empty($name)) {
             throw new BeditaMethodNotAllowedException('Unsupported endpoint for DELETE request. It should be /objects/:id');
         }
@@ -690,7 +694,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $relationName the relation name (direct or inverse)
      * @return void
      */
-    protected function postObjectRelations($objectId, $relationName) {
+    protected function postObjectsRelations($objectId, $relationName) {
         if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }
@@ -780,7 +784,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $objectId the object id
      * @return void
      */
-    protected function postObjectChildren($objectId) {
+    protected function postObjectsChildren($objectId) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -896,7 +900,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectChildren($id) {
+    protected function getObjectsChildren($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -909,7 +913,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectSections($id) {
+    protected function getObjectsSections($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -927,7 +931,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectContents($id) {
+    protected function getObjectsContents($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -947,7 +951,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectDescendants($id) {
+    protected function getObjectsDescendants($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -962,7 +966,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectSiblings($id) {
+    protected function getObjectsSiblings($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
@@ -983,7 +987,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param string $relation the relation name
      * @return void
      */
-    protected function getObjectRelations($id, $relation = '') {
+    protected function getObjectsRelations($id, $relation = '') {
         if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }
