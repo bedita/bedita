@@ -27,14 +27,14 @@ class ObjectRelation extends BEAppModel
 {
 
     public function afterFind($results) {
-        if (!empty($results[0]['RelatedObject'])) {
+        if (!empty($results[0][$this->alias])) {
             foreach ($results as &$r) {
-                if (!empty($r['RelatedObject']['params'])) {
-                    $params = json_decode($r['RelatedObject']['params'], true);
+                if (!empty($r[$this->alias]['params'])) {
+                    $params = json_decode($r[$this->alias]['params'], true);
                     if(!empty($params) && is_array($params)) {
-                        $r['RelatedObject']['params'] = $params;
+                        $r[$this->alias]['params'] = $params;
                     } else {
-                        unset($r['RelatedObject']['params']);
+                        unset($r[$this->alias]['params']);
                     }
                 }
             }
