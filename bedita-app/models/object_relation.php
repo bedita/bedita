@@ -143,6 +143,43 @@ class ObjectRelation extends BEAppModel
 	}
 
     /**
+     * Delete relations
+     * If $objectId is defined remove relations between $id and $objectId else remove all relations of $id
+     * If $switch is defined remove relation $switch and its inverse
+     *
+     * @param int $id
+     * @param int $objectId
+     * @param string $switch
+     * @param bool $bidirectional
+     * @return bool
+     */
+    public function deleteRelationAndInverse($id, $objectId = null, $switch = null) {
+        // #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
+        $id = Sanitize::escape($id);
+        $q = "DELETE FROM object_relations WHERE id={$id}";
+        $qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
+        if ($objectId !== null) {
+            $objectId = Sanitize::escape($objectId);
+            $q .= " AND object_id={$objectId}";
+            $qReverse .= " AND id={$objectId}";
+        }
+        if ($switch !== null) {
+            $switch = Sanitize::escape($switch);
+            $inverseSwitch = $this->inverseOf($switch);
+            if (empty($inverseSwitch)) {
+                return false;
+            }
+            $q .= " AND switch='{$switch}'";
+            $qReverse .= " AND switch='{$inverseSwitch}'";
+        }
+        $res = $this->query($q);
+        if ($res === false) {
+            return $res;
+        }
+        return $this->query($qReverse);
+    }
+
+    /**
      * delete a specific relation to an object
      *
      * @param int $id - object id

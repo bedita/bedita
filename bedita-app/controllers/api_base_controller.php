@@ -854,6 +854,34 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Delete a relation named $relation between $objectId and $relatedId
+     *
+     * @param int $objectId the object id
+     * @param string $relation the relation name
+     * @param int $relatedId the related id
+     * @return void
+     */
+    protected function deleteObjectsRelations($objectId, $relation, $relatedId) {
+        if (func_num_args() != 3) {
+            throw new BeditaBadRequestException();
+        }
+        $this->ApiValidator->checkPositiveInteger($relatedId, true);
+        $objectTypeId = $this->BEObject->findObjectTypeId($objectId);
+        if (!$this->ApiValidator->isRelationValid($relation, $objectTypeId)) {
+            throw new BeditaBadRequestException($relation . ' is not valid for object id ' . $objectId);
+        }
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        $exists = $objectRelation->relationExists($objectId, $relatedId, $relation);
+        if (!$exists) {
+            throw new BeditaNotFoundException('Relation ' . $relation . ' between ' . $objectId . ' and ' . $relatedId . ' not found');
+        }
+        if (!$objectRelation->deleteRelationAndInverse($objectId, $relatedId, $relation)) {
+            throw new BeditaInternalErrorException();
+        }
+        $this->emptyResponse();
+    }
+
+    /**
      * Delete from trees object $childId with $parentId as parent
      *
      * @param int $parentId the object parent id
@@ -861,11 +889,11 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function deleteObjectsChildren($parentId, $childId) {
-        if (func_num_args() > 2) {
+        if (func_num_args() != 2) {
             throw new BeditaBadRequestException();
         }
         $this->ApiValidator->checkPositiveInteger($childId, true);
-        $this->ApiValidator->checkObjectReachable($childId);
+        $this->ApiValidator->checkObjectAccess($childId);
         $tree = ClassRegistry::init('Tree');
         $count = $tree->find('count', array(
             'conditions' => array(
