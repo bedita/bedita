@@ -587,18 +587,19 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function putObjects($name = null, $filterType = null) {
-        if (!$this->BeAuthJwt->identify()) {
-            throw new BeditaUnauthorizedException();
-        }
-        if (empty($name)) {
-            throw new BeditaMethodNotAllowedException('Unsupported endpoint for PUT request. It should be /objects/:id');
-        }
-        $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-        if (!empty($this->data['id']) && $this->data['id'] != $id) {
-            throw new BeditaBadRequestException();
-        }
-        $this->data['id'] = $id;
-        $this->postObjects();
+        throw new BeditaMethodNotAllowedException();
+        // if (!$this->BeAuthJwt->identify()) {
+        //     throw new BeditaUnauthorizedException();
+        // }
+        // if (empty($name)) {
+        //     throw new BeditaMethodNotAllowedException('Unsupported endpoint for PUT request. It should be /objects/:id');
+        // }
+        // $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+        // if (!empty($this->data['id']) && $this->data['id'] != $id) {
+        //     throw new BeditaBadRequestException();
+        // }
+        // $this->data['id'] = $id;
+        // $this->postObjects();
     }
 
     /**
