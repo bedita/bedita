@@ -796,7 +796,8 @@ abstract class ApiBaseController extends FrontendController {
             ));
             // append child (insert)
             if (empty($row)) {
-                if (!$tree->appendChild($child['child_id'], $objectId)) {
+                $priority = !empty($child['priority']) ? $child['priority'] : null;
+                if (!$tree->appendChild($child['child_id'], $objectId, $priority)) {
                     throw new BeditaInternalErrorException('Error appending ' . $child['child_id'] . ' to ' . $objectId);
                 }
                 $created = true;

@@ -216,9 +216,10 @@ class Tree extends BEAppModel
 	 *
 	 * @param int $id object id
 	 * @param int $idParent parent object id
+     * @param int $priority if not passed append as last child else use passed position
 	 * @return boolean
 	 */
-	public function appendChild($id, $idParent = null) {
+	public function appendChild($id, $idParent = null, $priority = null) {
 		// avoid to append item to itself
 		if ($id == $idParent) {
 			return false;
@@ -235,8 +236,10 @@ class Tree extends BEAppModel
 		} else {
 			$parentPath = $this->field("object_path", array("id" => $idParent));
 			$area_id = $this->getAreaIdByPath($parentPath);
-			$maxPriority = $this->field("priority", array("parent_id" => $idParent), "priority DESC");
-			$maxPriority = (!empty($maxPriority))? $maxPriority + 1 : 1;
+            if (empty($priority)) {
+    			$maxPriority = $this->field("priority", array("parent_id" => $idParent), "priority DESC");
+    			$priority = (!empty($maxPriority))? $maxPriority + 1 : 1;
+            }
 
 			$data["Tree"] = array(
 				"id" => $id,
@@ -244,7 +247,7 @@ class Tree extends BEAppModel
 				"parent_id" => $idParent,
 				"object_path" => $parentPath . "/".$id,
 				"parent_path" => $parentPath,
-				"priority" => $maxPriority
+				"priority" => $priority
 			);
 		}
 
