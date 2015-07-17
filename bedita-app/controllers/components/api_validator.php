@@ -359,6 +359,7 @@ class ApiValidatorComponent extends Object {
         if (is_numeric($objectType)) {
             $objectType = Configure::read('objectTypes.' . $objectType . '.name');
         }
+        $objectRelation = ClassRegistry::init('ObjectRelation');
         foreach ($relations as $name => $data) {
             if ($objectType) {
                 if (!$this->isRelationValid($name, $objectType)) {
@@ -366,18 +367,43 @@ class ApiValidatorComponent extends Object {
                 }
             }
 
+            $inverseName = $objectRelation->inverseOf($name);
             foreach ($data as $relData) {
                 if (empty($relData['related_id'])) {
                     throw new BeditaBadRequestException('Missing related_id in relation data');
                 }
+                $this->checkPositiveInteger($relData['related_id']);
                 $relatedObjectType = $beObject->findObjectTypeId($relData['related_id']);
-                if (!$this->isRelationValid($name, $relatedObjectType)) {
+                if (!$this->isRelationValid($inverseName, $relatedObjectType)) {
                     throw new BeditaBadRequestException('Invalid relation: ' . $name . ' for object type ' . $relatedObjectType);
                 }
                 if (!$this->isObjectReachable($relData['related_id'])) {
                     throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
                 }
             }
+        }
+    }
+
+    /**
+     * Return true if $test is a positive integer, false otherwise
+     *
+     * @param mixed $test the type to test
+     * @return boolean
+     */
+    public function isPositiveInteger($test) {
+        return is_int($test) && $test > 0;
+    }
+
+    /**
+     * Check if $num is a positive integer
+     *
+     * @throws BeditaBadRequestException
+     * @param mixed $test the type to test
+     * @return void
+     */
+    public function checkPositiveInteger($test) {
+        if (!$this->isPositiveInteger($test)) {
+            throw new BeditaBadRequestException($test . ' must be a positive integer, ' . gettype($test) . ' is given');
         }
     }
 
@@ -407,11 +433,12 @@ class ApiValidatorComponent extends Object {
             throw new BeditaBadRequestException($objectType . ' can not have children');
         }
         foreach ($children as $key => $child) {
-            if (empty($child['child_id']) || !is_int($child['child_id'])) {
-                throw new BeditaBadRequestException('Missing child_id in children data or it is not an integer');
+            if (empty($child['child_id'])) {
+                throw new BeditaBadRequestException('Missing child_id in children data');
             }
-            if (array_key_exists('priority', $child) && !is_int($child['priority'])) {
-                throw new BeditaBadRequestException('priority in children has to be an integer');
+            $this->checkPositiveInteger($child['child_id']);
+            if (array_key_exists('priority', $child)) {
+                $this->checkPositiveInteger($child['priority']);
             }
             if (!$this->isObjectReachable($child['child_id'])) {
                 throw new BeditaBadRequestException($child['child_id'] . ' can not be children of ' . $parentId);

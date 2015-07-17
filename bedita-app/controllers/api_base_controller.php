@@ -697,23 +697,15 @@ abstract class ApiBaseController extends FrontendController {
             array($relationName => $this->data),
             $objectTypeId
         );
-        $relations = BeLib::getObject('BeConfigure')->mergeAllRelations();
-        $isInverse = !empty($relations[$relationName]) ? false : true;
         $objectRelation = ClassRegistry::init('ObjectRelation');
         $inverseName = $objectRelation->inverseOf($relationName);
         $created = false;
+        $responseData = array();
         $this->Transaction->begin();
         foreach ($this->data as $relData) {
-            if (!$isInverse) {
-                $id = $objectId;
-                $relatedId = $relData['related_id'];
-            } else {
-                $id = $relData['related_id'];
-                $relatedId = $objectId;
-            }
             $params = isset($relData['params']) ? $relData['params'] : array();
             $priority = isset($relData['priority']) ? $relData['priority'] : null;
-            $exists = $objectRelation->relationExists($id, $relatedId, $relationName);
+            $exists = $objectRelation->relationExists($objectId, $relData['related_id'], $relationName);
             // create
             if (!$exists) {
                 $result = $objectRelation->createRelationAndInverse($objectId, $relData['related_id'], $relationName, $inverseName, $priority, $params);
@@ -742,13 +734,35 @@ abstract class ApiBaseController extends FrontendController {
                     }
                 }
             }
+
+            // get added/updated relations to build response for client
+            $result = $objectRelation->find('first', array(
+                'conditions' => array(
+                    'id' => $objectId,
+                    'object_id' => $relData['related_id'],
+                    'switch' => $relationName
+                )
+            ));
+            if (empty($result)) {
+                throw new BeditaInternalErrorException(
+                    'Error fetching relation ' . $relationName . ' between ' . $objectId . ' and ' . $relData['related_id']
+                );
+            }
+            $d = array(
+                'related_id' => (int) $result['ObjectRelation']['object_id'],
+                'priority' => (int) $result['ObjectRelation']['priority']
+            );
+            if (!empty($result['ObjectRelation']['params'])) {
+                $d['params'] = $result['ObjectRelation']['params'];
+            }
+            $responseData[] = $d;
         }
         $this->Transaction->commit();
         if ($created) {
             $this->ResponseHandler->sendStatus(201);
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/relations/' . $relationName);
         }
-        $this->emptyResponse();
+        $this->setData($responseData);
     }
 
     /**
@@ -787,6 +801,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->Transaction->begin();
         $tree = ClassRegistry::init('Tree');
         $created = false;
+        $responseData = array();
         foreach ($this->data as $key => $child) {
             $row = $tree->find('first', array(
                 'conditions' => array(
@@ -808,14 +823,20 @@ abstract class ApiBaseController extends FrontendController {
                     throw new BeditaInternalErrorException('Error updating priority ' . $priority . ' for child ' . $child['child_id']);
                 }
             }
+
+            $d = array('child_id' => $child['child_id']);
+            // get current priority to prepare response
+            $d['priority'] = empty($child['priority']) ? $tree->getPriority($child['child_id'], $objectId) : $child['priority'];
+            $d['priority'] = (int) $d['priority'];
+            $responseData[] = $d;
+
         }
         $this->Transaction->commit();
-        $status = null;
         if ($created) {
-            $status = 201;
+            $this->ResponseHandler->sendStatus(201);
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/children');
         }
-        $this->emptyResponse($status);
+        $this->setData($responseData);
     }
 
     /**
