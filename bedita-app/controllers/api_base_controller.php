@@ -893,6 +893,10 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException();
         }
         $this->ApiValidator->checkPositiveInteger($childId, true);
+        $objectTypeId = $this->BEObject->findObjectTypeId($childId);
+        if ($objectTypeId == Configure::read('objectTypes.section.id')) {
+            throw new BeditaBadRequestException('Section ' .$childId . ' can not be removed from parents');
+        }
         $this->ApiValidator->checkObjectAccess($childId);
         $tree = ClassRegistry::init('Tree');
         $count = $tree->find('count', array(
