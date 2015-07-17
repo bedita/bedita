@@ -185,7 +185,7 @@ class ApiValidatorComponent extends Object {
         if (!$this->isObjectReachable($objectId)) {
             // redo without checking permissions to know if it has to return 404
             if (!$this->isObjectReachable($objectId, false)) {
-                throw new BeditaNotFoundException();
+                throw new BeditaNotFoundException('Object ' . $objectId . ' not found');
             }
             if (!$this->controller->BeAuth->identify()) {
                 throw new BeditaUnauthorizedException();
@@ -399,9 +399,17 @@ class ApiValidatorComponent extends Object {
      *
      * @throws BeditaBadRequestException
      * @param mixed $test the type to test
+     * @param boolean $cast set to true to trying to cast $test to int before check it
      * @return void
      */
-    public function checkPositiveInteger($test) {
+    public function checkPositiveInteger($test, $cast = false) {
+        if ($cast) {
+            $casted = (int) $test;
+            if (!is_numeric($test) || $casted != $test) {
+                throw new BeditaBadRequestException($test . ' must be an integer');
+            }
+            $test = $casted;
+        }
         if (!$this->isPositiveInteger($test)) {
             throw new BeditaBadRequestException($test . ' must be a positive integer, ' . gettype($test) . ' is given');
         }

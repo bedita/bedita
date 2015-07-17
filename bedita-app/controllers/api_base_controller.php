@@ -193,6 +193,10 @@ abstract class ApiBaseController extends FrontendController {
         'post' => array(
             'relations',
             'children'
+        ),
+        'delete' => array(
+            'relations',
+            'children'
         )
     );
 
@@ -508,6 +512,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     private function routeObjectsFilterType($id, $filterType) {
+        if (empty($this->allowedObjectsFilter[$this->requestMethod])) {
+            throw new BeditaMethodNotAllowedException();
+        }
         $allowedFilterTypes = $this->allowedObjectsFilter[$this->requestMethod];
         if (!in_array($filterType, $allowedFilterTypes)) {
             $allowedFilter = implode(', ', $allowedFilterTypes);
@@ -620,7 +627,9 @@ abstract class ApiBaseController extends FrontendController {
             parent::deleteObjects($modelName);
             $this->emptyResponse();
         } else {
-
+            $args = func_get_args();
+            $args[0] = $id;
+            call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
         }
     }
 
@@ -845,6 +854,35 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Delete from trees object $childId with $parentId as parent
+     *
+     * @param int $parentId the object parent id
+     * @param int $childId the object child id
+     * @return void
+     */
+    protected function deleteObjectsChildren($parentId, $childId) {
+        if (func_num_args() > 2) {
+            throw new BeditaBadRequestException();
+        }
+        $this->ApiValidator->checkPositiveInteger($childId, true);
+        $this->ApiValidator->checkObjectReachable($childId);
+        $tree = ClassRegistry::init('Tree');
+        $count = $tree->find('count', array(
+            'conditions' => array(
+                'id' => $childId,
+                'parent_id' => $parentId
+            )
+        ));
+        if (!$count) {
+            throw new BeditaNotFoundException($childId . ' is not child of ' . $parentId);
+        }
+        if (!$tree->removeChild($childId, $parentId)) {
+            throw new BeditaInternalErrorException();
+        }
+        $this->emptyResponse();
+    }
+
+    /**
      * Get children of $parentId object, prepare and set response data
      * The response is automatically paginated using self::paginationOptions
      *
@@ -1040,10 +1078,7 @@ abstract class ApiBaseController extends FrontendController {
                 }
             // relation detail (params and priority)
             } else {
-                $intRelatedId = (int) $relatedId;
-                if (!is_numeric($relatedId) || $intRelatedId != $relatedId) {
-                    throw new BeditaBadRequestException($relatedId . ' must be an integer');
-                }
+                $this->ApiValidator->checkPositiveInteger($relatedId, true);
                 $objectTypeId = $this->BEObject->findObjectTypeId($id);
                 if (!$this->ApiValidator->isRelationValid($relation, $objectTypeId)) {
                     throw new BeditaBadRequestException($relation . ' is not valid for object id ' . $id);
