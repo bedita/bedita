@@ -72,15 +72,17 @@ class MemcacheEngine extends CacheEngine {
 			), $settings)
 		);
 
-		if ($this->settings['compress']) {
-			$this->settings['compress'] = MEMCACHE_COMPRESSED;
-		}
 		if (!is_array($this->settings['servers'])) {
 			$this->settings['servers'] = array($this->settings['servers']);
 		}
 		if (!isset($this->__Memcache)) {
 			$return = false;
 			$this->__Memcache =& new Memcached();
+			if ($this->settings['compress']) {
+			    $this->__Memcache->setOption(Memcached::OPT_COMPRESSION, true);
+		    } else {
+		        $this->__Memcache->setOption(Memcached::OPT_COMPRESSION, false);
+		    }
 			foreach ($this->settings['servers'] as $server) {
 				list($host, $port) = $this->_parseServerString($server);
 				if ($this->__Memcache->addServer($host, $port, $this->settings['persistent'])) {
