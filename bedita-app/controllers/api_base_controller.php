@@ -613,10 +613,15 @@ abstract class ApiBaseController extends FrontendController {
         }
         $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
         $this->ApiValidator->checkObjectReachable($id);
-        $modelName = $this->BEObject->getType($id);
-        $this->data['id'] = $id;
-        parent::deleteObjects($modelName);
-        $this->emptyResponse(204);
+        // delete object
+        if (empty($filterType)) {
+            $modelName = $this->BEObject->getType($id);
+            $this->data['id'] = $id;
+            parent::deleteObjects($modelName);
+            $this->emptyResponse();
+        } else {
+
+        }
     }
 
     /**
@@ -1222,7 +1227,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function deleteAuth($refreshToken) {
         if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
-           $this->emptyResponse(204);
+           $this->emptyResponse();
         } else {
             throw new BeditaInternalErrorException();
         }
@@ -1267,10 +1272,11 @@ abstract class ApiBaseController extends FrontendController {
      * Send an empty response body to client
      * Optionally it can send an HTTP status code
      *
-     * @param int $statusCode a status code to send to client
+     * @param int $statusCode a status code to send to client (default 204 No Content)
+     *                        set it to null or other empty values to avoid to send status code
      * @return void
      */
-    protected function emptyResponse($statusCode = null) {
+    protected function emptyResponse($statusCode = 204) {
         $this->response(array(
             'statusCode' => $statusCode,
             'emptyBody' => true
