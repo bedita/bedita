@@ -459,11 +459,10 @@ abstract class ApiBaseController extends FrontendController {
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter[self::requestMethod]
-     * @param string $filterValue define a value for $filterType
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['get']
      * @return void
      */
-    protected function getObjects($name = null, $filterType = null, $filterValue = null) {
+    protected function getObjects($name = null, $filterType = null) {
         if (!empty($name)) {
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $this->ApiValidator->checkObjectReachable($id);
@@ -523,13 +522,11 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * POST /objects
      *
-     * @see self:objects() for param description
-     * @param int|string $name
-     * @param string $filterType
-     * @param string $filterValue
+     * @param int|string $name the object id or nickname
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['post']
      * @return void
      */
-    protected function postObjects($name = null, $filterType = null, $filterValue = null) {
+    protected function postObjects($name = null, $filterType = null) {
         if (!$this->BeAuthJwt->identify()) {
             throw new BeditaUnauthorizedException();
         }
@@ -578,13 +575,11 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * PUT /objects/:id
      *
-     * @see self:objects() for param description
-     * @param int|string $name
-     * @param string $filterType
-     * @param string $filterValue
+     * @param int|string $name the object id or nickname
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['put']
      * @return void
      */
-    protected function putObjects($name = null, $filterType = null, $filterValue = null) {
+    protected function putObjects($name = null, $filterType = null) {
         if (!$this->BeAuthJwt->identify()) {
             throw new BeditaUnauthorizedException();
         }
@@ -602,13 +597,11 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * DELETE /objects/:id
      *
-     * @see self:objects() for param description
      * @param int|string $name
-     * @param string $filterType
-     * @param string $filterValue
+     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['delete']
      * @return void
      */
-    protected function deleteObjects($name = null, $filterType = null, $filterValue = null) {
+    protected function deleteObjects($name = null, $filterType = null) {
         if (!$this->BeAuthJwt->identify()) {
             throw new BeditaUnauthorizedException();
         }
@@ -985,30 +978,66 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @param int $id the main object id
      * @param string $relation the relation name
+     * @param int $relatedId the related object id
      * @return void
      */
-    protected function getObjectsRelations($id, $relation = '') {
-        if (func_num_args() > 2) {
+    protected function getObjectsRelations($id, $relation = null, $relatedId = null) {
+        if (func_num_args() > 3) {
             throw new BeditaBadRequestException();
         }
         // count relations of object $id
-        if (empty($relation)) {
+        if ($relation === null) {
             $relCount = $this->ApiFormatter->formatRelationsCount(array('id' => $id));
             $this->setData($relCount);
-        // detail of related objects
         } else {
-            $defaultOptions = array('explodeRelations' => false);
-            $options = array_merge($defaultOptions, $this->paginationOptions);
-            $result = $this->loadRelatedObjects($id, $relation, $options);
-            if (empty($result['items'])) {
-                $this->setData();
+            $objectTypeId = $this->BEObject->findObjectTypeId($id);
+            if (!$this->ApiValidator->isRelationValid($relation, $objectTypeId)) {
+                throw new BeditaBadRequestException($relation . ' is not valid for object id ' . $id);
+            }
+
+            // detail of related objects
+            if ($relatedId === null) {
+
+                $defaultOptions = array('explodeRelations' => false);
+                $options = array_merge($defaultOptions, $this->paginationOptions);
+                $result = $this->loadRelatedObjects($id, $relation, $options);
+                if (empty($result['items'])) {
+                    $this->setData();
+                } else {
+                    $objects = $this->ApiFormatter->formatObjects(
+                        $result['items'],
+                        array('countRelations' => true)
+                    );
+                    $this->setData($objects);
+                    $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+                }
+            // relation detail (params and priority)
             } else {
-                $objects = $this->ApiFormatter->formatObjects(
-                    $result['items'],
-                    array('countRelations' => true)
-                );
-                $this->setData($objects);
-                $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
+                $intRelatedId = (int) $relatedId;
+                if (!is_numeric($relatedId) || $intRelatedId != $relatedId) {
+                    throw new BeditaBadRequestException($relatedId . ' must be an integer');
+                }
+                $objectTypeId = $this->BEObject->findObjectTypeId($id);
+                if (!$this->ApiValidator->isRelationValid($relation, $objectTypeId)) {
+                    throw new BeditaBadRequestException($relation . ' is not valid for object id ' . $id);
+                }
+                $objectRelation = ClassRegistry::init('ObjectRelation');
+                $relationData = $objectRelation->find('first', array(
+                    'conditions' => array(
+                        'switch' => $relation,
+                        'id' => $id,
+                        'object_id' => $relatedId
+                    )
+                ));
+                if (empty($relationData['ObjectRelation'])) {
+                    throw new BeditaNotFoundException();
+                }
+                $data = array();
+                $data['priority'] = (int) $relationData['ObjectRelation']['priority'];
+                if (!empty($relationData['ObjectRelation']['params'])) {
+                    $data['params'] = $relationData['ObjectRelation']['params'];
+                }
+                $this->setData($data);
             }
         }
     }
