@@ -21,7 +21,6 @@
 
 App::import('Core', 'l10n');
 App::import('Lib', 'BeLib');
-BeLib::getObject('BeConfigure')->initConfig();
 
 /**
  * Controller base class for backends+frontends
@@ -104,6 +103,7 @@ class AppController extends Controller {
      * then add it to self::componenets array
      */
     public function __construct() {
+        BeLib::getObject('BeConfigure')->initConfig();
         if (Configure::read('debugKit') && App::import('Component', 'DebugKit.Toolbar')) {
             $this->components[] = 'DebugKit.Toolbar';
         }
