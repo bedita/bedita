@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2015 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -19,22 +19,17 @@
  *------------------------------------------------------------------->8-----
  */
 App::import('Model', 'ConnectionManager');
+
 /**
  * BeConfigure class handle BEdita configuration 
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-
 class BeConfigure {
 	
     /**
      * An array with all active relations
      *
-     * @see self::relations()
+     * @see self::mergeAllRelations()
      * @var array
      */
     private $relations = array();
