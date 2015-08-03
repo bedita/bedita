@@ -462,7 +462,6 @@ class Permission extends BEAppModel
         ));
 
         // get objects allowed to user
-        $objectsAllowed = array();
         if (!empty($user)) {
             if (!empty($user['groupsIds'])) {
                 $conditions['Permission.ugid'] = $user['groupsIds'];
@@ -478,6 +477,9 @@ class Permission extends BEAppModel
                 'joins' => $joins,
                 'group' => $group
             ));
+        }
+        if (empty($objectsAllowed)) {
+            $objectsAllowed = array();
         }
 
         if ($options['count']) {
@@ -500,6 +502,89 @@ class Permission extends BEAppModel
         }
 
         return $objectsForbidden;
+    }
+
+    /**
+     * Return true if object $objectId and its parents are accessible i.e. for $user
+     * 'Accessible' means without 'frontend_access_with_block' permission set
+     *
+     * $options params are:
+     * - 'status' the status of parents to check
+     * - 'area_id' the parents publication id
+     * - 'stopIfMissingParents' true (default) to stop and return not valid if $objectId haven't parents and it isn't a publication
+     *
+     * @param int $objectId the object id
+     * @param array $options
+     * @param array $user the user data
+     * @return boolean
+     */
+    public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
+        $options += array(
+            'status' => array(),
+            'area_id' => null,
+            'stopIfMissingParents' => true
+        );
+        $tree = ClassRegistry::init('Tree');
+        $parents = $tree->getParents($objectId, $options['area_id'], $options['status']);
+        // no parents
+        if (empty($parents) && $options['stopIfMissingParents']) {
+            $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
+            $areaObjectTypeId = Configure::read('objectTypes.area.id');
+            // return false if object type is not area or if 'area_id' was passed and it's different from $objectId
+            if ($objectTypeId != $areaObjectTypeId || (!empty($options['area_id']) && $objectId != $options['area_id'])) {
+                return false;
+            }
+        }
+
+        $conditions = array(
+            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+            'Permission.switch' => 'group',
+            'Permission.object_id' => array_merge(
+                array($objectId),
+                $parents
+            )
+        );
+
+        $countForbidden = $this->find('count', array(
+            'fields' => 'DISTINCT (Permission.object_id)',
+            'conditions' => $conditions
+        ));
+
+        if (!empty($user)) {
+            if (!empty($user['groupsIds'])) {
+                $conditions['Permission.ugid'] = $user['groupsIds'];
+            } elseif (!empty($user['groups'])) {
+                $groupList = ClassRegistry::init('Group')->getList(array(
+                    'Group.name' => $user['groups']
+                ));
+                $conditions['Permission.ugid'] = array_keys($groupList);
+            }
+            $joins = array();
+            if (!empty($options['status'])) {
+                $joins = array(
+                    array(
+                        'table' => 'objects',
+                        'alias' => 'BEObject',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'BEObject.id = Permission.object_id',
+                            'BEObject.status' => $options['status']
+                        )
+                    )
+                );
+            }
+            $countAllowed = $this->find('count', array(
+                'fields' => 'DISTINCT (Permission.object_id)',
+                'conditions' => $conditions,
+                'joins' => $joins
+            ));
+
+            if (is_numeric($countAllowed)) {
+                $countForbidden -= $countAllowed;
+            }
+        }
+
+        return $countForbidden == 0;
     }
 
 }

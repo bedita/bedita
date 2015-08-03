@@ -768,13 +768,19 @@ class AppController extends Controller {
         }
     }
 
-    protected function saveObject(BEAppModel $beModel) {
-
-        if(empty($this->data))
+    protected function saveObject(BEAppModel $beModel, array $options = array()) {
+        if (empty($this->data)) {
             throw new BeditaException( __('No data', true));
-        $new = (empty($this->data['id'])) ? true : false ;
+        }
 
-        if(!$new) {
+        $options += array(
+            'handleTagList' => true, // true to handle comma separated tag list creating tags don't exist
+            'emptyPermission' => true, // true to remove permission ob object if any is passed
+            'saveTree' => true // true to save tree
+        );
+
+        $new = (empty($this->data['id'])) ? true : false ;
+        if (!$new) {
             $this->checkObjectWritePermission($this->data['id']);
         }
 
@@ -786,16 +792,18 @@ class AppController extends Controller {
         $categoryModel = ClassRegistry::init("Category");
 		$tagList = array();
 
-        if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
-            if (!empty($this->params['form']['tags'])) {
-                $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
-            }
+        if ($options['handleTagList']) {
+            if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
+                if (!empty($this->params['form']['tags'])) {
+                    $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
+                }
 
-            $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+                $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+            }
         }
 
         $fixed = false;
-        if(!$new) {
+        if (!$new) {
             $fixed = ClassRegistry::init('BEObject')->isFixed($this->data['id']);
             if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set!
                 unset($this->data['start_date']);
@@ -803,24 +811,27 @@ class AppController extends Controller {
             }
         }
 
-        if(!isset($this->data['Permission']))
-            $this->data['Permission'] = array() ;
-
-        if(isset($this->data['DateItem'])) {
-            // reorder array index from 0 to avoid removal
-            $this->data['DateItem'] = array_values($this->data['DateItem']); 
+        if ($options['emptyPermission'] && !isset($this->data['Permission'])) {
+            $this->data['Permission'] = array();
         }
-        
-        if(!$beModel->save($this->data)) {
+
+        if (isset($this->data['DateItem'])) {
+            // reorder array index from 0 to avoid removal
+            $this->data['DateItem'] = array_values($this->data['DateItem']);
+        }
+
+        if (!$beModel->save($this->data)) {
             throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
         }
 
         // handle tree. Section and Area handled in AreaController
-        if(!$fixed && isset($this->data['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
-            if (!$new) {
-                $this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+        if ($options['saveTree']) {
+            if(!$fixed && isset($this->data['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
+                if (!$new) {
+                    $this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+                }
+                ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
             }
-            ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
         }
     }
 

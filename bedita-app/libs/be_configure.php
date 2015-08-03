@@ -31,6 +31,14 @@ App::import('Model', 'ConnectionManager');
 
 class BeConfigure {
 	
+    /**
+     * An array with all active relations
+     *
+     * @see self::relations()
+     * @var array
+     */
+    private $relations = array();
+
 	/**
 	 * initialize BEdita static configuration setting cache and
 	 * add plugged model and component path
@@ -150,7 +158,10 @@ class BeConfigure {
             ClassRegistry::addObject('Session', $sessionObject);
         }
 
-		return $configurations;
+        // set self::relations
+        $this->mergeAllRelations(true);
+
+        return $configurations;
 	}
 	
 	/**
@@ -235,38 +246,44 @@ class BeConfigure {
 		}
 	}
 
-	
-	/**
-	 * Returns array with all relations, merging defaultObjRelationType, objRelationType, plugged.objRelationType
-	 * 
-	 * @return array
-	 */
-	public function mergeAllRelations() {
-		$defaultObjRel = Configure::read("defaultObjRelationType");
-		$cfgObjRel = Configure::read("objRelationType");
-		$pluggedObjRel = Configure::read("plugged.objRelationType");
-		if (!empty($cfgObjRel)) {
-			foreach($cfgObjRel as $relation => $rules) {
-				if (isset($defaultObjRel[$relation])) {
-					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
-					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
-				} else {
-					$defaultObjRel[$relation] = $rules;
-				}
-			}
-		}
-		if (!empty($pluggedObjRel)) {
-			foreach($pluggedObjRel as $relation => $rules) {
-				if (isset($defaultObjRel[$relation])) {
-					$defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
-					$defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
-				} else {
-					$defaultObjRel[$relation] = $rules;
-				}
-			}
-		}
-		return $defaultObjRel;
-	}
+
+    /**
+     * Returns array with all relations, merging defaultObjRelationType, objRelationType, plugged.objRelationType
+     * Set also self::relations and use it when it's not empty and no forced reading is request
+     *
+     * @param boolean $forceReading true to force to read from config also if self::relations is populated
+     * @return array
+     */
+    public function mergeAllRelations($forceReading = false) {
+        if ($forceReading || empty($this->relations)) {
+            $defaultObjRel = Configure::read("defaultObjRelationType");
+            $cfgObjRel = Configure::read("objRelationType");
+            $pluggedObjRel = Configure::read("plugged.objRelationType");
+            if (!empty($cfgObjRel)) {
+                foreach($cfgObjRel as $relation => $rules) {
+                    if (isset($defaultObjRel[$relation])) {
+                        $defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+                        $defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+                    } else {
+                        $defaultObjRel[$relation] = $rules;
+                    }
+                }
+            }
+            if (!empty($pluggedObjRel)) {
+                foreach($pluggedObjRel as $relation => $rules) {
+                    if (isset($defaultObjRel[$relation])) {
+                        $defaultObjRel[$relation]["left"] = array_merge($defaultObjRel[$relation]["left"], $rules["left"]);
+                        $defaultObjRel[$relation]["right"] = array_merge($defaultObjRel[$relation]["right"], $rules["right"]);
+                    } else {
+                        $defaultObjRel[$relation] = $rules;
+                    }
+                }
+            }
+            $this->relations = $defaultObjRel;
+        }
+
+        return $this->relations;
+    }
 
     /**
      * Tries to read ObjectType ID for given model from config, or from database as a fallback.
