@@ -359,7 +359,7 @@ abstract class ApiBaseController extends FrontendController {
      *  - api
      */
     private function setBaseResponse() {
-        $this->responseData['url'] = $this->params['url']['url'];
+        $this->responseData['url'] = Router::url('/', true) . $this->params['url']['url'];
         $urlParams = array_slice($this->params['url'], 1);
         $getParams = array_slice($_GET, 0);
         unset($getParams['url']);
