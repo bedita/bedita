@@ -210,6 +210,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     public function __construct() {
         Configure::write('Session.start', false);
+        parent::__construct();
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
@@ -218,7 +219,6 @@ abstract class ApiBaseController extends FrontendController {
             }
         }
         $this->endPoints = array_diff($this->endPoints, $this->blacklistEndPoints);
-        parent::__construct();
     }
 
     /**
