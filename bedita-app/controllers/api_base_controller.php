@@ -230,9 +230,9 @@ abstract class ApiBaseController extends FrontendController {
      */
     public function __call($method, $arguments) {
         $objectType = Configure::read('objectTypes.' . Inflector::singularize($method));
-        if (!empty($objectType)) {
+        if (!empty($objectType) && $this->requestMethod == 'get') {
             $this->filter['object_type_id'] = $objectType['id'];
-            return call_user_func_array(array($this, 'objects'), $arguments);
+            return call_user_func_array(array($this, $this->requestMethod . 'Objects'), $arguments);
         }
 
         throw new BeditaMethodNotAllowedException();
