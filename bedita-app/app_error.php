@@ -496,7 +496,8 @@ class AppError extends ErrorHandler {
 				$url = $_POST['url'];
 			}
 		}
-		return $url;
+		$url = Router::normalize($url);
+		return Router::url($url, true);
 	}
 
 	/**
