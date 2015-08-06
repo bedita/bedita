@@ -172,10 +172,11 @@ abstract class ApiBaseController extends FrontendController {
      * For example GET /objects/1/children search the children of object with id = 1
      *
      * Override in ApiController to limit or add functionality to /objects endpoint
-     * For example adding to 'get' array 'foo' search type and adding ApiController::getObjectFoo() you can call /objects/1/foo
-     * All filters must have a corresponding class method built as self::requestMethod + Object + filter, for example:
-     * - getObjectChildren() map $allowedObjectsFilter['get']['children']
-     * - postObjectRelations() map $allowedObjectsFilter['post']['relations']
+     * For example adding to 'get' array 'foo' filter and adding ApiController::getObjectsFoo() you can call /objects/1/foo
+     *
+     * All filters must have a corresponding class method built as self::requestMethod + Objects + filter camelized, for example:
+     * - getObjectsChildren() maps $allowedObjectsFilter['get']['children']
+     * - postObjectsRelations() maps $allowedObjectsFilter['post']['relations']
      *
      * @var array
      */
