@@ -400,7 +400,8 @@ class DataTransfer extends BEAppModel
                 $objIds = $objModel->find('list', array(
                     'fields' => array('id'),
                     'conditions' => array(
-                        'object_type_id' => $this->export['objectTypeIds']
+                        'object_type_id' => $this->export['objectTypeIds'],
+                        'status' => $this->export['status']
                     )
                 ));
                 $objects = array_keys($objIds);
@@ -482,8 +483,7 @@ class DataTransfer extends BEAppModel
                         'Section.*' => '',
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
-                    $allowedStatus = array('on','off','draft');
-                    $sections = $this->findObjects($parent, null, $allowedStatus, $filter, null, true, 1, null, true, array());
+                    $sections = $this->findObjects($parent, null, $this->export['status'], $filter, null, true, 1, null, true, array());
                     if (!empty($sections['items'])) {
                         foreach ($sections['items'] as $section) {
                             $sectionItem = array(
@@ -1793,6 +1793,7 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('... extracting objects inside rootId ' . $parentId);
             $conditions = array(
                 'parent_id' => $parentId,
+                'status' => $this->export['status'],
                 'NOT' => array(
                     'object_type_id' => array(
                         Configure::read('objectTypes.area.id'),
@@ -1861,6 +1862,7 @@ class DataTransfer extends BEAppModel
         $objsInTree = array_values($objsInTree);
         $objsInTree = array_merge($objsToSkip);
         $conditions = array(
+            'status' => $this->export['status'],
             'NOT' => array('BEObject.id' => $objsInTree)
         );
         if (!empty($this->export['types'])) {
