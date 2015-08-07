@@ -77,7 +77,7 @@ class AppError extends ErrorHandler {
 		'code' => null,
 		'message' => null,
 		'details' => null,
-		'moreInfo' => null,
+		'more_info' => null,
 		'url' => null
 	);
 
