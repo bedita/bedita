@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/firebase/php-jwt.png?branch=master)](https://travis-ci.org/firebase/php-jwt)
+[![Latest Stable Version](https://poser.pugx.org/firebase/php-jwt/v/stable)](https://packagist.org/packages/firebase/php-jwt)
+[![Total Downloads](https://poser.pugx.org/firebase/php-jwt/downloads)](https://packagist.org/packages/firebase/php-jwt)
+[![License](https://poser.pugx.org/firebase/php-jwt/license)](https://packagist.org/packages/firebase/php-jwt)
 
 PHP-JWT
 =======
@@ -45,8 +48,40 @@ print_r($decoded);
 
 $decoded_array = (array) $decoded;
 
+/**
+ * You can add a leeway to account for when there is a clock skew times between
+ * the signing and verifying servers. It is recommended that this leeway should
+ * not be bigger than a few minutes.
+ *
+ * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
+ */
+JWT::$leeway = 60; // $leeway in seconds
+$decoded = JWT::decode($jwt, $key, array('HS256'));
+
 ?>
 ```
+
+Changelog
+---------
+
+#### 2.2.0 / 2015-06-22
+- Add support for adding custom, optional JWT headers to `JWT::encode()`. See
+[#53](https://github.com/firebase/php-jwt/pull/53/files) for details. Thanks to
+[@mcocaro](https://github.com/mcocaro)!
+
+#### 2.1.0 / 2015-05-20
+- Add support for adding a leeway to `JWT:decode()` that accounts for clock skew
+between signing and verifying entities. Thanks to [@lcabral](https://github.com/lcabral)!
+- Add support for passing an object implementing the `ArrayAccess` interface for
+`$keys` argument in `JWT::decode()`. Thanks to [@aztech-dev](https://github.com/aztech-dev)!
+
+#### 2.0.0 / 2015-04-01
+- **Note**: It is strongly recommended that you update to > v2.0.0 to address
+  known security vulnerabilities in prior versions when both symmetric and
+  asymmetric keys are used together.
+- Update signature for `JWT::decode(...)` to require an array of supported
+  algorithms to use when verifying token signatures.
+
 
 Tests
 -----

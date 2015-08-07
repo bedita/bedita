@@ -15,6 +15,14 @@
  */
 class JWT
 {
+
+    /**
+     * When checking nbf, iat or expiration times,
+     * we want to provide some extra leeway time to
+     * account for clock skew.
+     */
+    public static $leeway = 0;
+
     public static $supported_algs = array(
         'HS256' => array('hash_hmac', 'SHA256'),
         'HS512' => array('hash_hmac', 'SHA512'),
@@ -65,7 +73,7 @@ class JWT
             if (!is_array($allowed_algs) || !in_array($header->alg, $allowed_algs)) {
                 throw new DomainException('Algorithm not allowed');
             }
-            if (is_array($key)) {
+            if (is_array($key) || $key instanceof \ArrayAccess) {
                 if (isset($header->kid)) {
                     $key = $key[$header->kid];
                 } else {
@@ -80,7 +88,7 @@ class JWT
 
             // Check if the nbf if it is defined. This is the time that the
             // token can actually be used. If it's not yet that time, abort.
-            if (isset($payload->nbf) && $payload->nbf > time()) {
+            if (isset($payload->nbf) && $payload->nbf > (time() + self::$leeway)) {
                 throw new BeforeValidException(
                     'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
                 );
@@ -89,14 +97,14 @@ class JWT
             // Check that this token has been created before 'now'. This prevents
             // using tokens that have been created for later use (and haven't
             // correctly used the nbf claim).
-            if (isset($payload->iat) && $payload->iat > time()) {
+            if (isset($payload->iat) && $payload->iat > (time() + self::$leeway)) {
                 throw new BeforeValidException(
                     'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
                 );
             }
 
             // Check if this token has expired.
-            if (isset($payload->exp) && time() >= $payload->exp) {
+            if (isset($payload->exp) && (time() - self::$leeway) >= $payload->exp) {
                 throw new ExpiredException('Expired token');
             }
         }
@@ -111,16 +119,20 @@ class JWT
      * @param string       $key     The secret key
      * @param string       $alg     The signing algorithm. Supported
      *                              algorithms are 'HS256', 'HS384' and 'HS512'
+     * @param array        $head    An array with header elements to attach
      *
      * @return string      A signed JWT
      * @uses jsonEncode
      * @uses urlsafeB64Encode
      */
-    public static function encode($payload, $key, $alg = 'HS256', $keyId = null)
+    public static function encode($payload, $key, $alg = 'HS256', $keyId = null, $head = null)
     {
         $header = array('typ' => 'JWT', 'alg' => $alg);
         if ($keyId !== null) {
             $header['kid'] = $keyId;
+        }
+        if ( isset($head) && is_array($head) ) {
+            $header = array_merge($head, $header);
         }
         $segments = array();
         $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($header));
