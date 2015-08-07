@@ -482,14 +482,16 @@ class DataTransfer extends BEAppModel
                         'Section.*' => '',
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
-                    $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
+                    $allowedStatus = array('on','off','draft');
+                    $sections = $this->findObjects($parent, null, $allowedStatus, $filter, null, true, 1, null, true, array());
                     if (!empty($sections['items'])) {
                         foreach ($sections['items'] as $section) {
                             $sectionItem = array(
                                 'id' => $section['id'],
                                 'parent' => $section['parent_id'],
                                 'priority_order' => $section['priority_order'],
-                                'syndicate' => $section['syndicate']
+                                'syndicate' => $section['syndicate'],
+                                'status' => $section['status']
                             );
                             if (!empty($section['priority'])) {
                                 $sectionItem['priority'] = $section['priority'];
