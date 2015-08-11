@@ -699,6 +699,28 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Save relations $relationName between $objectId and related objects in $this->data
      *
+     * If you want to save only one relation $this->data should be
+     * ```
+     * array(
+     *     'related_id' => 10, // required
+     *     'priority' => 1, // optional
+     *     'params' => array() // optional
+     * )
+     * ```
+     *
+     * If you want to save many relations $this->data should be
+     * ```
+     * array(
+     *     array(
+     *         'related_id' => 10, // required
+     *         'priority' => 1, // optional
+     *         'params' => array() // optional
+     *     ),
+     *     array(...)
+     * )
+     * ```
+     *
+     * @see ApiValidatorComponent::checkRelations()
      * @param int $objectId the main object id
      * @param string $relationName the relation name (direct or inverse)
      * @return void
@@ -719,11 +741,11 @@ abstract class ApiBaseController extends FrontendController {
         $responseData = array();
         $this->Transaction->begin();
         foreach ($this->data as $relData) {
-            $params = isset($relData['params']) ? $relData['params'] : array();
-            $priority = isset($relData['priority']) ? $relData['priority'] : null;
             $exists = $objectRelation->relationExists($objectId, $relData['related_id'], $relationName);
             // create
             if (!$exists) {
+                $params = isset($relData['params']) ? $relData['params'] : array();
+                $priority = isset($relData['priority']) ? $relData['priority'] : null;
                 $result = $objectRelation->createRelationAndInverse($objectId, $relData['related_id'], $relationName, $inverseName, $priority, $params);
                 if ($result === false) {
                     throw new BeditaInternalErrorException(
