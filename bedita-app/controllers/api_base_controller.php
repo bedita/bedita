@@ -1014,11 +1014,23 @@ abstract class ApiBaseController extends FrontendController {
      * @param int $id
      * @return void
      */
-    protected function getObjectsChildren($id) {
-        if (func_num_args() > 1) {
+    protected function getObjectsChildren($id, $childId = null) {
+        if (func_num_args() > 2) {
             throw new BeditaBadRequestException();
         }
-        $this->responseChildren($id);
+        // get list of children
+        if (empty($childId)) {
+            $this->responseChildren($id);
+        // get children position i.e. 'priority' value
+        } else {
+            $priority = ClassRegistry::init('Tree')->getPriority($childId, $id);
+            if (empty($priority)) {
+                throw new BeditaNotFoundException();
+            }
+            $this->setData(array(
+                'priority' => (int) $priority
+            ));
+        }
     }
 
     /**
