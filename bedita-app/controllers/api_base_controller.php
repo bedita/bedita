@@ -195,6 +195,9 @@ abstract class ApiBaseController extends FrontendController {
             'relations',
             'children'
         ),
+        'put' => array(
+            'relations'
+        ),
         'delete' => array(
             'relations',
             'children'
@@ -582,25 +585,23 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * PUT /objects/:id
+     * PUT of entire object is not allowed. If you want modify an object you should use POST
      *
      * @param int|string $name the object id or nickname
      * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['put']
      * @return void
      */
     protected function putObjects($name = null, $filterType = null) {
-        throw new BeditaMethodNotAllowedException();
-        // if (!$this->BeAuthJwt->identify()) {
-        //     throw new BeditaUnauthorizedException();
-        // }
-        // if (empty($name)) {
-        //     throw new BeditaMethodNotAllowedException('Unsupported endpoint for PUT request. It should be /objects/:id');
-        // }
-        // $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
-        // if (!empty($this->data['id']) && $this->data['id'] != $id) {
-        //     throw new BeditaBadRequestException();
-        // }
-        // $this->data['id'] = $id;
-        // $this->postObjects();
+        if (!$this->BeAuthJwt->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
+        if (empty($name) || empty($filterType)) {
+            throw new BeditaBadRequestException();
+        }
+        $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+        $args = func_get_args();
+        $args[0] = $id;
+        call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
     }
 
     /**
@@ -875,6 +876,65 @@ abstract class ApiBaseController extends FrontendController {
             $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $objectId .'/children');
         }
         $this->setData($responseData);
+    }
+
+    /**
+     * Edit relation $relationName between $objectId and $relatedId objects
+     *
+     * $this->data should be
+     * ```
+     * array(
+     *     'priority' => 1,
+     *     'params' => array()
+     * )
+     * ```
+     *
+     * If 'priority' or 'params' is not passed then they are set to null to update db field to NULL.
+     * Indeed PUT replaces all relation data with new one
+     *
+     * @param int $objectId the main object id
+     * @param string $relationName the relation name (direct or inverse)
+     * @param int $relatedId the related object id
+     * @return void
+     */
+    protected function putObjectsRelations($objectId, $relationName = null, $relatedId = null) {
+        if (func_num_args() != 3) {
+            throw new BeditaBadRequestException();
+        }
+        if (empty($this->data['priority']) && empty($this->data['params'])) {
+            throw new BeditaBadRequestException('No data to use in PUT request');
+        }
+        $this->ApiValidator->checkPositiveInteger($relatedId, true);
+        $this->data['related_id'] = (int) $relatedId;
+        $objectTypeId = $this->BEObject->findObjectTypeId($objectId);
+        $this->ApiValidator->checkRelations(
+            array($relationName => array($this->data)),
+            $objectTypeId
+        );
+
+        $objectRelation = ClassRegistry::init('ObjectRelation');
+        $exists = $objectRelation->relationExists($objectId, $relatedId, $relationName);
+        if (!$exists) {
+            throw new BeditaBadRequestException('You can not modify a relation that not exists.');
+        }
+
+        // set default value to null if not defined
+        if (empty($this->data['priority'])) {
+            $this->data['priority'] = null;
+        }
+        if (empty($this->data['params'])) {
+            $this->data['params'] = null;
+        }
+
+        $this->Transaction->begin();
+        $result = $objectRelation->updateRelation($objectId, $relatedId, $relationName, $this->data);
+        if ($result === false) {
+            throw new BeditaInternalErrorException(
+                'Error updating relation ' . $relationName . ' between ' . $objectId . ' and ' . $relatedId
+            );
+        }
+        $this->Transaction->commit();
+        $this->getObjectsRelations($objectId, $relationName, $relatedId);
     }
 
     /**
