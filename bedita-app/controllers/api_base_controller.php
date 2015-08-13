@@ -196,7 +196,8 @@ abstract class ApiBaseController extends FrontendController {
             'children'
         ),
         'put' => array(
-            'relations'
+            'relations',
+            'children'
         ),
         'delete' => array(
             'relations',
@@ -599,6 +600,7 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException();
         }
         $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+        $this->ApiValidator->checkObjectReachable($id);
         $args = func_get_args();
         $args[0] = $id;
         call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
@@ -879,7 +881,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Edit relation $relationName between $objectId and $relatedId objects
+     * Update relation $relationName between $objectId and $relatedId objects
      *
      * $this->data should be
      * ```
@@ -935,6 +937,53 @@ abstract class ApiBaseController extends FrontendController {
         }
         $this->Transaction->commit();
         $this->getObjectsRelations($objectId, $relationName, $relatedId);
+    }
+
+    /**
+     * Update 'priority' (position relative to all children) of $childId son of $objectId
+     *
+     * $this->data should be
+     * ```
+     * array(
+     *     'priority' => 1
+     * )
+     * ```
+     *
+     * If 'priority' is not passed then a 400 is thrown
+     * $childId must already be a child of $objectId
+     *
+     *
+     * @param int $objectId the parent object id
+     * @param int $childId the child object id
+     * @return void
+     */
+    protected function putObjectsChildren($objectId, $childId = null) {
+        if (func_num_args() != 2) {
+            throw new BeditaBadRequestException();
+        }
+        if (empty($this->data['priority'])) {
+            throw new BeditaBadRequestException('No data to use in PUT request');
+        }
+        $this->ApiValidator->checkPositiveInteger($childId, true);
+        $this->data['child_id'] = (int) $childId;
+        $this->ApiValidator->checkChildren(array($this->data), $objectId);
+
+        $tree = ClassRegistry::init('Tree');
+        $row = $tree->find('first', array(
+            'conditions' => array(
+                'parent_id' => $objectId,
+                'id' => $childId
+            )
+        ));
+        // if $objectId is not a parent of $childId throw 400
+        if (empty($row)) {
+            throw new BeditaBadRequestException($childId . ' must be a child of ' . $objectId);
+        }
+        $row['Tree']['priority'] = $this->data['priority'];
+        if (!$tree->save($row)) {
+            throw new BeditaInternalErrorException('Error updating priority');
+        }
+        $this->getObjectsChildren($objectId, $childId);
     }
 
     /**
