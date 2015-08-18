@@ -502,9 +502,16 @@ abstract class ApiBaseController extends FrontendController {
                 );
                 $this->setData($object);
             }
-        // @todo list of objects
+        // list of publication descendants
         } else {
-
+            $publication = $this->getPublication();
+            $filter = array('descendants' => true);
+            if (!empty($this->filter['object_type_id'])) {
+                $filter['object_type_id'] = $this->filter['object_type_id'];
+            }
+            $this->responseChildren($publication['id'], array(
+                'filter' => $filter
+            ));
         }
     }
 
