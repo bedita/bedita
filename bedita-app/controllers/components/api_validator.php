@@ -272,7 +272,7 @@ class ApiValidatorComponent extends Object {
      */
     public function isObjectAccessible($objectId, $parentsCheck = true) {
         $permission = ClassRegistry::init('Permission');
-        $user = $this->controller->BeAuthJwt->getUser();
+        $user = $this->controller->ApiAuth->getUser();
         if (!$parentsCheck) {
             // if object itself is forbidden to user return false without any other check
             $access = $permission->frontendAccess($objectId, $user);

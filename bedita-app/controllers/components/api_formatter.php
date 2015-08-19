@@ -444,7 +444,7 @@ class ApiFormatterComponent extends Object {
 
         // count not accessible relations
         $permission = ClassRegistry::init('Permission');
-        $user = $this->controller->BeAuthJwt->getUser();
+        $user = $this->controller->ApiAuth->getUser();
         $countForbidden = $permission->relatedObjectsNotAccessibile(
             $object['id'],
             array(
@@ -515,7 +515,7 @@ class ApiFormatterComponent extends Object {
         $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
         $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
 
-        $user = $this->controller->BeAuthJwt->getUser();
+        $user = $this->controller->ApiAuth->getUser();
         if (!empty($user)) {
             $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
             $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);

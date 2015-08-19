@@ -24,11 +24,14 @@ App::import('Vendor', 'ExpiredException', array('file' => 'php-jwt' . DS . 'Exce
 App::import('Vendor', 'SignatureInvalidException', array('file' => 'php-jwt' . DS . 'Exceptions' . DS . 'SignatureInvalidException.php'));
 App::import('Vendor', 'JWT', array('file' => 'php-jwt' . DS . 'Authentication' . DS . 'JWT.php'));
 
-
 /**
- * JSON Web Token (JWT) auth component
-*/
-class BeAuthJwtComponent extends Object {
+ * REST API auth component
+ * Authentication is based on JSON Web Token (JWT)
+ *
+ * @see http://jwt.io
+ * @see https://tools.ietf.org/html/rfc7519 (for full specs)
+ */
+class ApiAuthComponent extends Object {
 
     /**
      * The Controller

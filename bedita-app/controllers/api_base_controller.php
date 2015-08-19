@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2014 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014-2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -31,9 +31,9 @@ abstract class ApiBaseController extends FrontendController {
 
     public $components = array(
         'ResponseHandler' => array('type' => 'json'),
+        'ApiAuth',
         'ApiFormatter',
-        'ApiValidator',
-        'BeAuthJwt'
+        'ApiValidator'
     );
 
     protected $loginRedirect = null;
@@ -267,7 +267,7 @@ abstract class ApiBaseController extends FrontendController {
                         $this->params['form'] = array();
                     }
                 }
-            } catch(Exception $ex) {
+            } catch (Exception $ex) {
                 $this->params['form'] = array();
             }
             // set self::data
@@ -314,8 +314,8 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Common operations that every call must do:
      *
-     * - replace self::BeAuth with self::BeAuthJwt to work properly in FrontendController.
-     *   BeAuthComponent is not used in api context. JWT is used instead via BeAuthJwtComponent
+     * - replace self::BeAuth with self::ApiAuth to work properly in FrontendController.
+     *   BeAuthComponent is not used in api context. JWT is used instead via ApiAuthComponent
      * - check origin
      * - setup self::requestMethod to http verb used
      * - normalize post data
@@ -326,7 +326,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function beforeCheckLogin() {
-        $this->BeAuth = $this->BeAuthJwt;
+        $this->BeAuth = $this->ApiAuth;
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
@@ -546,7 +546,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function postObjects($name = null, $filterType = null) {
-        if (!$this->BeAuthJwt->identify()) {
+        if (!$this->ApiAuth->identify()) {
             throw new BeditaUnauthorizedException();
         }
 
@@ -600,7 +600,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function putObjects($name = null, $filterType = null) {
-        if (!$this->BeAuthJwt->identify()) {
+        if (!$this->ApiAuth->identify()) {
             throw new BeditaUnauthorizedException();
         }
         if (empty($name) || empty($filterType)) {
@@ -621,7 +621,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function deleteObjects($name = null, $filterType = null) {
-        if (!$this->BeAuthJwt->identify()) {
+        if (!$this->ApiAuth->identify()) {
             throw new BeditaUnauthorizedException();
         }
         if (empty($name)) {
@@ -661,7 +661,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function saveObject(BEAppModel $beModel, array $options = array()) {
-        $user = $this->BeAuthJwt->identify();
+        $user = $this->ApiAuth->identify();
         if (!$user) {
             throw new BeditaUnauthorizedException();
         }
@@ -1070,7 +1070,7 @@ abstract class ApiBaseController extends FrontendController {
         $options['itemsTogether'] = true;
         // add conditions on not accessible objects (frontend_access_with_block)
         // @todo move to FrontendController::loadSectionObjects()?
-        $user = $this->BeAuthJwt->getUser();
+        $user = $this->ApiAuth->getUser();
         $permissionJoin = array(
             'table' => 'permissions',
             'alias' => 'Permission',
@@ -1315,7 +1315,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function me() {
-        $user = $this->BeAuthJwt->identify();
+        $user = $this->ApiAuth->identify();
         if ($user) {
             $this->profile($user['id']);
         } else {
@@ -1386,16 +1386,16 @@ abstract class ApiBaseController extends FrontendController {
             if (empty($params['login']['username']) || empty($params['login']['password'])) {
                 throw new BeditaBadRequestException();
             }
-            $user = $this->BeAuthJwt->identify();
+            $user = $this->ApiAuth->identify();
             if (!$user) {
                 throw new BeditaUnauthorizedException();
             }
 
-            $token = $this->BeAuthJwt->generateToken();
-            $refreshToken = $this->BeAuthJwt->generateRefreshToken();
+            $token = $this->ApiAuth->generateToken();
+            $refreshToken = $this->ApiAuth->generateRefreshToken();
             $data = array(
                 'access_token' => $token,
-                'expires_in' => $this->BeAuthJwt->config['expiresIn'],
+                'expires_in' => $this->ApiAuth->config['expiresIn'],
                 'refresh_token' => $refreshToken
             );
         } elseif ($grantType == 'refresh_token') {
@@ -1403,14 +1403,14 @@ abstract class ApiBaseController extends FrontendController {
                 throw new BeditaBadRequestException();
             }
 
-            $token = $this->BeAuthJwt->renewToken($params['refresh_token']);
+            $token = $this->ApiAuth->renewToken($params['refresh_token']);
             if (!$token) {
                 throw new BeditaUnauthorizedException('invalid refresh token');
             }
 
             $data = array(
                 'access_token' => $token,
-                'expires_in' => $this->BeAuthJwt->config['expiresIn'],
+                'expires_in' => $this->ApiAuth->config['expiresIn'],
                 'refresh_token' => $params['refresh_token']
             );
         } else {
@@ -1427,13 +1427,13 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function getAuth() {
-        $user = $this->BeAuthJwt->identify();
+        $user = $this->ApiAuth->identify();
         if (!$user) {
             throw new BeditaUnauthorizedException();
         }
         $this->setData(array(
-            'access_token' => $this->BeAuthJwt->getToken(),
-            'expires_in' => $this->BeAuthJwt->expiresIn()
+            'access_token' => $this->ApiAuth->getToken(),
+            'expires_in' => $this->ApiAuth->expiresIn()
         ));
     }
 
@@ -1445,7 +1445,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function deleteAuth($refreshToken) {
-        if ($this->BeAuthJwt->revokeRefreshToken($refreshToken)) {
+        if ($this->ApiAuth->revokeRefreshToken($refreshToken)) {
            $this->emptyResponse();
         } else {
             throw new BeditaInternalErrorException();
