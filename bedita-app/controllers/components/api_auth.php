@@ -46,21 +46,21 @@ class ApiAuthComponent extends Object {
      *
      * @var array|bool
      */
-    private $user = false;
+    protected $user = false;
 
     /**
      * The JWT generated or read from request
      *
      * @var string
      */
-    private $token = null;
+    protected $token = null;
 
     /**
      * The payload used token generation
      *
      * @var array
      */
-    private $payload = array();
+    protected $payload = array();
 
     /**
      * Configuration used to customize token generation
