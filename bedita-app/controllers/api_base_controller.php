@@ -27,8 +27,18 @@
  */
 abstract class ApiBaseController extends FrontendController {
 
+    /**
+     * The Models used
+     *
+     * @var array
+     */
     public $uses = array();
 
+    /**
+     * The Components used
+     *
+     * @var array
+     */
     public $components = array(
         'ResponseHandler' => array('type' => 'json'),
         'ApiAuth',
@@ -36,7 +46,37 @@ abstract class ApiBaseController extends FrontendController {
         'ApiValidator'
     );
 
-    protected $loginRedirect = null;
+    /**
+     * Contain the instance of API auth component used
+     * Normally it corresponds to ApiAuthComponent but it can contain another auth component
+     * To do it a custom component, named for example 'MyAuth', has to be added to self::$components
+     *
+     * ```
+     * public $components = array(
+     *     'ResponseHandler' => array('type' => 'json'),
+     *     'MyAuth',
+     *     'ApiFormatter',
+     *     'ApiValidator'
+     * );
+     * ```
+     *
+     * and activated via conf
+     *
+     * ```
+     * $config['api'] = array(
+     *     'baseUrl' => '/api',
+     *     'auth' => array(
+     *         'component' => 'MyAuth'
+     *     ),
+     *     ...
+     * );
+     * ```
+     *
+     * Note that the custom auth component should be implements ApiAuthInterface
+     *
+     * @var Object
+     */
+    public $ApiAuth = null;
 
     /**
      * The default endpoints
@@ -314,19 +354,17 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Common operations that every call must do:
      *
-     * - replace self::BeAuth with self::ApiAuth to work properly in FrontendController.
-     *   BeAuthComponent is not used in api context. JWT is used instead via ApiAuthComponent
+     * - setup auth component
      * - check origin
      * - setup self::requestMethod to http verb used
      * - normalize post data
-     * - normalize authentication form fields
      *
      * If method is overridden in frontend ApiController remember to call parent::beforeCheckLogin()
      *
      * @return void
      */
     protected function beforeCheckLogin() {
-        $this->BeAuth = $this->ApiAuth;
+        $this->setupAuthComponents();
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
@@ -348,12 +386,42 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->setupPagination();
+    }
 
-        if (!empty($this->params['form']) && !empty($this->params['form']['username']) && !empty($this->params['form']['password'])) {
-            $this->params['form']['login'] = array('username' => $this->params['form']['username'], 'password' => $this->params['form']['password']);
-            unset($this->params['form']['username']);
-            unset($this->params['form']['password']);
+    /**
+     * Override FrontendController::checkLogin()
+     *
+     * @return mixed
+     */
+    protected function checkLogin() {
+        if ($this->ApiAuth->identify()) {
+            $this->logged = true;
         }
+    }
+
+    /**
+     * Setup components used for authentication:
+     *
+     * - check configuration (api.auth.component) to see if adhoc component should be used and assign it to self::$ApiAuth
+     * - replace self::BeAuth with self::ApiAuth to work properly in FrontendController.
+     *   BeAuthComponent is not used in API context. JWT is usually used instead via ApiAuthComponent
+     *
+     * @return void
+     */
+    private function setupAuthComponents() {
+        $componentName = Configure::read('api.auth.component');
+        if (!empty($componentName) && $componentName != 'ApiAuth') {
+            $componentClass = $componentName . 'Component';
+            if (empty($this->{$componentName}) || !($this->{$componentName} instanceof $componentClass)) {
+                throw new BeditaInternalErrorException(
+                    'Configuration error. Auth component ' . $componentName . ' is not properly loaded in API controller'
+                );
+            }
+            $this->ApiAuth = $this->{$componentName};
+        } elseif (empty($this->ApiAuth)) {
+            throw new BeditaInternalErrorException('API auth component is not properly loaded in API controller');
+        }
+        $this->BeAuth = $this->ApiAuth;
     }
 
     /**
@@ -1383,16 +1451,29 @@ abstract class ApiBaseController extends FrontendController {
         $params = $this->params['form'];
         $grantType = (!empty($params['grant_type'])) ? $params['grant_type'] : 'password';
         if ($grantType == 'password') {
-            if (empty($params['login']['username']) || empty($params['login']['password'])) {
+            if (empty($params['username']) || empty($params['password'])) {
                 throw new BeditaBadRequestException();
             }
-            $user = $this->ApiAuth->identify();
-            if (!$user) {
+            // authenticate user
+            if (Configure::read('staging') === true) {
+                $authorizedGroups = array(); // only backend authorized groups
+            } else {
+                // frontend only authorized groups (default empty)
+                $confGroups = Configure::read('authorizedGroups');
+                // which groups? authorized groups if defined, or any group
+                $group = ClassRegistry::init('Group');
+                $authorizedGroups = (!empty($confGroups))? $confGroups : $group->getList(array('backend_auth' => 0));
+            }
+            $authResponse = $this->ApiAuth->authenticate($params['username'], $params['password'], $authorizedGroups);
+            if (!$authResponse) {
                 throw new BeditaUnauthorizedException();
             }
 
             $token = $this->ApiAuth->generateToken();
             $refreshToken = $this->ApiAuth->generateRefreshToken();
+            if (!$token || !$refreshToken) {
+                throw new BeditaUnauthorizedException();
+            }
             $data = array(
                 'access_token' => $token,
                 'expires_in' => $this->ApiAuth->config['expiresIn'],
@@ -1445,8 +1526,11 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function deleteAuth($refreshToken) {
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
         if ($this->ApiAuth->revokeRefreshToken($refreshToken)) {
-           $this->emptyResponse();
+            $this->emptyResponse();
         } else {
             throw new BeditaInternalErrorException();
         }

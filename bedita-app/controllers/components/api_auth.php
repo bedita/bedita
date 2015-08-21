@@ -23,15 +23,20 @@ App::import('Vendor', 'BeforeValidException', array('file' => 'php-jwt' . DS . '
 App::import('Vendor', 'ExpiredException', array('file' => 'php-jwt' . DS . 'Exceptions' . DS . 'ExpiredException.php'));
 App::import('Vendor', 'SignatureInvalidException', array('file' => 'php-jwt' . DS . 'Exceptions' . DS . 'SignatureInvalidException.php'));
 App::import('Vendor', 'JWT', array('file' => 'php-jwt' . DS . 'Authentication' . DS . 'JWT.php'));
+App::import(
+    'File',
+    'ApiAuthInterface',
+    array('file' => BEDITA_CORE_PATH . DS . 'controllers' . DS . 'components' . DS  . 'api_auth_interface.php')
+);
 
 /**
  * REST API auth component
- * Authentication is based on JSON Web Token (JWT)
+ * 'access_token' used for authentication is a JSON Web Token (JWT)
  *
  * @see http://jwt.io
  * @see https://tools.ietf.org/html/rfc7519 (for full specs)
  */
-class ApiAuthComponent extends Object {
+class ApiAuthComponent extends Object implements ApiAuthInterface {
 
     /**
      * The Controller
@@ -83,7 +88,7 @@ class ApiAuthComponent extends Object {
         Configure::write('Session.start', false);
         $this->controller = $controller;
         $this->token = null;
-        $jwtConf = Configure::read('api.JWT');
+        $jwtConf = Configure::read('api.auth.JWT');
         if ($jwtConf) {
             $this->config = $jwtConf + $this->config;
         }
@@ -101,16 +106,6 @@ class ApiAuthComponent extends Object {
         if (empty($this->config['iss'])) {
             $this->config['iss'] = $controller->viewVars['publication']['public_url'];
         }
-    }
-
-    /**
-     * Return true if user is authenticated through JWT
-     * Used from FrontendController, it replaces BeAuthComponent::isLogged() in api context
-     *
-     * @return bool
-     */
-    public function isLogged() {
-        return $this->identify();
     }
 
     /**
@@ -133,18 +128,17 @@ class ApiAuthComponent extends Object {
     }
 
     /**
-     * Login user, it replaces BeAuthComponent::login() in api context
+     * Authenticate user starting from username and password
      *
-     * @param string $userid the username
+     * @param string $username the username
      * @param string $password the user password
-     * @param array $policy unused in api context
      * @param array $authGroupName an array of groups authorized to login
      * @return bool
      */
-    public function login($userid, $password, $policy = null, array $authGroupName = array()) {
+    public function authenticate($username, $password, array $authGroupName = array()) {
         $userModel = ClassRegistry::init('User');
         $conditions = array(
-            'User.userid' => $userid,
+            'User.userid' => $username,
             'User.passwd' => md5($password),
             'User.valid' => 1
         );
@@ -165,7 +159,7 @@ class ApiAuthComponent extends Object {
         }
 
         if ($authorized === false) {
-            $this->log('User login not authorized: ' . $userid);
+            $this->log('User login not authorized: ' . $username);
             return false;
         }
 
@@ -224,7 +218,7 @@ class ApiAuthComponent extends Object {
      */
     public function generateRefreshToken() {
         if (!$this->identify()) {
-            throw new BeditaUnauthorizedException();
+            return false;
         }
 
         $refreshToken = Security::generateAuthKey();
@@ -250,7 +244,7 @@ class ApiAuthComponent extends Object {
      */
     public function revokeRefreshToken($refreshToken) {
         if (!$this->identify()) {
-            throw new BeditaUnauthorizedException();
+            return false;
         }
 
         $hashJob = ClassRegistry::init('HashJob');
@@ -385,7 +379,7 @@ class ApiAuthComponent extends Object {
 
     /**
      * Return the userid
-     * It replaces BeAuthComponent::userid() in api context
+     * It replaces BeAuthComponent::userid() in API context
      *
      * @return string
      */
@@ -395,7 +389,7 @@ class ApiAuthComponent extends Object {
 
     /**
      * Return the user data
-     * it replaces BeAuthComponent::getUserSession() in api context
+     * it replaces BeAuthComponent::getUserSession() in API context
      *
      * @return array
      */
@@ -405,7 +399,9 @@ class ApiAuthComponent extends Object {
 
     /**
      * Get the current identified user
-     * It replaces BeAuthComponent::getUser() in api context
+     * It replaces BeAuthComponent::getUser() in API context
+     *
+     * @return array
      */
     public function getUser() {
         return $this->getUserSession();
