@@ -1368,7 +1368,7 @@ abstract class ApiBaseController extends FrontendController {
             $userModel = ClassRegistry::init('User');
             $cardId = $userModel->findCardId($userid);
             if ($cardId !== false) {
-                $this->objects($cardId);
+                $this->getObjects($cardId);
             } else {
                 throw new BeditaNotFoundException();
             }
@@ -1391,51 +1391,60 @@ abstract class ApiBaseController extends FrontendController {
         }
     }
 
-    protected function poster($id = null) {
-        if (!empty($id)) {
-            $objectModel = ClassRegistry::init('BEObject');
-            $obj = $objectModel->field('id', array(
-                'OR' => array(
-                    'id' => $id,
-                    'nickname' => $id
-                )
-            ));
-            if (!empty($obj)) {
-                $poster = $objectModel->getPoster($obj);
-                if ($poster !== false) {
-                    $thumbConf = array();
-                    if (!empty($this->params['url'])) {
-                        $acceptConf = array(
-                            'width' => true,
-                            'height' => true,
-                            'preset' => true
-                        );
-                        $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
-                        if (isset($thumbConf['preset'])) {
-                            $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
-                            if (!empty($presetConf)) {
-                                $thumbConf = $presetConf;
-                            }
-                        }
-                        $thumbConf['URLonly'] = true;
-                    }
+    /**
+     * GET /poster endpoint
+     * Try to return a poster thumbnail url of object $id
+     * For 'poster' is got an image object with the folowing order:
+     * 1. if object $id has a relation 'poster' return that image object
+     * 2. else if object $id is an image object type return it
+     * 3. else if object $id has a relation 'attach' with an image return that image
+     *
+     * Possible query url paramters are:
+     *
+     * - 'width' the thumbnail width
+     * - 'height' the thumbnail height
+     *
+     * @param int|string $id the object id or object nickname
+     * @return void
+     */
+    protected function getPoster($id = null) {
+        if (func_num_args() != 1) {
+            throw new BeditaBadRequestException();
+        }
+        $id = is_numeric($id) ? $id : $this->BEObject->getIdFromNickname($id);
+        if (empty($id)) {
+            throw new BeditaNotFoundException();
+        }
 
-                    try {
-                        $beThumb = BeLib::getObject('BeThumb');
-                        $poster['id'] = (int) $poster['id'];
-                        $poster['uri'] = $beThumb->image($poster, $thumbConf);
-                        $this->setData($poster);
-                    } catch (Exception $ex) {
-                        $this->setData();
+        $poster = $this->BEObject->getPoster($id);
+        if ($poster !== false) {
+            $thumbConf = array();
+            if (!empty($this->params['url'])) {
+                $acceptConf = array(
+                    'width' => true,
+                    'height' => true,
+                    'preset' => true
+                );
+                $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
+                if (isset($thumbConf['preset'])) {
+                    $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
+                    if (!empty($presetConf)) {
+                        $thumbConf = $presetConf;
                     }
-                } else {
-                    $this->setData();
                 }
-            } else {
-                throw new BeditaNotFoundException();
+                $thumbConf['URLonly'] = true;
+            }
+
+            try {
+                $beThumb = BeLib::getObject('BeThumb');
+                $poster['id'] = (int) $poster['id'];
+                $poster['uri'] = $beThumb->image($poster, $thumbConf);
+                $this->setData($poster);
+            } catch (Exception $ex) {
+                $this->setData();
             }
         } else {
-            throw new BeditaBadRequestException();
+            $this->setData();
         }
     }
 
