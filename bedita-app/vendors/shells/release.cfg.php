@@ -44,19 +44,19 @@ $rel["createDirs"] = array(
 $rel['renameFiles'] = array(
     'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'responsive' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'paths.php',
 );
 
 $rel["createFiles"] = array();
