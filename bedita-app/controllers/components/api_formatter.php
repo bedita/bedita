@@ -573,6 +573,13 @@ class ApiFormatterComponent extends Object {
     public function formatObject(array $object, $options = array()) {
         $options += array('countRelations' => false, 'countChildren' => false);
         $object['object_type'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
+        // adjust 'uri' in multimedia objects
+        $multimediaObjectTypeIds = Configure::read('objectTypes.multimedia.id');
+        if (in_array($object['object_type_id'], $multimediaObjectTypeIds)) {
+            if (!empty($object['uri']) && filter_var($object['uri'], FILTER_VALIDATE_URL) === false) {
+                $object['uri'] = Configure::read('mediaUrl') . $object['uri'];
+            }
+        }
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
