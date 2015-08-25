@@ -10,6 +10,7 @@ $rel["removeFiles"]= array(
 );
 
 $rel["removeDirs"]= array(
+    "addons",
     "bedita-deploy",
     "bedita-doc".DS."api".DS."html",
     "bedita-doc".DS."model",
@@ -28,17 +29,7 @@ $rel["createDirs"] = array(
     "bedita-app".DS."tmp".DS."logs",
     "bedita-app".DS."tmp".DS."sessions",
     "bedita-app".DS."tmp".DS."smarty".DS."cache",
-    "bedita-app".DS."tmp".DS."smarty".DS."compile",
-    "addons" . DS . "components",
-    "addons" . DS . "components" . DS . "enabled",
-    "addons" . DS . "config",
-    "addons" . DS . "helpers",
-    "addons" . DS . "helpers" . DS . "enabled",
-    "addons" . DS . "models",
-    "addons" . DS . "models" . DS . "enabled",
-    "addons" . DS . "models" . DS . "behaviors",
-    "addons" . DS . "models" . DS . "behaviors" . DS . "enabled",
-    "addons" . DS . "vendors",
+    "bedita-app".DS."tmp".DS."smarty".DS."compile"
 );
 
 $rel['renameFiles'] = array(
