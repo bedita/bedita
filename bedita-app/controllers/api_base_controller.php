@@ -41,7 +41,6 @@ abstract class ApiBaseController extends FrontendController {
      */
     public $components = array(
         'ResponseHandler' => array('type' => 'json'),
-        'ApiAuth',
         'ApiFormatter',
         'ApiValidator'
     );
@@ -49,18 +48,7 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Contain the instance of API auth component used
      * Normally it corresponds to ApiAuthComponent but it can contain another auth component
-     * To do it a custom component, named for example 'MyAuth', has to be added to self::$components
-     *
-     * ```
-     * public $components = array(
-     *     'ResponseHandler' => array('type' => 'json'),
-     *     'MyAuth',
-     *     'ApiFormatter',
-     *     'ApiValidator'
-     * );
-     * ```
-     *
-     * and activated via conf
+     * To do it a custom component, named for example 'MyAuth', has to be activated via conf
      *
      * ```
      * $config['api'] = array(
@@ -247,14 +235,20 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Constructor
-     * Setup endpoints available:
      *
-     * - Merge self::defaultEndPoints, self::endPoints
-     * - Add to endpoints object types whitelisted
-     * - remove blacklisted endpoints (self::blacklistEndPoints)
+     * - Add auth component (default 'ApiAuth') to self::$components
+     * - Setup endpoints available:
+     *  - Merge self::defaultEndPoints, self::endPoints
+     *  - Add to endpoints object types whitelisted
+     *  - remove blacklisted endpoints (self::blacklistEndPoints)
      */
     public function __construct() {
         Configure::write('Session.start', false);
+        $authComponent = Configure::read('api.auth.component');
+        if (empty($authComponent)) {
+            $authComponent = 'ApiAuth';
+        }
+        $this->components[] = $authComponent;
         parent::__construct();
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
         $objectTypes = Configure::read('objectTypes');
@@ -364,7 +358,7 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function beforeCheckLogin() {
-        $this->setupAuthComponents();
+        $this->setupAuthComponent();
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
@@ -400,7 +394,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Setup components used for authentication:
+     * Setup component used for authentication:
      *
      * - check configuration (api.auth.component) to see if adhoc component should be used and assign it to self::$ApiAuth
      * - replace self::BeAuth with self::ApiAuth to work properly in FrontendController.
@@ -408,20 +402,15 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @return void
      */
-    private function setupAuthComponents() {
+    private function setupAuthComponent() {
         $componentName = Configure::read('api.auth.component');
-        if (!empty($componentName) && $componentName != 'ApiAuth') {
-            $componentClass = $componentName . 'Component';
-            if (empty($this->{$componentName}) || !($this->{$componentName} instanceof $componentClass)) {
-                throw new BeditaInternalErrorException(
-                    'Configuration error. Auth component ' . $componentName . ' is not properly loaded in API controller'
-                );
-            }
-            $this->ApiAuth = $this->{$componentName};
-        } elseif (empty($this->ApiAuth)) {
+        if (!empty($componentName) && $componentName != 'ApiAuth' && !empty($this->{$componentName})) {
+            $this->ApiAuth = &$this->{$componentName};
+        }
+        if (empty($this->ApiAuth)) {
             throw new BeditaInternalErrorException('API auth component is not properly loaded in API controller');
         }
-        $this->BeAuth = $this->ApiAuth;
+        $this->BeAuth = &$this->ApiAuth;
     }
 
     /**
