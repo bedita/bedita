@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-02-17 16:06:34\n"
+"POT-Creation-Date: 2015-08-25 10:53:03\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -41,9 +41,6 @@ msgstr "Aggiungi associazione"
 msgid "Add comma separated words"
 msgstr "Aggiungi parole separate da virgole"
 
-msgid "Add event date"
-msgstr "Aggiungi data evento"
-
 msgid "Add many items"
 msgstr "Aggiungi più elementi"
 
@@ -59,9 +56,6 @@ msgstr "Aggiungi nuovi iscritti"
 msgid "Add selected items"
 msgstr "Aggiungi gli elementi selezionati"
 
-msgid "Addons"
-msgstr "Estensioni"
-
 msgid "Address"
 msgstr "Indirizzo"
 
@@ -73,9 +67,6 @@ msgstr "Alias"
 
 msgid "All modules"
 msgstr "Tutti i moduli"
-
-msgid "All publications are forbidden"
-msgstr "Accesso vietato a tutte le pubblicazioni"
 
 msgid "All unsaved changes will be lost"
 msgstr "Tutte le modifiche non salvate andranno perdute"
@@ -105,11 +96,23 @@ msgstr ""
 "Sei sicuro che vuoi eliminare la proprietà? Procedendo cancellerai anche "
 "tutti i valori associati"
 
+msgid "Are you sure that you want to delete the selected item(s)?"
+msgstr "Sei sicuro di voler eliminare gli elementi selezionati?"
+
 msgid "Are you sure that you want to delete the tag?"
 msgstr "Sicuro di voler eliminare il tag?"
 
 msgid "Are you sure that you want to empty the file?"
 msgstr "Sei sicuro di voler svuotare il file?"
+
+msgid ""
+"Are you sure that you want to merge the selected item(s)? All contents "
+"related to one or more of the checked categories will be associated to the "
+"first category created within the selection, while other ones will be "
+"deleted."
+msgstr "Sei sicuro di voler unire gli elementi selezionati? Tutti gli elementi "
+"collegati ad una o più categorie di quelle selezionate verranno associati alla "
+"prima categoria creata di quelle selezionate, mentre le altre categorie saranno eliminate."
 
 msgid "Are you sure you want to accept this IP?"
 msgstr "Sicuro di voler accettare questo IP"
@@ -212,8 +215,8 @@ msgstr "Behaviors abilitati"
 msgid "Bit depth"
 msgstr "Profondità in bit"
 
-msgid "Bulk actions on"
-msgstr "Operazioni su"
+msgid "Branch"
+msgstr "Ramo"
 
 msgid "Calendar start date after end date"
 msgstr "Nel calendario la data d'inizio è dopo la data di fine"
@@ -329,6 +332,9 @@ msgstr "Contenuto "
 msgid "Content not found"
 msgstr "Contenuto non trovato"
 
+msgid "Contents"
+msgstr "Contenuti"
+
 msgid "Contents with more comments (first 20)"
 msgstr "Contenuti più commentati"
 
@@ -367,6 +373,11 @@ msgstr "Creato il"
 
 msgid "Creator is required (at least %1 alphanumerical char)"
 msgstr "Campo creatore obbligatorio (almeno %1 caratteri alfanumerici)"
+
+msgid ""
+"Currently installed %1 version is too old, and is no longer supported by "
+"BEdita. Please consider upgrading to %2 at least."
+msgstr "La versione corrente %1 è troppo vecchia e non più supportata. Per favore aggiorna almeno alla versione %2."
 
 msgid "Custom Properties"
 msgstr "Proprietà Personalizzate"
@@ -407,9 +418,6 @@ msgstr "Elimina gli elementi selezionati"
 msgid "Description"
 msgstr "Descrizione"
 
-msgid "Destination"
-msgstr "Destinazione"
-
 msgid "Details"
 msgstr "Dettagli"
 
@@ -431,11 +439,21 @@ msgstr "Sicuro di voler eliminare il gruppo"
 msgid "Do you really want to remove user"
 msgstr "Sicuro di voler eliminare l'utente"
 
+msgid "Do you really want update "
+msgstr "Vuoi davvero eseguire l'aggiornamento "
+
 msgid ""
 "Do you want to remove the relation? Relation already created between objects "
 "will be maintained."
 msgstr ""
 "Vuoi eliminare la relazione? Le relazioni già create saranno mantenute."
+
+msgid ""
+"Do you want to save and SEND this newsletter now? (mails are being sent as "
+"soon as possible)"
+msgstr ""
+"Vuoi salvare e inviare la newsletter immediatamente? (la procedura di invio "
+"inizierà subito)"
 
 msgid "Do you want unsubscribe selected items?"
 msgstr "Sicuro di voler disiscrivere gli elementi selezionati"
@@ -502,6 +520,9 @@ msgstr "Errore in controllo url per collegamento:"
 
 msgid "Error creating jobs"
 msgstr "Errore in creazione processi"
+
+msgid "Error deleting User"
+msgstr "Errore eliminando l'utente"
 
 msgid "Error deleting custom property "
 msgstr "Errore in eliminazione proprietà custom "
@@ -611,6 +632,9 @@ msgstr "Errore in salvataggio scheda per "
 msgid "Error saving comment"
 msgstr "Errore in salvataggio dati commento"
 
+msgid "Error saving comment because the IP is banned"
+msgstr "Errore salvando il commento a causa dell'IP bannato"
+
 msgid "Error saving custom property"
 msgstr "Errore in salvataggio dati proprietà personalizzata"
 
@@ -689,6 +713,9 @@ msgstr "Errore di aggiornamento password"
 msgid "Error updating user"
 msgstr "Errore in aggiornamento dati utente"
 
+msgid "Error: could not update this resource"
+msgstr "Errore: non è stato possibile aggiornare questa risorsa"
+
 msgid "Error: utility operation undefined"
 msgstr "Errore: operazione non definita"
 
@@ -700,9 +727,6 @@ msgstr "Calendario"
 
 msgid "Event saved"
 msgstr "Evento salvato"
-
-msgid "Event start"
-msgstr "Inizio"
 
 msgid "Events calendar"
 msgstr "Calendario eventi"
@@ -722,8 +746,17 @@ msgstr "Gruppo esistente"
 msgid "Exit"
 msgstr "Esci"
 
+msgid "Export"
+msgstr "Esporta"
+
 msgid "Export to"
 msgstr "Esporta a"
+
+msgid "Export to CSV"
+msgstr "Esporta in CSV"
+
+msgid "Export to vCard"
+msgstr "Esporta in vCard"
 
 msgid "External auth component not found: "
 msgstr "Componente esterno di autenticazione non trovato"
@@ -757,6 +790,9 @@ msgstr "Fixed"
 
 msgid "Fixed object"
 msgstr "Oggetto fixed"
+
+msgid "Folder"
+msgstr "Cartella"
 
 msgid "For type options you have to define at least two options"
 msgstr "Definire almeno due opzioni, per tipo opzioni"
@@ -884,6 +920,21 @@ msgstr "Importa Dati"
 msgid "Import data"
 msgstr "Importa dati"
 
+msgid "Import error"
+msgstr "Errore d'importazione"
+
+msgid "Import file type:"
+msgstr "Tipo di file da importare:"
+
+msgid "Import options"
+msgstr "Opzioni di importazione"
+
+msgid "Import result"
+msgstr "Risultato dell'importazione"
+
+msgid "Import successfull"
+msgstr "Importazione avvenuta con successo"
+
 msgid "Incorrect hash command"
 msgstr "Comando di hash incorretto"
 
@@ -916,6 +967,9 @@ msgstr "Ultimo accesso il:"
 
 msgid "Last check"
 msgstr "Ultima verifica"
+
+msgid "Last commit"
+msgstr "Ultimo commit"
 
 msgid "Last result"
 msgstr "Ultimo risultato"
@@ -1010,6 +1064,9 @@ msgstr "Gestisci relazioni"
 msgid "Media already exists in the system"
 msgstr "Media già esiste nel sistema"
 
+msgid "Media file expected, hash value is present"
+msgstr "Media file atteso, l'hash è presente"
+
 msgid "Media file is missing"
 msgstr "File multimediale non trovato"
 
@@ -1031,6 +1088,9 @@ msgstr "Oggetto mediamap"
 msgid "Message template"
 msgstr "Template messaggio"
 
+msgid "Missing content unique name or id"
+msgstr "Manca il nome uinivoco o l'id"
+
 msgid "Missing data"
 msgstr "Dati mancanti"
 
@@ -1039,12 +1099,6 @@ msgstr "Mancano dati del gruppo da rimuovere"
 
 msgid "Missing email to send recover instructions"
 msgstr "Email non corretta per l'invio di istruzioni di recover"
-
-msgid "Missing form data"
-msgstr "Valori del form mancanti"
-
-msgid "Missing from field"
-msgstr "Campo 'Da' mancante"
 
 msgid "Missing invoices"
 msgstr "Invoice mancanti"
@@ -1058,8 +1112,14 @@ msgstr "Id gruppo di posta mancante"
 msgid "Missing message id or recipient"
 msgstr "Manca id messaggio o destinatario"
 
+msgid "Missing object id"
+msgstr "Manca l'id dell'oggetto"
+
 msgid "Missing object type"
 msgstr "Manca tipo oggetto"
+
+msgid "Missing object unique name or id"
+msgstr "Manca il nome univoco o l'id dell'oggetto"
 
 msgid "Missing options"
 msgstr "Opzioni mancanti"
@@ -1067,11 +1127,11 @@ msgstr "Opzioni mancanti"
 msgid "Missing parent"
 msgstr "Parent mancante"
 
+msgid "Missing parent_id"
+msgstr "Manca il parent_id"
+
 msgid "Missing publication"
 msgstr "Pubblicazione mancante"
-
-msgid "Missing recipient"
-msgstr "Destinatario mancante"
 
 msgid "Missing referenced object. Save new item before adding a note"
 msgstr ""
@@ -1084,11 +1144,11 @@ msgstr "Nome della relazione da eliminare mancante"
 msgid "Missing relation to delete"
 msgstr "Relazione da eliminare mancante"
 
+msgid "Missing sender email"
+msgstr "Manca l'indirizzo email del mittente"
+
 msgid "Missing sending date"
 msgstr "Manca la data invio"
-
-msgid "Missing subject field"
-msgstr "Manca il campo soggetto"
 
 msgid "Missing temporary file in filesystem."
 msgstr "Manca file temporaneo nel sistema"
@@ -1184,6 +1244,9 @@ msgstr "News salvata"
 msgid "Newsletter"
 msgstr "Newsletter"
 
+msgid "Newsletter association for"
+msgstr "Associazione alla newsletter per"
+
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
 msgstr ""
 "Newsletter inviata. Per programmare un altro invio clona questo elemento."
@@ -1197,26 +1260,11 @@ msgstr "Newsletter"
 msgid "Newsletters "
 msgstr "Newsletters "
 
-msgid "Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at"
-msgstr "Attenzione. Ogni modifica che fai potrebbe non essere applicata se non salvi in tempo. La newsletter sta per essere inviata in meno di un'ora, alle"
-
-msgid "schedule date and time"
-msgstr "date e ora di invio"
-
 msgid "Newsletters sent this month"
 msgstr "Newsletter inviate questo mese"
 
-msgid "Save & queue newsletter"
-msgstr "Salva e accoda newsletter"
-
-msgid "Test newsletter"
-msgstr "Prova newsletter"
-
-msgid "now"
-msgstr "ora"
-
-msgid "Do you want to save and SEND this newsletter now? (mails are being sent as soon as possible)"
-msgstr "Vuoi salvare e inviare la newsletter immediatamente? (la procedura di invio inizierà subito)"
+msgid "Newsletters sent this year"
+msgstr "Newsletter inviate quest'anno"
 
 msgid "No"
 msgstr "No"
@@ -1305,6 +1353,12 @@ msgstr "Nessuna newsletter trovata"
 msgid "No object id specified"
 msgstr "Nessun id oggetto specificato"
 
+msgid "No object was imported"
+msgstr "Nessun oggetto è stato importato"
+
+msgid "No permission access to this function"
+msgstr "Non hai i permessi per accedere a questa funzione"
+
 msgid "No plugins found on filesystem"
 msgstr "Nessun plugin trovato nel filesystem"
 
@@ -1377,8 +1431,8 @@ msgstr "Note"
 msgid "Notice"
 msgstr "Informazione"
 
-msgid "Notification mail delivery failed"
-msgstr "Consegna mail di notifica fallita"
+msgid "Number of imported objects:"
+msgstr "Numero di oggetti importati:"
 
 msgid "Number of objects"
 msgstr "Numero di oggetti"
@@ -1407,6 +1461,9 @@ msgstr "Apri Calendario"
 msgid "Operations on"
 msgstr "Operazioni su"
 
+msgid "Operations on %1 selected items"
+msgstr "Operazioni su %1 elementi selezionati"
+
 msgid "Or use one of this external auth service"
 msgstr "Oppure usa uno tra i servizi di autenticazione esterna"
 
@@ -1424,6 +1481,12 @@ msgstr "Altri modelli"
 
 msgid "Overview"
 msgstr "Panoramica"
+
+msgid ""
+"PHP extension %1 doesn't seem to be loaded, but it's required for BEdita "
+"full functionality. Please, ensure it is correctly installed."
+msgstr "L'estenzione %1 di PHP non sembra attiva, ma è richiesta per il funzionamento di BEdita."
+"Per favore assicurati che sia correttamente installata."
 
 msgid "PLAIN TEXT version"
 msgstr "versione SOLO TESTO"
@@ -1469,18 +1532,6 @@ msgstr "Verificare"
 
 msgid "Please choose an existing card, or create a new one."
 msgstr "Per favore, scegli una scheda esistente o creane una nuova."
-
-msgid "Please enter a valid date in the %1 format"
-msgstr "Inserire una data valida nel formato %1"
-
-msgid ""
-"Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
-"Inserire una data valida nel formato %1 e successiva alla data "
-"precedentemente inserita"
-
-msgid "Please enter a valid time in the %1 format"
-msgstr "Inserire un orario valido nel formato %1"
 
 msgid "Plugged modules"
 msgstr "Moduli collegati"
@@ -1569,6 +1620,9 @@ msgstr "Relazione salvata"
 msgid "Remove"
 msgstr "Rimuovi"
 
+msgid "Remove association"
+msgstr "Rimuovi associazione"
+
 msgid "Remove selected from"
 msgstr "Rimuovi selezione da"
 
@@ -1581,6 +1635,9 @@ msgstr "Metodo protetto richiamato da url"
 msgid "Resource "
 msgstr "Risorsa "
 
+msgid "Revision control system"
+msgstr "Sistema di controllo di versione"
+
 msgid "Rewrite password"
 msgstr "Riscrivere password"
 
@@ -1592,6 +1649,9 @@ msgstr "Righe da mostrare"
 
 msgid "Save"
 msgstr "Salva"
+
+msgid "Save & queue newsletter"
+msgstr "Salva e accoda newsletter"
 
 msgid "Save draft"
 msgstr "Salva bozza"
@@ -1608,8 +1668,13 @@ msgstr "Sezione elimnata"
 msgid "Section saved"
 msgstr "Sezione salvata"
 
+msgid "Sections"
+msgstr "Sezioni"
+
 msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
-msgstr "Errore di sicurezza: il token CSRF è invalido. Per favore prova a inviare i dati nuovamente"
+msgstr ""
+"Errore di sicurezza: il token CSRF è invalido. Per favore prova a inviare i "
+"dati nuovamente"
 
 msgid "Select a category"
 msgstr "Selezionare una categoria"
@@ -1617,20 +1682,17 @@ msgstr "Selezionare una categoria"
 msgid "Select a destination to 'copy to'"
 msgstr "Seleziona una destinazione per il 'copy to'"
 
-msgid "mailgroup"
-msgstr "Lista newsletter"
-
 msgid "Select a mailgroup"
 msgstr "Selezionare una lista della newsletter"
 
-msgid "Missing sender email"
-msgstr "Manca l'indirizzo email del mittente"
-
-msgid "Missing send time"
-msgstr "Manca l'ora di invio"
-
 msgid "Select a status"
 msgstr "Selezionare uno status"
+
+msgid "Select all"
+msgstr "Seleziona tutto"
+
+msgid "Select an import filter in Source data"
+msgstr "Seleziona un filtro d'importazione"
 
 msgid "Select by category"
 msgstr "Seleziona per categoria"
@@ -1638,8 +1700,8 @@ msgstr "Seleziona per categoria"
 msgid "Select content languages"
 msgstr "Selezionare lingue contenuti"
 
-msgid "Select file(s)"
-msgstr "Selezionare i(l) file"
+msgid "Select file"
+msgstr "Seleziona file"
 
 msgid "Select something in the editor"
 msgstr "Seleziona qualcosa nell'editor"
@@ -1686,9 +1748,6 @@ msgstr "Statistiche"
 msgid "Status"
 msgstr "Status"
 
-msgid "Subject"
-msgstr "Soggetto"
-
 msgid "Submit"
 msgstr "Submit"
 
@@ -1718,6 +1777,9 @@ msgstr "Info di Sistema"
 
 msgid "System Logs"
 msgstr "Log di Sistema"
+
+msgid "System User cannot be deleted!"
+msgstr "L'utente di sistema non può essere cancellato!"
 
 msgid "System configuration"
 msgstr "Configurazione Sistema"
@@ -1764,6 +1826,9 @@ msgstr "Template"
 msgid "Test mail sent to "
 msgstr "Test per invio posta a "
 
+msgid "Test newsletter"
+msgstr "Prova newsletter"
+
 msgid "Test on GoogleMaps"
 msgstr "Verifica su GoogleMaps"
 
@@ -1807,9 +1872,6 @@ msgstr "Il titolo è necesario"
 
 msgid "To unsubscribe"
 msgstr "Per disiscriverti"
-
-msgid "Tools"
-msgstr "Strumenti"
 
 msgid "Total"
 msgstr "Totale"
@@ -1870,6 +1932,15 @@ msgstr "Disiscrivi gli elementi selezionati"
 
 msgid "Unsupported type"
 msgstr "Tipo non supportato"
+
+msgid "Update BEdita"
+msgstr "Aggiorna BEdita"
+
+msgid "Update frontends"
+msgstr "Aggiorna i frontends"
+
+msgid "Update modules"
+msgstr "Aggiorna i moduli"
 
 msgid "Upload"
 msgstr "Upload"
@@ -1986,6 +2057,16 @@ msgstr "ATTENDERE"
 msgid "Warning"
 msgstr "Attenzione"
 
+msgid ""
+"Warning. Any change could be ignored if you don't save in time. This "
+"newsletter is being sent in less than an hour, at"
+msgstr ""
+"Attenzione. Ogni modifica che fai potrebbe non essere applicata se non salvi "
+"in tempo. La newsletter sta per essere inviata in meno di un'ora, alle"
+
+msgid "Warnings"
+msgstr "Avvertenze"
+
 msgid "Width"
 msgstr "larghezza"
 
@@ -2010,20 +2091,28 @@ msgstr "SI"
 msgid "Yes"
 msgstr "Sì"
 
+msgid "You are not allowed to block this user"
+msgstr "Non hai il permesso per bloccare quest'utente"
+
 msgid "You are not allowed to edit this user"
 msgstr "Non sei autorizzato a modificare questo utente"
 
 msgid "You are not allowed to remove this user"
 msgstr "Non sei autorizzato a rimuovere questo utente"
 
-msgid "You aren't authorized to access that item"
-msgstr "Non sei autorizzato ad accedere a questo elemento"
+msgid "You are not authorized to access that item"
+msgstr "Non sei autorizzato ad accedere all'elemento"
 
 msgid "You can't use remote file"
 msgstr "Non puoi usare file remoti"
 
 msgid "You have to be logged to access that item"
 msgstr "Devi effettuare l'accesso per accedere a questo elemento"
+
+msgid ""
+"Your database engine (%1) is not supported by BEdita. Supported SQL servers: "
+"%2."
+msgstr "Il tuo database (%1) non è supportato da BEdita. I database supportati sono: %2"
 
 msgid "accept this IP!"
 msgstr "accetta questo IP!"
@@ -2064,17 +2153,11 @@ msgstr "aggiungi al gruppo"
 msgid "add users"
 msgstr "aggiungi utenti"
 
-msgid "addon plugged succesfully"
-msgstr "addon abilitato con successo"
-
 msgid "address"
 msgstr "indirizzo"
 
 msgid "addressbook"
 msgstr "rubrica"
-
-msgid "addressbook details"
-msgstr "dettagli rubrica"
 
 msgid "admin"
 msgstr "amministrazione"
@@ -2093,9 +2176,6 @@ msgstr "tutte le schede"
 
 msgid "all comments"
 msgstr "tutti i commenti"
-
-msgid "all contents"
-msgstr "tutti i contenuti"
 
 msgid "all galleries"
 msgstr "tutte le gallerie"
@@ -2169,11 +2249,20 @@ msgstr "rimanda all'email (bounce)"
 msgid "browse your disk"
 msgstr "sfoglia, cerca nel disco"
 
+msgid "by"
+msgstr "da"
+
+msgid "card details"
+msgstr "dettagli card"
+
 msgid "card(s) associated to mailgroup"
 msgstr "schede associate a lista newsletter"
 
 msgid "cards"
 msgstr "schede"
+
+msgid "cards without email not added to mailgroup"
+msgstr "card senza email non sono aggiunte alla lista"
 
 msgid "categories"
 msgstr "categorie"
@@ -2186,9 +2275,6 @@ msgstr "cambia"
 
 msgid "change status"
 msgstr "cambia status"
-
-msgid "change status to"
-msgstr "cambia status in"
 
 msgid "change status to:"
 msgstr "cambia status in:"
@@ -2255,9 +2341,6 @@ msgstr "contatto email"
 
 msgid "contact the project admin"
 msgstr "contatta l'amministratore del progetto"
-
-msgid "content type"
-msgstr "tipo contenuto"
 
 msgid "contents"
 msgstr "contenuti"
@@ -2346,14 +2429,6 @@ msgstr "descrizione"
 msgid "details"
 msgstr "dettagli"
 
-msgid "disable succesfully"
-msgstr "disabilitato con successo"
-
-msgid "disable succesfully, all related objects are been deleted"
-msgstr ""
-"disabilitazione avvenuta con successo, tutti gli oggetti correlati sono "
-"stati eliminati"
-
 msgid "district"
 msgstr "regione"
 
@@ -2402,14 +2477,8 @@ msgstr "svuotare file di log"
 msgid "empty logs"
 msgstr "svuotare log"
 
-msgid "enabled folder isn't writable"
-msgstr "la cartella 'enabled' non è scrivibile"
-
 msgid "end"
 msgstr "fine"
-
-msgid "end has to be a valid date in the following format:"
-msgstr "il campo Fine deve essere una data valida nel seguente formato:"
 
 msgid "events"
 msgstr "eventi"
@@ -2443,6 +2512,9 @@ msgstr "nome file"
 
 msgid "filesize"
 msgstr "dimensione file"
+
+msgid "filter has no options"
+msgstr "il filtro non ha opzioni"
 
 msgid "filter:"
 msgstr "filtro:"
@@ -2509,6 +2581,9 @@ msgstr "ibrido"
 
 msgid "id"
 msgstr "id"
+
+msgid "id or unique name"
+msgstr "id o nome univoco"
 
 msgid "image"
 msgstr "immagine"
@@ -2624,6 +2699,9 @@ msgstr "longitudine"
 msgid "mail body"
 msgstr "testo della mail"
 
+msgid "mailgroup"
+msgstr "Lista newsletter"
+
 msgid "mails / minute"
 msgstr "email / minuto"
 
@@ -2688,6 +2766,9 @@ msgstr "media url non raggiungibile"
 
 msgid "media url not set"
 msgstr "media url non impostato"
+
+msgid "merge"
+msgstr "unire"
 
 msgid "message board"
 msgstr "area messaggi"
@@ -2830,6 +2911,9 @@ msgstr "note"
 msgid "notify me by email"
 msgstr "inviami notifica per email"
 
+msgid "now"
+msgstr "ora"
+
 msgid "number"
 msgstr "numero"
 
@@ -2865,6 +2949,9 @@ msgstr "vecchia psw"
 
 msgid "on"
 msgstr "on"
+
+msgid "on date"
+msgstr "alla data"
 
 msgid "on my stuff only"
 msgstr "su cose mie soltanto"
@@ -2976,6 +3063,9 @@ msgstr "lista privata "
 
 msgid "profile"
 msgstr "profilo"
+
+msgid "projects found"
+msgstr "progetti trovati"
 
 msgid "promote as user"
 msgstr "promuovi a utente"
@@ -3101,6 +3191,9 @@ msgstr "salva profilo"
 msgid "save this new relation"
 msgstr "salva nuova relazione"
 
+msgid "schedule date and time"
+msgstr "date e ora di invio"
+
 msgid "scheduled"
 msgstr "programmato"
 
@@ -3116,14 +3209,11 @@ msgstr "cerca utente"
 msgid "search word"
 msgstr "cerca la parola"
 
-msgid "sections"
-msgstr "sezioni"
-
-msgid "sections only"
-msgstr "solo sezioni"
-
 msgid "see all"
 msgstr "vedi tutto"
+
+msgid "see details"
+msgstr "vedi i dettagli"
 
 msgid "see error detail"
 msgstr "vedi dettagli errore"
@@ -3151,9 +3241,6 @@ msgstr "seleziona un elemento da collegare"
 
 msgid "select an object type"
 msgstr "seleziona un tipo di oggetto"
-
-msgid "select one"
-msgstr "seleziona uno"
 
 msgid "select position"
 msgstr "seleziona la posizione"
@@ -3212,9 +3299,6 @@ msgstr "inizio"
 
 msgid "start from"
 msgstr "inizio da"
-
-msgid "start has to be a valid date in the following format:"
-msgstr "il campo start deve essere una data valida nel seguente formato:"
 
 msgid "state"
 msgstr "stato"
@@ -3324,6 +3408,9 @@ msgstr "unplugged con successo"
 msgid "unsent"
 msgstr "non inviato"
 
+msgid "update"
+msgstr "aggiorna"
+
 msgid ""
 "update name (if empty), mime_type (if empty), size and hash_file fields of "
 "streams table"
@@ -3333,9 +3420,6 @@ msgstr ""
 
 msgid "update stream fields"
 msgstr "aggiornare campi stream"
-
-msgid "updated succesfully"
-msgstr "aggiornato con successo"
 
 msgid "url"
 msgstr "url"
@@ -3426,6 +3510,111 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+#~ msgid "Add event date"
+#~ msgstr "Aggiungi data evento"
+
+#~ msgid "Addons"
+#~ msgstr "Estensioni"
+
+#~ msgid "All publications are forbidden"
+#~ msgstr "Accesso vietato a tutte le pubblicazioni"
+
+#~ msgid "Bulk actions on"
+#~ msgstr "Operazioni su"
+
+#~ msgid "Destination"
+#~ msgstr "Destinazione"
+
+#~ msgid "Event start"
+#~ msgstr "Inizio"
+
+#~ msgid "Missing form data"
+#~ msgstr "Valori del form mancanti"
+
+#~ msgid "Missing from field"
+#~ msgstr "Campo 'Da' mancante"
+
+#~ msgid "Missing recipient"
+#~ msgstr "Destinatario mancante"
+
+#~ msgid "Missing subject field"
+#~ msgstr "Manca il campo soggetto"
+
+#~ msgid "Notification mail delivery failed"
+#~ msgstr "Consegna mail di notifica fallita"
+
+#~ msgid "Please enter a valid date in the %1 format"
+#~ msgstr "Inserire una data valida nel formato %1"
+
+#~ msgid ""
+#~ "Please enter a valid date in the %1 format and greater than the previous "
+#~ "date"
+#~ msgstr ""
+#~ "Inserire una data valida nel formato %1 e successiva alla data "
+#~ "precedentemente inserita"
+
+#~ msgid "Please enter a valid time in the %1 format"
+#~ msgstr "Inserire un orario valido nel formato %1"
+
+#~ msgid "Missing send time"
+#~ msgstr "Manca l'ora di invio"
+
+#~ msgid "Select file(s)"
+#~ msgstr "Selezionare i(l) file"
+
+#~ msgid "Subject"
+#~ msgstr "Soggetto"
+
+#~ msgid "Tools"
+#~ msgstr "Strumenti"
+
+#~ msgid "You aren't authorized to access that item"
+#~ msgstr "Non sei autorizzato ad accedere a questo elemento"
+
+#~ msgid "addon plugged succesfully"
+#~ msgstr "addon abilitato con successo"
+
+#~ msgid "addressbook details"
+#~ msgstr "dettagli rubrica"
+
+#~ msgid "all contents"
+#~ msgstr "tutti i contenuti"
+
+#~ msgid "change status to"
+#~ msgstr "cambia status in"
+
+#~ msgid "content type"
+#~ msgstr "tipo contenuto"
+
+#~ msgid "disable succesfully"
+#~ msgstr "disabilitato con successo"
+
+#~ msgid "disable succesfully, all related objects are been deleted"
+#~ msgstr ""
+#~ "disabilitazione avvenuta con successo, tutti gli oggetti correlati sono "
+#~ "stati eliminati"
+
+#~ msgid "enabled folder isn't writable"
+#~ msgstr "la cartella 'enabled' non è scrivibile"
+
+#~ msgid "end has to be a valid date in the following format:"
+#~ msgstr "il campo Fine deve essere una data valida nel seguente formato:"
+
+#~ msgid "sections"
+#~ msgstr "sezioni"
+
+#~ msgid "sections only"
+#~ msgstr "solo sezioni"
+
+#~ msgid "select one"
+#~ msgstr "seleziona uno"
+
+#~ msgid "start has to be a valid date in the following format:"
+#~ msgstr "il campo start deve essere una data valida nel seguente formato:"
+
+#~ msgid "updated succesfully"
+#~ msgstr "aggiornato con successo"
 
 #~ msgid "Category deleted"
 #~ msgstr "Categoria eliminata"
