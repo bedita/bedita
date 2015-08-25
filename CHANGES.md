@@ -1,5 +1,134 @@
 # ChangeLog
 
+## Version 3.6.0 - Corylus
+
+### User-visible changes
+
+* [#504](https://github.com/bedita/bedita/issues/504) Publications: review detail page
+* [#640](https://github.com/bedita/bedita/issues/640) ui: handle import/export filter dynamic options
+* [#480](https://github.com/bedita/bedita/issues/480) Tag filter in objects list view
+* [#660](https://github.com/bedita/bedita/issues/660) ui: parameters select not working adding new related objects
+* [#641](https://github.com/bedita/bedita/issues/641) new data import page on backend
+* [#642](https://github.com/bedita/bedita/issues/642) Maximize button for rich text editor in Newsletter module
+* [#634](https://github.com/bedita/bedita/issues/634) Animated gif should be preserved by beEmbedMedia
+* [#632](https://github.com/bedita/bedita/issues/632) publications: "create new section here" is not working
+* [#624](https://github.com/bedita/bedita/issues/624) General review of Newsletter module
+* [#621](https://github.com/bedita/bedita/issues/621) addressbook: bulk operations on newsletter mailgroup
+* [#611](https://github.com/bedita/bedita/issues/611) backend: id/nickname direct lookup
+* [#620](https://github.com/bedita/bedita/issues/620) addressbook: country select box is not working
+* [#603](https://github.com/bedita/bedita/issues/603) reuse core modules views - include path problems
+* [#614](https://github.com/bedita/bedita/issues/614) Checkbox behavior inside contents list
+* [#605](https://github.com/bedita/bedita/issues/605) Relations modal window:  select all
+* [#727](https://github.com/bedita/bedita/issues/727) BEdita error page not showing on missing module
+* [#292](https://github.com/bedita/bedita/issues/292) Indexing when changing title and or description outside of Multimedia module
+* [#666](https://github.com/bedita/bedita/issues/666) Addressbook: card details links tab is missing
+* [#652](https://github.com/bedita/bedita/issues/652) data JSON export/import from backend via filter
+* [#654](https://github.com/bedita/bedita/issues/654) Links translations not handled
+* [#653](https://github.com/bedita/bedita/issues/653) Error enabling addon behaviors
+* [#635](https://github.com/bedita/bedita/issues/635) admin / system info - check requirements
+* [#657](https://github.com/bedita/bedita/issues/657) notification email in HTML as mail type
+* [#505](https://github.com/bedita/bedita/issues/505) create a result view for search on area modules.
+* [#484](https://github.com/bedita/bedita/issues/484) translations: open tabs and html title
+* [#630](https://github.com/bedita/bedita/issues/630) multimedia: blank uri but hash_file has value
+* [#485](https://github.com/bedita/bedita/issues/485) admin: software update from git/svn
+* [#631](https://github.com/bedita/bedita/issues/631) addressbook: import/export vcard/CSV
+* [#595](https://github.com/bedita/bedita/issues/595) Inconsistency in new Section creation form
+* [#618](https://github.com/bedita/bedita/issues/618) First user created become system user and it has to be not removable
+* [#573](https://github.com/bedita/bedita/issues/573) Automatically create Card when creating a new User
+* [#622](https://github.com/bedita/bedita/issues/622) newsletter: error in unsubscribe items from mail group list
+* [#612](https://github.com/bedita/bedita/issues/612) Events: calendar day saving is bugged
+* [#604](https://github.com/bedita/bedita/issues/604) newsletter: HTML version of template not saved
+* [#607](https://github.com/bedita/bedita/issues/607) Links custom properties not handled
+* [#590](https://github.com/bedita/bedita/issues/590) Non-administrators backend users are able remove "fixed" property
+
+### Frontend changes
+
+* [#725](https://github.com/bedita/bedita/issues/725) introduce paths.php to define/override app paths
+* [#655](https://github.com/bedita/bedita/issues/655) Create a view helper method for hyphenation
+* [#558](https://github.com/bedita/bedita/issues/558) Implement Frontend RESTful API version 1
+* [#734](https://github.com/bedita/bedita/issues/734) API: introduce a simple way to use custom auth component
+* [#715](https://github.com/bedita/bedita/issues/715) API: implement method PUT to /objects/:id endpoint
+* [#733](https://github.com/bedita/bedita/issues/733) API: implement GET /objects/:id/children/:child_id
+* [#716](https://github.com/bedita/bedita/issues/716) API: implement method DELETE to /objects/:id endpoint
+* [#714](https://github.com/bedita/bedita/issues/714) API: implement method POST to /objects endpoint
+* [#728](https://github.com/bedita/bedita/issues/728) API: implement GET /objects/:id/relations/:name/:related_id
+* [#726](https://github.com/bedita/bedita/issues/726) API: permit to have empty payload in response
+* [#700](https://github.com/bedita/bedita/issues/700) API: change the /objects response 'data' removing relations/children details
+* [#701](https://github.com/bedita/bedita/issues/701) API: add /objects/:id/relations/:type
+* [#681](https://github.com/bedita/bedita/issues/681) API: control which fields hide/show
+* [#705](https://github.com/bedita/bedita/issues/705) API: check objects belong to publication
+* [#704](https://github.com/bedita/bedita/issues/704) API: fix /objects/:id/children and add /object/:id/contents and /objects/:id/sections
+* [#702](https://github.com/bedita/bedita/issues/702) API: handling pagination
+* [#703](https://github.com/bedita/bedita/issues/703) API: define a new $modelBindings level in models to use for api
+* [#698](https://github.com/bedita/bedita/issues/698) API: object types endpoints have  to be enabled with whitelist
+* [#691](https://github.com/bedita/bedita/issues/691) API: base url should show the available endpoints
+* [#679](https://github.com/bedita/bedita/issues/679) API: blacklist property to forbid use of some methods
+* [#687](https://github.com/bedita/bedita/issues/687) API: set Access-Control-Allow-Methods
+* [#686](https://github.com/bedita/bedita/issues/686) API: handle draft/off publication
+* [#682](https://github.com/bedita/bedita/issues/682) API: Access token remotion
+* [#673](https://github.com/bedita/bedita/issues/673) frontend search: don't use trees.priority in query
+* [#659](https://github.com/bedita/bedita/issues/659) Add interlace param to BeEmbedMediaHelper.
+* [#608](https://github.com/bedita/bedita/issues/608) Remove Content-Style-Type meta when document type is HTML 5
+* [#576](https://github.com/bedita/bedita/issues/576) web app capable meta data
+* [#690](https://github.com/bedita/bedita/issues/690) FrontendController::getPath causes 404 when an object is ubiquitous with a section `off`
+
+### Developer-visible changes
+
+* [#689](https://github.com/bedita/bedita/issues/689) problems exporting a section with `off` status
+* [#731](https://github.com/bedita/bedita/issues/731) shell: bedita checkMedia exclude dirs from check
+* [#729](https://github.com/bedita/bedita/issues/729) mail messages with missing data are set to 'failed' - enhanced log
+* [#720](https://github.com/bedita/bedita/issues/720) memcache support for object cache
+* [#723](https://github.com/bedita/bedita/issues/723) Callback system improvements
+* [#722](https://github.com/bedita/bedita/issues/722) Related objects' title and description emptied if not provided
+* [#717](https://github.com/bedita/bedita/issues/717) new addons structure
+* [#712](https://github.com/bedita/bedita/issues/712) ResponseHandler set json only if first Accepts param
+* [#707](https://github.com/bedita/bedita/issues/707) Fix warning if missing file size.
+* [#709](https://github.com/bedita/bedita/issues/709) BEAppModel::am() overrides populated values with empty values
+* [#708](https://github.com/bedita/bedita/issues/708) remove CSFR token in saved configuration arrays
+* [#699](https://github.com/bedita/bedita/issues/699) beEmbedMedia: add width and height attributes to the img tag
+* [#671](https://github.com/bedita/bedita/issues/671) Categories' bulk actions
+* [#540](https://github.com/bedita/bedita/issues/540) Installing BEdita with already populated DB prompts to overwrite user with ID=1
+* [#655](https://github.com/bedita/bedita/issues/655) Create a view helper method for hyphenation
+* [#697](https://github.com/bedita/bedita/issues/697) Fatal Error plug-in/plug-out modules
+* [#696](https://github.com/bedita/bedita/issues/696) Custom `loadObjectToAssoc` templates in modules
+* [#695](https://github.com/bedita/bedita/issues/695) Undefined variable in `AppError`
+* [#688](https://github.com/bedita/bedita/issues/688) dynamic callbacks not working for some object types
+* [#684](https://github.com/bedita/bedita/issues/684) Avoid to use directly BeAuthComponent::user
+* [#676](https://github.com/bedita/bedita/issues/676) db: increase objects.note field size
+* [#675](https://github.com/bedita/bedita/issues/675) search: sql error on custom behavior filter adding 'order by'
+* [#674](https://github.com/bedita/bedita/issues/674) After saving a new object, it doesn't clean cached objects related to the new one
+* [#650](https://github.com/bedita/bedita/issues/650) Wrong user_created / user_modified saving some objects
+* [#664](https://github.com/bedita/bedita/issues/664) Add order parameter in getUserHistory() from Model->History
+* [#584](https://github.com/bedita/bedita/issues/584) fix export -types, custom properties
+* [#470](https://github.com/bedita/bedita/issues/470) dynamic callbacks on backend operation
+* [#625](https://github.com/bedita/bedita/issues/625) Data JSON export - use model binding
+* [#665](https://github.com/bedita/bedita/issues/665) Switching autosave from enable to disable and vice versa throw a CSRF missing token
+* [#662](https://github.com/bedita/bedita/issues/662) data export/import - fields to ignore and fields to move from objects to tree.sections
+* [#651](https://github.com/bedita/bedita/issues/651) data import - use http URL as source media root
+* [#658](https://github.com/bedita/bedita/issues/658) data export/import - handle trees.menu field
+* [#659](https://github.com/bedita/bedita/issues/659) Add JPEG quality param to BeEmbedMediaHelper.
+* [#570](https://github.com/bedita/bedita/issues/570) Redesign exceptions and errors handling
+* [#641](https://github.com/bedita/bedita/issues/641) basic formatting of import form answer
+* [#648](https://github.com/bedita/bedita/issues/648) XML import/export filters
+* [#647](https://github.com/bedita/bedita/issues/647) implement csv cards import filter
+* [#639](https://github.com/bedita/bedita/issues/639) Associated models are merged into main object in BEAppModel::findObjects()
+* [#626](https://github.com/bedita/bedita/issues/626) data export: don't add custom properties config if a type is not exported
+* [#541](https://github.com/bedita/bedita/issues/541) Filter "count_relations" groups all rows in result
+* [#637](https://github.com/bedita/bedita/issues/637) BeThumb: mime type recognition fails on known file extension
+* [#606](https://github.com/bedita/bedita/issues/606) data XML import/export based on JSON
+* [#633](https://github.com/bedita/bedita/issues/633) home controller: public function view($id)  error is not correctly handled
+* [#627](https://github.com/bedita/bedita/issues/627) data JSON export/import - more result info
+* [#628](https://github.com/bedita/bedita/issues/628) data export: -relations option
+* [#594](https://github.com/bedita/bedita/issues/594) data JSON export/import - media and relations check consistency
+* [#592](https://github.com/bedita/bedita/issues/592) Data JSON export - warning on Audio, BEFile
+* [#623](https://github.com/bedita/bedita/issues/623) Vulnerability in BEdita 3.5.1
+* [#561](https://github.com/bedita/bedita/issues/561) default JSON import/export logic
+* [#610](https://github.com/bedita/bedita/issues/610) xss vulnerability
+* [#583](https://github.com/bedita/bedita/issues/583) section priority in JSON export/import
+* [#597](https://github.com/bedita/bedita/issues/597) Some parts of backend are exposed to CSRF attacks
+* [#602](https://github.com/bedita/bedita/issues/602) Adding link to other object raise a csrf token error
+
+
 ## Version 3.5.1 - Corylus
 
 ### User-visible changes
