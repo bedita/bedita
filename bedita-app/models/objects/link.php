@@ -63,7 +63,7 @@ class Link extends BEAppObjectModel {
         'api' => array('BEObject' => array('LangText','ObjectProperty'))
     );
 
-    public $objectTypesGroups = array('leafs');
+    public $objectTypesGroups = array('leafs', 'related');
 
     public function beforeSave() {
         if(!empty($this->data['Link']['url'])) { // when saveField() is called, no url checks should be done

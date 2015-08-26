@@ -92,6 +92,7 @@ class Section extends BeditaCollectionModel
 		)
 	) ;
 
+    public $objectTypesGroups = array('related');
 
 	function afterSave($created) {
 		if (!$created) {
