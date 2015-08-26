@@ -377,4 +377,214 @@ class Permission extends BEAppModel
 		return $objects;
 	}
 
+    /**
+     * Return information about frontend not accessible related objects to $objectId
+     *
+     * If $options['count'] = false (default) it returns a list of object ids with permission 'frontend_access_with_block'
+     * related to main object $objectId.
+     * Passing also $options['relation'] it filters by relation name
+     *
+     * If $options['count'] = true it returns an array of count of objects with permission 'frontend_access_with_block'
+     * related to main object $objectId and grouped by relation name
+     *
+     * Example:
+     * ```
+     * array(
+     *     'attach' => 14,
+     *     'seealso' => 7
+     * )
+     * ```
+     *
+     * If $user['groups'] is specified then it tests related objects against user groups and return a list
+     * without objects allowed to user or a count of objects not allowed to user
+     *
+     * @param int $objectId the main object id
+     * @param string $relation the relation name
+     * @param array $user the user data on which check perms
+     * @return array
+     */
+    public function relatedObjectsNotAccessibile($objectId, array $options = array(), array $user = array()) {
+        $options += array(
+            'relation' => null,
+            'count' => false,
+            'status' => null
+        );
+
+        $conditions = array(
+            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+            'Permission.switch' => 'group',
+            'ObjectRelation.id' => $objectId
+        );
+        if (!empty($options['relation'])) {
+            $conditions['ObjectRelation.switch'] = $options['relation'];
+        }
+
+        if ($options['count']) {
+            $findType = 'all';
+            $fields = array('COUNT(DISTINCT(Permission.object_id)) as count, ObjectRelation.switch');
+            $group = 'ObjectRelation.switch';
+        } else {
+            $findType = 'list';
+            $fields = array('Permission.id', 'Permission.object_id');
+            $group = 'Permission.object_id';
+        }
+
+        $joins = array(
+            array(
+                'table' => 'object_relations',
+                'alias' => 'ObjectRelation',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = ObjectRelation.object_id',
+                )
+            )
+        );
+
+        // if status is defined add join with objects
+        if (!empty($options['status'])) {
+            $joins[] = array(
+                'table' => 'objects',
+                'alias' => 'BEObject',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = BEObject.id',
+                    'BEObject.status' => $options['status']
+                )
+            );
+        }
+
+        $permission = ClassRegistry::init('Permission');
+        $objectsForbidden = $this->find($findType, array(
+            'fields' => $fields,
+            'conditions' => $conditions,
+            'joins' => $joins,
+            'group' => $group
+        ));
+
+        // get objects allowed to user
+        if (!empty($user)) {
+            if (!empty($user['groupsIds'])) {
+                $conditions['Permission.ugid'] = $user['groupsIds'];
+            } elseif (!empty($user['groups'])) {
+                $groupList = ClassRegistry::init('Group')->getList(array(
+                    'Group.name' => $user['groups']
+                ));
+                $conditions['Permission.ugid'] = array_keys($groupList);
+            }
+            $objectsAllowed = $this->find($findType, array(
+                'fields' => $fields,
+                'conditions' => $conditions,
+                'joins' => $joins,
+                'group' => $group
+            ));
+        }
+        if (empty($objectsAllowed)) {
+            $objectsAllowed = array();
+        }
+
+        if ($options['count']) {
+            $relationsCount = array();
+            $objectsAllowed = Set::combine($objectsAllowed, '{n}.ObjectRelation.switch', '{n}.{n}.count');
+            foreach ($objectsForbidden as $detail) {
+                $count = $detail[0]['count'];
+                $switch = $detail['ObjectRelation']['switch'];
+                if (!empty($objectsAllowed[$switch])) {
+                    $count -= $objectsAllowed[$switch][0];
+                }
+                $relationsCount[$detail['ObjectRelation']['switch']] = $count;
+            }
+            return $relationsCount;
+        } else {
+            $objectsForbidden = array_diff(
+                array_values($objectsForbidden),
+                array_values($objectsAllowed)
+            );
+        }
+
+        return $objectsForbidden;
+    }
+
+    /**
+     * Return true if object $objectId and its parents are accessible i.e. for $user
+     * 'Accessible' means without 'frontend_access_with_block' permission set
+     *
+     * $options params are:
+     * - 'status' the status of parents to check
+     * - 'area_id' the parents publication id
+     * - 'stopIfMissingParents' true (default) to stop and return not valid if $objectId haven't parents and it isn't a publication
+     *
+     * @param int $objectId the object id
+     * @param array $options
+     * @param array $user the user data
+     * @return boolean
+     */
+    public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
+        $options += array(
+            'status' => array(),
+            'area_id' => null,
+            'stopIfMissingParents' => true
+        );
+        $tree = ClassRegistry::init('Tree');
+        $parents = $tree->getParents($objectId, $options['area_id'], $options['status']);
+        // no parents
+        if (empty($parents) && $options['stopIfMissingParents']) {
+            $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
+            $areaObjectTypeId = Configure::read('objectTypes.area.id');
+            // return false if object type is not area or if 'area_id' was passed and it's different from $objectId
+            if ($objectTypeId != $areaObjectTypeId || (!empty($options['area_id']) && $objectId != $options['area_id'])) {
+                return false;
+            }
+        }
+
+        $conditions = array(
+            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+            'Permission.switch' => 'group',
+            'Permission.object_id' => array_merge(
+                array($objectId),
+                $parents
+            )
+        );
+
+        $countForbidden = $this->find('count', array(
+            'fields' => 'DISTINCT (Permission.object_id)',
+            'conditions' => $conditions
+        ));
+
+        if (!empty($user)) {
+            if (!empty($user['groupsIds'])) {
+                $conditions['Permission.ugid'] = $user['groupsIds'];
+            } elseif (!empty($user['groups'])) {
+                $groupList = ClassRegistry::init('Group')->getList(array(
+                    'Group.name' => $user['groups']
+                ));
+                $conditions['Permission.ugid'] = array_keys($groupList);
+            }
+            $joins = array();
+            if (!empty($options['status'])) {
+                $joins = array(
+                    array(
+                        'table' => 'objects',
+                        'alias' => 'BEObject',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'BEObject.id = Permission.object_id',
+                            'BEObject.status' => $options['status']
+                        )
+                    )
+                );
+            }
+            $countAllowed = $this->find('count', array(
+                'fields' => 'DISTINCT (Permission.object_id)',
+                'conditions' => $conditions,
+                'joins' => $joins
+            ));
+
+            if (is_numeric($countAllowed)) {
+                $countForbidden -= $countAllowed;
+            }
+        }
+
+        return $countForbidden == 0;
+    }
+
 }

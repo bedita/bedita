@@ -41,33 +41,55 @@ class Card extends BEAppObjectModel {
 	var $actsAs 	= array(
 			'CompactResult' 		=> array("MailGroup", "GeoTag")
 	); 
-	
-	protected $modelBindings = array( 
-				"detailed" =>  array("BEObject" => array("ObjectType", 
-															"UserCreated", 
-															"UserModified", 
-															"Permission",
-															"ObjectProperty",
-															"LangText",
-															"RelatedObject",
-															"Category",
-															"Annotation",
-															"User",
-															"Alias",
-															"Version" => array("User.realname", "User.userid"),
-															"GeoTag"
-														),
-									"MailGroup"),
 
-				"default" => array("BEObject" => array("ObjectProperty", 
-									"LangText", "ObjectType", 
-									"Category", "RelatedObject","Annotation" )),
+    protected $modelBindings = array(
+        'detailed' =>  array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Category',
+                'Annotation',
+                'User',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
+            ),
+            'MailGroup'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Category',
+                'RelatedObject',
+                'Annotation' )
+            ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'RelatedObject',
+                'GeoTag',
+                'ObjectProperty',
+                'Category'
+            )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'GeoTag',
+                'ObjectProperty',
+                'Category'
+            )
+        )
+    );
 
-				"minimum" => array("BEObject" => array("ObjectType")),
-		
-				"frontend" => array("BEObject" => array("LangText","RelatedObject", "GeoTag", "ObjectProperty", "Category"))
-		);
-		
 	public $objectTypesGroups = array("leafs", "related");
 	
 	var $hasAndBelongsToMany = array(
@@ -559,4 +581,3 @@ class Card extends BEAppObjectModel {
 	}
 
 }
-?>

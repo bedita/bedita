@@ -200,9 +200,11 @@ class BeSystem {
 			throw new BeditaException(__("Directory", true) . " " . $basePath . __("not found", true));
 		}
 		$results = array('success' => array(), 'failed' => array());
+	    App::import('Core', 'Folder');
 		$folder = new Folder($basePath);
 		$list = $folder->read(true, true, true);
 		// delete files
+		App::import('Core', 'File');
 		foreach ($list[1] as $file) {
 			$f = new File($file);
 			if ($f->name != "empty") {

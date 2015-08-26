@@ -96,7 +96,7 @@ class TranslationsController extends ModulesController {
 			if( ($new && ($this->data['LangText'][$k]['name'] == 'created_on')) || ($this->data['LangText'][$k]['name'] == 'modified_on') ) {
 				$this->data['LangText'][$k]['text'] = time();
 			} else if( ($new && ($this->data['LangText'][$k]['name'] == 'created_by')) || ($this->data['LangText'][$k]['name'] == 'modified_by') ) {
-				$this->data['LangText'][$k]['text'] = $this->BeAuth->user['userid'];
+				$this->data['LangText'][$k]['text'] = $this->BeAuth->userid();
 			}
 		}
 		$this->Transaction->begin();
@@ -135,7 +135,7 @@ class TranslationsController extends ModulesController {
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_DELETE)) {
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->userid(), BEDITA_PERMS_DELETE)) {
 //				throw new BeditaException(__("Error deleting permissions", true));
 //			}
 			$objectsToDel = array($this->data['id']);
@@ -165,7 +165,7 @@ class TranslationsController extends ModulesController {
 		} else {
 			if(empty($this->data['id'])) 
 				throw new BeditaException(__("No data", true));
-//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->user['userid'], BEDITA_PERMS_MODIFY)) {
+//			if(!$this->Permission->verify($this->data['id'], $this->BeAuth->userid(), BEDITA_PERMS_MODIFY)) {
 //				throw new BeditaException(__("Error saving status for translations", true));
 //			}
 			$objectsToModify = array($this->data['id']);

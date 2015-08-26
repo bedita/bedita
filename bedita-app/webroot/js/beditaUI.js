@@ -534,7 +534,7 @@ $(document).ready(function(){
 
     $('.selecteditems').text($('.objectCheck:checked').length);
 
-    $(document).on('click', '.selectAll', function () {
+    $(document).on('click', '.selectAll', function() {
         var $this = $(this),
             status = $this.prop('checked'),
             ctx = $this.attr('data-context'),
@@ -594,13 +594,18 @@ $(document).ready(function(){
 ...........................................*/
 
     $(".searchtrigger").click(function() {
-        $(".searchobjectsbyid").hide();
+        $(".searchobjectsbyid").css("visibility","hidden");
         $(".searchobjects").toggle();
     });
 
     $(".searchbyidtrigger").click(function() {
         $(".searchobjects").hide();
-        $(".searchobjectsbyid").toggle();
+        var visibility = $(".searchobjectsbyid").css("visibility");
+        if(visibility == "hidden") {
+            $(".searchobjectsbyid").css("visibility","visible");
+        } else {
+            $(".searchobjectsbyid").css("visibility","hidden");
+        }
     });
 
 /*...........................................

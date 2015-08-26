@@ -442,8 +442,8 @@ class BEObject extends BEAppModel {
 
                         // Update related models.
                         $this->data = array();
-                        $title = isset($val['title']) ? $val['title'] : '';
-                        $description = isset($val['description']) ? $val['description'] : '';
+                        $title = isset($val['title']) ? $val['title'] : null;
+                        $description = isset($val['description']) ? $val['description'] : null;
                         if ($switch == 'link') {
                             ClassRegistry::init('Link')->save(array(
                                 'id' => $obj_id,
@@ -509,11 +509,24 @@ class BEObject extends BEAppModel {
 			$data['ip_created'] = $this->_getDefaultIP();
 		}
 
-        // #650 set always user_modified = current user, set user_created only on new objects
-        $currentUserId = $this->_getIDCurrentUser();
-        $data['user_modified'] = $currentUserId;
+        // #650 set always user_modified = current user, set user_created only on new objects.
+        // Because of cakephp populate fields with default value on db
+        // user_created and user_modified are always set to 1 (systemUserId) if no value was set in $this->data array so
+        // 1. user_created will be populated if no 'id' is set and is empty $data['user_created'] or it's equal to $systemUserId.
+        //    In that case it will try to use session user
+        //    If 'id' isset then it unset $data['user_created'] if exists.
+        // 2. user_modified will be populated if is empty $data['user_modified'] or it's equal to $systemUserId.
+        //    In that case it will try to use session user
+        $systemUserId = BeLib::getObject('BeSystem')->systemUserId();
+        if (empty($data['user_modified']) || $data['user_modified'] == $systemUserId) {
+            $data['user_modified'] = $this->_getIDCurrentUser();
+        }
         if (!isset($data['id'])) {
-            $data['user_created'] = $currentUserId;
+            if (empty($data['user_created']) || $data['user_created'] == $systemUserId) {
+                $data['user_created'] = $this->_getIDCurrentUser();
+            }
+        } elseif (isset($data['user_created'])) {
+            unset($data['user_created']);
         }
 
 		// nickname: verify nick and status change, object not fixed
@@ -600,8 +613,8 @@ class BEObject extends BEAppModel {
      * Update title and description only.
      *
      * @param int $id
-     * @param string $title
-     * @param string $description
+     * @param string|null $title
+     * @param string|null $description
      * @return bool
      **/
     public function updateTitleDescription($id, $title, $description) {
@@ -610,11 +623,18 @@ class BEObject extends BEAppModel {
         }
 
         $model = Configure::read('objectTypes.' . $this->findObjectTypeId($id) . '.model');
-        return ClassRegistry::init($model)->save(array(
+        $reg = ClassRegistry::getInstance();
+        $reg->removeObject($model);  // #292 - Avoid loop in some cases, if related object is of the same model as the parent.
+
+        // #722 - Avoid emptying title or description if field not submitted.
+        $data = array(
             'id' => $id,
             'title' => $title,
             'description' => $description,
-        ));
+        );
+        return $reg->init($model)->save(array_filter($data, function ($val) {
+            return !is_null($val);
+        }));
     }
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -795,5 +815,73 @@ class BEObject extends BEAppModel {
 	function getNicknameFromId($id) {
 		return $this->field("nickname", array("id" => $id));
 	}
+
+    /**
+     * Get an image id and uri that can be used as a poster of the one represented by the $id
+     * Search in the relations expressed by $relations
+     * @param int|string $id
+     * @param array
+     * @return array
+     */
+    public function getPoster($id = null, $relations = array('poster', 'attach')) {
+        if (empty($id) && !empty($this->id)) {
+            $id = $this->id;
+        }
+        if (!empty($id)) {
+            $obj = ClassRegistry::init('BEObject')->find('first', array(
+                'contain' => array(),
+                'fields' => array(
+                    'RelatedObject.object_id',
+                    'Stream.uri',
+                    'Stream.mime_type',
+                    "IF(RelatedObject.switch = 'poster', 0, 1) AS FirstOrder",
+                    'IF(BEObject.object_type_id = ' . Configure::read('objectTypes.image.id') . ', 0, 1) AS SecondOrder',
+                    'IF(Stream.id, RelatedObject.priority, 99999) AS ThirdOrder'
+                ),
+                'joins' => array(
+                        array(
+                            'table' => 'object_relations',
+                            'alias' => 'RelatedObject',
+                            'type' => 'LEFT',
+                            'conditions' => array(
+                                'RelatedObject.id = BEObject.id',
+                                'RelatedObject.switch' => $relations,
+                            )
+                        ),
+                        array(
+                            'table' => 'streams',
+                            'alias' => 'Stream',
+                            'type' => 'LEFT',
+                            'conditions' => array(
+                                'OR' => array(
+                                    'Stream.id = BEObject.id',
+                                    'Stream.id = RelatedObject.object_id'
+                                ),
+                                "Stream.mime_type LIKE 'image%'"
+                            )
+                        )
+                    ),
+                'conditions' => array(
+                        'OR' => array(
+                            'BEObject.id' => $id,
+                            'BEObject.nickname' => $id
+                        )
+                    ),
+                'order' => array('FirstOrder ASC', 'SecondOrder ASC', 'ThirdOrder ASC')
+            ));
+
+            if (!empty($obj)) {
+            	$posterId = $id;
+            	if (!empty($obj['RelatedObject']['object_id'])) {
+            		$posterId = $obj['RelatedObject']['object_id'];
+            	}
+                return array(
+                    'id' => $posterId,
+                    'uri' => $obj['Stream']['uri']
+                );
+            }
+        }
+        return false;
+    }
 }
 ?>

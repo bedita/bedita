@@ -124,6 +124,11 @@ class DataShell extends BeditaBaseShell {
         } else {
             $this->options['export']['all'] = true;
         }
+        if (isset($this->params['status'])) {
+            $this->options['export']['status'] = explode(",", $this->params['status']);
+        } else {
+            $this->options['export']['status'] = array('on','off','draft');
+        }
         if (isset($this->params['types'])) {
             $this->options['export']['types'] = $this->params['types'];
             $this->out('Using types: ' . $this->options['export']['types'] 

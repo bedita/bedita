@@ -21,54 +21,71 @@
 
 /**
  * Event content. Associated to items DateItem (event start_date and end_date) and GeoTag (event location)
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
-class Event extends BeditaContentModel
-{
+class Event extends BeditaContentModel {
+
     var $useTable = 'contents';
 
-	protected $modelBindings = array( 
-				"detailed" =>  array(
-								"BEObject" => array("ObjectType", 
-													"UserCreated", 
-													"UserModified", 
-													"Permission",
-													"ObjectProperty",
-													"LangText",
-													"RelatedObject",
-													"Annotation",
-													"Category",
-													"Alias",
-													"Version" => array("User.realname", "User.userid"),
-													"GeoTag"
-													),
-									"DateItem"),
-				"default" 	=> array("BEObject" => array("ObjectProperty", "LangText", 
-								"ObjectType", "Category", "RelatedObject", "Annotation", "GeoTag"),
-								"DateItem"),
-				"minimum" => array("BEObject" => array("ObjectType")),
-		
-				"frontend" => array("BEObject" => array("LangText", 
-														"UserCreated", 
-														"RelatedObject", 
-														"Category", 
-														"Annotation",
-														"GeoTag",
-														"ObjectProperty"), 
-									"DateItem")
-	);
-    
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Annotation',
+                'Category',
+                'Alias',
+                'Version' => array('User.realname', 'User.userid'),
+                'GeoTag'
+            ),
+            'DateItem'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'ObjectType',
+                'Category',
+                'RelatedObject',
+                'Annotation',
+                'GeoTag'
+            ),
+            'DateItem'
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'UserCreated',
+                'RelatedObject',
+                'Category',
+                'Annotation',
+                'GeoTag',
+                'ObjectProperty'
+            ),
+            'DateItem'
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'Category',
+                'GeoTag',
+                'ObjectProperty'
+            ),
+            'DateItem'
+        )
+    );
+
 	var $actsAs 	= array(
 			'CompactResult' 		=> array('DateItem'),
 			'DeleteObject' 			=> 'objects',
 	);
-	
-	public $objectTypesGroups = array("leafs", "related", "tree");
+
+	public $objectTypesGroups = array('leafs', 'related', 'tree');
 
 	var $hasMany = array(
 			'DateItem' =>
@@ -83,5 +100,23 @@ class Event extends BeditaContentModel
 		return $this->updateHasManyAssoc();
 	}
 
+    /**
+     * Return an array of column types to transform (cast) for generic BEdita object type
+     * Used to build consistent REST APIs
+     *
+     * In general it returns all castable fields from BEAppObjectModel::apiTransformer() and DateItem
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the REST APIs should cast to
+     *
+     * @see BEAppObjectModel::apiTransformer()
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $transformer = parent::apiTransformer($options);
+        $transformer['DateItem'] = $this->DateItem->apiTransformer($options);
+        return $transformer;
+    }
+
 }
-?>

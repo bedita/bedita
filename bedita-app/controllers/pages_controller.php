@@ -137,7 +137,7 @@ class PagesController extends AppController {
                     $ot = $relTypes[$usedRelation][$objectTypeName];
                 } else {
                     $addRight = array();
-                    if (key_exists("left", $relTypes[$usedRelation])) {
+                    if (array_key_exists("left", $relTypes[$usedRelation])) {
                         // if 'left' is empty means that in the 'left' you have all objects in 'related' group => get right relations
                         // or if $objectTypeName is in the 'left' => get right relations
                         if (empty($relTypes[$usedRelation]["left"])
@@ -152,7 +152,7 @@ class PagesController extends AppController {
                     }
 
                     $addLeft = array();
-                    if (key_exists("right", $relTypes[$usedRelation])) {
+                    if (array_key_exists("right", $relTypes[$usedRelation])) {
                         // if 'right' is empty means that in the 'right' you have all objects in 'related' group => get left relations
                         // or if $objectTypeName is in the 'right' => get left relations
                         if (empty($relTypes[$usedRelation]["right"])
@@ -283,6 +283,10 @@ class PagesController extends AppController {
             }
         }
 
+        // get Tags
+        $tags = ClassRegistry::init("Category");
+        $this->set("listTags",$tags->getTags(array("cloud" => false)));
+
         $this->set("objectsToAssoc", $objects);
         $this->set('tree', $tree);
         $this->set('availableRelations', $availableRelations);
@@ -291,7 +295,7 @@ class PagesController extends AppController {
         $this->set("object_type_id", $main_object_type_id);
         $this->set("objectType", $objectType);
         $this->set("objectTypeIds", $objectTypeIds);
-                
+
         if (!empty($this->params["form"])) {
             $this->render("list_contents_to_assoc");
         }
@@ -301,16 +305,17 @@ class PagesController extends AppController {
      * called via ajax
      * load objects selected to main view to prepare association form
      *
-     * @param int $main_object_id, object id of main object used to exclude association with itself 
-     * @param string $objectType, object type used to filter
-     * @param string $tplname, template name without '.tpl' 
-     *               if it contains dots replace it with /
-     *               i.e. areas.inc.list_object become areas/inc/list_object.tpl
-     *                
+     * @param int|null $main_object_id Object ID of main object, used to exclude association with itself.
+     * @param string|null $objectType Object type, used to filter.
+     * @param string|null $tplname Template name without '.tpl' extension.
+     *               If it contains dots, they will be replaced with `/`,
+     *               i.e. `areas.inc.list_object` becomes `areas/inc/list_object.tpl`
+     * @param string|null $module Module name, used to search template in plugin modules view folders.
      */
-    public function loadObjectToAssoc($main_object_id = null, $objectType = null, $tplname = null) {
+    public function loadObjectToAssoc($main_object_id = null, $objectType = null, $tplname = null, $module = null) {
         $this->ajaxCheck();
         $tplname = (!empty($this->params["form"]["tplname"]))? $this->params["form"]["tplname"] : $tplname;
+        $module = (!empty($this->params['form']['module']))? $this->params['form']['module'] : $module;
         $relation = (!empty($this->params["form"]["relation"]))? $this->params["form"]["relation"] : null;
 
         $conditions = array("BEObject.id" => explode( ",", trim($this->params["form"]["object_selected"],",") ));
@@ -370,7 +375,8 @@ class PagesController extends AppController {
         $this->set("objsRelated", $objRelated);
         $this->set("rel", $relation);
         $tplname = (empty($tplname))? "elements/form_assoc_object.tpl" : str_replace(".", "/", $tplname) . ".tpl";
-        $this->render(null, null, VIEWS . $tplname);
+        $module = empty($module) ? VIEWS : (BEDITA_MODULES_PATH . DS . $module . DS . 'views' . DS);
+        $this->render(null, null, $module . $tplname);
     }
     
     /**

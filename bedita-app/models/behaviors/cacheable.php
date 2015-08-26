@@ -183,7 +183,7 @@ class CacheableBehavior extends ModelBehavior {
         if (empty($objectIds) || !$this->on) {
             return;
         }
-        $this->resetObjectsToClean();
+        $this->resetObjectsToClean($model);
         $allObjectsToClean = array();
         foreach ($objectIds as $objectId) {
             $allObjectsToClean = array_merge($allObjectsToClean, $this->getObjectsToCleanById($model, $objectId));
@@ -201,27 +201,26 @@ class CacheableBehavior extends ModelBehavior {
      * @return boolean
      */
     public function beforeSave(&$model) {
-        if ($this->on && !empty($model->data[$model->name]['id'])) {
+        if ($this->on) {
             $data = $model->data[$model->name];
-            $currentStatus = ClassRegistry::init('BEObject')->field('status', array('id' => $data['id']));
-            // if current status is 'on' or new status will be 'on' proceed to get objects to remove from cache
-            if ($currentStatus == 'on' || (!empty($data['status']) && $data['status'] == 'on')) {
-                $relatedIds = array();
-                if (!empty($data['RelatedObject'])) {
-                    foreach ($data['RelatedObject'] as $rel => $value) {
-                        $relatedIds = array_merge($relatedIds, array_keys($value));
-                    }
-                    // get unique values and filter falsy values
-                    $relatedIds = array_filter(array_unique($relatedIds));
+
+            $relatedIds = array();
+            if (!empty($data['RelatedObject'])) {
+                foreach ($data['RelatedObject'] as $rel => $value) {
+                    $relatedIds = array_merge($relatedIds, array_keys($value));
                 }
-
-                $treeIds = (!empty($data['destination'])) ? $data['destination'] : array();
-                $excludeIdsFromQuery = array_merge($treeIds, $relatedIds);
-
-                // prepare objects to clean
-                $this->setObjectsToClean($model, $data['id'], $excludeIdsFromQuery);
-                $this->addObjectsToClean($model, $excludeIdsFromQuery);
+                // get unique values and filter falsy values
+                $relatedIds = array_filter(array_unique($relatedIds));
             }
+
+            $treeIds = (!empty($data['destination'])) ? $data['destination'] : array();
+            $excludeIdsFromQuery = array_merge($treeIds, $relatedIds);
+
+            // prepare objects to clean
+            if (!empty($data['id'])) {
+                $this->setObjectsToClean($model, $data['id'], $excludeIdsFromQuery);
+            }
+            $this->addObjectsToClean($model, $excludeIdsFromQuery);
         }
         return true;
     }
@@ -236,7 +235,7 @@ class CacheableBehavior extends ModelBehavior {
      */
     public function afterSave(&$model, $created) {
         // if it's an update remove cache
-        if (!$created && $this->on) {
+        if ($this->on) {
             $this->clearCache($model);
         }
     }

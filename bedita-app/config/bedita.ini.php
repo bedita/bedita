@@ -27,10 +27,10 @@
 
 $config = array() ;
 
-$config['projectName'] = 'BEdita 3.5'; // override in bedita.cfg
+$config['projectName'] = 'BEdita 3.6'; // override in bedita.cfg
 
 // BEdita version - Semantic Versioning http://semver.org
-$config['version'] = '3.5.2'; // don't override -- admin/system
+$config['version'] = '3.6.0'; // don't override -- admin/system
 
 // majorVersion deprecated, keep for retrocomp
 $config['majorVersion'] = $config['version']; // don't override
@@ -41,6 +41,15 @@ $config['codenameVersion'] = 'Corylus'; // don't override -- admin/system
 $config['imgMissingFile'] = '/img/iconMissingImage_130x85.gif';
 
 $config['imgUnsupported'] = '/img/iconset/image-large.png';
+
+/**
+ * File size limit (in bytes). If an image exceeds this limit, thumbnail won't be generated,
+ * and the script won't even try to open the file, avoiding memory issues.
+ * If set to `null`, no file size limit will be enforced.
+ *
+ * @var int|null
+ */
+$config['imgFilesizeLimit'] = 1024 * 1024 * 16;
 
 /**
  ** ******************************************
@@ -416,7 +425,7 @@ $config["defaultReservedWords"] = array("captchaImage", "category", "content",
   "css", "download", "favicon.gif", "favicon.ico", "feed", "files", "georss",
   "georssatom", "hashjob", "homePage", "img", "js", "json", "kml", "lang", "login",
   "logout", "pages", "printme", "rss", "saveComment", "search", "section", "sitemap",
-  "sitemap.xml", "sitemap_xml", "subscribe", "swf", "tag", "webroot", "xml", "xmlobject","manifest.appcache");
+  "sitemap.xml", "sitemap_xml", "subscribe", "swf", "tag", "webroot", "xml", "xmlobject","manifest.appcache", 'api');
 
 // Cfg reserved words (override in bedita.cfg)
 $config["cfgReservedWords"] = array();

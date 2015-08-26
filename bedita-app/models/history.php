@@ -41,6 +41,7 @@ class History extends BEAppModel {
 	 * @param int $limit
 	 * @param array $group contains fields to group by
 	 * @param int $areaId publication area id, all publications if not set
+     * @param string $order possible options ASC, DESC. Default DESC.
 	 * 
 	 * @return array of history in the form 
 	 * 		   array(
@@ -49,7 +50,7 @@ class History extends BEAppModel {
 	 * 				...
 	 * 				) 
 	 */
-	public function getUserHistory($user_id, $limit=null, $group=array(), $areaId=null) {
+	public function getUserHistory($user_id, $limit=null, $group=array(), $areaId=null, $order="DESC") {
 		$conditions["user_id"] = $user_id;
 		if($areaId) {
 			$conditions["area_id"] = $areaId;
@@ -58,7 +59,7 @@ class History extends BEAppModel {
 				"conditions" => $conditions,
 				"limit" => $limit,
 				"group" => $group,
-				"order" => "History.created DESC",
+				"order" => "History.created ".$order,
 				"contain" => array()
 			)
 		);

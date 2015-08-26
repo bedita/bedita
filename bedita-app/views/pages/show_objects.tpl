@@ -159,7 +159,8 @@ $(document).ready(function() {
 			'type' => true,
 			'language' => true,
 			'customProp' => false,
-			'relations' => true
+			'relations' => true,
+			'tags' => true
 		]])}
 	</div>
 

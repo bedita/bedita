@@ -400,7 +400,8 @@ class DataTransfer extends BEAppModel
                 $objIds = $objModel->find('list', array(
                     'fields' => array('id'),
                     'conditions' => array(
-                        'object_type_id' => $this->export['objectTypeIds']
+                        'object_type_id' => $this->export['objectTypeIds'],
+                        'status' => $this->export['status']
                     )
                 ));
                 $objects = array_keys($objIds);
@@ -482,7 +483,7 @@ class DataTransfer extends BEAppModel
                         'Section.*' => '',
                         'object_type_id' => $conf->objectTypes['section']['id']
                     );
-                    $sections = $this->findObjects($parent, null, 'on', $filter, null, true, 1, null, true, array());
+                    $sections = $this->findObjects($parent, null, $this->export['status'], $filter, null, true, 1, null, true, array());
                     if (!empty($sections['items'])) {
                         foreach ($sections['items'] as $section) {
                             $sectionItem = array(
@@ -580,11 +581,21 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('4.1 config.customProperties:');
             if ($this->export['all'] === true) {
                 $this->trackDebug('... extracting all custom properties');
-                $p = ClassRegistry::init('Property')->find(
-                    'all', array(
-                        'contain' => array('PropertyOption')
-                    )
-                );
+                $p = array();
+                if (empty($this->export['types'])) {
+                    $p = ClassRegistry::init('Property')->find(
+                        'all', array(
+                            'contain' => array('PropertyOption')
+                        )
+                    );
+                } else {
+                    $p = ClassRegistry::init('Property')->find(
+                        'all', array(
+                            'conditions' => array('object_type_id' => $this->export['objectTypeIds']),
+                            'contain' => array('PropertyOption')
+                        )
+                    );
+                }
                 if (!empty($p)) {
                     foreach ($p as $cproperty) {
                         $this->export['customProperties'][$cproperty['id']] = $cproperty;
@@ -1781,6 +1792,7 @@ class DataTransfer extends BEAppModel
             $this->trackDebug('... extracting objects inside rootId ' . $parentId);
             $conditions = array(
                 'parent_id' => $parentId,
+                'status' => $this->export['status'],
                 'NOT' => array(
                     'object_type_id' => array(
                         Configure::read('objectTypes.area.id'),
@@ -1849,6 +1861,7 @@ class DataTransfer extends BEAppModel
         $objsInTree = array_values($objsInTree);
         $objsInTree = array_merge($objsToSkip);
         $conditions = array(
+            'status' => $this->export['status'],
             'NOT' => array('BEObject.id' => $objsInTree)
         );
         if (!empty($this->export['types'])) {

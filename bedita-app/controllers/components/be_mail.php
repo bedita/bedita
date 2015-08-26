@@ -434,10 +434,10 @@ class BeMailComponent extends Object {
 			$jobModel->saveField("status", "pending");
 		}
 
-		$data = array();
 		$mailMsgModel = ClassRegistry::init("MailMessage");
 		foreach ($jobsToSend as $job) {
-			$mailParams = unserialize($job['MailJob']['mail_params']);
+            $data = array();
+            $mailParams = unserialize($job['MailJob']['mail_params']);
 			$data["to"] = $job["MailJob"]["recipient"];
 
 			$data["from"] = (!empty($mailParams["sender_name"]))? $mailMsgModel->getCompleteSender(null, $mailParams["sender"], $mailParams["sender_name"]) : $mailParams["sender"];
@@ -449,15 +449,16 @@ class BeMailComponent extends Object {
 				$data["body"] .= "\n\n--\n" . $mailParams["signature"];
 			}
 			$jobModel->id = $job['MailJob']['id'];
-			if (!$this->send($data)) {
-				$this->log(__("Notification mail delivery failed", true) . "-" . $this->Email->smtpError);
-				$jobModel->saveField("status", "failed");
-				$jobModel->saveField("smtp_err", $this->Email->smtpError);
-			} else {
-				$jobModel->saveField("status", "sent");
-				$jobModel->saveField("sending_date", date("Y-m-d H:i:s"));
-			}
-		}
+            if (!$this->send($data)) {
+                $this->log('Notification mail delivery failed, job id: ' 
+                    . $jobModel->id . ' ' . $this->Email->smtpError, 'error');
+                $jobModel->saveField('status', 'failed');
+                $jobModel->saveField('smtp_err', $this->Email->smtpError);
+            } else {
+                $jobModel->saveField('status', 'sent');
+                $jobModel->saveField('sending_date', date('Y-m-d H:i:s'));
+            }
+        }
 	}
 
 	/**
@@ -533,20 +534,23 @@ class BeMailComponent extends Object {
 	 * @throws BeditaException
 	 */
 	private function prepareData(&$data) {
-		$this->Email->reset();
+        $this->Email->reset();
 
-		// check required fields
-		if (empty($data["to"])) {
-			throw new BeditaException(__("Missing recipient", true));
-		}
+        // check required fields
+        if (empty($data['to'])) {
+            $this->log('Missing recipient in mail message', 'error');
+            return false;
+        }
 
-		if (empty($data["from"])) {
-			throw new BeditaException(__("Missing from field", true));
-		}
+        if (empty($data['from'])) {
+            $this->log('Missing from field in mail message', 'error');
+            return false;
+        }
 
-		if (empty($data["subject"])) {
-			throw new BeditaException(__("Missing subject field", true));
-		}
+        if (empty($data['subject'])) {
+            $this->log('Missing subject in mail message', 'error');
+            return false;
+        }
 
 		$this->setSmtpOptions();
 		$this->Email->to = $data["to"];
@@ -580,6 +584,7 @@ class BeMailComponent extends Object {
 			$this->Email->template = (!empty($data["template"]))? $data["template"] : $this->templateNewsletter;
 			$data["body"] = null;
 		}
+		return true;
 	}
 
 	/**
@@ -587,12 +592,14 @@ class BeMailComponent extends Object {
 	 *
 	 * @param array $data
 	 */
-	private function send($data) {
-		$this->prepareData($data);
-		if (!$this->Email->send($data["body"])) {
-			return false;
-		}
-		return true;
-	}
+    private function send($data) {
+        if (!$this->prepareData($data)) {
+            return false;
+        }
+        if (!$this->Email->send($data['body'])) {
+            return false;
+        }
+        return true;
+    }
 }
 ?>

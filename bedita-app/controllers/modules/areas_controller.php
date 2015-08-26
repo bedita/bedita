@@ -39,85 +39,28 @@ class AreasController extends ModulesController {
 	protected $moduleName = 'areas';
 	protected $categorizableModels = array('Section');
 
-	function index($id = null, $order = "priority", $dir = true, $page = 1, $dim = 20) {
-		
-		$conf  = Configure::getInstance() ;
-		$filter["object_type_id"] = array($conf->objectTypes['section']["id"]);
-		$this->loadCategories($filter["object_type_id"]);
-		
-		if ($id == null && !empty($this->params["named"]["id"])) {
-			$id = $this->params["named"]["id"];
-		}
-		// if empty $id try to get first publication.id
-/*		
-		if (empty($id)) {
+	function index($id = null, $order = '', $dir = true, $page = 1, $dim = 20) {
+        if ($id == null && !empty($this->params["named"]["id"])) {
+            $id = $this->params["named"]["id"];
+        }
+        // if $id redirect to detail view
+        if (!empty($id)) {
+            $this->redirect('/areas/view/' . $id);
+        }
 
-			$pubIds = $this->BEObject->find('list', array(
-				'fields' => array('id'),
-				'conditions' => array(
-					'object_type_id' => $conf->objectTypes['area']['id']
-				),
-				'order' => 'title asc'
-			));
+        $conf = Configure::getInstance();
+        $filter['object_type_id'] = array(
+            $conf->objectTypes['area']['id'],
+            $conf->objectTypes['section']['id'],
+        );
+        $filter['count_annotation'] = array('Comment', 'EditorNote');
+        $this->paginatedList($id, $filter, $order, $dir, $page, $dim);
+        $this->loadCategories($filter['object_type_id']);
 
-			if (!empty($pubIds)) {
-
-				$user = $this->BeAuth->getUserSession();
-
-				if (!in_array('administrator', $user['groups'])) {
-
-					$groupIds = ClassRegistry::init('Group')->find('list', array(
-						'fields' => array('id'),
-						'conditions' => array('name' => $user['groups'])
-					));
-
-					$backendPrivatePerms = Configure::read('objectPermissions.backend_private');
-					$permission = ClassRegistry::init('Permission');
-					$allowedPubIds = $permission->find('list', array(
-						'fields' => array('object_id'),
-						'conditions' => array(
-							'flag' => $backendPrivatePerms,
-							'ugid' => $groupIds,
-							'switch' => 'group',
-							'object_id' => $pubIds
-						)
-					));
-
-					$pubToCheckForbidden = array_diff($pubIds, $allowedPubIds);
-
-					$forbiddenPubIds = $permission->find('list', array(
-						'fields' => array('object_id'),
-						'conditions' => array(
-							'flag' => $backendPrivatePerms,
-							'switch' => 'group',
-							'object_id' => $pubToCheckForbidden,
-						),
-						'group' => 'object_id'
-					));
-
-					$pubIds = array_diff($pubIds, $forbiddenPubIds);
-
-				}
-
-				if (empty($pubIds)) {
-					throw new BeditaException(__("All publications are forbidden", true));
-				}
-
-				$this->params["named"]["id"] = $id = array_shift($pubIds);
-
-			}
-		}
-*/
-		if (!empty($id)) {
-			$this->view($id);
-		} else {
-			$this->redirect("results");
-		}
-
+        $this->set('objectTypeIds', $filter['object_type_id']);
 	}
 
 	public function view($id = null) {
-		$this->action = "index";
 		$objectTypeId = $this->BEObject->field("object_type_id", array("BEObject.id" => $id));
 		$modelName = Configure::read("objectTypes.".$objectTypeId.".model");
 		if(empty($modelName)) {
@@ -138,19 +81,6 @@ class AreasController extends ModulesController {
 		}
 		$this->set('parent_id', $parentId);
 	}
-
-	public function results($id = null, $order = "", $dir = true, $page = 1, $dim = 20) {
-    	$conf  = Configure::getInstance() ;
-        $filter["object_type_id"] = array(
-            $conf->objectTypes['area']["id"],
-            $conf->objectTypes['section']["id"],
-        );
-		$filter['count_annotation'] = array('Comment', 'EditorNote');
-		$this->paginatedList(@$id, $filter, $order, $dir, $page, $dim);
-		$this->loadCategories($filter['object_type_id']);
-
-		$this->set("objectTypeIds",$filter["object_type_id"]);
-	 }
 	 
 	/**
 	 * load paginated contents and no paginated sections of $id publication/section

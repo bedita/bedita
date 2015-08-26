@@ -10,6 +10,7 @@ $rel["removeFiles"]= array(
 );
 
 $rel["removeDirs"]= array(
+    "addons",
     "bedita-deploy",
     "bedita-doc".DS."api".DS."html",
     "bedita-doc".DS."model",
@@ -28,35 +29,25 @@ $rel["createDirs"] = array(
     "bedita-app".DS."tmp".DS."logs",
     "bedita-app".DS."tmp".DS."sessions",
     "bedita-app".DS."tmp".DS."smarty".DS."cache",
-    "bedita-app".DS."tmp".DS."smarty".DS."compile",
-    "addons" . DS . "components",
-    "addons" . DS . "components" . DS . "enabled",
-    "addons" . DS . "config",
-    "addons" . DS . "helpers",
-    "addons" . DS . "helpers" . DS . "enabled",
-    "addons" . DS . "models",
-    "addons" . DS . "models" . DS . "enabled",
-    "addons" . DS . "models" . DS . "behaviors",
-    "addons" . DS . "models" . DS . "behaviors" . DS . "enabled",
-    "addons" . DS . "vendors",
+    "bedita-app".DS."tmp".DS."smarty".DS."compile"
 );
 
 $rel['renameFiles'] = array(
     'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'boilerplate' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'bootstrap' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'responsive' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'responsive' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'responsive' . DS . 'config' . DS . 'paths.php',
 
     'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'core.php',
     'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'frontend.cfg.php',
-    'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'webroot' . DS . 'index.php',
+    'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'paths.php.sample' => 'frontends' . DS . 'web-starter-kit' . DS . 'config' . DS . 'paths.php',
 );
 
 $rel["createFiles"] = array();

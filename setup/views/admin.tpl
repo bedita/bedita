@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita 3.5 setup | Admin</title>
+	<title>BEdita 3.6 setup | Admin</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>
 </head>
 <body>
 
-<h1>BEdita 3.5 setup</h1>
+<h1>BEdita 3.6 setup</h1>
 
 {assign var="page" value=$smarty.post.page|default:3}
 
@@ -23,7 +23,7 @@
 <h3>Administrator</h3>
 <p>
 	{* #540 - Prevent overwriting of system user. *}
-	<span class="INFO">[INFO]</span>: a system user <code>bedita</code> with password <code>bedita</code> has already been set up.
+	<span class="INFO">[INFO]</span>: a system user <code>{$existingUser}</code>{if $defaultPassword} with password <code>bedita</code>{/if} has already been set up.
 	You can choose to <b>add</b> another administrator or <b>replace</b> the system user.
 </p>
 <p>

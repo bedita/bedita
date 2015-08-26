@@ -260,7 +260,7 @@ class UsersController extends ModulesController {
             }
 
             $userid = $u['User']['userid'];
-            if ($userid === $this->BeAuth->user["userid"]) {
+            if ($userid === $this->BeAuth->userid()) {
                 throw new BeditaException(__("Auto-remove forbidden",true));
             }
             $this->BeAuth->removeUser($userid);
@@ -272,7 +272,8 @@ class UsersController extends ModulesController {
         $this->checkWriteModulePermission();
         if (isset($this->data['id'])) {
             $id = $this->data['id'];
-            if ($id === $this->BeAuth->user["userid"]) {
+            $user = $this->BeAuth->getUser();
+            if ($id === $user["id"]) {
                 throw new BeditaException(__("Auto-block forbidden",true));
             }
 

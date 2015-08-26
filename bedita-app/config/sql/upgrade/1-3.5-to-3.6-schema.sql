@@ -1,0 +1,1 @@
+ALTER TABLE `objects` MODIFY `note` MEDIUMTEXT NULL;

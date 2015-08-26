@@ -21,7 +21,6 @@
 
 App::import('Core', 'l10n');
 App::import('Lib', 'BeLib');
-BeLib::getObject('BeConfigure')->initConfig();
 
 /**
  * Controller base class for backends+frontends
@@ -104,6 +103,7 @@ class AppController extends Controller {
      * then add it to self::componenets array
      */
     public function __construct() {
+        BeLib::getObject('BeConfigure')->initConfig();
         if (Configure::read('debugKit') && App::import('Component', 'DebugKit.Toolbar')) {
             $this->components[] = 'DebugKit.Toolbar';
         }
@@ -124,11 +124,12 @@ class AppController extends Controller {
 
     public function handleError($eventMsg, $userMsg, $errTrace = null, $usrMsgParams = array()) {
         $url = self::usedUrl();
-        $userid = '';
-        if (!empty($this->BeAuth->user['userid'])) {
-            $userid = ' - ' . $this->BeAuth->user['userid'];
+        $log = $eventMsg;
+        $userid = $this->BeAuth->userid();
+        if (!empty($userid)) {
+            $log .= ' - ' . $userid;
         }
-        $this->log($eventMsg . $userid . $url);
+        $this->log($log . $url);
         if (!empty($errTrace)) {
             $this->log($errTrace, 'exception');
         }
@@ -370,7 +371,10 @@ class AppController extends Controller {
     }
 
     protected function eventLog($level, $msg) {
-        $u = isset($this->BeAuth->user['userid'])? $this->BeAuth->user['userid'] : '-';
+        $u = $this->BeAuth->userid();
+        if (empty($u)) {
+            $u = '-';
+        }
         $event = array('EventLog'=>array('log_level'=>$level,
             'userid'=>$u, 'msg'=>$msg, 'context'=>strtolower($this->name)));
         $this->EventLog->create();
@@ -480,7 +484,7 @@ class AppController extends Controller {
         }
 
         // module list
-        $this->moduleList = ClassRegistry::init('PermissionModule')->getListModules($this->BeAuth->user['userid']);
+        $this->moduleList = ClassRegistry::init('PermissionModule')->getListModules($this->BeAuth->userid());
         $this->set('moduleList', $this->moduleList) ;
         $this->set('moduleListInv', array_reverse($this->moduleList)) ;
 
@@ -606,18 +610,19 @@ class AppController extends Controller {
      * set model bindings for BEdita object
      *
      * @param string $modelType model name of BE object
+     * @param string $level model binding level
      * @return array that contains:
      *              "bindings_used" => multidimensional array of bindings used,
      *              "bindings_list" => one dimensional array with the simple list of bindings ordered using a "natural order" algorithm
      *
      */
-    protected function setObjectBindings($modelType) {
+    protected function setObjectBindings($modelType, $level = 'frontend') {
         if(!isset($this->{$modelType})) {
             $this->{$modelType} = $this->loadModelByType($modelType);
         }
     
         if (!$this->baseLevel) {
-            $bindingsUsed = $this->modelBindings($this->{$modelType}, "frontend");
+            $bindingsUsed = $this->modelBindings($this->{$modelType}, $level);
         } else {
             $bindingsUsed = array("BEObject" => array("LangText"));
             if ($modelType == "Section") {
@@ -758,17 +763,24 @@ class AppController extends Controller {
 
     protected function checkObjectWritePermission($objectId) {
         $permission = ClassRegistry::init('Permission');
-        if(!$permission->isWritable($objectId, $this->BeAuth->user))
+        if (!$permission->isWritable($objectId, $this->BeAuth->getUser())) {
             throw new BeditaException(__('No write permissions on object', true));
+        }
     }
 
-    protected function saveObject(BEAppModel $beModel) {
-
-        if(empty($this->data))
+    protected function saveObject(BEAppModel $beModel, array $options = array()) {
+        if (empty($this->data)) {
             throw new BeditaException( __('No data', true));
-        $new = (empty($this->data['id'])) ? true : false ;
+        }
 
-        if(!$new) {
+        $options += array(
+            'handleTagList' => true, // true to handle comma separated tag list creating tags don't exist
+            'emptyPermission' => true, // true to remove permission ob object if any is passed
+            'saveTree' => true // true to save tree
+        );
+
+        $new = (empty($this->data['id'])) ? true : false ;
+        if (!$new) {
             $this->checkObjectWritePermission($this->data['id']);
         }
 
@@ -780,16 +792,18 @@ class AppController extends Controller {
         $categoryModel = ClassRegistry::init("Category");
 		$tagList = array();
 
-        if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
-            if (!empty($this->params['form']['tags'])) {
-                $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
-            }
+        if ($options['handleTagList']) {
+            if (isset($this->params['form']['tags']) || isset($this->data['Category'])) {
+                if (!empty($this->params['form']['tags'])) {
+                    $tagList = $categoryModel->saveTagList($this->params['form']['tags']);
+                }
 
-            $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+                $this->data['Category'] = (!empty($this->data['Category']))? array_merge($this->data['Category'], $tagList) : $tagList;
+            }
         }
 
         $fixed = false;
-        if(!$new) {
+        if (!$new) {
             $fixed = ClassRegistry::init('BEObject')->isFixed($this->data['id']);
             if($fixed) { // unset pubblication date, TODO: throw exception if pub date is set!
                 unset($this->data['start_date']);
@@ -797,24 +811,27 @@ class AppController extends Controller {
             }
         }
 
-        if(!isset($this->data['Permission']))
-            $this->data['Permission'] = array() ;
-
-        if(isset($this->data['DateItem'])) {
-            // reorder array index from 0 to avoid removal
-            $this->data['DateItem'] = array_values($this->data['DateItem']); 
+        if ($options['emptyPermission'] && !isset($this->data['Permission'])) {
+            $this->data['Permission'] = array();
         }
-        
-        if(!$beModel->save($this->data)) {
+
+        if (isset($this->data['DateItem'])) {
+            // reorder array index from 0 to avoid removal
+            $this->data['DateItem'] = array_values($this->data['DateItem']);
+        }
+
+        if (!$beModel->save($this->data)) {
             throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
         }
 
         // handle tree. Section and Area handled in AreaController
-        if(!$fixed && isset($this->data['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
-            if (!$new) {
-                $this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+        if ($options['saveTree']) {
+            if(!$fixed && isset($this->data['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
+                if (!$new) {
+                    $this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+                }
+                ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
             }
-            ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
         }
     }
 
@@ -1018,6 +1035,9 @@ abstract class ModulesController extends AppController {
             }
         }
 
+        // get Tags
+        $listTags = ClassRegistry::init("Category")->getTags(array("cloud" => false));
+
         // template data
         $this->set('tree', $tree);
         $this->set('sectionSel',$sectionSel);
@@ -1025,6 +1045,7 @@ abstract class ModulesController extends AppController {
         $this->set('objects', $objects['items']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
+        $this->set('listTags', $listTags);
 
         // set prevNext array to session
         $this->setSessionForObjectDetail($objects['items']);
@@ -1435,44 +1456,57 @@ abstract class ModulesController extends AppController {
 		$this->checkWriteModulePermission();
 
 		$Category = ClassRegistry::init('Category');
+        $ExceptionClass = $this->params['isAjax'] ? 'BeditaAjaxException' : 'BeditaException';
+        $exceptionOptions = $this->params['isAjax'] ? array('output' => 'json') : array();
 
-		if(empty($this->data['label'])) {
-			throw new BeditaException(__('No data', true));
+		if (empty($this->data['label'])) {
+			throw new $ExceptionClass(__('No data', true), $exceptionOptions);
 		}
 
 		// Object type ID checks.
 		if (!in_array(Configure::read('objectTypes.' . $this->data['object_type_id'] . '.model'), $this->categorizableModels)) {
 			// Object type not categorizable in current controller.
-			throw new BeditaException(__('Object type not allowed', true));
+			throw new $ExceptionClass(__('Object type not allowed', true), $exceptionOptions);
 		}
 		if (array_key_exists('id', $this->data)) {
 			// Existing category.
 			$cat = $Category->findById($this->data['id']);
 			if ($cat['object_type_id'] != $this->data['object_type_id']) {
 				// Trying to change object_type_id of category.
-				throw new BeditaException(__('Cannot change object type for category', true));
+				throw new $ExceptionClass(__('Cannot change object type for category', true), $exceptionOptions);
 			}
 		}
 
 		$this->Transaction->begin();
-		if(!$Category->save($this->data)) {
-			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
+		if (!$Category->save($this->data)) {
+			throw new $ExceptionClass(__('Error saving tag', true), $exceptionOptions + $Category->validationErrors);
 		}
 		$this->Transaction->commit();
 
-		$this->userInfoMessage(__('Category saved', true) . ' - ' . $this->data['label']);
-		$this->eventInfo('Category [' .$this->data['label'] . '] saved');
+        $this->eventInfo('Category [' .$this->data['label'] . '] saved');
+
+        $info = __('Category saved', true) . ' - ' . $this->data['label'];
+        if ($this->params['isAjax']) {
+            $this->ResponseHandler->setType('json');
+            $this->set(compact('info'));
+            $this->set('_serialize', array('info'));
+        } else {
+            $this->userInfoMessage($info);
+            $this->redirect('/'. $this->moduleName . '/categories');
+        }
 	}
 
 	/**
 	 * Deletes a category. Controllers should specify the list of categorizable models in $categorizableModels property.
+     *
+     * @deprecated
 	 */
 	public function deleteCategories() {
 		$this->checkWriteModulePermission();
 
 		$Category = ClassRegistry::init('Category');
 
-		if(empty($this->data['id'])) {
+		if (empty($this->data['ids'])) {
 			throw new BeditaException(__('No data', true));
 		}
 
@@ -1484,7 +1518,7 @@ abstract class ModulesController extends AppController {
 		}
 
 		$this->Transaction->begin();
-		if(!$Category->delete($this->data['id'])) {
+		if (!$Category->delete($this->data['id'])) {
 			throw new BeditaException(__('Error saving tag', true), $Category->validationErrors);
 		}
 		$this->Transaction->commit();
@@ -1492,6 +1526,79 @@ abstract class ModulesController extends AppController {
 		$this->userInfoMessage(__('Category deleted', true) . ' - ' . $cat['label']);
 		$this->eventInfo('Category ' . $this->data['id'] . '-' . $cat['label'] . ' deleted');
 	}
+
+    /**
+     * Performs bulk actions on categories.
+     */
+    public function bulkCategories() {
+        $this->checkWriteModulePermission();
+
+        $Category = ClassRegistry::init('Category');
+
+        $action = null;
+        if (array_key_exists('merge', $this->data)) {
+            $action = 'merge';
+        } elseif (array_key_exists('delete', $this->data)) {
+            $action = 'delete';
+        } else {
+            throw new BeditaException(__('Unknown action'), array_keys($this->data));
+        }
+        if (empty($this->data['ids'])) {
+            throw new BeditaException(__('No data', true));
+        }
+
+        // Object type ID checks.
+        $objectTypeIds = Set::classicExtract($Category->find('all', array(
+            'contain' => array(),
+            'fields' => array('object_type_id'),
+            'conditions' => array('Category.id' => $this->data['ids'])
+        )), '{n}.object_type_id');
+        foreach (array_unique($objectTypeIds) as $otid) {
+            if (!in_array(Configure::read('objectTypes.' . $otid . '.model'), $this->categorizableModels)) {
+                // Object type not categorizable in current controller.
+                throw new BeditaException(__('Object type not allowed', true));
+            }
+        }
+
+        $mergeInfo;
+        $this->Transaction->begin();
+        if ($action == 'merge') {
+            // Merge.
+            $mergeId = array_shift($this->data['ids']);  // Get first category and remove from array.
+            $objectIds = ClassRegistry::init('ObjectCategory')->find('list', array(
+                'fields' => array('ObjectCategory.object_id'),
+                'conditions' => array(
+                    'ObjectCategory.category_id' => $this->data['ids'],
+                ),
+            ));  // Find objects in other categories.
+            foreach ($objectIds as $id) {
+                // Merge to elected category.
+                if (!$Category->addObjectCategory($mergeId, $id)) {
+                    throw new BeditaException(__('Error merging categories'), true);
+                }
+            }
+            $mergeInfo = $Category->read('name', $mergeId);
+        }
+        //*/
+        foreach ($this->data['ids'] as $id) {
+            // Delete.
+            if (!$Category->delete($id)) {
+                throw new BeditaException(__('Error deleting categories'), true);
+            }
+        }
+        /*/  // The following should be way faster but ain't working. Don't know why...
+        if (!$Category->deleteAll(array('Category.id' => $this->data['ids']), true, false)) {
+            // Delete.
+            throw new BeditaException(__('Error deleting categories'), true);
+        }
+        //*/
+        $this->Transaction->commit();
+
+        $msg = $action == 'merge' ? "merged to {$mergeInfo['name']}" : 'deleted';
+        $ids = implode(', ', $this->data['ids']);
+        $this->userInfoMessage(__('Categories ' . $msg, true) . ' - ' . $ids);
+        $this->eventInfo('Categories ' . $ids . ' ' . $msg);
+    }
 
     /**
      * return array of object types belong to module
@@ -1598,6 +1705,10 @@ abstract class ModulesController extends AppController {
                         'OK'    => $this->referer(),
                         'ERROR' => $this->referer()
                 ),
+                'bulkCategories'    => array(
+                        'OK'    => $categoriesUrl,
+                        'ERROR' => $categoriesUrl
+                ),
                 'changeStatusObjects'   =>  array(
                         'OK'    => $this->referer(),
                         'ERROR' => $this->referer()
@@ -1633,10 +1744,6 @@ abstract class ModulesController extends AppController {
                 'save'  =>  array(
                         'OK'    => $viewUrl,
                         'ERROR' => $referer
-                ),
-                'saveCategories'    => array(
-                        'OK'    => $categoriesUrl,
-                        'ERROR' => $categoriesUrl
                 ),
                 'view'  =>  array(
                         'ERROR' => '/'.$this->moduleName

@@ -40,7 +40,11 @@ class XmlView extends View {
     }
 
     public function render($action = null, $layout = null, $file = null) {
-        if (isset($this->viewVars['_serialize'])) {
+        if (array_key_exists('_serialize', $this->viewVars)) {
+            // empty response
+            if ($this->viewVars['_serialize'] === null) {
+                return parent::render(false, false);
+            }
             $this->serialize($this->viewVars['_serialize']);
             return parent::render('xml', 'xml/default');
         }

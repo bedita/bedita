@@ -125,11 +125,15 @@ class MultimediaController extends ModulesController {
         $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
+        // get Tags
+        $listTags = ClassRegistry::init("Category")->getTags(array("cloud" => false));
+
         // template data
         $this->set('tree', $tree);
         $this->set('objects', $bedita_items['items']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
+        $this->set('listTags', $listTags);
         $this->setSessionForObjectDetail($bedita_items['items']);
 
      }
@@ -185,8 +189,9 @@ class MultimediaController extends ModulesController {
 
             $this->historyItem["object_id"] = $id;
             // concurrent access
-            if($this->modulePerms & BEDITA_PERMS_MODIFY) {
-                $objEditor->updateAccess($id, $this->BeAuth->user["id"]);
+            if ($this->modulePerms & BEDITA_PERMS_MODIFY) {
+                $user = $this->BeAuth->getUser();
+                $objEditor->updateAccess($id, $user['id']);
             }
 
             //check if hash is present elsewhere

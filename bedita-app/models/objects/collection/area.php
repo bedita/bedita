@@ -22,11 +22,6 @@
 /**
  * Publication data
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
  */
 class Area extends BeditaCollectionModel
 {
@@ -45,26 +40,45 @@ class Area extends BeditaCollectionModel
 		"note" => 2
 	);
 
-	protected $modelBindings = array(
-			"detailed" =>  array("BEObject" => array("ObjectType",
-									"UserCreated",
-									"UserModified",
-									"Permission",
-									"ObjectProperty",
-									"LangText",
-									"RelatedObject",
-									"Annotation",
-									"Version" => array("User.realname", "User.userid")
-								),
-								"SectionDummy"),
-
-       		"default" => array("BEObject" => array("ObjectProperty",
-								"LangText", "RelatedObject", "ObjectType"), "SectionDummy"),
-
-			"minimum" => array("BEObject" => array("ObjectType")),
-
-			"frontend" => array("BEObject" => array("LangText", "RelatedObject", "ObjectProperty"))
-	);
+    protected $modelBindings = array(
+        'detailed' => array(
+            'BEObject' => array(
+                'ObjectType',
+                'UserCreated',
+                'UserModified',
+                'Permission',
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'Annotation',
+                'Version' => array('User.realname', 'User.userid')
+            ),
+            'SectionDummy'
+        ),
+        'default' => array(
+            'BEObject' => array(
+                'ObjectProperty',
+                'LangText',
+                'RelatedObject',
+                'ObjectType'
+            ),
+            'SectionDummy'
+        ),
+        'minimum' => array('BEObject' => array('ObjectType')),
+        'frontend' => array(
+            'BEObject' => array(
+                'LangText',
+                'RelatedObject',
+                'ObjectProperty'
+            )
+        ),
+        'api' => array(
+            'BEObject' => array(
+                'LangText',
+                'ObjectProperty'
+            )
+        )
+    );
 
 	var $hasOne = array(
 			'BEObject' => array(
@@ -106,6 +120,8 @@ class Area extends BeditaCollectionModel
 		)
 	);
 
+    public $objectTypesGroups = array('related');
+
 	function afterSave($created) {
 		if (!$created)
 			return ;
@@ -115,4 +131,3 @@ class Area extends BeditaCollectionModel
 	}
 
 }
-?>

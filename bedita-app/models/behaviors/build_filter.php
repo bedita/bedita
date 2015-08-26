@@ -72,7 +72,13 @@ class BuildFilterBehavior extends ModelBehavior {
 	 * it hasn't to contain the "FROM" string
 	 * @var string 
 	 */
-	private $from = "";
+	private $from = '';
+
+    /**
+     * sql JOINS built using CakePHP
+     * @var string
+     */
+    private $joins = '';
 	
 	/**
 	 * sql conditions
@@ -135,6 +141,8 @@ class BuildFilterBehavior extends ModelBehavior {
         'comment_object_id' => 'Comment.object_id'
     );
 
+    private $dataSource = null;
+
 	/**
 	 * Force BEAppModel::findObjects() to use 'GROUP BY' clausole
 	 * its value is returned in self::getSqlItems()
@@ -146,10 +154,10 @@ class BuildFilterBehavior extends ModelBehavior {
 	function setup(&$model, $settings=array()) {
     	$this->model = $model;
 		if(empty($this->sQ)) {
-			$db = ConnectionManager::getDataSource($model->useDbConfig);
-			$this->startQuote = $db->startQuote;
-			$this->endQuote = $db->endQuote;
-			$this->driver = $db->config["driver"];
+			$this->dataSource = ConnectionManager::getDataSource($model->useDbConfig);
+			$this->startQuote = $this->dataSource->startQuote;
+			$this->endQuote = $this->dataSource->endQuote;
+			$this->driver = $this->dataSource->config["driver"];
     	}
 	}
 	
@@ -163,7 +171,15 @@ class BuildFilterBehavior extends ModelBehavior {
 		$this->initVars($filter);
 		$s = $this->startQuote;
 		$e = $this->endQuote;
-		
+
+        // build joins using cake
+        if (!empty($filter['joins'])) {
+            $this->joins = ' ';
+            foreach ($filter['joins'] as $join) {
+                 $this->joins .= $this->dataSource->buildJoinStatement($join);
+            }
+        }
+
 		$beObject = ClassRegistry::init("BEObject");
 		$bool = array('and', 'or', 'not');
 		// #CUSTOM QUERY -- all class methods
@@ -301,6 +317,7 @@ class BuildFilterBehavior extends ModelBehavior {
 		return array(
 			'fields' => $this->fields,
 			'from' => $this->from,
+            'joins' => $this->joins,
 			'conditions' => $this->conditions,
 			'group' => $this->group,
 			'order' => $this->order,
@@ -316,6 +333,7 @@ class BuildFilterBehavior extends ModelBehavior {
 	private function initVars(array $filter) {
 		$this->fields = '';
 		$this->from = '';
+        $this->joins = '';
 		$this->conditions = array();
 		$this->group = '';
 		$this->order = '';
@@ -461,13 +479,14 @@ class BuildFilterBehavior extends ModelBehavior {
 		
 		$sType = $queryConf['searchType'];
 
+		$orderPrefix = (!empty($this->order) ? ', ' : '');
 		if ($sType == "fulltext") {
 			if ($this->driver === "mysql") {
 				// #MYSQL
 				$this->fields .= ", SearchText.object_id AS oid, SUM( MATCH (SearchText.content) AGAINST ('" . $searchString . "') * SearchText.relevance ) AS points";
 				$this->from .= ", search_texts AS SearchText";
 				$this->conditions[] = "SearchText.object_id = BEObject.id AND SearchText.lang = BEObject.lang AND MATCH (SearchText.content) AGAINST ('" . $searchString . "')";
-				$this->order .= "points DESC ";
+				$this->order .= $orderPrefix . "points DESC ";
 			} elseif ($this->driver === "postgres") {
 				$expr = explode(" ", $searchString);
 				$ts = "";
@@ -480,7 +499,7 @@ class BuildFilterBehavior extends ModelBehavior {
 				$this->fields .= ", {$s}SearchText{$e}.{$s}object_id{$e} AS oid, SUM(ts_rank(to_tsvector({$s}SearchText{$e}.{$s}content{$e}), query) * {$s}SearchText{$e}.{$s}relevance{$e}) as points";
 				$this->from .= ", {$s}search_texts{$s} AS {$s}SearchText{$e}, to_tsquery('" . $ts . "') query";
 				$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND {$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND {$s}SearchText{$e}.{$s}content{$e} @@ query ";
-				$this->order .= "points DESC ";
+				$this->order .= $orderPrefix . "points DESC ";
 				$this->group .= ", {$s}SearchText{$e}.{$s}object_id{$e}, query";
 			}
 		
@@ -491,7 +510,7 @@ class BuildFilterBehavior extends ModelBehavior {
 			$this->conditions[] = "{$s}SearchText{$e}.{$s}object_id{$e} = {$s}BEObject{$e}.{$s}id{$e} AND " .
 				"{$s}SearchText{$e}.{$s}lang{$e} = {$s}BEObject{$e}.{$s}lang{$e} AND " .
 				"{$s}SearchText{$e}.{$s}content{$e} LIKE '". $searchString ."' AND {$s}SearchText{$e}.{$s}relevance{$e} > 5";
-			$this->order .= "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
+			$this->order .= $orderPrefix . "{$s}SearchText{$e}.{$s}relevance{$e} DESC ";
 		}
 
 		$this->useGroupBy = true;

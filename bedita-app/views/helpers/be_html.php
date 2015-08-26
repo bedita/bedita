@@ -98,4 +98,48 @@ class BeHtmlHelper extends HtmlHelper {
     public function url ($url = null, $full = false, array $mergeParams = null) {
         return parent::url($this->parse($url, $mergeParams), $full);
     }
+    
+    public function hyphen($text, $lang = null, $excludeSelectors = array('.formula'), $excludeSelectorDefaults = array('pre', 'code', 'embed', 'object', 'iframe', 'img', 'svg', 'video', 'audio', 'script', 'style', 'head', 'sub', 'sup')) {
+        if (empty($lang)) {
+            $lang = Configure::read('defaultLang');
+        }
+    
+        App::Import('Vendor', 'simple_html_dom');
+        App::import('Vendor', 'Hyphenator', array('file' => 'hyphenator' . DS . 'Hyphenator.php'));
+    
+        $hyphenator = ClassRegistry::getObject('Hyphenator');
+        if (!$hyphenator) {
+            $hyphenator = new Hyphenator();
+            ClassRegistry::addObject('Hyphenator', $hyphenator);
+        }
+    
+        $excludeSelectors = array_merge($excludeSelectorDefaults, $excludeSelectors);
+        $restore = array();
+        if (!empty($excludeSelectors)) {
+            $html = str_get_html('<html><body>' . $text . '</body></html>');
+            $body = $html->find('body', 0);
+            $badsSelectors = implode(', ', $excludeSelectors);
+            $bads = $body->find($badsSelectors);
+            foreach ($bads as $bad) {
+                if (empty($bad->beNotHyphen)) {
+                    $innerBads = $bad->find($badsSelectors);
+                    foreach ($innerBads as $innerBad) {
+                        $innerBad->beNotHyphen = true;
+                    }
+                    $restore[] = $bad->innertext;
+                    $bad->innertext = '<!-- be-not-hyphen-' . (count($restore) - 1) . ' -->';
+                }
+            }
+            $text = $body->innertext;
+        }
+    
+        $text = $hyphenator->hyphenate($text, $lang);
+    
+        foreach ($restore as $key => $value) {
+            $text = str_replace('<!-- be-not-hyphen-' . $key . ' -->', $value, $text);
+        }
+    
+        return $text;
+    }
+
 }
