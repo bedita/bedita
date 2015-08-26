@@ -477,6 +477,21 @@ class ImagickThumb extends ThumbBase
 
     }
 
+    /**
+     * Interlace the image
+     *
+     * @param boolean $execute true to execute the interlace (done to follow the GD plugin signature)
+     * @param string $type the interlace type (default 'Plane')
+     * @return ImagickThumb
+     */
+    public function interlace($execute = true, $type = 'Plane') {
+        if ($execute) {
+            $this->workingImage->interlace($type);
+            $this->oldImage = $this->workingImage;
+        }
+        return $this;
+    }
+
 
 	/**
 	 * Saves an image
