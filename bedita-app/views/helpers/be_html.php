@@ -27,6 +27,19 @@ App::import('Helper', 'Html');
  */
 class BeHtmlHelper extends HtmlHelper {
     /**
+     * Current language.
+     *
+     * @var string
+     */
+    protected $currLang = null;
+
+    public function __construct(array $options = array()) {
+        if (!empty($options['currLang'])) {
+            $this->currLang = $options['currLang'];
+        }
+    }
+
+    /**
      * Parses a URL involving Router.
      *
      * @see Router::parse()
@@ -51,6 +64,9 @@ class BeHtmlHelper extends HtmlHelper {
         }
         if (is_array($url) && !empty($mergeParams)) {
             $url = array_merge($url, $mergeParams);
+        }
+        if ((!empty($url['lang']) ? $url['lang'] : $this->currLang) == Configure::read('frontendLang')) {
+            $url['lang'] = '';
         }
         return $url;
     }
