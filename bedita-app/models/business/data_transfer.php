@@ -490,8 +490,7 @@ class DataTransfer extends BEAppModel
                                 'id' => $section['id'],
                                 'parent' => $section['parent_id'],
                                 'priority_order' => $section['priority_order'],
-                                'syndicate' => $section['syndicate'],
-                                'status' => $section['status']
+                                'syndicate' => $section['syndicate']
                             );
                             if (!empty($section['priority'])) {
                                 $sectionItem['priority'] = $section['priority'];
