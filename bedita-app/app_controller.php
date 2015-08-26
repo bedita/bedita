@@ -42,7 +42,7 @@ class AppController extends Controller {
         'SessionFilter'
     );
 
-    public $uses = array('EventLog') ;
+    public $uses = array('EventLog');
 
     public $view = 'Smarty';
 

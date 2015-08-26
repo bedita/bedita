@@ -440,15 +440,16 @@ abstract class FrontendController extends AppController {
 	 * change language
 	 *
 	 * @param string $lang
-	 * @param string $forward redirect action after changing language. If it's null redirect to refere
-	 * @return string
 	 * @throws BeditaException
 	 */
-	public function lang($lang, $forward = null) {
-
+    protected function lang($lang) {
 		if (empty($lang)) {
 			throw new BeditaBadRequestException("No lang selected");
 		}
+
+        if ($lang == $this->currLang) {
+            return;
+        }
 
 		$conf = Configure::getInstance();
 		if (!array_key_exists($lang, $conf->frontendLangs)) {
@@ -458,21 +459,7 @@ abstract class FrontendController extends AppController {
 		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day');
 		$this->currLang = $lang;
 
-		if(!empty($forward)) {
-			if (substr($forward, 0, 5) != "http:") {
-				if (strpos("/", $forward) != 1)
-					$forward = "/" . $forward;
-
-				if (!empty($this->params["pass"][2])) {
-					$forward .= "/" . implode("/", array_slice($this->params["pass"],2));
-				}
-			}
-
-			$this->redirect($forward);
-		} else {
-			$this->redirect($this->referer());
-		}
-
+        // #517 - SEO-friendly I18n: removed redirection.
 	}
 
 
@@ -1956,10 +1943,12 @@ abstract class FrontendController extends AppController {
 	}
 */
 
-	/**
-	 * route to section, content or another method following the below rules
-	 *
-	 * 1. if there aren't url arguments (i.e. /) => uses homePage reserved word
+    /**
+     * Route to section, content or another method following these rules:
+     * 0. if urls begin with `lang/XYZ` and `XYZ` is a valid frontend language, switches to that language and continues routing. 
+     *    Please note that in order for this to work, your frontend should implement an additional route:
+     *    `Router::connect('/lang/:lang/*', array('controller' => 'pages', 'action' => 'route'), array('lang' => '[a-z]{3}', 'persist' => 'lang'));`
+     * 1. if there aren't url arguments (i.e. /) => uses homePage reserved word
 	 * 2. if first url argument is a reserved words defined in configuration var 'defaultReservedWords'
 	 *	  and 'cfgReservedWords' => try to call the method itself
 	 * 3. if first url argument is a method of current controller => try to call the method itself
@@ -1971,14 +1960,27 @@ abstract class FrontendController extends AppController {
 	 * @throws BeditaBadRequestException, BeditaNotFoundException
 	 */
 	public function route() {
-		$args = func_get_args();
-		if(count($args) === 0 || empty($args[0])) {
-			 $args[0] = "homePage";
+        $args = func_get_args();
+		if (count($args) >= 2 && $args[0] == 'lang') {
+			// #517 - SEO-friendly I18n - Retrocompatibility.
+			$this->params['lang'] = $args[1];
+			$args = array_slice($args, 2);
 		}
-		if($args[0] === "pages") {
-			array_shift($args);
-		}
-		
+        if (!empty($this->params['lang']) && array_key_exists($this->params['lang'], Configure::read('frontendLangs'))) {
+            // #517 - SEO-friendly I18n.
+            $this->lang($this->params['lang']);
+        } else {
+            $this->lang(Configure::read('frontendLang'));
+        }
+        $this->helpers['BeHtml'] = array('currLang' => $this->currLang);
+
+        if(count($args) === 0 || empty($args[0])) {
+             $args[0] = "homePage";
+        }
+        if($args[0] === "pages") {
+            array_shift($args);
+        }
+
 		$name = $args[0];
 
 		// generic methodName
