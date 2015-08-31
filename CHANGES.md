@@ -40,6 +40,8 @@
 * [#604](https://github.com/bedita/bedita/issues/604) newsletter: HTML version of template not saved
 * [#607](https://github.com/bedita/bedita/issues/607) Links custom properties not handled
 * [#590](https://github.com/bedita/bedita/issues/590) Non-administrators backend users are able remove "fixed" property
+* [#737](https://github.com/bedita/bedita/issues/737) admin: missing object types in custom relations ui tool
+* [#739](https://github.com/bedita/bedita/issues/739) Missing CSRF token when searching users in modal window
 
 ### Frontend changes
 
@@ -71,6 +73,7 @@
 * [#608](https://github.com/bedita/bedita/issues/608) Remove Content-Style-Type meta when document type is HTML 5
 * [#576](https://github.com/bedita/bedita/issues/576) web app capable meta data
 * [#690](https://github.com/bedita/bedita/issues/690) FrontendController::getPath causes 404 when an object is ubiquitous with a section `off`
+* [#517](https://github.com/bedita/bedita/issues/517) frontend: use hreflang and different urls for content translations
 
 ### Developer-visible changes
 
@@ -127,6 +130,10 @@
 * [#583](https://github.com/bedita/bedita/issues/583) section priority in JSON export/import
 * [#597](https://github.com/bedita/bedita/issues/597) Some parts of backend are exposed to CSRF attacks
 * [#602](https://github.com/bedita/bedita/issues/602) Adding link to other object raise a csrf token error
+* [#659](https://github.com/bedita/bedita/issues/659) Set JPEG quality in BeEmbedMedia
+* [#699](https://github.com/bedita/bedita/issues/699) beEmbedMedia: add width and height attributes to the img tag
+* [#689](https://github.com/bedita/bedita/issues/689) [import/export] problems exporting a section with `off` status
+* [#562](https://github.com/bedita/bedita/issues/562) BE embed media helper refactor for video and audio
 
 
 ## Version 3.5.1 - Corylus
