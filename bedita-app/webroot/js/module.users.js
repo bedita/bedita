@@ -24,11 +24,12 @@ function loadUsersToAdd(page) {
     var url = $('#addUserToGroupModal').attr('rel');
     $('#listUsers').empty();
     $('#loadUsersInModal').show();
-    var filterObj = {};
-    var search = $.trim($('#search').val());
+    var filterObj = {},
+        search = $.trim($('#search').val());
     if (search.length) {
         filterObj.filter = {query: search};
     }
+    filterObj = addCsrfToken(filterObj);
     $.ajax({
         url: url + '/page:' + page,
         data: filterObj,
@@ -36,7 +37,7 @@ function loadUsersToAdd(page) {
         type: 'POST'
     })
     .done(function(html) {
-        $('#listUsers').append(html);       
+        $('#listUsers').append(html);
         var listIds = usersToAddToGroupChecked.get();
         for (var i in listIds) {
             $('#listUsers').find('.ucheck[value=' + listIds[i] + ']').prop('checked', true);
