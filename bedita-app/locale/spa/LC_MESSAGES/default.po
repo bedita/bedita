@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-08-25 10:53:03\n"
+"POT-Creation-Date: 2015-08-31 09:47:50\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1882,6 +1882,9 @@ msgstr "Traducción actualizada"
 
 msgid "Translations"
 msgstr "Traducciones"
+
+msgid "Trying to embed a not valid object type"
+msgstr ""
 
 msgid "UPDATE"
 msgstr ""

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-08-25 11:22:44\n"
+"POT-Creation-Date: 2015-08-31 09:50:06\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1846,6 +1846,9 @@ msgid "Translation updated"
 msgstr ""
 
 msgid "Translations"
+msgstr ""
+
+msgid "Trying to embed a not valid object type"
 msgstr ""
 
 msgid "UPDATE"
