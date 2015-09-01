@@ -90,7 +90,6 @@ class ImagickThumb extends ThumbBase
 		
 		$this->oldImage = new phMagick($fileName);
 		$this->workingImage = new phMagick($fileName);
-		$this->workingImage->setImageQuality($this->options['jpegQuality']);
 		
 		list($w,$h) = $this->oldImage->getInfo($this->oldImage->getSource());
 		$this->currentDimensions = array
@@ -478,6 +477,21 @@ class ImagickThumb extends ThumbBase
 
     }
 
+    /**
+     * Interlace the image
+     *
+     * @param boolean $execute true to execute the interlace (done to follow the GD plugin signature)
+     * @param string $type the interlace type (default 'Plane')
+     * @return ImagickThumb
+     */
+    public function interlace($execute = true, $type = 'Plane') {
+        if ($execute) {
+            $this->workingImage->interlace($type);
+            $this->oldImage = $this->workingImage;
+        }
+        return $this;
+    }
+
 
 	/**
 	 * Saves an image
@@ -568,6 +582,7 @@ class ImagickThumb extends ThumbBase
 		}
 		
 		$this->options = array_merge($defaultOptions, $options);
+		$this->workingImage->setImageQuality($this->options['jpegQuality']);
 	}
 	
 	

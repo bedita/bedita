@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2014 ChannelWeb Srl, Chialab Srl
+ * Copyright 2014-2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -22,11 +22,10 @@
 /**
  * ApiFormatter class
  *
- * Format data to be consumed by client
+ * Format data to be consumed by client or to be saved
  *
  */
 class ApiFormatterComponent extends Object {
-
 
     /**
      * Controller instance
@@ -34,6 +33,13 @@ class ApiFormatterComponent extends Object {
      * @var Controller
      */
     public $controller = null;
+
+    /**
+     * Components used
+     *
+     * @var array
+     */
+    public $components = array('ApiValidator');
 
     /**
      * Fields that must be removed from object/s
@@ -66,7 +72,9 @@ class ApiFormatterComponent extends Object {
         'priority',
         'menu',
         'Category' => array(
+            'id',
             'object_type_id',
+            'area_id',
             'status',
             'priority',
             'parent_id',
@@ -82,6 +90,10 @@ class ApiFormatterComponent extends Object {
             'parent_id',
             'parent_path',
             'url_label'
+        ),
+        'DateItem' => array(
+            'object_id',
+            'params'
         )
     );
 
@@ -101,6 +113,7 @@ class ApiFormatterComponent extends Object {
      * Special types:
      *
      * - `underscoreField` underscorize field. Note that the value of field remains unchanged
+     * - `integerArray` cast to integer all array values
      *
      *
      * The `object` key contains transformation merged with all BEdita objects
@@ -124,7 +137,7 @@ class ApiFormatterComponent extends Object {
      * @return void
      */
     public function initialize(Controller $controller, array $settings = array()) {
-        $this->controller = $controller;
+        $this->controller = &$controller;
         if (isset($settings['objectFieldsToRemove']) && is_array($settings['objectFieldsToRemove'])) {
             $this->objectFieldsToRemove($settings['objectFieldsToRemove'], true);
         }
@@ -245,6 +258,7 @@ class ApiFormatterComponent extends Object {
      * The keys that correspond to array as `GeoTag` will be underscorized and pluralized.
      * So `GeoTag` become `geo_tags` in the $item array
      *
+     * @see self::transformers comments to all 'type' possibility
      * @param array $transformer the transformer array
      * @param array &$item the item to transform
      * @return void
@@ -282,8 +296,7 @@ class ApiFormatterComponent extends Object {
                             case 'date':
                             case 'datetime':
                                 if (!empty($item[$field])) {
-                                    $datetime = new DateTime($item[$field]);
-                                    $item[$field] = $datetime->format(DateTime::ISO8601);
+                                    $item[$field] = $this->dateFromDb($item[$field]);
                                 }
                                 break;
 
@@ -292,11 +305,40 @@ class ApiFormatterComponent extends Object {
                                 $item[$newField] = $item[$field];
                                 unset($item[$field]);
                                 break;
+
+                            case 'integerArray':
+                                if (is_array($item[$field])) {
+                                    $item[$field] = array_map('intval', $item[$field]);
+                                }
+                                break;
                         }
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Convert a date from db to ISO 8601 format
+     *
+     * @param string $date the date string to convert
+     * @return string
+     */
+    public function dateFromDb($date) {
+        $dateTime = new DateTime($date);
+        return $dateTime->format(DateTime::ISO8601);
+    }
+
+    /**
+     * Convert a date from ISO 8601 to $dbFormat
+     *
+     * @param string $date the ISO 8601 date string
+     * @param string $dbFormat the db format (default 'datetime' db type)
+     * @return string
+     */
+    public function dateToDb($date, $dbFormat = 'Y-m-d H:i:s') {
+        $dateTime = $this->ApiValidator->checkDate($date);
+        return $dateTime->format($dbFormat);
     }
 
     /**
@@ -313,16 +355,16 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
-     * Transform a BEdita object type casting fields to the right type
-     * Use BEAppObjectModel::apiTransformer() to get the transformer and merge it with self::transformers['object']
+     * Return the BEdita object transformer
+     * Used to know the fields to cast and the type
      *
-     * The transformer is cached
-     *
-     * @param array &$object
-     * @return void
+     * @param array $object the BEdita object
+     * @return array
      */
-    public function transformObject(array &$object) {
-        $Object = ClassRegistry::init($object['object_type']);
+    public function getObjectTransformer(array $object) {
+        $objectType = !empty($object['object_type']) ? $object['object_type'] : $object['object_type_id'];
+        $modelName = Configure::read('objectTypes.' . $objectType . '.model');
+        $Object = ClassRegistry::init($modelName);
         $modelName = $Object->name;
         $transformer = array();
         if (!isset($this->transformers[$modelName])) {
@@ -343,6 +385,20 @@ class ApiFormatterComponent extends Object {
         } else {
             $transformer = $this->transformers[$modelName];
         }
+        return $transformer;
+    }
+
+    /**
+     * Transform a BEdita object type casting fields to the right type
+     * Use BEAppObjectModel::apiTransformer() to get the transformer and merge it with self::transformers['object']
+     *
+     * The transformer is cached
+     *
+     * @param array &$object
+     * @return void
+     */
+    public function transformObject(array &$object) {
+        $transformer = $this->getObjectTransformer($object);
         $this->transformItem($transformer, $object);
     }
 
@@ -388,7 +444,7 @@ class ApiFormatterComponent extends Object {
 
         // count not accessible relations
         $permission = ClassRegistry::init('Permission');
-        $user = $this->controller->BeAuthJwt->getUser();
+        $user = $this->controller->ApiAuth->getUser();
         $countForbidden = $permission->relatedObjectsNotAccessibile(
             $object['id'],
             array(
@@ -455,13 +511,16 @@ class ApiFormatterComponent extends Object {
                 'Permission.switch' => 'group',
             )
         );
-        $user = $this->controller->BeAuthJwt->getUser();
-        if (!empty($user)) {
-            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
-        }
         $options['joins'][] = $permissionJoin;
         $countContentsForbidden = $tree->countChildrenContents($object['id'], $options);
         $countSectionsForbidden = $tree->countChildrenSections($object['id'], $options);
+
+        $user = $this->controller->ApiAuth->getUser();
+        if (!empty($user)) {
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+            $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
+            $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
+        }
 
         $countContents -= $countContentsForbidden;
         $countSections -= $countSectionsForbidden;
@@ -513,6 +572,14 @@ class ApiFormatterComponent extends Object {
      */
     public function formatObject(array $object, $options = array()) {
         $options += array('countRelations' => false, 'countChildren' => false);
+        $object['object_type'] = Configure::read('objectTypes.' . $object['object_type_id'] . '.name');
+        // adjust 'uri' in multimedia objects
+        $multimediaObjectTypeIds = Configure::read('objectTypes.multimedia.id');
+        if (in_array($object['object_type_id'], $multimediaObjectTypeIds)) {
+            if (!empty($object['uri']) && filter_var($object['uri'], FILTER_VALIDATE_URL) === false) {
+                $object['uri'] = Configure::read('mediaUrl') . $object['uri'];
+            }
+        }
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
@@ -605,6 +672,144 @@ class ApiFormatterComponent extends Object {
                 unset($object[$value]);
             }
         }
+    }
+
+    /**
+     * Arrange $object data to save
+     *
+     * - clean fields
+     * - transform date ISO8601 in SQL format
+     *
+     * @param array $object the $object data to save
+     * @return array
+     */
+    public function formatObjectForSave(array $object) {
+        if (!empty($object['relations'])) {
+            $object['RelatedObject'] = $this->formatRelationsForSave($object['relations']);
+            unset($object['relations']);
+        }
+        if (!empty($object['categories'])) {
+            $object['Category'] = $this->formatCategoriesForSave($object['categories'], $object['object_type_id']);
+            unset($object['categories']);
+        }
+        if (!empty($object['tags'])) {
+            $tags = $this->formatTagsForSave($object['tags']);
+            $object['Category'] = (!empty($object['Category'])) ? array_merge($object['Category'], $tags) : $tags;
+            unset($object['tags']);
+        }
+        if (!empty($object['geo_tags'])) {
+            $object['GeoTag'] = $object['geo_tags'];
+            unset($object['geo_tags']);
+        }
+        if (!empty($object['date_items'])) {
+            $object['DateItem'] = $this->formatDateItemsForSave($object['date_items']);
+            unset($object['date_items']);
+        }
+
+        $transformer = $this->getObjectTransformer($object);
+        foreach ($object as $key => $value) {
+            if (array_key_exists($key, $transformer)) {
+                if ($transformer[$key] == 'date') {
+                    $object[$key] = $this->dateToDb($value, 'Y-m-d');
+                } elseif ($transformer[$key] == 'datetime') {
+                    $object[$key] = $this->dateToDb($value, 'Y-m-d H:i:s');
+                }
+            }
+        }
+        return $object;
+    }
+
+    /**
+     * Arrange relations data to save.
+     * The data returned are suitable to saving an object
+     *
+     * The $relations array has to be in the form
+     * ```
+     * array(
+     *     'attach' => array(
+     *         array(
+     *             'related_id' => 1,
+     *             ...
+     *         ),
+     *         array(...)
+     *     ),
+     *     'seealso' => array(...)
+     * )
+     * ```
+     *
+     * @param array $relations array of relations
+     * @return array
+     */
+    public function formatRelationsForSave(array $relations) {
+        $relationsFormatted = array();
+        foreach ($relations as $name => $relList) {
+            $r = array(
+                0 => array('switch' => $name)
+            );
+            foreach ($relList as $key => $relData) {
+                $r[$relData['related_id']]['id'] = $relData['related_id'];
+                $r[$relData['related_id']]['priority'] = empty($relData['priority']) ? $key + 1 : $relData['priority'];
+                if (!empty($relData['params'])) {
+                    $r[$relData['related_id']]['params'] = $relData['params'];
+                }
+            }
+            $relationsFormatted[$name] = $r;
+        }
+        return $relationsFormatted;
+    }
+
+    /**
+     * Arrange categories data for save.
+     * The data returned are suitable to saving an object.
+     * Return an array of ids
+     *
+     * @param array $categories an array of category names
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function formatCategoriesForSave(array $categories, $objectTypeId = null) {
+        $categoryModel = ClassRegistry::init('Category');
+        $categoryModel->Behaviors->disable('CompactResult');
+        $result = $categoryModel->find('list', array(
+            'fields' => array('name', 'id'),
+            'conditions' => array(
+                'name' => $categories,
+                'object_type_id' => $objectTypeId,
+                'status' => $this->controller->getStatus()
+            )
+        ));
+        $categoryModel->Behaviors->enable('CompactResult');
+        return array_values($result);
+    }
+
+    /**
+     * Arrange tags data for save.
+     * The data returned are suitable to saving an object.
+     * Return an array of ids
+     *
+     * @param array $tags an array of tag names
+     * @return array
+     */
+    public function formatTagsForSave(array $tags) {
+        return $this->formatCategoriesForSave($tags);
+    }
+
+    /**
+     * Arrange date items for save:
+     * - format 'start_date' and 'end_date'
+     *
+     */
+    public function formatDateItemsForSave(array $dateItems) {
+        foreach ($dateItems as &$item) {
+            foreach ($item as $field => &$value) {
+                if (($field == 'start_date' || $field == 'end_date') && !empty($value)) {
+                    $value = $this->dateToDb($value, 'Y-m-d H:i:s');
+                } elseif ($field == 'days') {
+                    sort($value);
+                }
+            }
+        }
+        return $dateItems;
     }
 
 }

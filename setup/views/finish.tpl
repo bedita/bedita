@@ -2,14 +2,14 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>BEdita 3.5 setup | Finish</title>
+	<title>BEdita 3.6 setup | Finish</title>
 	<style>
 	{include file="../css/setup.css"}
 	</style>
 </head>
 <body>
 
-<h1>BEdita 3.5 setup</h1>
+<h1>BEdita 3.6 setup</h1>
 
 {assign var="page" value=4}
 

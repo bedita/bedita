@@ -456,8 +456,14 @@ class BeditaShell extends BeditaBaseShell {
 			$maxDepthLevel = $this->params["level"];
 			$this->out("Using max depth level: " . $maxDepthLevel);
 		}
+        $excludeDir = array();
+        if (isset($this->params['exclude'])) {
+            $exclude = $this->params['exclude'];
+            $this->out('Excluding dirs: ' . $exclude);
+            $excludeDir = explode(',', $exclude);
+        }
         $this->streamsCheck($mediaRoot, 0, $maxDepthLevel, $mediaNotPresent, 
-                isset($this->params['-remove-files']), isset($this->params['-force-remove']));
+                isset($this->params['-remove-files']), isset($this->params['-force-remove']), $excludeDir);
 		$this->hr();
 		$this->out("Media files not in BEdita - " . count($mediaNotPresent));
 		$stream = ClassRegistry::init("Stream");
@@ -513,24 +519,24 @@ class BeditaShell extends BeditaBaseShell {
         }
 		$this->hr();
 	}    
-	
-	
-	private function streamsCheck($mediaPath, $level, $maxLevel, 
-	        array &$mediaFiles, $removeFiles = false, $forceRemove = false) {
-		if($level > $maxLevel) {
-			return;
-		}
-		
-		$stream = ClassRegistry::init("Stream");
-		$mediaRoot = Configure::read("mediaRoot");
-		$folder = new Folder($mediaPath);
-		$ls = $folder->read();
+
+
+    private function streamsCheck($mediaPath, $level, $maxLevel, 
+            array &$mediaFiles, $removeFiles = false, $forceRemove = false, $excludeDir = array()) {
+        if ($level > $maxLevel) {
+            return;
+        }
+
+        $stream = ClassRegistry::init('Stream');
+        $mediaRoot = Configure::read('mediaRoot');
+        $folder = new Folder($mediaPath);
+        $ls = $folder->read();
         foreach ($ls[1] as $f) {
-            if($f[0] !== '.') {
+            if ($f[0] !== '.') {
                 $filePath = $mediaPath . DS . $f;
                 $p = substr($filePath, strlen($mediaRoot));
                 $s = $stream->findByUri($p);
-                if($s === false) {
+                if ($s === false) {
                     $this->out("File $p not found on db!!");
                     $remove = $forceRemove;
                     if ($removeFiles && !$forceRemove) {
@@ -549,19 +555,20 @@ class BeditaShell extends BeditaBaseShell {
                 }
             }
 		}
-		
-		$exlude = array();
-		if($level == 0) {
-		    $exlude[] = "cache"; // exclude cache in check
-		}
-		foreach ($ls[0] as $dir) {
-			if($dir[0] !== '.' && !in_array($dir, $exlude) ) {
-				$this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, 
-				        $mediaFiles, $removeFiles, $forceRemove);				
-			}
-		}
-	}
-	
+
+        if ($level == 0) {
+            $excludeDir[] = 'cache'; // exclude cache in check
+        } else {
+            $excludeDir = array(); // exclude only 0 level dirs
+        }
+        foreach ($ls[0] as $dir) {
+            if ($dir[0] !== '.' && !in_array($dir, $excludeDir)) {
+                $this->streamsCheck($mediaPath . DS . $dir, $level+1, $maxLevel, 
+                    $mediaFiles, $removeFiles, $forceRemove);				
+            }
+        }
+    }
+
     private function removeMediaFiles() {
 		$mediaRoot = Configure::read("mediaRoot");
 		$folder= new Folder($mediaRoot);
@@ -584,6 +591,10 @@ class BeditaShell extends BeditaBaseShell {
         } else {
             // config/frontend.cfg.php
             $this->checkAppFile($appPath . DS . 'config' . DS . 'frontend.cfg.php');
+            if (file_exists($appPath . DS . 'config' . DS . 'paths.php.sample')) {
+                // config/paths.php
+                $this->checkAppFile($appPath . DS . 'config' . DS . 'paths.php');
+            }
         }
         // index.php
         $this->checkAppFile($appPath.DS."index.php");
@@ -1025,12 +1036,13 @@ class BeditaShell extends BeditaBaseShell {
         $this->out(' ');
         $this->out('3. checkMedia: check media files on db and filesystem');
         $this->out(' ');
-        $this->out('    Usage: checkMedia [-create] [--remove-files] [--force-remove][-level <max-depth-level>]');
+        $this->out('    Usage: checkMedia [-create] [--remove-files] [--force-remove][-level <max-depth-level>] [-exclude <dirs>]');
         $this->out(' ');
         $this->out("    -create \t create media objects from files in media root not in DB");
         $this->out("    --remove-files \t remove files not referenced in media objects, ask user confirm");
         $this->out("    --force-remove \t remove files not referenced in media objects, don't ask user confirm");
         $this->out("    -level <max-depth-level> \t max depth level checking filesystem, default 2");
+        $this->out("    -exclude <dirs> \t exclude from filesystem check list of comma separated dirs in media root, -exclude dir1,dir2");
         $this->out(' ');
         $this->out('4. export: export media files and data dump');
   		$this->out(' ');

@@ -50,7 +50,7 @@ class ApiFormatterComponentTest extends BeditaTestCase {
         $expected = $this->defaultFieldsToRemove = $this->controller->ApiFormatter->objectFieldsToRemove();
         $expected[] = 'description';
         $expected[] = 'title';
-        $expected['Category'][] = 'id';
+        $expected['Category'][] = 'name';
         $expected['GeoTag'] = array('title');
         $expected[] = 'Tag';
         unset($expected['Tag']);

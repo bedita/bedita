@@ -32,7 +32,7 @@
 class MultimediaController extends ModulesController {
     var $name = 'Multimedia';
 
-    var $helpers    = array('BeTree', 'BeToolbar', 'MediaProvider', 'ImageInfo');
+    var $helpers    = array('BeTree', 'BeToolbar', 'ImageInfo');
     var $components = array('BeFileHandler', 'BeUploadToObj', 'BeSecurity');
 
     // This controller does not use a model

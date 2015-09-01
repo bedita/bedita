@@ -66,7 +66,7 @@ $(document).ready(function() {
 	$(document).delegate('button.ajax', 'click', function() {
 		var $_this = $(this);
 		var op = $_this.attr("rel");
-		if (confirm('{t}Do you really want update {/t}' + op + '{t}?{/t}')) {
+		if (confirm('{t}Do you really want update {/t}' + op + '?')) {
 			var loader = $('<div class="loader">');
 			loader.width(25).height(25).css('margin', '0 auto').show();
 			$_this.hide().after(loader);

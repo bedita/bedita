@@ -63,6 +63,10 @@ class DateItem extends BEAppModel
     protected function filterParams(array $params) {
         static $validKeys = array('days', 'scale_factor', 'bias');
 
+        if (!empty($params['days']) && is_array($params['days'])) {
+            $params['days'] = array_unique(array_values($params['days']));
+        }
+
         return array_filter(array_intersect_key($params, array_flip($validKeys)));
     }
 
@@ -323,5 +327,24 @@ class DateItem extends BEAppModel
             }
         }
         return compact('objIds', 'calendar');
+    }
+
+    /**
+     * Return an array of column types to transform (cast)
+     * Used to build consistent REST APIs
+     *
+     * Add to table fields type 'days' as 'integerArray' to convert ["0", "1", ...] in [0, 1, ...]
+     *
+     * Possible options are:
+     * - 'castable' an array of fields that the rest api would be cast to
+     *
+     * @see AppModel::apiTransformer()
+     * @param array $options
+     * @return array
+     */
+    public function apiTransformer(array $options = array()) {
+        $transformer = parent::apiTransformer($options);
+        $transformer['days'] = 'integerArray';
+        return $transformer;
     }
 }

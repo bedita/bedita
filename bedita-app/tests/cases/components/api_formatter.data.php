@@ -9,7 +9,7 @@ class ApiFormatterTestData extends BeditaTestData {
                     'remove' => array(
                         'description',
                         'title',
-                        'Category' => array('id'),
+                        'Category' => array('name'),
                         'GeoTag' => array('title'),
                         'Tag'
                     )

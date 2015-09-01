@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-02-17 16:13:31\n"
+"POT-Creation-Date: 2015-08-31 09:50:06\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -39,9 +39,6 @@ msgstr ""
 msgid "Add comma separated words"
 msgstr ""
 
-msgid "Add event date"
-msgstr ""
-
 msgid "Add many items"
 msgstr ""
 
@@ -57,9 +54,6 @@ msgstr ""
 msgid "Add selected items"
 msgstr ""
 
-msgid "Addons"
-msgstr ""
-
 msgid "Address"
 msgstr ""
 
@@ -70,9 +64,6 @@ msgid "Alias"
 msgstr ""
 
 msgid "All modules"
-msgstr ""
-
-msgid "All publications are forbidden"
 msgstr ""
 
 msgid "All unsaved changes will be lost"
@@ -99,10 +90,16 @@ msgstr ""
 msgid "Are you sure that you want to delete the property? this will also delete any properties data associated"
 msgstr ""
 
+msgid "Are you sure that you want to delete the selected item(s)?"
+msgstr ""
+
 msgid "Are you sure that you want to delete the tag?"
 msgstr ""
 
 msgid "Are you sure that you want to empty the file?"
+msgstr ""
+
+msgid "Are you sure that you want to merge the selected item(s)? All contents related to one or more of the checked categories will be associated to the first category created within the selection, while other ones will be deleted."
 msgstr ""
 
 msgid "Are you sure you want to accept this IP?"
@@ -201,7 +198,7 @@ msgstr ""
 msgid "Bit depth"
 msgstr ""
 
-msgid "Bulk actions on"
+msgid "Branch"
 msgstr ""
 
 msgid "Calendar start date after end date"
@@ -318,6 +315,9 @@ msgstr ""
 msgid "Content not found"
 msgstr ""
 
+msgid "Contents"
+msgstr ""
+
 msgid "Contents with more comments (first 20)"
 msgstr ""
 
@@ -355,6 +355,9 @@ msgid "Created on"
 msgstr ""
 
 msgid "Creator is required (at least %1 alphanumerical char)"
+msgstr ""
+
+msgid "Currently installed %1 version is too old, and is no longer supported by BEdita. Please consider upgrading to %2 at least."
 msgstr ""
 
 msgid "Custom Properties"
@@ -396,9 +399,6 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-msgid "Destination"
-msgstr ""
-
 msgid "Details"
 msgstr ""
 
@@ -417,7 +417,13 @@ msgstr ""
 msgid "Do you really want to remove user"
 msgstr ""
 
+msgid "Do you really want update "
+msgstr ""
+
 msgid "Do you want to remove the relation? Relation already created between objects will be maintained."
+msgstr ""
+
+msgid "Do you want to save and SEND this newsletter now? (mails are being sent as soon as possible)"
 msgstr ""
 
 msgid "Do you want unsubscribe selected items?"
@@ -484,6 +490,9 @@ msgid "Error checking url for link: "
 msgstr ""
 
 msgid "Error creating jobs"
+msgstr ""
+
+msgid "Error deleting User"
 msgstr ""
 
 msgid "Error deleting custom property "
@@ -594,6 +603,9 @@ msgstr ""
 msgid "Error saving comment"
 msgstr ""
 
+msgid "Error saving comment because the IP is banned"
+msgstr ""
+
 msgid "Error saving custom property"
 msgstr ""
 
@@ -672,6 +684,9 @@ msgstr ""
 msgid "Error updating user"
 msgstr ""
 
+msgid "Error: could not update this resource"
+msgstr ""
+
 msgid "Error: utility operation undefined"
 msgstr ""
 
@@ -682,9 +697,6 @@ msgid "Event calendar"
 msgstr ""
 
 msgid "Event saved"
-msgstr ""
-
-msgid "Event start"
 msgstr ""
 
 msgid "Events calendar"
@@ -705,7 +717,16 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
+msgid "Export"
+msgstr ""
+
 msgid "Export to"
+msgstr ""
+
+msgid "Export to CSV"
+msgstr ""
+
+msgid "Export to vCard"
 msgstr ""
 
 msgid "External auth component not found: "
@@ -739,6 +760,9 @@ msgid "Fixed"
 msgstr ""
 
 msgid "Fixed object"
+msgstr ""
+
+msgid "Folder"
 msgstr ""
 
 msgid "For type options you have to define at least two options"
@@ -867,6 +891,21 @@ msgstr ""
 msgid "Import data"
 msgstr ""
 
+msgid "Import error"
+msgstr ""
+
+msgid "Import file type:"
+msgstr ""
+
+msgid "Import options"
+msgstr ""
+
+msgid "Import result"
+msgstr ""
+
+msgid "Import successfull"
+msgstr ""
+
 msgid "Incorrect hash command"
 msgstr ""
 
@@ -898,6 +937,9 @@ msgid "Last access on:"
 msgstr ""
 
 msgid "Last check"
+msgstr ""
+
+msgid "Last commit"
 msgstr ""
 
 msgid "Last result"
@@ -993,6 +1035,9 @@ msgstr ""
 msgid "Media already exists in the system"
 msgstr ""
 
+msgid "Media file expected, hash value is present"
+msgstr ""
+
 msgid "Media file is missing"
 msgstr ""
 
@@ -1014,6 +1059,9 @@ msgstr ""
 msgid "Message template"
 msgstr ""
 
+msgid "Missing content unique name or id"
+msgstr ""
+
 msgid "Missing data"
 msgstr ""
 
@@ -1021,12 +1069,6 @@ msgid "Missing data group to remove"
 msgstr ""
 
 msgid "Missing email to send recover instructions"
-msgstr ""
-
-msgid "Missing form data"
-msgstr ""
-
-msgid "Missing from field"
 msgstr ""
 
 msgid "Missing invoices"
@@ -1041,7 +1083,13 @@ msgstr ""
 msgid "Missing message id or recipient"
 msgstr ""
 
+msgid "Missing object id"
+msgstr ""
+
 msgid "Missing object type"
+msgstr ""
+
+msgid "Missing object unique name or id"
 msgstr ""
 
 msgid "Missing options"
@@ -1050,10 +1098,10 @@ msgstr ""
 msgid "Missing parent"
 msgstr ""
 
-msgid "Missing publication"
+msgid "Missing parent_id"
 msgstr ""
 
-msgid "Missing recipient"
+msgid "Missing publication"
 msgstr ""
 
 msgid "Missing referenced object. Save new item before adding a note"
@@ -1065,10 +1113,10 @@ msgstr ""
 msgid "Missing relation to delete"
 msgstr ""
 
-msgid "Missing sending date"
+msgid "Missing sender email"
 msgstr ""
 
-msgid "Missing subject field"
+msgid "Missing sending date"
 msgstr ""
 
 msgid "Missing temporary file in filesystem."
@@ -1159,6 +1207,9 @@ msgid "News saved"
 msgstr ""
 
 msgid "Newsletter"
+msgstr ""
+
+msgid "Newsletter association for"
 msgstr ""
 
 msgid "Newsletter sent. To schedule another invoice, please clone this object."
@@ -1266,6 +1317,12 @@ msgstr ""
 msgid "No object id specified"
 msgstr ""
 
+msgid "No object was imported"
+msgstr ""
+
+msgid "No permission access to this function"
+msgstr ""
+
 msgid "No plugins found on filesystem"
 msgstr ""
 
@@ -1335,7 +1392,7 @@ msgstr ""
 msgid "Notice"
 msgstr ""
 
-msgid "Notification mail delivery failed"
+msgid "Number of imported objects:"
 msgstr ""
 
 msgid "Number of objects"
@@ -1365,6 +1422,9 @@ msgstr ""
 msgid "Operations on"
 msgstr ""
 
+msgid "Operations on %1 selected items"
+msgstr ""
+
 msgid "Or use one of this external auth service"
 msgstr ""
 
@@ -1381,6 +1441,9 @@ msgid "Other Models"
 msgstr ""
 
 msgid "Overview"
+msgstr ""
+
+msgid "PHP extension %1 doesn't seem to be loaded, but it's required for BEdita full functionality. Please, ensure it is correctly installed."
 msgstr ""
 
 msgid "PLAIN TEXT version"
@@ -1426,15 +1489,6 @@ msgid "Please check"
 msgstr ""
 
 msgid "Please choose an existing card, or create a new one."
-msgstr ""
-
-msgid "Please enter a valid date in the %1 format"
-msgstr ""
-
-msgid "Please enter a valid date in the %1 format and greater than the previous date"
-msgstr ""
-
-msgid "Please enter a valid time in the %1 format"
 msgstr ""
 
 msgid "Plugged modules"
@@ -1524,6 +1578,9 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
+msgid "Remove association"
+msgstr ""
+
 msgid "Remove selected from"
 msgstr ""
 
@@ -1536,6 +1593,9 @@ msgstr ""
 msgid "Resource "
 msgstr ""
 
+msgid "Revision control system"
+msgstr ""
+
 msgid "Rewrite password"
 msgstr ""
 
@@ -1546,6 +1606,9 @@ msgid "Rows to show"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "Save & queue newsletter"
 msgstr ""
 
 msgid "Save draft"
@@ -1563,6 +1626,9 @@ msgstr ""
 msgid "Section saved"
 msgstr ""
 
+msgid "Sections"
+msgstr ""
+
 msgid "Security error: CSRF token is invalid. Please try to resubmit the form"
 msgstr ""
 
@@ -1578,13 +1644,19 @@ msgstr ""
 msgid "Select a status"
 msgstr ""
 
+msgid "Select all"
+msgstr ""
+
+msgid "Select an import filter in Source data"
+msgstr ""
+
 msgid "Select by category"
 msgstr ""
 
 msgid "Select content languages"
 msgstr ""
 
-msgid "Select file(s)"
+msgid "Select file"
 msgstr ""
 
 msgid "Select something in the editor"
@@ -1632,9 +1704,6 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-msgid "Subject"
-msgstr ""
-
 msgid "Submit"
 msgstr ""
 
@@ -1663,6 +1732,9 @@ msgid "System Info"
 msgstr ""
 
 msgid "System Logs"
+msgstr ""
+
+msgid "System User cannot be deleted!"
 msgstr ""
 
 msgid "System configuration"
@@ -1710,6 +1782,9 @@ msgstr ""
 msgid "Test mail sent to "
 msgstr ""
 
+msgid "Test newsletter"
+msgstr ""
+
 msgid "Test on GoogleMaps"
 msgstr ""
 
@@ -1752,9 +1827,6 @@ msgstr ""
 msgid "To unsubscribe"
 msgstr ""
 
-msgid "Tools"
-msgstr ""
-
 msgid "Total"
 msgstr ""
 
@@ -1774,6 +1846,9 @@ msgid "Translation updated"
 msgstr ""
 
 msgid "Translations"
+msgstr ""
+
+msgid "Trying to embed a not valid object type"
 msgstr ""
 
 msgid "UPDATE"
@@ -1810,6 +1885,15 @@ msgid "Unsubscribe selected items"
 msgstr ""
 
 msgid "Unsupported type"
+msgstr ""
+
+msgid "Update BEdita"
+msgstr ""
+
+msgid "Update frontends"
+msgstr ""
+
+msgid "Update modules"
 msgstr ""
 
 msgid "Upload"
@@ -1914,6 +1998,12 @@ msgstr ""
 msgid "Warning"
 msgstr ""
 
+msgid "Warning. Any change could be ignored if you don't save in time. This newsletter is being sent in less than an hour, at"
+msgstr ""
+
+msgid "Warnings"
+msgstr ""
+
 msgid "Width"
 msgstr ""
 
@@ -1938,19 +2028,25 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "You are not allowed to block this user"
+msgstr ""
+
 msgid "You are not allowed to edit this user"
 msgstr ""
 
 msgid "You are not allowed to remove this user"
 msgstr ""
 
-msgid "You aren't authorized to access that item"
+msgid "You are not authorized to access that item"
 msgstr ""
 
 msgid "You can't use remote file"
 msgstr ""
 
 msgid "You have to be logged to access that item"
+msgstr ""
+
+msgid "Your database engine (%1) is not supported by BEdita. Supported SQL servers: %2."
 msgstr ""
 
 msgid "accept this IP!"
@@ -1992,16 +2088,10 @@ msgstr ""
 msgid "add users"
 msgstr ""
 
-msgid "addon plugged succesfully"
-msgstr ""
-
 msgid "address"
 msgstr ""
 
 msgid "addressbook"
-msgstr ""
-
-msgid "addressbook details"
 msgstr ""
 
 msgid "admin"
@@ -2020,9 +2110,6 @@ msgid "all cards"
 msgstr ""
 
 msgid "all comments"
-msgstr ""
-
-msgid "all contents"
 msgstr ""
 
 msgid "all galleries"
@@ -2097,10 +2184,19 @@ msgstr ""
 msgid "browse your disk"
 msgstr ""
 
+msgid "by"
+msgstr ""
+
+msgid "card details"
+msgstr ""
+
 msgid "card(s) associated to mailgroup"
 msgstr ""
 
 msgid "cards"
+msgstr ""
+
+msgid "cards without email not added to mailgroup"
 msgstr ""
 
 msgid "categories"
@@ -2113,9 +2209,6 @@ msgid "change"
 msgstr ""
 
 msgid "change status"
-msgstr ""
-
-msgid "change status to"
 msgstr ""
 
 msgid "change status to:"
@@ -2182,9 +2275,6 @@ msgid "contact email"
 msgstr ""
 
 msgid "contact the project admin"
-msgstr ""
-
-msgid "content type"
 msgstr ""
 
 msgid "contents"
@@ -2274,12 +2364,6 @@ msgstr ""
 msgid "details"
 msgstr ""
 
-msgid "disable succesfully"
-msgstr ""
-
-msgid "disable succesfully, all related objects are been deleted"
-msgstr ""
-
 msgid "district"
 msgstr ""
 
@@ -2328,13 +2412,7 @@ msgstr ""
 msgid "empty logs"
 msgstr ""
 
-msgid "enabled folder isn't writable"
-msgstr ""
-
 msgid "end"
-msgstr ""
-
-msgid "end has to be a valid date in the following format:"
 msgstr ""
 
 msgid "events"
@@ -2368,6 +2446,9 @@ msgid "filename"
 msgstr ""
 
 msgid "filesize"
+msgstr ""
+
+msgid "filter has no options"
 msgstr ""
 
 msgid "filter:"
@@ -2434,6 +2515,9 @@ msgid "hybrid"
 msgstr ""
 
 msgid "id"
+msgstr ""
+
+msgid "id or unique name"
 msgstr ""
 
 msgid "image"
@@ -2550,6 +2634,9 @@ msgstr ""
 msgid "mail body"
 msgstr ""
 
+msgid "mailgroup"
+msgstr ""
+
 msgid "mails / minute"
 msgstr ""
 
@@ -2611,6 +2698,9 @@ msgid "media url is unreachable"
 msgstr ""
 
 msgid "media url not set"
+msgstr ""
+
+msgid "merge"
 msgstr ""
 
 msgid "message board"
@@ -2754,6 +2844,9 @@ msgstr ""
 msgid "notify me by email"
 msgstr ""
 
+msgid "now"
+msgstr ""
+
 msgid "number"
 msgstr ""
 
@@ -2788,6 +2881,9 @@ msgid "old psw"
 msgstr ""
 
 msgid "on"
+msgstr ""
+
+msgid "on date"
 msgstr ""
 
 msgid "on my stuff only"
@@ -2899,6 +2995,9 @@ msgid "private list "
 msgstr ""
 
 msgid "profile"
+msgstr ""
+
+msgid "projects found"
 msgstr ""
 
 msgid "promote as user"
@@ -3021,6 +3120,9 @@ msgstr ""
 msgid "save this new relation"
 msgstr ""
 
+msgid "schedule date and time"
+msgstr ""
+
 msgid "scheduled"
 msgstr ""
 
@@ -3036,13 +3138,10 @@ msgstr ""
 msgid "search word"
 msgstr ""
 
-msgid "sections"
-msgstr ""
-
-msgid "sections only"
-msgstr ""
-
 msgid "see all"
+msgstr ""
+
+msgid "see details"
 msgstr ""
 
 msgid "see error detail"
@@ -3070,9 +3169,6 @@ msgid "select an item to associate"
 msgstr ""
 
 msgid "select an object type"
-msgstr ""
-
-msgid "select one"
 msgstr ""
 
 msgid "select position"
@@ -3130,9 +3226,6 @@ msgid "start"
 msgstr ""
 
 msgid "start from"
-msgstr ""
-
-msgid "start has to be a valid date in the following format:"
 msgstr ""
 
 msgid "state"
@@ -3243,13 +3336,13 @@ msgstr ""
 msgid "unsent"
 msgstr ""
 
+msgid "update"
+msgstr ""
+
 msgid "update name (if empty), mime_type (if empty), size and hash_file fields of streams table"
 msgstr ""
 
 msgid "update stream fields"
-msgstr ""
-
-msgid "updated succesfully"
 msgstr ""
 
 msgid "url"

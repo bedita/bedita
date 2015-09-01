@@ -14,7 +14,6 @@
             "role": "Developer"
         }
     ],
-    "version": "2.0.0",
     "license": "BSD-3-Clause",
     "require": {
         "php": ">=5.2.0"
@@ -22,6 +21,5 @@
     "autoload": {
         "classmap": ["Authentication/", "Exceptions/"]
     },
-    "target-dir": "Firebase/PHP-JWT",
     "minimum-stability": "dev"
 }
