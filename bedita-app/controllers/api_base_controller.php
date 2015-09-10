@@ -631,7 +631,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->saveObject($objectModel);
             $savedObjectId = $objectModel->id;
             $this->Transaction->commit();
-            $this->objects($savedObjectId);
+            $this->getObjects($savedObjectId);
             if ($isNew) {
                 $this->ResponseHandler->sendStatus(201);
                 $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
