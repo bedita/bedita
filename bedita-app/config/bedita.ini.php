@@ -140,6 +140,13 @@ $config['dateTimePatternLocale'] = array(
 );
 
 /**
+ * Event calendar range used in the calendar view in module Events
+ * (default '+1 month'), strtotime compatible
+ */
+$config['eventCalendarRange'] = '+1 month';
+
+
+/**
  ** ******************************************
  **  Content and UI Elements defaults
  ** ******************************************

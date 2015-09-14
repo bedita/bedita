@@ -2,6 +2,10 @@
 Template incluso.
 Menu a SX valido per tutte le pagine del controller.
 *}
+
+{$html->css('ui.datepicker', null, ['inline' => false])}
+{$html->script('libs/jquery/ui/jquery.ui.datepicker.min')}
+
 <div class="secondacolonna {if !empty($fixed)}fixed{/if}">
 	
 	{if !empty($view->action) && $view->action != "index" && $view->action != "categories"}
@@ -16,21 +20,50 @@ Menu a SX valido per tutte le pagine del controller.
 
 {if empty($categories)}
 	{if !empty($view->action) && $view->action == "calendar"}	
-		<form id="calendar_from" style="padding:10px" name="calendar_from" method="get">
+		<form id="event-calendar-form" method="post" action="{$html->url('/events/calendar')}">
 			{$beForm->csrf()}
-			<label>{t}start from{/t}:</label> 
-			<fieldset style="line-height:2.5em; margin:10px 0 10px 0;  padding-bottom:0px; display:block">
-				{$time=$startTime|default:$smarty.now|date_format:'%s'}
-				{html_select_date field_order="DMY" field_separator="<br />" time=$time start_year="-3" end_year="+1" display_days=true}
+
+			<label>{t}since{/t}:</label>
+			<fieldset>
+			    <input maxlength="10" type="text" class="start_date dateinput" name="start_date" data-date-iso="{$startDay|date_format:'%Y-%m-%d'|default:{$smarty.now|date_format:'%Y-%m-%d'}}"
+			    value="{$startDay|date_format:$conf->datePattern|default:{$smarty.now|date_format:$conf->datePattern}}"/>
 			</fieldset>
-			<input type="submit" style="width:100%" value="{t}go{/t}">
 
-			<hr />
+		    <label>{t}to{/t}:</label>
+		    <fieldset>
+    			<input maxlength="10" type="text" class="end_date dateinput" name="end_date" data-date-iso="{$endDay|date_format:'%Y-%m-%d'|default:{$smarty.now|date_format:'%Y-%m-%d'}}"
+    			value="{$endDay|date_format:$conf->datePattern|default:''}"/>
+    			<br>
+		    </fieldset>
 
-			export ics
+			<script>
+				$.datepicker.setDefaults({
+					speed: 'fast', 
+					showOn: 'both',
+					closeAtTop: false, 
+					buttonImageOnly: true, 
+				    buttonImage: '{$html->webroot}img/iconCalendar.gif', 
+				    buttonText: '{t}Open Calendar{/t}',
+				    dateFormat: '{$conf->dateFormatValidation|replace:'yyyy':'yy'}',
+					firstDay: 1,
+					nextText: "&rsaquo;&rsaquo;",
+					prevText: "&lsaquo;&lsaquo;",
+				    beforeShow: customRange
+				}, $.datepicker.regional['{$currLang}']);
+				
+				$("input.dateinput").datepicker();
+			</script>
 
-			export csv
+			<input type='hidden' name="toolbarStartDate" class="js-toolbarStartDate">
+			<input type='hidden' name="toolbarEndDate" class="js-toolbarEndDate">
+			<input type="submit" value="{t}go{/t}">
 
+			{bedev}
+				<hr />
+				export ics
+				<br>
+				export csv
+			{/bedev}
 		</form>
 	{elseif !empty($view->action) && $view->action != "index" && $view->action != "categories" && $view->action != "calendar"}
 		<div class="insidecol">

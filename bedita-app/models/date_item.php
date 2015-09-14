@@ -85,11 +85,26 @@ class DateItem extends BEAppModel
         $todayTime = $today . " 00:00:00";
         $nextCalendarTime = $nextCalendarDay . " 00:00:00";
 
-        $query = "select * from date_items as DateItem where " .
-                " (start_date >= '$todayTime' AND start_date < '$nextCalendarTime') ".
-                " OR (start_date < '$nextCalendarTime' AND end_date > '$todayTime' AND end_date IS NOT NULL)" .
-                " order by start_date";
-        $dateItems = $this->query($query);
+        $dateItems = $this->find('all', array(
+            'conditions' => array(
+                'OR' => array(
+                    array(
+                        'start_date >=' => $todayTime,
+                        'start_date <=' => $nextCalendarTime
+                    ),
+                    array(
+                        'start_date <=' => $nextCalendarTime,
+                        'end_date >=' => $todayTime,
+                        'NOT' => array(
+                            'end_date' => null
+                        )
+                    )
+
+                )
+            ),
+            'order' => 'start_date ASC',
+            'contain' => array()
+        ));
         $objIds = array();
 
         $calendar = array();

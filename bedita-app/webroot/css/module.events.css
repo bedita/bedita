@@ -2,3 +2,29 @@
 Events custom css
 @author		ste@channelweb.it
 */
+
+
+/*
+** calendar view
+*/
+
+#event-calendar-form {
+	padding: 10px;
+}
+
+#event-calendar-form .dateinput {
+    width: 68%;
+    margin-right: 5px;
+    text-align: center;
+}
+
+#event-calendar-form fieldset {
+	margin-bottom: 12px;
+}
+
+#event-calendar-form input[type=submit] {
+	width: 100%;
+	margin: 12px 0;
+}
+
+

@@ -3052,7 +3052,7 @@ msgid "prev"
 msgstr "prec"
 
 msgid "previous 7 days"
-msgstr "precedenti 7 giorni"
+msgstr "7 giorni precedenti"
 
 msgid "previous page"
 msgstr "pagina precedente"
@@ -3521,6 +3521,26 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
+
+msgid "time"
+msgstr "ora"
+
+msgid "since"
+msgstr "dal"
+
+msgid "this month"
+msgstr "questo mese"
+
+msgid "1 month starting today"
+msgstr "1 mese da oggi"
+
+msgid "1 week backward"
+msgstr "1 settimana indietro"
+
+msgid "1 week forward"
+msgstr "1 settimana avanti"
+
+
 
 #~ msgid "Add event date"
 #~ msgstr "Aggiungi data evento"

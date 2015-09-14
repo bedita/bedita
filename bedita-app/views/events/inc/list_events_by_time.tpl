@@ -19,7 +19,7 @@
 		<time>{$date}</time>
 		<time>{$dateprev}</time>
 		-->
-		<time class="hour">ore {$time}</time>
+		<time class="hour">{t}time{/t} {$time}</time>
 		<h3 style="padding:5px;">
 			{$item.DateItem.Event.title|truncate:64|default:"<i>[no title]</i>"|escape}
 		</h3>

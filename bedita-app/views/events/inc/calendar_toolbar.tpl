@@ -2,23 +2,35 @@
 <div class="head">
 	<div class="toolbar" style="white-space:nowrap">
 		<h2>{t}Events calendar{/t}</h2>
-		<table>
+		<table class="js-calendar-toolbar">
 			<tr>
-				<td>
-					<a href="{$html->url('/')}events/calendar?{$prevCalendarDay|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
-						{t}previous 7 days{/t}
-					</a>
-				</td>
-
-				<td>
-					<a href="{$html->url('/')}events/calendar?{$smarty.now|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
+				<td style="padding-top: 5px !important;">
+					<a href="#" class="js-today">
 						{t}today{/t}
 					</a>
 				</td>
 
 				<td>
-					<a href="{$html->url('/')}events/calendar?{$nextCalendarDay|date_format:'Date_Day=%d&Date_Month=%m&Date_Year=%Y'}">
-						{t}next 7 days{/t}
+					<a href="#" class="js-this-month">
+						{t}this month{/t}
+					</a>
+				</td>
+
+				<td>
+					<a href="#" class="js-one-month">
+						{t}1 month starting today{/t}
+					</a>
+				</td>
+
+				<td>
+					<a href="#" class="js-prev-week">
+						{t}1 week backward{/t}
+					</a>
+				</td>
+
+				<td>
+					<a href="#" class="js-next-week">
+						{t}1 week forward{/t}
 					</a>
 				</td>
 

@@ -40,26 +40,45 @@ class EventsController extends ModulesController {
 		$filter["count_annotation"] = array("Comment","EditorNote");
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 		$this->loadCategories($filter["object_type_id"]);
-	 }
+	}
 
     public function calendar() {
-        if(!empty($this->params["url"]["Date_Day"])) {
-            $startDay = $this->params["url"]["Date_Year"] . "-" . 
-                $this->params["url"]["Date_Month"] . "-" . 
-                str_pad($this->params["url"]["Date_Day"], 2, "0", STR_PAD_LEFT);
-        } else {
-            $startDay = date("Y-m-d");
-        }
-        $startTime = $startDay . " 00:00:00";
-        
-        $this->set("startTime", $startTime);
-        // end day: today + caelndarDays + 1
-        $nextCalendarDay = date("Y-m-d", strtotime($startTime) + ($this->calendarDays * DAY));
-        $this->set("nextCalendarDay", $nextCalendarDay);
-        $prevCalendarDay = date("Y-m-d", strtotime($startTime) - ($this->calendarDays * DAY));
-        $this->set("prevCalendarDay", $prevCalendarDay);
 
-        $calendarData = $this->DateItem->loadDateItemsCalendar($startDay, $nextCalendarDay);
+        $calendarRange = Configure::read('eventCalendarRange');
+
+        // get range from toolbar
+        if (!empty($this->params["form"]["toolbarStartDate"]) && !empty($this->params["form"]["toolbarEndDate"])) {
+            $startDay = $this->params["form"]["toolbarStartDate"];
+            $endDay = $this->params["form"]["toolbarEndDate"];
+        } else {
+
+            // set date_items range
+            if (!empty($this->params["form"]["start_date"])) {
+                $startDay = $this->Event->getDefaultDateFormat($this->params["form"]["start_date"], true);
+            } else {
+                $startDay = date('Y-m-d');
+            }
+
+            if (!empty($this->params["form"]["start_date"]) && !empty($this->params["form"]["end_date"])) {
+                $endDay = $this->Event->getDefaultDateFormat($this->params["form"]["end_date"], true);
+            } else {
+                $d = strtotime(date($startDay));
+                $endDay = date('Y-m-d', strtotime($calendarRange, $d));
+            }
+
+        }
+
+
+
+        $this->set("startDay", $startDay);
+        $this->set("endDay", $endDay);
+
+
+        // from here on untoched should be reviewd - xho
+        $startTime = $startDay . " 00:00:00";
+        $this->set("startTime", $startTime);
+
+        $calendarData = $this->DateItem->loadDateItemsCalendar($startDay, $endDay);
         
         $events = array();
         $this->Event->containLevel("minimum");
