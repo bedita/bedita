@@ -45,7 +45,7 @@
 /bedita-app/tests/cases/components/*.localdata.php
 
 # /bedita-app/tmp
-#/bedita-app/tmp
+/bedita-app/tmp
 
 # /bedita-app/vendors/shells/
 /bedita-app/vendors/shells/be_test.php
