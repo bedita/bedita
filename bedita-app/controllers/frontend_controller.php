@@ -1794,7 +1794,7 @@ abstract class FrontendController extends AppController {
 			if ($contentType === "Section") {
 				$args = func_get_args();
 				array_shift($args);
-				return call_user_func_array(array($this, "section"), $args);
+				return call_user_func_array(array('FrontendController', 'section'), $args);
 			// check that contentName is a child of secName
 			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {
 				throw new BeditaNotFoundException(
