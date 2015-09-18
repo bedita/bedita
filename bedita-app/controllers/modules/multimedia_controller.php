@@ -319,7 +319,9 @@ class MultimediaController extends ModulesController {
         
         $this->Transaction->begin() ;
         // save data
-        $this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
+        if (!empty($this->params["form"]["tags"])) {
+            $this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
+        }
 
         if (!empty($this->params['form']['Filedata']['name'])) {
             if(!empty($this->data['url'])) {
