@@ -281,7 +281,7 @@ class ApiAuthComponent extends Object implements ApiAuthInterface {
             return $this->token;
         }
 
-        $token = env('HTTP_AUTHORIZATION');
+        $token = env('HTTP_AUTHORIZATION') ? env('HTTP_AUTHORIZATION') : env('REDIRECT_HTTP_AUTHORIZATION');
 
         if (!$token && function_exists('getallheaders')) {
             $headers = getallheaders();
