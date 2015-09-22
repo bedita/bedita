@@ -108,12 +108,18 @@ abstract class FrontendController extends AppController {
 	 */
 	protected $tagOptions = array();
 
-	/**
-	 * search options, attribute used on search
-	 *
-	 * @var array
-	 */
-	protected $searchOptions = array("order" => false, "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
+    /**
+     * search options, attribute used on search
+     *
+     * @var array
+     */
+    protected $searchOptions = array(
+        'order' => false,
+        'dir' => 1,
+        'dim' => 50,
+        'page' => 1,
+        'filter' => array()
+    );
 
 	/**
 	 * user logged in or not
