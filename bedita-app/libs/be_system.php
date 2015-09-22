@@ -153,7 +153,16 @@ class BeSystem {
 				$results[$key] = array_merge($results[$key], $resSmarty[$key]);
 			}
 		}
-		Cache::clear();
+		
+        if ($cleanAll) {
+            $cacheKeys = Cache::configured();
+            foreach ($cacheKeys as $ck) {
+                Cache::clear(false, $ck);
+            }
+        } else {
+            Cache::clear();
+        }
+
 		if ($frontendsToo) {
 			$folder= new Folder(BEDITA_FRONTENDS_PATH);
             $dirs = $folder->read(true, true, true);
