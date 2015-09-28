@@ -23,12 +23,6 @@
 /**
  * Module Model class
  * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Module extends BEAppModel {
 	
@@ -48,6 +42,7 @@ class Module extends BEAppModel {
 		if(!file_exists(BEDITA_MODULES_PATH)) {
 			throw new BeditaException(__("Missing plugins directory on filesystem", true) . " " . BEDITA_MODULES_PATH);
 		}
+		App::Import('Core', 'Folder');
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$plugins = $folder->read(true, true);
 		foreach ($plugins[0] as $plugin) {
