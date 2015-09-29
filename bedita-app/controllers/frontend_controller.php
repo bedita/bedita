@@ -385,7 +385,6 @@ abstract class FrontendController extends AppController {
 	 * @see bedita-app/AppController#setupLocale()
 	 */
 	protected function setupLocale() {
-
 		$this->currLang = $this->Session->read('Config.language');
 		$conf = Configure::getInstance();
 		if($this->currLang === null || empty($this->currLang)) {
@@ -464,6 +463,8 @@ abstract class FrontendController extends AppController {
 		$this->Session->write('Config.language', $lang);
 		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day');
 		$this->currLang = $lang;
+
+		$this->setupLocale();
 
         // #517 - SEO-friendly I18n: removed redirection.
 	}
