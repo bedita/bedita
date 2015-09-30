@@ -246,9 +246,10 @@ class Module extends BEAppModel {
 				ksort($tableMeta);
 				$diff1 = array_diff_key($tabData, $tableMeta);
 				$diff2 = array_diff_key($tableMeta, $tabData);
-				if(!empty($diff1) || !empty($diff2)) {
-					throw new BeditaException(__("Database schema conflict, table has different schema", true) . ": " . $tabName);
-				}
+                if(!empty($diff1) || !empty($diff2)) {
+                    throw new BeditaException(__('Database schema conflict, table has different schema', true) 
+                        . ": " . $tabName, array_merge($diff1, $diff2));
+                }
 				ClassRegistry::removeObject($modelName);
 				
 			} else {
