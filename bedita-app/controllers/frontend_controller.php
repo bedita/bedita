@@ -1325,6 +1325,9 @@ abstract class FrontendController extends AppController {
 		}
 
 		if (!isset($this->objectCache[$obj_id])) {
+            if (empty($this->BEObject)) {
+                $this->BEObject = $this->loadModelByType('BEObject');
+            }
 			$modelType = $this->BEObject->getType($obj_id);
 			if (!empty($options['bindingLevel'])) {
 				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
@@ -1383,6 +1386,10 @@ abstract class FrontendController extends AppController {
 			throw new BeditaNotFoundException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
+        if (empty($this->BeLangText)) {
+            App::import('Component', 'BeLangText');
+            $this->BeLangText = new BeLangTextComponent();
+        }
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if ($options['explodeRelations'] && !empty($obj['RelatedObject'])) {
