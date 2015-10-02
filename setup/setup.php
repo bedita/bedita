@@ -265,11 +265,11 @@
 					$admin_data_ok = false;
 					$this->smarty->assign('cpassworderr',true);
 				}
-				
-				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
-					$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
-					$baseUrl = $config->read('App.baseUrl');
-				}
+				// #747 BEdita web wizard setup creates core.php with errors - skip _applymodrewrite 
+// 				if($check_mod_rewrite != $this->_checkmodrewritecakephp($baseUrl)) {
+// 					$this->_applymodrewrite($this->_checkmodrewritephp($baseUrl));
+// 					$baseUrl = $config->read('App.baseUrl');
+// 				}
 				if($admin_data_ok) {
 					$userdata = array(
 						'User' => array(

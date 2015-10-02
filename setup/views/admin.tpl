@@ -90,13 +90,18 @@
 
 {if $mod_rewrite_php !== $mod_rewrite_cakephp}
 <h3>Mod rewrite</h3>
+{*
 <p><span class="ERROR">[ERROR]</span>: <span>Mod Rewrite is</span> <span class="ERROR">{if $mod_rewrite_php == "askuser"}?{else}{$mod_rewrite_php}{/if}</span> for PHP and <span class="ERROR">{$mod_rewrite_cakephp}</span> for CakePhp</p>
+*}
 	{if $mod_rewrite_php == "askuser"}
 	<p><span class="WARN">[WARN]</span>: <span>Not able to say if mod_rewrite is enabled.</span></p>
+	<p><span>mod_rewrite should be enabled</span></p>
+{*
 	<p><span>Please check your webserver configuration and set properly the following preference.</span></p>
 	<p><label>mod_rewrite</label> is: <input type="radio" value="enabled" name="mod_rewrite_enabled" />enabled <input type="radio" value="disabled" name="mod_rewrite_enabled" />disabled </p>
 	{else}
 	<p><span class="INFO">[INFO]</span>: The wizard will try to set CakePHP 'mod revrite' to {$mod_rewrite_php} [file <code>config/core.php</code> must be writable by php/webserver]</p>
+*}
 	<p><span>Read the article <a href="http://docs.bedita.com/setup/handling-mod_rewrite-in-bedita-and-cakephp" target="_blank">Handling mod_rewrite in BEdita and CakePhp</a> 
 		on <a href="http://docs.bedita.com" target="_blank">docs.bedita.com</a> for more information on this topic</span></p>
 	{/if}
