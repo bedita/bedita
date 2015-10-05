@@ -91,9 +91,15 @@ class DateItem extends BEAppModel
                 return null;
             }
 
+            $date = preg_replace('/^-|([\/-])-/', '$1', $date, -1, $negative);
+
             $pattern = str_replace('%', '', Configure::read('datePattern'));
             if (($dateTime = date_create_from_format($pattern . ' G:i|', $date)) || ($dateTime = date_create_from_format($pattern . '|', $date))) {
                 $date = date_format($dateTime, 'Y-m-d H:i:s');
+            }
+
+            if ($negative) {
+                $date = '-' . $date;
             }
         }
 
