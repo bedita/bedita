@@ -139,7 +139,7 @@ class CallbackBehavior extends ModelBehavior {
                 }
 
                 // Initialize behavior.
-                $behavior;
+                $behavior = null;
                 if (ClassRegistry::isKeySet($class)) {
                     $behavior = ClassRegistry::getObject($class);
                 } else {
@@ -147,7 +147,6 @@ class CallbackBehavior extends ModelBehavior {
                     ClassRegistry::addObject($class, $behavior);
                 }
                 $behavior->setup($model);
-
                 // Bind listeners.
                 $methods = array_diff(get_class_methods($behavior), array(
                     'cakeError', 'log', 'requestAction', 'toString',
@@ -167,6 +166,7 @@ class CallbackBehavior extends ModelBehavior {
                     }
                     array_push($this->config[$model->alias]['_listeners'][$eventName], $listener);
                 }
+                unset($behavior);
             } else {
                 // Simply attach behavior.
                 $model->Behaviors->attach($beh);

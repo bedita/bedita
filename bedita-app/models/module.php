@@ -23,12 +23,6 @@
 /**
  * Module Model class
  * 
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class Module extends BEAppModel {
 	
@@ -48,6 +42,7 @@ class Module extends BEAppModel {
 		if(!file_exists(BEDITA_MODULES_PATH)) {
 			throw new BeditaException(__("Missing plugins directory on filesystem", true) . " " . BEDITA_MODULES_PATH);
 		}
+		App::Import('Core', 'Folder');
 		$folder = new Folder(BEDITA_MODULES_PATH);
 		$plugins = $folder->read(true, true);
 		foreach ($plugins[0] as $plugin) {
@@ -251,9 +246,10 @@ class Module extends BEAppModel {
 				ksort($tableMeta);
 				$diff1 = array_diff_key($tabData, $tableMeta);
 				$diff2 = array_diff_key($tableMeta, $tabData);
-				if(!empty($diff1) || !empty($diff2)) {
-					throw new BeditaException(__("Database schema conflict, table has different schema", true) . ": " . $tabName);
-				}
+                if(!empty($diff1) || !empty($diff2)) {
+                    throw new BeditaException(__('Database schema conflict, table has different schema', true) 
+                        . ": " . $tabName, array_merge($diff1, $diff2));
+                }
 				ClassRegistry::removeObject($modelName);
 				
 			} else {

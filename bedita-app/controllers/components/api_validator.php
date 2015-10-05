@@ -491,19 +491,40 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
-     * Check if $date is in the right $format
+     * Check if $date is in the right $format and if it's a valid date
      * If test passes it returns the DateTime object else it throws a BeditaBadRequestException
+     *
+     * Default $format tested are the following ISO-8601 formats:
+     * - 2005-08-15T15:52:01+02:00 (DateTime::ATOM)
+     * - 2005-08-15T13:52:01.467Z (js Date().toISOString())
      *
      * @throws BeditaBadRequestException
      * @param string $date the date string to check
-     * @param string $format the format against test $date (default ISO 8601)
+     * @param string $format the format against test $date (default ISO-8601)
      * @return DateTime
      */
-    public function checkDate($date, $format = DateTime::ISO8601) {
-        $dateTime = DateTime::createFromFormat($format, $date);
+    public function checkDate($date, $format = DateTime::ATOM) {
+        $defaultTimezone = $timezone = new DateTimeZone(date_default_timezone_get());
+        $zPattern = '/(.+)\.\d{3}Z$/';
+        // if ISO-8601 and it's in js Date().toISOString() format
+        if ($format == DateTime::ATOM && preg_match($zPattern, $date, $match)) {
+            $format = 'Y-m-d\TH:i:s';
+            $date = $match[1];
+            $timezone = new DateTimeZone('UTC');
+        }
+        $dateTime = DateTime::createFromFormat($format, $date, $timezone);
         if (!$dateTime) {
-            $formatName = ($format == DateTime::ISO8601) ? 'ISO 8601' : $format;
+            $formatName = ($format == DateTime::ATOM) ? 'ISO-8601' : $format;
             throw new BeditaBadRequestException($date . ' has to be in valid ' . $formatName . ' format');
+        }
+        // validate that formatted date is equal to start $date string
+        if ($date != $dateTime->format($format)) {
+            throw new BeditaBadRequestException($date . ' is not a valid date');
+        }
+
+        // if $dateTime was created using UTC time zone and it is different to default then change it
+        if ($dateTime->getTimezone()->getName() == 'UTC' && $defaultTimezone->getName() != 'UTC') {
+            $dateTime->setTimezone($defaultTimezone);
         }
         return $dateTime;
     }

@@ -108,12 +108,18 @@ abstract class FrontendController extends AppController {
 	 */
 	protected $tagOptions = array();
 
-	/**
-	 * search options, attribute used on search
-	 *
-	 * @var array
-	 */
-	protected $searchOptions = array("order" => false, "dir" => 1, "dim" => 50, "page" => 1, "filter" => false);
+    /**
+     * search options, attribute used on search
+     *
+     * @var array
+     */
+    protected $searchOptions = array(
+        'order' => false,
+        'dir' => 1,
+        'dim' => 50,
+        'page' => 1,
+        'filter' => array()
+    );
 
 	/**
 	 * user logged in or not
@@ -379,7 +385,6 @@ abstract class FrontendController extends AppController {
 	 * @see bedita-app/AppController#setupLocale()
 	 */
 	protected function setupLocale() {
-
 		$this->currLang = $this->Session->read('Config.language');
 		$conf = Configure::getInstance();
 		if($this->currLang === null || empty($this->currLang)) {
@@ -458,6 +463,8 @@ abstract class FrontendController extends AppController {
 		$this->Session->write('Config.language', $lang);
 		$this->Cookie->write($conf->cookieName["langSelect"], $lang, false, '+350 day');
 		$this->currLang = $lang;
+
+		$this->setupLocale();
 
         // #517 - SEO-friendly I18n: removed redirection.
 	}
@@ -1318,6 +1325,9 @@ abstract class FrontendController extends AppController {
 		}
 
 		if (!isset($this->objectCache[$obj_id])) {
+            if (empty($this->BEObject)) {
+                $this->BEObject = $this->loadModelByType('BEObject');
+            }
 			$modelType = $this->BEObject->getType($obj_id);
 			if (!empty($options['bindingLevel'])) {
 				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
@@ -1376,6 +1386,10 @@ abstract class FrontendController extends AppController {
 			throw new BeditaNotFoundException(__("Content not found", true) . ' id: ' . $obj_id);
 		}
 
+        if (empty($this->BeLangText)) {
+            App::import('Component', 'BeLangText');
+            $this->BeLangText = new BeLangTextComponent();
+        }
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
 		if ($options['explodeRelations'] && !empty($obj['RelatedObject'])) {
@@ -1794,7 +1808,7 @@ abstract class FrontendController extends AppController {
 			if ($contentType === "Section") {
 				$args = func_get_args();
 				array_shift($args);
-				return call_user_func_array(array($this, "section"), $args);
+				return call_user_func_array(array('FrontendController', 'section'), $args);
 			// check that contentName is a child of secName
 			} elseif ( $this->Tree->find('count',array("conditions" => array("id" => $content_id, "parent_id" => $sectionId))) == 0 ) {
 				throw new BeditaNotFoundException(

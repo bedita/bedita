@@ -319,7 +319,9 @@ class MultimediaController extends ModulesController {
         
         $this->Transaction->begin() ;
         // save data
-        $this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
+        if (!empty($this->params["form"]["tags"])) {
+            $this->data["Category"] = $this->Category->saveTagList($this->params["form"]["tags"]);
+        }
 
         if (!empty($this->params['form']['Filedata']['name'])) {
             if(!empty($this->data['url'])) {
@@ -342,10 +344,12 @@ class MultimediaController extends ModulesController {
             if ($model == "Video") {
                 $this->data["thumbnail"] = $this->BeUploadToObj->getThumbnail($this->data);
             }
-            
             if (!empty($this->params['form']['mediatype'])) {
-                $objetc_type_id = Configure::read("objectTypes." . Inflector::underscore($model) . ".id");
-                $this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($objetc_type_id, $this->params['form']['mediatype']));
+                $object_type_id = Configure::read("objectTypes." . Inflector::underscore($model) . ".id");
+                if (empty($this->data['Category'])) {
+                    $this->data['Category'] = array();
+                }
+                $this->data['Category'] = array_merge($this->data['Category'], $this->Category->checkMediaType($object_type_id, $this->params['form']['mediatype']));
             }
 
             if (!isset($this->data['Permission'])) {

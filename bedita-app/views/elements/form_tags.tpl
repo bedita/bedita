@@ -1,3 +1,5 @@
+{if isset($moduleList.tags)}
+
 <script type="text/javascript">
 <!--
 $(document).ready(function(){
@@ -55,3 +57,5 @@ $(document).ready(function(){
 	<div id="listExistingTags" class="tag graced" style="display: none; margin-top:5px; text-align:justify;"></div>
 
 </fieldset>
+
+{/if}

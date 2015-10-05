@@ -8,6 +8,8 @@
 
 	{$view->element('form_title_subtitle')}
 
+	{include file="../inc/form_properties.tpl" comments=true}
+
 	{$view->element('form_previews')}
 	
 	{$view->element('form_calendar_dates')}
@@ -17,7 +19,6 @@
 
 	{include file="../inc/form_promoter.tpl" comments=true}
 	
-	{include file="../inc/form_properties.tpl" comments=true}
 
 	{$view->element('form_tree')}
 	

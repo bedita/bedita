@@ -1,3 +1,5 @@
+{if isset($moduleList.webmarks)}
+
 <script type="text/javascript">
 <!--
 
@@ -105,3 +107,6 @@ $(document).ready(function() {
 	</table>
 	
 </fieldset>
+
+{/if}
+

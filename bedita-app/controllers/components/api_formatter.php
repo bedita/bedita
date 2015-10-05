@@ -319,20 +319,24 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
-     * Convert a date from db to ISO 8601 format
+     * Convert a date from db to ISO-8601 format
+     * Use DateTime::ATOM format i.e. 2005-08-15T15:52:01+00:00
      *
      * @param string $date the date string to convert
      * @return string
      */
     public function dateFromDb($date) {
         $dateTime = new DateTime($date);
-        return $dateTime->format(DateTime::ISO8601);
+        return $dateTime->format(DateTime::ATOM);
     }
 
     /**
-     * Convert a date from ISO 8601 to $dbFormat
+     * Convert a date from ISO-8601 to $dbFormat
+     * The format supported are:
+     * - 2005-08-15T15:52:01+02:00
+     * - 2005-08-15T13:52:01.467Z (js Date().toISOString())
      *
-     * @param string $date the ISO 8601 date string
+     * @param string $date the ISO-8601 date string
      * @param string $dbFormat the db format (default 'datetime' db type)
      * @return string
      */

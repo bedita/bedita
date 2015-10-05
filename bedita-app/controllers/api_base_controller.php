@@ -365,11 +365,15 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->ResponseHandler->sendHeader('Access-Control-Allow-Methods', "POST, GET, PUT, DELETE, OPTIONS, HEAD");
-        if (function_exists('getallheaders')) {
+        $acrh = env('HTTP_ACCESS_CONTROL_REQUEST_HEADERS');
+        if (!$acrh && function_exists('getallheaders')) {
             $headers = getallheaders();
             if (!empty($headers['Access-Control-Request-Headers'])) {
-                $this->ResponseHandler->sendHeader('Access-Control-Allow-Headers', $headers['Access-Control-Request-Headers']);
+                $acrh = $headers['Access-Control-Request-Headers'];
             }
+        }
+        if (!empty($acrh)) {
+            $this->ResponseHandler->sendHeader('Access-Control-Allow-Headers', $acrh);
         }
 
         $this->requestMethod = strtolower(env('REQUEST_METHOD'));
@@ -631,7 +635,7 @@ abstract class ApiBaseController extends FrontendController {
             $this->saveObject($objectModel);
             $savedObjectId = $objectModel->id;
             $this->Transaction->commit();
-            $this->objects($savedObjectId);
+            $this->getObjects($savedObjectId);
             if ($isNew) {
                 $this->ResponseHandler->sendStatus(201);
                 $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
