@@ -30,6 +30,12 @@ class ApiValidatorDummyTestController extends Controller {
 
     public $components = array('ApiValidator');
 
+    public $requestMethod = 'get';
+
+    public function getRequestMethod() {
+        return $this->requestMethod;
+    }
+
 }
 
 class ApiValidatorComponentTest extends BeditaTestCase {
@@ -40,6 +46,7 @@ class ApiValidatorComponentTest extends BeditaTestCase {
         parent::__construct('ApiValidator', dirname(__FILE__));
         $this->controller = new ApiValidatorDummyTestController();
         $this->controller->constructClasses();
+        $this->controller->ApiValidator->initialize($this->controller);
     }
 
     public function testCheckDate() {
@@ -77,6 +84,45 @@ class ApiValidatorComponentTest extends BeditaTestCase {
                 $this->assertTrue(!empty($checkMsg));
             }
         }
+   }
+
+   public function testCheckQueryString() {
+        $this->requiredData(array('checkQueryString'));
+        $d = $this->data['checkQueryString'];
+
+        // test register
+        $this->controller->ApiValidator->registerQueryStringNames($d);
+        $res = $this->controller->ApiValidator->getQueryStringNames();
+        $expected = array(
+            '__all' => array('common'),
+            '_group1' => array('groupname1', 'groupname2'),
+            'endpoint1' => array('common', 'name1', 'name2'),
+            'endpoint2' => array('common', 'groupname1', 'groupname2', 'name3'),
+        );
+        $this->assertEqual($res, $expected);
+
+        // test check query string
+        $this->controller->params['url'] = array(
+            'url' => 'http://example.com',
+            'common' => 'test',
+            'groupname2' => 'test'
+        );
+        $this->assertFalse(
+            $this->controller->ApiValidator->isQueryStringValid('endpoint1')
+        );
+        $this->assertTrue(
+            $this->controller->ApiValidator->isQueryStringValid('endpoint2')
+        );
+
+        // test check __all
+        $this->controller->requestMethod = 'post';
+        $this->assertFalse(
+            $this->controller->ApiValidator->isQueryStringValid('new_endpoint')
+        );
+        unset($this->controller->params['url']['groupname2']);
+        $this->assertTrue(
+            $this->controller->ApiValidator->isQueryStringValid('new_endpoint')
+        );
    }
 
 }

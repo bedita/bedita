@@ -86,6 +86,21 @@ class ApiValidatorComponent extends Object {
      * @return void
      */
     public function checkQueryString($endpoint) {
+        if (!$this->isQueryStringValid($endpoint)) {
+            $validStringNames = !empty($this->queryStringNames[$endpoint]) ? $this->queryStringNames[$endpoint] : $this->queryStringNames['__all'];
+            throw new BeditaBadRequestException(
+                'Query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
+            );
+        }
+    }
+
+    /**
+     * Return true if url query string is valid for an endpoint, false otherwise
+     *
+     * @param string $endpoint
+     * @return boolean
+     */
+    public function isQueryStringValid($endpoint) {
         $requestMethod = $this->controller->getRequestMethod();
         $queryStrings = $this->controller->params['url'];
         array_shift($queryStrings);
@@ -98,11 +113,10 @@ class ApiValidatorComponent extends Object {
 
             $notValid = array_diff(array_keys($queryStrings), $validStringNames);
             if ($notValid) {
-                throw new BeditaBadRequestException(
-                    'Query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
-                );
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -156,7 +170,7 @@ class ApiValidatorComponent extends Object {
             $names = array($names);
         }
         if (!isset($this->queryStringNames[$endpoint])) {
-            if ($endpoint != '__all') {
+            if (strpos($endpoint, '_') !== 0) {
                 $names = array_merge($names, $this->queryStringNames['__all']);
             }
             $merge = false;
@@ -172,6 +186,7 @@ class ApiValidatorComponent extends Object {
             }
         }
         $this->queryStringNames[$endpoint] = ($merge) ? array_merge($this->queryStringNames[$endpoint], $namesToAdd) : $namesToAdd;
+        sort($this->queryStringNames[$endpoint]);
         return $this->queryStringNames[$endpoint];
     }
 
