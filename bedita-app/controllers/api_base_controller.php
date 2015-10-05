@@ -234,6 +234,47 @@ abstract class ApiBaseController extends FrontendController {
     );
 
     /**
+     * The default supported query string parameters names for every endpoint
+     * It's an array as
+     *
+     * ```
+     * array(
+     *     'endpoint_1' => array('name_one'),
+     *     'endpoint_2' => array('name_one', 'name_two'),
+     *     ...
+     * )
+     * ```
+     *
+     * keys starting with '_' are special words that defines groups of string names to reuse in endpoints i.e.
+     *
+     * ```
+     * array(
+     *     '_groupOne' => array('name1', 'name2')
+     *     'endpoint_1' => array('name_one', '_groupOne'), // it's like array('name_one', 'name1', 'name2')
+     *     'endpoint_2' => array('_groupOne') // it's like array('name1', 'name2')
+     * )
+     * ```
+     *
+     * Key '__all' it's a special key that contains query string names valid for every endpoint
+     *
+     * @var array
+     */
+    private $defaultQueryStringNames = array(
+        '__all' => array('access_token'),
+        '_pagination' => array('page', 'page_size'),
+        'objects' => array('object_type', 'query', '_pagination')
+    );
+
+    /**
+     * Other supported query string parameters names for every endpoint.
+     * Override it according to your needs.
+     *
+     * @see self::$defaultQueryStringNames to the right format
+     * @var array
+     */
+    protected $queryStringNames = array();
+
+    /**
      * Constructor
      *
      * - Add auth component (default 'ApiAuth') to self::$components
@@ -275,6 +316,15 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         throw new BeditaMethodNotAllowedException();
+    }
+
+    /**
+     * Return the HTTP verb of the request
+     *
+     * @return string
+     */
+    public function getRequestMethod() {
+        return $this->requestMethod;
     }
 
     /**
@@ -384,6 +434,8 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->setupPagination();
+        $this->ApiValidator->registerQueryStringNames($this->defaultQueryStringNames);
+        $this->ApiValidator->registerQueryStringNames($this->queryStringNames);
     }
 
     /**
@@ -474,6 +526,7 @@ abstract class ApiBaseController extends FrontendController {
                 $this->action = $methodName;
                 throw new BeditaMethodNotAllowedException();
             } else {
+                $this->ApiValidator->checkQueryString($methodName);
                 $this->action = $methodName;
                 $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
                 if (method_exists($this, $specificMethodName)) {

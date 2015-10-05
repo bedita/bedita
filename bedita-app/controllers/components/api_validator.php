@@ -42,7 +42,17 @@ class ApiValidatorComponent extends Object {
     protected $writableObjects = array();
 
     /**
-     * Initialize function
+     * The supported query string parameters names for every endpoint.
+     *
+     * @see ApiBaseController::$defaultQueryStringNames to the right format
+     * @var array
+     */
+    private $queryStringNames = array(
+        '__all' => array()
+    );
+
+    /**
+     * Initialize component (called before Controller::beforeFilter())
      *
      * @param Controller $controller
      * @return void
@@ -50,10 +60,119 @@ class ApiValidatorComponent extends Object {
     public function initialize(Controller $controller, array $settings = array()) {
         $this->controller = &$controller;
         $this->_set($settings);
+    }
+
+    /**
+     * Startup component (called after Controller::beforeFilter())
+     *
+     * @param Controller $controller
+     * @return void
+     */
+    public function startup(Controller $controller) {
         $validateConf = Configure::read('api.validation');
         if (!empty($validateConf['writableObjects'])) {
             $this->writableObjects = $validateConf['writableObjects'];
         }
+        if (!empty($validateConf['queryStringNames'])) {
+            $this->registerQueryStringNames($validateConf['queryStringNames']);
+        }
+    }
+
+    /**
+     * Check if query string names of the request are valid for an endpoint
+     *
+     * @throws BeditaBadRequestException
+     * @param string $endpoint the endpoint to check
+     * @return void
+     */
+    public function checkQueryString($endpoint) {
+        $requestMethod = $this->controller->getRequestMethod();
+        $queryStrings = $this->controller->params['url'];
+        array_shift($queryStrings);
+        if (!empty($queryStrings)) {
+            if ($requestMethod == 'get' && !empty($this->queryStringNames[$endpoint])) {
+                $validStringNames = $this->queryStringNames[$endpoint];
+            } else {
+                $validStringNames = $this->queryStringNames['__all'];
+            }
+
+            $notValid = array_diff(array_keys($queryStrings), $validStringNames);
+            if ($notValid) {
+                throw new BeditaBadRequestException(
+                    'Query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
+                );
+            }
+        }
+    }
+
+    /**
+     * Register an array of query string names in self::queryStringNames
+     * The array has to be divided by endpoint i.e.
+     *
+     * ```
+     * array(
+     *     'endpoint_1' => array('string_one', 'string_two', ...),
+     *     'endpoint_2' => array(...)
+     * )
+     * ```
+     *
+     * @param array $stringNames
+     * @param boolean $merge if $stringNames has to be merged to exisiting self::queryStringNames
+     * @return array
+     */
+    public function registerQueryStringNames(array $stringNames, $merge = true) {
+        if (!$merge) {
+            $this->queryStringNames = $stringNames;
+        } else {
+            // assure to analyze first special names starting with '_'
+            ksort($stringNames);
+            foreach ($stringNames as $endpoint => $names) {
+                $this->setQueryStringNames($endpoint, $names, $merge);
+            }
+        }
+        return $this->queryStringNames;
+    }
+
+    /**
+     * Return the query string names valid
+     * Passing the endpoint the list is filtered by it
+     *
+     * @param string $endpoint the endpoint
+     * @return array
+     */
+    public function getQueryStringNames($endpoint = null) {
+        return !empty($this->queryStringNames[$endpoint]) ? $this->queryStringNames[$endpoint] : $this->queryStringNames;
+    }
+
+    /**
+     * Set new valid query string names
+     *
+     * @param string $endpoint the endpoint to modify
+     * @param string|array $names the query string names to add
+     * @param boolean $merge if the names have to be added or have to replace the old one
+     */
+    public function setQueryStringNames($endpoint, $names, $merge = true) {
+        if (!is_array($names)) {
+            $names = array($names);
+        }
+        if (!isset($this->queryStringNames[$endpoint])) {
+            if ($endpoint != '__all') {
+                $names = array_merge($names, $this->queryStringNames['__all']);
+            }
+            $merge = false;
+        }
+        $namesToAdd = array();
+        foreach ($names as $k => $n) {
+            if (strpos($n, '_') === 0) {
+                if (!empty($this->queryStringNames[$n])) {
+                    $namesToAdd = array_merge($namesToAdd, $this->queryStringNames[$n]);
+                }
+            } else {
+                $namesToAdd[] = $n;
+            }
+        }
+        $this->queryStringNames[$endpoint] = ($merge) ? array_merge($this->queryStringNames[$endpoint], $namesToAdd) : $namesToAdd;
+        return $this->queryStringNames[$endpoint];
     }
 
     /**
