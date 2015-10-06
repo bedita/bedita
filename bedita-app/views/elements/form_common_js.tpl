@@ -133,6 +133,7 @@ $(document).ready(function(){
 		}
 	});
 	
+	{if $conf->useDatePicker}
 	$.datepicker.setDefaults({
 		speed: 'fast', 
 		showOn: 'both',
@@ -148,7 +149,7 @@ $(document).ready(function(){
 	}, $.datepicker.regional['{$currLang}']);
 	
 	$("input.dateinput").datepicker();
-
+	{/if}
 
 
 {if empty($object.id)}
