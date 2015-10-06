@@ -700,6 +700,15 @@ $config["geoTagOptions"] = array(
 );
 
 /**
+ * Set whether JS date picker should be used or not.
+ *
+ * Disable it to prevent it from interfering with b.C. dates.
+ *
+ * @var bool
+ */
+$config['useDatePicker'] = true;
+
+/**
  ** ******************************************
  **  System locales available
  **  use arrays of locale strings
