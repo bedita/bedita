@@ -30,6 +30,12 @@ class ApiValidatorDummyTestController extends Controller {
 
     public $components = array('ApiValidator');
 
+    public $requestMethod = 'get';
+
+    public function getRequestMethod() {
+        return $this->requestMethod;
+    }
+
 }
 
 class ApiValidatorComponentTest extends BeditaTestCase {
@@ -40,6 +46,7 @@ class ApiValidatorComponentTest extends BeditaTestCase {
         parent::__construct('ApiValidator', dirname(__FILE__));
         $this->controller = new ApiValidatorDummyTestController();
         $this->controller->constructClasses();
+        $this->controller->ApiValidator->initialize($this->controller);
     }
 
     public function testCheckDate() {
@@ -77,6 +84,59 @@ class ApiValidatorComponentTest extends BeditaTestCase {
                 $this->assertTrue(!empty($checkMsg));
             }
         }
+   }
+
+   public function testCheckUrlParams() {
+        $this->requiredData(array('checkUrlParams'));
+        $d = $this->data['checkUrlParams'];
+
+        // test register
+        $this->controller->ApiValidator->registerAllowedUrlParams($d);
+        $res = $this->controller->ApiValidator->getAllowedUrlParams();
+        $expected = array(
+            '__all' => array('common'),
+            '_group1' => array('groupname1', 'groupname2'),
+            'endpoint1' => array('common', 'name1', 'name2'),
+            'endpoint2' => array('common', 'groupname1', 'groupname2', 'name3'),
+            'endpoint3' => array('common', 'filter[name1]', 'filter[name2]', 'groupname1', 'groupname2')
+        );
+        $this->assertEqual($res, $expected);
+
+        // test check query string
+        $this->controller->params['url'] = array(
+            'url' => 'http://example.com',
+            'common' => 'test',
+            'groupname2' => 'test'
+        );
+        $this->assertFalse(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint1')
+        );
+        $this->assertTrue(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint2')
+        );
+
+        $this->controller->params['url']['filter'] = array(
+            'name1' => 'test',
+            'name3' => 'test'
+        );
+        $this->assertFalse(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint3')
+        );
+        unset($this->controller->params['url']['filter']['name3']);
+        $this->assertTrue(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint3')
+        );
+
+        // test check __all
+        $this->controller->requestMethod = 'post';
+        unset($this->controller->params['url']['filter']);
+        $this->assertFalse(
+            $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
+        );
+        unset($this->controller->params['url']['groupname2']);
+        $this->assertTrue(
+            $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
+        );
    }
 
 }

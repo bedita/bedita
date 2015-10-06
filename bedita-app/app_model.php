@@ -479,6 +479,17 @@ class BEAppModel extends AppModel {
             unset($filter['descendants']);
         }
 
+        if (isset($filter['object_type'])) {
+            if (is_array($filter['object_type'])) {
+                foreach ($filter['object_type'] as $ot) {
+                    $filter['object_type_id'][] = Configure::read('objectTypes.' . $ot . '.id');
+                }
+            } else {
+                $filter['object_type_id'][] = Configure::read('objectTypes.' . $filter['object_type'] . '.id');
+            }
+            unset($filter['object_type']);
+        }
+
         // if filter 'tree_related_object' is set
         // it filters objects that have some relation with objects located
         // on $id tree branch or on $id tree branch descendants (if $all is true)

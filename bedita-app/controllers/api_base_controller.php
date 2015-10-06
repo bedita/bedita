@@ -175,7 +175,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    protected $filter = array();
+    protected $objectsFilter = array();
 
     /**
      * The request method invoked (get, post, put, delete)
@@ -194,8 +194,8 @@ abstract class ApiBaseController extends FrontendController {
     private $fullApiBaseUrl = null;
 
     /**
-     * The allowed filters you can apply to /objects endpoint.
-     * The filter is divided by request type 'get', 'post', 'put' and 'delete'
+     * The allowed url path you can apply to /objects endpoint.
+     * The url path is divided by request type 'get', 'post', 'put' and 'delete'
      *
      * For example GET /objects/1/children search the children of object with id = 1
      *
@@ -203,12 +203,12 @@ abstract class ApiBaseController extends FrontendController {
      * For example adding to 'get' array 'foo' filter and adding ApiController::getObjectsFoo() you can call /objects/1/foo
      *
      * All filters must have a corresponding class method built as self::requestMethod + Objects + filter camelized, for example:
-     * - getObjectsChildren() maps $allowedObjectsFilter['get']['children']
-     * - postObjectsRelations() maps $allowedObjectsFilter['post']['relations']
+     * - getObjectsChildren() maps $allowedObjectsUrlPath['get']['children']
+     * - postObjectsRelations() maps $allowedObjectsUrlPath['post']['relations']
      *
      * @var array
      */
-    protected $allowedObjectsFilter = array(
+    protected $allowedObjectsUrlPath = array(
         'get' => array(
             'relations',
             'children',
@@ -234,6 +234,48 @@ abstract class ApiBaseController extends FrontendController {
     );
 
     /**
+     * The default supported url query string parameters names for every endpoint
+     * It's an array as
+     *
+     * ```
+     * array(
+     *     'endpoint_1' => array('name_one'),
+     *     'endpoint_2' => array('name_one', 'name_two'),
+     *     ...
+     * )
+     * ```
+     *
+     * keys starting with '_' are special words that defines groups of string names to reuse in endpoints i.e.
+     *
+     * ```
+     * array(
+     *     '_groupOne' => array('name1', 'name2')
+     *     'endpoint_1' => array('name_one', '_groupOne'), // it's like array('name_one', 'name1', 'name2')
+     *     'endpoint_2' => array('_groupOne') // it's like array('name1', 'name2')
+     * )
+     * ```
+     *
+     * Key '__all' it's a special key that contains query string names valid for every endpoint and every request method.
+     * Other endpoints params are only valid for GET requests.
+     *
+     * @var array
+     */
+    private $defaultAllowedUrlParams = array(
+        '__all' => array('access_token'),
+        '_pagination' => array('page', 'page_size'),
+        'objects' => array('filter[object_type]', 'filter[query]', '_pagination')
+    );
+
+    /**
+     * Other supported query string parameters names for every endpoint.
+     * Override it according to your needs.
+     *
+     * @see self::$defaultUrlParams to the right format
+     * @var array
+     */
+    protected $allowedUrlParams = array();
+
+    /**
      * Constructor
      *
      * - Add auth component (default 'ApiAuth') to self::$components
@@ -251,13 +293,21 @@ abstract class ApiBaseController extends FrontendController {
         $this->components[] = $authComponent;
         parent::__construct();
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
+        $objectTypeQueryString = array_diff($this->defaultAllowedUrlParams['objects'], array('filter[object_type]'));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
             if (is_numeric($key) && in_array($value['name'], $this->whitelistObjectTypes)) {
-                $this->endPoints[] = Inflector::pluralize($value['name']);
+                $objectTypeEndPoint = Inflector::pluralize($value['name']);
+                $this->endPoints[] = $objectTypeEndPoint;
+                $this->defaultAllowedUrlParams[$objectTypeEndPoint] = $objectTypeQueryString;
             }
         }
         $this->endPoints = array_diff($this->endPoints, $this->blacklistEndPoints);
+
+        // for backward compatibility with 3.6.0
+        if (!empty($this->allowedObjectsFilter)) {
+            $this->$allowedObjectsUrlPath = $this->allowedObjectsFilter;
+        }
     }
 
     /**
@@ -270,11 +320,20 @@ abstract class ApiBaseController extends FrontendController {
     public function __call($method, $arguments) {
         $objectType = Configure::read('objectTypes.' . Inflector::singularize($method));
         if (!empty($objectType) && $this->requestMethod == 'get') {
-            $this->filter['object_type_id'] = $objectType['id'];
+            $this->objectsFilter['object_type_id'] = $objectType['id'];
             return call_user_func_array(array($this, $this->requestMethod . 'Objects'), $arguments);
         }
 
         throw new BeditaMethodNotAllowedException();
+    }
+
+    /**
+     * Return the HTTP verb of the request
+     *
+     * @return string
+     */
+    public function getRequestMethod() {
+        return $this->requestMethod;
     }
 
     /**
@@ -384,6 +443,8 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->setupPagination();
+        $this->ApiValidator->registerAllowedUrlParams($this->defaultAllowedUrlParams);
+        $this->ApiValidator->registerAllowedUrlParams($this->allowedUrlParams);
     }
 
     /**
@@ -467,13 +528,14 @@ abstract class ApiBaseController extends FrontendController {
         $args = func_get_args();
         $name = array_shift($args);
         // generic methodName
-        $methodName = str_replace(".", "_", $name);
+        $methodName = str_replace('.', '_', $name);
         if (!empty($methodName)) {
             // avoid to call methods that aren't endpoints
             if (!in_array($methodName, $this->endPoints)) {
                 $this->action = $methodName;
                 throw new BeditaMethodNotAllowedException();
             } else {
+                $this->ApiValidator->checkUrlParams($methodName);
                 $this->action = $methodName;
                 $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
                 if (method_exists($this, $specificMethodName)) {
@@ -524,16 +586,35 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * setup self::$objectsFilter from url params
+     *
+     * @return void
+     */
+    protected function setupObjectsFilter() {
+        $urlParams = $this->ApiFormatter->formatUrlParams();
+        if (!empty($urlParams['filter'])) {
+            $this->objectsFilter = $urlParams['filter'];
+        }
+    }
+
+    /**
      * GET /objects
      *
      * If $name is passed try to load an object with that id or nickname
      *
      * @param int|string $name an object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['get']
+     * @param string $filterType can be a value between those defined in self::allowedObjectsUrlPath['get']
      * @return void
      */
     protected function getObjects($name = null, $filterType = null) {
+        $this->setupObjectsFilter();
         if (!empty($name)) {
+            if (empty($filterType) && !$this->ApiValidator->isUrlParamsValid('__all')) {
+                $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+                throw new BeditaBadRequestException(
+                    'GET /objects/:id supports url params: ' . $validParams
+                );
+            }
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
             $this->ApiValidator->checkObjectReachable($id);
             if (!empty($filterType)) {
@@ -552,8 +633,8 @@ abstract class ApiBaseController extends FrontendController {
                 if ($object == parent::UNAUTHORIZED) {
                     throw new BeditaForbiddenException();
                 }
-                // check if id correspond to object type requested (if any)
-                if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
+                // check if id corresponds to object type requested (if any)
+                if (!empty($this->objectsFilter['object_type_id']) && $object['object_type_id'] != $this->objectsFilter['object_type_id']) {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }
 
@@ -566,12 +647,8 @@ abstract class ApiBaseController extends FrontendController {
         // list of publication descendants
         } else {
             $publication = $this->getPublication();
-            $filter = array('descendants' => true);
-            if (!empty($this->filter['object_type_id'])) {
-                $filter['object_type_id'] = $this->filter['object_type_id'];
-            }
             $this->responseChildren($publication['id'], array(
-                'filter' => $filter
+                'filter' => array('descendants' => true)
             ));
         }
     }
@@ -585,10 +662,10 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     private function routeObjectsFilterType($id, $filterType) {
-        if (empty($this->allowedObjectsFilter[$this->requestMethod])) {
+        if (empty($this->allowedObjectsUrlPath[$this->requestMethod])) {
             throw new BeditaMethodNotAllowedException();
         }
-        $allowedFilterTypes = $this->allowedObjectsFilter[$this->requestMethod];
+        $allowedFilterTypes = $this->allowedObjectsUrlPath[$this->requestMethod];
         if (!in_array($filterType, $allowedFilterTypes)) {
             $allowedFilter = implode(', ', $allowedFilterTypes);
             throw new BeditaBadRequestException($filterType . ' not valid. Valid options are: ' . $allowedFilter);
@@ -603,7 +680,7 @@ abstract class ApiBaseController extends FrontendController {
      * POST /objects
      *
      * @param int|string $name the object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['post']
+     * @param string $filterType can be a value between those defined in self::allowedObjectsUrlPath['post']
      * @return void
      */
     protected function postObjects($name = null, $filterType = null) {
@@ -657,7 +734,7 @@ abstract class ApiBaseController extends FrontendController {
      * PUT of entire object is not allowed. If you want modify an object you should use POST
      *
      * @param int|string $name the object id or nickname
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['put']
+     * @param string $filterType can be a value between those defined in self::allowedObjectsUrlPath['put']
      * @return void
      */
     protected function putObjects($name = null, $filterType = null) {
@@ -678,7 +755,7 @@ abstract class ApiBaseController extends FrontendController {
      * DELETE /objects/:id
      *
      * @param int|string $name
-     * @param string $filterType can be a value between those defined in self::allowedObjectsFilter['delete']
+     * @param string $filterType can be a value between those defined in self::allowedObjectsUrlPath['delete']
      * @return void
      */
     protected function deleteObjects($name = null, $filterType = null) {
@@ -1118,6 +1195,7 @@ abstract class ApiBaseController extends FrontendController {
     /**
      * Get children of $parentId object, prepare and set response data
      * The response is automatically paginated using self::paginationOptions
+     * self::$objectsFilter is used to populate $options['filter']
      *
      * @see FrontendController::loadSectionObjects()
      * @param int $parentId the parent id
@@ -1127,6 +1205,7 @@ abstract class ApiBaseController extends FrontendController {
     protected function responseChildren($parentId, array $options = array()) {
         $defaultOptions = array('explodeRelations' => false);
         $options = array_merge($defaultOptions, $this->paginationOptions, $options);
+        $options['filter'] = !empty($options['filter']) ? array_merge($this->objectsFilter, $options['filter']) : $this->objectsFilter;
         // assure to have result in 'children' key
         $options['itemsTogether'] = true;
         // add conditions on not accessible objects (frontend_access_with_block)
@@ -1200,6 +1279,12 @@ abstract class ApiBaseController extends FrontendController {
             $this->responseChildren($id);
         // get children position i.e. 'priority' value
         } else {
+            if (!$this->ApiValidator->isUrlParamsValid('__all')) {
+                $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+                throw new BeditaBadRequestException(
+                    'GET /objects/:id/children/:child_id supports url params: ' . $validParams
+                );
+            }
             $priority = ClassRegistry::init('Tree')->getPriority($childId, $id);
             if (empty($priority)) {
                 throw new BeditaNotFoundException();
@@ -1220,6 +1305,9 @@ abstract class ApiBaseController extends FrontendController {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
+        if (isset($this->params['url']['filter']['object_type'])) {
+            throw new BeditaBadRequestException('GET /objects/:id/sections does not support filter[object_type] param');
+        }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $result = $this->responseChildren($id, array(
             'filter' => array(
@@ -1237,6 +1325,10 @@ abstract class ApiBaseController extends FrontendController {
     protected function getObjectsContents($id) {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
+        }
+        $urlParams = $this->ApiFormatter->formatUrlParams();
+        if (!empty($urlParams['filter']['object_type']) && in_array('section', $urlParams['filter']['object_type'])) {
+            throw new BeditaBadRequestException('GET /objects/:id/contents does not support filter[object_type] section value');
         }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $result = $this->responseChildren($id, array(
@@ -1307,8 +1399,10 @@ abstract class ApiBaseController extends FrontendController {
 
             // detail of related objects
             if ($relatedId === null) {
-
-                $defaultOptions = array('explodeRelations' => false);
+                $defaultOptions = array(
+                    'explodeRelations' => false,
+                    'filter' => $this->objectsFilter
+                );
                 $options = array_merge($defaultOptions, $this->paginationOptions);
                 $result = $this->loadRelatedObjects($id, $relation, $options);
                 if (empty($result['items'])) {
@@ -1323,6 +1417,12 @@ abstract class ApiBaseController extends FrontendController {
                 }
             // relation detail (params and priority)
             } else {
+                if (!$this->ApiValidator->isUrlParamsValid('__all')) {
+                    $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+                    throw new BeditaBadRequestException(
+                        'GET /objects/:id/relations/:rel_name/:related_id supports url params: ' . $validParams
+                    );
+                }
                 $this->ApiValidator->checkPositiveInteger($relatedId, true);
                 $objectTypeId = $this->BEObject->findObjectTypeId($id);
                 if (!$this->ApiValidator->isRelationValid($relation, $objectTypeId)) {

@@ -130,6 +130,8 @@ class ApiFormatterComponent extends Object {
         )
     );
 
+    protected $urlParams = array();
+
     /**
      * Initialize function
      *
@@ -814,6 +816,54 @@ class ApiFormatterComponent extends Object {
             }
         }
         return $dateItems;
+    }
+
+    /**
+     * Format $this->controller->params['url'] building array of values starting from $separator separated values.
+     * By default $separator is ',' char and 'query' is excluded because it represents a full text search
+     *
+     * For example in a request as:
+     *
+     * https://example.com/objects?object_type=document,event&page=2
+     *
+     * the url params are formatted as
+     *
+     * ```
+     * array(
+     *     'object_type' => array('document', 'event'),
+     *     'page' => 2
+     * )
+     * ```
+     *
+     * Once url params has been formatted that value is returned to every next call without parse again the url
+     * unless $reset params is true
+     *
+     * @param string $separator the separator char that explode string in array
+     * @param array $exclude the array of url params to exclude to the formatting
+     * @param boolean $reset true if the url params have to be formatted again also if it had already been done
+     * @return array
+     */
+    public function formatUrlParams($separator = ',', array $exclude = array('query'), $reset = false) {
+        if (empty($this->urlParams) || $reset) {
+            $this->urlParams = $this->controller->params['url'];
+            array_shift($this->urlParams);
+            if (!empty($this->urlParams)) {
+                foreach ($this->urlParams as $name => &$value) {
+                    if (is_array($value)) {
+                        foreach ($value as $k => &$v) {
+                            if (!in_array($k, $exclude)) {
+                                $v = explode($separator, trim($v, $separator));
+                            }
+                        }
+                    } else {
+                        if (!in_array($name, $exclude)) {
+                            $value = explode($separator, trim($value, $separator));
+                        }
+                    }
+                }
+            }
+        }
+        return $this->urlParams;
     }
 
 }
