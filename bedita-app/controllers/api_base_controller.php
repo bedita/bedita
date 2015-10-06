@@ -263,7 +263,8 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultAllowedUrlParams = array(
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
-        'objects' => array('filter[object_type]', 'filter[query]', '_pagination')
+        'objects' => array('filter[object_type]', 'filter[query]', '_pagination'),
+        'poster' => array('width', 'height', 'mode')
     );
 
     /**
