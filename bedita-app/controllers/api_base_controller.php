@@ -259,7 +259,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultQueryStringNames = array(
+    private $defaultAllowedUrlParams = array(
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
         'objects' => array('object_type', 'query', '_pagination')
@@ -269,10 +269,10 @@ abstract class ApiBaseController extends FrontendController {
      * Other supported query string parameters names for every endpoint.
      * Override it according to your needs.
      *
-     * @see self::$defaultQueryStringNames to the right format
+     * @see self::$defaultUrlParams to the right format
      * @var array
      */
-    protected $queryStringNames = array();
+    protected $allowedUrlParams = array();
 
     /**
      * Constructor
@@ -292,10 +292,13 @@ abstract class ApiBaseController extends FrontendController {
         $this->components[] = $authComponent;
         parent::__construct();
         $this->endPoints = array_unique(array_merge($this->defaultEndPoints, $this->endPoints));
+        $objectTypeQueryString = array_diff($this->defaultAllowedUrlParams['objects'], array('object_type'));
         $objectTypes = Configure::read('objectTypes');
         foreach ($objectTypes as $key => $value) {
             if (is_numeric($key) && in_array($value['name'], $this->whitelistObjectTypes)) {
-                $this->endPoints[] = Inflector::pluralize($value['name']);
+                $objectTypeEndPoint = Inflector::pluralize($value['name']);
+                $this->endPoints[] = $objectTypeEndPoint;
+                $this->defaultUrlParams[$objectTypeEndPoint] = $objectTypeQueryString;
             }
         }
         $this->endPoints = array_diff($this->endPoints, $this->blacklistEndPoints);
@@ -434,8 +437,8 @@ abstract class ApiBaseController extends FrontendController {
         }
 
         $this->setupPagination();
-        $this->ApiValidator->registerQueryStringNames($this->defaultQueryStringNames);
-        $this->ApiValidator->registerQueryStringNames($this->queryStringNames);
+        $this->ApiValidator->registerAllowedUrlParams($this->defaultAllowedUrlParams);
+        $this->ApiValidator->registerAllowedUrlParams($this->allowedUrlParams);
     }
 
     /**
@@ -519,14 +522,14 @@ abstract class ApiBaseController extends FrontendController {
         $args = func_get_args();
         $name = array_shift($args);
         // generic methodName
-        $methodName = str_replace(".", "_", $name);
+        $methodName = str_replace('.', '_', $name);
         if (!empty($methodName)) {
             // avoid to call methods that aren't endpoints
             if (!in_array($methodName, $this->endPoints)) {
                 $this->action = $methodName;
                 throw new BeditaMethodNotAllowedException();
             } else {
-                $this->ApiValidator->checkQueryString($methodName);
+                $this->ApiValidator->checkUrlParams($methodName);
                 $this->action = $methodName;
                 $specificMethodName = Inflector::camelize($this->requestMethod . '_' . $methodName);
                 if (method_exists($this, $specificMethodName)) {
@@ -605,7 +608,7 @@ abstract class ApiBaseController extends FrontendController {
                 if ($object == parent::UNAUTHORIZED) {
                     throw new BeditaForbiddenException();
                 }
-                // check if id correspond to object type requested (if any)
+                // check if id corresponds to object type requested (if any)
                 if (!empty($this->filter['object_type_id']) && $object['object_type_id'] != $this->filter['object_type_id']) {
                     throw new BeditaInternalErrorException('Object type mismatch');
                 }

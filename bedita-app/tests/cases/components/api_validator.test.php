@@ -87,12 +87,12 @@ class ApiValidatorComponentTest extends BeditaTestCase {
    }
 
    public function testCheckQueryString() {
-        $this->requiredData(array('checkQueryString'));
-        $d = $this->data['checkQueryString'];
+        $this->requiredData(array('checkUrlParams'));
+        $d = $this->data['checkUrlParams'];
 
         // test register
-        $this->controller->ApiValidator->registerQueryStringNames($d);
-        $res = $this->controller->ApiValidator->getQueryStringNames();
+        $this->controller->ApiValidator->registerAllowedUrlParams($d);
+        $res = $this->controller->ApiValidator->getAllowedUrlParams();
         $expected = array(
             '__all' => array('common'),
             '_group1' => array('groupname1', 'groupname2'),
@@ -108,20 +108,20 @@ class ApiValidatorComponentTest extends BeditaTestCase {
             'groupname2' => 'test'
         );
         $this->assertFalse(
-            $this->controller->ApiValidator->isQueryStringValid('endpoint1')
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint1')
         );
         $this->assertTrue(
-            $this->controller->ApiValidator->isQueryStringValid('endpoint2')
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint2')
         );
 
         // test check __all
         $this->controller->requestMethod = 'post';
         $this->assertFalse(
-            $this->controller->ApiValidator->isQueryStringValid('new_endpoint')
+            $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
         );
         unset($this->controller->params['url']['groupname2']);
         $this->assertTrue(
-            $this->controller->ApiValidator->isQueryStringValid('new_endpoint')
+            $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
         );
    }
 

@@ -44,10 +44,10 @@ class ApiValidatorComponent extends Object {
     /**
      * The supported query string parameters names for every endpoint.
      *
-     * @see ApiBaseController::$defaultQueryStringNames to the right format
+     * @see ApiBaseController::$defaultAllowedUrlParams to the right format
      * @var array
      */
-    private $queryStringNames = array(
+    private $allowedUrlParams = array(
         '__all' => array()
     );
 
@@ -73,23 +73,23 @@ class ApiValidatorComponent extends Object {
         if (!empty($validateConf['writableObjects'])) {
             $this->writableObjects = $validateConf['writableObjects'];
         }
-        if (!empty($validateConf['queryStringNames'])) {
-            $this->registerQueryStringNames($validateConf['queryStringNames']);
+        if (!empty($validateConf['urlParams'])) {
+            $this->registerAllowedUrlParams($validateConf['urlParams']);
         }
     }
 
     /**
-     * Check if query string names of the request are valid for an endpoint
+     * Check if url query string names of the request are valid for an endpoint
      *
      * @throws BeditaBadRequestException
      * @param string $endpoint the endpoint to check
      * @return void
      */
-    public function checkQueryString($endpoint) {
-        if (!$this->isQueryStringValid($endpoint)) {
-            $validStringNames = !empty($this->queryStringNames[$endpoint]) ? $this->queryStringNames[$endpoint] : $this->queryStringNames['__all'];
+    public function checkUrlParams($endpoint) {
+        if (!$this->isUrlParamsValid($endpoint)) {
+            $validStringNames = !empty($this->allowedUrlParams[$endpoint]) ? $this->allowedUrlParams[$endpoint] : $this->allowedUrlParams['__all'];
             throw new BeditaBadRequestException(
-                'Query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
+                'Url query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
             );
         }
     }
@@ -100,15 +100,15 @@ class ApiValidatorComponent extends Object {
      * @param string $endpoint
      * @return boolean
      */
-    public function isQueryStringValid($endpoint) {
+    public function isUrlParamsValid($endpoint) {
         $requestMethod = $this->controller->getRequestMethod();
         $queryStrings = $this->controller->params['url'];
         array_shift($queryStrings);
         if (!empty($queryStrings)) {
-            if ($requestMethod == 'get' && !empty($this->queryStringNames[$endpoint])) {
-                $validStringNames = $this->queryStringNames[$endpoint];
+            if ($requestMethod == 'get' && !empty($this->allowedUrlParams[$endpoint])) {
+                $validStringNames = $this->allowedUrlParams[$endpoint];
             } else {
-                $validStringNames = $this->queryStringNames['__all'];
+                $validStringNames = $this->allowedUrlParams['__all'];
             }
 
             $notValid = array_diff(array_keys($queryStrings), $validStringNames);
@@ -120,7 +120,7 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
-     * Register an array of query string names in self::queryStringNames
+     * Register an array of query string names in self::$allowedUrlParams
      * The array has to be divided by endpoint i.e.
      *
      * ```
@@ -131,63 +131,63 @@ class ApiValidatorComponent extends Object {
      * ```
      *
      * @param array $stringNames
-     * @param boolean $merge if $stringNames has to be merged to exisiting self::queryStringNames
+     * @param boolean $merge if $stringNames has to be merged to exisiting self::$allowedUrlParams
      * @return array
      */
-    public function registerQueryStringNames(array $stringNames, $merge = true) {
+    public function registerAllowedUrlParams(array $stringNames, $merge = true) {
         if (!$merge) {
-            $this->queryStringNames = $stringNames;
+            $this->allowedUrlParams = $stringNames;
         } else {
             // assure to analyze first special names starting with '_'
             ksort($stringNames);
             foreach ($stringNames as $endpoint => $names) {
-                $this->setQueryStringNames($endpoint, $names, $merge);
+                $this->setAllowedUrlParams($endpoint, $names, $merge);
             }
         }
-        return $this->queryStringNames;
+        return $this->allowedUrlParams;
     }
 
     /**
-     * Return the query string names valid
+     * Return the url query string names valid
      * Passing the endpoint the list is filtered by it
      *
      * @param string $endpoint the endpoint
      * @return array
      */
-    public function getQueryStringNames($endpoint = null) {
-        return !empty($this->queryStringNames[$endpoint]) ? $this->queryStringNames[$endpoint] : $this->queryStringNames;
+    public function getAllowedUrlParams($endpoint = null) {
+        return !empty($this->allowedUrlParams[$endpoint]) ? $this->allowedUrlParams[$endpoint] : $this->allowedUrlParams;
     }
 
     /**
-     * Set new valid query string names
+     * Set new valid url query string names
      *
      * @param string $endpoint the endpoint to modify
      * @param string|array $names the query string names to add
      * @param boolean $merge if the names have to be added or have to replace the old one
      */
-    public function setQueryStringNames($endpoint, $names, $merge = true) {
+    public function setAllowedUrlParams($endpoint, $names, $merge = true) {
         if (!is_array($names)) {
             $names = array($names);
         }
-        if (!isset($this->queryStringNames[$endpoint])) {
+        if (!isset($this->allowedUrlParams[$endpoint])) {
             if (strpos($endpoint, '_') !== 0) {
-                $names = array_merge($names, $this->queryStringNames['__all']);
+                $names = array_merge($names, $this->allowedUrlParams['__all']);
             }
             $merge = false;
         }
         $namesToAdd = array();
         foreach ($names as $k => $n) {
             if (strpos($n, '_') === 0) {
-                if (!empty($this->queryStringNames[$n])) {
-                    $namesToAdd = array_merge($namesToAdd, $this->queryStringNames[$n]);
+                if (!empty($this->allowedUrlParams[$n])) {
+                    $namesToAdd = array_merge($namesToAdd, $this->allowedUrlParams[$n]);
                 }
             } else {
                 $namesToAdd[] = $n;
             }
         }
-        $this->queryStringNames[$endpoint] = ($merge) ? array_merge($this->queryStringNames[$endpoint], $namesToAdd) : $namesToAdd;
-        sort($this->queryStringNames[$endpoint]);
-        return $this->queryStringNames[$endpoint];
+        $this->allowedUrlParams[$endpoint] = ($merge) ? array_merge($this->allowedUrlParams[$endpoint], $namesToAdd) : $namesToAdd;
+        sort($this->allowedUrlParams[$endpoint]);
+        return $this->allowedUrlParams[$endpoint];
     }
 
     /**

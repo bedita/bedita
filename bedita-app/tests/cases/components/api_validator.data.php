@@ -23,7 +23,7 @@ class ApiValidatorTestData extends BeditaTestData {
                 )
             )
         ),
-        'checkQueryString' => array(
+        'checkUrlParams' => array(
             'endpoint1' => array('name1', 'name2'),
             '__all' => array('common'),
             'endpoint2' => array('_group1', 'name3'),
