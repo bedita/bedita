@@ -86,7 +86,7 @@ class ApiValidatorComponentTest extends BeditaTestCase {
         }
    }
 
-   public function testCheckQueryString() {
+   public function testCheckUrlParams() {
         $this->requiredData(array('checkUrlParams'));
         $d = $this->data['checkUrlParams'];
 
@@ -98,6 +98,7 @@ class ApiValidatorComponentTest extends BeditaTestCase {
             '_group1' => array('groupname1', 'groupname2'),
             'endpoint1' => array('common', 'name1', 'name2'),
             'endpoint2' => array('common', 'groupname1', 'groupname2', 'name3'),
+            'endpoint3' => array('common', 'filter[name1]', 'filter[name2]', 'groupname1', 'groupname2')
         );
         $this->assertEqual($res, $expected);
 
@@ -114,8 +115,21 @@ class ApiValidatorComponentTest extends BeditaTestCase {
             $this->controller->ApiValidator->isUrlParamsValid('endpoint2')
         );
 
+        $this->controller->params['url']['filter'] = array(
+            'name1' => 'test',
+            'name3' => 'test'
+        );
+        $this->assertFalse(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint3')
+        );
+        unset($this->controller->params['url']['filter']['name3']);
+        $this->assertTrue(
+            $this->controller->ApiValidator->isUrlParamsValid('endpoint3')
+        );
+
         // test check __all
         $this->controller->requestMethod = 'post';
+        unset($this->controller->params['url']['filter']);
         $this->assertFalse(
             $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
         );

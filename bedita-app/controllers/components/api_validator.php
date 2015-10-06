@@ -73,8 +73,8 @@ class ApiValidatorComponent extends Object {
         if (!empty($validateConf['writableObjects'])) {
             $this->writableObjects = $validateConf['writableObjects'];
         }
-        if (!empty($validateConf['urlParams'])) {
-            $this->registerAllowedUrlParams($validateConf['urlParams']);
+        if (!empty($validateConf['allowedUrlParams'])) {
+            $this->registerAllowedUrlParams($validateConf['allowedUrlParams']);
         }
     }
 
@@ -88,14 +88,19 @@ class ApiValidatorComponent extends Object {
     public function checkUrlParams($endpoint) {
         if (!$this->isUrlParamsValid($endpoint)) {
             $validStringNames = !empty($this->allowedUrlParams[$endpoint]) ? $this->allowedUrlParams[$endpoint] : $this->allowedUrlParams['__all'];
+            $endpointString = '';
+            if (strpos($endpoint, '_') !== 0) {
+                $endpointString = ' for /' . $endpoint;
+            }
             throw new BeditaBadRequestException(
-                'Url query string is not valid. Valid names are: ' . implode(', ', $validStringNames)
+                'Url query string is not valid. Valid names' . $endpointString . ' are: ' . implode(', ', $validStringNames)
             );
         }
     }
 
     /**
      * Return true if url query string is valid for an endpoint, false otherwise
+     * All allowed url params are valid for GET requests but '__all' values that are valid for all request types
      *
      * @param string $endpoint
      * @return boolean
@@ -105,6 +110,15 @@ class ApiValidatorComponent extends Object {
         $queryStrings = $this->controller->params['url'];
         array_shift($queryStrings);
         if (!empty($queryStrings)) {
+            foreach ($queryStrings as $key => $value) {
+                if (is_array($value)) {
+                    foreach ($value as $k => $v) {
+                        $queryStrings[$key . '[' . $k . ']'] = $v;
+                    }
+                    unset($queryStrings[$key]);
+                }
+            }
+
             if ($requestMethod == 'get' && !empty($this->allowedUrlParams[$endpoint])) {
                 $validStringNames = $this->allowedUrlParams[$endpoint];
             } else {
