@@ -271,7 +271,7 @@ abstract class ApiBaseController extends FrontendController {
      * Other supported query string parameters names for every endpoint.
      * Override it according to your needs.
      *
-     * @see self::$defaultUrlParams to the right format
+     * @see self::$defaultAllowedUrlParams to the right format
      * @var array
      */
     protected $allowedUrlParams = array();
