@@ -114,7 +114,7 @@ class CacheableBehavior extends ModelBehavior {
         ));
 
         // get related object to clean
-        $objectRelation = ClassRegistry::init('objectRelation');
+        $objectRelation = ClassRegistry::init('ObjectRelation');
         $relConditions = array('id' => $objectId);
         if (!empty($excludeIds)) {
             $relConditions['NOT'] = array('object_id' => $excludeIds);
