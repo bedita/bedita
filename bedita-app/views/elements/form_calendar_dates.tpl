@@ -61,12 +61,16 @@
 	value="{$dayStart}"/>
 	<input maxlength="5" type="text"  id="timeStart_{$key}"  class="timeinput timeStart" name="data[DateItem][{$key}][timeStart]" 
 	value="{if !empty($d.start_date)}{$d.start_date|date_format:'%H:%M'}{/if}" />
-	
+    <input type="hidden" name="data[DateItem][{$key}][scale_factor][0]" value="{$d.scale_factor.0|default:$d.scale_factor|default:''}" />
+    <input type="hidden" name="data[DateItem][{$key}][bias][0]" value="{$d.bias.0|default:$d.bias|default:''}" />
+
 	<label>{t}end{/t}:</label>
 	<input maxlength="10" type="text" id="eventEnd_{$key}" class="dateinput eventEnd" name="data[DateItem][{$key}][end_date]" 
 	value="{$dayEnd}"/>
 	<input maxlength="5" type="text"  id="timeEnd_{$key}"  class="timeinput timeEnd" name="data[DateItem][{$key}][timeEnd]" 
 	value="{if !empty($d.end_date)}{$d.end_date|date_format:'%H:%M'}{/if}" />
+    <input type="hidden" name="data[DateItem][{$key}][scale_factor][1]" value="{$d.scale_factor.1|default:$d.scale_factor|default:''}" />
+    <input type="hidden" name="data[DateItem][{$key}][bias][1]" value="{$d.bias.1|default:$d.bias|default:''}" />
 
     {if !empty($d.start_date) && !empty($d.end_date) && $dayStart != $dayEnd}
     <div>
