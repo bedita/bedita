@@ -520,7 +520,7 @@ class ApiValidatorComponent extends Object {
                 if (empty($relData['related_id'])) {
                     throw new BeditaBadRequestException('Missing related_id in relation data');
                 }
-                $this->checkPositiveInteger($relData['related_id']);
+                $this->checkPositiveInteger($relData['related_id'], true);
                 $relatedObjectType = $beObject->findObjectTypeId($relData['related_id']);
                 if (!$this->isRelationValid($inverseName, $relatedObjectType)) {
                     throw new BeditaBadRequestException('Invalid relation: ' . $name . ' for object type ' . $relatedObjectType);
@@ -592,9 +592,9 @@ class ApiValidatorComponent extends Object {
             if (empty($child['child_id'])) {
                 throw new BeditaBadRequestException('Missing child_id in children data');
             }
-            $this->checkPositiveInteger($child['child_id']);
+            $this->checkPositiveInteger($child['child_id'], true);
             if (array_key_exists('priority', $child)) {
-                $this->checkPositiveInteger($child['priority']);
+                $this->checkPositiveInteger($child['priority'], true);
             }
             if (!$this->isObjectReachable($child['child_id'])) {
                 throw new BeditaBadRequestException($child['child_id'] . ' can not be children of ' . $parentId);
