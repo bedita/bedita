@@ -407,6 +407,7 @@ $(document).ready(function(){
             destination: '',
             requestData: {},
             success: function() {},
+            error: function() {}
         };
 
         if (typeof options == 'undefined' || !$.isPlainObject(options)) {
@@ -433,7 +434,12 @@ $(document).ready(function(){
             $("#modal #modalmain").find('.loader').show();
             $("#modalmain").load(destination, options.requestData, function(response, status, xhr) {
                 $("#modal #modalmain").find('.loader').hide();
-                options.success();
+                if (status == 'error') {
+                    $("#modalmain").html(response);
+                    options.error(response, status, xhr);
+                } else {
+                    options.success(response, status, xhr);
+                }
             });
         }
 

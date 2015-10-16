@@ -104,6 +104,27 @@ class PagesController extends AppController {
      **/
     public function showObjects($main_object_id = null, $relation = null, $main_object_type_id = null, $objectType = "related") {
         $this->ajaxCheck();
+        // check params
+        if (!empty($main_object_id) && !is_numeric($main_object_id)) {
+            throw new BeditaBadRequestException(
+                __('Bad Request', true),
+                'Requested URL path contains invalid parameters ($main_object_id)'
+            );
+        }
+        if (!empty($main_object_type_id) && !is_numeric($main_object_type_id)) {
+            throw new BeditaBadRequestException(
+                __('Bad Request', true),
+                'Requested URL path contains invalid parameters ($main_object_type_id)'
+            );
+        }
+        $conf = Configure::getInstance();
+        if (!isset($conf->objectTypes[$objectType])) {
+            throw new BeditaBadRequestException(
+                __('Bad Request', true),
+                'Requested URL path contains invalid parameters ($objectType)'
+            );
+        }
+
         // clean session filter
         if (empty($this->params['form']['filter'])) {
             $this->SessionFilter->clean();
@@ -111,7 +132,6 @@ class PagesController extends AppController {
 
         $filter = array();
         $excludeIds = array();
-        $conf = Configure::getInstance();
         
         if (!empty($relation)) {
             

@@ -254,7 +254,6 @@ class AppError extends ErrorHandler {
 		$this->checkController();
 		if ($this->controller->RequestHandler->isAjax() && BACKEND_APP) {
 			$messages['output'] = ($this->controller->ResponseHandler->getType() == 'json') ? 'json' : 'beditaMsg';
-			$messages['headers'] = array('HTTP/1.1 500 Internal Server Error');
 			return $this->handleBeditaAjaxException($messages);
 		}
 		$this->restoreDebugLevel();
@@ -307,11 +306,17 @@ class AppError extends ErrorHandler {
 	 *         															if it's set and empty use "HTTP/1.1 500 Internal Server Error"
 	 */
 	public function handleBeditaAjaxException(array $messages) {
-		if (empty($messages['output'])) {
+		$isBeditaAjaxException = (get_class($this->exception) == 'BeditaAjaxException') ? true : false;
+		if (empty($messages['output']) && $isBeditaAjaxException) {
 			$messages['output'] = $this->exception->getOutputType();
 		}
 
-		$headers = (!empty($messages['headers'])) ? $messages['headers'] : $this->exception->getHeaders();
+		$headers = null;
+		if (!empty($messages['headers'])) {
+			$headers = $messages['headers'];
+		} elseif ($isBeditaAjaxException) {
+			$headers = $this->exception->getHeaders();
+		}
 
 		if ($headers !== null) {
 			if (empty($headers)) {
@@ -323,6 +328,9 @@ class AppError extends ErrorHandler {
 			foreach ($headers as $header) {
 				header($header);
 			}
+		} else {
+			$status = !empty($this->error['status']) ? $this->error['status'] : 500;
+			$this->controller->ResponseHandler->sendStatus($status);
 		}
 
 		$this->controller->set("output", $messages['output']);

@@ -1,20 +1,19 @@
 <script type="text/javascript">
 <!--
-//var urlShowObj = "{$html->here}";
 
-if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize|replace:'-':'_'} == "string") {
-	var urlToAdd = urlAddObjToAss{$relation|default:''|capitalize|replace:'-':'_'};
-} else if (typeof urlAddObjToAss{$objectType|default:''|capitalize} == "string") {
-	var urlToAdd = urlAddObjToAss{$objectType|default:''|capitalize};
+if (typeof urlAddObjToAss{$relation|default:'norelations'|capitalize|replace:'-':'_'|escape:"javascript"} == "string") {
+	var urlToAdd = urlAddObjToAss{$relation|default:''|capitalize|replace:'-':'_'|escape:"javascript"};
+} else if (typeof urlAddObjToAss{$objectType|default:''|capitalize|escape:"javascript"} == "string") {
+	var urlToAdd = urlAddObjToAss{$objectType|default:''|capitalize|escape:"javascript"};
 } else if (typeof urlAddObjToAss == "string") {
 	var urlToAdd = urlAddObjToAss;
 } else {
 	var urlToAdd = "{$html->url('/pages/loadObjectToAssoc')}";
 }
 
-var relType = "{$relation|default:""}";
-var suffix = "{$relation|default:""|capitalize|replace:'-':'_'}";
-var typesuffix = "{$objectType|default:'related'|capitalize}";
+var relType = "{$relation|default:""|escape:"javascript"}";
+var suffix = "{$relation|default:""|capitalize|replace:'-':'_'|escape:"javascript"}";
+var typesuffix = "{$objectType|default:'related'|capitalize|escape:"javascript"}";
 
 /**
  * handle a list of object's ids

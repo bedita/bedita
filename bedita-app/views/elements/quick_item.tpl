@@ -14,9 +14,11 @@
 					{$objectTypeIds = $objectTypeIds|default:$conf->objectTypes.leafs.id}
 					{foreach $objectTypeIds as $typeId}
 						{strip}
-						<option {if ($conf->objectTypes[$typeId].name == 'document')}selected="selected"{/if} value="{$typeId}" {if in_array($typeId, $conf->objectTypes.multimedia.id)}data-multimedia="true"{/if}>
-							{t}{$conf->objectTypes[$typeId].name}{/t}
-						</option>
+						{if !empty($conf->objectTypes[$typeId])}
+							<option {if ($conf->objectTypes[$typeId].name == 'document')}selected="selected"{/if} value="{$typeId}" {if in_array($typeId, $conf->objectTypes.multimedia.id)}data-multimedia="true"{/if}>
+								{t}{$conf->objectTypes[$typeId].name}{/t}
+							</option>
+						{/if}
 						{/strip}
 					{/foreach}
 					</select>
