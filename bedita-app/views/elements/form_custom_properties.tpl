@@ -51,7 +51,7 @@
 				<td>
 					<input type="hidden" name="data[ObjectProperty][{$countProperty}][property_type]" value="{$prop.property_type}" />
 					<input type="hidden" name="data[ObjectProperty][{$countProperty}][property_id]" value="{$prop.id}" />
-					<input type="text" name="data[ObjectProperty][{$countProperty++}][property_value]" value="{$prop.value.property_value|default:""}" />
+					<input type="text" class="numberinput" name="data[ObjectProperty][{$countProperty++}][property_value]" value="{$prop.value.property_value|default:""}" />
 				</td>	
 			{elseif $prop.property_type == "date"}
 				<td>
