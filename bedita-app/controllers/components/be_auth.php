@@ -71,7 +71,7 @@ class BeAuthComponent extends Object {
             $this->Session->startup($this->controller);
 
             if (!$this->Session->valid()) {
-                $this->log('Session just started but not valid! ' . $this->Session->id . AppController::usedUrl());
+                $this->log('Session just started but not valid! ' . $this->Session->id . AppController::usedUrl() . ' - ' . $this->Session->error());
                 return false;
             }
             $this->startupExternalServices();
@@ -79,7 +79,7 @@ class BeAuthComponent extends Object {
                 $this->user = $this->Session->read($this->sessionKey);
             }
         } elseif (!$this->Session->valid()) {
-            $this->log('Session already started not valid! ' . $this->Session->id . AppController::usedUrl());
+            $this->log('Session already started not valid! ' . $this->Session->id . AppController::usedUrl() . ' - ' . $this->Session->error());
             return false;
         }
 
