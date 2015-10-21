@@ -66,6 +66,18 @@ class DateItem extends BEAppModel
         if (!empty($params['days']) && is_array($params['days'])) {
             $params['days'] = array_unique(array_values($params['days']));
         }
+        if (!empty($params['scale_factor']) && is_array($params['scale_factor'])) {
+            $params['scale_factor'] = array_values($params['scale_factor']);
+            if (count($params['scale_factor']) == 1 || $params['scale_factor'][0] == $params['scale_factor'][1]) {
+                $params['scale_factor'] = $params['scale_factor'][0];
+            }
+        }
+        if (!empty($params['bias']) && is_array($params['bias'])) {
+            $params['bias'] = array_values($params['bias']);
+            if (count($params['bias']) == 1 || $params['bias'][0] == $params['bias'][1]) {
+                $params['bias'] = $params['bias'][0];
+            }
+        }
 
         return array_filter(array_intersect_key($params, array_flip($validKeys)));
     }
