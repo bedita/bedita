@@ -315,7 +315,21 @@ abstract class FrontendController extends AppController {
 			$this->status[] = "draft";
 
 		// check publication status
-		$pubStatus = $this->BEObject->field("status", array("id" => Configure::read("frontendAreaId")));
+		$pubStatus = $this->BEObject->field(
+			'status',
+			array(
+				'id' => Configure::read('frontendAreaId'),
+				'object_type_id' => Configure::read('objectTypes.area.id')
+			)
+		);
+
+		// configuration error
+		if ($pubStatus === false) {
+			throw new BeditaInternalErrorException(
+				__('Configuration error: missing or wrong publication', true),
+				'Wrong publication id ' . Configure::read('frontendAreaId')
+			);
+		}
 
 		if ($pubStatus != "on") {
 			$statusSaved = $this->status;
