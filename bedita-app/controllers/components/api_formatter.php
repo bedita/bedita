@@ -276,8 +276,10 @@ class ApiFormatterComponent extends Object {
                     if (is_array($type)) {
                         // underscore and pluralize $field
                         $newField = Inflector::pluralize(Inflector::underscore($field));
-                        $item[$newField] = $item[$field];
-                        unset($item[$field]);
+                        if ($newField != $field) {
+                            $item[$newField] = $item[$field];
+                            unset($item[$field]);
+                        }
                         if (is_array($item[$newField])) {
                             $this->transformItem($transformer[$field], $item[$newField]);
                         }
@@ -406,6 +408,25 @@ class ApiFormatterComponent extends Object {
     public function transformObject(array &$object) {
         $transformer = $this->getObjectTransformer($object);
         $this->transformItem($transformer, $object);
+    }
+
+    /**
+     * Prepare self::$transformer['object'] adding 'custom_properties' formatting info
+     * It is expected that $object contains the 'ObjectProperty' with custom properties details
+     *
+     * @param array $object the object on which prepare the custom properties transformer
+     */
+    public function setCustomPropertiesTransformer(array $object) {
+        $this->transformers['object']['custom_properties'] = array();
+        if (!empty($object['ObjectProperty'])) {
+            foreach ($object['ObjectProperty'] as $name => $customProp) {
+                if ($customProp['property_type'] == 'number') {
+                    $this->transformers['object']['custom_properties'][$name] = 'float';
+                } elseif ($customProp['property_type'] == 'date') {
+                    $this->transformers['object']['custom_properties'][$name] = 'date';
+                }
+            }
+        }
     }
 
     /**
@@ -586,6 +607,9 @@ class ApiFormatterComponent extends Object {
                 $object['uri'] = Configure::read('mediaUrl') . $object['uri'];
             }
         }
+        // before clean prepare custom properties transformer
+        $this->setCustomPropertiesTransformer($object);
+        //debug($this->transformers);exit;
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
