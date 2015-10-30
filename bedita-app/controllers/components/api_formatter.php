@@ -609,7 +609,6 @@ class ApiFormatterComponent extends Object {
         }
         // before clean prepare custom properties transformer
         $this->setCustomPropertiesTransformer($object);
-        //debug($this->transformers);exit;
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
