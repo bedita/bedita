@@ -54,4 +54,23 @@ class Property extends BEAppModel  {
         return $res;
     }
 
+    /**
+     * Return an array of property names of a specific object_type_id.
+     * The array keys are the property ids
+     *
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function propertyNames($objectTypeId) {
+        $this->Behaviors->disable('CompactResult');
+        $propList =  $this->find('list', array(
+            'field' => array('name'),
+            'conditions' => array(
+                'object_type_id' => $objectTypeId
+            )
+        ));
+        $this->Behaviors->enable('CompactResult');
+        return $propList;
+    }
+
 }

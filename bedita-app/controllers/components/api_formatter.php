@@ -133,6 +133,23 @@ class ApiFormatterComponent extends Object {
     protected $urlParams = array();
 
     /**
+     * A list of custom properties divided by object type
+     *
+     * ```
+     * array(
+     *     'document' => array(
+     *         id_custom_1 => 'custom1',
+     *         id_custom_2 => 'custom2',
+     *     ),
+     *     ...
+     * )
+     * ```
+     *
+     * @var array
+     */
+    protected $customPropertiesList = array();
+
+    /**
      * Initialize function
      *
      * @param Controller $controller
@@ -578,6 +595,21 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Return a list of custom properties of specific object type id
+     *
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function getCustomPropertiesList($objectTypeId) {
+        $objectType = Configure::read('objectTypes.' . $objectTypeId . '.name');
+        if (empty($this->customPropertiesList[$objectType])) {
+            $property = ClassRegistry::init('Property');
+            $this->customPropertiesList[$objectType] = $property->propertyNames($objectTypeId);
+        }
+        return $this->customPropertiesList[$objectType];
+    }
+
+    /**
      * Given an object return the formatted data ready for api response
      *
      * The $result is normally located in 'data' key of api response
@@ -607,7 +639,17 @@ class ApiFormatterComponent extends Object {
                 $object['uri'] = Configure::read('mediaUrl') . $object['uri'];
             }
         }
-        // before clean prepare custom properties transformer
+        // before clean prepare custom properties adding not populated and preparing transformer
+        if (!empty($object['ObjectProperty'])) {
+            foreach ($object['ObjectProperty'] as $propName => $objPropValue) {
+                if (!isset($object['customProperties'][$propName])) {
+                    $object['customProperties'][$propName] = null;
+                }
+            }
+        } else {
+            $propList = $this->getCustomPropertiesList($object['object_type_id']);
+            $object['customProperties'] = array_fill_keys($propList, null);
+        }
         $this->setCustomPropertiesTransformer($object);
         $this->cleanObject($object);
         $this->transformObject($object);
