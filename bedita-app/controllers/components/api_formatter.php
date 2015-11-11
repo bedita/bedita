@@ -130,6 +130,12 @@ class ApiFormatterComponent extends Object {
         )
     );
 
+    /**
+     * The URL query string parameters formatted
+     *
+     * @see self::formatUrlParams()
+     * @var array
+     */
     protected $urlParams = array();
 
     /**
