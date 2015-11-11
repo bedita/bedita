@@ -734,6 +734,9 @@ class ApiFormatterComponent extends Object {
             $object['DateItem'] = $this->formatDateItemsForSave($object['date_items']);
             unset($object['date_items']);
         }
+        if (!empty($object['custom_properties'])) {
+            $object['custom_properties'] = $this->formatCustomPropertiesForSave($object['custom_properties'], $object['object_type_id']);
+        }
 
         $transformer = $this->getObjectTransformer($object);
         foreach ($object as $key => $value) {
@@ -839,6 +842,36 @@ class ApiFormatterComponent extends Object {
             }
         }
         return $dateItems;
+    }
+
+    public function formatCustomPropertiesForSave(array $customProperties, $objectTypeId) {
+        $property = ClassRegistry::init('Property');
+        $result = array();
+        $cp = $property->find('all', array(
+            'conditions' => array(
+                'name' => array_keys($customProperties),
+                'object_type_id' => $objectTypeId
+            ),
+            'contain' => array()
+        ));
+        $cp = Set::combine($cp, '{n}.name', '{n}');
+        if (!empty($customProperties)) {
+            foreach ($customProperties as $cpName => $value) {
+                if (!empty($cp[$cpName])) {
+                    $value = (!is_array($value)) ? array($value) : $value;
+                    foreach ($value as $v) {
+                        if ($cp[$cpName]['property_type'] == 'date') {
+                            $v = $this->dateToDb($v);
+                        }
+                        $result[] = array(
+                            'property_id' => $cp[$cpName]['id'],
+                            'property_value' => $v,
+                        );
+                    }
+                }
+            }
+        }
+        return $result;
     }
 
     /**

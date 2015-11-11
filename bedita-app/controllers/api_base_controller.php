@@ -832,6 +832,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
         parent::saveObject($beModel, $options);
 
+        // save parents
         if (!empty($this->data['parents'])) {
             $tree = ClassRegistry::init('Tree');
             $tree->updateTree(
@@ -842,6 +843,28 @@ abstract class ApiBaseController extends FrontendController {
                     'status' => $this->getStatus()
                 )
             );
+        }
+
+        // save custom properties
+        if (!empty($this->data['custom_properties'])) {
+            $propertyIds = Set::extract('/property_id', $this->data['custom_properties']);
+            // delete previous custom properties
+            $delRes = $this->BEObject->ObjectProperty->deleteAll(array(
+                'property_id' => $propertyIds,
+                'object_id' => $beModel->id
+            ));
+            if (!$delRes) {
+                throw BeditaInternalErrorException('Error saving custom properties');
+            }
+            foreach ($this->data['custom_properties'] as $customProp) {
+                if ($customProp['property_value'] !== null) {
+                    $customProp['object_id'] = $beModel->id;
+                    $this->BEObject->ObjectProperty->create();
+                    if (!$this->BEObject->ObjectProperty->save($customProp)) {
+                        throw new BeditaInternalErrorException('Error saving custom property ' . $customProp['property_id']);
+                    }
+                }
+            }
         }
     }
 
