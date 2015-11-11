@@ -857,6 +857,7 @@ abstract class ApiBaseController extends FrontendController {
                 throw BeditaInternalErrorException('Error saving custom properties');
             }
             foreach ($this->data['custom_properties'] as $customProp) {
+                // save not null custom properties
                 if ($customProp['property_value'] !== null) {
                     $customProp['object_id'] = $beModel->id;
                     $this->BEObject->ObjectProperty->create();

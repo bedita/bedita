@@ -852,22 +852,25 @@ class ApiValidatorComponent extends Object {
             if (empty($properties[$name])) {
                 throw new BeditaBadRequestException('Custom property ' . $name . ' not exists');
             }
-            $propData = $properties[$name];
-            if (is_array($value)) {
-                if ($propData['property_type'] != 'options' || $propData['multiple_choice'] == 0) {
-                    throw new BeditaBadRequestException('Custom property ' . $name . ' does not support multiple values');
-                }
-                // check if property values are options valid
-                $checkOptions($value, $propData);
-            } else {
-                if ($propData['property_type'] == 'date') {
-                    $this->checkDate($value);
-                } elseif ($propData['property_type'] == 'number') {
-                    if (!is_numeric($value)) {
-                        throw new BeditaBadRequestException('Custom property ' . $name . ' must be numeric');
+            // null needsto delete custom property
+            if ($value !== null) {
+                $propData = $properties[$name];
+                if (is_array($value)) {
+                    if ($propData['property_type'] != 'options' || $propData['multiple_choice'] == 0) {
+                        throw new BeditaBadRequestException('Custom property ' . $name . ' does not support multiple values');
                     }
-                } elseif ($propData['property_type'] == 'options') {
-                    $checkOptions(array($value), $propData);
+                    // check if property values are options valid
+                    $checkOptions($value, $propData);
+                } else {
+                    if ($propData['property_type'] == 'date') {
+                        $this->checkDate($value);
+                    } elseif ($propData['property_type'] == 'number') {
+                        if (!is_numeric($value)) {
+                            throw new BeditaBadRequestException('Custom property ' . $name . ' must be numeric');
+                        }
+                    } elseif ($propData['property_type'] == 'options') {
+                        $checkOptions(array($value), $propData);
+                    }
                 }
             }
         }
