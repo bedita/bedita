@@ -42,6 +42,8 @@ class ApiValidatorComponentTest extends BeditaTestCase {
 
     public $controller = null;
 
+    protected $customPropCreated = array();
+
     public function __construct () {
         parent::__construct('ApiValidator', dirname(__FILE__));
         $this->controller = new ApiValidatorDummyTestController();
@@ -137,6 +139,151 @@ class ApiValidatorComponentTest extends BeditaTestCase {
         $this->assertTrue(
             $this->controller->ApiValidator->isUrlParamsValid('new_endpoint')
         );
-   }
+    }
+
+    public function testCheckCustomProperties() {
+        $this->requiredData(array('checkCustomProp'));
+        $d = $this->data['checkCustomProp'];
+        $checkDate = $this->data['checkDate'];
+        // clean db test
+        $this->assertTrue($this->cleanCustomProperties($d));
+        // prepare data on db test
+        $property = ClassRegistry::init('Property');
+        foreach ($d as $name => $propData) {
+            $property->create();
+            $property->save($propData);
+            $this->customPropCreated[] = $property->id;
+            if (!empty($propData['PropertyOption'])) {
+                $propOpt = array();
+                foreach ($propData['PropertyOption'] as $opt) {
+                    $propOpt[] = array(
+                        'property_id' => $property->id,
+                        'property_option' => trim($opt)
+                    );
+                }
+                $property->PropertyOption->saveAll($propOpt);
+            }
+        }
+
+        // not existing custom
+        $test = array(
+            'custom_text' => 'hello',
+            'invalid_prop' => 'bye'
+        );
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // invalid custom property for object type
+        $test = array('custom_text' => 'hello');
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 3);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // invalid number
+        $test = array('custom_number' => '12a');
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // valid number
+        $test = array('custom_number' => '125');
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(true);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(false);
+        }
+
+        // not valid date
+        $test = array('custom_date' => $checkDate['errors']['format'][0]);
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // valid date
+        $test = array('custom_date' => $checkDate['jsIso']);
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(true);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(false);
+        }
+
+        // invalid option (single choice)
+        $test = array('custom_option' => array('one', 'two'));
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // invalid option (single choice)
+        $test = array('custom_option' => 'four');
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // valid option (single choice)
+        $test = array('custom_option' => 'one');
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(true);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(false);
+        }
+
+        // invalid option (multiple choice)
+        $test = array('custom_multiple_options' => array('one', 'two', 'four', 'five'));
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(false);
+        } catch(BeditaBadRequestException $ex) {
+            $this->assertTrue(true);
+        }
+
+        // valid option (multiple choice)
+        $test = array('custom_multiple_options' => array('six', 'five'));
+        try {
+            $this->controller->ApiValidator->checkCustomProperties($test, 22);
+            $this->assertTrue(true);
+        } catch(BeditaBadRequestException $ex) {
+            echo $ex->getMessage();
+            $this->assertTrue(false);
+        }
+    }
+
+    public function endTest($method) {
+        if ($method == 'testCheckCustomProperties') {
+            $this->assertTrue($this->cleanCustomProperties());
+        }
+    }
+
+    private function cleanCustomProperties($customProp = null) {
+        if ($customProp === null) {
+            $this->requiredData(array('checkCustomProp'));
+            $customProp = $this->data['checkCustomProp'];
+        }
+        $conditions = array(
+            'name' => Set::extract('/name', $customProp),
+        );
+        return ClassRegistry::init('Property')->deleteAll($conditions, false);
+    }
 
 }
