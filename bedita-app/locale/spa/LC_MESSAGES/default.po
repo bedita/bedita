@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-08-31 09:47:50\n"
+"POT-Creation-Date: 2015-11-13 17:20:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -16,6 +16,15 @@ msgstr "Deseleccionar Todos"
 
 msgid "(un)select all"
 msgstr "deseleccionar todos"
+
+msgid "1 month starting today"
+msgstr ""
+
+msgid "1 week backward"
+msgstr ""
+
+msgid "1 week forward"
+msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
 msgstr ""
@@ -191,6 +200,9 @@ msgstr "Log Backend"
 msgid "Backend languages"
 msgstr "Lenguas Backend"
 
+msgid "Bad Request"
+msgstr ""
+
 msgid "Bad data"
 msgstr "Datos inválidos"
 
@@ -215,7 +227,7 @@ msgstr "Profundidad bit"
 msgid "Branch"
 msgstr ""
 
-msgid "Calendar start date after end date"
+msgid "Calendar start date after end date: %s - %s"
 msgstr ""
 
 msgid "Calendar view"
@@ -304,6 +316,9 @@ msgstr "Redactores simultáneos:"
 
 msgid "Configuration"
 msgstr "Configuración"
+
+msgid "Configuration error: missing or wrong publication"
+msgstr ""
 
 msgid "Configuration saved"
 msgstr "Configuración guardada"
@@ -2846,9 +2861,6 @@ msgstr "newsletter"
 msgid "next"
 msgstr "próximo"
 
-msgid "next 7 days"
-msgstr ""
-
 msgid "next invoice"
 msgstr "próximo invoice"
 
@@ -3025,9 +3037,6 @@ msgstr "puerta"
 
 msgid "prev"
 msgstr "previo"
-
-msgid "previous 7 days"
-msgstr ""
 
 msgid "previous page"
 msgstr "página anterior"
@@ -3263,6 +3272,9 @@ msgstr ""
 msgid "signature"
 msgstr "firma"
 
+msgid "since"
+msgstr ""
+
 msgid "size"
 msgstr "tamaño"
 
@@ -3277,9 +3289,6 @@ msgstr "url staging"
 
 msgid "start"
 msgstr "comenzar"
-
-msgid "start from"
-msgstr ""
 
 msgid "state"
 msgstr "estado"
@@ -3320,8 +3329,14 @@ msgstr "terreno"
 msgid "text"
 msgstr "texto"
 
+msgid "this month"
+msgstr ""
+
 msgid "thumbnail"
 msgstr "thumbnail"
+
+msgid "time"
+msgstr ""
 
 msgid "timeout"
 msgstr "tiempo de espera"

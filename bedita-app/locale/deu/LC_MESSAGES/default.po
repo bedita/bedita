@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-08-31 09:47:50\n"
+"POT-Creation-Date: 2015-11-13 17:20:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -20,6 +20,15 @@ msgstr "Alles (ab)wählen"
 
 msgid "(un)select all"
 msgstr "alles (ab)wählen"
+
+msgid "1 month starting today"
+msgstr ""
+
+msgid "1 week backward"
+msgstr ""
+
+msgid "1 week forward"
+msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
 msgstr ""
@@ -201,6 +210,9 @@ msgstr ""
 msgid "Backend languages"
 msgstr ""
 
+msgid "Bad Request"
+msgstr ""
+
 msgid "Bad data"
 msgstr "Schlechte Daten"
 
@@ -225,7 +237,7 @@ msgstr "Bit Tiefe"
 msgid "Branch"
 msgstr ""
 
-msgid "Calendar start date after end date"
+msgid "Calendar start date after end date: %s - %s"
 msgstr ""
 
 msgid "Calendar view"
@@ -314,6 +326,9 @@ msgstr "Konkurrierende Redakteure:"
 
 msgid "Configuration"
 msgstr "Konfiguration"
+
+msgid "Configuration error: missing or wrong publication"
+msgstr ""
 
 msgid "Configuration saved"
 msgstr ""
@@ -2882,9 +2897,6 @@ msgstr "Newsletter"
 msgid "next"
 msgstr "nächste"
 
-msgid "next 7 days"
-msgstr ""
-
 msgid "next invoice"
 msgstr "nächster Aufruf"
 
@@ -3061,9 +3073,6 @@ msgstr ""
 
 msgid "prev"
 msgstr "vorherige"
-
-msgid "previous 7 days"
-msgstr ""
 
 msgid "previous page"
 msgstr "vorherige Seite"
@@ -3299,6 +3308,9 @@ msgstr ""
 msgid "signature"
 msgstr "Signatur"
 
+msgid "since"
+msgstr ""
+
 msgid "size"
 msgstr "Größe"
 
@@ -3313,9 +3325,6 @@ msgstr "Brücken-URL"
 
 msgid "start"
 msgstr "Start"
-
-msgid "start from"
-msgstr ""
 
 msgid "state"
 msgstr "Zustand"
@@ -3356,8 +3365,14 @@ msgstr ""
 msgid "text"
 msgstr "Text"
 
+msgid "this month"
+msgstr ""
+
 msgid "thumbnail"
 msgstr "Vorschaubild"
+
+msgid "time"
+msgstr ""
 
 msgid "timeout"
 msgstr ""

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-08-31 09:47:50\n"
+"POT-Creation-Date: 2015-11-13 17:20:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -16,6 +16,15 @@ msgstr "(De)Seleziona tutto"
 
 msgid "(un)select all"
 msgstr "(de)seleziona tutti"
+
+msgid "1 month starting today"
+msgstr "1 mese da oggi"
+
+msgid "1 week backward"
+msgstr "1 settimana indietro"
+
+msgid "1 week forward"
+msgstr "1 settimana avanti"
 
 msgid "A new version of this is available. Do you want to update it?"
 msgstr "È disponibile una nuova versione del plugin. Vuoi aggiornarlo ora?"
@@ -196,6 +205,9 @@ msgstr "Log di Backend"
 msgid "Backend languages"
 msgstr "Lingue del backend"
 
+msgid "Bad Request"
+msgstr "Richiesta sbagliata"
+
 msgid "Bad data"
 msgstr "Dati non validi"
 
@@ -220,8 +232,8 @@ msgstr "Profondità in bit"
 msgid "Branch"
 msgstr "Ramo"
 
-msgid "Calendar start date after end date"
-msgstr "Nel calendario la data d'inizio è dopo la data di fine"
+msgid "Calendar start date after end date: %s - %s"
+msgstr "La data d'inizio è dopo la data di fine: %s - %s"
 
 msgid "Calendar view"
 msgstr "Vista a Calendario"
@@ -309,6 +321,9 @@ msgstr "Redattori concorrenti:"
 
 msgid "Configuration"
 msgstr "Configurazione"
+
+msgid "Configuration error: missing or wrong publication"
+msgstr "Errore di configurazione: pubblicazione sbagliata o mancante"
 
 msgid "Configuration saved"
 msgstr "Configurazione salvata"
@@ -2871,9 +2886,6 @@ msgstr "newsletter"
 msgid "next"
 msgstr "succ"
 
-msgid "next 7 days"
-msgstr "prossimi 7 giorni"
-
 msgid "next invoice"
 msgstr "prossimo invio"
 
@@ -3050,9 +3062,6 @@ msgstr "porta"
 
 msgid "prev"
 msgstr "prec"
-
-msgid "previous 7 days"
-msgstr "7 giorni precedenti"
 
 msgid "previous page"
 msgstr "pagina precedente"
@@ -3292,6 +3301,9 @@ msgstr "mostra oggetti mediamap"
 msgid "signature"
 msgstr "firma"
 
+msgid "since"
+msgstr "dal"
+
 msgid "size"
 msgstr "dimensione"
 
@@ -3307,9 +3319,6 @@ msgstr "url di staging"
 
 msgid "start"
 msgstr "inizio"
-
-msgid "start from"
-msgstr "inizio da"
 
 msgid "state"
 msgstr "stato"
@@ -3350,8 +3359,14 @@ msgstr "rilievo"
 msgid "text"
 msgstr "testo"
 
+msgid "this month"
+msgstr "questo mese"
+
 msgid "thumbnail"
 msgstr "miniatura"
+
+msgid "time"
+msgstr "ora"
 
 msgid "timeout"
 msgstr "timeout"
@@ -3522,25 +3537,17 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr "il tuo messaggio"
 
-msgid "time"
-msgstr "ora"
+#~ msgid "Calendar start date after end date"
+#~ msgstr "Nel calendario la data d'inizio è dopo la data di fine"
 
-msgid "since"
-msgstr "dal"
+#~ msgid "next 7 days"
+#~ msgstr "prossimi 7 giorni"
 
-msgid "this month"
-msgstr "questo mese"
+#~ msgid "previous 7 days"
+#~ msgstr "7 giorni precedenti"
 
-msgid "1 month starting today"
-msgstr "1 mese da oggi"
-
-msgid "1 week backward"
-msgstr "1 settimana indietro"
-
-msgid "1 week forward"
-msgstr "1 settimana avanti"
-
-
+#~ msgid "start from"
+#~ msgstr "inizio da"
 
 #~ msgid "Add event date"
 #~ msgstr "Aggiungi data evento"
