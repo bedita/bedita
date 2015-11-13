@@ -166,6 +166,14 @@ $(window).load(function() {
 	$('.richtextNewsletterTemplate').ckeditor(BEDITA.richtexteditor.ckeditor.configNewsletterTemplate);
 	$('.richtextNewsletterMessage').ckeditor(BEDITA.richtexteditor.ckeditor.configNewsletterMessage);
 		
+	if (BEDITA.webroot) {
+		if(typeof CKEDITOR.config.contentsCss === 'string') {
+			CKEDITOR.config.contentsCss = [CKEDITOR.config.contentsCss, BEDITA.webroot + 'js/libs/richtexteditors/conf/ckeditor_default_init.css'];
+		} else {
+			CKEDITOR.config.contentsCss.push( BEDITA.webroot + 'js/libs/richtexteditors/conf/ckeditor_default_init.css' );
+		}
+	}
+
 	for (i in CKEDITOR.instances) {
 		CKEDITOR.instances[i].on('key', onChangeHandler);
 		CKEDITOR.instances[i].on('afterPaste', onChangeHandler);
