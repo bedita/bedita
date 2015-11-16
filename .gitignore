@@ -64,7 +64,8 @@
 /bedita-app/webroot/img/.directory
 
 # /bedita-app/webroot/js/libs/richtexteditors/conf/local
-/bedita-app/webroot/js/libs/richtexteditors/conf/local/*
+/bedita-app/webroot/js/libs/richtexteditors/conf/local/*.js
+/bedita-app/webroot/js/libs/richtexteditors/conf/local/*.css
 
 # /bedita-app/plugins/debug_kit
 /bedita-app/plugins/debug_kit

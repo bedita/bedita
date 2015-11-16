@@ -21,13 +21,13 @@ BEDITA.richtexteditor = {
 			],
 			allowedContent: true,
 			resize_enabled: true,
-			autocorrect_enabled: false,
+			autocorrect_enabled: true,
 			extraPlugins: 'codemirror,attributes,beButtons,onchange,webkit-span-fix,autocorrect',
 			language: BEDITA.currLang2,
 			codemirror: { theme: 'lesser-dark' },
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: true,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: true,
 			height:660
 		},
 
@@ -48,14 +48,14 @@ BEDITA.richtexteditor = {
 			],
 			allowedContent: true,
 			resize_enabled: true,
-			autocorrect_enabled: false,
+			autocorrect_enabled: true,
 			extraPlugins: 'codemirror,attributes,beButtons,onchange,webkit-span-fix,autocorrect',
 			language: BEDITA.currLang2,
 			codemirror: { theme: 'lesser-dark' },
 			entities:false,
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: true,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: true,
 			height:660
 		},
 
@@ -74,8 +74,8 @@ BEDITA.richtexteditor = {
 			codemirror: { theme: 'lesser-dark' },
 			entities:false,
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: true,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: true,
 		},
 
 		configMini: {
@@ -92,10 +92,10 @@ BEDITA.richtexteditor = {
 			codemirror: { theme: 'lesser-dark' },
 			entities:false,
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: false,
-				height:100,
-				toolbarLocation: 'bottom'
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: false,
+			height:100,
+			toolbarLocation: 'bottom'
 		},
 
 		configNewsletterTemplate: {
@@ -115,13 +115,13 @@ BEDITA.richtexteditor = {
 			],
 			allowedContent: true,
 			resize_enabled: true,
-			autocorrect_enabled: false,
+			autocorrect_enabled: true,
 			extraPlugins: 'codemirror,attributes,beButtons,onchange,beditacontentblock,webkit-span-fix,autocorrect',
 			language: BEDITA.currLang2,
 			codemirror: { theme: 'lesser-dark' },
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: false,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: false,
 			height:660
 		},
 
@@ -142,13 +142,13 @@ BEDITA.richtexteditor = {
 			],
 			allowedContent: true,
 			resize_enabled: true,
-			autocorrect_enabled: false,
+			autocorrect_enabled: true,
 			extraPlugins: 'codemirror,attributes,beButtons,onchange,webkit-span-fix,autocorrect',
 			language: BEDITA.currLang2,
 			codemirror: { theme: 'lesser-dark' },
 			fillEmptyBlocks:false,
-				forcePasteAsPlainText:true,
-				startupOutlineBlocks: false,
+			forcePasteAsPlainText:true,
+			startupOutlineBlocks: false,
 			height:660
 		}
 	}
