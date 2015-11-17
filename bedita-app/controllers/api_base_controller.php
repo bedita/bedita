@@ -263,7 +263,7 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultAllowedUrlParams = array(
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
-        'objects' => array('filter[object_type]', 'filter[query]', '_pagination'),
+        'objects' => array('id', 'filter[object_type]', 'filter[query]', '_pagination'),
         'poster' => array('width', 'height', 'mode')
     );
 
@@ -610,10 +610,17 @@ abstract class ApiBaseController extends FrontendController {
     protected function getObjects($name = null, $filterType = null) {
         $this->setupObjectsFilter();
         if (!empty($name)) {
+            // GET /objects/:id supports only '__all' params
             if (empty($filterType) && !$this->ApiValidator->isUrlParamsValid('__all')) {
                 $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
                 throw new BeditaBadRequestException(
                     'GET /objects/:id supports url params: ' . $validParams
+                );
+            }
+            // GET /objects/:id/$filterType?id=x not valid
+            if (array_key_exists('id', $this->params['url'])) {
+                throw new BeditaBadRequestException(
+                    'GET /objects/:id/' . $filterType . ' does not support url params: id'
                 );
             }
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
@@ -645,12 +652,38 @@ abstract class ApiBaseController extends FrontendController {
                 );
                 $this->setData($object);
             }
-        // list of publication descendants
         } else {
-            $publication = $this->getPublication();
-            $this->responseChildren($publication['id'], array(
-                'filter' => array('descendants' => true)
-            ));
+            // get list of object ids (check reachability)
+            $urlParams = $this->ApiFormatter->formatUrlParams();
+            if (!empty($urlParams['id'])) {
+                $this->ApiValidator->setAllowedUrlParams('objects', array('id', '__all'), false);
+                if (!$this->ApiValidator->isUrlParamsValid('objects')) {
+                    $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+                    throw new BeditaBadRequestException(
+                        'GET /objects?id=xx,yy,... supports only these other url params: ' . $validParams
+                    );
+                }
+                $ids = $urlParams['id'];
+                if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
+                    throw new BeditaBadRequestException('Too objects requested. Max is ' . $this->paginationOptions['maxPageSize']);
+                }
+                $objects = array();
+                foreach ($ids as $id) {
+                    $this->ApiValidator->checkObjectReachable($id);
+                    $objects[] = $this->loadObj($id, true, array('explodeRelations' => false));
+                }
+                $objects = $this->ApiFormatter->formatObjects(
+                    $objects,
+                    array('countRelations' => true, 'countChildren' => true)
+                );
+                $this->setData($objects);
+            // list of publication descendants
+            } else {
+                $publication = $this->getPublication();
+                $this->responseChildren($publication['id'], array(
+                    'filter' => array('descendants' => true)
+                ));
+            }
         }
     }
 
