@@ -48,7 +48,7 @@ class GravatarHelper extends AppHelper {
      * @var array
      */
     private $imageOptions = array(
-        'd' => 'identicon',
+        'd' => 'retro',
         's' => null
     );
 
