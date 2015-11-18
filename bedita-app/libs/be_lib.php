@@ -23,14 +23,13 @@ if (!class_exists('ClassRegistry')) {
 	App::import('Core', array('ClassRegistry'));
 }
 
+if (!class_exists('Folder')) {
+    App::import('Core', 'Folder');
+}
+
 /**
  * BEdita libs class. Instantiate and put in the registry other classes
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 
 class BeLib {
