@@ -1932,7 +1932,7 @@ class DataTransfer extends BEAppModel
         // save new name (passed by reference)
         $name = $filename . $ext;
         $destination = $destBasePath . $dirsString . DS . $name;
-        if (!copy($sourceBasePath . $source, $destination)) {
+        if (!@copy($sourceBasePath . $source, $destination)) {
             $this->trackError('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
             //$this->trackWarn('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
             //throw new BeditaException('Error copying file "' . $sourceBasePath . DS . $source . '" to "' . $destination);
