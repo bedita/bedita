@@ -91,6 +91,11 @@ class MigrationDateItemsShell extends BeditaBaseShell
         }
     }
 
+    /**
+     * Load IDs of the Date Items to be converted.
+     *
+     * @return array Array of IDs.
+     */
     protected function load() {
         if (array_key_exists('-all', $this->params) || array_key_exists('a', $this->params)) {
             return $this->DateItem->find('list');
