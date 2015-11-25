@@ -1561,7 +1561,7 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function getPosters($id = null) {
         $thumbConf = $this->posterThumbConf();
-        if (!empty ($id)) {
+        if (!empty($id)) {
             if (func_num_args() != 1) {
                 throw new BeditaBadRequestException();
             }
@@ -1578,12 +1578,13 @@ abstract class ApiBaseController extends FrontendController {
         } else {
             $urlParams = $this->ApiFormatter->formatUrlParams();
             if (empty($urlParams['id'])) {
-                throw new BeditaBadRequestException();
+                throw new BeditaBadRequestException('GET /posters requires at least one id');
             }
             $ids = $urlParams['id'];
             if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
-                throw new BeditaBadRequestException('Too many ids requested. Max is ' . 
-                    $this->paginationOptions['maxPageSize']);
+                throw new BeditaBadRequestException(
+                    'Too many ids requested. Max is ' . $this->paginationOptions['maxPageSize']
+                );
             }
             $poster = array();
             try {
