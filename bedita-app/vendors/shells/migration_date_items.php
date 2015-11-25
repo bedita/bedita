@@ -170,6 +170,8 @@ class MigrationDateItemsShell extends BeditaBaseShell
             $this->error('No conversion to be performed!');
         }
 
+        $quiet = array_key_exists('-quiet', $this->params);
+
         $this->out(' - Loading data... ', 0);
         $dateItems = $this->load();
         $this->out('DONE');
@@ -179,7 +181,7 @@ class MigrationDateItemsShell extends BeditaBaseShell
             return;
         }
 
-        $this->out(' - Converting...');
+        $this->out(' - Converting... ', $quiet ? 0 : 1);
         $count = 0;
         $time = microtime(true);
         foreach ($dateItems as $id) {
@@ -193,11 +195,13 @@ class MigrationDateItemsShell extends BeditaBaseShell
             }
 
             $count++;
-            $this->out($ok ? '.' : 'x', ($count % 80 == 0) ? 1 : 0);
+            if (!$quiet) {
+                $this->out($ok ? '.' : 'x', ($count % 80 == 0) ? 1 : 0);
+            }
         }
-        $this->out();
+        $this->out($quiet ? 'DONE' : '');
         $time = microtime(true) - $time;
 
-        $this->out(' - Converted ' . count($dateItems) . ' items in ' . sprintf('%.3f', $time) . ' seconds');
+        $this->out(' * Converted ' . count($dateItems) . ' items in ' . sprintf('%.3f', $time) . ' seconds');
     }
 }
