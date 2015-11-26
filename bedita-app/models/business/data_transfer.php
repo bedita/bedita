@@ -921,6 +921,7 @@ class DataTransfer extends BEAppModel
                 }
             }
         }
+        $noPublicationAllowed = (!empty($options['parentId']));
         $this->import['expectedParentIds'] = array();
         $treeObjectTypes = array('area', 'section');
         foreach ($this->import['source']['data']['objects'] as $object) {
@@ -939,6 +940,9 @@ class DataTransfer extends BEAppModel
             // populate media uri array
             if (!empty($object['id']) && !empty($object['uri'])) {
                 $this->import['media'][$object['id']]['uri'] = $object['uri'];
+            }
+            if ($noPublicationAllowed && !empty($object['objectType']) && ($object['objectType'] === 'area') ) {
+                throw new BeditaException('object area (id: ' . $object['id'] . ') not allowed when importing to destination');
             }
             // 3.4 specific validation by objectType
             // TODO: implement it / idea: use model reflection (i.e. if <modelClass> has method 'validateBeforeImport' then invoke it)
