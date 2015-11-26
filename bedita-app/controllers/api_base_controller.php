@@ -71,7 +71,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'auth', 'me', 'poster');
+    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters');
 
     /**
      * The default binding level
@@ -264,7 +264,7 @@ abstract class ApiBaseController extends FrontendController {
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
         'objects' => array('id', 'filter[object_type]', 'filter[query]', '_pagination'),
-        'poster' => array('width', 'height', 'mode')
+        'posters' => array('id', 'width', 'height', 'mode')
     );
 
     /**
@@ -1543,12 +1543,13 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * GET /poster endpoint
-     * Try to return a poster thumbnail url of object $id
-     * For 'poster' is got an image object with the folowing order:
-     * 1. if object $id has a relation 'poster' return that image object
+     * GET /posters endpoint
+     * Return a poster thumbnail url of object $id or list of id's
+     * using 'id' parameter with a comma separated list of id's
+     * As 'posters' an image object is retrived using following order:
+     * 1. if object $id has a 'poster' relation return that image object
      * 2. else if object $id is an image object type return it
-     * 3. else if object $id has a relation 'attach' with an image return that image
+     * 3. else if object $id has an 'attach' relation with an image return that image
      *
      * Possible query url paramters are:
      *
@@ -1558,45 +1559,81 @@ abstract class ApiBaseController extends FrontendController {
      * @param int|string $id the object id or object nickname
      * @return void
      */
-    protected function getPoster($id = null) {
-        if (func_num_args() != 1) {
-            throw new BeditaBadRequestException();
-        }
-        $id = is_numeric($id) ? $id : $this->BEObject->getIdFromNickname($id);
-        if (empty($id)) {
-            throw new BeditaNotFoundException();
-        }
-
-        $poster = $this->BEObject->getPoster($id);
-        if ($poster !== false) {
-            $thumbConf = array();
-            if (!empty($this->params['url'])) {
-                $acceptConf = array(
-                    'width' => true,
-                    'height' => true,
-                    'preset' => true
-                );
-                $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
-                if (isset($thumbConf['preset'])) {
-                    $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
-                    if (!empty($presetConf)) {
-                        $thumbConf = $presetConf;
-                    }
-                }
-                $thumbConf['URLonly'] = true;
+    protected function getPosters($id = null) {
+        $thumbConf = $this->posterThumbConf();
+        if (!empty($id)) {
+            if (func_num_args() != 1) {
+                throw new BeditaBadRequestException();
             }
-
+            $id = is_numeric($id) ? $id : $this->BEObject->getIdFromNickname($id);
+            if (empty($id)) {
+                throw new BeditaNotFoundException();
+            }
             try {
-                $beThumb = BeLib::getObject('BeThumb');
-                $poster['id'] = (int) $poster['id'];
-                $poster['uri'] = $beThumb->image($poster, $thumbConf);
+                $poster = $this->posterData($id, $thumbConf);
                 $this->setData($poster);
             } catch (Exception $ex) {
                 $this->setData();
             }
         } else {
-            $this->setData();
+            $urlParams = $this->ApiFormatter->formatUrlParams();
+            if (empty($urlParams['id'])) {
+                throw new BeditaBadRequestException('GET /posters requires at least one id');
+            }
+            $ids = $urlParams['id'];
+            if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
+                throw new BeditaBadRequestException(
+                    'Too many ids requested. Max is ' . $this->paginationOptions['maxPageSize']
+                );
+            }
+            $poster = array();
+            try {
+                foreach ($ids as $id) {
+                    $poster[] = $this->posterData($id, $thumbConf);
+                }
+                $this->setData($poster);
+            } catch (Exception $ex) {
+                $this->setData();
+            }
         }
+    }
+
+    /**
+     * Returns thumbnail configuration array from URL and general configuration (used in /posters)
+     * @return thumb conf array
+     */
+    private function posterThumbConf() {
+        $thumbConf = array();
+        if (!empty($this->params['url'])) {
+            $acceptConf = array(
+                'width' => true,
+                'height' => true,
+                'preset' => true
+            );
+            $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
+            if (isset($thumbConf['preset'])) {
+                $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
+                if (!empty($presetConf)) {
+                    $thumbConf = $presetConf;
+                }
+            }
+            $thumbConf['URLonly'] = true;
+        }
+        return $thumbConf;
+    }
+    
+    /**
+     * Returns poster data for a single object (used in /posters)
+     * @param int $id
+     * @param array $thumbConf
+     * @return poster data array
+     */
+    private function posterData($id, array $thumbConf = array()) {
+        $poster = $this->BEObject->getPoster($id);
+        $poster['id'] = (int) $poster['id'];
+        $beThumb = BeLib::getObject('BeThumb');
+        $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        return $poster;
     }
 
     /**
