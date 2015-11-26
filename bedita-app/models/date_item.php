@@ -83,6 +83,41 @@ class DateItem extends BEAppModel
     }
 
     /**
+     * Convert a string to timestamp.
+     *
+     * This function is safe with years after 9999 or before -9999.
+     *
+     * @param string $date Date to be converted.
+     * @return int|null Timestamp.
+     */
+    public function stringToTimestamp($date) {
+        $year = null;
+        $date = preg_replace_callback('/(?<=^|-|\/)\s*(?P<year>-?\d{5,})/', function ($match) use (&$year) {
+            $year = $match['year'];
+            return '1972';
+        }, (string) $date);  // Replace any 5+-digit year with 1972 (must be a leap year).
+        $date = strtotime($date) ?: null;
+
+        if (is_null($year) || is_null($date)) {
+            // Invalid date, or 4-digit years.
+            return $date;
+        }
+
+        if (!class_exists('DateTime')) {
+            // Missing class `DateTime`, required for handling of 5+-digit years.
+            return null;
+        }
+
+        /** Fix timestamp for 5+-digit years. */
+        $datetime = new DateTime();
+        $datetime->setTimestamp($date);
+        $datetime->setDate($year, $datetime->format('m'), $datetime->format('d'));
+        $date = $datetime->getTimestamp();
+
+        return $date;
+    }
+
+    /**
      * Prepares one or more dates in the correct format for the underlying database structure (either `DATETIME` or `BIGINT`).
      *
      * @param string $column The name of the model column.
@@ -119,7 +154,7 @@ class DateItem extends BEAppModel
         if ($type == 'datetime' && is_int($date)) {
             $date = date('Y-m-d H:i:s', $date);
         } elseif ($type == 'integer' && !is_int($date)) {
-            $date = strtotime($date) ?: null;
+            $date = $this->stringToTimestamp($date);
         }
         return $date;
     }
