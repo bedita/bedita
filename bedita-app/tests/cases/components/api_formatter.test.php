@@ -90,4 +90,18 @@ class ApiFormatterComponentTest extends BeditaTestCase {
         }
     }
 
+    public function testFormatUrlParams() {
+        $this->requiredData(array('formatUrlParams'));
+        $url = $this->data['formatUrlParams']['queryString'];
+        $paramsExpected = $this->data['formatUrlParams']['expected'];
+        $urlParams = array();
+        parse_str($url, $urlParams);
+        $this->controller->params['url'] = array_merge(
+            array('url' => $url),
+            $urlParams
+        );
+        $urlParams = $this->controller->ApiFormatter->formatUrlParams();
+        $this->assertIdentical($urlParams, $paramsExpected);
+    }
+
 }

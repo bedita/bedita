@@ -990,7 +990,17 @@ class ApiFormatterComponent extends Object {
                     if (is_array($value)) {
                         foreach ($value as $k => &$v) {
                             if (!in_array($k, $exclude)) {
-                                $v = explode($separator, trim($v, $separator));
+                                if ($name == 'embed' && $k == 'relations_detail') {
+                                    $rel = explode($separator, trim($v, $separator));
+                                    $v = array();
+                                    foreach ($rel as $relInfo) {
+                                        $relInfoArr = explode('|', $relInfo);
+                                        $v[$relInfoArr[0]] = (count($relInfoArr) == 2) ? $relInfoArr[1] : 1;
+                                    }
+
+                                } else {
+                                    $v = explode($separator, trim($v, $separator));
+                                }
                             }
                         }
                     } else {
