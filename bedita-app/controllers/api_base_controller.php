@@ -663,8 +663,8 @@ abstract class ApiBaseController extends FrontendController {
                         'GET /objects?id=xx,yy,... supports only these other url params: ' . $validParams
                     );
                 }
-                $ids = $urlParams['id'];
-                if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
+                $ids = is_array($urlParams['id']) ? $urlParams['id'] : array($urlParams['id']);
+                if (count($ids) > $this->paginationOptions['maxPageSize']) {
                     throw new BeditaBadRequestException('Too objects requested. Max is ' . $this->paginationOptions['maxPageSize']);
                 }
                 $objects = array();

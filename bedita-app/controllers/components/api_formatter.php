@@ -958,17 +958,19 @@ class ApiFormatterComponent extends Object {
 
     /**
      * Format $this->controller->params['url'] building array of values starting from $separator separated values.
-     * By default $separator is ',' char and 'query' is excluded because it represents a full text search
+     * By default $separator is ',' char and 'query' is excluded because it represents a full text search.
      *
      * For example in a request as:
      *
-     * https://example.com/objects?object_type=document,event&page=2
+     * https://example.com/objects?filter[object_type]=document,event&page=2
      *
      * the url params are formatted as
      *
      * ```
      * array(
-     *     'object_type' => array('document', 'event'),
+     *     'filter' => array(
+     *         'object_type' => array('document', 'event')
+     *     ),
      *     'page' => 2
      * )
      * ```
@@ -997,15 +999,18 @@ class ApiFormatterComponent extends Object {
                                         $relInfoArr = explode('|', $relInfo);
                                         $v[$relInfoArr[0]] = (count($relInfoArr) == 2) ? $relInfoArr[1] : 1;
                                     }
-
                                 } else {
-                                    $v = explode($separator, trim($v, $separator));
+                                    $v = trim($v, $separator);
+                                    if (strpos($v, $separator) !== false) {
+                                        $v = explode($separator, $v);
+                                    }
                                 }
                             }
                         }
                     } else {
-                        if (!in_array($name, $exclude)) {
-                            $value = explode($separator, trim($value, $separator));
+                        $value = trim($value, $separator);
+                        if (strpos($value, $separator) !== false && !in_array($name, $exclude)) {
+                            $value = explode($separator, $value);
                         }
                     }
                 }

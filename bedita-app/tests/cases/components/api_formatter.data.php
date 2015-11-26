@@ -31,10 +31,10 @@ class ApiFormatterTestData extends BeditaTestData {
         ),
 
         'formatUrlParams' => array(
-            'queryString' => 'one=1&two=2&filter[object_type]=document,event&embed[relations_detail]=poster,seealso|4,attach|15',
+            'queryString' => 'one=1,&two=2&filter[object_type]=document,event&embed[relations_detail]=poster,seealso|4,attach|15',
             'expected' => array(
-                'one' => array('1'),
-                'two' => array('2'),
+                'one' => '1',
+                'two' => '2',
                 'filter' => array(
                     'object_type' => array('document', 'event')
                 ),
