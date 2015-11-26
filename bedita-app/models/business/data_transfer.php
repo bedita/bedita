@@ -237,6 +237,7 @@ class DataTransfer extends BEAppModel
                 foreach ($rootIds as $rootId) {
                     $rootData = $this->import['source']['data']['objects'][$rootId];
                     $rootObjType = $this->import['source']['data']['objects'][$rootId]['objectType'];
+                    
                     // 2.2.1.1 save area(s) with policy 'NEW'
                     $this->trackDebug('2.2.1.1 save area/section(s) with policy (old id ' . $rootId . ') \'NEW\'');
                     // 2.2.1.2 save area(s) with other policies [TODO]
@@ -248,12 +249,23 @@ class DataTransfer extends BEAppModel
                         $this->saveSection($rootData, $parentId);
                     }
                 }
+            } else if (!empty($options['parentId']) && !empty($this->import['source']['data']['tree']['roots'])) {
+                foreach ($this->import['source']['data']['tree']['roots'] as $rootId) {
+                    $parentId = $options['parentId'];
+                    $rootData = $this->import['source']['data']['objects'][$rootId];
+                    $this->saveSection($rootData, $parentId);
+                }
             }
             if (!empty($this->import['source']['data']['tree']['sections'])) {
                 // 2.2.2 save other section(s)
                 $this->trackDebug('2.2.2 save other section(s)');
                 foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-                    $newParentId = $this->import['saveMap'][$section['parent']];
+                    $newParentId = null;
+                    if (empty($this->import['saveMap'][$section['parent']]) && !empty($genParentId)) {
+                        $newParentId = $genParentId;
+                    } else {
+                        $newParentId = $this->import['saveMap'][$section['parent']];
+                    }
                     // 2.2.2.1 save section(s) with policy 'NEW'
                     $this->trackDebug('2.2.2.1 save section(s) (old section id ' . $section['id'] . ' | old parent_id ' . $section['parent'] . ' | new parent id ' . $newParentId . ') with policy \'NEW\'');
                     // 2.2.2.2 save section(s) with other policies [TODO]
