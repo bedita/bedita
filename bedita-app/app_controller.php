@@ -1623,6 +1623,31 @@ abstract class ModulesController extends AppController {
         return $objectTypes;
     }
 
+    protected function loadFilters($filterType = 'export') {
+        $ff = array();
+        $filters = Configure::read('filters.' . $filterType);
+        if (!empty($filters)) {
+            foreach($filters as $filter => $className) {
+                $filterModel = ClassRegistry::init($className);
+                if (!empty($filterModel)) {
+                    if (!empty($filterModel->label)) {
+                        $ff[$className]['label'] = $filterModel->label;
+                    }
+                    if (!empty($filterModel->options)) {
+                        $ff[$className]['options'] = $filterModel->options;
+                    }
+                }
+                if (empty($ff[$className]['label'])) {
+                    $ff[$className]['label'] = $filter;
+                }
+                if (empty($ff[$className]['options'])) {
+                    $ff[$className]['options'] = array();
+                }
+            }
+        }
+        return $ff;
+    }
+
     /**
      * Generic view method: to override in real modules or create specific view methods
      * if more types are handled by this module, like view[ModelName] (e.g. viewDocument, viewEvent...)

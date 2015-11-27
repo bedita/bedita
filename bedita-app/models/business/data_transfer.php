@@ -372,6 +372,9 @@ class DataTransfer extends BEAppModel
         // set destMediaRoot default
         $this->export['destMediaRoot'] = TMP . 'media-export';
         $this->export = array_merge($this->export, $options);
+        if (empty($this->export['status'])) {
+            $this->export['status'] = array('on', 'off', 'draft');
+        }
         $this->logLevel = $this->export['logLevel'];
         $this->trackInfo('START');
         try {
