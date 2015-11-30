@@ -263,7 +263,7 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultAllowedUrlParams = array(
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
-        'objects' => array('id', 'filter[object_type]', 'filter[query]', '_pagination'),
+        'objects' => array('id', 'filter[object_type]', 'filter[query]', 'embed[relations]', '_pagination'),
         'posters' => array('id', 'width', 'height', 'mode')
     );
 
@@ -609,18 +609,30 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function getObjects($name = null, $filterType = null) {
         $this->setupObjectsFilter();
+        $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($name)) {
             // GET /objects/:id supports only '__all' params
-            if (empty($filterType) && !$this->ApiValidator->isUrlParamsValid('__all')) {
-                $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
-                throw new BeditaBadRequestException(
-                    'GET /objects/:id supports url params: ' . $validParams
-                );
+            if (empty($filterType)) {
+                $this->ApiValidator->setAllowedUrlParams('objects', array('embed[relations]', '__all'), false);
+                if (!$this->ApiValidator->isUrlParamsValid('objects')) {
+                    $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('objects'));
+                    throw new BeditaBadRequestException(
+                        'GET /objects/:id supports url params: ' . $validParams
+                    );
+                }
             }
             // GET /objects/:id/$filterType?id=x not valid
             if (array_key_exists('id', $this->params['url'])) {
                 throw new BeditaBadRequestException(
                     'GET /objects/:id/' . $filterType . ' does not support url params: id'
+                );
+            }
+            // check embed[relations] params
+            if (!empty($urlParams['embed']['relations'])) {
+                $this->ApiValidator->checkEmbedRelations(
+                    $urlParams['embed']['relations'],
+                    $this->paginationOptions['pageSize'],
+                    $this->paginationOptions['maxPageSize']
                 );
             }
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
@@ -650,22 +662,32 @@ abstract class ApiBaseController extends FrontendController {
                     $object,
                     array('countRelations' => true, 'countChildren' => true)
                 );
+                if (!empty($urlParams['embed']['relations'])) {
+                    $object['object'] = $this->addRelatedObjects($object['object'], $urlParams['embed']['relations']);
+                }
                 $this->setData($object);
             }
         } else {
             // get list of object ids (check reachability)
-            $urlParams = $this->ApiFormatter->formatUrlParams();
             if (!empty($urlParams['id'])) {
-                $this->ApiValidator->setAllowedUrlParams('objects', array('id', '__all'), false);
+                $this->ApiValidator->setAllowedUrlParams('objects', array('id', 'embed[relations]', '__all'), false);
                 if (!$this->ApiValidator->isUrlParamsValid('objects')) {
                     $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
                     throw new BeditaBadRequestException(
                         'GET /objects?id=xx,yy,... supports only these other url params: ' . $validParams
                     );
                 }
-                $ids = $urlParams['id'];
-                if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
+                $ids = is_array($urlParams['id']) ? $urlParams['id'] : array($urlParams['id']);
+                if (count($ids) > $this->paginationOptions['maxPageSize']) {
                     throw new BeditaBadRequestException('Too objects requested. Max is ' . $this->paginationOptions['maxPageSize']);
+                }
+                // check embed[relations] params
+                if (!empty($urlParams['embed']['relations'])) {
+                    $this->ApiValidator->checkEmbedRelations(
+                        $urlParams['embed']['relations'],
+                        count($ids),
+                        $this->paginationOptions['maxPageSize']
+                    );
                 }
                 $objects = array();
                 foreach ($ids as $id) {
@@ -676,15 +698,62 @@ abstract class ApiBaseController extends FrontendController {
                     $objects,
                     array('countRelations' => true, 'countChildren' => true)
                 );
+                if (!empty($urlParams['embed']['relations'])) {
+                    foreach ($objects['objects'] as &$o) {
+                        $o = $this->addRelatedObjects($o, $urlParams['embed']['relations']);
+                    }
+                }
                 $this->setData($objects);
             // list of publication descendants
             } else {
+                // check embed[relations] params
+                if (!empty($urlParams['embed']['relations'])) {
+                    $this->ApiValidator->checkEmbedRelations(
+                        $urlParams['embed']['relations'],
+                        $this->paginationOptions['pageSize'],
+                        $this->paginationOptions['maxPageSize']
+                    );
+                }
                 $publication = $this->getPublication();
                 $this->responseChildren($publication['id'], array(
                     'filter' => array('descendants' => true)
                 ));
             }
         }
+    }
+
+    /**
+     * Add related objects to $object
+     * The $relations is an array that contains info
+     * about the number of objects to get for each relation
+     * For example
+     *
+     * ```
+     * array(
+     *     'attach' => 5,
+     *     'seealso' => 2,
+     *     'poster' => 1
+     * )
+     * ```
+     *
+     * @param array $object the object
+     * @param array $relations the relations info
+     * @return array
+     */
+    protected function addRelatedObjects(array $object, array $relations) {
+        foreach ($relations as $relName => $dim) {
+            if ($this->ApiValidator->isRelationValid($relName, $object['object_type'])) {
+                $relObj = $this->loadRelatedObjects($object['id'], $relName, array('dim' => $dim));
+                if (!empty($relObj['items'])) {
+                    $relObjs = $this->ApiFormatter->formatObjects(
+                        $relObj['items'],
+                        array('countRelations' => true, 'countChildren' => true)
+                    );
+                    $object['relations'][$relName]['objects'] = $relObjs['objects'];
+                }
+            }
+        }
+        return $object;
     }
 
     /**
@@ -1317,6 +1386,13 @@ abstract class ApiBaseController extends FrontendController {
                 $result['children'],
                 array('countRelations' => true, 'countChildren' => true)
             );
+            // embed related objects if request
+            $urlParams = $this->ApiFormatter->formatUrlParams();
+            if (!empty($urlParams['embed']['relations'])) {
+                foreach ($objects['objects'] as &$o) {
+                    $o = $this->addRelatedObjects($o, $urlParams['embed']['relations']);
+                }
+            }
             $this->setData($objects);
             $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
         }
@@ -1580,8 +1656,8 @@ abstract class ApiBaseController extends FrontendController {
             if (empty($urlParams['id'])) {
                 throw new BeditaBadRequestException('GET /posters requires at least one id');
             }
-            $ids = $urlParams['id'];
-            if (is_array($ids) && count($ids) > $this->paginationOptions['maxPageSize']) {
+            $ids = is_array($urlParams['id']) ? $urlParams['id'] : array($urlParams['id']);
+            if (count($ids) > $this->paginationOptions['maxPageSize']) {
                 throw new BeditaBadRequestException(
                     'Too many ids requested. Max is ' . $this->paginationOptions['maxPageSize']
                 );

@@ -536,6 +536,41 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
+     * Check embed relations requested.
+     * $relationsData must be in the form of 'relation_name' => number_requested,
+     * for example
+     *
+     * ```
+     * array(
+     *     'attach' => 3,
+     *     'seealso' => 1
+     * )
+     * ```
+     *
+     * It check that:
+     *
+     * - the number requested is positive integer
+     * - the total number of objects and relations embedded per page is less than max size
+     *
+     * @throws BeditaBadRequesException
+     * @param array $relationsData array of relations info
+     * @param int $pageSize the page size
+     * @param int $maxSize the max results allowed
+     * @return void
+     */
+    public function checkEmbedRelations(array $relationsData, $pageSize, $maxSize) {
+        // count main object too
+        $objAndRel = 1;
+        foreach ($relationsData as $relName => $num) {
+            $this->checkPositiveInteger($num, true);
+            $objAndRel += $num;
+        }
+        if ($objAndRel * $pageSize > $maxSize) {
+            throw new BeditaBadRequestException('Too many objects requested');
+        }
+    }
+
+    /**
      * Return true if $test is a positive integer, false otherwise
      *
      * @param mixed $test the type to test

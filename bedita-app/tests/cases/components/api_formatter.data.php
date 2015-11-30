@@ -29,6 +29,25 @@ class ApiFormatterTestData extends BeditaTestData {
                 )
             )
         ),
+
+        'formatUrlParams' => array(
+            'queryString' => 'one=1,&two=2&filter[object_type]=document,event&embed[relations]=poster,seealso|4,attach|15,link|',
+            'expected' => array(
+                'one' => '1',
+                'two' => '2',
+                'filter' => array(
+                    'object_type' => array('document', 'event')
+                ),
+                'embed' => array(
+                    'relations' => array(
+                        'poster' => 1,
+                        'seealso' => '4',
+                        'attach' => '15',
+                        'link' => 1
+                    )
+                )
+            )
+        )
     );
 
 }

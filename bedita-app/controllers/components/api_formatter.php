@@ -958,17 +958,19 @@ class ApiFormatterComponent extends Object {
 
     /**
      * Format $this->controller->params['url'] building array of values starting from $separator separated values.
-     * By default $separator is ',' char and 'query' is excluded because it represents a full text search
+     * By default $separator is ',' char and 'query' is excluded because it represents a full text search.
      *
      * For example in a request as:
      *
-     * https://example.com/objects?object_type=document,event&page=2
+     * https://example.com/objects?filter[object_type]=document,event&page=2
      *
      * the url params are formatted as
      *
      * ```
      * array(
-     *     'object_type' => array('document', 'event'),
+     *     'filter' => array(
+     *         'object_type' => array('document', 'event')
+     *     ),
      *     'page' => 2
      * )
      * ```
@@ -990,12 +992,25 @@ class ApiFormatterComponent extends Object {
                     if (is_array($value)) {
                         foreach ($value as $k => &$v) {
                             if (!in_array($k, $exclude)) {
-                                $v = explode($separator, trim($v, $separator));
+                                if ($name == 'embed' && $k == 'relations') {
+                                    $rel = explode($separator, trim($v, $separator));
+                                    $v = array();
+                                    foreach ($rel as $relInfo) {
+                                        $relInfoArr = explode('|', $relInfo);
+                                        $v[$relInfoArr[0]] = (!empty($relInfoArr[1])) ? $relInfoArr[1] : 1;
+                                    }
+                                } else {
+                                    $v = trim($v, $separator);
+                                    if (strpos($v, $separator) !== false) {
+                                        $v = explode($separator, $v);
+                                    }
+                                }
                             }
                         }
                     } else {
-                        if (!in_array($name, $exclude)) {
-                            $value = explode($separator, trim($value, $separator));
+                        $value = trim($value, $separator);
+                        if (strpos($value, $separator) !== false && !in_array($name, $exclude)) {
+                            $value = explode($separator, $value);
                         }
                     }
                 }
