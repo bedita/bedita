@@ -31,7 +31,7 @@ class ApiFormatterTestData extends BeditaTestData {
         ),
 
         'formatUrlParams' => array(
-            'queryString' => 'one=1,&two=2&filter[object_type]=document,event&embed[relations_detail]=poster,seealso|4,attach|15',
+            'queryString' => 'one=1,&two=2&filter[object_type]=document,event&embed[relations]=poster,seealso|4,attach|15,link|',
             'expected' => array(
                 'one' => '1',
                 'two' => '2',
@@ -39,10 +39,11 @@ class ApiFormatterTestData extends BeditaTestData {
                     'object_type' => array('document', 'event')
                 ),
                 'embed' => array(
-                    'relations_detail' => array(
+                    'relations' => array(
                         'poster' => 1,
                         'seealso' => '4',
-                        'attach' => '15'
+                        'attach' => '15',
+                        'link' => 1
                     )
                 )
             )
