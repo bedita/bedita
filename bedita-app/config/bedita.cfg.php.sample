@@ -168,10 +168,12 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * Example to use tinyMCE
  * name => 'tinymce'
  * conf => 'tiny_mce_default_init'
+ * local => 'filename' in webroot/js/libs/richtexteditors/conf/local/
  */
 // $config['richtexteditor'] = array(
 //  'name' => 'ckeditor',
-//  'conf' => 'ckeditor_default_init'
+//  'conf' => 'ckeditor_default_init',
+//  'local' => ''
 // );
 
 // Activate short text (abstract) for documents

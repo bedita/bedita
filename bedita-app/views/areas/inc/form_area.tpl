@@ -211,6 +211,8 @@
 		
 	</fieldset>
 
+    {$view->element('form_export')}
+
 	{$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.area.id}])}
 
 	{assign_associative var="params" object=$object|default:null}

@@ -1,0 +1,5 @@
+BEDITA.richtexteditor.ckeditor.configFull.autocorrect_enabled = false;
+BEDITA.richtexteditor.ckeditor.configNormal.autocorrect_enabled = false;
+BEDITA.richtexteditor.ckeditor.configSimple.autocorrect_enabled = false;
+BEDITA.richtexteditor.ckeditor.configNewsletterTemplate.autocorrect_enabled = false;
+BEDITA.richtexteditor.ckeditor.configNewsletterMessage.autocorrect_enabled = false;

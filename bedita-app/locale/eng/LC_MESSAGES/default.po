@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-08-31 09:47:50\n"
+"POT-Creation-Date: 2015-11-13 17:20:40\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -15,6 +15,15 @@ msgid "(Un)Select All"
 msgstr ""
 
 msgid "(un)select all"
+msgstr ""
+
+msgid "1 month starting today"
+msgstr ""
+
+msgid "1 week backward"
+msgstr ""
+
+msgid "1 week forward"
 msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
@@ -187,6 +196,9 @@ msgstr ""
 msgid "Backend languages"
 msgstr ""
 
+msgid "Bad Request"
+msgstr ""
+
 msgid "Bad data"
 msgstr ""
 
@@ -211,7 +223,7 @@ msgstr ""
 msgid "Branch"
 msgstr ""
 
-msgid "Calendar start date after end date"
+msgid "Calendar start date after end date: %s - %s"
 msgstr ""
 
 msgid "Calendar view"
@@ -299,6 +311,9 @@ msgid "Concurrent editors:"
 msgstr ""
 
 msgid "Configuration"
+msgstr ""
+
+msgid "Configuration error: missing or wrong publication"
 msgstr ""
 
 msgid "Configuration saved"
@@ -2825,9 +2840,6 @@ msgstr ""
 msgid "next"
 msgstr ""
 
-msgid "next 7 days"
-msgstr ""
-
 msgid "next invoice"
 msgstr ""
 
@@ -3003,9 +3015,6 @@ msgid "port"
 msgstr ""
 
 msgid "prev"
-msgstr ""
-
-msgid "previous 7 days"
 msgstr ""
 
 msgid "previous page"
@@ -3242,6 +3251,9 @@ msgstr ""
 msgid "signature"
 msgstr ""
 
+msgid "since"
+msgstr ""
+
 msgid "size"
 msgstr ""
 
@@ -3255,9 +3267,6 @@ msgid "staging url"
 msgstr ""
 
 msgid "start"
-msgstr ""
-
-msgid "start from"
 msgstr ""
 
 msgid "state"
@@ -3299,7 +3308,13 @@ msgstr ""
 msgid "text"
 msgstr ""
 
+msgid "this month"
+msgstr ""
+
 msgid "thumbnail"
+msgstr ""
+
+msgid "time"
 msgstr ""
 
 msgid "timeout"

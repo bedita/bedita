@@ -80,6 +80,8 @@ class AreasController extends ModulesController {
 			$parentId = $this->params['named']['branch'];
 		}
 		$this->set('parent_id', $parentId);
+		$filters = $this->loadFilters('export');
+		$this->set('export_filters',$filters);
 	}
 	 
 	/**
@@ -278,20 +280,31 @@ class AreasController extends ModulesController {
      */
     public function export() {
         $this->autoRender = false;
-        if (empty($this->data['type'])) {
+        $formData = $this->data;
+        // $this->params['form'];
+        if (empty($formData['type'])) {
             throw new BeditaException(__('No valid export filter has been selected', true));
         }
-        $filterClass = Configure::read("filters.export.{$this->data['type']}");
-
+        if(empty($formData['filename'])) {
+            throw new BeditaException(__('No valid export filename has been selected', true));
+        }
+        $filterClass = $formData['type'];
         $filterModel = ClassRegistry::init($filterClass);
-        $objects = array($this->data['id']);
-        $result = $filterModel->export($objects);
+        $objects = array($formData['id']);
+        $options = array(
+            'filename' => $formData['filename']
+        );
+        if (!empty($formData['options'])) {
+            $options = array_merge($options,$formData['options']);
+        }
+        ini_set('max_execution_time', 300); // 5 minutes
+        $result = $filterModel->export($objects, $options);
 
         Configure::write('debug', 0);
         // TODO: optimizations!!! use cake tools
         header('Content-Description: File Transfer');
         header("Content-Type: {$result['contentType']}");
-        header("Content-Disposition: attachment; filename={$this->data['filename']}");
+        header("Content-Disposition: attachment; filename={$formData['filename']}");
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

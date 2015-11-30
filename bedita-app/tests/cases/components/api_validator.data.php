@@ -29,6 +29,36 @@ class ApiValidatorTestData extends BeditaTestData {
             'endpoint2' => array('_group1', 'name3'),
             '_group1' => array('groupname1', 'groupname2'),
             'endpoint3' => array('filter[name1]', 'filter[name2]', '_group1')
+        ),
+        'checkCustomProp' => array(
+            array(
+                'name' => 'custom_text',
+                'object_type_id' => 22, // document
+                'property_type' => 'text'
+            ),
+            array(
+                'name' => 'custom_number',
+                'object_type_id' => 22, // document
+                'property_type' => 'number'
+            ),
+            array(
+                'name' => 'custom_date',
+                'object_type_id' => 22, // document
+                'property_type' => 'date'
+            ),
+            array(
+                'name' => 'custom_option',
+                'object_type_id' => 22, // document
+                'property_type' => 'options',
+                'PropertyOption' => array('one', 'two', 'three')
+            ),
+            array(
+                'name' => 'custom_multiple_options',
+                'object_type_id' => 22, // document
+                'property_type' => 'options',
+                'multiple_choice' => 1,
+                'PropertyOption' => array('four', 'five', 'six')
+            ),
         )
     );
 

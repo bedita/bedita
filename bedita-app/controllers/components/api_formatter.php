@@ -130,7 +130,30 @@ class ApiFormatterComponent extends Object {
         )
     );
 
+    /**
+     * The URL query string parameters formatted
+     *
+     * @see self::formatUrlParams()
+     * @var array
+     */
     protected $urlParams = array();
+
+    /**
+     * A list of custom properties divided by object type
+     *
+     * ```
+     * array(
+     *     'document' => array(
+     *         id_custom_1 => 'custom1',
+     *         id_custom_2 => 'custom2',
+     *     ),
+     *     ...
+     * )
+     * ```
+     *
+     * @var array
+     */
+    protected $customPropertiesList = array();
 
     /**
      * Initialize function
@@ -276,8 +299,10 @@ class ApiFormatterComponent extends Object {
                     if (is_array($type)) {
                         // underscore and pluralize $field
                         $newField = Inflector::pluralize(Inflector::underscore($field));
-                        $item[$newField] = $item[$field];
-                        unset($item[$field]);
+                        if ($newField != $field) {
+                            $item[$newField] = $item[$field];
+                            unset($item[$field]);
+                        }
                         if (is_array($item[$newField])) {
                             $this->transformItem($transformer[$field], $item[$newField]);
                         }
@@ -406,6 +431,25 @@ class ApiFormatterComponent extends Object {
     public function transformObject(array &$object) {
         $transformer = $this->getObjectTransformer($object);
         $this->transformItem($transformer, $object);
+    }
+
+    /**
+     * Prepare self::$transformer['object'] adding 'custom_properties' formatting info
+     * It is expected that $object contains the 'ObjectProperty' with custom properties details
+     *
+     * @param array $object the object on which prepare the custom properties transformer
+     */
+    public function setCustomPropertiesTransformer(array $object) {
+        $this->transformers['object']['custom_properties'] = array();
+        if (!empty($object['ObjectProperty'])) {
+            foreach ($object['ObjectProperty'] as $name => $customProp) {
+                if ($customProp['property_type'] == 'number') {
+                    $this->transformers['object']['custom_properties'][$name] = 'float';
+                } elseif ($customProp['property_type'] == 'date') {
+                    $this->transformers['object']['custom_properties'][$name] = 'date';
+                }
+            }
+        }
     }
 
     /**
@@ -557,6 +601,21 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Return a list of custom properties of specific object type id
+     *
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function getCustomPropertiesList($objectTypeId) {
+        $objectType = Configure::read('objectTypes.' . $objectTypeId . '.name');
+        if (empty($this->customPropertiesList[$objectType])) {
+            $property = ClassRegistry::init('Property');
+            $this->customPropertiesList[$objectType] = $property->propertyNames($objectTypeId);
+        }
+        return $this->customPropertiesList[$objectType];
+    }
+
+    /**
      * Given an object return the formatted data ready for api response
      *
      * The $result is normally located in 'data' key of api response
@@ -586,6 +645,18 @@ class ApiFormatterComponent extends Object {
                 $object['uri'] = Configure::read('mediaUrl') . $object['uri'];
             }
         }
+        // before clean prepare custom properties adding not populated and preparing transformer
+        if (!empty($object['ObjectProperty'])) {
+            foreach ($object['ObjectProperty'] as $propName => $objPropValue) {
+                if (!isset($object['customProperties'][$propName])) {
+                    $object['customProperties'][$propName] = null;
+                }
+            }
+        } else {
+            $propList = $this->getCustomPropertiesList($object['object_type_id']);
+            $object['customProperties'] = array_fill_keys($propList, null);
+        }
+        $this->setCustomPropertiesTransformer($object);
         $this->cleanObject($object);
         $this->transformObject($object);
         if ($options['countRelations']) {
@@ -711,6 +782,9 @@ class ApiFormatterComponent extends Object {
             $object['DateItem'] = $this->formatDateItemsForSave($object['date_items']);
             unset($object['date_items']);
         }
+        if (!empty($object['custom_properties'])) {
+            $object['custom_properties'] = $this->formatCustomPropertiesForSave($object['custom_properties'], $object['object_type_id']);
+        }
 
         $transformer = $this->getObjectTransformer($object);
         foreach ($object as $key => $value) {
@@ -819,18 +893,84 @@ class ApiFormatterComponent extends Object {
     }
 
     /**
+     * Format custom properties for save
+     * Array as
+     *
+     * ```
+     * array(
+     *     'custom_name_1' => 'value_1',
+     *     'custom_name_2' => array('value_2', 'value_3')
+     * )
+     * ```
+     *
+     * become
+     *
+     * ```
+     * array(
+     *     0 => array(
+     *         'property_id' => 1, // id of custom_name_1
+     *         'property_value' => 'value_1'
+     *     ),
+     *     1 => array(
+     *         'property_id' => 2, // id of custom_name_2
+     *         'property_value' => 'value_2'
+     *     ),
+     *     2 => array(
+     *         'property_id' => 2, // id of custom_name_2
+     *         'property_value' => 'value_3'
+     *     )
+     * )
+     * ```
+     *
+     * @param array $customProperties array of custom properties to format
+     * @param int $objectTypeId the object type id
+     * @return array
+     */
+    public function formatCustomPropertiesForSave(array $customProperties, $objectTypeId) {
+        $property = ClassRegistry::init('Property');
+        $result = array();
+        $cp = $property->find('all', array(
+            'conditions' => array(
+                'name' => array_keys($customProperties),
+                'object_type_id' => $objectTypeId
+            ),
+            'contain' => array()
+        ));
+        $cp = Set::combine($cp, '{n}.name', '{n}');
+        if (!empty($customProperties)) {
+            foreach ($customProperties as $cpName => $value) {
+                if (!empty($cp[$cpName])) {
+                    $value = (!is_array($value)) ? array($value) : $value;
+                    foreach ($value as $v) {
+                        if ($cp[$cpName]['property_type'] == 'date') {
+                            $v = $this->dateToDb($v);
+                        }
+                        $result[] = array(
+                            'property_id' => $cp[$cpName]['id'],
+                            'property_value' => $v,
+                        );
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Format $this->controller->params['url'] building array of values starting from $separator separated values.
-     * By default $separator is ',' char and 'query' is excluded because it represents a full text search
+     * By default $separator is ',' char and 'query' is excluded because it represents a full text search.
      *
      * For example in a request as:
      *
-     * https://example.com/objects?object_type=document,event&page=2
+     * https://example.com/objects?filter[object_type]=document,event&page=2
      *
      * the url params are formatted as
      *
      * ```
      * array(
-     *     'object_type' => array('document', 'event'),
+     *     'filter' => array(
+     *         'object_type' => array('document', 'event')
+     *     ),
      *     'page' => 2
      * )
      * ```
@@ -852,12 +992,25 @@ class ApiFormatterComponent extends Object {
                     if (is_array($value)) {
                         foreach ($value as $k => &$v) {
                             if (!in_array($k, $exclude)) {
-                                $v = explode($separator, trim($v, $separator));
+                                if ($name == 'embed' && $k == 'relations') {
+                                    $rel = explode($separator, trim($v, $separator));
+                                    $v = array();
+                                    foreach ($rel as $relInfo) {
+                                        $relInfoArr = explode('|', $relInfo);
+                                        $v[$relInfoArr[0]] = (!empty($relInfoArr[1])) ? $relInfoArr[1] : 1;
+                                    }
+                                } else {
+                                    $v = trim($v, $separator);
+                                    if (strpos($v, $separator) !== false) {
+                                        $v = explode($separator, $v);
+                                    }
+                                }
                             }
                         }
                     } else {
-                        if (!in_array($name, $exclude)) {
-                            $value = explode($separator, trim($value, $separator));
+                        $value = trim($value, $separator);
+                        if (strpos($value, $separator) !== false && !in_array($name, $exclude)) {
+                            $value = explode($separator, $value);
                         }
                     }
                 }

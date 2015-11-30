@@ -71,7 +71,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'auth', 'me', 'poster');
+    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters');
 
     /**
      * The default binding level
@@ -263,8 +263,8 @@ abstract class ApiBaseController extends FrontendController {
     private $defaultAllowedUrlParams = array(
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
-        'objects' => array('filter[object_type]', 'filter[query]', '_pagination'),
-        'poster' => array('width', 'height', 'mode')
+        'objects' => array('id', 'filter[object_type]', 'filter[query]', 'embed[relations]', '_pagination'),
+        'posters' => array('id', 'width', 'height', 'mode')
     );
 
     /**
@@ -609,11 +609,30 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function getObjects($name = null, $filterType = null) {
         $this->setupObjectsFilter();
+        $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($name)) {
-            if (empty($filterType) && !$this->ApiValidator->isUrlParamsValid('__all')) {
-                $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+            // GET /objects/:id supports only '__all' params
+            if (empty($filterType)) {
+                $this->ApiValidator->setAllowedUrlParams('objects', array('embed[relations]', '__all'), false);
+                if (!$this->ApiValidator->isUrlParamsValid('objects')) {
+                    $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('objects'));
+                    throw new BeditaBadRequestException(
+                        'GET /objects/:id supports url params: ' . $validParams
+                    );
+                }
+            }
+            // GET /objects/:id/$filterType?id=x not valid
+            if (array_key_exists('id', $this->params['url'])) {
                 throw new BeditaBadRequestException(
-                    'GET /objects/:id supports url params: ' . $validParams
+                    'GET /objects/:id/' . $filterType . ' does not support url params: id'
+                );
+            }
+            // check embed[relations] params
+            if (!empty($urlParams['embed']['relations'])) {
+                $this->ApiValidator->checkEmbedRelations(
+                    $urlParams['embed']['relations'],
+                    $this->paginationOptions['pageSize'],
+                    $this->paginationOptions['maxPageSize']
                 );
             }
             $id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
@@ -643,15 +662,98 @@ abstract class ApiBaseController extends FrontendController {
                     $object,
                     array('countRelations' => true, 'countChildren' => true)
                 );
+                if (!empty($urlParams['embed']['relations'])) {
+                    $object['object'] = $this->addRelatedObjects($object['object'], $urlParams['embed']['relations']);
+                }
                 $this->setData($object);
             }
-        // list of publication descendants
         } else {
-            $publication = $this->getPublication();
-            $this->responseChildren($publication['id'], array(
-                'filter' => array('descendants' => true)
-            ));
+            // get list of object ids (check reachability)
+            if (!empty($urlParams['id'])) {
+                $this->ApiValidator->setAllowedUrlParams('objects', array('id', 'embed[relations]', '__all'), false);
+                if (!$this->ApiValidator->isUrlParamsValid('objects')) {
+                    $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('__all'));
+                    throw new BeditaBadRequestException(
+                        'GET /objects?id=xx,yy,... supports only these other url params: ' . $validParams
+                    );
+                }
+                $ids = is_array($urlParams['id']) ? $urlParams['id'] : array($urlParams['id']);
+                if (count($ids) > $this->paginationOptions['maxPageSize']) {
+                    throw new BeditaBadRequestException('Too objects requested. Max is ' . $this->paginationOptions['maxPageSize']);
+                }
+                // check embed[relations] params
+                if (!empty($urlParams['embed']['relations'])) {
+                    $this->ApiValidator->checkEmbedRelations(
+                        $urlParams['embed']['relations'],
+                        count($ids),
+                        $this->paginationOptions['maxPageSize']
+                    );
+                }
+                $objects = array();
+                foreach ($ids as $id) {
+                    $this->ApiValidator->checkObjectReachable($id);
+                    $objects[] = $this->loadObj($id, true, array('explodeRelations' => false));
+                }
+                $objects = $this->ApiFormatter->formatObjects(
+                    $objects,
+                    array('countRelations' => true, 'countChildren' => true)
+                );
+                if (!empty($urlParams['embed']['relations'])) {
+                    foreach ($objects['objects'] as &$o) {
+                        $o = $this->addRelatedObjects($o, $urlParams['embed']['relations']);
+                    }
+                }
+                $this->setData($objects);
+            // list of publication descendants
+            } else {
+                // check embed[relations] params
+                if (!empty($urlParams['embed']['relations'])) {
+                    $this->ApiValidator->checkEmbedRelations(
+                        $urlParams['embed']['relations'],
+                        $this->paginationOptions['pageSize'],
+                        $this->paginationOptions['maxPageSize']
+                    );
+                }
+                $publication = $this->getPublication();
+                $this->responseChildren($publication['id'], array(
+                    'filter' => array('descendants' => true)
+                ));
+            }
         }
+    }
+
+    /**
+     * Add related objects to $object
+     * The $relations is an array that contains info
+     * about the number of objects to get for each relation
+     * For example
+     *
+     * ```
+     * array(
+     *     'attach' => 5,
+     *     'seealso' => 2,
+     *     'poster' => 1
+     * )
+     * ```
+     *
+     * @param array $object the object
+     * @param array $relations the relations info
+     * @return array
+     */
+    protected function addRelatedObjects(array $object, array $relations) {
+        foreach ($relations as $relName => $dim) {
+            if ($this->ApiValidator->isRelationValid($relName, $object['object_type'])) {
+                $relObj = $this->loadRelatedObjects($object['id'], $relName, array('dim' => $dim));
+                if (!empty($relObj['items'])) {
+                    $relObjs = $this->ApiFormatter->formatObjects(
+                        $relObj['items'],
+                        array('countRelations' => true, 'countChildren' => true)
+                    );
+                    $object['relations'][$relName]['objects'] = $relObjs['objects'];
+                }
+            }
+        }
+        return $object;
     }
 
     /**
@@ -832,6 +934,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
         parent::saveObject($beModel, $options);
 
+        // save parents
         if (!empty($this->data['parents'])) {
             $tree = ClassRegistry::init('Tree');
             $tree->updateTree(
@@ -842,6 +945,29 @@ abstract class ApiBaseController extends FrontendController {
                     'status' => $this->getStatus()
                 )
             );
+        }
+
+        // save custom properties
+        if (!empty($this->data['custom_properties'])) {
+            $propertyIds = Set::extract('/property_id', $this->data['custom_properties']);
+            // delete previous custom properties
+            $delRes = $this->BEObject->ObjectProperty->deleteAll(array(
+                'property_id' => $propertyIds,
+                'object_id' => $beModel->id
+            ));
+            if (!$delRes) {
+                throw BeditaInternalErrorException('Error saving custom properties');
+            }
+            foreach ($this->data['custom_properties'] as $customProp) {
+                // save not null custom properties
+                if ($customProp['property_value'] !== null) {
+                    $customProp['object_id'] = $beModel->id;
+                    $this->BEObject->ObjectProperty->create();
+                    if (!$this->BEObject->ObjectProperty->save($customProp)) {
+                        throw new BeditaInternalErrorException('Error saving custom property ' . $customProp['property_id']);
+                    }
+                }
+            }
         }
     }
 
@@ -1260,6 +1386,13 @@ abstract class ApiBaseController extends FrontendController {
                 $result['children'],
                 array('countRelations' => true, 'countChildren' => true)
             );
+            // embed related objects if request
+            $urlParams = $this->ApiFormatter->formatUrlParams();
+            if (!empty($urlParams['embed']['relations'])) {
+                foreach ($objects['objects'] as &$o) {
+                    $o = $this->addRelatedObjects($o, $urlParams['embed']['relations']);
+                }
+            }
             $this->setData($objects);
             $this->setPaging($this->ApiFormatter->formatPaging($result['toolbar']));
         }
@@ -1486,12 +1619,13 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * GET /poster endpoint
-     * Try to return a poster thumbnail url of object $id
-     * For 'poster' is got an image object with the folowing order:
-     * 1. if object $id has a relation 'poster' return that image object
+     * GET /posters endpoint
+     * Return a poster thumbnail url of object $id or list of id's
+     * using 'id' parameter with a comma separated list of id's
+     * As 'posters' an image object is retrived using following order:
+     * 1. if object $id has a 'poster' relation return that image object
      * 2. else if object $id is an image object type return it
-     * 3. else if object $id has a relation 'attach' with an image return that image
+     * 3. else if object $id has an 'attach' relation with an image return that image
      *
      * Possible query url paramters are:
      *
@@ -1501,45 +1635,81 @@ abstract class ApiBaseController extends FrontendController {
      * @param int|string $id the object id or object nickname
      * @return void
      */
-    protected function getPoster($id = null) {
-        if (func_num_args() != 1) {
-            throw new BeditaBadRequestException();
-        }
-        $id = is_numeric($id) ? $id : $this->BEObject->getIdFromNickname($id);
-        if (empty($id)) {
-            throw new BeditaNotFoundException();
-        }
-
-        $poster = $this->BEObject->getPoster($id);
-        if ($poster !== false) {
-            $thumbConf = array();
-            if (!empty($this->params['url'])) {
-                $acceptConf = array(
-                    'width' => true,
-                    'height' => true,
-                    'preset' => true
-                );
-                $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
-                if (isset($thumbConf['preset'])) {
-                    $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
-                    if (!empty($presetConf)) {
-                        $thumbConf = $presetConf;
-                    }
-                }
-                $thumbConf['URLonly'] = true;
+    protected function getPosters($id = null) {
+        $thumbConf = $this->posterThumbConf();
+        if (!empty($id)) {
+            if (func_num_args() != 1) {
+                throw new BeditaBadRequestException();
             }
-
+            $id = is_numeric($id) ? $id : $this->BEObject->getIdFromNickname($id);
+            if (empty($id)) {
+                throw new BeditaNotFoundException();
+            }
             try {
-                $beThumb = BeLib::getObject('BeThumb');
-                $poster['id'] = (int) $poster['id'];
-                $poster['uri'] = $beThumb->image($poster, $thumbConf);
+                $poster = $this->posterData($id, $thumbConf);
                 $this->setData($poster);
             } catch (Exception $ex) {
                 $this->setData();
             }
         } else {
-            $this->setData();
+            $urlParams = $this->ApiFormatter->formatUrlParams();
+            if (empty($urlParams['id'])) {
+                throw new BeditaBadRequestException('GET /posters requires at least one id');
+            }
+            $ids = is_array($urlParams['id']) ? $urlParams['id'] : array($urlParams['id']);
+            if (count($ids) > $this->paginationOptions['maxPageSize']) {
+                throw new BeditaBadRequestException(
+                    'Too many ids requested. Max is ' . $this->paginationOptions['maxPageSize']
+                );
+            }
+            $poster = array();
+            try {
+                foreach ($ids as $id) {
+                    $poster[] = $this->posterData($id, $thumbConf);
+                }
+                $this->setData($poster);
+            } catch (Exception $ex) {
+                $this->setData();
+            }
         }
+    }
+
+    /**
+     * Returns thumbnail configuration array from URL and general configuration (used in /posters)
+     * @return thumb conf array
+     */
+    private function posterThumbConf() {
+        $thumbConf = array();
+        if (!empty($this->params['url'])) {
+            $acceptConf = array(
+                'width' => true,
+                'height' => true,
+                'preset' => true
+            );
+            $thumbConf = array_intersect_key($this->params['url'], $acceptConf);
+            if (isset($thumbConf['preset'])) {
+                $presetConf = Configure::read('thumbnails.' . $thumbConf['preset']);
+                if (!empty($presetConf)) {
+                    $thumbConf = $presetConf;
+                }
+            }
+            $thumbConf['URLonly'] = true;
+        }
+        return $thumbConf;
+    }
+    
+    /**
+     * Returns poster data for a single object (used in /posters)
+     * @param int $id
+     * @param array $thumbConf
+     * @return poster data array
+     */
+    private function posterData($id, array $thumbConf = array()) {
+        $poster = $this->BEObject->getPoster($id);
+        $poster['id'] = (int) $poster['id'];
+        $beThumb = BeLib::getObject('BeThumb');
+        $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        return $poster;
     }
 
     /**

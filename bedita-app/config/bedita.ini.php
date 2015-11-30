@@ -165,8 +165,9 @@ $config['defaultStatus'] = "draft" ;
  * To use another conf file or use tinyMCE override var in bedita.cfg.php
  */
 $config['richtexteditor'] = array(
-	'name' => 'ckeditor',
-	'conf' => 'ckeditor_default_init'
+    'name' => 'ckeditor',
+    'conf' => 'ckeditor_default_init',
+    'local' => ''
 );
 
 // Application messages - temporary messages duration

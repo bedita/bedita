@@ -310,6 +310,9 @@ class ApiValidatorComponent extends Object {
             }
             $this->checkDateItems($object['date_items'], $objectId);
         }
+        if (!empty($object['custom_properties'])) {
+            $this->checkCustomProperties($object['custom_properties'], $object['object_type_id']);
+        }
     }
 
     /**
@@ -529,6 +532,41 @@ class ApiValidatorComponent extends Object {
                     throw new BeditaBadRequestException('Invalid Relation: ' . $relData['related_id'] . ' is unreachable');
                 }
             }
+        }
+    }
+
+    /**
+     * Check embed relations requested.
+     * $relationsData must be in the form of 'relation_name' => number_requested,
+     * for example
+     *
+     * ```
+     * array(
+     *     'attach' => 3,
+     *     'seealso' => 1
+     * )
+     * ```
+     *
+     * It check that:
+     *
+     * - the number requested is positive integer
+     * - the total number of objects and relations embedded per page is less than max size
+     *
+     * @throws BeditaBadRequesException
+     * @param array $relationsData array of relations info
+     * @param int $pageSize the page size
+     * @param int $maxSize the max results allowed
+     * @return void
+     */
+    public function checkEmbedRelations(array $relationsData, $pageSize, $maxSize) {
+        // count main object too
+        $objAndRel = 1;
+        foreach ($relationsData as $relName => $num) {
+            $this->checkPositiveInteger($num, true);
+            $objAndRel += $num;
+        }
+        if ($objAndRel * $pageSize > $maxSize) {
+            throw new BeditaBadRequestException('Too many objects requested');
         }
     }
 
@@ -797,6 +835,76 @@ class ApiValidatorComponent extends Object {
                     ));
                     if (empty($count)) {
                         throw new BeditaBadRequestException('geo_tags: ' . $field . '=' . $value .' is not valid');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if custom properties are valid
+     * The $customProperties array has to be in the form
+     *
+     * ```
+     * array(
+     *     'custom_prop_name_1' => 'value1',
+     *     'custom_prop_name_2' => 'value2',
+     *     'custom_prop_name_3' => array('value3', 'value4') // multiple choice
+     * )
+     * ```
+     *
+     * @param array $customProperties the custom properties to validate
+     * @param int|string $objectTypeId the object type id or name
+     * @return void
+     */
+    public function checkCustomProperties(array $customProperties, $objectTypeId) {
+        if (!is_numeric($objectTypeId)) {
+            $objectTypeId = Configure::read('objectTypes.' . $objectTypeId . '.id');
+        }
+        $property = ClassRegistry::init('Property');
+        $properties = $property->find('all', array(
+            'fields' => array('name', 'property_type', 'multiple_choice'),
+            'conditions' => array(
+                'name' => array_keys($customProperties),
+                'object_type_id' => $objectTypeId
+            ),
+            'contain' => array('PropertyOption')
+        ));
+        $properties = Set::combine($properties, '{n}.name', '{n}');
+
+        // check options closure
+        $checkOptions = function(array $valuesToCheck, array $prop) {
+            $availableOptions = Set::extract('/PropertyOption/property_option', $prop);
+            $valuesForbidden = array_diff($valuesToCheck, $availableOptions);
+            if (!empty($valuesForbidden)) {
+                throw new BeditaBadRequestException(
+                    'Custom property ' . $prop['name'] . ' values allowed are: ' . implode(',', $availableOptions)
+                );
+            }
+        };
+
+        foreach ($customProperties as $name => $value) {
+            if (empty($properties[$name])) {
+                throw new BeditaBadRequestException('Custom property ' . $name . ' not exists');
+            }
+            // null needsto delete custom property
+            if ($value !== null) {
+                $propData = $properties[$name];
+                if (is_array($value)) {
+                    if ($propData['property_type'] != 'options' || $propData['multiple_choice'] == 0) {
+                        throw new BeditaBadRequestException('Custom property ' . $name . ' does not support multiple values');
+                    }
+                    // check if property values are options valid
+                    $checkOptions($value, $propData);
+                } else {
+                    if ($propData['property_type'] == 'date') {
+                        $this->checkDate($value);
+                    } elseif ($propData['property_type'] == 'number') {
+                        if (!is_numeric($value)) {
+                            throw new BeditaBadRequestException('Custom property ' . $name . ' must be numeric');
+                        }
+                    } elseif ($propData['property_type'] == 'options') {
+                        $checkOptions(array($value), $propData);
                     }
                 }
             }

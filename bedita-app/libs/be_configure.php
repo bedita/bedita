@@ -231,10 +231,11 @@ class BeConfigure {
 	 * 
 	 * @param string $pluginName
 	 */
-	public function loadPluginLocalConfig($pluginName) {
+	public function loadPluginLocalConfig($pluginName, $configName = 'config_local') {
 		$pluginPath = BEDITA_MODULES_PATH . DS . $pluginName;
-		if ( file_exists($pluginPath . DS . 'config' . DS . 'config_local.php' )){
-			include $pluginPath . DS . 'config' . DS . 'config_local.php';
+		$configFile = $pluginPath . DS . 'config' . DS . $configName . '.php';
+		if ( file_exists($configFile )){
+			include $configFile;
 			if (!empty($config)) {
 				Configure::write($config);
 			}
