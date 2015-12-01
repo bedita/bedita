@@ -1439,7 +1439,7 @@ abstract class ApiBaseController extends FrontendController {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
-        if (isset($this->params['url']['filter']['object_type'])) {
+        if (isset($this->objectsFilter['object_type'])) {
             throw new BeditaBadRequestException('GET /objects/:id/sections does not support filter[object_type] param');
         }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
@@ -1460,9 +1460,11 @@ abstract class ApiBaseController extends FrontendController {
         if (func_num_args() > 1) {
             throw new BeditaBadRequestException();
         }
-        $urlParams = $this->ApiFormatter->formatUrlParams();
-        if (!empty($urlParams['filter']['object_type']) && in_array('section', $urlParams['filter']['object_type'])) {
-            throw new BeditaBadRequestException('GET /objects/:id/contents does not support filter[object_type] section value');
+        if (!empty($this->objectsFilter['object_type'])) {
+            $ot = is_array($this->objectsFilter['object_type']) ? $this->objectsFilter['object_type'] : array($this->objectsFilter['object_type']);
+            if (in_array('section', $ot)) {
+                throw new BeditaBadRequestException('GET /objects/:id/contents does not support filter[object_type] section value');
+            }
         }
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $result = $this->responseChildren($id, array(
