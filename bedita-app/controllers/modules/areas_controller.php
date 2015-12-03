@@ -297,8 +297,8 @@ class AreasController extends ModulesController {
         if (!empty($formData['options'])) {
             $options = array_merge($options,$formData['options']);
         }
-        ini_set('max_execution_time', 300); // 5 minutes
-        $result = $filterModel->export($objects, $options);
+        ini_set('max_execution_time', 600); // 10 minutes
+        $result = @$filterModel->export($objects, $options);
 
         Configure::write('debug', 0);
         // TODO: optimizations!!! use cake tools

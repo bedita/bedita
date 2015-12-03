@@ -11,6 +11,8 @@
 
 {$view->element('form_geotag')}
 
+{$view->element('form_export')}
+
 {$view->element('form_assoc_objects',['object_type_id' => {$conf->objectTypes.section.id}])}
 
 {$view->element('form_translations', ['object' => $object|default:null])}
