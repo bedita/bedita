@@ -76,7 +76,7 @@ class YoutubeHelper extends AppHelper implements MediaProviderInterface {
             $attributes['height'] = $this->conf->media_providers['youtube']['params']['height'];
         }
 
-        $url = rawurlencode($obj['uri']);
+        $url = $obj['uri'];
         $url .= '&format=json&maxwidth=' . $attributes['width'] . '&maxheight=' . $attributes['height'];
         $url = sprintf($this->conf->media_providers['youtube']['params']['urlembed'], $url);
         if (!$oEmbed = $this->oEmbedInfo($url)) {

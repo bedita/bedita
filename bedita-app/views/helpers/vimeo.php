@@ -53,7 +53,9 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
      */
     public function thumbnail(array $obj, array $htmlAttributes, $URLonly) {
         $url = rawurlencode($obj['uri']);
-        if (!$oEmbed = $this->oEmbedVideo($url)) {
+        $vimeoParams = Configure::read('media_providers.vimeo.params');
+        $url = sprintf($vimeoParams['urlembed'], $url);
+        if (!$oEmbed = $this->oEmbedInfo($url)) {
             return false;
         }
         $src = $oEmbed['thumbnail_url'];
@@ -69,7 +71,7 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
      */
     public function embed(array $obj, array $attributes) {
         $conf = Configure::getInstance();
-        $url = rawurlencode($obj['uri']);
+        $url = $obj['uri'];
         if (empty($attributes['width']) && empty($attributes['height'])) {
             $attributes['width'] = $conf->media_providers['vimeo']['params']['width'];
             $attributes['height'] = $conf->media_providers['vimeo']['params']['height'];
@@ -82,7 +84,6 @@ class VimeoHelper extends AppHelper implements MediaProviderInterface {
         if (!$oEmbed = $this->oEmbedInfo($url)) {
             return false;
         }
-
         return $oEmbed['html'] ;
     }
 
