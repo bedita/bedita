@@ -27,6 +27,19 @@ class XmlExportFilter extends BeditaExportFilter
 {
     protected $typeName = "BE-Xml";
     protected $mimeTypes = array("text/xml", "application/xml");
+    public $options = array(
+        'extension' => array(
+            'label' => 'Extension',
+            'dataType' => 'options', // number|date|text|options
+            'values' => array(
+                'xml' => 'xml'
+            ),
+            'defaultValue' => 'xml', //
+            'mandatory' => false,
+            'multipleChoice' => false,
+            'visible' => 'n'
+        )
+    );
 
     /**
      * Export objects in XML format

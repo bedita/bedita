@@ -28,7 +28,19 @@ class JsonExportFilter extends BeditaExportFilter
     protected $typeName = 'BE-Json';
     protected $mimeTypes = array('text/json', 'application/json');
     public $label = 'JSON data';
-    public $options = array();
+    public $options = array(
+        'extension' => array(
+            'label' => 'Extension',
+            'dataType' => 'options', // number|date|text|options
+            'values' => array(
+                'json' => 'json'
+            ),
+            'defaultValue' => 'json', //
+            'mandatory' => false,
+            'multipleChoice' => false,
+            'visible' => 'n'
+        )
+    );
 
     /**
      * Export objects in JSON format

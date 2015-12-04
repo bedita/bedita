@@ -12,6 +12,16 @@
             $('#data-options>div').hide();
             $('#' + sel + '-options').show();
             console.log(sel);
+            var exportFileNameBase = $('#exportFileName').val();
+            if (exportFileNameBase.lastIndexOf('.') > 0) {
+                exportFileNameBase = exportFileNameBase.substr(0,exportFileNameBase.lastIndexOf('.'));
+                $('#exportFileName').attr('value',exportFileNameBase);
+            }
+            $('.' + sel).each(function(){
+                if ($(this).attr('name') == 'data[options][extension]') {
+                    $('#exportFileName').attr('value',exportFileNameBase + '.' + $(this).val());
+                }
+            });
         });
         $.datepicker.setDefaults({
                 speed: 'fast', 
@@ -80,7 +90,8 @@
             {if !empty($filter.options)}
 
                 {foreach $filter.options as $optionName => $option}
-                <div class="filter-option">
+
+                <div class="filter-option" {if !empty($option.visible) && ($option.visible == 'n')}style="display:none;"{/if}>
                     <p>{$option.label|default:$optionName}:</p>
 
                     {if $option.dataType == 'boolean'}
@@ -137,6 +148,7 @@
                         </select>
                     {/if}
                 </div>
+
                 {/foreach}
             {/if}
 
