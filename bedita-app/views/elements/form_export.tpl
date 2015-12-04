@@ -29,8 +29,16 @@
         );
         $("input.dateinput").datepicker();
         $('#doExport').click(function(){
-            $('#updateForm').attr('action','{$html->url('/areas/export')}');
-            $('#updateForm').submit();
+            var sel = $(".export-type input[type='radio']:checked").val();
+            if (sel) {
+                $('.exportoption').each(function(){
+                    if (!($(this).hasClass(sel))) {
+                        $(this).remove();
+                    }
+                });
+                $('#updateForm').attr('action','{$html->url('/areas/export')}');
+                $('#updateForm').submit();
+            }
         });
     });
 </script>
@@ -45,7 +53,7 @@
                 <ul>
                     {foreach $export_filters as $filterType => $filter}
                     <li>
-                        <input name="data[type]" type="radio" value="{$filterType}" id="exportType" class="export-type">
+                        <input name="data[type]" type="radio" value="{$filterType}" class="export-type">
                         <label for="select-{$filterType}">{$filter.label|default:$filterType}</label> ({$filterType}) &nbsp;
                     </li>
                     {/foreach}
@@ -54,7 +62,7 @@
 
             <div class="export-file" style="padding-top:10px;padding-bottom:10px;">
                 {t}File{/t}:
-                <input type="text" name="data[filename]" value="bedita_export_{$object.id|default:''}" id="exportFileName">
+                <input type="text" name="data[filename]" value="{$object.nickname|default:'bedita_export_'}" id="exportFileName" size="40">
             </div>
 
             <div class="export-button-container">
@@ -77,25 +85,25 @@
 
                     {if $option.dataType == 'boolean'}
 
-                        <input type="checkbox" name="data[options][{$optionName}]" value="{$optionName}" id="{$optionName}" {if !empty($option.defaultValue)}checked="checked"{/if} class="exportoption">
+                        <input type="checkbox" name="data[options][{$optionName}]" value="{$optionName}" id="{$optionName}" {if !empty($option.defaultValue)}checked="checked"{/if} class="exportoption {$filterType}">
 
                     {elseif $option.dataType == 'date'}
 
-                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{if !empty($option.defaultValue)}{$option.defaultValue|date_format:$conf->datePattern}{/if}" size="10" class="dateinput exportoption" />
+                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{if !empty($option.defaultValue)}{$option.defaultValue|date_format:$conf->datePattern}{/if}" size="10" class="dateinput exportoption {$filterType}" />
 
                     {elseif $option.dataType == 'number'}
 
-                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="12" class="numberinput exportoption" />
+                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="12" class="numberinput exportoption {$filterType}" />
 
                     {elseif $option.dataType == 'text'}
 
-                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="40" class="textinput exportoption" />
+                        <input type="text" name="data[options][{$optionName}]" id="{$optionName}" value="{$option.defaultValue|default:''}" size="40" class="textinput exportoption {$filterType}" />
 
                     {elseif $option.dataType == 'options'}
 
                         {* if number of options is > 3 use a select *}
                         {if count($option.values) > 3}
-                            <select name="data[options][{$optionName}]" {if !empty($option.multipleChoice)}multiple{/if} class="exportoption">
+                            <select name="data[options][{$optionName}]" {if !empty($option.multipleChoice)}multiple{/if} class="exportoption {$filterType}">
                                 {if empty($option.mandatory)}
                                     <option>--</option>
                                 {/if}
@@ -109,7 +117,7 @@
                                 <li>
                                     <input type="{if !empty($option.multipleChoice)}checkbox{else}radio{/if}"
                                         name="data[options][{$optionName}]" value="{$optionValue}" id="{$optionName}-{$optionValue}"
-                                        {if !empty($option.defaultValue) && ($option.defaultValue == $optionValue)}checked="checked"{/if} class="exportoption">
+                                        {if !empty($option.defaultValue) && ($option.defaultValue == $optionValue)}checked="checked"{/if} class="exportoption {$filterType}">
                                     <label for="{$optionName}-{$optionValue}">{$optionLabel}</label>
                                 </li>
                                 {/foreach}
@@ -117,7 +125,7 @@
                         {/if}
 
                     {elseif $option.dataType == 'tree'}
-                        <select id="areaSectionAssoc" class="areaSectionAssociation exportoption" name="data[parent_id]" {if !empty($option.multipleChoice)}multiple{/if}>
+                        <select id="areaSectionAssoc" class="areaSectionAssociation exportoption {$filterType}" name="data[parent_id]" {if !empty($option.multipleChoice)}multiple{/if}>
                             {if empty($option.mandatory)}
                                 <option>--</option>
                             {/if}
