@@ -1636,12 +1636,18 @@ abstract class ModulesController extends AppController {
                     if (!empty($filterModel->options)) {
                         $ff[$className]['options'] = $filterModel->options;
                     }
+                    if (!empty($filterModel->defaultExtension)) {
+                        $ff[$className]['defaultExtension'] = $filterModel->defaultExtension;
+                    }
                 }
                 if (empty($ff[$className]['label'])) {
                     $ff[$className]['label'] = $filter;
                 }
                 if (empty($ff[$className]['options'])) {
                     $ff[$className]['options'] = array();
+                }
+                if (empty($ff[$className]['defaultExtension'])) {
+                    $ff[$className]['defaultExtension'] = '';
                 }
             }
         }

@@ -15,11 +15,11 @@
             var exportFileNameBase = $('#exportFileName').val();
             if (exportFileNameBase.lastIndexOf('.') > 0) {
                 exportFileNameBase = exportFileNameBase.substr(0,exportFileNameBase.lastIndexOf('.'));
-                $('#exportFileName').attr('value',exportFileNameBase);
+                $('#exportFileName').val(exportFileNameBase);
             }
             $('.' + sel).each(function(){
-                if ($(this).attr('name') == 'data[options][extension]') {
-                    $('#exportFileName').attr('value',exportFileNameBase + '.' + $(this).val());
+                if ($(this).attr('name') == 'data[options][defaultExtension]') {
+                    $('#exportFileName').val(exportFileNameBase + '.' + $(this).val());
                 }
             });
         });
@@ -87,11 +87,13 @@
             {foreach $export_filters as $filterType => $filter}
             <div id="{$filterType}-options" style="display: none;margin-top:10px;">
 
+            <input type="hidden" name="data[options][defaultExtension]" value="{$filter.defaultExtension|default:''}" class="{$filterType}"/>
             {if !empty($filter.options)}
 
                 {foreach $filter.options as $optionName => $option}
 
                 <div class="filter-option" {if !empty($option.visible) && ($option.visible == 'n')}style="display:none;"{/if}>
+
                     <p>{$option.label|default:$optionName}:</p>
 
                     {if $option.dataType == 'boolean'}
