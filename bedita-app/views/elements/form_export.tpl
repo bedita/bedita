@@ -48,7 +48,7 @@
 <fieldset id="export">
 
     <div class="mainhalf" style="width:49%; margin-right:2%;">
-        <fieldset id="data-source">
+        <fieldset id="data-source" class="ignore">
             <div class="export-type">
                 <ul>
                     {foreach $export_filters as $filterType => $filter}
@@ -73,7 +73,7 @@
 
     <div class="mainhalf" style="width:49%; margin-right:0;">
 
-        <fieldset id="data-options">
+        <fieldset id="data-options" class="ignore">
             {foreach $export_filters as $filterType => $filter}
             <div id="{$filterType}-options" style="display: none;margin-top:10px;">
 
