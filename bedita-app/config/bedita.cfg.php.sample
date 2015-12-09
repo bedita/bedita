@@ -301,7 +301,7 @@ $config['mediaUrl'] = $config['beditaUrl'] . '/files';
  * if you want to use another config you have to define one named 'objects' in core.php of backend and frontends.
  * The custom config has to be the same for backend and frontend.
  */
-// $config['objectCakeCache'] = true;
+$config['objectCakeCache'] = true;
 
 /**
  * Revision control systems config
