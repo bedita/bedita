@@ -37,7 +37,6 @@ class XmlExportFilter extends BeditaExportFilter
      * @param array $options Export options
      * @return array
      * @see DataTransfer::export()
-     * @deprecated
      */
     public function export(array $objects, array $options = array()) {
         $tmpDir = TMP . 'xml' . DS . md5(time());
@@ -60,7 +59,9 @@ class XmlExportFilter extends BeditaExportFilter
         $options['returnType'] = 'XML';
         $options['no-media'] = true;
         $options['all'] = false;
-        $options['logLevel'] = 3; // DEBUG
+        if(Configure::read('debug') > 0) {
+            $options['logLevel'] = 3; // DEBUG
+        }
         // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $content = $dataTransfer->export($objects, $options);

@@ -60,7 +60,9 @@ class JsonExportFilter extends BeditaExportFilter
         $options['returnType'] = 'JSON';
         $options['no-media'] = true;
         $options['all'] = false;
-        $options['logLevel'] = 3; // DEBUG
+        if(Configure::read('debug') > 0) {
+            $options['logLevel'] = 3; // DEBUG
+        }
         // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
         $content = $dataTransfer->export($objects, $options);
