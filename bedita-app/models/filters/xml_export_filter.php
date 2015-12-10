@@ -40,14 +40,41 @@ class XmlExportFilter extends BeditaExportFilter
      * @deprecated
      */
     public function export(array $objects, array $options = array()) {
+        $tmpDir = TMP . 'xml' . DS . md5(time());
+        if(!is_dir($tmpDir)) {
+            if(!is_dir(TMP . 'xml')) {
+                if(@mkdir(TMP . 'xml', 0755, true) === false) {
+                    throw new BeditaException("Unable to create TMP xml dir");
+                }
+            }
+            if(@mkdir($tmpDir, 0755, true) === false) {
+                throw new BeditaException("Unable to create $tmpDir");
+            }
+        }
+        $fileName = $tmpDir . DS . $options['filename'];
+        if (!strrpos($options['filename'],'.xml') || strrpos($options['filename'],'.xml') === (strlen($options['filename'])-3)) {
+            $fileName.= '.xml';
+        }
+        // export options
+        $options['filename'] = $fileName;
         $options['returnType'] = 'XML';
-        $DataTransfer = ClassRegistry::init('DataTransfer');
-
+        $options['no-media'] = true;
+        $options['all'] = false;
+        $options['logLevel'] = 3; // DEBUG
+        // do export
+        $dataTransfer = ClassRegistry::init('DataTransfer');
+        $content = $dataTransfer->export($objects, $options);
+        // clean tmp dir
+        $folder = new Folder($tmpDir);
+        if (!$folder->delete($tmpDir)) {
+            $this->log('Error deleting temporary folder ' . $tmpDir,'error');
+        }
+        // return data
         $res = array();
-        $res['content'] = $DataTransfer->export($objects, $options);
+        $res['content'] = $content;
         $res['contentType'] = 'text/xml';
         $res['size'] = strlen($res['content']);
-        $res = array_merge($DataTransfer->getResult(), $res);
+        $res = array_merge($dataTransfer->getResult(), $res);
         return $res;
     }
 }

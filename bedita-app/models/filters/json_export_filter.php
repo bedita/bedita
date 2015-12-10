@@ -40,11 +40,38 @@ class JsonExportFilter extends BeditaExportFilter
      * @see DataTransfer::export()
      */
     public function export(array $objects, array $options = array()) {
+        $tmpDir = TMP . 'json' . DS . md5(time());
+        if(!is_dir($tmpDir)) {
+            if(!is_dir(TMP . 'json')) {
+                if(@mkdir(TMP . 'json', 0755, true) === false) {
+                    throw new BeditaException("Unable to create TMP json dir");
+                }
+            }
+            if(@mkdir($tmpDir, 0755, true) === false) {
+                throw new BeditaException("Unable to create $tmpDir");
+            }
+        }
+        $fileName = $tmpDir . DS . $options['filename'];
+        if (!strrpos($options['filename'],'.json') || strrpos($options['filename'],'.json') === (strlen($options['filename'])-4)) {
+            $fileName.= '.json';
+        }
+        // export options
+        $options['filename'] = $fileName;
         $options['returnType'] = 'JSON';
         $options['no-media'] = true;
+        $options['all'] = false;
+        $options['logLevel'] = 3; // DEBUG
+        // do export
         $dataTransfer = ClassRegistry::init('DataTransfer');
+        $content = $dataTransfer->export($objects, $options);
+        // clean tmp dir
+        $folder = new Folder($tmpDir);
+        if (!$folder->delete($tmpDir)) {
+            $this->log('Error deleting temporary folder ' . $tmpDir,'error');
+        }
+        // return data
         $res = array();
-        $res['content'] = $dataTransfer->export($objects, $options);
+        $res['content'] = $content;
         $res['contentType'] = 'text/json';
         $res['size'] = strlen($res['content']);
         $res = array_merge($dataTransfer->getResult(), $res);
