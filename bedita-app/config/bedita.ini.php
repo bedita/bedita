@@ -536,20 +536,6 @@ $config['media_providers'] = array(
 			"urlembed"	=> "http://www.youtube.com/oembed?url=%s"
 		)
 	),
-	"blip"	=> array(
-		"regexp" => array(
-			'/^http:\/\/\w{3}\.blip\.tv\/file\/(\d+)\?{0,1}.*/',
-			'/^http:\/\/blip\.tv\/file\/(\d+)\?{0,1}.*/',
-			'/^http:\/\/blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/',
-			'/^http:\/\/w{3}\.blip\.tv\/[^"\&\?\/]+\/([^"\&\?\/]+)/'
-		),
-		"params" => array(
-			"width"		=> 300,
-			"height"	=> 250,
-			"urlinfo" 	=> "http://www.blip.tv/file/%s?skin=json&no_wrap=1",
-			"urlembed"	=> "http://blip.tv/oembed/?url=%sz"
-		)
-	),
 	"vimeo"	=> array(
 		"regexp" => array(
 			'/^http:\/\/\w{3}\.vimeo\.com\/(\d+)/',

@@ -20,16 +20,11 @@
  */
 
 /**
- * Upload component: common file, multimedia file, third party multimedia url (bliptv, vimeo, youtube, etc.)
+ * Upload component: common file, multimedia file, third party multimedia url (vimeo, youtube, etc.)
  *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class BeUploadToObjComponent extends Object {
-	var $components	= array('BeFileHandler', 'BeBlip', 'BeVimeo', 'BeYoutube') ;
+	var $components	= array('BeFileHandler', 'BeVimeo', 'BeYoutube') ;
 
 	function startup(&$controller) {
 		$this->params = &$controller->params;

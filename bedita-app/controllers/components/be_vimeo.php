@@ -20,14 +20,7 @@
  */
 
 /**
- * Blip TV media component
- *  
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
+ * Vimeo component
  */
 class BeVimeoComponent extends Object {
 	var $controller	;

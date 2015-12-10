@@ -30,8 +30,8 @@ class AppHelper extends Helper {
     /**
      * try to get from the registry the helper instance. Eventually instance a new helper object ant put
      * it in the registry
-     * @param $name, helper name without suffix Helper (i.e. BlipHelper => $name=Blip)
-     * @return $nameHelper instance  
+     * @param $name, helper name without suffix Helper (i.e. GravatarHelper => $name=Gravatar)
+     * @return $nameHelper instance
      */
     public function getHelper($name) {
         $helper = $name . 'Helper';

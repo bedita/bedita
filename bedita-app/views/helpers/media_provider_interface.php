@@ -20,7 +20,7 @@
  */
 
 /**
- * interface used by media provider helper as (youtube, vimeo, blip.tv)
+ * interface used by media provider helper as (youtube, vimeo, ...)
  */
 interface MediaProviderInterface {
 
