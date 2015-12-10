@@ -245,7 +245,7 @@ class DataTransfer extends BEAppModel
                     if ($rootObjType == 'area') {
                         $this->saveArea($rootData);
                     } else if ($rootObjType == 'section') {
-                        $parentId = $options['section_root_id'];
+                        $parentId = $options['parentId'];
                         $this->saveSection($rootData, $parentId);
                     }
                 }
@@ -299,7 +299,11 @@ class DataTransfer extends BEAppModel
             foreach ($this->import['source']['data']['objects'] as &$object) {
                 if (!empty($object['parents'])) {
                     foreach ($object['parents'] as $parent) {
-                        $orderedObjects[$object['id']] = str_pad($parent['id'], 20, '0', STR_PAD_LEFT) . '-' . str_pad($parent['priority'], 20, '0', STR_PAD_LEFT);
+                        if (!empty($parent['priority'])) {
+                            $orderedObjects[$object['id']] = str_pad($parent['id'], 20, '0', STR_PAD_LEFT) . '-' . str_pad($parent['priority'], 20, '0', STR_PAD_LEFT);
+                        } else {
+                            $orderedObjects[$object['id']] = str_pad($parent['id'], 20, '0', STR_PAD_LEFT) . '-' . str_pad(0, 20, '0', STR_PAD_LEFT);
+                        }
                     }
                 } else {
                     $orderedObjects[$object['id']] = str_pad($counter++, 25, '0', STR_PAD_LEFT) . '-' . str_pad('0', 25, '0', STR_PAD_LEFT);
@@ -1002,8 +1006,8 @@ class DataTransfer extends BEAppModel
                 if ($rootObjType != 'area' && $rootObjType != 'section') {
                     throw new BeditaException('root object type [' . $rootObjType . '] not valid: must be area or section');
                 } else if ($rootObjType == 'section') {
-                    if (empty($options['section_root_id'])) {
-                        throw new BeditaException('missing $options[section_root_id] for root section');
+                    if (empty($options['parentId'])) {
+                        throw new BeditaException('missing $options[parentId] for root section');
                     }
                 }
             }
@@ -1536,11 +1540,13 @@ class DataTransfer extends BEAppModel
 
             foreach ($this->import['treeLevels']['level-' . $level] as $parent => $data) {
                 $orderByPriority = false;
-                foreach ($this->import['source']['data']['tree']['sections'] as $section) {
-                    if ($section['parent'] == $parent) {
-                        $this->import['treeLevels']['level-' . $nextLevel][$section['id']] = $section;
-                        if (!empty($section['priority'])) {
-                            $orderByPriority = true;
+                if (!empty($this->import['source']['data']['tree']['sections'])) {
+                    foreach ($this->import['source']['data']['tree']['sections'] as $section) {
+                        if ($section['parent'] == $parent) {
+                            $this->import['treeLevels']['level-' . $nextLevel][$section['id']] = $section;
+                            if (!empty($section['priority'])) {
+                                $orderByPriority = true;
+                            }
                         }
                     }
                 }
