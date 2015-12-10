@@ -1789,11 +1789,36 @@ class DataTransfer extends BEAppModel
                 ),
                 'conditions' => array(
                     'Tree.id' => $objId,
-                    'Tree.area_id' => $rootIds
+                    'Tree.parent_id' => $rootIds
                 )
             )
         );
         $result = array();
+        if (!empty($parents)) {
+            foreach ($parents as $k => $v) {
+                $r = array(
+                    'id' => $v['Tree']['parent_id'],
+                    'priority' => $v['Tree']['priority']
+                );
+                if ($v['Tree']['menu'] != 0) {
+                    $r['menu'] = $v['Tree']['menu'];
+                }
+                $result[] = $r;
+            }
+        }
+        $parents = $tree->find('all',
+            array(
+                'fields' => array(
+                    'parent_id',
+                    'priority',
+                    'menu'
+                ),
+                'conditions' => array(
+                    'Tree.id' => $objId,
+                    'Tree.area_id' => $rootIds
+                )
+            )
+        );
         if (!empty($parents)) {
             foreach ($parents as $k => $v) {
                 $r = array(
