@@ -672,8 +672,8 @@ class DataTransfer extends BEAppModel
                 }
             }
             if ($this->export['returnType'] === 'JSON') {
-                if (phpversion() >= '5.4') {
-                    $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY'], JSON_PRETTY_PRINT);
+                if (phpversion() >= '5.4') { // JSON_NUMERIC_CHECK from php 5.3.3
+                    $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY'], JSON_PRETTY_PRINT | JSON_NUMERIC_CHECK);
                 } else {
                     $this->export['destination']['byType']['JSON'] = json_encode($this->export['destination']['byType']['ARRAY']);
                 }
