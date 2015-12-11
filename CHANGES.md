@@ -1,5 +1,56 @@
 # ChangeLog
 
+## Version 3.7.0 - Corylus
+
+### User-visible changes
+
+* [#771](https://github.com/bedita/bedita/issues/771) publications: new data export
+* [#758](https://github.com/bedita/bedita/issues/758) CKEditor "autocorrect" plugin default enabled
+* [#745](https://github.com/bedita/bedita/issues/745) Calendar view in Events
+* truncate more content from custom properties in list view
+* Multimedia module: avoid notice saving in some situations
+* show details on plugin schema conflict error
+
+### Frontend changes
+
+* [#751](https://github.com/bedita/bedita/issues/751) Frontend language requires double-load to change
+* [#748](https://github.com/bedita/bedita/issues/748) frontend: error in search if no filters are used
+
+### Developer-visible changes
+
+* [#764](https://github.com/bedita/bedita/issues/764) CKEditor improve local configuration
+* [#757](https://github.com/bedita/bedita/issues/757) [API] "Error: object type not found" when `frontendAreaId` object does not exists
+* [#773](https://github.com/bedita/bedita/issues/773) Blip.tv is dead. We should remove all references to it
+* [#775](https://github.com/bedita/bedita/issues/775) JSON_NUMERIC_CHECK in json_encode for export
+* [#774](https://github.com/bedita/bedita/issues/774) data JSON section export: missing parents
+* [#772](https://github.com/bedita/bedita/issues/772) data JSON import - choose destination id
+* [#771](https://github.com/bedita/bedita/issues/771) publications: new data export
+* [#741](https://github.com/bedita/bedita/issues/741) [API] POST /objects save data but it responds with 405 Method Not Allowed
+* [#744](https://github.com/bedita/bedita/issues/744) [API] introduce search and type filter in /objects endpoint
+* [#749](https://github.com/bedita/bedita/issues/749) [API] improve ISO-8601 support on date format
+* [#761](https://github.com/bedita/bedita/issues/761) [API] Save custom properties
+* [#762](https://github.com/bedita/bedita/issues/762) [API] Missing formatting of custom properties
+* [#763](https://github.com/bedita/bedita/issues/763) [API] Show all custom properties getting objects
+* [#765](https://github.com/bedita/bedita/issues/765) [API] add filter by object ids getting a collection of objects
+* [#767](https://github.com/bedita/bedita/issues/767) [API] single /poster call on multiple objects
+* [#768](https://github.com/bedita/bedita/issues/768) [API] implement a query string to get object relations detail
+* [#670](https://github.com/bedita/bedita/issues/670) Managing dateItems before 1000 AD
+* [#481](https://github.com/bedita/bedita/issues/481) allow other module config file load - other than conifg_local.php
+* [#764](https://github.com/bedita/bedita/issues/764) CKEditor improve local configuration
+* [#755](https://github.com/bedita/bedita/issues/755) Bedita CMS 3.6.0 – Publication Module Bug Report
+* [#747](https://github.com/bedita/bedita/issues/747) BEdita web wizard setup creates core.php with errors
+* [#743](https://github.com/bedita/bedita/issues/743) related, when tags module is disabled there was a minor issue saving multimedia objects
+* [#746](https://github.com/bedita/bedita/issues/746) Redis support
+* [#740](https://github.com/bedita/bedita/issues/740) CallbackBehavior fails to add two or more behavior to the same object
+* [#766](https://github.com/bedita/bedita/issues/766) create gravatar helper
+* 'objectCakeCache' config default is true
+* [API] fix wrong query string formatting if no ',' was present
+* [API] less restrictive related_id and child_id check
+* [API] improve 'Access-Control-Allow-Headers' using env()
+* [API] improve ApiAuthComponent::getToken(), only Bearer token are valid
+* import Folder class always (avoid 'class not found' errors)
+
+
 ## Version 3.6.0 - Corylus
 
 ### User-visible changes
