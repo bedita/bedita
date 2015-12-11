@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-11-13 17:20:40\n"
+"POT-Creation-Date: 2015-12-11 10:40:01\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1425,6 +1425,9 @@ msgid ""
 msgstr ""
 "Utente con privilegi di accesso non trovato oppure si sta utilizzando un "
 "servizio d'autenticazione esterno"
+
+msgid "No valid export filename has been selected"
+msgstr "Nessun nome di file valido è stato selezionato"
 
 msgid "No valid export filter has been selected"
 msgstr "Nessun filtro di esportazione è stato selezionato"

@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-11-13 17:37:24\n"
+"POT-Creation-Date: 2015-12-11 10:41:45\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1381,6 +1381,9 @@ msgid "No user data"
 msgstr ""
 
 msgid "No user with access privileges found or user uses an external authentication"
+msgstr ""
+
+msgid "No valid export filename has been selected"
 msgstr ""
 
 msgid "No valid export filter has been selected"
