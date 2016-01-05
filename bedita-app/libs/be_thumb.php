@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2013 ChannelWeb Srl, Chialab Srl
+ * Copyright 2013-2015 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -23,21 +23,21 @@
  * Thumbnail utilities class
  */
 class BeThumb {
+    
+    // supported image types, "mime type" => "img type for internal use"
+    private $supportedTypes = array(
+        'image/gif' => 'gif',
+        'image/jpeg' => 'jpg',
+        'image/pjpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/svg+xml' => 'svg'
+    );
 
-	// supported image types,  "mime type" => "img type for internal use"
-	private $supportedTypes = array(
-					"image/gif" => "gif", 
-					"image/jpeg" => "jpg", 
-					"image/pjpeg" => "jpg",
-					"image/png" => "png",
-					"image/svg+xml" => "svg",
-	);
-	
 	/**
 	 * Source image data
 	 * @var array
 	 */
-	private $imageInfo   = array();
+    private $imageInfo = array();
 
 
 	/**
@@ -84,50 +84,49 @@ class BeThumb {
 		return PhpThumbFactory::getValidImplementations();
 	}
 
+    /**
+     * Reset internal arrays
+     */
+    private function reset() {
+        $this->imageInfo = array(
+            'filename' => '', // filename
+            'filenameBase' => '', // filename without extension
+            'ext' => '', // file extension
+            'path' => '', // relative path, included file
+            'filepath' => '', // absolute file path
+            'cachePath' => '', // relative cache dir path
+            'cacheDirectory' => '', // absolute cache dir path
+            'filesize' => '',
+            'w' => '',
+            'h' => '',
+            'orientation' => '',
+            'type' => '', // 'gif', 'jpg', 'png', 'jpeg', 'svg'
+            'mime_type' => '',
+            'animated' => false,
+        );
+
+        $this->imageTarget = array(
+            'filename' => '',
+            'filepath' => '',
+            'uri' => '',
+            'w' => '',
+            'h' => '',
+            'offsetx' => 0,
+            'offsety' => 0,
+            'type' => '', // 'gif', 'jpg', 'png', 'jpeg', 'svg'
+            'mode' => '',
+            'fillcolor' => '',
+            'cropmode' => '',
+            'upscale' => false,
+            'q' => 95,
+            'interlace' => false
+        );
+    }
+
 	/**
-	 * Reset internal arrays
-	 */
-	private function reset() {
-		
-		$this->imageInfo = array (
-				"filename"		=> "", // filename 
-				"filenameBase"	=> "", // filename without extension
-				"ext"			=> "", // file extension
-				"path"			=> "", // relative path, included file
-				"filepath"		=> "", // absolute file path
-				"cachePath"		=> "", // relative cache dir path
-				"cacheDirectory" => "",// absolute cache dir path
-				
-				"filesize"		=> "",
-				"w"				=> "",
-				"h"				=> "",
-				"orientation"	=> "",
-				"type"			=> "", // "gif", "jpg", "png", "jpeg", "svg"
-				"mime_type"		=> "",
-		);
-	
-		$this->imageTarget = array (
-				"filename"		=> "",
-				"filepath"		=> "",
-				"uri"			=> "",
-				"w"				=> "",
-				"h"				=> "",
-				"offsetx"		=> 0,
-				"offsety"		=> 0,
-				"type"			=> "", // "gif", "jpg", "png", "jpeg", "svg"
-				"mode"			=> "",
-				"fillcolor"		=> "",
-				"cropmode"		=> "",
-				"upscale"		=> false,
-                'q' => 95,
-                'interlace' => false,
-		);
-	
-	}
-	
-	
-	/**
-	 * image public method: embed an image after resample and cache
+	 * Returns image URI after resample (thumbnail version of the input image data provided)
+	 * Creates thumbnail image in $config['mediaRoot']/cache dir if thumb not created or outdated
+	 * If a cache configuration 'thumbs' is found presence check is done through cache and not on filesystem (S3 optimization)
 	 *
 	 * @param: array $data, required, source image data (may be BE media object or other source) - required "uri"
 	 * @param: array $params
@@ -164,49 +163,69 @@ class BeThumb {
 	 *         watermark, optional: [array: 'text', 'font', 'fontSize', 'textColor', 'background', 'file', 'align', 'opacity' ]
      *         add simple watermark to image, the missing parameters are replaced with the defaults in bedita.ini (['image']['wmi']* )
 	 *
+	 * @param: boolean $skipCheck, if true don't perform thumbnail presence check and creation but returns URL immediately
+	 * 
 	 *
 	 * @return: string, resampled and cached image URI (using $html helper)
 	 *
 	 */
-	public function image($data, $params = array()) {
-		$this->reset();
+    public function image($data, $params = array(), $skipCheck = false) {
+        $this->reset();
 
-        // Setup internal `imageInfo` array and perform basic filesize checks.
+        // Setup internal `imageInfo` path and remote flags
         if (!$this->setupImagePath($data)) {
             return $this->imgMissingFile;
         }
         if (!empty($data['file_size']) && $this->isExceedingSize($data['file_size'])) {
             return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
         }
+        // #769 - avoid file access
         if (!$this->setupImageInfo($data)) {
             return (!empty($data['error']) && $data['error'] == 'unsupported') ? $this->imgUnsupported : $this->imgMissingFile;
         }
 
         // If image is of type SVG or animated GIF skip any elaboration and return original image.
-        if ($data['mime_type'] === 'image/svg+xml' || $this->isAnimatedGif()) {
+        if ($data['mime_type'] === 'image/svg+xml' || $this->imageInfo['animated']) {
             return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
         }
 
-		// test source file available
-		if (!$this->imageInfo["remote"] && !$this->checkSourceFile()) {
-			return $this->imgMissingFile;
-		}
-
-		// setup internal image target array
-		$this->setupImageTarget($params);
-
-        // Manage cache and resample if caching option is `true` and the image it's not already cached.
-        $cacheExists = file_exists($this->imageTarget['filepath']);
-        if (!$cacheExists && $this->imageTarget['type'] != 'svg' && !$this->isAnimatedGif() && !$this->resample()) {
-            return $this->imgMissingFile;
+        // test source file available
+        // #769 - avoid file access
+        if (!$this->imageInfo['remote'] && empty($this->imageInfo['cache']['info'])) {
+            if (!$this->checkSourceFile()) {
+                return $this->imgMissingFile;
+            }
         }
 
-		// return HTML <img> tag
-		return $this->imageTarget['uri'];
-	}
+        // setup internal image target array (uses $this->imageInfo) 
+        $this->setupImageTarget($params);
+
+        // #769 - avoid file access
+        $checkThumb = ($this->imageTarget['type'] != 'svg' && !$this->imageInfo['animated']);
+        if ($checkThumb) {
+            $cacheExists = false;
+            $cacheItem = $this->imageInfo['cachePath'] . DS . $this->imageTarget['filename'];
+            if (!empty($this->imageInfo['cache']['thumbs'])) {
+                if (in_array($cacheItem, $this->imageInfo['cache']['thumbs'])) {
+                    $cacheExists = true;
+                }
+            }
+            if (!$cacheExists) {
+                if (!file_exists($this->imageTarget['filepath'])) {
+                    if (!$this->resample()) {
+                        return $this->imgMissingFile;
+                    }
+                }
+                $this->storeCacheThumbnail($cacheItem);
+            }
+        }
+
+        // return HTML <img> tag
+        return $this->imageTarget['uri'];
+    }
 
     /**
-     * Setup image path.
+     * Setup source image path and remote flag
      *
      * @param array $data
      * @return bool Success.
@@ -278,31 +297,35 @@ class BeThumb {
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
 		$this->imageInfo['cacheDirectory'] = $mediaRoot . $this->imageInfo['cachePath'];
-		if (!$this->checkCacheDirectory()) {
-			$this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
-	        $data['error'] = 'fileSys';
-			return false;
-		}
-		
-		$cacheData = $this->readCacheImageInfo();
-		$data = array_merge($data, $cacheData);
-		
-		// check mime type
-		if (empty($data['mime_type'])) {
-			$data['mime_type'] = $this->mimeTypeByExtension($this->imageInfo['ext']);
-		}
-		if (!in_array($data["mime_type"], array_keys($this->supportedTypes))) {
-			$this->triggerError("'" . $data['uri'] . "' mime type not supported: " . $data['mime_type']);
-	        $data['error'] = 'unsupported';
-			return false;
-		}
-		$this->imageInfo['mime_type'] = $data['mime_type'];
-		$this->imageInfo['type'] = $this->supportedTypes[$data['mime_type']];		
 
-		// if SVG skip thumbnail and other info
-		if ($data['mime_type'] === 'image/svg+xml') { 
-			return true;
-		}
+        // #769 - avoid file access / read from cache
+        $cacheData = $this->readCacheImageInfo();
+        if (empty($cacheData)) {
+            // check directory and create if not found
+            if (!$this->checkCacheDirectory()) {
+                $this->triggerError("Error creating/reading cache directory " . $this->imageInfo['cacheDirectory']);
+                $data['error'] = 'fileSys';
+                return false;
+            }
+        }
+        $data = array_merge($data, $cacheData);
+
+        // check mime type
+        if (empty($data['mime_type'])) {
+            $data['mime_type'] = $this->mimeTypeByExtension($this->imageInfo['ext']);
+        }
+        if (!in_array($data['mime_type'], array_keys($this->supportedTypes))) {
+            $this->triggerError("'" . $data['uri'] . "' mime type not supported: " . $data['mime_type']);
+            $data['error'] = 'unsupported';
+            return false;
+        }
+        $this->imageInfo['mime_type'] = $data['mime_type'];
+        $this->imageInfo['type'] = $this->supportedTypes[$data['mime_type']];		
+
+        // if SVG skip thumbnail and other info
+        if ($data['mime_type'] === 'image/svg+xml') { 
+            return true;
+        }
 
 		if (empty($data['width']) || empty($data['height']) ) {
 
@@ -327,18 +350,27 @@ class BeThumb {
 			}
 			$this->imageInfo['type'] = $types[$imageData[2]];
 			$this->imageInfo['mime_type'] = $imageData['mime'];
-			$this->storeCacheImageInfo();
 				
 		} else {
 
 			$this->imageInfo['w'] = $data['width'];
 			$this->imageInfo['h'] = $data['height'];
 		}
-		
-		return true;
-	}
 
-	
+        // check if it's an animated gif
+        if (!isset($data['animated'])) {
+            $this->imageInfo['animated'] = $this->isAnimatedGif();
+        } else {
+            $this->imageInfo['animated'] = $data['animated'];
+        }
+
+        if (empty($cacheData)) {
+            $this->storeCacheImageInfo();
+        }
+
+        return true;
+    }
+
 	/**
 	 * Get image file path, get cached local copy behind a proxy 
 	 */
@@ -388,52 +420,87 @@ class BeThumb {
         }
         return $path;
     }
-	
-	/**
-	 * Read cached img info, if present 
-	 * @return array
-	 */
-	private function readCacheImageInfo() {
-		$res = array();
-		$imgInfoFile = $this->cacheImageInfoFilePath();
-		if(file_exists($imgInfoFile)) {
-			$cacheData = file_get_contents($imgInfoFile);
-			$res = unserialize($cacheData);
-		}
-		return $res;
-	}
-	
-	/**
-	 * Store img info in cache file
-	 */
-	private function storeCacheImageInfo() {
-		$imgInfoFile = $this->cacheImageInfoFilePath();
-		if(!file_exists($imgInfoFile)) {
-			$imgData = array( 
-				"width" => $this->imageInfo["w"],
-				"height" => $this->imageInfo["h"],
-				"type" => $this->imageInfo["type"],
-				"mime_type" => $this->imageInfo["mime_type"],
-			);
-			file_put_contents($imgInfoFile, serialize($imgData));
-		}
-	}
-	
-	/**
-	 * Setup internal imageInfo data array
+
+    /**
+     * Read cached img info, if present 
+    * @return array
+    */
+    private function readCacheImageInfo() {
+        $res = array();
+        if (!empty(Cache::settings('thumbs'))) {
+            $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
+            $this->imageInfo['cache'] = Cache::read($path, 'thumbs');
+            if (!empty($this->imageInfo['cache']['info'])) {
+                $res = $this->imageInfo['cache']['info'];
+            }
+        } else {
+            $imgInfoFile = $this->cacheImageInfoFilePath();
+            // #769 - avoid file access
+            if(file_exists($imgInfoFile)) {
+                $cacheData = file_get_contents($imgInfoFile);
+                $res = unserialize($cacheData);
+            }
+        }
+        return $res;
+    }
+
+    /**
+     * Store img info in cache (file or engine(
+     */
+    private function storeCacheImageInfo() {
+        $imgData = array(
+            'width' => $this->imageInfo['w'],
+            'height' => $this->imageInfo['h'],
+            'type' => $this->imageInfo['type'],
+            'mime_type' => $this->imageInfo['mime_type'],
+            'animated' => $this->imageInfo['animated']
+        );
+        if (!empty(Cache::settings('thumbs'))) {
+            $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
+            $this->imageInfo['cache'] = Cache::read($path, 'thumbs');
+            if (empty($this->imageInfo['cache']['info'])) {
+                $imgData['modified'] = 0;
+                if (!$this->imageInfo['remote']) {
+                    $imgData['modified'] = filemtime($this->imageInfo['filepath']);
+                }
+                $this->imageInfo['cache']['info'] = $imgData;
+                Cache::write($path, $this->imageInfo['cache'], 'thumbs');
+            }
+        } else {
+            $imgInfoFile = $this->cacheImageInfoFilePath();
+            if (!file_exists($imgInfoFile)) {
+                file_put_contents($imgInfoFile, serialize($imgData));
+            }
+        }
+    }
+
+    /**
+     * Store cache thumbnail item
+     */
+    private function storeCacheThumbnail($cacheItem) {
+        if (!empty($this->imageInfo['cache'])) {
+            $this->imageInfo['cache']['thumbs'][] = $cacheItem;
+            array_unique($this->imageInfo['cache']['thumbs']);
+            $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
+            Cache::write($path, $this->imageInfo['cache'], 'thumbs');
+        }
+    }
+
+    /**
+	 * Setup internal imageTarget data array, used in thumbnails creation
 	 * 
 	 */
 	private function setupImageTarget(array $params) {
-	    
+
 		// read params as an associative array or multiple variable
 		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
-				'cache', "watermark", 'quality', 'interlace');
+				'cache', 'watermark', 'quality', 'interlace');
 		extract ($params);
 
 		$imageConf = Configure::read('media.image');
 		
 		if (isset($watermark))	{
-			$this->imageTarget['watermark'] = array_merge($imageConf["watermark"], $watermark);
+			$this->imageTarget['watermark'] = array_merge($imageConf['watermark'], $watermark);
 		}
 		
 		// upscale
@@ -651,8 +718,9 @@ class BeThumb {
 	 *
 	 * @return boolean
 	 */
-	private function checkSourceFile() {
-		if(!file_exists($this->imageInfo['filepath']) ) {
+    private function checkSourceFile() {
+        // #769 - avoid file access
+	    if(!file_exists($this->imageInfo['filepath']) ) {
 			$this->triggerError("file '" . $this->imageInfo['filepath'] . "' does not exist");
 			return false;
 		} else if(!is_readable ($this->imageInfo['filepath'])) {
@@ -663,39 +731,42 @@ class BeThumb {
 		return true;
 	}
 
-	/**
-	 * Build target filename
-	 *
-	 * @return string
-	 */
-	private function targetFileName() {
-		// build hash on file path, modification time and mode
-		if($this->imageInfo["remote"]) {
-			$modified = 0;
-		} else {
-			$modified = filemtime ($this->imageInfo['filepath']);
-		}
-		
-		$wmString = "";
-		$wm = null;
-		if(isset($this->imageTarget["watermark"])) {
-			$wm = $this->imageTarget["watermark"];
-			$wmString = implode($wm);
-			unset($this->imageTarget["watermark"]);
-		}
-		$targetStr = implode($this->imageTarget) . $wmString;
-		if(!empty($wmString)) {
-			$this->imageTarget["watermark"] = $wm;
-		}
-		
-		$this->imageInfo['hash']  = md5 ( $this->imageInfo['filename'] . $modified . $targetStr);
+    /**
+     * Build target filename
+     *
+     * @return string
+     */
+    private function targetFileName() {
+        // build hash on file path, modification time and mode
+        if ($this->imageInfo['remote']) {
+            $modified = 0;
+        } else {
+            if (!empty($this->imageInfo['cache']['info']['modified'])) {
+                $modified = $this->imageInfo['cache']['info']['modified'];
+            } else {
+                $modified = filemtime($this->imageInfo['filepath']);
+            }
+        }
 
-		// target filename = orig_filename + "_" + w + "x" + h + "_" + hash + "." + ext
-		$target = $this->imageInfo['filenameBase'] . "_" .
-							$this->imageTarget['w'] . "x" . $this->imageTarget['h'] . "_" .
-							$this->imageInfo['hash'] . "." . $this->imageTarget['type'];
-		return BeLib::getInstance()->friendlyUrlString($target, "\.");
-	}
+        $wmString = '';
+        $wm = null;
+        if (isset($this->imageTarget['watermark'])) {
+            $wm = $this->imageTarget['watermark'];
+            $wmString = implode($wm);
+            unset($this->imageTarget['watermark']);
+        }
+        $targetStr = implode($this->imageTarget) . $wmString;
+        if (!empty($wmString)) {
+            $this->imageTarget['watermark'] = $wm;
+        }
+
+        $this->imageInfo['hash'] = md5($this->imageInfo['filename'] . $modified . $targetStr);
+
+        // target filename = orig_filename + "_" + w + "x" + h + "_" + hash + "." + ext
+        $target = $this->imageInfo['filenameBase'] . '_' . $this->imageTarget['w'] 
+            . 'x' . $this->imageTarget['h'] . '_' . $this->imageInfo['hash'] . '.' . $this->imageTarget['type'];
+        return BeLib::getInstance()->friendlyUrlString($target, "\.");
+    }
 
 	/**
 	 * build target filepath
@@ -703,7 +774,8 @@ class BeThumb {
 	 * @return string
 	 */
 	private function checkCacheDirectory() {
-		if (!file_exists($this->imageInfo['cacheDirectory'])) {
+        // #769 - avoid file access
+	    if (!file_exists($this->imageInfo['cacheDirectory'])) {
 			if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
 				$this->triggerError("Error creating cache directory: " . $this->imageInfo['cacheDirectory']);
 				return false;
