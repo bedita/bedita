@@ -34,6 +34,11 @@ CKEDITOR.stylesSet.add( 'default', [
 		element: 'P',
 		attributes: { 'class': 'formula' }
 	},
+	
+	{		
+		name: 'Aside',
+		element: 'aside'
+	},
 
 	/* Inline Styles */
 
@@ -65,6 +70,11 @@ CKEDITOR.stylesSet.add( 'default', [
 	{ name: 'inline formula',	
 		element: 'span', 
 		attributes: { 'class': 'formula' }
+	},
+
+	{ name: 'inline aside',	
+		element: 'span', 
+		attributes: { 'class': 'aside' }
 	}
 	/* Object Styles */
 

@@ -91,3 +91,8 @@ P.dittico, P.trittico {
 .formula {
 	background-color: #ffffcc;
 }
+
+aside, .aside {
+    border: 1px dotted #009933;
+    padding: 3px 0px 0px 8px;
+}
