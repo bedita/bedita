@@ -547,7 +547,7 @@ class ApiValidatorComponent extends Object {
      * )
      * ```
      *
-     * It check that:
+     * It checks that:
      *
      * - the number requested is positive integer
      * - the total number of objects and relations embedded per page is less than max size

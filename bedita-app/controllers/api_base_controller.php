@@ -631,7 +631,7 @@ abstract class ApiBaseController extends FrontendController {
             if (!empty($urlParams['embed']['relations'])) {
                 $this->ApiValidator->checkEmbedRelations(
                     $urlParams['embed']['relations'],
-                    $this->paginationOptions['pageSize'],
+                    1,
                     $this->paginationOptions['maxPageSize']
                 );
             }
