@@ -456,7 +456,8 @@ class BeThumb {
             'mime_type' => $this->imageInfo['mime_type'],
             'animated' => $this->imageInfo['animated']
         );
-        if (!empty(Cache::settings('thumbs'))) {
+		$cacheThumbs = Cache::settings('thumbs');
+        if (!empty($cacheThumbs)) {
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
             $this->imageInfo['cache'] = Cache::read($path, 'thumbs');
             if (empty($this->imageInfo['cache']['info'])) {
