@@ -427,7 +427,8 @@ class BeThumb {
     */
     private function readCacheImageInfo() {
         $res = array();
-        if (!empty(Cache::settings('thumbs'))) {
+        $cacheThumbs = Cache::settings('thumbs');
+        if (!empty($cacheThumbs)) {
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
             $this->imageInfo['cache'] = Cache::read($path, 'thumbs');
             if (!empty($this->imageInfo['cache']['info'])) {
