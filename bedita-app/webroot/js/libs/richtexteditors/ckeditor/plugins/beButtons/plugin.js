@@ -1,4 +1,5 @@
 CKEDITOR.plugins.add( 'beButtons', {
+	icons: 'icons/formula',
     init: function( editor ) {
     	editor.ui.addButton( 'Dfn',
 			{
@@ -7,10 +8,12 @@ CKEDITOR.plugins.add( 'beButtons', {
 			}
 		);
 		
-		editor.ui.addButton( 'x\y',
+		editor.ui.addButton( 'Formula',
 			{
-				label : 'x/y',
-				command : 'formula'
+				label : 'f(x)',
+				title: 'Add formulas',
+				command : 'formula',
+				icon: this.path + 'icons/formula.png',
 			}
 		);
 		
@@ -44,28 +47,7 @@ CKEDITOR.plugins.add( 'beButtons', {
 			}
 		);
 		
-		editor.addCommand( 'formula',
-			{
-			    exec : function( editor )
-			    {
-			    	var selection = editor.getSelection().getNative();
-					var index = selection.anchorOffset;
-					var end = selection.focusOffset;
-					var node = selection.anchorNode.parentNode;
-					var otext = selection.focusNode.wholeText;
-					var text = selection.focusNode.nodeValue;
-					
-					var selectText = text.substr(index,end);
-					
-					var newText = text.substr(0,index) + '|voglioCheSiaUnaFormula|' + selectText + '|voglioCheSiaUnaFormula|' + text.substr(end);
-					selection.focusNode.textContent = newText;
-					var html = node.innerHTML;
-					html = html.replace('|voglioCheSiaUnaFormula|' + selectText + '|voglioCheSiaUnaFormula|','<span class="formula">'+selectText+'</span>');
-					node.innerHTML = html;
-			    },
-			    async : true
-			}
-		);
+		editor.addCommand( 'formula', new CKEDITOR.dialogCommand( 'formulaDialog' ));
 		
 		editor.addCommand( 'glossary',
 			{
@@ -89,6 +71,41 @@ CKEDITOR.plugins.add( 'beButtons', {
 			    async : true
 			}
 		);
+	    
+	    CKEDITOR.dialog.add( 'formulaDialog', this.path + 'dialogs/formulaDialog.js' );
 		
+    },
+
+
+    afterInit: function(editor) {
+		var dataProcessor = editor.dataProcessor,
+	        dataFilter = dataProcessor && dataProcessor.dataFilter;
+	    if (dataFilter){
+	        dataFilter.addRules({
+	            elements : {
+	                'cke:object' : function(element) {
+						if (element && element['attributes'] && element['attributes']['data-bedita-relation'] == 'contains_formula') {
+							var fakeElement = editor.createFakeParserElement( element, 'cke_svg', 'svg', true );
+							if (element['attributes']['data-bedita-id']) {
+								var formulaId = element['attributes']['data-bedita-id'];
+								var url = '/bedita-app/formulas/svg/' + formulaId;
+								$.ajax({
+									url: url,
+									async: false,
+									success: function (res) {
+										if (res && res.svg) {
+											var encodedData = window.btoa(res.svg);
+											fakeElement.attributes['src'] = 'data:image/svg+xml;base64,' + encodedData;
+										}
+									}
+								});
+					    		return fakeElement;	
+							}
+						}	
+	                }
+	            }
+	        }, 5);
+	    }
     }
 });
+

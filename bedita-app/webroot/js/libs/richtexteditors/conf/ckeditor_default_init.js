@@ -13,7 +13,7 @@ BEDITA.richtexteditor = {
 				{ name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
 				{ name: 'editAttributes', items: [ 'Attr' ] },
 				{ name: 'editing', groups: [ 'find'], items: [ 'Find', 'Replace' ] },
-				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar' ] },
+				{ name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'SpecialChar', 'Formula' ] },
 				{ name: 'tools', items: [ /*'Maximize', */'ShowBlocks', 'AutoCorrect' ] },
 				'/',
 				{ name: 'styles', items: [ 'Format' , 'Styles'] },
@@ -41,7 +41,7 @@ BEDITA.richtexteditor = {
 				/*{ name: 'customTools', items: [ 'x\y', 'Dfn', 'Glo' ] },*/
 				{ name: 'editAttributes', items: [ 'Attr' ] },
 				{ name: 'editing', groups: [ 'find'], items: [ 'Find'/*, 'Replace'*/ ] },
-				{ name: 'insert', items: [ 'Table', 'HorizontalRule', 'SpecialChar' ] },
+				{ name: 'insert', items: [ 'Table', 'HorizontalRule', 'SpecialChar', 'Formula' ] },
 				{ name: 'styles', items: [ 'Format' , 'Styles'] },
 				{ name: 'clipboard', groups: [ 'clipboard', 'undo' ], items: [ /*'Paste', */'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo' ] },
 				{ name: 'tools', items: [/* 'Maximize',*/ 'ShowBlocks', 'AutoCorrect' ] },
