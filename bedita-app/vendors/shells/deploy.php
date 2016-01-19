@@ -319,105 +319,177 @@ class DeployShell extends BeditaBaseShell {
 		$this->out("Updated to: $beditaVersion");
     }
 
-    public function up() {
-		$sel = array();
-		$this->out("1. BEdita core/backend");
-		$sel[1] = ROOT;
-		$folder = new Folder(BEDITA_FRONTENDS_PATH);
-		$ls = $folder->read();
-		$count = 1;
-		foreach ($ls[0] as $dir) {
-			if($dir[0] !== '.' ) {
-				$count++;
-				$this->out("$count. $dir (frontend)");
-				$sel[$count] = BEDITA_FRONTENDS_PATH. DS .$dir;
-			}
-		}
-		
-		$frontEndCount = $count;
-		if(file_exists(BEDITA_ADDONS_PATH)) {
-			$folder = new Folder(BEDITA_ADDONS_PATH);
-			$ls = $folder->read();
-			foreach ($ls[0] as $dir) {
-				if($dir[0] !== '.' ) {
-					$count++;
-					$this->out("$count. addons - ($dir)");
-					$sel[$count] = BEDITA_ADDONS_PATH. DS .$dir;
-				}
-			}
-		}
-				
-		$folder = new Folder(BEDITA_MODULES_PATH);
-		$ls = $folder->read();
-		foreach ($ls[0] as $dir) {
-			if($dir[0] !== '.' ) {
-				$count++;
-				$this->out("$count. $dir (plugin module)");
-				$sel[$count] = BEDITA_MODULES_PATH. DS .$dir;
-			}
-		}
-		$count++;
-		$this->out("$count. or 'q' quit");
-		$this->hr();
-		
-    	$selected = $sel[1];
-		$res = $this->in("select item: [1]");
-		if(!empty($res)) {
-			if($res >=  1 && $res < $count) {
-				$selected = $sel[$res];
-			} else if($res == $count || $res === 'q'){
-				$this->out("Bye");
-				return;
-			} else {
-				$this->out("wrong item $res , choose between 1 and $count");
-				return;
-			}
-		}
-		// svn repository
-		if (file_exists($selected . DS . ".svn")) {
-			$updateCmd = "svn update $selected";
-		// git repository
-		} else {
-			$currentBranch = $this->getGitBranch($selected);
-			if ($currentBranch === false) {
-				$this->out("Failed retrieve current git branch");
-			}
-			$updateCmd = "cd $selected; git fetch origin; git merge origin/$currentBranch;";
-		}
+    /**
+     * Perform update for BEdita core, a frontend, a module or an addon.
+     *
+     * @param string $type Either `core`, `frontend`, `module` or `addon`.
+     * @param string|null $name The name of the frontend, module or addon.
+     * @param string $path The full path to the resource to be updated.
+     * @return boolean Success.
+     */
+    protected function performUpdate($type, $name, $path) {
+        /** Detect VCS. */
+        if (file_exists($path . DS . '.svn')) {
+            $this->out('SVN repository detected');
+            $updateCmd = "svn update {$path}";
+        } elseif (file_exists($path . DS . '.git')) {
+            $this->out('Git repository detected');
+            $branch = $this->getGitBranch($path);
+            if ($branch === false) {
+                $this->err('Could not read current Git branch!');
+                return false;
+            }
+            $updateCmd = "cd {$path}; git fetch origin; git merge origin/{$branch};";
+        } else {
+            $this->err('No VCS detected, aborting!');
+            return false;
+        }
 
-		$this->out("Update command: $updateCmd");
-    	$updateRes = system($updateCmd);
-    	if($updateRes === false) {
-			$this->out("Update command failed");
-    	}
+        /** Run update command. */
+        $this->out('Update command: ' . $updateCmd);
+        $updateRes = system($updateCmd);
+        if ($updateRes === false) {
+            $this->err('Update command exited with a non-zero code!');
+            return false;
+        }
 
-		// update enabled addons
-		if (strstr($selected, BEDITA_ADDONS_PATH)) {
-			$type = trim(substr($selected, strlen(BEDITA_ADDONS_PATH)), DS);
-			if ($type != "vendors") {
-				$Addon = ClassRegistry::init("Addon");
-				$enabledFolder = $Addon->getEnabledFolderByType($type);
-				$folder->cd($enabledFolder);
-				$list = $folder->read();
-				if (!empty($list[1])) {
-					foreach ($list[1] as $addonFile) {
-						$Addon->update($addonFile, $type);
-					}
-				}
-			}
-		}
-		
-    	$this->loadTasks();
-    	if($res == 1) {
-    		$this->updateVersion();
-    	} else if($res <= $frontEndCount) {
-    		$this->Cleanup->params["frontend"] = $selected;
-    	}
-    	$this->Cleanup->execute();
-		$this->out("Done");
-		$this->up();
+        /** Run post-update tasks. */
+        $this->loadTasks();
+        switch ($type) {
+            case 'core':
+                $this->updateVersion();
+                break;
+
+            case 'frontend':
+                $this->Cleanup->params['frontend'] = $path;
+                break;
+
+            case 'addon':
+                if ($name == 'vendors') {
+                    break;
+                }
+                $Addon = ClassRegistry::init('Addon');
+                $enabledFolder = $Addon->getEnabledFolderByType($name);
+                $folder->cd($enabledFolder);
+                $list = $folder->read();
+                foreach ($list[1] ?: array() as $addonFile) {
+                    $Addon->update($addonFile, $name);
+                }
+        }
+        $this->Cleanup->execute();
+
+        return true;
     }
-    
+
+    /**
+     * Update BEdita core, a frontend, or a module.
+     */
+    public function up() {
+        static $pluggable = array(
+            'frontend' => BEDITA_FRONTENDS_PATH,
+            'module' => BEDITA_MODULES_PATH,
+            'addon' => BEDITA_ADDONS_PATH,
+        );
+
+        /** Read input via CLI arguments. */
+        $cliInput = array('type' => null, 'name' => null);
+        if (!empty($this->params['-core']) || (!empty($this->params['-type']) && $this->params['-type'] == 'core')) {
+            $cliInput['type'] = 'core';
+            $cliInput['type'] = 'core';
+        } elseif (!empty($this->params['-frontend'])) {
+            $cliInput['type'] = 'frontend';
+            $cliInput['name'] = $this->params['-frontend'];
+        } elseif (!empty($this->params['-module'])) {
+            $cliInput['type'] = 'module';
+            $cliInput['name'] = $this->params['-module'];
+        } elseif (!empty($this->params['-addon'])) {
+            $cliInput['type'] = 'addon';
+            $cliInput['name'] = $this->params['-addon'];
+        } elseif (!empty($this->params['-type']) && !empty($this->params['-name'])) {
+            $cliInput['type'] = $this->params['-type'];
+            $cliInput['name'] = $this->params['-name'];
+        }
+
+        /** Perform update via CLI arguments. */
+        if (!empty($cliInput['type'])) {
+            $type = $cliInput['type'];
+            $name = Inflector::underscore($cliInput['name']);
+            $path = ($type == 'core') ? ROOT : ($pluggable[$type] . DS . $name);
+
+            if (!file_exists($path)) {
+                $this->error('Invalid arguments', 'The resource you wanted to update does not exists');
+                return;
+            }
+
+            $ok = $this->performUpdate($type, $name, $path);
+
+            if (!$ok) {
+                $this->error('Update failed', 'The update has failed. Check for output in stderr for details');
+                return;
+            }
+
+            $this->out('Done. Bye!');
+            return;
+        }
+
+        /** Prepare list of choices. */
+        $choices = array(
+            array('type' => 'core', 'name' => null, 'path' => ROOT, 'desc' => 'BEdita core / backend'),
+        );
+        foreach ($pluggable as $type => $dir) {
+            if (!file_exists($dir)) {
+                continue;
+            }
+
+            $folder = new Folder($dir);
+            $ls = $folder->read();
+            foreach ($ls[0] as $path) {
+                if ($path[0] == '.') {
+                    continue;
+                }
+
+                $name = Inflector::camelize($path);
+                $path = $dir . DS . $path;
+                $desc = "{$name} ({$type})";
+
+                array_push($choices, compact('type', 'name', 'path', 'desc'));
+            }
+        }
+
+        /** Output list of choices. */
+        foreach ($choices as $i => $choice) {
+            $this->out(sprintf('%3d : %s', $i + 1, $choice['desc']));
+        }
+        $this->out('  q : quit');
+        $this->hr();
+
+        /** Read input. */
+        while (true) {
+            $choice = $this->in('Select item: ', null, 'q');
+
+            if (strtolower($choice[0]) == 'q') {
+                $this->out('Quitting. Bye!');
+                return;
+            }
+            if (is_numeric($choice) && array_key_exists($choice - 1, $choices)) {
+                $choice = (int)$choice - 1;
+                break;
+            }
+            $this->err('Invalid selection!');
+        }
+
+        $chosen = $choices[$choice];
+        $ok = $this->performUpdate($chosen['type'], $chosen['name'], $chosen['path']);
+
+        if (!$ok) {
+            $this->err('Update failed!');
+        } else {
+            $this->out('Done');
+        }
+
+        $this->up();
+    }
+
     /**
      * @deprecated
      */
@@ -781,7 +853,9 @@ class DeployShell extends BeditaBaseShell {
         $this->out('2. updateVersion: updates version number from svn local info [if present]');
   		$this->out(' ');
         $this->out('3. up: updates from git/svn backend or frontends, with cleanup, version update...');
-  		$this->out(' ');
+        $this->out();
+        $this->out('   Usage: up [--core|--frontend <frontend>|--module <module>|--addon <addon>] [--type core|frontend|module|addon] [--name <name>]');
+        $this->out();
         $this->out('4. upgradeDb: upgrade bedita database to newest version');
   		$this->out(' ');
         $this->out(' ');
