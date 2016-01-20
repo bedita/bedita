@@ -27,7 +27,7 @@
 class BeObjectCache {
 
     /**
-     * Base path for objects cache
+     * Base path for objects cache on filesystem
      */
     private $baseCachePath = null;
 
@@ -50,6 +50,7 @@ class BeObjectCache {
             $this->baseCachePath = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
             $this->cacheConfig = array(
                 'engine' => 'File',
+                'prefix' => '',
                 'duration' => '+2 hours',
                 'path' => $this->baseCachePath
             );
@@ -102,8 +103,13 @@ class BeObjectCache {
     public function read($id, array &$options, $label = null) {
         $res = false;
         $cacheName = $this->cacheName($id, $options, $label);
-        $this->setCacheOptions($id);
-        $res = Cache::read($cacheName);
+        // use cache config if not using 'File' engine
+        if ($this->cacheConfig['engine'] !== 'File') {
+            $res = Cache::read($cacheName, 'objects');
+        } else {
+            $this->setCacheOptions($id);
+            $res = Cache::read($cacheName);
+        }
         return $res;
     }
 
@@ -115,6 +121,7 @@ class BeObjectCache {
      */
     public function write($id, array &$options, array &$data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
+        $res = false;
         // store index cache
         if ($this->cacheConfig['engine'] !== 'File') {
             $cacheIdxKey = $id . '_index';
@@ -126,9 +133,12 @@ class BeObjectCache {
                 $cacheIdx[] = $cacheName;
                 Cache::write($cacheIdxKey, $cacheIdx, 'objects');
             }
+            $res = Cache::write($cacheName, $data, 'objects');
+        } else {
+            $this->setCacheOptions($id);
+            $res = Cache::write($cacheName, $data);
         }
-        $this->setCacheOptions($id);
-        return Cache::write($cacheName, $data);
+        return $res;
     }
 
     /**
