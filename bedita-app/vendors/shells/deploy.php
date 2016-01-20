@@ -339,6 +339,7 @@ class DeployShell extends BeditaBaseShell {
                 $this->err('Could not read current Git branch!');
                 return false;
             }
+            // Use `git merge` instead of `git pull` to deal with non-clean working copy.
             $updateCmd = "cd {$path}; git fetch origin; git merge origin/{$branch};";
         } else {
             $this->err('No VCS detected, aborting!');
@@ -347,8 +348,10 @@ class DeployShell extends BeditaBaseShell {
 
         /** Run update command. */
         $this->out('Update command: ' . $updateCmd);
-        $updateRes = system($updateCmd);
-        if ($updateRes === false) {
+        if (isset($this->params['-dry-run'])) {
+            $this->out('This is a dry run, no action has been performed!');
+            return true;
+        } elseif (system($updateCmd) === false) {
             $this->err('Update command exited with a non-zero code!');
             return false;
         }
@@ -448,7 +451,7 @@ class DeployShell extends BeditaBaseShell {
                     continue;
                 }
 
-                $name = Inflector::camelize($path);
+                $name = $path;
                 $path = $dir . DS . $path;
                 $desc = "{$name} ({$type})";
 
@@ -854,7 +857,7 @@ class DeployShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out('3. up: updates from git/svn backend or frontends, with cleanup, version update...');
         $this->out();
-        $this->out('   Usage: up [--core|--frontend <frontend>|--module <module>|--addon <addon>] [--type core|frontend|module|addon] [--name <name>]');
+        $this->out('   Usage: up [--core|--frontend <frontend>|--module <module>|--addon <addon>] [--type core|frontend|module|addon] [--name <name>] [--dry-run]');
         $this->out();
         $this->out('4. upgradeDb: upgrade bedita database to newest version');
   		$this->out(' ');
