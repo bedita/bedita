@@ -448,7 +448,7 @@ class DeployShell extends BeditaBaseShell {
                     continue;
                 }
 
-                $name = Inflector::camelize($path);
+                $name = $path;
                 $path = $dir . DS . $path;
                 $desc = "{$name} ({$type})";
 
