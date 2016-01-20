@@ -524,8 +524,13 @@ class BeFileHandlerComponent extends Object {
 	 * @param string $path
 	 * @return boolean
 	 */
-	private function _removeFile($path) {
-		if (DS != "/") {
+    private function _removeFile($path) {
+        // #769 remove from cache if 'thumbs' cache is set
+        $cacheThumbs = Cache::settings('thumbs');
+        if (!empty($cacheThumbs)) {
+            Cache::delete($path, 'thumbs');
+        }
+	    if (DS != "/") {
 			$path = str_replace("/", DS, $path);
 		}
 		$path = Configure::read("mediaRoot") . $path ;
