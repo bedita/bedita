@@ -57,6 +57,10 @@ class BeThumb {
 	 */
 	private $imgUnsupported = null;
 	
+	/**
+	 * Path to BEdita media root
+	 */
+	private $mediaRoot = null;
 	
 	/**
 	 * All known mime types
@@ -77,6 +81,7 @@ class BeThumb {
 		        $this->imgUnsupported = Configure::read('beditaUrl') . $this->imgUnsupported;
 		    }
 		}
+        $this->mediaRoot = Configure::read('mediaRoot');
 	}
 
 	public function getValidImplementations() {
@@ -205,10 +210,8 @@ class BeThumb {
         if ($checkThumb) {
             $cacheExists = false;
             $cacheItem = $this->imageInfo['cachePath'] . DS . $this->imageTarget['filename'];
-            if (!empty($this->imageInfo['cache']['thumbs'])) {
-                if (in_array($cacheItem, $this->imageInfo['cache']['thumbs'])) {
-                    $cacheExists = true;
-                }
+            if (!empty($this->imageInfo['cache']['thumbs'][$cacheItem])) {
+                $cacheExists = true;
             }
             if (!$cacheExists) {
                 if (!file_exists($this->imageTarget['filepath'])) {
@@ -282,9 +285,8 @@ class BeThumb {
 		// file extension
 		$this->imageInfo['ext']	= (!empty($pathParts['extension']))? $pathParts['extension'] : "";
 		$this->imageInfo['dirname']	= $pathParts['dirname'];
-		$mediaRoot  = Configure::read('mediaRoot');
 	    if (!$this->imageInfo["remote"]) {
-			$this->imageInfo['filepath'] = $mediaRoot . $this->imageInfo['path'];  // absolute
+			$this->imageInfo['filepath'] = $this->mediaRoot . $this->imageInfo['path'];  // absolute
 			if (DS != "/") {
 				$this->imageInfo['filepath'] = str_replace("/", DS, $this->imageInfo['filepath']);
 			}
@@ -296,7 +298,7 @@ class BeThumb {
 		$this->imageInfo['cachePath'] = $cachePrefix . 
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
-		$this->imageInfo['cacheDirectory'] = $mediaRoot . $this->imageInfo['cachePath'];
+		$this->imageInfo['cacheDirectory'] = $this->mediaRoot . $this->imageInfo['cachePath'];
 
         // #769 - avoid file access / read from cache
         $cacheData = $this->readCacheImageInfo();
@@ -376,7 +378,7 @@ class BeThumb {
 	 */
 	public function imagePathCached($imageFilePath = null) {
 	    if (!empty($imageFilePath)) {
-	        $data["uri"] = str_replace(Configure::read('mediaRoot'), "", $imageFilePath);
+            $data['uri'] = str_replace($this->mediaRoot, '', $imageFilePath);
             $this->setupImagePath($data);
 	        $this->setupImageInfo($data);
 	    }
@@ -481,11 +483,30 @@ class BeThumb {
      */
     private function storeCacheThumbnail($cacheItem) {
         if (!empty($this->imageInfo['cache'])) {
-            $this->imageInfo['cache']['thumbs'][] = $cacheItem;
-            array_unique($this->imageInfo['cache']['thumbs']);
+            $thumbFileSize = filesize($this->imageTarget['filepath']);
+            $this->imageInfo['cache']['thumbs'][$cacheItem] = array('size' => $thumbFileSize);
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
             Cache::write($path, $this->imageInfo['cache'], 'thumbs');
         }
+    }
+
+    /**
+     * Get thumbnail size in bytes reading from cache or filsystem
+     * Input thumbnail path should be relative to media root (not includin media root)
+     * May use cached data
+     * @param unknown $thumbPath
+     */
+    public function thumbnailSize($thumbPath) {
+        $size = 0;
+        if (!empty($this->imageInfo['cache']) && !empty($this->imageInfo['cache']['thumbs'][$thumbPath])) {
+            $size = $this->imageInfo['cache']['thumbs'][$thumbPath]['size'];
+        } else {
+            $s = @filesize($this->mediaRoot . $thumbPath); // avoid generate warning
+            if ($s !== false) {
+                $size = $s;
+            }
+        }
+        return $size;
     }
 
     /**
