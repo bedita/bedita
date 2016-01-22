@@ -24,7 +24,7 @@ CKEDITOR.dialog.add( 'formulaDialog',
 							onShow: function() {
 								var that = this;
 								var currentID = BEDITA.id || 0;
-								var destination = '/bedita-app/pages/showObjects/' + currentID + '/contains_formula/22';
+								var destination = BEDITA.base + '/pages/showObjects/' + currentID + '/contains_formula/22';
 								var input = that.getInputElement().$;
 					            
 					            $(input).empty().find('.loader').show();
@@ -78,7 +78,7 @@ CKEDITOR.dialog.add( 'formulaDialog',
 				if (dialog.objectsChecked.list.length) {
 					
 					ids = dialog.objectsChecked.list.toString();
-					url = '/bedita-app/formulas/svgMulti/' + ids + (dialog.displayInline ? '?inline' : '');
+					url = BEDITA.base + '/formulas/svgMulti/' + ids + (dialog.displayInline ? '?inline' : '');
 					$('#addButton').click();
 					$.ajax({
 						url: url,

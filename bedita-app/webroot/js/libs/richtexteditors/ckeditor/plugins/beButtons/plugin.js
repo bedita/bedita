@@ -88,7 +88,7 @@ CKEDITOR.plugins.add( 'beButtons', {
 							var fakeElement = editor.createFakeParserElement( element, 'cke_svg', 'svg', true );
 							if (element['attributes']['data-bedita-id']) {
 								var formulaId = element['attributes']['data-bedita-id'];
-								var url = '/bedita-app/formulas/svg/' + formulaId;
+								var url = BEDITA.base +'/formulas/svg/' + formulaId;
 								$.ajax({
 									url: url,
 									async: false,
