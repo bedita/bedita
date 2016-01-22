@@ -33,8 +33,13 @@ class BeObjectCache {
 
     /**
      * Default cache config
+     * It's overriden in constructor if exists a cache conf named 'objects'
      */
-    private $cacheConfig = null;
+    private $cacheConfig = array(
+        'engine' => 'File',
+        'prefix' => '',
+        'duration' => '+24 hours'
+    );
 
     /**
      * Constructor
@@ -46,19 +51,12 @@ class BeObjectCache {
         // init cache
         $cacheConf = Cache::settings('objects');
         if (empty($cacheConf)) {
-            // default cache path and settings if not configured
-            $this->baseCachePath = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
-            $this->cacheConfig = array(
-                'engine' => 'File',
-                'prefix' => '',
-                'duration' => '+2 hours',
-                'path' => $this->baseCachePath
-            );
-        } else {
-            $this->cacheConfig = $cacheConf;
-            if (!empty($this->cacheConfig['path'])) {
-                $this->baseCachePath = $this->cacheConfig['path'];
-            }
+            // default cache path if not configured
+            $this->cacheConfig['path'] = BEDITA_CORE_PATH . DS . 'tmp' . DS . 'cache' . DS . 'objects';
+        }
+        $this->cacheConfig = $cacheConf + $this->cacheConfig;
+        if (!empty($this->cacheConfig['path'])) {
+            $this->baseCachePath = $this->cacheConfig['path'];
         }
     }
 
@@ -149,8 +147,7 @@ class BeObjectCache {
     public function delete($id, array $options = null) {
         if ($this->cacheConfig['engine'] == 'File') {
             $cachePath = $this->getPathById($id);
-            $prefix = (!empty($this->cacheConfig['prefix'])) ? $this->cacheConfig['prefix'] : 'cake_';
-            $wildCard = $cachePath . DS . $prefix . $id . '-*';
+            $wildCard = $cachePath . DS . $this->cacheConfig['prefix'] . $id . '-*';
             $toDelete = glob($wildCard);
             if (!empty($toDelete)) {
                 array_map('unlink', $toDelete);
