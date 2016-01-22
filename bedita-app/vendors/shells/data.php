@@ -216,8 +216,10 @@ class DataShell extends BeditaBaseShell {
         if (!empty($result['objects'])) {
             $this->out('Num of objects: ' . $result['objects']);
             $types = '';
-            foreach ($result['type'] as $r => $v) {
-                $types .= $r . '(' . $v . ') ';
+            if (!empty($result['type'])) {
+                foreach ($result['type'] as $r => $v) {
+                    $types .= $r . '(' . $v . ') ';
+                }
             }
             $this->out('Types: ' . $types);
         }

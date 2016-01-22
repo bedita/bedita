@@ -1362,7 +1362,7 @@ abstract class ApiBaseController extends FrontendController {
 
         // allowed to user
         if (!empty($user)) {
-            $permissionJoin['conditions']['Permission.ugid'] = $user['groupsIds'];
+            $permissionJoin['conditions']['Permission.ugid'] = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
             $objectsAllowed = $tree->find('list', array(
                 'fields' => $fields,
                 'joins' => array($permissionJoin),

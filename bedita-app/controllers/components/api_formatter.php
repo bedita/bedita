@@ -567,7 +567,8 @@ class ApiFormatterComponent extends Object {
 
         $user = $this->controller->ApiAuth->getUser();
         if (!empty($user)) {
-            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $user['groupsIds']);
+            $groupsIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
+            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $groupsIds);
             $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
             $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
         }
