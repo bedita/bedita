@@ -37,6 +37,11 @@ CKEDITOR.dialog.add( 'attrDialog',
 						},
 						{
 							type : 'text',
+							id : 'title',
+							label : 'Title',
+						},
+						{
+							type : 'text',
 							id : 'style',
 							label : 'Style',
 						},
@@ -72,8 +77,9 @@ CKEDITOR.dialog.add( 'attrDialog',
 				var node = selection.anchorNode.parentNode;
 				
 				if (node.id) dialog.setValueOf( 'tab1' , 'ID' , node.id );
-				if (node.className) dialog.setValueOf( 'tab1' , 'class' , node.className );
+				if (node.getAttribute('class')) dialog.setValueOf( 'tab1' , 'class' , node.getAttribute('class') );
 				if (node.getAttribute('style')) dialog.setValueOf( 'tab1' , 'style' , node.getAttribute('style') );
+				if (node.getAttribute('title')) dialog.setValueOf( 'tab1' , 'title' , node.getAttribute('title') );
 				var dir = node.getAttribute('dir');
 				if (dir == 'ltr') dialog.setValueOf( 'tab1' , 'text-dir' , 'Left to Right' );
 				if (dir == 'rtl') dialog.setValueOf( 'tab1' , 'text-dir' , 'Right to Left' );
@@ -93,6 +99,10 @@ CKEDITOR.dialog.add( 'attrDialog',
 				if (val!="") node.class = val;
 				var val = dialog.getValueOf( 'tab1', 'style' );
 				if (val!="") node.setAttribute('style',val);
+				var val = dialog.getValueOf( 'tab1', 'title' );
+				if (val!="") node.setAttribute('title',val);
+				var val = dialog.getValueOf( 'tab1', 'class' );
+				if (val!="") node.setAttribute('class',val);
 				var val = dialog.getValueOf( 'tab1', 'text-dir' );
 				if (val=='Left to Right') node.setAttribute('dir','ltr');
 				if (val=='Right to Left') node.setAttribute('dir','rtl');
