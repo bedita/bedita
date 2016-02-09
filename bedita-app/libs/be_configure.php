@@ -158,24 +158,32 @@ class BeConfigure {
 
         return $configurations;
 	}
-	
-	/**
-	 * add models and components module plugin paths to BEdita core paths
-	 * 
-	 * @param array $cachedConfig configuration cached
-	 */
-	public function addModulesPaths(array $cachedConfig) {
-		if (!empty($cachedConfig["plugged"]["modules"])) {
-			$additionalPaths["models"] = array();
-			$additionalPaths["components"] = array();
-			foreach ($cachedConfig["plugged"]["modules"] as $name => $m) {
-				$additionalPaths["models"][] = $m["pluginPath"] . DS . "models" . DS;
-				$additionalPaths["behaviors"][] = $m["pluginPath"] . DS . "models" . DS . "behaviors" . DS;
-				$additionalPaths["components"][] = $m["pluginPath"] . DS . "components" .DS;
-			}
-			App::build($additionalPaths);
-		}
-	}
+
+    /**
+     * add models and components module plugin paths to BEdita core paths
+     *
+     * @param array $cachedConfig configuration cached
+     */
+    public function addModulesPaths(array $cachedConfig) {
+        if (empty($cachedConfig["plugged"]["modules"])) {
+            return;
+        }
+
+        $additionalPaths = array(
+            'models' => array(),
+            'behaviors' => array(),
+            'components' => array(),
+            'helpers' => array(),
+        );
+        foreach ($cachedConfig['plugged']['modules'] as $m) {
+            $additionalPaths['models'][] = $m['pluginPath'] . DS . 'models' . DS;
+            $additionalPaths['behaviors'][] = $m['pluginPath'] . DS . 'models' . DS . 'behaviors' . DS;
+            $additionalPaths['components'][] = $m['pluginPath'] . DS . 'components' . DS;
+            $additionalPaths['helpers'][] = $m['pluginPath'] . DS . 'helpers' . DS;
+        }
+
+        App::build($additionalPaths);
+    }
 
 	/**
 	 * write in configuration the external authorization types supported
