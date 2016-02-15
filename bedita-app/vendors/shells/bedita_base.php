@@ -32,6 +32,11 @@ class BeditaBaseShell extends Shell {
     private $verbose = false;
 
     /**
+     * Debug mode.
+     */
+    private $debug = false;
+
+    /**
      * Call parent::__construct and set up exception handler
      *
      * @param ShellDispatcher $dispatch
@@ -67,9 +72,13 @@ class BeditaBaseShell extends Shell {
      */
     public function initialize() {
         parent::initialize();
-        // Verbose mode.
+        // verbose mode.
         if (array_key_exists('verbose', $this->params) || array_key_exists('-verbose', $this->params)) {
             $this->verbose = true;
+            $this->debug = true;
+        }
+        if (array_key_exists('debug', $this->params) || array_key_exists('-debug', $this->params)) {
+            $this->debug = true;
         }
     }
 
@@ -88,8 +97,10 @@ class BeditaBaseShell extends Shell {
 	 */
 	function startup() {
 		$this->initConfig();
-		// default debug = 1, get error/debug messages
-		Configure::write('debug', 1);
+        // default debug = 1, only if debug or verbose options are set
+        if ($this->debug) {
+            Configure::write('debug', 1);
+        }
         $this->Dispatch->clear();
     }
 
