@@ -236,7 +236,7 @@ class SearchText extends BEAppModel
 				$dataLang[] = $item['LangText'];
 			}
 			try {
-				$searchText->saveLangTexts($dataLang);
+				$this->saveLangTexts($dataLang);
 				if (!$returnOnlyFailed) {
 					$results['langTextSuccess'][] = array(
 						"object_id" => $r['LangText']['object_id'],
