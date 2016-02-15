@@ -149,7 +149,9 @@ class SearchText extends BEAppModel
      *      'delete' => delete index first (default false)
      *      'type' => index object type only (default unset -> all types)
      *      'log' => true to log errors
-	 * 
+     *      'min' => min id to index (included)
+     *      'max' => max id to index (included)
+	 *
 	 * @return array contains:
 	 *			'success' => array of objects data successfully indexed. Each item contains:
 	 *						'id' => object id indexed
@@ -171,11 +173,19 @@ class SearchText extends BEAppModel
 	    $returnOnlyFailed = (isset($options['returnOnlyFailed']))? $options['returnOnlyFailed'] : true;
 	    $deleteIndex = (isset($options['delete']))? $options['delete'] : false;
 	    $conditions = array();
-	    if (!empty($options['type'])) {
-	        $conditions['object_type_id'] = $options['type'];
+        if (!empty($options['type'])) {
+            $conditions['object_type_id'] = $options['type'];
             $this->log('using object type id: '. $options['type'], 'index');
-	    }
-		$beObj = ClassRegistry::init("BEObject");
+        }
+        if (!empty($options['min'])) {
+            $conditions[] = 'id >= ' . $options['min'];
+            $this->log('using min id: '. $options['min'], 'index');
+        }
+        if (!empty($options['max'])) {
+            $conditions[] = 'id <= ' . $options['max'];
+            $this->log('using max id: '. $options['max'], 'index');
+        }
+        $beObj = ClassRegistry::init("BEObject");
 		$beObj->contain();
 		$nObj = $beObj->find('count', array('conditions' => $conditions));
 		$pageSize = 1000;
@@ -191,7 +201,8 @@ class SearchText extends BEAppModel
 		while( ($pageSize * $pageNum) < $nObj ) {
 			$res = $beObj->find('list',array(
 					'fields' => array('id'),
-			        'conditions' => $conditions,
+                    'conditions' => $conditions,
+                    'order' => array('id' => 'asc'),
 					'limit' => $pageSize,
 					'offset' => $pageNum * $pageSize,
 			));

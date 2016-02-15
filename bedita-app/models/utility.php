@@ -92,6 +92,8 @@ class Utility extends AppModel {
 	 *				'delete' => delete index first (default false)
 	 *				'type' => index object type only (default unset -> all types)
 	 *				'log' => true to log errors
+	 *              'min' => min ID to index
+	 *              'max' => max ID to index
 	 */
 	protected function rebuildIndex($options) {
 		$searchText = ClassRegistry::init("SearchText");
