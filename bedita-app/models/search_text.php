@@ -187,7 +187,7 @@ class SearchText extends BEAppModel
 		if (!$returnOnlyFailed) {
 			$results = array_merge($results, array('success' => array(), 'failed' => array()));
 		}
-		
+        $count = 0;
 		while( ($pageSize * $pageNum) < $nObj ) {
 			$res = $beObj->find('list',array(
 					'fields' => array('id'),
@@ -197,6 +197,7 @@ class SearchText extends BEAppModel
 			));
 			$pageNum++;
 			foreach ($res as $id) {
+                $count++;
 				$type = $beObj->getType($id);
 				if(empty($type)) {
 					$results['failed'][] = array("id" => $id, "error" => "Object type not found for object id ". $id);
@@ -210,7 +211,7 @@ class SearchText extends BEAppModel
 							throw new BeditaException(__("Error deleting all search text indexed for object", true) . " " . $id);
 						}
 						$this->createSearchText($model);
-					    $this->log('index created for object: '. $id, 'index');
+                        $this->log("($count/$nObj) index created for: $id", 'index');
 						if (!$returnOnlyFailed) {
 							$results['success'][] = array("id" => $id);
 						}
