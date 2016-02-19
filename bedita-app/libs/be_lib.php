@@ -1,21 +1,21 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- * 
+ *
  * BEdita - a semantic content management framework
- * 
+ *
  * Copyright 2008 ChannelWeb Srl, Chialab Srl
- * 
+ *
  * This file is part of BEdita: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published 
- * by the Free Software Foundation, either version 3 of the License, or 
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
- * You should have received a copy of the GNU Lesser General Public License 
+ * You should have received a copy of the GNU Lesser General Public License
  * version 3 along with BEdita (see LICENSE.LGPL).
  * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
- * 
+ *
  *------------------------------------------------------------------->8-----
  */
 
@@ -33,13 +33,13 @@ if (!class_exists('Folder')) {
  */
 
 class BeLib {
-	
+
 	/**
 	 * used to flatten arrays in BeLib::arrayValues()
-	 * @var array 
+	 * @var array
 	 */
 	private $__arrayFlat = array();
-	
+
 	public static function &getInstance() {
 		static $instance = array();
 		if (!$instance) {
@@ -47,11 +47,11 @@ class BeLib {
 		}
 		return $instance[0];
 	}
-	
+
 	/**
 	 * return an instance of a class (by default search in libs dir)
 	 * If class is not instantiated do it and put in CakePHP registry
-	 * 
+	 *
 	 * @param string $name class name (file has to be underscorized MyClass => my_class.php)
 	 * @param string or array $paths paths where search class file (search in libs folder by default)
 	 * @return class instance
@@ -77,10 +77,10 @@ class BeLib {
 		}
 		return $libObject;
 	}
-	
+
 	/**
 	 * check if a class name is a BEdita object type
-	 * 
+	 *
 	 * @param string $name the class name
 	 * @param mixed $paths array of paths or string path where searching the class
 	 * 					   leave empty to use ClassRegistry
@@ -101,10 +101,10 @@ class BeLib {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * check if a file name is already used in Configure::$type."Paths"
-	 * 
+	 *
 	 * @param string $filename
 	 * @param string $type (models, controllers, ...) see App::path
 	 * @param array of path to exclude from search (paths have to end with DS trailing slash)
@@ -116,6 +116,7 @@ class BeLib {
 			throw new BeditaException(__("No paths to search for " . $type, true));
 		}
 		$paths = array_diff($typePaths ,$excludePaths);
+		App::import('Core', 'Folder');
 		$folder = new Folder();
 		foreach ($paths as $p) {
 			$folder->cd($p);
@@ -130,12 +131,12 @@ class BeLib {
 	/**
 	 * Modify a string to get friendly url version.
 	 * With a regexp you can choose which characters to preserve.
-	 * 
-	 * 
-	 * 
+	 *
+	 *
+	 *
 	 * @param string $value
-	 * @param string $keep, regexp fragment with characters to keep, e.g. "\." will preserve points, 
-	 * 						"\.\:" points and semicolons 
+	 * @param string $keep, regexp fragment with characters to keep, e.g. "\." will preserve points,
+	 * 						"\.\:" points and semicolons
 	 * @return string
 	 */
 	public function friendlyUrlString($value, $keep = "") {
@@ -159,26 +160,26 @@ class BeLib {
 		$value = preg_replace("/[\-]{2,}/", "-", $value);
 
 		// trim dashes in the beginning and in the end of nickname
-		return trim($value,"-");	
+		return trim($value,"-");
 	}
 
 	/**
 	 * Strip scripts, images, whitespace or all together on $data
 	 * using Sanitize::stripScripts, Sanitize::stripImages, Sanitize::stripWhitespace, Sanitize::stripAll methods
 	 * see Sanitize class of cakephp for more info
-	 * 
+	 *
 	 * @param mixed $data string or array
 	 * @param array $options, possible values are:
 	 *				"what" => "scripts" (default), "images", "whitespace", "all",
 	 *				"recursive" => true (default) strip recursively on $data
-	 * 
-	 * @return mixed 
+	 *
+	 * @return mixed
 	 */
 	public function stripData($data, array $options = array()) {
 		$options = array_merge(array("what" => "scripts", "recursive" => true), $options);
 		$method = "strip".ucfirst($options["what"]);
 		App::import("Sanitize");
-		
+
 		if (method_exists("Sanitize", $method)) {
 			if (is_array($data)) {
 				foreach ($data as $key => $value) {
@@ -192,7 +193,7 @@ class BeLib {
 				$data = Sanitize::$method($data);
 			}
 		}
-		
+
 		return $data;
 	}
 
@@ -223,16 +224,16 @@ class BeLib {
 		}
 		return false ;
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * return values of multidimensional array
 	 *
 	 * @param array $array
 	 * @param boolean $addStringKeys if it's true add string keys to the returned array
-	 * @return array 
+	 * @return array
 	 */
 	public function arrayValues(array $array, $addStringKeys = false) {
 		$this->__arrayFlat = array();
@@ -243,29 +244,29 @@ class BeLib {
 		}
 		return $this->__arrayFlat;
 	}
-	
+
 	/**
 	 * callback method used from BeLib::arrayValues
-	 * 
+	 *
 	 * @param mixed $item
 	 * @param mixed $key
-	 * @param array $values 
+	 * @param array $values
 	 */
 	static private function arrayValuesCallback(&$item, $key, $obj) {
 		$obj->__arrayFlat[] = $item;
 	}
-	
+
 	/**
 	 * return keys of multidimensional array
-	 * 
+	 *
 	 * @param array $ar
 	 * @param boolean $stringKeys if it's true add string keys to the returned array
-	 * @return array 
+	 * @return array
 	 */
 	public function arrayKeys(array $ar, $stringKeys = true) {
 		$keys = array();
 		foreach($ar as $k => $v) {
-			if (!$stringKeys || ($stringKeys && is_string($k))) { 
+			if (!$stringKeys || ($stringKeys && is_string($k))) {
 				$keys[] = $k;
 			}
 			if (is_array($ar[$k])) {
@@ -273,28 +274,28 @@ class BeLib {
 			}
 		}
 		return $keys;
-	} 
+	}
 
 	/**
 	 * Transform any numeric date in SQL date/datetime string format
 	 * Date types accepted: "little-endian"/"middle-endian"/"big-endian"
-	 * 
+	 *
 	 * if little endian, expected format id dd/mm/yyyy format, or dd.mm.yyyy, or dd-mm-yyyy
 	 * if middle endian, expected format is mm/dd/yyyy format, or mm.dd.yyyy (USA standard)
 	 * if big endian ==> yyyy-mm-dd
 	 * Examples:
-	 * 
+	 *
 	 *  Little endian
 	 *  "22/04/98", "22/04/1998", "22.4.1998", "22-4-98", "22 4 98", "1998", "98", "22.04", "22/4", "22 4"
-	 *  
+	 *
 	 *  Middle endian
 	 *  "4/22/98", "02/22/1998", "4.22.1998", "4-22-98", "4/22", "04.22"
-	 * 
+	 *
 	 * If format is not valid or string is not parsable, an exception maybe thrown
-	 * 
+	 *
 	 * @param string $val, string in generic numeric form
 	 * @param string $dateType, "little-endian"/"middle-endian"/"big-endian"
-	 * 
+	 *
 	 */
 	public function sqlDateFormat($value, $dateType = "little-endian") {
 		// check if it's already in SQL format
@@ -307,36 +308,36 @@ class BeLib {
 			return $value;
 		}
 		$d = false;
-		
+
 		if($dateType === "little-endian") {
-			// dd/mm/yyyy - dd.mm.yyy like formats			
+			// dd/mm/yyyy - dd.mm.yyy like formats
 			$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,4})$/";
 			$match = array();
 			if (preg_match($pattern, $value, $match)) {
 				$d = $match[5] . "-" . $match[3] . "-" . $match[1];
-			}	
-			// dd/mm - dd.mm like formats			
+			}
+			// dd/mm - dd.mm like formats
 			if($d === false) {
 				$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})$/";
 				$match = array();
 				if (preg_match($pattern, $value, $match)) {
 					$d = $match[3] . "/" . $match[1];
-				}	
+				}
 			}
 		} elseif($dateType === "middle-endian") {
-			// mm/dd/yyyy - mm.dd.yyyy like formats			
+			// mm/dd/yyyy - mm.dd.yyyy like formats
 			$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,4})$/";
 			$match = array();
 			if (preg_match($pattern, $value, $match)) {
 				$d = $match[5] . "-" . $match[1] . "-" . $match[3];
 			}
-			// dd/mm - dd.mm like formats			
+			// dd/mm - dd.mm like formats
 			if($d === false) {
 				$pattern = "/^([0-9]{1,2})(\/|-|\.|\s)([0-9]{1,2})$/";
 				$match = array();
 				if (preg_match($pattern, $value, $match)) {
 					$d = $match[1] . "/" . $match[3];
-				}	
+				}
 			}
 		}
 
@@ -345,7 +346,7 @@ class BeLib {
 			$match = array();
 			if (preg_match($pattern, $value, $match)) {
 				$d = $match[1] . "-01-01";
-			}	
+			}
 		}
 
 		if($d === false) {
@@ -357,7 +358,7 @@ class BeLib {
 				// which year 08, 12, 18, 28 ??? - if earlier than current year add 2000, otherwise add 1900
 				$yNow = intval($date->format("Y"));
 				$ys = strval($y + ((2000 + $y > $yNow) ? 1900 : 2000));
-				$d = $ys . "-01-01";				
+				$d = $ys . "-01-01";
 			}
 		}
 
@@ -367,14 +368,14 @@ class BeLib {
 		$date = new DateTime($d);
 		return $date->format('Y-m-d');
 	}
-	
+
 	/**
 	 * return conventional variable/method name starting from nickname
 	 * replacing '-' with '_' and camelizing (not first char)
-	 * 
+	 *
 	 * example: this-is-my-nickname become thisIsMyNickName
-	 * 
-	 * @param string $nickname 
+	 *
+	 * @param string $nickname
 	 * @return string
 	 */
 	public function variableFromNickname($nickname) {
@@ -385,8 +386,8 @@ class BeLib {
 
     /**
      * generate an array of frontend folders
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getFrontendFolders() {
         $sel = array();
@@ -402,8 +403,8 @@ class BeLib {
 
     /**
      * generate an array of addon folders
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getAddonFolders() {
         $sel = array();
@@ -419,8 +420,8 @@ class BeLib {
 
     /**
      * generate an array of plugin module folders
-     * 
-     * @return array 
+     *
+     * @return array
      */
     public function getPluginModuleFolders() {
         $sel = array();
@@ -436,9 +437,9 @@ class BeLib {
 
     /**
      * update Addons after project update
-     * 
-     * @param string $path 
-     * @return array 
+     *
+     * @param string $path
+     * @return array
      */
     public function remoteUpdateAddons($path) {
         // update enabled addons
