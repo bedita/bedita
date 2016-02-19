@@ -925,6 +925,23 @@ abstract class ModulesController extends AppController {
 	 */
 	protected $categorizableModels = array();
 
+    /**
+     * Define a relations order by Model
+     * The order will be reflected in every module object view detail
+     * Example:
+     *
+     * ```
+     * array(
+     *     'Image' => array('attached_to', 'poster_of'),
+     *     'Video' => array('seealso')
+     * )
+     * ```
+     *
+     * @see self::viewObject()
+     * @var array
+     */
+    protected $relationsOrder = array();
+
     // @todo uncomment once all module plugin will be updated to use BeSecurity
     // public function __construct() {
     //     $this->components[] = 'BeSecurity';
@@ -1362,7 +1379,8 @@ abstract class ModulesController extends AppController {
         }
 
         $property = $this->BeCustomProperty->setupForView($obj, Configure::read('objectTypes.' . $name . '.id'));
-        $availabeRelations = ClassRegistry::init('ObjectRelation')->availableRelations($name);
+        $relationsOrder = !empty($this->relationsOrder[$beModel->alias]) ? $this->relationsOrder[$beModel->alias] : array();
+        $availabeRelations = ClassRegistry::init('ObjectRelation')->availableRelations($name, $relationsOrder);
 
         $this->set('object',    $obj);
         $this->set('attach', isset($relations['attach']) ? $relations['attach'] : array());
