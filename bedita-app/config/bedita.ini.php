@@ -523,34 +523,29 @@ $config['validate_resource'] = array(
  *  and an array of params
  */
 $config['media_providers'] = array(
-	"youtube"	=> array(
-		"regexp" => array(
-			'/^http[s]?:\/\/\w{3}\.youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http[s]?:\/\/youtube\.com\/watch\?v=(.[^&]+)/',
-			'/^http[s]?:\/\/[a-z]{2}\.youtube\.com\/watch\?v=(.[^&]+)/'
-		),
-		"params" => array(
-			"width" 	=> 300,
-			"height" 	=> 250,
-			"urlthumb"	=> "http://i.ytimg.com/vi/%s/default.jpg",
-			"urlembed"	=> "http://www.youtube.com/oembed?url=%s"
-		)
-	),
-	"vimeo"	=> array(
-		"regexp" => array(
-			'/^http:\/\/\w{3}\.vimeo\.com\/(\d+)/',
-			'/^https:\/\/\w{3}\.vimeo\.com\/(\d+)/',
-			'/^http:\/\/vimeo\.com\/(\d+)/',
-			'/^https:\/\/vimeo\.com\/(\d+)/'
-		),
-		"params" => array(
-			"width"		=> 300,
-			"height"	=> 250,
-			"urlinfo" 	=> "http://vimeo.com/api/v2/video/%s.%s",
-			"urlembed"	=> "http://vimeo.com/api/oembed.json?url=%s"
-		)
-	)
-) ;
+    'youtube' => array(
+        'regexp' => array(
+            '#^https?://(?:www\.)?(?:m\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w_-]{11})(?:.+)?$#x',
+        ),
+        'params' => array(
+            'width' => 300,
+            'height' => 250,
+            'urlthumb' => 'http://i.ytimg.com/vi/%s/default.jpg',
+            'urlembed' => 'http://www.youtube.com/oembed?url=%s',
+        ),
+    ),
+    'vimeo' => array(
+        'regexp' => array(
+            '#^https?://(?:\w{3}\.)?vimeo\.com/(\d+)#',
+        ),
+        'params' => array(
+            'width' => 300,
+            'height' => 250,
+            'urlinfo' => 'http://vimeo.com/api/v2/video/%s.%s',
+            'urlembed' => 'http://vimeo.com/api/oembed.json?url=%s',
+        ),
+    ),
+);
 
 /**
  *  Default model bindings for Containable Behaviour
