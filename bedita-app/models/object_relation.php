@@ -353,10 +353,12 @@ class ObjectRelation extends BEAppModel
      * array returned is like
      * array('relation_name' => 'relation label', ...)
      *
+     * @see self::sortRelations() for $orderBy example
      * @param string|int $objectType Object type name or object type id
+     * @param array $orderBy sort relations returned
      * @return array
      */
-    public function availableRelations($objectType, array $sorter = array()) {
+    public function availableRelations($objectType, array $orderBy = array()) {
         $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
         $availableRelations = array();
         if (is_numeric($objectType)) {
@@ -401,8 +403,8 @@ class ObjectRelation extends BEAppModel
         }
 
         $availableRelations = array_unique($availableRelations);
-        if (!empty($sorter)) {
-            $availableRelations = $this->sortRelations($availableRelations, $sorter);
+        if (!empty($orderBy)) {
+            $availableRelations = $this->sortRelations($availableRelations, $orderBy);
         }
 
         return $availableRelations;
