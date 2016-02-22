@@ -484,6 +484,9 @@ class BeThumb {
     private function storeCacheThumbnail($cacheItem) {
         if (!empty($this->imageInfo['cache'])) {
             $thumbFileSize = filesize($this->imageTarget['filepath']);
+            if ($thumbFileSize === 0) {
+                $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']);
+            }
             $this->imageInfo['cache']['thumbs'][$cacheItem] = array('size' => $thumbFileSize);
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
             Cache::write($path, $this->imageInfo['cache'], 'thumbs');
