@@ -30,6 +30,7 @@ class RestClientModel extends BEAppModel {
 	public $httpReady = false;
 	public $client;
 	public $useCurl = false;
+	public $callHeaders = array();
 
 	/**
 	 * options used when a request (get/post) is done
@@ -90,6 +91,12 @@ class RestClientModel extends BEAppModel {
 		}
 	}
 
+	/**
+	 * Set headers for a call (get/post). After the call, reset headers
+	 */
+	public function setHeaders(array $headers = array()) {
+		$this->callHeaders = $headers;
+	}
 
 	/**
 	 * Do a HTTP GET request and returns output response. 
@@ -102,16 +109,27 @@ class RestClientModel extends BEAppModel {
 	 * @param boolean $camelize, used if $outType = 'xml'
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
+	 * @param array $headers, header parameters
 	 */
-	public function get($uri, $params = array(), $outType = null, $camelize = true) {
+	public function get($uri, $params = array(), $outType = null, $camelize = true, array $headers = array(), $verbose = false) {
+		$this->setHeaders($headers);
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 		}
-		
 		if(!$this->useCurl) {
 			// @todo: handle self::requestOptions
-			$out = $this->client->get($uri, $params);
+			$request = $this->callRequest();
+			$out = $this->client->get($uri, $params, $request);
 		} else {
+			if($verbose) {
+				curl_setopt($this->client, CURLOPT_VERBOSE, true);
+			}
+			$this->log("HTTP HEADERS:" . print_r($this->callHeaders, true), LOG_DEBUG);
+			$headers = array();
+			foreach ($this->callHeaders as $headerKey => $headerVal) {
+				$headers[] = $headerKey . ':' . $headerVal;
+			}
+			curl_setopt($this->client, CURLOPT_HTTPHEADER, $headers); 
 		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "GET");
 			curl_setopt($this->client, CURLOPT_HTTPGET, true);
 
@@ -131,6 +149,7 @@ class RestClientModel extends BEAppModel {
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
 			if(curl_errno($this->client)) {
+				exit;
 				$err = curl_error($this->client);
 				$this->log("Error: " . $err);
 			}
@@ -138,7 +157,7 @@ class RestClientModel extends BEAppModel {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
 		}
-		
+		$this->setHeaders(); // reset headers
 		return $this->output($out, $outType, $camelize);
 	}
 	
@@ -153,15 +172,23 @@ class RestClientModel extends BEAppModel {
 	 * @param boolean $camelize, used if $outType = 'xml'
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
+	 * @param array $headers, extra headers for call
 	 */
-	public function post($uri, $params = array(), $outType = null, $camelize = true) {
+	public function post($uri, $params = array(), $outType = null, $camelize = true, array $headers = array()) {
+		$this->setHeaders($headers);
 		if(!$this->useCurl) {
 			// @todo: handle self::requestOptions
-			$out = $this->client->post($uri, $params);
+			$request = $this->callRequest();
+			$out = $this->client->post($uri, $params, $request);
 			if(Configure::read('debug') > 0) {
 				$this->log("HTTP REQUEST:\nuri " . $uri . "\nparams " . print_r($params, true), LOG_DEBUG);
 			}
 		} else {
+			foreach ($this->callHeaders as $headerKey => $headerVal) {
+				curl_setopt($this->client, CURLOPT_HTTPHEADER , array(
+		            $headerKey . ':' . $headerVal
+		        ));
+			}
 		    curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, "POST");
 		    curl_setopt($this->client, CURLOPT_POST, true);
 
@@ -201,6 +228,7 @@ class RestClientModel extends BEAppModel {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
 		}
+		$this->setHeaders();
 		return $this->output($out, $outType, $camelize);
 	}
 
@@ -218,6 +246,7 @@ class RestClientModel extends BEAppModel {
 	 *			false leave array keys equal to xml items
 	 */
 	public function request($uri, $method="GET", $params = array(), $outType = null, $camelize = true) {
+		$this->setHeaders($headers);
 		$method = strtoupper($method);
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP REQUEST:\nuri " . $uri . "\nmethod " . $uri .
@@ -227,7 +256,8 @@ class RestClientModel extends BEAppModel {
 		if(!$this->useCurl) {
 			$classMethod = strtolower($method);
 			if(method_exists($this->client, $classMethod)) {
-				$out = $this->client->{$classMethod}($uri, $params);
+				$request = $this->callRequest();
+				$out = $this->client->{$classMethod}($uri, $params, $request);
 			} else {
 				throw new BeditaException("Bad HTTP method: " . $method);
 			}
@@ -238,6 +268,11 @@ class RestClientModel extends BEAppModel {
 				$httpQuery = $params;
 			}
 			$queryParms = (empty($httpQuery)) ? "" : "?" . $httpQuery;
+			foreach ($this->callHeaders as $headerKey => $headerVal) {
+				curl_setopt($this->client, CURLOPT_HTTPHEADER , array(
+		            $headerKey . ':' . $headerVal
+		        ));
+			}
 			curl_setopt($this->client, CURLOPT_CUSTOMREQUEST, $method);
 			curl_setopt($this->client, CURLOPT_URL, $uri . $queryParms);
 			$out = curl_exec($this->client);
@@ -249,10 +284,17 @@ class RestClientModel extends BEAppModel {
 		if(Configure::read('debug') > 0) {
 			$this->log("HTTP RESPONSE:\n" . $out . "\n", LOG_DEBUG);
 		}
-	
+		$this->setHeaders();
 		return $this->output($out, $outType, $camelize);
 	}
 	
+	private function callRequest() {
+		$request = array();
+		if (!empty($this->callHeaders)) {
+			$request = array('header' => $this->callHeaders);
+		}
+		return $request;
+	}
 	/**
 	 * Format response
 	 * 
