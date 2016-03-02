@@ -1,0 +1,44 @@
+{
+    "name": "bedita/api",
+    "type": "cakephp-plugin",
+    "description": "A plugin to enable REST API in any BEdita application.",
+    "keywords": ["cakephp", "cake3", "plugin", "bedita", "api", "rest", "travis", "scrutinizer", "coveralls"],
+    "license": "LGPL",
+    "support": {
+        "source": "https://github.com/bedita/bedita",
+        "issues": "https://github.com/bedita/bedita/issues"
+    },
+    "authors": [
+        {
+            "name": "Chia Lab s.r.l.",
+            "email": "dev@chialab.it",
+            "homepage": "http://www.chialab.it"
+        },
+        {
+            "name": "ChannelWeb s.r.l.",
+            "email": "info@channelweb.it",
+            "homepage": "http://www.channelweb.it"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "cakephp/cakephp": "~3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "cakephp/cakephp-codesniffer": "master-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "BEdita\\API\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BEdita\\API\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
