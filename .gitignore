@@ -1,0 +1,10 @@
+.git/
+.vscode/
+/coverage
+/logs
+/plugins
+/tmp
+/vendor
+composer.lock
+phinx.yml
+phpunit.xml
