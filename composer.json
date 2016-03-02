@@ -21,12 +21,14 @@
     "autoload": {
         "psr-4": {
             "BEdita\\Manage\\": "src",
+            "BEdita\\Auth\\": "./plugins/BEdita/Auth/src",
             "BEdita\\Core\\": "./plugins/BEdita/Core/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
             "BEdita\\Manage\\Test\\": "tests",
+            "BEdita\\Auth\\Test\\": "./plugins/BEdita/Auth/tests",
             "BEdita\\Core\\Test\\": "./plugins/BEdita/Core/tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
