@@ -225,9 +225,9 @@ return [
              * the following line and set the port accordingly
              */
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'my_app',
+            'username' => 'bedita',
+            'password' => 'bedita',
+            'database' => 'bedita',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'flags' => [],
@@ -252,7 +252,7 @@ return [
              * which is the recommended value in production environments
              */
             //'init' => ['SET GLOBAL innodb_stats_on_metadata = 0'],
-            
+
             'url' => env('DATABASE_URL', null),
         ],
 
@@ -265,9 +265,9 @@ return [
             'persistent' => false,
             'host' => 'localhost',
             //'port' => 'non_standard_port_number',
-            'username' => 'my_app',
-            'password' => 'secret',
-            'database' => 'test_myapp',
+            'username' => 'bedita',
+            'password' => 'bedita',
+            'database' => 'bedita_test',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
             'cacheMetadata' => true,
