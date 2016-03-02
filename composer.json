@@ -1,9 +1,25 @@
 {
     "name": "bedita/bedita",
+    "type": "project",
     "description": "BEdita manage app",
     "homepage": "http://bedita.com",
-    "type": "project",
     "license": "LGPL",
+    "support": {
+        "source": "https://github.com/bedita/bedita",
+        "issues": "https://github.com/bedita/bedita/issues"
+    },
+    "authors": [
+        {
+            "name": "Chia Lab s.r.l.",
+            "email": "dev@chialab.it",
+            "homepage": "http://www.chialab.it"
+        },
+        {
+            "name": "ChannelWeb s.r.l.",
+            "email": "info@channelweb.it",
+            "homepage": "http://www.channelweb.it"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "cakephp/cakephp": "~3.2",
