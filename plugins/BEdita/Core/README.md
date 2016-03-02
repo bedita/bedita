@@ -1,0 +1,1 @@
+# BEdita/Core plugin

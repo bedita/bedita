@@ -1,0 +1,26 @@
+{
+    "name": "BEdita/Core",
+    "description": "BEdita/Core plugin",
+    "type": "cakephp-plugin",
+    "license": "LGPL",
+    "require": {
+        "php": ">=5.5.9",
+        "cakephp/cakephp": "~3.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "BEdita\\Core\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "BEdita\\Core\\Test\\": "tests",
+            "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
