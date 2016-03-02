@@ -1,3 +1,4 @@
+# Define the line ending behavior of the different file extensions
 # Set default behaviour, in case users don't have core.autocrlf set.
 * text=auto
 * text eol=lf
@@ -7,6 +8,7 @@
 *.php text
 *.php.sample text
 *.tpl text
+*.default text
 *.ctp text
 *.js text
 *.css text
@@ -16,9 +18,16 @@
 *.po text
 *.md text
 *.ini text
+*.properties text
+*.txt text
+*.yml text
+.htaccess text
 
 # Declare files that will always have CRLF line endings on checkout.
 *.bat eol=crlf
+
+# Declare files that will always have LF line endings on checkout.
+*.pem eol=lf
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary
@@ -29,3 +38,6 @@
 *.swf binary
 *.ico binary
 *.tar binary
+*.mo binary
+*.pdf binary
+*.phar binary

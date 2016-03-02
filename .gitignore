@@ -1,11 +1,17 @@
 # User specific & automatically generated files #
 #################################################
-/vendor/*
-/config/app.php
-/tmp/*
-/logs/*
+/.vagrant/*
 /composer.lock
+/config/app.php
+/index.html
+/logs/*
+!/logs/.gitkeep
 /phpunit.xml
+/provision/roles/*
+!/provision/roles/.gitkeep
+/tmp/*
+/vendor/*
+!/vendor/.gitkeep
 
 # IDE and editor specific files #
 #################################
