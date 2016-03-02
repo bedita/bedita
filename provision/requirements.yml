@@ -1,0 +1,23 @@
+---
+- src: git+https://bitbucket.org/fquffio/ansible-apache.git
+  name: apache
+- src: git+https://bitbucket.org/fquffio/ansible-common.git
+  name: common
+- src: git+https://bitbucket.org/fquffio/ansible-composer.git
+  name: composer
+- src: git+https://bitbucket.org/fquffio/ansible-elasticsearch.git
+  name: elasticsearch
+- src: git+https://bitbucket.org/fquffio/ansible-git.git
+  name: git
+- src: git+https://bitbucket.org/fquffio/ansible-kibana.git
+  name: kibana
+- src: git+https://bitbucket.org/fquffio/ansible-logrotate.git
+  name: logrotate
+- src: git+https://bitbucket.org/fquffio/ansible-logstash.git
+  name: logstash
+- src: git+https://bitbucket.org/fquffio/ansible-mysql.git
+  name: mysql
+- src: git+https://bitbucket.org/fquffio/ansible-ntp.git
+  name: ntp
+- src: git+https://bitbucket.org/fquffio/ansible-redis.git
+  name: redis

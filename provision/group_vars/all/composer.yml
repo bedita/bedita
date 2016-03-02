@@ -1,0 +1,9 @@
+###
+# Composer
+###
+---
+composer_packages:
+  cakephp/cakephp-codesniffer: "*"
+  phpmd/phpmd: "*"
+  phpunit/phpunit: "4.*"
+  squizlabs/php_codesniffer: "*"

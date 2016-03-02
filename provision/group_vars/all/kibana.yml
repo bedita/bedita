@@ -1,0 +1,6 @@
+###
+# Kibana
+###
+---
+kibana_plugins:
+  marvel: elasticsearch/marvel/latest

@@ -1,0 +1,18 @@
+###
+# MySQL
+###
+---
+mysql_root_password: root
+mysql_databases:
+  - bedita
+  - bedita_test
+mysql_users:
+  - username: bedita
+    password: bedita
+    perms:
+      - bedita.*:ALL
+      - bedita\_%.*:ALL
+    hosts:
+      - localhost
+      - 127.0.0.1
+      - ::1
