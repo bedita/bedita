@@ -1,8 +1,13 @@
-filter:
-    paths: [src/*]
-    excluded_paths: [bin/*, config/*, logs/*, plugins/*, tests/*, tmp/*, webroot/*]
-tools:
-    php_analyzer: true
 checks:
-    php:
-        code_rating: true
+  php:
+    custom_coding_standard:
+      git_repository: 'https://github.com/cakephp/cakephp-codesniffer'
+      ruleset_path: 'CakePHP/ruleset.xml'
+
+filter:
+  paths:
+    - 'config/*'
+    - 'src/*'
+    - 'webroot/*'
+  dependency_paths:
+    - 'vendors/*'
