@@ -18,6 +18,7 @@
 /tags
 /.externalToolBuilders
 .DS_Store
+/*.vscode
 
 # /bedita-app/
 /bedita-app/.cache
