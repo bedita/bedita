@@ -10,6 +10,7 @@
 /provision/roles/*
 !/provision/roles/.gitkeep
 /tmp/*
+!/tmp/.gitkeep
 /vendor/*
 !/vendor/.gitkeep
 
