@@ -1,0 +1,4 @@
+The license text can be found in LICENSE.LGPL
+
+This license applies only to BEdita, third party libraries/components
+have their own licenses: they can be found inside cake/ and vendors/ 

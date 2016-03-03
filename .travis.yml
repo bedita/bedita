@@ -1,0 +1,53 @@
+language: php
+
+php:
+    - 5.3
+    - 5.4
+    - 5.5
+    - 5.6
+
+before_script:
+    - mysql -e 'CREATE DATABASE bedita;'
+    - mysql -e 'CREATE DATABASE bedita_test;'
+    - mysql --user=travis bedita < bedita-app/config/sql/bedita_mysql_schema.sql
+    - mysql --user=travis bedita < bedita-app/config/sql/bedita_init_data.sql
+    - mysql --user=travis bedita_test < bedita-app/config/sql/bedita_mysql_schema.sql
+    - mysql --user=travis bedita_test < bedita-app/config/sql/bedita_init_data.sql
+    - chmod -R 777 ./bedita-app/tmp
+    - cp ./bedita-app/config/core.php.sample ./bedita-app/config/core.php
+    - cp ./bedita-app/config/bedita.cfg.php.sample ./bedita-app/config/bedita.cfg.php
+    - echo "<?php
+        class DATABASE_CONFIG {
+            var \$default = array(
+                'driver' => 'mysql',
+                'persistent' => false,
+                'connect' => 'mysql_connect',
+                'host' => '127.0.0.1',
+                'login' => 'travis',
+                'password' => '',
+                'database' => 'bedita',
+                'schema' => '',
+                'prefix' => '',
+                'encoding' => 'utf8'
+            );
+            var \$test = array(
+                'driver' => 'mysql',
+                'persistent' => false,
+                'connect' => 'mysql_connect',
+                'host' => '127.0.0.1',
+                'login' => 'travis',
+                'password' => '',
+                'database' => 'bedita_test',
+                'schema' => '',
+                'prefix' => '',
+                'encoding' => 'utf8'
+            );
+        }" > bedita-app/config/database.php
+
+script:
+    - ./cake.sh testsuite app all
+    - ./cake.sh testsuite core case xml2
+
+notifications:
+    email:
+        - bedita-commits@channelweb.it

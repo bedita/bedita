@@ -1,0 +1,5 @@
+<IfModule mod_rewrite.c>
+   RewriteEngine on
+   RewriteRule    ^$ bedita-app/webroot/    [L]
+   RewriteRule    (.*) bedita-app/webroot/$1 [L]
+</IfModule>

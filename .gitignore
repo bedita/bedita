@@ -1,0 +1,74 @@
+# /
+/apache
+/media*
+/addons
+/.project
+/*.settings
+/themes
+/media.*
+/*.cache
+/.buildpath
+/doxygen_*
+/dir_conflicts.*
+/nbproject
+/modules
+/frontends
+/.idea
+/sources
+/tags
+/.externalToolBuilders
+.DS_Store
+
+# /bedita-app/
+/bedita-app/.cache
+/bedita-app/.settings
+/bedita-app/.project
+
+# /bedita-app/config/
+/bedita-app/config/database.php
+/bedita-app/config/core.php
+/bedita-app/config/bedita.cfg.php
+/bedita-app/config/bedita.version.php
+/bedita-app/config/bedita.sys.php
+/bedita-app/config/bedita.sys
+/bedita-app/config/local
+/bedita-app/config/.directory
+/bedita-app/config/*.copy
+
+# /bedita-app/config/local/
+/bedita-app/config/local/*
+
+# /bedita-app/config/notify/
+/bedita-app/config/notify/local.msg.php
+
+# /bedita-app/tests/cases/components/
+/bedita-app/tests/cases/components/*.localdata.php
+
+# /bedita-app/tmp
+/bedita-app/tmp
+
+# /bedita-app/vendors/shells/
+/bedita-app/vendors/shells/be_test.php
+
+# /bedita-app/webroot/
+/bedita-app/webroot/test.php
+/bedita-app/webroot/beditamedia
+/bedita-app/webroot/testmodale.html
+/bedita-app/webroot/xopus
+/bedita-app/webroot/.directory
+
+# /bedita-app/webroot/files/
+/bedita-app/webroot/files/*
+
+# /bedita-app/webroot/img/
+/bedita-app/webroot/img/.directory
+
+# /bedita-app/webroot/js/libs/richtexteditors/conf/local
+/bedita-app/webroot/js/libs/richtexteditors/conf/local/*.js
+/bedita-app/webroot/js/libs/richtexteditors/conf/local/*.css
+
+# /bedita-app/plugins/debug_kit
+/bedita-app/plugins/debug_kit
+
+# /bedita-doc/api/
+/bedita-doc/api/html
