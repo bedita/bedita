@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "private_network", ip: "10.0.83.4"
 
   # Add additional shared folder to easen Apache setup:
-  config.vm.synced_folder ".", "/var/www/html"
+  config.vm.synced_folder ".", "/var/www/html", owner: "www-data", group: "www-data"
   config.vm.synced_folder "provision/", "/vagrant"
 
   # Configure VirtualBox provider:
