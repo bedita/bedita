@@ -28,6 +28,7 @@
 .project
 .buildpath
 .settings
+.vscode
 
 # OS generated files #
 ######################
