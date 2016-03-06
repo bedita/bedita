@@ -141,13 +141,6 @@ Log::config(Configure::consume('Log'));
 Security::salt(Configure::consume('Security.salt'));
 
 /**
- * The default crypto extension in 3.0 is OpenSSL.
- * If you are migrating from 2.x uncomment this code to
- * use a more compatible Mcrypt based implementation
- */
-//Security::engine(new \Cake\Utility\Crypto\Mcrypt());
-
-/**
  * Setup detectors for mobile and tablet.
  */
 Request::addDetector('mobile', function () {
@@ -179,8 +172,11 @@ Request::addDetector('tablet', function () {
  * Plugin::load('Migrations'); //Loads a single plugin named Migrations
  *
  */
-
 Plugin::load('Migrations');
+Plugin::load(
+    ['BEdita/API', 'BEdita/Auth', 'BEdita/Core'],
+    ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]
+);
 
 // Only try to load DebugKit in development mode
 // Debug Kit should not be installed on a production system
@@ -218,5 +214,3 @@ Type::build('date')
 Type::build('datetime')
     ->useImmutable()
     ->useLocaleParser();
-
-Plugin::load('BEdita/Core', ['bootstrap' => false, 'routes' => false]);
