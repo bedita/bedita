@@ -32,9 +32,7 @@ class DbAdminShell extends Shell
     protected $schemaDir = null;
 
     /**
-     * Overrides Shell::initialize()
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function initialize()
     {
@@ -43,10 +41,7 @@ class DbAdminShell extends Shell
     }
 
     /**
-     * Overrides Shell::getOptionParser()
-     * Define subcommands and arguments/options  inline help
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function getOptionParser()
     {
