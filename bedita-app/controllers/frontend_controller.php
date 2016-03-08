@@ -590,6 +590,25 @@ abstract class FrontendController extends AppController {
 		}
 	}
 
+    protected function treeChildrenCache($id = null, $status = null, $filter = false, 
+        $order = 'priority', $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
+
+        if (empty($status)) {
+            $status = $this->status;
+        }
+        $sections = array();
+        $cacheOpts = array($id, $status, $filter, $order, $dir, $page, $dim, $excludeIds);
+        if ($this->BeObjectCache) {
+            $sections = $this->BeObjectCache->read($id, $cacheOpts, 'children');
+        }
+        if (empty($sections)) {
+            $sections = $this->BeTree->getChildren($id, $status, $filter, $order, $dir, $page, $dim, $excludeIds);
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($id, $cacheOpts, $sections, 'children');
+            }
+        }
+        return $sections;
+    }
 	/**
 	* Get tree starting from specified section or area
 	*
@@ -599,28 +618,19 @@ abstract class FrontendController extends AppController {
 	* @param int $depth				tree's depth level (default=null => all levels)
 	* @return array
 	* */
-	protected function loadSectionsTree($parentName, $loadContents = false, $exclude_nicknames = array(), $depth = null, $flatMode = false) {
+    protected function loadSectionsTree($parentName, $loadContents = false, $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
-		$conf = Configure::getInstance();
-		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
-		$result = array();
-		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
-		if (empty($parent_id)) {
-			throw new BeditaBadRequestException(__('Error loading sections tree. Missing parent', true)  . ': ' . $parentName);
-		}
-
-        $sections = array();
-        $cacheOpts = array();
-        if ($this->BeObjectCache) {
-            $cacheOpts = array($parent_id, $this->status, $filter, "priority");
-            $sections = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+        $parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
+        $result = array();
+        $filter['object_type_id'] = Configure::read('objectTypes.section.id');
+        if (empty($parent_id)) {
+            throw new BeditaBadRequestException(__('Error loading sections tree. Missing parent', true) 
+                . ': ' . $parentName);
         }
 
+        $sections = $this->treeChildrenCache($parent_id, $this->status, $filter, 'priority');
         if (empty($sections)) {
-            $sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
-            if ($this->BeObjectCache) {
-                $this->BeObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
-            }
+            return $result;
         }
 
 		foreach ($sections['items'] as $s) {
