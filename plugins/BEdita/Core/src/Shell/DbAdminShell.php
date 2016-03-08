@@ -6,6 +6,7 @@ namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
 use Cake\Datasource\ConnectionManager;
+use Cake\Core\Plugin;
 use BEdita\Core\Utils\DbUtils;
 
 /**
@@ -37,7 +38,7 @@ class DbAdminShell extends Shell
     public function initialize()
     {
         parent::initialize();
-        $this->schemaDir = ROOT . DS . 'plugins' . DS . 'BEdita' . DS . 'Core' . DS . 'config' . DS . 'schema' . DS;
+        $this->schemaDir = Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS;
     }
 
     /**
