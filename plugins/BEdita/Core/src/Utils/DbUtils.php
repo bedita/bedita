@@ -117,18 +117,20 @@ class DbUtils
      *
      * @return array containing keys: 'success' (boolean), 'error' (string with error message),
      *      'rowCount' (number of affected rows)
+     * @throws \Cake\Datasource\Exception\MissingDatasourceConfigException Throws an exception
+     *      if the requested `$dbConfig` does not exist.
      */
     public static function executeTransaction($sql, $dbConfig = 'default')
     {
         $res = ['success' => false, 'error' => '', 'rowCount' => 0];
+        $connection = ConnectionManager::get($dbConfig);
         try {
-            $connection = ConnectionManager::get($dbConfig);
             $connection->begin();
             $statement = $connection->query($sql);
             $connection->commit();
             $res['success'] = true;
             $res['rowCount'] = $statement->rowCount();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $connection->rollback();
             $res['error'] = $e->getMessage();
         }

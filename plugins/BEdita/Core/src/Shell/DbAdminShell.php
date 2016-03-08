@@ -7,6 +7,7 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Utils\DbUtils;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
+use Cake\Datasource\Exception\MissingDatasourceConfigException;
 
 /**
  * Database related shell commands like:
@@ -158,9 +159,13 @@ class DbAdminShell extends Shell
             $this->abort('Schema file not found: ' . $schemaFile);
         }
         $sqlSchema = file_get_contents($schemaFile);
-        $result = DbUtils::executeTransaction($sqlSchema);
-        if (!$result['success']) {
-            $this->abort('Error creating database schema: ' . $result['error']);
+        try {
+            $result = DbUtils::executeTransaction($sqlSchema);
+            if (!$result['success']) {
+                $this->abort('Error creating database schema: ' . $result['error']);
+            }
+        } catch (MissingDatasourceConfigException $e) {
+            $this->abort('Database connection not configured!');
         }
         $this->info('New database schema set');
     }
