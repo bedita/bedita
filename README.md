@@ -8,6 +8,7 @@
 1. Install [composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 2. Clone repository
 3. Run composer install
+
  ```bash
  $ cd /path/to/bedita
  $ composer install
@@ -24,7 +25,5 @@ BEdita employs a licensing scheme [LGPL](/bedita/bedita/blob/master/LICENSE.LGPL
 ## More info
 
  * For an overview of BEdita please visit http://www.bedita.com/
-
-<br/>
  * Get support on [Google Groups](https://groups.google.com/forum/#!forum/bedita)
 
