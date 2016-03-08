@@ -59,6 +59,7 @@ class DbAdminShell extends Shell
                         'help' => 'Specifiy output file path',
                         'short' => 'o',
                         'required' => false,
+                        'default' => $this->schemaDir . self::JSON_SCHEMA_FILE,
                     ],
                 ],
             ],
@@ -92,11 +93,7 @@ class DbAdminShell extends Shell
      */
     public function saveSchema()
     {
-        if (!empty($this->params['output'])) {
-            $schemaFile = $this->params['output'];
-        } else {
-            $schemaFile = $this->schemaDir . self::JSON_SCHEMA_FILE;
-        }
+        $schemaFile = $this->params['output'];
         if (file_exists($schemaFile)) {
             $res = $this->in('Overwrite schema file "' . $schemaFile . '"?', ['y', 'n'], 'n');
             if ($res != 'y') {
