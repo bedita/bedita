@@ -9,7 +9,7 @@ use Cake\Datasource\ConnectionManager;
 use BEdita\Core\Utils\DbUtils;
 
 /**
- * Database related shell commands like: 
+ * Database related shell commands like:
  *  - initialize a new databasa instance
  *  - create schema files
  *  - check schema consistency
@@ -60,8 +60,8 @@ class DbAdminShell extends Shell
                 ],
                 'options' => [
                     'output' => [
-                        'help' => 'Specifiy output file path', 
-                        'short' => 'o', 
+                        'help' => 'Specifiy output file path',
+                        'short' => 'o',
                         'required' => false,
                     ],
                 ]
@@ -72,7 +72,7 @@ class DbAdminShell extends Shell
             'parser' => [
                 'description' => [
                     'A JSON file schema is generated from current DB connection.',
-                    'This file is compared with the default one' . 
+                    'This file is compared with the default one' .
                     ' in BEdita/Core/config/schema/be4-schema.json.'
                 ],
             ]
@@ -95,7 +95,7 @@ class DbAdminShell extends Shell
      *
      * @return void
      */
-    public function saveSchema() 
+    public function saveSchema()
     {
         if (!empty($this->params['output'])) {
             $schemaFile = $this->params['output'];
@@ -117,14 +117,14 @@ class DbAdminShell extends Shell
         }
         $this->info('Schema file updated ' . $schemaFile);
     }
-    
+
     /**
-     * Check schema differences between current db and schema JSON file 
+     * Check schema differences between current db and schema JSON file
      * (in BEdita/Core/config/schema/be4-schema.json)
      *
      * @return void
      */
-    public function checkSchema() 
+    public function checkSchema()
     {
         $schemaFile = $this->schemaDir . 'be4-schema.json';
         $json = file_get_contents($schemaFile);
@@ -150,9 +150,9 @@ class DbAdminShell extends Shell
         $info = DbUtils::basicInfo();
         $this->warn('You are about to initialize a new database!!');
         $this->warn('ALL CURRENT BEDITA4 TABLES WILL BE DROPPED!!');
-        $this->info('Host: ' . $info['host']  . '');
-        $this->info('Database: ' . $info['database']  . '');
-        $this->info('Vendor: ' . $info['vendor']  . '');
+        $this->info('Host: ' . $info['host'] . '');
+        $this->info('Database: ' . $info['database'] . '');
+        $this->info('Vendor: ' . $info['vendor'] . '');
         $res = $this->in('Do you want to proceed?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->out('Database unchanged');
@@ -170,5 +170,4 @@ class DbAdminShell extends Shell
         }
         $this->info('New database schema set');
     }
-
 }
