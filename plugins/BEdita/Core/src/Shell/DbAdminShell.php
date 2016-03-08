@@ -4,10 +4,9 @@
  */
 namespace BEdita\Core\Shell;
 
-use Cake\Console\Shell;
-use Cake\Datasource\ConnectionManager;
-use Cake\Core\Plugin;
 use BEdita\Core\Utils\DbUtils;
+use Cake\Console\Shell;
+use Cake\Core\Plugin;
 
 /**
  * Database related shell commands like:
@@ -52,7 +51,7 @@ class DbAdminShell extends Shell
             'parser' => [
                 'description' => [
                     'Use this command to generate a JSON file schema.',
-                    'File is built using current database connection.'
+                    'File is built using current database connection.',
                 ],
                 'options' => [
                     'output' => [
@@ -60,27 +59,26 @@ class DbAdminShell extends Shell
                         'short' => 'o',
                         'required' => false,
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
         $parser->addSubcommand('checkSchema', [
             'help' => 'Check schema differences between current db and schema JSON file.',
             'parser' => [
                 'description' => [
                     'A JSON file schema is generated from current DB connection.',
-                    'This file is compared with the default one' .
-                    ' in BEdita/Core/config/schema/be4-schema.json.'
+                    'This file is compared with the default one in BEdita/Core/config/schema/be4-schema.json.',
                 ],
-            ]
+            ],
         ]);
         $parser->addSubcommand('init', [
             'help' => 'Create a new BE4 schema on current DB connection.',
             'parser' => [
                 'description' => [
                     'A new database schema is created using current DB connection.',
-                    'BEWARE: all existing BE4 tables will be dropped!!'
+                    'BEWARE: all existing BE4 tables will be dropped!!',
                 ],
-            ]
+            ],
         ]);
         return $parser;
     }

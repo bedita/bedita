@@ -115,7 +115,7 @@ class DbUtils
      * @param string $sql      SQL query to execute.
      * @param string $dbConfig Database config to use ('default' as default)
      *
-     * @return array containg keys: 'success' (boolean), 'error' (string with error message),
+     * @return array containing keys: 'success' (boolean), 'error' (string with error message),
      *      'rowCount' (number of affected rows)
      */
     public static function executeTransaction($sql, $dbConfig = 'default')
