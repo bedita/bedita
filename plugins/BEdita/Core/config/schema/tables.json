@@ -1,0 +1,19 @@
+[
+    // table list in order of insertion/creation
+    "users",
+    "auth_providers",
+    "external_auth",
+    "config",
+    "object_types",
+    "property_types",
+    "properties",
+    "object_properties",
+    "objects",
+    "annotations",
+    "media",
+    "profiles",
+    "relations",
+    "relation_types",
+    "object_relations",
+    "trees"
+]
