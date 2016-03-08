@@ -33,6 +33,8 @@ class DbAdminShell extends Shell
 
     /**
      * Overrides Shell::initialize()
+     *
+     * @return void
      */
     public function initialize()
     {
@@ -42,7 +44,9 @@ class DbAdminShell extends Shell
 
     /**
      * Overrides Shell::getOptionParser()
-     * define arguments and display inline help
+     * Define subcommands and arguments/options  inline help
+     *
+     * @return void
      */
     public function getOptionParser()
     {
@@ -88,6 +92,8 @@ class DbAdminShell extends Shell
     /**
      * Save schema to file (JSON format) from current db
      * Generated file is BEdita/Core/config/schema/be4-schema.json)
+     *
+     * @return void
      */
     public function saveSchema() 
     {
@@ -97,11 +103,11 @@ class DbAdminShell extends Shell
             $schemaFile = $this->schemaDir . self::JSON_SCHEMA_FILE;
         }
         if (file_exists($schemaFile)) {
-                $res = $this->in('Overwrite schema file "' . $schemaFile . '"?', ['y', 'n'], 'n');
-                if ($res != 'y') {
-                    $this->info('Schema file not updated');
-                    return;
-                }
+            $res = $this->in('Overwrite schema file "' . $schemaFile . '"?', ['y', 'n'], 'n');
+            if ($res != 'y') {
+                $this->info('Schema file not updated');
+                return;
+            }
         }
         $schemaData = DbUtils::currentSchema();
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
@@ -115,6 +121,8 @@ class DbAdminShell extends Shell
     /**
      * Check schema differences between current db and schema JSON file 
      * (in BEdita/Core/config/schema/be4-schema.json)
+     *
+     * @return void
      */
     public function checkSchema() 
     {
@@ -134,6 +142,8 @@ class DbAdminShell extends Shell
     /**
      * Initialize BE4 database schema
      * SQL schema in BEdita/Core/config/schema/be4-schema-<vendor>.sql
+     *
+     * @return void
      */
     public function init()
     {

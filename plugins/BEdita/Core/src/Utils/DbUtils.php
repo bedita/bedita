@@ -15,10 +15,12 @@ class DbUtils
 {
 
     /**
-     * Returns an array with current database schema information (tables, columns, indexes, constraints)
+     * Returns an array with current database schema information (tables, columns, 
+     * indexes, constraints)
      * Using $dbConfig database connection ('default' as default)
      *
-     * @param string $dbConfig input database configuration ('default' as default)
+     * @param string $dbConfig Input database configuration ('default' as default)
+     *
      * @return array containing complete schema information, table names as keys 
      *     and details on columns, indexes and constraints for every table
      */
@@ -51,8 +53,9 @@ class DbUtils
      * Compare schema arrays betweend $expected and $current schema metadata
      * Returns an array with difference details 
      * 
-     * @param array $expected expected db schema
-     * @param array $current db schema from DbUtils::currentSchema()
+     * @param array $expected Expected db schema
+     * @param array $current  Current db schema from DbUtils::currentSchema()
+     *
      * @return array containing information on differences found
      */
     public static function schemaCompare(array $expected, array $current) 
@@ -93,7 +96,9 @@ class DbUtils
      * Get basic database connection info
      *
      * @param string $dbConfig input database configuration ('default' as default)
-     * @return array containing requested configuration + 'vendor' key (mysql, sqlite, postgres,...)
+     *
+     * @return array containing requested configuration 
+     *          + 'vendor' key (mysql, sqlite, postgres,...)
      */
     public static function basicInfo($dbConfig = 'default') 
     {
@@ -107,7 +112,9 @@ class DbUtils
       * Executes SQL query using transactions.
       * Returns an array providing information on SQL query results
       *
-      * @param string $sql SQL query to execute.
+      * @param string $sql      SQL query to execute.
+      * @param string $dbConfig Database config to use ('default' as default)
+      *
       * @return array containg keys: 'success' (boolean), 'error' (string with error message), 
       *      'rowCount' (number of affected rows) 
       */
