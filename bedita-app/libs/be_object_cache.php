@@ -92,6 +92,44 @@ class BeObjectCache {
     }
 
     /**
+     * Returns true if cache engine type is 'File'
+     *
+     * @return boolean
+     */
+    public function hasFileEngine() {
+         return ($this->cacheConfig['engine'] === 'File');
+    }
+
+    /**
+     * Read id from nickname using cache
+     *
+     * @param  string $nickname object nickname
+     * @return int object id on success, null if $nickname is not found
+     */
+    public function readIdFromNickname($nickname) {
+        if ($this->cacheConfig['engine'] === 'File') {
+            return null;
+        }
+        $cacheName = 'nickname-' . $nickname;
+        return Cache::read($cacheName, 'objects');
+    }
+
+    /**
+     * Writes $nickname => $id key-value pair in object cache
+     *
+     * @param  string $nickname object nickname
+     * @param  int $id object id
+     * @return boolean true on success, false on failure
+     */
+    public function writeNicknameId($nickname, $id) {
+        if ($this->cacheConfig['engine'] === 'File') {
+            return false;
+        }
+        $cacheName = 'nickname-' . $nickname;
+        return $this->writeIndexedCache($id, $cacheName, $id);
+    }
+
+    /**
      * Read object from cache
      *
      * @param  int $id
@@ -111,27 +149,31 @@ class BeObjectCache {
         return $res;
     }
 
+    private function writeIndexedCache($id, $cacheName, $data) {
+        $cacheIdxKey = $id . '_index';
+        $cacheIdx = Cache::read($cacheIdxKey, 'objects');
+        if (empty($cacheIdx)) {
+            $cacheIdx = array();
+        }
+        if (!in_array($cacheName, $cacheIdx)) {
+            $cacheIdx[] = $cacheName;
+            Cache::write($cacheIdxKey, $cacheIdx, 'objects');
+        }
+        $res = Cache::write($cacheName, $data, 'objects');
+    }
+
     /**
      * Write object data to cache
      *
      * @param  string $key
-     * @return array
+     * @return boolean True if the data was successfully cached, false on failure
      */
     public function write($id, array &$options, array &$data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache
         if ($this->cacheConfig['engine'] !== 'File') {
-            $cacheIdxKey = $id . '_index';
-            $cacheIdx = Cache::read($cacheIdxKey, 'objects');
-            if (empty($cacheIdx)) {
-                $cacheIdx = array();
-            }
-            if (!in_array($cacheName, $cacheIdx)) {
-                $cacheIdx[] = $cacheName;
-                Cache::write($cacheIdxKey, $cacheIdx, 'objects');
-            }
-            $res = Cache::write($cacheName, $data, 'objects');
+            $this->writeIndexedCache($id, $cacheName, $data);
         } else {
             $this->setCacheOptions($id);
             $res = Cache::write($cacheName, $data);
