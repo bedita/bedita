@@ -86,29 +86,35 @@ class DbUtils
     }
 
     /**
-     * Compare schema related arrays relative to some $itemName ('columns', 'constraints', 'indexes')
+     * Compare schema related arrays relative to some $itemType ('columns', 'constraints', 'indexes')
      * Populate $diff array with differences on 3 keys:
      *  - 'missing' items expected but not found
      *  - 'changed' items with different metadata
      *  - 'exceeding' items not present in expected data
      *
+     * @param string $table Current table
+     * @param string $itemType Item type ('columns', 'constraints', 'indexes'()
+     * @param array $expItems Expected items data
+     * @param array $currItems Current items data
+     * @param array $diff Difference array
+     *
      * @return void
      */
-    private static function compareSchemaItems($table, $itemName, array $expItems, array $currItems, array &$diff)
+    private static function compareSchemaItems($table, $itemType, array $expItems, array $currItems, array &$diff)
     {
         foreach ($expItems as $key => $data) {
             if (empty($currItems[$key])) {
-                $diff['missing'][$itemName][] = $table . '.' . $key;
+                $diff['missing'][$itemType][] = $table . '.' . $key;
             } else {
                 $equal = ($currItems[$key] == $data);
                 if (!$equal) {
-                    $diff['changed'][$itemName][] = $table . '.' . $key;
+                    $diff['changed'][$itemType][] = $table . '.' . $key;
                 }
             }
         }
         $exceeding = array_diff_key($currItems, $expItems);
         foreach ($exceeding as $key => $data) {
-            $diff['exceeding'][$itemName][] = $table . '.' . $key;
+            $diff['exceeding'][$itemType][] = $table . '.' . $key;
         }
     }
 
