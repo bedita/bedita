@@ -103,6 +103,9 @@ class DbAdminShell extends Shell
                 return;
             }
         }
+        if (!Cache::clear(false, '_cake_model_')) {
+           $this->error('Unable to remove internal cache before schema check');
+        }
         $schemaData = DbUtils::currentSchema();
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
         $res = file_put_contents($schemaFile, $jsonSchema);
