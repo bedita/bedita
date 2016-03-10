@@ -72,8 +72,13 @@ class DbUtils
                     if (!isset($current[$table][$itemName])) {
                         $current[$table][$itemName] = [];
                     }
-                    static::compareSchemaItems($table, $itemName, $tableMeta[$itemName],
-                        $current[$table][$itemName], $diff);
+                    static::compareSchemaItems(
+                        $table,
+                        $itemName,
+                        $tableMeta[$itemName],
+                        $current[$table][$itemName],
+                        $diff
+                    );
                 }
             }
         }
@@ -89,8 +94,7 @@ class DbUtils
      *
      * @return void
      */
-    private static function compareSchemaItems($table, $itemName, array $expItems,
-        array $currItems, array &$diff)
+    private static function compareSchemaItems($table, $itemName, array $expItems, array $currItems, array &$diff)
     {
         foreach ($expItems as $key => $data) {
             if (empty($currItems[$key])) {

@@ -104,7 +104,7 @@ class DbAdminShell extends Shell
             }
         }
         if (!Cache::clear(false, '_cake_model_')) {
-           $this->error('Unable to remove internal cache before schema check');
+            $this->error('Unable to remove internal cache before schema check');
         }
         $schemaData = DbUtils::currentSchema();
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
@@ -127,7 +127,7 @@ class DbAdminShell extends Shell
         $json = file_get_contents($schemaFile);
         $be4Schema = json_decode($json, true);
         if (!Cache::clear(false, '_cake_model_')) {
-           $this->error('Unable to remove internal cache before schema check');
+            $this->error('Unable to remove internal cache before schema check');
         }
         $currentSchema = DbUtils::currentSchema();
         $schemaDiff = DbUtils::schemaCompare($be4Schema, $currentSchema);
@@ -138,8 +138,7 @@ class DbAdminShell extends Shell
             foreach ($schemaDiff as $key => $data) {
                 foreach ($data as $type => $value) {
                     foreach ($value as $v) {
-                        $this->warn($key . ' ' . Inflector::singularize($type)
-                            . ': ' . $v);
+                        $this->warn($key . ' ' . Inflector::singularize($type) . ': ' . $v);
                     }
                 }
             }
