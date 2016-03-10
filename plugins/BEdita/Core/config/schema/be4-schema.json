@@ -1,0 +1,1850 @@
+{
+    "annotations": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "object_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to annotated object",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "annotation author",
+                "precision": null
+            },
+            "user_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "user creating this annotation",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
+                "precision": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "annotation parameters (serialized JSON)",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "annotations_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": [
+
+                ]
+            },
+            "annotations_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "object_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "user_id": {
+                "type": "index",
+                "columns": [
+                    "user_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_id": {
+                "type": "index",
+                "columns": [
+                    "object_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "auth_providers": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "external provider name: facebook, google, github...",
+                "precision": null
+            },
+            "url": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "external provider url",
+                "precision": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "external provider parameters",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "config": {
+        "columns": {
+            "name": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "configuration parameter key",
+                "precision": null,
+                "fixed": null
+            },
+            "context": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "group of configuration parameters",
+                "precision": null
+            },
+            "value": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "configuration parameter value",
+                "precision": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "name"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "external_auth": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "user_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "reference to system user",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "auth_provider_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to external auth provider: ",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "auth_params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "external auth params, serialized JSON",
+                "precision": null
+            },
+            "auth_username": {
+                "type": "string",
+                "length": 255,
+                "null": true,
+                "default": null,
+                "comment": "auth username on provider",
+                "precision": null,
+                "fixed": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "auth_provider_id": {
+                "type": "unique",
+                "columns": [
+                    "auth_provider_id",
+                    "auth_username"
+                ],
+                "length": [
+
+                ]
+            },
+            "external_auth_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "auth_provider_id"
+                ],
+                "references": [
+                    "auth_providers",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": [
+
+                ]
+            },
+            "external_auth_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "user_id": {
+                "type": "index",
+                "columns": [
+                    "user_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "media": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "uri": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "media uri: relative path on local filesystem or remote URL",
+                "precision": null
+            },
+            "name": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "file name",
+                "precision": null
+            },
+            "mime_type": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "resource mime type",
+                "precision": null
+            },
+            "file_size": {
+                "type": "integer",
+                "length": 11,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "file size in bytes (if local)",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "hash_file": {
+                "type": "string",
+                "length": 255,
+                "null": true,
+                "default": null,
+                "comment": "md5 hash of local file",
+                "precision": null,
+                "fixed": null
+            },
+            "original_name": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "original name for uploaded file",
+                "precision": null
+            },
+            "width": {
+                "type": "integer",
+                "length": 6,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "(image) width",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "height": {
+                "type": "integer",
+                "length": 6,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "(image) height",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "provider": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "external provider\/service name",
+                "precision": null
+            },
+            "media_uid": {
+                "type": "string",
+                "length": 255,
+                "null": true,
+                "default": null,
+                "comment": "uid, used for remote videos",
+                "precision": null,
+                "fixed": null
+            },
+            "thumbnail": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "remote media thumbnail URL",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "media_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "hash_file": {
+                "type": "index",
+                "columns": [
+                    "hash_file"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "object_properties": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "property_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to properties.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "object_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to objects.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "property_value": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "property value of linked object",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_properties_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "object_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "object_properties_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "property_id"
+                ],
+                "references": [
+                    "properties",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "object_id": {
+                "type": "index",
+                "columns": [
+                    "object_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "property_id": {
+                "type": "index",
+                "columns": [
+                    "property_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "object_relations": {
+        "columns": {
+            "left_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "left part of the relation object id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "relation_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to relation definition",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "right_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "right part of the relation object id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "priority": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "priority order in relation",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "inv_priority": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "priority order in inverse relation",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "relation parameters (JSON format)",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "left_id",
+                    "relation_id",
+                    "right_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_relations_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "left_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "object_relations_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "right_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "object_relations_ibfk_3": {
+                "type": "foreign",
+                "columns": [
+                    "relation_id"
+                ],
+                "references": [
+                    "relations",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "left_id": {
+                "type": "index",
+                "columns": [
+                    "left_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "right_id": {
+                "type": "index",
+                "columns": [
+                    "right_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "relation_id": {
+                "type": "index",
+                "columns": [
+                    "relation_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "object_types": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "string",
+                "length": 50,
+                "null": false,
+                "default": null,
+                "comment": "object type name",
+                "precision": null,
+                "fixed": null
+            },
+            "module_name": {
+                "type": "string",
+                "length": 100,
+                "null": true,
+                "default": null,
+                "comment": "default module for object type",
+                "precision": null,
+                "fixed": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "name": {
+                "type": "unique",
+                "columns": [
+                    "name"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "objects": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "object_type_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "object type id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "status": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": "draft",
+                "comment": "object status: on, draft, off, deleted",
+                "precision": null
+            },
+            "uname": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "unique and url friendly resource name (slug)",
+                "precision": null,
+                "fixed": null
+            },
+            "locked": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "0",
+                "comment": "locked flag: some fields (status, uname,...) cannot be changed",
+                "precision": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
+                "precision": null
+            },
+            "published": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "publication date, status set to ON",
+                "precision": null
+            },
+            "title": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "",
+                "precision": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "",
+                "precision": null
+            },
+            "body": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "",
+                "precision": null
+            },
+            "extra": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "object data extensions (JSON format)",
+                "precision": null
+            },
+            "lang": {
+                "type": "string",
+                "fixed": true,
+                "length": 3,
+                "null": false,
+                "default": null,
+                "comment": "language used, ISO 639-3 code",
+                "precision": null
+            },
+            "created_by": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "user who created object",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "modified_by": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "last user to modify object",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "publish_start": {
+                "type": "datetime",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "publish from this date on",
+                "precision": null
+            },
+            "publish_end": {
+                "type": "datetime",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "publish until this date",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "uname": {
+                "type": "unique",
+                "columns": [
+                    "uname"
+                ],
+                "length": [
+
+                ]
+            },
+            "objects_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "object_type_id"
+                ],
+                "references": [
+                    "object_types",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "object_type_id": {
+                "type": "index",
+                "columns": [
+                    "object_type_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "profiles": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "user_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "link to users.id, if not null",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "name": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "person name, can be NULL",
+                "precision": null
+            },
+            "surname": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "person surname, can be NULL",
+                "precision": null
+            },
+            "email": {
+                "type": "string",
+                "length": 100,
+                "null": true,
+                "default": null,
+                "comment": "first email, can be NULL",
+                "precision": null,
+                "fixed": null
+            },
+            "person_title": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "person title, for example Sir, Madame, Prof, Doct, ecc., can be NULL",
+                "precision": null
+            },
+            "gender": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "gender, for example male, female, can be NULL",
+                "precision": null
+            },
+            "birthdate": {
+                "type": "date",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "date of birth, can be NULL",
+                "precision": null
+            },
+            "deathdate": {
+                "type": "date",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "date of death, can be NULL",
+                "precision": null
+            },
+            "company": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "0",
+                "comment": "is a company, default: false",
+                "precision": null
+            },
+            "company_name": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "name of company, can be NULL",
+                "precision": null
+            },
+            "company_kind": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "type of company, can be NULL",
+                "precision": null
+            },
+            "street_address": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "address street, can be NULL",
+                "precision": null
+            },
+            "city": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "city, can be NULL",
+                "precision": null
+            },
+            "zipcode": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "zipcode, can be NULL",
+                "precision": null
+            },
+            "country": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "country, can be NULL",
+                "precision": null
+            },
+            "state_name": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "state, can be NULL",
+                "precision": null
+            },
+            "phone": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "first phone number, can be NULL",
+                "precision": null
+            },
+            "website": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "website url, can be NULL",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "email": {
+                "type": "unique",
+                "columns": [
+                    "email"
+                ],
+                "length": [
+
+                ]
+            },
+            "profiles_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": [
+
+                ]
+            },
+            "profiles_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "user_id": {
+                "type": "index",
+                "columns": [
+                    "user_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "properties": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "string",
+                "length": 100,
+                "null": false,
+                "default": null,
+                "comment": "property name",
+                "precision": null,
+                "fixed": null
+            },
+            "object_type_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "link to object_types.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "property_type_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to property_type.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "multiple": {
+                "type": "boolean",
+                "length": null,
+                "null": true,
+                "default": "0",
+                "comment": "multiple values for this property?",
+                "precision": null
+            },
+            "options": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "property predefined options",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "name_type": {
+                "type": "unique",
+                "columns": [
+                    "name",
+                    "object_type_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "properties_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "object_type_id"
+                ],
+                "references": [
+                    "object_types",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": [
+
+                ]
+            },
+            "properties_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "property_type_id"
+                ],
+                "references": [
+                    "property_types",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "name": {
+                "type": "index",
+                "columns": [
+                    "name"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_type_id": {
+                "type": "index",
+                "columns": [
+                    "object_type_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "property_type_id": {
+                "type": "index",
+                "columns": [
+                    "property_type_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "property_types": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "string",
+                "length": 50,
+                "null": false,
+                "default": null,
+                "comment": "property type name",
+                "precision": null,
+                "fixed": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "property type parameters",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "name": {
+                "type": "unique",
+                "columns": [
+                    "name"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "relation_types": {
+        "columns": {
+            "relation_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to relation definition",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "object_type_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "object type id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "position": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "type position in relation",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "relation_id",
+                    "object_type_id",
+                    "position"
+                ],
+                "length": [
+
+                ]
+            },
+            "relation_types_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "relation_id"
+                ],
+                "references": [
+                    "relations",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "relation_types_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "object_type_id"
+                ],
+                "references": [
+                    "object_types",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "object_type_id": {
+                "type": "index",
+                "columns": [
+                    "object_type_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "relations": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "string",
+                "length": 100,
+                "null": false,
+                "default": null,
+                "comment": "relation name",
+                "precision": null,
+                "fixed": null
+            },
+            "label": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "relation label",
+                "precision": null
+            },
+            "inverse_name": {
+                "type": "string",
+                "length": 100,
+                "null": false,
+                "default": null,
+                "comment": "inverse relation name",
+                "precision": null,
+                "fixed": null
+            },
+            "inverse_label": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "inverse relation label",
+                "precision": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "relation description",
+                "precision": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "relation parameters definitions (JSON format)",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "name": {
+                "type": "unique",
+                "columns": [
+                    "name"
+                ],
+                "length": [
+
+                ]
+            },
+            "inverse_name": {
+                "type": "unique",
+                "columns": [
+                    "inverse_name"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "trees": {
+        "columns": {
+            "object_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "object id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "parent_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": "0",
+                "comment": "parent object id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "root_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "root id (for tree scoping)",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "tree_left": {
+                "type": "integer",
+                "length": 11,
+                "unsigned": false,
+                "null": false,
+                "default": null,
+                "comment": "left counter (for nested set model)",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "tree_right": {
+                "type": "integer",
+                "length": 11,
+                "unsigned": false,
+                "null": false,
+                "default": null,
+                "comment": "right counter (for nested set model)",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "depth": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "depth",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "menu": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": "1",
+                "comment": "menu on\/off",
+                "precision": null,
+                "autoIncrement": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "parent_id",
+                    "object_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "trees_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "object_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "trees_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "parent_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "trees_ibfk_3": {
+                "type": "foreign",
+                "columns": [
+                    "root_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "object_parent": {
+                "type": "index",
+                "columns": [
+                    "object_id",
+                    "parent_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "root_left": {
+                "type": "index",
+                "columns": [
+                    "root_id",
+                    "tree_left"
+                ],
+                "length": [
+
+                ]
+            },
+            "root_right": {
+                "type": "index",
+                "columns": [
+                    "root_id",
+                    "tree_right"
+                ],
+                "length": [
+
+                ]
+            },
+            "menu": {
+                "type": "index",
+                "columns": [
+                    "menu"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "users": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "username": {
+                "type": "string",
+                "length": 100,
+                "null": false,
+                "default": null,
+                "comment": "login user name",
+                "precision": null,
+                "fixed": null
+            },
+            "password": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "login password, if empty external auth is used",
+                "precision": null
+            },
+            "blocked": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "0",
+                "comment": "user blocked flag",
+                "precision": null
+            },
+            "last_login": {
+                "type": "datetime",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "last succcessful login datetime",
+                "precision": null
+            },
+            "last_login_err": {
+                "type": "datetime",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "last login filaure datetime",
+                "precision": null
+            },
+            "num_login_err": {
+                "type": "integer",
+                "length": 4,
+                "unsigned": false,
+                "null": false,
+                "default": "0",
+                "comment": "number of consecutive login failures",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "record creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "record last modification date",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "username": {
+                "type": "unique",
+                "columns": [
+                    "username"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    }
+}
