@@ -63,33 +63,49 @@ class DbUtils
         $diff = [];
         foreach ($expected as $table => $tableMeta) {
             if (empty($current[$table])) {
-                $diff['missingTables'][] = $table;
+                $diff['missing']['tables'][] = $table;
                 continue;
             }
-            foreach ($tableMeta['columns'] as $column => $colData) {
-                if (empty($current[$table]['columns'][$column])) {
-                    $diff['missingColumns'][] = $table . '.' . $column;
-                }
-                // TODO: column details diff
-            }
-            if (!empty($tableMeta['constraints'])) {
-                foreach ($tableMeta['constraints'] as $constraint => $constData) {
-                    if (empty($current[$table]['constraints'][$constraint])) {
-                        $diff['missingConstraints'][] = $table . '.' . $constraint;
+            $itemNames = ['columns', 'constraints', 'indexes'];
+            foreach ($itemNames as $itemName) {
+                if (!empty($tableMeta[$itemName])) {
+                    if (!isset($current[$table][$itemName])) {
+                        $current[$table][$itemName] = [];
                     }
-                    // TODO: constraint details diff
-                }
-            }
-            if (!empty($tableMeta['indexes'])) {
-                foreach ($tableMeta['indexes'] as $index => $idxData) {
-                    if (empty($current[$table]['indexes'][$index])) {
-                        $diff['missingIndexes'][] = $table . '.' . $index;
-                    }
-                    // TODO: index details diff
+                    static::compareSchemaItems($table, $itemName, $tableMeta[$itemName],
+                        $current[$table][$itemName], $diff);
                 }
             }
         }
         return $diff;
+    }
+
+    /**
+     * Compare schema related arrays relative to some $itemName ('columns', 'constraints', 'indexes')
+     * Populate $diff array with differences on 3 keys:
+     *  - 'missing' items expected but not found
+     *  - 'changed' items with different metadata
+     *  - 'exceeding' items not present in expected data
+     *
+     * @return void
+     */
+    private static function compareSchemaItems($table, $itemName, array $expItems,
+        array $currItems, array &$diff)
+    {
+        foreach ($expItems as $key => $data) {
+            if (empty($currItems[$key])) {
+                $diff['missing'][$itemName][] = $table . '.' . $key;
+            } else {
+                $equal = ($currItems[$key] == $data);
+                if (!$equal) {
+                    $diff['changed'][$itemName][] = $table . '.' . $key;
+                }
+            }
+        }
+        $exceeding = array_diff_key($currItems, $expItems);
+        foreach ($exceeding as $key => $data) {
+            $diff['exceeding'][$itemName][] = $table . '.' . $key;
+        }
     }
 
     /**

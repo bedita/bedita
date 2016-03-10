@@ -7,7 +7,9 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Utils\DbUtils;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
+use Cake\Utility\Inflector;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
+use Cake\Cache\Cache;
 
 /**
  * Database related shell commands like:
@@ -121,13 +123,23 @@ class DbAdminShell extends Shell
         $schemaFile = $this->schemaDir . 'be4-schema.json';
         $json = file_get_contents($schemaFile);
         $be4Schema = json_decode($json, true);
+        if (!Cache::clear(false, '_cake_model_')) {
+           $this->error('Unable to remove internal cache before schema check');
+        }
         $currentSchema = DbUtils::currentSchema();
         $schemaDiff = DbUtils::schemaCompare($be4Schema, $currentSchema);
         if (empty($schemaDiff)) {
             $this->info('No schema differences found');
         } else {
-            $this->out(print_r($schemaDiff, true));
-            $this->error('Schema differences found');
+            $this->warn('Schema differences found!!');
+            foreach ($schemaDiff as $key => $data) {
+                foreach ($data as $type => $value) {
+                    foreach ($value as $v) {
+                        $this->warn($key . ' ' . Inflector::singularize($type)
+                            . ': ' . $v);
+                    }
+                }
+            }
         }
     }
 
