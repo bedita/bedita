@@ -124,7 +124,9 @@ class RestClientModel extends BEAppModel {
 			if($verbose) {
 				curl_setopt($this->client, CURLOPT_VERBOSE, true);
 			}
-			$this->log("HTTP HEADERS:" . print_r($this->callHeaders, true), LOG_DEBUG);
+            if (Configure::read('debug') > 0) {
+                $this->log('HTTP HEADERS:' . print_r($this->callHeaders, true), LOG_DEBUG);
+            }
 			$headers = array();
 			foreach ($this->callHeaders as $headerKey => $headerVal) {
 				$headers[] = $headerKey . ':' . $headerVal;
