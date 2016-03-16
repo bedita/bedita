@@ -20,7 +20,7 @@ CREATE TABLE users (
   modified DATETIME NOT NULL                  COMMENT 'record last modification date',
   -- from MySQL 5.6.5 modified NOT NULL DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
-  PRIMARY KEY  (id),
+  PRIMARY KEY (id),
   UNIQUE KEY (username)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'authenticated users basic data';
@@ -34,7 +34,7 @@ CREATE TABLE auth_providers (
   url TINYTEXT NOT NULL              COMMENT 'external provider url',
   params TINYTEXT NOT NULL           COMMENT 'external provider parameters',
 
-  PRIMARY KEY  (id)
+  PRIMARY KEY (id)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
 
@@ -48,15 +48,58 @@ CREATE TABLE external_auth (
   -- From MySQL 5.7.8 JSON type
   auth_username VARCHAR(255)                  COMMENT 'auth username on provider',
 
-  PRIMARY KEY  (id),
-  UNIQUE KEY(auth_provider_id, auth_username),
+  PRIMARY KEY (id),
+  UNIQUE KEY (auth_provider_id, auth_username),
   FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
-  FOREIGN KEY(user_id)
+  FOREIGN KEY (user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user external auth data' ;
+
+-- --------
+--  ROLES
+-- --------
+
+DROP TABLE IF EXISTS roles;
+CREATE TABLE roles (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(32) NOT NULL                 COMMENT 'role unique name',
+  description TEXT NOT NULL                 COMMENT 'role description',
+  immutable BOOL NOT NULL DEFAULT '0'       COMMENT 'role data immutable (default:false)',
+  backend_auth BOOL NOT NULL DEFAULT '0'    COMMENT 'role authorized to backend (default: false)',
+  created datetime default NULL             COMMENT 'creation date',
+  modified datetime default NULL            COMMENT 'last modification date',
+
+  PRIMARY KEY(id),
+  UNIQUE KEY (name)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
+
+
+DROP TABLE IF EXISTS roles_users;
+CREATE TABLE roles_users (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  role_id INT UNSIGNED NOT NULL             COMMENT 'link to roles.id',
+  user_id INT UNSIGNED NOT NULL             COMMENT 'link to users.id',
+
+  PRIMARY KEY(id),
+  INDEX (user_id),
+  INDEX (group_id),
+  FOREIGN KEY(user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(role_id)
+    REFERENCES roles(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'join table for roles/users';
+
 
 -- -------------
 --   CONFIG
@@ -179,6 +222,34 @@ CREATE TABLE objects (
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'base table for all objects';
+
+-- --------------
+--  PERMISSIONS
+-- --------------
+
+DROP TABLE IF EXISTS object_permissions;
+CREATE TABLE object_permissions (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INT UNSIGNED NOT NULL               COMMENT 'object - link to objects.id',
+  role_id INT UNSIGNED NOT NULL                 COMMENT 'role - link to roles.id',
+  operation INT UNSIGNED NOT NULL               COMMENT 'operation to perform as bitwise mask',
+  params TEXT                                   COMMENT 'permission parameters (JSON data)',
+
+  PRIMARY KEY(id),
+  UNIQUE (object_id, role_id),
+
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(role_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'permissions on objects through roles and operations (RBAC)';
+
 
 -- --------------------------------------
 --  OBJECT METADATA / SPECIAL PROPERTIES
@@ -304,7 +375,7 @@ CREATE TABLE relation_types (
 
   PRIMARY KEY relation_type_position (relation_id, object_type_id, position),
 
-  FOREIGN KEY(relation_id) 
+  FOREIGN KEY(relation_id)
     REFERENCES relations(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
