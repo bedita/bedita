@@ -98,6 +98,17 @@ class AppController extends Controller {
     public $BeObjectCache = null;
 
     /**
+     * Internal array to store and reuse object data like object_type_id or id from nickname
+     * Avoid multiple load from database or cache of same data
+     *
+     * @var array
+     */
+    protected $objectData = array(
+        'nicknames' => array(), 
+        'typeIds' => array(), 
+    );
+
+    /**
      * Constructor
      * If debugKit is enabled in configuration and it's found in plugins paths
      * then add it to self::componenets array
@@ -635,7 +646,66 @@ class AppController extends Controller {
         return array("bindings_used" => $bindingsUsed, "bindings_list" => $listOfBindings);
     }
 
-    
+    /**
+     * Get object type (or model name) from object id using object cache
+     * 
+     * @param int $id Object id to search
+     * @return string Object type (or model name) on success, false on failure
+     */
+    protected function objectTypeCache($id) {
+        $typeId = $this->objectTypeIdCache($id);
+        return Configure::read('objectTypes.' . $typeId . '.model');;
+    }
+
+    /**
+     * Get object "type id" from object id using object cache
+     * 
+     * @param int $id Object id to search
+     * @return int Object "type id" on success, false on failure
+     */
+    protected function objectTypeIdCache($id) {
+        $typeId = null;
+        if (!empty($this->objectData['typeIds'][$id])) {
+            return $this->objectData['typeIds'][$id];
+        }
+        $cacheOpts = array();
+        if ($this->BeObjectCache) {
+            $typeId = $this->BeObjectCache->read($id, $cacheOpts, 'type');
+        }
+        if (empty($typeId)) {
+            $typeId = $this->BEObject->findObjectTypeId($id);
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($id, $cacheOpts, $typeId, 'type');
+            }
+        }
+        $this->objectData['typeIds'][$id] = $typeId;
+        return $typeId;
+    }
+
+    /**
+     * Get object id from object nickname using object cache
+     * 
+     * @param string $nickname Object nickname to search
+     * @return int Object id on success, false on failure
+     */
+    protected function idFromNicknameCache($nickname) {
+        $id = false;
+        if (!empty($this->objectData['nicknames'][$nickname])) {
+            return $this->objectData['nicknames'][$nickname];
+        }
+        if ($this->BeObjectCache && !$this->BeObjectCache->hasFileEngine()) {
+            $id = $this->BeObjectCache->readIdFromNickname($nickname);
+        }
+        if (empty($id)) {
+            $id = $this->BEObject->getIdFromNickname($nickname);
+            if ($id && $this->BeObjectCache && !$this->BeObjectCache->hasFileEngine()) {
+                $this->BeObjectCache->writeNicknameId($nickname, $id);
+            }
+        }
+        $this->objectData['nicknames'][$nickname] = $id;
+        return $id;
+    }
+
     /**
      * Reorder content objects relations in array where keys are relation names
      *
@@ -653,7 +723,11 @@ class AppController extends Controller {
         $permission = ClassRegistry::init("Permission");
         foreach ($objectArray as $obj) {
             $rel = $obj['switch'];
-            $modelClass = $beObject->getType($obj['object_id']);
+            if (BACKEND_APP) {
+                $modelClass = $beObject->getType($obj['object_id']);
+            } else {
+                $modelClass = $this->objectTypeCache($obj['object_id']);                
+            }
             $this->{$modelClass} = $this->loadModelByType($modelClass);
             if (BACKEND_APP) {
                 // TODO: return $bindings array like in setObjectBindings
