@@ -168,7 +168,7 @@ class BeObjectCache {
      * @param  string $key
      * @return boolean True if the data was successfully cached, false on failure
      */
-    public function write($id, array &$options, array &$data, $label = null) {
+    public function write($id, array &$options, $data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache

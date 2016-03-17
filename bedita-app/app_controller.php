@@ -674,7 +674,7 @@ class AppController extends Controller {
         }
         if (empty($typeId)) {
             $typeId = $this->BEObject->findObjectTypeId($id);
-            if ($this->BeObjectCache) {
+            if ($typeId && $this->BeObjectCache) {
                 $this->BeObjectCache->write($id, $cacheOpts, $typeId, 'type');
             }
         }
