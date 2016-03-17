@@ -11,12 +11,33 @@ available options:
 	'type' => true,
 	'language' => true,
 	'customProp' => false,
-	'categories' => true,
+	'categories' => true or array('label' => 'myLabel'),
 	'mediaType' => false,
-	'tags' => false
+	'tags' => false,
+	'status' => true or array() of labels
 ]
 -->
 *}
+
+{$statusLabels = [
+	'on' => 'on',
+	'draft' => 'draft',
+	'off' => 'off'
+	]
+}
+
+<script>
+	function uncheckOther(checkbox){
+		$("#statusfilter").find("input").each(function(){
+			if($(this).val() != checkbox){
+				$(this).uncheck();
+			}else{
+				$(this).check();
+			}
+		});
+		//$("#searchButton").click();
+	}
+</script>
 
 <form id="formFilter" action="{$filters.url|default:$beurl->getUrl(['page', 'dim', 'dir', 'order'])|escape:"html"}" 
 	method="post">
@@ -128,7 +149,11 @@ available options:
 
 		{if !empty($filters.categories)}
 			<div class="cell categories">
-				<label>{t}categories{/t}:</label>
+				{if !empty($filters.categories.label)}
+					<label>{t}{$filters.categories.label}{/t}:</label>
+				{else}
+					<label>{t}categories{/t}:</label>
+				{/if}
 				<select name="filter[category]">
 					<option value="">{t}all{/t}</option>
 					{foreach $categories as $catId => $catLabel}
@@ -174,6 +199,33 @@ available options:
 						{/strip}
 					{/foreach}
 				</select>
+			</div>
+		{/if}
+
+		{if !empty($filters.status)}
+			{if $filters.status|is_array && $filters.status|count gt 0}
+				{$statusLabels = $filters.status}
+			{/if}
+			<div class="cell" id="statusfilter">
+				{if $view->SessionFilter->check('status') || !$view->SessionFilter->check()}
+					{$status = $view->SessionFilter->read('status')}
+				{/if}
+				<label>{t}status{/t}:</label>
+
+					{foreach item='label' key='key' from=$statusLabels}
+						<fieldset style="display:inline; border-left:1px solid gray;
+							padding:5px 10px 5px 10px">
+
+							<input type="checkbox" class="filterTicket" value="{$key}" id="status_{$key}" name="filter[status][{$key}]"
+							{if !empty($status) && !empty($status[{$key}])}
+								checked="checked"
+							{/if}
+						    />
+							<a href="javascript: uncheckOther('{$key}');">{t}{$label}{/t}</a>
+
+							</fieldset>
+					{/foreach}
+				</fieldset>
 			</div>
 		{/if}
 
