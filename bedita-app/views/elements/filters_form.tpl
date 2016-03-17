@@ -158,9 +158,9 @@ available options:
 					<option value="">{t}all{/t}</option>
 					{foreach $categories as $catId => $catLabel}
 						{strip}
-						<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
-							{$catLabel|escape}
-						</option>
+							<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
+								{$catLabel|escape}
+							</option>
 						{/strip}
 					{/foreach}
 				</select>
