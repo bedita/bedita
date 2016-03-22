@@ -2978,7 +2978,7 @@ abstract class FrontendController extends AppController {
      * @param mixed $ids
      * @return array the current self::objectCache after cleaning
      */
-    public function clearObjectCache($ids = null) {
+    public function clearObjectCacheArray($ids = null) {
         if (empty($ids)) {
             return $this->objectCache = array();
         }
