@@ -233,7 +233,7 @@ CREATE TABLE object_permissions (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INT UNSIGNED NOT NULL               COMMENT 'object - link to objects.id',
   role_id INT UNSIGNED NOT NULL                 COMMENT 'role - link to roles.id',
-  operation INT UNSIGNED NOT NULL               COMMENT 'operation to perform as bitwise mask',
+  operation INT UNSIGNED NOT NULL               COMMENT 'operation permission as bitwise mask',
   params TEXT                                   COMMENT 'permission parameters (JSON data)',
 
   PRIMARY KEY(id),
