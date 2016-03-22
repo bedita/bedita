@@ -1,6 +1,8 @@
 [
     // table list in order of insertion/creation
     "users",
+    "roles",
+    "roles_users",
     "auth_providers",
     "external_auth",
     "config",
@@ -9,6 +11,7 @@
     "properties",
     "object_properties",
     "objects",
+    "object_permissions",
     "annotations",
     "media",
     "profiles",
