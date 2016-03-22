@@ -2967,4 +2967,26 @@ abstract class FrontendController extends AppController {
 	public function getPublication() {
 		return $this->publication;
 	}
+
+    /**
+     * Clear self::objectCache array
+     * If $ids is empty all self::objectCache is cleaned
+     *
+     * self::objectCache can be selectively cleared
+     * passing an id or an array of ids to delete
+     *
+     * @param mixed $ids
+     * @return array the current self::objectCache after cleaning
+     */
+    public function clearObjectCache($ids = null) {
+        if (empty($ids)) {
+            return $this->objectCache = array();
+        }
+
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        $this->objectCache = array_diff_key($this->objectCache, array_flip($ids));
+        return $this->objectCache;
+    }
 }
