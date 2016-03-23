@@ -107,7 +107,7 @@ class BeObjectCache {
      * @return int object id on success, null if $nickname is not found
      */
     public function readIdFromNickname($nickname) {
-        if ($this->cacheConfig['engine'] === 'File') {
+        if ($this->hasFileEngine()) {
             return null;
         }
         $cacheName = 'nickname-' . $nickname;
@@ -122,7 +122,7 @@ class BeObjectCache {
      * @return boolean true on success, false on failure
      */
     public function writeNicknameId($nickname, $id) {
-        if ($this->cacheConfig['engine'] === 'File') {
+        if ($this->hasFileEngine()) {
             return false;
         }
         $cacheName = 'nickname-' . $nickname;
