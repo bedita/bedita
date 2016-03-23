@@ -28,7 +28,7 @@ available options:
 
 <script>
 	$('.mainfull').on('change', '.statusFilter', function(event) {
-		if ($('input:checked').length <= 1) {
+		if ($('input:checked').length < 1) {
 			this.checked = true;
 		}
 	});
@@ -217,7 +217,6 @@ available options:
 					{$status = $view->SessionFilter->read('status')}
 				{/if}
 				<label>{t}status{/t}:</label>
-
 					{foreach item='label' key='key' from=$statusLabels}
 						<fieldset style="display:inline; border-left:1px solid gray;
 							padding:5px 10px 5px 10px">
