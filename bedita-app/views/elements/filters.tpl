@@ -36,6 +36,6 @@
 {$options = array_merge($defaultOptions, $options|default:[])}
 
 <div class="tab{if $view->SessionFilter->check()} open filteractive{/if}"><h2>{t}filters{/t}</h2></div>
-<div>
+<div id="filterView">
 	{$view->element("filters_form", ['filters' => $options])}
 </div>

@@ -27,6 +27,12 @@ available options:
 }
 
 <script>
+	$('.mainfull').on('change', '.statusFilter', function(event) {
+		if ($('input:checked').length <= 1) {
+			this.checked = true;
+		}
+	});
+
 	function uncheckOther(checkbox){
 		$("#statusfilter").find("input").each(function(){
 			if($(this).val() != checkbox){
@@ -215,9 +221,10 @@ available options:
 					{foreach item='label' key='key' from=$statusLabels}
 						<fieldset style="display:inline; border-left:1px solid gray;
 							padding:5px 10px 5px 10px">
-
-							<input type="checkbox" class="filterTicket" value="{$key}" id="status_{$key}" name="filter[status][{$key}]"
+							<input type="checkbox" class="statusFilter" value="{$key}" id="status_{$key}" name="filter[status][{$key}]"
 							{if !empty($status) && !empty($status[{$key}])}
+								checked="checked"
+							{elseif empty($status)}
 								checked="checked"
 							{/if}
 						    />
