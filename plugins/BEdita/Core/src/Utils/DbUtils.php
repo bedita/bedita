@@ -148,8 +148,18 @@ class DbUtils
      */
     protected static function splitSqlQueries($sql)
     {
-        // TODO: improve splitter.
-        return explode(';', $sql);
+        $lines = explode("\n", $sql);
+        $queries = [];
+        $q = '';
+        foreach ($lines as $l) {
+            $l = rtrim($l);
+            $q .= (!empty($q) ? "\n" : '') . $l;
+            if (substr($l, -1) == ';') {
+                $queries[] = $q;
+                $q = '';
+            }
+        }
+        return $queries;
     }
 
     /**
@@ -160,7 +170,7 @@ class DbUtils
      * @param string $dbConfig Database config to use ('default' as default)
      *
      * @return array containing keys: 'success' (boolean), 'error' (string with error message),
-     *      'rowCount' (number of affected rows)
+     *      'rowCount' (number of affected rows), 'queryCount' (number of queries executed)
      * @throws \Cake\Datasource\Exception\MissingDatasourceConfigException Throws an exception
      *      if the requested `$dbConfig` does not exist.
      */
@@ -174,6 +184,7 @@ class DbUtils
 
                 $success = true;
                 $rowCount = 0;
+                $queryCount = 0;
                 foreach ($queries as $query) {
                     if (!trim($query)) {
                         continue;
@@ -182,7 +193,7 @@ class DbUtils
                     $statmnt = $conn->prepare($query);
                     $success = $statmnt->execute() && (!$statmnt->errorCode() || $statmnt->errorCode() === '00000');
                     $rowCount += $statmnt->rowCount();
-
+                    $queryCount++;
                     $statmnt->closeCursor();
                     if (!$success) {
                         break;
@@ -197,6 +208,7 @@ class DbUtils
 
                 return [
                     'rowCount' => $rowCount,
+                    'queryCount' => $queryCount,
                     'success' => true
                 ];
             });
@@ -204,7 +216,7 @@ class DbUtils
             $res['error'] = $e->getMessage();
         }
 
-        $res += ['success' => false, 'error' => '', 'rowCount' => 0];
+        $res += ['success' => false, 'error' => '', 'rowCount' => 0, 'queryCount' => 0];
 
         return $res;
     }
