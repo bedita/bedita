@@ -70,7 +70,8 @@ class SessionFilterComponent extends Object {
         'mail_group',
         'tag',
         'query',
-        'substring'
+        'substring',
+        'status'
     );
 
     /**

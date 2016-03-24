@@ -805,7 +805,9 @@ function openAtStart(openTabs) {
         // avoid bad id selector
         var tabId = openTabs[i];
         if (tabId != '#' && tabId.length > 1) {
-            $(tabId).prev('.tab, .tab2').click();
+            if(!$(tabId).prev('.tab, .tab2').hasClass("filteractive")){
+                $(tabId).prev('.tab, .tab2').click();
+            }
         }
     }
 
