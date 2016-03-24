@@ -49,11 +49,12 @@ CREATE TABLE users (
 CREATE TABLE auth_providers (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name TINYTEXT NOT NULL             COMMENT 'external provider name: facebook, google, github...',
-  url TINYTEXT NOT NULL              COMMENT 'external provider url',
+  name VARCHAR(255) NOT NULL         COMMENT 'external provider name: facebook, google, github...',
+  url VARCHAR(255) NOT NULL          COMMENT 'external provider url',
   params TINYTEXT NOT NULL           COMMENT 'external provider parameters',
 
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE KEY (name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
 
@@ -63,12 +64,12 @@ CREATE TABLE external_auth (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id INT UNSIGNED NOT NULL               COMMENT 'reference to system user',
   auth_provider_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to external auth provider: ',
-  auth_params TEXT DEFAULT NULL               COMMENT 'external auth params, serialized JSON',
+  params TEXT DEFAULT NULL                    COMMENT 'external auth params, serialized JSON',
   -- From MySQL 5.7.8 JSON type
-  auth_username VARCHAR(255)                  COMMENT 'auth username on provider',
+  username VARCHAR(255)                       COMMENT 'auth username on provider',
 
   PRIMARY KEY (id),
-  UNIQUE KEY (auth_provider_id, auth_username),
+  UNIQUE KEY (auth_provider_id, username),
   FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
   FOREIGN KEY (user_id)
     REFERENCES users(id)
