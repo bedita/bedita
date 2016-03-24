@@ -140,6 +140,19 @@ class DbUtils
     }
 
     /**
+     * Split a multi-statement SQL query into chunks.
+     *
+     * @param string $sql SQL to be split.
+     *
+     * @return array
+     */
+    protected static function splitSqlQueries($sql)
+    {
+        // TODO: improve splitter.
+        return explode(';', $sql);
+    }
+
+    /**
      * Executes SQL query using transactions.
      * Returns an array providing information on SQL query results
      *
@@ -153,18 +166,46 @@ class DbUtils
      */
     public static function executeTransaction($sql, $dbConfig = 'default')
     {
-        $res = ['success' => false, 'error' => '', 'rowCount' => 0];
+        $res = [];
         $connection = ConnectionManager::get($dbConfig);
         try {
-            $connection->begin();
-            $statement = $connection->query($sql);
-            $connection->commit();
-            $res['success'] = true;
-            $res['rowCount'] = $statement->rowCount();
+            $res = $connection->transactional(function (Connection $conn) use ($sql) {
+                $queries = static::splitSqlQueries($sql);
+
+                $success = true;
+                $rowCount = 0;
+                foreach ($queries as $query) {
+                    if (!trim($query)) {
+                        continue;
+                    }
+
+                    $statmnt = $conn->prepare($query);
+                    $success = $statmnt->execute() && (!$statmnt->errorCode() || $statmnt->errorCode() === '00000');
+                    $rowCount += $statmnt->rowCount();
+
+                    $statmnt->closeCursor();
+                    if (!$success) {
+                        break;
+                    }
+                }
+
+                if (!$success) {
+                    return [
+                        'error' => 'Could not execute statement',
+                    ];
+                }
+
+                return [
+                    'rowCount' => $rowCount,
+                    'success' => true
+                ];
+            });
         } catch (\Exception $e) {
-            $connection->rollback();
             $res['error'] = $e->getMessage();
         }
+
+        $res += ['success' => false, 'error' => '', 'rowCount' => 0];
+
         return $res;
     }
 }
