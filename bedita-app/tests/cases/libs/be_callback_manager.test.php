@@ -27,7 +27,7 @@ class BeCallbackManagerTestCase extends CakeTestCase {
     public $manager = null;
 
     public function start() {
-        $this->manager = BeLib::getObject('BeCallbackManager');
+        $this->manager = BeLib::eventManager();
     }
 
     public function endTest($method) {
@@ -50,10 +50,11 @@ class BeCallbackManagerTestCase extends CakeTestCase {
     public function testTrigger() {
         // test closure
         $this->manager->bind('Event.one', function($arg) {
-            $this->assertIdentical(array('name' => 'John', 'surname' => 'Smith'), $arg);
+           return $arg;
         });
         $eventData = array('name' => 'John', 'surname' => 'Smith');
-        $this->manager->trigger('Event.one', array($eventData));
+        $event = $this->manager->trigger('Event.one', array($eventData));
+        $this->assertIdentical($eventData, $event->result);
 
         $document = ClassRegistry::init('Document');
 
