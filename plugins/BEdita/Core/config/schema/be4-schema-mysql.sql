@@ -88,7 +88,7 @@ CREATE TABLE roles_users (
 
   PRIMARY KEY(id),
   INDEX (user_id),
-  INDEX (group_id),
+  INDEX (role_id),
   FOREIGN KEY(user_id)
     REFERENCES users(id)
       ON DELETE CASCADE

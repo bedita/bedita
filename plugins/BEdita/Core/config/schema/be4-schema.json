@@ -483,6 +483,120 @@
             }
         }
     },
+    "object_permissions": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "object_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "object - link to objects.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "role_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "role - link to roles.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "operation": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "operation permission as bitwise mask",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "params": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "permission parameters (JSON data)",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_id": {
+                "type": "unique",
+                "columns": [
+                    "object_id",
+                    "role_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "object_permissions_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "object_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "object_permissions_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "role_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "role_id": {
+                "type": "index",
+                "columns": [
+                    "role_id"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
     "object_properties": {
         "columns": {
             "id": {
@@ -1650,6 +1764,101 @@
                 "type": "unique",
                 "columns": [
                     "name"
+                ],
+                "length": [
+
+                ]
+            }
+        }
+    },
+    "roles_users": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "role_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to roles.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "user_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to users.id",
+                "precision": null,
+                "autoIncrement": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": [
+
+                ]
+            },
+            "roles_users_ibfk_1": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "roles_users_ibfk_2": {
+                "type": "foreign",
+                "columns": [
+                    "role_id"
+                ],
+                "references": [
+                    "roles",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            }
+        },
+        "indexes": {
+            "user_id": {
+                "type": "index",
+                "columns": [
+                    "user_id"
+                ],
+                "length": [
+
+                ]
+            },
+            "role_id": {
+                "type": "index",
+                "columns": [
+                    "role_id"
                 ],
                 "length": [
 
