@@ -1,11 +1,31 @@
-SET FOREIGN_KEY_CHECKS=0;
+-- --------------------
+-- DROP existing tables
+-- --------------------
+
+DROP TABLE IF EXISTS config;
+DROP TABLE IF EXISTS trees;
+DROP TABLE IF EXISTS object_relations;
+DROP TABLE IF EXISTS relation_types;
+DROP TABLE IF EXISTS relations;
+DROP TABLE IF EXISTS profiles;
+DROP TABLE IF EXISTS media;
+DROP TABLE IF EXISTS annotations;
+DROP TABLE IF EXISTS object_permissions;
+DROP TABLE IF EXISTS object_properties;
+DROP TABLE IF EXISTS objects;
+DROP TABLE IF EXISTS properties;
+DROP TABLE IF EXISTS property_types;
+DROP TABLE IF EXISTS object_types;
+DROP TABLE IF EXISTS roles_users;
+DROP TABLE IF EXISTS roles;
+DROP TABLE IF EXISTS external_auth;
+DROP TABLE IF EXISTS auth_providers;
+DROP TABLE IF EXISTS users;
 
 -- ------------------
 --   USERS & AUTH
 -- ------------------
 
-
-DROP TABLE IF EXISTS users;
 CREATE TABLE users (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -26,7 +46,6 @@ CREATE TABLE users (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'authenticated users basic data';
 
 
-DROP TABLE IF EXISTS auth_providers;
 CREATE TABLE auth_providers (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -38,7 +57,7 @@ CREATE TABLE auth_providers (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
 
-DROP TABLE IF EXISTS external_auth;
+
 CREATE TABLE external_auth (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -62,7 +81,6 @@ CREATE TABLE external_auth (
 --  ROLES
 -- --------
 
-DROP TABLE IF EXISTS roles;
 CREATE TABLE roles (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -79,7 +97,6 @@ CREATE TABLE roles (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
 
 
-DROP TABLE IF EXISTS roles_users;
 CREATE TABLE roles_users (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -105,7 +122,6 @@ CREATE TABLE roles_users (
 --   CONFIG
 -- -------------
 
-DROP TABLE IF EXISTS config;
 CREATE TABLE config (
 
   name VARCHAR(255) NOT NULL                  COMMENT 'configuration parameter key',
@@ -121,7 +137,6 @@ CREATE TABLE config (
 --   OBJECTS
 -- -------------
 
-DROP TABLE IF EXISTS object_types;
 CREATE TABLE object_types (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -134,7 +149,6 @@ CREATE TABLE object_types (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'obect types definitions';
 
 
-DROP TABLE IF EXISTS property_types;
 CREATE TABLE property_types (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -147,7 +161,6 @@ CREATE TABLE property_types (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'property types definitions';
 
 
-DROP TABLE IF EXISTS properties;
 CREATE TABLE properties (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -169,28 +182,6 @@ CREATE TABLE properties (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties definitions' ;
 
 
-DROP TABLE IF EXISTS object_properties;
-CREATE TABLE object_properties (
-
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  property_id INT UNSIGNED NOT NULL           COMMENT 'link to properties.id',
-  object_id INT UNSIGNED NOT NULL             COMMENT 'link to objects.id',
-  property_value TEXT NOT NULL                COMMENT 'property value of linked object',
-
-  PRIMARY KEY(id),
-
-  FOREIGN KEY(object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  FOREIGN KEY(property_id)
-    REFERENCES properties(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties values' ;
-
-
-DROP TABLE IF EXISTS objects;
 CREATE TABLE objects (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -223,11 +214,31 @@ CREATE TABLE objects (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'base table for all objects';
 
+
+CREATE TABLE object_properties (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  property_id INT UNSIGNED NOT NULL           COMMENT 'link to properties.id',
+  object_id INT UNSIGNED NOT NULL             COMMENT 'link to objects.id',
+  property_value TEXT NOT NULL                COMMENT 'property value of linked object',
+
+  PRIMARY KEY(id),
+
+  FOREIGN KEY(object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  FOREIGN KEY(property_id)
+    REFERENCES properties(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties values' ;
+
+
 -- --------------
 --  PERMISSIONS
 -- --------------
 
-DROP TABLE IF EXISTS object_permissions;
 CREATE TABLE object_permissions (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -255,7 +266,6 @@ CREATE TABLE object_permissions (
 --  OBJECT METADATA / SPECIAL PROPERTIES
 -- --------------------------------------
 
-DROP TABLE IF EXISTS annotations;
 CREATE TABLE annotations (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -283,7 +293,6 @@ CREATE TABLE annotations (
 --  CORE OBJECT TYPES
 -- --------------------
 
-DROP TABLE IF EXISTS media;
 CREATE TABLE media (
 
   id INT UNSIGNED NOT NULL,
@@ -310,7 +319,6 @@ CREATE TABLE media (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'media objects like images, audio, videos, files';
 
 
-DROP TABLE IF EXISTS profiles;
 CREATE TABLE profiles (
   id INT UNSIGNED NOT NULL,
   user_id INT UNSIGNED NULL         COMMENT 'link to users.id, if not null',
@@ -347,7 +355,6 @@ CREATE TABLE profiles (
 --   RELATIONS
 -- -------------
 
-DROP TABLE IF EXISTS relations;
 CREATE TABLE relations (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -366,7 +373,6 @@ CREATE TABLE relations (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'object relations definitions';
 
 
-DROP TABLE IF EXISTS relation_types;
 CREATE TABLE relation_types (
 
   relation_id INT UNSIGNED NOT NULL             COMMENT 'link to relation definition',
@@ -387,7 +393,6 @@ CREATE TABLE relation_types (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'type constraints in object relations';
 
 
-DROP TABLE IF EXISTS object_relations;
 CREATE TABLE object_relations (
 
   left_id INT UNSIGNED NOT NULL         COMMENT 'left part of the relation object id',
@@ -422,7 +427,6 @@ CREATE TABLE object_relations (
 --   TREE
 -- -------------
 
-DROP TABLE IF EXISTS trees;
 CREATE TABLE trees (
 
   object_id INT UNSIGNED NOT NULL       COMMENT 'object id',
