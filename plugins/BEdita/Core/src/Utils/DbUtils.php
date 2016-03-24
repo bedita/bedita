@@ -4,6 +4,7 @@
  */
 namespace BEdita\Core\Utils;
 
+use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 
 /**
@@ -28,6 +29,10 @@ class DbUtils
     {
         $schema = [];
         $connection = ConnectionManager::get($dbConfig);
+        if (!($connection instanceof Connection)) {
+            return $schema;
+        }
+
         $collection = $connection->schemaCollection();
         $tables = $collection->listTables();
         foreach ($tables as $tableName) {
@@ -68,18 +73,19 @@ class DbUtils
             }
             $itemNames = ['columns', 'constraints', 'indexes'];
             foreach ($itemNames as $itemName) {
-                if (!empty($tableMeta[$itemName])) {
-                    if (!isset($current[$table][$itemName])) {
-                        $current[$table][$itemName] = [];
-                    }
-                    static::compareSchemaItems(
-                        $table,
-                        $itemName,
-                        $tableMeta[$itemName],
-                        $current[$table][$itemName],
-                        $diff
-                    );
+                if (empty($tableMeta[$itemName])) {
+                    continue;
                 }
+                if (!isset($current[$table][$itemName])) {
+                    $current[$table][$itemName] = [];
+                }
+                static::compareSchemaItems(
+                    $table,
+                    $itemName,
+                    $tableMeta[$itemName],
+                    $current[$table][$itemName],
+                    $diff
+                );
             }
         }
         return $diff;
@@ -100,16 +106,16 @@ class DbUtils
      *
      * @return void
      */
-    private static function compareSchemaItems($table, $itemType, array $expItems, array $currItems, array &$diff)
+    protected static function compareSchemaItems($table, $itemType, array $expItems, array $currItems, array &$diff)
     {
         foreach ($expItems as $key => $data) {
             if (empty($currItems[$key])) {
                 $diff['missing'][$itemType][] = $table . '.' . $key;
-            } else {
-                $equal = ($currItems[$key] == $data);
-                if (!$equal) {
-                    $diff['changed'][$itemType][] = $table . '.' . $key;
-                }
+                continue;
+            }
+
+            if ($currItems[$key] != $data) {
+                $diff['changed'][$itemType][] = $table . '.' . $key;
             }
         }
         $exceeding = array_diff_key($currItems, $expItems);
@@ -128,8 +134,7 @@ class DbUtils
      */
     public static function basicInfo($dbConfig = 'default')
     {
-        $connection = ConnectionManager::get($dbConfig);
-        $config = $connection->config();
+        $config = ConnectionManager::get($dbConfig)->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
         return $config;
     }

@@ -5,11 +5,11 @@
 namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utils\DbUtils;
+use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
-use Cake\Utility\Inflector;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
-use Cake\Cache\Cache;
+use Cake\Utility\Inflector;
 
 /**
  * Database related shell commands like:
@@ -104,7 +104,7 @@ class DbAdminShell extends Shell
             }
         }
         if (!Cache::clear(false, '_cake_model_')) {
-            $this->error('Unable to remove internal cache before schema check');
+            $this->abort('Unable to remove internal cache before schema check');
         }
         $schemaData = DbUtils::currentSchema();
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
@@ -127,7 +127,7 @@ class DbAdminShell extends Shell
         $json = file_get_contents($schemaFile);
         $be4Schema = json_decode($json, true);
         if (!Cache::clear(false, '_cake_model_')) {
-            $this->error('Unable to remove internal cache before schema check');
+            $this->abort('Unable to remove internal cache before schema check');
         }
         $currentSchema = DbUtils::currentSchema();
         $schemaDiff = DbUtils::schemaCompare($be4Schema, $currentSchema);
@@ -156,9 +156,9 @@ class DbAdminShell extends Shell
         $info = DbUtils::basicInfo();
         $this->warn('You are about to initialize a new database!!');
         $this->warn('ALL CURRENT BEDITA4 TABLES WILL BE DROPPED!!');
-        $this->info('Host: ' . $info['host'] . '');
-        $this->info('Database: ' . $info['database'] . '');
-        $this->info('Vendor: ' . $info['vendor'] . '');
+        $this->info('Host: ' . $info['host']);
+        $this->info('Database: ' . $info['database']);
+        $this->info('Vendor: ' . $info['vendor']);
         $res = $this->in('Do you want to proceed?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->out('Database unchanged');
