@@ -28,7 +28,7 @@ available options:
 
 <script>
 	$('.mainfull').on('change', '.statusFilter', function(event) {
-		if ($('input:checked').length < 1) {
+		if ($('input.statusFilter:checked').length < 1 && event.currentTarget.checked == false) {
 			this.checked = true;
 		}
 	});
@@ -41,7 +41,6 @@ available options:
 				$(this).check();
 			}
 		});
-		//$("#searchButton").click();
 	}
 </script>
 
