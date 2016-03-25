@@ -2,6 +2,7 @@
 /**
  ${BEDITA_LICENSE_HEADER}
  */
+
 namespace BEdita\Core\Utils;
 
 use Cake\Database\Connection;
@@ -148,15 +149,15 @@ class DbUtils
      */
     protected static function splitSqlQueries($sql)
     {
-        $lines = explode("\n", $sql);
+        $lines = explode(PHP_EOL, $sql);
         $queries = [];
-        $q = '';
-        foreach ($lines as $l) {
-            $l = rtrim($l);
-            $q .= (!empty($q) ? "\n" : '') . $l;
-            if (substr($l, -1) == ';') {
-                $queries[] = $q;
-                $q = '';
+        $query = '';
+        foreach ($lines as $line) {
+            $line = rtrim($line);
+            $query .= (!empty($query) ? PHP_EOL : '') . $line;
+            if (substr($line, -1) == ';') {
+                $queries[] = $query;
+                $query = '';
             }
         }
         return $queries;
