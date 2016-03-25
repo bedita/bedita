@@ -35,8 +35,8 @@ class MultimediaController extends ModulesController {
     var $helpers    = array('BeTree', 'BeToolbar', 'ImageInfo');
     var $components = array('BeFileHandler', 'BeUploadToObj', 'BeSecurity');
 
-    // This controller does not use a model
-    var $uses = array('Application','Stream', 'Image', 'Audio', 'Video', 'BEObject', 'Tree', 'User', 'Group','Category','BEFile') ;
+    // This controller does not use a single model
+    var $uses = array('BEObject', 'Application','Stream', 'Image', 'Audio', 'Video', 'Tree', 'User', 'Group','Category','BEFile') ;
     protected $moduleName = 'multimedia';
 
     function index($id = null, $order = "id", $dir = 0, $page = 1, $dim = 50) {
@@ -361,6 +361,8 @@ class MultimediaController extends ModulesController {
             }
             $this->Stream->id = $this->{$model}->id;
         }
+
+        $this->data['id'] = $this->Stream->id;
 
         if (isset($this->data['destination'])) {
             if (!$new) {
