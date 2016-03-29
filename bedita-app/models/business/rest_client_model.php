@@ -246,8 +246,9 @@ class RestClientModel extends BEAppModel {
 	 * @param boolean $camelize, used if $outType = 'xml'
 	 *			true (default) camelize array keys corresponding to xml items that contain other xml items (CakePHP default behavior)
 	 *			false leave array keys equal to xml items
+     * @param array $headers Extra headers to be added to request.
 	 */
-	public function request($uri, $method="GET", $params = array(), $outType = null, $camelize = true) {
+    public function request($uri, $method="GET", $params = array(), $outType = null, $camelize = true, array $headers = array()) {
 		$this->setHeaders($headers);
 		$method = strtoupper($method);
 		if(Configure::read('debug') > 0) {
