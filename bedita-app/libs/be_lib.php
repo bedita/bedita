@@ -79,6 +79,19 @@ class BeLib {
 	}
 
 	/**
+     * Return the instance of BeCallbackManager
+     *
+     * @return BeCallbackManager
+     */
+    public static function eventManager() {
+        static $eventManager = null;
+        if (!$eventManager) {
+            $eventManager = self::getObject('BeCallbackManager');
+        }
+        return $eventManager;
+    }
+
+	/**
 	 * check if a class name is a BEdita object type
 	 *
 	 * @param string $name the class name

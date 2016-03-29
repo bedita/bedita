@@ -170,6 +170,9 @@ class CacheableBehavior extends ModelBehavior {
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
+        if (!empty($this->objectsToClean)) {
+            BeLib::eventManager()->trigger('ObjectCache.clear', array($this->objectsToClean));
+        }
     }
 
     /**

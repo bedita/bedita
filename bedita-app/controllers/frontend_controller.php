@@ -361,6 +361,9 @@ abstract class FrontendController extends AppController {
 		$this->historyItem["area_id"] = $this->publication["id"];
 
 		$this->checkPublicationPermissions();
+
+        BeLib::eventManager()
+            ->bind('ObjectCache.clear', array($this, 'clearObjectCacheArray'));
 	}
 
 	/**
