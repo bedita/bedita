@@ -59,7 +59,7 @@ class AuthProvidersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->AuthProviders);
-        
+
         TableRegistry::clear();
 
         parent::tearDown();
@@ -143,7 +143,7 @@ class AuthProvidersTableTest extends TestCase
 
         if ($expected) {
             $success = $this->AuthProviders->save($authProvider);
-            $this->assertEquals($expected, (bool)$success);
+            $this->assertTrue((bool)$success);
         }
     }
 }

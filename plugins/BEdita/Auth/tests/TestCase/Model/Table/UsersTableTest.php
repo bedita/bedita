@@ -127,7 +127,7 @@ class UsersTableTest extends TestCase
 
         if ($expected) {
             $success = $this->Users->save($user);
-            $this->assertEquals($expected, (bool)$success);
+            $this->assertTrue((bool)$success);
         }
     }
 }
