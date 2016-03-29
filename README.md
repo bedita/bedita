@@ -1,4 +1,4 @@
-# BEdita, a semantic content management framework
+# BEdita, API-first content management framework
 
 [![Build Status](https://travis-ci.org/bedita/bedita.svg?branch=4-develop)](https://travis-ci.org/bedita/bedita)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=4-develop)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=4-develop)
