@@ -47,6 +47,8 @@ class AuthProvidersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->AuthProviders);
+        
+        TableRegistry::clear();
 
         parent::tearDown();
     }

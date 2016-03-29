@@ -50,6 +50,8 @@ class AuthProviderTest extends TestCase
     {
         unset($this->AuthProviders);
 
+        TableRegistry::clear();
+
         parent::tearDown();
     }
 
@@ -68,7 +70,6 @@ class AuthProviderTest extends TestCase
             'name' => 'patched_name',
         ];
         $authProvider = $this->AuthProviders->patchEntity($authProvider, $data);
-
         if (!($authProvider instanceof AuthProvider)) {
             throw new \InvalidArgumentException();
         }
