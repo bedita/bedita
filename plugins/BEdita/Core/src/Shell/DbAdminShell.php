@@ -9,8 +9,6 @@
  * (at your option) any later version.
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
- *
- * @since 4.0.0
  */
 namespace BEdita\Core\Shell;
 
@@ -26,6 +24,8 @@ use Cake\Utility\Inflector;
  *  - initialize a new databasa instance
  *  - create schema files
  *  - check schema consistency
+ *
+ * @since 4.0.0
  */
 class DbAdminShell extends Shell
 {
