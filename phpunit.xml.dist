@@ -35,7 +35,8 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./plugins/BEdita/*/src/</directory>
+            <directory suffix=".php">./plugins/*/src/</directory>
+            <directory suffix=".php">./plugins/*/*/src/</directory>
         </whitelist>
     </filter>
 </phpunit>
