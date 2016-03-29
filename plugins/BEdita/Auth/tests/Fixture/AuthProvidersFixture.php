@@ -10,11 +10,10 @@ class AuthProvidersFixture extends TestFixture
 {
 
     /**
-     * Fields
+     * {@inheritDoc}
      *
-     * @var array
+     * @codingStandardsIgnore
      */
-    // @codingStandardsIgnoreStart
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => 'external provider name: facebook, google, github...', 'precision' => null, 'fixed' => null],
@@ -29,12 +28,9 @@ class AuthProvidersFixture extends TestFixture
             'collation' => 'utf8_general_ci',
         ],
     ];
-    // @codingStandardsIgnoreEnd
 
     /**
-     * Records
-     *
-     * @var array
+     * {@inheritDoc}
      */
     public $records = [
         [

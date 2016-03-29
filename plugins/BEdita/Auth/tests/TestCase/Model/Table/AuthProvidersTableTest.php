@@ -56,15 +56,20 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return void
      * @covers ::initialize()
+     * @covers ::_initializeSchema()
      */
     public function testInitialization()
     {
         $this->AuthProviders->initialize([]);
+        $schema = $this->AuthProviders->schema();
+
         $this->assertEquals('auth_providers', $this->AuthProviders->table());
         $this->assertEquals('id', $this->AuthProviders->primaryKey());
         $this->assertEquals('name', $this->AuthProviders->displayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->AuthProviders->ExternalAuth);
+
+        $this->assertEquals('json', $schema->columnType('params'));
     }
 
     /**
@@ -111,6 +116,8 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
+     * @covers ::validationDefault
+     * @covers ::buildRules
      */
     public function testValidation($expected, array $data)
     {
@@ -119,5 +126,10 @@ class AuthProvidersTableTest extends TestCase
 
         $error = (bool)$authProvider->errors();
         $this->assertEquals($expected, !$error);
+
+        if ($expected) {
+            $success = $this->AuthProviders->save($authProvider);
+            $this->assertEquals($expected, (bool)$success);
+        }
     }
 }
