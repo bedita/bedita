@@ -20,7 +20,7 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///:memory:'"
-    - "DB=mysql db_dsn='mysql://travis@127.0.0.1/bedita_test'"
+    - "DB=mysql db_dsn='mysql://travis@0.0.0.0/bedita_test'"
     - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
@@ -34,7 +34,7 @@ matrix:
 
   exclude:
     - php: hhvm
-      env: "DB=sqlite db_dsn='sqlite:///:memory:'"
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
 
   allow_failures:
     - php: hhvm
