@@ -18,3 +18,4 @@ php_extensions:
   - php5-redis
   - php5-sqlite
   - php5-xcache
+  - php5-xdebug

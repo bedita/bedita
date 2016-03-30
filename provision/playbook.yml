@@ -9,6 +9,13 @@
         cache_valid_time: "{{ apt_cache_valid_time | default(3600) }}"
       tags: always
 
+  tasks:
+    - name: install sqlite
+      apt:
+        name: sqlite3
+        state: latest
+      tags: sqlite
+
   roles:
     - role: common
     - role: ntp
