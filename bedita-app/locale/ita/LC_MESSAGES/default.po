@@ -3540,6 +3540,9 @@ msgstr "i tuoi 5 ultimi elementi"
 msgid "your message"
 msgstr "il tuo messaggio"
 
+msgid "The object you're about to clone contains relations"
+msgstr "L'oggetto che stai per clonare contine relazioni"
+
 #~ msgid "Calendar start date after end date"
 #~ msgstr "Nel calendario la data d'inizio è dopo la data di fine"
 

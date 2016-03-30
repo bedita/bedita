@@ -125,8 +125,28 @@ $(document).ready(function(){
 
 		
 	$("div.insidecol input[name='clone']").click(function() {
-		var cloneTitle=prompt("{t}Title{/t}",$("input[name='data[title]']").val()+"-copy");
+		var relCounts = $("input[name *= 'data[RelatedObject]'].id");
+
+		if (relCounts != 'undefined' && relCounts.length) {
+			var htmlMsg = null;
+			if (!htmlMsg) {
+				htmlMsg = '<div class="message info">' +
+						'<h2>{t}Warning{/t}</h2>' +
+						'<p style="margin-top: 10px">' + "{t}The object you're about to clone contains relations{/t}" + '</p>' +
+						'<hr />' +
+						'<a class="closemessage" href="javascript:void(0)">{t}close{/t}</a>' +
+						'</div>';
+			}
+
+			var messageView = $('#messagesDiv');
+			messageView.empty()
+					.html(htmlMsg)
+					.triggerMessage('info', true);
+		}
+
+		var cloneTitle = prompt("{t}Title{/t}",$("input[name='data[title]']").val()+"-copy");
 		if (cloneTitle) {
+
 			$("input[name='data[title]']").attr("value",cloneTitle);
 			$("#updateForm").attr("action","{$html->url('/')}{$submiturl}/cloneObject");
 			$("#updateForm").submit();
