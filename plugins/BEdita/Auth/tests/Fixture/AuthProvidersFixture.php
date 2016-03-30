@@ -46,13 +46,11 @@ class AuthProvidersFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
             'name' => 'example',
             'url' => 'https://example.com/oauth2',
             'params' => null,
         ],
         [
-            'id' => 2,
             'name' => 'example_2',
             'url' => 'https://example.org/oauth2',
             'params' => '{"param":"value"}',

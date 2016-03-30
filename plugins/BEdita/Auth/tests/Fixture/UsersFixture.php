@@ -55,7 +55,6 @@ class UsersFixture extends TestFixture
     {
         $this->records = [
             [
-                'id' => 1,
                 'username' => 'first user',
                 'password' => (new LegacyMd5PasswordHasher())->hash('password1'),
                 'blocked' => 0,
@@ -66,7 +65,6 @@ class UsersFixture extends TestFixture
                 'modified' => '2016-03-15 09:57:38',
             ],
             [
-                'id' => 2,
                 'username' => 'second user',
                 'password' => (new DefaultPasswordHasher())->hash('password2'),
                 'blocked' => 0,
