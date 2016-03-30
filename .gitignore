@@ -3,6 +3,8 @@
 /.vagrant/*
 /composer.lock
 /config/app.php
+/coverage/*
+/docs/*
 /index.html
 /logs/*
 !/logs/.gitkeep
