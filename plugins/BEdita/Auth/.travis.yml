@@ -34,7 +34,7 @@ matrix:
 
   exclude:
     - php: hhvm
-      env: "DB=sqlite db_dsn='sqlite:///:memory:'"
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
 
   allow_failures:
     - php: hhvm

@@ -11,8 +11,14 @@
             <directory>./tests/TestCase</directory>
         </testsuite>
         <!-- Add plugin test suites here. -->
+        <testsuite name="BEdita 4 API Test Suite">
+            <directory>./plugins/BEdita/API/tests/TestCase</directory>
+        </testsuite>
         <testsuite name="BEdita 4 Auth Test Suite">
             <directory>./plugins/BEdita/Auth/tests/TestCase</directory>
+        </testsuite>
+        <testsuite name="BEdita 4 Core Test Suite">
+            <directory>./plugins/BEdita/Core/tests/TestCase</directory>
         </testsuite>
     </testsuites>
 
@@ -29,7 +35,8 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src/</directory>
-            <directory suffix=".php">./plugins/BEdita/*/src/</directory>
+            <directory suffix=".php">./plugins/*/src/</directory>
+            <directory suffix=".php">./plugins/*/*/src/</directory>
         </whitelist>
     </filter>
 </phpunit>
