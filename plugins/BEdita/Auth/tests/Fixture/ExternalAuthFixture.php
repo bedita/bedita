@@ -13,7 +13,7 @@
 
 namespace BEdita\Auth\Test\Fixture;
 
-use Cake\TestSuite\Fixture\TestFixture;
+use BEdita\Auth\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `external_auth` table.

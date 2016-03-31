@@ -13,7 +13,7 @@
 
 namespace BEdita\Auth\Test\Fixture;
 
-use Cake\TestSuite\Fixture\TestFixture;
+use BEdita\Auth\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `auth_providers` table.
@@ -48,7 +48,7 @@ class AuthProvidersFixture extends TestFixture
         [
             'name' => 'example',
             'url' => 'https://example.com/oauth2',
-            'params' => null,
+            'params' => '{}',
         ],
         [
             'name' => 'example_2',

@@ -14,8 +14,8 @@
 namespace BEdita\Auth\Test\Fixture;
 
 use BEdita\Auth\Auth\LegacyMd5PasswordHasher;
+use BEdita\Auth\TestSuite\Fixture\TestFixture;
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\TestSuite\Fixture\TestFixture;
 
 /**
  * Fixture for `users` table.
