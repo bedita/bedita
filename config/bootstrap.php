@@ -133,11 +133,11 @@ if (!Configure::read('App.fullBaseUrl')) {
     unset($httpHost, $s);
 }
 
-Cache::config(Configure::consume('Cache'));
-ConnectionManager::config(Configure::consume('Datasources'));
-Email::configTransport(Configure::consume('EmailTransport'));
-Email::config(Configure::consume('Email'));
-Log::config(Configure::consume('Log'));
+Cache::config(Configure::consume('Cache') ?: []);
+ConnectionManager::config(Configure::consume('Datasources') ?: []);
+Email::configTransport(Configure::consume('EmailTransport') ?: []);
+Email::config(Configure::consume('Email') ?: []);
+Log::config(Configure::consume('Log') ?: []);
 Security::salt(Configure::consume('Security.salt'));
 
 /**
@@ -184,11 +184,13 @@ if (Configure::read('debug')) {
     try {
         Plugin::load('BEdita/DebugKit', ['bootstrap' => true]);
     } catch (\Cake\Core\Exception\MissingPluginException $e) {
+        // Do not halt if the plugin is missing
     }
 
     try {
         Plugin::load('DebugKit', ['bootstrap' => true]);
     } catch (\Cake\Core\Exception\MissingPluginException $e) {
+        // Do not halt if the plugin is missing
     }
 }
 
