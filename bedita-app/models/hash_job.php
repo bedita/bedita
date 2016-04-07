@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008, 2016 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -52,7 +52,7 @@ class HashJob extends BEAppModel {
 					$params[$key] = $val;
 				}
 			}
-			$this->data["HashJob"]["params"] = serialize($params);
+			$this->data['HashJob']['params'] = json_encode($params, true);
 		}
 		
 		return true;
@@ -67,9 +67,18 @@ class HashJob extends BEAppModel {
 					$results[$key]["HashJob"]["status"] = "expired";
 				}
                 if (!empty($val['HashJob']['params'])) {
-                    $params = @unserialize($val['HashJob']['params']);
+                    $params = json_decode($val['HashJob']['params'], true);
+                    if (!(is_array($params) && (json_last_error() === JSON_ERROR_NONE))) {
+                        $params = @unserialize($val['HashJob']['params']);
+                    }
                     if ($params !== false && is_array($params)) {
                         $results[$key]['HashJob'] = array_merge($results[$key]['HashJob'], $params);
+                    }
+                }
+                if (!empty($val['HashJob']['result'])) {
+                    $res = json_decode($val['HashJob']['result'], true);
+                    if ($res !== false && is_array($res)) {
+                        $results[$key]['HashJob'] = array_merge($results[$key]['HashJob'], $res);
                     }
                 }
 			}
