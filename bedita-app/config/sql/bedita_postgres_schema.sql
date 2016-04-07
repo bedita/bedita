@@ -306,15 +306,17 @@ CREATE TABLE hash_jobs (
     hash character varying(255) NOT NULL,
     created timestamp without time zone NOT NULL,
     modified timestamp without time zone NOT NULL,
+    result text,
     expired timestamp without time zone NOT NULL,
-    status character varying(10) DEFAULT 'pending'::character varying NOT NULL
+    status character varying(20) DEFAULT 'pending'::character varying NOT NULL
 );
 
 
 COMMENT ON COLUMN hash_jobs.service_type IS 'type of hash operations';
 COMMENT ON COLUMN hash_jobs.params IS 'serialized specific params for hash operation';
 COMMENT ON COLUMN hash_jobs.expired IS 'hash expired datetime';
-COMMENT ON COLUMN hash_jobs.status IS 'job status, can be pending/expired/closed/failed';
+COMMENT ON COLUMN hash_jobs.result IS '(JSON) job result data';
+COMMENT ON COLUMN hash_jobs.status IS 'job status, can be pending/in progress/expired/closed/failed';
 
 
 CREATE TABLE history (
