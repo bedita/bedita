@@ -103,7 +103,7 @@ class BeObjectCache {
      * @param string|null $label Additional label.
      * @return string
      */
-    private function cacheName($id, array &$options, $label = null) {
+    private function cacheName($id, array $options, $label = null) {
         if (!empty($options['bindings_list'])) {
             $strOpt = implode('', $options['bindings_list']);
         } elseif (!empty($options)) {
@@ -120,7 +120,7 @@ class BeObjectCache {
      * @return boolean
      */
     public function hasFileEngine() {
-         return ($this->cacheConfig['engine'] === 'File');
+        return ($this->cacheConfig['engine'] === 'File');
     }
 
     /**
@@ -159,7 +159,7 @@ class BeObjectCache {
      * @param  array $options
      * @return data array or false if no cache is found
      */
-    public function read($id, array &$options, $label = null) {
+    public function read($id, array $options, $label = null) {
         $res = false;
         $cacheName = $this->cacheName($id, $options, $label);
         // use cache config if not using 'File' engine
@@ -191,6 +191,7 @@ class BeObjectCache {
             Cache::write($cacheIdxKey, $cacheIdx, 'objects');
         }
         $res = Cache::write($cacheName, $data, 'objects');
+        return $res;
     }
 
     /**
@@ -199,12 +200,12 @@ class BeObjectCache {
      * @param  string $key
      * @return boolean True if the data was successfully cached, false on failure
      */
-    public function write($id, array &$options, $data, $label = null) {
+    public function write($id, array $options, $data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache
         if ($this->cacheConfig['engine'] !== 'File') {
-            $this->writeIndexedCache($id, $cacheName, $data);
+            $res = $this->writeIndexedCache($id, $cacheName, $data);
         } else {
             $this->setCacheOptions($id);
             $res = Cache::write($cacheName, $data);
@@ -236,5 +237,4 @@ class BeObjectCache {
             Cache::delete($cacheIdxKey, 'objects');
         }
     }
-
 }
