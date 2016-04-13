@@ -27,13 +27,18 @@
 class BeObjectCache {
 
     /**
-     * Base path for objects cache on filesystem
+     * Base path for objects cache on filesystem.
+     *
+     * @var string|null
      */
     private $baseCachePath = null;
 
     /**
-     * Default cache config
-     * It's overriden in constructor if exists a cache conf named 'objects'
+     * Default cache config.
+     *
+     * It's overriden in constructor if exists a cache conf named 'objects'.
+     *
+     * @var array
      */
     private $cacheConfig = array(
         'engine' => 'File',
@@ -44,8 +49,6 @@ class BeObjectCache {
     /**
      * Constructor
      * Initialize cache config
-     *
-     * @param array $settings
      */
     public function __construct() {
         // init cache
@@ -60,6 +63,12 @@ class BeObjectCache {
         }
     }
 
+    /**
+     * Get cached path by object ID.
+     *
+     * @param int $id Object ID.
+     * @return string
+     */
     public function getPathById($id) {
         $strId = "{$id}";
         if ($id < 100) {
@@ -68,6 +77,12 @@ class BeObjectCache {
         return $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
     }
 
+    /**
+     * Prepare cached config for an object to be cached.
+     *
+     * @param int $id Object ID.
+     * @return void
+     */
     private function setCacheOptions($id) {
         if (!empty($this->cacheConfig['path'])) {
             $path = $this->getPathById($id);
@@ -80,6 +95,14 @@ class BeObjectCache {
         Cache::set($this->cacheConfig);
     }
 
+    /**
+     * Get cache name for an object.
+     *
+     * @param int $id Object ID.
+     * @param array $options Additional caching options.
+     * @param string|null $label Additional label.
+     * @return string
+     */
     private function cacheName($id, array &$options, $label = null) {
         if (!empty($options['bindings_list'])) {
             $strOpt = implode('', $options['bindings_list']);
@@ -149,6 +172,14 @@ class BeObjectCache {
         return $res;
     }
 
+    /**
+     * Write related indexes to cache
+     *
+     * @param int $id Object ID.
+     * @param string $cacheName Cache key.
+     * @param mixed $data Cache value to be stored.
+     * @return bool
+     */
     private function writeIndexedCache($id, $cacheName, $data) {
         $cacheIdxKey = $id . '_index';
         $cacheIdx = Cache::read($cacheIdxKey, 'objects');
