@@ -161,13 +161,15 @@ available options:
 				{/if}
 				<select name="filter[category]">
 					<option value="">{t}all{/t}</option>
-					{foreach $categories as $catId => $catLabel}
+					{if !empty($categories)}
+                        {foreach $categories as $catId => $catLabel}
 						{strip}
 							<option value="{$catId}" {if $view->SessionFilter->read('category') == $catId}selected="selected"{/if}>
 								{$catLabel|escape}
 							</option>
 						{/strip}
-					{/foreach}
+                        {/foreach}
+                    {/if}
 				</select>
 			</div>
 		{/if}
