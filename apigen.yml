@@ -10,7 +10,6 @@ exclude:
   - vendors/_smartyPlugins
   - webroot
 
-title: BEdita API doc
 accessLevels: [public, protected, private]
 templateTheme: bootstrap
 deprecated: true
