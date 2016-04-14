@@ -1,0 +1,20 @@
+source:
+  - bedita-app
+
+exclude:
+  - config
+  - locale
+  - plugins
+  - tests
+  - tmp
+  - vendors/_smartyPlugins
+  - webroot
+
+title: BEdita API doc
+baseUrl: http://apidoc.bedita.com
+accessLevels: [public, protected, private]
+templateTheme: bootstrap
+deprecated: true
+download: true
+title: BEdita API doc
+tree: true
