@@ -27,25 +27,28 @@ class TestFixture extends CakeFixture
     /**
      * {@inheritDoc}
      *
+     * If self::$fields is empty trying to use table schema loaded in configuration
+     *
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function init()
     {
-        parent::init();
-
-        if (!Configure::check("schema.{$this->table}.columns")) {
-            return;
+        if ($this->table === null) {
+            $this->table = $this->_tableFromClass();
         }
 
-        // #820 Temporarily use `ROOT/plugins/BEdita/Core/config/be4-schema.json` to obtain schema.
-        $this->fields = Configure::read("schema.{$this->table}.columns");
-        $this->fields += [
-            '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
-            '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],
-            '_options' => Configure::read("schema.{$this->table}.options") ?: [
-                'engine' => 'InnoDB',
-                'collation' => 'utf8_general_ci',
-            ],
-        ];
+        if (empty($this->fields) && Configure::check("schema.{$this->table}.columns")) {
+            $this->fields = Configure::read("schema.{$this->table}.columns");
+            $this->fields += [
+                '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
+                '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],
+                '_options' => Configure::read("schema.{$this->table}.options") ?: [
+                    'engine' => 'InnoDB',
+                    'collation' => 'utf8_general_ci',
+                ],
+            ];
+        }
+
+        parent::init();
     }
 }

@@ -17,7 +17,7 @@ if (getenv('db_dsn')) {
     ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
 }
 
-// #820 Temporarily use `ROOT/plugins/BEdita/Core/config/be4-schema.json` to obtain schema.
+// #820 use `ROOT/plugins/BEdita/Core/config/be4-schema.json` to obtain schema.
 Configure::write('schema', (new JsonConfig())->read('BEdita/Core.schema/be4-schema'));
 
 if (getenv('DEBUG_LOG_QUERIES')) {
