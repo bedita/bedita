@@ -70,11 +70,10 @@ class BeObjectCache {
      * @return string
      */
     public function getPathById($id) {
-        $strId = "{$id}";
-        if ($id < 100) {
-            $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
-        }
-        return $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
+        $id = $id % 1000;
+        $id = str_pad($id, 3, '0', STR_PAD_LEFT);
+
+        return $this->baseCachePath . DS . $id;
     }
 
     /**
