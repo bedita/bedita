@@ -236,4 +236,57 @@ class BeObjectCache {
             Cache::delete($cacheIdxKey, 'objects');
         }
     }
+
+    /**
+     * Read path cache for an object.
+     *
+     * @param int $id Object ID.
+     * @return array|null
+     */
+    public function readPathCache($id) {
+        if ($this->hasFileEngine()) {
+            return null;
+        }
+
+        return json_decode(Cache::read('path-' . $id, 'objects'), true);
+    }
+
+    /**
+     * Write path cache for an object.
+     *
+     * @param int $id Object ID.
+     * @param array $path Object path.
+     * @return bool
+     */
+    public function writePathCache($id, array $path) {
+        if ($this->hasFileEngine()) {
+            CakeLog::write('path_cache', 'Has file engine!');
+            return false;
+        }
+
+        $path = json_encode($path);
+
+        return Cache::write('path-' . $id, $path, 'objects');
+    }
+
+    /**
+     * Delete path cache for an object and all its descendants.
+     *
+     * @param int $id Object ID.
+     * @param int[] $descendants Array of descendant IDs.
+     * @return bool
+     */
+    public function deletePathCache($id, array $descendants) {
+        if ($this->hasFileEngine()) {
+            return false;
+        }
+
+        $success = true;
+        $descendants = array_merge(array($id), $descendants);
+        foreach ($descendants as $descId) {
+            $success = Cache::delete('path-' . $descId, 'objects') && $success;
+        }
+
+        return $success;
+    }
 }
