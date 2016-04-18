@@ -2189,7 +2189,6 @@ abstract class FrontendController extends AppController {
 	 */
 	protected function getPath($object_id) {
         if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id))) {
-            $this->log(sprintf('Path cache hit: object #%d', (int)$object_id), 'path_cache');
             return $pathArr;
         }
 
@@ -2266,8 +2265,7 @@ abstract class FrontendController extends AppController {
 		}
 
         if ($this->BeObjectCache) {
-            $success = $this->BeObjectCache->writePathCache($object_id, $pathArr);
-            $this->log(sprintf('Path cache miss: object #%d (%s)', (int)$object_id, var_export($success, true)), 'path_cache');
+            $this->BeObjectCache->writePathCache($object_id, $pathArr);
         }
 
 		return $pathArr;
