@@ -155,6 +155,32 @@ class CacheableBehavior extends ModelBehavior {
     }
 
     /**
+     * Get a list of IDs of all descendant sections.
+     *
+     * @param int $id Object ID.
+     * @return array
+     */
+    protected function getDescendantSections($id) {
+        $descendants = ClassRegistry::init('Tree')->find('all', array(
+            'fields' => array('id'),
+            'conditions' => array(
+                'object_path LIKE' => '%/' . (int)$id . '/%',
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'sections',
+                    'alias' => 'Section',
+                    'type' => 'INNER',
+                    'conditions' => array('Section.id = Tree.id'),
+                ),
+            ),
+        ));
+        $descendants = Set::extract('/Tree/id', $descendants);
+
+        return $descendants;
+    }
+
+    /**
      * Clear object cache
      *
      * If objectId is passed start from it to obtain all object ids to delete from cache
@@ -170,6 +196,7 @@ class CacheableBehavior extends ModelBehavior {
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
+        $this->BeObjectCache->deletePathCache($model->id, $this->getDescendantSections($model->id));
         if (!empty($this->objectsToClean)) {
             BeLib::eventManager()->trigger('ObjectCache.clear', array($this->objectsToClean));
         }
