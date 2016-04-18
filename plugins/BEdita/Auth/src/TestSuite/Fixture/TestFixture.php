@@ -15,7 +15,6 @@ namespace BEdita\Auth\TestSuite\Fixture;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\Fixture\TestFixture as CakeFixture;
-use Cake\Event\EventManager;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
@@ -44,21 +43,42 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
             $this->table = $this->_tableFromClass();
         }
 
-        if (empty($this->fields) && Configure::check("schema.{$this->table}.columns")) {
-            $this->fields = Configure::read("schema.{$this->table}.columns");
-            $this->fields += [
-                '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
-                '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],
-                '_options' => Configure::read("schema.{$this->table}.options") ?: [
-                    'engine' => 'InnoDB',
-                    'collation' => 'utf8_general_ci',
-                ],
-            ];
+        if (empty($this->fields)) {
+            $this->fields = $this->fieldsFromConf();
         }
 
         $this->dispatchEvent('TestFixure.beforeBuildSchema');
 
         parent::init();
+    }
+
+    /**
+     * Return fields for table defined in configuration.
+     *
+     * Configuration has to be in 'schema.table_name' key defined as:
+     * - 'schema.table_name.columns' (required)
+     * - 'schema.table_name.constraints' (optional)
+     * - 'schema.table_name.indexes' (optional)
+     * - 'schema.table_name.options' (optional)
+     *
+     * @return array
+     */
+    protected function fieldsFromConf()
+    {
+        if (!Configure::check("schema.{$this->table}.columns")) {
+            return [];
+        }
+
+        $fields = Configure::read("schema.{$this->table}.columns");
+        $fields += [
+            '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
+            '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],
+            '_options' => Configure::read("schema.{$this->table}.options") ?: [
+                'engine' => 'InnoDB',
+                'collation' => 'utf8_general_ci',
+            ],
+        ];
+        return $fields;
     }
 
     /**
