@@ -14,10 +14,10 @@
 namespace BEdita\Auth\TestSuite\Fixture;
 
 use Cake\Core\Configure;
-use Cake\TestSuite\Fixture\TestFixture as CakeFixture;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
+use Cake\TestSuite\Fixture\TestFixture as CakeFixture;
 
 /**
  * BEdita TestFixture loads DDL for fixtures from configuration, if present.
