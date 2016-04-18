@@ -15,14 +15,19 @@ namespace BEdita\Auth\TestSuite\Fixture;
 
 use Cake\Core\Configure;
 use Cake\TestSuite\Fixture\TestFixture as CakeFixture;
+use Cake\Event\EventManager;
+use Cake\Event\EventDispatcherInterface;
+use Cake\Event\EventDispatcherTrait;
+use Cake\Event\EventListenerInterface;
 
 /**
  * BEdita TestFixture loads DDL for fixtures from configuration, if present.
  *
  * @since 4.0.0
  */
-class TestFixture extends CakeFixture
+class TestFixture extends CakeFixture implements EventListenerInterface, EventDispatcherInterface
 {
+    use EventDispatcherTrait;
 
     /**
      * {@inheritDoc}
@@ -33,6 +38,8 @@ class TestFixture extends CakeFixture
      */
     public function init()
     {
+        $this->eventManager()->on($this);
+
         if ($this->table === null) {
             $this->table = $this->_tableFromClass();
         }
@@ -49,6 +56,36 @@ class TestFixture extends CakeFixture
             ];
         }
 
+        $this->dispatchEvent('TestFixure.beforeBuildSchema');
+
         parent::init();
+    }
+
+    /**
+     * Return an array of conventional TestFixture callbacks
+     *
+     * By implementing the conventional methods a TestFixture class is assumed
+     * to be interested in the related event.
+     *
+     * Override this method if you need to add non-conventional event listeners.
+     *
+     * The conventional method map is:
+     *
+     * - TestFixure.beforeBuildSchema => beforeBuildSchema
+     *
+     * @return array
+     */
+    public function implementedEvents()
+    {
+        $eventMap = ['TestFixure.beforeBuildSchema' => 'beforeBuildSchema'];
+        $events = [];
+
+        foreach ($eventMap as $event => $method) {
+            if (!method_exists($this, $method)) {
+                continue;
+            }
+            $events[$event] = $method;
+        }
+        return $events;
     }
 }
