@@ -196,7 +196,12 @@ class CacheableBehavior extends ModelBehavior {
         foreach ($this->objectsToClean as $id) {
             $this->BeObjectCache->delete($id);
         }
-        $this->BeObjectCache->deletePathCache($model->id, $this->getDescendantSections($model->id));
+
+        $notLeafs = array(Configure::read('objectTypes.area.id'), Configure::read('objectTypes.section.id'));
+        if (empty($model->data['BEObject']['object_type_id']) || in_array($model->data['BEObject']['object_type_id'], $notLeafs)) {
+            $this->BeObjectCache->deletePathCache($model->id, $this->getDescendantSections($model->id));
+        }
+
         if (!empty($this->objectsToClean)) {
             BeLib::eventManager()->trigger('ObjectCache.clear', array($this->objectsToClean));
         }
