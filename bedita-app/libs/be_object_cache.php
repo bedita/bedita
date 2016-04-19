@@ -241,14 +241,23 @@ class BeObjectCache {
      * Read path cache for an object.
      *
      * @param int $id Object ID.
+     * @param string $statuses Allowed object statuses.
      * @return array|null
      */
-    public function readPathCache($id) {
+    public function readPathCache($id, array $statuses = array()) {
         if ($this->hasFileEngine()) {
             return null;
         }
 
-        return unserialize(Cache::read('path-' . $id, 'objects'), true);
+        $status = 'on';
+        if (in_array('draft', $statuses)) {
+            $status = 'draft';
+        }
+        if (in_array('off', $statuses)) {
+            $status = 'off';
+        }
+
+        return unserialize(Cache::read(sprintf('path-%d-%s', (int)$id, $status), 'objects'), true);
     }
 
     /**
@@ -256,16 +265,25 @@ class BeObjectCache {
      *
      * @param int $id Object ID.
      * @param array $path Object path.
+     * @param string $statuses Allowed object statuses.
      * @return bool
      */
-    public function writePathCache($id, array $path) {
+    public function writePathCache($id, array $path, array $statuses = array()) {
         if ($this->hasFileEngine()) {
             return false;
         }
 
+        $status = 'on';
+        if (in_array('draft', $statuses)) {
+            $status = 'draft';
+        }
+        if (in_array('off', $statuses)) {
+            $status = 'off';
+        }
+
         $path = serialize($path);
 
-        return Cache::write('path-' . $id, $path, 'objects');
+        return Cache::write(sprintf('path-%d-%s', (int)$id, $status), $path, 'objects');
     }
 
     /**
@@ -283,7 +301,9 @@ class BeObjectCache {
         $success = true;
         $descendants = array_merge(array($id), $descendants);
         foreach ($descendants as $descId) {
-            $success = Cache::delete('path-' . $descId, 'objects') && $success;
+            foreach (array('on', 'draft', 'off') as $status) {
+                $success = Cache::delete(sprintf('path-%d-%s', (int)$descId, $status)) && $success;
+            }
         }
 
         return $success;
