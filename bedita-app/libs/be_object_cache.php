@@ -248,7 +248,7 @@ class BeObjectCache {
             return null;
         }
 
-        return json_decode(Cache::read('path-' . $id, 'objects'), true);
+        return unserialize(Cache::read('path-' . $id, 'objects'), true);
     }
 
     /**
@@ -263,7 +263,7 @@ class BeObjectCache {
             return false;
         }
 
-        $path = json_encode($path);
+        $path = serialize($path);
 
         return Cache::write('path-' . $id, $path, 'objects');
     }
