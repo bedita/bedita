@@ -257,7 +257,7 @@ class BeObjectCache {
             $status = 'off';
         }
 
-        return unserialize(Cache::read(sprintf('path-%d-%s', (int)$id, $status), 'objects'), true);
+        return Cache::read(sprintf('path-%d-%s', (int)$id, $status), 'objects');
     }
 
     /**
@@ -280,8 +280,6 @@ class BeObjectCache {
         if (in_array('off', $statuses)) {
             $status = 'off';
         }
-
-        $path = serialize($path);
 
         return Cache::write(sprintf('path-%d-%s', (int)$id, $status), $path, 'objects');
     }
