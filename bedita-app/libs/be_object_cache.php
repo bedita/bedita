@@ -260,7 +260,6 @@ class BeObjectCache {
      */
     public function writePathCache($id, array $path) {
         if ($this->hasFileEngine()) {
-            CakeLog::write('path_cache', 'Has file engine!');
             return false;
         }
 
