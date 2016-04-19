@@ -2188,6 +2188,15 @@ abstract class FrontendController extends AppController {
 	 * @return array (the keys are object's id)
 	 */
 	protected function getPath($object_id) {
+        if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status))) {
+            $firstParent = reset($pathArr);
+            if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $this->publication['id']) {
+                throw new BeditaNotFoundException('Wrong publication: ' . $firstParent['area_id']);
+            }
+
+            return $pathArr;
+        }
+
 		$pathArr = array();
 		$path = "";
 		if(isset($this->objectCache[$object_id]["parent_path"])){
@@ -2259,6 +2268,11 @@ abstract class FrontendController extends AppController {
 				$this->modelBindings["Section"] = $oldSectionBindings;
 			}
 		}
+
+        if ($this->BeObjectCache) {
+            $this->BeObjectCache->writePathCache($object_id, $pathArr, $this->status);
+        }
+
 		return $pathArr;
 	}
 
