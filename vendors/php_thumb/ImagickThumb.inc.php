@@ -600,13 +600,12 @@ class ImagickThumb extends ThumbBase
 	protected function calcWidth ($width, $height)
 	{
 	
-		$newWidthPercentage	= (100 * $this->maxWidth) / $width;
-		$newHeight			= ($height * $newWidthPercentage) / 100;
+		$newHeight			= ($height * $this->maxWidth) / $width;
 		
 		return array
 		(
-			'newWidth'	=> intval($this->maxWidth),
-			'newHeight'	=> intval($newHeight)
+			'newWidth'	=> ceil($this->maxWidth),
+			'newHeight'	=> ceil($newHeight)
 		);
 	}
 	
@@ -620,8 +619,7 @@ class ImagickThumb extends ThumbBase
 	protected function calcHeight ($width, $height)
 	{
 		
-		$newHeightPercentage	= (100 * $this->maxHeight) / $height;
-		$newWidth 				= ($width * $newHeightPercentage) / 100;
+		$newWidth 				= ($width * $this->maxHeight) / $height;
 		
 		return array
 		(
