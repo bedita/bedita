@@ -20,7 +20,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Entity\AuthProvider} Test Case
  *
- * @coversDefaultClass \BEdita\Auth\Model\Entity\AuthProvider
+ * @coversDefaultClass \BEdita\Core\Model\Entity\AuthProvider
  */
 class AuthProviderTest extends TestCase
 {
