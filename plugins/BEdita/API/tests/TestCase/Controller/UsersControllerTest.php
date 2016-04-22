@@ -22,7 +22,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Auth.users',
+        'plugin.BEdita/Core.users',
     ];
 
     public function testIndex()
