@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Auth\Model\Entity\User;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -28,7 +27,7 @@ class UsersController extends AppController
         parent::initialize();
         $this->Users = TableRegistry::get(
             'Users',
-            TableRegistry::exists('Users') ? [] : ['className' => 'BEdita\Auth\Model\Table\UsersTable']
+            TableRegistry::exists('Users') ? [] : ['className' => 'BEdita\Core\Model\Table\UsersTable']
         );
     }
 
