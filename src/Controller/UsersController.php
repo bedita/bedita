@@ -16,6 +16,8 @@ use Cake\ORM\TableRegistry;
 
 /**
  * Controller for /users endpoint
+ *
+ * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
 class UsersController extends AppController
 {
