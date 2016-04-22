@@ -14,9 +14,6 @@
         <testsuite name="BEdita 4 API Test Suite">
             <directory>./plugins/BEdita/API/tests/TestCase</directory>
         </testsuite>
-        <testsuite name="BEdita 4 Auth Test Suite">
-            <directory>./plugins/BEdita/Auth/tests/TestCase</directory>
-        </testsuite>
         <testsuite name="BEdita 4 Core Test Suite">
             <directory>./plugins/BEdita/Core/tests/TestCase</directory>
         </testsuite>
