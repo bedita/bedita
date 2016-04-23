@@ -10,9 +10,11 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utils\DbUtils;
+use BEdita\Core\Utils\StringUtils;
 use Cake\Console\Shell;
 
 /**
@@ -31,6 +33,14 @@ class DataSeedShell extends Shell
     private $faker = null;
 
     /**
+     * User defined field values
+     *
+     * @array
+     */
+    private $fields = [];
+
+
+    /**
      * {@inheritDoc}
      */
     public function getOptionParser()
@@ -41,11 +51,11 @@ class DataSeedShell extends Shell
             'parser' => [
                 'description' => [
                     'Use this command to generate new fake data in BE4',
-                    'You have to specify type and number of new items to seed.',
+                    'You have to specify table and number of new items to seed.',
                 ],
                 'options' => [
-                    'type' => [
-                        'help' => 'Specifiy item type',
+                    'table' => [
+                        'help' => 'Specifiy item table',
                         'short' => 't',
                         'required' => true,
                         'default' => 'users',
@@ -55,6 +65,11 @@ class DataSeedShell extends Shell
                         'short' => 'n',
                         'required' => true,
                         'default' => 1,
+                    ],
+                    'fields' => [
+                        'help' => 'Specifiy values for some fields using thus forma field1="val1",field2="val2"',
+                        'short' => 'f',
+                        'required' => false,
                     ],
                 ],
             ],
@@ -101,8 +116,38 @@ class DataSeedShell extends Shell
     {
         return [
             'name' => $this->faker->word,
-            'description' => $this->faker->text,
+            'description' => $this->faker->sentence,
             'backend_auth' => $this->faker->numberBetween(0, 1),
+            'created' => date('Y-m-d H:i:s'),
+            'modified' => date('Y-m-d H:i:s'),
+        ];
+    }
+
+    /**
+     * Generate data for "objects" table
+     *
+     * @return array
+     */
+    protected function objectsData()
+    {
+        if (empty($this->fields['object_type_id'])) {
+            $this->abort('Unable to set object_type_id: please use --fieldsd option');
+        }
+        $userId = 1;
+        if (!empty($this->fields['user_id'])) {
+            $userId = $this->fields['user_id'];
+        }
+        $title = $this->faker->sentence(4);
+        return [
+            'object_type_id' => $this->fields['object_type_id'],
+            'title' => $title,
+            'uname' => StringUtils::friendlyUrl($title),
+            'status' => $this->faker->randomElement(['on', 'off', 'draft', 'deleted']),
+            'description' => $this->faker->paragraph,
+            'body' => $this->faker->text,
+            'lang' => 'eng',
+            'created_by' => $userId,
+            'modified_by' => $userId,
             'created' => date('Y-m-d H:i:s'),
             'modified' => date('Y-m-d H:i:s'),
         ];
@@ -148,18 +193,29 @@ class DataSeedShell extends Shell
     public function insert()
     {
         $this->initFaker();
-        $type = $this->params['type'];
-        $method = $type . 'Data';
+        $table = $this->params['table'];
+        $method = $table . 'Data';
         if (!method_exists($this, $method)) {
-            $this->abort('Type "' . $type . '" not supported');
+            $this->abort('Table "' . $table . '" not supported');
         }
         $num = intval($this->params['number']);
+
+        if (!empty($this->params['fields'])) {
+            $f = explode(',', $this->params['fields']);
+            foreach ($f as $value) {
+                $fData = explode('=', $value);
+                if (count($fData) != 2) {
+                    $this->abort('Error parsing input field: ' . $value);
+                }
+                $this->fields[$fData[0]] = $fData[1];
+            }
+        }
 
         $sql = '';
         $this->info('Generating SQL queries...');
         for ($i = 0; $i < $num; $i++) {
             $data = $this->{$method}();
-            $query = $this->sqlInsert($data, $type);
+            $query = $this->sqlInsert($data, $table);
             $this->out($query);
             $sql .= $query . ";\n";
         }
