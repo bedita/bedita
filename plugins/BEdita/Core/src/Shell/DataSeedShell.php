@@ -85,7 +85,7 @@ class DataSeedShell extends Shell
     {
         return [
             'username' => $this->faker->userName,
-            'password' => $this->faker->password,
+            'password' => md5($this->faker->password),
             'last_login' => $this->faker->dateTimeThisDecade()->format('Y-m-d H:i:s'),
             'created' => date('Y-m-d H:i:s'),
             'modified' => date('Y-m-d H:i:s'),
