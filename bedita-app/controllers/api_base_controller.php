@@ -460,6 +460,30 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Override FrontendController::checkPublicationPermissions()
+     *
+     * Return true if the publication is authorized for user
+     * Return null if client is trying to authenticate via `POST /auth`
+     *
+     * @throws BeditaUnauthorizedException
+     * @throws BeditaForbiddenException
+     * @return mixed
+     */
+    protected function checkPublicationPermissions() {
+        if ($this->publication['authorized']) {
+            return true;
+        }
+        if ($this->params['pass']['0'] == 'auth' && $this->requestMethod == 'post' && in_array('auth', $this->endPoints)) {
+            return null;
+        }
+
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
+        throw new BeditaForbiddenException();
+    }
+
+    /**
      * Setup component used for authentication:
      *
      * - check configuration (api.auth.component) to see if adhoc component should be used and assign it to self::$ApiAuth

@@ -208,27 +208,34 @@ class BeHashComponent extends Object {
 			throw new BeditaHashException($ex->getMessage(), $ex->getDetails());
 		}
 
-		if (!empty($data["Card"])) {
-			$data["Card"]["ObjectUser"]["card"][0]["user_id"] = $user_id;
-			$data["Card"]["ObjectUser"]["card"][0]["switch"] = "card";
-			if (empty($data["Card"]["email"])) {
-				$data["Card"]["email"] = $data["User"]["email"];
-			}
-			if (empty($data["Card"]["title"])) {
-				$data["Card"]["title"] = $data["User"]["realname"];
-				if (!empty($data["Card"]["name"])) {
-					$data["Card"]["title"] = $data["Card"]["name"] . " ";
-					if (!empty($data["Card"]["surname"])) {
-						$data["Card"]["title"] .= $data["Card"]["surname"];
-					}
-				} elseif (!empty($data["Card"]["surname"])) {
-					$data["Card"]["title"] = $data["Card"]["surname"];
-				}
-			}
-			if (!ClassRegistry::init("Card")->save($data["Card"])) {
-				throw new BeditaHashException(__("Error saving data", true));
-			}
-		}
+    if (! empty($data['Card'])) {
+        $userModel = ClassRegistry::init('User');
+        $cardId = $userModel->findCardId($user_id);
+        if (empty($cardId)) {
+            $data['Card']['ObjectUser']['card'][0]['user_id'] = $user_id;
+            $data['Card']['ObjectUser']['card'][0]['switch'] = 'card';
+        } else {
+            $data['Card']['id'] = $cardId;
+        }
+        if (empty($data['Card']['email'])) {
+            $data['Card']['email'] = $data['User']['email'];
+        }
+        if (empty($data['Card']['title'])) {
+            $data['Card']['title'] = $data['User']['realname'];
+            if (! empty($data['Card']['name'])) {
+                $data['Card']['title'] = $data['Card']['name'] . ' ';
+                    if (! empty($data['Card']['surname'])) {
+                        $data['Card']['title'] .= $data['Card']['surname'];
+                    }
+            } elseif (! empty($data['Card']['surname'])) {
+                $data['Card']['title'] = $data['Card']['surname'];
+            }
+        }
+        $cardModel = ClassRegistry::init('Card');
+        if (! $cardModel->save($data['Card'])) {
+            throw new BeditaHashException(__('Error saving data', true));
+        }
+    }
 
 
 		// if user subscription is moderated

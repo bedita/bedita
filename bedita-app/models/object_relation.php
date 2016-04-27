@@ -353,10 +353,12 @@ class ObjectRelation extends BEAppModel
      * array returned is like
      * array('relation_name' => 'relation label', ...)
      *
+     * @see self::sortRelations() for $orderBy example
      * @param string|int $objectType Object type name or object type id
+     * @param array $orderBy sort relations returned
      * @return array
      */
-    public function availableRelations($objectType) {
+    public function availableRelations($objectType, array $orderBy = array()) {
         $allRelations = BeLib::getObject('BeConfigure')->mergeAllRelations();
         $availableRelations = array();
         if (is_numeric($objectType)) {
@@ -399,7 +401,46 @@ class ObjectRelation extends BEAppModel
                 }
             }
         }
-        return array_unique($availableRelations);
+
+        $availableRelations = array_unique($availableRelations);
+        if (!empty($orderBy)) {
+            $availableRelations = $this->sortRelations($availableRelations, $orderBy);
+        }
+
+        return $availableRelations;
+    }
+
+    /**
+     * Sort $relations using $orderBy array
+     * $relations must be an array with relation name as keys
+     * $orderBy must be an array with a list of relation.
+     * The order of that list is used to sort the relations.
+     *
+     * Example
+     *
+     * ```
+     * $relations = array('attach' => array(), 'seealso' => array(), ....)
+     * $orderBy = array('seealso')
+     * ```
+     *
+     * return
+     *
+     * ```
+     * array('seealso' => array(), 'attach' => array(), ...)
+     * ```
+     *
+     * @param array $relations
+     * @param array $orderBy
+     * @return array
+     */
+    public function sortRelations(array $relations, array $orderBy) {
+        // keep in $orderBy only relation available in $relations
+        $orderBy = array_intersect_key(
+            array_flip($orderBy),
+            $relations
+        );
+
+        return array_merge($orderBy, $relations);
     }
 
     /**

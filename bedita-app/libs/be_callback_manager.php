@@ -34,11 +34,9 @@ class BeCallbackManager {
     /**
      * Attaches a listener to an event.
      *
-     * Listeners can be either anonymous functions or pairs of class name / method name
-     * (`ClassRegistry::init()` will be used in this case to retreive object instance).
+     * Listeners can be either anonymous functions or pairs of class name (or object instance) / method name
      *
-     * @see ClassRegistry::init()
-     *
+     * @see self::callListener() to see valid types of listener
      * @param string $eventName Name of the event to be listened.
      * @param mixed $listener Callback or full qualified name of listener.
      * @return boolean Success.
@@ -116,9 +114,12 @@ class BeCallbackManager {
      * Triggers a new event, calling all listeners binded to that event in the order they were added.
      *
      * Passing data as an array will result in callbacks associated to the triggered event being called
-     * with array elements as arguments in the order they appear in that array (as of `call_user_func_array()`).
+     * with array elements as arguments in the order they appear in that array.
      * In addition to that, the `$event` object will be passed to those callbacks as *last* argument,
      * thus allowing listeners to gain control on event propagation or modifying the event itself.
+     *
+     * To stop the event propagation the listener method can return `false`
+     * or use `$event->stopPropagation->__invoke()`
      *
      * @param string $eventName Name of the event to be triggered.
      * @param array $eventData Data of the event.
@@ -132,18 +133,47 @@ class BeCallbackManager {
             return $event;
         }
         foreach ($this->listeners[$event->name] as $listener) {
-            if (is_array($listener)) {
-                list($class, $method) = $listener;
-                $listener = array(ClassRegistry::getObject($class), $method);
-            }
-            $res = call_user_func_array($listener, $event->data + array($event));
-            $event->result = $res;
+            $event->result = $this->callListener(
+                $listener,
+                array_merge($event->data, array($event))
+            );
 
             if ($event->result === false || !empty($event->stopped)) {
                 break;
             }
         }
         return $event;
+    }
+
+    /**
+     * Check if $listener is valid and call it
+     * To be valid a listener must be:
+     *
+     * - a Closure
+     * - a string as `ClassName::methodName` (methodName should be static)
+     * - an array as `array(instance of a class, 'methodName')`
+     * - an array as `array('ClassName', 'methodName')`
+     *   In this case:
+     *     - if 'ClassName' is in the registry the instance is retrieved
+     *     - else try to use it (methodName should be static)
+     *
+     * @throws BeditaInternalErrorException if the listener is not callable
+     * @param mixed $listener Callback or full qualified name of callback
+     * @return mixed the result of listener call
+     */
+    private function callListener($listener, array $data = array()) {
+        if (is_array($listener)) {
+            list($class, $method) = $listener;
+            if (is_string($class) && ClassRegistry::isKeySet($class)) {
+                $listener = array(ClassRegistry::getObject($class), $method);
+            }
+        }
+
+        if (!is_callable($listener)) {
+            throw new BeditaInternalErrorException('Listener not callable: ' . print_r($listener, true));
+        }
+
+        return call_user_func_array($listener, $data);
     }
 
     /**

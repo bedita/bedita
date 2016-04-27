@@ -27,13 +27,18 @@
 class BeObjectCache {
 
     /**
-     * Base path for objects cache on filesystem
+     * Base path for objects cache on filesystem.
+     *
+     * @var string|null
      */
     private $baseCachePath = null;
 
     /**
-     * Default cache config
-     * It's overriden in constructor if exists a cache conf named 'objects'
+     * Default cache config.
+     *
+     * It's overriden in constructor if exists a cache conf named 'objects'.
+     *
+     * @var array
      */
     private $cacheConfig = array(
         'engine' => 'File',
@@ -44,8 +49,6 @@ class BeObjectCache {
     /**
      * Constructor
      * Initialize cache config
-     *
-     * @param array $settings
      */
     public function __construct() {
         // init cache
@@ -60,14 +63,25 @@ class BeObjectCache {
         }
     }
 
+    /**
+     * Get cached path by object ID.
+     *
+     * @param int $id Object ID.
+     * @return string
+     */
     public function getPathById($id) {
-        $strId = "{$id}";
-        if ($id < 100) {
-            $strId = str_pad("{$id}", 3, '0', STR_PAD_LEFT);
-        }
-        return $this->baseCachePath . DS . substr($strId, strlen($strId) - 3, 3);
+        $id = $id % 1000;
+        $id = str_pad($id, 3, '0', STR_PAD_LEFT);
+
+        return $this->baseCachePath . DS . $id;
     }
 
+    /**
+     * Prepare cached config for an object to be cached.
+     *
+     * @param int $id Object ID.
+     * @return void
+     */
     private function setCacheOptions($id) {
         if (!empty($this->cacheConfig['path'])) {
             $path = $this->getPathById($id);
@@ -80,7 +94,15 @@ class BeObjectCache {
         Cache::set($this->cacheConfig);
     }
 
-    private function cacheName($id, array &$options, $label = null) {
+    /**
+     * Get cache name for an object.
+     *
+     * @param int $id Object ID.
+     * @param array $options Additional caching options.
+     * @param string|null $label Additional label.
+     * @return string
+     */
+    private function cacheName($id, array $options, $label = null) {
         if (!empty($options['bindings_list'])) {
             $strOpt = implode('', $options['bindings_list']);
         } elseif (!empty($options)) {
@@ -92,13 +114,51 @@ class BeObjectCache {
     }
 
     /**
+     * Returns true if cache engine type is 'File'
+     *
+     * @return boolean
+     */
+    public function hasFileEngine() {
+        return ($this->cacheConfig['engine'] === 'File');
+    }
+
+    /**
+     * Read id from nickname using cache
+     *
+     * @param  string $nickname object nickname
+     * @return int object id on success, null if $nickname is not found
+     */
+    public function readIdFromNickname($nickname) {
+        if ($this->hasFileEngine()) {
+            return null;
+        }
+        $cacheName = 'nickname-' . $nickname;
+        return Cache::read($cacheName, 'objects');
+    }
+
+    /**
+     * Writes $nickname => $id key-value pair in object cache
+     *
+     * @param  string $nickname object nickname
+     * @param  int $id object id
+     * @return boolean true on success, false on failure
+     */
+    public function writeNicknameId($nickname, $id) {
+        if ($this->hasFileEngine()) {
+            return false;
+        }
+        $cacheName = 'nickname-' . $nickname;
+        return $this->writeIndexedCache($id, $cacheName, $id);
+    }
+
+    /**
      * Read object from cache
      *
      * @param  int $id
      * @param  array $options
      * @return data array or false if no cache is found
      */
-    public function read($id, array &$options, $label = null) {
+    public function read($id, array $options, $label = null) {
         $res = false;
         $cacheName = $this->cacheName($id, $options, $label);
         // use cache config if not using 'File' engine
@@ -112,26 +172,39 @@ class BeObjectCache {
     }
 
     /**
+     * Write related indexes to cache
+     *
+     * @param int $id Object ID.
+     * @param string $cacheName Cache key.
+     * @param mixed $data Cache value to be stored.
+     * @return bool
+     */
+    private function writeIndexedCache($id, $cacheName, $data) {
+        $cacheIdxKey = $id . '_index';
+        $cacheIdx = Cache::read($cacheIdxKey, 'objects');
+        if (empty($cacheIdx)) {
+            $cacheIdx = array();
+        }
+        if (!in_array($cacheName, $cacheIdx)) {
+            $cacheIdx[] = $cacheName;
+            Cache::write($cacheIdxKey, $cacheIdx, 'objects');
+        }
+        $res = Cache::write($cacheName, $data, 'objects');
+        return $res;
+    }
+
+    /**
      * Write object data to cache
      *
      * @param  string $key
-     * @return array
+     * @return boolean True if the data was successfully cached, false on failure
      */
-    public function write($id, array &$options, array &$data, $label = null) {
+    public function write($id, array $options, $data, $label = null) {
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache
         if ($this->cacheConfig['engine'] !== 'File') {
-            $cacheIdxKey = $id . '_index';
-            $cacheIdx = Cache::read($cacheIdxKey, 'objects');
-            if (empty($cacheIdx)) {
-                $cacheIdx = array();
-            }
-            if (!in_array($cacheName, $cacheIdx)) {
-                $cacheIdx[] = $cacheName;
-                Cache::write($cacheIdxKey, $cacheIdx, 'objects');
-            }
-            $res = Cache::write($cacheName, $data, 'objects');
+            $res = $this->writeIndexedCache($id, $cacheName, $data);
         } else {
             $this->setCacheOptions($id);
             $res = Cache::write($cacheName, $data);
@@ -164,4 +237,73 @@ class BeObjectCache {
         }
     }
 
+    /**
+     * Read path cache for an object.
+     *
+     * @param int $id Object ID.
+     * @param string $statuses Allowed object statuses.
+     * @return array|null
+     */
+    public function readPathCache($id, array $statuses = array()) {
+        if ($this->hasFileEngine()) {
+            return null;
+        }
+
+        $status = 'on';
+        if (in_array('draft', $statuses)) {
+            $status = 'draft';
+        }
+        if (in_array('off', $statuses)) {
+            $status = 'off';
+        }
+
+        return Cache::read(sprintf('path-%d-%s', (int)$id, $status), 'objects');
+    }
+
+    /**
+     * Write path cache for an object.
+     *
+     * @param int $id Object ID.
+     * @param array $path Object path.
+     * @param string $statuses Allowed object statuses.
+     * @return bool
+     */
+    public function writePathCache($id, array $path, array $statuses = array()) {
+        if ($this->hasFileEngine()) {
+            return false;
+        }
+
+        $status = 'on';
+        if (in_array('draft', $statuses)) {
+            $status = 'draft';
+        }
+        if (in_array('off', $statuses)) {
+            $status = 'off';
+        }
+
+        return Cache::write(sprintf('path-%d-%s', (int)$id, $status), $path, 'objects');
+    }
+
+    /**
+     * Delete path cache for an object and all its descendants.
+     *
+     * @param int $id Object ID.
+     * @param int[] $descendants Array of descendant IDs.
+     * @return bool
+     */
+    public function deletePathCache($id, array $descendants) {
+        if ($this->hasFileEngine()) {
+            return false;
+        }
+
+        $success = true;
+        $descendants = array_merge(array($id), $descendants);
+        foreach ($descendants as $descId) {
+            foreach (array('on', 'draft', 'off') as $status) {
+                $success = Cache::delete(sprintf('path-%d-%s', (int)$descId, $status)) && $success;
+            }
+        }
+
+        return $success;
+    }
 }

@@ -70,7 +70,8 @@ class SessionFilterComponent extends Object {
         'mail_group',
         'tag',
         'query',
-        'substring'
+        'substring',
+        'status'
     );
 
     /**
@@ -230,8 +231,9 @@ class SessionFilterComponent extends Object {
      */
     public function read($key = null) {
         $filter = $this->Session->read($this->sessionKey);
-        if (!empty($key) && !empty($filter[$key])) {
-            $filter = $filter[$key];
+
+        if (!empty($key)) {
+            $filter = !empty($filter[$key]) ? $filter[$key] : array();
         } elseif (!$filter) {
             $filter = array();
         }

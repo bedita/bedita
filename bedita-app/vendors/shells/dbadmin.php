@@ -82,6 +82,22 @@ class DbadminShell extends BeditaBaseShell {
 		if (!empty($this->params['delete'])) {
 		    $options['delete'] = true;
 		}
+        if (!empty($this->params['min'])) {
+            $this->out('Using min ID: ' . $this->params['min']);
+            if (!is_numeric($this->params['min'])) {
+                $this->out('Min ID should be numeric: ' . $this->params['min']);
+                return;
+            }
+            $options['min'] = $this->params['min'];
+        }
+		if (!empty($this->params['max'])) {
+            $this->out('Using max ID: ' . $this->params['max']);
+            if (!is_numeric($this->params['max'])) {
+                $this->out('Max ID should be numeric: ' . $this->params['max']);
+                return;
+            }
+            $options['max'] = $this->params['max'];
+        }
 		$options['returnOnlyFailed'] = (!isset($this->params['verbose']))? true : false;
 		$options['log'] = (!empty($this->params['log']))? true : false;
 		$this->hr();
@@ -961,11 +977,13 @@ class DbadminShell extends BeditaBaseShell {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
 		$this->out(' ');
-		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-delete] [-id <obj-id>] [-type <object-type>] [-verbose] [-log]');
+		$this->out('    Usage: rebuildIndex [-engine <search-model>] [-delete] [-id <obj-id>] [-type <object-type>] [-min <id>] [-max <id>] [-verbose] [-log]');
 		$this->out(' ');
         $this->out("    -engine \t search engine to use, e.g. ElasticSearch");
 		$this->out("    -delete \t delete index before rebuild");
         $this->out("    -id \t rebuild index for single object only");
+        $this->out("    -min \t min ID to index (included)");
+        $this->out("    -max \t max ID to index (included)");
         $this->out("    -type \t rebuild index only for a single object type (like 'document', 'image'...)");
         $this->out("    -verbose \t show also successfully results");
 		$this->out("    -log \t write errors on rebuildIndex.log file");

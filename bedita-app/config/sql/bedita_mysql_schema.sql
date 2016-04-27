@@ -277,7 +277,8 @@ CREATE TABLE `hash_jobs` (
   `created` datetime NOT NULL,
   `modified` datetime NOT NULL,
   `expired` datetime NOT NULL COMMENT 'hash expired datetime',
-  `status` VARCHAR(10) NOT NULL default 'pending' COMMENT 'job status, can be pending/expired/closed/failed',
+  `result` text COMMENT '(JSON) job result data',
+  `status` VARCHAR(20) NOT NULL default 'pending' COMMENT 'job status, can be pending/in progress/expired/closed/failed',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `hash` (`hash`),
   KEY `user_id` (`user_id`)

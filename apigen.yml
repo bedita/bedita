@@ -1,0 +1,17 @@
+source:
+  - bedita-app
+
+exclude:
+  - config
+  - locale
+  - plugins
+  - tests
+  - tmp
+  - vendors/_smartyPlugins
+  - webroot
+
+accessLevels: [public, protected, private]
+templateTheme: bootstrap
+deprecated: true
+download: true
+tree: true

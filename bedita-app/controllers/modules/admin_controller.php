@@ -531,7 +531,7 @@ class AdminController extends ModulesController {
 	 	$pluginName = $this->params["form"]["pluginName"];
 		$filename = BEDITA_MODULES_PATH . DS . $pluginName . DS . "config" . DS . "bedita_module_setup.php";
 		if (!file_exists($filename)) {
-			throw new BeditaException(__("Something seems wrong. bedita_module_setup.php didn't found", true));
+			throw new BeditaException(__('Required file was not found: ', true) . $filename);
 		}
 		include($filename);
 		$this->Transaction->begin();
@@ -736,7 +736,7 @@ class AdminController extends ModulesController {
 		}
 	}
 
-	
+
 	public function customRelations() {
 		//
 	}

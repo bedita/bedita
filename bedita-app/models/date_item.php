@@ -141,8 +141,10 @@ class DateItem extends BEAppModel
             $date = preg_replace('/^-|([\/-])-/', '$1', $date, -1, $negative);
 
             $pattern = str_replace('%', '', Configure::read('datePattern'));
-            if (($dateTime = date_create_from_format($pattern . ' G:i|', $date)) || ($dateTime = date_create_from_format($pattern . '|', $date))) {
-                $date = date_format($dateTime, 'Y-m-d H:i:s');
+            if ($dateTime = date_create_from_format($pattern . ' G:i', $date)) {
+                $date = date_format($dateTime, 'Y-m-d H:i:00');
+            } elseif ($dateTime = date_create_from_format($pattern, $date)) {
+                $date = date_format($dateTime, 'Y-m-d 00:00:00');
             }
 
             if ($negative) {

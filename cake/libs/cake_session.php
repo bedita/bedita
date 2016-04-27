@@ -756,6 +756,11 @@ class CakeSession extends Object {
 		}
 		$expires = time() + Configure::read('Session.timeout') * Security::inactiveMins();
 		$model =& ClassRegistry::getObject('Session');
+		// patch https://github.com/bedita/bedita/issues/803
+		if (empty($data)) {
+			CakeLog::write('session-empty', 'trying to write empty session ' . $id);
+			return false;
+		}
 		$return = $model->save(array($model->primaryKey => $id) + compact('data', 'expires'));
 		return $return;
 	}

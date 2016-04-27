@@ -361,6 +361,9 @@ abstract class FrontendController extends AppController {
 		$this->historyItem["area_id"] = $this->publication["id"];
 
 		$this->checkPublicationPermissions();
+
+        BeLib::eventManager()
+            ->bind('ObjectCache.clear', array($this, 'clearObjectCacheArray'));
 	}
 
 	/**
@@ -590,6 +593,27 @@ abstract class FrontendController extends AppController {
 		}
 	}
 
+    protected function treeChildrenCache($id = null, $status = null, $filter = false, 
+        $order = 'priority', $dir  = true, $page = 1, $dim = null, $excludeIds = array()) {
+
+        if (empty($status)) {
+            $status = $this->status;
+        }
+        $sections = array();
+        $cacheOpts = array($id, $status, $filter, $order, $dir, $page, $dim, $excludeIds);
+        if ($this->BeObjectCache) {
+            $sections = $this->BeObjectCache->read($id, $cacheOpts, 'children');
+        }
+        if (empty($sections)) {
+            $sections = $this->BeTree->getChildren($id, $status, $filter, $order, $dir, $page, $dim, $excludeIds);
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($id, $cacheOpts, $sections, 'children');
+            }
+        }
+        return $sections;
+    }
+
+
 	/**
 	* Get tree starting from specified section or area
 	*
@@ -599,28 +623,19 @@ abstract class FrontendController extends AppController {
 	* @param int $depth				tree's depth level (default=null => all levels)
 	* @return array
 	* */
-	protected function loadSectionsTree($parentName, $loadContents = false, $exclude_nicknames = array(), $depth = null, $flatMode = false) {
+    protected function loadSectionsTree($parentName, $loadContents = false, $exclude_nicknames = array(), $depth = null, $flatMode = false) {
 
-		$conf = Configure::getInstance();
-		$parent_id = is_numeric($parentName) ? $parentName: $this->BEObject->getIdFromNickname($parentName);
-		$result = array();
-		$filter["object_type_id"] = $conf->objectTypes['section']["id"];
-		if (empty($parent_id)) {
-			throw new BeditaBadRequestException(__('Error loading sections tree. Missing parent', true)  . ': ' . $parentName);
-		}
-
-        $sections = array();
-        $cacheOpts = array();
-        if ($this->BeObjectCache) {
-            $cacheOpts = array($parent_id, $this->status, $filter, "priority");
-            $sections = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+        $parent_id = is_numeric($parentName) ? $parentName: $this->idFromNicknameCache($parentName);
+        $result = array();
+        $filter['object_type_id'] = Configure::read('objectTypes.section.id');
+        if (empty($parent_id)) {
+            throw new BeditaBadRequestException(__('Error loading sections tree. Missing parent', true) 
+                . ': ' . $parentName);
         }
 
+        $sections = $this->treeChildrenCache($parent_id, $this->status, $filter, 'priority');
         if (empty($sections)) {
-            $sections = $this->BeTree->getChildren($parent_id, $this->status, $filter, "priority");
-            if ($this->BeObjectCache) {
-                $this->BeObjectCache->write($parent_id, $cacheOpts, $sections, 'children');
-            }
+            return $result;
         }
 
 		foreach ($sections['items'] as $s) {
@@ -750,7 +765,7 @@ abstract class FrontendController extends AppController {
 		$conf = Configure::getInstance();
 		$result = array();
 
-		$section_id = is_numeric($secName) ? $secName : $this->BEObject->getIdFromNickname($secName);
+		$section_id = is_numeric($secName) ? $secName : $this->idFromNicknameCache($secName);
 
 		$path = $this->Tree->field("object_path", array("id" => $section_id));
 		$parents = explode("/", trim($path,"/"));
@@ -1184,7 +1199,7 @@ abstract class FrontendController extends AppController {
 	 * @return array
 	 */
 	public function loadObjByNick($obj_nick, $blockAccess = true) {
-		return $this->loadObj($this->BEObject->getIdFromNickname($obj_nick), $blockAccess);
+		return $this->loadObj($this->idFromNicknameCache($obj_nick), $blockAccess);
 	}
 
 	/**
@@ -1196,7 +1211,7 @@ abstract class FrontendController extends AppController {
 	 * @return array
 	 */
 	protected function loadAndSetObjByNick($obj_nick, $var_name = null, $blockAccess = true) {
-		return $this->loadAndSetObj($this->BEObject->getIdFromNickname($obj_nick) , $var_name, $blockAccess);
+		return $this->loadAndSetObj($this->idFromNicknameCache($obj_nick) , $var_name, $blockAccess);
 	}
 
 	/**
@@ -1342,7 +1357,7 @@ abstract class FrontendController extends AppController {
             if (empty($this->BEObject)) {
                 $this->BEObject = $this->loadModelByType('BEObject');
             }
-			$modelType = $this->BEObject->getType($obj_id);
+			$modelType = $this->objectTypeCache($obj_id);
 			if (!empty($options['bindingLevel'])) {
 				$bindings = $this->setObjectBindings($modelType, $options['bindingLevel']);
 			} else {
@@ -1521,7 +1536,7 @@ abstract class FrontendController extends AppController {
 	 * @return array
 	 */
 	public function loadSectionObjectsByNick($parentNick, $options=array()) {
-		return $this->loadSectionObjects($this->BEObject->getIdFromNickname($parentNick), $options);
+		return $this->loadSectionObjects($this->idFromNicknameCache($parentNick), $options);
 	}
 
 	/**
@@ -1761,7 +1776,7 @@ abstract class FrontendController extends AppController {
 			);
 		}
 
-		$content_id = is_numeric($name) ? $name : $this->BEObject->getIdFromNickname($name);
+		$content_id = is_numeric($name) ? $name : $this->idFromNicknameCache($name);
 
 		// if it's defined frontend publication id then search content inside that publication else in all BEdita
 		$publicationId = (!empty($this->publication["id"]))? $this->publication['id'] : null;
@@ -1802,7 +1817,7 @@ abstract class FrontendController extends AppController {
 			$sectionId = $secName;
 			$secName = $this->BEObject->getNicknameFromId($sectionId);
 		} else {
-			$sectionId = $this->BEObject->getIdFromNickname($secName);
+			$sectionId = $this->idFromNicknameCache($secName);
 		}
 
 		$content_id = null;
@@ -1812,10 +1827,10 @@ abstract class FrontendController extends AppController {
 				$content_id = $contentName;
 				$contentName = $this->BEObject->getNicknameFromId($content_id);
 			} else {
-				$content_id = $this->BEObject->getIdFromNickname($contentName);
+				$content_id = $this->idFromNicknameCache($contentName);
 			}
 			try {
-				$contentType = $this->BEObject->getType($content_id);
+				$contentType = $this->objectTypeCache($content_id);
 			} catch (BeditaException $ex) {
 				throw new BeditaNotFoundException($ex->getMessage());
 			}
@@ -2021,7 +2036,7 @@ abstract class FrontendController extends AppController {
 
 		$reflectionClass = new ReflectionClass($this);
 
-		$id = (is_numeric($name))? $name : $this->BEObject->getIdFromNickname($name,$this->status);
+		$id = (is_numeric($name))? $name : $this->idFromNicknameCache($name,$this->status);
 
 		// setup args: look if $name is reserved
 		if (in_array($name, Configure::read("defaultReservedWords")) || in_array($name, Configure::read("cfgReservedWords"))) {
@@ -2056,15 +2071,15 @@ abstract class FrontendController extends AppController {
 				}
 			}
 
-			// try to use self::section or self::content methods
-			if ($methodName === null && is_string($name) && !empty($id)) {
-				$object_type_id = $this->BEObject->findObjectTypeId($id);
-				if ($object_type_id == Configure::read("objectTypes.section.id") || $object_type_id == Configure::read("objectTypes.area.id")) {
-					$methodName = "section";
-				} else {
-					$methodName = "content";
-				}
-			}
+            // try to use self::section or self::content methods
+            if ($methodName === null && is_string($name) && !empty($id)) {
+                $objectType = $this->objectTypeCache($id);
+                if ($objectType == 'Section' || $objectType == 'Area') {
+                   $methodName = 'section';
+                } else {
+                   $methodName = 'content';
+                }
+             }
 		}
 
 		$this->action = $methodName;
@@ -2173,6 +2188,15 @@ abstract class FrontendController extends AppController {
 	 * @return array (the keys are object's id)
 	 */
 	protected function getPath($object_id) {
+        if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status))) {
+            $firstParent = reset($pathArr);
+            if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $this->publication['id']) {
+                throw new BeditaNotFoundException('Wrong publication: ' . $firstParent['area_id']);
+            }
+
+            return $pathArr;
+        }
+
 		$pathArr = array();
 		$path = "";
 		if(isset($this->objectCache[$object_id]["parent_path"])){
@@ -2244,6 +2268,11 @@ abstract class FrontendController extends AppController {
 				$this->modelBindings["Section"] = $oldSectionBindings;
 			}
 		}
+
+        if ($this->BeObjectCache) {
+            $this->BeObjectCache->writePathCache($object_id, $pathArr, $this->status);
+        }
+
 		return $pathArr;
 	}
 
@@ -2957,4 +2986,26 @@ abstract class FrontendController extends AppController {
 	public function getPublication() {
 		return $this->publication;
 	}
+
+    /**
+     * Clear self::objectCache array
+     * If $ids is empty all self::objectCache is cleaned
+     *
+     * self::objectCache can be selectively cleared
+     * passing an id or an array of ids to delete
+     *
+     * @param mixed $ids
+     * @return array the current self::objectCache after cleaning
+     */
+    public function clearObjectCacheArray($ids = null) {
+        if (empty($ids)) {
+            return $this->objectCache = array();
+        }
+
+        if (!is_array($ids)) {
+            $ids = array($ids);
+        }
+        $this->objectCache = array_diff_key($this->objectCache, array_flip($ids));
+        return $this->objectCache;
+    }
 }
