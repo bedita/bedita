@@ -823,65 +823,87 @@ class BEObject extends BEAppModel {
      * @param array
      * @return array
      */
-    public function getPoster($id = null, $relations = array('poster', 'attach')) {
+    public function getPoster($id = null, $relations = array('attach')) {
         if (empty($id) && !empty($this->id)) {
             $id = $this->id;
         }
-        if (!empty($id)) {
-            $obj = ClassRegistry::init('BEObject')->find('first', array(
-                'contain' => array(),
-                'fields' => array(
-                    'RelatedObject.object_id',
-                    'Stream.uri',
-                    'Stream.mime_type',
-                    "IF(RelatedObject.switch = 'poster', 0, 1) AS FirstOrder",
-                    'IF(BEObject.object_type_id = ' . Configure::read('objectTypes.image.id') . ', 0, 1) AS SecondOrder',
-                    'IF(Stream.id, RelatedObject.priority, 99999) AS ThirdOrder'
-                ),
-                'joins' => array(
-                        array(
-                            'table' => 'object_relations',
-                            'alias' => 'RelatedObject',
-                            'type' => 'LEFT',
-                            'conditions' => array(
-                                'RelatedObject.id = BEObject.id',
-                                'RelatedObject.switch' => $relations,
-                            )
-                        ),
-                        array(
-                            'table' => 'streams',
-                            'alias' => 'Stream',
-                            'type' => 'LEFT',
-                            'conditions' => array(
-                                'OR' => array(
-                                    'Stream.id = BEObject.id',
-                                    'Stream.id = RelatedObject.object_id'
-                                ),
-                                "Stream.mime_type LIKE 'image%'"
-                            )
-                        )
-                    ),
-                'conditions' => array(
-                        'OR' => array(
-                            'BEObject.id' => $id,
-                            'BEObject.nickname' => $id
-                        )
-                    ),
-                'order' => array('FirstOrder ASC', 'SecondOrder ASC', 'ThirdOrder ASC')
-            ));
-
-            if (!empty($obj)) {
-            	$posterId = $id;
-            	if (!empty($obj['RelatedObject']['object_id'])) {
-            		$posterId = $obj['RelatedObject']['object_id'];
-            	}
-                return array(
-                    'id' => $posterId,
-                    'uri' => $obj['Stream']['uri']
-                );
-            }
+        if (empty($id)) {
+            return false;
         }
+        if (!is_numeric($id)) {
+            $id = $this->getIdFromNickname($id);
+        }
+
+        $Stream = ClassRegistry::init('Stream');
+
+        /** Use `poster` relation, if present. */
+        $poster = $Stream->find('first', array(
+            'contain' => array(),
+            'fields' => array(
+                'RelatedObject.object_id',
+                'Stream.uri',
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'RelatedObject',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'RelatedObject.object_id = Stream.id',
+                        'RelatedObject.switch' => 'poster',
+                        'RelatedObject.id' => $id,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'Stream.mime_type LIKE' => 'image%',
+            ),
+            'order' => array('RelatedObject.priority ASC'),
+        ));
+        if (!empty($poster)) {
+            return array(
+                'id' => $poster['RelatedObject']['object_id'],
+                'uri' => $poster['Stream']['uri'],
+            );
+        }
+
+        /** Use current object, if it is an image. */
+        if ($this->findObjectTypeId($id) == Configure::read('objectTypes.image.id')) {
+            $uri = $Stream->field('uri', array('Stream.id' => $id));
+            return compact('id', 'uri');
+        }
+
+        /** Use attachments and other configured relations, as a last resort. */
+        $related = $Stream->find('first', array(
+            'contain' => array(),
+            'fields' => array(
+                'RelatedObject.object_id',
+                'Stream.uri',
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'RelatedObject',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'RelatedObject.object_id = Stream.id',
+                        'RelatedObject.switch' => $relations,
+                        'RelatedObject.id' => $id,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'Stream.mime_type LIKE' => 'image%',
+            ),
+            'order' => array('RelatedObject.priority ASC'),
+        ));
+        if (!empty($related)) {
+            return array(
+                'id' => $related['RelatedObject']['object_id'],
+                'uri' => $related['Stream']['uri'],
+            );
+        }
+
         return false;
     }
 }
-?>
