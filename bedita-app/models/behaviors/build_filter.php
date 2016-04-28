@@ -174,10 +174,7 @@ class BuildFilterBehavior extends ModelBehavior {
 
         // build joins using cake
         if (!empty($filter['joins'])) {
-            $this->joins = ' ';
-            foreach ($filter['joins'] as $join) {
-                 $this->joins .= $this->dataSource->buildJoinStatement($join);
-            }
+            $this->addJoins($filter['joins']);
         }
 
 		$beObject = ClassRegistry::init("BEObject");
@@ -360,7 +357,42 @@ class BuildFilterBehavior extends ModelBehavior {
 		}
 		$this->filter = $filter;
 	}
-	
+
+    /**
+     * Add joins statements
+     *
+     * $joins must be an array as
+     *
+     * ```
+     * array(
+     *     array(
+     *         'table' => 'table_name',
+     *         'alias' => 'TableName',
+     *         'type' => 'INNER',
+     *         'conditions' => array(
+     *             'TableName.key_one = JoinToTable.key_two'
+     *         )
+     *     ),
+     *     array(
+     *         ...
+     *     ),
+     * )
+     * ```
+     *
+     * where every internal array describe the join in CakePHP way
+     *
+     * @param array $joins
+     * @return void
+     */
+    protected function addJoins(array $joins) {
+        foreach ($joins as $key => $join) {
+            if (!is_numeric($key)) {
+                continue;
+            }
+            $this->joins .= ' ' . $this->dataSource->buildJoinStatement($join);
+        }
+    }
+
 	/**
 	 * filter to get user_id (as obj_userid) joined to an object through object_users table
 	 * 
@@ -518,41 +550,109 @@ class BuildFilterBehavior extends ModelBehavior {
 		
 	
 	/**
-	 * filter objects by category
-	 * 
+	 * filter objects by categories
+	 *
 	 * @param string $s, start quote sql
 	 * @param string $e, end quote sql
-	 * @param mixed $value, id or category name
+	 * @param mixed $value, id/name or array of ids/names
+     * @return void
 	 */
 	protected function categoryFilter($s, $e, $value) {
-		$cat_field = (is_numeric($value))? "id" : "name";
-		$value = Sanitize::escape($value);
-		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
-		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
-						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
-						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}
-						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NOT NULL";
+        if (array_key_exists('mediatype', $this->filter)) {
+            return;
+        }
+        if (!is_array($value)) {
+            $value = array($value);
+        }
+
+        $allNumeric = count(array_filter($value, 'is_numeric')) == count($value);
+        $catField = $allNumeric ? 'Category.id' : 'Category.name';
+
+        $this->addJoins(array(
+            array(
+                'table' => 'object_categories',
+                'alias' => 'ObjectCategory',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'ObjectCategory.object_id = BEObject.id',
+                ),
+            ),
+            array(
+                'table' => 'categories',
+                'alias' => 'Category',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'Category.id = ObjectCategory.category_id',
+                    'NOT' => array(
+                        'Category.object_type_id' => null
+                    ),
+                    $catField => $value
+                ),
+            )
+        ));
 	}
-	
+
+    /**
+     * Alias for self::categoryFilter()
+     *
+     * @param string $s start quote sql
+     * @param string $e end quote sql
+     * @param mixed $value id/name or array of ids/names
+     * @return void
+     */
+    protected function categoriesFilter($s, $e, $value) {
+        $this->categoryFilter($s, $e, $value);
+    }
+
 	/**
-	 * filter objects by tag
-	 * 
+	 * filter objects by tags
+	 *
 	 * @param string $s, start quote sql
 	 * @param string $e, end quote sql
-	 * @param mixed $value, id or tag name
+	 * @param mixed  id/name or array of ids/names
 	 */
 	protected function tagFilter($s, $e, $value) {
-		$cat_field = (is_numeric($value))? "id" : "name";
-		$value = Sanitize::escape($value);
-		if (!strstr($this->from, "Category") && !array_key_exists("mediatype", $this->filter))
-			$this->from .= ", {$s}categories{$e} AS {$s}Category{$e}, {$s}object_categories{$e} AS {$s}ObjectCategory{$e}";
-		$this->conditions[] = "{$s}Category{$e}.{$s}" . $cat_field . "{$e}='" . $value . "' 
-						AND {$s}ObjectCategory{$e}.{$s}object_id{$e}={$s}BEObject{$e}.{$s}id{$e}
-						AND {$s}ObjectCategory{$e}.{$s}category_id{$e}={$s}Category{$e}.{$s}id{$e}
-						AND {$s}Category{$e}.{$s}object_type_id{$e} IS NULL";
+		if (!is_array($value)) {
+            $value = array($value);
+        }
+
+        $allNumeric = count(array_filter($value, 'is_numeric')) == count($value);
+        $catField = $allNumeric ? 'Tag.id' : 'Tag.name';
+
+        $this->addJoins(array(
+            array(
+                'table' => 'object_categories',
+                'alias' => 'ObjectTag',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'ObjectTag.object_id = BEObject.id',
+                ),
+            ),
+            array(
+                'table' => 'categories',
+                'alias' => 'Tag',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'Tag.id = ObjectTag.category_id',
+                    'Tag.object_type_id' => null,
+                    $catField => $value
+                ),
+            )
+        ));
 	}
-	
+
+    /**
+     * Alias for self::tagFilter()
+     *
+     * @param string $s start quote sql
+     * @param string $e end quote sql
+     * @param mixed $value id/name or array of ids/names
+     * @return void
+     */
+    protected function tagsFilter($s, $e, $value) {
+        $this->tagFilter($s, $e, $value);
+    }
+
 	/**
 	 * get RelatedObject fields
 	 * 
