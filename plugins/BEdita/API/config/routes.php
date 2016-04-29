@@ -6,7 +6,7 @@ Router::plugin(
     ['path' => '/'],
     function ($routes) {
 
-        $routes->connect('/users', ['controller' => 'Users', 'action' => 'index']);
+        $routes->connect('/users/*', ['controller' => 'Users', 'action' => 'index']);
 
         $routes->fallbacks('DashedRoute');
     }

@@ -19,6 +19,7 @@ use Cake\Controller\Controller;
  */
 class AppController extends Controller
 {
+
     /**
      * {@inheritDoc}
      */
@@ -27,5 +28,21 @@ class AppController extends Controller
         parent::initialize();
         $this->loadComponent('RequestHandler');
         $this->RequestHandler->renderAs($this, 'json');
+    }
+
+    /**
+     * Prepare response data, format using selected response format
+     * (only JSON API at this point)
+     *
+     * @param mixed $data Response data, could be an array or a Query / Entity
+     * @param bool $multiple Multiple data flag, if true multiple items, if false single item
+     * @param string $type Common type for response, if any
+     * @return void
+     */
+    protected function prepareResponseData($data, $multiple = true, $type = null)
+    {
+        $this->loadComponent('BEdita/API.JsonApi');
+        $responseData = $this->JsonApi->formatResponse($data, $multiple, $type);
+        $this->set($responseData);
     }
 }
