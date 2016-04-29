@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Network\Exception\NotAcceptableException;
 
 /**
  * Base class for all API Controller endpoints
@@ -26,6 +27,25 @@ class AppController extends Controller
     {
         parent::initialize();
         $this->loadComponent('RequestHandler');
-        $this->RequestHandler->renderAs($this, 'json');
+        $accepts = $this->request->accepts();
+
+        $jsonAccepts = ['application/json', 'application/vnd.api+json'];
+        if (!empty(array_intersect($jsonAccepts, $accepts))) {
+            $this->RequestHandler->renderAs($this, 'json');
+            if (in_array('application/vnd.api+json', $accepts)) {
+                $this->response->type('jsonapi');
+            } else {
+                $this->response->type('json');
+            }
+        } else {
+            $htmlAccepts = ['text/xhtml', 'application/xhtml+xml', 'application/xhtml', 'text/html'];
+            if (empty(array_intersect($htmlAccepts, $accepts))) {
+                throw new NotAcceptableException('Bad request content type "' . implode('" "', $accepts) .
+                    '" valid content types are: "' . implode('" "', array_merge($jsonAccepts, $htmlAccepts)) . '"');
+            } else {
+                // Set the layout.
+                $this->viewBuilder()->layout('default-api');
+            }
+        }
     }
 }
