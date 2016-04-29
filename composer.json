@@ -33,7 +33,8 @@
         "cakephp/bake": "~1.1",
         "phpunit/phpunit": "*",
         "cakephp/cakephp-codesniffer": "master-dev",
-        "phpmd/phpmd": "*"
+        "phpmd/phpmd": "*",
+        "fzaninotto/faker": "^1.5"
     },
     "autoload": {
         "psr-4": {

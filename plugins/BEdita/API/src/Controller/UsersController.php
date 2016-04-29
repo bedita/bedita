@@ -36,14 +36,18 @@ class UsersController extends AppController
     /**
      * Paginated users index
      *
+     * @param int $id User id
      * @return void
      */
-    public function index()
+    public function index($id = null)
     {
-        $users = $this->Users->find('all');
-        $this->set([
-            'users' => $users,
-            '_serialize' => ['users']
-        ]);
+        $multi = false;
+        if (!$id) {
+            $users = $this->Users->find('all');
+            $multi = true;
+        } else {
+            $users = $this->Users->get($id);
+        }
+        $this->prepareResponseData($users, $multi, 'users');
     }
 }
