@@ -311,19 +311,18 @@ abstract class FrontendController extends AppController {
 			$this->Tree = $this->loadModelByType('Tree');
 		}
 		$conf = Configure::getInstance() ;
-		if (!empty($conf->draft))
+		if (!empty($conf->draft)) {
 			$this->status[] = "draft";
-
-		// check publication status
-		$pubStatus = $this->BEObject->field(
-			'status',
-			array(
-				'id' => Configure::read('frontendAreaId'),
-				'object_type_id' => Configure::read('objectTypes.area.id')
-			)
-		);
-
-		// configuration error
+		}
+        $frontendAreaId = Configure::read("frontendAreaId");
+        if (empty($frontendAreaId)) {
+            throw new BeditaInternalErrorException(
+                __('Configuration error: missing or wrong publication', true),
+                'Wrong publication id ' . Configure::read('frontendAreaId')
+            );
+        }
+		$this->publication = $this->loadObj($frontendAreaId,false);
+		$pubStatus = (!empty($this->publication['status'])) ? $this->publication['status'] : false;
 		if ($pubStatus === false) {
 			throw new BeditaInternalErrorException(
 				__('Configuration error: missing or wrong publication', true),
@@ -341,7 +340,6 @@ abstract class FrontendController extends AppController {
 				$this->publicationDisabled($pubStatus);
 			}
 		}
-		$this->publication = $this->loadObj(Configure::read("frontendAreaId"),false);
 
 		// set publication data for template
 		$this->set('publication', $this->publication);
@@ -1557,18 +1555,30 @@ abstract class FrontendController extends AppController {
 		}
 
 		$this->checkParentStatus($parent_id);
-		if(isset($this->objectCache[$parent_id]["menu"])){
+		if(isset($this->objectCache[$parent_id]["menu"])){ // first level cache
 			$menu = $this->objectCache[$parent_id]["menu"];
 			$priorityOrder = $this->objectCache[$parent_id]["priority_order"];
 		} else {
-			$menu = $this->Tree->field("menu", array("id" => $parent_id));
-			$priorityOrder = $this->Section->field("priority_order", array("id" => $parent_id));
-			if(isset($this->objectCache[$parent_id])) {
-				$this->objectCache[$parent_id]["menu"] = $menu;
-				$this->objectCache[$parent_id]["priority_order"] = $priorityOrder;
-			}
+		    $cacheOpts = array($parent_id, $this->status);
+		    if ($this->BeObjectCache) { // second level cache (ext)
+		        $tree = $this->BeObjectCache->read($parent_id, $cacheOpts, 'tree');
+		    }
+		    if (empty($tree)) {
+		        $tree = array();
+    			$tree['menu'] = $this->Tree->field("menu", array("id" => $parent_id));
+    			$tree['priorityOrder'] = $this->Section->field("priority_order", array("id" => $parent_id));
+    			if(isset($this->objectCache[$parent_id])) {
+    				$this->objectCache[$parent_id]["menu"] = $tree['menu'];
+    				$this->objectCache[$parent_id]["priority_order"] = $tree['priorityOrder'];
+    			}
+                if ($this->BeObjectCache) {
+                    $this->BeObjectCache->write($parent_id, $cacheOpts, $tree, 'tree');
+                }
+                $menu = $tree['menu'];
+                $priorityOrder = $tree['priorityOrder'];
+		    }
 		}
-		$findAltPath = ($menu === '0');
+		$findAltPath = (isset($menu) && ($menu === '0'));
 		if(empty($priorityOrder)) {
 			$priorityOrder = "asc";
 		}
@@ -2897,33 +2907,45 @@ abstract class FrontendController extends AppController {
 		}
 	}
 
-	/**
-	 * check parents status of $section_id
-	 *
-	 * if one or more parents haven't status IN $this->status array throw a BeditaNotFoundException
-	 *
-	 * @param int $section_id
-	 * @throws BeditaNotFoundException
-	 */
-	private function checkParentStatus($section_id) {
-		$parent_path = $this->Tree->field("parent_path", array("id" => $section_id));
-		$parent_array = explode("/", trim($parent_path,"/"));
-		if (!empty($parent_array[0])) {
-			$countParent = count($parent_array);
-			$countParentStatus = $this->BEObject->find("count", array(
-					"conditions" => array(
-						"status" => $this->status,
-						"id" => $parent_array
-					),
-					"contain" => array()
-				)
-			);
-
-			if ($countParent != $countParentStatus) {
-				throw new BeditaNotFoundException(__("Content not found", true));
-			}
-		}
-	}
+    /**
+     * check parents status of $section_id
+     *
+     * if one or more parents haven't status IN $this->status array throw a BeditaNotFoundException
+     *
+     * @param int $section_id
+     * @throws BeditaNotFoundException
+     */
+    private function checkParentStatus($section_id) {
+        $cacheOpts = array($section_id, $this->status);
+        if ($this->BeObjectCache) {
+            $parent = $this->BeObjectCache->read($section_id, $cacheOpts, 'parent');
+        }
+        if (empty($parent)) {
+            $parent = array();
+            $parent['path'] = $this->Tree->field("parent_path", array("id" => $section_id));
+            $parent['ids'] = explode("/", trim($parent['path'],"/"));
+            $parent['countId'] = 0;
+            $parent['countStatus'] = 0;
+            if (!empty($parent['ids'][0])) {
+                $parent['countId'] = count($parent['ids']);
+                $parent['countStatus'] = $this->BEObject->find("count", array(
+                    "conditions" => array(
+                        "status" => $this->status,
+                        "id" => $parent['ids']
+                    ),
+                    "contain" => array()
+                ));
+            } else {
+                $parent['ids'] = array();
+            }
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($section_id, $cacheOpts, $parent, 'parent');
+            }
+        }
+        if (isset($parent['countId']) && isset($parent['countStatus']) && $parent['countId'] != $parent['countStatus']) {
+            throw new BeditaNotFoundException(__("Content not found", true));
+        }
+    }
 
 	/**
 	 * add "draft" status to class attribute $status
