@@ -70,7 +70,7 @@ class AppController extends Controller
             $this->viewBuilder()->layout('default_api');
             $templatePath = $this->viewBuilder()->templatePath();
             $templatePath = substr($templatePath, 0, strrpos($templatePath, DS));
-            $this->viewBuilder()->templatePath($templatePath . DS . 'Common');
+            $this->viewBuilder()->templatePath($templatePath . 'Common');
             $this->viewBuilder()->template('html_json');
         } else {
             $this->RequestHandler->renderAs($this, 'json');
