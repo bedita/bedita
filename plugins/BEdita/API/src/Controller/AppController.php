@@ -52,8 +52,9 @@ class AppController extends Controller
                 $this->responseType = 'jsonapi';
             }
         } else {
-            $htmlAccepts = ['text/xhtml', 'application/xhtml+xml', 'application/xhtml', 'text/html'];
-            if (!Configure::read('debug') || empty(array_intersect($htmlAccepts, $accepts))) {
+            $htmlAccepts = ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'];
+            $acceptHml = array_intersect($htmlAccepts, $accepts);
+            if (empty($acceptHml) || !(Configure::read('debug') || Configure::read('Accept.html'))) {
                 throw new NotAcceptableException('Bad request content type "' . implode('" "', $accepts) . '"');
             }
             $this->responseType = 'html';
