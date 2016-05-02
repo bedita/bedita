@@ -12,8 +12,8 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
+use Cake\TestSuite\IntegrationTestCase;
 
 class UsersControllerTest extends IntegrationTestCase
 {
@@ -136,12 +136,21 @@ class UsersControllerTest extends IntegrationTestCase
         // Check for a specific response code, e.g. 200
         $this->assertResponseCode(406);
 
+        Configure::write('Accept.html', 1);
+        $this->configRequest([
+            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
+        ]);
+        $result = $this->get('/users');
+        $this->assertResponseCode(200);
+        $this->assertContentType('text/html');
+
+        Configure::write('Accept.html', 0);
         Configure::write('debug', 1);
         $this->configRequest([
             'headers' => ['Accept' => 'text/html,application/xhtml+xml']
         ]);
         $result = $this->get('/users');
-        $this->assertResponseOk();
+        $this->assertResponseCode(200);
         $this->assertContentType('text/html');
     }
 }
