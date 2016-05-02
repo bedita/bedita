@@ -1469,7 +1469,7 @@ abstract class ApiBaseController extends FrontendController {
         $sectionObjectTypeId = Configure::read('objectTypes.section.id');
         $result = $this->responseChildren($id, array(
             'filter' => array(
-                'object_type_id' => array($sectionObjectTypeId)
+                'BEObject.object_type_id' => array($sectionObjectTypeId)
             )
         ));
     }
@@ -1494,7 +1494,7 @@ abstract class ApiBaseController extends FrontendController {
         $result = $this->responseChildren($id, array(
             'filter' => array(
                 'NOT' => array(
-                    'object_type_id' => array($sectionObjectTypeId)
+                    'BEObject.object_type_id' => array($sectionObjectTypeId)
                 )
             )
         ));
