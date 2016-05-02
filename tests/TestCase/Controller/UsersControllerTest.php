@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Cake\TestSuite\IntegrationTestCase;
+use Cake\Core\Configure;
 
 class UsersControllerTest extends IntegrationTestCase
 {
@@ -104,5 +105,43 @@ class UsersControllerTest extends IntegrationTestCase
         $expected = json_encode($expected, JSON_PRETTY_PRINT);
         $response = $this->_response->body();
         $this->assertEquals($expected, $response);
+    }
+
+
+    public function testContentType()
+    {
+        $this->configRequest([
+            'headers' => ['Accept' => 'application/json']
+        ]);
+        $result = $this->get('/users');
+        // Check that the response was a 200
+        $this->assertResponseOk();
+        // Check the content type
+        $this->assertContentType('application/json');
+
+        $this->configRequest([
+            'headers' => ['Accept' => 'application/vnd.api+json']
+        ]);
+        $result = $this->get('/users');
+        $this->assertResponseOk();
+        $this->assertContentType('application/vnd.api+json');
+
+        Configure::write('debug', 0);
+        $this->configRequest([
+            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
+        ]);
+        $result = $this->get('/users');
+        // Check for a 4xx response code
+        $this->assertResponseError();
+        // Check for a specific response code, e.g. 200
+        $this->assertResponseCode(406);
+
+        Configure::write('debug', 1);
+        $this->configRequest([
+            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
+        ]);
+        $result = $this->get('/users');
+        $this->assertResponseOk();
+        $this->assertContentType('text/html');
     }
 }
