@@ -6,16 +6,6 @@
 </head>
 <body>
 
-<pre>
-<?php
-    $d = [];
-    foreach ($_serialize as $k) {
-        $d[$k] = ${$k};
-    }
-    $json = json_encode($d, JSON_PRETTY_PRINT);
-    echo $json;
-
-?>
-</pre>
+<?php echo $this->fetch('content'); ?>
 
 </body>
