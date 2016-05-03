@@ -620,7 +620,7 @@ class ApiFormatterComponent extends Object {
      */
     public function getCustomPropertiesList($objectTypeId) {
         $objectType = Configure::read('objectTypes.' . $objectTypeId . '.name');
-        if (empty($this->customPropertiesList[$objectType])) {
+        if (!isset($this->customPropertiesList[$objectType])) {
             $property = ClassRegistry::init('Property');
             $this->customPropertiesList[$objectType] = $property->propertyNames($objectTypeId);
         }
