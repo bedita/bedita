@@ -1582,20 +1582,32 @@ abstract class FrontendController extends AppController {
 
 		$s = $this->BEObject->getStartQuote();
 		$e = $this->BEObject->getEndQuote();
+
 		// add rules for start and end pubblication date
+        $filterNoPubDate = $filter;
 		$this->setPublicationDateFilter($filter);
 
         $items = null;
         $cacheOpts = array();
         if ($this->BeObjectCache) {
-            $cacheOpts = array($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
-            $items = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+            $cacheOpts = array($parent_id, $this->status, $filterNoPubDate, $order, $dir, $page, $dim);
+
+            $cached = $this->BeObjectCache->read($parent_id, $cacheOpts, 'children');
+            if (!is_array($cached) || count($cached) != 2) {
+                $cached = array(null, null);
+            }
+
+            list($expiration, $items) = $cached;
+            if (is_int($expiration) && $expiration < time()) {
+                $items = null;
+            }
         }
-        
+
         if (empty($items)) {
+            $expiration = $this->getSectionCacheExpiration($parent_id);
             $items = $this->BeTree->getChildren($parent_id, $this->status, $filter, $order, $dir, $page, $dim);
             if ($this->BeObjectCache) {
-                $this->BeObjectCache->write($parent_id, $cacheOpts, $items, 'children');
+                $this->BeObjectCache->write($parent_id, $cacheOpts, array($expiration, $items), 'children');
             }
         }
 
@@ -1706,18 +1718,30 @@ abstract class FrontendController extends AppController {
         extract($options, EXTR_SKIP);
 
         // add rules for start and end pubblication date
+        $filterNoPubDate = $filter;
         $this->setPublicationDateFilter($filter);
 
         $items = null;
         $cacheOpts = array();
         if ($this->BeObjectCache) {
-            $cacheOpts = array($id, $this->status, $filter, $order, $dir, $page, $dim, $objectsForbidden);
-            $items = $this->BeObjectCache->read($id, $cacheOpts, 'relation-' . $relation);
+            $cacheOpts = array($id, $this->status, $filterNoPubDate, $order, $dir, $page, $dim, $objectsForbidden);
+
+            $cached = $this->BeObjectCache->read($id, $cacheOpts, 'relation-' . $relation);
+            if (!is_array($cached) || count($cached) != 2) {
+                $cached = array(null, null);
+            }
+
+            list($expiration, $items) = $cached;
+            if (is_int($expiration) && $expiration < time()) {
+                $items = null;
+            }
         }
+
         if (empty($items)) {
+            $expiration = $this->getRelatedCacheExpiration($id, $relation);
             $items = $this->BeTree->getChildren(null, $this->status, $filter, $order, $dir, $page, $dim);
             if ($this->BeObjectCache) {
-                $this->BeObjectCache->write($id, $cacheOpts, $items, 'relation-' . $relation);
+                $this->BeObjectCache->write($id, $cacheOpts, array($expiration, $items), 'relation-' . $relation);
             }
         }
 
@@ -1761,6 +1785,159 @@ abstract class FrontendController extends AppController {
                 )
             );
         }
+    }
+
+    /**
+     * Get the timestamp of the possible expiration date of `loadSectionObjects()` cache.
+     *
+     * @param int $parentId Parent ID.
+     * @return int|null
+     */
+    protected function getSectionCacheExpiration($parentId) {
+        $BEObject = ClassRegistry::init('BEObject');
+        $nextShown = $BEObject->find('first', array(
+            'fields' => array('MIN(Content.start_date) AS expiration_date'),
+            'joins' => array(
+                array(
+                    'table' => 'contents',
+                    'alias' => 'Content',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Content.id = BEObject.id',
+                        'Content.start_date >' => date('Y-m-d H:m:s'),
+                        'Content.start_date IS NOT NULL',
+                    ),
+                ),
+                array(
+                    'table' => 'trees',
+                    'alias' => 'Tree',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Tree.id = BEObject.id',
+                        'Tree.parent_id' => $parentId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'BEObject.status' => $this->status,
+            ),
+        ));
+        $nextHidden = $BEObject->find('first', array(
+            'fields' => array('MIN(Content.end_date) AS expiration_date'),
+            'joins' => array(
+                array(
+                    'table' => 'contents',
+                    'alias' => 'Content',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Content.id = BEObject.id',
+                        'Content.end_date >' => date('Y-m-d H:m:s'),
+                        'Content.end_date IS NOT NULL',
+                    ),
+                ),
+                array(
+                    'table' => 'trees',
+                    'alias' => 'Tree',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Tree.id = BEObject.id',
+                        'Tree.parent_id' => $parentId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'BEObject.status' => $this->status,
+            ),
+        ));
+
+        if (empty($nextShown[0]['expiration_date']) && empty($nextHidden[0]['expiration_date'])) {
+            return null;
+        }
+        if (empty($nextHidden[0]['expiration_date'])) {
+            return strtotime($nextShown[0]['expiration_date']);
+        }
+        if (empty($nextShown[0]['expiration_date'])) {
+            return strtotime($nextHidden[0]['expiration_date']);
+        }
+        return min(strtotime($nextShown[0]['expiration_date']), strtotime($nextHidden[0]['expiration_date']));
+    }
+
+    /**
+     * Get the timestamp of the possible expiration date of `loadRelatedObjects()` cache.
+     *
+     * @param int $objectId Object ID.
+     * @param string $relationSwitch Relation switch.
+     * @return int|null
+     */
+    protected function getRelatedCacheExpiration($objectId, $relationSwitch) {
+        $BEObject = ClassRegistry::init('BEObject');
+        $nextShown = $BEObject->find('first', array(
+            'fields' => array('MIN(Content.start_date) AS expiration_date'),
+            'joins' => array(
+                array(
+                    'table' => 'contents',
+                    'alias' => 'Content',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Content.id = BEObject.id',
+                        'Content.start_date >' => date('Y-m-d H:m:s'),
+                        'Content.start_date IS NOT NULL',
+                    ),
+                ),
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'ObjectRelation',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'ObjectRelation.object_id = BEObject.id',
+                        'ObjectRelation.switch' => $relationSwitch,
+                        'ObjectRelation.id' => $objectId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'BEObject.status' => $this->status,
+            ),
+        ));
+        $nextHidden = $BEObject->find('first', array(
+            'fields' => array('MIN(Content.end_date) AS expiration_date'),
+            'joins' => array(
+                array(
+                    'table' => 'contents',
+                    'alias' => 'Content',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'Content.id = BEObject.id',
+                        'Content.end_date >' => date('Y-m-d H:m:s'),
+                        'Content.end_date IS NOT NULL',
+                    ),
+                ),
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'ObjectRelation',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'ObjectRelation.object_id = BEObject.id',
+                        'ObjectRelation.switch' => $relationSwitch,
+                        'ObjectRelation.id' => $objectId,
+                    ),
+                ),
+            ),
+            'conditions' => array(
+                'BEObject.status' => $this->status,
+            ),
+        ));
+
+        if (empty($nextShown[0]['expiration_date']) && empty($nextHidden[0]['expiration_date'])) {
+            return null;
+        }
+        if (empty($nextHidden[0]['expiration_date'])) {
+            return strtotime($nextShown[0]['expiration_date']);
+        }
+        if (empty($nextShown[0]['expiration_date'])) {
+            return strtotime($nextHidden[0]['expiration_date']);
+        }
+        return min(strtotime($nextShown[0]['expiration_date']), strtotime($nextHidden[0]['expiration_date']));
     }
 
 	/**
