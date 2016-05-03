@@ -114,9 +114,7 @@ class UsersControllerTest extends IntegrationTestCase
             'headers' => ['Accept' => 'application/json']
         ]);
         $result = $this->get('/users');
-        // Check that the response was a 200
         $this->assertResponseOk();
-        // Check the content type
         $this->assertContentType('application/json');
 
         $this->configRequest([
@@ -126,14 +124,21 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseOk();
         $this->assertContentType('application/vnd.api+json');
 
+        $this->configRequest([
+            'headers' => ['Accept' => 'application/vnd.api+json; m=test']
+        ]);
+        $result = $this->get('/users');
+        $this->assertResponseError();
+        // http://jsonapi.org/format/#content-negotiation-servers
+        $this->assertResponseCode(415);
+
+        Configure::write('Accept.html', 0);
         Configure::write('debug', 0);
         $this->configRequest([
             'headers' => ['Accept' => 'text/html,application/xhtml+xml']
         ]);
         $result = $this->get('/users');
-        // Check for a 4xx response code
         $this->assertResponseError();
-        // Check for a specific response code, e.g. 200
         $this->assertResponseCode(406);
 
         Configure::write('Accept.html', 1);
