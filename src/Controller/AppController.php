@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -50,12 +51,19 @@ class AppController extends Controller
         if (!empty(array_intersect($jsonAccepts, $accepts))) {
             if (in_array('application/vnd.api+json', $accepts)) {
                 $this->responseType = 'jsonapi';
+                $h = $this->request->header('ACCEPT');
+                if ('application/vnd.api+json' !== trim($h)) {
+                    // http://jsonapi.org/format/#content-negotiation-servers
+                    throw new UnsupportedMediaTypeException('Bad request content type "' .
+                        implode('" "', $accepts) . '"');
+                }
             }
         } else {
             $htmlAccepts = ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'];
             $acceptHml = array_intersect($htmlAccepts, $accepts);
             if (empty($acceptHml) || !(Configure::read('debug') || Configure::read('Accept.html'))) {
-                throw new NotAcceptableException('Bad request content type "' . implode('" "', $accepts) . '"');
+                throw new NotAcceptableException('Bad request content type "' .
+                    implode('" "', $accepts) . '"');
             }
             $this->responseType = 'html';
         }
