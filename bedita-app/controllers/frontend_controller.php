@@ -310,8 +310,7 @@ abstract class FrontendController extends AppController {
 		if(!isset($this->Tree)) {
 			$this->Tree = $this->loadModelByType('Tree');
 		}
-		$conf = Configure::getInstance() ;
-        if (!empty($conf->draft)) {
+        if (Configure::read('draft')) {
             $this->status[] = 'draft';
         }
         $frontendAreaId = Configure::read('frontendAreaId');
@@ -321,7 +320,12 @@ abstract class FrontendController extends AppController {
                 'Wrong publication id ' . Configure::read('frontendAreaId')
             );
         }
-        $this->publication = $this->loadObj($frontendAreaId,false);
+        $currStatus = $this->status;
+        // use all status options to load publication anyway
+        $this->status = array('on', 'draft', 'off');
+        $this->publication = $this->loadObj($frontendAreaId ,false);
+        // restore current status
+        $this->status = $currStatus;
         $pubStatus = (!empty($this->publication['status'])) ? $this->publication['status'] : false;
 		if ($pubStatus === false) {
 			throw new BeditaInternalErrorException(
@@ -330,19 +334,12 @@ abstract class FrontendController extends AppController {
 			);
 		}
 
-		if ($pubStatus != "on") {
-			$statusSaved = $this->status;
-			$this->status = array('on', 'off', 'draft');
-			$this->publication = $this->loadObj(Configure::read("frontendAreaId"), false);
-			$this->status = $statusSaved;
-			$this->set('publication', $this->publication);
-			if (Configure::read("draft") == false || $pubStatus == "off") {
-				$this->publicationDisabled($pubStatus);
-			}
-		}
+        // set publication data for template
+        $this->set('publication', $this->publication);
 
-		// set publication data for template
-		$this->set('publication', $this->publication);
+        if ($pubStatus === 'off' || ($pubStatus === 'draft' && !in_array('draft', $this->status))) {
+            $this->publicationDisabled($pubStatus);
+        }
 
 		// set filterPublicationDate
 		$filterPubDate = Configure::read("filterPublicationDate");
@@ -1559,7 +1556,7 @@ abstract class FrontendController extends AppController {
             $menu = $this->objectCache[$parent_id]['menu'];
             $priorityOrder = $this->objectCache[$parent_id]['priority_order'];
         } else {
-            $cacheOpts = array($parent_id, $this->status);
+            $cacheOpts = $this->status;
             if ($this->BeObjectCache) { // persistent cache
                 $tree = $this->BeObjectCache->read($parent_id, $cacheOpts, 'tree');
             }
@@ -1574,14 +1571,14 @@ abstract class FrontendController extends AppController {
                 if ($this->BeObjectCache) {
                     $this->BeObjectCache->write($parent_id, $cacheOpts, $tree, 'tree');
                 }
-                $menu = $tree['menu'];
-                $priorityOrder = $tree['priorityOrder'];
             }
+            $menu = $tree['menu'];
+            $priorityOrder = $tree['priorityOrder'];
         }
         $findAltPath = (isset($menu) && ($menu === '0'));
-		if(empty($priorityOrder)) {
-			$priorityOrder = "asc";
-		}
+        if (empty($priorityOrder)) {
+            $priorityOrder = 'asc';
+        }
 		$sectionItems = array();
 
 		$filter = (!empty($options["filter"]))? $options["filter"] : array();
@@ -2916,7 +2913,7 @@ abstract class FrontendController extends AppController {
      * @throws BeditaNotFoundException
      */
     private function checkParentStatus($section_id) {
-        $cacheOpts = array($section_id, $this->status);
+        $cacheOpts = $this->status;
         if ($this->BeObjectCache) {
             $parent = $this->BeObjectCache->read($section_id, $cacheOpts, 'parent');
         }
