@@ -475,22 +475,33 @@ class ApiFormatterComponent extends Object {
         $relations = array();
         $objectRelation = ClassRegistry::init('ObjectRelation');
         // count all relations
-        $countRel = $objectRelation->find('all', array(
-            'fields' => array('COUNT(ObjectRelation.id) as count', 'ObjectRelation.switch'),
-            'conditions' => array('ObjectRelation.id' => $object['id']),
-            'group' => 'ObjectRelation.switch',
-            'joins' => array(
-                array(
-                    'table' => 'objects',
-                    'alias' => 'BEObject',
-                    'type' => 'inner',
-                    'conditions' => array(
-                        'ObjectRelation.object_id = BEObject.id',
-                        'BEObject.status' => $this->controller->getStatus()
+        $countRel = null;
+        if ($this->controller->BeObjectCache) {
+            $cacheOpts = array($this->controller->getStatus());
+            $countRel = $this->controller->BeObjectCache->read($object['id'], $cacheOpts, 'relations-count');
+        }
+        if (empty($countRel)) {
+            $countRel = $objectRelation->find('all', array(
+                'fields' => array('COUNT(ObjectRelation.id) as count', 'ObjectRelation.switch'),
+                'conditions' => array('ObjectRelation.id' => $object['id']),
+                'group' => 'ObjectRelation.switch',
+                'joins' => array(
+                    array(
+                        'table' => 'objects',
+                        'alias' => 'BEObject',
+                        'type' => 'inner',
+                        'conditions' => array(
+                            'ObjectRelation.object_id = BEObject.id',
+                            'BEObject.status' => $this->controller->getStatus()
+                        )
                     )
                 )
-            )
-        ));
+            ));
+            if ($this->controller->BeObjectCache) {
+                $this->controller->BeObjectCache->write($object['id'], $cacheOpts, 
+                    $countRel, 'relations-count');
+            }
+        }
 
         // count not accessible relations
         $permission = ClassRegistry::init('Permission');
