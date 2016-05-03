@@ -311,18 +311,18 @@ abstract class FrontendController extends AppController {
 			$this->Tree = $this->loadModelByType('Tree');
 		}
 		$conf = Configure::getInstance() ;
-		if (!empty($conf->draft)) {
-			$this->status[] = "draft";
-		}
-        $frontendAreaId = Configure::read("frontendAreaId");
+        if (!empty($conf->draft)) {
+            $this->status[] = 'draft';
+        }
+        $frontendAreaId = Configure::read('frontendAreaId');
         if (empty($frontendAreaId)) {
             throw new BeditaInternalErrorException(
                 __('Configuration error: missing or wrong publication', true),
                 'Wrong publication id ' . Configure::read('frontendAreaId')
             );
         }
-		$this->publication = $this->loadObj($frontendAreaId,false);
-		$pubStatus = (!empty($this->publication['status'])) ? $this->publication['status'] : false;
+        $this->publication = $this->loadObj($frontendAreaId,false);
+        $pubStatus = (!empty($this->publication['status'])) ? $this->publication['status'] : false;
 		if ($pubStatus === false) {
 			throw new BeditaInternalErrorException(
 				__('Configuration error: missing or wrong publication', true),
@@ -1555,30 +1555,30 @@ abstract class FrontendController extends AppController {
 		}
 
 		$this->checkParentStatus($parent_id);
-		if(isset($this->objectCache[$parent_id]["menu"])){ // first level cache
-			$menu = $this->objectCache[$parent_id]["menu"];
-			$priorityOrder = $this->objectCache[$parent_id]["priority_order"];
-		} else {
-		    $cacheOpts = array($parent_id, $this->status);
-		    if ($this->BeObjectCache) { // second level cache (ext)
-		        $tree = $this->BeObjectCache->read($parent_id, $cacheOpts, 'tree');
-		    }
-		    if (empty($tree)) {
-		        $tree = array();
-    			$tree['menu'] = $this->Tree->field("menu", array("id" => $parent_id));
-    			$tree['priorityOrder'] = $this->Section->field("priority_order", array("id" => $parent_id));
-    			if(isset($this->objectCache[$parent_id])) {
-    				$this->objectCache[$parent_id]["menu"] = $tree['menu'];
-    				$this->objectCache[$parent_id]["priority_order"] = $tree['priorityOrder'];
-    			}
+        if(isset($this->objectCache[$parent_id]['menu'])){ // internal array cache
+            $menu = $this->objectCache[$parent_id]['menu'];
+            $priorityOrder = $this->objectCache[$parent_id]['priority_order'];
+        } else {
+            $cacheOpts = array($parent_id, $this->status);
+            if ($this->BeObjectCache) { // persistent cache
+                $tree = $this->BeObjectCache->read($parent_id, $cacheOpts, 'tree');
+            }
+            if (empty($tree)) {
+                $tree = array();
+                $tree['menu'] = $this->Tree->field('menu', array('id' => $parent_id));
+                $tree['priorityOrder'] = $this->Section->field('priority_order', array('id' => $parent_id));
+                if(isset($this->objectCache[$parent_id])) {
+                    $this->objectCache[$parent_id]['menu'] = $tree['menu'];
+                    $this->objectCache[$parent_id]['priority_order'] = $tree['priorityOrder'];
+                }
                 if ($this->BeObjectCache) {
                     $this->BeObjectCache->write($parent_id, $cacheOpts, $tree, 'tree');
                 }
                 $menu = $tree['menu'];
                 $priorityOrder = $tree['priorityOrder'];
-		    }
-		}
-		$findAltPath = (isset($menu) && ($menu === '0'));
+            }
+        }
+        $findAltPath = (isset($menu) && ($menu === '0'));
 		if(empty($priorityOrder)) {
 			$priorityOrder = "asc";
 		}
@@ -2922,18 +2922,18 @@ abstract class FrontendController extends AppController {
         }
         if (empty($parent)) {
             $parent = array();
-            $parent['path'] = $this->Tree->field("parent_path", array("id" => $section_id));
-            $parent['ids'] = explode("/", trim($parent['path'],"/"));
+            $parent['path'] = $this->Tree->field('parent_path', array('id' => $section_id));
+            $parent['ids'] = explode('/', trim($parent['path'], '/'));
             $parent['countId'] = 0;
             $parent['countStatus'] = 0;
             if (!empty($parent['ids'][0])) {
                 $parent['countId'] = count($parent['ids']);
-                $parent['countStatus'] = $this->BEObject->find("count", array(
-                    "conditions" => array(
-                        "status" => $this->status,
-                        "id" => $parent['ids']
+                $parent['countStatus'] = $this->BEObject->find('count', array(
+                    'conditions' => array(
+                        'status' => $this->status,
+                        'id' => $parent['ids']
                     ),
-                    "contain" => array()
+                    'contain' => array()
                 ));
             } else {
                 $parent['ids'] = array();
@@ -2943,7 +2943,7 @@ abstract class FrontendController extends AppController {
             }
         }
         if (isset($parent['countId']) && isset($parent['countStatus']) && $parent['countId'] != $parent['countStatus']) {
-            throw new BeditaNotFoundException(__("Content not found", true));
+            throw new BeditaNotFoundException(__('Content not found', true));
         }
     }
 
