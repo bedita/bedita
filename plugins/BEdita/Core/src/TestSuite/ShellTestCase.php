@@ -13,9 +13,9 @@
 namespace BEdita\Core\TestSuite;
 
 use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOutput;
 use Cake\Console\Exception\StopException;
 use Cake\Console\ShellDispatcher;
+use Cake\TestSuite\Stub\ConsoleOutput;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -26,25 +26,18 @@ use Cake\TestSuite\TestCase;
 class ShellTestCase extends TestCase
 {
     /**
-     * Temporary file for mocked stdout.
+     * Mocked stdout.
      *
-     * @var string
+     * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
-    private $_outFile;
+    private $_out;
 
     /**
-     * Temporary file for mocked stderr.
+     * Mocked stderr.
      *
-     * @var string
+     * @var \Cake\TestSuite\Stub\ConsoleOutput
      */
-    private $_errFile;
-
-    /**
-     * Console IO.
-     *
-     * @var \Cake\Console\ConsoleIo
-     */
-    protected $_io;
+    private $_err;
 
     /**
      * Has the shell been aborted?
@@ -60,10 +53,8 @@ class ShellTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->_outFile = tempnam(TMP, 'STDOUT');
-        $this->_errFile = tempnam(TMP, 'STDERR');
-
-        $this->_io = new ConsoleIo(new ConsoleOutput($this->_outFile), new ConsoleOutput($this->_errFile));
+        $this->_out = new ConsoleOutput();
+        $this->_err = new ConsoleOutput();
     }
 
     /**
@@ -71,11 +62,7 @@ class ShellTestCase extends TestCase
      */
     public function tearDown()
     {
-        unset($this->_io);
-
-        unlink($this->_outFile);
-        unlink($this->_errFile);
-        unset($this->_outFile, $this->_errFile);
+        unset($this->_out, $this->_err);
 
         parent::tearDown();
     }
@@ -87,7 +74,7 @@ class ShellTestCase extends TestCase
      */
     protected function getOutput()
     {
-        return rtrim(file_get_contents($this->_outFile), PHP_EOL);
+        return rtrim($this->_out->messages(), PHP_EOL);
     }
 
     /**
@@ -97,7 +84,7 @@ class ShellTestCase extends TestCase
      */
     protected function getError()
     {
-        return rtrim(file_get_contents($this->_errFile), PHP_EOL);
+        return rtrim($this->_err->messages(), PHP_EOL);
     }
 
     /**
@@ -182,7 +169,7 @@ class ShellTestCase extends TestCase
         $shell = array_shift($args);
 
         $Shell = (new ShellDispatcher())->findShell($shell);
-        $Shell->io($this->_io);
+        $Shell->io(new ConsoleIo($this->_out, $this->_err));
         $Shell->initialize();
 
         try {
