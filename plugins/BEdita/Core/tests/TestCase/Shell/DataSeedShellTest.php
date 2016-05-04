@@ -73,7 +73,7 @@ class DataSeedShellTest extends ShellTestCase
         $before = $Users->find('all')->count();
 
         $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '10']);
-        $this->assertNotAborted();
+        $this->assertNotAborted($this->getError());
 
         $after = $Users->find('all')->count();
 
