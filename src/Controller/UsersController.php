@@ -27,10 +27,7 @@ class UsersController extends AppController
     public function initialize()
     {
         parent::initialize();
-        $this->Users = TableRegistry::get(
-            'Users',
-            TableRegistry::exists('Users') ? [] : ['className' => 'BEdita\Core\Model\Table\UsersTable']
-        );
+        $this->Users = TableRegistry::get('Users');
     }
 
     /**
