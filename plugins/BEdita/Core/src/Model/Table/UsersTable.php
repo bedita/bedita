@@ -55,7 +55,7 @@ class UsersTable extends Table
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
-            'className' => 'BEdita/Auth.ExternalAuth',
+            'className' => 'BEdita/Core.ExternalAuth',
         ]);
     }
 
