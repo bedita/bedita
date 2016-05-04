@@ -178,7 +178,7 @@ class DataSeedShell extends Shell
         if (!method_exists($this, $method)) {
             $this->abort('Table "' . $tableName . '" is not yet supported');
         }
-        $table = TableRegistry::get($tableName);
+        $table = TableRegistry::get('BEdita/Core.' . $tableName);
         $count = max(1, intval($this->params['number']));
 
         $fields = [];
@@ -202,9 +202,7 @@ class DataSeedShell extends Shell
         try {
             $table->connection()->transactional(function () use ($table, $entities) {
                 foreach ($entities as $entity) {
-                    if (!$table->save($entity, ['atomic' => false])) {
-                        throw new \InvalidArgumentException('Could not save entity');
-                    }
+                    $table->save($entity, ['atomic' => false]);
                 }
             });
         } catch (\Exception $e) {
