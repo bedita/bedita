@@ -60,8 +60,8 @@ class ShellTestCase extends TestCase
     {
         parent::setUp();
 
-        $this->_outFile = tempnam(sys_get_temp_dir(), 'STDOUT');
-        $this->_errFile = tempnam(sys_get_temp_dir(), 'STDERR');
+        $this->_outFile = tempnam(TMP, 'STDOUT');
+        $this->_errFile = tempnam(TMP, 'STDERR');
 
         $this->_io = new ConsoleIo(new ConsoleOutput($this->_outFile), new ConsoleOutput($this->_errFile));
     }
