@@ -25,31 +25,6 @@ class UsersFixture extends TestFixture
 
     /**
      * {@inheritDoc}
-     *
-     * @codingStandardsIgnore
-     */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'username' => ['type' => 'string', 'length' => 100, 'null' => false, 'default' => null, 'comment' => 'login user name', 'precision' => null, 'fixed' => null],
-        'password' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'login password, if empty external auth is used', 'precision' => null],
-        'blocked' => ['type' => 'boolean', 'length' => null, 'null' => false, 'default' => '0', 'comment' => 'user blocked flag', 'precision' => null],
-        'last_login' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'last succcessful login datetime', 'precision' => null],
-        'last_login_err' => ['type' => 'datetime', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'last login filaure datetime', 'precision' => null],
-        'num_login_err' => ['type' => 'integer', 'length' => 4, 'unsigned' => false, 'null' => false, 'default' => '0', 'comment' => 'number of consecutive login failures', 'precision' => null, 'autoIncrement' => null],
-        'created' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => 'record creation date', 'precision' => null],
-        'modified' => ['type' => 'datetime', 'length' => null, 'null' => false, 'default' => null, 'comment' => 'record last modification date', 'precision' => null],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'username' => ['type' => 'unique', 'columns' => ['username'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
-
-    /**
-     * {@inheritDoc}
      */
     public function init()
     {
