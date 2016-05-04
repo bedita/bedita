@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Utils\DbUtils;
-use BEdita\Core\Utils\StringUtils;
 use Cake\Console\Shell;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
  * Shell commands to seed new fake data
@@ -26,19 +26,11 @@ class DataSeedShell extends Shell
 {
 
     /**
-     * Faker intance
+     * Faker instance
      *
-     * @var
+     * @var \Faker\Generator
      */
-    private $faker = null;
-
-    /**
-     * User defined field values
-     *
-     * @array
-     */
-    private $fields = [];
-
+    private $faker;
 
     /**
      * {@inheritDoc}
@@ -55,19 +47,19 @@ class DataSeedShell extends Shell
                 ],
                 'options' => [
                     'table' => [
-                        'help' => 'Specifiy item table',
+                        'help' => 'Specify item table',
                         'short' => 't',
                         'required' => true,
                         'default' => 'users',
                     ],
                     'number' => [
-                        'help' => 'Specifiy item number',
+                        'help' => 'Specify item number',
                         'short' => 'n',
                         'required' => true,
                         'default' => 1,
                     ],
                     'fields' => [
-                        'help' => 'Specifiy values for some fields using thus forma field1="val1",field2="val2"',
+                        'help' => 'Specifiy values for some fields using this format field1="val1",field2="val2"',
                         'short' => 'f',
                         'required' => false,
                     ],
@@ -75,16 +67,18 @@ class DataSeedShell extends Shell
             ],
         ]);
 
-         return $parser;
+        return $parser;
     }
 
     /**
-     * Init Faker instance, check class existence
+     * Initialize Faker instance.
      *
-     * @return void
+     * {@inheritDoc}
      */
-    protected function initFaker()
+    public function initialize()
     {
+        parent::initialize();
+
         if (!class_exists('\Faker\Factory')) {
             $this->abort('Faker lib not found');
         }
@@ -100,10 +94,8 @@ class DataSeedShell extends Shell
     {
         return [
             'username' => $this->faker->userName,
-            'password' => md5($this->faker->password),
+            'password' => $this->faker->password,
             'last_login' => $this->faker->dateTimeThisDecade()->format('Y-m-d H:i:s'),
-            'created' => date('Y-m-d H:i:s'),
-            'modified' => date('Y-m-d H:i:s'),
         ];
     }
 
@@ -130,59 +122,48 @@ class DataSeedShell extends Shell
      */
     protected function objectsData()
     {
-        if (empty($this->fields['object_type_id'])) {
-            $this->abort('Unable to set object_type_id: please use --fieldsd option');
-        }
-        $userId = 1;
-        if (!empty($this->fields['user_id'])) {
-            $userId = $this->fields['user_id'];
-        }
         $title = $this->faker->sentence(4);
+
         return [
-            'object_type_id' => $this->fields['object_type_id'],
             'title' => $title,
-            'uname' => StringUtils::friendlyUrl($title),
+            'uname' => Inflector::slug($title),
             'status' => $this->faker->randomElement(['on', 'off', 'draft', 'deleted']),
             'description' => $this->faker->paragraph,
             'body' => $this->faker->text,
             'lang' => 'eng',
-            'created_by' => $userId,
-            'modified_by' => $userId,
+            'created_by' => 1,
+            'modified_by' => 1,
             'created' => date('Y-m-d H:i:s'),
             'modified' => date('Y-m-d H:i:s'),
         ];
     }
 
     /**
-     * Generate SQL insert statement from $data
+     * Parse fields.
      *
-     * @param array $data Input data from Faker
-     * @param string $table Table name in SQL
-     * @return string
+     * @param string $fields Field string to be parsed.
+     * @return array Parsed fields.
+     * @throws \InvalidArgumentException Throws an exception if a field couldn't be parsed.
      */
-    protected function sqlInsert($data, $table)
+    protected function parseFields($fields)
     {
-        $sql = 'INSERT INTO ' . $table . ' (';
-        $dim = count($data);
-        $count = 0;
-        foreach ($data as $k => $v) {
-            $sql .= $k;
-            $count++;
-            if ($count < $dim) {
-                $sql .= ', ';
-            }
+        if (empty($fields)) {
+            return [];
         }
-        $sql .= ') VALUES (';
-        $count = 0;
-        foreach ($data as $k => $v) {
-            $sql .= is_string($v) ? "'" . addslashes($v) . "'" : $v;
-            $count++;
-            if ($count < $dim) {
-                $sql .= ', ';
+
+        $parsed = [];
+        $fields = explode(',', $fields);
+        foreach ($fields as $field) {
+            $field = explode('=', $field);
+            if (count($field) != 2) {
+                throw new \InvalidArgumentException(sprintf('Could not parse field "%s"', implode('=', $field)));
             }
+
+            list($key, $value) = $field;
+            $parsed[$key] = $value;
         }
-        $sql .= ')';
-        return $sql;
+
+        return $parsed;
     }
 
     /**
@@ -192,39 +173,44 @@ class DataSeedShell extends Shell
      */
     public function insert()
     {
-        $this->initFaker();
-        $table = $this->params['table'];
-        $method = $table . 'Data';
+        $tableName = Inflector::camelize($this->params['table']);
+        $method = Inflector::variable($tableName) . 'Data';
         if (!method_exists($this, $method)) {
-            $this->abort('Table "' . $table . '" not supported');
+            $this->abort('Table "' . $tableName . '" is not yet supported');
         }
-        $num = intval($this->params['number']);
+        $table = TableRegistry::get($tableName);
+        $count = max(1, intval($this->params['number']));
 
+        $fields = [];
         if (!empty($this->params['fields'])) {
-            $f = explode(',', $this->params['fields']);
-            foreach ($f as $value) {
-                $fData = explode('=', $value);
-                if (count($fData) != 2) {
-                    $this->abort('Error parsing input field: ' . $value);
-                }
-                $this->fields[$fData[0]] = $fData[1];
+            try {
+                $fields = $this->parseFields($this->params['fields']);
+            } catch (\InvalidArgumentException $e) {
+                $this->abort(sprintf('Parsing error: ' . $e->getMessage()));
             }
         }
 
-        $sql = '';
-        $this->info('Generating SQL queries...');
-        for ($i = 0; $i < $num; $i++) {
-            $data = $this->{$method}();
-            $query = $this->sqlInsert($data, $table);
-            $this->out($query);
-            $sql .= $query . ";\n";
+        $this->out('<info>Generating entities...</info> ', 0);
+        $entities = [];
+        for ($i = 0; $i < $count; $i++) {
+            $data = $fields + call_user_func([$this, $method]);
+            $entities[] = $table->newEntity($data);
         }
+        $this->out('<success>DONE</success>');
 
-        $this->info('Executing SQL queries...');
-        $result = DbUtils::executeTransaction($sql);
-        if (!$result['success']) {
-            $this->abort('Error executing SQL: ' . $result['error']);
+        $this->out('<info>Persisting entities...</info> ', 0);
+        try {
+            $table->connection()->transactional(function () use ($table, $entities) {
+                foreach ($entities as $entity) {
+                    if (!$table->save($entity, ['atomic' => false])) {
+                        throw new \InvalidArgumentException('Could not save entity');
+                    }
+                }
+            });
+        } catch (\Exception $e) {
+            $this->out('<error>ERROR</error>');
+            $this->abort(sprintf('Error while saving entities: %s', $e->getMessage()));
         }
-        $this->info('...done');
+        $this->out('<success>DONE</success>');
     }
 }
