@@ -74,7 +74,7 @@ class ShellTestCase extends TestCase
      */
     protected function getOutput()
     {
-        return rtrim($this->_out->messages(), PHP_EOL);
+        return implode(PHP_EOL, $this->_out->messages());
     }
 
     /**
@@ -84,7 +84,7 @@ class ShellTestCase extends TestCase
      */
     protected function getError()
     {
-        return rtrim($this->_err->messages(), PHP_EOL);
+        return implode(PHP_EOL, $this->_err->messages());
     }
 
     /**

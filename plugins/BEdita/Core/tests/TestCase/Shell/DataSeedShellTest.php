@@ -44,7 +44,7 @@ class DataSeedShellTest extends ShellTestCase
         $this->invoke(['data_seed', 'insert', '-t', 'thisTableDoesNotExist']);
 
         $this->assertAborted();
-        $this->assertErrorEquals('Table "ThisTableDoesNotExist" is not yet supported');
+        $this->assertErrorContains('Table "ThisTableDoesNotExist" is not yet supported');
     }
 
     /**
