@@ -79,26 +79,4 @@ class DataSeedShellTest extends ShellTestCase
 
         $this->assertEquals($before + 10, $after);
     }
-
-    /**
-     * Test seeding of roles.
-     *
-     * @return void
-     */
-    public function testRoleSeeding()
-    {
-        $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '1']);
-        $this->assertNotAborted($this->getError());
-    }
-
-    /**
-     * Test seeding of objects.
-     *
-     * @return void
-     */
-    public function testObjectSeeding()
-    {
-        $this->invoke(['data_seed', 'insert', '-t', 'objects', '-n', '2']);
-        $this->assertNotAborted($this->getError());
-    }
 }
