@@ -16,6 +16,7 @@ namespace BEdita\Core\Shell;
 use Cake\Console\Shell;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
+use Cake\Utility\Text;
 
 /**
  * Shell commands to seed new fake data
@@ -126,7 +127,7 @@ class DataSeedShell extends Shell
 
         return [
             'title' => $title,
-            'uname' => Inflector::slug($title),
+            'uname' => Text::slug($title),
             'status' => $this->faker->randomElement(['on', 'off', 'draft', 'deleted']),
             'description' => $this->faker->paragraph,
             'body' => $this->faker->text,
