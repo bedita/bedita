@@ -13,9 +13,12 @@
 namespace BEdita\API\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Routing\Router;
 
 /**
- * Base class for all API Controller endpoints
+ * Base class for all API Controller endpoints.
+ *
+ * @since 4.0.0
  */
 class AppController extends Controller
 {
@@ -26,8 +29,18 @@ class AppController extends Controller
     public function initialize()
     {
         parent::initialize();
+
         $this->loadComponent('RequestHandler');
         $this->RequestHandler->renderAs($this, 'json');
+
+        if (empty(Router::fullBaseUrl())) {
+            Router::fullBaseUrl(
+                rtrim(
+                    sprintf('%s://%s/%s', $this->request->scheme(), $this->request->host(), $this->request->base),
+                    '/'
+                )
+            );
+        }
     }
 
     /**
@@ -35,14 +48,13 @@ class AppController extends Controller
      * (only JSON API at this point)
      *
      * @param mixed $data Response data, could be an array or a Query / Entity
-     * @param bool $multiple Multiple data flag, if true multiple items, if false single item
      * @param string $type Common type for response, if any
      * @return void
      */
-    protected function prepareResponseData($data, $multiple = true, $type = null)
+    protected function prepareResponseData($data, $type = null)
     {
         $this->loadComponent('BEdita/API.JsonApi');
-        $responseData = $this->JsonApi->formatResponse($data, $multiple, $type);
+        $responseData = $this->JsonApi->formatResponse($data, $type);
         $this->set($responseData);
     }
 }
