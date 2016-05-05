@@ -63,7 +63,6 @@ class JsonApiComponent extends Component
      */
     protected function formatItem($item, $type = null)
     {
-        $itemData = $item;
         if (!is_array($item)) {
             $itemData = $item->toArray();
         } else {
@@ -71,7 +70,7 @@ class JsonApiComponent extends Component
         }
         $data = [
             'id' => is_int($itemData['id']) ? strval($itemData['id']) : $itemData['id'],
-            'type' => ($type != null) ? $type : $itemData['type'],
+            'type' => ($type !== null) ? $type : $itemData['type'],
         ];
         unset($itemData['id']);
         unset($itemData['type']);
