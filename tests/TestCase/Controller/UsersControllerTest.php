@@ -147,55 +147,84 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseCode(404);
     }
 
-
-    public function testContentType()
+    /**
+     * Data provider for `testContentType` test case.
+     *
+     * @return array
+     */
+    public function contentTypeProvider()
     {
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
-        ]);
-        $result = $this->get('/users');
-        $this->assertResponseOk();
-        $this->assertContentType('application/json');
+        return [
+            'json' => [
+                200,
+                'application/json',
+                'application/json',
+            ],
+            'jsonApi' => [
+                200,
+                'application/vnd.api+json',
+                'application/vnd.api+json',
+            ],
+            'jsonApiWrongMediaType' => [
+                415,
+                null,
+                'application/vnd.api+json; m=test',
+            ],
+            'htmlNotAllowed' => [
+                406,
+                null,
+                'text/html,application/xhtml+xml',
+                [
+                    'debug' => 0,
+                    'Accept.html' => 0,
+                ],
+            ],
+            'htmlDebugMode' => [
+                200,
+                'text/html',
+                'text/html,application/xhtml+xml',
+                [
+                    'debug' => 1,
+                    'Accept.html' => 0,
+                ],
+            ],
+            'htmlAccepted' => [
+                200,
+                'text/html',
+                'text/html,application/xhtml+xml',
+                [
+                    'debug' => 0,
+                    'Accept.html' => 1,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test content type negotiation rules.
+     *
+     * @param int $expectedCode Expected response code.
+     * @param string|null $expectedContentType Expected content type.
+     * @param string $accept Request's "Accept" header.
+     * @param array|null $config Configuration to be written.
+     * @return void
+     *
+     * @dataProvider contentTypeProvider
+     * @coversNothing
+     */
+    public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
+    {
+        Configure::write($config);
 
         $this->configRequest([
-            'headers' => ['Accept' => 'application/vnd.api+json']
+            'headers' => ['Accept' => $accept],
         ]);
-        $result = $this->get('/users');
-        $this->assertResponseOk();
-        $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/vnd.api+json; m=test']
-        ]);
-        $result = $this->get('/users');
-        $this->assertResponseError();
-        // http://jsonapi.org/format/#content-negotiation-servers
-        $this->assertResponseCode(415);
+        $this->get('/users');
 
-        Configure::write('Accept.html', 0);
-        Configure::write('debug', 0);
-        $this->configRequest([
-            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
-        ]);
-        $result = $this->get('/users');
-        $this->assertResponseError();
-        $this->assertResponseCode(406);
-
-        Configure::write('Accept.html', 1);
-        $this->configRequest([
-            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
-        ]);
-        $result = $this->get('/users');
-        $this->assertResponseCode(200);
-        $this->assertContentType('text/html');
-
-        Configure::write('Accept.html', 0);
-        Configure::write('debug', 1);
-        $this->configRequest([
-            'headers' => ['Accept' => 'text/html,application/xhtml+xml']
-        ]);
-        $result = $this->get('/users');
-        $this->assertResponseCode(200);
-        $this->assertContentType('text/html');
+        $this->assertResponseCode($expectedCode);
+        if ($expectedContentType) {
+            $this->assertContentType($expectedContentType);
+        }
     }
 }
