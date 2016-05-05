@@ -14,6 +14,7 @@
 namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
@@ -93,10 +94,11 @@ class DataSeedShell extends Shell
      */
     protected function usersData()
     {
+        $tsLast = $this->faker->dateTimeThisYear()->getTimestamp();
         return [
             'username' => $this->faker->userName,
             'password' => $this->faker->password,
-            'last_login' => $this->faker->dateTimeThisDecade()->format('Y-m-d H:i:s'),
+            'last_login' => Time::createFromTimestamp($tsLast),
         ];
     }
 
@@ -111,8 +113,8 @@ class DataSeedShell extends Shell
             'name' => $this->faker->word,
             'description' => $this->faker->sentence,
             'backend_auth' => $this->faker->numberBetween(0, 1),
-            'created' => date('Y-m-d H:i:s'),
-            'modified' => date('Y-m-d H:i:s'),
+            'created' => Time::now(),
+            'modified' => Time::now(),
         ];
     }
 
@@ -134,8 +136,8 @@ class DataSeedShell extends Shell
             'lang' => 'eng',
             'created_by' => 1,
             'modified_by' => 1,
-            'created' => date('Y-m-d H:i:s'),
-            'modified' => date('Y-m-d H:i:s'),
+            'created' => Time::now(),
+            'modified' => Time::now(),
         ];
     }
 
