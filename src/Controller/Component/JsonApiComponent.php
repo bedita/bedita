@@ -12,70 +12,47 @@
  */
 namespace BEdita\API\Controller\Component;
 
+use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
+use Cake\Event\Event;
+use Cake\Routing\Router;
 
 /**
  * Handles JSON API data format in input and in output
  *
+ * @since 4.0.0
  */
 class JsonApiComponent extends Component
 {
+    /**
+     * Get links according to JSON API specifications.
+     *
+     * @return array
+     */
+    public function getLinks()
+    {
+        return [
+            'self' => Router::url(null, true),
+        ];
+    }
 
     /**
      * Format response data array in JSON API format
      *
      * @param mixed $data Response data, could be an array or a Query / Entity
-     * @param bool $multiple Multiple data flag, if true multiple items, if false single item
      * @param string $type Common type for response, if any
      * @return array
      */
-    public function formatResponse($data, $multiple = true, $type = null)
+    public function formatResponse($data, $type = null)
     {
-        $respData = null;
-        if (!is_array($data)) {
-            $data = $data->toArray();
-        }
-        if ($multiple) {
-            foreach ($data as $d) {
-                $respData[] = $this->formatItem($d, $type);
-            }
-        } else {
-            $respData = $this->formatItem($data, $type);
-        }
+        $links = $this->getLinks();
+        $data = JsonApi::formatData($data, $type);
 
-        $controller = $this->_registry->getController();
-        $url = $controller->request->scheme() . '://' . $controller->request->host() . '/' . $controller->request->url;
-        $links = ['self' => $url];
         $res = [
             'links' => $links,
-            'data' => $respData,
+            'data' => $data,
             '_serialize' => ['links', 'data'],
         ];
         return $res;
-    }
-
-    /**
-     * Format single data item in JSON API format
-     *
-     * @param object $item Single entity item to format
-     * @param string $type Type of item, if missing deduce it from item's data
-     * @return array
-     */
-    protected function formatItem($item, $type = null)
-    {
-        $itemData = $item;
-        if (!is_array($item)) {
-            $itemData = $item->toArray();
-        } else {
-            $itemData = $item;
-        }
-        $data = [
-            'id' => is_int($itemData['id']) ? strval($itemData['id']) : $itemData['id'],
-            'type' => ($type != null) ? $type : $itemData['type'],
-        ];
-        unset($itemData['id']);
-        unset($itemData['type']);
-        $data['attributes'] = $itemData;
-        return $data;
     }
 }
