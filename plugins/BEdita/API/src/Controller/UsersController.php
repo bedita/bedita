@@ -12,10 +12,10 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\ORM\TableRegistry;
-
 /**
- * Controller for /users endpoint
+ * Controller for /users endpoint.
+ *
+ * @since 4.0.0
  *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
@@ -24,11 +24,7 @@ class UsersController extends AppController
     /**
      * {@inheritDoc}
      */
-    public function initialize()
-    {
-        parent::initialize();
-        $this->Users = TableRegistry::get('Users');
-    }
+    public $modelClass = 'Users';
 
     /**
      * Paginated users index
@@ -38,7 +34,7 @@ class UsersController extends AppController
     public function index()
     {
         $users = $this->Users->find('all');
-        $this->prepareResponseData($users, true, 'users');
+        $this->prepareResponseData($users, 'users');
     }
 
     /**
@@ -51,6 +47,6 @@ class UsersController extends AppController
     {
         $user = $this->Users->get($id);
 
-        $this->prepareResponseData($user, false, 'users');
+        $this->prepareResponseData($user, 'users');
     }
 }
