@@ -47,10 +47,7 @@ class AuthProvidersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->AuthProviders = TableRegistry::get(
-            'AuthProviders',
-            TableRegistry::exists('AuthProviders') ? [] : ['className' => 'BEdita\Core\Model\Table\AuthProvidersTable']
-        );
+        $this->AuthProviders = TableRegistry::get('BEdita/Core.AuthProviders');
     }
 
     /**

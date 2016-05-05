@@ -69,7 +69,7 @@ class DataSeedShellTest extends ShellTestCase
     {
         $this->loadFixtures('Users');
 
-        $Users = TableRegistry::get('Users');
+        $Users = TableRegistry::get('BEdita/Core.Users');
         $before = $Users->find('all')->count();
 
         $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '10']);
