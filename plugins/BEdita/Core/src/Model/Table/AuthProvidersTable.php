@@ -41,7 +41,7 @@ class AuthProvidersTable extends Table
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'auth_provider_id',
-            'className' => 'BEdita/Auth.ExternalAuth',
+            'className' => 'BEdita/Core.ExternalAuth',
         ]);
     }
 

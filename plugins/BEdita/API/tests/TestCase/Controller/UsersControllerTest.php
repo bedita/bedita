@@ -15,8 +15,12 @@ namespace BEdita\API\Test\TestCase\Controller;
 use Cake\Core\Configure;
 use Cake\TestSuite\IntegrationTestCase;
 
+/**
+ * @coversDefaultClass \BEdita\API\Controller\UsersController
+ */
 class UsersControllerTest extends IntegrationTestCase
 {
+
     /**
      * Fixtures
      *
@@ -26,19 +30,18 @@ class UsersControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.users',
     ];
 
+    /**
+     * Test index method.
+     *
+     * @return void
+     *
+     * @covers ::index()
+     */
     public function testIndex()
     {
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
-        ]);
-        $result = $this->get('/users');
-
-        // Check that the response was a 200
-        $this->assertResponseOk();
-
         $expected = [
             'links' => [
-                'self' => 'http:///users'
+                'self' => 'http://api.example.com/users'
             ],
             'data' => [
                 [
@@ -69,24 +72,32 @@ class UsersControllerTest extends IntegrationTestCase
                 ],
             ]
         ];
-        $expected = json_encode($expected, JSON_PRETTY_PRINT);
-        $response = $this->_response->body();
-        $this->assertEquals($expected, $response);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/json',
+            ],
+        ]);
+        $this->get('/users');
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertEquals($expected, $result);
     }
 
+    /**
+     * Test view method.
+     *
+     * @return void
+     *
+     * @covers ::view()
+     */
     public function testSingle()
     {
-        $this->configRequest([
-            'headers' => ['Accept' => 'application/json']
-        ]);
-        $result = $this->get('/users/1');
-
-        // Check that the response was a 200
-        $this->assertResponseOk();
-
         $expected = [
             'links' => [
-                'self' => 'http:///users/1'
+                'self' => 'http://api.example.com/users/1'
             ],
             'data' => [
                 'id' => '1',
@@ -102,9 +113,38 @@ class UsersControllerTest extends IntegrationTestCase
                 ]
             ]
         ];
-        $expected = json_encode($expected, JSON_PRETTY_PRINT);
-        $response = $this->_response->body();
-        $this->assertEquals($expected, $response);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/json',
+            ],
+        ]);
+        $this->get('/users/1');
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test view method.
+     *
+     * @return void
+     *
+     * @covers ::view()
+     */
+    public function testMissing()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/json',
+            ],
+        ]);
+        $this->get('/users/99');
+
+        $this->assertResponseCode(404);
     }
 
 

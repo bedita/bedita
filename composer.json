@@ -55,6 +55,8 @@
     },
     "scripts": {
         "post-install-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
+        "post-update-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
+        "post-create-project-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
         "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
     },
     "minimum-stability": "stable",

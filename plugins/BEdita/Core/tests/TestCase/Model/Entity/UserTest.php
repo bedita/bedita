@@ -49,10 +49,7 @@ class UserTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get(
-            'Users',
-            TableRegistry::exists('Users') ? [] : ['className' => 'BEdita\Core\Model\Table\UsersTable']
-        );
+        $this->Users = TableRegistry::get('BEdita/Core.Users');
     }
 
     /**

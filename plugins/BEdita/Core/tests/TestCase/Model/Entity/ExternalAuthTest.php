@@ -50,10 +50,7 @@ class ExternalAuthTest extends TestCase
     {
         parent::setUp();
 
-        $this->ExternalAuth = TableRegistry::get(
-            'ExternalAuth',
-            TableRegistry::exists('ExternalAuth') ? [] : ['className' => 'BEdita\Core\Model\Table\ExternalAuthTable']
-        );
+        $this->ExternalAuth = TableRegistry::get('BEdita/Core.ExternalAuth');
     }
 
     /**

@@ -23,26 +23,6 @@ class AuthProvidersFixture extends TestFixture
 
     /**
      * {@inheritDoc}
-     *
-     * @codingStandardsIgnore
-     */
-    public $fields = [
-        'id' => ['type' => 'integer', 'length' => 5, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'autoIncrement' => true, 'precision' => null],
-        'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => 'external provider name: facebook, google, github...', 'precision' => null, 'fixed' => null],
-        'url' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'comment' => 'external provider url', 'precision' => null, 'fixed' => null],
-        'params' => ['type' => 'text', 'length' => null, 'null' => true, 'default' => null, 'comment' => 'external provider parameters', 'precision' => null],
-        '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
-            'name' => ['type' => 'unique', 'columns' => ['name'], 'length' => []],
-        ],
-        '_options' => [
-            'engine' => 'InnoDB',
-            'collation' => 'utf8_general_ci',
-        ],
-    ];
-
-    /**
-     * {@inheritDoc}
      */
     public $records = [
         [

@@ -43,12 +43,12 @@ class ExternalAuthTable extends Table
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Auth.Users',
+            'className' => 'BEdita/Core.Users',
         ]);
         $this->belongsTo('AuthProviders', [
             'foreignKey' => 'auth_provider_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Auth.AuthProviders',
+            'className' => 'BEdita/Core.AuthProviders',
         ]);
     }
 
