@@ -1723,7 +1723,7 @@
             "description": {
                 "type": "text",
                 "length": null,
-                "null": false,
+                "null": true,
                 "default": null,
                 "comment": "role description",
                 "precision": null
