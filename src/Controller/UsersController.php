@@ -43,7 +43,7 @@ class UsersController extends AppController
      */
     public function index()
     {
-        $users = $this->Users->find('all');
+        $users = $this->paginate($this->Users->find('all'));
 
         $this->set(compact('users'));
         $this->set('_serialize', ['users']);

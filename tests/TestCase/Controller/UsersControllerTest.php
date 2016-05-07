@@ -42,7 +42,11 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users'
+                'self' => 'http://api.example.com/users',
+                'first' => 'http://api.example.com/users',
+                'last' => 'http://api.example.com/users',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [
                 [
@@ -56,7 +60,7 @@ class UsersControllerTest extends IntegrationTestCase
                         'num_login_err' => 1,
                         'created' => '2016-03-15T09:57:38+0000',
                         'modified' => '2016-03-15T09:57:38+0000',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -69,9 +73,9 @@ class UsersControllerTest extends IntegrationTestCase
                         'num_login_err' => 0,
                         'created' => '2016-03-15T09:57:38+0000',
                         'modified' => '2016-03-15T09:57:38+0000',
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ];
 
         $this->configRequest([
@@ -99,7 +103,7 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users/1'
+                'self' => 'http://api.example.com/users/1',
             ],
             'data' => [
                 'id' => '1',
@@ -112,8 +116,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'num_login_err' => 1,
                     'created' => '2016-03-15T09:57:38+0000',
                     'modified' => '2016-03-15T09:57:38+0000',
-                ]
-            ]
+                ],
+            ],
         ];
 
         $this->configRequest([
