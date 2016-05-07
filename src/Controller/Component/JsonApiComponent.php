@@ -12,8 +12,9 @@
  */
 namespace BEdita\API\Controller\Component;
 
-use BEdita\API\Utility\JsonApi;
+use BEdita\API\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\Component;
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Routing\Router;
 
@@ -21,9 +22,53 @@ use Cake\Routing\Router;
  * Handles JSON API data format in input and in output
  *
  * @since 4.0.0
+ *
+ * @property \Cake\Controller\Component\RequestHandlerComponent $RequestHandler
  */
 class JsonApiComponent extends Component
 {
+    /**
+     * JSON API content type.
+     *
+     * @var string
+     */
+    const CONTENT_TYPE = 'application/vnd.api+json';
+
+    /**
+     * {@inheritDoc}
+     */
+    public $components = ['RequestHandler'];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'checkMediaType' => true,
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize(array $config)
+    {
+        $this->response->type([
+            'jsonApi' => self::CONTENT_TYPE,
+        ]);
+
+        $this->RequestHandler->config('inputTypeMap.jsonApi', [[$this, 'parseInput']]);
+        $this->RequestHandler->config('viewClassMap.jsonApi', 'BEdita/API.JsonApi');
+    }
+
+    /**
+     * Input data parser for JSON API format.
+     *
+     * @return array
+     */
+    public function parseInput()
+    {
+        return [];
+    }
+
     /**
      * Get links according to JSON API specifications.
      *
@@ -37,22 +82,35 @@ class JsonApiComponent extends Component
     }
 
     /**
-     * Format response data array in JSON API format
+     * Perform preliminary checks and operations.
      *
-     * @param mixed $data Response data, could be an array or a Query / Entity
-     * @param string $type Common type for response, if any
-     * @return array
+     * @return void
+     * @throws \BEdita\API\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header does not
+     *      comply to JSON API specifications and `checkMediaType` configuration is enabled.
      */
-    public function formatResponse($data, $type = null)
+    public function beforeFilter()
     {
-        $links = $this->getLinks();
-        $data = JsonApi::formatData($data, $type);
+        if ($this->config('checkMediaType') && trim($this->request->header('accept')) != self::CONTENT_TYPE) {
+            // http://jsonapi.org/format/#content-negotiation-servers
+            throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+        }
+    }
 
-        $res = [
-            'links' => $links,
-            'data' => $data,
-            '_serialize' => ['links', 'data'],
-        ];
-        return $res;
+    /**
+     * Perform operations before view rendering.
+     *
+     * @param \Cake\Event\Event $event Triggered event.
+     * @return void
+     */
+    public function beforeRender(Event $event)
+    {
+        $controller = $event->subject();
+        if (!($controller instanceof Controller)) {
+            return;
+        }
+
+        $controller->set('_links', $this->getLinks());
+
+        $this->RequestHandler->renderAs($controller, 'jsonApi');
     }
 }

@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\API\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -23,17 +22,11 @@ use Cake\Routing\Router;
  * Base class for all API Controller endpoints.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
  */
 class AppController extends Controller
 {
-
-    /**
-     * Response content type, can be 'json' (default) 'jsonapi' or 'html'
-     *
-     * @var string
-     */
-    protected $responseType = 'json';
-
     /**
      * {@inheritDoc}
      */
@@ -42,6 +35,12 @@ class AppController extends Controller
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
+        if ($this->request->is(['json', 'jsonApi'])) {
+            $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
+            $this->loadComponent('BEdita/API.JsonApi', [
+                'checkMediaType' => $this->request->is('jsonApi'),
+            ]);
+        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
@@ -58,27 +57,9 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
-        // check request "Accept:" content types
-        $accepts = $this->request->accepts();
-        $jsonAccepts = ['application/json', 'application/vnd.api+json'];
-        if (!empty(array_intersect($jsonAccepts, $accepts))) {
-            if (in_array('application/vnd.api+json', $accepts)) {
-                $this->responseType = 'jsonapi';
-                $h = $this->request->header('ACCEPT');
-                if ('application/vnd.api+json' !== trim($h)) {
-                    // http://jsonapi.org/format/#content-negotiation-servers
-                    throw new UnsupportedMediaTypeException('Bad request content type "' .
-                        implode('" "', $accepts) . '"');
-                }
-            }
-        } else {
-            $htmlAccepts = ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml'];
-            $acceptHml = array_intersect($htmlAccepts, $accepts);
-            if (empty($acceptHml) || !(Configure::read('debug') || Configure::read('Accept.html'))) {
-                throw new NotAcceptableException('Bad request content type "' .
-                    implode('" "', $accepts) . '"');
-            }
-            $this->responseType = 'html';
+        $acceptHtml = (Configure::read('debug') || Configure::read('Accept.html'));
+        if (!$this->request->is(['json', 'jsonApi']) && (!$this->request->is('html') || !$acceptHtml)) {
+            throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
         }
     }
 
@@ -87,41 +68,22 @@ class AppController extends Controller
      */
     public function beforeRender(Event $event)
     {
-        if ($this->responseType === 'html') {
+        if ($this->request->is('html')) {
             $this->viewBuilder()->layout('default_api');
             $templatePath = $this->viewBuilder()->templatePath();
             $templatePath = substr($templatePath, 0, strrpos($templatePath, DS));
             $this->viewBuilder()->templatePath($templatePath . 'Common');
             $this->viewBuilder()->template('html_json');
-        } else {
-            $this->RequestHandler->renderAs($this, 'json');
         }
     }
-
 
     /**
      * {@inheritDoc}
      */
     public function afterFilter(Event $event)
     {
-        // setting response type before has no effect for 'jsonapi'
-        // since JSON View changes type to 'application/json'
-        $this->response->type($this->responseType);
-    }
-
-
-    /**
-     * Prepare response data, format using selected response format
-     * (only JSON API at this point)
-     *
-     * @param mixed $data Response data, could be an array or a Query / Entity
-     * @param string $type Common type for response, if any
-     * @return void
-     */
-    protected function prepareResponseData($data, $type = null)
-    {
-        $this->loadComponent('BEdita/API.JsonApi');
-        $responseData = $this->JsonApi->formatResponse($data, $type);
-        $this->set($responseData);
+        if ($this->request->is('json')) {
+            $this->response->type('json');
+        }
     }
 }
