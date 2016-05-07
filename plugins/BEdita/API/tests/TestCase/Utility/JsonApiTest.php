@@ -101,6 +101,40 @@ class JsonApiTest extends TestCase
                 },
                 'users',
             ],
+            'multipleResultSetItems' => [
+                [
+                    [
+                        'id' => '1',
+                        'type' => 'users',
+                        'attributes' => [
+                            'username' => 'first user',
+                            'blocked' => false,
+                            'last_login' => null,
+                            'last_login_err' => null,
+                            'num_login_err' => 1,
+                            'created' => '2016-03-15T09:57:38+0000',
+                            'modified' => '2016-03-15T09:57:38+0000',
+                        ],
+                    ],
+                    [
+                        'id' => '2',
+                        'type' => 'users',
+                        'attributes' => [
+                            'username' => 'second user',
+                            'blocked' => false,
+                            'last_login' => '2016-03-15T09:57:38+0000',
+                            'last_login_err' => '2016-03-15T09:57:38+0000',
+                            'num_login_err' => 0,
+                            'created' => '2016-03-15T09:57:38+0000',
+                            'modified' => '2016-03-15T09:57:38+0000',
+                        ],
+                    ],
+                ],
+                function (Table $Table) {
+                    return $Table->find('all')->all();
+                },
+                'users',
+            ],
             'multipleArrayItems' => [
                 [
                     [
