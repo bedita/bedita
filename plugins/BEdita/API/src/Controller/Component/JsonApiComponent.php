@@ -76,9 +76,19 @@ class JsonApiComponent extends Component
      */
     public function getLinks()
     {
-        return [
+        $links = [
             'self' => Router::url(null, true),
         ];
+
+        if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
+            $paging = reset($this->request->params['paging']);
+            $links['first'] = Router::url(['page' => null], true);
+            $links['last'] = Router::url(['page' => ($paging['pageCount'] > 1) ? $paging['pageCount'] : null], true);
+            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $paging['page'] - 1]) : null;
+            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $paging['page'] + 1]) : null;
+        }
+
+        return $links;
     }
 
     /**
