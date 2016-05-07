@@ -93,7 +93,7 @@ CREATE TABLE roles (
   modified datetime default NULL            COMMENT 'last modification date',
 
   PRIMARY KEY(id),
-  UNIQUE KEY (name)
+  UNIQUE KEY u_name(name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
 

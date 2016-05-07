@@ -57,7 +57,7 @@
             },
             "params": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "annotation parameters (serialized JSON)",
@@ -158,7 +158,7 @@
             },
             "params": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": false,
                 "default": null,
                 "comment": "external provider parameters",
@@ -377,7 +377,7 @@
             },
             "mime_type": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": false,
                 "default": null,
                 "comment": "resource mime type",
@@ -432,7 +432,7 @@
             },
             "provider": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "external provider\/service name",
@@ -449,7 +449,7 @@
             },
             "thumbnail": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "remote media thumbnail URL",
@@ -765,7 +765,7 @@
             },
             "params": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "relation parameters (JSON format)",
@@ -993,7 +993,7 @@
             },
             "description": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "",
@@ -1001,7 +1001,7 @@
             },
             "body": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "",
@@ -1009,7 +1009,7 @@
             },
             "extra": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "object data extensions (JSON format)",
@@ -1132,7 +1132,7 @@
             },
             "name": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "person name, can be NULL",
@@ -1140,7 +1140,7 @@
             },
             "surname": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "person surname, can be NULL",
@@ -1157,7 +1157,7 @@
             },
             "person_title": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "person title, for example Sir, Madame, Prof, Doct, ecc., can be NULL",
@@ -1165,7 +1165,7 @@
             },
             "gender": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "gender, for example male, female, can be NULL",
@@ -1197,7 +1197,7 @@
             },
             "company_name": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "name of company, can be NULL",
@@ -1205,7 +1205,7 @@
             },
             "company_kind": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "type of company, can be NULL",
@@ -1221,7 +1221,7 @@
             },
             "city": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "city, can be NULL",
@@ -1229,7 +1229,7 @@
             },
             "zipcode": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "zipcode, can be NULL",
@@ -1237,7 +1237,7 @@
             },
             "country": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "country, can be NULL",
@@ -1245,7 +1245,7 @@
             },
             "state_name": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "state, can be NULL",
@@ -1253,7 +1253,7 @@
             },
             "phone": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "first phone number, can be NULL",
@@ -1629,7 +1629,7 @@
             },
             "label": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": false,
                 "default": null,
                 "comment": "relation label",
@@ -1646,7 +1646,7 @@
             },
             "inverse_label": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": false,
                 "default": null,
                 "comment": "inverse relation label",
@@ -1662,7 +1662,7 @@
             },
             "params": {
                 "type": "text",
-                "length": null,
+                "length": 16777215,
                 "null": true,
                 "default": null,
                 "comment": "relation parameters definitions (JSON format)",
@@ -1771,7 +1771,7 @@
 
                 ]
             },
-            "name": {
+            "u_name": {
                 "type": "unique",
                 "columns": [
                     "name"
@@ -2072,7 +2072,7 @@
             },
             "password": {
                 "type": "text",
-                "length": null,
+                "length": 255,
                 "null": true,
                 "default": null,
                 "comment": "login password, if empty external auth is used",
