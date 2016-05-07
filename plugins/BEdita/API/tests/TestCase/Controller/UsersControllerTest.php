@@ -36,6 +36,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::initialize()
      */
     public function testIndex()
     {
@@ -92,6 +93,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::view()
+     * @covers ::initialize()
      */
     public function testSingle()
     {
@@ -133,6 +135,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::view()
+     * @covers ::initialize()
      */
     public function testMissing()
     {
@@ -210,7 +213,8 @@ class UsersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeProvider
-     * @coversNothing
+     * @covers \BEdita\API\Controller\AppController
+     * @covers \BEdita\API\Controller\Component\JsonApiComponent
      */
     public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
     {

@@ -27,14 +27,26 @@ class UsersController extends AppController
     public $modelClass = 'Users';
 
     /**
-     * Paginated users index
+     * {@inheritDoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        $this->set('_type', 'users');
+    }
+
+    /**
+     * Paginated users list.
      *
      * @return void
      */
     public function index()
     {
         $users = $this->Users->find('all');
-        $this->prepareResponseData($users, 'users');
+
+        $this->set(compact('users'));
+        $this->set('_serialize', ['users']);
     }
 
     /**
@@ -47,6 +59,7 @@ class UsersController extends AppController
     {
         $user = $this->Users->get($id);
 
-        $this->prepareResponseData($user, 'users');
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 }
