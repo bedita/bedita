@@ -75,6 +75,25 @@ class JsonApiComponent extends Component
     }
 
     /**
+     * Set occurred error.
+     *
+     * @param int $code HTTP error code.
+     * @param string $title Brief description of error.
+     * @param string $description Long description of error
+     * @param array|null $meta Additional metadata about error.
+     * @return void
+     */
+    public function error($code, $title, $description, array $meta = null)
+    {
+        $controller = $this->_registry->getController();
+
+        $error = compact('code', 'title', 'description', 'meta');
+        $error = array_filter($error);
+
+        $controller->set('_error', $error);
+    }
+
+    /**
      * Get links according to JSON API specifications.
      *
      * @return array
