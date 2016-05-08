@@ -38,6 +38,7 @@ class AppController extends Controller
         if ($this->request->is(['json', 'jsonApi'])) {
             $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
             $this->loadComponent('BEdita/API.JsonApi', [
+                'contentType' => $this->request->is('json') ? 'json' : null,
                 'checkMediaType' => $this->request->is('jsonApi'),
             ]);
         }
@@ -74,16 +75,6 @@ class AppController extends Controller
             $templatePath = substr($templatePath, 0, strrpos($templatePath, DS));
             $this->viewBuilder()->templatePath($templatePath . 'Common');
             $this->viewBuilder()->template('html_json');
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function afterFilter(Event $event)
-    {
-        if ($this->request->is('json')) {
-            $this->response->type('json');
         }
     }
 }

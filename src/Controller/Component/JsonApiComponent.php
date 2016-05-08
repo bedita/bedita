@@ -43,6 +43,7 @@ class JsonApiComponent extends Component
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
+        'contentType' => null,
         'checkMediaType' => true,
     ];
 
@@ -51,8 +52,12 @@ class JsonApiComponent extends Component
      */
     public function initialize(array $config)
     {
+        $contentType = self::CONTENT_TYPE;
+        if (!empty($config['contentType'])) {
+            $contentType = $this->response->getMimeType($config['contentType']) ?: $config['contentType'];
+        }
         $this->response->type([
-            'jsonApi' => self::CONTENT_TYPE,
+            'jsonApi' => $contentType,
         ]);
 
         $this->RequestHandler->config('inputTypeMap.jsonApi', [[$this, 'parseInput']]);
