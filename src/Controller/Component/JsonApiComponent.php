@@ -77,19 +77,19 @@ class JsonApiComponent extends Component
     /**
      * Set occurred error.
      *
-     * @param int $code HTTP error code.
+     * @param int $status HTTP error code.
      * @param string $title Brief description of error.
      * @param string $description Long description of error
      * @param array|null $meta Additional metadata about error.
      * @return void
      */
-    public function error($code, $title, $description, array $meta = null)
+    public function error($status, $title, $description, array $meta = null)
     {
         $controller = $this->_registry->getController();
 
-        $code = (string)$code;
+        $status = (string)$status;
 
-        $error = compact('code', 'title', 'description', 'meta');
+        $error = compact('status', 'title', 'description', 'meta');
         $error = array_filter($error);
 
         $controller->set('_error', $error);
