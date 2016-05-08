@@ -87,6 +87,8 @@ class JsonApiComponent extends Component
     {
         $controller = $this->_registry->getController();
 
+        $code = (string)$code;
+
         $error = compact('code', 'title', 'description', 'meta');
         $error = array_filter($error);
 
