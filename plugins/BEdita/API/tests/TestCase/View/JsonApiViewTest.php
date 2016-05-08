@@ -102,6 +102,30 @@ class JsonApiViewTest extends TestCase
                     '_serialize' => true,
                 ],
             ],
+            'dataLinksError' => [
+                json_encode([
+                    'links' => [
+                        'self' => 'http://example.com/objects/0',
+                    ],
+                    'error' => [
+                        'status' => '404',
+                        'title' => 'Not found',
+                        'description' => 'The requested object could not be found',
+                    ],
+                ]),
+                [
+                    '_links' => [
+                        'self' => 'http://example.com/objects/0',
+                    ],
+                    'object' => 'I do not even exist!',
+                    '_serialize' => true,
+                    '_error' => [
+                        'status' => 404,
+                        'title' => 'Not found',
+                        'description' => 'The requested object could not be found',
+                    ],
+                ],
+            ],
         ];
     }
 

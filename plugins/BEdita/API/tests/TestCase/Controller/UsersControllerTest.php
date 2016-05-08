@@ -142,9 +142,20 @@ class UsersControllerTest extends IntegrationTestCase
      *
      * @covers ::view()
      * @covers ::initialize()
+     * @covers \BEdita\API\Error\ExceptionRenderer
      */
     public function testMissing()
     {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/users/99',
+            ],
+            'error' => [
+                'status' => '404',
+                'title' => 'Record not found in table "users"',
+            ],
+        ];
+
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
@@ -152,9 +163,12 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/users/99');
+        $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+        $this->assertArrayNotHasKey('data', $result);
+        $this->assertArraySubset($expected, $result);
     }
 
     /**
@@ -177,7 +191,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
             'jsonApiWrongMediaType' => [
                 415,
-                null,
+                'application/vnd.api+json',
                 'application/vnd.api+json; m=test',
             ],
             'htmlNotAllowed' => [
