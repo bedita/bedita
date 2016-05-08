@@ -81,13 +81,14 @@ class UsersControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
-                'Accept' => 'application/json',
+                'Accept' => 'application/vnd.api+json',
             ],
         ]);
         $this->get('/users');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
 
@@ -123,13 +124,14 @@ class UsersControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
-                'Accept' => 'application/json',
+                'Accept' => 'application/vnd.api+json',
             ],
         ]);
         $this->get('/users/1');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
 
@@ -146,12 +148,13 @@ class UsersControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
-                'Accept' => 'application/json',
+                'Accept' => 'application/vnd.api+json',
             ],
         ]);
         $this->get('/users/99');
 
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
     }
 
     /**
