@@ -223,6 +223,12 @@ class JsonApiTest extends TestCase
                     ];
                 },
             ],
+            'emptyArray' => [
+                [],
+                function () {
+                    return [];
+                },
+            ],
             'unsupportedType' => [
                 false,
                 function () {
