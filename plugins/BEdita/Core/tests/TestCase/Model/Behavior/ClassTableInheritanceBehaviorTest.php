@@ -58,20 +58,12 @@ class ClassTableInheritanceBehaviorTest extends TestCase
 
         $this->fakeMammals = TableRegistry::get('FakeMammals');
         $this->fakeMammals->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'tables' => [
-                'FakeAnimals' => [
-                    'foreignKey' => 'id'
-                ]
-            ]
+            'table' => 'FakeAnimals'
         ]);
 
         $this->fakeFelines = TableRegistry::get('FakeFelines');
         $this->fakeFelines->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'tables' => [
-                'FakeMammals' => [
-                    'foreignKey' => 'id'
-                ]
-            ]
+            'table' => 'FakeMammals'
         ]);
     }
 
@@ -97,14 +89,14 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      */
     public function testInheritedTables()
     {
-        $mammalsInheritance = array_keys($this->fakeMammals->inheritedTables());
-        $this->assertEquals(['FakeAnimals'], $mammalsInheritance);
+        $mammalsInheritance = $this->fakeMammals->inheritedTables();
+        $this->assertEquals(['FakeAnimals'], array_column($mammalsInheritance, 'alias'));
 
-        $felinesInheritance = array_keys($this->fakeFelines->inheritedTables());
-        $this->assertEquals(['FakeMammals'], $felinesInheritance);
+        $felinesInheritance = $this->fakeFelines->inheritedTables();
+        $this->assertEquals(['FakeMammals'], array_column($felinesInheritance, 'alias'));
 
-        $felinesDeepInheritance = array_keys($this->fakeFelines->inheritedTables(true));
-        $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+        $felinesDeepInheritance = $this->fakeFelines->inheritedTables(true);
+        $this->assertEquals(['FakeMammals', 'FakeAnimals'], array_column($felinesDeepInheritance, 'alias'));
 
         $this->assertTrue($this->fakeFelines->isTableInherited('FakeAnimals', true));
         $this->assertFalse($this->fakeFelines->isTableInherited('FakeAnimals'));
@@ -222,36 +214,5 @@ class ClassTableInheritanceBehaviorTest extends TestCase
             'subclass' => 'Eutheria',
             'family' => 'purring cats'
         ];
-    }
-
-    /**
-     * Test Multiple inheritance
-     *
-     * @return void
-     */
-    public function testMultipleInheritance()
-    {
-        $this->fakeFelines
-            ->behaviors()
-            ->get('ClassTableInheritance')
-            ->addTable('FakeInfos', ['foreignKey' => 'id']);
-
-        $felinesDeepInheritance = array_keys($this->fakeFelines->inheritedTables(true));
-        $this->assertEquals(['FakeMammals', 'FakeInfos', 'FakeAnimals'], $felinesDeepInheritance);
-
-        $felines = $this->fakeFelines->find();
-        $this->assertEquals(1, $felines->count());
-
-        $feline = $felines->first();
-        $expected = [
-            'id' => 1,
-            'name' => 'cat',
-            'legs' => 4,
-            'subclass' => 'Eutheria',
-            'family' => 'purring cats',
-            'info' => 'Curiosity killed the cat'
-        ];
-        $result = $feline->extract($felines->first()->visibleProperties());
-        $this->assertEquals(ksort($expected), ksort($result));
     }
 }
