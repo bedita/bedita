@@ -70,6 +70,10 @@ class JsonApi
             throw new \InvalidArgumentException('Unsupported item type');
         }
 
+        if (empty($item)) {
+            return [];
+        }
+
         if (empty($item['id'])) {
             throw new \InvalidArgumentException('Key `id` is mandatory');
         }
