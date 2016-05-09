@@ -13,6 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Cake\Core\Configure;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -83,6 +84,49 @@ class UsersControllerTest extends IntegrationTestCase
                 ],
             ],
         ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/users');
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test index method.
+     *
+     * @return void
+     *
+     * @covers ::view()
+     * @covers ::initialize()
+     */
+    public function testEmpty()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/users',
+                'first' => 'http://api.example.com/users',
+                'last' => 'http://api.example.com/users',
+                'prev' => null,
+                'next' => null,
+            ],
+            'meta' => [
+                'page' => 1,
+                'count' => 0,
+                'perPage' => 20,
+                'pageCount' => 0,
+            ],
+            'data' => [],
+        ];
+
+        TableRegistry::get('Users')->deleteAll([]);
 
         $this->configRequest([
             'headers' => [
