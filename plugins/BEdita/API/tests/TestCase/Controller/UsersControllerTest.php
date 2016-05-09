@@ -152,7 +152,6 @@ class UsersControllerTest extends IntegrationTestCase
             ],
             'error' => [
                 'status' => '404',
-                'title' => 'Record not found in table "users"',
             ],
         ];
 
@@ -168,7 +167,12 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
         $this->assertArrayNotHasKey('data', $result);
-        $this->assertArraySubset($expected, $result);
+        $this->assertArrayHasKey('links', $result);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertEquals($expected['links'], $result['links']);
+        $this->assertArraySubset($expected['error'], $result['error']);
+        $this->assertArrayHasKey('title', $result['error']);
+        $this->assertNotEmpty($result['error']['title']);
     }
 
     /**
