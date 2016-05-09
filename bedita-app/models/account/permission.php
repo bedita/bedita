@@ -46,6 +46,19 @@ class Permission extends BEAppModel
 			),
 	);
 
+    /**
+     * Object cache 
+     * 
+     */
+    protected $BeObjectCache = null;
+
+    public function  __construct() {
+        parent::__construct();
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
+    }
+
 	/**
 	 * Add object permissions
 	 *
@@ -291,16 +304,8 @@ class Permission extends BEAppModel
 			$flag = array($flag);
 		}
 		// if frontend app (not staging) and object cache is active
-		if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
-			$beObjectCache = BeLib::getObject('BeObjectCache');
-			$options = array();
-			$perms = $beObjectCache->read($objectId, $options, 'perms');
-			if (!$perms && !is_array($perms)) {
-				$perms = $this->find('all', array(
-					'conditions' => array('object_id' => $objectId)
-				));
-				$beObjectCache->write($objectId, $options, $perms, 'perms');
-			}
+        if ($this->BeObjectCache) {
+            $perms = $this->load($objectId);
 			// search $flag inside $perms
 			$result = array();
 			if (!empty($perms)) {
@@ -346,14 +351,25 @@ class Permission extends BEAppModel
 	}	
 
 	/**
-	 * Load all object permissions
+	 * Load all object permissions, using object cache
 	 *
 	 * @param integer $objectId
 	 * @return array (permissions)
 	 */
-	public function load($objectId) {
-		return $this->find('all', array("conditions" => array("object_id" => $objectId)));
-	}
+    public function load($objectId) {
+        $perms = false;
+        if ($this->BeObjectCache) {
+            $options = array();
+            $perms = $this->BeObjectCache->read($objectId, $options, 'perms');
+        }
+        if ($perms === false) {
+            $perms = $this->find('all', array('conditions' => array('object_id' => $objectId)));
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
+            }
+        }
+        return $perms;
+    }
 
 	/**
 	 * passed an array of BEdita objects add 'count_permission' key
