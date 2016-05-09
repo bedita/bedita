@@ -108,10 +108,14 @@ class JsonApiComponent extends Component
 
         if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
             $paging = reset($this->request->params['paging']);
+            $lastPage = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
+            $prevPage = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
+            $nextPage = $paging['page'] + 1;
+
             $links['first'] = Router::url(['page' => null], true);
-            $links['last'] = Router::url(['page' => ($paging['pageCount'] > 1) ? $paging['pageCount'] : null], true);
-            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $paging['page'] - 1]) : null;
-            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $paging['page'] + 1]) : null;
+            $links['last'] = Router::url(['page' => $lastPage], true);
+            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $prevPage], true) : null;
+            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $nextPage], true) : null;
         }
 
         return $links;
@@ -145,7 +149,12 @@ class JsonApiComponent extends Component
             return;
         }
 
-        $controller->set('_links', $this->getLinks());
+        $links = [];
+        if (isset($controller->viewVars['_links'])) {
+            $links = (array)$controller->viewVars['_links'];
+        }
+        $links += $this->getLinks();
+        $controller->set('_links', $links);
 
         $this->RequestHandler->renderAs($controller, 'jsonApi');
     }
