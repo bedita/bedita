@@ -48,6 +48,12 @@ class UsersControllerTest extends IntegrationTestCase
                 'prev' => null,
                 'next' => null,
             ],
+            'meta' => [
+                'page' => 1,
+                'count' => 2,
+                'perPage' => 20,
+                'pageCount' => 1,
+            ],
             'data' => [
                 [
                     'id' => '1',
