@@ -1344,6 +1344,107 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Get list of parent children with access restricted to $user
+     *
+     * @param int $parentId the parent id
+     * @param array $user array with user data, empty if no user is logged
+     * @return array list of forbidden object ids, may be empty
+     */
+    protected function forbiddenChildren($parentId, array $user = array()) {
+        // add conditions on not accessible objects (frontend_access_with_block)
+        // @todo move to FrontendController::loadSectionObjects()?
+        $objectsForbidden = array();
+        $childrenForbidden = false;
+        if ($this->BeObjectCache) {
+            $cacheOpts = array();
+            $childrenForbidden = $this->BeObjectCache->read($parentId, $cacheOpts, 'children-forbidden');
+        }
+        if ($childrenForbidden === false) {
+/*          $permissionJoin = array(
+                'table' => 'permissions',
+                'alias' => 'Permission',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Permission.object_id = Tree.id',
+                    'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                    'Permission.switch' => 'group',
+                )
+            );
+
+            $fields = array('Tree.id', 'Permission.ugid');
+            $conditions = array('Tree.parent_id' => $parentId);
+            $group = 'Tree.id';
+
+            $tree = ClassRegistry::init('Tree');
+            $childrenForbidden = $tree->find('list', array(
+                'fields' => $fields,
+                'joins' => array($permissionJoin),
+                'conditions' => $conditions,
+                //'group' => $group
+            ));
+*/          $treeJoin = array(
+                'table' => 'trees',
+                'alias' => 'Tree',
+                'type' => 'inner',
+                'conditions' => array(
+                    'Tree.id = Permission.object_id',
+                    'Tree.parent_id' => $parentId,
+                )
+            );
+
+            $fields = array('Tree.id', 'Permission.ugid');
+            $conditions = array(
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+            );
+
+            $permission = ClassRegistry::init('Permission');
+            $perms = $permission->find('all', array(
+                'fields' => $fields,
+                'joins' => array($treeJoin),
+                'conditions' => $conditions,
+            ));
+
+            $childrenForbidden = array();
+            foreach ($perms as $value) {
+                $objId = $value['Tree']['id'];
+                $childrenForbidden[$objId][] = $value['Permission']['ugid'];
+            }
+
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($parentId, $cacheOpts, $childrenForbidden, 'children-forbidden');
+            }
+        }
+
+        // check user allowed if there are forbidden objs
+        if (!empty($childrenForbidden)) {
+            if (!empty($user)) {
+                $groupIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
+    /*
+                $permissionJoin['conditions']['Permission.ugid'] = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
+                $objectsAllowed = $tree->find('list', array(
+                    'fields' => $fields,
+                    'joins' => array($permissionJoin),
+                    'conditions' => $conditions,
+                    'group' => $group
+                ));
+                if (!empty($objectsAllowed)) {
+                    $objectsForbidden = array_diff($objectsForbidden, $objectsAllowed);
+                }
+    */
+                foreach ($childrenForbidden as $id => $groups) {
+                    if (empty(array_intersect($groups, $groupIds))) {
+                        $objectsForbidden[] = $id;
+                    }
+                }
+            } else {
+                $objectsForbidden = array_keys($childrenForbidden);
+            }
+        }
+        return $objectsForbidden;
+    }
+
+    /**
      * Get children of $parentId object, prepare and set response data
      * The response is automatically paginated using self::paginationOptions
      * self::$objectsFilter is used to populate $options['filter']
@@ -1359,47 +1460,10 @@ abstract class ApiBaseController extends FrontendController {
         $options['filter'] = !empty($options['filter']) ? array_merge($this->objectsFilter, $options['filter']) : $this->objectsFilter;
         // assure to have result in 'children' key
         $options['itemsTogether'] = true;
-        // add conditions on not accessible objects (frontend_access_with_block)
-        // @todo move to FrontendController::loadSectionObjects()?
         $user = $this->ApiAuth->getUser();
-        $permissionJoin = array(
-            'table' => 'permissions',
-            'alias' => 'Permission',
-            'type' => 'inner',
-            'conditions' => array(
-                'Permission.object_id = Tree.id',
-                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
-                'Permission.switch' => 'group',
-            )
-        );
-        $fields = array('Tree.id');
-        $conditions = array('Tree.parent_id' => $parentId);
-        $group = 'Tree.id';
-
-        $tree = ClassRegistry::init('Tree');
-        $objectsForbidden = $tree->find('list', array(
-            'fields' => $fields,
-            'joins' => array($permissionJoin),
-            'conditions' => $conditions,
-            'group' => $group
-        ));
-
-        // allowed to user
-        if (!empty($user)) {
-            $permissionJoin['conditions']['Permission.ugid'] = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
-            $objectsAllowed = $tree->find('list', array(
-                'fields' => $fields,
-                'joins' => array($permissionJoin),
-                'conditions' => $conditions,
-                'group' => $group
-            ));
-            if (!empty($objectsAllowed)) {
-                $objectsForbidden = array_diff($objectsForbidden, $objectsAllowed);
-            }
-        }
-
+        $objectsForbidden = $this->forbiddenChildren($parentId, $user);
         if (!empty($objectsForbidden)) {
-            $options['filter']['NOT']['BEObject.id'] = array_values($objectsForbidden);
+            $options['filter']['NOT']['BEObject.id'] = $objectsForbidden;
         }
 
         $result = $this->loadSectionObjects($parentId, $options);
