@@ -55,7 +55,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
                 'checkMediaType' => $this->controller->request->is('jsonApi'),
             ]);
 
-            $this->controller->JsonApi->error($code, $message, '', compact('trace'));
+            $this->controller->JsonApi->error($code, $message, '', array_filter(compact('trace')));
         }
 
         return parent::render();
