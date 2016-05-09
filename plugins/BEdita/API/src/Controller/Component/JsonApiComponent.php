@@ -122,6 +122,31 @@ class JsonApiComponent extends Component
     }
 
     /**
+     * Get common metadata.
+     *
+     * @return array
+     */
+    public function getMeta()
+    {
+        $meta = [];
+
+        if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
+            $paging = reset($this->request->params['paging']);
+
+            $pagingMeta = [
+                'page' => null,
+                'count' => null,
+                'perPage' => null,
+                'pageCount' => null,
+            ];
+
+            $meta += array_intersect_key($paging, $pagingMeta) + $pagingMeta;
+        }
+
+        return $meta;
+    }
+
+    /**
      * Perform preliminary checks and operations.
      *
      * @return void
@@ -154,7 +179,17 @@ class JsonApiComponent extends Component
             $links = (array)$controller->viewVars['_links'];
         }
         $links += $this->getLinks();
-        $controller->set('_links', $links);
+
+        $meta = [];
+        if (isset($controller->viewVars['_meta'])) {
+            $meta = (array)$controller->viewVars['_meta'];
+        }
+        $meta += $this->getMeta();
+
+        $controller->set([
+            '_links' => $links,
+            '_meta' => $meta,
+        ]);
 
         $this->RequestHandler->renderAs($controller, 'jsonApi');
     }
