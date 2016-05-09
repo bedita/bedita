@@ -112,11 +112,11 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     public function containStringProvider()
     {
         return [
-            // start value, expected
+            // expected, start value
             ['FakeMammals', 'FakeMammals'],
-            ['FakeAnimals', 'FakeMammals.FakeAnimals'],
-            ['FakeArticles', 'FakeMammals.FakeAnimals.FakeArticles'],
-            ['WrongAssociation', false]
+            ['FakeMammals.FakeAnimals', 'FakeAnimals'],
+            ['FakeMammals.FakeAnimals.FakeArticles', 'FakeArticles'],
+            [false, 'WrongAssociation']
         ];
     }
 
@@ -127,7 +127,7 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      *
      * @return void
      */
-    public function testBuildContainString($string, $expected)
+    public function testBuildContainString($expected, $string)
     {
         $containString = $this->fakeFelines->buildContainString($string);
         $this->assertEquals($expected, $containString);
@@ -194,6 +194,11 @@ class ClassTableInheritanceBehaviorTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    /**
+     * Test find using contain
+     *
+     * @return void
+     */
     public function testContainFind()
     {
         $felines = $this->fakeFelines
