@@ -303,18 +303,9 @@ class Permission extends BEAppModel
 		if (!is_array($flag)) {
 			$flag = array($flag);
 		}
-		// if frontend app (not staging) and object cache is active
+        // if frontend app (not staging) and object cache is active
         if ($this->BeObjectCache) {
-            $perms = $this->load($objectId);
-			// search $flag inside $perms
-			$result = array();
-			if (!empty($perms)) {
-				foreach ($perms as $p) {
-					if (in_array($p['Permission']['flag'], $flag)) {
-						$result[] = $p;
-					}
-				}
-			}
+            $result = $this->load($objectId, $flag);
 		} else {
 			$result = $this->find('all', array(
 				'conditions' => array('object_id' => $objectId, 'flag' => $flag)
@@ -350,22 +341,37 @@ class Permission extends BEAppModel
 		}
 	}	
 
-	/**
-	 * Load all object permissions, using object cache
-	 *
-	 * @param integer $objectId
-	 * @return array (permissions)
-	 */
-    public function load($objectId) {
+    /**
+     * Load all object permissions, using object cache, selecting one or more flag value
+     * 
+     * @param integer $objectId
+     * @param mixed $flag array or string with flag permission to search
+     * @return array (permissions)
+     */
+    public function load($objectId, $flag = array()) {
         $perms = false;
         if ($this->BeObjectCache) {
             $options = array();
             $perms = $this->BeObjectCache->read($objectId, $options, 'perms');
         }
+        if (!is_array($flag)) {
+            $flag = array($flag);
+        }
         if ($perms === false) {
-            $perms = $this->find('all', array('conditions' => array('object_id' => $objectId)));
+            $perms = $this->find('all', array(
+                'conditions' => array('object_id' => $objectId),
+                'contain' => array()
+                ));
             if ($this->BeObjectCache) {
                 $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
+            }
+        }
+        // search $flag inside $perms
+        if (!empty($perms) && !empty($flag)) {
+            foreach ($perms as $i => $p) {
+                if (!in_array($p['Permission']['flag'], $flag)) {
+                    unset($perms[$i]);
+                }
             }
         }
         return $perms;
@@ -543,7 +549,7 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
      * @param array $user the user data
      * @return boolean
      */
-    public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
+   public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
         $options += array(
             'status' => array(),
             'area_id' => null,
@@ -611,5 +617,4 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
 
         return $countForbidden == 0;
     }
-
 }
