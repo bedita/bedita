@@ -399,7 +399,7 @@ class ClassTableInheritanceBehavior extends Behavior
             ->association($tableName)
             ->property();
         if (empty($row[$association])) {
-            continue;
+            return $row;
         }
 
         $flattenMethod = is_object($row[$association]) ? 'flattenEntityProperty' : 'flattenArrayProperty';
