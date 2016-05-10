@@ -549,16 +549,16 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
      * @param array $user the user data
      * @return boolean
      */
-   public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
+    public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
         $options += array(
             'status' => array(),
             'area_id' => null,
             'stopIfMissingParents' => true
         );
         $tree = ClassRegistry::init('Tree');
-        $parents = $tree->getParents($objectId, $options['area_id'], $options['status']);
+        $checkIds = $tree->getParents($objectId, $options['area_id'], $options['status']);
         // no parents
-        if (empty($parents) && $options['stopIfMissingParents']) {
+        if (empty($checkIds) && $options['stopIfMissingParents']) {
             $objectTypeId = ClassRegistry::init('BEObject')->findObjectTypeId($objectId);
             $areaObjectTypeId = Configure::read('objectTypes.area.id');
             // return false if object type is not area or if 'area_id' was passed and it's different from $objectId
@@ -567,6 +567,22 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
             }
         }
 
+        $checkIds[] = $objectId;
+        $groupIds = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
+        
+        $flag = Configure::read('objectPermissions.frontend_access_with_block');
+        foreach ($checkIds as $id) {
+            $perms = $this->load($id, $flag);
+            $groupsAllowed = array();
+            foreach ($perms as $p) {
+                $groupsAllowed[] = $p['Permission']['ugid'];
+            }
+            if (!empty($groupsAllowed) && empty(array_intersect($groupsAllowed, $groupIds))) {
+                return false;
+            }
+        }
+        return true;
+/*
         $conditions = array(
             'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
             'Permission.switch' => 'group',
@@ -581,7 +597,7 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
             'conditions' => $conditions
         ));
 
-        if (!empty($user)) {
+        if (!empty($user) && !empty($countForbidden)) {
             if (!empty($user['groupsIds'])) {
                 $conditions['Permission.ugid'] = $user['groupsIds'];
             } elseif (!empty($user['groups'])) {
@@ -616,5 +632,6 @@ public function relatedObjectsNotAccessibile($objectId, array $options = array()
         }
 
         return $countForbidden == 0;
+*/
     }
 }
