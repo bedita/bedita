@@ -17,19 +17,19 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Table\UsersTable} Test Case
+ * {@see \BEdita\Core\Model\Table\RolesTable} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Table\UsersTable
+ * @coversDefaultClass \BEdita\Core\Model\Table\RolesTable
  */
-class UsersTableTest extends TestCase
+class RolesTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\UsersTable
+     * @var \BEdita\Core\Model\Table\RolesTable
      */
-    public $Users;
+    public $Roles;
 
     /**
      * Fixtures
@@ -37,7 +37,7 @@ class UsersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -46,8 +46,7 @@ class UsersTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->Users = TableRegistry::get('BEdita/Core.Users');
+        $this->Roles = TableRegistry::get('BEdita/Core.Roles');
     }
 
     /**
@@ -55,10 +54,8 @@ class UsersTableTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Users);
-
+        unset($this->Roles);
         TableRegistry::clear();
-
         parent::tearDown();
     }
 
@@ -70,13 +67,12 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
-        $this->Users->initialize([]);
-        $this->assertEquals('users', $this->Users->table());
-        $this->assertEquals('id', $this->Users->primaryKey());
-        $this->assertEquals('username', $this->Users->displayField());
+        $this->Roles->initialize([]);
+        $this->assertEquals('roles', $this->Roles->table());
+        $this->assertEquals('id', $this->Roles->primaryKey());
+        $this->assertEquals('name', $this->Roles->displayField());
 
-        $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->Users->ExternalAuth);
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Users->Roles);
+        $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Roles->Users);
     }
 
     /**
@@ -90,15 +86,13 @@ class UsersTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'username' => 'some_unique_value',
-                    'password' => null,
+                    'name' => 'unique_role_name',
                 ],
             ],
             'notUnique' => [
                 false,
                 [
-                    'username' => 'first user',
-                    'password' => 'password',
+                    'name' => 'first role',
                 ],
             ],
         ];
@@ -117,14 +111,14 @@ class UsersTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $user = $this->Users->newEntity();
-        $this->Users->patchEntity($user, $data);
+        $role = $this->Roles->newEntity();
+        $this->Roles->patchEntity($role, $data);
 
-        $error = (bool)$user->errors();
+        $error = (bool)$role->errors();
         $this->assertEquals($expected, !$error);
 
         if ($expected) {
-            $success = $this->Users->save($user);
+            $success = $this->Roles->save($role);
             $this->assertTrue((bool)$success);
         }
     }

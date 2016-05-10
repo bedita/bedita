@@ -18,13 +18,13 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Users Model
+ * Roles Model
  *
- * @property \Cake\ORM\Association\HasMany $ExternalAuth
+ * @property \Cake\ORM\Association\HasMany $Users
  *
  * @since 4.0.0
  */
-class UsersTable extends Table
+class RolesTable extends Table
 {
 
     /**
@@ -34,32 +34,21 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('users');
+        $this->table('roles');
         $this->primaryKey('id');
-        $this->displayField('username');
+        $this->displayField('name');
 
         $this->addBehavior('Timestamp', [
             'events' => [
                 'Model.beforeSave' => [
                     'created' => 'new',
                     'modified' => 'always',
-                ],
-                'Users.login' => [
-                    'last_login' => 'always',
-                ],
-                'Users.loginError' => [
-                    'last_login_err' => 'always',
-                ],
+                ]
             ],
         ]);
 
-        $this->hasMany('ExternalAuth', [
-            'foreignKey' => 'user_id',
-            'className' => 'BEdita/Core.ExternalAuth',
-        ]);
-
-        $this->belongsToMany('Roles', [
-            'className' => 'BEdita/Core.Role',
+        $this->belongsToMany('Users', [
+            'className' => 'BEdita/Core.Users',
         ]);
     }
 
@@ -72,23 +61,17 @@ class UsersTable extends Table
             ->naturalNumber('id')
             ->allowEmpty('id', 'create')
 
-            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('username')
-            ->notEmpty('username')
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->requirePresence('name')
+            ->notEmpty('name')
 
-            ->allowEmpty('password')
+            ->allowEmpty('description')
 
-            ->boolean('blocked')
-            ->allowEmpty('blocked')
+            ->boolean('immutable')
+            ->allowEmpty('immutable')
 
-            ->dateTime('last_login')
-            ->allowEmpty('last_login')
-
-            ->dateTime('last_login_err')
-            ->allowEmpty('last_login_err')
-
-            ->naturalNumber('num_login_err')
-            ->allowEmpty('num_login_err');
+            ->boolean('backend_auth')
+            ->allowEmpty('backend_auth');
 
         return $validator;
     }
@@ -98,7 +81,7 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['username']));
+        $rules->add($rules->isUnique(['name']));
 
         return $rules;
     }
