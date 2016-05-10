@@ -40,8 +40,10 @@ use RuntimeException;
  * public function initialize(array $config)
  * {
  *     $this->addBehavior('BEdita/Core.ClassTableInheritance', [
- *         'table' => 'InheritedOne',
- *         'className' => 'Class\Namespace\InheritedOneTable'
+ *         'table' => [
+ *              'name' => 'InheritedOne',
+ *              'className' => 'Class\Namespace\InheritedOneTable'
+ *         ]
  *     ]);
  * }
  *
@@ -49,8 +51,10 @@ use RuntimeException;
  * public function initialize(array $config)
  * {
  *     $this->addBehavior('BEdita/Core.ClassTableInheritance', [
- *         'table' => 'InheritedTwo',
- *         'className' => 'Class\Namespace\InheritedTwoTable'
+ *         'table' => [
+ *              'name' => 'InheritedTwo',
+ *              'className' => 'Class\Namespace\InheritedTwoTable'
+ *         ]
  *     ]);
  * }
  * ```
@@ -81,15 +85,15 @@ class ClassTableInheritanceBehavior extends Behavior
      *
      * Configuration options are:
      *
-     * * `table` the table to inherit (as Table alias)
-     * * `className` the table class name
+     * * `table` the table to inherit configuration.
+     *   It can contains `name` and `className` keys
      *
      * After the initialization the Behavior config will be
      * something like
      *
      * ```
      * 'table' => [
-     *      'alias' => 'Objects',
+     *      'name' => 'Objects',
      *      'className' => 'BEdita\Core\Model\Table\ObjectsTable,
      *      'associationCreated' => true
      * ]
@@ -101,7 +105,9 @@ class ClassTableInheritanceBehavior extends Behavior
     public function initialize(array $config)
     {
         $this->config(['table' => null, 'className' => null]);
-        $this->addTable($config['table'], $config);
+        if (!empty($config['table']['name'])) {
+            $this->addTable($config['table']['name'], $config['table']);
+        }
     }
 
     /**
@@ -150,16 +156,9 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     public function addTable($tableName, array $conf = [])
     {
-        $conf = ['alias' => $tableName] + $conf + ['className' => null];
-        if (!empty($this->config('table'))) {
+        $conf = ['name' => $tableName] + $conf + ['className' => null];
+        if (!empty($this->inheritedTables())) {
             throw new RuntimeException('You can inherit just one table');
-        }
-
-        if ($this->isTableInherited($tableName, true)) {
-            throw new RuntimeException(sprintf(
-                'You cannot add "%s", it is already inherited.',
-                $tableName
-            ));
         }
 
         if ($this->_table->association($tableName)) {
@@ -275,7 +274,7 @@ class ClassTableInheritanceBehavior extends Behavior
     {
         $found = array_search(
             $tableName,
-            array_column($this->inheritedTables($nested), 'alias')
+            array_column($this->inheritedTables($nested), 'name')
         );
         return $found !== false;
     }
@@ -307,12 +306,15 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     public function inheritedTables($nested = false)
     {
-        $inheritedTables = $this->config('table') ?: [];
-        if (!$nested || empty($inheritedTables)) {
+        $inheritedTables = $this->config('table');
+        if (empty($inheritedTables)) {
+            return [];
+        }
+        if (!$nested) {
             return [$inheritedTables];
         }
 
-        $table = $this->getTable($inheritedTables['alias'], $inheritedTables['className']);
+        $table = $this->getTable($inheritedTables['name'], $inheritedTables['className']);
         if (!$table->hasBehavior('ClassTableInheritance')) {
             return [$inheritedTables];
         }
@@ -334,7 +336,7 @@ class ClassTableInheritanceBehavior extends Behavior
     {
         $inheritedTables = $this->inheritedTables(true);
         $contain = $query->contain();
-        $contain += array_fill_keys(array_column($inheritedTables, 'alias'), []);
+        $contain += array_fill_keys(array_column($inheritedTables, 'name'), []);
         $result = [];
 
         foreach ($contain as $tableName => $tableContain) {
@@ -367,15 +369,15 @@ class ClassTableInheritanceBehavior extends Behavior
         }
 
         foreach ($this->inheritedTables(true) as $conf) {
-            $table = $this->getTable($conf['alias'], $conf['className']);
+            $table = $this->getTable($conf['name'], $conf['className']);
 
             if ($table->association($tableName)) {
-                return $conf['alias'] . '.' . $tableName;
+                return $conf['name'] . '.' . $tableName;
             }
 
             if ($table->hasBehavior('ClassTableInheritance')) {
                 $containString = $table->buildContainString($tableName);
-                return ($containString === false) ? false : $conf['alias'] . '.' . $containString;
+                return ($containString === false) ? false : $conf['name'] . '.' . $containString;
             }
         }
 
@@ -392,7 +394,7 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     public function flatten($row)
     {
-        $tableName = $this->config('table.alias');
+        $tableName = $this->config('table.name');
         $association = $this->_table
             ->association($tableName)
             ->property();
