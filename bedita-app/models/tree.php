@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2016 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -20,13 +20,7 @@
  */
 
 /**
- * Tree structure
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * Tree operations model
  */
 class Tree extends BEAppModel
 {
