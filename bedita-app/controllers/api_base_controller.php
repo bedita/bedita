@@ -1360,29 +1360,7 @@ abstract class ApiBaseController extends FrontendController {
             $childrenForbidden = $this->BeObjectCache->read($parentId, $cacheOpts, 'children-forbidden');
         }
         if ($childrenForbidden === false) {
-/*          $permissionJoin = array(
-                'table' => 'permissions',
-                'alias' => 'Permission',
-                'type' => 'inner',
-                'conditions' => array(
-                    'Permission.object_id = Tree.id',
-                    'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
-                    'Permission.switch' => 'group',
-                )
-            );
-
-            $fields = array('Tree.id', 'Permission.ugid');
-            $conditions = array('Tree.parent_id' => $parentId);
-            $group = 'Tree.id';
-
-            $tree = ClassRegistry::init('Tree');
-            $childrenForbidden = $tree->find('list', array(
-                'fields' => $fields,
-                'joins' => array($permissionJoin),
-                'conditions' => $conditions,
-                //'group' => $group
-            ));
-*/          $treeJoin = array(
+            $treeJoin = array(
                 'table' => 'trees',
                 'alias' => 'Tree',
                 'type' => 'inner',
@@ -1420,18 +1398,6 @@ abstract class ApiBaseController extends FrontendController {
         if (!empty($childrenForbidden)) {
             if (!empty($user)) {
                 $groupIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
-    /*
-                $permissionJoin['conditions']['Permission.ugid'] = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
-                $objectsAllowed = $tree->find('list', array(
-                    'fields' => $fields,
-                    'joins' => array($permissionJoin),
-                    'conditions' => $conditions,
-                    'group' => $group
-                ));
-                if (!empty($objectsAllowed)) {
-                    $objectsForbidden = array_diff($objectsForbidden, $objectsAllowed);
-                }
-    */
                 foreach ($childrenForbidden as $id => $groups) {
                     if (empty(array_intersect($groups, $groupIds))) {
                         $objectsForbidden[] = $id;
