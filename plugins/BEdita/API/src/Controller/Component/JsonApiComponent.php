@@ -112,10 +112,10 @@ class JsonApiComponent extends Component
             $prevPage = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
             $nextPage = $paging['page'] + 1;
 
-            $links['first'] = Router::url(['page' => null], true);
-            $links['last'] = Router::url(['page' => $lastPage], true);
-            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $prevPage], true) : null;
-            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $nextPage], true) : null;
+            $links['first'] = Router::url(['page' => null, '_method' => 'GET'], true);
+            $links['last'] = Router::url(['page' => $lastPage, '_method' => 'GET'], true);
+            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $prevPage, '_method' => 'GET'], true) : null;
+            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $nextPage, '_method' => 'GET'], true) : null;
         }
 
         return $links;

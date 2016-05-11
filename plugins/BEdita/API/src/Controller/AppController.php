@@ -60,10 +60,12 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
-            return $this->setAction('html');
+            return $this->html();
         } elseif (!$this->request->is(['json', 'jsonApi'])) {
             throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
         }
+
+        return null;
     }
 
     /**
@@ -72,7 +74,7 @@ class AppController extends Controller
      * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\NotFoundException
      */
-    public function html()
+    protected function html()
     {
         if ($this->request->is('requested')) {
             throw new NotFoundException();
@@ -80,7 +82,7 @@ class AppController extends Controller
 
         $method = $this->request->method();
         $url = $this->request->here;
-        $response = $this->requestAction($this->request->here, [
+        $response = $this->requestAction($this->request->params, [
             'environment' => [
                 'HTTP_CONTENT_TYPE' => 'application/json',
                 'HTTP_ACCEPT' => 'application/json',
