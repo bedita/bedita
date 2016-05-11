@@ -596,7 +596,8 @@ class Permission extends BEAppModel
             foreach ($perms as $p) {
                 $groupsAllowed[] = $p['Permission']['ugid'];
             }
-            if (!empty($groupsAllowed) && empty(array_intersect($groupsAllowed, $userGroups))) {
+            $permsAllowed = array_intersect($groupsAllowed, $userGroups);
+            if (!empty($groupsAllowed) && empty($permsAllowed)) {
                 return false;
             }
         }
