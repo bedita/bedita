@@ -26,7 +26,18 @@ class Tree extends BEAppModel
 {
 
 	public $primaryKey = "object_path";
-	public $BeObjectCache = null;
+    /**
+     * Object cache 
+     * 
+     */
+    protected $BeObjectCache = null;
+
+    public function  __construct() {
+        parent::__construct();
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
+    }
 
 	/**
 	 * check object_path and parent_path, avoid object is parent or ancestor of itself
@@ -142,7 +153,6 @@ class Tree extends BEAppModel
      * @return array, parent ids (may be empty)
      */
     public function getParents($id = null, $area_id=null, $status = array()) {
-        $this->initCache();
         $cacheOpts = array($area_id, $status);
         if ($this->BeObjectCache) {
             $cachedValue = $this->BeObjectCache->read($id, $cacheOpts, 'parents');
@@ -590,16 +600,12 @@ class Tree extends BEAppModel
      * @return boolean
      */
     public function isOnTree($id, $area_id = null, $status = array()) {
-        $this->initCache();
         $result = true;
         $cacheOpts = array($area_id, $status);
         if ($this->BeObjectCache) {
             $cachedValue = $this->BeObjectCache->read($id, $cacheOpts, 'is-on-tree');
             if ($cachedValue !== false) {
-                if ($cachedValue === 'false') {
-                    return false;
-                }
-                return $cachedValue;
+                return ($cachedValue == 1);
             }
         }
         $conditions['Tree.id'] = $id;
@@ -629,7 +635,7 @@ class Tree extends BEAppModel
             $result = false;
         }
         if ($this->BeObjectCache) {
-            $resultToCache = ($result) ? $result : 'false';
+            $resultToCache = ($result) ? 1 : -1;
             $this->BeObjectCache->write($id, $cacheOpts, $resultToCache, 'is-on-tree');
         }
     	return $result;
@@ -1091,7 +1097,6 @@ class Tree extends BEAppModel
      * @return int
      */
     public function countChildren($parentId, array $options = array()) {
-        $this->initCache();
         $cacheOpts = $options;
         if ($this->BeObjectCache) {
             $cachedValue = $this->BeObjectCache->read($parentId, $cacheOpts, 'count-children');
@@ -1109,11 +1114,5 @@ class Tree extends BEAppModel
             $this->BeObjectCache->write($parentId, $cacheOpts, $count, 'count-children');
         }
         return $count;
-    }
-
-    private function initCache() {
-        if ($this->BeObjectCache == null) {
-            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
-        }
     }
 }
