@@ -55,6 +55,7 @@ class Permission extends BEAppModel
     public function  __construct() {
         parent::__construct();
         if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+            App::import('Lib', 'BeLib');
             $this->BeObjectCache = BeLib::getObject('BeObjectCache');
         }
     }
