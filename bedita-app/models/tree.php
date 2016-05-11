@@ -3,7 +3,7 @@
  *
  * BEdita - a semantic content management framework
  *
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2016 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -20,18 +20,24 @@
  */
 
 /**
- * Tree structure
- *
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- *
- * $Id$
+ * Tree operations model
  */
 class Tree extends BEAppModel
 {
 
 	public $primaryKey = "object_path";
+    /**
+     * Object cache 
+     * 
+     */
+    protected $BeObjectCache = null;
+
+    public function  __construct() {
+        parent::__construct();
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
+    }
 
 	/**
 	 * check object_path and parent_path, avoid object is parent or ancestor of itself
@@ -90,9 +96,9 @@ class Tree extends BEAppModel
 	 * @param integer $id
 	 * @param integer $area_id, publication id: if defined search parent only inside the publication
 	 *
-	 * @return mixed	integer, if only one parent founded
-	 * 					array, if two or more parents founded
-	 * 					false, error or none parent founded
+	 * @return mixed	integer, if only one parent found
+	 * 					array, if two or more parents found
+	 * 					false, error or none parent found
 	 */
 	public function getParent($id, $area_id=null, $status = array()) {
 		if (empty($id)) {
@@ -140,26 +146,34 @@ class Tree extends BEAppModel
 		}
 	}
 
-	
-	/**
-	 * Array of objcet $id tree parents objects
-	 *
-	 * @param integer $id
-	 * @return array, parent ids (may be empty)
-	 */
-	public function getParents($id = null, $area_id=null, $status = array()) {
-		$parents_id = array();
-		if (isset($id)) {
-			$parents_id = $this->getParent($id, $area_id, $status) ;
-			if ($parents_id === false) {
-				$parents_id = array();
-			} elseif (!is_array($parents_id)) {
-				$parents_id = array($parents_id);
-			}
-		}
-		return $parents_id;
-	}
-		
+    /**
+     * Array of object $id tree parents objects
+     *
+     * @param integer $id
+     * @return array, parent ids (may be empty)
+     */
+    public function getParents($id = null, $area_id=null, $status = array()) {
+        $cacheOpts = array($area_id, $status);
+        if ($this->BeObjectCache) {
+            $cachedValue = $this->BeObjectCache->read($id, $cacheOpts, 'parents');
+            if ($cachedValue !== false) {
+                return $cachedValue;
+            }
+        }
+        $parents = array();
+        if (isset($id)) {
+            $parents = $this->getParent($id, $area_id, $status) ;
+            if ($parents === false) {
+                $parents = array();
+            } elseif (!is_array($parents)) {
+                $parents = array($parents);
+            }
+        }
+        if ($this->BeObjectCache) {
+            $this->BeObjectCache->write($id, $cacheOpts, $parents, 'parents');
+        }
+        return $parents;
+    }
 
     /**
      * Update tree position of object $id with new $destination array
@@ -578,18 +592,26 @@ class Tree extends BEAppModel
 		return true;
 	}
 
-	/**
-	 * check if an object is on the tree
-	 *
-	 * @param integer $id
-	 * @param integer $area_id if defined check if the object is a descendant of a publication
-	 * @return boolean
-	 */
-	public function isOnTree($id, $area_id = null, $status = array()) {
-		$conditions['Tree.id'] = $id;
-		if (!empty($area_id)) {
-			$conditions['Tree.area_id'] = $area_id;
-		}
+    /**
+     * check if an object is on the tree
+     *
+     * @param integer $id
+     * @param integer $area_id if defined check if the object is a descendant of a publication
+     * @return boolean
+     */
+    public function isOnTree($id, $area_id = null, $status = array()) {
+        $result = true;
+        $cacheOpts = array($area_id, $status);
+        if ($this->BeObjectCache) {
+            $cachedValue = $this->BeObjectCache->read($id, $cacheOpts, 'is-on-tree');
+            if ($cachedValue !== false) {
+                return ($cachedValue == 1);
+            }
+        }
+        $conditions['Tree.id'] = $id;
+        if (!empty($area_id)) {
+            $conditions['Tree.area_id'] = $area_id;
+        }
         $joins = array();
         if (!empty($status)) {
             $conditions['BEObject.status'] = $status;
@@ -604,16 +626,20 @@ class Tree extends BEAppModel
                 )
             );
         }
-		$c = $this->find('count', array(
+        $c = $this->find('count', array(
             'fields' => 'DISTINCT Tree.id',
             'conditions' => $conditions,
             'joins' => $joins
         ));
-		if ($c === 0) {
-			return false;
-		}
-		return true;
-	}
+        if ($c === 0) {
+            $result = false;
+        }
+        if ($this->BeObjectCache) {
+            $resultToCache = ($result) ? 1 : -1;
+            $this->BeObjectCache->write($id, $cacheOpts, $resultToCache, 'is-on-tree');
+        }
+    	return $result;
+    }
 
     /**
      * Return a list of a count (based on $option['count']) of related object to $id that are on tree
@@ -1071,13 +1097,22 @@ class Tree extends BEAppModel
      * @return int
      */
     public function countChildren($parentId, array $options = array()) {
+        $cacheOpts = $options;
+        if ($this->BeObjectCache) {
+            $cachedValue = $this->BeObjectCache->read($parentId, $cacheOpts, 'count-children');
+            if ($cachedValue !== false) {
+                return $cachedValue;
+            }
+        }
         $options += array(
             'fields' => 'DISTINCT (Tree.id)',
             'conditions' => array()
         );
         $options['conditions']['Tree.parent_id'] = $parentId;
         $count = $this->find('count', $options);
+        if ($this->BeObjectCache) {
+            $this->BeObjectCache->write($parentId, $cacheOpts, $count, 'count-children');
+        }
         return $count;
     }
-
 }
