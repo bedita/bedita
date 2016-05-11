@@ -60,7 +60,7 @@ class AppController extends Controller
     public function beforeFilter(Event $event)
     {
         if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
-            $this->setAction('html');
+            return $this->setAction('html');
         } elseif (!$this->request->is(['json', 'jsonApi'])) {
             throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
         }
@@ -69,7 +69,7 @@ class AppController extends Controller
     /**
      * Action to display HTML layout.
      *
-     * @return void
+     * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\NotFoundException
      */
     public function html()
@@ -90,5 +90,7 @@ class AppController extends Controller
         $this->set(compact('method', 'response', 'url'));
 
         $this->viewBuilder()->template('Common/html');
+
+        return $this->render();
     }
 }
