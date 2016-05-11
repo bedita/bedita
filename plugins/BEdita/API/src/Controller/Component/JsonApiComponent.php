@@ -132,15 +132,21 @@ class JsonApiComponent extends Component
 
         if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
             $paging = reset($this->request->params['paging']);
-
-            $pagingMeta = [
+            $paging += [
+                'current' => null,
                 'page' => null,
                 'count' => null,
                 'perPage' => null,
                 'pageCount' => null,
             ];
 
-            $meta += array_intersect_key($paging, $pagingMeta) + $pagingMeta;
+            $meta['pagination'] = [
+                'count' => $paging['count'],
+                'page' => $paging['page'],
+                'page_count' => $paging['pageCount'],
+                'page_items' => $paging['current'],
+                'page_size' => $paging['perPage'],
+            ];
         }
 
         return $meta;

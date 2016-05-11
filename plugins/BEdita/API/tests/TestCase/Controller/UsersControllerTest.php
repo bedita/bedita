@@ -50,10 +50,13 @@ class UsersControllerTest extends IntegrationTestCase
                 'next' => null,
             ],
             'meta' => [
-                'page' => 1,
-                'count' => 2,
-                'perPage' => 20,
-                'pageCount' => 1,
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
             ],
             'data' => [
                 [
@@ -118,10 +121,13 @@ class UsersControllerTest extends IntegrationTestCase
                 'next' => null,
             ],
             'meta' => [
-                'page' => 1,
-                'count' => 0,
-                'perPage' => 20,
-                'pageCount' => 0,
+                'pagination' => [
+                    'count' => 0,
+                    'page' => 1,
+                    'page_count' => 0,
+                    'page_items' => 0,
+                    'page_size' => 20,
+                ],
             ],
             'data' => [],
         ];
