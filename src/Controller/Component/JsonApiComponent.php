@@ -107,15 +107,18 @@ class JsonApiComponent extends Component
         ];
 
         if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
+            $params = $this->request->params;
+            unset($params['paging']);
+
             $paging = reset($this->request->params['paging']);
             $lastPage = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
             $prevPage = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
             $nextPage = $paging['page'] + 1;
 
-            $links['first'] = Router::url(['page' => null, '_method' => 'GET'], true);
-            $links['last'] = Router::url(['page' => $lastPage, '_method' => 'GET'], true);
-            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $prevPage, '_method' => 'GET'], true) : null;
-            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $nextPage, '_method' => 'GET'], true) : null;
+            $links['first'] = Router::url($params + ['page' => null], true);
+            $links['last'] = Router::url($params + ['page' => $lastPage], true);
+            $links['prev'] = $paging['prevPage'] ? Router::url($params + ['page' => $prevPage], true) : null;
+            $links['next'] = $paging['nextPage'] ? Router::url($params + ['page' => $nextPage], true) : null;
         }
 
         return $links;
