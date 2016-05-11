@@ -11,10 +11,11 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 namespace BEdita\API\Controller;
+
 use Cake\ORM\Query;
 
 /**
- * Controller for /users endpoint.
+ * Controller for `/users` endpoint.
  *
  * @since 4.0.0
  *
