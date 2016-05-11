@@ -86,14 +86,14 @@ CREATE TABLE roles (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL                 COMMENT 'role unique name',
-  description TEXT NOT NULL                 COMMENT 'role description',
+  description TEXT DEFAULT NULL             COMMENT 'role description',
   immutable BOOL NOT NULL DEFAULT '0'       COMMENT 'role data immutable (default:false)',
   backend_auth BOOL NOT NULL DEFAULT '0'    COMMENT 'role authorized to backend (default: false)',
   created datetime default NULL             COMMENT 'creation date',
   modified datetime default NULL            COMMENT 'last modification date',
 
   PRIMARY KEY(id),
-  UNIQUE KEY (name)
+  UNIQUE KEY u_name(name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
 

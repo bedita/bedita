@@ -11,16 +11,17 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-use Cake\Routing\RouteBuilder;
-use Cake\Routing\Router;
+$this->layout = null;
+?>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-Router::plugin(
-    'BEdita/API',
-    ['path' => '/'],
-    function (RouteBuilder $routes) {
-        $routes->connect('/users', ['controller' => 'Users', 'action' => 'index']);
-        $routes->connect('/users/*', ['controller' => 'Users', 'action' => 'view']);
-
-        $routes->fallbacks('DashedRoute');
-    }
-);
+    <title><?= __('BEdita 4 - API response') ?></title>
+</head>
+<body>
+    <h1><?= sprintf('%s %s', $method, h($url)) ?></h1>
+    <pre><?= h($response) ?></pre>
+</body>

@@ -13,16 +13,21 @@
 namespace BEdita\API\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
+use Cake\Event\Event;
+use Cake\Network\Exception\NotAcceptableException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\Routing\Router;
 
 /**
  * Base class for all API Controller endpoints.
  *
  * @since 4.0.0
+ *
+ * @property \BEdita\API\Controller\Component\JsonApiComponent $JsonApi
  */
 class AppController extends Controller
 {
-
     /**
      * {@inheritDoc}
      */
@@ -31,7 +36,13 @@ class AppController extends Controller
         parent::initialize();
 
         $this->loadComponent('RequestHandler');
-        $this->RequestHandler->renderAs($this, 'json');
+        if ($this->request->is(['json', 'jsonApi'])) {
+            $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
+            $this->loadComponent('BEdita/API.JsonApi', [
+                'contentType' => $this->request->is('json') ? 'json' : null,
+                'checkMediaType' => $this->request->is('jsonApi'),
+            ]);
+        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
@@ -44,17 +55,42 @@ class AppController extends Controller
     }
 
     /**
-     * Prepare response data, format using selected response format
-     * (only JSON API at this point)
-     *
-     * @param mixed $data Response data, could be an array or a Query / Entity
-     * @param string $type Common type for response, if any
-     * @return void
+     * {@inheritDoc}
      */
-    protected function prepareResponseData($data, $type = null)
+    public function beforeFilter(Event $event)
     {
-        $this->loadComponent('BEdita/API.JsonApi');
-        $responseData = $this->JsonApi->formatResponse($data, $type);
-        $this->set($responseData);
+        if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
+            return $this->setAction('html');
+        } elseif (!$this->request->is(['json', 'jsonApi'])) {
+            throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+        }
+    }
+
+    /**
+     * Action to display HTML layout.
+     *
+     * @return \Cake\Network\Response
+     * @throws \Cake\Network\Exception\NotFoundException
+     */
+    public function html()
+    {
+        if ($this->request->is('requested')) {
+            throw new NotFoundException();
+        }
+
+        $method = $this->request->method();
+        $url = $this->request->here;
+        $response = $this->requestAction($this->request->here, [
+            'environment' => [
+                'HTTP_CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json',
+            ],
+        ]);
+
+        $this->set(compact('method', 'response', 'url'));
+
+        $this->viewBuilder()->template('Common/html');
+
+        return $this->render();
     }
 }
