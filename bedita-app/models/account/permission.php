@@ -358,19 +358,7 @@ class Permission extends BEAppModel
                 'conditions' => $conditions,
             ));
             if ($this->BeObjectCache) {
-                foreach ($perms as $i => $p) {
-                    if (!empty($p['Permission']['Group']['name'])) {
-                        $groupName = $p['Permission']['Group']['name'];
-                        unset($p['Permission']['Group']);
-                        $p['Permission']['Group']['name'] = $groupName;
-                        unset($p['Permission']['User']);
-                    } else if (!empty($p['Permission']['User']['userid'])) {
-                        $userName = $p['Permission']['User']['userid'];
-                        unset($p['Permission']['User']);
-                        $p['Permission']['User']['userid'] = $userName;
-                        unset($p['Permission']['Group']);
-                    }
-                }
+                $this->cleanupPermissionData($perms);
                 $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
             }
         }
@@ -383,6 +371,22 @@ class Permission extends BEAppModel
             }
         }
         return $perms;
+    }
+
+    private function cleanupPermissionData(array &$perms) {
+        foreach ($perms as $i => &$p) {
+            if (!empty($p['Group']['name'])) {
+                $groupName = $p['Group']['name'];
+                unset($p['Group']);
+                $p['Group']['name'] = $groupName;
+                unset($p['User']);
+            } else if (!empty($p['User']['userid'])) {
+                $userName = $p['User']['userid'];
+                unset($p['User']);
+                $p['User']['userid'] = $userName;
+                unset($p['Group']);
+            }
+        }
     }
 
 	/**
