@@ -17,9 +17,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\UsersController
+ * @coversDefaultClass \BEdita\API\Controller\RolesController
  */
-class UsersControllerTest extends IntegrationTestCase
+class RolesControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -28,9 +28,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -45,9 +43,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users',
-                'first' => 'http://api.example.com/users',
-                'last' => 'http://api.example.com/users',
+                'self' => 'http://api.example.com/roles',
+                'first' => 'http://api.example.com/roles',
+                'last' => 'http://api.example.com/roles',
                 'prev' => null,
                 'next' => null,
             ],
@@ -63,28 +61,26 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'users',
+                    'type' => 'roles',
                     'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
+                        'name' => 'first role',
+                        'description' => 'this is the very first role',
+                        'immutable' => true,
+                        'backend_auth' => true,
+                        'created' => '2016-04-15T09:57:38+0000',
+                        'modified' => '2016-04-15T09:57:38+0000',
                     ],
                 ],
                 [
                     'id' => '2',
-                    'type' => 'users',
+                    'type' => 'roles',
                     'attributes' => [
-                        'username' => 'second user',
-                        'blocked' => false,
-                        'last_login' => '2016-03-15T09:57:38+0000',
-                        'last_login_err' => '2016-03-15T09:57:38+0000',
-                        'num_login_err' => 0,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
+                        'name' => 'second role',
+                        'description' => 'this is a second role',
+                        'immutable' => false,
+                        'backend_auth' => false,
+                        'created' => '2016-04-15T11:59:12+0000',
+                        'modified' => '2016-04-15T11:59:13+0000',
                     ],
                 ],
             ],
@@ -96,65 +92,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users');
-        $result = json_decode($this->_response->body(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * Test index method filtering by role.
-     *
-     * @return void
-     *
-     * @covers ::index()
-     * @covers ::initialize()
-     */
-    public function testIndexRoles()
-    {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/users',
-                'first' => 'http://api.example.com/roles/1/users',
-                'last' => 'http://api.example.com/roles/1/users',
-                'prev' => null,
-                'next' => null,
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-            'data' => [
-                [
-                    'id' => '1',
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
-                    ],
-                ],
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->get('/roles/1/users');
+        $this->get('/roles');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -174,9 +112,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users',
-                'first' => 'http://api.example.com/users',
-                'last' => 'http://api.example.com/users',
+                'self' => 'http://api.example.com/roles',
+                'first' => 'http://api.example.com/roles',
+                'last' => 'http://api.example.com/roles',
                 'prev' => null,
                 'next' => null,
             ],
@@ -192,7 +130,7 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Users')->deleteAll([]);
+        TableRegistry::get('Roles')->deleteAll([]);
 
         $this->configRequest([
             'headers' => [
@@ -200,7 +138,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users');
+        $this->get('/roles');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -220,19 +158,18 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users/1',
+                'self' => 'http://api.example.com/roles/1',
             ],
             'data' => [
                 'id' => '1',
-                'type' => 'users',
+                'type' => 'roles',
                 'attributes' => [
-                    'username' => 'first user',
-                    'blocked' => false,
-                    'last_login' => null,
-                    'last_login_err' => null,
-                    'num_login_err' => 1,
-                    'created' => '2016-03-15T09:57:38+0000',
-                    'modified' => '2016-03-15T09:57:38+0000',
+                    'name' => 'first role',
+                    'description' => 'this is the very first role',
+                    'immutable' => true,
+                    'backend_auth' => true,
+                    'created' => '2016-04-15T09:57:38+0000',
+                    'modified' => '2016-04-15T09:57:38+0000',
                 ],
             ],
         ];
@@ -243,7 +180,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users/1');
+        $this->get('/roles/1');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -264,7 +201,7 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users/99',
+                'self' => 'http://api.example.com/roles/99',
             ],
             'error' => [
                 'status' => '404',
@@ -277,7 +214,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users/99');
+        $this->get('/roles/99');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
