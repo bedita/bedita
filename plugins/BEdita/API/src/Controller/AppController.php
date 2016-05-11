@@ -92,6 +92,6 @@ class AppController extends Controller
 
         $this->set(compact('method', 'response', 'url'));
 
-        $this->viewBuilder()->template('Common/html_json');
+        $this->viewBuilder()->template('Common/html');
     }
 }
