@@ -635,7 +635,7 @@ class Tree extends BEAppModel
             $result = false;
         }
         if ($this->BeObjectCache) {
-            $resultToCache = ($result) ? 1 : -1;
+            $resultToCache = ($result) ? 1 : 'no';
             $this->BeObjectCache->write($id, $cacheOpts, $resultToCache, 'is-on-tree');
         }
     	return $result;
