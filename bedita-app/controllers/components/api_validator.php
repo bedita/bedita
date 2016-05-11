@@ -365,7 +365,7 @@ class ApiValidatorComponent extends Object {
                 return false;
             }
             // check if it's on tree and also its parents are accessible
-            if ($isOnTree && $this->isObjectAccessible($objectId)) {
+            if ($isOnTree && $this->areObjectParentsAccessible($objectId)) {
                 return true;
             }
             // if not, check if at least a related object is accessible
@@ -430,7 +430,7 @@ class ApiValidatorComponent extends Object {
             return $access != 'denied';
         }
         $publication = $this->controller->getPublication();
-        return $permission->isObjectsAndParentsAccessible($objectId,
+        return $permission->objectParentsAccessible($objectId,
                     array(
                        'status' => $this->controller->getStatus(),
                        'area_id' => $publication['id']
@@ -438,6 +438,27 @@ class ApiValidatorComponent extends Object {
                     $user
                 );
     }
+
+    /**
+     * Return true if $objectId parents are accessible for authorized user, false otherwise.
+     * 'Accessible' means without 'frontend_access_with_block' permission set for groups that the user doesn't belong.
+     * 
+     * @param int $objectId the object id
+     * @return boolean
+     */
+    public function areObjectParentsAccessible($objectId) {
+        $permission = ClassRegistry::init('Permission');
+        $user = $this->controller->ApiAuth->getUser();
+        $publication = $this->controller->getPublication();
+        return $permission->objectParentsAccessible($objectId,
+                    array(
+                       'status' => $this->controller->getStatus(),
+                       'area_id' => $publication['id']
+                    ),
+                    $user
+                );
+    }
+
 
     /**
      * Check if $objectId and its parents are accessible for authorized user.
