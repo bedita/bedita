@@ -18,6 +18,9 @@ Router::plugin(
     'BEdita/API',
     ['path' => '/'],
     function (RouteBuilder $routes) {
+        $routes->resources('Roles', function (RouteBuilder $routes) {
+            $routes->resources('Users');
+        });
         $routes->resources('Users');
     }
 );
