@@ -16,9 +16,9 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * Fixture for `roles` table.
+ * Fixture for `roles_users` table.
  */
-class RolesFixture extends TestFixture
+class RolesUsersFixture extends TestFixture
 {
 
     /**
@@ -26,20 +26,8 @@ class RolesFixture extends TestFixture
      */
     public $records = [
         [
-            'name' => 'first role',
-            'description' => 'this is the very first role',
-            'immutable' => 1,
-            'backend_auth' => 1,
-            'created' => '2016-04-15 09:57:38',
-            'modified' => '2016-04-15 09:57:38',
-        ],
-        [
-            'name' => 'second role',
-            'description' => 'this is a second role',
-            'immutable' => 0,
-            'backend_auth' => 0,
-            'created' => '2016-04-15 11:59:12',
-            'modified' => '2016-04-15 11:59:13',
+            'role_id' => 1,
+            'user_id' => 1,
         ],
     ];
 }
