@@ -59,13 +59,10 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
-        $isHtml = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
-        if (!$this->request->is(['json', 'jsonApi']) && !$isHtml) {
-            throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
-        }
-
-        if ($isHtml) {
+        if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
             $this->setAction('html');
+        } elseif (!$this->request->is(['json', 'jsonApi'])) {
+            throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
         }
     }
 
