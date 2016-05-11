@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Utility;
 
+use Cake\Collection\CollectionInterface;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\Utility\Hash;
@@ -26,7 +27,7 @@ class JsonApi
     /**
      * Format single or multiple data items in JSON API format.
      *
-     * @param \Cake\ORM\Entity|\Cake\ORM\Query|array $items Items to be formatted.
+     * @param mixed $items Items to be formatted.
      * @param string|null $type Type of items. If missing, an attempt is made to obtain this info from each item's data.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
@@ -34,7 +35,7 @@ class JsonApi
      */
     public static function formatData($items, $type = null)
     {
-        if ($items instanceof Query) {
+        if ($items instanceof Query || $items instanceof CollectionInterface) {
             $items = $items->toList();
         }
 
@@ -67,6 +68,10 @@ class JsonApi
 
         if (!is_array($item)) {
             throw new \InvalidArgumentException('Unsupported item type');
+        }
+
+        if (empty($item)) {
+            return [];
         }
 
         if (empty($item['id'])) {
