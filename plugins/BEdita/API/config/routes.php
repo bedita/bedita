@@ -19,7 +19,7 @@ Router::plugin(
     ['path' => '/'],
     function (RouteBuilder $routes) {
         $routes->resources('Roles', function (RouteBuilder $routes) {
-            $routes->resources('Users');
+            $routes->resources('Users', ['only' => ['index']]);
         });
         $routes->resources('Users');
     }
