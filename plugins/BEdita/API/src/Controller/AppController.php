@@ -16,6 +16,7 @@ use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\NotAcceptableException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\Routing\Router;
 
 /**
@@ -58,23 +59,39 @@ class AppController extends Controller
      */
     public function beforeFilter(Event $event)
     {
-        $acceptHtml = (Configure::read('debug') || Configure::read('Accept.html'));
-        if (!$this->request->is(['json', 'jsonApi']) && (!$this->request->is('html') || !$acceptHtml)) {
+        $isHtml = (Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html');
+        if (!$this->request->is(['json', 'jsonApi']) && !$isHtml) {
             throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+        }
+
+        if ($isHtml) {
+            $this->setAction('html');
         }
     }
 
     /**
-     * {@inheritDoc}
+     * Action to display HTML layout.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\NotFoundException
      */
-    public function beforeRender(Event $event)
+    public function html()
     {
-        if ($this->request->is('html')) {
-            $this->viewBuilder()->layout('default_api');
-            $templatePath = $this->viewBuilder()->templatePath();
-            $templatePath = substr($templatePath, 0, strrpos($templatePath, DS));
-            $this->viewBuilder()->templatePath($templatePath . 'Common');
-            $this->viewBuilder()->template('html_json');
+        if ($this->request->is('requested')) {
+            throw new NotFoundException();
         }
+
+        $method = $this->request->method();
+        $url = $this->request->here;
+        $response = $this->requestAction($this->request->here, [
+            'environment' => [
+                'HTTP_CONTENT_TYPE' => 'application/json',
+                'HTTP_ACCEPT' => 'application/json',
+            ],
+        ]);
+
+        $this->set(compact('method', 'response', 'url'));
+
+        $this->viewBuilder()->template('Common/html_json');
     }
 }
