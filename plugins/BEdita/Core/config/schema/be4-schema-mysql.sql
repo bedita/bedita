@@ -105,8 +105,8 @@ CREATE TABLE roles_users (
   user_id INT UNSIGNED NOT NULL             COMMENT 'link to users.id',
 
   PRIMARY KEY(id),
-  INDEX (user_id),
-  INDEX (role_id),
+  INDEX rolesusers_userid_idx(user_id),
+  INDEX rolesusers_roleid_idx(role_id),
   FOREIGN KEY(user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
