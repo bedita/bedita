@@ -550,24 +550,26 @@ class Permission extends BEAppModel
         if($access == 'denied') {
             return false;
         }
-        return $this->objectParentsAccessible($objectId, $options, $user);
+        $userGroups = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
+        return $this->objectParentsAccessible($objectId, $options, $userGroups);
     }
 
    /**
-     * Return true if object $objectId parents are accessible i.e. for $user
+     * Return true if object $objectId parents are accessible for a user
      * 'Accessible' means without 'frontend_access_with_block' permission set
      *
      * $options params are:
+     *
      * - 'status' the status of parents to check
      * - 'area_id' the parents publication id
      * - 'stopIfMissingParents' true (default) to stop and return not valid if $objectId haven't parents and it isn't a publication
      *
      * @param int $objectId the object id
      * @param array $options
-     * @param array $user the user data
+     * @param array $userGroups array of user groups ids
      * @return boolean
      */
-    public function objectParentsAccessible($objectId, array $options = array(), array $user = array()) {
+    public function objectParentsAccessible($objectId, array $options = array(), array $userGroups = array()) {
         $options += array(
             'status' => array(),
             'area_id' => null,
@@ -587,7 +589,6 @@ class Permission extends BEAppModel
             }
         }
 
-        $groupIds = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
         $flag = Configure::read('objectPermissions.frontend_access_with_block');
         foreach ($parents as $id) {
             $perms = $this->load($id, $flag);
@@ -595,7 +596,7 @@ class Permission extends BEAppModel
             foreach ($perms as $p) {
                 $groupsAllowed[] = $p['Permission']['ugid'];
             }
-            if (!empty($groupsAllowed) && empty(array_intersect($groupsAllowed, $groupIds))) {
+            if (!empty($groupsAllowed) && empty(array_intersect($groupsAllowed, $userGroups))) {
                 return false;
             }
         }

@@ -424,19 +424,15 @@ class ApiValidatorComponent extends Object {
     public function isObjectAccessible($objectId, $parentsCheck = true) {
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
-        if (!$parentsCheck) {
-            // if object itself is forbidden to user return false without any other check
-            $access = $permission->frontendAccess($objectId, $user);
-            return $access != 'denied';
+        // if object itself is forbidden to user return false without any other check
+        $access = $permission->frontendAccess($objectId, $user);
+        if ($access == 'denied') {
+            return false;
         }
-        $publication = $this->controller->getPublication();
-        return $permission->objectParentsAccessible($objectId,
-                    array(
-                       'status' => $this->controller->getStatus(),
-                       'area_id' => $publication['id']
-                    ),
-                    $user
-                );
+        if (!$parentsCheck) {
+            return true;
+        }
+        return $this->areObjectParentsAccessible($objectId);
     }
 
     /**
@@ -449,13 +445,14 @@ class ApiValidatorComponent extends Object {
     public function areObjectParentsAccessible($objectId) {
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
+        $userGroups = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
         $publication = $this->controller->getPublication();
         return $permission->objectParentsAccessible($objectId,
                     array(
                        'status' => $this->controller->getStatus(),
                        'area_id' => $publication['id']
                     ),
-                    $user
+                    $userGroups
                 );
     }
 
