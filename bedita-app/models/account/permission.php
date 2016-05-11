@@ -356,9 +356,21 @@ class Permission extends BEAppModel
             }
             $perms = $this->find('all', array(
                 'conditions' => $conditions,
-                'contain' => array()
-                ));
+            ));
             if ($this->BeObjectCache) {
+                foreach ($perms as $i => $p) {
+                    if (!empty($p['Permission']['Group']['name'])) {
+                        $groupName = $p['Permission']['Group']['name'];
+                        unset($p['Permission']['Group']);
+                        $p['Permission']['Group']['name'] = $groupName;
+                        unset($p['Permission']['User']);
+                    } else if (!empty($p['Permission']['User']['userid'])) {
+                        $userName = $p['Permission']['User']['userid'];
+                        unset($p['Permission']['User']);
+                        $p['Permission']['User']['userid'] = $userName;
+                        unset($p['Permission']['Group']);
+                    }
+                }
                 $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
             }
         }
