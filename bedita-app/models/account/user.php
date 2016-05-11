@@ -119,7 +119,7 @@ class User extends BEAppModel
 	 *
 	 * @param array $user
 	 */
-	function compact(&$user, $keepGroupsIds = false) {
+	function compact(&$user, $keepGroupsIds = true) {
 		unset($user['Permission']);
 		
 		$user['User']['groups'] = array();
