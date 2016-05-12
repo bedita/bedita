@@ -162,6 +162,234 @@ class BuildFilterBehavior extends ModelBehavior {
     }
 
     /**
+     * Prepare and return $afterFilter array built from $filter
+     *
+     * @param array $filter The filter to apply
+     * @param string $order The order string
+     * @return array
+     */
+    public function prepareAfterFilter(array &$filter, $order) {
+        $afterFilter = array();
+        if (array_key_exists('afterFilter', $filter)) {
+            if (is_array($filter['afterFilter'])) {
+                $afterFilter = $filter['afterFilter'];
+            }
+            unset($filter['afterFilter']);
+        }
+
+        // if 'count_permission' filter is set and 'num_of_permission' order is not requested
+        // avoid join and count them after filter
+        if (!empty($filter['count_permission']) && $order != 'num_of_permission') {
+            $afterFilter[] = array(
+                'className' => 'Permission',
+                'methodName' => 'countPermissions'
+            );
+        }
+
+        $filterKeysString = implode('|', array_keys($filter));
+        if (strstr($filterKeysString, 'Content.')) {
+            // if set remove Content::addContentFields() from afterFilter
+            foreach ($afterFilter as $key => $f) {
+                if ($f['className'] == 'Content' && $f['methodName'] == 'appendContentFields') {
+                    unset($afterFilter[$key]);
+                }
+            }
+        }
+
+        // if 'count_annotation' filter is set and 'num_of_annotation_object' order is not requested
+        // count them after filter
+        // else count others in after filter
+        if (!empty($filter['count_annotation'])) {
+            $countAnnotation = !is_array($filter['count_annotation']) ? array($filter['count_annotation']) : $filter['count_annotation'];
+
+            $countAnnotaionModel = Inflector::camelize(str_replace('num_of_', '', $order));
+
+            if (in_array($countAnnotaionModel, $countAnnotation)) {
+                $countAnnotation = array_diff($countAnnotation, array($countAnnotaionModel));
+            }
+
+            if (empty($countAnnotation)) {
+                return;
+            }
+
+            if (!empty($countAnnotation)) {
+                $afterFilter[] = array(
+                    'className' => 'Annotation',
+                    'methodName' => 'countAnnotations',
+                    'options' => array(
+                        'type' => $countAnnotation
+                    )
+                );
+            }
+        }
+
+        return $afterFilter;
+    }
+
+    /**
+     * Check `$filter['count_permission']` and remove it if necessary.
+     * It is removed if:
+     *
+     * * it's not empty and it doesn't appear in `$order` as 'num_of_permission' string
+     *
+     * @param array $filter The array of filters to apply
+     * @param string $order The order string
+     * @return void
+     */
+    public function prepareCountPermissionFilter(array &$filter, $order) {
+        if (!array_key_exists('count_permission', $filter)) {
+            return;
+        }
+
+        if (!empty($filter['count_permission']) && $order != 'num_of_permission') {
+            unset($filter['count_permission']);
+        }
+    }
+
+    /**
+     * Check `$filter['count_annotation']` and remove it if necessary.
+     * It is removed if:
+     *
+     * * it is empty
+     * * it doesn't appear in `$order` as 'num_of_object' string (for example 'num_of_comment', etc...)
+     *
+     * @param array $filter The array of filters to apply
+     * @param string $order The order string
+     * @return void
+     */
+    public function prepareCountAnnotationFilter(array &$filter, $order) {
+        if (!array_key_exists('count_annotation', $filter)) {
+            return;
+        }
+
+        if (empty($filter['count_annotation'])) {
+            unset($filter['count_annotation']);
+            return;
+        }
+
+        if (!is_array($filter['count_annotation'])) {
+            $filter['count_annotation'] = array($filter['count_annotation']);
+        }
+
+        $searchAnnotation = Inflector::camelize(str_replace('num_of_', '', $order));
+        if (!in_array($searchAnnotation, $filter['count_annotation'])) {
+            unset($filter['count_annotation']);
+        }
+    }
+
+    /**
+     * Prepare object type filter transforming
+     * object type string in object type id
+     *
+     * @param array $filter The array of filters to apply
+     * @return void
+     */
+    public function prepareObjectTypeFilter(&$filter) {
+        if (!array_key_exists('object_type', $filter)) {
+            return;
+        }
+
+        if (empty($filter['object_type'])) {
+            unset($filter['object_type']);
+            return;
+        }
+
+        if (!is_array($filter['object_type'])) {
+            $filter['object_type'] = array($filter['object_type']);
+        }
+        foreach ($filter['object_type'] as $ot) {
+            $filter['object_type_id'][] = Configure::read('objectTypes.' . $ot . '.id');
+        }
+        unset($filter['object_type']);
+    }
+
+    /**
+     * Prepare 'query' search filter
+     *
+     * @param array $filter The filter to apply
+     * @param array $options [description]
+     * @return void
+     */
+    public function prepareSearchFilter(array &$filter) {
+        if (array_key_exists('searchstring', $filter)) {
+            if (empty($filter['query'])) {
+                $filter['query'] = $filter['searchstring'];
+            }
+            unset($filter['searchstring']);
+        }
+
+        if (array_key_exists('searchType', $filter)) {
+            $searchType = $filter['searchType'];
+            unset($filter['searchType']);
+        }
+
+        if (empty($filter['query'])) {
+            return;
+        }
+
+        if (empty($searchType)) {
+            $searchType = empty($filter['substring']) ? 'fulltext' : 'like';
+        }
+
+        $filter['query'] = array(
+            'searchType' => $searchType,
+            'searchString' => $filter['query']
+        );
+    }
+
+    /**
+     * Get results using a search engine
+     *
+     * For example it could use Elasticsearch.
+     *
+     * Return false if no search engine is found or if $options['filter']['query'] is empty.
+     * Return an array as
+     *
+     * ```
+     * array(
+     *     'result' => array(), // the array of results found by search engine
+     *     'count' => 12, // the number of results
+     *     'order' => array() // an array with object ids as key and the rank as value
+     * )
+     * ```
+     *
+     * @param string $engine The engine Model name i.e. 'ElasticSearch'
+     * @param array $options An array of options.
+     *                       At least $options['filter']['query'] must be populated
+     * @return array|bool
+     */
+    public function searchEngineResult($engine, $options) {
+        if (empty($engine) || empty($options['filter']['query'])) {
+            return false;
+        }
+
+        if (array_key_exists('searchString', $options['filter']['query'])) {
+            $options['filter']['query'] = $options['filter']['query']['searchString'];
+        }
+
+        $searchEngine = ClassRegistry::init($engine);
+        if (empty($searchEngine)) {
+            return false;
+        }
+        $result = $searchEngine->searchObjects($options);
+        $searchResult = array(
+            'result' => $result,
+            'count' => $result['total'],
+            'order' => null
+        );
+
+        // use rank order
+        if (empty($options['order'])) {
+            $rank = 1;
+            foreach ($result['ids'] as $idFound) {
+                $searchResult['order'][$idFound] = $rank++;
+            }
+        }
+
+        return $searchResult;
+    }
+
+    /**
      * set conditions, from, fields, group and order from $filter
      *
      * @param array $filter

@@ -1115,4 +1115,27 @@ class Tree extends BEAppModel
         }
         return $count;
     }
+
+    /**
+     * Return a list of children ids
+     *
+     * @param int $parentId The parent id
+     * @param boolean $descendants True to get all descendants, false to get just children
+     * @return array
+     */
+    public function findChildrenList($parentId, $descendants = false) {
+        if ($descendants) {
+            return $this->find('list', array(
+                'fields' => array('id'),
+                'conditions' => array('object_path LIKE' => '%/' . $parentId . '/%'),
+                'group' => 'id'
+            ));
+        }
+
+        return $this->find('list', array(
+            'fields' => array('id'),
+            'conditions' => array('parent_id' => $parentId)
+        ));
+    }
+
 }
