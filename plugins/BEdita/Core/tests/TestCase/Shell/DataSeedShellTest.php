@@ -61,6 +61,34 @@ class DataSeedShellTest extends ShellTestCase
     }
 
     /**
+     * Test entity validation.
+     *
+     * @return void
+     */
+    public function testValidationErrors()
+    {
+        $this->loadFixtures('Users');
+        $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '1', '-f', 'blocked=no']);
+
+         $this->assertAborted();
+         $this->assertErrorContains('Entity validation failed');
+    }
+
+    /**
+     * Test application rules validation.
+     *
+     * @return void
+     */
+    public function testBuildRulesErrors()
+    {
+        $this->loadFixtures('Users');
+        $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '2', '-f', 'username=double']);
+
+         $this->assertAborted();
+         $this->assertErrorContains('Application rules failed');
+    }
+
+    /**
      * Test seeding of users.
      *
      * @return void

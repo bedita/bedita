@@ -192,7 +192,7 @@ CREATE TABLE objects (
   locked BOOLEAN NOT NULL DEFAULT 0         COMMENT 'locked flag: some fields (status, uname,...) cannot be changed',
   created DATETIME NOT NULL                 COMMENT 'creation date',
   modified DATETIME NOT NULL                COMMENT 'last modification date',
-  published DATETIME NOT NULL               COMMENT 'publication date, status set to ON',
+  published DATETIME NULL                   COMMENT 'publication date, status set to ON',
   title TEXT NULL,
   description MEDIUMTEXT NULL,
   body MEDIUMTEXT NULL,
