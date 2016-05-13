@@ -197,7 +197,11 @@ class DataSeedShell extends Shell
         $entities = [];
         for ($i = 0; $i < $count; $i++) {
             $data = $fields + call_user_func([$this, $method]);
-            $entities[] = $table->newEntity($data);
+            $entity = $table->newEntity($data);
+            if ($entity->errors()) {
+                $this->error(sprintf('Entity validation failed: %s', print_r($entity->errors(), true)));
+            }
+            $entities[] = $entity;
         }
         $this->out('<success>DONE</success>');
 
@@ -205,7 +209,9 @@ class DataSeedShell extends Shell
         try {
             $table->connection()->transactional(function () use ($table, $entities) {
                 foreach ($entities as $entity) {
-                    $table->save($entity, ['atomic' => false]);
+                    if (!$table->save($entity, ['atomic' => false])) {
+                        $this->error(sprintf('Application rules failed: %s', print_r($entity->errors(), true)));
+                    }
                 }
             });
         } catch (\Exception $e) {
