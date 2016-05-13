@@ -21,6 +21,7 @@ use Cake\Validation\Validator;
  * Users Model
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
+ * @property \Cake\ORM\Association\BelongsToMany $Roles
  *
  * @since 4.0.0
  */
