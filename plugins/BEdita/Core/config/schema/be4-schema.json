@@ -815,12 +815,29 @@
                 "precision": null,
                 "fixed": null
             },
-            "module_name": {
-                "type": "string",
-                "length": 100,
+            "description": {
+                "type": "text",
+                "length": null,
                 "null": true,
                 "default": null,
-                "comment": "default module for object type",
+                "comment": "object type description",
+                "precision": null
+            },
+            "plugin": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "CakePHP plugin name",
+                "precision": null,
+                "fixed": null
+            },
+            "model": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "CakePHP Table class name",
                 "precision": null,
                 "fixed": null
             }
@@ -833,10 +850,20 @@
                 ],
                 "length": []
             },
-            "name": {
+            "objecttypes_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
+                ],
+                "length": []
+            }
+        },
+        "indexes": {
+            "objecttypes_model_idx": {
+                "type": "index",
+                "columns": [
+                    "plugin",
+                    "model"
                 ],
                 "length": []
             }
