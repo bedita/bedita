@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Shell;
 
+use Cake\Console\Exception\StopException;
 use Cake\Console\Shell;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
@@ -199,7 +200,8 @@ class DataSeedShell extends Shell
             $data = $fields + call_user_func([$this, $method]);
             $entity = $table->newEntity($data);
             if ($entity->errors()) {
-                $this->error(sprintf('Entity validation failed: %s', print_r($entity->errors(), true)));
+                $this->out('<error>ERROR</error>');
+                $this->abort(sprintf('Entity validation failed: %s', print_r($entity->errors(), true)));
             }
             $entities[] = $entity;
         }
@@ -210,7 +212,7 @@ class DataSeedShell extends Shell
             $table->connection()->transactional(function () use ($table, $entities) {
                 foreach ($entities as $entity) {
                     if (!$table->save($entity, ['atomic' => false])) {
-                        $this->error(sprintf('Application rules failed: %s', print_r($entity->errors(), true)));
+                        throw new StopException(sprintf('Application rules failed: %s', print_r($entity->errors(), true)));
                     }
                 }
             });
