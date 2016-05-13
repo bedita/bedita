@@ -419,14 +419,16 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     /**
      * Test build contain string
      *
+     * @param string|bool $expected Expected result.
+     * @param string $tableName The Table name.
      * @return void
      *
      * @dataProvider containStringProvider
      * @covers ::buildContainString()
      */
-    public function testBuildContainString($expected, $string)
+    public function testBuildContainString($expected, $tableName)
     {
-        $containString = $this->fakeFelines->buildContainString($string);
+        $containString = $this->fakeFelines->buildContainString($tableName);
         $this->assertEquals($expected, $containString);
     }
 
@@ -462,6 +464,8 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     /**
      * Test arrange contain
      *
+     * @param array $expected Expected result.
+     * @param array $contain The contain data.
      * @return void
      *
      * @dataProvider arrangeContainProvider
@@ -478,6 +482,7 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * Test basic find
      *
      * @return void
+     * @coversNothing
      */
     public function testBasicFind()
     {
