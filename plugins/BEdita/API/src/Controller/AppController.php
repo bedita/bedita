@@ -81,8 +81,8 @@ class AppController extends Controller
         }
 
         $method = $this->request->method();
-        $url = $this->request->here;
-        $response = $this->requestAction($this->request->params, [
+        $url = Router::reverse($this->request);
+        $response = $this->requestAction($url, [
             'environment' => [
                 'HTTP_CONTENT_TYPE' => 'application/json',
                 'HTTP_ACCEPT' => 'application/json',
