@@ -70,9 +70,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "annotations_ibfk_1": {
                 "type": "foreign",
@@ -85,9 +83,7 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": [
-
-                ]
+                "length": []
             },
             "annotations_ibfk_2": {
                 "type": "foreign",
@@ -100,9 +96,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -111,18 +105,14 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_id": {
                 "type": "index",
                 "columns": [
                     "object_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -171,18 +161,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "name": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -228,9 +214,7 @@
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -290,9 +274,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "auth_provider_id": {
                 "type": "unique",
@@ -300,9 +282,7 @@
                     "auth_provider_id",
                     "username"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "external_auth_ibfk_1": {
                 "type": "foreign",
@@ -315,9 +295,7 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": [
-
-                ]
+                "length": []
             },
             "external_auth_ibfk_2": {
                 "type": "foreign",
@@ -330,9 +308,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -341,9 +317,7 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -462,9 +436,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "media_ibfk_1": {
                 "type": "foreign",
@@ -477,9 +449,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -488,9 +458,7 @@
                 "columns": [
                     "hash_file"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -551,9 +519,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_id": {
                 "type": "unique",
@@ -561,9 +527,7 @@
                     "object_id",
                     "role_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_permissions_ibfk_1": {
                 "type": "foreign",
@@ -576,9 +540,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "object_permissions_ibfk_2": {
                 "type": "foreign",
@@ -591,9 +553,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -602,9 +562,7 @@
                 "columns": [
                     "role_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -655,9 +613,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_properties_ibfk_1": {
                 "type": "foreign",
@@ -670,9 +626,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "object_properties_ibfk_2": {
                 "type": "foreign",
@@ -685,9 +639,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -696,18 +648,14 @@
                 "columns": [
                     "object_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "property_id": {
                 "type": "index",
                 "columns": [
                     "property_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -780,9 +728,7 @@
                     "relation_id",
                     "right_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_relations_ibfk_1": {
                 "type": "foreign",
@@ -795,9 +741,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "object_relations_ibfk_2": {
                 "type": "foreign",
@@ -810,9 +754,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "object_relations_ibfk_3": {
                 "type": "foreign",
@@ -825,9 +767,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -836,27 +776,21 @@
                 "columns": [
                     "left_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "right_id": {
                 "type": "index",
                 "columns": [
                     "right_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "relation_id": {
                 "type": "index",
                 "columns": [
                     "relation_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -897,18 +831,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "name": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -978,7 +908,7 @@
             "published": {
                 "type": "datetime",
                 "length": null,
-                "null": false,
+                "null": true,
                 "default": null,
                 "comment": "publication date, status set to ON",
                 "precision": null
@@ -1067,18 +997,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "uname": {
                 "type": "unique",
                 "columns": [
                     "uname"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "objects_ibfk_1": {
                 "type": "foreign",
@@ -1091,9 +1017,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -1102,9 +1026,7 @@
                 "columns": [
                     "object_type_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1274,18 +1196,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "email": {
                 "type": "unique",
                 "columns": [
                     "email"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "profiles_ibfk_1": {
                 "type": "foreign",
@@ -1298,9 +1216,7 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": [
-
-                ]
+                "length": []
             },
             "profiles_ibfk_2": {
                 "type": "foreign",
@@ -1313,9 +1229,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -1324,9 +1238,7 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1394,9 +1306,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "name_type": {
                 "type": "unique",
@@ -1404,9 +1314,7 @@
                     "name",
                     "object_type_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "properties_ibfk_1": {
                 "type": "foreign",
@@ -1419,9 +1327,7 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": [
-
-                ]
+                "length": []
             },
             "properties_ibfk_2": {
                 "type": "foreign",
@@ -1434,9 +1340,7 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -1445,27 +1349,21 @@
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "object_type_id": {
                 "type": "index",
                 "columns": [
                     "object_type_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "property_type_id": {
                 "type": "index",
                 "columns": [
                     "property_type_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1505,18 +1403,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "name": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1559,9 +1453,7 @@
                     "object_type_id",
                     "position"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "relation_types_ibfk_1": {
                 "type": "foreign",
@@ -1574,9 +1466,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "relation_types_ibfk_2": {
                 "type": "foreign",
@@ -1589,9 +1479,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -1600,9 +1488,7 @@
                 "columns": [
                     "object_type_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1675,27 +1561,21 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "name": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "inverse_name": {
                 "type": "unique",
                 "columns": [
                     "inverse_name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1767,18 +1647,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "u_name": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1821,9 +1697,7 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "roles_users_ibfk_1": {
                 "type": "foreign",
@@ -1836,9 +1710,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "roles_users_ibfk_2": {
                 "type": "foreign",
@@ -1851,9 +1723,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -1862,18 +1732,14 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "role_id": {
                 "type": "index",
                 "columns": [
                     "role_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -1957,9 +1823,7 @@
                     "parent_id",
                     "object_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "trees_ibfk_1": {
                 "type": "foreign",
@@ -1972,9 +1836,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "trees_ibfk_2": {
                 "type": "foreign",
@@ -1987,9 +1849,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             },
             "trees_ibfk_3": {
                 "type": "foreign",
@@ -2002,9 +1862,7 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": [
-
-                ]
+                "length": []
             }
         },
         "indexes": {
@@ -2014,9 +1872,7 @@
                     "object_id",
                     "parent_id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "root_left": {
                 "type": "index",
@@ -2024,9 +1880,7 @@
                     "root_id",
                     "tree_left"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "root_right": {
                 "type": "index",
@@ -2034,18 +1888,14 @@
                     "root_id",
                     "tree_right"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "menu": {
                 "type": "index",
                 "columns": [
                     "menu"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     },
@@ -2135,18 +1985,14 @@
                 "columns": [
                     "id"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "username": {
                 "type": "unique",
                 "columns": [
                     "username"
                 ],
-                "length": [
-
-                ]
+                "length": []
             }
         }
     }
