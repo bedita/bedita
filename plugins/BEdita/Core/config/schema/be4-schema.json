@@ -1727,14 +1727,14 @@
             }
         },
         "indexes": {
-            "user_id": {
+            "rolesusers_userid_idx": {
                 "type": "index",
                 "columns": [
                     "user_id"
                 ],
                 "length": []
             },
-            "role_id": {
+            "rolesusers_roleid_idx": {
                 "type": "index",
                 "columns": [
                     "role_id"

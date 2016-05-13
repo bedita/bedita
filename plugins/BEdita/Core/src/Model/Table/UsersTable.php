@@ -60,7 +60,7 @@ class UsersTable extends Table
         ]);
 
         $this->belongsToMany('Roles', [
-            'className' => 'BEdita/Core.Role',
+            'className' => 'BEdita/Core.Roles',
         ]);
     }
 
