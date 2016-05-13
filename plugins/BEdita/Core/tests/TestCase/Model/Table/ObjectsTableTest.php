@@ -27,8 +27,8 @@ class ObjectsTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.object_types'
     ];
 
     /**
@@ -127,14 +127,18 @@ class ObjectsTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $user = $this->Objects->newEntity();
-        $this->Objects->patchEntity($user, $data);
+        $object = $this->Objects->newEntity($data, [
+            'accessibleFields' => [
+                'created_by' => true,
+                'modified_by' => true,
+            ]
+        ]);
 
-        $error = (bool)$user->errors();
-        $this->assertEquals($expected, !$error, print_r($user->errors(), true));
+        $error = (bool)$object->errors();
+        $this->assertEquals($expected, !$error, print_r($object->errors(), true));
 
         if ($expected) {
-            $success = $this->Objects->save($user);
+            $success = $this->Objects->save($object);
             $this->assertTrue((bool)$success);
         }
     }

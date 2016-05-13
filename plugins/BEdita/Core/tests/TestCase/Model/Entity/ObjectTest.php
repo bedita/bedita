@@ -39,6 +39,7 @@ class ObjectTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
     ];
 
