@@ -18,9 +18,31 @@ Router::plugin(
     'BEdita/API',
     ['path' => '/'],
     function (RouteBuilder $routes) {
-        $routes->resources('Roles', function (RouteBuilder $routes) {
-            $routes->resources('Users', ['only' => ['index']]);
-        });
-        $routes->resources('Users');
+        $routes->connect(
+            '/roles',
+            ['controller' => 'Roles', 'action' => 'index'],
+            ['_method' => 'GET']
+        );
+        $routes->connect(
+            '/roles/*',
+            ['controller' => 'Roles', 'action' => 'view'],
+            ['_method' => 'GET']
+        );
+        $routes->connect(
+            '/roles/:role_id/users',
+            ['controller' => 'Users', 'action' => 'index'],
+            ['_method' => 'GET']
+        );
+
+        $routes->connect(
+            '/users',
+            ['controller' => 'Users', 'action' => 'index'],
+            ['_method' => 'GET']
+        );
+        $routes->connect(
+            '/users/*',
+            ['controller' => 'Users', 'action' => 'view'],
+            ['_method' => 'GET']
+        );
     }
 );
