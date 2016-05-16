@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Exception;
+namespace BEdita\API\Network\Exception;
 
 use Cake\Network\Exception\HttpException;
 
