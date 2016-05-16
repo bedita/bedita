@@ -14,6 +14,7 @@
 namespace BEdita\API\Controller\Component;
 
 use Cake\Controller\Component\PaginatorComponent as CakePaginatorComponent;
+use Cake\Datasource\RepositoryInterface;
 
 /**
  * Handles pagination.
@@ -45,5 +46,27 @@ class PaginatorComponent extends CakePaginatorComponent
         unset($options['page_size']);
 
         return $options;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function validateSort(RepositoryInterface $object, array $options)
+    {
+        if (!empty($options['sort'])) {
+            $firstChar = substr($options['sort'], 0, 1);
+            switch ($firstChar) {
+                case '+':
+                    $options['sort'] = substr($options['sort'], 1);
+                    $options['direction'] = 'asc';
+                    break;
+                case '-':
+                    $options['sort'] = substr($options['sort'], 1);
+                    $options['direction'] = 'desc';
+                    break;
+            }
+        }
+
+        return parent::validateSort($object, $options);
     }
 }
