@@ -17,6 +17,7 @@ use BEdita\API\Controller\Component\PaginatorComponent;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Network\Request;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -24,6 +25,20 @@ use Cake\TestSuite\TestCase;
  */
 class PaginatorComponentTest extends TestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $autoFixtures = false;
+
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.users',
+    ];
+
     /**
      * Data provider for `testMergeOptions` test case.
      *
@@ -115,6 +130,69 @@ class PaginatorComponentTest extends TestCase
             $component->config('whitelist', $whitelist, false);
         }
 
-        $this->assertEquals($expected, $component->mergeOptions($alias, $settings));
+        $options = $component->mergeOptions($alias, $settings);
+        $this->assertEquals($expected, $options);
+    }
+
+    /**
+     * Data provider for `testValidateSort` test case.
+     *
+     * @return array
+     */
+    public function validateSortProvider()
+    {
+        return [
+            'default' => [
+                [],
+            ],
+            'asc' => [
+                ['Users.username' => 'asc'],
+                'username',
+            ],
+            'desc' => [
+                ['Users.username' => 'desc'],
+                '-username',
+            ],
+            'multipleFields' => [
+                false,
+                'username,created',
+            ],
+            'unallowedField' => [
+                false,
+                '-this_field_does_not_exist',
+            ],
+            'explicitAsc' => [
+                false,
+                '+username',
+            ],
+        ];
+    }
+
+    /**
+     * Test `validateSort()` method.
+     *
+     * @param array|false $expected Expected result.
+     * @param string|null $sort `sort` query parameter in request.
+     * @return void
+     *
+     * @dataProvider validateSortProvider
+     * @covers ::validateSort()
+     */
+    public function testValidateSort($expected, $sort = null)
+    {
+        $this->loadFixtures('Users');
+
+        if ($expected === false) {
+            $this->setExpectedException('Cake\Network\Exception\BadRequestException');
+        }
+
+        $request = new Request(['query' => compact('sort')]);
+        $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
+
+        $repository = TableRegistry::get('Users')->find()->repository();
+        $options = $component->mergeOptions('Users', []);
+
+        $options = $component->validateSort($repository, $options);
+        $this->assertEquals($expected, $options['order']);
     }
 }
