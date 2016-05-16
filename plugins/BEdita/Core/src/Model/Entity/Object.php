@@ -55,15 +55,4 @@ class Object extends Entity
         'created_by' => false,
         'modified_by' => false
     ];
-
-    public function __construct(array $properties = [], array $options = [])
-    {
-        $this->initialize();
-        parent::__construct($properties, $options);
-    }
-
-    public function initialize()
-    {
-        // debug($this->_accessible);
-    }
 }
