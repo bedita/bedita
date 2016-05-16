@@ -70,6 +70,9 @@ class RolesControllerTest extends IntegrationTestCase
                         'created' => '2016-04-15T09:57:38+0000',
                         'modified' => '2016-04-15T09:57:38+0000',
                     ],
+                    'links' => [
+                        'self' => 'http://api.example.com/roles/1',
+                    ]
                 ],
                 [
                     'id' => '2',
@@ -82,6 +85,9 @@ class RolesControllerTest extends IntegrationTestCase
                         'created' => '2016-04-15T11:59:12+0000',
                         'modified' => '2016-04-15T11:59:13+0000',
                     ],
+                    'links' => [
+                        'self' => 'http://api.example.com/roles/2',
+                    ]
                 ],
             ],
         ];

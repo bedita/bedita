@@ -73,6 +73,9 @@ class UsersControllerTest extends IntegrationTestCase
                         'created' => '2016-03-15T09:57:38+0000',
                         'modified' => '2016-03-15T09:57:38+0000',
                     ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/1',
+                    ]
                 ],
                 [
                     'id' => '2',
@@ -86,6 +89,9 @@ class UsersControllerTest extends IntegrationTestCase
                         'created' => '2016-03-15T09:57:38+0000',
                         'modified' => '2016-03-15T09:57:38+0000',
                     ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/2',
+                    ]
                 ],
             ],
         ];
@@ -144,6 +150,9 @@ class UsersControllerTest extends IntegrationTestCase
                         'created' => '2016-03-15T09:57:38+0000',
                         'modified' => '2016-03-15T09:57:38+0000',
                     ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/1',
+                    ]
                 ],
             ],
         ];
