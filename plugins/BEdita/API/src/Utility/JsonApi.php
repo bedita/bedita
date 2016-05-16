@@ -15,6 +15,7 @@ namespace BEdita\API\Utility;
 use Cake\Collection\CollectionInterface;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
+use Cake\Routing\Router;
 use Cake\Utility\Hash;
 
 /**
@@ -40,7 +41,7 @@ class JsonApi
         }
 
         if (!is_array($items) || !Hash::numeric(array_keys($items))) {
-            return static::formatItem($items, $type);
+            return static::formatItem($items, $type, false);
         }
 
         $data = [];
@@ -56,11 +57,12 @@ class JsonApi
      *
      * @param \Cake\ORM\Entity|array $item Single entity item to be formatted.
      * @param string|null $type Type of item. If missing, an attempt is made to obtain this info from item's data.
+     * @param bool $showLink Display item url in 'links.self', default is true
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    protected static function formatItem($item, $type = null)
+    protected static function formatItem($item, $type = null, $showLink = true)
     {
         if ($item instanceof Entity) {
             $item = $item->toArray();
@@ -95,7 +97,14 @@ class JsonApi
         }
         unset($attribute);
 
-        return compact('id', 'type', 'attributes');
+        if (!$showLink) {
+            return compact('id', 'type', 'attributes');
+        }
+
+        $links = [];
+        $links['self'] = Router::fullBaseUrl() . '/' . $type . '/' . $id;
+
+        return compact('id', 'type', 'attributes', 'links');
     }
 
     /**
