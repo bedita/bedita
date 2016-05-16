@@ -53,6 +53,20 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null
         ],
+        [
+            'object_type_id' => 2,
+            'status' => 'on',
+            'uname' => 'gustavo-supporto',
+            'locked' => 0,
+            'created' => '2016-05-13 07:09:23',
+            'modified' => '2016-05-13 07:09:23',
+            'published' => null,
+            'title' => 'Gustavo Supporto profile',
+            'description' => 'Some description about Gustavo',
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1
+        ],
     ];
 
     /**

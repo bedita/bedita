@@ -16,9 +16,9 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * Fixture for `object_types` table.
+ * Fixture for `profiles` table.
  */
-class ObjectTypesFixture extends TestFixture
+class ProfilesFixture extends TestFixture
 {
 
     /**
@@ -28,16 +28,14 @@ class ObjectTypesFixture extends TestFixture
      */
     public $records = [
         [
-            'name' => 'document',
-            'description' => 'none',
-            'plugin' => 'BEdita/Core',
-            'model' => 'Objects'
-        ],
-        [
-            'name' => 'profile',
-            'description' => 'none',
-            'plugin' => 'BEdita/Core',
-            'model' => 'Profiles'
+            'id' => 3,
+            'name' => 'Gustavo',
+            'surname' => 'Supporto',
+            'email' => 'gustavo.supporto@channelweb.it',
+            'person_title' => 'Doct.',
+            'gender' => 'monkey',
+            'birthdate' => null,
+            'deathdate' => null,
         ],
     ];
 }
