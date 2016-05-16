@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Controller\Component;
 
-use BEdita\API\Exception\UnsupportedMediaTypeException;
+use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -167,8 +167,8 @@ class JsonApiComponent extends Component
      * Perform preliminary checks and operations.
      *
      * @return void
-     * @throws \BEdita\API\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header does not
-     *      comply to JSON API specifications and `checkMediaType` configuration is enabled.
+     * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
+     *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
      */
     public function beforeFilter()
     {
