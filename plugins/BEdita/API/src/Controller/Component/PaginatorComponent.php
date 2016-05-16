@@ -15,6 +15,7 @@ namespace BEdita\API\Controller\Component;
 
 use Cake\Controller\Component\PaginatorComponent as CakePaginatorComponent;
 use Cake\Datasource\RepositoryInterface;
+use Cake\Network\Exception\BadRequestException;
 
 /**
  * Handles pagination.
@@ -53,7 +54,9 @@ class PaginatorComponent extends CakePaginatorComponent
      */
     public function validateSort(RepositoryInterface $object, array $options)
     {
+        $sortedRequest = false;
         if (!empty($options['sort'])) {
+            $sortedRequest = true;
             $firstChar = substr($options['sort'], 0, 1);
             switch ($firstChar) {
                 case '+':
@@ -67,6 +70,12 @@ class PaginatorComponent extends CakePaginatorComponent
             }
         }
 
-        return parent::validateSort($object, $options);
+        $options = parent::validateSort($object, $options);
+
+        if ($sortedRequest && empty($options['order'])) {
+            throw new BadRequestException(__('Unsupported sorting field'));
+        }
+
+        return $options;
     }
 }

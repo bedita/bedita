@@ -157,22 +157,34 @@ class PaginatorComponentTest extends TestCase
                 ['Users.username' => 'desc'],
                 '-username',
             ],
+            'multipleFields' => [
+                false,
+                'username,created',
+            ],
+            'unallowedField' => [
+                false,
+                '-this_field_does_not_exist',
+            ],
         ];
     }
 
     /**
      * Test `validateSort()` method.
      *
-     * @param array $expected Expected result.
+     * @param array|false $expected Expected result.
      * @param string|null $sort `sort` query parameter in request.
      * @return void
      *
      * @dataProvider validateSortProvider
      * @covers ::validateSort()
      */
-    public function testValidateSort(array $expected, $sort = null)
+    public function testValidateSort($expected, $sort = null)
     {
         $this->loadFixtures('Users');
+
+        if ($expected === false) {
+            $this->setExpectedException('Cake\Network\Exception\BadRequestException');
+        }
 
         $request = new Request(['query' => compact('sort')]);
         $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
