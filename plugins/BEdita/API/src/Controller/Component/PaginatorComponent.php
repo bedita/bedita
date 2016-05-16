@@ -57,16 +57,9 @@ class PaginatorComponent extends CakePaginatorComponent
         $sortedRequest = false;
         if (!empty($options['sort'])) {
             $sortedRequest = true;
-            $firstChar = substr($options['sort'], 0, 1);
-            switch ($firstChar) {
-                case '+':
-                    $options['sort'] = substr($options['sort'], 1);
-                    $options['direction'] = 'asc';
-                    break;
-                case '-':
-                    $options['sort'] = substr($options['sort'], 1);
-                    $options['direction'] = 'desc';
-                    break;
+            if (substr($options['sort'], 0, 1) == '-') {
+                $options['sort'] = substr($options['sort'], 1);
+                $options['direction'] = 'desc';
             }
         }
 

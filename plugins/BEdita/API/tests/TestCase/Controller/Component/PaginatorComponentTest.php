@@ -145,13 +145,9 @@ class PaginatorComponentTest extends TestCase
             'default' => [
                 [],
             ],
-            'implicitAsc' => [
+            'asc' => [
                 ['Users.username' => 'asc'],
                 'username',
-            ],
-            'explicitAsc' => [
-                ['Users.username' => 'asc'],
-                '+username',
             ],
             'desc' => [
                 ['Users.username' => 'desc'],
@@ -164,6 +160,10 @@ class PaginatorComponentTest extends TestCase
             'unallowedField' => [
                 false,
                 '-this_field_does_not_exist',
+            ],
+            'explicitAsc' => [
+                false,
+                '+username',
             ],
         ];
     }
