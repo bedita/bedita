@@ -444,13 +444,13 @@ class Permission extends BEAppModel
             'count' => false,
             'status' => null
         );
-        
+
         $objectsForbidden = false;
         if ($this->BeObjectCache) {
             $objectsForbidden = $this->BeObjectCache->read($objectId, $options, 'related-perms');
         }
 
-        if ($objectsForbidden === false) {
+        if (!empty($user) || $objectsForbidden === false) {
             $conditions = array(
                 'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
                 'Permission.switch' => 'group',
@@ -493,7 +493,9 @@ class Permission extends BEAppModel
                     )
                 );
             }
+        }
 
+        if ($objectsForbidden === false) {
             $objectsForbidden = $this->find($findType, array(
                 'fields' => $fields,
                 'conditions' => $conditions,
