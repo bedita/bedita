@@ -23,8 +23,8 @@ if (!class_exists('ClassRegistry')) {
 	App::import('Core', array('ClassRegistry'));
 }
 
-if (!class_exists('Folder')) {
-    App::import('Core', 'Folder');
+if (!class_exists('File')) {
+    App::import('Core', 'File');
 }
 
 /**
@@ -129,7 +129,6 @@ class BeLib {
 			throw new BeditaException(__("No paths to search for " . $type, true));
 		}
 		$paths = array_diff($typePaths ,$excludePaths);
-		App::import('Core', 'Folder');
 		$folder = new Folder();
 		foreach ($paths as $p) {
 			$folder->cd($p);
