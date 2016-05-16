@@ -365,7 +365,7 @@ class ApiValidatorComponent extends Object {
                 return false;
             }
             // check if it's on tree and also its parents are accessible
-            if ($isOnTree && $this->isObjectAccessible($objectId)) {
+            if ($isOnTree && $this->areObjectParentsAccessible($objectId)) {
                 return true;
             }
             // if not, check if at least a related object is accessible
@@ -424,20 +424,38 @@ class ApiValidatorComponent extends Object {
     public function isObjectAccessible($objectId, $parentsCheck = true) {
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
-        if (!$parentsCheck) {
-            // if object itself is forbidden to user return false without any other check
-            $access = $permission->frontendAccess($objectId, $user);
-            return $access != 'denied';
+        // if object itself is forbidden to user return false without any other check
+        $access = $permission->frontendAccess($objectId, $user);
+        if ($access == 'denied') {
+            return false;
         }
+        if (!$parentsCheck) {
+            return true;
+        }
+        return $this->areObjectParentsAccessible($objectId);
+    }
+
+    /**
+     * Return true if $objectId parents are accessible for authorized user, false otherwise.
+     * 'Accessible' means without 'frontend_access_with_block' permission set for groups that the user doesn't belong.
+     * 
+     * @param int $objectId the object id
+     * @return boolean
+     */
+    public function areObjectParentsAccessible($objectId) {
+        $permission = ClassRegistry::init('Permission');
+        $user = $this->controller->ApiAuth->getUser();
+        $userGroups = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
         $publication = $this->controller->getPublication();
-        return $permission->isObjectsAndParentsAccessible($objectId,
+        return $permission->objectParentsAccessible($objectId,
                     array(
                        'status' => $this->controller->getStatus(),
                        'area_id' => $publication['id']
                     ),
-                    $user
+                    $userGroups
                 );
     }
+
 
     /**
      * Check if $objectId and its parents are accessible for authorized user.

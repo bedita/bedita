@@ -46,6 +46,20 @@ class Permission extends BEAppModel
 			),
 	);
 
+    /**
+     * Object cache 
+     * 
+     */
+    protected $BeObjectCache = null;
+
+    public function  __construct() {
+        parent::__construct();
+        if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
+            App::import('Lib', 'BeLib');
+            $this->BeObjectCache = BeLib::getObject('BeObjectCache');
+        }
+    }
+
 	/**
 	 * Add object permissions
 	 *
@@ -290,32 +304,7 @@ class Permission extends BEAppModel
 		if (!is_array($flag)) {
 			$flag = array($flag);
 		}
-		// if frontend app (not staging) and object cache is active
-		if (!BACKEND_APP && Configure::read('objectCakeCache') && !Configure::read('staging')) {
-			$beObjectCache = BeLib::getObject('BeObjectCache');
-			$options = array();
-			$perms = $beObjectCache->read($objectId, $options, 'perms');
-			if (!$perms && !is_array($perms)) {
-				$perms = $this->find('all', array(
-					'conditions' => array('object_id' => $objectId)
-				));
-				$beObjectCache->write($objectId, $options, $perms, 'perms');
-			}
-			// search $flag inside $perms
-			$result = array();
-			if (!empty($perms)) {
-				foreach ($perms as $p) {
-					if (in_array($p['Permission']['flag'], $flag)) {
-						$result[] = $p;
-					}
-				}
-			}
-		} else {
-			$result = $this->find('all', array(
-				'conditions' => array('object_id' => $objectId, 'flag' => $flag)
-			));
-		}
-
+        $result = $this->load($objectId, $flag);
 		$ret = (!empty($result)) ? $result : false;
 		return $ret;
 	}
@@ -345,15 +334,61 @@ class Permission extends BEAppModel
 		}
 	}	
 
-	/**
-	 * Load all object permissions
-	 *
-	 * @param integer $objectId
-	 * @return array (permissions)
-	 */
-	public function load($objectId) {
-		return $this->find('all', array("conditions" => array("object_id" => $objectId)));
-	}
+    /**
+     * Load all object permissions, using object cache, selecting one or more flag value
+     * 
+     * @param integer $objectId
+     * @param mixed $flag array or string with flag permission to search
+     * @return array (permissions)
+     */
+    public function load($objectId, $flag = array()) {
+        $perms = false;
+        if ($this->BeObjectCache) {
+            $options = array();
+            $perms = $this->BeObjectCache->read($objectId, $options, 'perms');
+        }
+        if (!is_array($flag)) {
+            $flag = array($flag);
+        }
+        if ($perms === false) {
+            $conditions = array('object_id' => $objectId);
+            if (!$this->BeObjectCache && !empty($flag)) {
+                $conditions['flag'] = $flag;
+            }
+            $perms = $this->find('all', array(
+                'conditions' => $conditions,
+            ));
+            if ($this->BeObjectCache) {
+                $this->cleanupPermissionData($perms);
+                $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
+            }
+        }
+        // search $flag inside $perms
+        if (!empty($perms) && !empty($flag) && $this->BeObjectCache) {
+            foreach ($perms as $i => $p) {
+                if (!in_array($p['Permission']['flag'], $flag)) {
+                    unset($perms[$i]);
+                }
+            }
+        }
+        return $perms;
+    }
+
+    private function cleanupPermissionData(array &$perms) {
+        foreach ($perms as $i => &$p) {
+            if (!empty($p['Group']['name'])) {
+                $groupName = $p['Group']['name'];
+                unset($p['Group']);
+                $p['Group']['name'] = $groupName;
+                unset($p['User']);
+            } else if (!empty($p['User']['userid'])) {
+                $userName = $p['User']['userid'];
+                unset($p['User']);
+                $p['User']['userid'] = $userName;
+                unset($p['Group']);
+            }
+        }
+    }
 
 	/**
 	 * passed an array of BEdita objects add 'count_permission' key
@@ -410,59 +445,70 @@ class Permission extends BEAppModel
             'status' => null
         );
 
-        $conditions = array(
-            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
-            'Permission.switch' => 'group',
-            'ObjectRelation.id' => $objectId
-        );
-        if (!empty($options['relation'])) {
-            $conditions['ObjectRelation.switch'] = $options['relation'];
+        $objectsForbidden = false;
+        if ($this->BeObjectCache) {
+            $objectsForbidden = $this->BeObjectCache->read($objectId, $options, 'related-perms');
         }
 
-        if ($options['count']) {
-            $findType = 'all';
-            $fields = array('COUNT(DISTINCT(Permission.object_id)) as count, ObjectRelation.switch');
-            $group = 'ObjectRelation.switch';
-        } else {
-            $findType = 'list';
-            $fields = array('Permission.id', 'Permission.object_id');
-            $group = 'Permission.object_id';
-        }
+        if (!empty($user) || $objectsForbidden === false) {
+            $conditions = array(
+                'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
+                'Permission.switch' => 'group',
+                'ObjectRelation.id' => $objectId
+            );
+            if (!empty($options['relation'])) {
+                $conditions['ObjectRelation.switch'] = $options['relation'];
+            }
 
-        $joins = array(
-            array(
-                'table' => 'object_relations',
-                'alias' => 'ObjectRelation',
-                'type' => 'inner',
-                'conditions' => array(
-                    'Permission.object_id = ObjectRelation.object_id',
-                )
-            )
-        );
+            if ($options['count']) {
+                $findType = 'all';
+                $fields = array('COUNT(DISTINCT(Permission.object_id)) as count, ObjectRelation.switch');
+                $group = 'ObjectRelation.switch';
+            } else {
+                $findType = 'list';
+                $fields = array('Permission.id', 'Permission.object_id');
+                $group = 'Permission.object_id';
+            }
 
-        // if status is defined add join with objects
-        if (!empty($options['status'])) {
-            $joins[] = array(
-                'table' => 'objects',
-                'alias' => 'BEObject',
-                'type' => 'inner',
-                'conditions' => array(
-                    'Permission.object_id = BEObject.id',
-                    'BEObject.status' => $options['status']
+            $joins = array(
+                array(
+                    'table' => 'object_relations',
+                    'alias' => 'ObjectRelation',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Permission.object_id = ObjectRelation.object_id',
+                    )
                 )
             );
+
+            // if status is defined add join with objects
+            if (!empty($options['status'])) {
+                $joins[] = array(
+                    'table' => 'objects',
+                    'alias' => 'BEObject',
+                    'type' => 'inner',
+                    'conditions' => array(
+                        'Permission.object_id = BEObject.id',
+                        'BEObject.status' => $options['status']
+                    )
+                );
+            }
         }
 
-        $permission = ClassRegistry::init('Permission');
-        $objectsForbidden = $this->find($findType, array(
-            'fields' => $fields,
-            'conditions' => $conditions,
-            'joins' => $joins,
-            'group' => $group
-        ));
+        if ($objectsForbidden === false) {
+            $objectsForbidden = $this->find($findType, array(
+                'fields' => $fields,
+                'conditions' => $conditions,
+                'joins' => $joins,
+                'group' => $group
+            ));
+            if ($this->BeObjectCache) {
+                $this->BeObjectCache->write($objectId, $options, $objectsForbidden, 'related-perms');
+            }
+        }
 
         // get objects allowed to user
-        if (!empty($user)) {
+        if (!empty($user) && !empty($objectsForbidden)) {
             if (!empty($user['groupsIds'])) {
                 $conditions['Permission.ugid'] = $user['groupsIds'];
             } elseif (!empty($user['groups'])) {
@@ -519,6 +565,30 @@ class Permission extends BEAppModel
      * @return boolean
      */
     public function isObjectsAndParentsAccessible($objectId, array $options = array(), array $user = array()) {
+        $access = $this->frontendAccess($objectId, $user);
+        if($access == 'denied') {
+            return false;
+        }
+        $userGroups = !empty($user['groupsIds']) ? $user['groupsIds'] : array();
+        return $this->objectParentsAccessible($objectId, $options, $userGroups);
+    }
+
+   /**
+     * Return true if object $objectId parents are accessible for a user
+     * 'Accessible' means without 'frontend_access_with_block' permission set
+     *
+     * $options params are:
+     *
+     * - 'status' the status of parents to check
+     * - 'area_id' the parents publication id
+     * - 'stopIfMissingParents' true (default) to stop and return not valid if $objectId haven't parents and it isn't a publication
+     *
+     * @param int $objectId the object id
+     * @param array $options
+     * @param array $userGroups array of user groups ids
+     * @return boolean
+     */
+    public function objectParentsAccessible($objectId, array $options = array(), array $userGroups = array()) {
         $options += array(
             'status' => array(),
             'area_id' => null,
@@ -533,58 +603,23 @@ class Permission extends BEAppModel
             // return false if object type is not area or if 'area_id' was passed and it's different from $objectId
             if ($objectTypeId != $areaObjectTypeId || (!empty($options['area_id']) && $objectId != $options['area_id'])) {
                 return false;
+            } else {
+                return true;
             }
         }
 
-        $conditions = array(
-            'Permission.flag' => Configure::read('objectPermissions.frontend_access_with_block'),
-            'Permission.switch' => 'group',
-            'Permission.object_id' => array_merge(
-                array($objectId),
-                $parents
-            )
-        );
-
-        $countForbidden = $this->find('count', array(
-            'fields' => 'DISTINCT (Permission.object_id)',
-            'conditions' => $conditions
-        ));
-
-        if (!empty($user)) {
-            if (!empty($user['groupsIds'])) {
-                $conditions['Permission.ugid'] = $user['groupsIds'];
-            } elseif (!empty($user['groups'])) {
-                $groupList = ClassRegistry::init('Group')->getList(array(
-                    'Group.name' => $user['groups']
-                ));
-                $conditions['Permission.ugid'] = array_keys($groupList);
+        $flag = Configure::read('objectPermissions.frontend_access_with_block');
+        foreach ($parents as $id) {
+            $perms = $this->load($id, $flag);
+            $groupsAllowed = array();
+            foreach ($perms as $p) {
+                $groupsAllowed[] = $p['Permission']['ugid'];
             }
-            $joins = array();
-            if (!empty($options['status'])) {
-                $joins = array(
-                    array(
-                        'table' => 'objects',
-                        'alias' => 'BEObject',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'BEObject.id = Permission.object_id',
-                            'BEObject.status' => $options['status']
-                        )
-                    )
-                );
-            }
-            $countAllowed = $this->find('count', array(
-                'fields' => 'DISTINCT (Permission.object_id)',
-                'conditions' => $conditions,
-                'joins' => $joins
-            ));
-
-            if (is_numeric($countAllowed)) {
-                $countForbidden -= $countAllowed;
+            $permsAllowed = array_intersect($groupsAllowed, $userGroups);
+            if (!empty($groupsAllowed) && empty($permsAllowed)) {
+                return false;
             }
         }
-
-        return $countForbidden == 0;
+        return true;
     }
-
 }
