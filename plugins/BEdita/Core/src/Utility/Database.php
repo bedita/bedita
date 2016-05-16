@@ -3,7 +3,7 @@
  ${BEDITA_LICENSE_HEADER}
  */
 
-namespace BEdita\Core\Utils;
+namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
@@ -13,7 +13,7 @@ use Cake\Datasource\ConnectionManager;
  *
  * Provides static methods to common db related operations
  */
-class DbUtils
+class Database
 {
 
     /**
@@ -56,7 +56,7 @@ class DbUtils
     }
 
     /**
-     * Compare schema arrays betweend $expected and $current schema metadata
+     * Compare schema arrays between $expected and $current schema metadata
      * Returns an array with difference details
      *
      * @param array $expected Expected db schema

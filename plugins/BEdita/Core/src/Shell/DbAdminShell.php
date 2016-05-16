@@ -12,7 +12,7 @@
  */
 namespace BEdita\Core\Shell;
 
-use BEdita\Core\Utils\DbUtils;
+use BEdita\Core\Utility\Database;
 use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
@@ -21,7 +21,7 @@ use Cake\Utility\Inflector;
 
 /**
  * Database related shell commands like:
- *  - initialize a new databasa instance
+ *  - initialize a new database instance
  *  - create schema files
  *  - check schema consistency
  *
@@ -116,7 +116,7 @@ class DbAdminShell extends Shell
         if (!Cache::clear(false, '_cake_model_')) {
             $this->abort('Unable to remove internal cache before schema check');
         }
-        $schemaData = DbUtils::currentSchema();
+        $schemaData = Database::currentSchema();
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
         $res = file_put_contents($schemaFile, $jsonSchema);
         if (!$res) {
@@ -139,8 +139,8 @@ class DbAdminShell extends Shell
         if (!Cache::clear(false, '_cake_model_')) {
             $this->abort('Unable to remove internal cache before schema check');
         }
-        $currentSchema = DbUtils::currentSchema();
-        $schemaDiff = DbUtils::schemaCompare($be4Schema, $currentSchema);
+        $currentSchema = Database::currentSchema();
+        $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
         if (empty($schemaDiff)) {
             $this->info('No schema differences found');
         } else {
@@ -163,7 +163,7 @@ class DbAdminShell extends Shell
      */
     public function init()
     {
-        $info = DbUtils::basicInfo();
+        $info = Database::basicInfo();
         $this->warn('You are about to initialize a new database!!');
         $this->warn('ALL CURRENT BEDITA4 TABLES WILL BE DROPPED!!');
         $this->info('Host: ' . $info['host']);
@@ -181,7 +181,7 @@ class DbAdminShell extends Shell
         }
         $sqlSchema = file_get_contents($schemaFile);
         try {
-            $result = DbUtils::executeTransaction($sqlSchema);
+            $result = Database::executeTransaction($sqlSchema);
             if (!$result['success']) {
                 $this->abort('Error creating database schema: ' . $result['error']);
             }
