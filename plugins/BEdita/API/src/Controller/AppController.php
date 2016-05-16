@@ -35,6 +35,8 @@ class AppController extends Controller
     {
         parent::initialize();
 
+        $this->loadComponent('BEdita/API.Paginator');
+
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonApi'])) {
             $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
