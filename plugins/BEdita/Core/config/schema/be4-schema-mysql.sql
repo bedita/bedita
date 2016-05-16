@@ -347,7 +347,7 @@ CREATE TABLE profiles (
   PRIMARY KEY(id),
   UNIQUE KEY (email),
 
-  FOREIGN KEY(user_id) REFERENCES users(id),
+  FOREIGN KEY profiles_userid_fk(user_id) REFERENCES users(id),
 
   FOREIGN KEY(id)
     REFERENCES objects(id)

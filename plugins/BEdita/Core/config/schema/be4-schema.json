@@ -1260,7 +1260,7 @@
             }
         },
         "indexes": {
-            "user_id": {
+            "profiles_userid_fk": {
                 "type": "index",
                 "columns": [
                     "user_id"
