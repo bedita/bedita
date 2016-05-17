@@ -18,14 +18,13 @@ use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use RuntimeException;
 
 /**
  * ClassTableInheritance behavior
  *
- * It is responsabile to handle Class Table Inheritance.
+ * It is responsible for handling Class Table Inheritance.
  *
  * Adding tables to the inheritance implies that
  * the current table will show fields of all inherited tables as own fields in a transparent way.
@@ -360,7 +359,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * Return false if `$tableName` is not found as association to any table
      *
      * @param string $tableName The starting table name
-     * @return bool|string
+     * @return string|false
      */
     public function buildContainString($tableName)
     {
