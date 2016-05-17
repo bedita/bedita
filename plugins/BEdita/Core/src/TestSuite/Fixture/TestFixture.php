@@ -31,7 +31,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
     /**
      * {@inheritDoc}
      *
-     * If self::$fields is empty trying to use table schema loaded in configuration
+     * If `self::$fields` is empty trying to use table schema loaded in configuration
      *
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -56,6 +56,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      * Return fields for table defined in configuration.
      *
      * Configuration has to be in 'schema.table_name' key defined as:
+     *
      * - 'schema.table_name.columns' (required)
      * - 'schema.table_name.constraints' (optional)
      * - 'schema.table_name.indexes' (optional)
