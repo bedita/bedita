@@ -340,7 +340,7 @@ class ClassTableInheritanceBehavior extends Behavior
 
         foreach ($contain as $tableName => $tableContain) {
             $containString = $this->buildContainString($tableName);
-            if (!$containString) {
+            if ($containString === false) {
                 $containString = $tableName;
             }
             $result[$containString] = $tableContain;
@@ -367,17 +367,19 @@ class ClassTableInheritanceBehavior extends Behavior
             return $tableName;
         }
 
-        foreach ($this->inheritedTables(true) as $conf) {
-            $table = $this->getTable($conf['name'], $conf['className']);
+        $conf = $this->config('table');
+        if (empty($conf)) {
+            return false;
+        }
 
-            if ($table->association($tableName)) {
-                return $conf['name'] . '.' . $tableName;
-            }
+        $inheritTable = $this->getTable($conf['name'], $conf['className']);
+        if ($inheritTable->association($tableName)) {
+            return $conf['name'] . '.' . $tableName;
+        }
 
-            if ($table->hasBehavior('ClassTableInheritance')) {
-                $containString = $table->buildContainString($tableName);
-                return ($containString === false) ? false : $conf['name'] . '.' . $containString;
-            }
+        if ($inheritTable->hasBehavior('ClassTableInheritance')) {
+            $containString = $inheritTable->buildContainString($tableName);
+            return ($containString === false) ? false : $conf['name'] . '.' . $containString;
         }
 
         return false;
