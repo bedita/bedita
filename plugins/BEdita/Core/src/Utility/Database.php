@@ -1,9 +1,17 @@
 <?php
 /**
- ${BEDITA_LICENSE_HEADER}
+ * BEdita, API-first content management framework
+ * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Utils;
+namespace BEdita\Core\Utility;
 
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
@@ -13,7 +21,7 @@ use Cake\Datasource\ConnectionManager;
  *
  * Provides static methods to common db related operations
  */
-class DbUtils
+class Database
 {
 
     /**
@@ -56,7 +64,7 @@ class DbUtils
     }
 
     /**
-     * Compare schema arrays betweend $expected and $current schema metadata
+     * Compare schema arrays between $expected and $current schema metadata
      * Returns an array with difference details
      *
      * @param array $expected Expected db schema

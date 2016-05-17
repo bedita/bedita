@@ -20,7 +20,7 @@ use Cake\Validation\Validator;
 /**
  * Roles Model
  *
- * @property \Cake\ORM\Association\HasMany $Users
+ * @property \Cake\ORM\Association\BelongsToMany $Users
  *
  * @since 4.0.0
  */

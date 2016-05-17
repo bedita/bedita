@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Controller\Component;
 
-use BEdita\API\Exception\UnsupportedMediaTypeException;
+use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -103,19 +103,30 @@ class JsonApiComponent extends Component
     public function getLinks()
     {
         $links = [
-            'self' => Router::url(null, true),
+            'self' => Router::reverse($this->request, true),
         ];
 
         if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
-            $paging = reset($this->request->params['paging']);
-            $lastPage = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
-            $prevPage = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
-            $nextPage = $paging['page'] + 1;
+            $request = $this->request;
+            $paging = reset($request->params['paging']);
 
-            $links['first'] = Router::url(['page' => null], true);
-            $links['last'] = Router::url(['page' => $lastPage], true);
-            $links['prev'] = $paging['prevPage'] ? Router::url(['page' => $prevPage], true) : null;
-            $links['next'] = $paging['nextPage'] ? Router::url(['page' => $nextPage], true) : null;
+            $request->query['page'] = null;
+            $links['first'] = Router::reverse($request, true);
+
+            $request->query['page'] = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
+            $links['last'] = Router::reverse($request, true);
+
+            $links['prev'] = null;
+            if ($paging['prevPage']) {
+                $request->query['page'] = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
+                $links['prev'] = Router::reverse($request, true);
+            }
+
+            $links['next'] = null;
+            if ($paging['nextPage']) {
+                $request->query['page'] = $paging['page'] + 1;
+                $links['next'] = Router::reverse($request, true);
+            }
         }
 
         return $links;
@@ -156,8 +167,8 @@ class JsonApiComponent extends Component
      * Perform preliminary checks and operations.
      *
      * @return void
-     * @throws \BEdita\API\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header does not
-     *      comply to JSON API specifications and `checkMediaType` configuration is enabled.
+     * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
+     *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
      */
     public function beforeFilter()
     {

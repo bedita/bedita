@@ -12,21 +12,19 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\ORM\Query;
-
 /**
- * Controller for `/users` endpoint.
+ * Controller for `/roles` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\UsersTable $Users
+ * @property \BEdita\Core\Model\Table\RolesTable $Roles
  */
-class UsersController extends AppController
+class RolesController extends AppController
 {
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'Users';
+    public $modelClass = 'Roles';
 
     /**
      * {@inheritDoc}
@@ -35,41 +33,35 @@ class UsersController extends AppController
     {
         parent::initialize();
 
-        $this->set('_type', 'users');
+        $this->set('_type', 'roles');
     }
 
     /**
-     * Paginated users list.
+     * Paginated roles list.
      *
      * @return void
      */
     public function index()
     {
-        $query = $this->Users->find('all');
+        $query = $this->Roles->find('all');
 
-        if ($roleId = $this->request->param('role_id')) {
-            $query = $query->innerJoinWith('Roles', function (Query $query) use ($roleId) {
-                return $query->where(['Roles.id' => $roleId]);
-            });
-        }
+        $roles = $this->paginate($query);
 
-        $users = $this->paginate($query);
-
-        $this->set(compact('users'));
-        $this->set('_serialize', ['users']);
+        $this->set(compact('roles'));
+        $this->set('_serialize', ['roles']);
     }
 
     /**
-     * Get user's data.
+     * Get role's data.
      *
-     * @param int $id User ID.
+     * @param int $id Role ID.
      * @return void
      */
     public function view($id)
     {
-        $user = $this->Users->get($id);
+        $role = $this->Roles->get($id);
 
-        $this->set(compact('user'));
-        $this->set('_serialize', ['user']);
+        $this->set(compact('role'));
+        $this->set('_serialize', ['role']);
     }
 }

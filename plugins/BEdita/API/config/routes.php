@@ -16,11 +16,36 @@ use Cake\Routing\Router;
 
 Router::plugin(
     'BEdita/API',
-    ['path' => '/'],
+    [
+        'path' => '/',
+        '_namePrefix' => 'api:',
+    ],
     function (RouteBuilder $routes) {
-        $routes->connect('/users', ['controller' => 'Users', 'action' => 'index']);
-        $routes->connect('/users/*', ['controller' => 'Users', 'action' => 'view']);
+        $routes->connect(
+            '/roles',
+            ['controller' => 'Roles', 'action' => 'index'],
+            ['_method' => 'GET', '_name' => 'roles:index']
+        );
+        $routes->connect(
+            '/roles/*',
+            ['controller' => 'Roles', 'action' => 'view'],
+            ['_method' => 'GET', '_name' => 'roles:view']
+        );
+        $routes->connect(
+            '/roles/:role_id/users',
+            ['controller' => 'Users', 'action' => 'index'],
+            ['_method' => 'GET', '_name' => 'roles:users']
+        );
 
-        $routes->fallbacks('DashedRoute');
+        $routes->connect(
+            '/users',
+            ['controller' => 'Users', 'action' => 'index'],
+            ['_method' => 'GET', '_name' => 'users:index']
+        );
+        $routes->connect(
+            '/users/*',
+            ['controller' => 'Users', 'action' => 'view'],
+            ['_method' => 'GET', '_name' => 'users:view']
+        );
     }
 );

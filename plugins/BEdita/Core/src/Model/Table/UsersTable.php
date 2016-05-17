@@ -21,6 +21,7 @@ use Cake\Validation\Validator;
  * Users Model
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
+ * @property \Cake\ORM\Association\BelongsToMany $Roles
  *
  * @since 4.0.0
  */
@@ -59,7 +60,7 @@ class UsersTable extends Table
         ]);
 
         $this->belongsToMany('Roles', [
-            'className' => 'BEdita/Core.Role',
+            'className' => 'BEdita/Core.Roles',
         ]);
     }
 

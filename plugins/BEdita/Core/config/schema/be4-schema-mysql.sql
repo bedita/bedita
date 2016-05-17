@@ -41,7 +41,7 @@ CREATE TABLE users (
   -- from MySQL 5.6.5 modified NOT NULL DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
   PRIMARY KEY (id),
-  UNIQUE KEY (username)
+  UNIQUE KEY users_username_uq (username)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'authenticated users basic data';
 
@@ -54,7 +54,7 @@ CREATE TABLE auth_providers (
   params TINYTEXT NOT NULL           COMMENT 'external provider parameters',
 
   PRIMARY KEY (id),
-  UNIQUE KEY (name)
+  UNIQUE KEY authproviders_name_uq (name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
 
@@ -69,9 +69,9 @@ CREATE TABLE external_auth (
   username VARCHAR(255)                       COMMENT 'auth username on provider',
 
   PRIMARY KEY (id),
-  UNIQUE KEY (auth_provider_id, username),
-  FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
-  FOREIGN KEY (user_id)
+  UNIQUE KEY externalauth_authuser_uq (auth_provider_id, username),
+  FOREIGN KEY externalauth_authprovider_fk (auth_provider_id) REFERENCES auth_providers(id),
+  FOREIGN KEY externalauth_userid_fk (user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -92,8 +92,8 @@ CREATE TABLE roles (
   created datetime default NULL             COMMENT 'creation date',
   modified datetime default NULL            COMMENT 'last modification date',
 
-  PRIMARY KEY(id),
-  UNIQUE KEY u_name(name)
+  PRIMARY KEY (id),
+  UNIQUE KEY roles_name_uq (name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
 
@@ -104,14 +104,14 @@ CREATE TABLE roles_users (
   role_id INT UNSIGNED NOT NULL             COMMENT 'link to roles.id',
   user_id INT UNSIGNED NOT NULL             COMMENT 'link to users.id',
 
-  PRIMARY KEY(id),
-  INDEX (user_id),
-  INDEX (role_id),
-  FOREIGN KEY(user_id)
+  PRIMARY KEY (id),
+  INDEX rolesusers_userid_idx (user_id),
+  INDEX rolesusers_roleid_idx (role_id),
+  FOREIGN KEY rolesusers_userid_fk (user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(role_id)
+  FOREIGN KEY rolesusers_roleid_fk (role_id)
     REFERENCES roles(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -126,11 +126,12 @@ CREATE TABLE roles_users (
 CREATE TABLE config (
 
   name VARCHAR(255) NOT NULL                  COMMENT 'configuration parameter key',
-  context TEXT NOT NULL                       COMMENT 'group of configuration parameters',
+  context VARCHAR(255) NOT NULL               COMMENT 'group name of configuration parameters',
   value TEXT NOT NULL                         COMMENT 'configuration parameter value',
   created DATETIME NOT NULL                   COMMENT 'creation date',
 
-  PRIMARY KEY  (name)
+  PRIMARY KEY (name),
+  INDEX config_context_idx (context)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'configuration parameters' ;
 
@@ -147,8 +148,8 @@ CREATE TABLE object_types (
   model VARCHAR(255) NOT NULL               COMMENT 'CakePHP Table class name',
 
   PRIMARY KEY (id),
-  UNIQUE objecttypes_name_uq(name),
-  INDEX objecttypes_model_idx(plugin, model)
+  UNIQUE objecttypes_name_uq (name),
+  INDEX objecttypes_model_idx (plugin, model)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'obect types definitions';
 
@@ -160,7 +161,7 @@ CREATE TABLE property_types (
   params TEXT                                 COMMENT 'property type parameters',
 
   PRIMARY KEY (id),
-  UNIQUE (name)
+  UNIQUE propertytypes_name_uq (name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'property types definitions';
 
@@ -174,14 +175,14 @@ CREATE TABLE properties (
   multiple BOOL DEFAULT 0                     COMMENT 'multiple values for this property?',
   options TEXT                                COMMENT 'property predefined options',
 
-  PRIMARY KEY(id),
-  UNIQUE name_type(name, object_type_id),
-  INDEX (name),
-  INDEX (object_type_id),
-  INDEX (property_type_id),
+  PRIMARY KEY (id),
+  UNIQUE properties_nametype_uq (name, object_type_id),
+  INDEX properties_name_idx (name),
+  INDEX properties_objtype_idx (object_type_id),
+  INDEX properties_proptype_idx (property_type_id),
 
-  FOREIGN KEY(object_type_id) REFERENCES object_types(id),
-  FOREIGN KEY(property_type_id) REFERENCES property_types(id)
+  FOREIGN KEY properties_objtype_fk (object_type_id) REFERENCES object_types(id),
+  FOREIGN KEY properties_proptype_fk (property_type_id) REFERENCES property_types(id)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties definitions' ;
 
@@ -208,10 +209,10 @@ CREATE TABLE objects (
   publish_end DATETIME NULL                 COMMENT 'publish until this date',
 
   PRIMARY KEY (id),
-  UNIQUE KEY (uname),
-  INDEX (object_type_id),
+  UNIQUE KEY objects_uname_uq (uname),
+  INDEX objects_objtype_idx (object_type_id),
 
-  FOREIGN KEY(object_type_id)
+  FOREIGN KEY objects_objtype_fk (object_type_id)
     REFERENCES object_types(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -226,13 +227,13 @@ CREATE TABLE object_properties (
   object_id INT UNSIGNED NOT NULL             COMMENT 'link to objects.id',
   property_value TEXT NOT NULL                COMMENT 'property value of linked object',
 
-  PRIMARY KEY(id),
+  PRIMARY KEY (id),
 
-  FOREIGN KEY(object_id)
+  FOREIGN KEY objectproperties_objectid_fk (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(property_id)
+  FOREIGN KEY objectproperties_propertyid_fk (property_id)
     REFERENCES properties(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -251,15 +252,15 @@ CREATE TABLE object_permissions (
   operation INT UNSIGNED NOT NULL               COMMENT 'operation permission as bitwise mask',
   params TEXT                                   COMMENT 'permission parameters (JSON data)',
 
-  PRIMARY KEY(id),
-  UNIQUE (object_id, role_id),
+  PRIMARY KEY (id),
+  UNIQUE objectpermissions_objectrole_uq (object_id, role_id),
 
-  FOREIGN KEY(object_id)
+  FOREIGN KEY objectpermissions_objectid_fk (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(role_id)
-    REFERENCES objects(id)
+  FOREIGN KEY objectpermissions_roleid_fk (role_id)
+    REFERENCES roles(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 
@@ -280,9 +281,9 @@ CREATE TABLE annotations (
   modified DATETIME NOT NULL        COMMENT 'last modification date',
   params MEDIUMTEXT                 COMMENT 'annotation parameters (serialized JSON)',
 
-  PRIMARY KEY(id),
-  FOREIGN KEY(user_id) REFERENCES users(id),
-  FOREIGN KEY(object_id)
+  PRIMARY KEY (id),
+  FOREIGN KEY annotations_userid_fk (user_id) REFERENCES users(id),
+  FOREIGN KEY annotations_objectid_fk (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -312,10 +313,10 @@ CREATE TABLE media (
   media_uid VARCHAR(255) NULL       COMMENT 'uid, used for remote videos',
   thumbnail TINYTEXT NULL           COMMENT 'remote media thumbnail URL',
 
-  PRIMARY KEY(id),
-  INDEX (hash_file),
+  PRIMARY KEY (id),
+  INDEX media_hashfile_idx (hash_file),
 
-  FOREIGN KEY(id)
+  FOREIGN KEY media_id_fk (id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -344,12 +345,12 @@ CREATE TABLE profiles (
   phone TINYTEXT NULL               COMMENT 'first phone number, can be NULL',
   website TEXT NULL                 COMMENT 'website url, can be NULL',
 
-  PRIMARY KEY(id),
-  UNIQUE KEY (email),
+  PRIMARY KEY (id),
+  UNIQUE KEY profiles_email_uq (email),
 
-  FOREIGN KEY profiles_userid_fk(user_id) REFERENCES users(id),
+  FOREIGN KEY profiles_userid_fk (user_id) REFERENCES users(id),
 
-  FOREIGN KEY(id)
+  FOREIGN KEY profiles_id_fk (id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -371,8 +372,8 @@ CREATE TABLE relations (
 -- From MySQL 5.7.8 use JSON type
 
   PRIMARY KEY (id),
-  UNIQUE KEY (name),
-  UNIQUE KEY (inverse_name)
+  UNIQUE KEY relations_name_uq (name),
+  UNIQUE KEY relations_inversename_uq (inverse_name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'object relations definitions';
 
@@ -383,13 +384,13 @@ CREATE TABLE relation_types (
   object_type_id SMALLINT UNSIGNED NOT NULL     COMMENT 'object type id',
   position ENUM ('left', 'right') NOT NULL      COMMENT 'type position in relation',
 
-  PRIMARY KEY relation_type_position (relation_id, object_type_id, position),
+  PRIMARY KEY relationtypes_relobjpos_pk (relation_id, object_type_id, position),
 
-  FOREIGN KEY(relation_id)
+  FOREIGN KEY relationtypes_relationid_fk (relation_id)
     REFERENCES relations(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(object_type_id)
+  FOREIGN KEY relationtypes_objtypeid_fk (object_type_id)
     REFERENCES object_types(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -407,19 +408,19 @@ CREATE TABLE object_relations (
   params MEDIUMTEXT NULL                COMMENT 'relation parameters (JSON format)',
 -- From MySQL 5.7.8 use JSON type
 
-  PRIMARY KEY left_relation_right (left_id, relation_id, right_id),
-  INDEX (left_id),
-  INDEX (right_id),
+  PRIMARY KEY objectrelations_leftrelright_pk (left_id, relation_id, right_id),
+  INDEX objectrelations_leftid_idx (left_id),
+  INDEX objectrelations_rightid_idx (right_id),
 
-  FOREIGN KEY(left_id)
+  FOREIGN KEY objectrelations_leftid_fk (left_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(right_id)
+  FOREIGN KEY objectrelations_rightid_fk (right_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(relation_id)
+  FOREIGN KEY objectrelations_relationid_fk (relation_id)
     REFERENCES relations(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -441,21 +442,21 @@ CREATE TABLE trees (
   depth INT UNSIGNED NOT NULL           COMMENT 'depth',
   menu INT UNSIGNED NOT NULL DEFAULT 1  COMMENT 'menu on/off',
 
-  PRIMARY KEY(parent_id, object_id),
-  INDEX object_parent (object_id, parent_id),
-  INDEX root_left (root_id, tree_left),
-  INDEX root_right (root_id, tree_right),
-  INDEX (menu),
+  PRIMARY KEY trees_parentobj_pk (parent_id, object_id),
+  INDEX trees_objectparent_idx (object_id, parent_id),
+  INDEX trees_rootleft_idx (root_id, tree_left),
+  INDEX trees_rootright_idx (root_id, tree_right),
+  INDEX trees_menu_idx (menu),
 
-  FOREIGN KEY(object_id)
+  FOREIGN KEY trees_objectid_fk (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(parent_id)
+  FOREIGN KEY trees_parentid_fk (parent_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY(root_id)
+  FOREIGN KEY trees_rootid_fk (root_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION

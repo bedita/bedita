@@ -81,6 +81,9 @@ class JsonApiTest extends TestCase
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
                         ],
+                        'links' => [
+                            'self' => '/users/1',
+                        ],
                     ],
                     [
                         'id' => '2',
@@ -93,6 +96,9 @@ class JsonApiTest extends TestCase
                             'num_login_err' => 0,
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
+                        ],
+                        'links' => [
+                            'self' => '/users/2',
                         ],
                     ],
                 ],
@@ -115,6 +121,9 @@ class JsonApiTest extends TestCase
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
                         ],
+                        'links' => [
+                            'self' => '/users/1',
+                        ],
                     ],
                     [
                         'id' => '2',
@@ -127,6 +136,9 @@ class JsonApiTest extends TestCase
                             'num_login_err' => 0,
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
+                        ],
+                        'links' => [
+                            'self' => '/users/2',
                         ],
                     ],
                 ],
@@ -149,6 +161,9 @@ class JsonApiTest extends TestCase
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
                         ],
+                        'links' => [
+                            'self' => '/users/1',
+                        ],
                     ],
                     [
                         'id' => '2',
@@ -161,6 +176,9 @@ class JsonApiTest extends TestCase
                             'num_login_err' => 0,
                             'created' => '2016-03-15T09:57:38+0000',
                             'modified' => '2016-03-15T09:57:38+0000',
+                        ],
+                        'links' => [
+                            'self' => '/users/2',
                         ],
                     ],
                 ],
