@@ -457,9 +457,6 @@ class BEAppModel extends AppModel {
             throw new BeditaException(__('Error finding objects', true));
         }
 
-        $s = $this->getStartQuote();
-        $e = $this->getEndQuote();
-
         if ($size === null) {
             $size = $this->findObjectsCount(array(
                 'joins' => $clauses['joins'],
@@ -752,7 +749,7 @@ class BEAppModel extends AppModel {
      * @param array $clauses The SQL clauses
      * @return string
      */
-    public function buildQueryStatement($clauses) {
+    public function buildQueryStatement(array $clauses) {
         $clauses += array(
             'fields' => '',
             'table' => '',
