@@ -430,7 +430,7 @@ class BEAppModel extends AppModel {
         // listen if search engine was used and eventually update $size and $rankOrder
         BeLib::eventManager()->bind(
             'buildFindObjects.searchEngineResult',
-            function ($data) use ($size, $rankOrder) {
+            function ($data) use (&$size, &$rankOrder) {
                 $size = $data['count'];
                 $rankOrder = $data['order'];
                 return $data;
