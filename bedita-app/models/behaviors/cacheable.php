@@ -133,7 +133,7 @@ class CacheableBehavior extends ModelBehavior {
      * Add object ids to delete from cache to self::objectsToClean array
      *
      * @param Model $model
-     * @param array $ids array of ids
+     * @param array|int $ids array of ids or single id
      */
     public function addObjectsToClean(&$model, $ids = array()) {
         if (!$this->on) {
@@ -271,6 +271,7 @@ class CacheableBehavior extends ModelBehavior {
     public function afterSave(&$model, $created) {
         // if it's an update remove cache
         if ($this->on) {
+            $this->addObjectsToClean($model, $model->id);
             $this->clearCache($model);
         }
     }

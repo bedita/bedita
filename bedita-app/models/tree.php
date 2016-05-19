@@ -149,27 +149,35 @@ class Tree extends BEAppModel
     /**
      * Array of object $id tree parents objects
      *
-     * @param integer $id
+     * If `$useCache` is true it will try to read/write from/to cache 
+     *
+     * @param int|null $id The child id
+     * @param int|null $area_id The publication (area) id
+     * @param array $status An array of object status that parent must have
+     * @param bool $useCache If it has to use cache (true default)
      * @return array, parent ids (may be empty)
      */
-    public function getParents($id = null, $area_id=null, $status = array()) {
+    public function getParents($id = null, $area_id=null, $status = array(), $useCache = true) {
+        if ($id === null) {
+            return array();
+        }
+
         $cacheOpts = array($area_id, $status);
-        if ($this->BeObjectCache) {
+        if ($this->BeObjectCache && $useCache) {
             $cachedValue = $this->BeObjectCache->read($id, $cacheOpts, 'parents');
             if ($cachedValue !== false) {
                 return $cachedValue;
             }
         }
-        $parents = array();
-        if (isset($id)) {
-            $parents = $this->getParent($id, $area_id, $status) ;
-            if ($parents === false) {
-                $parents = array();
-            } elseif (!is_array($parents)) {
-                $parents = array($parents);
-            }
+
+        $parents = $this->getParent($id, $area_id, $status) ;
+        if ($parents === false) {
+            $parents = array();
+        } elseif (!is_array($parents)) {
+            $parents = array($parents);
         }
-        if ($this->BeObjectCache) {
+
+        if ($this->BeObjectCache && $useCache) {
             $this->BeObjectCache->write($id, $cacheOpts, $parents, 'parents');
         }
         return $parents;
@@ -201,7 +209,7 @@ class Tree extends BEAppModel
         if (!is_array($destination)) {
             $destination = (empty($destination))? array() : array($destination);
         }
-        $currParents = $this->getParents($id, $options['area_id'], $options['status']);
+        $currParents = $this->getParents($id, $options['area_id'], $options['status'], false);
         // remove
         $remove = array_diff($currParents, $destination) ;
         foreach ($remove as $parent_id) {
