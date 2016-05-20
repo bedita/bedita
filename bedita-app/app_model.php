@@ -386,331 +386,88 @@ class BEAppModel extends AppModel {
 		return $res;
 	}
 
-	/**
-	 * perform an objects search
-	 *
-	 * @param integer $id		root id, if it's set perform search on the tree
-	 * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
-	 * @param string $status	object status
-	 * @param array  $filter	example of filter:
+    /**
+     * perform an objects search
+     *
+     * @param integer $id		root id, if it's set perform search on the tree
+     * @param string $userid	user: null (default) => no permission check. ' ' => guest/anonymous user,
+     * @param string $status	object status
+     * @param array  $filter	example of filter:
      *                          parent_id => used if $id is empty as root id
-	 * 							"object_type_id" => array(21,22,...),
-	 *							"ModelName.fieldname => "value",
-	 * 							"query" => "text to search"
-	 * 							....
-	 *
-	 *							reserved filter words:
-	 *							"category" => "val" search by category id or category name
-	 *							"relation" => "val" search by object_relations swicth
-	 *							"rel_object_id" => "val" search object relateds to a particular object (object_relation object_id)
-	 *							...
-	 *							see all in BuildFilter behavior
+     * 							"object_type_id" => array(21,22,...),
+     *							"ModelName.fieldname => "value",
+     * 							"query" => "text to search"
+     * 							....
+     *
+     *							reserved filter words:
+     *							"category" => "val" search by category id or category name
+     *							"relation" => "val" search by object_relations swicth
+     *							"rel_object_id" => "val" search object relateds to a particular object (object_relation object_id)
+     *							...
+     *							see all in BuildFilter behavior
      *
      *                          "afterFilter" => array() define some operations executed after the objects search
      *                                           to spec on array params see BEAppModel::findObjectsAfterFilter()
-	 *
-	 * @param string $order		field to order result (id, status, modified..)
-	 * @param boolean $dir		true (default), ascending, otherwise descending.
-	 * @param integer $page		Page number (for pagination)
-	 * @param integer $dim		Page dim (for pagination). Default get all
-	 * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
-	 * @param array $excludeIds Array of id's to exclude
-	 */
-	public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
+     *
+     * @param string $order		field to order result (id, status, modified..)
+     * @param boolean $dir		true (default), ascending, otherwise descending.
+     * @param integer $page		Page number (for pagination)
+     * @param integer $dim		Page dim (for pagination). Default get all
+     * @param boolean $all		true: all tree levels (discendents), false: only first level (children)
+     * @param array $excludeIds Array of id's to exclude
+     */
+    public function findObjects($id = null, $userid = null, $status = null, $filter = array(), $order = null, $dir = true, $page = 1, $dim = null, $all = false, $excludeIds = array()) {
 
-        $afterFilter = array();
-        if (isset($filter['afterFilter'])) {
-            if (is_array($filter['afterFilter'])) {
-                $afterFilter = $filter['afterFilter'];
+        if (!$this->Behaviors->attached('BuildFilter')) {
+            $this->Behaviors->attach('BuildFilter');
+        }
+
+        $afterFilter = $this->Behaviors->BuildFilter->prepareAfterFilter($filter, $order);
+
+        $size = null;
+        $rankOrder = null;
+
+        // listen if search engine was used and eventually update $size and $rankOrder
+        BeLib::eventManager()->bind(
+            'buildFindObjects.searchEngineResult',
+            function ($data) use (&$size, &$rankOrder) {
+                $size = $data['count'];
+                $rankOrder = $data['order'];
+                return $data;
             }
-            unset($filter['afterFilter']);
+        );
+
+        $clauses = $this->findObjectsClauses(compact(
+            'id',
+            'userid',
+            'status',
+            'filter',
+            'order',
+            'dir',
+            'page',
+            'dim',
+            'all',
+            'excludeIds'
+        ));
+
+        $query = $this->buildQueryStatement($clauses);
+
+        $tmp = $this->query($query);
+        if ($tmp === false) {
+            throw new BeditaException(__('Error finding objects', true));
         }
 
-        // if 'count_permission' filter is set and 'num_of_permission' order is not requested
-        // avoid join and count them after filter
-        if (!empty($filter['count_permission']) && $order != 'num_of_permission') {
-            unset($filter['count_permission']);
-            $afterFilter[] = array(
-                'className' => 'Permission',
-                'methodName' => 'countPermissions'
-            );
+        if ($size === null) {
+            $size = $this->findObjectsCount(array(
+                'joins' => $clauses['joins'],
+                'conditions' => $clauses['conditions']
+            ));
         }
 
-        // if 'count_annotation' filter is set and 'num_of_annotation_object' order is not requested
-        // avoid join and count them after filter
-        // else join only annotation related to 'num_of_annotation_object' and count others in after filter
-        if (!empty($filter['count_annotation'])) {
-            if (!is_array($filter['count_annotation'])) {
-                $countAnnotation = array($filter['count_annotation']);
-            } else {
-                $countAnnotation = $filter['count_annotation'];
-            }
-            unset($filter['count_annotation']);
-            $countAnnotationNames = array();
-            foreach ($countAnnotation as $annotationModelName) {
-                $countAnnotationNames[$annotationModelName] = 'num_of_' . Inflector::underscore($annotationModelName);
-            }
-
-            if (in_array($order, $countAnnotationNames)) {
-                $flipCountAnnotationNames =  array_flip($countAnnotationNames);
-                $a = $flipCountAnnotationNames[$order];
-                $filter['count_annotation'] = array($a);
-                $countAnnotation = array_diff($countAnnotation, $filter['count_annotation']);
-            }
-
-            if (!empty($countAnnotation)) {
-                 $afterFilter[] = array(
-                    'className' => 'Annotation',
-                    'methodName' => 'countAnnotations',
-                    'options' => array(
-                        'type' => $countAnnotation
-                    )
-                );
-            }
-        }
-
-        if (isset($filter['parent_id'])) {
-            $id = (!$id && !empty($filter['parent_id']))? $filter['parent_id'] : $id;
-            unset($filter['parent_id']);
-        }
-
-        if (isset($filter['descendants'])) {
-            $all = true;
-            unset($filter['descendants']);
-        }
-
-        if (isset($filter['object_type'])) {
-            if (is_array($filter['object_type'])) {
-                foreach ($filter['object_type'] as $ot) {
-                    $filter['object_type_id'][] = Configure::read('objectTypes.' . $ot . '.id');
-                }
-            } else {
-                $filter['object_type_id'][] = Configure::read('objectTypes.' . $filter['object_type'] . '.id');
-            }
-            unset($filter['object_type']);
-        }
-
-        // if filter 'tree_related_object' is set
-        // it filters objects that have some relation with objects located
-        // on $id tree branch or on $id tree branch descendants (if $all is true)
-        if ($id && isset($filter['tree_related_object'])) {
-            $objectIds = array();
-            $tree = ClassRegistry::init('Tree');
-            if ($all) {
-                $objectIds = $tree->find('list', array(
-                    'fields' => array('id'),
-                    'conditions' => array('object_path LIKE' => '%/' . $id . '/%'),
-                    'group' => 'id'
-                ));
-            } else {
-                $objectIds = $tree->find('list', array(
-                    'fields' => array('id'),
-                    'conditions' => array('parent_id' => $id)
-                ));
-            }
-            $filter['ObjectRelation.object_id'] = $objectIds;
-            // avoid to search objects children on $id branch tree
-            $id = null;
-        }
-
-        if (!empty($filter['searchstring'])) {
-            if (empty($filter['query'])) {
-                $filter['query'] = $filter['searchstring'];
-            }
-            unset($filter['searchstring']);
-        }
-
-		$s = $this->getStartQuote();
-		$e = $this->getEndQuote();
-
-		$beObjFields = $this->fieldsString("BEObject");
-		$fields = 'DISTINCT ' . $beObjFields;
-		$from = "{$s}objects{$e} as {$s}BEObject{$e}";
-		$conditions = array();
-		$groupClausole = $beObjFields;
-
-        $filterKeysString = implode('|', array_keys($filter));
-        if (strstr($filterKeysString, 'Content.')) {
-            $contentFields = $this->fieldsString('Content', null, array('id'));
-            $fields .= ', ' . $contentFields;
-            $from .= " LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
-            $groupClausole .= ', ' . $contentFields;
-            // if set remove Content::addContentFields() from afterFilter
-            foreach ($afterFilter as $key => $f) {
-                if ($f['className'] == 'Content' && $f['methodName'] == 'appendContentFields') {
-                    unset($afterFilter[$key]);
-                }
-            }
-        }
-
-		if (!empty($status)) {
-			$conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status);
-        }
-
-        // actual SQL limit page (may vary using external searchEngine)
-        $limitPage = $page;
-        $rankOrder = array();
-        $searchCount = null;
-        if (!empty($filter["query"])) {
-            $engine = Configure::read("searchEngine");
-            if (!empty($engine)) {
-                $options = array("id" => $id, "userid" => $userid,
-                        "status" => $status, "filter" => $filter, "page" => $page,
-                        "dim" => $dim, "all" => $all);
-                $searchEngine = ClassRegistry::init($engine);
-                $result = $searchEngine->searchObjects($options);
-                $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $result["ids"]);
-                if (empty($order)) { // user rank order on empty $order
-                    $rank = 1;
-                    foreach ($result["ids"] as $idFound) {
-                        $rankOrder[$idFound] = $rank++;
-                    }
-                }
-                $searchCount = $result["total"];
-                unset($filter["query"]);
-                $limitPage = 1;
-            // default search engine
-            } else {
-            	if (!empty($filter['searchType'])) {
-            		$sType = $filter['searchType'];
-            	} else {
-                    $sType = (empty($filter['substring']))? 'fulltext' : 'like';
-                }
-                $filter['query'] = array(
-                    'searchType' => $sType,
-                    'searchString' => $filter['query']
-                );
-            }
-        }
-        if (isset($filter['searchType'])) {
-        	unset($filter['searchType']);
-        }
-
-		if(!empty($excludeIds)) {
-			$conditions["NOT"] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
-		}
-
-		// setup filter to get only allowed objects
-		// exclude backend private objects and object that stay only in private publication/section
-		if (BACKEND_APP && $userid) {
-			$filter["allowed_to_user"] = $userid;
-		}
-
-		// get specific query elements
-		if (!$this->Behaviors->attached('BuildFilter')) {
-			$this->Behaviors->attach('BuildFilter');
-		}
-
-		$sqlItems = $this->getSqlItems($filter);
-        $otherFields = $sqlItems['fields'];
-        $otherFrom = $sqlItems['from'];
-        $otherJoins = $sqlItems['joins'];
-        $otherConditions = $sqlItems['conditions'];
-        $otherGroup = $sqlItems['group'];
-        $otherOrder = $sqlItems['order'];
-        $useGroupBy = $sqlItems['useGroupBy'];
-
-		if (!empty($otherFields)) {
-			$fields = $fields . $otherFields;
-        }
-
-		$conditions = array_merge($conditions, $otherConditions);
-		$from .= $otherJoins . $otherFrom;
-
-		if (!empty($id)) {
-			$treeFields = $this->fieldsString("Tree");
-			$fields .= "," . $treeFields;
-			if ($this->getDriver() == 'mysql') {
-				// #MYSQL
-				$groupClausole .= ", {$s}Tree{$e}.{$s}id{$e}";
-			} else {
-				// #POSTGRES (@TODO: this clausole do not exclude double results. To fix it)
-				$groupClausole .= "," . $this->fieldsString("Tree");
-			}
-			$from .= ", {$s}trees{$e} AS {$s}Tree{$e}";
-			$conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
-
-			if ($all) {
-				$cond = "";
-				if ($this->getDriver() == 'mysql') {
-					// #MYSQL
-					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
-				} else {
-					// #POSTGRES
-					$cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE ((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}) || '/%') " ;
-				}
-				$conditions[] = $cond;
-			} else {
-				$conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
-			}
-			if (empty($order) && empty($filter['query'])) {
-				$order = "{$s}Tree{$e}.{$s}priority{$e}";
-				$section = ClassRegistry::init("Section");
-				$priorityOrder = $section->field("priority_order", array("id" => $id));
-				if(empty($priorityOrder))
-					$priorityOrder = "asc";
-				$dir = ($priorityOrder == "asc");
-			}
-		}
-
-        // if $order is empty and not performing search then set a default order
-        if ((empty($order) || !preg_match('/^[a-z0-9`., _-]+$/i', trim($order))) && empty($filter['query'])) {
-            $order = "{$s}BEObject{$e}.{$s}id{$e}";
-            $dir = false;
-        }
-
-		// build sql conditions
-		$db = ConnectionManager::getDataSource($this->useDbConfig);
-		$sqlClausole = $db->conditions($conditions, true, true) ;
-
-        if ($useGroupBy || !empty($otherGroup) || ($id && $all)) {
-            $groupClausole = 'GROUP BY ' . $groupClausole . $otherGroup;
-        } else {
-            $groupClausole = '';
-        }
-
-		$ordClausole = "";
-        if (is_string($order) && strlen($order)) {
-			$beObject = ClassRegistry::init("BEObject");
-			if ($beObject->hasField($order))
-				$order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
-            $ordItem = $order . ((!$dir)? "DESC " : "");
-			if (!empty($otherOrder)) {
-				$ordClausole = "ORDER BY " . $ordItem .", " . $otherOrder;
-			} else {
-				$ordClausole = " ORDER BY {$order} " . ((!$dir)? " DESC " : "") ;
-			}
-		} elseif (!empty($otherOrder)) {
-			$ordClausole = "ORDER BY {$otherOrder}";
-		}
-
-		$limit = (!empty($dim))? $this->getLimitClausole($dim, $limitPage) : '';
-		$query = "SELECT {$fields} FROM {$from} {$sqlClausole} {$groupClausole} {$ordClausole} {$limit}";
-
-		// #CUSTOM QUERY
-		$tmp = $this->query($query);
-
-		if ($tmp === false) {
-			throw new BeditaException(__("Error finding objects", true));
-        }
-
-        if ($searchCount === null) {
-    		$queryCount = "SELECT COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count FROM {$from} {$sqlClausole}";
-    
-    		// #CUSTOM QUERY
-    		$tmpCount = $this->query($queryCount);
-    		if ($tmpCount === false) {
-    			throw new BeditaException(__("Error counting objects", true));
-            }
-    
-    		$size = (empty($tmpCount[0][0]["count"]))? 0 : $tmpCount[0][0]["count"];
-        } else {
-            $size = $searchCount;
-        }
-
-		$recordset = array(
-			"items"		=> array(),
-			"toolbar"	=> $this->toolbar($page, $dim, $size) );
+        $recordset = array(
+            'items'	=> array(),
+            'toolbar' => $this->toolbar($page, $dim, $size)
+        );
 
         // Keys to be skipped when merging results. #639 - Associated models merged to main object results.
         $skipKeys = array('RelatedObject', 'ReferenceObject', 'DateItem', 'ObjectProperty');
@@ -719,7 +476,7 @@ class BEAppModel extends AppModel {
             array_push($recordset['items'], $this->am($item, $skipKeys));
         }
 
-		// reorder array using search engine rank
+        // reorder array using search engine rank
         if (!empty($rankOrder)) {
             $tmpOrder = array();
             foreach ($recordset['items'] as $item) {
@@ -735,8 +492,277 @@ class BEAppModel extends AppModel {
             $this->findObjectsAfterFilter($recordset['items'], $afterFilter);
         }
 
-		return $recordset;
-	}
+        return $recordset;
+    }
+
+    /**
+     * Return an objects count
+     *
+     * The count can be customized using $clauses as in `self::buildQueryStatement`
+     * Keys `fields`, `table` and `alias` defined in `$clauses` will be overridden.
+     * Other keys have to take account that `objects` table is aliased with `BEObject`
+     *
+     * Setting `executeQuery` to false will return the SQL query as string
+     *
+     * @param array $clauses The sql clauses
+     * @param bool $executeQuery If the query have to executed or returned
+     * @return int|string
+     */
+    public function findObjectsCount(array $clauses, $executeQuery = true) {
+        $s = $this->getStartQuote();
+        $e = $this->getEndQuote();
+        $clauses = array_merge(
+            $clauses,
+            array(
+                'fields' => "COUNT(DISTINCT {$s}BEObject{$e}.{$s}id{$e}) AS count",
+                'table' => "{$s}objects{$e}",
+                'alias' => "{$s}BEObject{$e}"
+            )
+        );
+
+        $queryCount = $this->buildQueryStatement($clauses);
+        if (!$executeQuery) {
+            return $queryCount;
+        }
+
+        $count = $this->query($queryCount);
+        if ($count === false) {
+            throw new BeditaException(__('Error counting objects', true));
+        }
+
+        return current(Set::flatten($count));
+    }
+
+    /**
+     * Return an array of query clauses starting from some options
+     * and applying some filters.
+     *
+     * Possible options are the arguments passed to self::findObjects()
+     *
+     * @see self::findObjects() to see the meaning of $options keys
+     * @see BuildFilterBehavior to see how to the filter is used to build the query clauses
+     * @param array $options An array of options
+     * @return array
+     */
+    public function findObjectsClauses(array $options) {
+        $options += array(
+            'id' => null,
+            'userid' => null,
+            'status' => null,
+            'filter' => array(),
+            'order' => null,
+            'dir' => true,
+            'page' => 1,
+            'dim' => null,
+            'all' => false,
+            'excludeIds' => array()
+        );
+        $clauses = array(
+            'fields' => '',
+            'table' => '',
+            'alias' => '',
+            'joins' => '',
+            'conditions' => '',
+            'group' => '',
+            'order' => '',
+            'limit' => ''
+        );
+        $s = $this->getStartQuote();
+        $e = $this->getEndQuote();
+
+        extract($options, EXTR_SKIP);
+
+        if (array_key_exists('parent_id', $filter)) {
+            $id = (!$id && !empty($filter['parent_id']))? $filter['parent_id'] : $id;
+            unset($filter['parent_id']);
+        }
+
+        if (isset($filter['descendants'])) {
+            $all = true;
+            unset($filter['descendants']);
+        }
+
+        // if filter 'tree_related_object' is set
+        // it filters objects that have some relation with objects located
+        // on $id tree branch or on $id tree branch descendants (if $all is true)
+        if ($id && isset($filter['tree_related_object'])) {
+            $tree = ClassRegistry::init('Tree');
+            $filter['ObjectRelation.object_id'] = $tree->findChildrenList($id, $all);
+            // avoid to search objects children on $id branch tree
+            $id = null;
+        }
+
+        if (!$this->Behaviors->attached('BuildFilter')) {
+            $this->Behaviors->attach('BuildFilter');
+        }
+        $this->Behaviors->BuildFilter->prepareCountPermissionFilter($filter, $order);
+        $this->Behaviors->BuildFilter->prepareCountAnnotationFilter($filter, $order);
+        $this->Behaviors->BuildFilter->prepareObjectTypeFilter($filter);
+
+        $beObjFields = $this->fieldsString('BEObject');
+        $clauses['fields'] = 'DISTINCT ' . $beObjFields;
+        $clauses['table'] = "{$s}objects{$e}";
+        $clauses['alias'] = "as {$s}BEObject{$e}";
+        $conditions = array();
+        $clauses['group'] = $beObjFields;
+
+        if (!empty($excludeIds)) {
+            $conditions['NOT'] = array(array("{$s}BEObject{$e}.{$s}id{$e}" => $excludeIds));
+        }
+
+        $filterKeysString = implode('|', array_keys($filter));
+        if (strstr($filterKeysString, 'Content.')) {
+            $contentFields = $this->fieldsString('Content', null, array('id'));
+            $clauses['fields'] .= ', ' . $contentFields;
+            $clauses['joins'] .= " LEFT OUTER JOIN {$s}contents{$e} as {$s}Content{$e} ON {$s}BEObject{$e}.{$s}id{$e}={$s}Content{$e}.{$s}id{$e}";
+            $clauses['group'] .= ', ' . $contentFields;
+        }
+
+        if (!empty($status)) {
+            $conditions[] = array("{$s}BEObject{$e}.{$s}status{$e}" => $status);
+        }
+
+        // actual SQL limit page (may vary using external searchEngine)
+        $limitPage = $page;
+
+        // search filter
+        $this->Behaviors->BuildFilter->prepareSearchFilter($filter);
+        $searchEngineResult = $this->Behaviors->BuildFilter->searchEngineResult(
+            Configure::read('searchEngine'),
+            array(
+                'id' => $id,
+                'userid' => $userid,
+                'status' => $status,
+                'filter' => $filter,
+                'page' => $page,
+                'dim' => $dim,
+                'all' => $all,
+                'order' => $order
+            )
+        );
+        if ($searchEngineResult !== false) {
+            unset($filter['query']);
+            $limitPage = 1;
+            $conditions[] = array("{$s}BEObject{$e}.{$s}id{$e}" => $searchEngineResult['result']['ids']);
+            BeLib::eventManager()->trigger('buildFindObjects.searchEngineResult', array($searchEngineResult));
+        }
+
+        // setup filter to get only allowed objects
+        // exclude backend private objects and object that stay only in private publication/section
+        if (BACKEND_APP && $userid) {
+            $filter['allowed_to_user'] = $userid;
+        }
+
+        // build filter clauses with BuildFilterBehavior::getSqlItems()
+        $sqlItems = $this->getSqlItems($filter);
+        $otherFields = $sqlItems['fields'];
+        $otherFrom = $sqlItems['from'];
+        $otherJoins = $sqlItems['joins'];
+        $otherConditions = $sqlItems['conditions'];
+        $otherGroup = $sqlItems['group'];
+        $otherOrder = $sqlItems['order'];
+        $useGroupBy = $sqlItems['useGroupBy'];
+
+        if (!empty($otherFields)) {
+            $clauses['fields'] = $clauses['fields'] . $otherFields;
+        }
+
+        $conditions = array_merge($conditions, $otherConditions);
+        $clauses['joins'] .= $otherJoins . $otherFrom;
+
+        if (!empty($id)) {
+            $treeFields = $this->fieldsString('Tree');
+            $clauses['fields'] .= ',' . $treeFields;
+            if ($this->getDriver() == 'mysql') {
+                // #MYSQL
+                $clauses['group'] .= ", {$s}Tree{$e}.{$s}id{$e}";
+            } else {
+                // #POSTGRES (@TODO: this clausole do not exclude double results. To fix it)
+                $clauses['group'] .= ',' . $this->fieldsString('Tree');
+            }
+            $clauses['joins'] .= ", {$s}trees{$e} AS {$s}Tree{$e}";
+            $conditions[] = " {$s}Tree{$e}.{$s}id{$e}={$s}BEObject{$e}.{$s}id{$e}" ;
+
+            if ($all) {
+                $cond = '';
+                if ($this->getDriver() == 'mysql') {
+                    // #MYSQL
+                    $cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE (CONCAT((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}), '/%')) " ;
+                } else {
+                    // #POSTGRES
+                    $cond = " {$s}Tree{$e}.{$s}object_path{$e} LIKE ((SELECT {$s}object_path{$e} FROM {$s}trees{$e} WHERE {$s}id{$e} = {$id}) || '/%') " ;
+                }
+                $conditions[] = $cond;
+            } else {
+                $conditions[] = array("{$s}Tree{$e}.{$s}parent_id{$e}" => $id) ;
+            }
+            if (empty($order) && empty($filter['query'])) {
+                $order = "{$s}Tree{$e}.{$s}priority{$e}";
+                $section = ClassRegistry::init('Section');
+                $priorityOrder = $section->field('priority_order', array('id' => $id));
+                if (empty($priorityOrder)) {
+                    $priorityOrder = 'asc';
+                }
+                $dir = ($priorityOrder == 'asc');
+            }
+        }
+
+        // if $order is empty and not performing search then set a default order
+        if ((empty($order) || !preg_match('/^[a-z0-9`., _-]+$/i', trim($order))) && empty($filter['query'])) {
+            $order = "{$s}BEObject{$e}.{$s}id{$e}";
+            $dir = false;
+        }
+
+        // build sql conditions
+        $db = ConnectionManager::getDataSource($this->useDbConfig);
+        $clauses['conditions'] = $db->conditions($conditions, true, true) ;
+
+        if ($useGroupBy || !empty($otherGroup) || ($id && $all)) {
+            $clauses['group'] = 'GROUP BY ' . $clauses['group'] . $otherGroup;
+        } else {
+            $clauses['group'] = '';
+        }
+
+        if (is_string($order) && strlen($order)) {
+            $beObject = ClassRegistry::init('BEObject');
+            if ($beObject->hasField($order)) {
+                $order = "{$s}BEObject{$e}.{$s}{$order}{$e}";
+            }
+            $ordItem = $order . ((!$dir)? 'DESC ' : '');
+            if (!empty($otherOrder)) {
+                $clauses['order'] = ' ORDER BY ' . $ordItem . ', ' . $otherOrder;
+            } else {
+                $clauses['order'] = " ORDER BY {$order} " . ((!$dir)? ' DESC ' : '');
+            }
+        } elseif (!empty($otherOrder)) {
+            $clauses['order'] = "ORDER BY {$otherOrder}";
+        }
+
+        $clauses['limit'] = (!empty($dim))? $this->getLimitClausole($dim, $limitPage) : '';
+
+        return $clauses;
+    }
+
+    /**
+     * Given an array of clauses build a SQL SELECT query
+     *
+     * @param array $clauses The SQL clauses
+     * @return string
+     */
+    public function buildQueryStatement(array $clauses) {
+        $clauses += array(
+            'fields' => '',
+            'table' => '',
+            'alias' => '',
+            'joins' => '',
+            'conditions' => '',
+            'group' => '',
+            'order' => '',
+            'limit' => ''
+        );
+        $db = ConnectionManager::getDataSource($this->useDbConfig);
+        return $db->renderStatement('select', $clauses);
+    }
 
     /**
      * callback called by BEAppModel::findObjects() to work on list of BEdita objects
