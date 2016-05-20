@@ -969,6 +969,8 @@ abstract class ApiBaseController extends FrontendController {
                     'status' => $this->getStatus()
                 )
             );
+
+            $this->BEObject->clearCacheByIds($this->data['parents']);
         }
 
         // save custom properties
@@ -1161,6 +1163,8 @@ abstract class ApiBaseController extends FrontendController {
                 }
             }
 
+            $this->BEObject->clearCacheByIds(array($child['child_id']));
+
             $d = array('child_id' => $child['child_id']);
             // get current priority to prepare response
             $d['priority'] = empty($child['priority']) ? $tree->getPriority($child['child_id'], $objectId) : $child['priority'];
@@ -1168,6 +1172,7 @@ abstract class ApiBaseController extends FrontendController {
             $responseData[] = $d;
 
         }
+        $this->BEObject->clearCacheByIds(array($objectId));
         $this->Transaction->commit();
         if ($created) {
             $this->ResponseHandler->sendStatus(201);
@@ -1279,6 +1284,8 @@ abstract class ApiBaseController extends FrontendController {
         if (!$tree->save($row)) {
             throw new BeditaInternalErrorException('Error updating priority');
         }
+
+        $this->BEObject->clearCacheByIds(array($objectId, $childId));
         $this->getObjectsChildren($objectId, $childId);
     }
 
@@ -1340,6 +1347,8 @@ abstract class ApiBaseController extends FrontendController {
         if (!$tree->removeChild($childId, $parentId)) {
             throw new BeditaInternalErrorException();
         }
+
+        $this->BEObject->clearCacheByIds(array($parentId, $childId));
         $this->emptyResponse();
     }
 
