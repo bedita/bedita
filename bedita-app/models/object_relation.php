@@ -60,14 +60,24 @@ class ObjectRelation extends BEAppModel
 		$jParams = json_encode($params);
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
 		$res = $this->query($q);
-		if($res === false) {
+		if ($res === false) {
 			return $res;
 		}
-		if(!$bidirectional) {
+		if (!$bidirectional) {
+            ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
 			return $res;
 		}
+
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$switch}', {$priority}, '{$jParams}')";
-		return $this->query($q);
+		$res = $this->query($q);
+
+        if ($res === false) {
+            return $res;
+        }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
+
+        return $res;
 	}
 
 	/**
@@ -80,35 +90,43 @@ class ObjectRelation extends BEAppModel
 	 */
 	public function createRelationAndInverse($id, $objectId, $switch, $inverseSwitch = null, $priority = null, $params = array()) {
 
-		if($priority == null) {
+		if ($priority == null) {
 			$rel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$id} AND switch='{$switch}'");
 			$priority = (empty($rel[0][0]["priority"]))? 1 : $rel[0][0]["priority"];
 		}
-		// #CUSTOM QUERY 
+		// #CUSTOM QUERY
 		$jParams = json_encode($params);
 		$q = "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$id}, {$objectId}, '{$switch}', {$priority}, '{$jParams}')";
 		$res = $this->query($q);
-		if($res === false) {
+		if ($res === false) {
 			return $res;
 		}
 
-		if($inverseSwitch == null) {
+		if ($inverseSwitch == null) {
 			$inverseSwitch = $switch;
 		}
 
 		$inverseRel = $this->query("SELECT priority FROM object_relations WHERE id={$objectId}
 									AND object_id={$id} AND switch='{$inverseSwitch}'");
-							
+
 		if (empty($inverseRel[0]["object_relations"]["priority"])) {
 			// #CUSTOM QUERY
 			$inverseRel = $this->query("SELECT MAX(priority)+1 AS priority FROM object_relations WHERE id={$objectId} AND switch='{$inverseSwitch}'");
 			$inversePriority = (empty($inverseRel[0][0]["priority"]))? 1 : $inverseRel[0][0]["priority"];
 		} else {
 			$inversePriority = $inverseRel[0]["object_relations"]["priority"];
-		}						
+		}
 		// #CUSTOM QUERY
 		$q= "INSERT INTO object_relations (id, object_id, switch, priority, params) VALUES ({$objectId}, {$id}, '{$inverseSwitch}', {$inversePriority}, '{$jParams}')" ;
-		return $this->query($q);	
+		$res = $this->query($q);
+
+        if ($res === false) {
+            return $res;
+        }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
+
+        return $res;
 	}
 
 	/**
@@ -122,11 +140,13 @@ class ObjectRelation extends BEAppModel
 	 */
 	public function deleteRelation($id, $objectId=null, $switch=null, $bidirectional = true) {
 		// #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
+        $clearObjects = array($id);
 		$q = "DELETE FROM object_relations WHERE id={$id}";
 		$qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
 		if ($objectId !== null) {
 			$q .= " AND object_id={$objectId}";
 			$qReverse .= " AND id={$objectId}";
+            $clearObjects[] = $objectId;
 		}
 		if ($switch !== null) {
 			$q .= " AND switch='{$switch}'";
@@ -136,10 +156,18 @@ class ObjectRelation extends BEAppModel
 		if ($res === false) {
 			return $res;
 		}
-		if(!$bidirectional) {
+		if (!$bidirectional) {
 			return $res;
 		}
-		return $this->query($qReverse);
+		$res = $this->query($qReverse);
+
+        if ($res === false) {
+            return $res;
+        }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds($clearObjects);
+
+        return $res;
 	}
 
     /**
@@ -156,12 +184,14 @@ class ObjectRelation extends BEAppModel
     public function deleteRelationAndInverse($id, $objectId = null, $switch = null) {
         // #CUSTOM QUERY - TODO: use cake, how?? changing table structure (id primary key, object_id, related_object_id, switch, priority)
         $id = Sanitize::escape($id);
+        $clearObjects = array($id);
         $q = "DELETE FROM object_relations WHERE id={$id}";
         $qReverse = "DELETE FROM object_relations WHERE object_id={$id}";
         if ($objectId !== null) {
             $objectId = Sanitize::escape($objectId);
             $q .= " AND object_id={$objectId}";
             $qReverse .= " AND id={$objectId}";
+            $clearObjects[] = $objectId;
         }
         if ($switch !== null) {
             $switch = Sanitize::escape($switch);
@@ -176,7 +206,15 @@ class ObjectRelation extends BEAppModel
         if ($res === false) {
             return $res;
         }
-        return $this->query($qReverse);
+
+        $res = $this->query($qReverse);
+        if ($res === false) {
+            return $res;
+        }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds($clearObjects);
+
+        return $res;
     }
 
     /**
@@ -188,6 +226,9 @@ class ObjectRelation extends BEAppModel
      * @return bool
      */
     public function deleteObjectRelation($id, $switch, $inverseSwitch = null) {
+        $BEObject = ClassRegistry::init('BEObject');
+        $objectsToClean = $BEObject->setObjectsToClean($objectId);
+
         // #CUSTOM QUERY - TODO: use cake, how??
         $q = "DELETE FROM object_relations WHERE id={$id} AND switch='{$switch}'";
         $res = $this->query($q);
@@ -202,11 +243,22 @@ class ObjectRelation extends BEAppModel
         $res = $this->query($qReverse);
         if ($res === false) {
             $this->log('Error executing query: ' . $qReverse, 'error');
+            return $res;
         }
+
+        $BEObject->clearCache();
         return $res;
     }
 
-
+    /**
+     * Updates priority of a relation between objects.
+     *
+     * @param int $id
+     * @param int $objectId
+     * @param string $switch
+     * @param int $priority
+     * @return false on failure
+     */
     public function updateRelationPriority($id, $objectId, $switch, $priority){
         $q = "  UPDATE object_relations
                 SET priority={$priority}
@@ -215,11 +267,15 @@ class ObjectRelation extends BEAppModel
         if ($res === false) {
             return $res;
         }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
+
+        return $res;
     }
 
     /**
      * Updates parameters of a relation between objects.
-     * 
+     *
      * @param int $id
      * @param int $objectId
      * @param string $switch
@@ -235,6 +291,10 @@ class ObjectRelation extends BEAppModel
         if ($res === false) {
             return $res;
         }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
+
+        return $res;
     }
 
     /**
@@ -292,6 +352,13 @@ class ObjectRelation extends BEAppModel
                 WHERE id={$objectId} AND object_id={$id} AND switch='{$switchInverse}'";
             $result = $this->query($q);
         }
+
+        if ($result === false) {
+            return false;
+        }
+
+        ClassRegistry::init('BEObject')->clearCacheByIds(array($id, $objectId));
+
         return $result;
     }
 
