@@ -30,7 +30,7 @@ CREATE TABLE users (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   username VARCHAR(100) NOT NULL              COMMENT 'login user name',
-  password TINYTEXT NULL                      COMMENT 'login password, if empty external auth is used',
+  password_hash TINYTEXT NULL                 COMMENT 'login password hash, if empty external auth is used',
   blocked BOOL NOT NULL DEFAULT 0             COMMENT 'user blocked flag',
   last_login DATETIME DEFAULT NULL            COMMENT 'last succcessful login datetime',
   last_login_err DATETIME DEFAULT NULL        COMMENT 'last login filaure datetime',
@@ -63,13 +63,13 @@ CREATE TABLE external_auth (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id INT UNSIGNED NOT NULL               COMMENT 'reference to system user',
-  auth_provider_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to external auth provider: ',
+  auth_provider_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to external auth provider',
   params TEXT DEFAULT NULL                    COMMENT 'external auth params, serialized JSON',
   -- From MySQL 5.7.8 JSON type
-  username VARCHAR(255)                       COMMENT 'auth username on provider',
+  provider_username VARCHAR(255)              COMMENT 'auth username on provider',
 
   PRIMARY KEY (id),
-  UNIQUE KEY externalauth_authuser_uq (auth_provider_id, username),
+  UNIQUE KEY externalauth_authuser_uq (auth_provider_id, provider_username),
   FOREIGN KEY externalauth_authprovider_fk (auth_provider_id) REFERENCES auth_providers(id),
   FOREIGN KEY externalauth_userid_fk (user_id)
     REFERENCES users(id)
@@ -87,7 +87,7 @@ CREATE TABLE roles (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(32) NOT NULL                 COMMENT 'role unique name',
   description TEXT DEFAULT NULL             COMMENT 'role description',
-  immutable BOOL NOT NULL DEFAULT '0'       COMMENT 'role data immutable (default:false)',
+  unchangeable BOOL NOT NULL DEFAULT '0'    COMMENT 'role data not modifiable (default:false)',
   backend_auth BOOL NOT NULL DEFAULT '0'    COMMENT 'role authorized to backend (default: false)',
   created datetime default NULL             COMMENT 'creation date',
   modified datetime default NULL            COMMENT 'last modification date',
@@ -125,9 +125,9 @@ CREATE TABLE roles_users (
 
 CREATE TABLE config (
 
-  name VARCHAR(255) NOT NULL                  COMMENT 'configuration parameter key',
+  name VARCHAR(255) NOT NULL                  COMMENT 'configuration key',
   context VARCHAR(255) NOT NULL               COMMENT 'group name of configuration parameters',
-  value TEXT NOT NULL                         COMMENT 'configuration parameter value',
+  content TEXT NOT NULL                       COMMENT 'configuration data',
   created DATETIME NOT NULL                   COMMENT 'creation date',
 
   PRIMARY KEY (name),
@@ -173,7 +173,7 @@ CREATE TABLE properties (
   object_type_id SMALLINT UNSIGNED NULL       COMMENT 'link to object_types.id',
   property_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to property_type.id',
   multiple BOOL DEFAULT 0                     COMMENT 'multiple values for this property?',
-  options TEXT                                COMMENT 'property predefined options',
+  options_list TEXT                           COMMENT 'property predefined options list',
 
   PRIMARY KEY (id),
   UNIQUE properties_nametype_uq (name, object_type_id),
@@ -249,7 +249,6 @@ CREATE TABLE object_permissions (
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INT UNSIGNED NOT NULL               COMMENT 'object - link to objects.id',
   role_id INT UNSIGNED NOT NULL                 COMMENT 'role - link to roles.id',
-  operation INT UNSIGNED NOT NULL               COMMENT 'operation permission as bitwise mask',
   params TEXT                                   COMMENT 'permission parameters (JSON data)',
 
   PRIMARY KEY (id),
@@ -382,9 +381,9 @@ CREATE TABLE relation_types (
 
   relation_id INT UNSIGNED NOT NULL             COMMENT 'link to relation definition',
   object_type_id SMALLINT UNSIGNED NOT NULL     COMMENT 'object type id',
-  position ENUM ('left', 'right') NOT NULL      COMMENT 'type position in relation',
+  side ENUM ('left', 'right') NOT NULL          COMMENT 'type position in relation, left or right',
 
-  PRIMARY KEY relationtypes_relobjpos_pk (relation_id, object_type_id, position),
+  PRIMARY KEY relationtypes_relobjside_pk (relation_id, object_type_id, side),
 
   FOREIGN KEY relationtypes_relationid_fk (relation_id)
     REFERENCES relations(id)
@@ -439,7 +438,7 @@ CREATE TABLE trees (
   root_id INT UNSIGNED NOT NULL         COMMENT 'root id (for tree scoping)',
   tree_left INT NOT NULL                COMMENT 'left counter (for nested set model)',
   tree_right INT NOT NULL               COMMENT 'right counter (for nested set model)',
-  depth INT UNSIGNED NOT NULL           COMMENT 'depth',
+  depth_level INT UNSIGNED NOT NULL     COMMENT 'tree depth level',
   menu INT UNSIGNED NOT NULL DEFAULT 1  COMMENT 'menu on/off',
 
   PRIMARY KEY trees_parentobj_pk (parent_id, object_id),

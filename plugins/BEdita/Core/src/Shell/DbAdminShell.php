@@ -117,6 +117,8 @@ class DbAdminShell extends Shell
             $this->abort('Unable to remove internal cache before schema check');
         }
         $schemaData = Database::currentSchema();
+        $this->checkSQLReservedWords($schemaData);
+        $this->checkDuplicateColumns($schemaData);
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
         $res = file_put_contents($schemaFile, $jsonSchema);
         if (!$res) {
@@ -140,6 +142,8 @@ class DbAdminShell extends Shell
             $this->abort('Unable to remove internal cache before schema check');
         }
         $currentSchema = Database::currentSchema();
+        $this->checkSQLReservedWords($currentSchema);
+        $this->checkDuplicateColumns($currentSchema);
         $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
         if (empty($schemaDiff)) {
             $this->info('No schema differences found');
@@ -149,6 +153,76 @@ class DbAdminShell extends Shell
                 foreach ($data as $type => $value) {
                     foreach ($value as $v) {
                         $this->warn($key . ' ' . Inflector::singularize($type) . ': ' . $v);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Load SQL reserved words array from 'reserved_words.txt' file
+     * Some words (like 'name' and 'status') are allowed in BEdita4
+     *
+     * @return array
+     */
+    protected function loadSQLReservedWords()
+    {
+        $exceptions = ['NAME', 'STATUS'];
+        $reservedWords = [];
+        $reservedWordsFile = $this->schemaDir . 'sql_reserved_words.txt';
+        $lines = file($reservedWordsFile);
+        foreach ($lines as $value) {
+            $l = strtoupper(trim($value));
+            if (!empty($l) && $l[0] !== '#' && !in_array($l, $exceptions)) {
+                $reservedWords[] = $l;
+            }
+        }
+        return $reservedWords;
+    }
+
+    /**
+     * Check schema array against SQL reserved words
+     *
+     * @param array $schema Array representation of d schema
+     * @return void
+     */
+    protected function checkSQLReservedWords(array $schema)
+    {
+        $reservedWords = $this->loadSQLReservedWords();
+        foreach ($schema as $table => $data) {
+            if (in_array(strtoupper($table), $reservedWords)) {
+                $this->warn('Table name "' . $table . '" is a SQL reserved word');
+            }
+            foreach ($data as $key => $value) {
+                foreach ($value as $col => $meta) {
+                    if (in_array(strtoupper($col), $reservedWords) &&
+                            $key !== 'constraints' && $col !== 'primary') {
+                        $this->warn('"' . $table . '.' . $col . '" (' . $key .
+                            ') is a SQL reserved word');
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check for duplicate colum names in schema
+     *
+     * @param array $schema Array representation of d schema
+     * @return void
+     */
+    protected function checkDuplicateColumns(array $schema)
+    {
+        $columns = [];
+        $allowed = ['created', 'description', 'modified', 'name', 'params'];
+        foreach ($schema as $table => $data) {
+            foreach ($data['columns'] as $name => $columnData) {
+                if ($name !== 'id' && (substr($name, -3) !== '_id') && !in_array($name, $allowed)) {
+                    if (!empty($columns[$name])) {
+                        $this->warn('"' . $table . '.' . $name . '" already defined in "' .
+                            $columns[$name] . '.' . $name . '"');
+                    } else {
+                        $columns[$name] = $table;
                     }
                 }
             }

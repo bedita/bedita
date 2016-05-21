@@ -61,8 +61,8 @@ class ExternalAuthTable extends Table
             ->naturalNumber('id')
             ->allowEmpty('id', 'create')
 
-            ->requirePresence('username')
-            ->notEmpty('username')
+            ->requirePresence('provider_username')
+            ->notEmpty('provider_username')
 
             ->allowEmpty('params');
 
@@ -78,7 +78,7 @@ class ExternalAuthTable extends Table
         $rules->add($rules->existsIn(['auth_provider_id'], 'AuthProviders'));
 
         $rules->add($rules->isUnique(['user_id', 'auth_provider_id']));
-        $rules->add($rules->isUnique(['auth_provider_id', 'username']));
+        $rules->add($rules->isUnique(['auth_provider_id', 'provider_username']));
 
         return $rules;
     }

@@ -91,14 +91,14 @@ class UsersTableTest extends TestCase
                 true,
                 [
                     'username' => 'some_unique_value',
-                    'password' => null,
+                    'password_hash' => null,
                 ],
             ],
             'notUnique' => [
                 false,
                 [
                     'username' => 'first user',
-                    'password' => 'password',
+                    'password_hash' => 'password',
                 ],
             ],
         ];

@@ -28,7 +28,7 @@ class RolesFixture extends TestFixture
         [
             'name' => 'first role',
             'description' => 'this is the very first role',
-            'immutable' => 1,
+            'unchangeable' => 1,
             'backend_auth' => 1,
             'created' => '2016-04-15 09:57:38',
             'modified' => '2016-04-15 09:57:38',
@@ -36,7 +36,7 @@ class RolesFixture extends TestFixture
         [
             'name' => 'second role',
             'description' => 'this is a second role',
-            'immutable' => 0,
+            'unchangeable' => 0,
             'backend_auth' => 0,
             'created' => '2016-04-15 11:59:12',
             'modified' => '2016-04-15 11:59:13',

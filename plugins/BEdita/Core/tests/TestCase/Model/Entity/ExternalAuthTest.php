@@ -77,7 +77,7 @@ class ExternalAuthTest extends TestCase
 
         $data = [
             'id' => 42,
-            'username' => 'patched_username',
+            'provider_username' => 'patched_username',
         ];
         $externalAuth = $this->ExternalAuth->patchEntity($externalAuth, $data);
         if (!($externalAuth instanceof ExternalAuth)) {
@@ -85,6 +85,6 @@ class ExternalAuthTest extends TestCase
         }
 
         $this->assertEquals(1, $externalAuth->id);
-        $this->assertEquals('patched_username', $externalAuth->username);
+        $this->assertEquals('patched_username', $externalAuth->provider_username);
     }
 }
