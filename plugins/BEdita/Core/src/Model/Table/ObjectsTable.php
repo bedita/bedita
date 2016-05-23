@@ -14,8 +14,10 @@
 namespace BEdita\Core\Model\Table;
 
 use Cake\Database\Schema\Table as Schema;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -131,5 +133,31 @@ class ObjectsTable extends Table
     {
         $schema->columnType('extra', 'json');
         return $schema;
+    }
+
+    /**
+     * Find by object type.
+     *
+     * You can pass a list of allowed object types to this finder:
+     *
+     * ```
+     * $table->find('type', [1, 'document', 'profiles', 1004]);
+     * ```
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable object types.
+     * @return \Cake\ORM\Query
+     */
+    public function findType(Query $query, array $options)
+    {
+        $ObjectTypes = TableRegistry::get('BEdita/Core.ObjectTypes');
+        foreach ($options as &$type) {
+            $type = $ObjectTypes->get($type)->id;
+        }
+        unset($type);
+
+        $query->where([$this->alias() . '.object_type_id IN' => $options]);
+
+        return $query;
     }
 }
