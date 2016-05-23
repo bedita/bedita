@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use Cake\Database\Schema\Table as Schema;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -23,8 +22,8 @@ use Cake\Validation\Validator;
  * Objects Model
  *
  * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
- * @property \Cake\ORM\Association\BelongsTo $Users as CreatedByUser
- * @property \Cake\ORM\Association\BelongsTo $Users as ModifiedByUser
+ * @property \Cake\ORM\Association\BelongsTo $CreatedByUser
+ * @property \Cake\ORM\Association\BelongsTo $ModifiedByUser
  *
  * @since 4.0.0
  */
@@ -39,8 +38,8 @@ class ObjectsTable extends Table
         parent::initialize($config);
 
         $this->table('objects');
-        $this->displayField('title');
         $this->primaryKey('id');
+        $this->displayField('title');
 
         $this->addBehavior('Timestamp');
 

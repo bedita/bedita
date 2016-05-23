@@ -37,8 +37,8 @@ class ProfilesTable extends Table
         parent::initialize($config);
 
         $this->table('profiles');
-        $this->displayField('name');
         $this->primaryKey('id');
+        $this->displayField('name');
 
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
