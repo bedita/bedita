@@ -22,6 +22,11 @@ Router::plugin(
     ],
     function (RouteBuilder $routes) {
         $routes->connect(
+            '/home',
+            ['controller' => 'Home', 'action' => 'index'],
+            ['_method' => 'GET', '_name' => 'home:index']
+        );
+        $routes->connect(
             '/roles',
             ['controller' => 'Roles', 'action' => 'index'],
             ['_method' => 'GET', '_name' => 'roles:index']
