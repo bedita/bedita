@@ -13,5 +13,6 @@ Type::map('json', 'BEdita\Core\Database\Type\JsonType');
  */
 TableRegistry::config('AuthProviders', ['className' => 'BEdita/Core.AuthProviders']);
 TableRegistry::config('ExternalAuth', ['className' => 'BEdita/Core.ExternalAuth']);
+TableRegistry::config('ObjectTypes', ['className' => 'BEdita/Core.ObjectTypes']);
 TableRegistry::config('Roles', ['className' => 'BEdita/Core.Roles']);
 TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
