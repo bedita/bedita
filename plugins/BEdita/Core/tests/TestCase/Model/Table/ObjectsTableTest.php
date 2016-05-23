@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -37,6 +36,7 @@ class ObjectsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Objects = TableRegistry::get('BEdita/Core.Objects');
     }
 
@@ -46,6 +46,7 @@ class ObjectsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Objects);
+
         parent::tearDown();
     }
 
@@ -141,5 +142,56 @@ class ObjectsTableTest extends TestCase
             $success = $this->Objects->save($object);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Data provider for `testFindType` test case.
+     *
+     * @return array
+     */
+    public function findTypeProvider()
+    {
+        return [
+            'documents' => [
+                [
+                    1 => 'title one',
+                    2 => 'title two',
+                ],
+                [1],
+            ],
+            'multiple' => [
+                [
+                    1 => 'title one',
+                    2 => 'title two',
+                    3 => 'Gustavo Supporto profile',
+                ],
+                ['document', 'profiles'],
+            ],
+            'missing' => [
+                false,
+                ['document', 'profiles', 0],
+            ],
+        ];
+    }
+
+    /**
+     * Test object types finder.
+     *
+     * @param array|false $expected Expected results.
+     * @param array $types Array of object types to filter for.
+     * @return void
+     *
+     * @dataProvider findTypeProvider
+     * @covers ::findType()
+     */
+    public function testFindType($expected, array $types)
+    {
+        if (!$expected) {
+            $this->setExpectedException('\Cake\Datasource\Exception\RecordNotFoundException');
+        }
+
+        $result = $this->Objects->find('list')->find('type', $types)->toArray();
+
+        $this->assertEquals($expected, $result);
     }
 }
