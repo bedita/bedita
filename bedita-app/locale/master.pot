@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2015-12-11 10:41:45\n"
+"POT-Creation-Date: 2016-05-23 18:06:25\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -1605,6 +1605,9 @@ msgstr ""
 msgid "Remove selected from category"
 msgstr ""
 
+msgid "Required file was not found: "
+msgstr ""
+
 msgid "Reserved method called from url"
 msgstr ""
 
@@ -1642,6 +1645,9 @@ msgid "Section deleted"
 msgstr ""
 
 msgid "Section saved"
+msgstr ""
+
+msgid "Section viewed not in publication tree"
 msgstr ""
 
 msgid "Sections"
@@ -1822,6 +1828,9 @@ msgid "Text lang"
 msgstr ""
 
 msgid "The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+
+msgid "The object you're about to clone contains relations"
 msgstr ""
 
 msgid "This content is not on publication tree. Continue?"

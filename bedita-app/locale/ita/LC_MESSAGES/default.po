@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-12-11 10:40:01\n"
+"POT-Creation-Date: 2016-05-23 18:06:25\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -1653,6 +1653,9 @@ msgstr "Rimuovi selezione da"
 msgid "Remove selected from category"
 msgstr "Rimuovi selezione da categoria"
 
+msgid "Required file was not found: "
+msgstr "File richiesto non trovato: "
+
 msgid "Reserved method called from url"
 msgstr "Metodo protetto richiamato da url"
 
@@ -1691,6 +1694,9 @@ msgstr "Sezione elimnata"
 
 msgid "Section saved"
 msgstr "Sezione salvata"
+
+msgid "Section viewed not in publication tree"
+msgstr "La sezione visualizzata non è nell'albero"
 
 msgid "Sections"
 msgstr "Sezioni"
@@ -1875,6 +1881,9 @@ msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
 msgstr ""
 "Contenuto immodificabile: non è possibile cambiarne la posizione nell'albero"
+
+msgid "The object you're about to clone contains relations"
+msgstr "L'oggetto che stai per clonare contiene relazioni"
 
 msgid "This content is not on publication tree. Continue?"
 msgstr "Questo contenuto non è nell'albero della pubblicazione. Continuare?"
@@ -3539,9 +3548,6 @@ msgstr "i tuoi 5 ultimi elementi"
 
 msgid "your message"
 msgstr "il tuo messaggio"
-
-msgid "The object you're about to clone contains relations"
-msgstr "L'oggetto che stai per clonare contiene relazioni"
 
 #~ msgid "Calendar start date after end date"
 #~ msgstr "Nel calendario la data d'inizio è dopo la data di fine"
