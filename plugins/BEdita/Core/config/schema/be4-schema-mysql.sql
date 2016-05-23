@@ -143,15 +143,17 @@ CREATE TABLE object_types (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(50) NOT NULL                 COMMENT 'object type name',
-  description TEXT NULL                     COMMENT 'object type description',
+  pluralized VARCHAR(50) NOT NULL           COMMENT 'pluralized object type name',
+  description TEXT NULL DEFAULT NULL        COMMENT 'object type description',
   plugin VARCHAR(255) NOT NULL              COMMENT 'CakePHP plugin name',
   model VARCHAR(255) NOT NULL               COMMENT 'CakePHP Table class name',
 
   PRIMARY KEY (id),
   UNIQUE objecttypes_name_uq (name),
+  UNIQUE objecttypes_plural_uq (pluralized),
   INDEX objecttypes_model_idx (plugin, model)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'obect types definitions';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'object types definitions';
 
 
 CREATE TABLE property_types (

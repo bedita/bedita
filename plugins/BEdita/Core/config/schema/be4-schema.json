@@ -893,6 +893,15 @@
                 "precision": null,
                 "fixed": null
             },
+            "pluralized": {
+                "type": "string",
+                "length": 50,
+                "null": false,
+                "default": null,
+                "comment": "pluralized object type name",
+                "precision": null,
+                "fixed": null
+            },
             "description": {
                 "type": "text",
                 "length": null,
@@ -938,6 +947,15 @@
                 "length": [
 
                 ]
+            },
+            "objecttypes_plural_uq": {
+                "type": "unique",
+                "columns": [
+                    "pluralized"
+                ],
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -947,7 +965,9 @@
                     "plugin",
                     "model"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
