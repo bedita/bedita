@@ -32,6 +32,7 @@ class HomeControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/home',
+                'home' => 'http://api.example.com/home',
             ],
             'meta' => [
                 'resources' => [
