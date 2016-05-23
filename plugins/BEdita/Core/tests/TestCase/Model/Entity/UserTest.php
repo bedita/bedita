@@ -110,9 +110,9 @@ class UserTest extends TestCase
      * Test setter method for `password`.
      *
      * @return void
-     * @covers ::_setPassword()
+     * @covers ::_setPasswordHash()
      */
-    public function testSetPassword()
+    public function testSetPasswordHash()
     {
         $user = $this->Users->get(1);
 
