@@ -76,6 +76,11 @@ class AreasController extends ModulesController {
 		}
 		if (!empty($id)) {
 			$parentId = $this->Tree->getParent($id);
+            // #881 alert user if section has no parent
+            if (empty($parentId) && $modelName === 'Section') {
+                $this->userErrorMessage(__('Section viewed not in publication tree', true));
+                $this->eventError('section not in tree, id: ' . $id);
+            }
 		} else if (!empty($this->params['named']['branch'])) {
 			$parentId = $this->params['named']['branch'];
 		}
