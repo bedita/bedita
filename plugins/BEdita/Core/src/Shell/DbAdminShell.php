@@ -119,6 +119,7 @@ class DbAdminShell extends Shell
         $schemaData = Database::currentSchema();
         $this->checkSQLReservedWords($schemaData);
         $this->checkDuplicateColumns($schemaData);
+        $this->checkSchemaNaming($schemaData);
         $jsonSchema = json_encode($schemaData, JSON_PRETTY_PRINT);
         $res = file_put_contents($schemaFile, $jsonSchema);
         if (!$res) {
@@ -144,6 +145,7 @@ class DbAdminShell extends Shell
         $currentSchema = Database::currentSchema();
         $this->checkSQLReservedWords($currentSchema);
         $this->checkDuplicateColumns($currentSchema);
+        $this->checkSchemaNaming($currentSchema);
         $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
         if (empty($schemaDiff)) {
             $this->info('No schema differences found');
@@ -224,6 +226,37 @@ class DbAdminShell extends Shell
                     } else {
                         $columns[$name] = $table;
                     }
+                }
+            }
+        }
+    }
+
+    /**
+     * Check naming conventions for tables and columns names
+     *
+     * @param array $schema Array representation of d schema
+     * @return void
+     */
+    protected function checkSchemaNaming(array $schema)
+    {
+        foreach ($schema as $table => $data) {
+            $tableUnderscored = Inflector::underscore($table);
+            if ($tableUnderscored !== $table) {
+                $this->warn('table name "' . $table . '" should be underscored');
+            }
+            foreach ($data['columns'] as $name => $columnData) {
+                $columnUnderscored = Inflector::underscore($name);
+                if ($columnUnderscored !== $name) {
+                    $this->warn('column name "' . $table . '.' . $name . '" should be underscored');
+                }
+                if (substr($name, -1) === '_' || substr($name, 0, 1) === '_') {
+                    $this->warn('column name "' . $table . '.' . $name . '" should not start/end with "_"');
+                }
+                if (strpos($name, '__') !== false) {
+                    $this->warn('column name "' . $table . '.' . $name . '" should not contain "__"');
+                }
+                if (is_numeric(substr($name, 0, 1))) {
+                    $this->warn('column name "' . $table . '.' . $name . '" should not start with a number');
                 }
             }
         }
