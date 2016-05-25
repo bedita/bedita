@@ -352,7 +352,7 @@ abstract class ApiBaseController extends FrontendController {
             try {
                 $contentType = env('CONTENT_TYPE');
                 $inputData = file_get_contents('php://input');
-                if ($contentType == 'application/x-www-form-urlencoded') {
+                if (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
                     parse_str($inputData, $this->params['form']);
                 } else {
                     $this->params['form'] = json_decode($inputData, true);
