@@ -99,12 +99,15 @@ class Section extends BeditaCollectionModel
 			return;
 		}
 		$tree = ClassRegistry::init('Tree');
-		if ($tree->appendChild($this->id, $this->data[$this->name]['parent_id']) === false) {
-			return false;
+
+		if (!isset($this->data[$this->name]['skipTreeUpdate']) || (isset($this->data[$this->name]['skipTreeUpdate']) && $this->data[$this->name]['skipTreeUpdate'] == false)) {
+			if ($tree->appendChild($this->id, $this->data[$this->name]['parent_id']) === false) {
+				return false;
+			}
+			// save Tree.menu
+			$menu = (!empty($this->data[$this->name]['menu'])) ? 1 : 0;
+			$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]["parent_id"], $menu);
 		}
-		// save Tree.menu
-		$menu = (!empty($this->data[$this->name]['menu']))? 1 : 0;
-		$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]["parent_id"], $menu);
 		return true;
 	}
 

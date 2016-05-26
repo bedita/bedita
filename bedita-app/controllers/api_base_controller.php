@@ -956,6 +956,12 @@ abstract class ApiBaseController extends FrontendController {
         // validate and format data for save
         $this->ApiValidator->checkObject($this->data);
         $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
+
+        // #883 skip tree update when saving section
+        if ($this->data['object_type'] == "section") {
+            $this->data['skipTreeUpdate'] = true;
+        }
+
         parent::saveObject($beModel, $options);
 
         // save parents
