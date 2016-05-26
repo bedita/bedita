@@ -184,6 +184,10 @@ class Section extends BeditaCollectionModel
 		}
 	}
 
+	public function setVisibility($visibility) {
+		$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]["parent_id"], $visibility);
+	}
+
     /**
      * Return an array of column types to transform (cast) for generic BEdita object type
      * Used to build consistent REST APIs
