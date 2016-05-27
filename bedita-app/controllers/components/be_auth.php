@@ -449,17 +449,21 @@ class BeAuthComponent extends Object {
             }
         }
 
-        $this->user = null ;
+        $this->user = null;
         
-        if(isset($this->Session)) {
+        if (isset($this->Session)) {
             $this->Session->destroy();
+            // delete cookie if Session.start = false because CakePHP skips it :(
+            if (Configure::read('Session.start') === false) {
+                setcookie(Configure::read('Session.cookie'), '', time() - 42000, $this->Session->path);
+            }
         }
         
-        if(isset($this->controller)) {
+        if (isset($this->controller)) {
             $this->controller->set($this->sessionKey, null);
         }
 
-        return true ;
+        return true;
     }
 
     /**
