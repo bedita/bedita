@@ -104,7 +104,7 @@ class JsonApiComponent extends Component
     {
         $links = [
             'self' => Router::reverse($this->request, true),
-            'home' => Router::fullBaseUrl() . '/home',
+            'home' => Router::url(['_name' => 'api:home'], true),
         ];
 
         if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {

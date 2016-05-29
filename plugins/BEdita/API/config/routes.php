@@ -24,7 +24,7 @@ Router::plugin(
         $routes->connect(
             '/home',
             ['controller' => 'Home', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'home:index']
+            ['_method' => 'GET', '_name' => 'home']
         );
         $routes->connect(
             '/roles',
