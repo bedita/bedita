@@ -62,6 +62,12 @@ class BeThumb {
 	 */
 	private $mediaRoot = null;
 	
+    /**
+     * Path to local root folder used for writing thumbs 
+     * if null $this->mediaRoot is used
+     */
+    private $localThumbRoot = null;
+
 	/**
 	 * All known mime types
 	 * internal use (if needed), read from config/mime.types.php
@@ -82,6 +88,7 @@ class BeThumb {
 		    }
 		}
         $this->mediaRoot = Configure::read('mediaRoot');
+        $this->localThumbRoot = Configure::read('localThumbRoot');
 	}
 
 	public function getValidImplementations() {
@@ -299,6 +306,10 @@ class BeThumb {
 			BeLib::getInstance()->friendlyUrlString($this->imageInfo['path'], "\.\/");
 		// absolute cache dir path
 		$this->imageInfo['cacheDirectory'] = $this->mediaRoot . $this->imageInfo['cachePath'];
+        if ($this->localThumbRoot) {
+            $this->imageInfo['localThumbCacheDirectory'] = $this->localThumbRoot . $this->imageInfo['cachePath'];
+            $this->checkLocalThumbCacheDirectory();
+        }
 
         // #769 - avoid file access / read from cache
         $cacheData = $this->readCacheImageInfo();
@@ -647,6 +658,9 @@ class BeThumb {
 		// target filename, filepath, uri
 		$this->imageTarget['filename'] = $this->targetFileName();
 		$this->imageTarget['filepath'] =  $this->imageInfo['cacheDirectory'] . DS . $this->imageTarget['filename'];
+        if (!empty($this->imageInfo['localThumbCacheDirectory'])) {
+            $this->imageTarget['localThumbFilepath'] = $this->imageInfo['localThumbCacheDirectory'] . DS . $this->imageTarget['filename'];
+        }
 		$this->imageTarget['uri'] = Configure::read('mediaUrl') . 
 				$this->imageInfo['cachePath'] . "/" . $this->imageTarget['filename'];
 	}
@@ -666,8 +680,13 @@ class BeThumb {
 	    
 	    try {
 	        
+            $targetThumbPath = $this->imageTarget['filepath'];
+            if (!empty($this->imageTarget['localThumbFilepath'])) {
+                $targetThumbPath = $this->imageTarget['localThumbFilepath'];
+            } 
+ 
     		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
-    		$thumbnail->setDestination ( $this->imageTarget['filepath'], $this->imageTarget['type'] );
+            $thumbnail->setDestination(targetThumbPath, $this->imageTarget['type']);
 
             if (array_key_exists('q', $this->imageTarget)) {
                 // Set quality.
@@ -718,7 +737,7 @@ class BeThumb {
 
             // add watermark
             if (isset($this->imageTarget['watermark'])) {
-                $thumbnail->wmark($this->imageTarget['filepath'], $this->imageTarget['watermark']);
+                $thumbnail->wmark($targetThumbPath, $this->imageTarget['watermark']);
             }
 
             // Interlace image.
@@ -726,12 +745,23 @@ class BeThumb {
                 $thumbnail->interlace(true);
             }
 
-    		if ($thumbnail->save($this->imageTarget['filepath'], $this->imageTarget['type'])) {
-    			return true;
-    		} else {
-    			$this->triggerError("phpThumb error");
-    			return false;
-    		}
+            if ($thumbnail->save($targetThumbPath, $this->imageTarget['type'])) {
+                if (!empty($this->imageTarget['localThumbFilepath'])) {
+                    if (!copy($targetThumbPath, $this->imageTarget['filepath'])) {
+                        $this->triggerError('Error copying local thumbnail ' . $targetThumbPath 
+                            . ' to ' . $this->imageTarget['filepath']);
+                        return false;
+                    }
+                    if (!unlink($targetThumbPath)) {
+                        $this->triggerError('Error removing local thumbnail ' . $targetThumbPath);
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                $this->triggerError('Error saving thumbnail: ' . $targetThumbPath);
+                return false;
+            }
 		} catch (Exception $e) {
 		    $this->triggerError($e->getMessage());
 		    return false;
@@ -794,12 +824,12 @@ class BeThumb {
         return BeLib::getInstance()->friendlyUrlString($target, "\.");
     }
 
-	/**
-	 * build target filepath
-	 *
-	 * @return string
-	 */
-	private function checkCacheDirectory() {
+    /**
+     * Check target cache directory existence and create it if missing
+     *
+     * @return boolean
+     */
+    private function checkCacheDirectory() {
         // #769 - avoid file access
 	    if (!file_exists($this->imageInfo['cacheDirectory'])) {
 			if (!mkdir($this->imageInfo['cacheDirectory'], 0777, true)) {
@@ -812,6 +842,27 @@ class BeThumb {
 		}
 		return true;
 	}
+
+    /**
+     * Check local thumb target cache directory existence and create it if missing
+     *
+     * @return string
+     */
+    private function checkLocalThumbCacheDirectory() {
+        if (!empty($this->imageInfo['localThumbCacheDirectory'])) {
+	        if (!file_exists($this->imageInfo['localThumbCacheDirectory'])) {
+                if (!mkdir($this->imageInfo['localThumbCacheDirectory'], 0777, true)) {
+                    $this->triggerError("Error creating thumb cache directory: " . $this->imageInfo['localThumbCacheDirectory']);
+                    return false;
+                }
+            } elseif (!is_dir($this->imageInfo['localThumbCacheDirectory'])) {
+                $this->triggerError("Not a direcotory: " . $this->imageInfo['localThumbCacheDirectory']);
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 	/**
 	 * calculate cropping coordinates (top, left)
