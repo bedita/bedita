@@ -379,13 +379,13 @@ class Permission extends BEAppModel
             if (!empty($p['Group']['name'])) {
                 $p['Group'] = array_intersect_key(
                     $p['Group'],
-                    array_flip(array('id', 'name'))
+                    array_flip(array('name'))
                 );
                 unset($p['User']);
             } else if (!empty($p['User']['userid'])) {
                 $p['User'] = array_intersect_key(
                     $p['User'],
-                    array_flip(array('id', 'userid'))
+                    array_flip(array('userid'))
                 );
                 unset($p['Group']);
             }
