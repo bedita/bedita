@@ -68,6 +68,20 @@ class BeThumb {
      */
     private $localThumbRoot = null;
 
+    /**
+     * Input params passed to image() method gor thumb creation
+     */
+    private $inputParams = array();
+
+    /** 
+     * List of allowed input params
+     */
+    public $allowedParams = array(
+        'width', 'height', 'fillcolor', 'longside', 'mode', 'modeparam', 'type', 'upscale',
+        'cache', 'watermark', 'quality', 'interlace',
+    );
+
+
 	/**
 	 * All known mime types
 	 * internal use (if needed), read from config/mime.types.php
@@ -133,6 +147,8 @@ class BeThumb {
             'q' => 95,
             'interlace' => false
         );
+        
+        $this->inputParams = array();
     }
 
 	/**
@@ -209,8 +225,9 @@ class BeThumb {
             }
         }
 
-        // setup internal image target array (uses $this->imageInfo) 
-        $this->setupImageTarget($params);
+        // setup internal image target array (uses $this->imageInfo)
+        $this->inputParams = $params;
+        $this->setupImageTarget();
 
         // #769 - avoid file access
         $checkThumb = ($this->imageTarget['type'] != 'svg' && !$this->imageInfo['animated']);
@@ -496,7 +513,8 @@ class BeThumb {
         if (!empty($this->imageInfo['cache'])) {
             $thumbFileSize = filesize($this->imageTarget['filepath']);
             if ($thumbFileSize === 0) {
-                $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']);
+                $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']
+                    . ' input params: ' . print_r($this->inputParams, true));
             }
             $this->imageInfo['cache']['thumbs'][$cacheItem] = array('size' => $thumbFileSize);
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
@@ -527,12 +545,15 @@ class BeThumb {
 	 * Setup internal imageTarget data array, used in thumbnails creation
 	 * 
 	 */
-	private function setupImageTarget(array $params) {
+	private function setupImageTarget() {
 
-		// read params as an associative array or multiple variable
-		$expectedArgs = array ('width', 'height', 'longside', 'mode', 'modeparam', 'type', 'upscale',
-				'cache', 'watermark', 'quality', 'interlace');
-		extract ($params);
+        // check input params
+        $inputKeys = array_keys($this->inputParams);
+        $paramsDiff = array_diff($inputKeys, $this->allowedParams);
+        if (!empty($paramsDiff)) {
+            $this->triggerError('input params not supported: ' . print_r($paramsDiff, true));
+        }
+        extract($this->inputParams);
 
 		$imageConf = Configure::read('media.image');
 		
