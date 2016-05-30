@@ -358,8 +358,8 @@ class Permission extends BEAppModel
             $perms = $this->find('all', array(
                 'conditions' => $conditions,
             ));
+            $this->cleanupPermissionData($perms);
             if ($this->BeObjectCache) {
-                $this->cleanupPermissionData($perms);
                 $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
             }
         }
@@ -377,14 +377,16 @@ class Permission extends BEAppModel
     private function cleanupPermissionData(array &$perms) {
         foreach ($perms as $i => &$p) {
             if (!empty($p['Group']['name'])) {
-                $groupName = $p['Group']['name'];
-                unset($p['Group']);
-                $p['Group']['name'] = $groupName;
+                $p['Group'] = array_intersect_key(
+                    $p['Group'],
+                    array_flip(array('id', 'name'))
+                );
                 unset($p['User']);
             } else if (!empty($p['User']['userid'])) {
-                $userName = $p['User']['userid'];
-                unset($p['User']);
-                $p['User']['userid'] = $userName;
+                $p['User'] = array_intersect_key(
+                    $p['User'],
+                    array_flip(array('id', 'userid'))
+                );
                 unset($p['Group']);
             }
         }
