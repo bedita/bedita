@@ -283,10 +283,10 @@ class Permission extends BEAppModel
 			return true;
 
 		foreach ($perms as $p) {
-			if(!empty($p['User']['id']) && $userData['id'] == $p['User']['id']) {
+			if(!empty($p['User']) && $userData['id'] == $p['Permission']['ugid']) {
 				return true;
 			}
-			if(!empty($p['Group']['name']) && !empty($userData['groups']) && in_array($p['Group']['name'], $userData['groups'])) {
+			if(!empty($p['Group']) && !empty($userData['groups']) && in_array($p['Group']['name'], $userData['groups'])) {
 				return true;
 			}
 		}
