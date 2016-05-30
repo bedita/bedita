@@ -283,10 +283,10 @@ class Permission extends BEAppModel
 			return true;
 
 		foreach ($perms as $p) {
-			if(!empty($p['User']['id']) && $userData['id'] == $p['User']['id']) {
+			if(!empty($p['User']) && $userData['id'] == $p['Permission']['ugid']) {
 				return true;
 			}
-			if(!empty($p['Group']['name']) && !empty($userData['groups']) && in_array($p['Group']['name'], $userData['groups'])) {
+			if(!empty($p['Group']) && !empty($userData['groups']) && in_array($p['Group']['name'], $userData['groups'])) {
 				return true;
 			}
 		}
@@ -358,8 +358,8 @@ class Permission extends BEAppModel
             $perms = $this->find('all', array(
                 'conditions' => $conditions,
             ));
+            $this->cleanupPermissionData($perms);
             if ($this->BeObjectCache) {
-                $this->cleanupPermissionData($perms);
                 $this->BeObjectCache->write($objectId, $options, $perms, 'perms');
             }
         }
@@ -377,14 +377,16 @@ class Permission extends BEAppModel
     private function cleanupPermissionData(array &$perms) {
         foreach ($perms as $i => &$p) {
             if (!empty($p['Group']['name'])) {
-                $groupName = $p['Group']['name'];
-                unset($p['Group']);
-                $p['Group']['name'] = $groupName;
+                $p['Group'] = array_intersect_key(
+                    $p['Group'],
+                    array_flip(array('name'))
+                );
                 unset($p['User']);
             } else if (!empty($p['User']['userid'])) {
-                $userName = $p['User']['userid'];
-                unset($p['User']);
-                $p['User']['userid'] = $userName;
+                $p['User'] = array_intersect_key(
+                    $p['User'],
+                    array_flip(array('userid'))
+                );
                 unset($p['Group']);
             }
         }
