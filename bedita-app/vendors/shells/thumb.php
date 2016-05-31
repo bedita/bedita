@@ -48,7 +48,7 @@ class ThumbShell extends BeditaBaseShell {
         $res = array();
         if (!empty($this->params['-thumb-options'])) {
             $thumbOpts = $this->params['-thumb-options'];
-            $opts = explode('|', $thumbOpts);
+            $opts = explode(',', $thumbOpts);
             foreach ($opts as $v) {
                 $opt = explode('=', $v);
                 if (count($opt) != 2) {
@@ -59,6 +59,8 @@ class ThumbShell extends BeditaBaseShell {
                     $opt[1] = true;
                 } elseif ($opt[1] === 'false') {
                     $opt[1] = false;
+                } elseif ($opt[1] === 'null') {
+                    $opt[1] = null;
                 }
                 $res[$opt[0]] = $opt[1];
             }
