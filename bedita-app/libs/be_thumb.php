@@ -715,7 +715,7 @@ class BeThumb {
             } 
  
     		$thumbnail = PhpThumbFactory::create($imageFilePath, Configure::read('media.image'));
-            $thumbnail->setDestination(targetThumbPath, $this->imageTarget['type']);
+            $thumbnail->setDestination($targetThumbPath, $this->imageTarget['type']);
 
             if (array_key_exists('q', $this->imageTarget)) {
                 // Set quality.
