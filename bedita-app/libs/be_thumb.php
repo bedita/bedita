@@ -81,6 +81,11 @@ class BeThumb {
         'cache', 'watermark', 'quality', 'interlace',
     );
 
+    /** 
+     * List of input params to ignore
+     */
+    public $ignoredParams = array('presentation', 'URLonly');
+
 
 	/**
 	 * All known mime types
@@ -226,6 +231,9 @@ class BeThumb {
         }
 
         // setup internal image target array (uses $this->imageInfo)
+        foreach ($this->ignoredParams as $ignored) {
+            unset($params[$ignored]);
+        }
         $this->inputParams = $params;
         $this->setupImageTarget();
 
