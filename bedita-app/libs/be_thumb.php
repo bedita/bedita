@@ -517,7 +517,7 @@ class BeThumb {
     private function storeCacheThumbnail($cacheItem) {
         if (!empty($this->imageInfo['cache'])) {
             $thumbFileSize = filesize($this->imageTarget['filepath']);
-            $targetFileSize = !empty($this->imageTarget['filesize']) ? 
+            $targetFileSize = isset($this->imageTarget['filesize']) ? 
                 ' - local size: ' . $this->imageTarget['filesize'] : '';
             if ($thumbFileSize === 0) {
                 $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']
