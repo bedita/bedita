@@ -551,7 +551,7 @@ class BeThumb {
         $inputKeys = array_keys($this->inputParams);
         $paramsDiff = array_diff($inputKeys, $this->allowedParams);
         if (!empty($paramsDiff)) {
-            $this->triggerError('input params not supported: ' . print_r($paramsDiff, true));
+            $this->log('input params not supported: ' . print_r($paramsDiff, true), 'warn');
         }
         extract($this->inputParams);
 
@@ -960,6 +960,18 @@ class BeThumb {
             return;
         }
 		CakeLog::write('error', get_class($this) . ": " . $errorMsg);
+	}
+
+	/**
+	 * Log/report error
+	 *
+	 * @param string $errorMsg
+	 */
+	private function log($msg, $type) {
+        if (!class_exists('CakeLog')) {
+            return;
+        }
+		CakeLog::write($type, get_class($this) . ": " . $msg);
 	}
 
     /**
