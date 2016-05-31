@@ -517,9 +517,11 @@ class BeThumb {
     private function storeCacheThumbnail($cacheItem) {
         if (!empty($this->imageInfo['cache'])) {
             $thumbFileSize = filesize($this->imageTarget['filepath']);
+            $targetFileSize = !empty($this->imageTarget['filesize']) ? 
+                ' - local size: ' . $this->imageTarget['filesize'] : '';
             if ($thumbFileSize === 0) {
                 $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']
-                    . ' input params: ' . print_r($this->inputParams, true));
+                    . $targetFileSize . ' input params: ' . print_r($this->inputParams, true));
             }
             $this->imageInfo['cache']['thumbs'][$cacheItem] = array('size' => $thumbFileSize);
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
@@ -779,6 +781,7 @@ class BeThumb {
                             . ' to ' . $this->imageTarget['filepath']);
                         return false;
                     }
+                    $this->imageTarget['filesize'] = filesize($targetThumbPath);
                     if (!unlink($targetThumbPath)) {
                         $this->triggerError('Error removing local thumbnail ' . $targetThumbPath);
                         return false;
