@@ -231,9 +231,6 @@ class BeThumb {
         }
 
         // setup internal image target array (uses $this->imageInfo)
-        foreach ($this->ignoredParams as $ignored) {
-            unset($params[$ignored]);
-        }
         $this->inputParams = $params;
         $this->setupImageTarget();
 
@@ -558,6 +555,7 @@ class BeThumb {
         // check input params
         $inputKeys = array_keys($this->inputParams);
         $paramsDiff = array_diff($inputKeys, $this->allowedParams);
+        $paramsDiff = array_diff($paramsDiff, $this->ignoredParams);
         if (!empty($paramsDiff)) {
             $this->log('input params not supported: ' . print_r($paramsDiff, true), 'warn');
         }
