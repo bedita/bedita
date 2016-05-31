@@ -170,7 +170,7 @@ class MultimediaController extends ModulesController {
                 }
                 $obj["Category"] = $objCat;
             }
-            
+
             if (!empty($obj['RelatedObject'])) {
                 $obj["relations"] = $this->objectRelationArray($obj['RelatedObject']);
             }
@@ -178,7 +178,7 @@ class MultimediaController extends ModulesController {
                 $this->setupAnnotations($obj);
             }
             unset($obj['Annotation']);
-            
+
             $imagePath  = $this->BeFileHandler->path($id) ;
             $imageURL   = $this->BeFileHandler->url($id) ;
 
@@ -188,11 +188,6 @@ class MultimediaController extends ModulesController {
             $previews = $this->previewsForObject($parents_id, $id, $obj['status']);
 
             $this->historyItem["object_id"] = $id;
-            // concurrent access
-            if ($this->modulePerms & BEDITA_PERMS_MODIFY) {
-                $user = $this->BeAuth->getUser();
-                $objEditor->updateAccess($id, $user['id']);
-            }
 
             //check if hash is present elsewhere
             if (!empty($obj['hash_file'])) {
@@ -204,7 +199,7 @@ class MultimediaController extends ModulesController {
                 $results = $this->Image->query("SELECT * FROM streams INNER JOIN objects ON objects.id = streams.id WHERE hash_file='".$obj['hash_file']."'  AND streams.id != ".$obj['id']."");
                 $this->set('elsewhere_hash',$results);
             }
-            
+
             // #536 check local file existence
             if (!empty($obj['uri']) && ($obj['uri'][0] === '/' || $obj['uri'][0] === DS)) {
                 $path = Configure::read('mediaRoot') . $obj['uri'];
@@ -226,17 +221,13 @@ class MultimediaController extends ModulesController {
         $this->set('object',    @$obj);
         $this->set('imagePath', @$imagePath);
         $this->set('imageUrl',  @$imageURL);
-        // get users and groups list. 
-        $this->User->displayField = 'userid';
-        $this->set("usersList", $this->User->find('list', array("order" => "userid")));
-        $this->set("groupsList", $this->Group->find('list', array("order" => "name")));
-        
+
         // exclude some kind of relations from view
         $relationsToExclude = array("attach" => "attach","download" => "download","seealso" => "seealso");
         $availableRelations = array_diff_key($availableRelations, $relationsToExclude);
 
         $this->set('availabeRelations', $availableRelations);
-        
+
         if(!empty($obj["relations"])) {
             $this->set('relObjects', $obj["relations"]);
         }
