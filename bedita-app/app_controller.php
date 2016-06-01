@@ -894,17 +894,18 @@ class AppController extends Controller {
             $this->data['DateItem'] = array_values($this->data['DateItem']);
         }
 
-        if (!$beModel->save($this->data)) {
+        $success = $beModel->save($this->data);
+        if (!$success) {
             throw new BeditaException(__("Error saving $name", true), $beModel->validationErrors);
         }
 
         // handle tree. Section and Area handled in AreaController
         if ($options['saveTree']) {
-            if(!$fixed && isset($this->data['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
+            if(!$fixed && isset($success[$beModel->alias]['destination']) && $beModel->name != 'Section' &&  $beModel->name != 'Area') {
                 if (!$new) {
-                    $this->BeTree->setupForSave($beModel->id, $this->data['destination']);
+                    $this->BeTree->setupForSave($beModel->id, $success[$beModel->alias]['destination']);
                 }
-                ClassRegistry::init('Tree')->updateTree($beModel->id, $this->data['destination']);
+                ClassRegistry::init('Tree')->updateTree($beModel->id, $success[$beModel->alias]['destination']);
             }
         }
     }
