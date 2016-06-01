@@ -243,10 +243,12 @@ class BeThumb {
                 $cacheExists = true;
             }
             if (!$cacheExists) {
+                $this->imageTarget['thumbCreated'] = false;
                 if (!file_exists($this->imageTarget['filepath'])) {
                     if (!$this->resample()) {
                         return $this->imgMissingFile;
                     }
+                    $this->imageTarget['thumbCreated'] = true;
                 }
                 $this->storeCacheThumbnail($cacheItem);
             }
@@ -519,9 +521,16 @@ class BeThumb {
             $thumbFileSize = filesize($this->imageTarget['filepath']);
             $targetFileSize = isset($this->imageTarget['filesize']) ? 
                 ' - local size: ' . $this->imageTarget['filesize'] : '';
+            $thumbCreated = !empty($this->imageTarget['thumbCreated']) ? ' - thumb created ' : '';
             if ($thumbFileSize === 0) {
-                $this->triggerError('empty file size for thumbnail: ' . $this->imageTarget['filepath']
-                    . $targetFileSize . ' input params: ' . print_r($this->inputParams, true));
+                $this->triggerError(
+                    'empty file size for thumbnail: '
+                    . $this->imageTarget['filepath']
+                    . $thumbCreated
+                    . $targetFileSize
+                    . ' input params: '
+                    . print_r($this->inputParams, true)
+                );
             }
             $this->imageInfo['cache']['thumbs'][$cacheItem] = array('size' => $thumbFileSize);
             $path = ($this->imageInfo['remote'] ? DS . 'ext' : '') . $this->imageInfo['path'];
