@@ -185,6 +185,10 @@ class BeObjectCache {
         if (empty($cacheIdx)) {
             $cacheIdx = array();
         }
+        if (!is_array($cacheIdx)) {
+            CakeLog::write('error', sprintf('Invalid value for cache key %s: array expected, got %s', $cacheIdxKey, var_export($cacheIdx, true)));
+            $cacheIdx = array();
+        }
         if (!in_array($cacheName, $cacheIdx)) {
             $cacheIdx[] = $cacheName;
             Cache::write($cacheIdxKey, $cacheIdx, 'objects');
