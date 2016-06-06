@@ -244,7 +244,19 @@ class BeThumb {
             }
             if (!$cacheExists) {
                 $this->imageTarget['thumbCreated'] = false;
+                $createThumb = false;
                 if (!file_exists($this->imageTarget['filepath'])) {
+                    $createThumb = true;
+                } else {
+                    $this->imageTarget['thumbFileSize'] = filesize($this->imageTarget['filepath']);
+                    if ($this->imageTarget['thumbFileSize'] === 0) {
+                        $this->log('empty file size found for ' . $this->imageTarget['filepath'], 'warn');
+                        $createThumb = true;
+                        unset($this->imageTarget['thumbFileSize']);
+                    }
+                }
+
+                if ($createThumb) {
                     if (!$this->resample()) {
                         return $this->imgMissingFile;
                     }
@@ -518,7 +530,8 @@ class BeThumb {
      */
     private function storeCacheThumbnail($cacheItem) {
         if (!empty($this->imageInfo['cache'])) {
-            $thumbFileSize = filesize($this->imageTarget['filepath']);
+            $thumbFileSize = isset($this->imageTarget['thumbFileSize']) ? 
+                 $this->imageTarget['thumbFileSize'] : filesize($this->imageTarget['filepath']);
             $targetFileSize = isset($this->imageTarget['filesize']) ? 
                 ' - local size: ' . $this->imageTarget['filesize'] : '';
             $thumbCreated = !empty($this->imageTarget['thumbCreated']) ? ' - thumb created ' : '';
