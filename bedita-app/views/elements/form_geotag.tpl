@@ -1,6 +1,6 @@
 <!-- Google Maps API key API 3.3 -->
 <script type="text/javascript"
-    src="http://maps.google.com/maps/api/js?sensor=false">
+    src="https://maps.google.com/maps/api/js?sensor=false">
 </script>
 
 <script>
@@ -23,7 +23,7 @@ $(document).ready(function(){
 		} else {
 			q += "&t=" +  $("#mapType").val();
 		}
-		window.open("http://maps.google.com/maps?" + q + "&output=classic");
+		window.open("https://maps.google.com/maps?" + q + "&output=classic");
 	});	
 	
     try {
