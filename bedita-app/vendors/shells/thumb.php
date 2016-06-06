@@ -30,11 +30,27 @@ class ThumbShell extends BeditaBaseShell {
      * Create thumb from image id with basic options 
      */
     public function create() {
-        $id = $this->mandatoryArgument('id', 'image id is mandatory, use -id');
-        $image = ClassRegistry::init('Image');
-        $imgData = $image->findById($id);
-        if (empty($imgData['uri'])) {
-            $this->out('No stream uri found for image id: ' . $id);
+        $id = isset($this->params['id']) ? $this->params['id'] : null;
+        $uri = isset($this->params['-uri']) ? $this->params['-uri'] : null;
+        if (!$id && !$uri) {
+            $this->out('Please use --uri or -id options to identify source image');
+            return;
+        }
+        $stream = ClassRegistry::init('Stream');
+        if ($id) {
+            $imgData = $stream->findById($id);
+        } else {
+            $imgData = $stream->find('first', array('conditions' => array('uri' => $uri)));
+            if (!empty($imgData['Stream'])) {
+                $imgData = $imgData['Stream'];
+            }
+        }
+        if ($imgData === false || empty($imgData['uri'])) {
+            if ($id) {
+                $this->out('No stream uri found for image id: ' . $id);
+            } else {
+                $this->out('Stream uri not found: ' . $uri);
+            }
             return;
         }
         $beThumb = BeLib::getObject('BeThumb');
@@ -71,11 +87,12 @@ class ThumbShell extends BeditaBaseShell {
     function help() {
         $this->out('Available functions:');
         $this->out(' ');
-        $this->out('1. create: thumbnail from image id');
+        $this->out('1. create: thumbnail from image id or stream uri');
         $this->out(' ');
-        $this->out('   Usage: create -id <object-id> [--thumb-options <thumb-options>]');
+        $this->out('   Usage: create [-id <object-id>] [--uri <stream-uri>] [--thumb-options <thumb-options>]');
         $this->out(' ');
         $this->out("    -id <object-id>\t source image id");
+        $this->out("    --uri <stream-uri>\t local stream uri, relative to media root folder - e.g. /ad/54/img.jpg");
         $this->out("    --thumb-options \t thumb options in the form width=100|height=100|...");
         $this->out(' ');
     }
