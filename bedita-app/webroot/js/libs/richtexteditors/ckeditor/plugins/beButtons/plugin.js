@@ -35,7 +35,7 @@ CKEDITOR.plugins.add( 'beButtons', {
 					var otext = selection.focusNode.wholeText;
 					var text = selection.focusNode.nodeValue;
 					
-					var selectText = text.substr(index,end);
+					var selectText = text.substr(index,end-index);
 					
 					var newText = text.substr(0,index) + '|voglioCheSiaUnaDefinizione|' + selectText + '|voglioCheSiaUnaDefinizione|' + text.substr(end);
 					selection.focusNode.textContent = newText;
