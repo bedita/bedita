@@ -34,7 +34,7 @@ class ExternalAuthFixture extends TestFixture
             'user_id' => 1,
             'auth_provider_id' => 1,
             'params' => null,
-            'username' => 'first_user',
+            'provider_username' => 'first_user',
         ],
     ];
 }

@@ -102,29 +102,29 @@ class UserTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertNotEmpty($user->password);
-        $this->assertArrayNotHasKey('password', $user->toArray());
+        $this->assertNotEmpty($user->password_hash);
+        $this->assertArrayNotHasKey('password_hash', $user->toArray());
     }
 
     /**
      * Test setter method for `password`.
      *
      * @return void
-     * @covers ::_setPassword()
+     * @covers ::_setPasswordHash()
      */
-    public function testSetPassword()
+    public function testSetPasswordHash()
     {
         $user = $this->Users->get(1);
 
         $data = [
-            'password' => 'myPassword',
+            'password_hash' => 'myPassword',
         ];
         $user = $this->Users->patchEntity($user, $data);
         if (!($user instanceof User)) {
             throw new \InvalidArgumentException();
         }
 
-        $this->assertNotEquals('myPassword', $user->password);
-        $this->assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password));
+        $this->assertNotEquals('myPassword', $user->password_hash);
+        $this->assertTrue((new DefaultPasswordHasher())->check('myPassword', $user->password_hash));
     }
 }

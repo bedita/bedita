@@ -65,7 +65,7 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
-                        'immutable' => true,
+                        'unchangeable' => true,
                         'backend_auth' => true,
                         'created' => '2016-04-15T09:57:38+0000',
                         'modified' => '2016-04-15T09:57:38+0000',
@@ -80,7 +80,7 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'second role',
                         'description' => 'this is a second role',
-                        'immutable' => false,
+                        'unchangeable' => false,
                         'backend_auth' => false,
                         'created' => '2016-04-15T11:59:12+0000',
                         'modified' => '2016-04-15T11:59:13+0000',
@@ -172,7 +172,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'name' => 'first role',
                     'description' => 'this is the very first role',
-                    'immutable' => true,
+                    'unchangeable' => true,
                     'backend_auth' => true,
                     'created' => '2016-04-15T09:57:38+0000',
                     'modified' => '2016-04-15T09:57:38+0000',

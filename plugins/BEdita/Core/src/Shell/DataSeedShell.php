@@ -98,7 +98,7 @@ class DataSeedShell extends Shell
         $tsLast = $this->faker->dateTimeThisYear()->getTimestamp();
         return [
             'username' => $this->faker->userName,
-            'password' => $this->faker->password,
+            'password_hash' => $this->faker->password,
             'last_login' => Time::createFromTimestamp($tsLast),
         ];
     }
