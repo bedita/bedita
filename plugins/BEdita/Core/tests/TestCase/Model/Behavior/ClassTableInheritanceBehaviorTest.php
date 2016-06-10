@@ -235,7 +235,7 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * Test find using contain
      *
      * @return void
-     * @covers ::arrangeContain()
+     * @covers ::patchContain()
      */
     public function testContainFind()
     {
