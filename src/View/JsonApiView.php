@@ -38,8 +38,8 @@ class JsonApiView extends JsonView
      */
     protected function _dataToSerialize($serialize = true)
     {
+        $type = null;
         if (empty($this->viewVars['_error'])) {
-            $type = null;
             if (!empty($this->viewVars['_type'])) {
                 $type = $this->viewVars['_type'];
             }
@@ -60,6 +60,9 @@ class JsonApiView extends JsonView
             $meta = $this->viewVars['_meta'];
         }
 
+        if ($type && empty($data) && $type === 'meta') {
+            return compact('error', 'links', 'meta');
+        }
         return compact('error', 'data', 'links', 'meta');
     }
 }
