@@ -101,6 +101,7 @@ class JsonApiComponentTest extends TestCase
     {
         $expected = [
             'self' => 'http://example.org/users',
+            'home' => 'http://example.org/home',
         ];
 
         $request = new Request([
@@ -133,6 +134,7 @@ class JsonApiComponentTest extends TestCase
                     'last' => 'http://example.org/users',
                     'prev' => null,
                     'next' => null,
+                    'home' => 'http://example.org/home',
                 ],
                 [
                     'pagination' => [
@@ -152,6 +154,7 @@ class JsonApiComponentTest extends TestCase
                     'last' => 'http://example.org/users?limit=1&page=2',
                     'prev' => null,
                     'next' => 'http://example.org/users?limit=1&page=2',
+                    'home' => 'http://example.org/home',
                 ],
                 [
                     'pagination' => [
@@ -173,6 +176,7 @@ class JsonApiComponentTest extends TestCase
                     'last' => 'http://example.org/users?page=2&limit=1',
                     'prev' => 'http://example.org/users?limit=1',
                     'next' => null,
+                    'home' => 'http://example.org/home',
                 ],
                 [
                     'pagination' => [
