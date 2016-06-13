@@ -191,7 +191,19 @@ class BeObjectCache {
         }
         if (!in_array($cacheName, $cacheIdx)) {
             $cacheIdx[] = $cacheName;
-            Cache::write($cacheIdxKey, $cacheIdx, 'objects');
+            $res = Cache::write($cacheIdxKey, $cacheIdx, 'objects');
+            if ($res !== true) {
+                CakeLog::write(
+                    'error',
+                    sprintf(
+                        'Error writing index cache %s for object %s. Cache key %s not persisted.',
+                        $cacheIdxKey,
+                        $id,
+                        $cacheName
+                    )
+                );
+                return false;
+            }
         }
         $res = Cache::write($cacheName, $data, 'objects');
         return $res;
@@ -207,7 +219,7 @@ class BeObjectCache {
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache
-        if ($this->cacheConfig['engine'] !== 'File') {
+        if (!$this->hasFileEngine()) {
             $res = $this->writeIndexedCache($id, $cacheName, $data);
         } else {
             $this->setCacheOptions($id);
@@ -222,7 +234,7 @@ class BeObjectCache {
      * @param  integer $id objectId
      */
     public function delete($id, array $options = null) {
-        if ($this->cacheConfig['engine'] == 'File') {
+        if ($this->hasFileEngine()) {
             $cachePath = $this->getPathById($id);
             $wildCard = $cachePath . DS . $this->cacheConfig['prefix'] . $id . '-*';
             $toDelete = glob($wildCard);
