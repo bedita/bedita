@@ -19,9 +19,15 @@ $this->layout = null;
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!--
     <link rel="stylesheet" href="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.css" />
     <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
     <script type="text/javascript" src="https://rawgithub.com/yesmeck/jquery-jsonview/master/dist/jquery.jsonview.js"></script>
+    -->
+
+    <?= $this->Html->css('BEdita/API.jquery.jsonview'); ?>
+    <?= $this->Html->script('BEdita/API.jquery.min'); ?>
+    <?= $this->Html->script('BEdita/API.jquery.jsonview'); ?>
 
     <title><?= __('BEdita 4 - API response') ?></title>
 
