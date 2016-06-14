@@ -85,9 +85,13 @@ class JsonApi
         $id = (string)$attributes['id'];
         unset($attributes['id']);
 
+        $selfEndpoint = $type;
         if ($type === null && isset($attributes['type'])) {
-            $type = $attributes['type'];
+            $type = $selfEndpoint = $attributes['type'];
             unset($attributes['type']);
+        } elseif ($type === 'objects' && isset($attributes['object_type']['name'])) {
+            $type = $attributes['object_type']['name'];
+            unset($attributes['object_type']);
         }
 
         foreach ($attributes as &$attribute) {
@@ -102,7 +106,7 @@ class JsonApi
         }
 
         $links = [];
-        $links['self'] = Router::fullBaseUrl() . '/' . $type . '/' . $id;
+        $links['self'] = Router::fullBaseUrl() . '/' . $selfEndpoint . '/' . $id;
 
         return compact('id', 'type', 'attributes', 'links');
     }
