@@ -52,7 +52,7 @@ class ObjectTypesTable extends Table
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Objects',
         ]);
     }
 

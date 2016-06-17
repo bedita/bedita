@@ -49,7 +49,6 @@ class ObjectType extends Entity
      * {@inheritDoc}
      */
     protected $_virtual = [
-        'pluralized',
         'alias',
         'table',
     ];
