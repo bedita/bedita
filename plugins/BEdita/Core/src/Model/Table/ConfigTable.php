@@ -34,6 +34,16 @@ class ConfigTable extends Table
 
         $this->table('config');
         $this->primaryKey('name');
+
+        $this->addBehavior('Timestamp', [
+            'events' => [
+                'Model.beforeSave' => [
+                    'created' => 'new',
+                    'modified' => 'always',
+                ]
+            ],
+        ]);
+
     }
 
     /**
