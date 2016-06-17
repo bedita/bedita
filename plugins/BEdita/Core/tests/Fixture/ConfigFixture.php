@@ -34,21 +34,21 @@ class ConfigFixture extends TestFixture
             'context' => 'group1',
             'content' => 'false',
             'created' => '2016-06-16 12:34:56',
-//            'modified' => '2016-06-16 12:38:02',
+            'modified' => '2016-06-16 12:38:02',
         ],
         [
             'name' => 'Key2',
             'context' => 'group1',
             'content' => '{"test1" : "some data", "test2" : "other data"}',
             'created' => '2016-06-14 12:34:56',
-//            'modified' => '2016-06-15 12:38:02',
+            'modified' => '2016-06-15 12:38:02',
         ],
         [
             'name' => 'IntVal',
             'context' => 'group2',
             'content' => 14,
             'created' => '2016-06-13 17:34:56',
-//            'modified' => '2016-06-14 16:38:02',
+            'modified' => '2016-06-14 16:38:02',
         ],
     ];
 }
