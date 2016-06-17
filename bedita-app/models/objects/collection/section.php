@@ -95,6 +95,9 @@ class Section extends BeditaCollectionModel
     public $objectTypesGroups = array('related');
 
 	function afterSave($created) {
+	    if (!empty($this->data[$this->name]['parent_id'])) {
+	       $this->BEObject->clearCacheByIds(array($this->data[$this->name]['parent_id']));
+	    }
 		if (!$created) {
 			return;
 		}
@@ -106,7 +109,7 @@ class Section extends BeditaCollectionModel
 			}
 			// save Tree.menu
 			$menu = (!empty($this->data[$this->name]['menu'])) ? 1 : 0;
-			$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]["parent_id"], $menu);
+			$this->Tree->saveMenuVisibility($this->id, $this->data[$this->name]['parent_id'], $menu);
 		}
 		return true;
 	}

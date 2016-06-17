@@ -296,8 +296,7 @@ class BeObjectCache {
         if (in_array('off', $statuses)) {
             $status = 'off';
         }
-
-        return Cache::write(sprintf('path-%d-%s', (int)$id, $status), $path, 'objects');
+        return $this->writeIndexedCache($id, sprintf('path-%d-%s', (int)$id, $status), $path);
     }
 
     /**
