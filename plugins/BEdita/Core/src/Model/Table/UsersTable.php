@@ -77,7 +77,7 @@ class UsersTable extends Table
             ->requirePresence('username')
             ->notEmpty('username')
 
-            ->allowEmpty('password')
+            ->allowEmpty('password_hash')
 
             ->boolean('blocked')
             ->allowEmpty('blocked')

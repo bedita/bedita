@@ -67,8 +67,8 @@ class RolesTable extends Table
 
             ->allowEmpty('description')
 
-            ->boolean('immutable')
-            ->allowEmpty('immutable')
+            ->boolean('unchangeable')
+            ->allowEmpty('unchangeable')
 
             ->boolean('backend_auth')
             ->allowEmpty('backend_auth');

@@ -41,7 +41,7 @@ class User extends Entity
     protected $_accessible = [
         '*' => false,
         'username' => true,
-        'password' => true,
+        'password_hash' => true,
         'external_auth' => true,
     ];
 
@@ -49,7 +49,7 @@ class User extends Entity
      * {@inheritDoc}
      */
     protected $_hidden = [
-        'password',
+        'password_hash',
     ];
 
     /**
@@ -58,7 +58,7 @@ class User extends Entity
      * @param string $password Password to be hashed.
      * @return string
      */
-    protected function _setPassword($password)
+    protected function _setPasswordHash($password)
     {
         return (new DefaultPasswordHasher())->hash($password);
     }

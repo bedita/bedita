@@ -99,7 +99,7 @@ class ExternalAuthTableTest extends TestCase
                 [
                     'user_id' => 1,
                     'auth_provider_id' => 2,
-                    'username' => 'unique_username',
+                    'provider_username' => 'unique_username',
                 ],
             ],
             'notUnique' => [
@@ -107,7 +107,7 @@ class ExternalAuthTableTest extends TestCase
                 [
                     'user_id' => 2,
                     'auth_provider_id' => 1,
-                    'username' => 'first_user',
+                    'provider_username' => 'first_user',
                     'params' => [
                         'someParam' => 'someValue',
                     ],
@@ -118,7 +118,7 @@ class ExternalAuthTableTest extends TestCase
                 [
                     'user_id' => 1,
                     'auth_provider_id' => 1,
-                    'username' => 'some_username',
+                    'provider_username' => 'some_username',
                 ],
             ],
         ];

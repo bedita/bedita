@@ -193,7 +193,7 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "comment": "configuration parameter key",
+                "comment": "configuration key",
                 "precision": null,
                 "fixed": null
             },
@@ -206,12 +206,12 @@
                 "precision": null,
                 "fixed": null
             },
-            "value": {
+            "content": {
                 "type": "text",
                 "length": null,
                 "null": false,
                 "default": null,
-                "comment": "configuration parameter value",
+                "comment": "configuration data",
                 "precision": null
             },
             "created": {
@@ -274,7 +274,7 @@
                 "unsigned": true,
                 "null": false,
                 "default": null,
-                "comment": "link to external auth provider: ",
+                "comment": "link to external auth provider",
                 "precision": null,
                 "autoIncrement": null
             },
@@ -286,7 +286,7 @@
                 "comment": "external auth params, serialized JSON",
                 "precision": null
             },
-            "username": {
+            "provider_username": {
                 "type": "string",
                 "length": 255,
                 "null": true,
@@ -310,7 +310,7 @@
                 "type": "unique",
                 "columns": [
                     "auth_provider_id",
-                    "username"
+                    "provider_username"
                 ],
                 "length": [
 
@@ -535,16 +535,6 @@
                 "null": false,
                 "default": null,
                 "comment": "role - link to roles.id",
-                "precision": null,
-                "autoIncrement": null
-            },
-            "operation": {
-                "type": "integer",
-                "length": 10,
-                "unsigned": true,
-                "null": false,
-                "default": null,
-                "comment": "operation permission as bitwise mask",
                 "precision": null,
                 "autoIncrement": null
             },
@@ -1438,12 +1428,12 @@
                 "comment": "multiple values for this property?",
                 "precision": null
             },
-            "options": {
+            "options_list": {
                 "type": "text",
                 "length": null,
                 "null": true,
                 "default": null,
-                "comment": "property predefined options",
+                "comment": "property predefined options list",
                 "precision": null
             }
         },
@@ -1601,12 +1591,12 @@
                 "precision": null,
                 "autoIncrement": null
             },
-            "position": {
+            "side": {
                 "type": "text",
                 "length": null,
                 "null": false,
                 "default": null,
-                "comment": "type position in relation",
+                "comment": "type position in relation, left or right",
                 "precision": null
             }
         },
@@ -1616,7 +1606,7 @@
                 "columns": [
                     "relation_id",
                     "object_type_id",
-                    "position"
+                    "side"
                 ],
                 "length": [
 
@@ -1787,12 +1777,12 @@
                 "comment": "role description",
                 "precision": null
             },
-            "immutable": {
+            "unchangeable": {
                 "type": "boolean",
                 "length": null,
                 "null": false,
                 "default": "0",
-                "comment": "role data immutable (default:false)",
+                "comment": "role data not modifiable (default:false)",
                 "precision": null
             },
             "backend_auth": {
@@ -1988,13 +1978,13 @@
                 "precision": null,
                 "autoIncrement": null
             },
-            "depth": {
+            "depth_level": {
                 "type": "integer",
                 "length": 10,
                 "unsigned": true,
                 "null": false,
                 "default": null,
-                "comment": "depth",
+                "comment": "tree depth level",
                 "precision": null,
                 "autoIncrement": null
             },
@@ -2129,12 +2119,12 @@
                 "precision": null,
                 "fixed": null
             },
-            "password": {
+            "password_hash": {
                 "type": "text",
                 "length": 255,
                 "null": true,
                 "default": null,
-                "comment": "login password, if empty external auth is used",
+                "comment": "login password hash, if empty external auth is used",
                 "precision": null
             },
             "blocked": {

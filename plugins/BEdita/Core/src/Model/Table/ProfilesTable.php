@@ -13,8 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Entity\Profile;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
