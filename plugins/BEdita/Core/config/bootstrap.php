@@ -23,4 +23,6 @@ TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
  * Load 'core' configuration parameters
  */
 Configure::config('database', new DatabaseConfig());
-Configure::load('core', 'database');
+if (!defined('UNIT_TEST_RUN')) {
+    Configure::load('core', 'database');
+}
