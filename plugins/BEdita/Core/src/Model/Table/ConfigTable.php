@@ -53,6 +53,7 @@ class ConfigTable extends Table
         $validator
             ->requirePresence('name', 'create')
             ->notEmpty('name')
+            ->alphaNumeric('name')
 
             ->requirePresence('context', 'create')
             ->notEmpty('context')

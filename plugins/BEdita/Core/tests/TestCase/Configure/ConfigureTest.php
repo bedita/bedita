@@ -16,6 +16,7 @@ namespace BEdita\Core\Test\TestCase\Configure;
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -34,16 +35,29 @@ class ConfigureTest extends TestCase
     ];
 
     /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        TableRegistry::remove('Config');
+        TableRegistry::clear();
+        TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
+    }
+
+    /**
      * Test read method
      *
      * @return void
      */
     public function testRead()
     {
-        Configure::config('database', new DatabaseConfig());
-        Configure::load('group1', 'database', false);
+        Configure::config('test-database', new DatabaseConfig());
+        Configure::load('group1', 'test-database');
 
-        $this->assertFalse(Configure::read('Key1'));
+        $this->assertTrue(Configure::read('Name2'));
         $this->assertEquals('some data', Configure::read('Key2.test1'));
         $this->assertEquals('other data', Configure::read('Key2.test2'));
     }
@@ -88,7 +102,7 @@ class ConfigureTest extends TestCase
      */
     public function testDump($expected, $context, $data)
     {
-        Configure::config('database', new DatabaseConfig());
+        Configure::config('test-database', new DatabaseConfig());
         foreach ($data as $key => $value) {
             Configure::write($key, $value);
         }
@@ -97,11 +111,11 @@ class ConfigureTest extends TestCase
             $this->setExpectedException('Exception');
         }
 
-        $result = Configure::dump($context, 'database', array_keys($data));
+        $result = Configure::dump($context, 'test-database', array_keys($data));
 
         $this->assertEquals($expected, $result);
 
-        Configure::load($context, 'database', false);
+        Configure::load($context, 'test-database', false);
         foreach ($data as $key => $value) {
             $cfgVal = Configure::read($key);
             $this->assertEquals($value, $cfgVal);

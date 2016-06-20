@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Configure\Engine;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Database\Exception;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -47,7 +48,8 @@ class DatabaseConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
+        TableRegistry::clear();
+        TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
         $this->DatabaseConfig = new DatabaseConfig();
     }
 
@@ -59,7 +61,6 @@ class DatabaseConfigTest extends TestCase
     public function tearDown()
     {
         unset($this->DatabaseConfig);
-
         parent::tearDown();
     }
 
@@ -71,7 +72,7 @@ class DatabaseConfigTest extends TestCase
     public function testRead()
     {
         $configData = $this->DatabaseConfig->read();
-        $this->assertFalse($configData['Key1']);
+        $this->assertEquals(true, $configData['Name2']);
         $this->assertEquals(14, $configData['IntVal']);
 
         $configData = $this->DatabaseConfig->read('group1');

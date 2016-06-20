@@ -22,6 +22,7 @@ use Cake\ORM\TableRegistry;
  * Configuration parameters are stored in `config` table
  *
  * Each `config.name` in database should be a first level key in Configure (without dots)
+ * Some keys like 'Datasources', 'Cache' and 'EmailTransport' are reserved and may not be stored in database
  * Instead each corresponding `config.content` field should be either a string or JSON
  * `config.context` represents a group of parameters loaded via Configure::load($key, 'database')
  *
@@ -30,6 +31,8 @@ use Cake\ORM\TableRegistry;
  */
 class DatabaseConfig implements ConfigEngineInterface
 {
+
+    protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
      * Read from DB (or cache) $key group of paramenters (see database `config.context`)
@@ -44,11 +47,15 @@ class DatabaseConfig implements ConfigEngineInterface
         $values = [];
         $config = TableRegistry::get('Config');
         $query = $config->find()->select(['name', 'context', 'content']);
+        $query->where(function ($exp, $q) {
+            return $exp->notIn('name', $this->reservedKeys);
+        });
         if ($key) {
-            $query->where(['context' => $key]);
+            $query->andWhere(['context' => $key]);
         }
         $results = $query->all();
         foreach ($results as $data) {
+            //pr('config read: ' . print_r($data, true));
             $cfgKey = $data['name'];
             $cfgValue = json_decode($data['content'], true);
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -72,12 +79,14 @@ class DatabaseConfig implements ConfigEngineInterface
         $entities = [];
         $table = TableRegistry::get('Config');
         foreach ($data as $name => $content) {
-            if (is_array($content)) {
-                $content = json_encode($content);
-            } else {
-                $content = $this->valueToString($content);
+            if (!in_array($name, $this->reservedKeys)) {
+                if (is_array($content)) {
+                    $content = json_encode($content);
+                } else {
+                    $content = $this->valueToString($content);
+                }
+                $entities[] = $table->newEntity(compact('name', 'context', 'content'));
             }
-            $entities[] = $table->newEntity(compact('name', 'context', 'content'));
         }
         $table->connection()->transactional(function () use ($table, $entities) {
             foreach ($entities as $entity) {

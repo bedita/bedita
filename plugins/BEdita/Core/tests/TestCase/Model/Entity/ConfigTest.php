@@ -46,7 +46,7 @@ class ConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Config = TableRegistry::get('Config');
+        $this->Config = TableRegistry::get('BEdita/Core.Config');
     }
 
     /**
@@ -55,7 +55,6 @@ class ConfigTest extends TestCase
     public function tearDown()
     {
         unset($this->Config);
-        TableRegistry::clear();
         parent::tearDown();
     }
 
@@ -67,9 +66,9 @@ class ConfigTest extends TestCase
      */
     public function testEntity()
     {
-        $config = $this->Config->get('Key1');
+        $config = $this->Config->get('Name2');
         $this->assertEquals('group1', $config->context);
-        $this->assertEquals('false', $config->content);
+        $this->assertEquals('true', $config->content);
 
         $data = [
             'content' => 'true',

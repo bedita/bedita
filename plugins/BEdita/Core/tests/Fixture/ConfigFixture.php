@@ -30,9 +30,16 @@ class ConfigFixture extends TestFixture
      */
     public $records = [
         [
-            'name' => 'Key1',
+            'name' => 'Name1',
             'context' => 'group1',
-            'content' => 'false',
+            'content' => 'data',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'Name2',
+            'context' => 'group1',
+            'content' => 'true',
             'created' => '2016-06-16 12:34:56',
             'modified' => '2016-06-16 12:38:02',
         ],

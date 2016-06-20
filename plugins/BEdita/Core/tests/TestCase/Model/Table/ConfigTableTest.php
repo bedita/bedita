@@ -91,8 +91,16 @@ class ConfigTableTest extends TestCase
             'notValid' => [
                 false,
                 [
-                    'name' => 'bad.key',
+                    'name' => 'missingContent',
                     'context' => '',
+                ],
+            ],
+            'notValid2' => [
+                false,
+                [
+                    'name' => 'bad.key',
+                    'context' => 'somecontext',
+                    'content' => 'some content'
                 ],
             ],
         ];
