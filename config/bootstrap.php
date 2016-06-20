@@ -174,7 +174,7 @@ Request::addDetector('tablet', function () {
  */
 Plugin::load('Migrations');
 Plugin::load(
-    ['BEdita/API', 'BEdita/Core'],
+    ['BEdita/Core', 'BEdita/API'],
     ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]
 );
 

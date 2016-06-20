@@ -17,6 +17,11 @@ use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Network\Request;
 
+/**
+ * Load 'api' configuration parameters
+ */
+Configure::load('api', 'database');
+
 /** Set API exception renderer. This also requires error handler to be reset. */
 Configure::write('Error.exceptionRenderer', 'BEdita\API\Error\ExceptionRenderer');
 restore_error_handler();
