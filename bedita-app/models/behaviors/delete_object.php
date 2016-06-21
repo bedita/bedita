@@ -52,13 +52,15 @@ class DeleteObjectBehavior extends ModelBehavior {
             $model->BEObject->setObjectsToClean($model->id);
         }
 
-        $model->tmpAssociations = array();
         $model->tmpTable = $model->table;
+        if (empty($model->tmpAssociations)) {
+            $model->tmpAssociations = array();
 
-        $associations = array('hasOne', 'hasMany', 'belongsTo', 'hasAndBelongsToMany');
-        foreach ($associations as $association) {
-            $model->tmpAssociations[$association] = $model->$association;
-            $model->$association = array();
+            $associations = array('hasOne', 'hasMany', 'belongsTo', 'hasAndBelongsToMany');
+            foreach ($associations as $association) {
+                $model->tmpAssociations[$association] = $model->$association;
+                $model->$association = array();
+            }
         }
         $configure = $this->config[$model->name];
 
