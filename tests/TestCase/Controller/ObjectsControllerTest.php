@@ -45,6 +45,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/objects',
+                'home' => 'http://api.example.com/home',
                 'first' => 'http://api.example.com/objects',
                 'last' => 'http://api.example.com/objects',
                 'prev' => null,
@@ -168,6 +169,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/objects',
+                'home' => 'http://api.example.com/home',
                 'first' => 'http://api.example.com/objects',
                 'last' => 'http://api.example.com/objects',
                 'prev' => null,
@@ -214,6 +216,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/objects/1',
+                'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
@@ -270,6 +273,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/objects/99',
+                'home' => 'http://api.example.com/home',
             ],
             'error' => [
                 'status' => '404',
