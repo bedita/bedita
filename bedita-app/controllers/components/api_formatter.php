@@ -515,11 +515,15 @@ class ApiFormatterComponent extends Object {
             $user
         );
 
+        $excludeRelations = Configure::read('excludeRelations');
         $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
         if (!empty($countRel)) {
             foreach ($countRel as $cDetail) {
                 $count = $cDetail[0]['count'];
                 $switch = $cDetail['ObjectRelation']['switch'];
+                if ($excludeRelations && in_array($switch, $excludeRelations)) {
+                    continue;
+                }
                 if (isset($countForbidden[$switch])) {
                     $count -= $countForbidden[$switch];
                 }
