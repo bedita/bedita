@@ -48,6 +48,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/roles',
                 'prev' => null,
                 'next' => null,
+                'home' => 'http://api.example.com/home',
             ],
             'meta' => [
                 'pagination' => [
@@ -123,6 +124,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'last' => 'http://api.example.com/roles',
                 'prev' => null,
                 'next' => null,
+                'home' => 'http://api.example.com/home',
             ],
             'meta' => [
                 'pagination' => [
@@ -165,6 +167,7 @@ class RolesControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/roles/1',
+                'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
@@ -208,6 +211,7 @@ class RolesControllerTest extends IntegrationTestCase
         $expected = [
             'links' => [
                 'self' => 'http://api.example.com/roles/99',
+                'home' => 'http://api.example.com/home',
             ],
             'error' => [
                 'status' => '404',
