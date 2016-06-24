@@ -1497,7 +1497,7 @@ abstract class FrontendController extends AppController {
     /**
      * Remove from 'RelatedObject' array relations excluded in configuration
      * via $config['excludeRelations']
-	 * @param array $obj, object data array
+     * @param array $obj, object data array
      */
     protected function excludeRelations(array &$obj) {
         $excludeRelations = Configure::read('excludeRelations');
