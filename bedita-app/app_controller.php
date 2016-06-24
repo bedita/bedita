@@ -842,6 +842,30 @@ class AppController extends Controller {
         }
     }
 
+    /**
+     * Prepare `$this->data` with relations data checking if them are to unserialize.
+     *
+     * If exits `$this->data['relations_serialized']` then unserialize it and put result in `$this->data['RelatedObject']`
+     *
+     * @throws BeditaException When are defined both `$this->data['relations_serialized']` and `$this->data['RelatedObject']`
+     * @return void
+     */
+    protected function prepareRelationsToSave() {
+        if (array_key_exists('relations_serialized', $this->data)) {
+            if (!empty($this->data['RelatedObject'])) {
+                throw new BeditaException(
+                    __('Wrong data to save. RelatedObject and relations_serialized can not be set together', true)
+                );
+            }
+            $relationUnserialized = array();
+            parse_str($this->data['relations_serialized'], $relationUnserialized);
+            if (!empty($relationUnserialized['data']['RelatedObject'])) {
+                $this->data['RelatedObject'] = $relationUnserialized['data']['RelatedObject'];
+            }
+            unset($this->data['relations_serialized']);
+        }
+    }
+
     protected function saveObject(BEAppModel $beModel, array $options = array()) {
         if (empty($this->data)) {
             throw new BeditaException( __('No data', true));
@@ -857,6 +881,8 @@ class AppController extends Controller {
         if (!$new) {
             $this->checkObjectWritePermission($this->data['id']);
         }
+
+        $this->prepareRelationsToSave();
 
         // Format custom properties
         $this->BeCustomProperty->setupForSave() ;
