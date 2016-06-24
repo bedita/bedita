@@ -79,14 +79,11 @@ class DatabaseConfig implements ConfigEngineInterface
         $entities = [];
         $table = TableRegistry::get('Config');
         foreach ($data as $name => $content) {
-            if (!in_array($name, $this->reservedKeys)) {
-                if (is_array($content)) {
-                    $content = json_encode($content);
-                } else {
-                    $content = $this->valueToString($content);
-                }
-                $entities[] = $table->newEntity(compact('name', 'context', 'content'));
+            if (in_array($name, $this->reservedKeys)) {
+                continue;
             }
+            $content = is_array($content) ? json_encode($content) : $this->valueToString($content);
+            $entities[] = $table->newEntity(compact('name', 'context', 'content'));
         }
         $table->connection()->transactional(function () use ($table, $entities) {
             foreach ($entities as $entity) {
