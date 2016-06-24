@@ -32,6 +32,18 @@ $(window).on('load', function() {
 
 $(document).ready(function(){
 
+    // serialize relations before submit form
+	$("#updateForm").submit(function(e) {
+		var relationInputs = $(this).find(':input[name^=data\\[RelatedObject\\]]');
+		$('<input>').attr({
+		    type: 'hidden',
+		    name: 'data[relations_serialized]',
+		    value: relationInputs.serialize()
+		}).appendTo($(this));
+		relationInputs.remove();
+		return true;
+	});
+
 	{if !empty($branch)}
 		// se passato branch apre con quel ramo checked
 		$('input[value="{$branch}"][name="data[destination][]"]').attr("checked",true);
@@ -404,7 +416,5 @@ function updateEditors() {
 	$("#concurrenteditors").load(submitUrl);
 	chatTimer=setTimeout(updateEditors,checkTime);	
 }
-
-
 
 </script>
