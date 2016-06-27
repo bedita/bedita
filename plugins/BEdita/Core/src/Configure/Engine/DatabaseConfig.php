@@ -55,7 +55,6 @@ class DatabaseConfig implements ConfigEngineInterface
         }
         $results = $query->all();
         foreach ($results as $data) {
-            //pr('config read: ' . print_r($data, true));
             $cfgKey = $data['name'];
             $cfgValue = json_decode($data['content'], true);
             if (json_last_error() !== JSON_ERROR_NONE) {
