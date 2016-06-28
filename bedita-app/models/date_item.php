@@ -385,6 +385,7 @@ class DateItem extends BEAppModel
                 $day = date('Y-m-d', $time);
             }
         }
+        ksort($calendar);
         return compact('objIds', 'calendar');
     }
 
