@@ -367,18 +367,22 @@ class DateItem extends BEAppModel
              * Recurring event.
              */
             $time = $s;
-            while ($time <= $e) {
-                $time = strtotime('+1 day', $time);
+            $day = date('Y-m-d', $time);
+            $lastDay = ($e === $winEnd) ?  date('Y-m-d', $e - DAY) : date('Y-m-d', $e);
+            while ($day <= $lastDay) {
                 if (!empty($di['DateItem']['days']) && !in_array(date('N', $time), $di['DateItem']['days'])) {
+                    $time = strtotime('+1 day', $time);
                     continue;
                 }
 
-                $day = date('Y-m-d', $time);
                 $newItem = $di;
                 $newItem['DateItem']['start_date'] = $day . ' ' . $st;
                 $newItem['DateItem']['end_date'] = $day . ' ' . $et;
 
                 self::addToCalendar($calendar, $newItem);
+
+                $time += DAY;
+                $day = date('Y-m-d', $time);
             }
         }
         return compact('objIds', 'calendar');

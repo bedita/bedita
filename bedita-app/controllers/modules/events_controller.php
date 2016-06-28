@@ -70,8 +70,6 @@ class EventsController extends ModulesController {
 
         }
 
-
-
         $this->set("startDay", $startDay);
         $this->set("endDay", $endDay);
 
@@ -80,7 +78,9 @@ class EventsController extends ModulesController {
         $startTime = $startDay . " 00:00:00";
         $this->set("startTime", $startTime);
 
-        $calendarData = $this->DateItem->loadDateItemsCalendar($startDay, $endDay);
+        // #902 since $endDay is excluded upper limit we should increment it to 1 DAY
+        $endDayLimit = date('Y-m-d', strtotime($endDay) + DAY);
+        $calendarData = $this->DateItem->loadDateItemsCalendar($startDay, $endDayLimit);
         
         $events = array();
         $this->Event->containLevel("minimum");
