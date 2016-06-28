@@ -34,13 +34,7 @@ $(document).ready(function(){
 
     // serialize relations before submit form
 	$("#updateForm").submit(function(e) {
-		var relationInputs = $(this).find(':input[name^=data\\[RelatedObject\\]]');
-		$('<input>').attr({
-		    type: 'hidden',
-		    name: 'data[relations_serialized]',
-		    value: relationInputs.serialize()
-		}).appendTo($(this));
-		relationInputs.remove();
+		$(this).serializeFormRelations();
 		return true;
 	});
 

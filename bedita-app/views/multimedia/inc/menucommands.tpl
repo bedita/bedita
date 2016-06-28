@@ -25,12 +25,16 @@ Menu a SX valido per tutte le pagine del controller.
 			beforeSend: function() {
 		        $('#saveBEObject', commandArea).before(loader);
 		    },
+		    beforeSerialize: function($form, options) {
+		    	$form.serializeFormRelations();
+		    },
 		    uploadProgress: function(event, position, total, percentComplete) {
 		        var percentVal = percentComplete + '%';
 		        $('span', loader).text(percentVal);
 		    },
 			complete: function(xhr) {
 				$('span', loader).remove();
+				$('#updateForm').restoreFormRelations();
 			}
 		};
 	

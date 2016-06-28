@@ -141,8 +141,40 @@ jQuery.fn.extend({
                 currentBindings.unshift(currentBindings.pop());
             }
         });
-    }
+    },
 
+    /**
+     * Serialize all inputs with name begins with data[RelatedObject],
+     * add hidden input with relations serialized
+     * and disable inputs with name begins with data[RelatedObject]
+     *
+     * Used before submit form to avoid to send too much input vars
+     *
+     * @return {void}
+     */
+    serializeFormRelations: function() {
+        $(this).restoreFormRelations();
+        var relationInputs = $(this).find(':input[name^=data\\[RelatedObject\\]]');
+        $('<input>').attr({
+            type: 'hidden',
+            name: 'data[relations_serialized]',
+            value: relationInputs.serialize()
+        }).appendTo($(this));
+        relationInputs.prop('disabled', true);
+    },
+
+    /**
+     * Restore the relations input in the original situation
+     *
+     * - enable inputs with name begins with data[RelatedObject]
+     * - remove hidden input with relations serialized
+     *
+     * @return {[type]} [description]
+     */
+    restoreFormRelations: function() {
+        $(this).find(':input[name^=data\\[RelatedObject\\]]').prop('disabled', false);
+        $(this).find('input[name=data\\[relations_serialized\\]]').remove();
+    }
 
 });
 
