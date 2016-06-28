@@ -1418,7 +1418,8 @@ abstract class ApiBaseController extends FrontendController {
             if (!empty($user)) {
                 $groupIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
                 foreach ($childrenForbidden as $id => $groups) {
-                    if (empty(array_intersect($groups, $groupIds))) {
+                    $intersect = array_intersect($groups, $groupIds); 
+                    if (empty($intersect)) {
                         $objectsForbidden[] = $id;
                     }
                 }
