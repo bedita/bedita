@@ -857,8 +857,19 @@ class AppController extends Controller {
                     __('Wrong data to save. RelatedObject and relations_serialized can not be set together', true)
                 );
             }
-            $relationUnserialized = array();
-            parse_str($this->data['relations_serialized'], $relationUnserialized);
+
+            $relationUnserialized = array_reduce(
+                array_map(
+                    function ($chunk) {
+                        parse_str(implode('&', $chunk), $parsed);
+                        return $parsed;
+                    },
+                    array_chunk(explode('&', $this->data['relations_serialized']), ini_get('max_input_vars'))
+                ),
+                array('Set', 'pushDiff'),
+                array()
+            );
+
             if (!empty($relationUnserialized['data']['RelatedObject'])) {
                 $this->data['RelatedObject'] = $relationUnserialized['data']['RelatedObject'];
             }
