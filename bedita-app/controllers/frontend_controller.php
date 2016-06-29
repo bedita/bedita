@@ -1416,6 +1416,8 @@ abstract class FrontendController extends AppController {
         }
 		$this->BeLangText->setObjectLang($obj, $this->currLang, $this->status);
 
+        $this->excludeRelations($obj);
+
 		if ($options['explodeRelations'] && !empty($obj['RelatedObject'])) {
 			$userdata = (!$this->logged) ? array() : $this->BeAuth->getUserSession();
 			$relOptions = array("mainLanguage" => $this->currLang, "user" => $userdata);
@@ -1491,6 +1493,22 @@ abstract class FrontendController extends AppController {
 		$this->objectCache[$obj_id] = $obj;
 		return $obj;
 	}
+
+    /**
+     * Remove from 'RelatedObject' array relations excluded in configuration
+     * via $config['excludeRelationsFrontend']
+     * @param array $obj, object data array
+     */
+    protected function excludeRelations(array &$obj) {
+        $excludeRelationsFrontend = Configure::read('excludeRelationsFrontend');
+        if (!empty($obj['RelatedObject']) && $excludeRelationsFrontend) {
+            foreach ($obj['RelatedObject'] as $k => $rel) {
+                if (in_array($rel['switch'], $excludeRelationsFrontend)) {
+                    unset($obj['RelatedObject'][$k]);
+                }
+            }
+        }
+    }
 
 	/**
 	 * Load objects in section $parent_id and set in view vars an array for each object type
