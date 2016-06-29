@@ -515,7 +515,7 @@ class ApiFormatterComponent extends Object {
             $user
         );
 
-        $excludeRelations = Configure::read('excludeRelations');
+        $excludeRelations = Configure::read('excludeRelationsFrontend');
         $url = $this->controller->baseUrl() . '/objects/' . $object['id']  . '/relations/';
         if (!empty($countRel)) {
             foreach ($countRel as $cDetail) {

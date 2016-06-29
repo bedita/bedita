@@ -488,8 +488,8 @@ class ApiValidatorComponent extends Object {
      * @return boolean
      */
     public function isRelationValid($name, $objectType) {
-        $excludeRelations = Configure::read('excludeRelations');
-        if ($excludeRelations && in_array($name, $excludeRelations)) {
+        $excludeRelationsFrontend = Configure::read('excludeRelationsFrontend');
+        if ($excludeRelationsFrontend && in_array($name, $excludeRelationsFrontend)) {
             return false;
         }
 

@@ -1496,14 +1496,14 @@ abstract class FrontendController extends AppController {
 
     /**
      * Remove from 'RelatedObject' array relations excluded in configuration
-     * via $config['excludeRelations']
+     * via $config['excludeRelationsFrontend']
      * @param array $obj, object data array
      */
     protected function excludeRelations(array &$obj) {
-        $excludeRelations = Configure::read('excludeRelations');
-        if (!empty($obj['RelatedObject']) && $excludeRelations) {
+        $excludeRelationsFrontend = Configure::read('excludeRelationsFrontend');
+        if (!empty($obj['RelatedObject']) && $excludeRelationsFrontend) {
             foreach ($obj['RelatedObject'] as $k => $rel) {
-                if (in_array($rel['switch'], $excludeRelations)) {
+                if (in_array($rel['switch'], $excludeRelationsFrontend)) {
                     unset($obj['RelatedObject'][$k]);
                 }
             }
