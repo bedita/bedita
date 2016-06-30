@@ -23,6 +23,6 @@ TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
  * Load 'core' configuration parameters
  */
 Configure::config('database', new DatabaseConfig());
-if (!defined('UNIT_TEST_RUN') || (PHP_SAPI === 'cli')) {
+if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('core', 'database');
 }
