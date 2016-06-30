@@ -12,7 +12,8 @@
 3. Run composer install
 
  ```bash
- $ cd /path/to/bedita
+ $ git -b 4-develop clone https://github.com/bedita/bedita.git
+ $ cd bedita
  $ composer install
  ```
 
