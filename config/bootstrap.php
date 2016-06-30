@@ -20,7 +20,7 @@ use Cake\Network\Request;
 /**
  * Load 'api' configuration parameters
  */
-if (!defined('UNIT_TEST_RUN') || (PHP_SAPI === 'cli')) {
+if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('api', 'database');
 }
 
