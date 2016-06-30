@@ -44,13 +44,6 @@ class TableInheritanceManagerTest extends TestCase
     public $fakeFelines;
 
     /**
-     * TableInheritanceManager instance
-     *
-     * @var \BEdita\Core\ORM\Inheritance\TableInheritanceManager
-     */
-    public $inheritanceManager;
-
-    /**
      * setUp method
      *
      * @return void
@@ -58,7 +51,6 @@ class TableInheritanceManagerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->inheritanceManager = new TableInheritanceManager();
         $this->fakeFelines = TableRegistry::get('FakeFelines');
     }
 
@@ -70,7 +62,6 @@ class TableInheritanceManagerTest extends TestCase
     public function tearDown()
     {
         TableRegistry::clear();
-        unset($this->inheritanceManager);
         unset($this->fakeFelines);
         parent::tearDown();
     }
@@ -115,14 +106,14 @@ class TableInheritanceManagerTest extends TestCase
         if ($expected === 'missingTableName') {
             $this->setExpectedException('\InvalidArgumentException');
         }
-        $this->inheritanceManager->addTable($this->fakeFelines, $conf);
+        TableInheritanceManager::addTable($this->fakeFelines, $conf);
         $this->assertCount(1, $this->fakeFelines->associations()->type('ExtensionOf'));
 
         // trying to add again do nothing
-        $this->inheritanceManager->addTable($this->fakeFelines, $conf);
+        TableInheritanceManager::addTable($this->fakeFelines, $conf);
         $this->assertCount(1, $this->fakeFelines->associations()->type('ExtensionOf'));
 
-        $inherited = $this->inheritanceManager->inheritedTables($this->fakeFelines);
+        $inherited = TableInheritanceManager::inheritedTables($this->fakeFelines);
         $inherited = current($inherited);
         $this->assertInstanceOf($expected['instanceOf'], $inherited);
         $this->assertEquals($expected['tableName'], $inherited->alias());
@@ -204,15 +195,15 @@ class TableInheritanceManagerTest extends TestCase
 
         if ($associationType != 'extensionOf') {
             $this->fakeFelines->{$associationType}('FakeMammals', $conf);
-            $this->inheritanceManager->addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
+            TableInheritanceManager::addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
         } elseif (!empty($conf['createFirst'])) {
             $conf['sourceTable'] = $this->fakeFelines;
             $association = new ExtensionOf('FakeMammals', $conf);
             $this->fakeFelines->associations()->add($association->name(), $association);
-            $this->inheritanceManager->addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
+            TableInheritanceManager::addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
         } else {
-            $this->inheritanceManager->addTable($this->fakeFelines, $conf);
-            $this->inheritanceManager->addTable($this->fakeFelines, ['tableName' => 'FakeMammals', 'className' => 'Cake\ORM\Table']);
+            TableInheritanceManager::addTable($this->fakeFelines, $conf);
+            TableInheritanceManager::addTable($this->fakeFelines, ['tableName' => 'FakeMammals', 'className' => 'Cake\ORM\Table']);
         }
     }
 
@@ -252,17 +243,17 @@ class TableInheritanceManagerTest extends TestCase
     public function testRemoveTable($expected, $tableName)
     {
         $fakeMammals = TableRegistry::get('FakeMammals');
-        $this->inheritanceManager->addTable($fakeMammals, ['tableName' => 'FakeAnimals']);
-        $this->inheritanceManager->addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
+        TableInheritanceManager::addTable($fakeMammals, ['tableName' => 'FakeAnimals']);
+        TableInheritanceManager::addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
         $this->assertCount(1, $this->fakeFelines->associations()->type('ExtensionOf'));
 
         if ($expected === false) {
             $this->setExpectedException('\RuntimeException');
         }
 
-        $this->inheritanceManager->removeTable($this->fakeFelines, $tableName);
+        TableInheritanceManager::removeTable($this->fakeFelines, $tableName);
 
-        $this->assertEquals($expected, $this->inheritanceManager->inheritedTables($this->fakeFelines));
+        $this->assertEquals($expected, TableInheritanceManager::inheritedTables($this->fakeFelines));
         $this->assertCount(0, $this->fakeFelines->associations()->type('ExtensionOf'));
     }
 
@@ -276,25 +267,25 @@ class TableInheritanceManagerTest extends TestCase
     public function testInheritedTables()
     {
         $fakeMammals = TableRegistry::get('FakeMammals');
-        $this->inheritanceManager->addTable($fakeMammals, ['tableName' => 'FakeAnimals']);
-        $this->inheritanceManager->addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
+        TableInheritanceManager::addTable($fakeMammals, ['tableName' => 'FakeAnimals']);
+        TableInheritanceManager::addTable($this->fakeFelines, ['tableName' => 'FakeMammals']);
 
-        $mammalsInheritance = current($this->inheritanceManager->inheritedTables($fakeMammals));
+        $mammalsInheritance = current(TableInheritanceManager::inheritedTables($fakeMammals));
 
         $this->assertEquals('FakeAnimals', $mammalsInheritance->alias());
 
-        $felinesInheritance = current($this->inheritanceManager->inheritedTables($this->fakeFelines));
+        $felinesInheritance = current(TableInheritanceManager::inheritedTables($this->fakeFelines));
         $this->assertEquals('FakeMammals', $felinesInheritance->alias());
 
         $felinesDeepInheritance = array_map(function ($inherited) {
             return $inherited->alias();
-        }, $this->inheritanceManager->inheritedTables($this->fakeFelines, true));
+        }, TableInheritanceManager::inheritedTables($this->fakeFelines, true));
 
         $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
 
-        $this->assertTrue($this->inheritanceManager->isTableInherited($this->fakeFelines, 'FakeAnimals', true));
-        $this->assertFalse($this->inheritanceManager->isTableInherited($this->fakeFelines, 'FakeAnimals'));
-        $this->assertTrue($this->inheritanceManager->isTableInherited($this->fakeFelines, 'FakeMammals', true));
-        $this->assertTrue($this->inheritanceManager->isTableInherited($this->fakeFelines, 'FakeMammals'));
+        $this->assertTrue(TableInheritanceManager::isTableInherited($this->fakeFelines, 'FakeAnimals', true));
+        $this->assertFalse(TableInheritanceManager::isTableInherited($this->fakeFelines, 'FakeAnimals'));
+        $this->assertTrue(TableInheritanceManager::isTableInherited($this->fakeFelines, 'FakeMammals', true));
+        $this->assertTrue(TableInheritanceManager::isTableInherited($this->fakeFelines, 'FakeMammals'));
     }
 }

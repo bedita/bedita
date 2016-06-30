@@ -15,6 +15,7 @@ namespace BEdita\Core\ORM\Inheritance;
 
 use BEdita\Core\ORM\Association\ExtensionOf;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 
 /**
  * TableInheritanceManager class
@@ -45,9 +46,9 @@ class TableInheritanceManager
      *                           or when self::checkAssociation() fails
      * @param \Cake\ORM\Table $source The source table instance
      * @param array $targetConf The configuration of inherited table
-     * @return $this
+     * @return void
      */
-    public function addTable(Table $source, $targetConf = [])
+    public static function addTable(Table $source, $targetConf = [])
     {
         $targetConf += ['className' => null];
 
@@ -58,7 +59,7 @@ class TableInheritanceManager
             ));
         }
 
-        $inheritedTable = current($this->inheritedTables($source));
+        $inheritedTable = current(static::inheritedTables($source));
         if (!empty($inheritedTable) && $inheritedTable->alias() != $targetConf['tableName']) {
             throw new \RuntimeException(sprintf(
                 '%s already inherits table %s',
@@ -68,13 +69,11 @@ class TableInheritanceManager
         }
 
         if ($source->association($targetConf['tableName'])) {
-            $this->checkAssociation($source, $targetConf);
-            return $this;
+            static::checkAssociation($source, $targetConf);
+            return;
         }
 
-        $this->createAssociation($source, $targetConf['tableName'], $targetConf);
-
-        return $this;
+        static::createAssociation($source, $targetConf['tableName'], $targetConf);
     }
 
     /**
@@ -109,7 +108,7 @@ class TableInheritanceManager
      * @param array $options list of options to configure the association definition
      * @return \BEdita\Core\ORM\Association\ExtensionOf
      */
-    protected function createAssociation(Table $source, $associated, array $options = [])
+    protected static function createAssociation(Table $source, $associated, array $options = [])
     {
         $options = array_merge($options, [
             'sourceTable' => $source,
@@ -130,11 +129,11 @@ class TableInheritanceManager
      * @throws \RuntimeException When trying to remove a wrong table
      * @param \Cake\ORM\Table $source The source table instance
      * @param string $tableName The table name to remove
-     * @return $this
+     * @return void
      */
-    public function removeTable(Table $source, $tableName)
+    public static function removeTable(Table $source, $tableName)
     {
-        if (!$this->isTableInherited($source, $tableName)) {
+        if (!static::isTableInherited($source, $tableName)) {
             throw new \RuntimeException(sprintf(
                 '"%s" is not inherited or is a nested inheritance. You can remove only direct inheritance',
                 $tableName
@@ -142,7 +141,6 @@ class TableInheritanceManager
         }
 
         $source->associations()->remove($tableName);
-        return $this;
     }
 
     /**
@@ -160,7 +158,7 @@ class TableInheritanceManager
      * @param array $targetConf an array of inherited conf to check
      * @return void
      */
-    protected function checkAssociation(Table $source, array $targetConf = [])
+    protected static function checkAssociation(Table $source, array $targetConf = [])
     {
         $association = $source->association($targetConf['tableName']);
         if (!$association) {
@@ -211,9 +209,9 @@ class TableInheritanceManager
      * @param bool $nested If it must check nested inheritance
      * @return bool
      */
-    public function isTableInherited(Table $source, $tableName, $nested = false)
+    public static function isTableInherited(Table $source, $tableName, $nested = false)
     {
-        $inheritedTables = $this->inheritedTables($source, $nested);
+        $inheritedTables = static::inheritedTables($source, $nested);
         $found = array_filter($inheritedTables, function ($table) use ($tableName) {
             return $table->alias() === $tableName;
         });
@@ -231,7 +229,7 @@ class TableInheritanceManager
      * @param bool $nested If it must return all the inherited tables or just direct inherited table
      * @return array
      */
-    public function inheritedTables(Table $source, $nested = false)
+    public static function inheritedTables(Table $source, $nested = false)
     {
         $associations = $source->associations()->type('ExtensionOf');
         if (empty($associations)) {
@@ -243,6 +241,6 @@ class TableInheritanceManager
             return [$association->target()];
         }
 
-        return array_merge([$association->target()], $this->inheritedTables($association->target(), true));
+        return array_merge([$association->target()], static::inheritedTables($association->target(), true));
     }
 }

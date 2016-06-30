@@ -73,7 +73,6 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'implementedMethods' => [
-            'inheritanceManager' => 'inheritanceManager',
             'isTableInherited' => 'isTableInherited',
             'inheritedTables' => 'inheritedTables',
             'patchContain' => 'patchContain',
@@ -98,22 +97,7 @@ class ClassTableInheritanceBehavior extends Behavior
         if (empty($config['table']['tableName'])) {
             throw new \InvalidArgumentException('Behavior missing configuration. At least [table => [tableName => \'MyTableName\']] expected');
         }
-        $this->inheritanceManager()->addTable($this->_table, $config['table']);
-    }
-
-    /**
-     * Return the instance of TableInheritanceManager.
-     *
-     * @return \BEdita\Core\ORM\TableInheritanceManager
-     */
-    public function inheritanceManager()
-    {
-        static $inheritanceManager = null;
-        if ($inheritanceManager === null) {
-            $inheritanceManager = new TableInheritanceManager();
-        }
-
-        return $inheritanceManager;
+        TableInheritanceManager::addTable($this->_table, $config['table']);
     }
 
     /**
@@ -157,7 +141,7 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     public function isTableInherited($tableName, $nested = false)
     {
-        return $this->inheritanceManager()->isTableInherited($this->_table, $tableName, $nested);
+        return TableInheritanceManager::isTableInherited($this->_table, $tableName, $nested);
     }
 
     /**
@@ -170,7 +154,7 @@ class ClassTableInheritanceBehavior extends Behavior
      */
     public function inheritedTables($nested = false)
     {
-        return $this->inheritanceManager()->inheritedTables($this->_table, $nested);
+        return TableInheritanceManager::inheritedTables($this->_table, $nested);
     }
 
     /**

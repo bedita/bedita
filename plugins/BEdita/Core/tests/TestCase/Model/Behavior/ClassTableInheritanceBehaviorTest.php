@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior;
+use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -151,7 +152,7 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      */
     public function testAddBehavior($expected, $conf)
     {
-        $this->fakeFelines->inheritanceManager()->removeTable($this->fakeFelines, 'FakeMammals');
+        TableInheritanceManager::removeTable($this->fakeFelines, 'FakeMammals');
         $this->fakeFelines->removeBehavior('ClassTableInheritance');
 
         if ($expected === false) {
