@@ -7,12 +7,19 @@
 
 ## Install
 
-1. Install [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
-2. Clone repository
-3. Run composer install
+Prerequisites:
+ * PHP >= 5.5.9 or PHP 7
+ * MySQL >= 5.5
+ * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
+
+
+1. Clone repository
+2. Run composer install
+
 
  ```bash
- $ cd /path/to/bedita
+ $ git clone -b 4-develop https://github.com/bedita/bedita.git
+ $ cd bedita
  $ composer install
  ```
 
@@ -22,7 +29,7 @@
 
 ## Licensing
 
-BEdita employs a licensing scheme [LGPL](/bedita/bedita/blob/master/LICENSE.LGPL), Lesser General Public License.
+BEdita is released under [LGPL](/bedita/bedita/blob/master/LICENSE.LGPL), Lesser General Public License.
 
 ## More info
 

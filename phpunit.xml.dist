@@ -3,6 +3,7 @@
     <php>
         <ini name="memory_limit" value="-1"/>
         <ini name="apc.enable_cli" value="1"/>
+        <const name="UNIT_TEST_RUN" value="1"/>
     </php>
 
     <!-- Add any additional test suites you want to run here -->
@@ -31,7 +32,9 @@
     <!-- Ignore vendor tests in code coverage reports -->
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
+            <!--
+                <directory suffix=".php">./src/</directory>
+            -->
             <directory suffix=".php">./plugins/*/src/</directory>
             <directory suffix=".php">./plugins/*/*/src/</directory>
         </whitelist>

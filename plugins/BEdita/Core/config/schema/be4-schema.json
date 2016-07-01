@@ -211,7 +211,7 @@
                 "length": null,
                 "null": false,
                 "default": null,
-                "comment": "configuration data",
+                "comment": "configuration data as string or JSON",
                 "precision": null
             },
             "created": {
@@ -220,6 +220,14 @@
                 "null": false,
                 "default": null,
                 "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
                 "precision": null
             }
         },

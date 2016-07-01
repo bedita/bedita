@@ -27,6 +27,16 @@ Router::plugin(
             ['_method' => 'GET', '_name' => 'home']
         );
         $routes->connect(
+            '/objects',
+            ['controller' => 'Objects', 'action' => 'index'],
+            ['_method' => 'GET', '_name' => 'objects:index']
+        );
+        $routes->connect(
+            '/objects/*',
+            ['controller' => 'Objects', 'action' => 'view'],
+            ['_method' => 'GET', '_name' => 'objects:view']
+        );
+        $routes->connect(
             '/roles',
             ['controller' => 'Roles', 'action' => 'index'],
             ['_method' => 'GET', '_name' => 'roles:index']

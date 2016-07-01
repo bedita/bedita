@@ -127,8 +127,9 @@ CREATE TABLE config (
 
   name VARCHAR(255) NOT NULL                  COMMENT 'configuration key',
   context VARCHAR(255) NOT NULL               COMMENT 'group name of configuration parameters',
-  content TEXT NOT NULL                       COMMENT 'configuration data',
+  content TEXT NOT NULL                       COMMENT 'configuration data as string or JSON',
   created DATETIME NOT NULL                   COMMENT 'creation date',
+  modified DATETIME NOT NULL                  COMMENT 'last modification date',
 
   PRIMARY KEY (name),
   INDEX config_context_idx (context)
