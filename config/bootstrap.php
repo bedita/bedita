@@ -74,12 +74,13 @@ try {
 // shared configuration.
 //Configure::load('app_local', 'default');
 
-// When debug = false the metadata cache should last
-// for a very very long time, as we don't want
-// to refresh the cache while users are doing requests.
-if (!Configure::read('debug')) {
-    Configure::write('Cache._cake_model_.duration', '+1 years');
-    Configure::write('Cache._cake_core_.duration', '+1 years');
+// When debug = true the metadata cache should last
+// for a very very short time, as we want
+// to refresh the cache while developers are making changes.
+if (Configure::read('debug')) {
+    Configure::write('Cache._bedita_object_types_.duration', '+2 minutes');
+    Configure::write('Cache._cake_model_.duration', '+2 minutes');
+    Configure::write('Cache._cake_core_.duration', '+2 minutes');
 }
 
 /**
