@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Test\Fixture;
 
-use BEdita\Core\Auth\LegacyMd5PasswordHasher;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Auth\WeakPasswordHasher;
 
 /**
  * Fixture for `users` table.
@@ -31,7 +31,7 @@ class UsersFixture extends TestFixture
         $this->records = [
             [
                 'username' => 'first user',
-                'password_hash' => (new LegacyMd5PasswordHasher())->hash('password1'),
+                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
                 'blocked' => 0,
                 'last_login' => null,
                 'last_login_err' => null,
