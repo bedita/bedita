@@ -177,20 +177,6 @@ class ClassTableInheritanceBehavior extends Behavior
     }
 
     /**
-     * Flatten an Cake\ORM\Entity or array using inherited tables
-     *
-     * All associations defined by inherited tables are collapsed on current entity
-     *
-     * @see \BEdita\Core\ORM\Inheritance\EntityPatcher::flatten()
-     * @param \Cake\ORM\Entity|array $row The entity or array to flatten
-     * @return \Cake\ORM\Entity|array
-     */
-    public function flatten($row)
-    {
-        return $this->entityPatcher()->flatten($row);
-    }
-
-    /**
      * Return a new instance of QueryPatcher
      *
      * @return \BEdita\Core\ORM\Inheritance\QueryPatcher
