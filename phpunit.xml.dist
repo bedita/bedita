@@ -32,7 +32,9 @@
     <!-- Ignore vendor tests in code coverage reports -->
     <filter>
         <whitelist>
-            <directory suffix=".php">./src/</directory>
+            <!--
+                <directory suffix=".php">./src/</directory>
+            -->
             <directory suffix=".php">./plugins/*/src/</directory>
             <directory suffix=".php">./plugins/*/*/src/</directory>
         </whitelist>
