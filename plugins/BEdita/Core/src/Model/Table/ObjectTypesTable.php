@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -98,8 +99,14 @@ class ObjectTypesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules
-            ->add($rules->isUnique(['name']))
-            ->add($rules->isUnique(['pluralized']));
+            ->add(new IsUniqueAmongst(['name' => ['name', 'pluralized']]), '_isUniqueAmongst', [
+                'errorField' => 'name',
+                'message' => __d('cake', 'This value is already in use'),
+            ])
+            ->add(new IsUniqueAmongst(['pluralized' => ['name', 'pluralized']]), '_isUniqueAmongst', [
+                'errorField' => 'pluralized',
+                'message' => __d('cake', 'This value is already in use'),
+            ]);
 
         return $rules;
     }

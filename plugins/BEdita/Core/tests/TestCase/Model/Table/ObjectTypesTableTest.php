@@ -118,6 +118,24 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                 ],
             ],
+            'notCrossUnique1' => [
+                false,
+                [
+                    'name' => 'profiles',
+                    'pluralized' => 'many_profiles',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
+            'notCrossUnique2' => [
+                false,
+                [
+                    'name' => 'piece_of_profile',
+                    'pluralized' => 'profile',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+            ],
         ];
     }
 
@@ -129,7 +147,7 @@ class ObjectTypesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @coversNothing
+     * @covers \BEdita\Core\ORM\Rule\IsUniqueAmongst
      */
     public function testValidation($expected, array $data)
     {
