@@ -50,7 +50,7 @@ class ObjectEditor extends BEAppModel
             $data += array('last_access' => date('Y-m-d H:i:s'));
             $this->create($data);
 			if (!$this->save()) {
-				throw new BeditaException(__("Error saving object editor", true), $this->validationErrors);
+				throw new BeditaException(__('Error saving object editor', true), $this->validationErrors);
 			}
 		}
 	}
