@@ -89,6 +89,19 @@ return [
         ],
 
         /**
+         * Configure the cache used for object types caching.
+         * Duration will be set to '+1 year' in bootstrap.php when debug = false
+         */
+        '_bedita_object_types_' => [
+            'className' => 'File',
+            'prefix' => 'bedita_object_types_',
+            'path' => CACHE . 'object_types/',
+            'serialize' => true,
+            'duration' => '+2 minutes',
+            'url' => env('CACHE_BEDITAOBJECTTYPES_URL', null),
+        ],
+
+        /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
          * Duration will be set to '+1 year' in bootstrap.php when debug = false
