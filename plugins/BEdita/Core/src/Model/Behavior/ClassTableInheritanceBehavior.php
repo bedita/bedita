@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
-use BEdita\Core\ORM\Inheritance\EntityPatcher;
 use BEdita\Core\ORM\Inheritance\QueryPatcher;
 use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
 use Cake\Event\Event;
@@ -118,16 +117,9 @@ class ClassTableInheritanceBehavior extends Behavior
         if (!$primary) {
             return;
         }
-
         $this->queryPatcher()
             ->patch($query)
             ->all();
-
-        $query->formatResults(function ($results) {
-            return $results->map(function ($row) {
-                return $this->flatten($row);
-            });
-        });
     }
 
     /**
@@ -206,15 +198,5 @@ class ClassTableInheritanceBehavior extends Behavior
     public function queryPatcher()
     {
         return new QueryPatcher($this->_table);
-    }
-
-    /**
-     * Return a new instance of EntityPatcher
-     *
-     * @return \BEdita\Core\ORM\Inheritance\QueryPatcher
-     */
-    public function entityPatcher()
-    {
-        return new EntityPatcher($this->_table);
     }
 }

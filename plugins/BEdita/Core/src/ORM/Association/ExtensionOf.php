@@ -15,6 +15,7 @@ namespace BEdita\Core\ORM\Association;
 
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\DependentDeleteTrait;
+use Cake\ORM\Entity;
 
 /**
  * Represents an 1 - 1 relationship where the source side of the relation is
@@ -58,5 +59,23 @@ class ExtensionOf extends BelongsTo
     public function type()
     {
         return self::ONE_TO_ONE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function transformRow($row, $nestKey, $joined)
+    {
+        $sourceAlias = $this->source()->alias();
+        $nestKey = $nestKey ?: $this->_name;
+        if (!isset($row[$sourceAlias])) {
+            return $row;
+        }
+
+        $properties = ($row[$nestKey] instanceof Entity) ? $row[$nestKey]->getOriginalValues() : $row[$nestKey];
+        $row[$sourceAlias] += $properties;
+        unset($row[$nestKey]);
+
+        return $row;
     }
 }
