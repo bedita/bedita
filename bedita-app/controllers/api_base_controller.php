@@ -977,7 +977,8 @@ abstract class ApiBaseController extends FrontendController {
             );
 
             if ($this->data['object_type'] == 'section') {
-                $tree->saveMenuVisibility($beModel->id, $this->data['parents'][0], 1);
+                $menu = (isset($this->data[$this->name]['menu']) && $this->data[$this->name]['menu'] == 0) ? 0 : 1;
+                $tree->saveMenuVisibility($beModel->id, $this->data['parents'][0], $menu);
             }
 
             $this->BEObject->clearCacheByIds($this->data['parents']);
