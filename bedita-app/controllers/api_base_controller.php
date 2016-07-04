@@ -958,7 +958,7 @@ abstract class ApiBaseController extends FrontendController {
         $this->data = $this->ApiFormatter->formatObjectForSave($this->data);
 
         // #883 skip tree update when saving section
-        if ($this->data['object_type'] == "section") {
+        if ($this->data['object_type'] == 'section') {
             $this->data['skipTreeUpdate'] = true;
         }
 
@@ -977,7 +977,7 @@ abstract class ApiBaseController extends FrontendController {
             );
 
             if ($this->data['object_type'] == 'section') {
-                $tree->saveMenuVisibility($beModel->id, $this->data["parents"][0], 1);
+                $tree->saveMenuVisibility($beModel->id, $this->data['parents'][0], 1);
             }
 
             $this->BEObject->clearCacheByIds($this->data['parents']);
