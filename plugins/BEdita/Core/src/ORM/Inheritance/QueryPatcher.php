@@ -40,6 +40,13 @@ class QueryPatcher
     protected $query = null;
 
     /**
+     * It keeps trace of inheritance to avoid repeated operations
+     *
+     * @var array
+     */
+    protected $inheritanceMap = [];
+
+    /**
      * Constructor.
      *
      * @param Cake\ORM\Table $table The Table instance
@@ -53,6 +60,22 @@ class QueryPatcher
             ));
         }
         $this->table = $table;
+    }
+
+    /**
+     * Return the complete table inheritance of `$this->table`.
+     * Once obtained it returns its value without recalculate it.
+     *
+     * @return array
+     */
+    protected function inheritedTables()
+    {
+        if (array_key_exists('tables', $this->inheritanceMap)) {
+            return $this->inheritanceMap['tables'];
+        }
+
+        $this->inheritanceMap['tables'] = $this->table->inheritedTables(true);
+        return $this->inheritanceMap['tables'];
     }
 
     /**
@@ -91,7 +114,7 @@ class QueryPatcher
     {
         $inheritedTables = array_map(function ($table) {
             return $table->alias();
-        }, $this->table->inheritedTables(true));
+        }, $this->inheritedTables());
 
         $contain = $this->query->contain();
         $contain += array_fill_keys($inheritedTables, []);
@@ -126,21 +149,15 @@ class QueryPatcher
             return $tableName;
         }
 
-        $inheritTable = current($this->table->inheritedTables());
+        foreach ($this->inheritedTables(true) as $inherited) {
+            $containString = empty($containString) ? $inherited->alias() : $containString . '.' . $inherited->alias();
+            if (!$inherited->association($tableName)) {
+                continue;
+            }
 
-        if (empty($inheritTable)) {
-            return false;
+            return $containString .= '.' . $tableName;
         }
 
-        if ($inheritTable->association($tableName)) {
-            return $inheritTable->alias() . '.' . $tableName;
-        }
-
-        if (empty($inheritTable->associations()->type('ExtensionOf'))) {
-            return false;
-        }
-
-        $containString = $inheritTable->buildContainString($tableName);
-        return ($containString === false) ? false : $inheritTable->alias() . '.' . $containString;
+        return false;
     }
 }

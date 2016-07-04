@@ -20,6 +20,8 @@ use Cake\ORM\Entity;
 /**
  * Represents an 1 - 1 relationship where the source side of the relation is
  * related to only one record in the target table and vice versa.
+ * Note that the target fields will be merged with source fields as it represents
+ * an association in CTI scenario.
  *
  * The association extends BelongsTo for saving the target side before the source side
  * but it is defined as Association::ONE_TO_ONE instead of Association::MANY_TO_ONE.

@@ -74,8 +74,7 @@ class ClassTableInheritanceBehavior extends Behavior
         'implementedMethods' => [
             'isTableInherited' => 'isTableInherited',
             'inheritedTables' => 'inheritedTables',
-            'patchContain' => 'patchContain',
-            'buildContainString' => 'buildContainString'
+            'patchContain' => 'patchContain'
         ]
     ];
 
@@ -162,18 +161,6 @@ class ClassTableInheritanceBehavior extends Behavior
             ->patch($query)
             ->contain();
         return $query;
-    }
-
-    /**
-     * Given a table name return the right contain string
-     *
-     * @see \BEdita\Core\ORM\Inheritance\QueryPatcher::buildContainString()
-     * @param string $tableName The starting table name
-     * @return string|false
-     */
-    public function buildContainString($tableName)
-    {
-        return $this->queryPatcher()->buildContainString($tableName);
     }
 
     /**
