@@ -15,7 +15,6 @@ namespace BEdita\Core\ORM\Inheritance;
 
 use BEdita\Core\ORM\Association\ExtensionOf;
 use Cake\ORM\Table;
-use Cake\Utility\Hash;
 
 /**
  * TableInheritanceManager class
@@ -212,7 +211,7 @@ class TableInheritanceManager
     public static function isTableInherited(Table $source, $tableName, $nested = false)
     {
         $inheritedTables = static::inheritedTables($source, $nested);
-        $found = array_filter($inheritedTables, function ($table) use ($tableName) {
+        $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
             return $table->alias() === $tableName;
         });
 

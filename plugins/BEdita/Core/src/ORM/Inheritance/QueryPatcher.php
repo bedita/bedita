@@ -49,7 +49,7 @@ class QueryPatcher
     /**
      * Constructor.
      *
-     * @param Cake\ORM\Table $table The Table instance
+     * @param \Cake\ORM\Table $table The Table instance
      */
     public function __construct(Table $table)
     {
@@ -112,7 +112,7 @@ class QueryPatcher
      */
     public function contain()
     {
-        $inheritedTables = array_map(function ($table) {
+        $inheritedTables = array_map(function (Table $table) {
             return $table->alias();
         }, $this->inheritedTables());
 
@@ -149,13 +149,13 @@ class QueryPatcher
             return $tableName;
         }
 
-        foreach ($this->inheritedTables(true) as $inherited) {
+        foreach ($this->inheritedTables() as $inherited) {
             $containString = empty($containString) ? $inherited->alias() : $containString . '.' . $inherited->alias();
             if (!$inherited->association($tableName)) {
                 continue;
             }
 
-            return $containString .= '.' . $tableName;
+            return $containString . '.' . $tableName;
         }
 
         return false;

@@ -18,7 +18,6 @@ use BEdita\Core\ORM\Inheritance\QueryPatcher;
 use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
 
 /**
