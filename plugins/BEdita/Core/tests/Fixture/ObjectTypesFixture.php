@@ -29,13 +29,15 @@ class ObjectTypesFixture extends TestFixture
     public $records = [
         [
             'name' => 'document',
-            'description' => 'none',
+            'pluralized' => 'documents',
+            'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects'
         ],
         [
             'name' => 'profile',
-            'description' => 'none',
+            'pluralized' => 'profiles',
+            'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Profiles'
         ],
