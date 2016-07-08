@@ -436,6 +436,7 @@ CREATE TABLE object_relations (
 
 CREATE TABLE trees (
 
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INT UNSIGNED NOT NULL       COMMENT 'object id',
   parent_id INT UNSIGNED NULL           COMMENT 'parent object id',
   root_id INT UNSIGNED NOT NULL         COMMENT 'root id (for tree scoping)',
@@ -444,8 +445,8 @@ CREATE TABLE trees (
   depth_level INT UNSIGNED NOT NULL     COMMENT 'tree depth level',
   menu INT UNSIGNED NOT NULL DEFAULT 1  COMMENT 'menu on/off',
 
-  PRIMARY KEY trees_parentobj_pk (parent_id, object_id),
-  INDEX trees_objectparent_idx (object_id, parent_id),
+  PRIMARY KEY (id),
+  UNIQUE KEY trees_objectparent_uq (object_id, parent_id),
   INDEX trees_rootleft_idx (root_id, tree_left),
   INDEX trees_rootright_idx (root_id, tree_right),
   INDEX trees_menu_idx (menu),
