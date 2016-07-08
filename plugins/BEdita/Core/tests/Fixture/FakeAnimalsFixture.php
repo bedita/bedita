@@ -19,7 +19,7 @@ class FakeAnimalsFixture extends TestFixture
 {
 
     public $fields = [
-        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
+        'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
         'name' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
         'legs' => ['type' => 'integer', 'length' => 2, 'null' => false, 'default' => null, 'precision' => null],
         '_constraints' => [

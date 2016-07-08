@@ -80,7 +80,7 @@ class ProfilesTableTest extends TestCase
         $this->assertEquals('id', $this->Profiles->primaryKey());
         $this->assertEquals('name', $this->Profiles->displayField());
 
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Profiles->Objects);
+        $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Profiles->Users);
         $this->assertInstanceOf(
             '\BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior',
