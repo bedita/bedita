@@ -1787,8 +1787,8 @@
                 "null": false,
                 "default": null,
                 "comment": "",
-                "precision": null,
-                "autoIncrement": null
+                "autoIncrement": true,
+                "precision": null
             },
             "object_id": {
                 "type": "integer",

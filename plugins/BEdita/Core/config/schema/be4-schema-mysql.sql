@@ -434,7 +434,7 @@ CREATE TABLE object_relations (
 
 CREATE TABLE trees (
 
-  id INT UNSIGNED NOT NULL,
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   object_id INT UNSIGNED NOT NULL       COMMENT 'object id',
   parent_id INT UNSIGNED NULL           COMMENT 'parent object id',
   root_id INT UNSIGNED NOT NULL         COMMENT 'root id (for tree scoping)',
