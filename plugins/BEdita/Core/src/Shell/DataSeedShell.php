@@ -15,6 +15,7 @@ namespace BEdita\Core\Shell;
 
 use Cake\Console\Exception\StopException;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -81,6 +82,8 @@ class DataSeedShell extends Shell
     public function initialize()
     {
         parent::initialize();
+
+        Configure::load('core', 'database');
 
         if (!class_exists('\Faker\Factory')) {
             $this->abort('Faker lib not found');
