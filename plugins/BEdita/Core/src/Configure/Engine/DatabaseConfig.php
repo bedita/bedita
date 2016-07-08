@@ -32,6 +32,11 @@ use Cake\ORM\TableRegistry;
 class DatabaseConfig implements ConfigEngineInterface
 {
 
+    /**
+     * Reserved keys not storable in database
+     *
+     * @var array
+     */
     protected $reservedKeys = ['Datasources', 'Cache', 'EmailTransport', 'Session', 'Error', 'App'];
 
     /**
