@@ -17,7 +17,10 @@ use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\Routing\Router;
+use Cake\Utility\Hash;
 
 /**
  * Handles JSON API data format in input and in output
@@ -46,6 +49,8 @@ class JsonApiComponent extends Component
     protected $_defaultConfig = [
         'contentType' => null,
         'checkMediaType' => true,
+        'resourceTypes' => null,
+        'clientGeneratedIds' => false,
     ];
 
     /**
@@ -177,17 +182,89 @@ class JsonApiComponent extends Component
     }
 
     /**
+     * Check if given resource types are allowed.
+     *
+     * @param mixed $types One or more allowed types to check resources array against.
+     * @param array|null $data Data to be checked. By default, this is taken from the request.
+     * @return void
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
+     */
+    public function allowedResourceTypes($types, array $data = null)
+    {
+        $data = $data ?: $this->request->data;
+        if (!$data || !$types) {
+            return;
+        }
+        $data = (array)$data;
+        $types = (array)$types;
+
+        if (Hash::numeric($data)) {
+            foreach ($data as $item) {
+                $this->allowedResourceTypes($types, $item);
+            }
+
+            return;
+        }
+
+        if (empty($data['type']) || !in_array($data['type'], $types)) {
+            throw new ConflictException('Unsupported resource type');
+        }
+    }
+
+    /**
+     * Check that no resource includes a client-generated ID, if this feature is unsupported.
+     *
+     * @param bool $allow
+     * @param array|null $data
+     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource has a client-generated
+     *      ID, but this feature is not supported.
+     */
+    public function allowClientGeneratedIds($allow = true, array $data = null)
+    {
+        $data = $data ?: $this->request->data;
+        if (!$data || $allow) {
+            return;
+        }
+        $data = (array)$data;
+
+        if (Hash::numeric($data)) {
+            foreach ($data as $item) {
+                $this->allowClientGeneratedIds($allow, $item);
+            }
+
+            return;
+        }
+
+        if (!empty($data['id'])) {
+            throw new ForbiddenException('Client-generated IDs are not supported');
+        }
+    }
+
+    /**
      * Perform preliminary checks and operations.
      *
      * @return void
      * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
      *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource in the payload has a
+     *      non-supported `type`.
+     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
+     *      client-generated ID, but the feature is not supported.
      */
-    public function beforeFilter()
+    public function startup()
     {
         if ($this->config('checkMediaType') && trim($this->request->header('accept')) != self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
             throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+        }
+
+        if ($this->request->is(['post', 'patch'])) {
+            $this->allowedResourceTypes($this->config('resourceTypes'));
+        }
+
+        if ($this->request->is('post')) {
+            $this->allowClientGeneratedIds($this->config('clientGeneratedIds'));
         }
     }
 
