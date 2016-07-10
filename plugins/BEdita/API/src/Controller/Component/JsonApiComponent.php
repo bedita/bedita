@@ -213,8 +213,8 @@ class JsonApiComponent extends Component
     /**
      * Check that no resource includes a client-generated ID, if this feature is unsupported.
      *
-     * @param bool $allow
-     * @param array|null $data
+     * @param bool $allow Should client-generated IDs be allowed?
+     * @param array|null $data Data to be checked. By default, this is taken from the request.
      * @return void
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
