@@ -75,6 +75,11 @@ Router::plugin(
         );
         $routes->connect(
             '/users/*',
+            ['controller' => 'Users', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'users:edit']
+        );
+        $routes->connect(
+            '/users/*',
             ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'users:delete']
         );
