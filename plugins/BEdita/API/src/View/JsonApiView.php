@@ -60,9 +60,10 @@ class JsonApiView extends JsonView
             $meta = $this->viewVars['_meta'];
         }
 
-        if ($type && empty($data) && $type === 'meta') {
-            return compact('error', 'links', 'meta');
+        if (empty($serialize)) {
+            unset($data);
         }
+
         return compact('error', 'data', 'links', 'meta');
     }
 }
