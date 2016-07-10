@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Query;
+use Cake\Routing\Router;
 
 /**
  * Controller for `/users` endpoint.
@@ -93,6 +94,7 @@ class UsersController extends AppController
         }
 
         $this->response->statusCode(201);
+        $this->response->header('Location', Router::url(['_name' => 'api:users:view', $user->id], true));
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
