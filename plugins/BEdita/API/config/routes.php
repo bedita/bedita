@@ -26,6 +26,8 @@ Router::plugin(
             ['controller' => 'Home', 'action' => 'index'],
             ['_method' => 'GET', '_name' => 'home']
         );
+
+        // Roles.
         $routes->connect(
             '/objects',
             ['controller' => 'Objects', 'action' => 'index'],
@@ -52,6 +54,7 @@ Router::plugin(
             ['_method' => 'GET', '_name' => 'roles:users']
         );
 
+        // Users.
         $routes->connect(
             '/users',
             ['controller' => 'Users', 'action' => 'index'],
@@ -61,6 +64,11 @@ Router::plugin(
             '/users/*',
             ['controller' => 'Users', 'action' => 'view'],
             ['_method' => 'GET', '_name' => 'users:view']
+        );
+        $routes->connect(
+            '/auth',
+            ['controller' => 'Users', 'action' => 'login'],
+            ['_method' => 'POST', '_name' => 'users:login']
         );
     }
 );

@@ -46,6 +46,26 @@ class AppController extends Controller
             ]);
         }
 
+        $this->loadComponent('Auth', [
+            'authenticate' => [
+                'Form' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
+                    ],
+                    'scope' => [
+                        'blocked' => false,
+                    ],
+                    'contain' => ['Roles'],
+                ],
+                'BEdita/API.Jwt',
+            ],
+            'loginAction' => ['_name' => 'api:users:login'],
+            'loginRedirect' => ['_name' => 'api:users:login'],
+            'unauthorizedRedirect' => false,
+            'storage' => 'Memory',
+        ]);
+
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
                 rtrim(
