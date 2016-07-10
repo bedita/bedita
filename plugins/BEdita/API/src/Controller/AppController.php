@@ -88,6 +88,7 @@ class AppController extends Controller
             'environment' => [
                 'HTTP_CONTENT_TYPE' => 'application/json',
                 'HTTP_ACCEPT' => 'application/json',
+                'REQUEST_METHOD' => $method,
             ],
         ]);
 
