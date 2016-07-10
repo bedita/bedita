@@ -256,4 +256,49 @@ class JsonApiComponentTest extends TestCase
 
         $this->assertEquals($expected, $controller->viewVars['_error']);
     }
+
+    /**
+     * Data provider for `testParseInput` test case.
+     *
+     * @return array
+     */
+    public function parseInputProvider()
+    {
+        return [
+            'valid' => [
+                [
+                    'type' => 'customType',
+                    'key' => 'value',
+                ],
+                '{"data":{"type":"customType","attributes":{"key":"value"}}}'
+            ],
+            'invalidJson' => [
+                [],
+                '{"some", "invalid":"json"',
+            ],
+            'invalidJsonApi' => [
+                [],
+                '{"data":{"type":null,"attributes":{"key":"value"}}}',
+            ],
+        ];
+    }
+
+    /**
+     * Test `parseInput()` method.
+     *
+     * @param array $expected Expected parsed array.
+     * @param string $input Input to be parsed.
+     * @return void
+     *
+     * @dataProvider parseInputProvider
+     * @covers ::parseInput()
+     */
+    public function testParseInput($expected, $input)
+    {
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+
+        $result = $component->parseInput($input);
+
+        $this->assertEquals($expected, $result);
+    }
 }
