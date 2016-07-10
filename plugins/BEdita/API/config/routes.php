@@ -73,5 +73,10 @@ Router::plugin(
             ['controller' => 'Users', 'action' => 'add', '_method' => 'POST'],
             ['_name' => 'users:add']
         );
+        $routes->connect(
+            '/users/*',
+            ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'users:delete']
+        );
     }
 );

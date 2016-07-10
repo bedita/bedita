@@ -97,4 +97,23 @@ class UsersController extends AppController
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
     }
+
+    /**
+     * Delete an existing user.
+     *
+     * @param int $id User ID.
+     * @return \Cake\Network\Response
+     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     */
+    public function delete($id)
+    {
+        $this->request->allowMethod('delete');
+
+        $user = $this->Users->get($id);
+        if (!$this->Users->delete($user)) {
+            throw new InternalErrorException('Could not delete user');
+        }
+
+        return $this->response;
+    }
 }
