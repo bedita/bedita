@@ -21,11 +21,14 @@ Router::plugin(
         '_namePrefix' => 'api:',
     ],
     function (RouteBuilder $routes) {
+        // Home.
         $routes->connect(
             '/home',
             ['controller' => 'Home', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'home']
         );
+
+        // Objects.
         $routes->connect(
             '/objects',
             ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
@@ -36,6 +39,8 @@ Router::plugin(
             ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
             ['_name' => 'objects:view']
         );
+
+        // Roles.
         $routes->connect(
             '/roles',
             ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
@@ -52,6 +57,7 @@ Router::plugin(
             ['_name' => 'roles:users']
         );
 
+        // Users.
         $routes->connect(
             '/users',
             ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
