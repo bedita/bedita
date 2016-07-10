@@ -86,7 +86,7 @@ class JsonApiComponentTest extends TestCase
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
         $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonApi'));
-        $this->assertArrayHasKey('jsonApi', $component->RequestHandler->config('inputTypeMap'));
+        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('inputTypeMap'));
         $this->assertArrayHasKey('jsonApi', $component->RequestHandler->config('viewClassMap'));
     }
 
@@ -106,6 +106,7 @@ class JsonApiComponentTest extends TestCase
 
         $request = new Request([
             'params' => [
+                'plugin' => 'BEdita/API',
                 'controller' => 'Users',
                 'action' => 'index',
                 '_method' => 'GET',
@@ -213,6 +214,7 @@ class JsonApiComponentTest extends TestCase
 
         $request = new Request([
             'params' => [
+                'plugin' => 'BEdita/API',
                 'controller' => 'Users',
                 'action' => 'index',
                 '_method' => 'GET',
