@@ -67,7 +67,7 @@ class JsonApiComponent extends Component
         ]);
 
         $this->RequestHandler->config('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
-        $this->RequestHandler->config('viewClassMap.jsonApi', 'BEdita/API.JsonApi');
+        $this->RequestHandler->config('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
     }
 
     /**
@@ -243,6 +243,7 @@ class JsonApiComponent extends Component
     /**
      * Perform preliminary checks and operations.
      *
+     * @param \Cake\Event\Event $event Triggered event.
      * @return void
      * @throws \BEdita\API\Network\Exception\UnsupportedMediaTypeException Throws an exception if the `Accept` header
      *      does not comply to JSON API specifications and `checkMediaType` configuration is enabled.
@@ -251,8 +252,15 @@ class JsonApiComponent extends Component
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource in the payload includes a
      *      client-generated ID, but the feature is not supported.
      */
-    public function startup()
+    public function startup(Event $event)
     {
+        $controller = $event->subject();
+        if (!($controller instanceof Controller)) {
+            return;
+        }
+
+        $this->RequestHandler->renderAs($controller, 'jsonapi');
+
         if ($this->config('checkMediaType') && trim($this->request->header('accept')) != self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
             throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
@@ -296,7 +304,5 @@ class JsonApiComponent extends Component
             '_links' => $links,
             '_meta' => $meta,
         ]);
-
-        $this->RequestHandler->renderAs($controller, 'jsonApi');
     }
 }
