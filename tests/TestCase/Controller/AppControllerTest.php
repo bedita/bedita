@@ -94,7 +94,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeProvider
-     * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeFilter()
+     * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
      */
     public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
