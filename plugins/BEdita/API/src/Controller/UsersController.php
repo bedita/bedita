@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\ORM\Query;
 use Cake\Routing\Router;
@@ -83,6 +84,7 @@ class UsersController extends AppController
      * Add a new user.
      *
      * @return void
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
      */
     public function add()
     {
@@ -95,6 +97,34 @@ class UsersController extends AppController
 
         $this->response->statusCode(201);
         $this->response->header('Location', Router::url(['_name' => 'api:users:view', $user->id], true));
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    /**
+     * Edit an existing user.
+     *
+     * @param int $id User ID.
+     * @return void
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if user ID in the payload doesn't match
+     *      the user ID in the URL.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified user could not be found.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
+     */
+    public function edit($id)
+    {
+        $this->request->allowMethod('patch');
+
+        if ($this->request->data('id') != $id) {
+            throw new ConflictException('IDs don\' match');
+        }
+
+        $user = $this->Users->get($id);
+        $user = $this->Users->patchEntity($user, $this->request->data);
+        if (!$this->Users->save($user)) {
+            throw new BadRequestException('Invalid data');
+        }
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
