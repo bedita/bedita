@@ -86,7 +86,6 @@ class JsonApiComponent extends Component
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
-            debug($e->getMessage());
             return [];
         }
     }
