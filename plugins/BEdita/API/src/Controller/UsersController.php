@@ -12,6 +12,9 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\ForbiddenException;
 use Cake\ORM\Query;
 
 /**
@@ -68,6 +71,34 @@ class UsersController extends AppController
     public function view($id)
     {
         $user = $this->Users->get($id);
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
+    }
+
+    /**
+     * Add a new user.
+     *
+     * @return void
+     */
+    public function add()
+    {
+        $this->request->allowMethod('post');
+        if ($this->request->data('type') !== 'users') {
+            throw new ConflictException('Invalid resource type');
+        }
+        if (!empty($this->request->data['id'])) {
+            throw new ForbiddenException('Client-generated IDs are not supported');
+        }
+
+        $user = $this->Users->newEntity();
+        $user = $this->Users->patchEntity($user, $this->request->data);
+        $user = $this->Users->save($user);
+        if (!$user) {
+            throw new BadRequestException('Invalid data');
+        }
+
+        $this->response->statusCode(201);
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);

@@ -23,44 +23,49 @@ Router::plugin(
     function (RouteBuilder $routes) {
         $routes->connect(
             '/home',
-            ['controller' => 'Home', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'home']
+            ['controller' => 'Home', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'home']
         );
         $routes->connect(
             '/objects',
-            ['controller' => 'Objects', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'objects:index']
+            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'objects:index']
         );
         $routes->connect(
             '/objects/*',
-            ['controller' => 'Objects', 'action' => 'view'],
-            ['_method' => 'GET', '_name' => 'objects:view']
+            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'objects:view']
         );
         $routes->connect(
             '/roles',
-            ['controller' => 'Roles', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'roles:index']
+            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'roles:index']
         );
         $routes->connect(
             '/roles/*',
-            ['controller' => 'Roles', 'action' => 'view'],
-            ['_method' => 'GET', '_name' => 'roles:view']
+            ['controller' => 'Roles', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'roles:view']
         );
         $routes->connect(
             '/roles/:role_id/users',
-            ['controller' => 'Users', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'roles:users']
+            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'roles:users']
         );
 
         $routes->connect(
             '/users',
-            ['controller' => 'Users', 'action' => 'index'],
-            ['_method' => 'GET', '_name' => 'users:index']
+            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'users:index']
         );
         $routes->connect(
             '/users/*',
-            ['controller' => 'Users', 'action' => 'view'],
-            ['_method' => 'GET', '_name' => 'users:view']
+            ['controller' => 'Users', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'users:view']
+        );
+        $routes->connect(
+            '/users',
+            ['controller' => 'Users', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'users:add']
         );
     }
 );

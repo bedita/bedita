@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller\Component;
 
 use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
+use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
 use Cake\Event\Event;
@@ -60,18 +61,29 @@ class JsonApiComponent extends Component
             'jsonApi' => $contentType,
         ]);
 
-        $this->RequestHandler->config('inputTypeMap.jsonApi', [[$this, 'parseInput']]);
+        $this->RequestHandler->config('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
         $this->RequestHandler->config('viewClassMap.jsonApi', 'BEdita/API.JsonApi');
     }
 
     /**
      * Input data parser for JSON API format.
      *
+     * @param string $json JSON string.
      * @return array
      */
-    public function parseInput()
+    public function parseInput($json)
     {
-        return [];
+        try {
+            $json = json_decode($json, true);
+            if (json_last_error() || !is_array($json) || empty($json['data'])) {
+                throw new \InvalidArgumentException('Invalid JSON');
+            }
+
+            return JsonApi::parseData((array)$json['data']);
+        } catch (\InvalidArgumentException $e) {
+            debug($e->getMessage());
+            return [];
+        }
     }
 
     /**
