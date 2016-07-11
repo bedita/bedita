@@ -26,7 +26,7 @@ class JsonApiView extends JsonView
     /**
      * {@inheritDoc}
      */
-    protected $_responseType = 'jsonApi';
+    protected $_responseType = 'jsonapi';
 
     /**
      * {@inheritDoc}

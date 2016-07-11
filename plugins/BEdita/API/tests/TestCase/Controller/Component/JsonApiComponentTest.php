@@ -85,7 +85,7 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonApi'));
+        $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonapi'));
         $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('inputTypeMap'));
         $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('viewClassMap'));
     }

@@ -38,11 +38,11 @@ class AppController extends Controller
         $this->loadComponent('BEdita/API.Paginator');
 
         $this->loadComponent('RequestHandler');
-        if ($this->request->is(['json', 'jsonApi'])) {
+        if ($this->request->is(['json', 'jsonapi'])) {
             $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
             $this->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->request->is('json') ? 'json' : null,
-                'checkMediaType' => $this->request->is('jsonApi'),
+                'checkMediaType' => $this->request->is('jsonapi'),
             ]);
         }
 
@@ -63,7 +63,7 @@ class AppController extends Controller
     {
         if ((Configure::read('debug') || Configure::read('Accept.html')) && $this->request->is('html')) {
             return $this->html();
-        } elseif (!$this->request->is(['json', 'jsonApi'])) {
+        } elseif (!$this->request->is(['json', 'jsonapi'])) {
             throw new NotAcceptableException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
         }
 

@@ -63,7 +63,7 @@ class JsonApiComponent extends Component
             $contentType = $this->response->getMimeType($config['contentType']) ?: $config['contentType'];
         }
         $this->response->type([
-            'jsonApi' => $contentType,
+            'jsonapi' => $contentType,
         ]);
 
         $this->RequestHandler->config('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.

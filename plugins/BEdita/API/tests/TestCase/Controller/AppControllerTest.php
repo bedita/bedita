@@ -44,12 +44,12 @@ class AppControllerTest extends IntegrationTestCase
                 'application/json',
                 'application/json',
             ],
-            'jsonApi' => [
+            'jsonapi' => [
                 200,
                 'application/vnd.api+json',
                 'application/vnd.api+json',
             ],
-            'jsonApiWrongMediaType' => [
+            'jsonapiWrongMediaType' => [
                 415,
                 'application/vnd.api+json',
                 'application/vnd.api+json; m=test',
