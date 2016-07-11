@@ -56,6 +56,21 @@ Router::plugin(
             ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'roles:users']
         );
+        $routes->connect(
+            '/roles',
+            ['controller' => 'Roles', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'roles:add']
+        );
+        $routes->connect(
+            '/roles/*',
+            ['controller' => 'Roles', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'roles:edit']
+        );
+        $routes->connect(
+            '/roles/*',
+            ['controller' => 'Roles', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'roles:delete']
+        );
 
         // Users.
         $routes->connect(

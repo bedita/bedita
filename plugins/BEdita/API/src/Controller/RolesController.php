@@ -12,6 +12,11 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\InternalErrorException;
+use Cake\Routing\Router;
+
 /**
  * Controller for `/roles` endpoint.
  *
@@ -34,6 +39,9 @@ class RolesController extends AppController
         parent::initialize();
 
         $this->set('_type', 'roles');
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->config('resourceTypes', ['roles']);
+        }
     }
 
     /**
@@ -63,5 +71,74 @@ class RolesController extends AppController
 
         $this->set(compact('role'));
         $this->set('_serialize', ['role']);
+    }
+
+    /**
+     * Add a new role.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
+     */
+    public function add()
+    {
+        $this->request->allowMethod('post');
+
+        $role = $this->Roles->newEntity($this->request->data);
+        if (!$this->Roles->save($role)) {
+            throw new BadRequestException('Invalid data');
+        }
+
+        $this->response->statusCode(201);
+        $this->response->header('Location', Router::url(['_name' => 'api:roles:view', $role->id], true));
+
+        $this->set(compact('role'));
+        $this->set('_serialize', ['role']);
+    }
+
+    /**
+     * Edit an existing role.
+     *
+     * @param int $id Role ID.
+     * @return void
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if role ID in the payload doesn't match
+     *      the role ID in the URL.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified role could not be found.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
+     */
+    public function edit($id)
+    {
+        $this->request->allowMethod('patch');
+
+        if ($this->request->data('id') != $id) {
+            throw new ConflictException('IDs don\' match');
+        }
+
+        $role = $this->Roles->get($id);
+        $role = $this->Roles->patchEntity($role, $this->request->data);
+        if (!$this->Roles->save($role)) {
+            throw new BadRequestException('Invalid data');
+        }
+
+        $this->set(compact('role'));
+        $this->set('_serialize', ['role']);
+    }
+
+    /**
+     * Delete an existing role.
+     *
+     * @param int $id Role ID.
+     * @return \Cake\Network\Response
+     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     */
+    public function delete($id)
+    {
+        $this->request->allowMethod('delete');
+
+        $role = $this->Roles->get($id);
+        if (!$this->Roles->delete($role)) {
+            throw new InternalErrorException('Could not delete role');
+        }
+
+        return $this->response;
     }
 }
