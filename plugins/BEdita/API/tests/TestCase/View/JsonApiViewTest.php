@@ -120,7 +120,7 @@ class JsonApiViewTest extends TestCase
                     ],
                 ],
             ],
-            'noData' =>[
+            'noData' => [
                 json_encode([
                     'links' => [
                         'self' => 'http://example.com/home',
