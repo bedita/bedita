@@ -190,15 +190,19 @@ class JsonApiComponent extends Component
      */
     public function allowedResourceTypes($types, array $data = null)
     {
-        $data = $data ?: $this->request->data;
+        $data = ($data === null) ? $this->request->data : $data;
         if (!$data || !$types) {
             return;
         }
         $data = (array)$data;
         $types = (array)$types;
 
-        if (Hash::numeric($data)) {
+        if (Hash::numeric(array_keys($data))) {
             foreach ($data as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+
                 $this->allowedResourceTypes($types, $item);
             }
 
@@ -221,14 +225,18 @@ class JsonApiComponent extends Component
      */
     public function allowClientGeneratedIds($allow = true, array $data = null)
     {
-        $data = $data ?: $this->request->data;
+        $data = ($data === null) ? $this->request->data : $data;
         if (!$data || $allow) {
             return;
         }
         $data = (array)$data;
 
-        if (Hash::numeric($data)) {
+        if (Hash::numeric(array_keys($data))) {
             foreach ($data as $item) {
+                if (!is_array($item)) {
+                    continue;
+                }
+
                 $this->allowClientGeneratedIds($allow, $item);
             }
 
