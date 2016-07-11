@@ -301,4 +301,160 @@ class JsonApiComponentTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testAllowedResourceTypes` test case.
+     *
+     * @return array
+     */
+    public function allowedResourceTypesProvider()
+    {
+        return [
+            'single' => [
+                true,
+                'myCustomType',
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'multiple' => [
+                true,
+                ['myCustomType1', 'myCustomType2'],
+                [
+                    [
+                        'type' => 'myCustomType1',
+                        'key' => 'value',
+                    ],
+                    [
+                        'type' => 'myCustomType2',
+                        'key' => 'value',
+                    ],
+                ],
+            ],
+            'emptyData' => [
+                true,
+                ['myCustomType1', 'myCustomType2'],
+                [],
+            ],
+            'emptyTypes' => [
+                true,
+                null,
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'unsupportedType' => [
+                false,
+                ['myCustomType'],
+                [
+                    'type' => 'unsupportedType',
+                    'key' => 'value',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `allowedResourceTypes()` method.
+     *
+     * @param bool $expected Expected success.
+     * @param mixed $types Allowed types.
+     * @param array $data Data to be checked.
+     * @return void
+     *
+     * @dataProvider allowedResourceTypesProvider
+     * @cover ::allowedResourceTypes()
+     */
+    public function testAllowedResourceTypes($expected, $types, array $data)
+    {
+        if (!$expected) {
+            $this->setExpectedException('\Cake\Network\Exception\ConflictException');
+        }
+
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+
+        $component->allowedResourceTypes($types, $data);
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Data provider for `testAllowClientGeneratedIds` test case.
+     *
+     * @return array
+     */
+    public function allowClientGeneratedIdsProvider()
+    {
+        return [
+            'allowed' => [
+                true,
+                true,
+                [
+                    'id' => 'my-id',
+                ],
+            ],
+            'single' => [
+                true,
+                false,
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'multiple' => [
+                true,
+                false,
+                [
+                    [
+                        'type' => 'myCustomType1',
+                        'key' => 'value',
+                    ],
+                    [
+                        'type' => 'myCustomType2',
+                        'key' => 'value',
+                    ],
+                ],
+            ],
+            'emptyData' => [
+                true,
+                false,
+                [],
+            ],
+            'unsupportedClientGeneratedId' => [
+                false,
+                false,
+                [
+                    'id' => 'my-id',
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `allowClientGeneratedIds()` method.
+     *
+     * @param bool $expected Expected success.
+     * @param bool $allow Should client-generated IDs be allowed?
+     * @param array $data Data to be checked.
+     * @return void
+     *
+     * @dataProvider allowClientGeneratedIdsProvider
+     * @cover ::allowClientGeneratedIds()
+     */
+    public function testAllowClientGeneratedIds($expected, $allow, array $data)
+    {
+        if (!$expected) {
+            $this->setExpectedException('\Cake\Network\Exception\ForbiddenException');
+        }
+
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+
+        $component->allowClientGeneratedIds($allow, $data);
+
+        $this->assertTrue(true);
+    }
 }
