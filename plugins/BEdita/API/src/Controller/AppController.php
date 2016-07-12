@@ -39,11 +39,13 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
-            $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
             $this->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->request->is('json') ? 'json' : null,
                 'checkMediaType' => $this->request->is('jsonapi'),
             ]);
+
+            $this->RequestHandler->config('inputTypeMap.json', [[$this->JsonApi, 'parseInput']], false);
+            $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
         }
 
         if (empty(Router::fullBaseUrl())) {
