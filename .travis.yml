@@ -24,7 +24,9 @@ env:
     - "DB=mysql DB_VERSION=5.5 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+    - "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
   global:
     - RUN_TESTS=1
 
@@ -37,7 +39,11 @@ matrix:
 
   exclude:
     - php: hhvm
-      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - php: hhvm
+      env: "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - php: hhvm
+      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
 
   allow_failures:
     - php: hhvm
@@ -52,8 +58,15 @@ before_script:
       docker pull mysql:$DB_VERSION
       docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
       docker ps -a
+      until nc -z 127.0.0.1 33060; do sleep 1; echo 'Waiting for MySQL to come up...'; done
     fi
-  - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
+  - |
+    if [ "$DB" = 'pgsql' ]; then
+      docker pull postgres:$DB_VERSION
+      docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bedita_test -p 127.0.0.1:54320:5432 postgres:$DB_VERSION
+      docker ps -a
+      until nc -z 127.0.0.1 54320; do sleep 1; echo 'Waiting for PostgreSQL to come up...'; done
+    fi
 
   - |
     if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
