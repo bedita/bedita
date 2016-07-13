@@ -49,24 +49,22 @@ matrix:
     - php: hhvm
 
 before_script:
-  - echo "$TRAVIS_PHP_VERSION"
-  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
-  - composer install --prefer-dist --no-interaction
-
   - |
     if [ "$DB" = 'mysql' ]; then
       docker pull mysql:$DB_VERSION
       docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
       docker ps -a
-      until nc -z 127.0.0.1 33060; do sleep 1; echo 'Waiting for MySQL to come up...'; done
     fi
   - |
     if [ "$DB" = 'pgsql' ]; then
       docker pull postgres:$DB_VERSION
       docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bedita_test -p 127.0.0.1:54320:5432 postgres:$DB_VERSION
       docker ps -a
-      until nc -z 127.0.0.1 54320; do sleep 1; echo 'Waiting for PostgreSQL to come up...'; done
     fi
+
+  - echo "$TRAVIS_PHP_VERSION"
+  - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
+  - composer install --prefer-dist --no-interaction
 
   - |
     if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
