@@ -51,6 +51,7 @@ before_script:
     if [ "$DB" = 'mysql' ]; then
       docker pull mysql:$DB_VERSION
       docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
+      docker ps -a
     fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
 
