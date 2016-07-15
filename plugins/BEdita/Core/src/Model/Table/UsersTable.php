@@ -74,7 +74,7 @@ class UsersTable extends Table
             ->allowEmpty('id', 'create')
 
             ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('username')
+            ->requirePresence('username', 'create')
             ->notEmpty('username')
 
             ->allowEmpty('password_hash')

@@ -141,14 +141,16 @@ class JsonApi
      */
     protected static function parseItem(array $item)
     {
-        if (empty($item['id']) || empty($item['type'])) {
-            throw new \InvalidArgumentException('Keys `id` and `type` are mandatory');
+        if (empty($item['type'])) {
+            throw new \InvalidArgumentException('Key `type` is mandatory');
         }
 
         $data = [
-            'id' => $item['id'],
             'type' => $item['type'],
         ];
+        if (!empty($item['id'])) {
+            $data['id'] = $item['id'];
+        }
 
         if (isset($item['attributes']) && is_array($item['attributes'])) {
             $data += $item['attributes'];

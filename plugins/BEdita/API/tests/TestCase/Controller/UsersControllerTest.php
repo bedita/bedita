@@ -304,4 +304,190 @@ class UsersControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('title', $result['error']);
         $this->assertNotEmpty($result['error']['title']);
     }
+
+    /**
+     * Test add method.
+     *
+     * @return void
+     *
+     * @covers ::add()
+     * @covers ::initialize()
+     */
+    public function testAdd()
+    {
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'gustavo_supporto',
+                'password_hash' => 'aiuto',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/users', json_encode(compact('data')));
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertHeader('Location', 'http://api.example.com/users/3');
+        $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
+    }
+
+    /**
+     * Test add method with invalid data.
+     *
+     * @return void
+     *
+     * @covers ::add()
+     * @covers ::initialize()
+     */
+    public function testAddInvalid()
+    {
+        $data = [
+            'type' => 'users',
+            'attributes' => [
+                'password_hash' => 'aiuto',
+            ],
+        ];
+
+        $count = TableRegistry::get('Users')->find()->count();
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/users', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('Users')->find()->count());
+    }
+
+    /**
+     * Test edit method.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEdit()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'new_username',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/users/1', json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+    }
+
+    /**
+     * Test edit method with ID conflict.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEditConflict()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'new_username',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/users/2', json_encode(compact('data')));
+
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
+        $this->assertEquals('second user', TableRegistry::get('Users')->get(2)->get('username'));
+    }
+
+    /**
+     * Test edit method with invalid data.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEditInvalid()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'users',
+            'attributes' => [
+                'username' => 'second user',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/users/1', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
+    }
+
+    /**
+     * Test delete method.
+     *
+     * @return void
+     *
+     * @covers ::delete()
+     * @covers ::initialize()
+     */
+    public function testDelete()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->delete('/users/1');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertFalse(TableRegistry::get('Users')->exists(['id' => 1]));
+    }
 }
