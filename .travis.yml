@@ -6,7 +6,9 @@ php:
   - 7.0
   - hhvm
 
-sudo: false
+sudo: required
+dist: trusty
+group: edge
 
 services:
   - docker
