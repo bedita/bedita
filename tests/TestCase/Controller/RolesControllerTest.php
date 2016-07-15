@@ -29,6 +29,8 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -236,5 +238,190 @@ class RolesControllerTest extends IntegrationTestCase
         $this->assertArraySubset($expected['error'], $result['error']);
         $this->assertArrayHasKey('title', $result['error']);
         $this->assertNotEmpty($result['error']['title']);
+    }
+
+    /**
+     * Test add method.
+     *
+     * @return void
+     *
+     * @covers ::add()
+     * @covers ::initialize()
+     */
+    public function testAdd()
+    {
+        $data = [
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'head_of_support',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/roles', json_encode(compact('data')));
+
+        $this->assertResponseCode(201);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertHeader('Location', 'http://api.example.com/roles/3');
+        $this->assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+    }
+
+    /**
+     * Test add method with invalid data.
+     *
+     * @return void
+     *
+     * @covers ::add()
+     * @covers ::initialize()
+     */
+    public function testAddInvalid()
+    {
+        $data = [
+            'type' => 'roles',
+            'attributes' => [
+                'description' => 'Anonymous role.',
+            ],
+        ];
+
+        $count = TableRegistry::get('Roles')->find()->count();
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/roles', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($count, TableRegistry::get('Roles')->find()->count());
+    }
+
+    /**
+     * Test edit method.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEdit()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'new_name',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/1', json_encode(compact('data')));
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('new_name', TableRegistry::get('Roles')->get(1)->get('name'));
+    }
+
+    /**
+     * Test edit method with ID conflict.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEditConflict()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'new_name',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/2', json_encode(compact('data')));
+
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals('second role', TableRegistry::get('Roles')->get(2)->get('name'));
+    }
+
+    /**
+     * Test edit method with invalid data.
+     *
+     * @return void
+     *
+     * @covers ::edit()
+     * @covers ::initialize()
+     */
+    public function testEditInvalid()
+    {
+        $data = [
+            'id' => '1',
+            'type' => 'roles',
+            'attributes' => [
+                'name' => 'second role',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/1', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
+    }
+
+    /**
+     * Test delete method.
+     *
+     * @return void
+     *
+     * @covers ::delete()
+     * @covers ::initialize()
+     */
+    public function testDelete()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->delete('/roles/1');
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 1]));
     }
 }

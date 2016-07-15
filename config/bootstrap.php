@@ -36,6 +36,6 @@ if (PHP_SAPI === 'cli') {
 
 /** Add custom request detectors. */
 Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml']]);
-Request::addDetector('jsonApi', function (Request $request) {
+Request::addDetector('jsonapi', function (Request $request) {
     return $request->accepts(JsonApiComponent::CONTENT_TYPE);
 });
