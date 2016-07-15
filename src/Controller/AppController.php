@@ -47,21 +47,9 @@ class AppController extends Controller
         }
 
         $this->loadComponent('Auth', [
-            'authenticate' => [
-                'Form' => [
-                    'fields' => [
-                        'username' => 'username',
-                        'password' => 'password_hash',
-                    ],
-                    'scope' => [
-                        'blocked' => false,
-                    ],
-                    'contain' => ['Roles'],
-                ],
-                'BEdita/API.Jwt',
-            ],
-            'loginAction' => ['_name' => 'api:users:login'],
-            'loginRedirect' => ['_name' => 'api:users:login'],
+            'authenticate' => ['BEdita/API.Jwt'],
+            'loginAction' => ['_name' => 'api:login'],
+            'loginRedirect' => ['_name' => 'api:login'],
             'unauthorizedRedirect' => false,
             'storage' => 'Memory',
         ]);

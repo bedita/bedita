@@ -65,10 +65,12 @@ Router::plugin(
             ['controller' => 'Users', 'action' => 'view'],
             ['_method' => 'GET', '_name' => 'users:view']
         );
+
+        // Login.
         $routes->connect(
             '/auth',
-            ['controller' => 'Users', 'action' => 'login'],
-            ['_method' => 'POST', '_name' => 'users:login']
+            ['controller' => 'Login', 'action' => 'login'],
+            ['_name' => 'login']
         );
     }
 );
