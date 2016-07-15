@@ -69,6 +69,7 @@ class TableInheritanceManager
 
         if ($source->association($targetConf['tableName'])) {
             static::checkAssociation($source, $targetConf);
+
             return;
         }
 
@@ -116,6 +117,7 @@ class TableInheritanceManager
         $options = array_diff_key($options, array_flip(['joinType', 'dependent']));
 
         $association = new ExtensionOf($associated, $options);
+
         return $source->associations()->add($association->name(), $association);
     }
 

@@ -75,6 +75,7 @@ class QueryPatcher
         }
 
         $this->inheritanceMap['tables'] = $this->table->inheritedTables(true);
+
         return $this->inheritanceMap['tables'];
     }
 
@@ -87,6 +88,7 @@ class QueryPatcher
     public function patch(Query $query)
     {
         $this->query = $query;
+
         return $this;
     }
 
@@ -98,6 +100,7 @@ class QueryPatcher
     public function all()
     {
         $this->contain();
+
         return $this->query;
     }
 
@@ -129,6 +132,7 @@ class QueryPatcher
         }
 
         $this->query->contain($result, true);
+
         return $this;
     }
 

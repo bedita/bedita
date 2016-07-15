@@ -33,6 +33,7 @@ class JsonType extends Type
         if ($value === null) {
             return null;
         }
+
         return json_decode($value, true);
     }
 
@@ -44,6 +45,7 @@ class JsonType extends Type
         if (is_array($value) || $value === null) {
             return $value;
         }
+
         return json_decode($value, true);
     }
 
@@ -63,6 +65,7 @@ class JsonType extends Type
         if ($value === null) {
             return PDO::PARAM_NULL;
         }
+
         return PDO::PARAM_STR;
     }
 }
