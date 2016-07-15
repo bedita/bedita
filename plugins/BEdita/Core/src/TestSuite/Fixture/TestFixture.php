@@ -79,6 +79,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
                 'collation' => 'utf8_general_ci',
             ],
         ];
+
         return $fields;
     }
 
@@ -107,6 +108,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
             }
             $events[$event] = $method;
         }
+
         return $events;
     }
 }

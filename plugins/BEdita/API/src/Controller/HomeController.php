@@ -55,8 +55,7 @@ class HomeController extends AppController
         }
 
         $meta = compact('resources');
-        $this->set('_type', 'meta');
         $this->set('_meta', $meta);
-        $this->set('_serialize', true);
+        $this->set('_serialize', []);
     }
 }

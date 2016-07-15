@@ -41,15 +41,16 @@ class ExceptionRenderer extends CakeExceptionRenderer
             ]);
         }
 
-        if ($this->controller->request->is(['json', 'jsonApi'])) {
+        if ($this->controller->request->is(['json', 'jsonapi'])) {
             $this->controller->loadComponent('RequestHandler');
             $this->controller->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
             $this->controller->loadComponent('BEdita/API.JsonApi', [
                 'contentType' => $this->controller->request->is('json') ? 'json' : null,
-                'checkMediaType' => $this->controller->request->is('jsonApi'),
+                'checkMediaType' => $this->controller->request->is('jsonapi'),
             ]);
 
             $this->controller->JsonApi->error($code, $message, '', array_filter(compact('trace')));
+            $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
         }
 
         return parent::render();

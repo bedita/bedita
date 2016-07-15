@@ -44,12 +44,12 @@ class AppControllerTest extends IntegrationTestCase
                 'application/json',
                 'application/json',
             ],
-            'jsonApi' => [
+            'jsonapi' => [
                 200,
                 'application/vnd.api+json',
                 'application/vnd.api+json',
             ],
-            'jsonApiWrongMediaType' => [
+            'jsonapiWrongMediaType' => [
                 415,
                 'application/vnd.api+json',
                 'application/vnd.api+json; m=test',
@@ -94,7 +94,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider contentTypeProvider
-     * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeFilter()
+     * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
      */
     public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)

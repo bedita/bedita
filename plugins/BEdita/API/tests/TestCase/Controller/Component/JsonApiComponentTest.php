@@ -16,6 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller\Component;
 use BEdita\API\Controller\Component\JsonApiComponent;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -85,9 +86,9 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonApi'));
-        $this->assertArrayHasKey('jsonApi', $component->RequestHandler->config('inputTypeMap'));
-        $this->assertArrayHasKey('jsonApi', $component->RequestHandler->config('viewClassMap'));
+        $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonapi'));
+        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('inputTypeMap'));
+        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('viewClassMap'));
     }
 
     /**
@@ -106,6 +107,7 @@ class JsonApiComponentTest extends TestCase
 
         $request = new Request([
             'params' => [
+                'plugin' => 'BEdita/API',
                 'controller' => 'Users',
                 'action' => 'index',
                 '_method' => 'GET',
@@ -213,6 +215,7 @@ class JsonApiComponentTest extends TestCase
 
         $request = new Request([
             'params' => [
+                'plugin' => 'BEdita/API',
                 'controller' => 'Users',
                 'action' => 'index',
                 '_method' => 'GET',
@@ -253,5 +256,216 @@ class JsonApiComponentTest extends TestCase
         $component->error(500, 'Example error', 'Example description', ['key' => 'Example metadata']);
 
         $this->assertEquals($expected, $controller->viewVars['_error']);
+    }
+
+    /**
+     * Data provider for `testParseInput` test case.
+     *
+     * @return array
+     */
+    public function parseInputProvider()
+    {
+        return [
+            'valid' => [
+                [
+                    'type' => 'customType',
+                    'key' => 'value',
+                ],
+                '{"data":{"type":"customType","attributes":{"key":"value"}}}'
+            ],
+            'invalidJson' => [
+                [],
+                '{"some", "invalid":"json"',
+            ],
+            'invalidJsonApi' => [
+                [],
+                '{"data":{"type":null,"attributes":{"key":"value"}}}',
+            ],
+        ];
+    }
+
+    /**
+     * Test `parseInput()` method.
+     *
+     * @param array $expected Expected parsed array.
+     * @param string $input Input to be parsed.
+     * @return void
+     *
+     * @dataProvider parseInputProvider
+     * @covers ::parseInput()
+     */
+    public function testParseInput($expected, $input)
+    {
+        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+
+        $result = $component->parseInput($input);
+
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testAllowedResourceTypes` test case.
+     *
+     * @return array
+     */
+    public function allowedResourceTypesProvider()
+    {
+        return [
+            'single' => [
+                true,
+                'myCustomType',
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'multiple' => [
+                true,
+                ['myCustomType1', 'myCustomType2'],
+                [
+                    [
+                        'type' => 'myCustomType1',
+                        'key' => 'value',
+                    ],
+                    [
+                        'type' => 'myCustomType2',
+                        'key' => 'value',
+                    ],
+                ],
+            ],
+            'emptyData' => [
+                true,
+                ['myCustomType1', 'myCustomType2'],
+                [],
+            ],
+            'emptyTypes' => [
+                true,
+                null,
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'unsupportedType' => [
+                false,
+                ['myCustomType'],
+                [
+                    'type' => 'unsupportedType',
+                    'key' => 'value',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `allowedResourceTypes()` method.
+     *
+     * @param bool $expected Expected success.
+     * @param mixed $types Allowed types.
+     * @param array $data Data to be checked.
+     * @return void
+     *
+     * @dataProvider allowedResourceTypesProvider
+     * @covers ::allowedResourceTypes()
+     * @covers ::startup()
+     */
+    public function testAllowedResourceTypes($expected, $types, array $data)
+    {
+        if (!$expected) {
+            $this->setExpectedException('\Cake\Network\Exception\ConflictException');
+        }
+
+        $request = new Request([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+                'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
+                'REQUEST_METHOD' => 'POST',
+            ],
+            'post' => $data,
+        ]);
+
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller), ['resourceTypes' => $types]);
+
+        $component->startup(new Event('Controller.startup', $controller));
+
+        $this->assertTrue(true);
+    }
+
+    /**
+     * Data provider for `testAllowClientGeneratedIds` test case.
+     *
+     * @return array
+     */
+    public function allowClientGeneratedIdsProvider()
+    {
+        return [
+            'single' => [
+                true,
+                [
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+            'multiple' => [
+                true,
+                [
+                    [
+                        'type' => 'myCustomType1',
+                        'key' => 'value',
+                    ],
+                    [
+                        'type' => 'myCustomType2',
+                        'key' => 'value',
+                    ],
+                ],
+            ],
+            'emptyData' => [
+                true,
+                [],
+            ],
+            'unsupportedClientGeneratedId' => [
+                false,
+                [
+                    'id' => 'my-id',
+                    'type' => 'myCustomType',
+                    'key' => 'value',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test `allowClientGeneratedIds()` method.
+     *
+     * @param bool $expected Expected success.
+     * @param array $data Data to be checked.
+     * @return void
+     *
+     * @dataProvider allowClientGeneratedIdsProvider
+     * @covers ::allowClientGeneratedIds()
+     * @covers ::startup()
+     */
+    public function testAllowClientGeneratedIds($expected, array $data)
+    {
+        if (!$expected) {
+            $this->setExpectedException('\Cake\Network\Exception\ForbiddenException');
+        }
+
+        $request = new Request([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+                'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
+                'REQUEST_METHOD' => 'POST',
+            ],
+            'post' => $data,
+        ]);
+
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller));
+
+        $component->startup(new Event('Controller.startup', $controller));
+
+        $this->assertTrue(true);
     }
 }

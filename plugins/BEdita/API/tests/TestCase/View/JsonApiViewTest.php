@@ -120,6 +120,25 @@ class JsonApiViewTest extends TestCase
                     ],
                 ],
             ],
+            'noData' => [
+                json_encode([
+                    'links' => [
+                        'self' => 'http://example.com/home',
+                    ],
+                    'meta' => [
+                        'metaKey' => 'metaValue',
+                    ],
+                ]),
+                [
+                    '_links' => [
+                        'self' => 'http://example.com/home',
+                    ],
+                    '_meta' => [
+                        'metaKey' => 'metaValue',
+                    ],
+                    '_serialize' => [],
+                ],
+            ],
         ];
     }
 

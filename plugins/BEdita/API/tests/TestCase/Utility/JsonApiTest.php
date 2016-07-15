@@ -325,11 +325,14 @@ class JsonApiTest extends TestCase
                 ],
             ],
             'missingId' => [
-                false,
+                [
+                    'type' => 'customType',
+                    'name' => 'Gustavo',
+                ],
                 [
                     'type' => 'customType',
                     'attributes' => [
-                        'name' => 'Paolo',
+                        'name' => 'Gustavo',
                     ],
                 ],
             ],

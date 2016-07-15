@@ -123,6 +123,7 @@ class ObjectsTable extends Table
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
+
         return $rules;
     }
 
@@ -132,6 +133,7 @@ class ObjectsTable extends Table
     protected function _initializeSchema(Schema $schema)
     {
         $schema->columnType('extra', 'json');
+
         return $schema;
     }
 

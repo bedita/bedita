@@ -159,6 +159,7 @@ class ClassTableInheritanceBehavior extends Behavior
         $this->queryPatcher()
             ->patch($query)
             ->contain();
+
         return $query;
     }
 

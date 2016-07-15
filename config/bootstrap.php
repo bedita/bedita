@@ -74,6 +74,17 @@ try {
 // shared configuration.
 //Configure::load('app_local', 'default');
 
+// Load default values for object types cache, if missing.
+if (!Configure::check('Cache._bedita_object_types_')) {
+    Configure::write('Cache._bedita_object_types_', [
+        'className' => 'File',
+        'prefix' => 'bedita_object_types_',
+        'path' => CACHE . 'object_types/',
+        'serialize' => true,
+        'duration' => '+1 year',
+    ]);
+}
+
 // When debug = true the metadata cache should last
 // for a very very short time, as we want
 // to refresh the cache while developers are making changes.
@@ -146,10 +157,12 @@ Security::salt(Configure::consume('Security.salt'));
  */
 Request::addDetector('mobile', function () {
     $detector = new \Detection\MobileDetect();
+
     return $detector->isMobile();
 });
 Request::addDetector('tablet', function () {
     $detector = new \Detection\MobileDetect();
+
     return $detector->isTablet();
 });
 
