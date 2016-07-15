@@ -12,12 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\Core\Configure;
-use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\Query;
-use Cake\Routing\Router;
-use Cake\Utility\Security;
-use Firebase\JWT\JWT;
 
 /**
  * Controller for `/users` endpoint.
@@ -76,35 +71,5 @@ class UsersController extends AppController
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
-    }
-
-    /**
-     * Login with username and password.
-     *
-     * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user credentials are invalid.
-     */
-    public function login()
-    {
-        $this->request->allowMethod('post');
-
-        $user = $this->Auth->identify();
-        if (!$user) {
-            throw new UnauthorizedException(__('Login not successful'));
-        }
-
-        $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
-        $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
-        $claims = [
-            'iss' => Router::fullBaseUrl(),
-            'iat' => time(),
-            'nbf' => time(),
-        ];
-        $jwt = JWT::encode($user + $claims + ['exp' => strtotime($duration)], Security::salt(), $algorithm);
-        $renew = JWT::encode(['sub' => $user['id']] + $claims, Security::salt(), $algorithm);
-
-        $this->set('_type', 'meta');
-        $this->set('_serialize', true);
-        $this->set('_meta', compact('jwt', 'renew'));
     }
 }
