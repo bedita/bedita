@@ -94,6 +94,7 @@ class DbAdminShell extends Shell
                 ],
             ],
         ]);
+
         return $parser;
     }
 
@@ -110,6 +111,7 @@ class DbAdminShell extends Shell
             $res = $this->in('Overwrite schema file "' . $schemaFile . '"?', ['y', 'n'], 'n');
             if ($res != 'y') {
                 $this->info('Schema file not updated');
+
                 return;
             }
         }
@@ -179,6 +181,7 @@ class DbAdminShell extends Shell
                 $reservedWords[] = $l;
             }
         }
+
         return $reservedWords;
     }
 
@@ -279,6 +282,7 @@ class DbAdminShell extends Shell
         $res = $this->in('Do you want to proceed?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->out('Database unchanged');
+
             return;
         }
         $this->out('Creating new database schema...');

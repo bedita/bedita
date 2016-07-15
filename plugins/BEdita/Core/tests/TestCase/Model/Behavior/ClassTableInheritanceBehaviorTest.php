@@ -222,11 +222,13 @@ class ClassTableInheritanceBehaviorTest extends TestCase
         ];
         $expected = array_map(function ($a) {
             ksort($a);
+
             return $a;
         }, $expected);
 
         $result = array_map(function ($a) {
             ksort($a);
+
             return $a;
         }, $mammals->toArray());
         $this->assertEquals($expected, $result);

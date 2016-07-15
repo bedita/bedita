@@ -99,6 +99,7 @@ class DataSeedShell extends Shell
     protected function usersData()
     {
         $tsLast = $this->faker->dateTimeThisYear()->getTimestamp();
+
         return [
             'username' => $this->faker->userName,
             'password_hash' => $this->faker->password,

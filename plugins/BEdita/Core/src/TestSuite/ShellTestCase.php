@@ -176,6 +176,7 @@ class ShellTestCase extends TestCase
             return $Shell->runCommand($args, true, $extra + ['required' => true]);
         } catch (StopException $e) {
             $this->aborted = true;
+
             return 1;
         }
     }

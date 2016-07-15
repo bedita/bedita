@@ -63,6 +63,7 @@ class JsonApiView extends JsonView
         if ($type && empty($data) && $type === 'meta') {
             return compact('error', 'links', 'meta');
         }
+
         return compact('error', 'data', 'links', 'meta');
     }
 }
