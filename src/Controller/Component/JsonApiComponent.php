@@ -50,7 +50,6 @@ class JsonApiComponent extends Component
         'contentType' => null,
         'checkMediaType' => true,
         'resourceTypes' => null,
-        'clientGeneratedIds' => false,
     ];
 
     /**
@@ -188,7 +187,7 @@ class JsonApiComponent extends Component
      * @return void
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if a resource has a non-supported `type`.
      */
-    public function allowedResourceTypes($types, array $data = null)
+    protected function allowedResourceTypes($types, array $data = null)
     {
         $data = ($data === null) ? $this->request->data : $data;
         if (!$data || !$types) {
@@ -223,7 +222,7 @@ class JsonApiComponent extends Component
      * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if a resource has a client-generated
      *      ID, but this feature is not supported.
      */
-    public function allowClientGeneratedIds($allow = true, array $data = null)
+    protected function allowClientGeneratedIds($allow = true, array $data = null)
     {
         $data = ($data === null) ? $this->request->data : $data;
         if (!$data || $allow) {
@@ -279,7 +278,7 @@ class JsonApiComponent extends Component
         }
 
         if ($this->request->is('post')) {
-            $this->allowClientGeneratedIds($this->config('clientGeneratedIds'));
+            $this->allowClientGeneratedIds(false);
         }
     }
 
