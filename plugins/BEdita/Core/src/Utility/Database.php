@@ -60,6 +60,7 @@ class Database
                 $schema[$tableName]['indexes'][$idx] = $table->index($idx);
             }
         }
+
         return $schema;
     }
 
@@ -97,6 +98,7 @@ class Database
                 );
             }
         }
+
         return $diff;
     }
 
@@ -145,6 +147,7 @@ class Database
     {
         $config = ConnectionManager::get($dbConfig)->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
+
         return $config;
     }
 
@@ -168,6 +171,7 @@ class Database
                 $query = '';
             }
         }
+
         return $queries;
     }
 

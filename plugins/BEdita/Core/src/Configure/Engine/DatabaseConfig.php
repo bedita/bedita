@@ -67,6 +67,7 @@ class DatabaseConfig implements ConfigEngineInterface
             }
             $values[$cfgKey] = $cfgValue;
         }
+
         return $values;
     }
 
@@ -96,6 +97,7 @@ class DatabaseConfig implements ConfigEngineInterface
                 }
             }
         });
+
         return true;
     }
 
@@ -116,6 +118,7 @@ class DatabaseConfig implements ConfigEngineInterface
         if ($value === false) {
             return 'false';
         }
+
         return (string)$value;
     }
 
@@ -136,6 +139,7 @@ class DatabaseConfig implements ConfigEngineInterface
         if ($value === 'false') {
             return false;
         }
+
         return $value;
     }
 }
