@@ -16,6 +16,7 @@ namespace BEdita\API\Test\TestCase\Controller\Component;
 use BEdita\API\Controller\Component\JsonApiComponent;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
+use Cake\Event\Event;
 use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
@@ -365,7 +366,8 @@ class JsonApiComponentTest extends TestCase
      * @return void
      *
      * @dataProvider allowedResourceTypesProvider
-     * @cover ::allowedResourceTypes()
+     * @covers ::allowedResourceTypes()
+     * @covers ::startup()
      */
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
@@ -373,9 +375,19 @@ class JsonApiComponentTest extends TestCase
             $this->setExpectedException('\Cake\Network\Exception\ConflictException');
         }
 
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+        $request = new Request([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+                'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
+                'REQUEST_METHOD' => 'POST',
+            ],
+            'post' => $data,
+        ]);
 
-        $component->allowedResourceTypes($types, $data);
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller), ['resourceTypes' => $types]);
+
+        $component->startup(new Event('Controller.startup', $controller));
 
         $this->assertTrue(true);
     }
@@ -388,16 +400,8 @@ class JsonApiComponentTest extends TestCase
     public function allowClientGeneratedIdsProvider()
     {
         return [
-            'allowed' => [
-                true,
-                true,
-                [
-                    'id' => 'my-id',
-                ],
-            ],
             'single' => [
                 true,
-                false,
                 [
                     'type' => 'myCustomType',
                     'key' => 'value',
@@ -405,7 +409,6 @@ class JsonApiComponentTest extends TestCase
             ],
             'multiple' => [
                 true,
-                false,
                 [
                     [
                         'type' => 'myCustomType1',
@@ -419,11 +422,9 @@ class JsonApiComponentTest extends TestCase
             ],
             'emptyData' => [
                 true,
-                false,
                 [],
             ],
             'unsupportedClientGeneratedId' => [
-                false,
                 false,
                 [
                     'id' => 'my-id',
@@ -438,22 +439,32 @@ class JsonApiComponentTest extends TestCase
      * Test `allowClientGeneratedIds()` method.
      *
      * @param bool $expected Expected success.
-     * @param bool $allow Should client-generated IDs be allowed?
      * @param array $data Data to be checked.
      * @return void
      *
      * @dataProvider allowClientGeneratedIdsProvider
-     * @cover ::allowClientGeneratedIds()
+     * @covers ::allowClientGeneratedIds()
+     * @covers ::startup()
      */
-    public function testAllowClientGeneratedIds($expected, $allow, array $data)
+    public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {
             $this->setExpectedException('\Cake\Network\Exception\ForbiddenException');
         }
 
-        $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
+        $request = new Request([
+            'environment' => [
+                'HTTP_ACCEPT' => 'application/vnd.api+json',
+                'HTTP_CONTENT_TYPE' => 'application/vnd.api+json',
+                'REQUEST_METHOD' => 'POST',
+            ],
+            'post' => $data,
+        ]);
 
-        $component->allowClientGeneratedIds($allow, $data);
+        $controller = new Controller($request);
+        $component = new JsonApiComponent(new ComponentRegistry($controller));
+
+        $component->startup(new Event('Controller.startup', $controller));
 
         $this->assertTrue(true);
     }
