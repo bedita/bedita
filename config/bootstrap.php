@@ -157,10 +157,12 @@ Security::salt(Configure::consume('Security.salt'));
  */
 Request::addDetector('mobile', function () {
     $detector = new \Detection\MobileDetect();
+
     return $detector->isMobile();
 });
 Request::addDetector('tablet', function () {
     $detector = new \Detection\MobileDetect();
+
     return $detector->isTablet();
 });
 
