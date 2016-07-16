@@ -7,8 +7,6 @@ php:
   - hhvm
 
 sudo: required
-dist: trusty
-group: edge
 
 services:
   - docker
@@ -23,12 +21,8 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///:memory:'"
-    - "DB=mysql DB_VERSION=5.5 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - "DB=mysql db_dsn='mysql://travis@0.0.0.0/bedita_test'"
+    - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
 
@@ -37,15 +31,33 @@ matrix:
 
   include:
     - php: 7.0
+      env: "DB=mysql DB_VERSION=5.5 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
+      sudo: required
+    - php: 7.0
+      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
+      sudo: required
+    - php: 7.0
+      env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
+      sudo: required
+    - php: 7.0
+      env: "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+      sudo: required
+    - php: 7.0
+      env: "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+      sudo: required
+    - php: 7.0
+      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+      sudo: required
+    - php: 7.0
       env: RUN_CS=1 RUN_TESTS=0
 
   exclude:
+    - php: 7.0
+      env: "DB=mysql db_dsn='mysql://travis@0.0.0.0/bedita_test'"
+    - php: 7.0
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - php: hhvm
-      env: "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: hhvm
-      env: "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: hhvm
-      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
 
   allow_failures:
     - php: hhvm
@@ -53,18 +65,15 @@ matrix:
 before_script:
   - |
     if [ "$DB" = 'mysql' ]; then
-      docker pull mysql:$DB_VERSION
-      docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
-      docker ps -a
+      mysql -e 'CREATE DATABASE bedita_test;'
+      if [ -n "$DB_VERSION" ]; then
+        docker pull mysql:$DB_VERSION
+        docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
+        docker ps -a
+      fi
     fi
-  - |
-    if [ "$DB" = 'pgsql' ]; then
-      docker pull postgres:$DB_VERSION
-      docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bedita_test -p 127.0.0.1:54320:5432 postgres:$DB_VERSION
-      docker ps -a
-    fi
+  - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
 
-  - echo "$TRAVIS_PHP_VERSION"
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
   - composer install --prefer-dist --no-interaction
 
