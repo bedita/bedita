@@ -13,6 +13,7 @@ group: edge
 services:
   - docker
   - memcached
+  - mysql
   - redis-server
 
 cache:
