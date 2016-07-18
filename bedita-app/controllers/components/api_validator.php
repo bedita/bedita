@@ -285,6 +285,11 @@ class ApiValidatorComponent extends Object {
                 throw new BeditaBadRequestException($objectType . ' can have only one parent');
             }
             $this->checkObjectAccess($object['parents']);
+            $this->checkParents($object['parents']);
+        } else {
+            if ($objectType == 'section') {
+                throw new BeditaBadRequestException($objectType . ' must have one and only one parent');
+            }
         }
 
         // if new object parents or relations cannot be empty
@@ -456,6 +461,38 @@ class ApiValidatorComponent extends Object {
                 );
     }
 
+    /**
+     * Check if $parentsId are valid parents for the saving object
+     *
+     * If check fails it throws a bad request exception
+     *
+     * @throws BeditaBadRequesException
+     * @param int|array $objectId the object id or an array of object ids
+     * @return void
+     */
+    public function checkParents($parentsId) {
+        $parentFilter = array(
+            'branches' => array(
+                Configure::read('objectTypes.area.id'),
+                Configure::read('objectTypes.section.id')
+            ),
+            'message' => 'Area or Section'
+        );
+        if (!is_array($parentsId)) {
+            $parentsId = array($parentsId);
+        }
+
+        $branches = $parentFilter['branches'];
+        foreach($parentsId as $parentId) {
+            $beObject = ClassRegistry::init('BEObject');
+            $parentTypeId = $beObject->findObjectTypeId($parentId);
+            if (!empty($branches)) {
+                if (!in_array($parentTypeId, $branches)) {
+                    throw new BeditaBadRequestException('objects can only have parents of: '. $parentFilter['message']);
+                }
+            }
+        }
+    }
 
     /**
      * Check if $objectId and its parents are accessible for authorized user.
