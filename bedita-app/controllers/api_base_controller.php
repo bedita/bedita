@@ -60,7 +60,7 @@ abstract class ApiBaseController extends FrontendController {
      * );
      * ```
      *
-     * Note that the custom auth component should be implements ApiAuthInterface
+     * Note that the custom auth component should implements ApiAuthInterface
      *
      * @var Object
      */
@@ -419,6 +419,8 @@ abstract class ApiBaseController extends FrontendController {
      */
     protected function beforeCheckLogin() {
         $this->setupAuthComponent();
+        $this->setupValidatorComponent();
+        $this->setupFormatterComponent();
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
@@ -501,6 +503,40 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaInternalErrorException('API auth component is not properly loaded in API controller');
         }
         $this->BeAuth = &$this->ApiAuth;
+    }
+
+    /**
+     * Setup component used for validation:
+     *
+     * - check configuration (api.validator.component) to see if adhoc component should be used and assign it to self::$ApiValidator
+     *
+     * @return void
+     */
+    private function setupValidatorComponent() {
+        $componentName = Configure::read('api.validator.component');
+        if (!empty($componentName) && $componentName != 'ApiValidator' && !empty($this->{$componentName})) {
+            $this->ApiValidator = &$this->{$componentName};
+        }
+        if (empty($this->ApiValidator)) {
+            throw new BeditaInternalErrorException('API validator component is not properly loaded in API controller');
+        }
+    }
+
+    /**
+     * Setup component used for authentication:
+     *
+     * - check configuration (api.formatter.component) to see if adhoc component should be used and assign it to self::$ApiFormatter
+     *
+     * @return void
+     */
+    private function setupFormatterComponent() {
+        $componentName = Configure::read('api.formatter.component');
+        if (!empty($componentName) && $componentName != 'ApiFormatter' && !empty($this->{$componentName})) {
+            $this->ApiFormatter = &$this->{$componentName};
+        }
+        if (empty($this->ApiFormatter)) {
+            throw new BeditaInternalErrorException('API formatter component is not properly loaded in API controller');
+        }
     }
 
     /**
