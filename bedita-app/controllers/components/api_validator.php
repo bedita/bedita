@@ -287,7 +287,7 @@ class ApiValidatorComponent extends Object {
             $this->checkObjectAccess($object['parents']);
             $this->checkParents($object['parents']);
         } else {
-            if ($objectType == 'section') {
+            if ($objectType == 'section' && $objectId == null) {
                 throw new BeditaBadRequestException($objectType . ' must have one and only one parent');
             }
         }
