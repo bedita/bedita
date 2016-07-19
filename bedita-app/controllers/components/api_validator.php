@@ -466,30 +466,21 @@ class ApiValidatorComponent extends Object {
      *
      * If check fails it throws a bad request exception
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param int|array $objectId the object id or an array of object ids
      * @return void
      */
-    public function checkParents($parentsId) {
-        $parentFilter = array(
-            'branches' => array(
-                Configure::read('objectTypes.area.id'),
-                Configure::read('objectTypes.section.id')
-            ),
-            'message' => 'Area or Section'
-        );
+    public function checkParents($parentsId)
+    {
         if (!is_array($parentsId)) {
             $parentsId = array($parentsId);
         }
-
-        $branches = $parentFilter['branches'];
-        foreach($parentsId as $parentId) {
+        $branches = array(Configure::read('objectTypes.area.id'), Configure::read('objectTypes.section.id'));
+        foreach ($parentsId as $parentId) {
             $beObject = ClassRegistry::init('BEObject');
             $parentTypeId = $beObject->findObjectTypeId($parentId);
-            if (!empty($branches)) {
-                if (!in_array($parentTypeId, $branches)) {
-                    throw new BeditaBadRequestException('objects can only have parents of: '. $parentFilter['message']);
-                }
+            if (!in_array($parentTypeId, $branches)) {
+                throw new BeditaBadRequestException('objects can only have parents of: area or section');
             }
         }
     }
@@ -500,7 +491,7 @@ class ApiValidatorComponent extends Object {
      *
      * If check fails it throws a bad request exception
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param int|array $objectId the object id or an array of object ids
      * @return void
      */
@@ -559,7 +550,7 @@ class ApiValidatorComponent extends Object {
      *
      * If check fails it throws a bad request exception
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param array $relations the array of relations
      * @param string|int $objectType an object type name or id on which test all relations
      * @return void
@@ -611,7 +602,7 @@ class ApiValidatorComponent extends Object {
      * - the number requested is positive integer
      * - the total number of objects and relations embedded per page is less than max size
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param array $relationsData array of relations info
      * @param int $pageSize the page size
      * @param int $maxSize the max results allowed
@@ -674,7 +665,7 @@ class ApiValidatorComponent extends Object {
      * )
      * ```
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param array $children array of chidlren data
      * @param int $parentId the parent object id
      * @return void
@@ -702,7 +693,7 @@ class ApiValidatorComponent extends Object {
     /**
      * Check if an array of category names is valid for an object type id
      *
-     * @throws BeditaBadRequesException
+     * @throws BeditaBadRequestException
      * @param array $tags a list of category names
      * @param int $objectTypeId the object_type_id
      * @return void
