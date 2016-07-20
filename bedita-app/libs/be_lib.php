@@ -140,6 +140,39 @@ class BeLib {
 		return false;
 	}
 
+    /**
+     * Starting from a file `$name` return a unique file path
+     *
+     * For example passing `$name = 'filename.jpg'
+     * it returns `/03/e6/filename.jpg` or `/03/e6/filename-1.jpg`
+     * if the first path tested already exists and so on.
+     * Use mediaRoot for base path.
+     *
+     * @param string $name The file name
+     * @param string $prefix The prefix used for building path
+     * @return string
+    */
+    public function uniqueFilePath($name, $prefix = null)  {
+        $md5 = md5($name);
+        preg_match('/(\w{2})(\w{2})/', $md5, $dirs);
+        array_shift($dirs);
+        
+        $pointPosition = strrpos($name, '.');
+        $filename = $tmpname = substr($name, 0, $pointPosition);
+        $ext = substr($name, $pointPosition);
+        $mediaRoot = Configure::read('mediaRoot');
+        if ($prefix != null) {
+            $mediaRoot.= DS . $prefix;
+        }
+        $dirsString = implode(DS, $dirs);
+        $counter = 1;
+        while (file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {
+            $filename = $tmpname . '-' . $counter++;
+        }
+
+        return DS . $dirsString . DS . $filename . $ext;
+    }
+
 	/**
 	 * Modify a string to get friendly url version.
 	 * With a regexp you can choose which characters to preserve.

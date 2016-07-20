@@ -249,7 +249,7 @@ class BeFileHandlerComponent extends Object {
 		}
 		$targetPath	= $this->getPathTargetFile($data['name']);
 		// Create file
-		if (!$this->_putFile($sourcePath, $targetPath)) {
+		if (!$this->putFile($sourcePath, $targetPath)) {
             return false;
         }
         // if update an object remove old file (if any)
@@ -492,31 +492,39 @@ class BeFileHandlerComponent extends Object {
 		return $mime_type;
 	}
 
-	/**
-	 * Create target with source (temporary file), through transactional object
-	 *
-	 * @param string $sourcePath
-	 * @param string $targetPath
-	 * @return mixed boolean|string
-	 */
-	private function _putFile($sourcePath, $targetPath) {
-		if(empty($targetPath)) return false ;
-		// Temporary directories to create
-		$tmp = Configure::read("mediaRoot") . $targetPath ;
-		$stack = array() ;
-		$dir = dirname($tmp) ;
-		while($dir != Configure::read("mediaRoot")) {
-			if(is_dir($dir)) break ;
-			array_push($stack, $dir) ;
-			$dir = dirname($dir) ;
-		} 
-		unset($dir) ;
-		// Creating directories
-		while(($current = array_pop($stack))) {
-			if(!$this->Transaction->mkdir($current)) return false ;
-		}
-		return $this->Transaction->makeFromFile($tmp, $sourcePath) ;
-	}
+    /**
+     * Create target with source (temporary file), through transactional object
+     *
+     * @param string $sourcePath
+     * @param string $targetPath
+     * @return mixed boolean|string
+     */
+    public function putFile($sourcePath, $targetPath) {
+        if (empty($targetPath)) {
+            return false;
+        }
+
+        // Temporary directories to create
+        $tmp = Configure::read('mediaRoot') . $targetPath;
+        $stack = array();
+        $dir = dirname($tmp);
+        while ($dir != Configure::read('mediaRoot')) {
+            if (is_dir($dir)) {
+                break;
+            }
+            array_push($stack, $dir);
+            $dir = dirname($dir);
+        } 
+        unset($dir);
+
+        // Creating directories
+        while (($current = array_pop($stack))) {
+			if (!$this->Transaction->mkdir($current)) {
+                return false;
+            }
+        }
+        return $this->Transaction->makeFromFile($tmp, $sourcePath);
+    }
 
 	/**
 	 * Delete a file from file system with transactional object
@@ -574,38 +582,18 @@ class BeFileHandlerComponent extends Object {
 	}
 
 
-	/**
-	 * Get path where to save uploaded file
-	 *
-	 * @param string $name, file name
-	 * @return string, path
-	 */
-	public function getPathTargetFile(&$name, $prefix = null)  {
-		
-		$md5 = md5($name) ;
-		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
-		preg_match("/(\w{2})(\w{2})/", $md5, $dirs) ;
-		array_shift($dirs) ;
-		
-		$pointPosition = strrpos($name,".");
-		$filename = $tmpname = substr($name, 0, $pointPosition);
-		$ext = substr($name, $pointPosition);
-		$mediaRoot = Configure::read("mediaRoot");
-		if ($prefix != null) {
-			$mediaRoot.= DS . $prefix;
-		}
-		$dirsString = implode(DS, $dirs);
-		$counter = 1;
-		while(file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {
-			$filename = $tmpname . "-" . $counter++;
-		}
-		
-		// save new name (passed by reference)
-		$name = $filename . $ext;
-		$path =  DS . $dirsString . DS . $name ;
-		
-		return $path ;
-	}
+    /**
+    * Get path where to save uploaded file
+    *
+    * @param string $name The file name
+    * @param string $prefix The prefix used for building path
+    * @return string
+    */
+    public function getPathTargetFile(&$name, $prefix = null)  {
+        $targetFilePath = BeLib::getInstance()->uniqueFilePath($name, $prefix);
+        $name = pathinfo($targetFilePath, PATHINFO_BASENAME);
+        return $targetFilePath;
+    }
 
 	/**
 	 * build friendly url name from filename

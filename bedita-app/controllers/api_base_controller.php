@@ -42,7 +42,8 @@ abstract class ApiBaseController extends FrontendController {
     public $components = array(
         'ResponseHandler' => array('type' => 'json'),
         'ApiFormatter',
-        'ApiValidator'
+        'ApiValidator',
+        'ApiUpload'
     );
 
     /**
@@ -71,7 +72,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters');
+    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters', 'files');
 
     /**
      * The default binding level
@@ -1920,6 +1921,35 @@ abstract class ApiBaseController extends FrontendController {
         } else {
             throw new BeditaInternalErrorException();
         }
+    }
+
+    /**
+     * Upload a file
+     *
+     * @param string $objectType the corresponding object type
+     * @return void
+     */
+    protected function postFiles($objectType = null, $fileName = null) {
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
+
+        if (empty($objectType)) {
+            throw new BeditaBadRequestException('Missing object_type in url path');
+        }
+
+        if (empty($fileName)) {
+            throw new BeditaBadRequestException('Missing file name in url path');
+        }
+
+        if (!$this->ApiValidator->isObjectTypeUploadable($objectType)) {
+            throw new BeditaBadRequestException($objectType . ' does not support upload');
+        }
+
+        $uploadToken = $this->ApiUpload->upload($fileName, $objectType);
+        $this->setData(array(
+            'upload_token' => $uploadToken
+        ));
     }
 
     /**
