@@ -1924,9 +1924,11 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Upload a file
+     * Upload a file.
+     * Respond with an upload_token that it must be used to link a new object to the uploaded file. 
      *
-     * @param string $objectType the corresponding object type
+     * @param string $objectType The corresponding object type
+     * @param string $fileName The file name
      * @return void
      */
     protected function postFiles($objectType = null, $fileName = null) {
