@@ -69,6 +69,7 @@ class ApiUploadComponent extends Object {
      */
     public function upload($targetName, $objectType) {
         $source = $this->source();
+        $fileSize = $source->size();
         $fileName = $this->BeFileHandler->buildNameFromFile($targetName);
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $fileName);
 
@@ -91,7 +92,7 @@ class ApiUploadComponent extends Object {
             'uri' => $targetPath,
             'name' => pathinfo($targetPath, PATHINFO_BASENAME),
             'mime_type' => $mimeType,
-            'file_size' => $source->size(),
+            'file_size' => $fileSize,
             'original_name' => $targetName,
             'object_type' => $objectType
         ));
@@ -177,6 +178,87 @@ class ApiUploadComponent extends Object {
         }
 
         return $uploadToken;
-    } 
+    }
 
+    /**
+     * Given an upload token it returns the related data 
+     *
+     * @param string $uploadToken The upload token
+     * @param string $objectType The object type related to the upload operation
+     * @return array
+     */
+    public function uploadedFileData($uploadToken, $objectType) {
+        $uploadData = $this->validateToken($uploadToken);
+
+        if ($objectType != $uploadData['object_type']) {
+            throw new BeditaBadRequestException('upload_token refers to different object type');
+        }
+
+        $uploadData = array_intersect_key($uploadData, array_flip(
+            array('uri', 'name', 'mime_type', 'file_size', 'original_name')
+        ));
+
+        $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
+        $model = ClassRegistry::init($objectTypeClass);
+        if (method_exists($model, 'apiUpload')) {
+            return $model->apiUploadTransformData($uploadData);
+        }
+
+        return $uploadData;
+    }
+
+    /**
+     * Validate an `$uploadToken` and return data related
+     *
+     * @throws BeditaBadRequestException When the token doesn't exists or is not valid anymore
+     * @param string $uploadToken The upload token to validate
+     * @return array
+     */
+    public function validateToken($uploadToken) {
+        $user = $this->controller->ApiAuth->getUser();
+        $hashJob = ClassRegistry::init('HashJob');
+        $hashRow = $hashJob->find('first', array(
+            'conditions' => array(
+                'service_type' => 'api_upload',
+                'hash' => $uploadToken,
+                'user_id' => $user['id']
+            )
+        ));
+
+        if (empty($hashRow)) {
+            throw new BeditaBadRequestException('upload_token ' . $uploadToken . ' not exists');
+        }
+
+        if ($hashRow['HashJob']['status'] != 'pending') {
+            throw new BeditaBadRequestException('Invalid upload_token. Its status is ' . $hashRow['HashJob']['status']);
+        }
+
+        return $hashRow['HashJob'];
+    }
+
+    /**
+     * Remove `$uploadToken`
+     *
+     * @param string $uploadToken The upload token to remove
+     * @return bool
+     */
+    public function removeToken($uploadToken) {
+        if (empty($uploadToken)) {
+            return false;
+        }
+
+        $user = $this->controller->ApiAuth->getUser();
+        $hashJob = ClassRegistry::init('HashJob');
+        $hashId = $hashJob->field('id', array(
+            'service_type' => 'api_upload',
+            'hash' => $uploadToken,
+            'user_id' => $user['id']
+        ));
+
+        if (!$hashId) {
+            return false;
+        }
+
+        return $hashJob->delete($hashId);
+    }
 }

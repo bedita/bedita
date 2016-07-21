@@ -969,7 +969,6 @@ class ApiValidatorComponent extends Object {
      * - it must be writable
      * - the related model must extends 'BeditaSimpleStreamModel', 'BeditaStreamModel' or implements an `apiUpload()` method
      *
-     * @throws BeditaBadRequestException
      * @param string $objectType The object type 
      * @return void
      */
@@ -991,5 +990,18 @@ class ApiValidatorComponent extends Object {
         }
 
         return true;
+    }
+
+    /**
+     * Check if an `$objectType` supports
+     *
+     * @throws BeditaBadRequestException When object type doesn't support upload
+     * @param string $objectType The object type 
+     * @return void
+     */
+    public function checkUploadable($objectType) {
+        if (!$this->isObjectTypeUploadable($objectType)) {
+            throw new BeditaBadRequestException($objectType . ' does not support upload');
+        }
     }
 }

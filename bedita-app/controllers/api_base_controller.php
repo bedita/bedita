@@ -856,32 +856,7 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException('Missing data to save');
         }
 
-        // save object
-        if (empty($name)) {
-            $isNew = (empty($this->data['id'])) ? true : false;
-            if ($isNew) {
-                if (empty($this->data['object_type'])) {
-                    throw new BeditaBadRequestException('Missing object_type');
-                }
-                $confType = $this->data['object_type'];
-            } else {
-                $confType = $this->BEObject->findObjectTypeId($this->data['id']);
-            }
-            $objectTypeConf = Configure::read('objectTypes.' . $confType);
-            if (empty($objectTypeConf)) {
-                throw new BeditaBadRequestException('Invalid object type');
-            }
-            $objectModel = $this->loadModelByType($objectTypeConf['model']);
-            $this->Transaction->begin();
-            $this->saveObject($objectModel);
-            $savedObjectId = $objectModel->id;
-            $this->Transaction->commit();
-            $this->getObjects($savedObjectId);
-            if ($isNew) {
-                $this->ResponseHandler->sendStatus(201);
-                $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
-            }
-        } else {
+        if (!empty($name)) {
             if (func_num_args() == 1) {
                 throw new BeditaMethodNotAllowedException('POST /objects/:id is not supported');
             }
@@ -890,6 +865,47 @@ abstract class ApiBaseController extends FrontendController {
             $args = func_get_args();
             $args[0] = $id;
             call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
+            return;
+        }
+
+        $isNew = (empty($this->data['id'])) ? true : false;
+        if ($isNew) {
+            if (empty($this->data['object_type'])) {
+                throw new BeditaBadRequestException('Missing object_type');
+            }
+            $confType = $this->data['object_type'];
+
+            if (array_key_exists('upload_token', $this->data)) {
+                $uploadToken = $this->data['upload_token'];
+                unset($this->data['upload_token']);
+                $this->ApiValidator->checkUploadable($confType);
+                $this->data = array_merge(
+                    $this->data,
+                    $this->ApiUpload->uploadedFileData($uploadToken, $confType)
+                );
+            }
+        } else {
+            $confType = $this->BEObject->findObjectTypeId($this->data['id']);
+        }
+
+        $objectTypeConf = Configure::read('objectTypes.' . $confType);
+        if (empty($objectTypeConf)) {
+            throw new BeditaBadRequestException('Invalid object type');
+        }
+        $objectModel = $this->loadModelByType($objectTypeConf['model']);
+
+        $this->Transaction->begin();
+        $this->saveObject($objectModel);
+        $savedObjectId = $objectModel->id;
+        if (isset($uploadToken) && !$this->ApiUpload->removeToken($uploadToken)) {
+            throw new BeditaInternalErrorException('Error removing upload token');
+        }
+        $this->Transaction->commit();
+
+        $this->getObjects($savedObjectId);
+        if ($isNew) {
+            $this->ResponseHandler->sendStatus(201);
+            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/objects/' . $savedObjectId);
         }
     }
 
@@ -1944,9 +1960,7 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException('Missing file name in url path');
         }
 
-        if (!$this->ApiValidator->isObjectTypeUploadable($objectType)) {
-            throw new BeditaBadRequestException($objectType . ' does not support upload');
-        }
+        $this->ApiValidator->checkUploadable($objectType);
 
         $uploadToken = $this->ApiUpload->upload($fileName, $objectType);
         $this->setData(array(
