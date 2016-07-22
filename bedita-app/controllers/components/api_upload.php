@@ -63,25 +63,27 @@ class ApiUploadComponent extends Object {
      * 
      *
      * @throws BeditaInternalErrorException
-     * @param string $targetName The target file name
+     * @param string $originalFileName The target file name
      * @param string $objectType The object type to which the upload file refers
      * @return string
      */
-    public function upload($targetName, $objectType) {
+    public function upload($originalFileName, $objectType) {
         $source = $this->source();
         $fileSize = $source->size();
-        $fileName = $this->BeFileHandler->buildNameFromFile($targetName);
-        $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $fileName);
+        $safeFileName = $this->BeFileHandler->buildNameFromFile($originalFileName);
+        $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
+
+        $this->controller->ApiValidator->checkUploadable($objectType, compact('fileSize', 'mimeType', 'originalFileName'));
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
         $model = ClassRegistry::init($objectTypeClass);
         if (method_exists($model, 'apiUpload')) {
             $targetPath = $model->apiUpload($source, array(
-                'fileName' => $fileName,
+                'fileName' => $safeFileName,
                 'user' => $this->controller->ApiAuth->getUser()
             ));
         } else {
-            $targetPath = $this->put($source, $fileName);
+            $targetPath = $this->put($source, $safeFileName);
         }
 
         if (empty($targetPath)) {
@@ -93,7 +95,7 @@ class ApiUploadComponent extends Object {
             'name' => pathinfo($targetPath, PATHINFO_BASENAME),
             'mime_type' => $mimeType,
             'file_size' => $fileSize,
-            'original_name' => $targetName,
+            'original_name' => $originalFileName,
             'object_type' => $objectType
         ));
     }

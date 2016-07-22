@@ -993,13 +993,15 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
-     * Check if an `$objectType` supports
+     * Check if an `$objectType` supports upload.
+     * If `$metaData` is passed it checks them too. 
      *
      * @throws BeditaBadRequestException When object type doesn't support upload
-     * @param string $objectType The object type 
+     * @param string $objectType The object type
+     * @param array $metaData The meta data to check  
      * @return void
      */
-    public function checkUploadable($objectType) {
+    public function checkUploadable($objectType, array $metaData = array()) {
         if (!$this->isObjectTypeUploadable($objectType)) {
             throw new BeditaBadRequestException($objectType . ' does not support upload');
         }

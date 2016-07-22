@@ -878,7 +878,6 @@ abstract class ApiBaseController extends FrontendController {
             if (array_key_exists('upload_token', $this->data)) {
                 $uploadToken = $this->data['upload_token'];
                 unset($this->data['upload_token']);
-                $this->ApiValidator->checkUploadable($confType);
                 $this->data = array_merge(
                     $this->data,
                     $this->ApiUpload->uploadedFileData($uploadToken, $confType)
@@ -1959,8 +1958,6 @@ abstract class ApiBaseController extends FrontendController {
         if (empty($fileName)) {
             throw new BeditaBadRequestException('Missing file name in url path');
         }
-
-        $this->ApiValidator->checkUploadable($objectType);
 
         $uploadToken = $this->ApiUpload->upload($fileName, $objectType);
         $this->setData(array(
