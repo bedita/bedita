@@ -52,7 +52,7 @@ Router::plugin(
             ['_name' => 'roles:view']
         );
         $routes->connect(
-            '/roles/:role_id/users',
+            '/roles/:role_id/relationships/users',
             ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'roles:users']
         );
