@@ -76,7 +76,7 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
-                    ],
+                    ]
                 ],
                 [
                     'id' => '2',
@@ -92,7 +92,7 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/2',
-                    ],
+                    ]
                 ],
             ],
         ];
@@ -123,9 +123,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'first' => 'http://api.example.com/roles/1/relationships/users',
-                'last' => 'http://api.example.com/roles/1/relationships/users',
+                'self' => 'http://api.example.com/roles/1/users',
+                'first' => 'http://api.example.com/roles/1/users',
+                'last' => 'http://api.example.com/roles/1/users',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -154,7 +154,7 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
-                    ],
+                    ]
                 ],
             ],
         ];
@@ -165,7 +165,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/roles/1/relationships/users');
+        $this->get('/roles/1/users');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
