@@ -62,16 +62,18 @@ class ApiUploadComponent extends Object {
      * That hash string must be used from client to associate a new object to the file uploaded
      * 
      *
-     * @throws BeditaInternalErrorException
      * @param string $originalFileName The target file name
      * @param string $objectType The object type to which the upload file refers
      * @return string
+     * @throws BeditaInternalErrorException
+     * @throws BeditaConflictException When file already exists
      */
     public function upload($originalFileName, $objectType) {
         $source = $this->source();
         $fileSize = $source->size();
         $safeFileName = $this->BeFileHandler->buildNameFromFile($originalFileName);
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
+        $hashFile = $this->BeFileHandler->getHashFile($source->pwd()); 
 
         $this->controller->ApiValidator->checkUploadable($objectType, compact('fileSize', 'mimeType', 'originalFileName'));
 
@@ -80,9 +82,14 @@ class ApiUploadComponent extends Object {
         if (method_exists($model, 'apiUpload')) {
             $targetPath = $model->apiUpload($source, array(
                 'fileName' => $safeFileName,
+                'hashFile' => $hashFile,
                 'user' => $this->controller->ApiAuth->getUser()
             ));
         } else {
+            $streamId = $this->BeFileHandler->hashFileExists($hashFile); 
+            if ($streamId !== false) {
+                throw new BeditaConflictException('The file already exists in /objects/' . $streamId);
+            }
             $targetPath = $this->put($source, $safeFileName);
         }
 
@@ -96,6 +103,7 @@ class ApiUploadComponent extends Object {
             'mime_type' => $mimeType,
             'file_size' => $fileSize,
             'original_name' => $originalFileName,
+            'hash_file' => $hashFile,
             'object_type' => $objectType
         ));
     }
@@ -103,8 +111,8 @@ class ApiUploadComponent extends Object {
     /**
      * Read from php://input, put the content in a temporary file and return the File instance
      *
-     * @throws BeditaBadRequestException, BeditaInternalErrorException
      * @return File
+     * @throws BeditaBadRequestException, BeditaInternalErrorException
      */
     public function source() {
         $contentLength = env('CONTENT_LENGTH');
@@ -141,10 +149,10 @@ class ApiUploadComponent extends Object {
      * and returning the target path.
      * Once the file is successfully copied it is removed.
      *
-     * @throws BeditaInternalErrorException
      * @param File $source The source File instance
      * @param string $targetName The file target name
      * @return string
+     * @throws BeditaInternalErrorException
      */
     public function put(File $source, $targetName) {
         $targetPath = $this->BeFileHandler->getPathTargetFile($targetName);
@@ -197,7 +205,7 @@ class ApiUploadComponent extends Object {
         }
 
         $uploadData = array_intersect_key($uploadData, array_flip(
-            array('uri', 'name', 'mime_type', 'file_size', 'original_name')
+            array('uri', 'name', 'mime_type', 'file_size', 'original_name', 'hash_file')
         ));
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
@@ -212,9 +220,9 @@ class ApiUploadComponent extends Object {
     /**
      * Validate an `$uploadToken` and return data related
      *
-     * @throws BeditaBadRequestException When the token doesn't exists or is not valid anymore
      * @param string $uploadToken The upload token to validate
      * @return array
+     * @throws BeditaBadRequestException When the token doesn't exists or is not valid anymore
      */
     public function validateToken($uploadToken) {
         $user = $this->controller->ApiAuth->getUser();

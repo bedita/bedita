@@ -214,56 +214,88 @@ class BeFileHandlerComponent extends Object {
 		return $this->_create($data) ;
 	}
 
-	/**
-	 * Create (or clone) data for file
-	 * 
-	 * @param array $data
-	 * @param boolean $clone
-	 * @return mixed boolean|int (int or other type, according to primaryKey type for model)
-	 * @throws BeditaException
-	 * @throws BEditaFileExistException
-	 */
-	private function _createFromFile(&$data, $clone) {
-		// if it's new object and missing uri
-		if(empty($data['uri']) && empty($data['id'])) {
-			throw new BeditaException(__("Missing temporary file in filesystem.", true));
-		}
-		
-		if (!file_exists($data["uri"])) {
-			throw new BEditaFileExistException(__("Resource " . $data["uri"] . " not valid", true));
-		}
-		$conf = Configure::getInstance() ;
-		if(in_array($data['mime_type'],$conf->forbiddenUploadFiles["mimeTypes"])) {
-			throw new BeditaException($data['mime_type'] . " " . __("mime type not allowed for upload", true));
-		}
-		if(preg_match($conf->forbiddenUploadFiles["extensions"],$data['name'])) {
-			throw new BeditaException(__("File extension not allowed for upload.", true));
-		}
-		// Create destination path
-		$sourcePath = $data['uri'] ;
-		$data["hash_file"] = hash_file("md5", $sourcePath);
-		$streamModel = ClassRegistry::init("Stream");
-		// check if hash file exists
-		if (!$clone && ($stream_id = $streamModel->field("id", array("hash_file" => $data["hash_file"]))) ) {
-			throw new BEditaFileExistException(__("File already exists in the filesystem",true),array("id"=>$stream_id)) ;
-		}
-		$targetPath	= $this->getPathTargetFile($data['name']);
-		// Create file
-		if (!$this->putFile($sourcePath, $targetPath)) {
+    /**
+     * Create (or clone) data for file
+     * 
+     * @param array $data
+     * @param boolean $clone
+     * @return mixed boolean|int (int or other type, according to primaryKey type for model)
+     * @throws BeditaException
+     * @throws BEditaFileExistException
+     */
+    private function _createFromFile(&$data, $clone) {
+        // if it's new object and missing uri
+        if (empty($data['uri']) && empty($data['id'])) {
+            throw new BeditaException(__('Missing temporary file in filesystem.', true));
+        }
+
+        if (!file_exists($data['uri'])) {
+            throw new BEditaFileExistException(__('Resource ' . $data['uri'] . ' not valid', true));
+        }
+        $conf = Configure::getInstance() ;
+        if (in_array($data['mime_type'], $conf->forbiddenUploadFiles['mimeTypes'])) {
+            throw new BeditaException($data['mime_type'] . ' ' . __('mime type not allowed for upload', true));
+        }
+        if (preg_match($conf->forbiddenUploadFiles['extensions'], $data['name'])) {
+            throw new BeditaException(__('File extension not allowed for upload.', true));
+        }
+
+        $sourcePath = $data['uri'] ;
+
+        // check if hash file exists
+        $data['hash_file'] = $this->getHashFile($sourcePath);
+        $streamId = $this->hashFileExists($data['hash_file']);
+        if (!$clone && $streamId) {
+            throw new BEditaFileExistException(
+                __('File already exists in the filesystem', true),
+                array('id' => $streamId)
+            );
+        }
+
+        $targetPath	= $this->getPathTargetFile($data['name']);
+        // Create file
+        if (!$this->putFile($sourcePath, $targetPath)) {
             return false;
         }
         // if update an object remove old file (if any)
-        if (!empty($data["id"])) {
-            $ret = $streamModel->read('uri', $data["id"]);
+        if (!empty($data['id'])) {
+            $ret = $streamModel->read('uri', $data['id']);
             // if present a path to a file on filesystem, delete it
             if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
                 $this->_removeFile($ret['Stream']['uri']) ;
             }
         }
-		$data['uri'] = (DS == "/")? $targetPath : str_replace(DS, "/", $targetPath);
-		// Create object
-		return $this->_create($data) ;
-	}
+        $data['uri'] = (DS == '/')? $targetPath : str_replace(DS, '/', $targetPath);
+
+        return $this->_create($data) ;
+    }
+
+    /**
+     * Given a file path return its hash (md5)
+     *
+     * @param string $sourcePath The file path
+     * @return string
+     */
+    public function getHashFile($sourcePath) {
+        return hash_file('md5', $sourcePath);
+    }
+
+    /**
+     * Check if an hash is already present in streams.
+     * Return the streams.id if exists, false otherwise
+     *
+     * @param string $hash The file hash
+     * @return int|false
+     */
+    public function hashFileExists($hash) {
+        $streamModel = ClassRegistry::init('Stream');
+        $streamId = $streamModel->field('id', array('hash_file' => $hash));
+        if (!empty($streamId)) {
+            return $streamId;
+        }
+
+        return false;
+    }
 
 	/**
 	 * Create object for $data
