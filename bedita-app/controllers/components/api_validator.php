@@ -212,7 +212,7 @@ class ApiValidatorComponent extends Object {
      */
     public function isObjectTypeWritable($objectType) {
         if (is_numeric($objectType)) {
-            $objectType = Configure::read('objectTypes.' . $objectType . 'name');
+            $objectType = Configure::read('objectTypes.' . $objectType . '.name');
         }
         return in_array($objectType, $this->writableObjects);
     }
@@ -996,14 +996,47 @@ class ApiValidatorComponent extends Object {
      * Check if an `$objectType` supports upload.
      * If `$metaData` is passed it checks them too. 
      *
-     * @throws BeditaBadRequestException When object type doesn't support upload
      * @param string $objectType The object type
      * @param array $metaData The meta data to check  
      * @return void
+     * @throws BeditaBadRequestException When object type doesn't support upload
      */
     public function checkUploadable($objectType, array $metaData = array()) {
+        $metaData += array('mimeType' => null, 'fileSize' => null);
         if (!$this->isObjectTypeUploadable($objectType)) {
             throw new BeditaBadRequestException($objectType . ' does not support upload');
         }
+
+        if (!$this->isMimeTypeValid($metaData['mimeType'], $objectType)) {
+            throw new BeditaBadRequestException('Mime type ' . $metaData['mimeType'] . ' not valid for ' . $objectType);
+        }
+    }
+
+    /**
+     * Validate a mime type against an object type.
+     * It uses validate_resource.mime.ObjectModel configuration 
+     *
+     * @param string $mimeType The mime type to validate  
+     * @param string $objectType The object type on which validate the mime type
+     * @return bool
+     */
+    public function isMimeTypeValid($mimeType, $objectType) {
+        $objectTypeModel = Configure::read('objectTypes.' . $objectType . '.model');
+        $validMimeTypes = Configure::read('validate_resource.mime.' . $objectTypeModel);
+        if (empty($validMimeTypes)) {
+            return false;
+        }
+
+        if (!Set::numeric(array_keys($validMimeTypes))) {
+            $validMimeTypes = Set::flatten(Set::classicExtract($validMimeTypes, '{s}.mime_type'));
+        }
+
+        foreach ($validMimeTypes as $rule) {
+            if (is_string($rule) && preg_match($rule, $mimeType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
