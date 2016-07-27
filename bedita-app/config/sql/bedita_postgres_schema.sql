@@ -723,7 +723,9 @@ CREATE TABLE products (
     volume_unit character varying(40),
     color character varying(128),
     production_date timestamp without time zone,
-    production_place character varying(255)
+    production_place character varying(255),
+    quantity integer,
+    price double precision
 );
 
 
@@ -783,6 +785,12 @@ COMMENT ON COLUMN products.production_date IS '???';
 COMMENT ON COLUMN products.production_place IS '???';
 
 
+
+COMMENT ON COLUMN products.quantity IS 'product quantity in inventory';
+
+
+
+COMMENT ON COLUMN products.price IS 'product price';
 
 CREATE TABLE properties (
     id serial,

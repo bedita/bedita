@@ -655,6 +655,8 @@ CREATE TABLE products (
   color VARCHAR(128) NULL COMMENT '???',
   production_date DATETIME NULL COMMENT '???',
   production_place VARCHAR(255) NULL COMMENT '???',
+  quantity INTEGER NULL COMMENT 'product quantity in inventory',
+  price FLOAT(10,2) NULL COMMENT 'product price',
   PRIMARY KEY(id),
   FOREIGN KEY(id)
     REFERENCES objects(id)
