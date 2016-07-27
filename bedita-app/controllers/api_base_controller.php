@@ -349,27 +349,34 @@ abstract class ApiBaseController extends FrontendController {
      * @return array
      */
     private function handleInputData() {
-        if (empty($this->params['form'])) {
-            try {
-                $contentType = env('CONTENT_TYPE');
-                $inputData = file_get_contents('php://input');
-                if (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
-                    parse_str($inputData, $this->params['form']);
-                } else {
-                    $this->params['form'] = json_decode($inputData, true);
-                    $jsonError = json_last_error();
-                    if (!empty($jsonError)) {
-                        $this->params['form'] = array();
-                    }
+        if (!empty($this->params['form'])) {
+            return;
+        }
+
+        $contentType = env('CONTENT_TYPE');
+        if (strpos($contentType, 'application/x-www-form-urlencoded') === false
+            && strpos($contentType, 'application/json') === false) {
+            return;
+        }
+
+        try {
+            $inputData = file_get_contents('php://input');
+            if (strpos($contentType, 'application/x-www-form-urlencoded') !== false) {
+                parse_str($inputData, $this->params['form']);
+            } else {
+                $this->params['form'] = json_decode($inputData, true);
+                $jsonError = json_last_error();
+                if (!empty($jsonError)) {
+                    $this->params['form'] = array();
                 }
-            } catch (Exception $ex) {
-                $this->params['form'] = array();
             }
-            // set self::data
-            if (!empty($this->params['form']['data'])) {
-                $this->data = $this->params['form']['data'];
-                unset($this->params['form']['data']);
-            }
+        } catch (Exception $ex) {
+            $this->params['form'] = array();
+        }
+        // set self::data
+        if (!empty($this->params['form']['data'])) {
+            $this->data = $this->params['form']['data'];
+            unset($this->params['form']['data']);
         }
     }
 
