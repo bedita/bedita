@@ -297,55 +297,56 @@ class BeFileHandlerComponent extends Object {
         return false;
     }
 
-	/**
-	 * Create object for $data
-	 * 
-	 * @param array $data
-	 * @return int (or other type, according to primaryKey type for model)
-	 * @throws BEditaMIMEException
-	 * @throws BEditaSaveStreamObjException
-	 */
-	private function _create(&$data) {
-		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
-		    if (!empty($data["object_type_id"])) {
-		        $modelType["name"] = Configure::read("objectTypes." . $data["object_type_id"] . ".model");
-		    } else {
-			    throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
-		    }
-		}
-		if (!empty($data["id"])) {
-			$stream = ClassRegistry::init("Stream")->read(array('mime_type','uri'), $data["id"]) ;
-			$object_type_id = ClassRegistry::init("BEObject")->field("object_type_id", array("id" => $data["id"]));
-			$prevModel = Configure::read("objectTypes." . $object_type_id . ".model");
-			// change object type
-			if ($modelType["name"] != $prevModel) {
-				$data["object_type_id"] = Configure::read("objectTypes." . Inflector::underscore($modelType["name"]) . ".id");
-				// delete old data from specific table
-				$prevMediaModel = ClassRegistry::init($prevModel);
-				$prevMediaModel->Behaviors->disable('DeleteObject');
-				$prevMediaModel->delete($data["id"], false);
-				$prevMediaModel->Behaviors->enable('DeleteObject');
-				// delete file on filesystem
-				if(($stream["Stream"]["uri"] && !$this->_isURL($stream["Stream"]["uri"]))) {
-					$this->_removeFile($stream["Stream"]["uri"]) ;
-				}
-			}
-		}
-		if (method_exists($this, "set" . $modelType["name"] . "Data")) {
-			if (!empty($modelType["specificType"])) {
-				$this->{"set" . $modelType["name"] . "Data"}($data, $modelType["specificType"]);
-			} else {
-				$this->{"set" . $modelType["name"] . "Data"}($data);
-			}
-		}
-		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType["name"])) : $this->getCategoryMediaType($data,$modelType["name"]);
-		$mediaModel = ClassRegistry::init($modelType["name"]);
-		$mediaModel->create();
-		if(!($ret = $mediaModel->save($data))) {
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $mediaModel->validationErrors) ;
-		}
-		return ($mediaModel->{$mediaModel->primaryKey}) ;
-	}
+    /**
+     * Create object for $data
+     * 
+     * @param array $data
+     * @return int (or other type, according to primaryKey type for model)
+     * @throws BEditaMIMEException
+     * @throws BEditaSaveStreamObjException
+     */
+    private function _create(&$data) {
+        $modelType = BeLib::getTypeFromMIME($data['mime_type']);
+        if (!$modelType) {
+            if (!empty($data['object_type_id'])) {
+                $modelType['name'] = Configure::read('objectTypes.' . $data['object_type_id'] . '.model');
+            } else {
+                throw new BEditaMIMEException(__('MIME type not found',true) . ': ' . $data['mime_type']);
+            }
+        }
+        if (!empty($data['id'])) {
+            $stream = ClassRegistry::init('Stream')->read(array('mime_type', 'uri'), $data['id']);
+            $object_type_id = ClassRegistry::init('BEObject')->field('object_type_id', array('id' => $data['id']));
+            $prevModel = Configure::read('objectTypes.' . $object_type_id . '.model');
+            // change object type
+            if ($modelType['name'] != $prevModel) {
+                $data['object_type_id'] = Configure::read('objectTypes.' . Inflector::underscore($modelType['name']) . '.id');
+                // delete old data from specific table
+                $prevMediaModel = ClassRegistry::init($prevModel);
+                $prevMediaModel->Behaviors->disable('DeleteObject');
+                $prevMediaModel->delete($data['id'], false);
+                $prevMediaModel->Behaviors->enable('DeleteObject');
+                // delete file on filesystem
+                if (($stream['Stream']['uri'] && !$this->_isURL($stream['Stream']['uri']))) {
+                    $this->_removeFile($stream['Stream']['uri']);
+                }
+            }
+        }
+        if (method_exists($this, 'set' . $modelType['name'] . 'Data')) {
+            if (!empty($modelType['specificType'])) {
+                $this->{'set' . $modelType['name'] . 'Data'}($data, $modelType['specificType']);
+            } else {
+                $this->{'set' . $modelType['name'] . 'Data'}($data);
+            }
+        }
+        $data['Category'] = (!empty($data['Category'])) ? array_merge($data['Category'], $this->getCategoryMediaType($data, $modelType['name'])) : $this->getCategoryMediaType($data, $modelType['name']);
+        $mediaModel = ClassRegistry::init($modelType['name']);
+        $mediaModel->create();
+        if (!($ret = $mediaModel->save($data))) {
+            throw new BEditaSaveStreamObjException(__('Error saving stream object',true), $mediaModel->validationErrors);
+        }
+        return ($mediaModel->{$mediaModel->primaryKey});
+    }
 
 	/**
 	 * Set image size for $data
@@ -444,35 +445,6 @@ class BeFileHandlerComponent extends Object {
 		}
 		return false ;
 	}
-
-	/**
-	 * return array with model name and eventually specific type (see $config[validate_resource][mime][Application]) 
-	 * from mime type
-	 *
-	 * @param string $mime	mime type
-	 * @return mixed array|boolean
-	 */
-	private function _getTypeFromMIME($mime) {
-		$conf 		= Configure::getInstance() ;
-		if(empty($mime)) {
-			return false ;
-		}
-		$models = $conf->validate_resource['mime'] ;
-		foreach ($models as $model => $regs) {
-			foreach ($regs as $key => $reg) {
-				if (is_array($reg)) {
-					foreach ($reg["mime_type"] as $val) {
-						if(preg_match($val, $mime)) 
-							return array("name" => $model, "specificType" => $key) ;
-					}
-				} elseif(preg_match($reg, $mime)) {
-					return array("name" => $model) ;
-				}	
-			}
-		}
-		return false ;
-	}
-
 	
 	/**
 	 * put mime type checking uri

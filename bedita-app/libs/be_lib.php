@@ -242,36 +242,35 @@ class BeLib {
 		return $data;
 	}
 
-	/**
-	 * Return array with model name and eventually specific type (see $config[validate_resource][mime][Application])
-	 * from mime type
-	 *
-	 * @param string $mime	mime type
-	 * @return mixed array|boolean
-	 */
-	public static function getTypeFromMIME($mime) {
-		$conf 		= Configure::getInstance() ;
-		if(empty($mime)) {
-			return false ;
-		}
-		$models = $conf->validate_resource['mime'] ;
-		foreach ($models as $model => $regs) {
-			foreach ($regs as $key => $reg) {
-				if (is_array($reg)) {
-					foreach ($reg["mime_type"] as $val) {
-						if(preg_match($val, $mime))
-							return array("name" => $model, "specificType" => $key) ;
-					}
-				} elseif(preg_match($reg, $mime)) {
-					return array("name" => $model) ;
-				}
-			}
-		}
-		return false ;
-	}
+    /**
+     * Return array with model name and eventually specific type (see $config[validate_resource][mime][Application])
+     * from mime type
+     *
+     * @param string $mime	mime type
+     * @return mixed array|boolean
+     */
+    public static function getTypeFromMIME($mime) {
+        $conf = Configure::getInstance();
+        if (empty($mime)) {
+            return false;
+        }
+        $models = $conf->validate_resource['mime'];
+        foreach ($models as $model => $regs) {
+            foreach ($regs as $key => $reg) {
+                if (is_array($reg)) {
+                    foreach ($reg['mime_type'] as $val) {
+                        if (preg_match($val, $mime)) {
+                            return array('name' => $model, 'specificType' => $key);
+                        }
+                    }
+                } elseif (preg_match($reg, $mime)) {
+                    return array('name' => $model);
+                }
+            }
+        }
 
-
-
+        return false;
+    }
 
 	/**
 	 * return values of multidimensional array
