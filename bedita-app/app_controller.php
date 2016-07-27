@@ -957,18 +957,17 @@ class AppController extends Controller {
         $objectsToDel = array();
         $objectsListDesc = '';
 
-        if(!empty($this->params['form']['objects_selected'])) {
+        if (!empty($this->params['form']['objects_selected'])) {
             $objectsToDel = $this->params['form']['objects_selected'];
         } else {
-            if(empty($this->data['id']))
+            if (empty($this->data['id'])) {
                 throw new BeditaException(__('No data', true));
+            }
             $objectsToDel = array($this->data['id']);
         }
 
-        $this->Transaction->begin() ;
-
+        $this->Transaction->begin();
         $beObject = ClassRegistry::init('BEObject');
-
         foreach ($objectsToDel as $id) {
             $this->checkObjectWritePermission($id);
 
@@ -976,16 +975,27 @@ class AppController extends Controller {
                 throw new BeditaException(__('Error, trying to delete fixed object!', true));
             }
 
-            if ($model != 'Stream') {
-                if(!ClassRegistry::init($model)->delete($id))
-                    throw new BeditaException(__('Error deleting object: ', true) . $id);
-            } else {
-                if(!$this->BeFileHandler->del($id))
-                    throw new BeditaException(__('Error deleting object: ', true) . $id);
+            $objectModel = ClassRegistry::init($model);
+            $parentClass = get_parent_class($objectModel);
+            if ($model == 'Stream' || in_array($parentClass, array('BeditaSimpleStreamModel', 'BeditaStreamModel'))) {
+                if (empty($this->BeFileHandler)) {
+                    App::import('Component', 'BeFileHandler');
+                    $this->BeFileHandler = new BeFileHandlerComponent();
+                    $this->BeFileHandler->startup($this);
+                }
+                $result = $this->BeFileHandler->del($id);
+            }  else {
+                $result = $objectModel->delete($id);
             }
+
+            if (!$result) {
+                throw new BeditaException(__('Error deleting object: ', true) . $id);
+            }
+
             $objectsListDesc .= $id . ',';
         }
-        $this->Transaction->commit() ;
+        $this->Transaction->commit();
+
         return trim($objectsListDesc, ',');
     }
 
