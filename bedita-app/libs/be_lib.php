@@ -140,6 +140,39 @@ class BeLib {
 		return false;
 	}
 
+    /**
+     * Starting from a file `$name` return a unique file path
+     *
+     * For example passing `$name = 'filename.jpg'
+     * it returns `/03/e6/filename.jpg` or `/03/e6/filename-1.jpg`
+     * if the first path tested already exists and so on.
+     * Use mediaRoot for base path.
+     *
+     * @param string $name The file name
+     * @param string $prefix The prefix used for building path
+     * @return string
+    */
+    public function uniqueFilePath($name, $prefix = null)  {
+        $md5 = md5($name);
+        preg_match('/(\w{2})(\w{2})/', $md5, $dirs);
+        array_shift($dirs);
+        
+        $pointPosition = strrpos($name, '.');
+        $filename = $tmpname = substr($name, 0, $pointPosition);
+        $ext = substr($name, $pointPosition);
+        $mediaRoot = Configure::read('mediaRoot');
+        if ($prefix != null) {
+            $mediaRoot.= DS . $prefix;
+        }
+        $dirsString = implode(DS, $dirs);
+        $counter = 1;
+        while (file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {
+            $filename = $tmpname . '-' . $counter++;
+        }
+
+        return DS . $dirsString . DS . $filename . $ext;
+    }
+
 	/**
 	 * Modify a string to get friendly url version.
 	 * With a regexp you can choose which characters to preserve.
@@ -209,36 +242,35 @@ class BeLib {
 		return $data;
 	}
 
-	/**
-	 * Return array with model name and eventually specific type (see $config[validate_resource][mime][Application])
-	 * from mime type
-	 *
-	 * @param string $mime	mime type
-	 * @return mixed array|boolean
-	 */
-	public static function getTypeFromMIME($mime) {
-		$conf 		= Configure::getInstance() ;
-		if(empty($mime)) {
-			return false ;
-		}
-		$models = $conf->validate_resource['mime'] ;
-		foreach ($models as $model => $regs) {
-			foreach ($regs as $key => $reg) {
-				if (is_array($reg)) {
-					foreach ($reg["mime_type"] as $val) {
-						if(preg_match($val, $mime))
-							return array("name" => $model, "specificType" => $key) ;
-					}
-				} elseif(preg_match($reg, $mime)) {
-					return array("name" => $model) ;
-				}
-			}
-		}
-		return false ;
-	}
+    /**
+     * Return array with model name and eventually specific type (see $config[validate_resource][mime][Application])
+     * from mime type
+     *
+     * @param string $mime	mime type
+     * @return mixed array|boolean
+     */
+    public static function getTypeFromMIME($mime) {
+        $conf = Configure::getInstance();
+        if (empty($mime)) {
+            return false;
+        }
+        $models = $conf->validate_resource['mime'];
+        foreach ($models as $model => $regs) {
+            foreach ($regs as $key => $reg) {
+                if (is_array($reg)) {
+                    foreach ($reg['mime_type'] as $val) {
+                        if (preg_match($val, $mime)) {
+                            return array('name' => $model, 'specificType' => $key);
+                        }
+                    }
+                } elseif (preg_match($reg, $mime)) {
+                    return array('name' => $model);
+                }
+            }
+        }
 
-
-
+        return false;
+    }
 
 	/**
 	 * return values of multidimensional array

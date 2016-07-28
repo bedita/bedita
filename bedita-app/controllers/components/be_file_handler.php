@@ -214,113 +214,146 @@ class BeFileHandlerComponent extends Object {
 		return $this->_create($data) ;
 	}
 
-	/**
-	 * Create (or clone) data for file
-	 * 
-	 * @param array $data
-	 * @param boolean $clone
-	 * @return mixed boolean|int (int or other type, according to primaryKey type for model)
-	 * @throws BeditaException
-	 * @throws BEditaFileExistException
-	 */
-	private function _createFromFile(&$data, $clone) {
-		// if it's new object and missing uri
-		if(empty($data['uri']) && empty($data['id'])) {
-			throw new BeditaException(__("Missing temporary file in filesystem.", true));
-		}
-		
-		if (!file_exists($data["uri"])) {
-			throw new BEditaFileExistException(__("Resource " . $data["uri"] . " not valid", true));
-		}
-		$conf = Configure::getInstance() ;
-		if(in_array($data['mime_type'],$conf->forbiddenUploadFiles["mimeTypes"])) {
-			throw new BeditaException($data['mime_type'] . " " . __("mime type not allowed for upload", true));
-		}
-		if(preg_match($conf->forbiddenUploadFiles["extensions"],$data['name'])) {
-			throw new BeditaException(__("File extension not allowed for upload.", true));
-		}
-		// Create destination path
-		$sourcePath = $data['uri'] ;
-		$data["hash_file"] = hash_file("md5", $sourcePath);
-		$streamModel = ClassRegistry::init("Stream");
-		// check if hash file exists
-		if (!$clone && ($stream_id = $streamModel->field("id", array("hash_file" => $data["hash_file"]))) ) {
-			throw new BEditaFileExistException(__("File already exists in the filesystem",true),array("id"=>$stream_id)) ;
-		}
-		$targetPath	= $this->getPathTargetFile($data['name']);
-		// Create file
-		if (!$this->_putFile($sourcePath, $targetPath)) {
+    /**
+     * Create (or clone) data for file
+     * 
+     * @param array $data
+     * @param boolean $clone
+     * @return mixed boolean|int (int or other type, according to primaryKey type for model)
+     * @throws BeditaException
+     * @throws BEditaFileExistException
+     */
+    private function _createFromFile(&$data, $clone) {
+        // if it's new object and missing uri
+        if (empty($data['uri']) && empty($data['id'])) {
+            throw new BeditaException(__('Missing temporary file in filesystem.', true));
+        }
+
+        if (!file_exists($data['uri'])) {
+            throw new BEditaFileExistException(__('Resource ' . $data['uri'] . ' not valid', true));
+        }
+        $conf = Configure::getInstance() ;
+        if (in_array($data['mime_type'], $conf->forbiddenUploadFiles['mimeTypes'])) {
+            throw new BeditaException($data['mime_type'] . ' ' . __('mime type not allowed for upload', true));
+        }
+        if (preg_match($conf->forbiddenUploadFiles['extensions'], $data['name'])) {
+            throw new BeditaException(__('File extension not allowed for upload.', true));
+        }
+
+        $sourcePath = $data['uri'] ;
+
+        // check if hash file exists
+        $data['hash_file'] = $this->getHashFile($sourcePath);
+        $streamId = $this->hashFileExists($data['hash_file']);
+        if (!$clone && $streamId) {
+            throw new BEditaFileExistException(
+                __('File already exists in the filesystem', true),
+                array('id' => $streamId)
+            );
+        }
+
+        $targetPath	= $this->getPathTargetFile($data['name']);
+        // Create file
+        if (!$this->putFile($sourcePath, $targetPath)) {
             return false;
         }
         // if update an object remove old file (if any)
-        if (!empty($data["id"])) {
-            $ret = $streamModel->read('uri', $data["id"]);
+        if (!empty($data['id'])) {
+            $ret = $streamModel->read('uri', $data['id']);
             // if present a path to a file on filesystem, delete it
             if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
                 $this->_removeFile($ret['Stream']['uri']) ;
             }
         }
-		$data['uri'] = (DS == "/")? $targetPath : str_replace(DS, "/", $targetPath);
-		// Create object
-		return $this->_create($data) ;
-	}
+        $data['uri'] = (DS == '/')? $targetPath : str_replace(DS, '/', $targetPath);
 
-	/**
-	 * Create object for $data
-	 * 
-	 * @param array $data
-	 * @return int (or other type, according to primaryKey type for model)
-	 * @throws BEditaMIMEException
-	 * @throws BEditaSaveStreamObjException
-	 */
-	private function _create(&$data) {
-		if (!$modelType = $this->_getTypeFromMIME($data["mime_type"])) {
-		    if (!empty($data["object_type_id"])) {
-		        $modelType["name"] = Configure::read("objectTypes." . $data["object_type_id"] . ".model");
-		    } else {
-			    throw new BEditaMIMEException(__("MIME type not found",true).": ".$data['mime_type']) ;
-		    }
-		}
-		if (!empty($data["id"])) {
-			$stream = ClassRegistry::init("Stream")->read(array('mime_type','uri'), $data["id"]) ;
-			$object_type_id = ClassRegistry::init("BEObject")->field("object_type_id", array("id" => $data["id"]));
-			$prevModel = Configure::read("objectTypes." . $object_type_id . ".model");
-			// change object type
-			if ($modelType["name"] != $prevModel) {
-				$data["object_type_id"] = Configure::read("objectTypes." . Inflector::underscore($modelType["name"]) . ".id");
-				// delete old data from specific table
-				$prevMediaModel = ClassRegistry::init($prevModel);
-				$prevMediaModel->Behaviors->disable('DeleteObject');
-				$prevMediaModel->delete($data["id"], false);
-				$prevMediaModel->Behaviors->enable('DeleteObject');
-				// delete file on filesystem
-				if(($stream["Stream"]["uri"] && !$this->_isURL($stream["Stream"]["uri"]))) {
-					$this->_removeFile($stream["Stream"]["uri"]) ;
-				}
-			}
-		}
-		if (method_exists($this, "set" . $modelType["name"] . "Data")) {
-			if (!empty($modelType["specificType"])) {
-				$this->{"set" . $modelType["name"] . "Data"}($data, $modelType["specificType"]);
-			} else {
-				$this->{"set" . $modelType["name"] . "Data"}($data);
-			}
-		}
-		$data['Category'] = (!empty($data['Category']))? array_merge($data['Category'],$this->getCategoryMediaType($data,$modelType["name"])) : $this->getCategoryMediaType($data,$modelType["name"]);
-		$mediaModel = ClassRegistry::init($modelType["name"]);
-		$mediaModel->create();
-		if(!($ret = $mediaModel->save($data))) {
-			throw new BEditaSaveStreamObjException(__("Error saving stream object",true), $mediaModel->validationErrors) ;
-		}
-		return ($mediaModel->{$mediaModel->primaryKey}) ;
-	}
+        return $this->_create($data) ;
+    }
+
+    /**
+     * Given a file path return its hash (md5)
+     *
+     * @param string $sourcePath The file path
+     * @return string
+     */
+    public function getHashFile($sourcePath) {
+        return hash_file('md5', $sourcePath);
+    }
+
+    /**
+     * Check if an hash is already present in streams.
+     * Return the streams.id if exists, false otherwise
+     *
+     * @param string $hash The file hash
+     * @return int|false
+     */
+    public function hashFileExists($hash) {
+        $streamModel = ClassRegistry::init('Stream');
+        $streamId = $streamModel->field('id', array('hash_file' => $hash));
+        if (!empty($streamId)) {
+            return $streamId;
+        }
+
+        return false;
+    }
+
+    /**
+     * Create object for $data
+     * 
+     * @param array $data
+     * @return int (or other type, according to primaryKey type for model)
+     * @throws BEditaMIMEException
+     * @throws BEditaSaveStreamObjException
+     */
+    private function _create(&$data) {
+        $modelType = BeLib::getTypeFromMIME($data['mime_type']);
+        if (!$modelType) {
+            if (!empty($data['object_type_id'])) {
+                $modelType['name'] = Configure::read('objectTypes.' . $data['object_type_id'] . '.model');
+            } else {
+                throw new BEditaMIMEException(__('MIME type not found',true) . ': ' . $data['mime_type']);
+            }
+        }
+        if (!empty($data['id'])) {
+            $stream = ClassRegistry::init('Stream')->read(array('mime_type', 'uri'), $data['id']);
+            $object_type_id = ClassRegistry::init('BEObject')->field('object_type_id', array('id' => $data['id']));
+            $prevModel = Configure::read('objectTypes.' . $object_type_id . '.model');
+            // change object type
+            if ($modelType['name'] != $prevModel) {
+                $data['object_type_id'] = Configure::read('objectTypes.' . Inflector::underscore($modelType['name']) . '.id');
+                // delete old data from specific table
+                $prevMediaModel = ClassRegistry::init($prevModel);
+                $prevMediaModel->Behaviors->disable('DeleteObject');
+                $prevMediaModel->delete($data['id'], false);
+                $prevMediaModel->Behaviors->enable('DeleteObject');
+                // delete file on filesystem
+                if (($stream['Stream']['uri'] && !$this->_isURL($stream['Stream']['uri']))) {
+                    $this->_removeFile($stream['Stream']['uri']);
+                }
+            }
+        }
+        if (method_exists($this, 'set' . $modelType['name'] . 'Data')) {
+            if (!empty($modelType['specificType'])) {
+                $this->{'set' . $modelType['name'] . 'Data'}($data, $modelType['specificType']);
+            } else {
+                $this->{'set' . $modelType['name'] . 'Data'}($data);
+            }
+        }
+        $data['Category'] = (!empty($data['Category'])) ? array_merge($data['Category'], $this->getCategoryMediaType($data, $modelType['name'])) : $this->getCategoryMediaType($data, $modelType['name']);
+        $mediaModel = ClassRegistry::init($modelType['name']);
+        $mediaModel->create();
+        if (!($ret = $mediaModel->save($data))) {
+            throw new BEditaSaveStreamObjException(__('Error saving stream object',true), $mediaModel->validationErrors);
+        }
+        return ($mediaModel->{$mediaModel->primaryKey});
+    }
 
 	/**
 	 * Set image size for $data
 	 * 
 	 * @param $data $data
 	 */
-	private function setImageData(&$data) {
+	public function setImageData(&$data) {
 		$this->getImageSize($data);
 	}
 
@@ -412,35 +445,6 @@ class BeFileHandlerComponent extends Object {
 		}
 		return false ;
 	}
-
-	/**
-	 * return array with model name and eventually specific type (see $config[validate_resource][mime][Application]) 
-	 * from mime type
-	 *
-	 * @param string $mime	mime type
-	 * @return mixed array|boolean
-	 */
-	private function _getTypeFromMIME($mime) {
-		$conf 		= Configure::getInstance() ;
-		if(empty($mime)) {
-			return false ;
-		}
-		$models = $conf->validate_resource['mime'] ;
-		foreach ($models as $model => $regs) {
-			foreach ($regs as $key => $reg) {
-				if (is_array($reg)) {
-					foreach ($reg["mime_type"] as $val) {
-						if(preg_match($val, $mime)) 
-							return array("name" => $model, "specificType" => $key) ;
-					}
-				} elseif(preg_match($reg, $mime)) {
-					return array("name" => $model) ;
-				}	
-			}
-		}
-		return false ;
-	}
-
 	
 	/**
 	 * put mime type checking uri
@@ -492,31 +496,39 @@ class BeFileHandlerComponent extends Object {
 		return $mime_type;
 	}
 
-	/**
-	 * Create target with source (temporary file), through transactional object
-	 *
-	 * @param string $sourcePath
-	 * @param string $targetPath
-	 * @return mixed boolean|string
-	 */
-	private function _putFile($sourcePath, $targetPath) {
-		if(empty($targetPath)) return false ;
-		// Temporary directories to create
-		$tmp = Configure::read("mediaRoot") . $targetPath ;
-		$stack = array() ;
-		$dir = dirname($tmp) ;
-		while($dir != Configure::read("mediaRoot")) {
-			if(is_dir($dir)) break ;
-			array_push($stack, $dir) ;
-			$dir = dirname($dir) ;
-		} 
-		unset($dir) ;
-		// Creating directories
-		while(($current = array_pop($stack))) {
-			if(!$this->Transaction->mkdir($current)) return false ;
-		}
-		return $this->Transaction->makeFromFile($tmp, $sourcePath) ;
-	}
+    /**
+     * Create target with source (temporary file), through transactional object
+     *
+     * @param string $sourcePath
+     * @param string $targetPath
+     * @return mixed boolean|string
+     */
+    public function putFile($sourcePath, $targetPath) {
+        if (empty($targetPath)) {
+            return false;
+        }
+
+        // Temporary directories to create
+        $tmp = Configure::read('mediaRoot') . $targetPath;
+        $stack = array();
+        $dir = dirname($tmp);
+        while ($dir != Configure::read('mediaRoot')) {
+            if (is_dir($dir)) {
+                break;
+            }
+            array_push($stack, $dir);
+            $dir = dirname($dir);
+        } 
+        unset($dir);
+
+        // Creating directories
+        while (($current = array_pop($stack))) {
+			if (!$this->Transaction->mkdir($current)) {
+                return false;
+            }
+        }
+        return $this->Transaction->makeFromFile($tmp, $sourcePath);
+    }
 
 	/**
 	 * Delete a file from file system with transactional object
@@ -574,38 +586,18 @@ class BeFileHandlerComponent extends Object {
 	}
 
 
-	/**
-	 * Get path where to save uploaded file
-	 *
-	 * @param string $name, file name
-	 * @return string, path
-	 */
-	public function getPathTargetFile(&$name, $prefix = null)  {
-		
-		$md5 = md5($name) ;
-		//preg_match("/(\w{2,2})(\w{2,2})(\w{2,2})(\w{2,2})/", $md5, $dirs) ;
-		preg_match("/(\w{2})(\w{2})/", $md5, $dirs) ;
-		array_shift($dirs) ;
-		
-		$pointPosition = strrpos($name,".");
-		$filename = $tmpname = substr($name, 0, $pointPosition);
-		$ext = substr($name, $pointPosition);
-		$mediaRoot = Configure::read("mediaRoot");
-		if ($prefix != null) {
-			$mediaRoot.= DS . $prefix;
-		}
-		$dirsString = implode(DS, $dirs);
-		$counter = 1;
-		while(file_exists($mediaRoot . DS . $dirsString . DS . $filename . $ext)) {
-			$filename = $tmpname . "-" . $counter++;
-		}
-		
-		// save new name (passed by reference)
-		$name = $filename . $ext;
-		$path =  DS . $dirsString . DS . $name ;
-		
-		return $path ;
-	}
+    /**
+    * Get path where to save uploaded file
+    *
+    * @param string $name The file name
+    * @param string $prefix The prefix used for building path
+    * @return string
+    */
+    public function getPathTargetFile(&$name, $prefix = null)  {
+        $targetFilePath = BeLib::getInstance()->uniqueFilePath($name, $prefix);
+        $name = pathinfo($targetFilePath, PATHINFO_BASENAME);
+        return $targetFilePath;
+    }
 
 	/**
 	 * build friendly url name from filename

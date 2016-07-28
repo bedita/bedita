@@ -86,10 +86,16 @@ class HashJob extends BEAppModel {
 		}
 		return $results;
 	}
-	
-	public function generateHash() {
-		return md5(str_shuffle($this->hashString) . microtime());
-	}
+
+    /**
+     * Generate a random hash
+     *
+     * @param bool $authKey If true use `Security::generateAuthKey()`. Default false
+     * @return string
+     */
+    public function generateHash($authKey = false) {
+        return $authKey ? Security::generateAuthKey() : md5(str_shuffle($this->hashString) . microtime());
+    }
 
 	/**
 	 * get hash expiration date

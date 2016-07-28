@@ -22,15 +22,24 @@
 
 require_once ROOT . DS . APP_DIR. DS. 'tests'. DS . 'bedita_base.test.php';
 
-App::import('Controller', 'Controller', false);
-
-class ApiValidatorDummyTestController extends Controller {
+class ApiValidatorDummyTestController extends BeditaTestController {
 
     public $uses = array();
 
     public $components = array('ApiValidator');
 
     public $requestMethod = 'get';
+
+    public $apiConf = array(
+        'validation' => array(
+            'writableObjects' => array('image', 'document')
+        )
+    );
+
+    public function __construct() {
+        Configure::write('api', $this->apiConf);
+        parent::__construct();
+    }
 
     public function getRequestMethod() {
         return $this->requestMethod;
@@ -49,6 +58,7 @@ class ApiValidatorComponentTest extends BeditaTestCase {
         $this->controller = new ApiValidatorDummyTestController();
         $this->controller->constructClasses();
         $this->controller->ApiValidator->initialize($this->controller);
+        $this->controller->ApiValidator->startup($this->controller);
     }
 
     public function testCheckDate() {
@@ -267,6 +277,27 @@ class ApiValidatorComponentTest extends BeditaTestCase {
             echo $ex->getMessage();
             $this->assertTrue(false);
         }
+    }
+
+    public function testIsObjectTypeWritable() {
+        $this->assertFalse($this->controller->ApiValidator->isObjectTypeWritable('video'));
+        $this->assertTrue($this->controller->ApiValidator->isObjectTypeWritable('document'));
+        $documentId = Configure::read('objectTypes.document.id');
+        $this->assertTrue($this->controller->ApiValidator->isObjectTypeWritable($documentId));
+    }
+
+    public function testIsObjectTypeUploadable() {
+        $this->assertFalse($this->controller->ApiValidator->isObjectTypeUploadable('video'));
+        $this->assertTrue($this->controller->ApiValidator->isObjectTypeUploadable('image'));
+        $this->assertFalse($this->controller->ApiValidator->isObjectTypeUploadable('document'));
+    }
+
+    public function testIsMimeTypeValid() {
+        $this->assertTrue($this->controller->ApiValidator->isMimeTypeValid('image/jpg', 'image'));
+        $this->assertTrue($this->controller->ApiValidator->isMimeTypeValid('image/png', 'image'));
+        $this->assertTrue($this->controller->ApiValidator->isMimeTypeValid('application/x-shockwave-flash', 'application'));
+        $this->assertFalse($this->controller->ApiValidator->isMimeTypeValid('image/jpg', 'video'));
+        $this->assertFalse($this->controller->ApiValidator->isMimeTypeValid('image/jpg', 'document'));
     }
 
     public function endTest($method) {
