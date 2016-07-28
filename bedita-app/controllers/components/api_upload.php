@@ -83,7 +83,7 @@ class ApiUploadComponent extends Object {
             $targetPath = $model->apiUpload($source, array(
                 'fileName' => $safeFileName,
                 'hashFile' => $hashFile,
-                'user' => $this->controller->ApiAuth->getUser()
+                'user' => $this->controller->ApiAuth->identify()
             ));
         } else {
             $streamId = $this->BeFileHandler->hashFileExists($hashFile); 
@@ -173,7 +173,7 @@ class ApiUploadComponent extends Object {
      * @return string
      */
     protected function generateToken(array $params = array()) {
-        $user = $this->controller->ApiAuth->getUser();
+        $user = $this->controller->ApiAuth->identify();
         $hashJob = ClassRegistry::init('HashJob');
         $uploadToken = $hashJob->generateHash(true);
         $data = array(
@@ -225,7 +225,7 @@ class ApiUploadComponent extends Object {
      * @throws BeditaBadRequestException When the token doesn't exists or is not valid anymore
      */
     public function validateToken($uploadToken) {
-        $user = $this->controller->ApiAuth->getUser();
+        $user = $this->controller->ApiAuth->identify();
         $hashJob = ClassRegistry::init('HashJob');
         $hashRow = $hashJob->find('first', array(
             'conditions' => array(
@@ -257,7 +257,7 @@ class ApiUploadComponent extends Object {
             return false;
         }
 
-        $user = $this->controller->ApiAuth->getUser();
+        $user = $this->controller->ApiAuth->identify();
         $hashJob = ClassRegistry::init('HashJob');
         $hashId = $hashJob->field('id', array(
             'service_type' => 'api_upload',
