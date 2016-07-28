@@ -214,6 +214,10 @@ class ApiUploadComponent extends Object {
             return $model->apiUploadTransformData($uploadData);
         }
 
+        if ($objectType == 'image') {
+            $this->BeFileHandler->setImageData($uploadData);
+        }
+
         return $uploadData;
     }
 

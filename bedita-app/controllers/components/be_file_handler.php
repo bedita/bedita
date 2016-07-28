@@ -353,7 +353,7 @@ class BeFileHandlerComponent extends Object {
 	 * 
 	 * @param $data $data
 	 */
-	private function setImageData(&$data) {
+	public function setImageData(&$data) {
 		$this->getImageSize($data);
 	}
 
