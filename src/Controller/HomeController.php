@@ -21,15 +21,6 @@ use Cake\Routing\Router;
  */
 class HomeController extends AppController
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function initialize()
-    {
-        parent::initialize();
-
-        $this->Auth->allow(['index']);
-    }
 
     /**
      * List API available endpoints
