@@ -63,7 +63,7 @@ class RolesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -106,8 +106,7 @@ class RolesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

@@ -71,6 +71,7 @@ class ProfilesTableTest extends TestCase
      * Test initialize method
      *
      * @return void
+     * @coversNothing
      */
     public function testInitialize()
     {
@@ -120,8 +121,7 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

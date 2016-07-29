@@ -34,6 +34,8 @@ class ObjectsTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -64,6 +66,8 @@ class ObjectsTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -113,11 +117,9 @@ class ObjectsTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * {@inheritDoc}
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {
@@ -129,6 +131,8 @@ class ObjectsTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     protected function _initializeSchema(Schema $schema)
     {
