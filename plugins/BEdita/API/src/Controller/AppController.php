@@ -85,8 +85,8 @@ class AppController extends Controller
      *
      *  'ApiKeys' => [
      *    'sdgwr89081023jfdklewRASdasdwdfswdr' => [
-     *      'label' => 'web app',
-     *      'origin' => 'example.com', // could be '*'
+     *      'label' => 'web app', // (optional)
+     *      'origin' => 'example.com', // (optional) could be '*'
      *    ],
      *    'w4nvwpq5028DDfwnrK2933293423nfnaa4' => [
      *       ....
