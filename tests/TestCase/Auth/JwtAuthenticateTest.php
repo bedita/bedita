@@ -14,10 +14,11 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\JwtAuthenticate;
+use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
+use Cake\I18n\FrozenTime;
 use Cake\Network\Request;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -163,7 +164,17 @@ class JwtAuthenticateTest extends TestCase
                 ]),
             ],
             'queryDatasource' => [
-                TableRegistry::get('BEdita/API.Users')->get(1)->toArray(),
+                [
+                    'id' => 1,
+                    'username' => 'first user',
+                    'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
+                    'blocked' => false,
+                    'last_login' => null,
+                    'last_login_err' => null,
+                    'num_login_err' => 1,
+                    'created' => new FrozenTime('2016-03-15 09:57:38'),
+                    'modified' => new FrozenTime('2016-03-15 09:57:38'),
+                ],
                 [
                     'userModel' => 'BEdita/API.Users',
                     'queryDatasource' => true,
