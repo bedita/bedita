@@ -122,21 +122,21 @@ class JwtAuthenticate extends BaseAuthenticate
      * Get user record based on info available in JWT.
      *
      * @param \Cake\Network\Request $request Request object.
-     * @return array|false User record array or false on failure.
+     * @return array|false User record array, `false` on failure.
      */
     public function getUser(Request $request)
     {
         $payload = $this->getPayload($request);
 
-        if (!$this->_config['queryDatasource'] && !isset($payload->sub)) {
-            return (array)$payload;
+        if (!$this->_config['queryDatasource'] && !isset($payload['sub'])) {
+            return $payload;
         }
 
-        if (!isset($payload->sub)) {
+        if (!isset($payload['sub'])) {
             return false;
         }
 
-        $user = $this->_findUser($payload->sub);
+        $user = $this->_findUser($payload['sub']);
 
         return $user;
     }
@@ -144,37 +144,29 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Get payload data.
      *
-     * @param \Cake\Network\Request|null $request Request instance or null
-     * @return object|null Payload object on success, null on failure.
+     * @param \Cake\Network\Request $request Request instance or null
+     * @return object|false Payload object on success, `false` on failure.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
-    public function getPayload(Request $request = null)
+    public function getPayload(Request $request)
     {
-        if (!$request) {
-            return $this->payload;
-        }
-
         $token = $this->getToken($request);
         if ($token) {
             return $this->payload = $this->decode($token);
         }
 
-        return null;
+        return false;
     }
 
     /**
      * Get token from header or query string.
      *
-     * @param \Cake\Network\Request|null $request Request object.
+     * @param \Cake\Network\Request $request Request object.
      * @return string|null Token string if found else null.
      */
-    public function getToken(Request $request = null)
+    public function getToken(Request $request)
     {
         $config = $this->_config;
-
-        if (!$request) {
-            return $this->token;
-        }
 
         $header = trim($request->header($config['header']));
         $headerPrefix = strtolower(trim($config['headerPrefix'])) . ' ';
@@ -194,7 +186,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * Decode JWT token.
      *
      * @param string $token JWT token to decode.
-     * @return object|null The token's payload as a PHP object, `null` on failure.
+     * @return array|false The token's payload as a PHP object, `false` on failure.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
     protected function decode($token)
@@ -202,7 +194,7 @@ class JwtAuthenticate extends BaseAuthenticate
         try {
             $payload = JWT::decode($token, Security::salt(), $this->_config['allowedAlgorithms']);
 
-            return $payload;
+            return (array)$payload;
         } catch (\Exception $e) {
             if (Configure::read('debug')) {
                 throw $e;
@@ -211,7 +203,7 @@ class JwtAuthenticate extends BaseAuthenticate
             $this->error = $e;
         }
 
-        return null;
+        return false;
     }
 
     /**
