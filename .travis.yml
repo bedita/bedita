@@ -13,7 +13,6 @@ group: edge
 services:
   - docker
   - memcached
-  - mysql
   - redis-server
 
 cache:
@@ -24,7 +23,7 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///:memory:'"
-    - "DB=mysql db_dsn='mysql://travis@127.0.0.1/bedita_test'"
+    - "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
@@ -35,8 +34,6 @@ matrix:
   include:
     - php: 7.0
       env: "DB=mysql DB_VERSION=5.5 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - php: 7.0
-      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - php: 7.0
       env: "DB=mysql DB_VERSION=5.7 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - php: 7.0
@@ -49,8 +46,6 @@ matrix:
       env: RUN_CS=1 RUN_TESTS=0
 
   exclude:
-    - php: 7.0
-      env: "DB=mysql db_dsn='mysql://travis@127.0.0.1/bedita_test'"
     - php: 7.0
       env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - php: hhvm
