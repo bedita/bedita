@@ -55,6 +55,7 @@ class AppController extends Controller
             'unauthorizedRedirect' => false,
             'storage' => 'Memory',
         ]);
+        $this->Auth->allow();
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
