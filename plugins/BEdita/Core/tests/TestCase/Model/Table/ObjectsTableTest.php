@@ -37,7 +37,7 @@ class ObjectsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('BEdita/Core.Objects');
+        $this->Objects = TableRegistry::get('Objects');
     }
 
     /**

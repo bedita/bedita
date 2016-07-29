@@ -186,7 +186,7 @@ class DataSeedShell extends Shell
         if (!method_exists($this, $method)) {
             $this->abort('Table "' . $tableName . '" is not yet supported');
         }
-        $table = TableRegistry::get('BEdita/Core.' . $tableName);
+        $table = TableRegistry::get($tableName);
         $count = max(1, intval($this->params['number']));
 
         $fields = [];

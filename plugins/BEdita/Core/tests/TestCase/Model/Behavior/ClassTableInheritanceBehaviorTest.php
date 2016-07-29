@@ -95,7 +95,10 @@ class ClassTableInheritanceBehaviorTest extends TestCase
         unset($this->fakeAnimals);
         unset($this->fakeMammals);
         unset($this->fakeFelines);
-        TableRegistry::clear();
+
+        TableRegistry::remove('FakeAnimals');
+        TableRegistry::remove('FakeMammals');
+        TableRegistry::remove('FakeFelines');
 
         parent::tearDown();
     }

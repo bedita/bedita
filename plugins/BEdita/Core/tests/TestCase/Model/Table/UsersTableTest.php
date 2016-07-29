@@ -47,7 +47,7 @@ class UsersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('BEdita/Core.Users');
+        $this->Users = TableRegistry::get('Users');
     }
 
     /**
@@ -56,8 +56,6 @@ class UsersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Users);
-
-        TableRegistry::clear();
 
         parent::tearDown();
     }

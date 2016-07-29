@@ -152,7 +152,7 @@ class ObjectsTable extends Table
      */
     public function findType(Query $query, array $options)
     {
-        $ObjectTypes = TableRegistry::get('BEdita/Core.ObjectTypes');
+        $ObjectTypes = TableRegistry::get('ObjectTypes');
         foreach ($options as &$type) {
             $type = $ObjectTypes->get($type)->id;
         }

@@ -52,7 +52,7 @@ class ProfilesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Profiles = TableRegistry::get('BEdita/Core.Profiles');
+        $this->Profiles = TableRegistry::get('Profiles');
     }
 
     /**

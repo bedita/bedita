@@ -47,7 +47,7 @@ class AuthProvidersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->AuthProviders = TableRegistry::get('BEdita/Core.AuthProviders');
+        $this->AuthProviders = TableRegistry::get('AuthProviders');
     }
 
     /**
@@ -56,8 +56,6 @@ class AuthProvidersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->AuthProviders);
-
-        TableRegistry::clear();
 
         parent::tearDown();
     }

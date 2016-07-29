@@ -49,7 +49,7 @@ class ExternalAuthTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->ExternalAuth = TableRegistry::get('BEdita/Core.ExternalAuth');
+        $this->ExternalAuth = TableRegistry::get('ExternalAuth');
     }
 
     /**
@@ -58,8 +58,6 @@ class ExternalAuthTableTest extends TestCase
     public function tearDown()
     {
         unset($this->ExternalAuth);
-
-        TableRegistry::clear();
 
         parent::tearDown();
     }
