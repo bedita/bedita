@@ -225,7 +225,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::get('BEdita/Core.Users'));
+        $controller->paginate(TableRegistry::get('Users'));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         $this->assertEquals($expectedLinks, $component->getLinks());
