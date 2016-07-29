@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -38,10 +39,13 @@ class LoginControllerTest extends IntegrationTestCase
      * @return string A valid JWT.
      *
      * @covers ::login()
-     * @covers \BEdita\API\Auth\JwtAuthenticate
      */
     public function testSuccessfulLogin()
     {
+        // Force event listener on `Auth.afterIdentify` to be re-attached.
+        TableRegistry::remove('Users');
+        TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
+
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
@@ -54,6 +58,10 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
 
+        $lastLogin = TableRegistry::get('Users')->get(1)->get('last_login');
+        $this->assertNotNull($lastLogin);
+        $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
+
         return $result['meta']['renew'];
     }
 
@@ -65,6 +73,7 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @depends testSuccessfulLogin
      * @covers ::login()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
     public function testSuccessfulRenew($renewToken)
     {
@@ -83,5 +92,26 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertTextNotEquals($renewToken, $result['meta']['renew']);
+    }
+
+    /**
+     * Test login method with invalid credentials.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testFailedLogin()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+
+        $this->post('/auth', ['username' => 'first user', 'password_hash' => 'wrongPassword']);
+
+        $this->assertResponseCode(401);
     }
 }
