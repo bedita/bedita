@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -127,5 +128,21 @@ class UsersTableTest extends TestCase
             $success = $this->Users->save($user);
             $this->assertTrue((bool)$success);
         }
+    }
+
+    /**
+     * Test handling of login event.
+     *
+     * @return void
+     *
+     * @covers ::login()
+     */
+    public function testLogin()
+    {
+        $this->Users->login(new Event('Auth.afterIdentify', null, [['id' => 1]]));
+
+        $lastLogin = $this->Users->get(1)->get('last_login');
+        $this->assertNotNull($lastLogin);
+        $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
     }
 }
