@@ -112,4 +112,84 @@ class AppControllerTest extends IntegrationTestCase
             $this->assertContentType($expectedContentType);
         }
     }
+
+    /**
+     * Data provider for `testApiKey` test case.
+     *
+     * @return array
+     */
+    public function apiKeysProvider()
+    {
+        return [
+            'apiKeyMissing' => [
+                403,
+                [
+                    'eqe12131231231231412414' => [
+                        'origin' => '*',
+                    ],
+                ],
+            ],
+            'apiKeyOk' => [
+                200,
+                [
+                    'eqe12131231231231412414' => [
+                        'origin' => '*',
+                    ],
+                ],
+                'eqe12131231231231412414',
+            ],
+            'noApiKey' => [
+                200,
+                [],
+            ],
+            'originOk' => [
+                200,
+                [
+                    'eqe12131231231231412414' => [
+                        'origin' => 'example.com',
+                    ],
+                ],
+                'eqe12131231231231412414',
+                'example.com'
+            ],
+            'originKo' => [
+                403,
+                [
+                    'eqe12131231231231412414' => [
+                        'origin' => 'example.com',
+                    ],
+                ],
+                'eqe12131231231231412414',
+                'otherdomain.com'
+            ],
+        ];
+    }
+
+    /**
+     * Test API KEY check rules.
+     *
+     * @param int $expectedCode Expected response code.
+     * @param array $apiKeyCfg API KEY configuration.
+     * @param string|null $apiKeyReq API KEY in request header.
+     * @param string|null $origin Request's "Origin" header.
+     * @return void
+     *
+     * @dataProvider apiKeysProvider
+     */
+    public function testApiKeys($expectedCode, $apiKeyCfg, $apiKeyReq = null, $origin = null)
+    {
+        Configure::write('ApiKeys', $apiKeyCfg);
+
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/vnd.api+json',
+                'Origin' => $origin,
+                'X-Api-Key' => $apiKeyReq,
+            ]
+        ]);
+
+        $this->get('/home');
+
+        $this->assertResponseCode($expectedCode);
+    }
 }
