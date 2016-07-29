@@ -152,6 +152,8 @@ class JwtAuthenticateTest extends TestCase
         $token = JWT::encode($payload, Security::salt());
         $renewToken = JWT::encode(['sub' => 1], Security::salt());
 
+        $invalidToken = JWT::encode(['aud' => 'http://example.org'], Security::salt());
+
         return [
             'default' => [
                 $payload,
@@ -189,7 +191,15 @@ class JwtAuthenticateTest extends TestCase
                 false,
                 [],
                 new Request([
-                    'environment' => ['HTTP_AUTHORIZATION' => 'Bearer invalidToken.invalidToken.invalidToken'],
+                    'params' => [
+                        'plugin' => 'BEdita/API',
+                        'controller' => 'Login',
+                        'action' => 'login',
+                    ],
+                    'environment' => [
+                        'HTTP_AUTHORIZATION' => 'Bearer ' . $invalidToken,
+                        'HTTP_HOST' => 'api.example.com',
+                    ],
                 ]),
             ],
         ];

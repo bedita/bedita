@@ -84,6 +84,7 @@ class LoginController extends AppController
 
         $algorithm = Configure::read('Security.jwt.algorithm') ?: 'HS256';
         $duration = Configure::read('Security.jwt.duration') ?: '+2 hours';
+        $currentUrl = Router::reverse($this->request, true);
         $claims = [
             'iss' => Router::fullBaseUrl(),
             'iat' => time(),
@@ -96,7 +97,7 @@ class LoginController extends AppController
             $algorithm
         );
         $renew = JWT::encode(
-            $claims + ['sub' => $user['id']],
+            $claims + ['sub' => $user['id'], 'aud' => $currentUrl],
             Security::salt(),
             $algorithm
         );

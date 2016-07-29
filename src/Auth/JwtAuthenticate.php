@@ -18,6 +18,7 @@ use Cake\Core\Configure;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
@@ -152,7 +153,7 @@ class JwtAuthenticate extends BaseAuthenticate
     {
         $token = $this->getToken($request);
         if ($token) {
-            return $this->payload = $this->decode($token);
+            return $this->payload = $this->decode($token, $request);
         }
 
         return false;
@@ -186,13 +187,21 @@ class JwtAuthenticate extends BaseAuthenticate
      * Decode JWT token.
      *
      * @param string $token JWT token to decode.
+     * @param \Cake\Network\Request $request Request object.
      * @return array|false The token's payload as a PHP object, `false` on failure.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
-    protected function decode($token)
+    protected function decode($token, Request $request)
     {
         try {
             $payload = JWT::decode($token, Security::salt(), $this->_config['allowedAlgorithms']);
+
+            if (isset($payload->aud)) {
+                $audience = Router::url($payload->aud, true);
+                if (strpos($audience, Router::reverse($request, true)) !== 0) {
+                    throw new \DomainException('Invalid audience');
+                }
+            }
 
             return (array)$payload;
         } catch (\Exception $e) {
