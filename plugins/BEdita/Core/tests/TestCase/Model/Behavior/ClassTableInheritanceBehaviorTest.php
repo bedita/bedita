@@ -281,4 +281,80 @@ class ClassTableInheritanceBehaviorTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testSave` test case.
+     *
+     * @return array
+     */
+    public function saveProvider()
+    {
+        return [
+            'simple' => [
+                [
+                    'id' => 4,
+                    'name' => 'lion',
+                    'familiy' => 'big cats'
+                ],
+                [
+                    'name' => 'lion',
+                    'familiy' => 'big cats'
+                ]
+            ],
+            'advanced' => [
+                [
+                    'id' => 4,
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        [
+                            'id' => 1,
+                            'title' => 'The cat',
+                            'body' => 'article body',
+                            'fake_animal_id' => 4
+                        ],
+                        [
+                            'id' => 2,
+                            'title' => 'Puss in boots',
+                            'body' => 'text',
+                            'fake_animal_id' => 4
+                        ]
+                    ]
+                ],
+                [
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        '_ids' => [1, 2]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * testSave method
+     *
+     * @return void
+     *
+     * @dataProvider saveProvider
+     * @coversNothing
+     */
+    public function testSave($expected, $data)
+    {
+        $feline = $this->fakeFelines->newEntity($data);
+        $result = $this->fakeFelines->save($feline);
+
+        $this->assertNotFalse($result);
+        $resultArray = $result->toArray();
+        $this->assertEquals($expected, $resultArray);
+
+        $this->assertCount(1, $this->fakeFelines->findById($result->id));
+        $this->assertCount(1, $this->fakeMammals->findById($result->id));
+        $this->assertCount(1, $this->fakeAnimals->findById($result->id));
+    }
 }
