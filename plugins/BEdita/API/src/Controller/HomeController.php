@@ -18,7 +18,6 @@ use Cake\Routing\Router;
  * Controller for `/home` endpoint.
  *
  * @since 4.0.0
- *
  */
 class HomeController extends AppController
 {
