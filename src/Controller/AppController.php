@@ -53,6 +53,15 @@ class AppController extends Controller
             $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
         }
 
+        $this->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt'],
+            'loginAction' => ['_name' => 'api:login'],
+            'loginRedirect' => ['_name' => 'api:login'],
+            'unauthorizedRedirect' => false,
+            'storage' => 'Memory',
+        ]);
+        $this->Auth->allow();
+
         $this->corsSettings();
 
         if (empty(Router::fullBaseUrl())) {

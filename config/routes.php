@@ -98,5 +98,12 @@ Router::plugin(
             ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'users:delete']
         );
+
+        // Login.
+        $routes->connect(
+            '/auth',
+            ['controller' => 'Login', 'action' => 'login'],
+            ['_name' => 'login']
+        );
     }
 );
