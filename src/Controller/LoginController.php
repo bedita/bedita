@@ -21,7 +21,7 @@ use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 
 /**
- * Controller for `/login` endpoint.
+ * Controller for `/auth` endpoint.
  *
  * @since 4.0.0
  */
