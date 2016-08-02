@@ -127,7 +127,7 @@ class RolesController extends AppController
      * Delete an existing role.
      *
      * @param int $id Role ID.
-     * @return \Cake\Network\Response
+     * @return void
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
@@ -139,6 +139,6 @@ class RolesController extends AppController
             throw new InternalErrorException('Could not delete role');
         }
 
-        return $this->response;
+        $this->noContentResponse();
     }
 }
