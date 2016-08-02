@@ -189,4 +189,17 @@ class AppController extends Controller
 
         return $this->render();
     }
+
+    /**
+     * Send a 204 No Content response with empty body.
+     *
+     * @return void
+     */
+    protected function noContentResponse()
+    {
+        $this->autoRender = false;
+        $this->response->header('Content-Type: ' . $this->request->contentType());
+        $this->response->statusCode(204);
+        $this->response->send();
+    }
 }

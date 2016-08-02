@@ -420,7 +420,7 @@ class RolesControllerTest extends IntegrationTestCase
         ]);
         $this->delete('/roles/1');
 
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
         $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 1]));
     }

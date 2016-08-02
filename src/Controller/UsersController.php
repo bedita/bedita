@@ -134,7 +134,7 @@ class UsersController extends AppController
      * Delete an existing user.
      *
      * @param int $id User ID.
-     * @return \Cake\Network\Response
+     * @return void
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
@@ -146,6 +146,6 @@ class UsersController extends AppController
             throw new InternalErrorException('Could not delete user');
         }
 
-        return $this->response;
+        $this->noContentResponse();
     }
 }

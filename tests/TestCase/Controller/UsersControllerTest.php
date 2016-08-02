@@ -486,7 +486,7 @@ class UsersControllerTest extends IntegrationTestCase
         ]);
         $this->delete('/users/1');
 
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
         $this->assertFalse(TableRegistry::get('Users')->exists(['id' => 1]));
     }
