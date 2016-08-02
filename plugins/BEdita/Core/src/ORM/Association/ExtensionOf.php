@@ -116,6 +116,7 @@ class ExtensionOf extends BelongsTo
         }
 
         $entity->set($properties, ['guard' => false]);
+
         return $entity;
     }
 
