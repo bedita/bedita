@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use ArrayObject;
 use BEdita\Core\ORM\Inheritance\QueryPatcher;
 use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
 use Cake\Datasource\EntityInterface;
@@ -111,7 +110,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * @param bool $primary Indicates whether or not this is the root query or an associated query
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)
+    public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
     {
         if (!$primary) {
             return;
