@@ -24,8 +24,9 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\RolesTable $Roles
  */
-class RolesController extends AppController
+class RolesController extends ResourcesController
 {
+
     /**
      * {@inheritDoc}
      */
@@ -41,6 +42,11 @@ class RolesController extends AppController
         $this->set('_type', 'roles');
         if (isset($this->JsonApi)) {
             $this->JsonApi->config('resourceTypes', ['roles']);
+
+            if ($this->request->param('action') == 'relationships') {
+                $this->JsonApi->config('resourceTypes', null);
+                $this->JsonApi->config('clientGeneratedIds', true);
+            }
         }
     }
 
