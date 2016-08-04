@@ -209,7 +209,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
-
     public function testMissing()
     {
         $expected = [
@@ -250,7 +249,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::add()
      * @covers ::initialize()
      */
-
     public function testAdd()
     {
         $data = [
@@ -289,7 +287,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::add()
      * @covers ::initialize()
      */
-
     public function testAddInvalid()
     {
         $data = [
@@ -323,7 +320,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::edit()
      * @covers ::initialize()
      */
-
     public function testEdit()
     {
         $data = [
@@ -356,7 +352,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::edit()
      * @covers ::initialize()
      */
-
     public function testEditConflict()
     {
         $data = [
@@ -390,7 +385,6 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::delete()
      * @covers ::initialize()
      */
-
     public function testDelete()
     {
         $this->configRequest([
@@ -405,5 +399,4 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 1]));
     }
-
 }
