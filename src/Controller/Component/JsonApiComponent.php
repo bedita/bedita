@@ -50,6 +50,7 @@ class JsonApiComponent extends Component
         'contentType' => null,
         'checkMediaType' => true,
         'resourceTypes' => null,
+        'clientGeneratedIds' => false,
     ];
 
     /**
@@ -277,7 +278,7 @@ class JsonApiComponent extends Component
             $this->allowedResourceTypes($this->config('resourceTypes'));
         }
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') && !$this->config('clientGeneratedIds')) {
             $this->allowClientGeneratedIds(false);
         }
     }
