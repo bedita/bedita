@@ -48,7 +48,7 @@ class RemoveAssociated extends UpdateAssociated
         }
 
         throw new \RuntimeException(
-            __('Unable to add additional links with association of type "{0}"', [get_class($this->Association)])
+            __('Unable to add additional links with association of type "{0}"', get_class($this->Association))
         );
     }
 }

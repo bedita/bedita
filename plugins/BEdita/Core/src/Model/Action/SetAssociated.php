@@ -63,6 +63,6 @@ class SetAssociated extends UpdateAssociated
             return $this->Association->target()->save($relatedEntities);
         }
 
-        throw new \RuntimeException(__('Unknown association of type "{0}"', [get_class($this->Association)]));
+        throw new \RuntimeException(__('Unknown association of type "{0}"', get_class($this->Association)));
     }
 }
