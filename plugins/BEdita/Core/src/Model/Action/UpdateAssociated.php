@@ -59,8 +59,8 @@ abstract class UpdateAssociated
     /**
      * Perform update.
      *
-     * @param \Cake\Datasource\EntityInterface $entity
-     * @param $relatedEntities
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
      * @return bool
      */
     abstract public function __invoke(EntityInterface $entity, $relatedEntities);
