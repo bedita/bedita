@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\ORM\Association;
 
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\DependentDeleteTrait;
 use Cake\ORM\Entity;
@@ -79,5 +80,65 @@ class ExtensionOf extends BelongsTo
         unset($row[$nestKey]);
 
         return $row;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function saveAssociated(EntityInterface $entity, array $options = [])
+    {
+        $targetData = $this->targetPropertiesValues($entity);
+        if (empty($targetData)) {
+            $targetData = $this->target()->schema()->defaultValues();
+            $propertiesToRemove = array_keys($targetData);
+        }
+
+        $targetEntity = $this->target()->newEntity($targetData, [
+            'accessibleFields' => ['*' => true]
+        ]);
+
+        if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
+            return $entity;
+        }
+
+        $targetEntity = $this->target()->save($targetEntity, $options);
+        if (!$targetEntity) {
+            return false;
+        }
+
+        $properties = array_combine(
+            (array)$this->foreignKey(),
+            $targetEntity->extract((array)$this->bindingKey())
+        );
+        $properties += $targetEntity->extract($targetEntity->visibleProperties() + $targetEntity->hiddenProperties());
+        if (isset($propertiesToRemove)) {
+            $properties = array_diff_key($properties, array_flip($propertiesToRemove));
+        }
+
+        $entity->set($properties, ['guard' => false]);
+
+        return $entity;
+    }
+
+    /**
+     * Return all properties values that not belong to table source `$entity.
+     * It check all `$entity` visible properties plus hidden properties
+     * plus Table source associations' properties.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity an entity from the source table
+     * @return array
+     */
+    protected function targetPropertiesValues(EntityInterface $entity)
+    {
+        $properties = $entity->visibleProperties() + $entity->hiddenProperties();
+        $propertyValues = $entity->extract($properties);
+
+        $source = $this->source();
+        $sourceProperties = array_diff($source->schema()->columns(), [$source->primaryKey()]);
+        foreach ($source->associations()->keys() as $key) {
+            $sourceProperties[] = $source->association($key)->property();
+        }
+
+        return array_diff_key($propertyValues, array_flip($sourceProperties));
     }
 }

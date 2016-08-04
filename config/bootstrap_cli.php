@@ -34,3 +34,7 @@ try {
 } catch (MissingPluginException $e) {
     // Do not halt if the plugin is missing
 }
+
+if (Configure::read('debug')) {
+    class_alias('\Cake\ORM\TableRegistry', 'T');
+}

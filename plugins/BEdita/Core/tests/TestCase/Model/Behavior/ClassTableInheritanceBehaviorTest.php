@@ -281,4 +281,172 @@ class ClassTableInheritanceBehaviorTest extends TestCase
 
         $this->assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testSave` test case.
+     *
+     * @return array
+     */
+    public function saveProvider()
+    {
+        return [
+            'onlyAncestorField' => [
+                [
+                    'id' => 4,
+                    'name' => 'lion'
+                ],
+                [
+                    'name' => 'lion'
+                ]
+            ],
+            'noAncestorsField' => [
+                [
+                    'id' => 4,
+                    'family' => 'big cats'
+                ],
+                [
+                    'family' => 'big cats'
+                ]
+            ],
+            'noParentField' => [
+                [
+                    'id' => 4,
+                    'name' => 'tiger',
+                    'family' => 'big cats'
+                ],
+                [
+                    'name' => 'tiger',
+                    'family' => 'big cats'
+                ]
+            ],
+            'simple' => [
+                [
+                    'id' => 4,
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats'
+                ],
+                [
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats'
+                ]
+            ],
+            'advanced' => [
+                [
+                    'id' => 4,
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        [
+                            'id' => 1,
+                            'title' => 'The cat',
+                            'body' => 'article body',
+                            'fake_animal_id' => 4
+                        ],
+                        [
+                            'id' => 2,
+                            'title' => 'Puss in boots',
+                            'body' => 'text',
+                            'fake_animal_id' => 4
+                        ]
+                    ]
+                ],
+                [
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        '_ids' => [1, 2]
+                    ]
+                ]
+            ],
+            'advancedNewArticles' => [
+                [
+                    'id' => 4,
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        [
+                            'id' => 3,
+                            'title' => 'The white tiger',
+                            'body' => 'Body of article',
+                            'fake_animal_id' => 4
+                        ],
+                        [
+                            'id' => 4,
+                            'title' => 'Sandokan',
+                            'body' => 'The Malaysian tiger',
+                            'fake_animal_id' => 4
+                        ]
+                    ]
+                ],
+                [
+                    'name' => 'tiger',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                    'family' => 'big cats',
+                    'fake_articles' => [
+                        [
+                            'title' => 'The white tiger',
+                            'body' => 'Body of article'
+                        ],
+                        [
+                            'title' => 'Sandokan',
+                            'body' => 'The Malaysian tiger'
+                        ]
+                    ]
+                ]
+            ],
+            'simplePatch' => [
+                [
+                    'id' => 1,
+                    'name' => 'The super cat',
+                    'family' => 'purring cats',
+                    'legs' => 4,
+                    'subclass' => 'None',
+                ],
+                [
+                    'id' => 1,
+                    'name' => 'The super cat',
+                    'subclass' => 'None',
+                ]
+            ],
+        ];
+    }
+
+    /**
+     * testSave method
+     *
+     * @return void
+     *
+     * @dataProvider saveProvider
+     * @covers ::beforeSave()
+     * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
+     * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
+     */
+    public function testSave($expected, $data)
+    {
+        $feline = $this->fakeFelines->newEntity();
+        if (!empty($data['id'])) {
+            $feline = $this->fakeFelines->get($data['id']);
+        }
+        $feline = $this->fakeFelines->patchEntity($feline, $data);
+        $result = $this->fakeFelines->save($feline);
+
+        $this->assertNotFalse($result);
+        $resultArray = $result->toArray();
+        $this->assertEquals($expected, $resultArray);
+
+        $this->assertCount(1, $this->fakeFelines->findById($result->id));
+        $this->assertCount(1, $this->fakeMammals->findById($result->id));
+        $this->assertCount(1, $this->fakeAnimals->findById($result->id));
+    }
 }
