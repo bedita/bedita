@@ -70,10 +70,10 @@ class UpdateAssociated
             ]);
 
         if ($targetEntities->count() !== count($targetPrimaryKeys)) {
-            throw new RecordNotFoundException(__(
-                'Record not found in table "{0}"',
-                [$this->Action->association()->target()->table()]
-            ));
+            throw new RecordNotFoundException(
+                __('Record not found in table "{0}"', $this->Action->association()->target()->table()),
+                400
+            );
         }
 
         return call_user_func($this->Action, $sourceEntity, $targetEntities->toArray());
