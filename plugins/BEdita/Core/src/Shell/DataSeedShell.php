@@ -147,6 +147,22 @@ class DataSeedShell extends Shell
     }
 
     /**
+     * Generate data for "object_types" table
+     *
+     * @return array
+     */
+    protected function objectTypesData()
+    {
+        return [
+            'name' => $this->faker->sentence(1),
+            'pluralized' => $this->faker->sentence(1),
+            'description' => $this->faker->paragraph,
+            'plugin' => $this->faker->sentence(1),
+            'model' => $this->faker->sentence(1)
+        ];
+    }
+
+    /**
      * Parse fields.
      *
      * @param string $fields Field string to be parsed.
