@@ -20,7 +20,7 @@ class FakeFelinesFixture extends TestFixture
 
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'family' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
+        'family' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'precision' => null],
         '_constraints' => [
              'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
