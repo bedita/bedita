@@ -45,7 +45,7 @@ class IsUniqueAmongst extends IsUnique
         }
 
         return [
-            'OR' => $this->_alias($alias, $conditions),
+            'OR' => $this->_alias($alias, $conditions, true),
         ];
     }
 
@@ -62,7 +62,7 @@ class IsUniqueAmongst extends IsUnique
         $conditions = $this->buildConditions($alias, $entity->extract(array_keys($this->_fields)));
         if ($entity->isNew() === false) {
             $keys = (array)$options['repository']->primaryKey();
-            $keys = $this->_alias($alias, $entity->extract($keys));
+            $keys = $this->_alias($alias, $entity->extract($keys), true);
             if (array_filter($keys, 'strlen')) {
                 $conditions['NOT'] = $keys;
             }
