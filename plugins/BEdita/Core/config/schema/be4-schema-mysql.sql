@@ -2,6 +2,7 @@
 -- DROP existing tables
 -- --------------------
 
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS config;
 DROP TABLE IF EXISTS trees;
 DROP TABLE IF EXISTS object_relations;
@@ -17,11 +18,14 @@ DROP TABLE IF EXISTS properties;
 DROP TABLE IF EXISTS property_types;
 DROP TABLE IF EXISTS object_types;
 DROP TABLE IF EXISTS roles_users;
+DROP TABLE IF EXISTS endpoint_permissions;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS external_auth;
 DROP TABLE IF EXISTS auth_providers;
 DROP TABLE IF EXISTS users;
-
+DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS endpoints;
+SET FOREIGN_KEY_CHECKS=1;
 -- ------------------
 --   USERS & AUTH
 -- ------------------
@@ -135,6 +139,7 @@ CREATE TABLE config (
   INDEX config_context_idx (context)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'configuration parameters' ;
+
 
 -- -------------
 --   OBJECTS
@@ -267,6 +272,77 @@ CREATE TABLE object_permissions (
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'permissions on objects through roles and operations (RBAC)';
+
+
+-- ---------------------------
+--  ENDPOINTS / APPLICATIONS
+-- ---------------------------
+
+CREATE TABLE applications (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL                 COMMENT 'application name',
+  descripion TEXT NOT NULL                   COMMENT 'application description',
+  created DATETIME NOT NULL                  COMMENT 'creation date',
+  modified DATETIME NOT NULL                 COMMENT 'last modification date',
+
+  PRIMARY KEY (id),
+  UNIQUE applications_name_uq (name)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
+
+
+-- CREATE TABLE api_keys (
+
+--  key_value VARCHAR(255) NOT NULL            COMMENT 'api key value',
+--  descripion TEXT NOT NULL                   COMMENT 'group name of configuration parameters',
+--  application_id SMALLINT UNSIGNED NULL       COMMENT 'link to applications.id',
+--  created DATETIME NOT NULL                  COMMENT 'creation date',
+--  modified DATETIME NOT NULL                 COMMENT 'last modification date',
+
+--  PRIMARY KEY (id),
+--  CONSTRAINT apikeys_applicationid_fk FOREIGN KEY (application_id)
+--      REFERENCES applications (id) ON DELETE CASCADE ON UPDATE NO ACTION,
+
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client api keys' ;
+
+
+CREATE TABLE endpoints (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL                COMMENT 'endpoint name without slash, will be used as /name',
+  descripion TEXT NULL                      COMMENT 'endpoint description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled  BOOL NOT NULL DEFAULT 1          COMMENT 'endpoint active flag',
+  object_type_id SMALLINT UNSIGNED NULL     COMMENT 'link to object_types.id in case of an object type endpoint',
+
+  PRIMARY KEY (id),
+  UNIQUE endpoints_name_uq (name),
+  CONSTRAINT endpoins_objecttypeid_fk FOREIGN KEY (object_type_id)
+    REFERENCES object_types (id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'API available endpoints' ;
+
+
+CREATE TABLE endpoint_permissions (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  endpoint_id SMALLINT UNSIGNED NOT NULL    COMMENT 'link to endpoints.id',
+  application_id SMALLINT UNSIGNED NULL     COMMENT 'link to applications.id - may be null',
+  role_id INT UNSIGNED NULL                 COMMENT 'link to roles.id - may be null',
+  permission INT NOT NULL DEFAULT 0         COMMENT 'endpoint permission for role and app',
+
+  PRIMARY KEY (id),
+  CONSTRAINT endpointspermissions_endpointid_fk FOREIGN KEY (endpoint_id)
+    REFERENCES endpoints (id),
+  CONSTRAINT endpointspermissions_applicationid_fk FOREIGN KEY (application_id)
+    REFERENCES applications (id),
+  CONSTRAINT endpointspermissions_roleid_fk FOREIGN KEY (role_id)
+    REFERENCES roles (id),
+  UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
 
 
 -- --------------------------------------
