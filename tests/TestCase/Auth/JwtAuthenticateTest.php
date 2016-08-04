@@ -134,7 +134,7 @@ class JwtAuthenticateTest extends TestCase
      */
     public function testGetToken($expected, array $config, Request $request)
     {
-        $auth = new JwtAuthenticate($this->getMock('Cake\Controller\ComponentRegistry'), $config);
+        $auth = new JwtAuthenticate($this->getMockBuilder('Cake\Controller\ComponentRegistry')->getMock(), $config);
 
         $result = $auth->getToken($request);
 
@@ -234,7 +234,7 @@ class JwtAuthenticateTest extends TestCase
         $debug = Configure::read('debug');
         Configure::write('debug', false);
 
-        $auth = new JwtAuthenticate($this->getMock('Cake\Controller\ComponentRegistry'), $config);
+        $auth = new JwtAuthenticate($this->getMockBuilder('Cake\Controller\ComponentRegistry')->getMock(), $config);
 
         $result = $auth->getUser($request);
 

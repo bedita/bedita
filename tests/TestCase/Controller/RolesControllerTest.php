@@ -70,8 +70,8 @@ class RolesControllerTest extends IntegrationTestCase
                         'description' => 'this is the very first role',
                         'unchangeable' => true,
                         'backend_auth' => true,
-                        'created' => '2016-04-15T09:57:38+0000',
-                        'modified' => '2016-04-15T09:57:38+0000',
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/1',
@@ -85,8 +85,8 @@ class RolesControllerTest extends IntegrationTestCase
                         'description' => 'this is a second role',
                         'unchangeable' => false,
                         'backend_auth' => false,
-                        'created' => '2016-04-15T11:59:12+0000',
-                        'modified' => '2016-04-15T11:59:13+0000',
+                        'created' => '2016-04-15T11:59:12+00:00',
+                        'modified' => '2016-04-15T11:59:13+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/2',
@@ -179,8 +179,8 @@ class RolesControllerTest extends IntegrationTestCase
                     'description' => 'this is the very first role',
                     'unchangeable' => true,
                     'backend_auth' => true,
-                    'created' => '2016-04-15T09:57:38+0000',
-                    'modified' => '2016-04-15T09:57:38+0000',
+                    'created' => '2016-04-15T09:57:38+00:00',
+                    'modified' => '2016-04-15T09:57:38+00:00',
                 ],
             ],
         ];
