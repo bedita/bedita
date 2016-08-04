@@ -64,11 +64,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'first object_type',
-                        'pluralized' => 'pluralized sample 1',
-                        'description' => 'this is the very first object_type',
-                        'plugin' => 'plugin sample 1',
-                        'model' => 'model sample 1'
+                        'name' => 'document',
+                        'pluralized' => 'documents',
+                        'alias' => 'Documents',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/1',
@@ -78,11 +80,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'second object_type',
-                        'pluralized' => 'pluralized sample 2',
-                        'description' => 'this is the second object_type',
-                        'plugin' => 'plugin sample 2',
-                        'model' => 'model sample 2'
+                        'name' => 'profile',
+                        'pluralized' => 'profiles',
+                        'alias' => 'Profiles',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Profiles',
+                        'table' => 'BEdita/Core.Profiles'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/2',
@@ -171,11 +175,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'id' => '1',
                 'type' => 'object_types',
                 'attributes' => [
-                    'name' => 'first object_type',
-                    'pluralized' => 'pluralized sample 1',
-                    'description' => 'this is the very first object_type',
-                    'plugin' => 'plugin sample 1',
-                    'model' => 'model sample 1'
+                    'name' => 'document',
+                    'pluralized' => 'documents',
+                    'alias' => 'Documents',
+                    'description' => null,
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'table' => 'BEdita/Core.Objects'
                 ],
             ],
         ];
@@ -203,6 +209,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
+
     public function testMissing()
     {
         $expected = [
@@ -249,7 +256,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'head_of_support',
+                'name' => 'my_object_type',
+                'pluralized' => 'my_object_types',
+                'alias' => 'My Object Type',
+                'description' => null,
+                'plugin' => 'BEdita/Core',
+                'model' => 'Objects',
+                'table' => 'BEdita/Core.Objects'
             ],
         ];
 
@@ -265,7 +278,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/object_types/3');
-        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'head_of_support']));
+        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
     }
 
     /**
@@ -317,7 +330,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'id' => '1',
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'new_name',
+                'name' => 'document new',
             ],
         ];
 
@@ -332,7 +345,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_name', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
     }
 
     /**
@@ -350,7 +363,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'id' => '1',
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'new_name',
+                'name' => 'profile new',
             ],
         ];
 
@@ -365,41 +378,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first object_type', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
-        $this->assertEquals('second object_type', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
-    }
-
-    /**
-     * Test edit method with invalid data.
-     *
-     * @return void
-     *
-     * @covers ::edit()
-     * @covers ::initialize()
-     */
-
-    public function testEditInvalid()
-    {
-        $data = [
-            'id' => '1',
-            'type' => 'object_types',
-            'attributes' => [
-                'description' => 'second object_type',
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->patch('/object_types/1', json_encode(compact('data')));
-
-        $this->assertResponseCode(400);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first object_type', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
     }
 
     /**
