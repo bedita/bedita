@@ -23,6 +23,25 @@ Prerequisites:
  $ composer install
  ```
 
+3. Configure your database connection editing `Datasources.default` in `config/app.php`
+4. Run shell script to initialize the database
+
+ ```bash
+ $ bin/cake db_admin init
+ ```
+
+5. If you have configured a virtualhost in your webserver you can point
+ the browser to `http://your-vhost/home` or you can take advantage of
+ PHP server launching it with
+
+ ```bash
+ $ bin/cake server
+ ```
+
+ and following the link shown pointing to `/home` endpoint,
+ for example `http://localhost:8765/home`
+
+
 ## Documentation
 
  * Developer documentation can be found [here](http://bedita.readthedocs.org/en/4-develop)
