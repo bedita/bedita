@@ -14,6 +14,7 @@
  */
 namespace BEdita\Manage\Console;
 
+use Cake\Utility\Security;
 use Composer\Script\Event;
 use Exception;
 
@@ -174,10 +175,10 @@ class Installer
         $config = $dir . '/config/app.php';
         $content = file_get_contents($config);
 
-        $newKey = hash('sha256', $dir . php_uname() . microtime(true));
+        $newKey = hash('sha256', Security::randomBytes(64));
         $content = str_replace('__SALT__', $newKey, $content, $count);
 
-        if (!$count) {
+        if ($count == 0) {
             $io->write('No Security.salt placeholder to replace.');
 
             return;
