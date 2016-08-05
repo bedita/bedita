@@ -115,8 +115,8 @@ jQuery.fn.extend({
             if (pause != -1) {
                 setTimeout(function() {
                     $_this.fadeOut(1000);
-                });
-            }               
+                }, pause);
+            }
         } else if (type == "warn") {
             $_this.show();
         }
