@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -28,6 +27,9 @@ class UsersControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
@@ -66,32 +68,94 @@ class UsersControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'users',
                     'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'first-user',
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+0000',
+                        'modified' => '2016-05-13T07:09:23+0000',
+                        'published' => null,
+                        'title' => 'Mr. First User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'name' => 'First',
+                        'surname' => 'User',
+                        'email' => 'first.user@example.com',
+                        'person_title' => 'Mr.',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'object_type_id' => 3,
+                        'publish_start' => null,
+                        'publish_end' => null,
                         'username' => 'first user',
                         'blocked' => false,
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ]
                 ],
                 [
-                    'id' => '2',
+                    'id' => '5',
                     'type' => 'users',
                     'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'second-user',
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+0000',
+                        'modified' => '2016-05-13T07:09:23+0000',
+                        'published' => null,
+                        'title' => 'Miss Second User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'name' => 'Second',
+                        'surname' => 'User',
+                        'email' => 'second.user@example.com',
+                        'person_title' => 'Miss',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'object_type_id' => 3,
+                        'publish_start' => null,
+                        'publish_end' => null,
                         'username' => 'second user',
                         'blocked' => false,
                         'last_login' => '2016-03-15T09:57:38+0000',
                         'last_login_err' => '2016-03-15T09:57:38+0000',
                         'num_login_err' => 0,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/users/2',
+                        'self' => 'http://api.example.com/users/5',
                     ]
                 ],
             ],
@@ -144,13 +208,44 @@ class UsersControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'users',
                     'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'first-user',
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+0000',
+                        'modified' => '2016-05-13T07:09:23+0000',
+                        'published' => null,
+                        'title' => 'Mr. First User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'name' => 'First',
+                        'surname' => 'User',
+                        'email' => 'first.user@example.com',
+                        'person_title' => 'Mr.',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'object_type_id' => 3,
+                        'publish_start' => null,
+                        'publish_end' => null,
                         'username' => 'first user',
                         'blocked' => false,
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -239,13 +334,44 @@ class UsersControllerTest extends IntegrationTestCase
                 'id' => '1',
                 'type' => 'users',
                 'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'first-user',
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+0000',
+                    'modified' => '2016-05-13T07:09:23+0000',
+                    'published' => null,
+                    'title' => 'Mr. First User',
+                    'description' => null,
+                    'body' => null,
+                    'extra' => null,
+                    'lang' => 'eng',
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'name' => 'First',
+                    'surname' => 'User',
+                    'email' => 'first.user@example.com',
+                    'person_title' => 'Mr.',
+                    'gender' => null,
+                    'birthdate' => null,
+                    'deathdate' => null,
+                    'company' => false,
+                    'company_name' => null,
+                    'company_kind' => null,
+                    'street_address' => null,
+                    'city' => null,
+                    'zipcode' => null,
+                    'country' => null,
+                    'state_name' => null,
+                    'phone' => null,
+                    'website' => null,
+                    'object_type_id' => 3,
+                    'publish_start' => null,
+                    'publish_end' => null,
                     'username' => 'first user',
                     'blocked' => false,
                     'last_login' => null,
                     'last_login_err' => null,
                     'num_login_err' => 1,
-                    'created' => '2016-03-15T09:57:38+0000',
-                    'modified' => '2016-03-15T09:57:38+0000',
                 ],
             ],
         ];
@@ -318,6 +444,11 @@ class UsersControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'users',
             'attributes' => [
+                'object_type_id' => 3,
+                'status' => 'on',
+                'uname' => 'gustavo-supporto-user',
+                'lang' => 'eng',
+                'company' => false,
                 'username' => 'gustavo_supporto',
                 'password_hash' => 'aiuto',
             ],
@@ -334,7 +465,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/3');
+        $this->assertHeader('Location', 'http://api.example.com/users/6');
         $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
@@ -428,12 +559,12 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/users/2', json_encode(compact('data')));
+        $this->patch('/users/5', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
-        $this->assertEquals('second user', TableRegistry::get('Users')->get(2)->get('username'));
+        $this->assertEquals('second user', TableRegistry::get('Users')->get(5)->get('username'));
     }
 
     /**
