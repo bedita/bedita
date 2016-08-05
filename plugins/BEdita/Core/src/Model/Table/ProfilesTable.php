@@ -29,6 +29,8 @@ class ProfilesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -53,6 +55,8 @@ class ProfilesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -104,11 +108,9 @@ class ProfilesTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * {@inheritDoc}
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {

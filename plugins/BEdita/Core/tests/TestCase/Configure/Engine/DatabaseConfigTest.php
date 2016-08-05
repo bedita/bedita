@@ -48,8 +48,7 @@ class DatabaseConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        TableRegistry::clear();
-        TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
+
         $this->DatabaseConfig = new DatabaseConfig();
     }
 

@@ -52,7 +52,7 @@ class ProfilesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Profiles = TableRegistry::get('BEdita/Core.Profiles');
+        $this->Profiles = TableRegistry::get('Profiles');
     }
 
     /**
@@ -71,6 +71,7 @@ class ProfilesTableTest extends TestCase
      * Test initialize method
      *
      * @return void
+     * @coversNothing
      */
     public function testInitialize()
     {
@@ -132,8 +133,7 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
      * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
      */

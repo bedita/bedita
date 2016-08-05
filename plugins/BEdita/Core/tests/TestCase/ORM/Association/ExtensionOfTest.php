@@ -80,7 +80,11 @@ class ExtensionOfTest extends TestCase
         unset($this->fakeFelines);
         unset($this->fakeMammals);
         unset($this->fakeAnimals);
-        TableRegistry::clear();
+
+        TableRegistry::remove('FakeFelines');
+        TableRegistry::remove('FakeMammals');
+        TableRegistry::remove('FakeAnimals');
+
         parent::tearDown();
     }
 
