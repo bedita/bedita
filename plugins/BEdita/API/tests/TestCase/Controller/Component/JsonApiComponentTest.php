@@ -38,7 +38,7 @@ class JsonApiComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -101,19 +101,19 @@ class JsonApiComponentTest extends TestCase
     public function testLinks()
     {
         $expected = [
-            'self' => 'http://example.org/users',
+            'self' => 'http://example.org/roles',
             'home' => 'http://example.org/home',
         ];
 
         $request = new Request([
             'params' => [
                 'plugin' => 'BEdita/API',
-                'controller' => 'Users',
+                'controller' => 'Roles',
                 'action' => 'index',
                 '_method' => 'GET',
             ],
             'base' => '/',
-            'url' => 'users',
+            'url' => 'roles',
         ]);
         $controller = new Controller($request);
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
@@ -131,9 +131,9 @@ class JsonApiComponentTest extends TestCase
         return [
             'default' => [
                 [
-                    'self' => 'http://example.org/users',
-                    'first' => 'http://example.org/users',
-                    'last' => 'http://example.org/users',
+                    'self' => 'http://example.org/roles',
+                    'first' => 'http://example.org/roles',
+                    'last' => 'http://example.org/roles',
                     'prev' => null,
                     'next' => null,
                     'home' => 'http://example.org/home',
@@ -151,11 +151,11 @@ class JsonApiComponentTest extends TestCase
             ],
             'limit' => [
                 [
-                    'self' => 'http://example.org/users?limit=1',
-                    'first' => 'http://example.org/users?limit=1',
-                    'last' => 'http://example.org/users?limit=1&page=2',
+                    'self' => 'http://example.org/roles?limit=1',
+                    'first' => 'http://example.org/roles?limit=1',
+                    'last' => 'http://example.org/roles?limit=1&page=2',
                     'prev' => null,
-                    'next' => 'http://example.org/users?limit=1&page=2',
+                    'next' => 'http://example.org/roles?limit=1&page=2',
                     'home' => 'http://example.org/home',
                 ],
                 [
@@ -173,10 +173,10 @@ class JsonApiComponentTest extends TestCase
             ],
             'page' => [
                 [
-                    'self' => 'http://example.org/users?page=2&limit=1',
-                    'first' => 'http://example.org/users?limit=1',
-                    'last' => 'http://example.org/users?page=2&limit=1',
-                    'prev' => 'http://example.org/users?limit=1',
+                    'self' => 'http://example.org/roles?page=2&limit=1',
+                    'first' => 'http://example.org/roles?limit=1',
+                    'last' => 'http://example.org/roles?page=2&limit=1',
+                    'prev' => 'http://example.org/roles?limit=1',
                     'next' => null,
                     'home' => 'http://example.org/home',
                 ],
@@ -211,21 +211,21 @@ class JsonApiComponentTest extends TestCase
      */
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {
-        $this->loadFixtures('Users');
+        $this->loadFixtures('Roles');
 
         $request = new Request([
             'params' => [
                 'plugin' => 'BEdita/API',
-                'controller' => 'Users',
+                'controller' => 'Roles',
                 'action' => 'index',
                 '_method' => 'GET',
             ],
             'base' => '/',
-            'url' => 'users',
+            'url' => 'roles',
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::get('BEdita/Core.Users'));
+        $controller->paginate(TableRegistry::get('BEdita/Core.Roles'));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         $this->assertEquals($expectedLinks, $component->getLinks());
