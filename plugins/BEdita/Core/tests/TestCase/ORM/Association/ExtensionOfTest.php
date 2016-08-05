@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM\Association;
 
 use BEdita\Core\ORM\Association\ExtensionOf;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -133,6 +134,7 @@ class ExtensionOfTest extends TestCase
     /**
      * Test testSaveAssociated
      *
+     * @param array $entityData Entity data.
      * @return void
      * @dataProvider saveAssociatedProvider
      * @covers ::saveAssociated()
@@ -190,7 +192,7 @@ class ExtensionOfTest extends TestCase
             try {
                 $entity = $this->{$table}->get($id);
                 $this->fail(ucfirst($table) . ' record not deleted');
-            } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
+            } catch (RecordNotFoundException $ex) {
                 continue;
             }
         }
