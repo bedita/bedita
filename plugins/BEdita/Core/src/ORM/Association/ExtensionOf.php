@@ -93,9 +93,12 @@ class ExtensionOf extends BelongsTo
             $propertiesToRemove = array_keys($targetData);
         }
 
-        $targetEntity = $this->target()->newEntity($targetData, [
-            'accessibleFields' => ['*' => true]
+        $targetEntity = $this->target()->newEntity();
+        $targetEntity->isNew($entity->isNew());
+        $this->target()->patchEntity($targetEntity, $targetData, [
+            'accessibleFields' => ['*' => true],
         ]);
+        $targetEntity->dirty($this->bindingKey(), true);
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;
