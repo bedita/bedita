@@ -30,24 +30,22 @@ class UsersFixture extends TestFixture
     {
         $this->records = [
             [
+                'id' => 1,
                 'username' => 'first user',
                 'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
                 'blocked' => 0,
                 'last_login' => null,
                 'last_login_err' => null,
                 'num_login_err' => 1,
-                'created' => '2016-03-15 09:57:38',
-                'modified' => '2016-03-15 09:57:38',
             ],
             [
+                'id' => 5,
                 'username' => 'second user',
                 'password_hash' => (new DefaultPasswordHasher())->hash('password2'),
                 'blocked' => 0,
                 'last_login' => '2016-03-15 09:57:38',
                 'last_login_err' => '2016-03-15 09:57:38',
                 'num_login_err' => 0,
-                'created' => '2016-03-15 09:57:38',
-                'modified' => '2016-03-15 09:57:38',
             ],
         ];
 
