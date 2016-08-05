@@ -38,6 +38,9 @@ class UsersTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
 
@@ -91,6 +94,13 @@ class UsersTableTest extends TestCase
             'valid' => [
                 true,
                 [
+                    'object_type_id' => 3,
+                    'status' => 'draft',
+                    'uname' => 'some-unique-value',
+                    'lang' => 'eng',
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'company' => false,
                     'username' => 'some_unique_value',
                     'password_hash' => null,
                 ],

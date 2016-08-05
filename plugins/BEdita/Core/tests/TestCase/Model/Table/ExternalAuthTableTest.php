@@ -37,6 +37,9 @@ class ExternalAuthTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.auth_providers',
         'plugin.BEdita/Core.external_auth',

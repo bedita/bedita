@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -53,16 +52,41 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 5,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 5,
                     'page_size' => 20,
                 ],
             ],
             'data' => [
                 [
                     'id' => '1',
+                    'type' => 'user',
+                    'attributes' => [
+                        'object_type_id' => 3,
+                        'status' => 'on',
+                        'uname' => 'first-user',
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+0000',
+                        'modified' => '2016-05-13T07:09:23+0000',
+                        'published' => null,
+                        'title' => 'Mr. First User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/objects/1',
+                    ]
+                ],
+                [
+                    'id' => '2',
                     'type' => 'document',
                     'attributes' => [
                         'object_type_id' => 1,
@@ -77,20 +101,20 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'body' => 'body here',
                         'extra' => [
                             'abstract' => 'abstract here',
-                            'list' => "[\"one\", \"two\", \"three\"]"
+                            'list' => ['one', 'two', 'three'],
                         ],
                         'lang' => 'eng',
                         'created_by' => 1,
                         'modified_by' => 1,
                         'publish_start' => '2016-05-13T07:09:23+0000',
-                        'publish_end' => '2016-05-13T07:09:23+0000'
+                        'publish_end' => '2016-05-13T07:09:23+0000',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/1',
+                        'self' => 'http://api.example.com/objects/2',
                     ]
                 ],
                 [
-                    'id' => '2',
+                    'id' => '3',
                     'type' => 'document',
                     'attributes' => [
                         'object_type_id' => 1,
@@ -111,11 +135,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/2',
+                        'self' => 'http://api.example.com/objects/3',
                     ]
                 ],
                 [
-                    'id' => '3',
+                    'id' => '4',
                     'type' => 'profile',
                     'attributes' => [
                         'object_type_id' => 2,
@@ -136,7 +160,32 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/3',
+                        'self' => 'http://api.example.com/objects/4',
+                    ]
+                ],
+                [
+                    'id' => '5',
+                    'type' => 'user',
+                    'attributes' => [
+                        'object_type_id' => 3,
+                        'status' => 'on',
+                        'uname' => 'second-user',
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+0000',
+                        'modified' => '2016-05-13T07:09:23+0000',
+                        'published' => null,
+                        'title' => 'Miss Second User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/objects/5',
                     ]
                 ],
             ],
@@ -215,11 +264,11 @@ class ObjectsControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/objects/1',
+                'self' => 'http://api.example.com/objects/2',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
-                'id' => '1',
+                'id' => '2',
                 'type' => 'document',
                 'attributes' => [
                     'object_type_id' => 1,
@@ -234,7 +283,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'body' => 'body here',
                     'extra' => [
                         'abstract' => 'abstract here',
-                        'list' => "[\"one\", \"two\", \"three\"]"
+                        'list' => ['one', 'two', 'three'],
                     ],
                     'lang' => 'eng',
                     'created_by' => 1,
@@ -251,7 +300,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/objects/1');
+        $this->get('/objects/2');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);

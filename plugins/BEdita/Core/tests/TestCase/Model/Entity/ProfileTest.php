@@ -14,7 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\Profile;
-use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -39,10 +38,10 @@ class ProfileTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -75,7 +74,7 @@ class ProfileTest extends TestCase
      */
     public function testAccessible()
     {
-        $profile = $this->Profiles->get(3);
+        $profile = $this->Profiles->get(4);
 
         $data = [
             'id' => 42,
@@ -86,6 +85,6 @@ class ProfileTest extends TestCase
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(3, $profile->id);
+        $this->assertEquals(4, $profile->id);
     }
 }

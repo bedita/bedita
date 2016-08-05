@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -28,8 +27,11 @@ class RolesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
     ];
 
@@ -69,7 +71,6 @@ class RolesControllerTest extends IntegrationTestCase
                         'name' => 'first role',
                         'description' => 'this is the very first role',
                         'unchangeable' => true,
-                        'backend_auth' => true,
                         'created' => '2016-04-15T09:57:38+0000',
                         'modified' => '2016-04-15T09:57:38+0000',
                     ],
@@ -84,7 +85,6 @@ class RolesControllerTest extends IntegrationTestCase
                         'name' => 'second role',
                         'description' => 'this is a second role',
                         'unchangeable' => false,
-                        'backend_auth' => false,
                         'created' => '2016-04-15T11:59:12+0000',
                         'modified' => '2016-04-15T11:59:13+0000',
                     ],
@@ -178,7 +178,6 @@ class RolesControllerTest extends IntegrationTestCase
                     'name' => 'first role',
                     'description' => 'this is the very first role',
                     'unchangeable' => true,
-                    'backend_auth' => true,
                     'created' => '2016-04-15T09:57:38+0000',
                     'modified' => '2016-04-15T09:57:38+0000',
                 ],
