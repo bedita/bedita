@@ -53,6 +53,6 @@ class Object extends Entity
         'modified' => false,
         'published' => false,
         'created_by' => false,
-        'modified_by' => false
+        'modified_by' => false,
     ];
 }

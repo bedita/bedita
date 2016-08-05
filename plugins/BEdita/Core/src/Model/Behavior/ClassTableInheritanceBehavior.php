@@ -163,7 +163,7 @@ class ClassTableInheritanceBehavior extends Behavior
      *
      * @see BEdita\Core\ORM\TableInheritanceManager::inheritedTables()
      * @param bool $nested If it must return the complete inherited tables (default false)
-     * @return array
+     * @return \Cake\ORM\Table[]
      */
     public function inheritedTables($nested = false)
     {
