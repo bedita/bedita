@@ -26,7 +26,7 @@ class DataSeedShellTest extends ShellTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -67,11 +67,11 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testValidationErrors()
     {
-        $this->loadFixtures('Users');
-        $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '1', '-f', 'blocked=no']);
+        $this->loadFixtures('Roles');
+        $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '1', '-f', 'unchangeable=no']);
 
-         $this->assertAborted();
-         $this->assertErrorContains('Entity validation failed');
+        $this->assertAborted();
+        $this->assertErrorContains('Entity validation failed');
     }
 
     /**
@@ -81,29 +81,29 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testBuildRulesErrors()
     {
-        $this->loadFixtures('Users');
-        $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '2', '-f', 'username=double']);
+        $this->loadFixtures('Roles');
+        $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '2', '-f', 'name=double']);
 
-         $this->assertAborted();
-         $this->assertErrorContains('Application rules failed');
+        $this->assertAborted();
+        $this->assertErrorContains('Application rules failed');
     }
 
     /**
-     * Test seeding of users.
+     * Test seeding of roles.
      *
      * @return void
      */
-    public function testUserSeeding()
+    public function testRoleSeeding()
     {
-        $this->loadFixtures('Users');
+        $this->loadFixtures('Roles');
 
-        $Users = TableRegistry::get('BEdita/Core.Users');
-        $before = $Users->find('all')->count();
+        $Roles = TableRegistry::get('BEdita/Core.Roles');
+        $before = $Roles->find('all')->count();
 
-        $this->invoke(['data_seed', 'insert', '-t', 'users', '-n', '10']);
+        $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '10']);
         $this->assertNotAborted($this->getError());
 
-        $after = $Users->find('all')->count();
+        $after = $Roles->find('all')->count();
 
         $this->assertEquals($before + 10, $after);
     }
