@@ -53,10 +53,10 @@ class ObjectTypesController extends AppController
     {
         $query = $this->ObjectTypes->find('all');
 
-        $object_types = $this->paginate($query);
+        $objectTypes = $this->paginate($query);
 
-        $this->set(compact('object_types'));
-        $this->set('_serialize', ['object_types']);
+        $this->set(compact('objectTypes'));
+        $this->set('_serialize', ['objectTypes']);
     }
 
     /**
@@ -67,11 +67,10 @@ class ObjectTypesController extends AppController
      */
     public function view($id)
     {
+        $objectTypes = $this->ObjectTypes->get($id);
 
-        $object_type = $this->ObjectTypes->get($id);
-
-        $this->set(compact('object_type'));
-        $this->set('_serialize', ['object_type']);
+        $this->set(compact('objectTypes'));
+        $this->set('_serialize', ['objectTypes']);
     }
 
     /**
@@ -84,13 +83,13 @@ class ObjectTypesController extends AppController
     {
         $this->request->allowMethod('post');
 
-        $object_type = $this->ObjectTypes->newEntity($this->request->data);
-        if (!$this->ObjectTypes->save($object_type)) {
+        $objectTypes = $this->ObjectTypes->newEntity($this->request->data);
+        if (!$this->ObjectTypes->save($objectTypes)) {
             throw new BadRequestException('Invalid data');
         }
 
         $this->response->statusCode(201);
-        $this->response->header('Location', Router::url(['_name' => 'api:object_types:view', $object_type->id], true));
+        $this->response->header('Location', Router::url(['_name' => 'api:object_types:view', $objectTypes->id], true));
 
         $this->set(compact('object_type'));
         $this->set('_serialize', ['object_type']);
@@ -114,14 +113,14 @@ class ObjectTypesController extends AppController
             throw new ConflictException('IDs don\' match');
         }
 
-        $object_type = $this->ObjectTypes->get($id);
-        $object_type = $this->ObjectTypes->patchEntity($object_type, $this->request->data);
-        if (!$this->ObjectTypes->save($object_type)) {
+        $objectType = $this->ObjectTypes->get($id);
+        $objectType = $this->ObjectTypes->patchEntity($objectType, $this->request->data);
+        if (!$this->ObjectTypes->save($objectType)) {
             throw new BadRequestException('Invalid data');
         }
 
-        $this->set(compact('object_type'));
-        $this->set('_serialize', ['object_type']);
+        $this->set(compact('objectType'));
+        $this->set('_serialize', ['objectType']);
     }
 
     /**
@@ -135,8 +134,8 @@ class ObjectTypesController extends AppController
     {
         $this->request->allowMethod('delete');
 
-        $object_type = $this->ObjectTypes->get($id);
-        if (!$this->ObjectTypes->delete($object_type)) {
+        $objectType = $this->ObjectTypes->get($id);
+        if (!$this->ObjectTypes->delete($objectType)) {
             throw new InternalErrorException('Could not delete object_type');
         }
 
