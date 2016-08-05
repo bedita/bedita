@@ -190,9 +190,24 @@ class AreasController extends ModulesController {
 
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
-			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
-					$this->Tree->appendChild($r["id"], $id);
+                $isDesc = $this->Tree->find('count', array(
+                    'conditions' => array(
+                        'id' => $r['id'],
+                        'parent_id' => $id,
+                    ),
+                ));
+
+                if (!$isDesc) {
+                    if ($this->BEObject->getType($r['id']) === 'Section') {
+                        $this->userWarnMessage(
+                            sprintf(__('A subsection (ID %d) has been removed from this parent by a concurrent editor! (Maybe you using another browser tab?)', true), $r['id'])
+                        );
+                        continue;
+                    }
+
+                    $this->Tree->appendChild($r['id'], $id);
 				}
+
 				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
@@ -250,9 +265,24 @@ class AreasController extends ModulesController {
 
 			// add new children and reorder priority
 			foreach ($reorder as $r) {
-			 	if (!$this->Tree->find("first", array("conditions" => "id=".$r["id"]." AND parent_id=".$id))) {
-					$this->Tree->appendChild($r["id"], $id);
+                $isDesc = $this->Tree->find('count', array(
+                    'conditions' => array(
+                        'id' => $r['id'],
+                        'parent_id' => $id,
+                    ),
+                ));
+
+                if (!$isDesc) {
+                    if ($this->BEObject->getType($r['id']) === 'Section') {
+                        $this->userWarnMessage(
+                            sprintf(__('A subsection (ID %d) has been removed from this parent by a concurrent editor! (Maybe you using another browser tab?)', true), $r['id'])
+                        );
+                        continue;
+                    }
+
+                    $this->Tree->appendChild($r['id'], $id);
 				}
+
 				if (!$this->Tree->setPriority($r['id'], $r['priority'], $id)) {
 					throw new BeditaException( __("Error during reorder children priority", true), $r["id"]);
 				}
