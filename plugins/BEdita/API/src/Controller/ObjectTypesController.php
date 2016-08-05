@@ -18,18 +18,18 @@ use Cake\Network\Exception\InternalErrorException;
 use Cake\Routing\Router;
 
 /**
- * Controller for `/roles` endpoint.
+ * Controller for `/object_types` endpoint.
  *
  * @since 4.0.0
  *
- * @property \BEdita\Core\Model\Table\RolesTable $Roles
+ * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
  */
-class RolesController extends AppController
+class ObjectTypesController extends AppController
 {
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'Roles';
+    public $modelClass = 'ObjectTypes';
 
     /**
      * {@inheritDoc}
@@ -38,43 +38,43 @@ class RolesController extends AppController
     {
         parent::initialize();
 
-        $this->set('_type', 'roles');
+        $this->set('_type', 'object_types');
         if (isset($this->JsonApi)) {
-            $this->JsonApi->config('resourceTypes', ['roles']);
+            $this->JsonApi->config('resourceTypes', ['object_types']);
         }
     }
 
     /**
-     * Paginated roles list.
+     * Paginated object_types list.
      *
      * @return void
      */
     public function index()
     {
-        $query = $this->Roles->find('all');
+        $query = $this->ObjectTypes->find('all');
 
-        $roles = $this->paginate($query);
+        $objectTypes = $this->paginate($query);
 
-        $this->set(compact('roles'));
-        $this->set('_serialize', ['roles']);
+        $this->set(compact('objectTypes'));
+        $this->set('_serialize', ['objectTypes']);
     }
 
     /**
-     * Get role's data.
+     * Get object_type's data.
      *
-     * @param int $id Role ID.
+     * @param int $id ObjectType ID.
      * @return void
      */
     public function view($id)
     {
-        $role = $this->Roles->get($id);
+        $objectTypes = $this->ObjectTypes->get($id);
 
-        $this->set(compact('role'));
-        $this->set('_serialize', ['role']);
+        $this->set(compact('objectTypes'));
+        $this->set('_serialize', ['objectTypes']);
     }
 
     /**
-     * Add a new role.
+     * Add a new object_type.
      *
      * @return void
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
@@ -83,26 +83,26 @@ class RolesController extends AppController
     {
         $this->request->allowMethod('post');
 
-        $role = $this->Roles->newEntity($this->request->data);
-        if (!$this->Roles->save($role)) {
+        $objectTypes = $this->ObjectTypes->newEntity($this->request->data);
+        if (!$this->ObjectTypes->save($objectTypes)) {
             throw new BadRequestException('Invalid data');
         }
 
         $this->response->statusCode(201);
-        $this->response->header('Location', Router::url(['_name' => 'api:roles:view', $role->id], true));
+        $this->response->header('Location', Router::url(['_name' => 'api:object_types:view', $objectTypes->id], true));
 
-        $this->set(compact('role'));
-        $this->set('_serialize', ['role']);
+        $this->set(compact('object_type'));
+        $this->set('_serialize', ['object_type']);
     }
 
     /**
-     * Edit an existing role.
+     * Edit an existing object_type.
      *
-     * @param int $id Role ID.
+     * @param int $id ObjectType ID.
      * @return void
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if role ID in the payload doesn't match
-     *      the role ID in the URL.
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified role could not be found.
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object_type ID in the payload doesn't match
+     *      the object_type ID in the URL.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object_type could not be found.
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
      */
     public function edit($id)
@@ -113,20 +113,20 @@ class RolesController extends AppController
             throw new ConflictException('IDs don\' match');
         }
 
-        $role = $this->Roles->get($id);
-        $role = $this->Roles->patchEntity($role, $this->request->data);
-        if (!$this->Roles->save($role)) {
+        $objectType = $this->ObjectTypes->get($id);
+        $objectType = $this->ObjectTypes->patchEntity($objectType, $this->request->data);
+        if (!$this->ObjectTypes->save($objectType)) {
             throw new BadRequestException('Invalid data');
         }
 
-        $this->set(compact('role'));
-        $this->set('_serialize', ['role']);
+        $this->set(compact('objectType'));
+        $this->set('_serialize', ['objectType']);
     }
 
     /**
-     * Delete an existing role.
+     * Delete an existing object_type.
      *
-     * @param int $id Role ID.
+     * @param int $id ObjectType ID.
      * @return void
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
@@ -134,9 +134,9 @@ class RolesController extends AppController
     {
         $this->request->allowMethod('delete');
 
-        $role = $this->Roles->get($id);
-        if (!$this->Roles->delete($role)) {
-            throw new InternalErrorException('Could not delete role');
+        $objectType = $this->ObjectTypes->get($id);
+        if (!$this->ObjectTypes->delete($objectType)) {
+            throw new InternalErrorException('Could not delete object_type');
         }
 
         $this->noContentResponse();

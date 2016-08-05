@@ -17,9 +17,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\RolesController
+ * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
  */
-class RolesControllerTest extends IntegrationTestCase
+class ObjectTypesControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -28,9 +28,7 @@ class RolesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.object_types'
     ];
 
     /**
@@ -45,9 +43,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles',
-                'first' => 'http://api.example.com/roles',
-                'last' => 'http://api.example.com/roles',
+                'self' => 'http://api.example.com/object_types',
+                'first' => 'http://api.example.com/object_types',
+                'last' => 'http://api.example.com/object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -64,32 +62,34 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'roles',
+                    'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'first role',
-                        'description' => 'this is the very first role',
-                        'unchangeable' => true,
-                        'backend_auth' => true,
-                        'created' => '2016-04-15T09:57:38+0000',
-                        'modified' => '2016-04-15T09:57:38+0000',
+                        'name' => 'document',
+                        'pluralized' => 'documents',
+                        'alias' => 'Documents',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects'
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/roles/1',
+                        'self' => 'http://api.example.com/object_types/1',
                     ]
                 ],
                 [
                     'id' => '2',
-                    'type' => 'roles',
+                    'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'second role',
-                        'description' => 'this is a second role',
-                        'unchangeable' => false,
-                        'backend_auth' => false,
-                        'created' => '2016-04-15T11:59:12+0000',
-                        'modified' => '2016-04-15T11:59:13+0000',
+                        'name' => 'profile',
+                        'pluralized' => 'profiles',
+                        'alias' => 'Profiles',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Profiles',
+                        'table' => 'BEdita/Core.Profiles'
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/roles/2',
+                        'self' => 'http://api.example.com/object_types/2',
                     ]
                 ],
             ],
@@ -101,7 +101,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/roles');
+        $this->get('/object_types');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -121,9 +121,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles',
-                'first' => 'http://api.example.com/roles',
-                'last' => 'http://api.example.com/roles',
+                'self' => 'http://api.example.com/object_types',
+                'first' => 'http://api.example.com/object_types',
+                'last' => 'http://api.example.com/object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -140,7 +140,7 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Roles')->deleteAll([]);
+        TableRegistry::get('ObjectTypes')->deleteAll([]);
 
         $this->configRequest([
             'headers' => [
@@ -148,7 +148,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/roles');
+        $this->get('/object_types');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -168,19 +168,20 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/1',
+                'self' => 'http://api.example.com/object_types/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
-                'type' => 'roles',
+                'type' => 'object_types',
                 'attributes' => [
-                    'name' => 'first role',
-                    'description' => 'this is the very first role',
-                    'unchangeable' => true,
-                    'backend_auth' => true,
-                    'created' => '2016-04-15T09:57:38+0000',
-                    'modified' => '2016-04-15T09:57:38+0000',
+                    'name' => 'document',
+                    'pluralized' => 'documents',
+                    'alias' => 'Documents',
+                    'description' => null,
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'table' => 'BEdita/Core.Objects'
                 ],
             ],
         ];
@@ -191,7 +192,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/roles/1');
+        $this->get('/object_types/1');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -212,7 +213,7 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles/99',
+                'self' => 'http://api.example.com/object_types/99',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -226,7 +227,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/roles/99');
+        $this->get('/object_types/99');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
@@ -251,9 +252,15 @@ class RolesControllerTest extends IntegrationTestCase
     public function testAdd()
     {
         $data = [
-            'type' => 'roles',
+            'type' => 'object_types',
             'attributes' => [
-                'name' => 'head_of_support',
+                'name' => 'my_object_type',
+                'pluralized' => 'my_object_types',
+                'alias' => 'My Object Type',
+                'description' => null,
+                'plugin' => 'BEdita/Core',
+                'model' => 'Objects',
+                'table' => 'BEdita/Core.Objects'
             ],
         ];
 
@@ -264,12 +271,12 @@ class RolesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/roles', json_encode(compact('data')));
+        $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/roles/3');
-        $this->assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+        $this->assertHeader('Location', 'http://api.example.com/object_types/3');
+        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
     }
 
     /**
@@ -283,13 +290,13 @@ class RolesControllerTest extends IntegrationTestCase
     public function testAddInvalid()
     {
         $data = [
-            'type' => 'roles',
+            'type' => 'object_types',
             'attributes' => [
-                'description' => 'Anonymous role.',
+                'description' => 'Anonymous object_type.',
             ],
         ];
 
-        $count = TableRegistry::get('Roles')->find()->count();
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
 
         $this->configRequest([
             'headers' => [
@@ -298,11 +305,11 @@ class RolesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/roles', json_encode(compact('data')));
+        $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Roles')->find()->count());
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
     }
 
     /**
@@ -317,9 +324,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'roles',
+            'type' => 'object_types',
             'attributes' => [
-                'name' => 'new_name',
+                'name' => 'document new',
             ],
         ];
 
@@ -330,11 +337,11 @@ class RolesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/roles/1', json_encode(compact('data')));
+        $this->patch('/object_types/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_name', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
     }
 
     /**
@@ -349,9 +356,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'roles',
+            'type' => 'object_types',
             'attributes' => [
-                'name' => 'new_name',
+                'name' => 'profile new',
             ],
         ];
 
@@ -362,44 +369,12 @@ class RolesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/roles/2', json_encode(compact('data')));
+        $this->patch('/object_types/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
-        $this->assertEquals('second role', TableRegistry::get('Roles')->get(2)->get('name'));
-    }
-
-    /**
-     * Test edit method with invalid data.
-     *
-     * @return void
-     *
-     * @covers ::edit()
-     * @covers ::initialize()
-     */
-    public function testEditInvalid()
-    {
-        $data = [
-            'id' => '1',
-            'type' => 'roles',
-            'attributes' => [
-                'name' => 'second role',
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->patch('/roles/1', json_encode(compact('data')));
-
-        $this->assertResponseCode(400);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first role', TableRegistry::get('Roles')->get(1)->get('name'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
     }
 
     /**
@@ -418,10 +393,10 @@ class RolesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->delete('/roles/1');
+        $this->delete('/object_types/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 1]));
     }
 }

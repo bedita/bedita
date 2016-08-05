@@ -22,7 +22,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "cakephp/cakephp": "~3.2"
+        "cakephp/cakephp": "~3.2",
+        "firebase/php-jwt": "~3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "*",

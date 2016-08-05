@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -41,20 +43,7 @@ class UsersTable extends Table
         $this->primaryKey('id');
         $this->displayField('username');
 
-        $this->addBehavior('Timestamp', [
-            'events' => [
-                'Model.beforeSave' => [
-                    'created' => 'new',
-                    'modified' => 'always',
-                ],
-                'Users.login' => [
-                    'last_login' => 'always',
-                ],
-                'Users.loginError' => [
-                    'last_login_err' => 'always',
-                ],
-            ],
-        ]);
+        $this->addBehavior('Timestamp');
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
@@ -64,6 +53,8 @@ class UsersTable extends Table
         $this->belongsToMany('Roles', [
             'className' => 'BEdita/Core.Roles',
         ]);
+
+        EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
 
     /**
@@ -108,5 +99,22 @@ class UsersTable extends Table
         $rules->add($rules->isUnique(['username']));
 
         return $rules;
+    }
+
+    /**
+     * Update last login.
+     *
+     * @param \Cake\Event\Event $event Dispatched event.
+     * @return void
+     */
+    public function login(Event $event)
+    {
+        $data = $event->data();
+
+        if (empty($data[0]['id'])) {
+            return;
+        }
+
+        $this->updateAll(['last_login' => time()], ['id' => $data[0]['id']]);
     }
 }

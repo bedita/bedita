@@ -61,9 +61,15 @@ return [
      * - salt - A random string used in security hashing methods.
      *   The salt value is also used as the encryption key.
      *   You should treat it as extremely sensitive data.
+     * - jwt - Duration and algorithm for JSON Web Tokens.
+     *   By default, `duration` is `'+2 hours'`, and `algorithm` is `'HS256'`.
      */
     'Security' => [
         'salt' => env('SECURITY_SALT', '__SALT__'),
+        // 'jwt' => [
+        //     'duration' => '+2 hours',
+        //     'algorithm' => 'HS256',
+        // ],
     ],
 
     /**

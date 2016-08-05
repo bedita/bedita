@@ -18,7 +18,6 @@ use Cake\Routing\Router;
  * Controller for `/home` endpoint.
  *
  * @since 4.0.0
- *
  */
 class HomeController extends AppController
 {
@@ -32,7 +31,7 @@ class HomeController extends AppController
     {
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/users', '/roles'];
+        $endPoints = ['/objects', '/users', '/roles', '/object_types'];
         foreach ($endPoints as $e) {
             $resources[$e] = [
                 'href' => $baseUrl . $e,
