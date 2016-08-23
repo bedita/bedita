@@ -38,31 +38,54 @@ class SetAssociated extends UpdateAssociated
     public function __invoke(EntityInterface $entity, $relatedEntities)
     {
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            if ($relatedEntities === null) {
-                $relatedEntities = [];
-            } elseif (!is_array($relatedEntities)) {
-                $relatedEntities = [$relatedEntities];
+            $relatedEntities = $this->prepareEntities($relatedEntities, true);
+
+            if ($this->Association instanceof HasMany) {
+                return $this->Association->replace($entity, $relatedEntities);
             }
 
             return $this->Association->replaceLinks($entity, $relatedEntities);
         }
 
-        if ($relatedEntities !== null && !($relatedEntities instanceof EntityInterface)) {
-            throw new \InvalidArgumentException(__('Unable to link multiple entities'));
-        }
+        $relatedEntities = $this->prepareEntities($relatedEntities, false);
 
         if ($this->Association instanceof BelongsTo) {
             $entity[$this->Association->property()] = $relatedEntities;
 
-            return $this->Association->source()->save($entity);
+            return (bool)$this->Association->source()->save($entity);
         }
 
         if ($this->Association instanceof HasOne) {
             $relatedEntities[$this->Association->foreignKey()] = $entity;
 
-            return $this->Association->target()->save($relatedEntities);
+            return (bool)$this->Association->target()->save($relatedEntities);
         }
 
         throw new \RuntimeException(__('Unknown association of type "{0}"', get_class($this->Association)));
+    }
+
+    /**
+     * Prepare related entities.
+     *
+     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
+     * @param bool $multiple Are multiple entities expected?
+     * @return array|null
+     * @throws \InvalidArgumentException Throws an exception if multiple entities are not supported, and a list is passed.
+     */
+    protected function prepareEntities($relatedEntities, $multiple)
+    {
+        if ($relatedEntities === null) {
+            return $multiple ? [] : null;
+        }
+
+        if (!$multiple && !($relatedEntities instanceof EntityInterface)) {
+            throw new \InvalidArgumentException(__('Unable to link multiple entities'));
+        }
+
+        if ($multiple && !is_array($relatedEntities)) {
+            return [$relatedEntities];
+        }
+
+        return $relatedEntities;
     }
 }
