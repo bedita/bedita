@@ -20,6 +20,9 @@ TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
 TableRegistry::config('Roles', ['className' => 'BEdita/Core.Roles']);
 TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
 
+TableRegistry::config('Objects', ['className' => 'BEdita/Core.Objects']);
+TableRegistry::config('Profiles', ['className' => 'BEdita/Core.Profiles']);
+
 /**
  * Load 'core' configuration parameters
  */

@@ -29,6 +29,8 @@ class RolesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -54,6 +56,8 @@ class RolesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -78,6 +82,8 @@ class RolesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {

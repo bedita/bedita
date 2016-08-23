@@ -65,8 +65,6 @@ class JsonTypeTest extends TestCase
     {
         unset($this->JsonSchemaTable);
 
-        TableRegistry::clear();
-
         parent::tearDown();
     }
 

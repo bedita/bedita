@@ -16,6 +16,7 @@ use BEdita\API\Network\Exception\UnsupportedMediaTypeException;
 use BEdita\API\Utility\JsonApi;
 use Cake\Controller\Component;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\ForbiddenException;
@@ -86,6 +87,10 @@ class JsonApiComponent extends Component
 
             return JsonApi::parseData((array)$json['data']);
         } catch (\InvalidArgumentException $e) {
+            if (Configure::read('debug') && !(empty($json))) {
+                throw $e;
+            }
+
             return [];
         }
     }

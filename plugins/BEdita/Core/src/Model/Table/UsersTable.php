@@ -32,6 +32,8 @@ class UsersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -57,6 +59,8 @@ class UsersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -87,6 +91,8 @@ class UsersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {

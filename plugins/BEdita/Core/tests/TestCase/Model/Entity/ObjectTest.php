@@ -50,7 +50,7 @@ class ObjectTest extends TestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('BEdita/Core.Objects');
+        $this->Objects = TableRegistry::get('Objects');
     }
 
     /**
@@ -59,8 +59,6 @@ class ObjectTest extends TestCase
     public function tearDown()
     {
         unset($this->Objects);
-
-        TableRegistry::clear();
 
         parent::tearDown();
     }

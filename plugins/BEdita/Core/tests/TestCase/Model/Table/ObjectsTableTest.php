@@ -37,7 +37,7 @@ class ObjectsTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('BEdita/Core.Objects');
+        $this->Objects = TableRegistry::get('Objects');
     }
 
     /**
@@ -54,7 +54,7 @@ class ObjectsTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -123,8 +123,7 @@ class ObjectsTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
