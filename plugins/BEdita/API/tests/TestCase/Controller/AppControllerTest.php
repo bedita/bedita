@@ -41,7 +41,7 @@ class AppControllerTest extends IntegrationTestCase
         return [
             'json' => [
                 200,
-                'application/json',
+                'application/json; charset=UTF-8',
                 'application/json',
             ],
             'jsonapi' => [
@@ -65,7 +65,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlDebugMode' => [
                 200,
-                'text/html',
+                'text/html; charset=UTF-8',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 1,
@@ -74,7 +74,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlAccepted' => [
                 200,
-                'text/html',
+                'text/html; charset=UTF-8',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 0,
