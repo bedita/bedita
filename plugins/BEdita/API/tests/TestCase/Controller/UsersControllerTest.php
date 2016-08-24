@@ -482,6 +482,7 @@ class UsersControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
         $this->delete('/users/1');
