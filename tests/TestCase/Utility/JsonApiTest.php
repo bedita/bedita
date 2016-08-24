@@ -46,7 +46,7 @@ class JsonApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('BEdita/Core.Users');
+        $this->Users = TableRegistry::get('Users');
     }
 
     /**
