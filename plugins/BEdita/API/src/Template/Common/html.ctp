@@ -32,7 +32,7 @@ $this->layout = null;
     <title><?= __('BEdita 4 - API response') ?></title>
 
     <script type="text/javascript">
-        var jsonData = <?= $response ?>;
+        var jsonData = <?= $responseBody ?>;
         $(function() {
             $("#main").JSONView(jsonData);
         });

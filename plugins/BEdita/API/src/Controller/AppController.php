@@ -12,12 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Error\ExceptionRenderer;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 
 /**
@@ -169,23 +170,44 @@ class AppController extends Controller
      */
     protected function html()
     {
-        if ($this->request->is('requested')) {
-            throw new NotFoundException();
+        $this->request->allowMethod('get');
+        $method = $this->request->method();
+        $url = $this->request->here();
+
+        // render JSON API response
+        try {
+            $this->request->env('HTTP_ACCEPT', 'application/json');
+            $this->loadComponent('BEdita/API.JsonApi');
+
+            $this->viewBuilder()->className('BEdita/API.JsonApi');
+            $this->invokeAction();
+            $responseBody = $this->render()->body();
+
+            $this->dispatchEvent('Controller.shutdown');
+            $dispatcher = DispatcherFactory::create();
+            $args = [
+                'request' => $this->request,
+                'response' => $this->response,
+            ];
+            $dispatcher->dispatchEvent('Dispatcher.afterDispatch', $args);
+
+            $this->components()->unload('JsonApi');
+            unset($this->JsonApi);
+        } catch (\Exception $exception) {
+            $renderer = new ExceptionRenderer($exception);
+            $response = $renderer->render();
+            $responseBody = $response->body();
+            $this->response->statusCode($response->statusCode());
         }
 
-        $method = $this->request->method();
-        $url = Router::reverse($this->request);
-        $response = $this->requestAction($url, [
-            'environment' => [
-                'HTTP_CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json',
-                'REQUEST_METHOD' => $method,
-            ],
-        ]);
+        $this->set(compact('method', 'responseBody', 'url'));
 
-        $this->set(compact('method', 'response', 'url'));
+        // render HTML
+        $this->viewBuilder()
+            ->className('View')
+            ->template('Common/html');
 
-        $this->viewBuilder()->template('Common/html');
+        $this->response->type('html');
 
         return $this->render();
     }
