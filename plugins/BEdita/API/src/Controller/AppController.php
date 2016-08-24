@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Error\ExceptionRenderer;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -169,23 +170,37 @@ class AppController extends Controller
      */
     protected function html()
     {
-        if ($this->request->is('requested')) {
-            throw new NotFoundException();
+        $method = $this->request->method();
+        $url = $this->request->here();
+
+        // render JSON API response
+        try {
+            $httpAccept = $this->request->env('HTTP_ACCEPT');
+            $this->request->env('HTTP_ACCEPT', 'application/json');
+            $this->loadComponent('BEdita/API.JsonApi');
+            $this->viewBuilder()->className('BEdita/API.JsonApi');
+            $this->invokeAction();
+            $responseBody = $this->render()->body();
+        } catch (\Exception $exception) {
+            $renderer = new ExceptionRenderer($exception);
+            $response = $renderer->render();
+            $responseBody = $response->body();
+            $this->response->statusCode($response->statusCode());
         }
 
-        $method = $this->request->method();
-        $url = Router::reverse($this->request);
-        $response = $this->requestAction($url, [
-            'environment' => [
-                'HTTP_CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json',
-                'REQUEST_METHOD' => $method,
-            ],
-        ]);
+        $this->set(compact('method', 'responseBody', 'url'));
 
-        $this->set(compact('method', 'response', 'url'));
+        // render HTML
+        //$this->request->env('HTTP_ACCEPT', $httpAccept);
+        $this->components()->unload('JsonApi');
+        unset($this->JsonApi);
+        $this->viewClass = null;
+        $this->viewBuilder()
+            ->className('View')
+            ->plugin(false)
+            ->template('Common/html');
 
-        $this->viewBuilder()->template('Common/html');
+        $this->response->type('html');
 
         return $this->render();
     }
