@@ -52,7 +52,7 @@ abstract class ResourcesController extends AppController
             }
         }
         if ($Association === null) {
-            throw new NotFoundException(__('Relationship {0} does not exist', [$relationship]));
+            throw new NotFoundException(__('Relationship "{0}" does not exist', $relationship));
         }
 
         $coreAction = null;
@@ -73,7 +73,7 @@ abstract class ResourcesController extends AppController
             $action = new UpdateAssociated($coreAction, $this->request);
 
             if (!$action($id)) {
-                throw new InternalErrorException(__('Could not update relationship {0}', [$relationship]));
+                throw new InternalErrorException(__('Could not update relationship "{0}"', $relationship));
             }
         }
 
