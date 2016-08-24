@@ -46,7 +46,7 @@ class RolesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Roles = TableRegistry::get('BEdita/Core.Roles');
+        $this->Roles = TableRegistry::get('Roles');
     }
 
     /**
@@ -55,7 +55,7 @@ class RolesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Roles);
-        TableRegistry::clear();
+
         parent::tearDown();
     }
 
@@ -63,7 +63,7 @@ class RolesTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -106,8 +106,7 @@ class RolesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

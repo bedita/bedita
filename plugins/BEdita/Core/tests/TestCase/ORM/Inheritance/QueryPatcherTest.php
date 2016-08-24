@@ -91,9 +91,12 @@ class QueryPatcherTest extends TestCase
      */
     public function tearDown()
     {
-        TableRegistry::clear();
         unset($this->fakeFelines);
         unset($this->fakeMammals);
+
+        TableRegistry::remove('FakeFelines');
+        TableRegistry::remove('FakeMammals');
+
         parent::tearDown();
     }
 

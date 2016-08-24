@@ -52,7 +52,7 @@ class ProfilesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Profiles = TableRegistry::get('BEdita/Core.Profiles');
+        $this->Profiles = TableRegistry::get('Profiles');
     }
 
     /**
@@ -71,6 +71,7 @@ class ProfilesTableTest extends TestCase
      * Test initialize method
      *
      * @return void
+     * @coversNothing
      */
     public function testInitialize()
     {
@@ -101,12 +102,24 @@ class ProfilesTableTest extends TestCase
                 [
                     'name' => 'Channelweb Srl',
                     'company' => true,
+                    'object_type_id' => 2,
+                    'uname' => 'object-associated-' . md5(microtime()),
+                    'status' => 'draft',
+                    'lang' => 'eng',
+                    'created_by' => 1,
+                    'modified_by' => 1,
                 ],
             ],
             'notUniqueEmail' => [
                 false,
                 [
                     'email' => 'gustavo.supporto@channelweb.it',
+                    'object_type_id' => 2,
+                    'uname' => 'object-associated-' . md5(microtime()),
+                    'status' => 'draft',
+                    'lang' => 'eng',
+                    'created_by' => 1,
+                    'modified_by' => 1,
                 ],
             ],
         ];
@@ -120,29 +133,13 @@ class ProfilesTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
+     * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
+     * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
      */
     public function testValidation($expected, array $data)
     {
-        // @todo: remove and put as $data fields when CTI save is completed
-        $data['object'] = [
-            'object_type_id' => 2,
-            'uname' => 'object-associated-' . md5(implode('|', $data)),
-            'status' => 'draft',
-            'lang' => 'eng',
-            'created_by' => 1,
-            'modified_by' => 1,
-        ];
-
-        // @todo: remove `associated` when CTI save is complete
-        $profile = $this->Profiles->newEntity($data, [
-            'associated' => [
-                'Objects' => [
-                    'accessibleFields' => ['*' => true]
-                ]
-            ]
-        ]);
+        $profile = $this->Profiles->newEntity($data);
 
         $error = (bool)$profile->errors();
         $this->assertEquals($expected, !$error, print_r($profile->errors(), true));
