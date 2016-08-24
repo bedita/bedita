@@ -18,7 +18,6 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
-use Cake\Network\Exception\NotFoundException;
 use Cake\Routing\Router;
 
 /**
@@ -193,7 +192,6 @@ class AppController extends Controller
         // render HTML
         $this->components()->unload('JsonApi');
         unset($this->JsonApi);
-        $this->viewClass = null;
         $this->viewBuilder()
             ->className('View')
             ->plugin(false)
