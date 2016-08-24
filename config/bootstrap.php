@@ -15,7 +15,6 @@ use BEdita\API\Controller\Component\JsonApiComponent;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
-use Cake\Event\EventManager;
 use Cake\Network\Request;
 
 /**
