@@ -14,6 +14,8 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\ORM\Association;
+use Cake\ORM\Association\HasMany;
+use Cake\ORM\Association\HasOne;
 use Cake\ORM\Query;
 
 /**
@@ -45,7 +47,7 @@ class ListAssociated
      * Find existing relations.
      *
      * @param mixed $primaryKey Primary key of entity to find associations for.
-     * @return \Cake\Datasource\EntityInterface[]
+     * @return \Cake\Datasource\EntityInterface[]|\Cake\Datasource\EntityInterface|null
      * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if an invalid
      *      primary key is passed.
      */
@@ -56,13 +58,20 @@ class ListAssociated
             (array)$this->Association->source()->primaryKey()
         );
 
+        $joinFields = [];
+        if ($this->Association instanceof HasMany || $this->Association instanceof HasOne) {
+            $joinFields = (array)$this->Association->foreignKey();
+        }
+
         $associated = $this->Association->source()
             ->get($primaryKey, [
                 'fields' => $sourcePrimaryKey,
                 'contain' => [
-                    $this->Association->name() => function (Query $q) {
+                    $this->Association->name() => function (Query $q) use ($joinFields) {
+                        $fields = array_merge((array)$this->Association->primaryKey(), $joinFields);
+
                         return $q
-                            ->select((array)$this->Association->primaryKey());
+                            ->select($fields);
                     },
                 ],
             ])
@@ -70,7 +79,10 @@ class ListAssociated
 
         if (is_array($associated)) {
             $associated = array_map(
-                function ($entity) {
+                function ($entity) use ($joinFields) {
+                    foreach ($joinFields as $joinField) {
+                        unset($entity[$joinField]);
+                    }
                     unset($entity['_joinData']);
 
                     return $entity;
