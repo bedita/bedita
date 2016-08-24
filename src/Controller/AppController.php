@@ -18,6 +18,7 @@ use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
+use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 
 /**
@@ -177,9 +178,21 @@ class AppController extends Controller
         try {
             $this->request->env('HTTP_ACCEPT', 'application/json');
             $this->loadComponent('BEdita/API.JsonApi');
+
             $this->viewBuilder()->className('BEdita/API.JsonApi');
             $this->invokeAction();
             $responseBody = $this->render()->body();
+
+            $this->dispatchEvent('Controller.shutdown');
+            $dispatcher = DispatcherFactory::create();
+            $args = [
+                'request' => $this->request,
+                'response' => $this->response,
+            ];
+            $dispatcher->dispatchEvent('Dispatcher.afterDispatch', $args);
+
+            $this->components()->unload('JsonApi');
+            unset($this->JsonApi);
         } catch (\Exception $exception) {
             $renderer = new ExceptionRenderer($exception);
             $response = $renderer->render();
@@ -190,11 +203,8 @@ class AppController extends Controller
         $this->set(compact('method', 'responseBody', 'url'));
 
         // render HTML
-        $this->components()->unload('JsonApi');
-        unset($this->JsonApi);
         $this->viewBuilder()
             ->className('View')
-            ->plugin(false)
             ->template('Common/html');
 
         $this->response->type('html');
