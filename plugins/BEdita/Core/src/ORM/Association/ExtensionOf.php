@@ -66,7 +66,7 @@ class ExtensionOf extends BelongsTo
     /**
      * {@inheritDoc}
      */
-    public function transformRow($row, $nestKey, $joined)
+    public function transformRow($row, $nestKey, $joined, $targetProperty = null)
     {
         $sourceAlias = $this->source()->alias();
         $nestKey = $nestKey ?: $this->_name;
