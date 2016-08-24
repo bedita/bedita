@@ -162,22 +162,22 @@ if (!Configure::read('App.fullBaseUrl')) {
     unset($httpHost, $s);
 }
 
-Cache::config(Configure::consume('Cache'));
-ConnectionManager::config(Configure::consume('Datasources'));
-Email::configTransport(Configure::consume('EmailTransport'));
-Email::config(Configure::consume('Email'));
-Log::config(Configure::consume('Log'));
+Cache::config(Configure::consume('Cache') ?: []);
+ConnectionManager::config(Configure::consume('Datasources') ?: []);
+Email::configTransport(Configure::consume('EmailTransport') ?: []);
+Email::config(Configure::consume('Email') ?: []);
+Log::config(Configure::consume('Log') ?: []);
 Security::salt(Configure::consume('Security.salt'));
 
 /*
  * Setup detectors for mobile and tablet.
  */
-Request::addDetector('mobile', function ($request) {
+Request::addDetector('mobile', function () {
     $detector = new \Detection\MobileDetect();
 
     return $detector->isMobile();
 });
-Request::addDetector('tablet', function ($request) {
+Request::addDetector('tablet', function () {
     $detector = new \Detection\MobileDetect();
 
     return $detector->isTablet();

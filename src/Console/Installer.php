@@ -178,7 +178,7 @@ class Installer
         $newKey = hash('sha256', Security::randomBytes(64));
         $content = str_replace('__SALT__', $newKey, $content, $count);
 
-        if ($count == 0) {
+        if ($count === 0) {
             $io->write('No Security.salt placeholder to replace.');
 
             return;
