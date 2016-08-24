@@ -170,12 +170,12 @@ class AppController extends Controller
      */
     protected function html()
     {
+        $this->request->allowMethod('get');
         $method = $this->request->method();
         $url = $this->request->here();
 
         // render JSON API response
         try {
-            $httpAccept = $this->request->env('HTTP_ACCEPT');
             $this->request->env('HTTP_ACCEPT', 'application/json');
             $this->loadComponent('BEdita/API.JsonApi');
             $this->viewBuilder()->className('BEdita/API.JsonApi');
@@ -191,7 +191,6 @@ class AppController extends Controller
         $this->set(compact('method', 'responseBody', 'url'));
 
         // render HTML
-        //$this->request->env('HTTP_ACCEPT', $httpAccept);
         $this->components()->unload('JsonApi');
         unset($this->JsonApi);
         $this->viewClass = null;
