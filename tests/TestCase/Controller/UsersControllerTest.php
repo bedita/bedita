@@ -71,8 +71,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
+                        'created' => '2016-03-15T09:57:38+00:00',
+                        'modified' => '2016-03-15T09:57:38+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -84,11 +84,11 @@ class UsersControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'username' => 'second user',
                         'blocked' => false,
-                        'last_login' => '2016-03-15T09:57:38+0000',
-                        'last_login_err' => '2016-03-15T09:57:38+0000',
+                        'last_login' => '2016-03-15T09:57:38+00:00',
+                        'last_login_err' => '2016-03-15T09:57:38+00:00',
                         'num_login_err' => 0,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
+                        'created' => '2016-03-15T09:57:38+00:00',
+                        'modified' => '2016-03-15T09:57:38+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/2',
@@ -149,8 +149,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'last_login' => null,
                         'last_login_err' => null,
                         'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+0000',
-                        'modified' => '2016-03-15T09:57:38+0000',
+                        'created' => '2016-03-15T09:57:38+00:00',
+                        'modified' => '2016-03-15T09:57:38+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -244,8 +244,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login' => null,
                     'last_login_err' => null,
                     'num_login_err' => 1,
-                    'created' => '2016-03-15T09:57:38+0000',
-                    'modified' => '2016-03-15T09:57:38+0000',
+                    'created' => '2016-03-15T09:57:38+00:00',
+                    'modified' => '2016-03-15T09:57:38+00:00',
                 ],
             ],
         ];
@@ -482,6 +482,7 @@ class UsersControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
         $this->delete('/users/1');
