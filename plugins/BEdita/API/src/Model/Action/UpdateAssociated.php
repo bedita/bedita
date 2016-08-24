@@ -62,20 +62,26 @@ class UpdateAssociated
     {
         $sourceEntity = $this->Action->association()->source()->get($primaryKey);
 
-        $targetPrimaryKeys = Hash::extract($this->request->data, '{*}.id');
-        $targetPrimaryKeyField = $this->Action->association()->aliasField($this->Action->association()->primaryKey());
-        $targetEntities = $this->Action->association()->find()
-            ->where([
-                $targetPrimaryKeyField . ' IN' => $targetPrimaryKeys,
-            ]);
+        $targetPrimaryKeys = (array)$this->request->data('id') ?: Hash::extract($this->request->data, '{*}.id');
+        $targetPKField = $this->Action->association()->aliasField($this->Action->association()->primaryKey());
 
-        if ($targetEntities->count() !== count($targetPrimaryKeys)) {
-            throw new RecordNotFoundException(
-                __('Record not found in table "{0}"', $this->Action->association()->target()->table()),
-                400
-            );
+        $targetEntities = null;
+        if (count($targetPrimaryKeys)) {
+            $targetEntities = $this->Action->association()->find()
+                ->where([
+                    $targetPKField . ' IN' => $targetPrimaryKeys,
+                ]);
+
+            if ($targetEntities->count() !== count($targetPrimaryKeys)) {
+                throw new RecordNotFoundException(
+                    __('Record not found in table "{0}"', $this->Action->association()->target()->table()),
+                    400
+                );
+            }
+
+            $targetEntities = (count($targetPrimaryKeys) > 1) ? $targetEntities->toArray() : $targetEntities->firstOrFail();
         }
 
-        return call_user_func($this->Action, $sourceEntity, $targetEntities->toArray());
+        return call_user_func($this->Action, $sourceEntity, $targetEntities);
     }
 }
