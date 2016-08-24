@@ -25,7 +25,7 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('api', 'database');
 }
 
-/** Set API exception renderer. @todo: verify -> This also requires error handler to be reset. */
+/** Set API exception renderer. This also requires error handler to be reset. */
 Configure::write('Error.exceptionRenderer', 'BEdita\API\Error\ExceptionRenderer');
 restore_error_handler();
 restore_exception_handler();
