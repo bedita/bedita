@@ -96,8 +96,6 @@ class UsersTableTest extends TestCase
                     'status' => 'draft',
                     'uname' => 'some-unique-value',
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                     'company' => false,
                     'username' => 'some_unique_value',
                     'password_hash' => null,
@@ -127,6 +125,8 @@ class UsersTableTest extends TestCase
     {
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data);
+        $user->set('created_by', 1);
+        $user->set('modified_by', 1);
 
         $error = (bool)$user->errors();
         $this->assertEquals($expected, !$error);
