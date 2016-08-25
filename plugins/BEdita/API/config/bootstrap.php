@@ -39,8 +39,3 @@ Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml',
 Request::addDetector('jsonapi', function (Request $request) {
     return $request->accepts(JsonApiComponent::CONTENT_TYPE);
 });
-
-/**
- * Load API meta config.
- */
-Configure::load('BEdita/API.bedita', 'ini');
