@@ -46,7 +46,7 @@ class ConfigTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Config = TableRegistry::get('BEdita/Core.Config');
+        $this->Config = TableRegistry::get('Config');
     }
 
     /**
@@ -55,6 +55,7 @@ class ConfigTest extends TestCase
     public function tearDown()
     {
         unset($this->Config);
+
         parent::tearDown();
     }
 

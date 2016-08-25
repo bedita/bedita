@@ -68,8 +68,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'first-user',
                         'locked' => true,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
@@ -83,7 +83,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/objects/1',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -93,9 +93,9 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'title-one',
                         'locked' => true,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
-                        'published' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
                         'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
@@ -106,12 +106,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'lang' => 'eng',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'publish_start' => '2016-05-13T07:09:23+0000',
-                        'publish_end' => '2016-05-13T07:09:23+0000',
+                        'publish_start' => '2016-05-13T07:09:23+00:00',
+                        'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/objects/2',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -121,8 +121,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'status' => 'draft',
                         'uname' => 'title-two',
                         'locked' => false,
-                        'created' => '2016-05-12T07:09:23+0000',
-                        'modified' => '2016-05-13T08:30:00+0000',
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
                         'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
@@ -136,7 +136,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/objects/3',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '4',
@@ -146,8 +146,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
                         'locked' => false,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Gustavo Supporto profile',
                         'description' => 'Some description about Gustavo',
@@ -161,7 +161,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/objects/4',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '5',
@@ -171,8 +171,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'second-user',
                         'locked' => false,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
@@ -186,7 +186,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/objects/5',
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -275,9 +275,9 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'status' => 'on',
                     'uname' => 'title-one',
                     'locked' => true,
-                    'created' => '2016-05-13T07:09:23+0000',
-                    'modified' => '2016-05-13T07:09:23+0000',
-                    'published' => '2016-05-13T07:09:23+0000',
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
                     'title' => 'title one',
                     'description' => 'description here',
                     'body' => 'body here',
@@ -288,8 +288,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'lang' => 'eng',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-05-13T07:09:23+0000',
-                    'publish_end' => '2016-05-13T07:09:23+0000'
+                    'publish_start' => '2016-05-13T07:09:23+00:00',
+                    'publish_end' => '2016-05-13T07:09:23+00:00',
                 ],
             ],
         ];

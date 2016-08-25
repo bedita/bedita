@@ -225,7 +225,7 @@ class JsonApiComponentTest extends TestCase
             'query' => $query,
         ]);
         $controller = new Controller($request);
-        $controller->paginate(TableRegistry::get('BEdita/Core.Roles'));
+        $controller->paginate(TableRegistry::get('Roles'));
         $component = new JsonApiComponent(new ComponentRegistry($controller), []);
 
         $this->assertEquals($expectedLinks, $component->getLinks());
@@ -278,7 +278,7 @@ class JsonApiComponentTest extends TestCase
                 '{"some", "invalid":"json"',
             ],
             'invalidJsonApi' => [
-                [],
+                false,
                 '{"data":{"type":null,"attributes":{"key":"value"}}}',
             ],
         ];
@@ -296,6 +296,10 @@ class JsonApiComponentTest extends TestCase
      */
     public function testParseInput($expected, $input)
     {
+        if ($expected === false) {
+            $this->setExpectedException('\InvalidArgumentException');
+        }
+
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
 
         $result = $component->parseInput($input);

@@ -30,6 +30,8 @@ class AuthProvidersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -47,6 +49,8 @@ class AuthProvidersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -69,6 +73,8 @@ class AuthProvidersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {
@@ -79,6 +85,8 @@ class AuthProvidersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     protected function _initializeSchema(Schema $schema)
     {

@@ -47,7 +47,7 @@ class AuthProvidersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->AuthProviders = TableRegistry::get('BEdita/Core.AuthProviders');
+        $this->AuthProviders = TableRegistry::get('AuthProviders');
     }
 
     /**
@@ -57,8 +57,6 @@ class AuthProvidersTableTest extends TestCase
     {
         unset($this->AuthProviders);
 
-        TableRegistry::clear();
-
         parent::tearDown();
     }
 
@@ -66,8 +64,7 @@ class AuthProvidersTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::_initializeSchema()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -127,8 +124,7 @@ class AuthProvidersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

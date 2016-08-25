@@ -97,7 +97,7 @@ class DataSeedShellTest extends ShellTestCase
     {
         $this->loadFixtures('Roles');
 
-        $Roles = TableRegistry::get('BEdita/Core.Roles');
+        $Roles = TableRegistry::get('Roles');
         $before = $Roles->find('all')->count();
 
         $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '10']);

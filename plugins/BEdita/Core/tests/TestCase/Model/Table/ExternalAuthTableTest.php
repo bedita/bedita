@@ -52,7 +52,7 @@ class ExternalAuthTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->ExternalAuth = TableRegistry::get('BEdita/Core.ExternalAuth');
+        $this->ExternalAuth = TableRegistry::get('ExternalAuth');
     }
 
     /**
@@ -62,8 +62,6 @@ class ExternalAuthTableTest extends TestCase
     {
         unset($this->ExternalAuth);
 
-        TableRegistry::clear();
-
         parent::tearDown();
     }
 
@@ -71,8 +69,7 @@ class ExternalAuthTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
-     * @covers ::_initializeSchema()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -135,8 +132,7 @@ class ExternalAuthTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

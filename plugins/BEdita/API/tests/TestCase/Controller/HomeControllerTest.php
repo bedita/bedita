@@ -72,6 +72,18 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/object_types' => [
+                        'href' => 'http://api.example.com/object_types',
+                        'hints' => [
+                            'allow' => [
+                                'GET'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ]
+                        ],
+                    ],
                 ],
             ],
         ];

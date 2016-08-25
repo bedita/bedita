@@ -71,8 +71,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'first-user',
                         'locked' => true,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
@@ -109,7 +109,7 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '5',
@@ -118,8 +118,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'second-user',
                         'locked' => false,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
@@ -150,13 +150,13 @@ class UsersControllerTest extends IntegrationTestCase
                         'publish_end' => null,
                         'username' => 'second user',
                         'blocked' => false,
-                        'last_login' => '2016-03-15T09:57:38+0000',
-                        'last_login_err' => '2016-03-15T09:57:38+0000',
+                        'last_login' => '2016-03-15T09:57:38+00:00',
+                        'last_login_err' => '2016-03-15T09:57:38+00:00',
                         'num_login_err' => 0,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -211,8 +211,8 @@ class UsersControllerTest extends IntegrationTestCase
                         'status' => 'on',
                         'uname' => 'first-user',
                         'locked' => true,
-                        'created' => '2016-05-13T07:09:23+0000',
-                        'modified' => '2016-05-13T07:09:23+0000',
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
@@ -249,7 +249,7 @@ class UsersControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
-                    ]
+                    ],
                 ],
             ],
         ];
@@ -337,8 +337,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'status' => 'on',
                     'uname' => 'first-user',
                     'locked' => true,
-                    'created' => '2016-05-13T07:09:23+0000',
-                    'modified' => '2016-05-13T07:09:23+0000',
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
                     'published' => null,
                     'title' => 'Mr. First User',
                     'description' => null,
@@ -613,6 +613,7 @@ class UsersControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
         $this->delete('/users/1');

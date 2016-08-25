@@ -47,7 +47,8 @@ class RoleTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Roles = TableRegistry::get('BEdita/Core.Roles');
+
+        $this->Roles = TableRegistry::get('Roles');
     }
 
     /**
@@ -56,7 +57,7 @@ class RoleTest extends TestCase
     public function tearDown()
     {
         unset($this->Roles);
-        TableRegistry::clear();
+
         parent::tearDown();
     }
 

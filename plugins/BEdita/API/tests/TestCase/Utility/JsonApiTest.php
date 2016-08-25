@@ -46,7 +46,7 @@ class JsonApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->Roles = TableRegistry::get('BEdita/Core.Roles');
+        $this->Roles = TableRegistry::get('Roles');
     }
 
     /**
@@ -76,8 +76,8 @@ class JsonApiTest extends TestCase
                             'name' => 'first role',
                             'description' => 'this is the very first role',
                             'unchangeable' => true,
-                            'created' => '2016-04-15T09:57:38+0000',
-                            'modified' => '2016-04-15T09:57:38+0000',
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/1',
@@ -90,8 +90,8 @@ class JsonApiTest extends TestCase
                             'name' => 'second role',
                             'description' => 'this is a second role',
                             'unchangeable' => false,
-                            'created' => '2016-04-15T11:59:12+0000',
-                            'modified' => '2016-04-15T11:59:13+0000',
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/2',
@@ -112,8 +112,8 @@ class JsonApiTest extends TestCase
                             'name' => 'first role',
                             'description' => 'this is the very first role',
                             'unchangeable' => true,
-                            'created' => '2016-04-15T09:57:38+0000',
-                            'modified' => '2016-04-15T09:57:38+0000',
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/1',
@@ -126,8 +126,8 @@ class JsonApiTest extends TestCase
                             'name' => 'second role',
                             'description' => 'this is a second role',
                             'unchangeable' => false,
-                            'created' => '2016-04-15T11:59:12+0000',
-                            'modified' => '2016-04-15T11:59:13+0000',
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/2',
@@ -148,8 +148,8 @@ class JsonApiTest extends TestCase
                             'name' => 'first role',
                             'description' => 'this is the very first role',
                             'unchangeable' => true,
-                            'created' => '2016-04-15T09:57:38+0000',
-                            'modified' => '2016-04-15T09:57:38+0000',
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/1',
@@ -162,8 +162,8 @@ class JsonApiTest extends TestCase
                             'name' => 'second role',
                             'description' => 'this is a second role',
                             'unchangeable' => false,
-                            'created' => '2016-04-15T11:59:12+0000',
-                            'modified' => '2016-04-15T11:59:13+0000',
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
                             'self' => '/roles/2',
@@ -183,8 +183,8 @@ class JsonApiTest extends TestCase
                         'name' => 'first role',
                         'description' => 'this is the very first role',
                         'unchangeable' => true,
-                        'created' => '2016-04-15T09:57:38+0000',
-                        'modified' => '2016-04-15T09:57:38+0000',
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
                     ],
                 ],
                 function (Table $Table) {
@@ -200,8 +200,8 @@ class JsonApiTest extends TestCase
                         'name' => 'first role',
                         'description' => 'this is the very first role',
                         'unchangeable' => true,
-                        'created' => '2016-04-15T09:57:38+0000',
-                        'modified' => '2016-04-15T09:57:38+0000',
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
                     ],
                 ],
                 function (Table $Table) {
