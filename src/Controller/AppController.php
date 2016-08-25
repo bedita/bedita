@@ -42,7 +42,6 @@ class AppController extends Controller
         }
 
         $this->response->header('X-BEdita-Version', Configure::read('BEdita.version'));
-        $this->response->header('X-BEdita-API-Version', Configure::read('BEdita.apiVersion'));
 
         $this->loadComponent('BEdita/API.Paginator');
 

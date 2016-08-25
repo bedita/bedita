@@ -194,7 +194,7 @@ class AppControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test API meta info headers.
+     * Test API meta info header.
      *
      * @return void
      */
@@ -209,6 +209,5 @@ class AppControllerTest extends IntegrationTestCase
         $this->_sendRequest('/home', 'HEAD');
 
         $this->assertHeader('X-BEdita-Version', Configure::read('BEdita.version'));
-        $this->assertHeader('X-BEdita-API-Version', Configure::read('BEdita.apiVersion'));
     }
 }
