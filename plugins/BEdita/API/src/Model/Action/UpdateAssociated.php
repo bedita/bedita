@@ -63,7 +63,8 @@ class UpdateAssociated
         $sourceEntity = $this->Action->association()->source()->get($primaryKey);
 
         $targetPrimaryKeys = (array)$this->request->data('id') ?: Hash::extract($this->request->data, '{*}.id');
-        $targetPKField = $this->Action->association()->aliasField($this->Action->association()->primaryKey());
+        $primaryKeyField = $this->Action->association()->primaryKey();
+        $targetPKField = $this->Action->association()->aliasField($primaryKeyField);
 
         $targetEntities = null;
         if (count($targetPrimaryKeys)) {
