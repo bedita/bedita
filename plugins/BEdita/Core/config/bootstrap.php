@@ -2,6 +2,7 @@
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Core\Configure;
+use Cake\Core\Configure\Engine\IniConfig;
 use Cake\Database\Type;
 use Cake\ORM\TableRegistry;
 
@@ -30,3 +31,11 @@ Configure::config('database', new DatabaseConfig());
 if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('core', 'database');
 }
+
+/**
+ * Load API config.
+ */
+if (!Configure::configured('ini')) {
+    Configure::config('ini', new IniConfig());
+}
+Configure::load('BEdita/Core.bedita', 'ini');
