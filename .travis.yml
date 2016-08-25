@@ -86,6 +86,7 @@ before_script:
     else
       composer require lorenzo/multiple-iterator=~1.0
     fi
+  - if [ "$TRAVIS_PHP_VERSION" = 7.* ]; then phpenv config-rm xdebug.ini; fi
 
   - phpenv rehash
   - set +H
@@ -94,7 +95,7 @@ script:
   - |
     if [ "$RUN_TESTS" = '1' ]; then
       if [[ "$TRAVIS_PHP_VERSION" = 7.* ]]; then
-        vendor/bin/phpunit --coverage-clover=clover.xml -d zend.enable_gc=0
+        phpdbg -qrr vendor/bin/phpunit --coverage-clover=clover.xml
       else
         vendor/bin/phpunit --coverage-clover=clover.xml
       fi
