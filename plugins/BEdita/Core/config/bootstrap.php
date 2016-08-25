@@ -33,7 +33,7 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
 }
 
 /**
- * Load API config.
+ * Load BEdita meta config.
  */
 if (!Configure::configured('ini')) {
     Configure::config('ini', new IniConfig());

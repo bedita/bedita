@@ -41,6 +41,6 @@ Request::addDetector('jsonapi', function (Request $request) {
 });
 
 /**
- * Load API config.
+ * Load API meta config.
  */
 Configure::load('BEdita/API.bedita', 'ini');
