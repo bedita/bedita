@@ -125,7 +125,7 @@ class JsonApi
                 continue;
             }
 
-            $name = Inflector::underscore($association->name());
+            $name = $association->property();
             $model = Inflector::singularize($source->table());
 
             try {
