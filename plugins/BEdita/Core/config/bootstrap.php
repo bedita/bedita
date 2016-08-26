@@ -3,13 +3,7 @@
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
-use Cake\Database\Type;
 use Cake\ORM\TableRegistry;
-
-/**
- * Map custom types.
- */
-Type::map('json', 'BEdita\Core\Database\Type\JsonType');
 
 /**
  * Register tables.
