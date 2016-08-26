@@ -2,7 +2,6 @@
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
-use Cake\Event\Event;
 
 /**
  * ObjectsFixture
@@ -108,8 +107,11 @@ class ObjectsFixture extends TestFixture
      *
      * @return void
      */
-    public function beforeBuildSchema(Event $event)
+    public function beforeBuildSchema()
     {
         $this->fields['status']['type'] = 'string';
+
+        unset($this->fields['_constraints']['objects_modifiedby_fk']);
+        unset($this->fields['_constraints']['objects_createdby_fk']);
     }
 }
