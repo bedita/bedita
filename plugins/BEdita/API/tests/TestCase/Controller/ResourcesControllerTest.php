@@ -45,6 +45,10 @@ class ResourcesControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/roles/1/relationships/users',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/roles/1/relationships/users',
+                'last' => 'http://api.example.com/roles/1/relationships/users',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [
                 [
@@ -53,6 +57,15 @@ class ResourcesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 1,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 1,
+                    'page_size' => 20,
                 ],
             ],
         ];
@@ -77,6 +90,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testAddAssociations()
     {
@@ -84,6 +98,10 @@ class ResourcesControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/roles/1/relationships/users',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/roles/1/relationships/users',
+                'last' => 'http://api.example.com/roles/1/relationships/users',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [
                 [
@@ -99,6 +117,15 @@ class ResourcesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/2',
                     ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
                 ],
             ],
         ];
@@ -138,8 +165,21 @@ class ResourcesControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/roles/1/relationships/users',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/roles/1/relationships/users',
+                'last' => 'http://api.example.com/roles/1/relationships/users',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [],
+            'meta' => [
+                'pagination' => [
+                    'count' => 0,
+                    'page' => 1,
+                    'page_count' => 0,
+                    'page_items' => 0,
+                    'page_size' => 20,
+                ],
+            ],
         ];
 
         $data = [
@@ -182,6 +222,10 @@ class ResourcesControllerTest extends IntegrationTestCase
             'links' => [
                 'self' => 'http://api.example.com/roles/1/relationships/users',
                 'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/roles/1/relationships/users',
+                'last' => 'http://api.example.com/roles/1/relationships/users',
+                'prev' => null,
+                'next' => null,
             ],
             'data' => [
                 [
@@ -190,6 +234,15 @@ class ResourcesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/2',
                     ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 1,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 1,
+                    'page_size' => 20,
                 ],
             ],
         ];

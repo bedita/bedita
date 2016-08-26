@@ -20,6 +20,7 @@ use BEdita\Core\Model\Action\RemoveAssociated;
 use BEdita\Core\Model\Action\SetAssociated;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -29,6 +30,26 @@ use Cake\ORM\TableRegistry;
  */
 abstract class ResourcesController extends AppController
 {
+
+    /**
+     * Find the association corresponding to the relationship name.
+     *
+     * @param string $relationship Relationship name.
+     * @return \Cake\ORM\Association
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if no association could be found.
+     */
+    protected function findAssociation($relationship)
+    {
+        $associations = TableRegistry::get($this->modelClass)->associations();
+
+        foreach ($associations as $association) {
+            if ($association->property() === $relationship) {
+                return $association;
+            }
+        }
+
+        throw new NotFoundException(__('Relationship "{0}" does not exist', $relationship));
+    }
 
     /**
      * View and manage relationships.
@@ -42,18 +63,7 @@ abstract class ResourcesController extends AppController
         $id = $this->request->param('id');
         $relationship = $this->request->param('relationship');
 
-        $Table = TableRegistry::get($this->modelClass);
-
-        $Association = null;
-        foreach ($Table->associations() as $assoc) {
-            if ($assoc->property() == $relationship) {
-                $Association = $assoc;
-                break;
-            }
-        }
-        if ($Association === null) {
-            throw new NotFoundException(__('Relationship "{0}" does not exist', $relationship));
-        }
+        $Association = $this->findAssociation($relationship);
 
         $coreAction = null;
         switch ($this->request->method()) {
@@ -80,10 +90,14 @@ abstract class ResourcesController extends AppController
         $action = new ListAssociated($Association);
         $associatedEntities = $action($id);
 
+        if ($associatedEntities instanceof Query) {
+            $associatedEntities = $this->paginate($associatedEntities);
+        }
+
         $this->set([
-            $relationship => $associatedEntities,
+            'data' => $associatedEntities,
             '_type' => $relationship,
-            '_serialize' => [$relationship],
+            '_serialize' => ['data'],
         ]);
     }
 }

@@ -13,10 +13,11 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Association;
-use Cake\ORM\Association\HasMany;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\HasOne;
-use Cake\ORM\Query;
 
 /**
  * Command to list entities associated to another entity.
@@ -47,50 +48,78 @@ class ListAssociated
      * Find existing relations.
      *
      * @param mixed $primaryKey Primary key of entity to find associations for.
-     * @return \Cake\Datasource\EntityInterface[]|\Cake\Datasource\EntityInterface|null
+     * @return \Cake\ORM\Query|\Cake\Datasource\EntityInterface|null
      * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if an invalid
      *      primary key is passed.
      */
     public function __invoke($primaryKey)
     {
-        $sourcePrimaryKey = array_map(
-            [$this->Association->source(), 'aliasField'],
-            (array)$this->Association->source()->primaryKey()
-        );
+        $query = $this->buildQuery($primaryKey);
 
-        $joinFields = [];
-        if ($this->Association instanceof HasMany || $this->Association instanceof HasOne) {
-            $joinFields = (array)$this->Association->foreignKey();
+        if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
+            return $query->first();
         }
 
-        $associated = $this->Association->source()
-            ->get($primaryKey, [
-                'fields' => $sourcePrimaryKey,
-                'contain' => [
-                    $this->Association->name() => function (Query $q) use ($joinFields) {
-                        $fields = array_merge((array)$this->Association->primaryKey(), $joinFields);
+        return $query;
+    }
 
-                        return $q
-                            ->select($fields);
-                    },
-                ],
-            ])
-            ->get($this->Association->property());
+    /**
+     * Build conditions for primary key.
+     *
+     * @param mixed $primaryKey Primary key.
+     * @return array
+     * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if primary key is invalid.
+     */
+    protected function primaryKeyConditions($primaryKey)
+    {
+        $source = $this->Association->source();
 
-        if (is_array($associated)) {
-            $associated = array_map(
-                function ($entity) use ($joinFields) {
-                    foreach ($joinFields as $joinField) {
-                        unset($entity[$joinField]);
+        $primaryKeyFields = array_map([$source, 'aliasField'], (array)$source->primaryKey());
+
+        $primaryKey = (array)$primaryKey;
+        if (count($primaryKeyFields) !== count($primaryKey)) {
+            $primaryKey = $primaryKey ?: [null];
+            $primaryKey = array_map(function ($key) {
+                return var_export($key, true);
+            }, $primaryKey);
+
+            throw new InvalidPrimaryKeyException(__(
+                'Record not found in table "{0}" with primary key [{1}]',
+                $source->table(),
+                implode($primaryKey, ', ')
+            ));
+        }
+
+        return array_combine($primaryKeyFields, $primaryKey);
+    }
+
+    /**
+     * Build the query object.
+     *
+     * @param mixed $primaryKey Primary key.
+     * @return \Cake\ORM\Query
+     */
+    protected function buildQuery($primaryKey)
+    {
+        $primaryKeyFields = array_map([$this->Association, 'aliasField'], (array)$this->Association->primaryKey());
+
+        $query = $this->Association->source()->find()
+            ->innerJoinWith($this->Association->name())
+            ->select($primaryKeyFields)
+            ->where($this->primaryKeyConditions($primaryKey))
+            ->autoFields(false)
+            ->formatResults(function (ResultSetInterface $results) {
+                return $results->map(function ($row) {
+                    if (!isset($row['_matchingData']) || !is_array($row['_matchingData'])) {
+                        return $row;
                     }
-                    unset($entity['_joinData']);
 
-                    return $entity;
-                },
-                $associated
-            );
-        }
+                    $row = current($row['_matchingData']);
 
-        return $associated;
+                    return $row;
+                });
+            });
+
+        return $query;
     }
 }

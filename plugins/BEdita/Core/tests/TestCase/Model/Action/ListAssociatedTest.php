@@ -14,6 +14,8 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociated;
+use Cake\Datasource\EntityInterface;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -128,7 +130,13 @@ class ListAssociatedTest extends TestCase
         $association = TableRegistry::get($table)->association($association);
         $action = new ListAssociated($association);
 
-        $result = json_decode(json_encode($action($id)), true);
+        $result = $action($id);
+
+        if ($result instanceof Query) {
+            $result = $result->hydrate(false)->toArray();
+        } elseif ($result instanceof EntityInterface) {
+            $result = $result->toArray();
+        }
 
         $this->assertEquals($expected, $result);
     }
