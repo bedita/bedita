@@ -41,6 +41,8 @@ class AppController extends Controller
             throw new ForbiddenException('No valid API KEY found');
         }
 
+        $this->response->header('X-BEdita-Version', Configure::read('BEdita.version'));
+
         $this->loadComponent('BEdita/API.Paginator');
 
         $this->loadComponent('RequestHandler');
