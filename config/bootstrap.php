@@ -12,9 +12,11 @@
  */
 
 use BEdita\API\Controller\Component\JsonApiComponent;
+use BEdita\API\Middleware\CorsMiddleware;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
+use Cake\Event\EventManager;
 use Cake\Network\Request;
 
 /**
@@ -38,4 +40,25 @@ if (PHP_SAPI === 'cli') {
 Request::addDetector('html', ['accept' => ['text/html', 'application/xhtml+xml', 'application/xhtml', 'text/xhtml']]);
 Request::addDetector('jsonapi', function (Request $request) {
     return $request->accepts(JsonApiComponent::CONTENT_TYPE);
+});
+
+/**
+ * Customize middlewares for API needs
+ *
+ * Setup CORS from configuration
+ * An optional 'CORS' key in should be like this example:
+ *
+ * 'CORS' => [
+ *   'allowOrigin' => '*.example.com',
+ *   'allowMethods' => ['GET', 'POST'],
+ *   'allowHeaders' => ['X-CSRF-Token']
+ * ]
+ *
+ * @see \BEdita\API\Middleware\CorsMiddleware
+ */
+EventManager::instance()->on('Server.buildMiddleware', function ($event, $middleware) {
+    $middleware->insertAfter(
+        'Cake\Error\Middleware\ErrorHandlerMiddleware',
+        new CorsMiddleware(Configure::read('CORS'))
+    );
 });
