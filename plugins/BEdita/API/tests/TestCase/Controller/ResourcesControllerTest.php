@@ -77,6 +77,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testAddAssociations()
     {
