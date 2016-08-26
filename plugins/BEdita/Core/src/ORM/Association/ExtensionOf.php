@@ -98,7 +98,9 @@ class ExtensionOf extends BelongsTo
         $this->target()->patchEntity($targetEntity, $targetData, [
             'accessibleFields' => ['*' => true],
         ]);
-        $targetEntity->dirty($this->bindingKey(), true);
+        if (!$entity->isNew()) {
+            $targetEntity->dirty($this->bindingKey(), true);
+        }
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;
