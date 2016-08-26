@@ -117,8 +117,8 @@ class JsonApi
     protected static function extractRelationships(Entity $entity, $endpoint)
     {
         $relationships = [];
-        $source = TableRegistry::get($entity->source());
-        $associations = $source->associations();
+        $associations = TableRegistry::get($entity->source())->associations();
+        $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
 
         foreach ($associations as $association) {
             if (!($association instanceof Association) || $association instanceof ExtensionOf) {
@@ -126,7 +126,6 @@ class JsonApi
             }
 
             $name = $association->property();
-            $model = Inflector::singularize($source->table());
 
             try {
                 $self = Router::url(
@@ -144,7 +143,7 @@ class JsonApi
                 $related = Router::url(
                     [
                         '_name' => sprintf('api:%s:%s', $endpoint, $name),
-                        $model . '_id' => $entity->id,
+                        $relatedParam => $entity->id,
                     ],
                     true
                 );
