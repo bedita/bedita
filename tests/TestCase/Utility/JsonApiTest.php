@@ -241,6 +241,37 @@ class JsonApiTest extends TestCase
                     ];
                 },
             ],
+            'getObjectTypeFromItem' => [
+                [
+                    'id' => '17',
+                    'type' => 'customType',
+                    'attributes' => [
+                        'someAttribute' => 'someValue',
+                    ],
+                ],
+                function () {
+                    return [
+                        'id' => 17,
+                        'object_type' => [
+                            'name' => 'customType',
+                        ],
+                        'someAttribute' => 'someValue',
+                    ];
+                },
+                'objects',
+            ],
+            'noAttributes' => [
+                [
+                    'id' => '17',
+                    'type' => 'customType',
+                ],
+                function () {
+                    return [
+                        'id' => 17,
+                        'type' => 'customType',
+                    ];
+                },
+            ],
             'emptyArray' => [
                 [],
                 function () {
@@ -360,6 +391,9 @@ class JsonApiTest extends TestCase
      * @dataProvider formatDataProvider
      * @covers ::formatData
      * @covers ::formatItem
+     * @covers ::extractEndpoint
+     * @covers ::extractAttributes
+     * @covers ::extractRelationships
      */
     public function testFormatData($expected, callable $items, $type = null)
     {
