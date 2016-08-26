@@ -231,6 +231,48 @@ class CorsMiddlewareTest extends TestCase
                     'maxAge' => '1000'
                 ],
             ],
+            'preflightWildCardAllowMethods' => [
+                200,
+                [
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS',
+                    'Access-Control-Allow-Headers' => 'Authorization, Content-Type',
+                ],
+                [
+                    'REQUEST_URI' => '/testpath',
+                    'REQUEST_METHOD' => 'OPTIONS',
+                    'HTTP_ACCEPT' => 'application/json',
+                    'HTTP_ORIGIN' => 'http://bedita.com',
+                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type'
+                ],
+                [
+                    'allowOrigin' => '*',
+                    'allowMethods' => '*',
+                    'allowHeaders' => ['Authorization', 'Content-Type']
+                ],
+            ],
+            'preflightWildCardAllowHeaders' => [
+                200,
+                [
+                    'Access-Control-Allow-Origin' => '*',
+                    'Access-Control-Allow-Methods' => 'GET, POST',
+                    'Access-Control-Allow-Headers' => 'Authorization, Content-Type, X-Test-Header',
+                ],
+                [
+                    'REQUEST_URI' => '/testpath',
+                    'REQUEST_METHOD' => 'OPTIONS',
+                    'HTTP_ACCEPT' => 'application/json',
+                    'HTTP_ORIGIN' => 'http://bedita.com',
+                    'HTTP_ACCESS_CONTROL_REQUEST_METHOD' => 'POST',
+                    'HTTP_ACCESS_CONTROL_REQUEST_HEADERS' => 'Authorization, Content-Type, X-Test-Header'
+                ],
+                [
+                    'allowOrigin' => '*',
+                    'allowMethods' => ['GET', 'POST'],
+                    'allowHeaders' => '*'
+                ],
+            ],
         ];
     }
 

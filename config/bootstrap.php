@@ -48,13 +48,15 @@ Request::addDetector('jsonapi', function (Request $request) {
  * Setup CORS from configuration
  * An optional 'CORS' key in should be like this example:
  *
+ * ```
  * 'CORS' => [
  *   'allowOrigin' => '*.example.com',
  *   'allowMethods' => ['GET', 'POST'],
  *   'allowHeaders' => ['X-CSRF-Token']
  * ]
+ * ```
  *
- * @see \BEdita\API\Middleware\CorsMiddleware
+ * @see \BEdita\API\Middleware\CorsMiddleware to more info on CORS configuration
  */
 EventManager::instance()->on('Server.buildMiddleware', function ($event, $middleware) {
     $middleware->insertAfter(

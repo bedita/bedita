@@ -41,6 +41,9 @@ class CorsMiddleware
      *
      * When value is falsy the related configuration is skipped.
      *
+     * `'allowOrigin'`, `'allowMethods'` and `'allowHeaders'` support the `'*'` wildcard
+     * to allow respectively every origin, every methods and every headers.
+     *
      * @var array
      */
     protected $corsConfig = [
@@ -69,6 +72,9 @@ class CorsMiddleware
 
         $allowedConfig = array_intersect_key($corsConfig, $this->corsConfig);
         $this->corsConfig = $allowedConfig + $this->corsConfig;
+        if ($this->corsConfig['allowMethods'] == '*') {
+            $this->corsConfig['allowMethods'] = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'HEAD', 'OPTIONS'];
+        }
     }
 
     /**
@@ -102,7 +108,6 @@ class CorsMiddleware
      * @param \Psr\Http\Message\ResponseInterface $response The response.
      * @return \Psr\Http\Message\ResponseInterface A response.
      * @throws \Cake\Network\Exception\BadRequestException When the request is malformed
-     * @throws \Cake\Network\Exception\ForbiddenException When no CORS rule matches the preflight request
      */
     protected function preflight(ServerRequestInterface $request, ResponseInterface $response)
     {
@@ -110,6 +115,25 @@ class CorsMiddleware
             throw new BadRequestException('Preflight request missing of "Origin" header');
         }
 
+        $this->checkAccessControlRequestMethod($request);
+
+        if ($this->corsConfig['allowHeaders'] != '*') {
+            $this->checkAccessControlRequestHeaders($request);
+        }
+
+        return $this->buildCors($request, $response, true);
+    }
+
+    /**
+     * Check `Access-Control-Request-Method` against allowMethods
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException When missing `Access-Control-Request-Method`
+     * @throws \Cake\Network\Exception\ForbiddenException When `Access-Control-Request-Method` is not allowed
+     */
+    protected function checkAccessControlRequestMethod(ServerRequestInterface $request)
+    {
         $accessControlRequestMethod = $request->getHeaderLine('Access-Control-Request-Method');
         if (empty($accessControlRequestMethod)) {
             throw new BadRequestException('Preflight request missing of "Access-Control-Request-Method" header');
@@ -119,7 +143,17 @@ class CorsMiddleware
         if (!in_array($accessControlRequestMethod, $allowedMethods)) {
             throw new ForbiddenException('Preflight request refused. Access-Control-Request-Method not allowed');
         }
+    }
 
+    /**
+     * Check `Access-Control-Request-Headers` against `allowHeaders`
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @return void
+     * @throws \Cake\Network\Exception\ForbiddenException When `Access-Control-Request-Headers` doesn't match the `allowHeaders` rules
+     */
+    protected function checkAccessControlRequestHeaders(ServerRequestInterface $request)
+    {
         $accessControlRequestHeaders = explode(', ', strtolower($request->getHeaderLine('Access-Control-Request-Headers')));
         $allowedHeaders = array_map(
             function ($header) {
@@ -134,8 +168,6 @@ class CorsMiddleware
                 'Preflight request refused. Access-Control-Request-Headers not allowed for ' . implode(', ', $notAllowedHeaders)
             );
         }
-
-        return $this->buildCors($request, $response, true);
     }
 
     /**
@@ -158,6 +190,8 @@ class CorsMiddleware
         $options = array_filter($this->corsConfig);
         if (!$preflight) {
             $options = array_diff_key($options, array_flip(['allowMethods', 'allowHeaders', 'maxAge']));
+        } elseif ($options['allowHeaders'] == '*') {
+            $options['allowHeaders'] = $request->getHeader('Access-Control-Request-Headers');
         }
 
         foreach ($options as $corsOption => $corsValue) {
