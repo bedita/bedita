@@ -20,6 +20,7 @@ use BEdita\Core\Model\Action\RemoveAssociated;
 use BEdita\Core\Model\Action\SetAssociated;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -88,6 +89,10 @@ abstract class ResourcesController extends AppController
 
         $action = new ListAssociated($Association);
         $associatedEntities = $action($id);
+
+        if ($associatedEntities instanceof Query) {
+            $associatedEntities = $this->paginate($associatedEntities);
+        }
 
         $this->set([
             'data' => $associatedEntities,
