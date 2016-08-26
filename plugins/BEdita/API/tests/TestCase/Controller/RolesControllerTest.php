@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -75,7 +74,14 @@ class RolesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/1',
-                    ]
+                    ],
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/roles/1/users',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -90,7 +96,14 @@ class RolesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/2',
-                    ]
+                    ],
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/roles/2/users',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -181,6 +194,13 @@ class RolesControllerTest extends IntegrationTestCase
                     'backend_auth' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
+                ],
+                'relationships' => [
+                    'users' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/roles/1/users',
+                        ],
+                    ],
                 ],
             ],
         ];
