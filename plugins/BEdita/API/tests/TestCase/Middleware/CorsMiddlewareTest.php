@@ -289,6 +289,8 @@ class CorsMiddlewareTest extends TestCase
      * @covers ::__invoke()
      * @covers ::preflight()
      * @covers ::buildCors()
+     * @covers ::checkAccessControlRequestMethod()
+     * @covers ::checkAccessControlRequestHeaders()
      * @covers \BEdita\API\Network\CorsBuilder::build()
      */
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)
