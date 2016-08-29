@@ -259,7 +259,7 @@ class BeFileHandlerComponent extends Object {
         }
         // if update an object remove old file (if any)
         if (!empty($data['id'])) {
-            $ret = $streamModel->read('uri', $data['id']);
+            $ret = ClassRegistry::init('Stream')->read('uri', $data['id']);
             // if present a path to a file on filesystem, delete it
             if((!empty($ret['Stream']['uri']) && !$this->_isURL($ret['Stream']['uri']))) {
                 $this->_removeFile($ret['Stream']['uri']) ;
