@@ -56,11 +56,11 @@ class ApiUploadComponent extends Object {
 
     /**
      * Upload a file using local filesystem or delegating to Model::apiUpload() method if exists.
-     * 
+     *
      * After the file is moved to the right location
      * a row in hash_jobs is added with status "pending" and the hash string is returned.
      * That hash string must be used from client to associate a new object to the file uploaded
-     * 
+     *
      *
      * @param string $originalFileName The target file name
      * @param string $objectType The object type to which the upload file refers
@@ -71,9 +71,10 @@ class ApiUploadComponent extends Object {
     public function upload($originalFileName, $objectType) {
         $source = $this->source();
         $fileSize = $source->size();
+        $originalFileName = rawurldecode($originalFileName);
         $safeFileName = $this->BeFileHandler->buildNameFromFile($originalFileName);
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
-        $hashFile = $this->BeFileHandler->getHashFile($source->pwd()); 
+        $hashFile = $this->BeFileHandler->getHashFile($source->pwd());
 
         $this->controller->ApiValidator->checkUploadable($objectType, compact('fileSize', 'mimeType', 'originalFileName'));
 
@@ -86,7 +87,7 @@ class ApiUploadComponent extends Object {
                 'user' => $this->controller->ApiAuth->identify()
             ));
         } else {
-            $streamId = $this->BeFileHandler->hashFileExists($hashFile); 
+            $streamId = $this->BeFileHandler->hashFileExists($hashFile);
             if ($streamId !== false) {
                 throw new BeditaConflictException('The file already exists in /objects/' . $streamId);
             }
@@ -191,7 +192,7 @@ class ApiUploadComponent extends Object {
     }
 
     /**
-     * Given an upload token it returns the related data 
+     * Given an upload token it returns the related data
      *
      * @param string $uploadToken The upload token
      * @param string $objectType The object type related to the upload operation
