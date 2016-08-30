@@ -95,7 +95,6 @@ class BeEmbedMediaHelper extends AppHelper {
         // get object type
         $model = $this->getType($obj);
         $params['presentation'] = (!empty($params['presentation'])) ? $params['presentation'] : $this->defaultPresentation[$model];
-        $method = 'show' . ucfirst($params['presentation']) . $model;
 
         if (method_exists($this, 'show' . ucfirst($params['presentation']) . $model)) {
             $output = $this->{'show' . ucfirst($params['presentation']) . $model}($obj, $params, $htmlAttributes);
@@ -354,9 +353,18 @@ class BeEmbedMediaHelper extends AppHelper {
      * @param array $obj, object
      * @return string
      */
-    private function getType($obj) {
+    private function getType(array $obj) {
         $model = Configure::read('objectTypes.' . $obj['object_type_id'] . '.model');
-        return (!empty($model)) ? $model : '';
+        if (empty($model)) {
+            return '';
+        }
+
+        $modelClass = ClassRegistry::init($model);
+        if (!method_exists($modelClass, 'embedAs')) {
+            return $model;
+        }
+
+        return $modelClass->embedAs($obj);
     }
 
     /**
