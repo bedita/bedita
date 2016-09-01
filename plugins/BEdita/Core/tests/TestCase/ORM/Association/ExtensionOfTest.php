@@ -34,6 +34,7 @@ class ExtensionOfTest extends TestCase
         'plugin.BEdita/Core.fake_animals',
         'plugin.BEdita/Core.fake_mammals',
         'plugin.BEdita/Core.fake_felines',
+        'plugin.BEdita/Core.fake_articles',
     ];
 
     /**
@@ -68,6 +69,10 @@ class ExtensionOfTest extends TestCase
         $this->fakeAnimals = TableRegistry::get('FakeAnimals');
         $this->fakeMammals = TableRegistry::get('FakeMammals');
         $this->fakeFelines = TableRegistry::get('FakeFelines');
+
+        $this->fakeAnimals->hasMany('FakeArticles', [
+            'dependent' => true
+        ]);
     }
 
     /**
@@ -84,8 +89,28 @@ class ExtensionOfTest extends TestCase
         TableRegistry::remove('FakeFelines');
         TableRegistry::remove('FakeMammals');
         TableRegistry::remove('FakeAnimals');
+        TableRegistry::remove('FakeArticles');
 
         parent::tearDown();
+    }
+
+    /**
+     * Test __constructor to see if Model.afterDelete is set
+     *
+     * @return void
+     * @covers ::__construct()
+     */
+    public function testConstruct()
+    {
+        $count = count($this->fakeMammals->eventManager()->listeners('Model.afterDelete'));
+
+        $assoc = new ExtensionOf('FakeAnimals', [
+            'sourceTable' => $this->fakeMammals,
+            'foreignKey' => $this->fakeMammals->primaryKey()
+        ]);
+
+        $count++;
+        $this->assertCount($count, $this->fakeMammals->eventManager()->listeners('Model.afterDelete'));
     }
 
     /**
@@ -198,5 +223,13 @@ class ExtensionOfTest extends TestCase
                 continue;
             }
         }
+
+        $articles = $this->fakeAnimals
+            ->FakeArticles
+            ->find()
+            ->where(['fake_animal_id' => $id])
+            ->count();
+
+        $this->assertEquals(0, $articles);
     }
 }
