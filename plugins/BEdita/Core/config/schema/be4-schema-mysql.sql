@@ -281,30 +281,18 @@ CREATE TABLE object_permissions (
 CREATE TABLE applications (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL                 COMMENT 'application name',
-  descripion TEXT NOT NULL                   COMMENT 'application description',
-  created DATETIME NOT NULL                  COMMENT 'creation date',
-  modified DATETIME NOT NULL                 COMMENT 'last modification date',
+  api_key VARCHAR(255) NOT NULL             COMMENT 'api key value for application',
+  name VARCHAR(255) NOT NULL                COMMENT 'application name',
+  descripion TEXT NOT NULL                  COMMENT 'application description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled  BOOL NOT NULL DEFAULT 1          COMMENT 'endpoint active flag',
 
   PRIMARY KEY (id),
+  UNIQUE applications_apikey_uq (api_key),
   UNIQUE applications_name_uq (name)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
-
-
--- CREATE TABLE api_keys (
-
---  key_value VARCHAR(255) NOT NULL            COMMENT 'api key value',
---  descripion TEXT NOT NULL                   COMMENT 'group name of configuration parameters',
---  application_id SMALLINT UNSIGNED NULL       COMMENT 'link to applications.id',
---  created DATETIME NOT NULL                  COMMENT 'creation date',
---  modified DATETIME NOT NULL                 COMMENT 'last modification date',
-
---  PRIMARY KEY (id),
---  CONSTRAINT apikeys_applicationid_fk FOREIGN KEY (application_id)
---      REFERENCES applications (id) ON DELETE CASCADE ON UPDATE NO ACTION,
-
--- ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client api keys' ;
 
 
 CREATE TABLE endpoints (
@@ -342,7 +330,7 @@ CREATE TABLE endpoint_permissions (
     REFERENCES roles (id),
   UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id)
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'permissions on endpoints from applications' ;
 
 
 -- --------------------------------------
