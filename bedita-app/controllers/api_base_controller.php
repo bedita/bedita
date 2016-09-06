@@ -662,7 +662,7 @@ abstract class ApiBaseController extends FrontendController {
     protected function setupObjectsFilter() {
         $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($urlParams['filter'])) {
-            $this->objectsFilter = $urlParams['filter'];
+            $this->objectsFilter = array_merge($this->objectsFilter, $urlParams['filter']);
         }
     }
 
