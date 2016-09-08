@@ -85,7 +85,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * - `table` the table to inherit.
      *   Must contain `tableName` key. Other keys can be `className`
      *
-     * @see BEdita\Core\ORM\TableInheritanceManager::addTable()
+     * @see \BEdita\Core\ORM\Inheritance\TableInheritanceManager::addTable()
      * @param array $config configuration options
      * @return void
      */
@@ -147,7 +147,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * Wrap BEdita\Core\ORM\TableInheritanceManager::isTableInherited()
      * to expose it to Table class
      *
-     * @see BEdita\Core\ORM\TableInheritanceManager::isTableInherited()
+     * @see \BEdita\Core\ORM\Inheritance\TableInheritanceManager::isTableInherited()
      * @param string $tableName The table name to check
      * @param bool $nested If it must check nested inheritance
      * @return bool
@@ -161,7 +161,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * Wrap BEdita\Core\ORM\TableInheritanceManager::inheritedTables()
      * to exposes it to Table class
      *
-     * @see BEdita\Core\ORM\TableInheritanceManager::inheritedTables()
+     * @see \BEdita\Core\ORM\Inheritance\TableInheritanceManager::inheritedTables()
      * @param bool $nested If it must return the complete inherited tables (default false)
      * @return \Cake\ORM\Table[]
      */
