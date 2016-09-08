@@ -17,9 +17,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\UsersController
+ * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
  */
-class UsersControllerTest extends IntegrationTestCase
+class ObjectTypesControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -28,9 +28,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
+        'plugin.BEdita/Core.object_types'
     ];
 
     /**
@@ -45,9 +43,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users',
-                'first' => 'http://api.example.com/users',
-                'last' => 'http://api.example.com/users',
+                'self' => 'http://api.example.com/object_types',
+                'first' => 'http://api.example.com/object_types',
+                'last' => 'http://api.example.com/object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -64,34 +62,34 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'users',
+                    'type' => 'object_types',
                     'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+00:00',
-                        'modified' => '2016-03-15T09:57:38+00:00',
+                        'name' => 'document',
+                        'pluralized' => 'documents',
+                        'alias' => 'Documents',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects'
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/users/1',
+                        'self' => 'http://api.example.com/object_types/1',
                     ]
                 ],
                 [
                     'id' => '2',
-                    'type' => 'users',
+                    'type' => 'object_types',
                     'attributes' => [
-                        'username' => 'second user',
-                        'blocked' => false,
-                        'last_login' => '2016-03-15T09:57:38+00:00',
-                        'last_login_err' => '2016-03-15T09:57:38+00:00',
-                        'num_login_err' => 0,
-                        'created' => '2016-03-15T09:57:38+00:00',
-                        'modified' => '2016-03-15T09:57:38+00:00',
+                        'name' => 'profile',
+                        'pluralized' => 'profiles',
+                        'alias' => 'Profiles',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Profiles',
+                        'table' => 'BEdita/Core.Profiles'
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/users/2',
+                        'self' => 'http://api.example.com/object_types/2',
                     ]
                 ],
             ],
@@ -103,69 +101,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users');
-        $result = json_decode($this->_response->body(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * Test index method filtering by role.
-     *
-     * @return void
-     *
-     * @covers ::index()
-     * @covers ::initialize()
-     */
-    public function testIndexRoles()
-    {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/users',
-                'first' => 'http://api.example.com/roles/1/users',
-                'last' => 'http://api.example.com/roles/1/users',
-                'prev' => null,
-                'next' => null,
-                'home' => 'http://api.example.com/home',
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-            'data' => [
-                [
-                    'id' => '1',
-                    'type' => 'users',
-                    'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+00:00',
-                        'modified' => '2016-03-15T09:57:38+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/users/1',
-                    ]
-                ],
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->get('/roles/1/users');
+        $this->get('/object_types');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -185,9 +121,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users',
-                'first' => 'http://api.example.com/users',
-                'last' => 'http://api.example.com/users',
+                'self' => 'http://api.example.com/object_types',
+                'first' => 'http://api.example.com/object_types',
+                'last' => 'http://api.example.com/object_types',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -204,7 +140,7 @@ class UsersControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('Users')->deleteAll([]);
+        TableRegistry::get('ObjectTypes')->deleteAll([]);
 
         $this->configRequest([
             'headers' => [
@@ -212,7 +148,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users');
+        $this->get('/object_types');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -232,20 +168,20 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users/1',
+                'self' => 'http://api.example.com/object_types/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
-                'type' => 'users',
+                'type' => 'object_types',
                 'attributes' => [
-                    'username' => 'first user',
-                    'blocked' => false,
-                    'last_login' => null,
-                    'last_login_err' => null,
-                    'num_login_err' => 1,
-                    'created' => '2016-03-15T09:57:38+00:00',
-                    'modified' => '2016-03-15T09:57:38+00:00',
+                    'name' => 'document',
+                    'pluralized' => 'documents',
+                    'alias' => 'Documents',
+                    'description' => null,
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'table' => 'BEdita/Core.Objects'
                 ],
             ],
         ];
@@ -256,7 +192,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users/1');
+        $this->get('/object_types/1');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -277,7 +213,7 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/users/99',
+                'self' => 'http://api.example.com/object_types/99',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -291,7 +227,7 @@ class UsersControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/users/99');
+        $this->get('/object_types/99');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
@@ -316,10 +252,15 @@ class UsersControllerTest extends IntegrationTestCase
     public function testAdd()
     {
         $data = [
-            'type' => 'users',
+            'type' => 'object_types',
             'attributes' => [
-                'username' => 'gustavo_supporto',
-                'password_hash' => 'aiuto',
+                'name' => 'my_object_type',
+                'pluralized' => 'my_object_types',
+                'alias' => 'My Object Type',
+                'description' => null,
+                'plugin' => 'BEdita/Core',
+                'model' => 'Objects',
+                'table' => 'BEdita/Core.Objects'
             ],
         ];
 
@@ -330,12 +271,12 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/users', json_encode(compact('data')));
+        $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/3');
-        $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
+        $this->assertHeader('Location', 'http://api.example.com/object_types/3');
+        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
     }
 
     /**
@@ -349,13 +290,13 @@ class UsersControllerTest extends IntegrationTestCase
     public function testAddInvalid()
     {
         $data = [
-            'type' => 'users',
+            'type' => 'object_types',
             'attributes' => [
-                'password_hash' => 'aiuto',
+                'description' => 'Anonymous object_type.',
             ],
         ];
 
-        $count = TableRegistry::get('Users')->find()->count();
+        $count = TableRegistry::get('ObjectTypes')->find()->count();
 
         $this->configRequest([
             'headers' => [
@@ -364,11 +305,11 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/users', json_encode(compact('data')));
+        $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('Users')->find()->count());
+        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
     }
 
     /**
@@ -383,9 +324,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'users',
+            'type' => 'object_types',
             'attributes' => [
-                'username' => 'new_username',
+                'name' => 'document new',
             ],
         ];
 
@@ -396,11 +337,11 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/users/1', json_encode(compact('data')));
+        $this->patch('/object_types/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('new_username', TableRegistry::get('Users')->get(1)->get('username'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
     }
 
     /**
@@ -415,9 +356,9 @@ class UsersControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'users',
+            'type' => 'object_types',
             'attributes' => [
-                'username' => 'new_username',
+                'name' => 'profile new',
             ],
         ];
 
@@ -428,44 +369,12 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/users/2', json_encode(compact('data')));
+        $this->patch('/object_types/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
-        $this->assertEquals('second user', TableRegistry::get('Users')->get(2)->get('username'));
-    }
-
-    /**
-     * Test edit method with invalid data.
-     *
-     * @return void
-     *
-     * @covers ::edit()
-     * @covers ::initialize()
-     */
-    public function testEditInvalid()
-    {
-        $data = [
-            'id' => '1',
-            'type' => 'users',
-            'attributes' => [
-                'username' => 'second user',
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->patch('/users/1', json_encode(compact('data')));
-
-        $this->assertResponseCode(400);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('first user', TableRegistry::get('Users')->get(1)->get('username'));
+        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
     }
 
     /**
@@ -485,10 +394,10 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->delete('/users/1');
+        $this->delete('/object_types/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Users')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 1]));
     }
 }

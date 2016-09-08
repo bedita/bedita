@@ -34,6 +34,7 @@ class ExtensionOfTest extends TestCase
         'plugin.BEdita/Core.fake_animals',
         'plugin.BEdita/Core.fake_mammals',
         'plugin.BEdita/Core.fake_felines',
+        'plugin.BEdita/Core.fake_articles',
     ];
 
     /**
@@ -68,6 +69,10 @@ class ExtensionOfTest extends TestCase
         $this->fakeAnimals = TableRegistry::get('FakeAnimals');
         $this->fakeMammals = TableRegistry::get('FakeMammals');
         $this->fakeFelines = TableRegistry::get('FakeFelines');
+
+        $this->fakeAnimals->hasMany('FakeArticles', [
+            'dependent' => true
+        ]);
     }
 
     /**
@@ -80,8 +85,32 @@ class ExtensionOfTest extends TestCase
         unset($this->fakeFelines);
         unset($this->fakeMammals);
         unset($this->fakeAnimals);
-        TableRegistry::clear();
+
+        TableRegistry::remove('FakeFelines');
+        TableRegistry::remove('FakeMammals');
+        TableRegistry::remove('FakeAnimals');
+        TableRegistry::remove('FakeArticles');
+
         parent::tearDown();
+    }
+
+    /**
+     * Test __constructor to see if Model.afterDelete is set
+     *
+     * @return void
+     * @covers ::__construct()
+     */
+    public function testConstruct()
+    {
+        $count = count($this->fakeMammals->eventManager()->listeners('Model.afterDelete'));
+
+        $assoc = new ExtensionOf('FakeAnimals', [
+            'sourceTable' => $this->fakeMammals,
+            'foreignKey' => $this->fakeMammals->primaryKey()
+        ]);
+
+        $count++;
+        $this->assertCount($count, $this->fakeMammals->eventManager()->listeners('Model.afterDelete'));
     }
 
     /**
@@ -115,18 +144,16 @@ class ExtensionOfTest extends TestCase
     public function saveAssociatedProvider()
     {
         return [
-            'noProperty' => [
+            'noParentField' => [
                 [
                     'subclass' => 'Eutheria'
                 ]
             ],
-            'protertySet' => [
+            'parentField' => [
                 [
                     'subclass' => 'Marsupial',
-                    'fake_animal' => [
-                        'name' => 'kangaroo',
-                        'legs' => 4
-                    ]
+                    'name' => 'kangaroo',
+                    'legs' => 4
                 ]
             ],
         ];
@@ -137,7 +164,8 @@ class ExtensionOfTest extends TestCase
      *
      * @return void
      * @dataProvider saveAssociatedProvider
-     * @coversNothing
+     * @covers ::saveAssociated()
+     * @covers ::targetPropertiesValues()
      */
     public function testSaveAssociated($entityData)
     {
@@ -149,22 +177,16 @@ class ExtensionOfTest extends TestCase
         $this->fakeMammals->associations()->add($assoc->name(), $assoc);
         $mammal = $this->fakeMammals->newEntity($entityData);
 
-        if (empty($entityData['fake_animal'])) {
-            $prop = $mammal->visibleProperties();
-            $assoc->saveAssociated($mammal);
-            $this->assertEquals($prop, $mammal->visibleProperties());
-        } else {
-            $lastInserted = $this->fakeAnimals
-                ->find()
-                ->hydrate(false)
-                ->last();
+        $lastInserted = $this->fakeAnimals
+            ->find()
+            ->hydrate(false)
+            ->last();
 
-            $expectedId = $lastInserted['id'] + 1;
+        $expectedId = $lastInserted['id'] + 1;
 
-            $mammal = $assoc->saveAssociated($mammal);
-            $this->assertEquals($expectedId, $mammal->fake_animal->id);
-            $this->assertEquals($expectedId, $mammal->id);
-        }
+        $mammal = $assoc->saveAssociated($mammal);
+        $this->assertEquals($expectedId, $mammal->id);
+        $this->assertEquals($expectedId, $mammal->id);
     }
 
     /**
@@ -201,5 +223,13 @@ class ExtensionOfTest extends TestCase
                 continue;
             }
         }
+
+        $articles = $this->fakeAnimals
+            ->FakeArticles
+            ->find()
+            ->where(['fake_animal_id' => $id])
+            ->count();
+
+        $this->assertEquals(0, $articles);
     }
 }

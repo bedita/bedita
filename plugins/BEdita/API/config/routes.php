@@ -24,7 +24,7 @@ Router::plugin(
         // Home.
         $routes->connect(
             '/home',
-            ['controller' => 'Home', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Home', 'action' => 'index'],
             ['_name' => 'home']
         );
 
@@ -70,6 +70,33 @@ Router::plugin(
             '/roles/*',
             ['controller' => 'Roles', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'roles:delete']
+        );
+
+        // Object Types.
+        $routes->connect(
+            '/object_types',
+            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'object_types:index']
+        );
+        $routes->connect(
+            '/object_types/*',
+            ['controller' => 'ObjectTypes', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'object_types:view']
+        );
+        $routes->connect(
+            '/object_types',
+            ['controller' => 'ObjectTypes', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'object_types:add']
+        );
+        $routes->connect(
+            '/object_types/*',
+            ['controller' => 'ObjectTypes', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'object_types:edit']
+        );
+        $routes->connect(
+            '/object_types/*',
+            ['controller' => 'ObjectTypes', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'object_types:delete']
         );
 
         // Users.

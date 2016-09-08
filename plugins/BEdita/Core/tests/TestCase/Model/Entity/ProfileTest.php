@@ -52,7 +52,7 @@ class ProfileTest extends TestCase
     {
         parent::setUp();
 
-        $this->Profiles = TableRegistry::get('BEdita/Core.Profiles');
+        $this->Profiles = TableRegistry::get('Profiles');
     }
 
     /**
@@ -61,8 +61,6 @@ class ProfileTest extends TestCase
     public function tearDown()
     {
         unset($this->Profiles);
-
-        TableRegistry::clear();
 
         parent::tearDown();
     }

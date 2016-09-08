@@ -12,12 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Error\ExceptionRenderer;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 
 /**
@@ -40,6 +41,8 @@ class AppController extends Controller
             throw new ForbiddenException('No valid API KEY found');
         }
 
+        $this->response->header('X-BEdita-Version', Configure::read('BEdita.version'));
+
         $this->loadComponent('BEdita/API.Paginator');
 
         $this->loadComponent('RequestHandler');
@@ -61,8 +64,6 @@ class AppController extends Controller
             'storage' => 'Memory',
         ]);
         $this->Auth->allow();
-
-        $this->corsSettings();
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
@@ -129,39 +130,6 @@ class AppController extends Controller
     }
 
     /**
-     * Setup CORS from configuration
-     * An optional 'CORS' key in should be like this example:
-     *
-     * 'CORS' => [
-     *   'allowOrigin' => '*.example.com',
-     *   'allowMethods' => ['GET', 'POST'],
-     *   'allowHeaders' => ['X-CSRF-Token']
-     * ]
-     *
-     * where:
-     *   - 'allowOrigin' is a single domain or an array of domains
-     *   - 'allowMethods' is an array of HTTP methods
-     *   - 'allowHeaders' is an array of HTTP headers
-     *
-     *
-     * @return void
-     */
-    protected function corsSettings()
-    {
-        $corsConfig = Configure::read('CORS');
-        if (!empty($corsConfig)) {
-            $corsBuilder = $this->response->cors($this->request);
-            $corsAllowed = ['allowOrigin' => '', 'allowMethods' => '', 'allowHeaders' => ''];
-            $corsAccepted = array_intersect_key($corsConfig, $corsAllowed);
-            foreach ($corsAccepted as $corsOption => $corsValue) {
-                $corsBuilder->{$corsOption}($corsValue);
-            }
-            $corsBuilder->build();
-        }
-    }
-
-
-    /**
      * Action to display HTML layout.
      *
      * @return \Cake\Network\Response
@@ -169,23 +137,44 @@ class AppController extends Controller
      */
     protected function html()
     {
-        if ($this->request->is('requested')) {
-            throw new NotFoundException();
+        $this->request->allowMethod('get');
+        $method = $this->request->method();
+        $url = $this->request->here();
+
+        // render JSON API response
+        try {
+            $this->request->env('HTTP_ACCEPT', 'application/json');
+            $this->loadComponent('BEdita/API.JsonApi');
+
+            $this->viewBuilder()->className('BEdita/API.JsonApi');
+            $this->invokeAction();
+            $responseBody = $this->render()->body();
+
+            $this->dispatchEvent('Controller.shutdown');
+            $dispatcher = DispatcherFactory::create();
+            $args = [
+                'request' => $this->request,
+                'response' => $this->response,
+            ];
+            $dispatcher->dispatchEvent('Dispatcher.afterDispatch', $args);
+
+            $this->components()->unload('JsonApi');
+            unset($this->JsonApi);
+        } catch (\Exception $exception) {
+            $renderer = new ExceptionRenderer($exception);
+            $response = $renderer->render();
+            $responseBody = $response->body();
+            $this->response->statusCode($response->statusCode());
         }
 
-        $method = $this->request->method();
-        $url = Router::reverse($this->request);
-        $response = $this->requestAction($url, [
-            'environment' => [
-                'HTTP_CONTENT_TYPE' => 'application/json',
-                'HTTP_ACCEPT' => 'application/json',
-                'REQUEST_METHOD' => $method,
-            ],
-        ]);
+        $this->set(compact('method', 'responseBody', 'url'));
 
-        $this->set(compact('method', 'response', 'url'));
+        // render HTML
+        $this->viewBuilder()
+            ->className('View')
+            ->template('Common/html');
 
-        $this->viewBuilder()->template('Common/html');
+        $this->response->type('html');
 
         return $this->render();
     }

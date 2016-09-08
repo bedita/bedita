@@ -22,11 +22,11 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "cakephp/cakephp": "~3.2",
+        "cakephp/cakephp": "3.3.*",
         "mobiledetect/mobiledetectlib": "2.*",
         "cakephp/migrations": "~1.0",
         "cakephp/plugin-installer": "*",
-        "firebase/php-jwt": "~3.0"
+        "firebase/php-jwt": "~4.0"
     },
     "require-dev": {
         "psy/psysh": "@stable",

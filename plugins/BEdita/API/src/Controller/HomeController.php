@@ -29,9 +29,11 @@ class HomeController extends AppController
      */
     public function index()
     {
+        $this->request->allowMethod(['get', 'head']);
+
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/users', '/roles'];
+        $endPoints = ['/objects', '/users', '/roles', '/object_types'];
         foreach ($endPoints as $e) {
             $resources[$e] = [
                 'href' => $baseUrl . $e,
@@ -40,13 +42,12 @@ class HomeController extends AppController
                     'formats' => [
                         'application/json',
                         'application/vnd.api+json',
-                    ]
-                ]
+                    ],
+                ],
             ];
         }
 
-        $meta = compact('resources');
-        $this->set('_meta', $meta);
+        $this->set('_meta', compact('resources'));
         $this->set('_serialize', []);
     }
 }

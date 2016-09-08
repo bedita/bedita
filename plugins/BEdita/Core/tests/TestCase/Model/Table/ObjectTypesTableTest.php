@@ -53,7 +53,7 @@ class ObjectTypesTableTest extends TestCase
 
         Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
 
-        $this->ObjectTypes = TableRegistry::get('BEdita/Core.ObjectTypes');
+        $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
 
     /**

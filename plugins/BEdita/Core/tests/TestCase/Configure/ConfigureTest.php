@@ -42,9 +42,6 @@ class ConfigureTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        TableRegistry::remove('Config');
-        TableRegistry::clear();
-        TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
     }
 
     /**

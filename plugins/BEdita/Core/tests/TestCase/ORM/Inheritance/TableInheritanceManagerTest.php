@@ -61,8 +61,10 @@ class TableInheritanceManagerTest extends TestCase
      */
     public function tearDown()
     {
-        TableRegistry::clear();
         unset($this->fakeFelines);
+
+        TableRegistry::remove('FakeFelines');
+
         parent::tearDown();
     }
 

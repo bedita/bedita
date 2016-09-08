@@ -48,7 +48,7 @@ class UsersTableTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('BEdita/Core.Users');
+        $this->Users = TableRegistry::get('Users');
     }
 
     /**
@@ -58,8 +58,6 @@ class UsersTableTest extends TestCase
     {
         unset($this->Users);
 
-        TableRegistry::clear();
-
         parent::tearDown();
     }
 
@@ -67,7 +65,7 @@ class UsersTableTest extends TestCase
      * Test initialization.
      *
      * @return void
-     * @covers ::initialize()
+     * @coversNothing
      */
     public function testInitialization()
     {
@@ -113,8 +111,7 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @covers ::validationDefault
-     * @covers ::buildRules
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {

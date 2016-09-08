@@ -13,9 +13,9 @@
 
 namespace BEdita\Core\Model\Behavior;
 
-use ArrayObject;
 use BEdita\Core\ORM\Inheritance\QueryPatcher;
 use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 use Cake\ORM\Query;
@@ -110,7 +110,7 @@ class ClassTableInheritanceBehavior extends Behavior
      * @param bool $primary Indicates whether or not this is the root query or an associated query
      * @return void
      */
-    public function beforeFind(Event $event, Query $query, ArrayObject $options, $primary)
+    public function beforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
     {
         if (!$primary) {
             return;
@@ -118,6 +118,29 @@ class ClassTableInheritanceBehavior extends Behavior
         $this->queryPatcher()
             ->patch($query)
             ->all();
+    }
+
+    /**
+     * Dirty the Entity property corresponding to the inherited table to trigger `ExtensionOf::saveAssociated()`
+     *
+     * @see \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @param \ArrayObject $options The save options
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    {
+        $inheritedTable = current($this->inheritedTables());
+        if (empty($inheritedTable)) {
+            return;
+        }
+
+        $property = $this->_table
+            ->association($inheritedTable->alias())
+            ->property();
+
+        $entity->dirty($property, true);
     }
 
     /**
