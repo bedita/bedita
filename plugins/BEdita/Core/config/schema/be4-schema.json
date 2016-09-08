@@ -26,7 +26,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "annotation author",
                 "precision": null
             },
@@ -61,7 +60,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "annotation parameters (serialized JSON)",
                 "precision": null
             }
@@ -135,7 +133,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "external provider name: facebook, google, github...",
                 "precision": null,
                 "fixed": null
@@ -145,7 +142,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "external provider url",
                 "precision": null,
                 "fixed": null
@@ -155,7 +151,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "external provider parameters",
                 "precision": null
             }
@@ -184,7 +179,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "configuration key",
                 "precision": null,
                 "fixed": null
@@ -194,7 +188,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "group name of configuration parameters",
                 "precision": null,
                 "fixed": null
@@ -204,7 +197,6 @@
                 "length": null,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "configuration data as string or JSON",
                 "precision": null
             },
@@ -281,7 +273,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "external auth params, serialized JSON",
                 "precision": null
             },
@@ -290,7 +281,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "auth username on provider",
                 "precision": null,
                 "fixed": null
@@ -366,7 +356,6 @@
                 "length": null,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "media uri: relative path on local filesystem or remote URL",
                 "precision": null
             },
@@ -375,7 +364,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "file name",
                 "precision": null
             },
@@ -384,7 +372,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "resource mime type",
                 "precision": null
             },
@@ -403,7 +390,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "md5 hash of local file",
                 "precision": null,
                 "fixed": null
@@ -413,7 +399,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "original name for uploaded file",
                 "precision": null
             },
@@ -442,7 +427,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "external provider\/service name",
                 "precision": null
             },
@@ -451,7 +435,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "uid, used for remote videos",
                 "precision": null,
                 "fixed": null
@@ -461,7 +444,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "remote media thumbnail URL",
                 "precision": null
             }
@@ -535,7 +517,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "permission parameters (JSON data)",
                 "precision": null
             }
@@ -630,7 +611,6 @@
                 "length": null,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "property value of linked object",
                 "precision": null
             }
@@ -744,7 +724,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "relation parameters (JSON format)",
                 "precision": null
             }
@@ -840,7 +819,6 @@
                 "length": 50,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "object type name",
                 "precision": null,
                 "fixed": null
@@ -850,7 +828,6 @@
                 "length": 50,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "pluralized object type name",
                 "precision": null,
                 "fixed": null
@@ -860,7 +837,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "object type description",
                 "precision": null
             },
@@ -869,7 +845,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "CakePHP plugin name",
                 "precision": null,
                 "fixed": null
@@ -879,7 +854,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "CakePHP Table class name",
                 "precision": null,
                 "fixed": null
@@ -946,7 +920,6 @@
                 "length": null,
                 "null": false,
                 "default": "draft",
-                "collate": "utf8_general_ci",
                 "comment": "object status: on, draft, off, deleted",
                 "precision": null
             },
@@ -955,7 +928,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "unique and url friendly resource name (slug)",
                 "precision": null,
                 "fixed": null
@@ -997,7 +969,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "",
                 "precision": null
             },
@@ -1006,7 +977,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "",
                 "precision": null
             },
@@ -1015,7 +985,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "",
                 "precision": null
             },
@@ -1024,7 +993,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "object data extensions (JSON format)",
                 "precision": null
             },
@@ -1034,7 +1002,6 @@
                 "length": 3,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "language used, ISO 639-3 code",
                 "precision": null
             },
@@ -1141,7 +1108,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "person name, can be NULL",
                 "precision": null
             },
@@ -1150,7 +1116,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "person surname, can be NULL",
                 "precision": null
             },
@@ -1159,7 +1124,6 @@
                 "length": 100,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "first email, can be NULL",
                 "precision": null,
                 "fixed": null
@@ -1169,7 +1133,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "person title, for example Sir, Madame, Prof, Doct, ecc., can be NULL",
                 "precision": null
             },
@@ -1178,7 +1141,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "gender, for example male, female, can be NULL",
                 "precision": null
             },
@@ -1211,7 +1173,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "name of company, can be NULL",
                 "precision": null
             },
@@ -1220,7 +1181,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "type of company, can be NULL",
                 "precision": null
             },
@@ -1229,7 +1189,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "address street, can be NULL",
                 "precision": null
             },
@@ -1238,7 +1197,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "city, can be NULL",
                 "precision": null
             },
@@ -1247,7 +1205,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "zipcode, can be NULL",
                 "precision": null
             },
@@ -1256,7 +1213,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "country, can be NULL",
                 "precision": null
             },
@@ -1265,7 +1221,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "state, can be NULL",
                 "precision": null
             },
@@ -1274,7 +1229,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "first phone number, can be NULL",
                 "precision": null
             },
@@ -1283,7 +1237,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "website url, can be NULL",
                 "precision": null
             }
@@ -1357,7 +1310,6 @@
                 "length": 100,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "property name",
                 "precision": null,
                 "fixed": null
@@ -1395,7 +1347,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "property predefined options list",
                 "precision": null
             }
@@ -1484,7 +1435,6 @@
                 "length": 50,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "property type name",
                 "precision": null,
                 "fixed": null
@@ -1494,7 +1444,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "property type parameters",
                 "precision": null
             }
@@ -1543,7 +1492,6 @@
                 "length": null,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "type position in relation, left or right",
                 "precision": null
             }
@@ -1612,7 +1560,6 @@
                 "length": 100,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "relation name",
                 "precision": null,
                 "fixed": null
@@ -1622,7 +1569,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "relation label",
                 "precision": null
             },
@@ -1631,7 +1577,6 @@
                 "length": 100,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "inverse relation name",
                 "precision": null,
                 "fixed": null
@@ -1641,7 +1586,6 @@
                 "length": 255,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "inverse relation label",
                 "precision": null
             },
@@ -1650,7 +1594,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "relation description",
                 "precision": null
             },
@@ -1659,7 +1602,6 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "relation parameters definitions (JSON format)",
                 "precision": null
             }
@@ -1705,7 +1647,6 @@
                 "length": 32,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "role unique name",
                 "precision": null,
                 "fixed": null
@@ -1715,7 +1656,6 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "role description",
                 "precision": null
             },
@@ -2043,7 +1983,6 @@
                 "length": 100,
                 "null": false,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "login user name",
                 "precision": null,
                 "fixed": null
@@ -2053,7 +1992,6 @@
                 "length": 255,
                 "null": true,
                 "default": null,
-                "collate": "utf8_general_ci",
                 "comment": "login password hash, if empty external auth is used",
                 "precision": null
             },
