@@ -101,14 +101,28 @@ class ExtensionOf extends BelongsTo
     public function saveAssociated(EntityInterface $entity, array $options = [])
     {
         $targetData = $this->targetPropertiesValues($entity);
-        if (empty($targetData)) {
-            $targetData = $this->target()->schema()->defaultValues();
-            $propertiesToRemove = array_keys($targetData);
-        }
+        $defaultValues = array_map(
+            function ($val) {
+                if ($val === 'NULL::character varying') {
+                    return null;
+                }
 
-        $targetEntity = $this->target()->newEntity($targetData, [
+                return $val;
+            },
+            $this->target()->schema()->defaultValues()
+        );
+        $propertiesToRemove = array_keys($defaultValues);
+
+        $targetEntity = $this->target()->newEntity($defaultValues, [
             'accessibleFields' => ['*' => true],
         ]);
+        $targetEntity->isNew($entity->isNew());
+        $targetEntity = $this->target()->patchEntity($targetEntity, $targetData, [
+            'accessibleFields' => ['*' => true],
+        ]);
+        if (!$entity->isNew()) {
+            $targetEntity->dirty($this->bindingKey(), true);
+        }
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;
