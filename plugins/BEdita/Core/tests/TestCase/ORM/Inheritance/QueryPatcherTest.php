@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
 use BEdita\Core\ORM\Inheritance\QueryPatcher;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -96,6 +97,8 @@ class QueryPatcherTest extends TestCase
 
         TableRegistry::remove('FakeFelines');
         TableRegistry::remove('FakeMammals');
+        TableRegistry::remove('FakeAnimals');
+        TableRegistry::remove('FakeArticles');
 
         parent::tearDown();
     }
@@ -190,5 +193,282 @@ class QueryPatcherTest extends TestCase
         $queryPatcher = new QueryPatcher($this->fakeFelines);
         $queryPatcher->patch($query)->contain();
         $this->assertEquals($expected, $query->contain());
+    }
+
+    /**
+     * Data provider for `testAliasField` test case.
+     *
+     * @return array
+     */
+    public function aliasFieldProvider()
+    {
+        return [
+            'id' => [
+                'FakeFelines.id',
+                'id',
+            ],
+            'aliasRight' => [
+                'FakeFelines.family',
+                'FakeFelines.family',
+            ],
+            'inheritedAlias' => [
+                'FakeMammals.subclass',
+                'FakeFelines.subclass',
+            ],
+            'inheritedAlias2' => [
+                'FakeAnimals.legs',
+                'FakeFelines.legs',
+            ],
+            'inheritedJustName' => [
+                'FakeMammals.subclass',
+                'subclass',
+            ],
+            'inheritedJustName2' => [
+                'FakeAnimals.legs',
+                'legs',
+            ],
+            'notInherited' => [
+                'FakeArticles.title',
+                'FakeArticles.title',
+            ],
+        ];
+    }
+
+    /**
+     * testAliasField
+     *
+     * @param string $expected Expected result.
+     * @param string $field The starting field.
+     * @return void
+     *
+     * @dataProvider aliasFieldProvider
+     * @covers ::aliasField()
+     * @covers ::extractField()
+     */
+    public function testAliasField($expected, $field)
+    {
+        $queryPatcher = new QueryPatcher($this->fakeFelines);
+        $this->assertEquals($expected, $queryPatcher->aliasField($field));
+    }
+
+    /**
+     * Data provider for `testFixClause` test case.
+     *
+     * @return array
+     */
+    public function fixClauseProvider()
+    {
+        return [
+            'selectString' => [
+                ['FakeFelines.id'],
+                'select',
+                'id',
+            ],
+            'selectArray' => [
+                ['FakeFelines.id', 'FakeAnimals.legs', 'FakeMammals.subclass', 'FakeAnimals.name', 'sc' => 'FakeMammals.subclass'],
+                'select',
+                ['id', 'legs', 'subclass', 'FakeAnimals.name', 'sc' => 'subclass'],
+            ],
+            'group' => [
+                ['FakeFelines.id', 'FakeAnimals.legs'],
+                'group',
+                ['id', 'legs'],
+            ],
+            'noDistinct' => [
+                false,
+                'distinct',
+                false
+            ],
+            'distinct' => [
+                true,
+                'distinct',
+                true
+            ],
+            'distinctField' => [
+                ['FakeFelines.id'],
+                'distinct',
+                'id'
+            ],
+            'distinctArray' => [
+                ['FakeFelines.id', 'FakeAnimals.name'],
+                'distinct',
+                ['id', 'name']
+            ]
+        ];
+    }
+
+    /**
+     * testFixClause
+     *
+     * @param array $expected Expected result.
+     * @param string $clause The sql clause
+     * @param array|string|\Cake\Database\ExpressionInterface|bool the clause data
+     * @return void
+     *
+     * @dataProvider fixClauseProvider
+     * @covers ::fixClause()
+     * @covers ::aliasField()
+     * @covers ::extractField()
+     */
+    public function testFixClause($expected, $clause, $data)
+    {
+        $query = $this->fakeFelines->find();
+        $queryPatcher = new QueryPatcher($this->fakeFelines);
+        $queryPatcher->patch($query)
+            ->fixClause($data, $clause);
+
+        if (!is_bool($data)) {
+            $this->assertEquals($expected, $query->clause($clause));
+        }
+
+        // start from Query::clause()
+        $query->{$clause}($data, true);
+        $queryPatcher->fixClause(null, $clause);
+        $this->assertEquals($expected, $query->clause($clause));
+    }
+
+    /**
+     * testFixExpression
+     *
+     * @covers ::fixExpression()
+     * @covers ::aliasField()
+     * @covers ::extractField()
+     */
+    public function testFixExpression()
+    {
+        $query = $this->fakeFelines->find();
+        $queryPatcher = new QueryPatcher($this->fakeFelines);
+
+        // where: test \Cake\Database\Expression\FieldInterface case
+        $where = ['id' => 1, 'name' => 'cat'];
+        $whereExpected = ['FakeFelines.id' => 1, 'FakeAnimals.name' => 'cat'];
+        $query->where($where);
+        $whereExpression = $query->clause('where');
+        $whereExpression->iterateParts(function ($value, $key) use ($queryPatcher, $whereExpected) {
+            $whereKeys = array_keys($whereExpected);
+            $queryPatcher->fixExpression($value);
+            $expected = $whereKeys[$key];
+            $this->assertEquals($expected, $value->getField());
+            $this->assertEquals($whereExpected[$expected], $value->getValue());
+
+            return $value;
+        });
+
+        // order: test \Cake\Database\Expression\QueryExpression case
+        $query->order(['subclass' => 'ASC']);
+        $orderExpression = $query->clause('order');
+        $queryPatcher->fixExpression($orderExpression);
+        $orderExpression->iterateParts(function ($value, $key) use ($queryPatcher) {
+            $this->assertEquals('FakeMammals.subclass', $key);
+
+            return $value;
+        });
+
+        // test \Cake\Database\Expression\IdentifierExpression case
+        $identifierTest = [
+            'id' => 'FakeFelines.id',
+            'FakeFelines.name' => 'FakeAnimals.name',
+            'subclass' => 'FakeMammals.subclass',
+            'FakeFelines.family' => 'FakeFelines.family',
+            'FakeArticles.title' => 'FakeArticles.title'
+        ];
+        foreach ($identifierTest as $test => $expected) {
+            $identifierExpression = new IdentifierExpression($test);
+            $queryPatcher->fixExpression($identifierExpression);
+            $this->assertEquals($expected, $identifierExpression->getIdentifier());
+        }
+    }
+
+    /**
+     * testAll
+     *
+     * @covers ::all()
+     * @covers ::contain()
+     * @covers ::fixClause()
+     * @covers ::fixExpression()
+     */
+    public function testAll()
+    {
+        $query = $this->fakeFelines->find();
+        $queryPatcher = new QueryPatcher($this->fakeFelines);
+
+        $query->select([
+            'custom_name' => 'name',
+            'subclass',
+            'family',
+            'count' => $query->func()->count('id')
+        ])
+            ->where(['family' => 'purring cats'])
+            ->andWhere(['id' => 1])
+            ->group('legs')
+            ->order(['subclass' => 'ASC']);
+
+        $queryPatcher->patch($query)->all();
+
+        // contain
+        $this->assertEquals(
+            [
+                'FakeMammals' => [
+                    'FakeAnimals' => []
+                    ]
+            ],
+            $query->contain()
+        );
+
+        // select
+        $selectClause = $query->clause('select');
+        $selectExpected = [
+            'custom_name' => 'FakeAnimals.name',
+            'FakeMammals.subclass',
+            'FakeFelines.family',
+            'count' => $query->func()->count('FakeFelines.id')
+        ];
+        foreach ($selectClause as $k => $s) {
+            $this->assertEquals($selectExpected[$k], $s);
+        }
+
+        // where
+        $whereClause = $query->clause('where');
+        $whereExpected = [
+            'FakeFelines.family' => 'purring cats',
+            'FakeFelines.id' => 1
+        ];
+
+        $whereClause->iterateParts(function ($value, $key) use ($whereExpected) {
+            $whereKeys = array_keys($whereExpected);
+            $expected = $whereKeys[$key];
+            $this->assertEquals($expected, $value->getField());
+            $this->assertEquals($whereExpected[$expected], $value->getValue());
+
+            return $value;
+        });
+
+        // group
+        $groupClause = $query->clause('group');
+        $this->assertEquals('FakeAnimals.legs', $groupClause[0]);
+
+        // order
+        $orderClause = $query->clause('order');
+        $orderClause->iterateParts(function ($value, $key) use ($queryPatcher) {
+            $this->assertEquals('FakeMammals.subclass', $key);
+
+            return $value;
+        });
+
+        // check sql just for MySQL
+        if ($query->connection()->driver() instanceof \Cake\Database\Driver\Mysql) {
+            $sql = $query->sql();
+            $sql = preg_replace('/(\s){2,}/', ' ', $sql);
+
+            $expected = 'SELECT FakeAnimals.name AS `custom_name`, FakeMammals.subclass AS `FakeMammals__subclass`, ' .
+                'FakeFelines.family AS `FakeFelines__family`, (COUNT(FakeFelines.id)) AS `count` ' .
+                'FROM fake_felines FakeFelines INNER JOIN fake_mammals FakeMammals ON FakeMammals.id = (FakeFelines.id) ' .
+                'INNER JOIN fake_animals FakeAnimals ON FakeAnimals.id = (FakeMammals.id) ' .
+                'WHERE (FakeFelines.family = :c0 AND FakeFelines.id = :c1) ' .
+                'GROUP BY FakeAnimals.legs ' .
+                'ORDER BY FakeMammals.subclass ASC';
+
+            $this->assertEquals($expected, $sql);
+        }
     }
 }

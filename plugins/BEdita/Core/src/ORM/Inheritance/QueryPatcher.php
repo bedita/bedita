@@ -13,6 +13,10 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use Cake\Database\ExpressionInterface;
+use Cake\Database\Expression\FieldInterface;
+use Cake\Database\Expression\IdentifierExpression;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 
@@ -47,6 +51,16 @@ class QueryPatcher
     protected $inheritanceMap = [];
 
     /**
+     * The alias checker used to extract fields name aliased with table alias
+     *
+     * @var array
+     */
+    protected $aliasChecker = [
+        'string' => '',
+        'length' => 0
+    ];
+
+    /**
      * Constructor.
      *
      * @param \Cake\ORM\Table $table The Table instance
@@ -60,6 +74,8 @@ class QueryPatcher
             ));
         }
         $this->table = $table;
+        $this->aliasChecker['string'] = $table->alias() . '.';
+        $this->aliasChecker['length'] = strlen($this->aliasChecker['string']);
     }
 
     /**
@@ -101,7 +117,12 @@ class QueryPatcher
     {
         $this->contain();
 
-        return $this->query;
+        return $this->query
+            ->traverseExpressions([$this, 'fixExpression'])
+            ->traverse(
+                [$this, 'fixClause'],
+                ['select', 'group', 'distinct']
+            );
     }
 
     /**
@@ -163,5 +184,131 @@ class QueryPatcher
         }
 
         return false;
+    }
+
+    /**
+     * Fix sql clause mapping inherited fields.
+     *
+     * Pay attention that this method just fixes clauses in the format of string or array of string.
+     * Moreover at the end `\Cake\ORM\Query::$clause()` is called with overwrite `true` as second param
+     * so assure that the clause method of `\Cake\ORM\Query` has the right signature.
+     *
+     * If you have to fix query expression you should use `self::fixExpression()` instead.
+     *
+     * @param array|\Cake\Database\ExpressionInterface|bool|string $clauseData The clause data
+     * @param string $clause The sql clause
+     * @return $this
+     */
+    public function fixClause($clauseData, $clause)
+    {
+        $clauseData = $clauseData ?: $this->query->clause($clause);
+        if (empty($clauseData) || is_bool($clauseData) || $clauseData instanceof ExpressionInterface) {
+            return $this;
+        }
+
+        if (!is_array($clauseData)) {
+            $clauseData = [$clauseData];
+        }
+
+        foreach ($clauseData as $key => $data) {
+            if (!is_string($data)) {
+                continue;
+            }
+
+            $clauseData[$key] = $this->aliasField($data);
+        }
+
+        $this->query->{$clause}($clauseData, true);
+
+        return $this;
+    }
+
+    /**
+     * Fix query expressions mapping inherited fields
+     *
+     * @param \Cake\Database\ExpressionInterface $expression The expression to manipulate
+     * @return $this
+     */
+    public function fixExpression(ExpressionInterface $expression)
+    {
+        if ($expression instanceof IdentifierExpression) {
+            $identifier = $expression->getIdentifier();
+            $expression->setIdentifier($this->aliasField($identifier));
+
+            return $this;
+        }
+
+        if ($expression instanceof FieldInterface) {
+            $field = $expression->getField();
+            if (is_string($field)) {
+                $expression->setField($this->aliasField($field));
+            }
+
+            return $this;
+        }
+
+        if ($expression instanceof QueryExpression) {
+            $expression->iterateParts(function ($value, &$key) {
+                if (!is_numeric($key)) {
+                    $key = $this->aliasField($key);
+                }
+
+                if (is_string($value)) {
+                    return $this->aliasField($value);
+                }
+
+                return $value;
+            });
+        }
+
+        return $this;
+    }
+
+    /**
+     * Given a `$field` return itself aliased as `TableAlias.column_name`
+     *
+     * If `$field` doesn't correspond to any inherited table columns
+     * then return it without any change.
+     *
+     * @param string $field The field string
+     * @return string
+     */
+    public function aliasField($field)
+    {
+        $field = $this->extractField($field);
+
+        if (strpos($field, '.') !== false) {
+            return $field;
+        }
+
+        if ($this->table->hasField($field)) {
+            return $this->table->alias() . '.' . $field;
+        }
+
+        foreach ($this->inheritedTables() as $inherited) {
+            if (!$inherited->hasField($field)) {
+                continue;
+            }
+
+            return $inherited->alias() . '.' . $field;
+        }
+
+        return $field;
+    }
+
+    /**
+     * Given a `$field` returns it without the `self::$table` alias
+     *
+     * @param string $field The field string
+     * @return string
+     */
+    protected function extractField($field)
+    {
+        $aliasedWith = substr($field, 0, $this->aliasChecker['length']);
+        if ($aliasedWith == $this->aliasChecker['string']) {
+            $field = substr($field, $this->aliasChecker['length']);
+        }
+
+        return $field;
     }
 }
