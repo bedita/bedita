@@ -23,7 +23,7 @@ class FakeAnimalsFixture extends TestFixture
         'name' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'precision' => null],
         'legs' => ['type' => 'integer', 'length' => 2, 'null' => true, 'default' => null, 'precision' => null],
         '_constraints' => [
-             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',

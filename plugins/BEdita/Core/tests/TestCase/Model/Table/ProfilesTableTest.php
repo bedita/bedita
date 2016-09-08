@@ -150,6 +150,11 @@ class ProfilesTableTest extends TestCase
         }
     }
 
+    /**
+     * Test find.
+     *
+     * @return void
+     */
     public function testFind()
     {
         $expectedProperites = [
@@ -199,5 +204,32 @@ class ProfilesTableTest extends TestCase
         sort($visibleProperties);
 
         $this->assertEquals($expectedProperites, $visibleProperties);
+    }
+
+    /**
+     * Test delete.
+     *
+     * @return void
+     */
+    public function testDelete()
+    {
+        $profile = $this->Profiles->find()->first();
+        $id = $profile->id;
+        $this->assertEquals(true, $this->Profiles->delete($profile));
+
+
+        $inheritanceTables = $this->Profiles->inheritedTables(true);
+        // remove behavior to avoid auto contain() with inherited tables
+        $this->Profiles->removeBehavior('ClassTableInheritance');
+        $inheritanceTables[] = $this->Profiles;
+
+        foreach ($inheritanceTables as $table) {
+            try {
+                $entity = $table->get($id);
+                $this->fail(ucfirst($table) . ' record not deleted');
+            } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
+                continue;
+            }
+        }
     }
 }
