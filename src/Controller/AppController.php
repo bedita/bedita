@@ -52,6 +52,8 @@ class AppController extends Controller
             throw new ForbiddenException('No valid API KEY found');
         }
 
+        $this->response->header('X-BEdita-Version', Configure::read('BEdita.version'));
+
         $this->loadComponent('BEdita/API.Paginator');
 
         $this->loadComponent('RequestHandler');
@@ -73,8 +75,6 @@ class AppController extends Controller
             'storage' => 'Memory',
         ]);
         $this->Auth->allow();
-
-        $this->corsSettings();
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
@@ -139,39 +139,6 @@ class AppController extends Controller
 
         return true;
     }
-
-    /**
-     * Setup CORS from configuration
-     * An optional 'CORS' key in should be like this example:
-     *
-     * 'CORS' => [
-     *   'allowOrigin' => '*.example.com',
-     *   'allowMethods' => ['GET', 'POST'],
-     *   'allowHeaders' => ['X-CSRF-Token']
-     * ]
-     *
-     * where:
-     *   - 'allowOrigin' is a single domain or an array of domains
-     *   - 'allowMethods' is an array of HTTP methods
-     *   - 'allowHeaders' is an array of HTTP headers
-     *
-     *
-     * @return void
-     */
-    protected function corsSettings()
-    {
-        $corsConfig = Configure::read('CORS');
-        if (!empty($corsConfig)) {
-            $corsBuilder = $this->response->cors($this->request);
-            $corsAllowed = ['allowOrigin' => '', 'allowMethods' => '', 'allowHeaders' => ''];
-            $corsAccepted = array_intersect_key($corsConfig, $corsAllowed);
-            foreach ($corsAccepted as $corsOption => $corsValue) {
-                $corsBuilder->{$corsOption}($corsValue);
-            }
-            $corsBuilder->build();
-        }
-    }
-
 
     /**
      * Action to display HTML layout.
