@@ -94,42 +94,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testAddAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/roles/1/relationships/users',
-                'last' => 'http://api.example.com/roles/1/relationships/users',
-                'prev' => null,
-                'next' => null,
-            ],
-            'data' => [
-                [
-                    'id' => '1',
-                    'type' => 'users',
-                    'links' => [
-                        'self' => 'http://api.example.com/users/1',
-                    ],
-                ],
-                [
-                    'id' => '2',
-                    'type' => 'users',
-                    'links' => [
-                        'self' => 'http://api.example.com/users/2',
-                    ],
-                ],
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 2,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 2,
-                    'page_size' => 20,
-                ],
-            ],
-        ];
-
         $data = [
             [
                 'id' => '2',
@@ -145,11 +109,10 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
 
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        $this->assertResponseEmpty();
     }
 
     /**
@@ -161,27 +124,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testDeleteAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/roles/1/relationships/users',
-                'last' => 'http://api.example.com/roles/1/relationships/users',
-                'prev' => null,
-                'next' => null,
-            ],
-            'data' => [],
-            'meta' => [
-                'pagination' => [
-                    'count' => 0,
-                    'page' => 1,
-                    'page_count' => 0,
-                    'page_items' => 0,
-                    'page_size' => 20,
-                ],
-            ],
-        ];
-
         $data = [
             [
                 'id' => '1',
@@ -202,11 +144,10 @@ class ResourcesControllerTest extends IntegrationTestCase
         ]);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
 
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        $this->assertResponseEmpty();
     }
 
     /**
@@ -218,35 +159,6 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociations()
     {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/roles/1/relationships/users',
-                'home' => 'http://api.example.com/home',
-                'first' => 'http://api.example.com/roles/1/relationships/users',
-                'last' => 'http://api.example.com/roles/1/relationships/users',
-                'prev' => null,
-                'next' => null,
-            ],
-            'data' => [
-                [
-                    'id' => '2',
-                    'type' => 'users',
-                    'links' => [
-                        'self' => 'http://api.example.com/users/2',
-                    ],
-                ],
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-        ];
-
         $data = [
             [
                 'id' => '2',
@@ -262,11 +174,10 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
 
-        $this->assertResponseCode(200);
+        $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
+        $this->assertResponseEmpty();
     }
 
     /**
