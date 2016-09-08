@@ -283,10 +283,10 @@ CREATE TABLE applications (
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   api_key VARCHAR(255) NOT NULL             COMMENT 'api key value for application',
   name VARCHAR(255) NOT NULL                COMMENT 'application name',
-  descripion TEXT NOT NULL                  COMMENT 'application description',
+  description TEXT NOT NULL                 COMMENT 'application description',
   created DATETIME NOT NULL                 COMMENT 'creation date',
   modified DATETIME NOT NULL                COMMENT 'last modification date',
-  enabled  BOOL NOT NULL DEFAULT 1          COMMENT 'endpoint active flag',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'application active flag',
 
   PRIMARY KEY (id),
   UNIQUE applications_apikey_uq (api_key),
@@ -299,10 +299,10 @@ CREATE TABLE endpoints (
 
   id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL                COMMENT 'endpoint name without slash, will be used as /name',
-  descripion TEXT NULL                      COMMENT 'endpoint description',
+  description TEXT NULL                     COMMENT 'endpoint description',
   created DATETIME NOT NULL                 COMMENT 'creation date',
   modified DATETIME NOT NULL                COMMENT 'last modification date',
-  enabled  BOOL NOT NULL DEFAULT 1          COMMENT 'endpoint active flag',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'endpoint active flag',
   object_type_id SMALLINT UNSIGNED NULL     COMMENT 'link to object_types.id in case of an object type endpoint',
 
   PRIMARY KEY (id),
