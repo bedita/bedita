@@ -616,10 +616,10 @@ class UsersControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->delete('/users/1');
+        $this->delete('/users/5');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Users')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('Users')->exists(['Users.id' => 5]));
     }
 }
