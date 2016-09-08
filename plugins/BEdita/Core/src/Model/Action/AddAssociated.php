@@ -42,10 +42,12 @@ class AddAssociated extends UpdateAssociated
                 $relatedEntities = [$relatedEntities];
             }
 
-            // @todo: find links diff instead of removing and recreating links
-            $this->Association->unlink($entity, $relatedEntities);
+            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+                // @todo: find links diff instead of removing and recreating links
+                $this->Association->unlink($entity, $relatedEntities);
 
-            return $this->Association->link($entity, $relatedEntities);
+                return $this->Association->link($entity, $relatedEntities);
+            });
         }
 
         throw new \RuntimeException(
