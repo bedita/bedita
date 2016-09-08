@@ -54,7 +54,7 @@ abstract class ResourcesController extends AppController
     /**
      * View and manage relationships.
      *
-     * @return void
+     * @return \Cake\Network\Response|null
      */
     public function relationships()
     {
@@ -65,39 +65,53 @@ abstract class ResourcesController extends AppController
 
         $Association = $this->findAssociation($relationship);
 
-        $coreAction = null;
         switch ($this->request->method()) {
             case 'PATCH':
-                $coreAction = new SetAssociated($Association);
+                $action = new UpdateAssociated(
+                    new SetAssociated($Association),
+                    $this->request
+                );
                 break;
 
             case 'POST':
-                $coreAction = new AddAssociated($Association);
+                $action = new UpdateAssociated(
+                    new AddAssociated($Association),
+                    $this->request
+                );
                 break;
 
             case 'DELETE':
-                $coreAction = new RemoveAssociated($Association);
+                $action = new UpdateAssociated(
+                    new RemoveAssociated($Association),
+                    $this->request
+                );
+                break;
+
+            case 'GET':
+            default:
+                $action = new ListAssociated($Association);
+                $data = $action($id);
+
+                if ($data instanceof Query) {
+                    $data = $this->paginate($data);
+                }
+
+                $this->set(compact('data'));
+                $this->set([
+                        '_type' => $relationship,
+                        '_serialize' => ['data'],
+                    ]);
+
+                return null;
         }
 
-        if ($coreAction !== null) {
-            $action = new UpdateAssociated($coreAction, $this->request);
-
-            if (!$action($id)) {
-                throw new InternalErrorException(__('Could not update relationship "{0}"', $relationship));
-            }
+        if (!$action($id)) {
+            throw new InternalErrorException(__('Could not update relationship "{0}"', $relationship));
         }
 
-        $action = new ListAssociated($Association);
-        $associatedEntities = $action($id);
+        $this->response->header('Content-Type: ' . $this->request->contentType());
+        $this->response->statusCode(204);
 
-        if ($associatedEntities instanceof Query) {
-            $associatedEntities = $this->paginate($associatedEntities);
-        }
-
-        $this->set([
-            'data' => $associatedEntities,
-            '_type' => $relationship,
-            '_serialize' => ['data'],
-        ]);
+        return $this->response;
     }
 }
