@@ -16,7 +16,6 @@ namespace BEdita\Core\ORM\Association;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\DependentDeleteTrait;
 use Cake\ORM\Entity;
 
 /**
@@ -40,19 +39,6 @@ use Cake\ORM\Entity;
  */
 class ExtensionOf extends BelongsTo
 {
-    use DependentDeleteTrait {
-        cascadeDelete as cakeCascadeDelete;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_dependent = true;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_cascadeCallbacks = true;
 
     /**
      * {@inheritDoc}
@@ -75,10 +61,10 @@ class ExtensionOf extends BelongsTo
             ->on(
                 'Model.afterDelete',
                 function (Event $event, Entity $entity, \ArrayObject $options) {
-                    return $this->cakeCascadeDelete(
-                        $entity,
-                        ['_primary' => false] + $options->getArrayCopy()
-                    );
+                    $bindingKey = (array)$this->bindingKey();
+                    $entity = $this->target()->get($entity->extract($bindingKey));
+
+                    return $this->target()->delete($entity, ['_primary' => false] + $options->getArrayCopy());
                 }
             );
     }
@@ -89,14 +75,6 @@ class ExtensionOf extends BelongsTo
     public function type()
     {
         return self::ONE_TO_ONE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function cascadeDelete(EntityInterface $entity, array $options = [])
-    {
-        return true;
     }
 
     /**
@@ -128,14 +106,9 @@ class ExtensionOf extends BelongsTo
             $propertiesToRemove = array_keys($targetData);
         }
 
-        $targetEntity = $this->target()->newEntity();
-        $targetEntity->isNew($entity->isNew());
-        $this->target()->patchEntity($targetEntity, $targetData, [
+        $targetEntity = $this->target()->newEntity($targetData, [
             'accessibleFields' => ['*' => true],
         ]);
-        if (!$entity->isNew()) {
-            $targetEntity->dirty($this->bindingKey(), true);
-        }
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;

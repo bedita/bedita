@@ -105,7 +105,7 @@ class ExtensionOfTest extends TestCase
     {
         $count = count($this->fakeMammals->eventManager()->listeners('Model.afterDelete'));
 
-        $assoc = new ExtensionOf('FakeAnimals', [
+        new ExtensionOf('FakeAnimals', [
             'sourceTable' => $this->fakeMammals,
             'foreignKey' => $this->fakeMammals->primaryKey()
         ]);
@@ -129,8 +129,8 @@ class ExtensionOfTest extends TestCase
 
         $this->assertEquals(Association::ONE_TO_ONE, $assoc->type());
         $this->assertEquals('INNER', $assoc->joinType());
-        $this->assertTrue($assoc->dependent());
-        $this->assertTrue($assoc->cascadeCallbacks());
+        $this->assertFalse($assoc->dependent());
+        $this->assertFalse($assoc->cascadeCallbacks());
         $this->assertEquals($this->fakeAnimals->primaryKey(), $assoc->bindingKey());
         $this->assertEquals('fake_animal', $assoc->property());
         $this->assertFalse($assoc->isOwningSide($this->fakeMammals));
@@ -219,7 +219,7 @@ class ExtensionOfTest extends TestCase
         $this->fakeFelines->delete($feline);
         foreach (['fakeFelines', 'fakeMammals', 'fakeAnimals'] as $table) {
             try {
-                $entity = $this->{$table}->get($id);
+                $this->{$table}->get($id);
                 $this->fail(ucfirst($table) . ' record not deleted');
             } catch (RecordNotFoundException $ex) {
                 continue;
