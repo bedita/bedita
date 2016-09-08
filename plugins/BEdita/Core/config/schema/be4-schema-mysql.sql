@@ -70,8 +70,9 @@ CREATE TABLE external_auth (
 
   PRIMARY KEY (id),
   UNIQUE KEY externalauth_authuser_uq (auth_provider_id, provider_username),
-  FOREIGN KEY externalauth_authprovider_fk (auth_provider_id) REFERENCES auth_providers(id),
-  FOREIGN KEY externalauth_userid_fk (user_id)
+
+  CONSTRAINT externalauth_authprovider_fk FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
+  CONSTRAINT externalauth_userid_fk FOREIGN KEY (user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -107,11 +108,12 @@ CREATE TABLE roles_users (
   PRIMARY KEY (id),
   INDEX rolesusers_userid_idx (user_id),
   INDEX rolesusers_roleid_idx (role_id),
-  FOREIGN KEY rolesusers_userid_fk (user_id)
+
+  CONSTRAINT rolesusers_userid_fk FOREIGN KEY (user_id)
     REFERENCES users(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY rolesusers_roleid_fk (role_id)
+  CONSTRAINT rolesusers_roleid_fk FOREIGN KEY (role_id)
     REFERENCES roles(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -184,8 +186,8 @@ CREATE TABLE properties (
   INDEX properties_objtype_idx (object_type_id),
   INDEX properties_proptype_idx (property_type_id),
 
-  FOREIGN KEY properties_objtype_fk (object_type_id) REFERENCES object_types(id),
-  FOREIGN KEY properties_proptype_fk (property_type_id) REFERENCES property_types(id)
+  CONSTRAINT properties_objtype_fk FOREIGN KEY (object_type_id) REFERENCES object_types(id),
+  CONSTRAINT properties_proptype_fk FOREIGN KEY (property_type_id) REFERENCES property_types(id)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties definitions' ;
 
@@ -215,7 +217,7 @@ CREATE TABLE objects (
   UNIQUE KEY objects_uname_uq (uname),
   INDEX objects_objtype_idx (object_type_id),
 
-  FOREIGN KEY objects_objtype_fk (object_type_id)
+  CONSTRAINT objects_objtype_fk FOREIGN KEY (object_type_id)
     REFERENCES object_types(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -232,14 +234,15 @@ CREATE TABLE object_properties (
 
   PRIMARY KEY (id),
 
-  FOREIGN KEY objectproperties_objectid_fk (object_id)
+  CONSTRAINT objectproperties_objectid_fk FOREIGN KEY (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY objectproperties_propertyid_fk (property_id)
+  CONSTRAINT objectproperties_propertyid_fk FOREIGN KEY (property_id)
     REFERENCES properties(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object properties values' ;
 
 
@@ -257,11 +260,11 @@ CREATE TABLE object_permissions (
   PRIMARY KEY (id),
   UNIQUE objectpermissions_objectrole_uq (object_id, role_id),
 
-  FOREIGN KEY objectpermissions_objectid_fk (object_id)
+  CONSTRAINT objectpermissions_objectid_fk FOREIGN KEY (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY objectpermissions_roleid_fk (role_id)
+  CONSTRAINT objectpermissions_roleid_fk FOREIGN KEY (role_id)
     REFERENCES roles(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -284,8 +287,9 @@ CREATE TABLE annotations (
   params MEDIUMTEXT                 COMMENT 'annotation parameters (serialized JSON)',
 
   PRIMARY KEY (id),
-  FOREIGN KEY annotations_userid_fk (user_id) REFERENCES users(id),
-  FOREIGN KEY annotations_objectid_fk (object_id)
+
+  CONSTRAINT annotations_userid_fk FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT annotations_objectid_fk FOREIGN KEY (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -318,7 +322,7 @@ CREATE TABLE media (
   PRIMARY KEY (id),
   INDEX media_hashfile_idx (hash_file),
 
-  FOREIGN KEY media_id_fk (id)
+  CONSTRAINT media_id_fk FOREIGN KEY (id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -350,12 +354,12 @@ CREATE TABLE profiles (
   PRIMARY KEY (id),
   UNIQUE KEY profiles_email_uq (email),
 
-  FOREIGN KEY profiles_userid_fk (user_id) REFERENCES users(id),
-
-  FOREIGN KEY profiles_id_fk (id)
+  CONSTRAINT profiles_userid_fk FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT profiles_id_fk FOREIGN KEY (id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user profiles, addressbook data' ;
 
 -- -------------
@@ -388,11 +392,11 @@ CREATE TABLE relation_types (
 
   PRIMARY KEY relationtypes_relobjside_pk (relation_id, object_type_id, side),
 
-  FOREIGN KEY relationtypes_relationid_fk (relation_id)
+  CONSTRAINT relationtypes_relationid_fk FOREIGN KEY (relation_id)
     REFERENCES relations(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY relationtypes_objtypeid_fk (object_type_id)
+  CONSTRAINT relationtypes_objtypeid_fk FOREIGN KEY (object_type_id)
     REFERENCES object_types(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -414,15 +418,15 @@ CREATE TABLE object_relations (
   INDEX objectrelations_leftid_idx (left_id),
   INDEX objectrelations_rightid_idx (right_id),
 
-  FOREIGN KEY objectrelations_leftid_fk (left_id)
+  CONSTRAINT objectrelations_leftid_fk FOREIGN KEY (left_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY objectrelations_rightid_fk (right_id)
+  CONSTRAINT objectrelations_rightid_fk FOREIGN KEY (right_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY objectrelations_relationid_fk (relation_id)
+  CONSTRAINT objectrelations_relationid_fk FOREIGN KEY (relation_id)
     REFERENCES relations(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
@@ -451,15 +455,15 @@ CREATE TABLE trees (
   INDEX trees_rootright_idx (root_id, tree_right),
   INDEX trees_menu_idx (menu),
 
-  FOREIGN KEY trees_objectid_fk (object_id)
+  CONSTRAINT trees_objectid_fk FOREIGN KEY (object_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY trees_parentid_fk (parent_id)
+  CONSTRAINT trees_parentid_fk FOREIGN KEY (parent_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION,
-  FOREIGN KEY trees_rootid_fk (root_id)
+  CONSTRAINT trees_rootid_fk FOREIGN KEY (root_id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
