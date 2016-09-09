@@ -166,6 +166,7 @@ class DataSeedShell extends Shell
 
         foreach ($entities as &$data) {
             $data += [
+                'object_type_id' => 1, // TODO: auto set in #971
                 'username' => $this->faker->unique()->userName,
                 'password_hash' => $this->faker->password,
                 'last_login' => Time::createFromTimestamp(
@@ -250,7 +251,7 @@ class DataSeedShell extends Shell
         $entities = [];
         $data = call_user_func([$this, $method], $fields, $count);
         foreach ($data as $entity) {
-            $entity = $table->newEntity($entity);
+            $entity = $table->newEntity($entity, ['accessibleFields' => ['*' => true]]);
             if ($entity->errors()) {
                 $this->out('<error>ERROR</error>');
                 $this->abort(sprintf('Entity validation failed: %s', print_r($entity->errors(), true)));
