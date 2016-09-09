@@ -478,8 +478,8 @@ CREATE TABLE trees (
 --  INITIAL DATA SET
 -- ------------------
 
-INSERT INTO `object_types` (`name`, `pluralized`, `description`)
-    VALUES ('user', 'users', 'User object type');
+INSERT INTO `object_types` (`name`, `pluralized`, `description`, `plugin`, `model`)
+    VALUES ('user', 'users', 'User object type', 'BEdita/Core', 'Users');
 INSERT INTO `objects` (`object_type_id`, `status`, `uname`, `locked`, `created`, `modified`,
     `title`, `lang`, `created_by`, `modified_by`)
     VALUES (1, 'draft', 'bedita', 1, '2016-08-01 00:00:00', '2016-08-01 00:00:00', 'bedita', 'eng', 1, 1);
