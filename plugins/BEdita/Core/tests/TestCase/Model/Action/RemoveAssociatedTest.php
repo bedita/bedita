@@ -81,21 +81,21 @@ class RemoveAssociatedTest extends TestCase
     {
         return [
             'nothingToDo' => [
-                true,
+                0,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 null,
             ],
             'belongsToMany' => [
-                true,
+                1,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 1,
             ],
             'hasMany' => [
-                true,
+                2,
                 'FakeAnimals',
                 'FakeArticles',
                 1,

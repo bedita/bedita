@@ -80,22 +80,29 @@ class SetAssociatedTest extends TestCase
     public function invocationProvider()
     {
         return [
-            'nothingToDo' => [
-                true,
+            'belongsToManyEmpty' => [
+                1,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 null,
             ],
-            'belongsToMany' => [
-                true,
+            'belongsToManyNothingToDo' => [
+                0,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 1,
             ],
             'hasMany' => [
-                true,
+                2,
+                'FakeAnimals',
+                'FakeArticles',
+                2,
+                [1, 2],
+            ],
+            'hasManyNothingToDo' => [
+                0,
                 'FakeAnimals',
                 'FakeArticles',
                 1,
@@ -110,12 +117,26 @@ class SetAssociatedTest extends TestCase
                 1,
                 [1, 2],
             ],
-            'belongsTo' => [
-                true,
+            'belongsToEmpty' => [
+                1,
                 'FakeArticles',
                 'FakeAnimals',
+                1,
+                null,
+            ],
+            'belongsTo' => [
+                1,
+                'FakeArticles',
+                'FakeAnimals',
+                1,
                 2,
-                2,
+            ],
+            'belongsToNothingToDo' => [
+                0,
+                'FakeArticles',
+                'FakeAnimals',
+                1,
+                1,
             ],
         ];
     }

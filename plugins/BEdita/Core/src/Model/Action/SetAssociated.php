@@ -28,64 +28,152 @@ class SetAssociated extends UpdateAssociated
 {
 
     /**
+     * Count entities to be actually updated.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
+     * @return int
+     */
+    protected function diff(EntityInterface $entity, $relatedEntities)
+    {
+        $bindingKey = (array)$this->Association->bindingKey();
+        $existing = $this->existing($entity);
+
+        $diff = 0;
+        $new = [];
+        foreach ($relatedEntities as $relatedEntity) {
+            $primaryKey = $relatedEntity->extract($bindingKey);
+            $new[] = $primaryKey;
+            if (in_array($primaryKey, $existing)) {
+                continue;
+            }
+
+            $diff++;
+        }
+        foreach ($existing as $primaryKey) {
+            if (in_array($primaryKey, $new)) {
+                continue;
+            }
+
+            $diff++;
+        }
+
+        return $diff;
+    }
+
+    /**
      * Replace existing relations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @return bool
+     * @return int|false Number of updated relationships, or `false` on failure.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
     public function __invoke(EntityInterface $entity, $relatedEntities)
     {
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $relatedEntities = $this->prepareEntities($relatedEntities, true);
-
-            if ($this->Association instanceof HasMany) {
-                return $this->Association->replace($entity, $relatedEntities);
+            if ($relatedEntities === null) {
+                $relatedEntities = [];
+            } elseif (!is_array($relatedEntities)) {
+                $relatedEntities = [$relatedEntities];
             }
 
-            return $this->Association->replaceLinks($entity, $relatedEntities);
+            return $this->toMany($entity, $relatedEntities);
         }
 
-        $relatedEntities = $this->prepareEntities($relatedEntities, false);
+        if ($relatedEntities !== null && !($relatedEntities instanceof EntityInterface)) {
+            throw new \InvalidArgumentException(__('Unable to link multiple entities'));
+        }
 
         if ($this->Association instanceof BelongsTo) {
-            $entity[$this->Association->property()] = $relatedEntities;
-
-            return (bool)$this->Association->source()->save($entity);
+            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+                return $this->belongsTo($entity, $relatedEntities);
+            });
         }
 
         if ($this->Association instanceof HasOne) {
-            $relatedEntities[$this->Association->foreignKey()] = $entity;
-
-            return (bool)$this->Association->target()->save($relatedEntities);
+            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+                return $this->hasOne($entity, $relatedEntities);
+            });
         }
 
         throw new \RuntimeException(__('Unknown association of type "{0}"', get_class($this->Association)));
     }
 
     /**
-     * Prepare related entities.
+     * Process action for to-many relationships.
      *
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @param bool $multiple Are multiple entities expected?
-     * @return array|null
-     * @throws \InvalidArgumentException Throws an exception if multiple entities are not supported, and a list is passed.
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
+     * @return int|false
      */
-    protected function prepareEntities($relatedEntities, $multiple)
+    protected function toMany(EntityInterface $entity, array $relatedEntities)
     {
-        if ($relatedEntities === null) {
-            return $multiple ? [] : null;
+        $count = $this->diff($entity, $relatedEntities); // This doesn't need to be in a transaction.
+
+        if ($this->Association instanceof HasMany) {
+            return $this->Association->replace($entity, $relatedEntities) ? $count : false;
         }
 
-        if (!$multiple && !($relatedEntities instanceof EntityInterface)) {
-            throw new \InvalidArgumentException(__('Unable to link multiple entities'));
+        if ($this->Association instanceof BelongsToMany) {
+            return $this->Association->replaceLinks($entity, $relatedEntities) ? $count : false;
         }
 
-        if ($multiple && !is_array($relatedEntities)) {
-            return [$relatedEntities];
+        return false;
+    }
+
+    /**
+     * Process action for "belongs to" relationships.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
+     * @return int|false
+     */
+    protected function belongsTo(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    {
+        $existing = $this->existing($entity);
+
+        if ($existing === null && $relatedEntity === null) {
+            return 0;
+        } elseif ($relatedEntity !== null) {
+            $bindingKey = $relatedEntity->extract((array)$this->Association->bindingKey());
+
+            if ($bindingKey == $existing) {
+                return 0;
+            }
         }
 
-        return $relatedEntities;
+        $entity->set($this->Association->property(), $relatedEntity);
+
+        return $this->Association->source()->save($entity) ? 1 : false;
+    }
+
+    /**
+     * Process action for "has one" relationships.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface|null $relatedEntity Related entity.
+     * @return int|false
+     */
+    protected function hasOne(EntityInterface $entity, EntityInterface $relatedEntity = null)
+    {
+        $existing = $this->existing($entity);
+
+        if ($existing === null && $relatedEntity === null) {
+            return 0;
+        } elseif ($relatedEntity !== null) {
+            $primaryKey = $relatedEntity->extract((array)$this->Association->primaryKey());
+
+            if ($primaryKey == $existing) {
+                return 0;
+            }
+        }
+
+        $relatedEntity->set(array_combine(
+            (array)$this->Association->foreignKey(),
+            $entity->extract((array)$this->Association->bindingKey())
+        ));
+
+        return $this->Association->target()->save($relatedEntity) ? 1 : false;
     }
 }

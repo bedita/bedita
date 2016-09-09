@@ -26,11 +26,36 @@ class RemoveAssociated extends UpdateAssociated
 {
 
     /**
+     * Filter entities to be actually updated.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @param \Cake\Datasource\EntityInterface[] $relatedEntities Related entities.
+     * @return \Cake\Datasource\EntityInterface[]
+     */
+    protected function diff(EntityInterface $entity, array $relatedEntities)
+    {
+        $bindingKey = (array)$this->Association->bindingKey();
+        $existing = $this->existing($entity);
+
+        $diff = [];
+        foreach ($relatedEntities as $relatedEntity) {
+            $primaryKey = $relatedEntity->extract($bindingKey);
+            if (!in_array($primaryKey, $existing)) {
+                continue;
+            }
+
+            $diff[] = $relatedEntity;
+        }
+
+        return $diff;
+    }
+
+    /**
      * Remove existing relations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @return bool
+     * @return int|false Number of updated relationships, or `false` on failure.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
     public function __invoke(EntityInterface $entity, $relatedEntities)
@@ -42,9 +67,14 @@ class RemoveAssociated extends UpdateAssociated
                 $relatedEntities = [$relatedEntities];
             }
 
-            $this->Association->unlink($entity, $relatedEntities);
 
-            return true;
+            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+                $relatedEntities = $this->diff($entity, $relatedEntities);
+
+                $this->Association->unlink($entity, $relatedEntities);
+
+                return count($relatedEntities);
+            });
         }
 
         throw new \RuntimeException(

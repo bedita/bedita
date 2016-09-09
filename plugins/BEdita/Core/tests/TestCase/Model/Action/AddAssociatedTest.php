@@ -81,21 +81,21 @@ class AddAssociatedTest extends TestCase
     {
         return [
             'nothingToDo' => [
-                true,
+                0,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 null,
             ],
             'belongsToMany' => [
-                true,
+                1,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 2,
             ],
             'hasMany' => [
-                true,
+                2,
                 'FakeAnimals',
                 'FakeArticles',
                 2,

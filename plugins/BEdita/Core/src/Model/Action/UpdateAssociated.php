@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Query;
 
 /**
  * Abstract class for updating associations between entities.
@@ -57,11 +58,41 @@ abstract class UpdateAssociated
     }
 
     /**
+     * Find existing associations.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity Source entity.
+     * @return array|null
+     */
+    protected function existing(EntityInterface $entity)
+    {
+        $list = new ListAssociated($this->Association);
+        $sourcePrimaryKey = (array)$this->Association->source()->primaryKey();
+        $bindingKey = (array)$this->Association->bindingKey();
+
+        $existing = $list($entity->extract($sourcePrimaryKey));
+
+        if ($existing instanceof EntityInterface) {
+            return $existing
+                ->extract($bindingKey);
+        }
+
+        if (!($existing instanceof Query)) {
+            return null;
+        }
+
+        return $existing
+            ->map(function (EntityInterface $relatedEntity) use ($bindingKey) {
+                return $relatedEntity->extract($bindingKey);
+            })
+            ->toArray();
+    }
+
+    /**
      * Perform update.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @return bool
+     * @return int|false
      */
     abstract public function __invoke(EntityInterface $entity, $relatedEntities);
 }
