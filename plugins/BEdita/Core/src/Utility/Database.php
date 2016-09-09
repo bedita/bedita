@@ -50,6 +50,7 @@ class Database
             $columns = $table->columns();
             foreach ($columns as $col) {
                 $schema[$tableName]['columns'][$col] = $table->column($col);
+                unset($schema[$tableName]['columns'][$col]['collate']);
             }
             $constraints = $table->constraints();
             foreach ($constraints as $cons) {
