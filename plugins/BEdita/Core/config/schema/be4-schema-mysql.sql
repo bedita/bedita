@@ -316,19 +316,20 @@ CREATE TABLE endpoints (
 CREATE TABLE endpoint_permissions (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  endpoint_id SMALLINT UNSIGNED NOT NULL    COMMENT 'link to endpoints.id',
-  application_id SMALLINT UNSIGNED NULL     COMMENT 'link to applications.id - may be null',
-  role_id INT UNSIGNED NULL                 COMMENT 'link to roles.id - may be null',
-  permission INT NOT NULL DEFAULT 0         COMMENT 'endpoint permission for role and app',
+  endpoint_id SMALLINT UNSIGNED NOT NULL            COMMENT 'link to endpoints.id',
+  application_id SMALLINT UNSIGNED NULL             COMMENT 'link to applications.id - may be null',
+  role_id INT UNSIGNED NULL                         COMMENT 'link to roles.id - may be null',
+  permission TINYINT UNSIGNED NOT NULL DEFAULT 0    COMMENT 'endpoint permission for role and app',
 
   PRIMARY KEY (id),
+  UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id)
+
   CONSTRAINT endpointspermissions_endpointid_fk FOREIGN KEY (endpoint_id)
     REFERENCES endpoints (id),
   CONSTRAINT endpointspermissions_applicationid_fk FOREIGN KEY (application_id)
     REFERENCES applications (id),
   CONSTRAINT endpointspermissions_roleid_fk FOREIGN KEY (role_id)
     REFERENCES roles (id),
-  UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'permissions on endpoints from applications' ;
 
