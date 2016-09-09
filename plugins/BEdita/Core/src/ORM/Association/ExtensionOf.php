@@ -103,7 +103,7 @@ class ExtensionOf extends BelongsTo
         $targetData = $this->targetPropertiesValues($entity);
         $defaultValues = array_map(
             function ($val) {
-                if ($val === 'NULL::character varying') {
+                if (is_string($val) && substr($val, 0, 6) === 'NULL::') {
                     return null;
                 }
 
