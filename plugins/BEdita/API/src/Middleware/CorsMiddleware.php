@@ -78,6 +78,7 @@ class CorsMiddleware
     }
 
     /**
+     * If no CORS configuration is present delegate to server
      * If the request is a preflight send the response applying CORS rules.
      * If it is a simple request it applies CORS rules to the response and call next middleware
      *
@@ -88,6 +89,10 @@ class CorsMiddleware
      */
     public function __invoke(ServerRequestInterface $request, ResponseInterface $response, callable $next)
     {
+        if (!$this->isConfigured()) {
+            return $this->delegateToServer($request, $response, $next);
+        }
+
         try {
             if ($request->getMethod() == 'OPTIONS') {
                 return $this->preflight($request, $response);
@@ -99,6 +104,33 @@ class CorsMiddleware
         } catch (\Exception $e) {
             return $response->withStatus($e->getCode());
         }
+    }
+
+    /**
+     * Tell if CORS is configured
+     *
+     * @return bool
+     */
+    public function isConfigured()
+    {
+        return (bool)array_filter($this->corsConfig);
+    }
+
+    /**
+     * Delegate to Server the CORS settings.
+     *
+     * On preflight requests the middleware stack will be interrupted and the response will be send.
+     * On other requests call next middleware.
+     * The server should take care to set the right headers.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request The request.
+     * @param \Psr\Http\Message\ResponseInterface $response The response.
+     * @param callable $next The next middleware to call.
+     * @return \Psr\Http\Message\ResponseInterface A response.
+     */
+    protected function delegateToServer(ServerRequestInterface $request, ResponseInterface $response, callable $next)
+    {
+        return ($request->getMethod() == 'OPTIONS') ? $response : $next($request, $response);
     }
 
     /**

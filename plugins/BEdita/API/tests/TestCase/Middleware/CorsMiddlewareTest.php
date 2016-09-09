@@ -53,6 +53,18 @@ class CorsMiddlewareTest extends TestCase
                 ],
                 [], // CORS config
             ],
+            // delegate to server that in this case is not configured
+            'noCorsPreflight' => [
+                200,
+                [],
+                [
+                    'REQUEST_URI' => '/testpath',
+                    'REQUEST_METHOD' => 'OPTIONS',
+                    'HTTP_ACCEPT' => 'application/json',
+                    'HTTP_ORIGIN' => 'http://example.com'
+                ],
+                [],
+            ],
             'allAllowedOrigin' => [
                 200,
                 [
@@ -291,6 +303,7 @@ class CorsMiddlewareTest extends TestCase
      * @covers ::buildCors()
      * @covers ::checkAccessControlRequestMethod()
      * @covers ::checkAccessControlRequestHeaders()
+     * @covers ::isConfigured()
      * @covers \BEdita\API\Network\CorsBuilder::build()
      */
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)
@@ -306,6 +319,7 @@ class CorsMiddlewareTest extends TestCase
         $this->assertEquals($expectedStatus, $response->getStatusCode());
 
         if (empty($corsConfig)) {
+            $this->assertFalse($middleware->isConfigured());
             $this->assertEmpty($response->getHeader('Access-Control-Allow-Origin'));
             $this->assertEmpty($response->getHeader('Access-Control-Allow-Methods'));
             $this->assertEmpty($response->getHeader('Access-Control-Allow-Credentials'));
@@ -313,6 +327,7 @@ class CorsMiddlewareTest extends TestCase
             $this->assertEmpty($response->getHeader('Access-Control-Expose-Headers'));
             $this->assertEmpty($response->getHeader('Access-Control-Max-Age'));
         } else {
+            $this->assertTrue($middleware->isConfigured());
             foreach ($expectedCorsHeaders as $header => $value) {
                 $this->assertEquals(
                     $value,
