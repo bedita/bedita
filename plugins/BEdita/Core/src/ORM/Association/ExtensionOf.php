@@ -14,6 +14,7 @@
 namespace BEdita\Core\ORM\Association;
 
 use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\DependentDeleteTrait;
 use Cake\ORM\Entity;
@@ -39,7 +40,9 @@ use Cake\ORM\Entity;
  */
 class ExtensionOf extends BelongsTo
 {
-    use DependentDeleteTrait;
+    use DependentDeleteTrait {
+        cascadeDelete as cakeCascadeDelete;
+    }
 
     /**
      * {@inheritDoc}
@@ -58,10 +61,42 @@ class ExtensionOf extends BelongsTo
 
     /**
      * {@inheritDoc}
+     *
+     * Add `Model.afterDelete` listener to work in a cascading delete scenario.
+     * The `cascadeDelete()` used by CakePHP in fact would fail for constraint violation error
+     * deleting first target table when the foreign key is in source table
+     */
+    public function __construct($alias, array $options = [])
+    {
+        parent::__construct($alias, $options);
+
+        $this->source()
+            ->eventManager()
+            ->on(
+                'Model.afterDelete',
+                function (Event $event, Entity $entity, \ArrayObject $options) {
+                    return $this->cakeCascadeDelete(
+                        $entity,
+                        ['_primary' => false] + $options->getArrayCopy()
+                    );
+                }
+            );
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function type()
     {
         return self::ONE_TO_ONE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function cascadeDelete(EntityInterface $entity, array $options = [])
+    {
+        return true;
     }
 
     /**

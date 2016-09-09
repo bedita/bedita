@@ -72,20 +72,7 @@
                 ],
                 "length": []
             },
-            "annotations_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "restrict",
-                "delete": "restrict",
-                "length": []
-            },
-            "annotations_ibfk_2": {
+            "annotations_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -96,6 +83,19 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
+                "length": []
+            },
+            "annotations_userid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
                 "length": []
             }
         },
@@ -302,7 +302,7 @@
                 ],
                 "length": []
             },
-            "external_auth_ibfk_1": {
+            "externalauth_authprovider_fk": {
                 "type": "foreign",
                 "columns": [
                     "auth_provider_id"
@@ -315,7 +315,7 @@
                 "delete": "restrict",
                 "length": []
             },
-            "external_auth_ibfk_2": {
+            "externalauth_userid_fk": {
                 "type": "foreign",
                 "columns": [
                     "user_id"
@@ -456,7 +456,7 @@
                 ],
                 "length": []
             },
-            "media_ibfk_1": {
+            "media_id_fk": {
                 "type": "foreign",
                 "columns": [
                     "id"
@@ -537,7 +537,7 @@
                 ],
                 "length": []
             },
-            "object_permissions_ibfk_1": {
+            "objectpermissions_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -550,7 +550,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_permissions_ibfk_2": {
+            "objectpermissions_roleid_fk": {
                 "type": "foreign",
                 "columns": [
                     "role_id"
@@ -623,7 +623,7 @@
                 ],
                 "length": []
             },
-            "object_properties_ibfk_1": {
+            "objectproperties_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -636,7 +636,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_properties_ibfk_2": {
+            "objectproperties_propertyid_fk": {
                 "type": "foreign",
                 "columns": [
                     "property_id"
@@ -738,7 +738,7 @@
                 ],
                 "length": []
             },
-            "object_relations_ibfk_1": {
+            "objectrelations_leftid_fk": {
                 "type": "foreign",
                 "columns": [
                     "left_id"
@@ -751,26 +751,26 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_relations_ibfk_2": {
-                "type": "foreign",
-                "columns": [
-                    "right_id"
-                ],
-                "references": [
-                    "objects",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "object_relations_ibfk_3": {
+            "objectrelations_relationid_fk": {
                 "type": "foreign",
                 "columns": [
                     "relation_id"
                 ],
                 "references": [
                     "relations",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "objectrelations_rightid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "right_id"
+                ],
+                "references": [
+                    "objects",
                     "id"
                 ],
                 "update": "noAction",
@@ -872,9 +872,7 @@
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "objecttypes_plural_uq": {
                 "type": "unique",
@@ -1059,7 +1057,7 @@
                 ],
                 "length": []
             },
-            "objects_ibfk_1": {
+            "objects_objtype_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
@@ -1258,20 +1256,7 @@
                 ],
                 "length": []
             },
-            "profiles_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "restrict",
-                "delete": "restrict",
-                "length": []
-            },
-            "profiles_ibfk_2": {
+            "profiles_id_fk": {
                 "type": "foreign",
                 "columns": [
                     "id"
@@ -1282,6 +1267,19 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
+                "length": []
+            },
+            "profiles_userid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
                 "length": []
             }
         },
@@ -1369,7 +1367,7 @@
                 ],
                 "length": []
             },
-            "properties_ibfk_1": {
+            "properties_objtype_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
@@ -1382,7 +1380,7 @@
                 "delete": "restrict",
                 "length": []
             },
-            "properties_ibfk_2": {
+            "properties_proptype_fk": {
                 "type": "foreign",
                 "columns": [
                     "property_type_id"
@@ -1508,26 +1506,26 @@
                 ],
                 "length": []
             },
-            "relation_types_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "relation_id"
-                ],
-                "references": [
-                    "relations",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "relation_types_ibfk_2": {
+            "relationtypes_objtypeid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
                 ],
                 "references": [
                     "object_types",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "relationtypes_relationid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "relation_id"
+                ],
+                "references": [
+                    "relations",
                     "id"
                 ],
                 "update": "noAction",
@@ -1752,26 +1750,26 @@
                 ],
                 "length": []
             },
-            "roles_users_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "roles_users_ibfk_2": {
+            "rolesusers_roleid_fk": {
                 "type": "foreign",
                 "columns": [
                     "role_id"
                 ],
                 "references": [
                     "roles",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "rolesusers_userid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
                     "id"
                 ],
                 "update": "noAction",
@@ -1895,7 +1893,7 @@
                 ],
                 "length": []
             },
-            "trees_ibfk_1": {
+            "trees_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -1908,7 +1906,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "trees_ibfk_2": {
+            "trees_parentid_fk": {
                 "type": "foreign",
                 "columns": [
                     "parent_id"
@@ -1921,7 +1919,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "trees_ibfk_3": {
+            "trees_rootid_fk": {
                 "type": "foreign",
                 "columns": [
                     "root_id"
