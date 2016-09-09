@@ -133,7 +133,7 @@ CREATE TABLE objects (
   body MEDIUMTEXT NULL,
   extra MEDIUMTEXT NULL                     COMMENT 'object data extensions (JSON format)',
   -- From MySQL 5.7.8 use JSON type
-  lang CHAR(3) NOT NULL                     COMMENT 'language used, ISO 639-3 code',
+  lang CHAR(3) NULL DEFAULT NULL            COMMENT 'language used, ISO 639-3 code',
   created_by INT UNSIGNED NOT NULL          COMMENT 'user who created object',
   modified_by INT UNSIGNED NOT NULL         COMMENT 'last user to modify object',
   publish_start DATETIME NULL               COMMENT 'publish from this date on',

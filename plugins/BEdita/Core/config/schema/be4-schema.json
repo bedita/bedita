@@ -1076,7 +1076,7 @@
                 "type": "string",
                 "fixed": true,
                 "length": 3,
-                "null": false,
+                "null": true,
                 "default": null,
                 "comment": "language used, ISO 639-3 code",
                 "precision": null
