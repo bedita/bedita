@@ -445,10 +445,7 @@ class UsersControllerTest extends IntegrationTestCase
             'type' => 'users',
             'attributes' => [
                 'object_type_id' => 3,
-                'status' => 'on',
                 'uname' => 'gustavo-supporto-user',
-                'lang' => 'eng',
-                'company' => false,
                 'username' => 'gustavo_supporto',
                 'password_hash' => 'aiuto',
             ],

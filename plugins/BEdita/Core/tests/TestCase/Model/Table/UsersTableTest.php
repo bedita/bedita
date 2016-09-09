@@ -93,10 +93,7 @@ class UsersTableTest extends TestCase
                 true,
                 [
                     'object_type_id' => 3,
-                    'status' => 'draft',
                     'uname' => 'some-unique-value',
-                    'lang' => 'eng',
-                    'company' => false,
                     'username' => 'some_unique_value',
                     'password_hash' => null,
                 ],

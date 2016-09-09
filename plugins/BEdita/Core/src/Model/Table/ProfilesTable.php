@@ -76,7 +76,6 @@ class ProfilesTable extends Table
             ->allowEmpty('deathdate')
 
             ->boolean('company')
-            ->requirePresence('company', 'create')
             ->allowEmpty('company')
 
             ->allowEmpty('company_name')
