@@ -94,9 +94,48 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testAddAssociations()
     {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
         $data = [
             [
                 'id' => '2',
+                'type' => 'users',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/roles/1/relationships/users', json_encode(compact('data')));
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '1',
                 'type' => 'users',
             ],
         ];
@@ -124,11 +163,50 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testDeleteAssociations()
     {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
         $data = [
             [
                 'id' => '1',
                 'type' => 'users',
             ],
+            [
+                'id' => '2',
+                'type' => 'users',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to delete existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::relationships()
+     */
+    public function testDeleteAssociationsNoContent()
+    {
+        $data = [
             [
                 'id' => '2',
                 'type' => 'users',
@@ -159,9 +237,47 @@ class ResourcesControllerTest extends IntegrationTestCase
      */
     public function testSetAssociations()
     {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
         $data = [
             [
                 'id' => '2',
+                'type' => 'users',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::relationships()
+     */
+    public function testSetAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '1',
                 'type' => 'users',
             ],
         ];
