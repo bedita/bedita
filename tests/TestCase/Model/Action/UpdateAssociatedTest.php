@@ -83,15 +83,15 @@ class UpdateAssociatedTest extends TestCase
     public function invocationProvider()
     {
         return [
-            'nothingToDo' => [
-                true,
+            'belongsToManyEmpty' => [
+                1,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 [],
             ],
-            'belongsToMany' => [
-                true,
+            'belongsToManyNothingToDo' => [
+                0,
                 'FakeTags',
                 'FakeArticles',
                 1,
@@ -99,8 +99,8 @@ class UpdateAssociatedTest extends TestCase
                     ['id' => 1],
                 ],
             ],
-            'hasMany' => [
-                true,
+            'hasManyNothingToDo' => [
+                0,
                 'FakeAnimals',
                 'FakeArticles',
                 1,
@@ -122,12 +122,21 @@ class UpdateAssociatedTest extends TestCase
                 ],
             ],
             'belongsTo' => [
-                true,
+                1,
                 'FakeArticles',
                 'FakeAnimals',
-                2,
+                1,
                 [
                     'id' => 2,
+                ],
+            ],
+            'belongsToNothingToDo' => [
+                0,
+                'FakeArticles',
+                'FakeAnimals',
+                1,
+                [
+                    'id' => 1,
                 ],
             ],
             'missingEntity' => [

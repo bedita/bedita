@@ -56,7 +56,7 @@ class UpdateAssociated
      * Add new relations.
      *
      * @param mixed $primaryKey Source entity primary key.
-     * @return bool
+     * @return int|false
      */
     public function __invoke($primaryKey)
     {

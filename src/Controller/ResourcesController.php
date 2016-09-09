@@ -67,24 +67,15 @@ abstract class ResourcesController extends AppController
 
         switch ($this->request->method()) {
             case 'PATCH':
-                $action = new UpdateAssociated(
-                    new SetAssociated($Association),
-                    $this->request
-                );
+                $action = new SetAssociated($Association);
                 break;
 
             case 'POST':
-                $action = new UpdateAssociated(
-                    new AddAssociated($Association),
-                    $this->request
-                );
+                $action = new AddAssociated($Association);
                 break;
 
             case 'DELETE':
-                $action = new UpdateAssociated(
-                    new RemoveAssociated($Association),
-                    $this->request
-                );
+                $action = new RemoveAssociated($Association);
                 break;
 
             case 'GET':
@@ -105,13 +96,22 @@ abstract class ResourcesController extends AppController
                 return null;
         }
 
-        if (!$action($id)) {
+        $action = new UpdateAssociated($action, $this->request);
+        $count = $action($id);
+
+        if ($count === false) {
             throw new InternalErrorException(__('Could not update relationship "{0}"', $relationship));
         }
 
-        $this->response->header('Content-Type: ' . $this->request->contentType());
-        $this->response->statusCode(204);
+        if ($count === 0) {
+            $this->response->header('Content-Type: ' . $this->request->contentType());
+            $this->response->statusCode(204);
 
-        return $this->response;
+            return $this->response;
+        }
+
+        $this->set(['_serialize' => []]);
+
+        return null;
     }
 }
