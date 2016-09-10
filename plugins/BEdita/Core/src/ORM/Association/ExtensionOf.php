@@ -110,7 +110,10 @@ class ExtensionOf extends BelongsTo
             return $row;
         }
 
-        $properties = ($row[$nestKey] instanceof Entity) ? $row[$nestKey]->getOriginalValues() : $row[$nestKey];
+        $properties = $row[$nestKey];
+        if ($properties instanceof Entity) {
+            $properties = $properties->getOriginalValues();
+        }
         $row[$sourceAlias] += $properties;
         unset($row[$nestKey]);
 
