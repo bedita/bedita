@@ -52,7 +52,7 @@ class DatabaseConfig implements ConfigEngineInterface
         $values = [];
         $config = TableRegistry::get('Config');
         $query = $config->find()->select(['name', 'context', 'content']);
-        $query->where(function ($exp, $q) {
+        $query->where(function ($exp) {
             return $exp->notIn('name', $this->reservedKeys);
         });
         if ($key) {

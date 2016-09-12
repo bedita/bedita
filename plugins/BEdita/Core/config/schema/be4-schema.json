@@ -70,20 +70,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
-            },
-            "annotations_objectid_fk": {
-                "type": "foreign",
-                "columns": [
-                    "object_id"
-                ],
-                "references": [
-                    "objects",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "annotations_userid_fk": {
                 "type": "foreign",
@@ -96,7 +85,24 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": []
+                "length": [
+
+                ]
+            },
+            "annotations_objectid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "object_id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -105,14 +111,18 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "annotations_objectid_fk": {
                 "type": "index",
                 "columns": [
                     "object_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -161,14 +171,18 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "authproviders_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -223,7 +237,9 @@
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -232,7 +248,9 @@
                 "columns": [
                     "context"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -292,7 +310,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "externalauth_authuser_uq": {
                 "type": "unique",
@@ -300,7 +320,9 @@
                     "auth_provider_id",
                     "provider_username"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "externalauth_authprovider_fk": {
                 "type": "foreign",
@@ -313,7 +335,9 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": []
+                "length": [
+
+                ]
             },
             "externalauth_userid_fk": {
                 "type": "foreign",
@@ -326,7 +350,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -335,7 +361,9 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -454,7 +482,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "media_id_fk": {
                 "type": "foreign",
@@ -467,7 +497,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -476,7 +508,9 @@
                 "columns": [
                     "hash_file"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -527,7 +561,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectpermissions_objectrole_uq": {
                 "type": "unique",
@@ -535,7 +571,9 @@
                     "object_id",
                     "role_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectpermissions_objectid_fk": {
                 "type": "foreign",
@@ -548,7 +586,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "objectpermissions_roleid_fk": {
                 "type": "foreign",
@@ -561,7 +601,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -570,7 +612,9 @@
                 "columns": [
                     "role_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -621,7 +665,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectproperties_objectid_fk": {
                 "type": "foreign",
@@ -634,7 +680,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "objectproperties_propertyid_fk": {
                 "type": "foreign",
@@ -647,7 +695,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -656,14 +706,18 @@
                 "columns": [
                     "object_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectproperties_propertyid_fk": {
                 "type": "index",
                 "columns": [
                     "property_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -736,7 +790,9 @@
                     "relation_id",
                     "right_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectrelations_leftid_fk": {
                 "type": "foreign",
@@ -749,20 +805,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
-            },
-            "objectrelations_relationid_fk": {
-                "type": "foreign",
-                "columns": [
-                    "relation_id"
-                ],
-                "references": [
-                    "relations",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "objectrelations_rightid_fk": {
                 "type": "foreign",
@@ -775,7 +820,24 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
+            },
+            "objectrelations_relationid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "relation_id"
+                ],
+                "references": [
+                    "relations",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -784,21 +846,27 @@
                 "columns": [
                     "left_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectrelations_rightid_idx": {
                 "type": "index",
                 "columns": [
                     "right_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objectrelations_relationid_fk": {
                 "type": "index",
                 "columns": [
                     "relation_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -865,21 +933,27 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objecttypes_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objecttypes_plural_uq": {
                 "type": "unique",
                 "columns": [
                     "pluralized"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -889,7 +963,9 @@
                     "plugin",
                     "model"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1000,7 +1076,7 @@
                 "type": "string",
                 "fixed": true,
                 "length": 3,
-                "null": false,
+                "null": true,
                 "default": null,
                 "comment": "language used, ISO 639-3 code",
                 "precision": null
@@ -1048,14 +1124,48 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "objects_uname_uq": {
                 "type": "unique",
                 "columns": [
                     "uname"
                 ],
-                "length": []
+                "length": [
+
+                ]
+            },
+            "objects_modifiedby_fk": {
+                "type": "foreign",
+                "columns": [
+                    "modified_by"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
+            },
+            "objects_createdby_fk": {
+                "type": "foreign",
+                "columns": [
+                    "created_by"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             },
             "objects_objtype_fk": {
                 "type": "foreign",
@@ -1068,7 +1178,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -1077,7 +1189,27 @@
                 "columns": [
                     "object_type_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
+            },
+            "objects_createdby_fk": {
+                "type": "index",
+                "columns": [
+                    "created_by"
+                ],
+                "length": [
+
+                ]
+            },
+            "objects_modifiedby_fk": {
+                "type": "index",
+                "columns": [
+                    "modified_by"
+                ],
+                "length": [
+
+                ]
             }
         }
     },
@@ -1090,16 +1222,6 @@
                 "null": false,
                 "default": null,
                 "comment": "",
-                "precision": null,
-                "autoIncrement": null
-            },
-            "user_id": {
-                "type": "integer",
-                "length": 10,
-                "unsigned": true,
-                "null": true,
-                "default": null,
-                "comment": "link to users.id, if not null",
                 "precision": null,
                 "autoIncrement": null
             },
@@ -1247,14 +1369,18 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "profiles_email_uq": {
                 "type": "unique",
                 "columns": [
                     "email"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "profiles_id_fk": {
                 "type": "foreign",
@@ -1267,29 +1393,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
-            },
-            "profiles_userid_fk": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "restrict",
-                "delete": "restrict",
-                "length": []
-            }
-        },
-        "indexes": {
-            "profiles_userid_fk": {
-                "type": "index",
-                "columns": [
-                    "user_id"
-                ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1357,7 +1463,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "properties_nametype_uq": {
                 "type": "unique",
@@ -1365,7 +1473,9 @@
                     "name",
                     "object_type_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "properties_objtype_fk": {
                 "type": "foreign",
@@ -1378,7 +1488,9 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": []
+                "length": [
+
+                ]
             },
             "properties_proptype_fk": {
                 "type": "foreign",
@@ -1391,7 +1503,9 @@
                 ],
                 "update": "restrict",
                 "delete": "restrict",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -1400,21 +1514,27 @@
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "properties_objtype_idx": {
                 "type": "index",
                 "columns": [
                     "object_type_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "properties_proptype_idx": {
                 "type": "index",
                 "columns": [
                     "property_type_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1454,14 +1574,18 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "propertytypes_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1504,20 +1628,9 @@
                     "object_type_id",
                     "side"
                 ],
-                "length": []
-            },
-            "relationtypes_objtypeid_fk": {
-                "type": "foreign",
-                "columns": [
-                    "object_type_id"
-                ],
-                "references": [
-                    "object_types",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "relationtypes_relationid_fk": {
                 "type": "foreign",
@@ -1530,7 +1643,24 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
+            },
+            "relationtypes_objtypeid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "object_type_id"
+                ],
+                "references": [
+                    "object_types",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -1539,7 +1669,9 @@
                 "columns": [
                     "object_type_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1612,21 +1744,27 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "relations_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "relations_inversename_uq": {
                 "type": "unique",
                 "columns": [
                     "inverse_name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1667,14 +1805,6 @@
                 "comment": "role data not modifiable (default:false)",
                 "precision": null
             },
-            "backend_auth": {
-                "type": "boolean",
-                "length": null,
-                "null": false,
-                "default": "0",
-                "comment": "role authorized to backend (default: false)",
-                "precision": null
-            },
             "created": {
                 "type": "datetime",
                 "length": null,
@@ -1698,14 +1828,18 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "roles_name_uq": {
                 "type": "unique",
                 "columns": [
                     "name"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1748,20 +1882,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
-            },
-            "rolesusers_roleid_fk": {
-                "type": "foreign",
-                "columns": [
-                    "role_id"
-                ],
-                "references": [
-                    "roles",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "rolesusers_userid_fk": {
                 "type": "foreign",
@@ -1774,7 +1897,24 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
+            },
+            "rolesusers_roleid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "role_id"
+                ],
+                "references": [
+                    "roles",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -1783,14 +1923,18 @@
                 "columns": [
                     "user_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "rolesusers_roleid_idx": {
                 "type": "index",
                 "columns": [
                     "role_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1883,7 +2027,9 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_objectparent_uq": {
                 "type": "unique",
@@ -1891,7 +2037,9 @@
                     "object_id",
                     "parent_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_objectid_fk": {
                 "type": "foreign",
@@ -1904,7 +2052,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_parentid_fk": {
                 "type": "foreign",
@@ -1917,7 +2067,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_rootid_fk": {
                 "type": "foreign",
@@ -1930,7 +2082,9 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
+                "length": [
+
+                ]
             }
         },
         "indexes": {
@@ -1940,7 +2094,9 @@
                     "root_id",
                     "tree_left"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_rootright_idx": {
                 "type": "index",
@@ -1948,21 +2104,27 @@
                     "root_id",
                     "tree_right"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_menu_idx": {
                 "type": "index",
                 "columns": [
                     "menu"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "trees_parentid_fk": {
                 "type": "index",
                 "columns": [
                     "parent_id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             }
         }
     },
@@ -1975,8 +2137,8 @@
                 "null": false,
                 "default": null,
                 "comment": "",
-                "autoIncrement": true,
-                "precision": null
+                "precision": null,
+                "autoIncrement": null
             },
             "username": {
                 "type": "string",
@@ -2028,22 +2190,6 @@
                 "comment": "number of consecutive login failures",
                 "precision": null,
                 "autoIncrement": null
-            },
-            "created": {
-                "type": "datetime",
-                "length": null,
-                "null": false,
-                "default": null,
-                "comment": "record creation date",
-                "precision": null
-            },
-            "modified": {
-                "type": "datetime",
-                "length": null,
-                "null": false,
-                "default": null,
-                "comment": "record last modification date",
-                "precision": null
             }
         },
         "constraints": {
@@ -2052,14 +2198,33 @@
                 "columns": [
                     "id"
                 ],
-                "length": []
+                "length": [
+
+                ]
             },
             "users_username_uq": {
                 "type": "unique",
                 "columns": [
                     "username"
                 ],
-                "length": []
+                "length": [
+
+                ]
+            },
+            "users_id_fk": {
+                "type": "foreign",
+                "columns": [
+                    "id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": [
+
+                ]
             }
         }
     }

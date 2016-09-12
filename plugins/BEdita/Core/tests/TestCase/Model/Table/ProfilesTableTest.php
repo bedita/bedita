@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ProfilesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -38,10 +37,10 @@ class ProfilesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -82,10 +81,9 @@ class ProfilesTableTest extends TestCase
         $this->assertEquals('name', $this->Profiles->displayField());
 
         $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Profiles->Users);
         $this->assertInstanceOf(
             '\BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior',
-            $this->Profiles->Behaviors()->get('ClassTableInheritance')
+            $this->Profiles->behaviors()->get('ClassTableInheritance')
         );
     }
 
@@ -106,8 +104,6 @@ class ProfilesTableTest extends TestCase
                     'uname' => 'object-associated-' . md5(microtime()),
                     'status' => 'draft',
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                 ],
             ],
             'notUniqueEmail' => [
@@ -118,8 +114,6 @@ class ProfilesTableTest extends TestCase
                     'uname' => 'object-associated-' . md5(microtime()),
                     'status' => 'draft',
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                 ],
             ],
         ];
@@ -140,6 +134,8 @@ class ProfilesTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
+        $profile->created_by = 1;
+        $profile->modified_by = 1;
 
         $error = (bool)$profile->errors();
         $this->assertEquals($expected, !$error, print_r($profile->errors(), true));
@@ -151,15 +147,16 @@ class ProfilesTableTest extends TestCase
     }
 
     /**
-     * Test find.
+     * Test find method.
      *
      * @return void
+     *
+     * @coversNothing
      */
     public function testFind()
     {
-        $expectedProperites = [
+        $expectedProperties = [
             'id',
-            'user_id',
             'name',
             'surname',
             'email',
@@ -195,7 +192,7 @@ class ProfilesTableTest extends TestCase
             'publish_end'
         ];
 
-        sort($expectedProperites);
+        sort($expectedProperties);
 
         $profile = $this->Profiles->find()
             ->where(['object_type_id' => 2])
@@ -203,7 +200,7 @@ class ProfilesTableTest extends TestCase
         $visibleProperties = $profile->visibleProperties();
         sort($visibleProperties);
 
-        $this->assertEquals($expectedProperites, $visibleProperties);
+        $this->assertEquals($expectedProperties, $visibleProperties);
     }
 
     /**

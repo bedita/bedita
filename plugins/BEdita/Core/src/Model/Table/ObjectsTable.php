@@ -75,7 +75,6 @@ class ObjectsTable extends Table
             ->naturalNumber('id')
             ->allowEmpty('id', 'create')
 
-            ->requirePresence('status', 'create')
             ->notEmpty('status')
 
             ->requirePresence('uname', 'create')
@@ -96,8 +95,7 @@ class ObjectsTable extends Table
 
             ->allowEmpty('extra')
 
-            ->requirePresence('lang', 'create')
-            ->notEmpty('lang')
+            ->allowEmpty('lang')
 
             ->naturalNumber('created_by')
             ->requirePresence('created_by', 'create')
