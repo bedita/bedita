@@ -14,6 +14,7 @@ DROP TABLE IF EXISTS external_auth;
 DROP TABLE IF EXISTS auth_providers;
 DROP TABLE IF EXISTS annotations;
 DROP TABLE IF EXISTS object_permissions;
+DROP TABLE IF EXISTS endpoint_permissions;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS object_properties;
 
@@ -22,6 +23,8 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS objects;
 SET FOREIGN_KEY_CHECKS=1;
 
+DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS endpoints;
 DROP TABLE IF EXISTS properties;
 DROP TABLE IF EXISTS property_types;
 DROP TABLE IF EXISTS object_types;
@@ -196,6 +199,66 @@ CREATE TABLE object_permissions (
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'permissions on objects through roles and operations (RBAC)';
+
+
+-- ---------------------------
+--  ENDPOINTS / APPLICATIONS
+-- ---------------------------
+
+CREATE TABLE applications (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  api_key VARCHAR(255) NOT NULL             COMMENT 'api key value for application',
+  name VARCHAR(255) NOT NULL                COMMENT 'application name',
+  description TEXT NOT NULL                 COMMENT 'application description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'application active flag',
+
+  PRIMARY KEY (id),
+  UNIQUE applications_apikey_uq (api_key),
+  UNIQUE applications_name_uq (name)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
+
+
+CREATE TABLE endpoints (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL                COMMENT 'endpoint name without slash, will be used as /name',
+  description TEXT NULL                     COMMENT 'endpoint description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'endpoint active flag',
+  object_type_id SMALLINT UNSIGNED NULL     COMMENT 'link to object_types.id in case of an object type endpoint',
+
+  PRIMARY KEY (id),
+  UNIQUE endpoints_name_uq (name),
+  CONSTRAINT endpoins_objecttypeid_fk FOREIGN KEY (object_type_id)
+    REFERENCES object_types (id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'API available endpoints' ;
+
+
+CREATE TABLE endpoint_permissions (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  endpoint_id SMALLINT UNSIGNED NOT NULL            COMMENT 'link to endpoints.id',
+  application_id SMALLINT UNSIGNED NULL             COMMENT 'link to applications.id - may be null',
+  role_id INT UNSIGNED NULL                         COMMENT 'link to roles.id - may be null',
+  permission TINYINT UNSIGNED NOT NULL DEFAULT 0    COMMENT 'endpoint permission for role and app',
+
+  PRIMARY KEY (id),
+  UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id),
+
+  CONSTRAINT endpointspermissions_endpointid_fk FOREIGN KEY (endpoint_id)
+    REFERENCES endpoints (id),
+  CONSTRAINT endpointspermissions_applicationid_fk FOREIGN KEY (application_id)
+    REFERENCES applications (id),
+  CONSTRAINT endpointspermissions_roleid_fk FOREIGN KEY (role_id)
+    REFERENCES roles (id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'permissions on endpoints from applications' ;
 
 
 -- --------------------
