@@ -28,7 +28,7 @@ class AppControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -105,7 +105,7 @@ class AppControllerTest extends IntegrationTestCase
             'headers' => ['Accept' => $accept],
         ]);
 
-        $this->get('/users');
+        $this->get('/roles');
 
         $this->assertResponseCode($expectedCode);
         if ($expectedContentType) {
