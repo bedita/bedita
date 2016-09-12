@@ -16,7 +16,6 @@ namespace BEdita\Core\ORM\Association;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Association\BelongsTo;
-use Cake\ORM\Association\DependentDeleteTrait;
 use Cake\ORM\Entity;
 
 /**
@@ -40,19 +39,6 @@ use Cake\ORM\Entity;
  */
 class ExtensionOf extends BelongsTo
 {
-    use DependentDeleteTrait {
-        cascadeDelete as cakeCascadeDelete;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_dependent = true;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_cascadeCallbacks = true;
 
     /**
      * {@inheritDoc}
@@ -75,10 +61,10 @@ class ExtensionOf extends BelongsTo
             ->on(
                 'Model.afterDelete',
                 function (Event $event, Entity $entity, \ArrayObject $options) {
-                    return $this->cakeCascadeDelete(
-                        $entity,
-                        ['_primary' => false] + $options->getArrayCopy()
-                    );
+                    $bindingKey = (array)$this->bindingKey();
+                    $entity = $this->target()->get($entity->extract($bindingKey));
+
+                    return $this->target()->delete($entity, ['_primary' => false] + $options->getArrayCopy());
                 }
             );
     }
@@ -94,14 +80,6 @@ class ExtensionOf extends BelongsTo
     /**
      * {@inheritDoc}
      */
-    public function cascadeDelete(EntityInterface $entity, array $options = [])
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function transformRow($row, $nestKey, $joined, $targetProperty = null)
     {
         $sourceAlias = $this->source()->alias();
@@ -110,7 +88,10 @@ class ExtensionOf extends BelongsTo
             return $row;
         }
 
-        $properties = ($row[$nestKey] instanceof Entity) ? $row[$nestKey]->getOriginalValues() : $row[$nestKey];
+        $properties = $row[$nestKey];
+        if ($properties instanceof Entity) {
+            $properties = $properties->getOriginalValues();
+        }
         $row[$sourceAlias] += $properties;
         unset($row[$nestKey]);
 
@@ -123,14 +104,28 @@ class ExtensionOf extends BelongsTo
     public function saveAssociated(EntityInterface $entity, array $options = [])
     {
         $targetData = $this->targetPropertiesValues($entity);
-        if (empty($targetData)) {
-            $targetData = $this->target()->schema()->defaultValues();
-            $propertiesToRemove = array_keys($targetData);
-        }
+        $defaultValues = array_map(
+            function ($val) {
+                if (is_string($val) && substr($val, 0, 6) === 'NULL::') {
+                    return null;
+                }
 
-        $targetEntity = $this->target()->newEntity($targetData, [
-            'accessibleFields' => ['*' => true]
+                return $val;
+            },
+            $this->target()->schema()->defaultValues()
+        );
+        $propertiesToRemove = array_keys($defaultValues);
+
+        $targetEntity = $this->target()->newEntity($defaultValues, [
+            'accessibleFields' => ['*' => true],
         ]);
+        $targetEntity->isNew($entity->isNew());
+        $targetEntity = $this->target()->patchEntity($targetEntity, $targetData, [
+            'accessibleFields' => ['*' => true],
+        ]);
+        if (!$entity->isNew()) {
+            $targetEntity->dirty($this->bindingKey(), true);
+        }
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;

@@ -54,6 +54,13 @@ class UsersTable extends Table
             'className' => 'BEdita/Core.Roles',
         ]);
 
+        $this->addBehavior('BEdita/Core.ClassTableInheritance', [
+            'table' => [
+                'tableName' => 'Profiles',
+                'className' => 'BEdita/Core.Profiles',
+            ],
+        ]);
+
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
 

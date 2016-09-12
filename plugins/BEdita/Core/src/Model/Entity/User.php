@@ -14,35 +14,42 @@
 namespace BEdita\Core\Model\Entity;
 
 use Cake\Auth\DefaultPasswordHasher;
-use Cake\ORM\Entity;
 
 /**
  * User Entity.
  *
  * @property int $id
  * @property string $username
- * @property string $password
+ * @property string $password_hash
  * @property bool $blocked
  * @property \Cake\I18n\Time $last_login
  * @property \Cake\I18n\Time $last_login_err
  * @property int $num_login_err
- * @property \Cake\I18n\Time $created
- * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\ExternalAuth[] $external_auth
  *
  * @since 4.0.0
  */
-class User extends Entity
+class User extends Profile
 {
 
     /**
      * {@inheritDoc}
+     *
+     * @todo Inherit accessible fields from parent entity.
      */
     protected $_accessible = [
-        '*' => false,
-        'username' => true,
-        'password_hash' => true,
-        'external_auth' => true,
+        '*' => true,
+        'id' => false,
+        'locked' => false,
+        'created' => false,
+        'modified' => false,
+        'published' => false,
+        'created_by' => false,
+        'modified_by' => false,
+        'blocked' => false,
+        'last_login' => false,
+        'last_login_err' => false,
+        'num_login_err' => false,
     ];
 
     /**

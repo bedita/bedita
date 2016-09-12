@@ -124,7 +124,7 @@ class TableInheritanceManagerTest extends TestCase
         $this->assertInstanceOf('BEdita\Core\ORM\Association\ExtensionOf', $association);
         $this->assertEquals($this->fakeFelines->primaryKey(), $association->foreignKey());
         $this->assertEquals('INNER', $association->joinType());
-        $this->assertTrue($association->dependent());
+        $this->assertFalse($association->dependent());
     }
 
     /**
