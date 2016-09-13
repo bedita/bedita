@@ -85,6 +85,27 @@ class ResourcesControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test relationships method to list existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::relationships()
+     */
+    public function testListAssociationsNotFound()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/roles/99/relationships/users');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
      * Test relationships method to add new relationships.
      *
      * @return void
