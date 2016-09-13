@@ -24,7 +24,7 @@ Router::plugin(
         // Home.
         $routes->connect(
             '/home',
-            ['controller' => 'Home', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Home', 'action' => 'index'],
             ['_name' => 'home']
         );
 
