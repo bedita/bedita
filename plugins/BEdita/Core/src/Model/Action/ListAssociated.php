@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
@@ -73,7 +74,6 @@ class ListAssociated
     protected function primaryKeyConditions($primaryKey)
     {
         $source = $this->Association->source();
-
         $primaryKeyFields = array_map([$source, 'aliasField'], (array)$source->primaryKey());
 
         $primaryKey = (array)$primaryKey;
@@ -98,15 +98,27 @@ class ListAssociated
      *
      * @param mixed $primaryKey Primary key.
      * @return \Cake\ORM\Query
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if trying to fetch associations
+     *      for a missing resource.
      */
     protected function buildQuery($primaryKey)
     {
+        $source = $this->Association->source();
+        $conditions = $this->primaryKeyConditions($primaryKey);
+
+        $existing = $source->find()
+            ->where($conditions)
+            ->count();
+        if (!$existing) {
+            throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->table()));
+        }
+
         $primaryKeyFields = array_map([$this->Association, 'aliasField'], (array)$this->Association->primaryKey());
 
-        $query = $this->Association->source()->find()
+        $query = $source->find()
             ->innerJoinWith($this->Association->name())
             ->select($primaryKeyFields)
-            ->where($this->primaryKeyConditions($primaryKey))
+            ->where($conditions)
             ->autoFields(false)
             ->formatResults(function (ResultSetInterface $results) {
                 return $results->map(function ($row) {

@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociated;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -88,6 +89,12 @@ class ListAssociatedTest extends TestCase
                 'FakeArticles',
                 1,
             ],
+            'belongsToManyMissing' => [
+                new RecordNotFoundException('Record not found in table "fake_tags"'),
+                'FakeTags',
+                'FakeArticles',
+                99,
+            ],
             'hasMany' => [
                 [
                     ['id' => 1],
@@ -117,7 +124,7 @@ class ListAssociatedTest extends TestCase
     /**
      * Test invocation of command.
      *
-     * @param array $expected Expected result.
+     * @param array|\Exception $expected Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $id Entity ID to list relations for.
@@ -125,8 +132,12 @@ class ListAssociatedTest extends TestCase
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation(array $expected, $table, $association, $id)
+    public function testInvocation($expected, $table, $association, $id)
     {
+        if ($expected instanceof \Exception) {
+            $this->setExpectedException(get_class($expected), $expected->getMessage());
+        }
+
         $association = TableRegistry::get($table)->association($association);
         $action = new ListAssociated($association);
 
