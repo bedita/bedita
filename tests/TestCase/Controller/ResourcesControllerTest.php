@@ -337,6 +337,39 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @covers ::relationships()
      */
+    public function testSetAssociationsEmpty()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/relationships/users',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::relationships()
+     */
     public function testSetAssociationsNoContent()
     {
         $data = [

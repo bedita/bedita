@@ -81,7 +81,7 @@ class JsonApiComponent extends Component
     {
         try {
             $json = json_decode($json, true);
-            if (json_last_error() || !is_array($json) || empty($json['data'])) {
+            if (json_last_error() || !is_array($json) || !isset($json['data'])) {
                 throw new \InvalidArgumentException('Invalid JSON');
             }
 
