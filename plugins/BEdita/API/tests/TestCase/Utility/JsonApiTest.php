@@ -345,6 +345,10 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
+            'empty' => [
+                [],
+                [],
+            ],
         ];
     }
 
