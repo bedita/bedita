@@ -83,6 +83,17 @@ class UpdateAssociatedTest extends TestCase
     public function invocationProvider()
     {
         return [
+            'belongsToManyDuplicateEntry' => [
+                1,
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    ['id' => 1],
+                    ['id' => 2],
+                    ['id' => 2],
+                ],
+            ],
             'belongsToManyEmpty' => [
                 1,
                 'FakeTags',
@@ -192,6 +203,6 @@ class UpdateAssociatedTest extends TestCase
         }
 
         $this->assertEquals($expected, $result);
-        $this->assertEquals(count($data), $count);
+        $this->assertEquals(count(array_unique($data, SORT_REGULAR)), $count);
     }
 }
