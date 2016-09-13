@@ -13,15 +13,10 @@
 
 namespace BEdita\Core\Model\Entity;
 
-use BEdita\Core\Model\Entity\Object;
-use Cake\ORM\Entity;
-
 /**
  * Profile Entity.
  *
  * @property int $id
- * @property int $user_id
- * @property \BEdita\Core\Model\Entity\User $user
  * @property string $name
  * @property string $surname
  * @property string $email
@@ -44,12 +39,4 @@ use Cake\ORM\Entity;
  */
 class Profile extends Object
 {
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_accessible = [
-        '*' => true,
-        'id' => false,
-    ];
 }

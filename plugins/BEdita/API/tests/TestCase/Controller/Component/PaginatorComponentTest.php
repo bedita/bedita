@@ -36,7 +36,7 @@ class PaginatorComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -146,12 +146,12 @@ class PaginatorComponentTest extends TestCase
                 [],
             ],
             'asc' => [
-                ['Users.username' => 'asc'],
-                'username',
+                ['Roles.name' => 'asc'],
+                'name',
             ],
             'desc' => [
-                ['Users.username' => 'desc'],
-                '-username',
+                ['Roles.name' => 'desc'],
+                '-name',
             ],
             'multipleFields' => [
                 false,
@@ -163,7 +163,7 @@ class PaginatorComponentTest extends TestCase
             ],
             'explicitAsc' => [
                 false,
-                '+username',
+                '+name',
             ],
         ];
     }
@@ -180,7 +180,7 @@ class PaginatorComponentTest extends TestCase
      */
     public function testValidateSort($expected, $sort = null)
     {
-        $this->loadFixtures('Users');
+        $this->loadFixtures('Roles');
 
         if ($expected === false) {
             $this->setExpectedException('Cake\Network\Exception\BadRequestException');
@@ -189,8 +189,8 @@ class PaginatorComponentTest extends TestCase
         $request = new Request(['query' => compact('sort')]);
         $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
 
-        $repository = TableRegistry::get('Users')->find()->repository();
-        $options = $component->mergeOptions('Users', []);
+        $repository = TableRegistry::get('Roles')->find()->repository();
+        $options = $component->mergeOptions('Roles', []);
 
         $options = $component->validateSort($repository, $options);
         $this->assertEquals($expected, $options['order']);

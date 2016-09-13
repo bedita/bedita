@@ -28,7 +28,7 @@ class AppControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -105,7 +105,7 @@ class AppControllerTest extends IntegrationTestCase
             'headers' => ['Accept' => $accept],
         ]);
 
-        $this->get('/users');
+        $this->get('/roles');
 
         $this->assertResponseCode($expectedCode);
         if ($expectedContentType) {
@@ -191,5 +191,23 @@ class AppControllerTest extends IntegrationTestCase
         $this->get('/home');
 
         $this->assertResponseCode($expectedCode);
+    }
+
+    /**
+     * Test API meta info header.
+     *
+     * @return void
+     */
+    public function testMetaInfo()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+
+        $this->_sendRequest('/home', 'HEAD');
+
+        $this->assertHeader('X-BEdita-Version', Configure::read('BEdita.version'));
     }
 }

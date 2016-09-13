@@ -83,7 +83,6 @@ class RoleTest extends TestCase
 
         $this->assertEquals(1, $role->id);
         $this->assertTrue($role->unchangeable);
-        $this->assertFalse($role->backend_auth);
         $this->assertEquals('patched_role_name', $role->name);
     }
 }

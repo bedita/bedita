@@ -21,8 +21,7 @@ use Cake\ORM\Entity;
  * @property int $id
  * @property string $name
  * @property string $description
- * @property bool $immutable
- * @property bool $backend_auth
+ * @property bool $unchangeable
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\User[] $users
@@ -38,6 +37,6 @@ class Role extends Entity
     protected $_accessible = [
         '*' => true,
         'id' => false,
-        'immutable' => false,
+        'unchangeable' => false,
     ];
 }

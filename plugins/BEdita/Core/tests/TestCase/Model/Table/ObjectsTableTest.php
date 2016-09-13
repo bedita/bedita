@@ -25,9 +25,10 @@ class ObjectsTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -64,7 +65,7 @@ class ObjectsTableTest extends TestCase
         $this->assertEquals('title', $this->Objects->displayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Objects->ObjectTypes);
-        $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Objects->Behaviors()->get('Timestamp'));
+        $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Objects->behaviors()->get('Timestamp'));
     }
 
     /**
@@ -153,16 +154,16 @@ class ObjectsTableTest extends TestCase
         return [
             'documents' => [
                 [
-                    1 => 'title one',
-                    2 => 'title two',
+                    2 => 'title one',
+                    3 => 'title two',
                 ],
                 [1],
             ],
             'multiple' => [
                 [
-                    1 => 'title one',
-                    2 => 'title two',
-                    3 => 'Gustavo Supporto profile',
+                    2 => 'title one',
+                    3 => 'title two',
+                    4 => 'Gustavo Supporto profile',
                 ],
                 ['document', 'profiles'],
             ],

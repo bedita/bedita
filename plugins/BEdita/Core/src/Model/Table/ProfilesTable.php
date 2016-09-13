@@ -20,8 +20,6 @@ use Cake\Validation\Validator;
 /**
  * Profiles Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Users
- *
  * @since 4.0.0
  */
 class ProfilesTable extends Table
@@ -40,16 +38,11 @@ class ProfilesTable extends Table
         $this->primaryKey('id');
         $this->displayField('name');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'className' => 'BEdita/Core.Users'
-        ]);
-
         $this->addBehavior('BEdita/Core.ClassTableInheritance', [
             'table' => [
                 'tableName' => 'Objects',
-                'className' => 'BEdita/Core.Objects'
-            ]
+                'className' => 'BEdita/Core.Objects',
+            ],
         ]);
     }
 
@@ -83,8 +76,7 @@ class ProfilesTable extends Table
             ->allowEmpty('deathdate')
 
             ->boolean('company')
-            ->requirePresence('company', 'create')
-            ->notEmpty('company')
+            ->allowEmpty('company')
 
             ->allowEmpty('company_name')
 

@@ -2,7 +2,6 @@
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
-use Cake\Event\Event;
 
 /**
  * ObjectsFixture
@@ -18,6 +17,22 @@ class ObjectsFixture extends TestFixture
      */
     public $records = [
         [
+            'object_type_id' => 3,
+            'status' => 'on',
+            'uname' => 'first-user',
+            'locked' => 1,
+            'created' => '2016-05-13 07:09:23',
+            'modified' => '2016-05-13 07:09:23',
+            'published' => null,
+            'title' => 'Mr. First User',
+            'description' => null,
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+        ],
+        [
             'object_type_id' => 1,
             'status' => 'on',
             'uname' => 'title-one',
@@ -28,7 +43,7 @@ class ObjectsFixture extends TestFixture
             'title' => 'title one',
             'description' => 'description here',
             'body' => 'body here',
-            'extra' => '{"abstract": "abstract here", "list": "[\"one\", \"two\", \"three\"]"}',
+            'extra' => '{"abstract": "abstract here", "list": ["one", "two", "three"]}',
             'lang' => 'eng',
             'created_by' => 1,
             'modified_by' => 1,
@@ -67,6 +82,22 @@ class ObjectsFixture extends TestFixture
             'created_by' => 1,
             'modified_by' => 1
         ],
+        [
+            'object_type_id' => 3,
+            'status' => 'on',
+            'uname' => 'second-user',
+            'locked' => 0,
+            'created' => '2016-05-13 07:09:23',
+            'modified' => '2016-05-13 07:09:23',
+            'published' => null,
+            'title' => 'Miss Second User',
+            'description' => null,
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+        ],
     ];
 
     /**
@@ -76,8 +107,11 @@ class ObjectsFixture extends TestFixture
      *
      * @return void
      */
-    public function beforeBuildSchema(Event $event)
+    public function beforeBuildSchema()
     {
         $this->fields['status']['type'] = 'string';
+
+        unset($this->fields['_constraints']['objects_modifiedby_fk']);
+        unset($this->fields['_constraints']['objects_createdby_fk']);
     }
 }
