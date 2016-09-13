@@ -27,8 +27,12 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
     ];
 
@@ -124,7 +128,7 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $data = [
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
         ];
@@ -163,11 +167,11 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $data = [
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
         ];
@@ -240,7 +244,7 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'type' => 'users',
             ],
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
         ];
@@ -272,7 +276,7 @@ class ResourcesControllerTest extends IntegrationTestCase
     {
         $data = [
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
         ];
@@ -310,7 +314,7 @@ class ResourcesControllerTest extends IntegrationTestCase
 
         $data = [
             [
-                'id' => '2',
+                'id' => '5',
                 'type' => 'users',
             ],
         ];
