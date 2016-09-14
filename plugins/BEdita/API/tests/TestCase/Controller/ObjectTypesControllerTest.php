@@ -52,10 +52,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 2,
+                    'count' => 3,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 2,
+                    'page_items' => 3,
                     'page_size' => 20,
                 ],
             ],
@@ -74,7 +74,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/1',
-                    ]
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -90,7 +90,23 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/2',
-                    ]
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'name' => 'user',
+                        'pluralized' => 'users',
+                        'alias' => 'Users',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Users',
+                        'table' => 'BEdita/Core.Users'
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/object_types/3',
+                    ],
                 ],
             ],
         ];
@@ -275,7 +291,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/object_types/3');
+        $this->assertHeader('Location', 'http://api.example.com/object_types/4');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
     }
 

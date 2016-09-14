@@ -216,6 +216,10 @@ class JsonApi
      */
     public static function parseData(array $data)
     {
+        if (empty($data)) {
+            return [];
+        }
+
         if (!Hash::numeric(array_keys($data))) {
             return static::parseItem($data);
         }

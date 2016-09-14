@@ -26,9 +26,9 @@ class JsonApiTest extends TestCase
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\UsersTable
+     * @var \BEdita\Core\Model\Table\RolesTable
      */
-    public $Users;
+    public $Roles;
 
     /**
      * Fixtures.
@@ -36,7 +36,7 @@ class JsonApiTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
     ];
 
     /**
@@ -46,7 +46,7 @@ class JsonApiTest extends TestCase
     {
         parent::setUp();
 
-        $this->Users = TableRegistry::get('Users');
+        $this->Roles = TableRegistry::get('Roles');
     }
 
     /**
@@ -54,7 +54,7 @@ class JsonApiTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Users);
+        unset($this->Roles);
 
         parent::tearDown();
     }
@@ -71,159 +71,143 @@ class JsonApiTest extends TestCase
                 [
                     [
                         'id' => '1',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'first user',
-                            'blocked' => false,
-                            'last_login' => null,
-                            'last_login_err' => null,
-                            'num_login_err' => 1,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'first role',
+                            'description' => 'this is the very first role',
+                            'unchangeable' => true,
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/1',
+                            'self' => '/roles/1',
                         ],
                     ],
                     [
                         'id' => '2',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'second user',
-                            'blocked' => false,
-                            'last_login' => '2016-03-15T09:57:38+00:00',
-                            'last_login_err' => '2016-03-15T09:57:38+00:00',
-                            'num_login_err' => 0,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'second role',
+                            'description' => 'this is a second role',
+                            'unchangeable' => false,
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/2',
+                            'self' => '/roles/2',
                         ],
                     ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all');
                 },
-                'users',
+                'roles',
             ],
             'multipleResultSetItems' => [
                 [
                     [
                         'id' => '1',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'first user',
-                            'blocked' => false,
-                            'last_login' => null,
-                            'last_login_err' => null,
-                            'num_login_err' => 1,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'first role',
+                            'description' => 'this is the very first role',
+                            'unchangeable' => true,
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/1',
+                            'self' => '/roles/1',
                         ],
                     ],
                     [
                         'id' => '2',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'second user',
-                            'blocked' => false,
-                            'last_login' => '2016-03-15T09:57:38+00:00',
-                            'last_login_err' => '2016-03-15T09:57:38+00:00',
-                            'num_login_err' => 0,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'second role',
+                            'description' => 'this is a second role',
+                            'unchangeable' => false,
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/2',
+                            'self' => '/roles/2',
                         ],
                     ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->all();
                 },
-                'users',
+                'roles',
             ],
             'multipleArrayItems' => [
                 [
                     [
                         'id' => '1',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'first user',
-                            'blocked' => false,
-                            'last_login' => null,
-                            'last_login_err' => null,
-                            'num_login_err' => 1,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'first role',
+                            'description' => 'this is the very first role',
+                            'unchangeable' => true,
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/1',
+                            'self' => '/roles/1',
                         ],
                     ],
                     [
                         'id' => '2',
-                        'type' => 'users',
+                        'type' => 'roles',
                         'attributes' => [
-                            'username' => 'second user',
-                            'blocked' => false,
-                            'last_login' => '2016-03-15T09:57:38+00:00',
-                            'last_login_err' => '2016-03-15T09:57:38+00:00',
-                            'num_login_err' => 0,
-                            'created' => '2016-03-15T09:57:38+00:00',
-                            'modified' => '2016-03-15T09:57:38+00:00',
+                            'name' => 'second role',
+                            'description' => 'this is a second role',
+                            'unchangeable' => false,
+                            'created' => '2016-04-15T11:59:12+00:00',
+                            'modified' => '2016-04-15T11:59:13+00:00',
                         ],
                         'links' => [
-                            'self' => '/users/2',
+                            'self' => '/roles/2',
                         ],
                     ],
                 ],
                 function (Table $Table) {
                     return $Table->find('all')->toArray();
                 },
-                'users',
+                'roles',
             ],
             'singleEntityItem' => [
                 [
                     'id' => '1',
-                    'type' => 'users',
+                    'type' => 'roles',
                     'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+00:00',
-                        'modified' => '2016-03-15T09:57:38+00:00',
+                        'name' => 'first role',
+                        'description' => 'this is the very first role',
+                        'unchangeable' => true,
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
                     ],
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
                 },
-                'users',
+                'roles',
             ],
             'singleArrayItem' => [
                 [
                     'id' => '1',
-                    'type' => 'users',
+                    'type' => 'roles',
                     'attributes' => [
-                        'username' => 'first user',
-                        'blocked' => false,
-                        'last_login' => null,
-                        'last_login_err' => null,
-                        'num_login_err' => 1,
-                        'created' => '2016-03-15T09:57:38+00:00',
-                        'modified' => '2016-03-15T09:57:38+00:00',
+                        'name' => 'first role',
+                        'description' => 'this is the very first role',
+                        'unchangeable' => true,
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
                     ],
                 ],
                 function (Table $Table) {
                     return $Table->get(1)->toArray();
                 },
-                'users',
+                'roles',
             ],
             'getTypeFromItem' => [
                 [
@@ -376,6 +360,10 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
+            'empty' => [
+                [],
+                [],
+            ],
         ];
     }
 
@@ -401,7 +389,7 @@ class JsonApiTest extends TestCase
             $this->setExpectedException('\InvalidArgumentException');
         }
 
-        $result = JsonApi::formatData($items($this->Users), $type);
+        $result = JsonApi::formatData($items($this->Roles), $type);
 
         $this->assertEquals($expected, $result);
     }

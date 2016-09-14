@@ -9,116 +9,25 @@ DROP TABLE IF EXISTS relation_types;
 DROP TABLE IF EXISTS relations;
 DROP TABLE IF EXISTS profiles;
 DROP TABLE IF EXISTS media;
+DROP TABLE IF EXISTS roles_users;
+DROP TABLE IF EXISTS external_auth;
+DROP TABLE IF EXISTS auth_providers;
 DROP TABLE IF EXISTS annotations;
 DROP TABLE IF EXISTS object_permissions;
+DROP TABLE IF EXISTS endpoint_permissions;
+DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS object_properties;
+
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS objects;
+SET FOREIGN_KEY_CHECKS=1;
+
+DROP TABLE IF EXISTS applications;
+DROP TABLE IF EXISTS endpoints;
 DROP TABLE IF EXISTS properties;
 DROP TABLE IF EXISTS property_types;
 DROP TABLE IF EXISTS object_types;
-DROP TABLE IF EXISTS roles_users;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS external_auth;
-DROP TABLE IF EXISTS auth_providers;
-DROP TABLE IF EXISTS users;
-
--- ------------------
---   USERS & AUTH
--- ------------------
-
-CREATE TABLE users (
-
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  username VARCHAR(100) NOT NULL              COMMENT 'login user name',
-  password_hash TINYTEXT NULL                 COMMENT 'login password hash, if empty external auth is used',
-  blocked BOOL NOT NULL DEFAULT 0             COMMENT 'user blocked flag',
-  last_login DATETIME DEFAULT NULL            COMMENT 'last succcessful login datetime',
-  last_login_err DATETIME DEFAULT NULL        COMMENT 'last login filaure datetime',
-  num_login_err TINYINT NOT NULL DEFAULT 0    COMMENT 'number of consecutive login failures',
-  created DATETIME NOT NULL                   COMMENT 'record creation date',
-  -- from MySQL 5.6.5 created NOT NULL DATETIME DEFAULT CURRENT_TIMESTAMP,
-  modified DATETIME NOT NULL                  COMMENT 'record last modification date',
-  -- from MySQL 5.6.5 modified NOT NULL DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-
-  PRIMARY KEY (id),
-  UNIQUE KEY users_username_uq (username)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'authenticated users basic data';
-
-
-CREATE TABLE auth_providers (
-
-  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL         COMMENT 'external provider name: facebook, google, github...',
-  url VARCHAR(255) NOT NULL          COMMENT 'external provider url',
-  params TINYTEXT NOT NULL           COMMENT 'external provider parameters',
-
-  PRIMARY KEY (id),
-  UNIQUE KEY authproviders_name_uq (name)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
-
-
-CREATE TABLE external_auth (
-
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  user_id INT UNSIGNED NOT NULL               COMMENT 'reference to system user',
-  auth_provider_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to external auth provider',
-  params TEXT DEFAULT NULL                    COMMENT 'external auth params, serialized JSON',
-  -- From MySQL 5.7.8 JSON type
-  provider_username VARCHAR(255)              COMMENT 'auth username on provider',
-
-  PRIMARY KEY (id),
-  UNIQUE KEY externalauth_authuser_uq (auth_provider_id, provider_username),
-
-  CONSTRAINT externalauth_authprovider_fk FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
-  CONSTRAINT externalauth_userid_fk FOREIGN KEY (user_id)
-    REFERENCES users(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user external auth data' ;
-
--- --------
---  ROLES
--- --------
-
-CREATE TABLE roles (
-
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name VARCHAR(32) NOT NULL                 COMMENT 'role unique name',
-  description TEXT DEFAULT NULL             COMMENT 'role description',
-  unchangeable BOOL NOT NULL DEFAULT '0'    COMMENT 'role data not modifiable (default:false)',
-  backend_auth BOOL NOT NULL DEFAULT '0'    COMMENT 'role authorized to backend (default: false)',
-  created datetime default NULL             COMMENT 'creation date',
-  modified datetime default NULL            COMMENT 'last modification date',
-
-  PRIMARY KEY (id),
-  UNIQUE KEY roles_name_uq (name)
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
-
-
-CREATE TABLE roles_users (
-
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  role_id INT UNSIGNED NOT NULL             COMMENT 'link to roles.id',
-  user_id INT UNSIGNED NOT NULL             COMMENT 'link to users.id',
-
-  PRIMARY KEY (id),
-  INDEX rolesusers_userid_idx (user_id),
-  INDEX rolesusers_roleid_idx (role_id),
-
-  CONSTRAINT rolesusers_userid_fk FOREIGN KEY (user_id)
-    REFERENCES users(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION,
-  CONSTRAINT rolesusers_roleid_fk FOREIGN KEY (role_id)
-    REFERENCES roles(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
-
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'join table for roles/users';
 
 
 -- -------------
@@ -137,6 +46,26 @@ CREATE TABLE config (
   INDEX config_context_idx (context)
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'configuration parameters' ;
+
+
+-- --------
+--  ROLES
+-- --------
+
+CREATE TABLE roles (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(32) NOT NULL                 COMMENT 'role unique name',
+  description TEXT DEFAULT NULL             COMMENT 'role description',
+  unchangeable BOOL NOT NULL DEFAULT '0'    COMMENT 'role data not modifiable (default:false)',
+  created datetime default NULL             COMMENT 'creation date',
+  modified datetime default NULL            COMMENT 'last modification date',
+
+  PRIMARY KEY (id),
+  UNIQUE KEY roles_name_uq (name)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'roles definitions';
+
 
 -- -------------
 --   OBJECTS
@@ -207,7 +136,7 @@ CREATE TABLE objects (
   body MEDIUMTEXT NULL,
   extra MEDIUMTEXT NULL                     COMMENT 'object data extensions (JSON format)',
   -- From MySQL 5.7.8 use JSON type
-  lang CHAR(3) NOT NULL                     COMMENT 'language used, ISO 639-3 code',
+  lang CHAR(3) NULL DEFAULT NULL            COMMENT 'language used, ISO 639-3 code',
   created_by INT UNSIGNED NOT NULL          COMMENT 'user who created object',
   modified_by INT UNSIGNED NOT NULL         COMMENT 'last user to modify object',
   publish_start DATETIME NULL               COMMENT 'publish from this date on',
@@ -272,33 +201,65 @@ CREATE TABLE object_permissions (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'permissions on objects through roles and operations (RBAC)';
 
 
--- --------------------------------------
---  OBJECT METADATA / SPECIAL PROPERTIES
--- --------------------------------------
+-- ---------------------------
+--  ENDPOINTS / APPLICATIONS
+-- ---------------------------
 
-CREATE TABLE annotations (
+CREATE TABLE applications (
 
-  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  object_id INT UNSIGNED NOT NULL   COMMENT 'link to annotated object',
-  description TEXT NULL             COMMENT 'annotation author',
-  user_id INT UNSIGNED NOT NULL     COMMENT 'user creating this annotation',
-  created DATETIME NOT NULL         COMMENT 'creation date',
-  modified DATETIME NOT NULL        COMMENT 'last modification date',
-  params MEDIUMTEXT                 COMMENT 'annotation parameters (serialized JSON)',
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  api_key VARCHAR(255) NOT NULL             COMMENT 'api key value for application',
+  name VARCHAR(255) NOT NULL                COMMENT 'application name',
+  description TEXT NOT NULL                 COMMENT 'application description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'application active flag',
 
   PRIMARY KEY (id),
+  UNIQUE applications_apikey_uq (api_key),
+  UNIQUE applications_name_uq (name)
 
-  CONSTRAINT annotations_userid_fk FOREIGN KEY (user_id) REFERENCES users(id),
-  CONSTRAINT annotations_objectid_fk FOREIGN KEY (object_id)
-    REFERENCES objects(id)
-      ON DELETE CASCADE
-      ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'client API applications' ;
 
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object annotations, comments, notes';
 
--- DROP TABLE IF EXISTS date_items;
--- CREATE TABLE date_items (
--- );
+CREATE TABLE endpoints (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL                COMMENT 'endpoint name without slash, will be used as /name',
+  description TEXT NULL                     COMMENT 'endpoint description',
+  created DATETIME NOT NULL                 COMMENT 'creation date',
+  modified DATETIME NOT NULL                COMMENT 'last modification date',
+  enabled BOOL NOT NULL DEFAULT 1           COMMENT 'endpoint active flag',
+  object_type_id SMALLINT UNSIGNED NULL     COMMENT 'link to object_types.id in case of an object type endpoint',
+
+  PRIMARY KEY (id),
+  UNIQUE endpoints_name_uq (name),
+  CONSTRAINT endpoins_objecttypeid_fk FOREIGN KEY (object_type_id)
+    REFERENCES object_types (id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'API available endpoints' ;
+
+
+CREATE TABLE endpoint_permissions (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  endpoint_id SMALLINT UNSIGNED NOT NULL            COMMENT 'link to endpoints.id',
+  application_id SMALLINT UNSIGNED NULL             COMMENT 'link to applications.id - may be null',
+  role_id INT UNSIGNED NULL                         COMMENT 'link to roles.id - may be null',
+  permission TINYINT UNSIGNED NOT NULL DEFAULT 0    COMMENT 'endpoint permission for role and app',
+
+  PRIMARY KEY (id),
+  UNIQUE applications_endapprole_uq (endpoint_id, application_id, role_id),
+
+  CONSTRAINT endpointspermissions_endpointid_fk FOREIGN KEY (endpoint_id)
+    REFERENCES endpoints (id),
+  CONSTRAINT endpointspermissions_applicationid_fk FOREIGN KEY (application_id)
+    REFERENCES applications (id),
+  CONSTRAINT endpointspermissions_roleid_fk FOREIGN KEY (role_id)
+    REFERENCES roles (id)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'permissions on endpoints from applications' ;
+
 
 -- --------------------
 --  CORE OBJECT TYPES
@@ -332,7 +293,6 @@ CREATE TABLE media (
 
 CREATE TABLE profiles (
   id INT UNSIGNED NOT NULL,
-  user_id INT UNSIGNED NULL         COMMENT 'link to users.id, if not null',
   name TINYTEXT NULL                COMMENT 'person name, can be NULL',
   surname TINYTEXT NULL             COMMENT 'person surname, can be NULL',
   email VARCHAR(100) NULL           COMMENT 'first email, can be NULL',
@@ -354,13 +314,119 @@ CREATE TABLE profiles (
   PRIMARY KEY (id),
   UNIQUE KEY profiles_email_uq (email),
 
-  CONSTRAINT profiles_userid_fk FOREIGN KEY (user_id) REFERENCES users(id),
   CONSTRAINT profiles_id_fk FOREIGN KEY (id)
     REFERENCES objects(id)
       ON DELETE CASCADE
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user profiles, addressbook data' ;
+
+
+-- ------------------
+--   USERS & AUTH
+-- ------------------
+
+CREATE TABLE users (
+
+  id INT UNSIGNED NOT NULL,
+  username VARCHAR(100) NOT NULL              COMMENT 'login user name',
+  password_hash TINYTEXT NULL                 COMMENT 'login password hash, if empty external auth is used',
+  blocked BOOL NOT NULL DEFAULT 0             COMMENT 'user blocked flag',
+  last_login DATETIME DEFAULT NULL            COMMENT 'last succcessful login datetime',
+  last_login_err DATETIME DEFAULT NULL        COMMENT 'last login filaure datetime',
+  num_login_err TINYINT NOT NULL DEFAULT 0    COMMENT 'number of consecutive login failures',
+
+  PRIMARY KEY (id),
+  UNIQUE KEY users_username_uq (username),
+
+  CONSTRAINT users_id_fk FOREIGN KEY (id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'authenticated users basic data';
+
+
+CREATE TABLE auth_providers (
+
+  id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL         COMMENT 'external provider name: facebook, google, github...',
+  url VARCHAR(255) NOT NULL          COMMENT 'external provider url',
+  params TINYTEXT NOT NULL           COMMENT 'external provider parameters',
+
+  PRIMARY KEY (id),
+  UNIQUE KEY authproviders_name_uq (name)
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'supported external auth providers';
+
+
+CREATE TABLE external_auth (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id INT UNSIGNED NOT NULL               COMMENT 'reference to system user',
+  auth_provider_id SMALLINT UNSIGNED NOT NULL COMMENT 'link to external auth provider',
+  params TEXT DEFAULT NULL                    COMMENT 'external auth params, serialized JSON',
+  -- From MySQL 5.7.8 JSON type
+  provider_username VARCHAR(255)              COMMENT 'auth username on provider',
+
+  PRIMARY KEY (id),
+  UNIQUE KEY externalauth_authuser_uq (auth_provider_id, provider_username),
+  CONSTRAINT externalauth_authprovider_fk FOREIGN KEY (auth_provider_id) REFERENCES auth_providers(id),
+  CONSTRAINT externalauth_userid_fk FOREIGN KEY (user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user external auth data' ;
+
+
+CREATE TABLE roles_users (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  role_id INT UNSIGNED NOT NULL             COMMENT 'link to roles.id',
+  user_id INT UNSIGNED NOT NULL             COMMENT 'link to users.id',
+
+  PRIMARY KEY (id),
+  INDEX rolesusers_userid_idx (user_id),
+  INDEX rolesusers_roleid_idx (role_id),
+  CONSTRAINT rolesusers_userid_fk FOREIGN KEY (user_id)
+    REFERENCES users(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION,
+  CONSTRAINT rolesusers_roleid_fk FOREIGN KEY (role_id)
+    REFERENCES roles(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'join table for roles/users';
+
+
+-- --------------------------------------
+--  OBJECT METADATA / SPECIAL PROPERTIES
+-- --------------------------------------
+
+CREATE TABLE annotations (
+
+  id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  object_id INT UNSIGNED NOT NULL   COMMENT 'link to annotated object',
+  description TEXT NULL             COMMENT 'annotation author',
+  user_id INT UNSIGNED NOT NULL     COMMENT 'user creating this annotation',
+  created DATETIME NOT NULL         COMMENT 'creation date',
+  modified DATETIME NOT NULL        COMMENT 'last modification date',
+  params MEDIUMTEXT                 COMMENT 'annotation parameters (serialized JSON)',
+
+  PRIMARY KEY (id),
+  CONSTRAINT annotations_userid_fk FOREIGN KEY (user_id) REFERENCES users(id),
+  CONSTRAINT annotations_objectid_fk FOREIGN KEY (object_id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'object annotations, comments, notes';
+
+-- DROP TABLE IF EXISTS date_items;
+-- CREATE TABLE date_items (
+-- );
 
 -- -------------
 --   RELATIONS
@@ -469,3 +535,21 @@ CREATE TABLE trees (
       ON UPDATE NO ACTION
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT 'tree structure';
+
+
+-- ------------------
+--  INITIAL DATA SET
+-- ------------------
+
+INSERT INTO `object_types` (`name`, `pluralized`, `description`, `plugin`, `model`)
+    VALUES ('user', 'users', 'User object type', 'BEdita/Core', 'Users');
+INSERT INTO `objects` (`object_type_id`, `status`, `uname`, `locked`, `created`, `modified`,
+    `title`, `lang`, `created_by`, `modified_by`)
+    VALUES (1, 'draft', 'bedita', 1, '2016-08-01 00:00:00', '2016-08-01 00:00:00', 'bedita', 'eng', 1, 1);
+INSERT INTO `profiles` (`id`) VALUES (1);
+INSERT INTO `users` (`id`, `username`, `password_hash`, `blocked`) VALUES (1, 'bedita', '42', 1);
+
+ALTER TABLE  `objects` ADD CONSTRAINT objects_createdby_fk FOREIGN KEY (`created_by`)
+    REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+ALTER TABLE  `objects` ADD CONSTRAINT objects_modifiedby_fk FOREIGN KEY (`modified_by`)
+    REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE NO ACTION;

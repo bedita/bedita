@@ -28,12 +28,32 @@ class ProfilesFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 3,
+            'id' => 1,
+            'name' => 'First',
+            'surname' => 'User',
+            'email' => 'first.user@example.com',
+            'person_title' => 'Mr.',
+            'gender' => null,
+            'birthdate' => null,
+            'deathdate' => null,
+        ],
+        [
+            'id' => 4,
             'name' => 'Gustavo',
             'surname' => 'Supporto',
             'email' => 'gustavo.supporto@channelweb.it',
             'person_title' => 'Doct.',
             'gender' => 'monkey',
+            'birthdate' => null,
+            'deathdate' => null,
+        ],
+        [
+            'id' => 5,
+            'name' => 'Second',
+            'surname' => 'User',
+            'email' => 'second.user@example.com',
+            'person_title' => 'Miss',
+            'gender' => null,
             'birthdate' => null,
             'deathdate' => null,
         ],
