@@ -134,6 +134,8 @@ class DbAdminShellTest extends TestCase
      */
     public function testInit($userInput, $emptySchema)
     {
+        $this->fixtureManager->shutDown();
+
         $this->io->method('askChoice')
              ->willReturn($userInput);
 
