@@ -24,12 +24,22 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\RolesTable $Roles
  */
-class RolesController extends AppController
+class RolesController extends ResourcesController
 {
+
     /**
      * {@inheritDoc}
      */
     public $modelClass = 'Roles';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'users' => ['users'],
+        ],
+    ];
 
     /**
      * {@inheritDoc}
@@ -39,7 +49,7 @@ class RolesController extends AppController
         parent::initialize();
 
         $this->set('_type', 'roles');
-        if (isset($this->JsonApi)) {
+        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['roles']);
         }
     }
@@ -110,7 +120,7 @@ class RolesController extends AppController
         $this->request->allowMethod('patch');
 
         if ($this->request->data('id') != $id) {
-            throw new ConflictException('IDs don\' match');
+            throw new ConflictException('IDs don\'t match');
         }
 
         $role = $this->Roles->get($id);
