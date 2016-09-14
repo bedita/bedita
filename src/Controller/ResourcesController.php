@@ -18,6 +18,7 @@ use BEdita\Core\Model\Action\AddAssociated;
 use BEdita\Core\Model\Action\ListAssociated;
 use BEdita\Core\Model\Action\RemoveAssociated;
 use BEdita\Core\Model\Action\SetAssociated;
+use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
@@ -31,6 +32,37 @@ use Cake\ORM\TableRegistry;
 abstract class ResourcesController extends AppController
 {
 
+    use InstanceConfigTrait;
+
+    /**
+     * Configuration.
+     *
+     * Available configurations are:
+     *  - `allowedAssociations`: an associative array of relationships names, and
+     *      an array of allowed resource types for that relationship.
+     *
+     * @var array
+     */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [],
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function initialize()
+    {
+        parent::initialize();
+
+        if (isset($this->JsonApi) && $this->request->param('action') == 'relationships') {
+            $this->JsonApi->config(
+                'resourceTypes',
+                $this->config(sprintf('allowedAssociations.%s', $this->request->param('relationship')))
+            );
+            $this->JsonApi->config('clientGeneratedIds', true);
+        }
+    }
+
     /**
      * Find the association corresponding to the relationship name.
      *
@@ -40,11 +72,12 @@ abstract class ResourcesController extends AppController
      */
     protected function findAssociation($relationship)
     {
-        $associations = TableRegistry::get($this->modelClass)->associations();
-
-        foreach ($associations as $association) {
-            if ($association->property() === $relationship) {
-                return $association;
+        if (array_key_exists($relationship, $this->config('allowedAssociations'))) {
+            $associations = TableRegistry::get($this->modelClass)->associations();
+            foreach ($associations as $association) {
+                if ($association->property() === $relationship) {
+                    return $association;
+                }
             }
         }
 

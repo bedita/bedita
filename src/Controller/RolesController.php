@@ -35,18 +35,22 @@ class RolesController extends ResourcesController
     /**
      * {@inheritDoc}
      */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'users' => ['users'],
+        ],
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
     public function initialize()
     {
         parent::initialize();
 
         $this->set('_type', 'roles');
-        if (isset($this->JsonApi)) {
+        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['roles']);
-
-            if ($this->request->param('action') == 'relationships') {
-                $this->JsonApi->config('resourceTypes', null);
-                $this->JsonApi->config('clientGeneratedIds', true);
-            }
         }
     }
 
