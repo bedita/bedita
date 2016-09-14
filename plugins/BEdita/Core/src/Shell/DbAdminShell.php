@@ -15,6 +15,7 @@ namespace BEdita\Core\Shell;
 use BEdita\Core\Utility\Database;
 use Cake\Cache\Cache;
 use Cake\Console\Shell;
+use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Core\Plugin;
 use Cake\Datasource\Exception\MissingDatasourceConfigException;
 use Cake\Utility\Inflector;
@@ -42,7 +43,7 @@ class DbAdminShell extends Shell
      *
      * @var string
      */
-    protected $schemaDir = null;
+    public $schemaDir = null;
 
     /**
      * {@inheritDoc}
@@ -134,13 +135,11 @@ class DbAdminShell extends Shell
      * Check schema differences between current db and schema JSON file
      * (in BEdita/Core/config/schema/be4-schema.json)
      *
-     * @return void
+     * @return bool True on schema match, false on failure
      */
     public function checkSchema()
     {
-        $schemaFile = $this->schemaDir . 'be4-schema.json';
-        $json = file_get_contents($schemaFile);
-        $be4Schema = json_decode($json, true);
+        $be4Schema = (new JsonConfig())->read('BEdita/Core.schema/be4-schema');
         if (!Cache::clear(false, '_cake_model_')) {
             $this->abort('Unable to remove internal cache before schema check');
         }
@@ -149,9 +148,7 @@ class DbAdminShell extends Shell
         $this->checkDuplicateColumns($currentSchema);
         $this->checkSchemaNaming($currentSchema);
         $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
-        if (empty($schemaDiff)) {
-            $this->info('No schema differences found');
-        } else {
+        if (!empty($schemaDiff)) {
             $this->warn('Schema differences found!!');
             foreach ($schemaDiff as $key => $data) {
                 foreach ($data as $type => $value) {
@@ -160,7 +157,13 @@ class DbAdminShell extends Shell
                     }
                 }
             }
+
+            return false;
         }
+
+        $this->info('No schema differences found');
+
+        return true;
     }
 
     /**
@@ -285,20 +288,8 @@ class DbAdminShell extends Shell
 
             return;
         }
-        $this->out('Creating new database schema...');
-        $schemaFile = $this->schemaDir . 'be4-schema-' . $info['vendor'] . '.sql';
-        if (!file_exists($schemaFile)) {
-            $this->abort('Schema file not found: ' . $schemaFile);
-        }
-        $sqlSchema = file_get_contents($schemaFile);
-        try {
-            $result = Database::executeTransaction($sqlSchema);
-            if (!$result['success']) {
-                $this->abort('Error creating database schema: ' . $result['error']);
-            }
-        } catch (MissingDatasourceConfigException $e) {
-            $this->abort('Database connection not configured!');
-        }
-        $this->info('New database schema set');
+
+        $dbInitTask = $this->Tasks->load('BEdita/Core.DbInit');
+        $dbInitTask->main();
     }
 }
