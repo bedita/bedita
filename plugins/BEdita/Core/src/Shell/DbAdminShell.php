@@ -116,9 +116,6 @@ class DbAdminShell extends Shell
                 return;
             }
         }
-        if (!Cache::clear(false, '_cake_model_')) {
-            $this->abort('Unable to remove internal cache before schema check');
-        }
         $schemaData = Database::currentSchema();
         $this->checkSQLReservedWords($schemaData);
         $this->checkDuplicateColumns($schemaData);
@@ -140,9 +137,6 @@ class DbAdminShell extends Shell
     public function checkSchema()
     {
         $be4Schema = (new JsonConfig())->read('BEdita/Core.schema/be4-schema');
-        if (!Cache::clear(false, '_cake_model_')) {
-            $this->abort('Unable to remove internal cache before schema check');
-        }
         $currentSchema = Database::currentSchema();
         $this->checkSQLReservedWords($currentSchema);
         $this->checkDuplicateColumns($currentSchema);

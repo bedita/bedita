@@ -106,9 +106,6 @@ class BeditaShell extends Shell
      */
     protected function initSchema()
     {
-        if (!Cache::clear(false, '_cake_model_')) {
-            $this->abort('Unable to remove internal cache before schema check');
-        }
         $currentSchema = Database::currentSchema();
         if (!empty($currentSchema)) {
             $be4Schema = (new JsonConfig())->read('BEdita/Core.schema/be4-schema');
