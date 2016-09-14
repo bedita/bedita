@@ -30,6 +30,17 @@ use Cake\Routing\Router;
  */
 class AppController extends Controller
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    public $paginate = [
+        'maxLimit' => 100,
+        'order' => [
+            'id' => 'asc',
+        ],
+    ];
+
     /**
      * {@inheritDoc}
      */

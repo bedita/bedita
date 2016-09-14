@@ -91,6 +91,8 @@ class UsersController extends AppController
         $this->request->allowMethod('post');
 
         $user = $this->Users->newEntity($this->request->data);
+        $user->created_by = 1; // TODO: depends on authenticated user.
+        $user->modified_by = 1;
         if (!$this->Users->save($user)) {
             throw new BadRequestException('Invalid data');
         }
@@ -122,6 +124,7 @@ class UsersController extends AppController
 
         $user = $this->Users->get($id);
         $user = $this->Users->patchEntity($user, $this->request->data);
+        $user->modified_by = 1; // TODO: depends on authenticated user.
         if (!$this->Users->save($user)) {
             throw new BadRequestException('Invalid data');
         }
