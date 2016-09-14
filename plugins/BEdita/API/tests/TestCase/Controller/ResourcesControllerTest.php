@@ -41,6 +41,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -94,6 +95,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -116,6 +118,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -155,6 +158,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -198,6 +202,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -229,6 +234,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -273,6 +279,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -305,6 +312,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -344,6 +352,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -378,6 +387,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -409,6 +419,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -447,6 +458,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::initialize()
      * @covers ::relationships()
      * @covers ::findAssociation()
      */
@@ -467,6 +479,45 @@ class ResourcesControllerTest extends IntegrationTestCase
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertArrayHasKey('error', $result);
+        $this->assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test relationships method to update relationships with a wrong type.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testUpdateAssociationsUnsupportedType()
+    {
+        $expected = [
+            'status' => '409',
+            'title' => 'Unsupported resource type',
+        ];
+
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'myCustomType',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
+        $result = json_decode($this->_response->body(), true);
+
+        $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
         $this->assertArrayHasKey('error', $result);
         $this->assertArraySubset($expected, $result['error']);
