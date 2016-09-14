@@ -42,6 +42,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testListAssociations()
     {
@@ -94,6 +95,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testListAssociationsNotFound()
     {
@@ -228,6 +230,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testDeleteAssociations()
     {
@@ -271,6 +274,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testDeleteAssociationsNoContent()
     {
@@ -302,6 +306,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testSetAssociations()
     {
@@ -340,6 +345,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testSetAssociationsEmpty()
     {
@@ -373,6 +379,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testSetAssociationsNoContent()
     {
@@ -403,6 +410,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testUpdateAssociationsMissingId()
     {
@@ -440,6 +448,7 @@ class ResourcesControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testWrongAssociation()
     {
