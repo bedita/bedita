@@ -12,9 +12,9 @@
  */
 namespace BEdita\API\Utility;
 
-use BEdita\Core\ORM\Association\ExtensionOf;
 use Cake\Collection\CollectionInterface;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -120,8 +120,17 @@ class JsonApi
         $associations = TableRegistry::get($entity->source())->associations();
         $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
 
+        $btmJunctionAliases = array_map(
+            function (BelongsToMany $val) {
+                return $val->junction()->alias();
+            },
+            $associations->type('BelongsToMany')
+        );
+
         foreach ($associations as $association) {
-            if (!($association instanceof Association) || $association instanceof ExtensionOf) {
+            list(, $type) = namespaceSplit(get_class($association));
+            if (!($association instanceof Association) || $type === 'ExtensionOf' ||
+                ($type === 'HasMany' && in_array($association->target()->alias(), $btmJunctionAliases))) {
                 continue;
             }
 
