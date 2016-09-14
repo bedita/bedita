@@ -104,10 +104,12 @@ class DatabaseTest extends TestCase
     {
         $info = Database::basicInfo();
         $this->assertNotEmpty($info);
-        $this->assertArrayHasKey('host', $info);
-        $this->assertArrayHasKey('username', $info);
         $this->assertArrayHasKey('database', $info);
         $this->assertStringEndsWith($info['vendor'], strtolower($info['driver']));
+        if ($info['vendor'] != 'sqlite') {
+            $this->assertArrayHasKey('host', $info);
+            $this->assertArrayHasKey('username', $info);
+        }
     }
 
     /**

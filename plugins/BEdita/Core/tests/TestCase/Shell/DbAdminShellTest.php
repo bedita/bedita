@@ -129,7 +129,7 @@ class DbAdminShellTest extends TestCase
      * @dataProvider initInputProvider
      * @covers \BEdita\Core\Shell\DbAdminShell::init
      * @covers \BEdita\Core\Shell\DbAdminShell::checkSchema
-     * @covers \BEdita\Core\Shell\Task\DbInitTaskShell::main
+     * @covers \BEdita\Core\Shell\Task\DbInitTask::main
      * @covers \BEdita\Core\Utility\Database::currentSchema
      */
     public function testInit($userInput, $emptySchema)
