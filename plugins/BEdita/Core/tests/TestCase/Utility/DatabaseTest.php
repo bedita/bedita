@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\TestCase\Shell;
+namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
 use Cake\Core\Plugin;
@@ -50,6 +50,8 @@ class DatabaseTest extends TestCase
      */
     public function testCurrentSchema()
     {
+        $this->fixtureManager->shutDown();
+
         $fixtures = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
         call_user_func_array([$this, 'loadFixtures'], $fixtures);
         $schema = Database::currentSchema();
@@ -67,6 +69,8 @@ class DatabaseTest extends TestCase
      */
     public function testSchemaCompare()
     {
+        $this->fixtureManager->shutDown();
+
         $fixtures1 = ['Config', 'ObjectTypes', 'Objects', 'Profiles'];
         call_user_func_array([$this, 'loadFixtures'], $fixtures1);
         $schema1 = Database::currentSchema();

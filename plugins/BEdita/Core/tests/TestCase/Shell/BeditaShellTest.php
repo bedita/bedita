@@ -74,6 +74,8 @@ class BeditaShellTest extends TestCase
      */
     public function testSetup()
     {
+        $this->fixtureManager->shutDown();
+
         $mapChoice = [
             ['Proceed with database creation?', ['y', 'n'], 'n', 'y'],
             ['Overwrite current admin user?', ['y', 'n'], 'n', 'y'],
