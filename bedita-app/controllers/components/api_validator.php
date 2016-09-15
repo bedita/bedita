@@ -998,7 +998,7 @@ class ApiValidatorComponent extends Object {
      * @return array
      */
     public function uploadableObjects() {
-        $uploadableObjects = [];
+        $uploadableObjects = array();
         foreach ($this->writableObjects as $objectType) {
             if (!$this->isObjectTypeUploadable($objectType)) {
                 continue;

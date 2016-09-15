@@ -114,7 +114,7 @@ class ApiUploadComponent extends Object {
         if ($event->result === false || $event->stopped) {
             throw new BeditaInternalErrorException('Error uploading file, some check failed.');
         }
-        $objectTypesData = is_array($event->result) ? $event->result : [];
+        $objectTypesData = is_array($event->result) ? $event->result : array();
 
         $this->controller->ApiValidator->checkUploadable(
             $objectType,
