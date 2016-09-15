@@ -583,7 +583,9 @@ class DbadminShell extends BeditaBaseShell {
 			$options['id'] = $this->params['id'];
 		}
 		$response = ClassRegistry::init("Utility")->call('updateStreamFields', $options);
-		$streamsUpdated = $response['results'];
+        $this->out('Streams update completed');
+        $streamsUpdated = $response['results'];
+        $this->out('Number of streams updated: ' . count($streamsUpdated));
 		foreach ($streamsUpdated as $s) {
 			$this->out("stream ".$s["Stream"]["id"]. " updated");
 		}
