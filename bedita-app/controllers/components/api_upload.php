@@ -52,7 +52,6 @@ class ApiUploadComponent extends Object {
     public function initialize(Controller $controller, array $settings = array()) {
         $this->controller = &$controller;
         $this->_set($settings);
-        });
     }
 
     /**
