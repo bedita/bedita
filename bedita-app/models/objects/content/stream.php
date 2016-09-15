@@ -91,7 +91,7 @@ class Stream extends BEAppModel
 
         $this->contain();
         $nObj = $this->find('count', array('conditions' => $conditions));
-        $this->log('num of stream objects to check: '. $nObj, 'debug');
+        $this->log('[updateStreamFields] num of stream objects to check: '. $nObj, 'debug');
 
         $pageSize = 1000;
         $pageNum = 0;
@@ -157,7 +157,7 @@ class Stream extends BEAppModel
 
                             if (!$isURL) {
                                 if (!file_exists($streamPath)) {
-                                    $this->log('media file not found ' . $streamPath, 'warn');
+                                    $this->log('[updateStreamFields] media file not found ' . $streamPath, 'warn');
                                 } else {
                                     $stream['Stream']['file_size'] = filesize($streamPath);
                                     $stream['Stream']['hash_file'] = hash_file('md5', $streamPath);
@@ -174,9 +174,8 @@ class Stream extends BEAppModel
                         }
 
                         if ($updateStream) {
-                            $streamIdent = $stream['Stream']['id'] . ' - "' 
-                                . !empty($stream['Stream']['title']) ? $stream['Stream']['title'] : ''  . '"';
-                            $this->log('updating stream - ' . $streamIdent, 'debug');
+                            $streamIdent = 'id: ' . $stream['Stream']['id'] . ' - uri: "' . $stream['Stream']['uri'] . '"';
+                            $this->log('[updateStreamFields] updating stream ' . $streamIdent, 'debug');
                             $this->create();
                             if (!$this->save($stream)) {
                                 throw new BeditaException(__('Error updating stream ' . $streamIdent, true));
