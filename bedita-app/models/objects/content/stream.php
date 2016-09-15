@@ -168,7 +168,8 @@ class Stream extends BEAppModel
                         $updateStream = false;
                         $checkedFields = array('name', 'mime_type', 'file_size', 'hash_file');
                         foreach ($checkedFields as $cf) {
-                            if (empty($originalStream[$cf] || $originalStream[$cf] != $stream['Stream'][$cf])) {
+                            if (!$isURL && (empty($originalStream[$cf]) || 
+                                    $originalStream[$cf] != $stream['Stream'][$cf])) {
                                 $updateStream = true;
                             }
                         }
