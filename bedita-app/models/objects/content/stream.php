@@ -174,7 +174,8 @@ class Stream extends BEAppModel
                         }
 
                         if ($updateStream) {
-                            $streamIdent = $stream['Stream']['id'] . ' - "' . $stream['Stream']['title'] . '"';
+                            $streamIdent = $stream['Stream']['id'] . ' - "' 
+                                . !empty($stream['Stream']['title']) ? $stream['Stream']['title'] : ''  . '"';
                             $this->log('updating stream - ' . $streamIdent, 'debug');
                             $this->create();
                             if (!$this->save($stream)) {
