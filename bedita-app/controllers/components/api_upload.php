@@ -52,6 +52,7 @@ class ApiUploadComponent extends Object {
     public function initialize(Controller $controller, array $settings = array()) {
         $this->controller = &$controller;
         $this->_set($settings);
+        });
     }
 
     /**
@@ -60,6 +61,33 @@ class ApiUploadComponent extends Object {
      * After the file is moved to the right location
      * a row in hash_jobs is added with status "pending" and the hash string is returned.
      * That hash string must be used from client to associate a new object to the file uploaded
+     *
+     * Event triggered:
+     *
+     * - Api.beforeCheckUpload: pass to listener a list of objects uploadable and the authenticated user
+     *
+     *   The listener should be calculate the size occupied (in bytes) from all files linked to a specific object type
+     *   and the total number of files.
+     *   It should be return an array with key object types and the above information.
+     *   For example:
+     *
+     *   ```
+     *   array(
+     *       'image' => array(
+     *           'size' => 12345678,
+     *           'number' => 256
+     *        ),
+     *        'video' => array(
+     *           'size' => 123456789,
+     *           'number' => 15
+     *        ),
+     *   )
+     *   ```
+     *
+     *   The listener should be merge its results with `$event->result` to avoid to delete other results
+     *   calculated from another listener.
+     *
+     *   The final result will be used to check if the authenticated user is exceeding his upload quota defined in conf.
      *
      *
      * @param string $originalFileName The target file name
@@ -76,7 +104,22 @@ class ApiUploadComponent extends Object {
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
         $hashFile = $this->BeFileHandler->getHashFile($source->pwd());
 
-        $this->controller->ApiValidator->checkUploadable($objectType, compact('fileSize', 'mimeType', 'originalFileName'));
+        $user = $this->controller->ApiAuth->identify();
+        $eventData = array(
+            'uploadableObjects' => $this->controller->ApiValidator->uploadableObjects(),
+            'user' => $user
+        );
+        $event = BeLib::eventManager()->trigger('Api.beforeCheckUpload', $eventData);
+
+        if ($event->result === false || $event->stopped) {
+            throw new BeditaInternalErrorException('Error uploading file, some check failed.');
+        }
+        $objectTypesData = is_array($event->result) ? $event->result : [];
+
+        $this->controller->ApiValidator->checkUploadable(
+            $objectType,
+            compact('fileSize', 'mimeType', 'originalFileName', 'objectTypesData')
+        );
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
         $model = ClassRegistry::init($objectTypeClass);
@@ -84,7 +127,7 @@ class ApiUploadComponent extends Object {
             $targetPath = $model->apiUpload($source, array(
                 'fileName' => $safeFileName,
                 'hashFile' => $hashFile,
-                'user' => $this->controller->ApiAuth->identify()
+                'user' => $user
             ));
         } else {
             $streamId = $this->BeFileHandler->hashFileExists($hashFile);

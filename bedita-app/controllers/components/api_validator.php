@@ -993,6 +993,24 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
+     * Retrun an array of object types that support upload
+     *
+     * @return array
+     */
+    public function uploadableObjects() {
+        $uploadableObjects = [];
+        foreach ($this->writableObjects as $objectType) {
+            if (!$this->isObjectTypeUploadable($objectType)) {
+                continue;
+            }
+
+            $uploadableObjects[] = $objectType;
+        }
+
+        return $uploadableObjects;
+    }
+
+    /**
      * Check if an `$objectType` supports upload.
      * If `$metaData` is passed it checks them too.
      *
