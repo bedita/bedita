@@ -81,9 +81,8 @@ class FrontendControllerTest extends BeditaTestCase {
             $this->assertTrue($expected);
         } catch(Exception $e) {
             pr($e->xdebug_message);
-        } finally {
-            $this->deleteData();
         }
+        $this->deleteData();
     }
 
     private function saveDataAndConfig() {
