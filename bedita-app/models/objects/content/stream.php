@@ -75,37 +75,47 @@ class Stream extends BEAppModel
 	}
 	
 	
-	/**
-	 * update fields in streams table
-	 * 
-	 * @param int $id, if empty update all streams
-	 * @return array of updated streams (empty array if no array updated)
-	 */
-	public function updateStreamFields($id = null) {
-		
-		$conditions = array();
-		if (!empty($id)) {
-			$conditions = array("id" => $id);
-		}
-		
-		$conf = Configure::getInstance();
-		
-		$streams = $this->find("all", array(
-			"conditions" => $conditions
-		));
-		
-		$streamsUpdated = array();
-		
-		if (!empty($streams)) {
-			foreach ($streams as $stream) {
-				if (!empty($stream["Stream"]["uri"])) {
-					$isURL = (preg_match($conf->validate_resource['URL'], $stream["Stream"]["uri"]))? true : false;
-					$uri = $stream["Stream"]["uri"];
-					$hasFile = file_exists($conf->mediaRoot . $uri);
+    /**
+     * Update fields in streams table: url friendly name, mime type, file size, hash
+     * 
+     * @param int $id, stream id to update - if empty update all streams
+     * @return array of updated streams (empty array if no array updated)
+     */
+    public function updateStreamFields($id = null) {
+
+        $conditions = array();
+        if (!empty($id)) {
+            $conditions = array('id' => $id);
+        }
+        $conf = Configure::getInstance();
+
+        $this->contain();
+        $nObj = $this->find('count', array('conditions' => $conditions));
+        $this->log('num of stream objects to check: '. $nObj, 'debug');
+
+        $pageSize = 1000;
+        $pageNum = 0;
+        $count = 0;
+        $streamsUpdated = array();
+        while( ($pageSize * $pageNum) < $nObj ) {
+            $streams = $this->find('all', array(
+                'conditions' => $conditions,
+                'order' => array('id' => 'asc'),
+                'limit' => $pageSize,
+                'offset' => $pageNum * $pageSize,
+            ));
+            $pageNum++;
+            foreach ($streams as $stream) {
+                $count++;
+                if (!empty($stream['Stream']['uri'])) {
+                    $isURL = (preg_match($conf->validate_resource['URL'], $stream['Stream']['uri']))? true : false;
+                    $uri = $stream['Stream']['uri'];
+                    $hasFile = $isURL ? false : file_exists($conf->mediaRoot . $uri);
 					
 					if ($isURL || $hasFile) {
-						
-						if($hasFile) {
+
+                        $originalStream = $stream['Stream'];
+                        if ($hasFile) {
 							// check & correct file name
 							$oldName = $stream["Stream"]["name"];
 							$p = strrpos($stream["Stream"]["name"], ".");
@@ -140,27 +150,42 @@ class Stream extends BEAppModel
 								$stream["Stream"]["name"] = basename($stream["Stream"]["uri"]);
 							}
 
-							if (empty($stream["Stream"]["mime_type"])) {
-							    $path = $hasFile ? $conf->mediaRoot . $stream["Stream"]["uri"] : $stream["Stream"]["uri"];
-								$stream["Stream"]["mime_type"] = $this->getMimeType($path, $stream["Stream"]["name"]);
-							}
+                            $streamPath = $hasFile ? $conf->mediaRoot . $stream['Stream']['uri'] : $stream['Stream']['uri'];
+                            if (empty($stream['Stream']['mime_type'])) {
+                                $stream['Stream']['mime_type'] = $this->getMimeType($streamPath, $stream['Stream']['name']);
+                            }
 
-							if (!$isURL) {
-								$stream["Stream"]["file_size"] = filesize($conf->mediaRoot . $stream["Stream"]["uri"]);
-								$stream["Stream"]["hash_file"] = hash_file("md5", $conf->mediaRoot . $stream["Stream"]["uri"]);
-							}
-						}
+                            if (!$isURL) {
+                                if (!file_exists($streamPath)) {
+                                    $this->log('media file not found ' . $streamPath, 'warn');
+                                } else {
+                                    $stream['Stream']['file_size'] = filesize($streamPath);
+                                    $stream['Stream']['hash_file'] = hash_file('md5', $streamPath);
+                                }
+                            }
+                        }
 
-						$this->create();
+                        $updateStream = false;
+                        $checkedFields = array('name', 'mime_type', 'file_size', 'hash_file');
+                        foreach ($checkedFields as $cf) {
+                            if (empty($originalStream[$cf] || $originalStream[$cf] != $stream['Stream'][$cf])) {
+                                $updateStream = true;
+                            }
+                        }
 
-						if (!$this->save($stream)) {
-							throw new BeditaException(__("Error updating stream " . $id, true));
-						}
-
-						$streamsUpdated[] = $stream;						
-					}					
+                        if ($updateStream) {
+                            $streamIdent = $stream['Stream']['id'] . ' - "' . $stream['Stream']['title'] . '"';
+                            $this->log('updating stream - ' . $streamIdent, 'debug');
+                            $this->create();
+                            if (!$this->save($stream)) {
+                                throw new BeditaException(__('Error updating stream ' . $streamIdent, true));
+                            }
+                            $streamsUpdated[] = $stream;
+                        }
+					}
 				}
 			}
+            $this->log('[updateStreamFields] streams checked: '. $count, 'debug');
 		}
 		return $streamsUpdated;
 	}
