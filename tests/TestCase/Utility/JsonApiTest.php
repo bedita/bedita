@@ -248,6 +248,30 @@ class JsonApiTest extends TestCase
                 },
                 'roles',
             ],
+            'singleEntityItemAutomaticType' => [
+                [
+                    'id' => '1',
+                    'type' => 'roles',
+                    'attributes' => [
+                        'name' => 'first role',
+                        'description' => 'this is the very first role',
+                        'unchangeable' => true,
+                        'created' => '2016-04-15T09:57:38+00:00',
+                        'modified' => '2016-04-15T09:57:38+00:00',
+                    ],
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'self' => '/roles/1/relationships/users',
+                                'related' => '/roles/1/users',
+                            ],
+                        ],
+                    ],
+                ],
+                function (Table $Table) {
+                    return $Table->get(1);
+                },
+            ],
             'singleArrayItem' => [
                 [
                     'id' => '1',
@@ -292,9 +316,7 @@ class JsonApiTest extends TestCase
                 function () {
                     return [
                         'id' => 17,
-                        'object_type' => [
-                            'name' => 'customType',
-                        ],
+                        'type' => 'customType',
                         'someAttribute' => 'someValue',
                     ];
                 },
