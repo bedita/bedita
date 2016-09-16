@@ -17,7 +17,9 @@ use BEdita\Core\Utility\Database;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Shell\DbAdminShell Test Case
+ * \BEdita\Core\Shell\DbAdminShell Test Case
+ *
+ * @covers \BEdita\Core\Shell\DbAdminShell
  */
 class DbAdminShellTest extends TestCase
 {
@@ -127,10 +129,6 @@ class DbAdminShellTest extends TestCase
      *
      * @return void
      * @dataProvider initInputProvider
-     * @covers \BEdita\Core\Shell\DbAdminShell::init
-     * @covers \BEdita\Core\Shell\DbAdminShell::checkSchema
-     * @covers \BEdita\Core\Shell\Task\DbInitTask::main
-     * @covers \BEdita\Core\Utility\Database::currentSchema
      */
     public function testInit($userInput, $emptySchema)
     {

@@ -7,7 +7,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Shell\BeditaShell Test Case
+ * \BEdita\Core\Shell\BeditaShell Test Case
+ *
+ * @covers \BEdita\Core\Shell\BeditaShell
  */
 class BeditaShellTest extends TestCase
 {
@@ -68,9 +70,6 @@ class BeditaShellTest extends TestCase
      * Test setup method
      *
      * @return void
-     * @covers \BEdita\Core\Shell\BeditaShell::setup
-     * @covers \BEdita\Core\Utility\Database::currentSchema
-     * @covers \BEdita\Core\Utility\Database::executeTransaction
      */
     public function testSetup()
     {

@@ -19,6 +19,8 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
+ * \BEdita\Core\Utility\Database Test Case
+ *
  * @covers \BEdita\Core\Utility\Database
  */
 class DatabaseTest extends TestCase
@@ -66,6 +68,17 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
+     * @expectedException Cake\Datasource\Exception\MissingDatasourceConfigException
+     */
+    public function testMissingDatasourceConfigException()
+    {
+        Database::currentSchema('zzzzzzzz');
+    }
+
+    /**
+     * Test schemaCompare method
+     *
+     * @return void
      */
     public function testSchemaCompare()
     {
@@ -93,6 +106,13 @@ class DatabaseTest extends TestCase
         foreach ($arrayDiff as $v) {
             $this->assertContains(Inflector::underscore($v), $diff2['missing']['tables']);
         }
+
+        unset($schema2['objects']['indexes']);
+        $schema2['objects']['columns']['tttt'] = $schema2['objects']['columns']['title'];
+        unset($schema2['objects']['columns']['title']);
+        $schema2['objects']['columns']['body'] = $schema1['objects']['columns']['publish_start'];
+        $diff1 = Database::schemaCompare($schema1, $schema2);
+        $this->assertCount(3, $diff1);
     }
 
     /**
@@ -140,6 +160,7 @@ class DatabaseTest extends TestCase
              "UPDATE profiles SET person_title='Spiritual Guide' WHERE id = 1;", true, 2, 2],
             ["SELECT name from config;\n" . "SELECT name from profiles;", true, 7, 2],
             ["SELECT something", false, 0, 0],
+            [["SAY NO TO SQL", " ", "NOSQL NOPARTY"], false, 0, 0],
         ];
     }
 
