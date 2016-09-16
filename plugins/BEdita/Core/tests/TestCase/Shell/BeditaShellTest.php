@@ -57,6 +57,7 @@ class BeditaShellTest extends TestCase
      * Test getOptionParser method
      *
      * @return void
+     * @coversNothing
      */
     public function testGetOptionParser()
     {
@@ -92,8 +93,7 @@ class BeditaShellTest extends TestCase
 
         $info = Database::basicInfo();
         if ($info['vendor'] != 'mysql') {
-            // TODO: BeditaShell::init works only in MySQL
-            return;
+            $this->markTestSkipped('MySQL only supported (for now)');
         }
 
         $this->BeditaShell->setup();
@@ -101,7 +101,6 @@ class BeditaShellTest extends TestCase
         $usersTable = TableRegistry::get('Users');
         $user = $usersTable->get(1);
 
-        $this->assertEquals(1, $user->id);
         $this->assertFalse($user->blocked);
         $this->assertEquals('pippo', $user->username);
 

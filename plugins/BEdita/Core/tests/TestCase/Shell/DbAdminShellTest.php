@@ -78,6 +78,7 @@ class DbAdminShellTest extends TestCase
      * Test getOptionParser method
      *
      * @return void
+     * @coversNothing
      */
     public function testGetOptionParser()
     {
@@ -139,8 +140,7 @@ class DbAdminShellTest extends TestCase
 
         $info = Database::basicInfo();
         if ($info['vendor'] != 'mysql') {
-            // TODO: DbAdminShell::init works only in MySQL
-            return;
+            $this->markTestSkipped('MySQL only supported (for now)');
         }
 
         $this->DbAdminShell->init();

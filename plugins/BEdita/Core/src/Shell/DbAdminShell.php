@@ -56,6 +56,8 @@ class DbAdminShell extends Shell
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function getOptionParser()
     {

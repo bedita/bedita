@@ -34,6 +34,8 @@ class BeditaShell extends Shell
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function getOptionParser()
     {
