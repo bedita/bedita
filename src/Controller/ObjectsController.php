@@ -24,7 +24,7 @@ class ObjectsController extends AppController
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'BEdita/Core.Objects';
+    public $modelClass = 'Objects';
 
     /**
      * {@inheritDoc}
