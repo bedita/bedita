@@ -183,15 +183,17 @@ class Stream extends BEAppModel
                             }
                             $streamsUpdated[] = $stream;
                         }
-					}
-				}
-			}
+                    } else {
+                        $this->log('[updateStreamFields] stream uri unreachable ' . $uri, 'warn');
+                    }
+                }
+            }
             $this->log('[updateStreamFields] streams checked: '. $count, 'debug');
-		}
-		return $streamsUpdated;
-	}
-	
-	
+        }
+        return $streamsUpdated;
+    }
+
+
 	/**
 	 * Clears media cache, using both new cache structure ($mediaRoot/cache) and old structure.
 	 * See: https://github.com/bedita/bedita/issues/352
