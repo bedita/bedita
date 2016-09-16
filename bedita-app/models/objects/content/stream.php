@@ -362,4 +362,87 @@ class Stream extends BEAppModel
         }
         return DS . $dirsString . DS . $name;
     }
+
+    /**
+     * Given an array of uploadable object types and a user
+     * it calculate the quota occupied and the total number of multimedia objects for that user
+     * divided by type.
+     *
+     * The result is merged with `$event->result` and returned in the form
+     *
+     * ```
+     * array(
+     *     'image' => array(
+     *         'size' => 12345678,
+     *         'number' => 256
+     *      ),
+     *      'video' => array(
+     *         'size' => 123456789,
+     *         'number' => 15
+     *      ),
+     * )
+     * ```
+     *
+     * This method is in intended to use as listener of event system
+     * Used for example by `ApiUploadComponent`
+     *
+     * @param array $uploadableObjects The array of uploadable object types
+     * @param array $user The user data
+     * @param object $event The event coming from BeCallbackManager
+     * @return array
+     */
+    public function apiBeforeCheckUpload(array $uploadableObjects, array $user, $event) {
+        $event->result = $event->result ? $event->result : array();
+        $objectTypes = Configure::read('objectTypes');
+        $objectTypesIds = array();
+        foreach ($uploadableObjects as $name) {
+            if (!array_key_exists($name, $objectTypes)) {
+                continue;
+            }
+
+            $objectTypesIds[$name] = $objectTypes[$name]['id'];
+        }
+
+        $checkTypes = array_intersect($objectTypesIds, $objectTypes['multimedia']['id']);
+
+        if (empty($checkTypes)) {
+            return $event->result;
+        }
+
+        $this->bindModel(array(
+            'hasOne' => array(
+                'BEObject' => array(
+                    'foreignKey' => 'id'
+                )
+            )
+        ));
+        $multimedia = $this->find('all', array(
+            'fields' => array('SUM(file_size) as size, COUNT(Stream.id) as number, BEObject.object_type_id'),
+            'conditions' => array(
+                'BEObject.object_type_id' => $checkTypes,
+                'user_created' => $user['id'],
+                'file_size NOT' => null
+            ),
+            'group' => array('BEObject.object_type_id')
+        ));
+
+        $result = array_fill_keys(
+            array_keys($checkTypes),
+            array('size' => 0, 'number' => 0)
+        );
+
+        if (empty($multimedia)) {
+            return array_merge($event->result, $result);
+        }
+
+        foreach ($multimedia as $m) {
+            $type = $objectTypes[$m['BEObject']['object_type_id']]['name'];
+            $result[$type] = array(
+                'size' => $m[0]['size'],
+                'number' => $m[0]['number']
+            );
+        }
+
+        return array_merge($event->result, $result);
+    }
 }
