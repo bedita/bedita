@@ -457,7 +457,7 @@ class JsonApiTest extends TestCase
      * @dataProvider formatDataProvider
      * @covers ::formatData
      * @covers ::formatItem
-     * @covers ::extractEndpoint
+     * @covers ::extractType
      * @covers ::extractAttributes
      * @covers ::extractRelationships
      */
