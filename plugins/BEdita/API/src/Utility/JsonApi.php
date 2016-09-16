@@ -101,12 +101,15 @@ class JsonApi
         }
         unset($attribute);
 
-        if (!$showLink) {
-            return compact('id', 'type', 'attributes');
+        if (empty($attributes)) {
+            unset($attributes);
         }
 
-        $links = [];
-        $links['self'] = Router::fullBaseUrl() . '/' . $selfEndpoint . '/' . $id;
+        if ($showLink) {
+            $links = [
+                'self' => Router::url(['_name' => sprintf('api:%s:view', $selfEndpoint), $id], true),
+            ];
+        }
 
         return compact('id', 'type', 'attributes', 'links');
     }
@@ -120,6 +123,10 @@ class JsonApi
      */
     public static function parseData(array $data)
     {
+        if (empty($data)) {
+            return [];
+        }
+
         if (!Hash::numeric(array_keys($data))) {
             return static::parseItem($data);
         }

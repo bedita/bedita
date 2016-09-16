@@ -58,12 +58,9 @@ Request::addDetector('jsonapi', function (Request $request) {
  *
  * @see \BEdita\API\Middleware\CorsMiddleware to more info on CORS configuration
  */
-$corsConfig = Configure::read('CORS');
-if ($corsConfig) {
-    EventManager::instance()->on('Server.buildMiddleware', function ($event, $middleware) use ($corsConfig) {
-        $middleware->insertAfter(
-            'Cake\Error\Middleware\ErrorHandlerMiddleware',
-            new CorsMiddleware($corsConfig)
-        );
-    });
-}
+EventManager::instance()->on('Server.buildMiddleware', function ($event, $middleware) {
+    $middleware->insertAfter(
+        'Cake\Error\Middleware\ErrorHandlerMiddleware',
+        new CorsMiddleware(Configure::read('CORS'))
+    );
+});

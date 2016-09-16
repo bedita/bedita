@@ -71,6 +71,10 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
         }
 
         $fields = Configure::read("schema.{$this->table}.columns");
+        foreach ($fields as &$field) {
+            unset($field['collate']);
+        }
+
         $fields += [
             '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
             '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],

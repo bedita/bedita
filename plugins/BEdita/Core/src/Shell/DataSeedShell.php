@@ -20,6 +20,7 @@ use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 use Cake\Utility\Text;
+use Faker\Factory;
 
 /**
  * Shell commands to seed new fake data
@@ -88,62 +89,94 @@ class DataSeedShell extends Shell
         if (!class_exists('\Faker\Factory')) {
             $this->abort('Faker lib not found');
         }
-        $this->faker = \Faker\Factory::create();
-    }
-
-    /**
-     * Generate data for "users" table
-     *
-     * @return array
-     */
-    protected function usersData()
-    {
-        $tsLast = $this->faker->dateTimeThisYear()->getTimestamp();
-
-        return [
-            'username' => $this->faker->userName,
-            'password_hash' => $this->faker->password,
-            'last_login' => Time::createFromTimestamp($tsLast),
-        ];
+        $this->faker = Factory::create();
     }
 
     /**
      * Generate data for "roles" table
      *
+     * @param array $fields Fields to be set.
+     * @param int $count Amount of entities to be generated.
      * @return array
      */
-    protected function rolesData()
+    protected function rolesData(array $fields, $count)
     {
-        return [
-            'name' => $this->faker->word,
-            'description' => $this->faker->sentence,
-            'backend_auth' => $this->faker->numberBetween(0, 1),
-            'created' => Time::now(),
-            'modified' => Time::now(),
-        ];
+        $entities = [];
+        for ($i = 0; $i < $count; $i++) {
+            $data = $fields;
+            $data += [
+                'name' => $this->faker->unique()->word,
+                'description' => $this->faker->optional()->sentence,
+                'unchangeable' => $this->faker->boolean(10),
+                'created' => Time::now(),
+                'modified' => Time::now(),
+            ];
+
+            $entities[] = $data;
+        }
+
+        return $entities;
     }
 
     /**
      * Generate data for "objects" table
      *
+     * @param array $fields Fields to be set.
+     * @param int $count Amount of entities to be generated.
      * @return array
      */
-    protected function objectsData()
+    protected function objectsData(array $fields, $count)
     {
-        $title = $this->faker->sentence(4);
+        $entities = [];
+        for ($i = 0; $i < $count; $i++) {
+            $title = $this->faker->unique()->sentence(4);
 
-        return [
-            'title' => $title,
-            'uname' => Text::slug($title),
-            'status' => $this->faker->randomElement(['on', 'off', 'draft', 'deleted']),
-            'description' => $this->faker->paragraph,
-            'body' => $this->faker->text,
-            'lang' => 'eng',
-            'created_by' => 1,
-            'modified_by' => 1,
-            'created' => Time::now(),
-            'modified' => Time::now(),
-        ];
+            $data = $fields;
+            $data += [
+                'title' => $title,
+                'uname' => Text::slug($title),
+                'status' => $this->faker->randomElement(['on', 'off', 'draft', 'deleted']),
+                'description' => $this->faker->optional()->paragraph,
+                'body' => $this->faker->optional()->text,
+                'lang' => 'eng',
+                'created_by' => 1,
+                'modified_by' => 1,
+                'created' => Time::createFromTimestamp(
+                    $this->faker->dateTimeThisYear->getTimestamp()
+                ),
+                'modified' => Time::now(),
+            ];
+
+            $entities[] = $data;
+        }
+
+        return $entities;
+    }
+
+    /**
+     * Generate data for "users" table
+     *
+     * @param array $fields Fields to be set.
+     * @param int $count Amount of entities to be generated.
+     * @return array
+     */
+    protected function usersData(array $fields, $count)
+    {
+        $entities = $this->objectsData($fields, $count);
+
+        foreach ($entities as &$data) {
+            $data += [
+                'object_type_id' => 1, // TODO: auto set in #971
+                'username' => $this->faker->unique()->userName,
+                'password_hash' => $this->faker->password,
+                'last_login' => Time::createFromTimestamp(
+                    $this->faker->dateTimeThisYear->getTimestamp()
+                ),
+            ];
+        }
+        unset($data);
+
+        return $entities;
     }
 
     /**
@@ -216,9 +249,9 @@ class DataSeedShell extends Shell
 
         $this->out('<info>Generating entities...</info> ', 0);
         $entities = [];
-        for ($i = 0; $i < $count; $i++) {
-            $data = $fields + call_user_func([$this, $method]);
-            $entity = $table->newEntity($data);
+        $data = call_user_func([$this, $method], $fields, $count);
+        foreach ($data as $entity) {
+            $entity = $table->newEntity($entity, ['accessibleFields' => ['*' => true]]);
             if ($entity->errors()) {
                 $this->out('<error>ERROR</error>');
                 $this->abort(sprintf('Entity validation failed: %s', print_r($entity->errors(), true)));

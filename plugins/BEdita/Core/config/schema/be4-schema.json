@@ -72,20 +72,7 @@
                 ],
                 "length": []
             },
-            "annotations_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "restrict",
-                "delete": "restrict",
-                "length": []
-            },
-            "annotations_ibfk_2": {
+            "annotations_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -96,6 +83,19 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
+                "length": []
+            },
+            "annotations_userid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
                 "length": []
             }
         },
@@ -111,6 +111,93 @@
                 "type": "index",
                 "columns": [
                     "object_id"
+                ],
+                "length": []
+            }
+        }
+    },
+    "applications": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "api_key": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "api key value for application",
+                "precision": null,
+                "fixed": null
+            },
+            "name": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "application name",
+                "precision": null,
+                "fixed": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "application description",
+                "precision": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
+                "precision": null
+            },
+            "enabled": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "1",
+                "comment": "application active flag",
+                "precision": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": []
+            },
+            "applications_apikey_uq": {
+                "type": "unique",
+                "columns": [
+                    "api_key"
+                ],
+                "length": []
+            },
+            "applications_name_uq": {
+                "type": "unique",
+                "columns": [
+                    "name"
                 ],
                 "length": []
             }
@@ -236,6 +323,236 @@
             }
         }
     },
+    "endpoint_permissions": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "endpoint_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "link to endpoints.id",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "application_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "link to applications.id - may be null",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "role_id": {
+                "type": "integer",
+                "length": 10,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "link to roles.id - may be null",
+                "precision": null,
+                "autoIncrement": null
+            },
+            "permission": {
+                "type": "integer",
+                "length": 3,
+                "unsigned": true,
+                "null": false,
+                "default": "0",
+                "comment": "endpoint permission for role and app",
+                "precision": null,
+                "autoIncrement": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": []
+            },
+            "applications_endapprole_uq": {
+                "type": "unique",
+                "columns": [
+                    "endpoint_id",
+                    "application_id",
+                    "role_id"
+                ],
+                "length": []
+            },
+            "endpointspermissions_applicationid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "application_id"
+                ],
+                "references": [
+                    "applications",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": []
+            },
+            "endpointspermissions_endpointid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "endpoint_id"
+                ],
+                "references": [
+                    "endpoints",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": []
+            },
+            "endpointspermissions_roleid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "role_id"
+                ],
+                "references": [
+                    "roles",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": []
+            }
+        },
+        "indexes": {
+            "endpointspermissions_applicationid_fk": {
+                "type": "index",
+                "columns": [
+                    "application_id"
+                ],
+                "length": []
+            },
+            "endpointspermissions_roleid_fk": {
+                "type": "index",
+                "columns": [
+                    "role_id"
+                ],
+                "length": []
+            }
+        }
+    },
+    "endpoints": {
+        "columns": {
+            "id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": false,
+                "default": null,
+                "comment": "",
+                "autoIncrement": true,
+                "precision": null
+            },
+            "name": {
+                "type": "string",
+                "length": 255,
+                "null": false,
+                "default": null,
+                "comment": "endpoint name without slash, will be used as \/name",
+                "precision": null,
+                "fixed": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "endpoint description",
+                "precision": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
+                "precision": null
+            },
+            "enabled": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "1",
+                "comment": "endpoint active flag",
+                "precision": null
+            },
+            "object_type_id": {
+                "type": "integer",
+                "length": 5,
+                "unsigned": true,
+                "null": true,
+                "default": null,
+                "comment": "link to object_types.id in case of an object type endpoint",
+                "precision": null,
+                "autoIncrement": null
+            }
+        },
+        "constraints": {
+            "primary": {
+                "type": "primary",
+                "columns": [
+                    "id"
+                ],
+                "length": []
+            },
+            "endpoints_name_uq": {
+                "type": "unique",
+                "columns": [
+                    "name"
+                ],
+                "length": []
+            },
+            "endpoins_objecttypeid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "object_type_id"
+                ],
+                "references": [
+                    "object_types",
+                    "id"
+                ],
+                "update": "restrict",
+                "delete": "restrict",
+                "length": []
+            }
+        },
+        "indexes": {
+            "endpoins_objecttypeid_fk": {
+                "type": "index",
+                "columns": [
+                    "object_type_id"
+                ],
+                "length": []
+            }
+        }
+    },
     "external_auth": {
         "columns": {
             "id": {
@@ -302,7 +619,7 @@
                 ],
                 "length": []
             },
-            "external_auth_ibfk_1": {
+            "externalauth_authprovider_fk": {
                 "type": "foreign",
                 "columns": [
                     "auth_provider_id"
@@ -315,7 +632,7 @@
                 "delete": "restrict",
                 "length": []
             },
-            "external_auth_ibfk_2": {
+            "externalauth_userid_fk": {
                 "type": "foreign",
                 "columns": [
                     "user_id"
@@ -456,7 +773,7 @@
                 ],
                 "length": []
             },
-            "media_ibfk_1": {
+            "media_id_fk": {
                 "type": "foreign",
                 "columns": [
                     "id"
@@ -537,7 +854,7 @@
                 ],
                 "length": []
             },
-            "object_permissions_ibfk_1": {
+            "objectpermissions_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -550,7 +867,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_permissions_ibfk_2": {
+            "objectpermissions_roleid_fk": {
                 "type": "foreign",
                 "columns": [
                     "role_id"
@@ -623,7 +940,7 @@
                 ],
                 "length": []
             },
-            "object_properties_ibfk_1": {
+            "objectproperties_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -636,7 +953,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_properties_ibfk_2": {
+            "objectproperties_propertyid_fk": {
                 "type": "foreign",
                 "columns": [
                     "property_id"
@@ -738,7 +1055,7 @@
                 ],
                 "length": []
             },
-            "object_relations_ibfk_1": {
+            "objectrelations_leftid_fk": {
                 "type": "foreign",
                 "columns": [
                     "left_id"
@@ -751,26 +1068,26 @@
                 "delete": "cascade",
                 "length": []
             },
-            "object_relations_ibfk_2": {
-                "type": "foreign",
-                "columns": [
-                    "right_id"
-                ],
-                "references": [
-                    "objects",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "object_relations_ibfk_3": {
+            "objectrelations_relationid_fk": {
                 "type": "foreign",
                 "columns": [
                     "relation_id"
                 ],
                 "references": [
                     "relations",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "objectrelations_rightid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "right_id"
+                ],
+                "references": [
+                    "objects",
                     "id"
                 ],
                 "update": "noAction",
@@ -872,9 +1189,7 @@
                 "columns": [
                     "name"
                 ],
-                "length": [
-
-                ]
+                "length": []
             },
             "objecttypes_plural_uq": {
                 "type": "unique",
@@ -1002,7 +1317,7 @@
                 "type": "string",
                 "fixed": true,
                 "length": 3,
-                "null": false,
+                "null": true,
                 "default": null,
                 "comment": "language used, ISO 639-3 code",
                 "precision": null
@@ -1059,7 +1374,33 @@
                 ],
                 "length": []
             },
-            "objects_ibfk_1": {
+            "objects_createdby_fk": {
+                "type": "foreign",
+                "columns": [
+                    "created_by"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "objects_modifiedby_fk": {
+                "type": "foreign",
+                "columns": [
+                    "modified_by"
+                ],
+                "references": [
+                    "users",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "objects_objtype_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
@@ -1080,6 +1421,20 @@
                     "object_type_id"
                 ],
                 "length": []
+            },
+            "objects_createdby_fk": {
+                "type": "index",
+                "columns": [
+                    "created_by"
+                ],
+                "length": []
+            },
+            "objects_modifiedby_fk": {
+                "type": "index",
+                "columns": [
+                    "modified_by"
+                ],
+                "length": []
             }
         }
     },
@@ -1092,16 +1447,6 @@
                 "null": false,
                 "default": null,
                 "comment": "",
-                "precision": null,
-                "autoIncrement": null
-            },
-            "user_id": {
-                "type": "integer",
-                "length": 10,
-                "unsigned": true,
-                "null": true,
-                "default": null,
-                "comment": "link to users.id, if not null",
                 "precision": null,
                 "autoIncrement": null
             },
@@ -1258,20 +1603,7 @@
                 ],
                 "length": []
             },
-            "profiles_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "restrict",
-                "delete": "restrict",
-                "length": []
-            },
-            "profiles_ibfk_2": {
+            "profiles_id_fk": {
                 "type": "foreign",
                 "columns": [
                     "id"
@@ -1282,15 +1614,6 @@
                 ],
                 "update": "noAction",
                 "delete": "cascade",
-                "length": []
-            }
-        },
-        "indexes": {
-            "profiles_userid_fk": {
-                "type": "index",
-                "columns": [
-                    "user_id"
-                ],
                 "length": []
             }
         }
@@ -1369,7 +1692,7 @@
                 ],
                 "length": []
             },
-            "properties_ibfk_1": {
+            "properties_objtype_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
@@ -1382,7 +1705,7 @@
                 "delete": "restrict",
                 "length": []
             },
-            "properties_ibfk_2": {
+            "properties_proptype_fk": {
                 "type": "foreign",
                 "columns": [
                     "property_type_id"
@@ -1508,26 +1831,26 @@
                 ],
                 "length": []
             },
-            "relation_types_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "relation_id"
-                ],
-                "references": [
-                    "relations",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "relation_types_ibfk_2": {
+            "relationtypes_objtypeid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_type_id"
                 ],
                 "references": [
                     "object_types",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "relationtypes_relationid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "relation_id"
+                ],
+                "references": [
+                    "relations",
                     "id"
                 ],
                 "update": "noAction",
@@ -1669,14 +1992,6 @@
                 "comment": "role data not modifiable (default:false)",
                 "precision": null
             },
-            "backend_auth": {
-                "type": "boolean",
-                "length": null,
-                "null": false,
-                "default": "0",
-                "comment": "role authorized to backend (default: false)",
-                "precision": null
-            },
             "created": {
                 "type": "datetime",
                 "length": null,
@@ -1752,26 +2067,26 @@
                 ],
                 "length": []
             },
-            "roles_users_ibfk_1": {
-                "type": "foreign",
-                "columns": [
-                    "user_id"
-                ],
-                "references": [
-                    "users",
-                    "id"
-                ],
-                "update": "noAction",
-                "delete": "cascade",
-                "length": []
-            },
-            "roles_users_ibfk_2": {
+            "rolesusers_roleid_fk": {
                 "type": "foreign",
                 "columns": [
                     "role_id"
                 ],
                 "references": [
                     "roles",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
+                "length": []
+            },
+            "rolesusers_userid_fk": {
+                "type": "foreign",
+                "columns": [
+                    "user_id"
+                ],
+                "references": [
+                    "users",
                     "id"
                 ],
                 "update": "noAction",
@@ -1895,7 +2210,7 @@
                 ],
                 "length": []
             },
-            "trees_ibfk_1": {
+            "trees_objectid_fk": {
                 "type": "foreign",
                 "columns": [
                     "object_id"
@@ -1908,7 +2223,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "trees_ibfk_2": {
+            "trees_parentid_fk": {
                 "type": "foreign",
                 "columns": [
                     "parent_id"
@@ -1921,7 +2236,7 @@
                 "delete": "cascade",
                 "length": []
             },
-            "trees_ibfk_3": {
+            "trees_rootid_fk": {
                 "type": "foreign",
                 "columns": [
                     "root_id"
@@ -1977,8 +2292,8 @@
                 "null": false,
                 "default": null,
                 "comment": "",
-                "autoIncrement": true,
-                "precision": null
+                "precision": null,
+                "autoIncrement": null
             },
             "username": {
                 "type": "string",
@@ -2030,22 +2345,6 @@
                 "comment": "number of consecutive login failures",
                 "precision": null,
                 "autoIncrement": null
-            },
-            "created": {
-                "type": "datetime",
-                "length": null,
-                "null": false,
-                "default": null,
-                "comment": "record creation date",
-                "precision": null
-            },
-            "modified": {
-                "type": "datetime",
-                "length": null,
-                "null": false,
-                "default": null,
-                "comment": "record last modification date",
-                "precision": null
             }
         },
         "constraints": {
@@ -2061,6 +2360,19 @@
                 "columns": [
                     "username"
                 ],
+                "length": []
+            },
+            "users_id_fk": {
+                "type": "foreign",
+                "columns": [
+                    "id"
+                ],
+                "references": [
+                    "objects",
+                    "id"
+                ],
+                "update": "noAction",
+                "delete": "cascade",
                 "length": []
             }
         }

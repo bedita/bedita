@@ -71,6 +71,11 @@ Router::plugin(
             ['controller' => 'Roles', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'roles:delete']
         );
+        $routes->connect(
+            '/roles/:id/relationships/:relationship',
+            ['controller' => 'Roles', 'action' => 'relationships'],
+            ['_name' => 'roles:relationships']
+        );
 
         // Object Types.
         $routes->connect(

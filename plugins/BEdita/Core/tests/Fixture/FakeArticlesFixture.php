@@ -22,9 +22,16 @@ class FakeArticlesFixture extends TestFixture
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => true],
         'title' => ['type' => 'string', 'length' => 255, 'null' => false, 'default' => null, 'precision' => null],
         'body' => ['type' => 'text'],
-        'fake_animal_id' => ['type' => 'integer', 'null' => true],
+        'fake_animal_id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false],
         '_constraints' => [
-             'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['id'], 'length' => []],
+            'fakearticles_fk_1' => [
+                'type' => 'foreign',
+                'columns' => ['fake_animal_id'],
+                'references' => ['fake_animals', 'id'],
+                'update' => 'noAction',
+                'delete' => 'noAction'
+            ]
         ],
         '_options' => [
             'engine' => 'InnoDB',
