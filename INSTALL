@@ -4,7 +4,7 @@
                ======================================
 
 
-BEdita 3.2 comes with a new web wizard install procedure.
+BEdita comes with a web wizard install procedure.
 If you have access to a command line shell, you can still use the classic procedure (see
 below).
 
@@ -25,6 +25,8 @@ Your server should have at least have:
     * PHP 5.3 or newer and modules GD, Mbstring (Multibyte string), Gettext (recommended)
     * MySQL 5.0.26 or newer
 
+[**] PHP 7 not supported
+[**] From MySQL 5.7 'ONLY_FULL_GROUP_BY' SQL mode should be disabled 
 
 BEdita is a PHP application based on CakePHP framework. All third party libraries are bundled
 with the source package.
