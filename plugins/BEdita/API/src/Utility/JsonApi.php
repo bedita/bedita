@@ -13,10 +13,15 @@
 namespace BEdita\API\Utility;
 
 use Cake\Collection\CollectionInterface;
+use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
+use Cake\ORM\TableRegistry;
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * JSON API formatter API.
@@ -53,6 +58,120 @@ class JsonApi
     }
 
     /**
+     * Extract API endpoint for item.
+     *
+     * @param \Cake\ORM\Entity|array $item Item.
+     * @param string|null $type Original item type.
+     * @return mixed
+     */
+    protected static function extractEndpoint($item, $type)
+    {
+        if ($type === null && isset($item['type'])) {
+            return $item['type'];
+        }
+
+        return $type;
+    }
+
+    /**
+     * Extract item's ID, type and attributes.
+     *
+     * @param array $item Item's data.
+     * @param string|null $type Original item type.
+     * @return array Array with item's ID, type and attributes.
+     */
+    protected static function extractAttributes(array $item, $type)
+    {
+        if (empty($item['id'])) {
+            throw new \InvalidArgumentException('Key `id` is mandatory');
+        }
+        $id = (string)$item['id'];
+        unset($item['id']);
+
+        if ($type === null && isset($item['type'])) {
+            $type = $item['type'];
+        } elseif ($type === 'objects' && isset($item['object_type'], $item['object_type']['name'])) {
+            $type = $item['object_type']['name'];
+        }
+        unset($item['type'], $item['object_type']);
+
+        array_walk(
+            $item,
+            function (&$attribute) {
+                if ($attribute instanceof \JsonSerializable) {
+                    $attribute = json_decode(json_encode($attribute), true);
+                }
+            }
+        );
+
+        return [$id, $type, $item];
+    }
+
+    /**
+     * Extract relationships for an entity.
+     *
+     * @param Entity $entity Entity item.
+     * @param string $endpoint Default API endpoint for entity type.
+     * @return array
+     */
+    protected static function extractRelationships(Entity $entity, $endpoint)
+    {
+        $relationships = [];
+        $associations = TableRegistry::get($entity->source())->associations();
+        $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
+
+        $btmJunctionAliases = array_map(
+            function (BelongsToMany $val) {
+                return $val->junction()->alias();
+            },
+            $associations->type('BelongsToMany')
+        );
+
+        foreach ($associations as $association) {
+            list(, $type) = namespaceSplit(get_class($association));
+            if (!($association instanceof Association) || $type === 'ExtensionOf' ||
+                ($type === 'HasMany' && in_array($association->target()->alias(), $btmJunctionAliases))) {
+                continue;
+            }
+
+            $name = $association->property();
+
+            try {
+                $self = Router::url(
+                    [
+                        '_name' => sprintf('api:%s:relationships', $endpoint),
+                        'id' => $entity->id,
+                        'relationship' => $name,
+                    ],
+                    true
+                );
+            } catch (MissingRouteException $e) {
+            }
+
+            try {
+                $related = Router::url(
+                    [
+                        '_name' => sprintf('api:%s:%s', $endpoint, $name),
+                        $relatedParam => $entity->id,
+                    ],
+                    true
+                );
+            } catch (MissingRouteException $e) {
+            }
+
+            if (empty($self) && empty($related)) {
+                continue;
+            }
+
+            $relationships[$name] = [
+                'links' => compact('related', 'self'),
+            ];
+        }
+
+        return $relationships;
+    }
+
+    /**
      * Format single data item in JSON API format.
      *
      * @param \Cake\ORM\Entity|array $item Single entity item to be formatted.
@@ -64,54 +183,37 @@ class JsonApi
      */
     protected static function formatItem($item, $type = null, $showLink = true)
     {
-        if ($item instanceof Entity) {
-            $item = $item->toArray();
+        if (!is_array($item) && !($item instanceof Entity)) {
+            throw new \InvalidArgumentException('Unsupported item type');
         }
 
-        if (!is_array($item)) {
-            throw new \InvalidArgumentException('Unsupported item type');
+        $endpoint = static::extractEndpoint($item, $type);
+
+        if ($item instanceof Entity) {
+            $relationships = static::extractRelationships($item, $endpoint);
+            if (empty($relationships)) {
+                unset($relationships);
+            }
+
+            $item = $item->toArray();
         }
 
         if (empty($item)) {
             return [];
         }
 
-        if (empty($item['id'])) {
-            throw new \InvalidArgumentException('Key `id` is mandatory');
-        }
-
-        $attributes = $item;
-
-        $id = (string)$attributes['id'];
-        unset($attributes['id']);
-
-        $selfEndpoint = $type;
-        if ($type === null && isset($attributes['type'])) {
-            $type = $selfEndpoint = $attributes['type'];
-            unset($attributes['type']);
-        } elseif ($type === 'objects' && isset($attributes['object_type']['name'])) {
-            $type = $attributes['object_type']['name'];
-            unset($attributes['object_type']);
-        }
-
-        foreach ($attributes as &$attribute) {
-            if ($attribute instanceof \JsonSerializable) {
-                $attribute = json_decode(json_encode($attribute), true);
-            }
-        }
-        unset($attribute);
-
+        list($id, $type, $attributes) = static::extractAttributes($item, $type);
         if (empty($attributes)) {
             unset($attributes);
         }
 
         if ($showLink) {
             $links = [
-                'self' => Router::url(['_name' => sprintf('api:%s:view', $selfEndpoint), $id], true),
+                'self' => Router::url(['_name' => sprintf('api:%s:view', $endpoint), $id], true),
             ];
         }
 
-        return compact('id', 'type', 'attributes', 'links');
+        return compact('id', 'type', 'attributes', 'links', 'relationships');
     }
 
     /**
