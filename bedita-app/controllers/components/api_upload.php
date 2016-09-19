@@ -105,14 +105,19 @@ class ApiUploadComponent extends Object {
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
         $hashFile = $this->BeFileHandler->getHashFile($source->pwd());
 
+        $uploadableObjects = $this->controller->ApiValidator->uploadableObjects();
+        if (!in_array($objectType, $uploadableObjects)) {
+            throw new BeditaBadRequestException($objectType . ' does not support upload');
+        }
+
         $user = $this->controller->ApiAuth->identify();
         $eventData = array(
-            'uploadableObjects' => $this->controller->ApiValidator->uploadableObjects(),
+            'uploadableObjects' => $uploadableObjects,
             'user' => $user
         );
         $event = BeLib::eventManager()->trigger('Api.beforeCheckUpload', $eventData);
 
-        if ($event->result === false || $event->stopped) {
+        if ($event->result === false || !empty($event->stopped)) {
             throw new BeditaInternalErrorException('Error uploading file, some check failed.');
         }
         $objectTypesData = is_array($event->result) ? $event->result : array();
