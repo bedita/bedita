@@ -967,7 +967,7 @@ class ApiValidatorComponent extends Object {
      * To be accepted as uploadable:
      *
      * - it must be writable
-     * - the related model must extends 'BeditaSimpleStreamModel', 'BeditaStreamModel' or implements an `apiUpload()` method
+     * - the related model must extend 'BeditaSimpleStreamModel', 'BeditaStreamModel' or implements an `apiUpload()` method
      *
      * @param string $objectType The object type
      * @return void
@@ -1020,38 +1020,13 @@ class ApiValidatorComponent extends Object {
      * @throws BeditaBadRequestException When object type doesn't support upload
      */
     public function checkUploadable($objectType, array $metaData = array()) {
-        $metaData += array('mimeType' => null, 'fileSize' => null, 'objectTypesData' => []);
+        $metaData += array('mimeType' => null, 'fileSize' => null);
         if (!$this->isObjectTypeUploadable($objectType)) {
             throw new BeditaBadRequestException($objectType . ' does not support upload');
         }
 
         if (!$this->isMimeTypeValid($metaData['mimeType'], $objectType)) {
             throw new BeditaBadRequestException('Mime type ' . $metaData['mimeType'] . ' not valid for ' . $objectType);
-        }
-
-        $uploadConfig = Configure::read('api.upload');
-        if (empty($uploadConfig)) {
-            return;
-        }
-
-        if ($metaData['fileSize'] > $uploadConfig['maxFileSize']) {
-            throw new BeditaInternalErrorException('File size exceeds the maximum allowed.');
-        }
-
-        // init quota used with uploaded file data
-        $quotaUsed = ['size' => $metaData['fileSize'], 'number' => 1];
-
-        foreach ($metaData['objectTypesData'] as $type => $data) {
-            $quotaUsed['size'] += (int)$data['size'];
-            $quotaUsed['number'] += (int)$data['number'];
-        }
-
-        if ($quotaUsed['size'] > $uploadConfig['maxSizeAvailable']) {
-            throw new BeditaInternalErrorException('Allowed quota exceeded.');
-        }
-
-        if ($quotaUsed['number'] > $uploadConfig['maxFilesAllowed']) {
-            throw new BeditaInternalErrorException('Allowed number of files exceeded.');
         }
     }
 

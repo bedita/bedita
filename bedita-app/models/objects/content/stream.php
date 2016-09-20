@@ -383,7 +383,7 @@ class Stream extends BEAppModel
      * )
      * ```
      *
-     * This method is in intended to use as listener of event system
+     * This method is intended to use as listener of event system
      * Used for example by `ApiUploadComponent`
      *
      * @param array $uploadableObjects The array of uploadable object types
@@ -391,7 +391,7 @@ class Stream extends BEAppModel
      * @param object $event The event coming from BeCallbackManager
      * @return array
      */
-    public function apiBeforeCheckUpload(array $uploadableObjects, array $user, $event) {
+    public function apiUploadQuota(array $uploadableObjects, array $user, $event) {
         $event->result = $event->result ? $event->result : array();
         $objectTypes = Configure::read('objectTypes');
         $objectTypesIds = array();
