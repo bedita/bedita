@@ -267,6 +267,28 @@ class BeditaConflictException extends BeditaException {
 }
 
 /**
+ * Represents an HTTP 409 error.
+ */
+class BeditaLengthRequiredException extends BeditaException {
+
+    /**
+     * Constructor
+     *
+     * @param string $message If no message is given 'Length Required' will be the message
+     * @param mixed $details The exception details
+     * @param $res The result status
+     * @param int $code Status code, defaults to 411
+     */
+    public function __construct($message = null, $details = null, $res = self::ERROR, $code = 411) {
+        if (empty($message)) {
+            $message = 'Length Required';
+        }
+        parent::__construct($message, $details, $res, $code);
+    }
+
+}
+
+/**
  * Represents an HTTP 500 error.
  */
 class BeditaInternalErrorException extends BeditaException {

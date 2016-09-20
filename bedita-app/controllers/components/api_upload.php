@@ -44,6 +44,23 @@ class ApiUploadComponent extends Object {
     public $components = array('BeFileHandler');
 
     /**
+     * Upload quota configuration.
+     *
+     * Options available:
+     *
+     * - maxFileSize: max single file size supported (default 50 MB)
+     * - maxSizeAvailable: max size available for each user (default 500 MB)
+     * - maxFilesAllowed: max number of files uploadable for each user (default 500)
+     *
+     * @var array
+     */
+    protected $quota = array(
+        'maxFileSize' => 52428800,  // 50 * 1024^2
+        'maxSizeAvailable' => 524288000,  // 500 * 1024^2
+        'maxFilesAllowed' => 500
+    );
+
+    /**
      * Initialize component (called before Controller::beforeFilter())
      *
      * @param Controller $controller
@@ -51,7 +68,27 @@ class ApiUploadComponent extends Object {
      */
     public function initialize(Controller $controller, array $settings = array()) {
         $this->controller = &$controller;
-        $this->_set($settings);
+
+        $quotaConf = !empty($settings['quota']) ? $settings['quota'] : Configure::read('api.upload.quota');
+        if (is_array($quotaConf)) {
+            $this->setQuota($quotaConf);
+        }
+
+        BeLib::eventManager()->bind('Api.uploadQuota', array('Stream', 'apiUploadQuota'));
+    }
+
+    /**
+     * Set quota configuration and return it
+     *
+     * Replace `self::$quota` conf with the new one in `$quotaConf` passed.
+     * If `$quotaConf` missing of some keys the related value already set are maintained
+     *
+     * @param array $quotaConf The quota configuration
+     * @return array
+     */
+    public function setQuota(array $quotaConf = array()) {
+        $this->quota = $quotaConf + $this->quota;
+        return $this->quota;
     }
 
     /**
@@ -60,7 +97,6 @@ class ApiUploadComponent extends Object {
      * After the file is moved to the right location
      * a row in hash_jobs is added with status "pending" and the hash string is returned.
      * That hash string must be used from client to associate a new object to the file uploaded
-     *
      *
      * @param string $originalFileName The target file name
      * @param string $objectType The object type to which the upload file refers
@@ -76,7 +112,12 @@ class ApiUploadComponent extends Object {
         $mimeType = ClassRegistry::init('Stream')->getMimeType($source->pwd(), $safeFileName);
         $hashFile = $this->BeFileHandler->getHashFile($source->pwd());
 
-        $this->controller->ApiValidator->checkUploadable($objectType, compact('fileSize', 'mimeType', 'originalFileName'));
+        $this->controller->ApiValidator->checkUploadable(
+            $objectType,
+            compact('fileSize', 'mimeType', 'originalFileName')
+        );
+
+        $this->checkQuota($fileSize);
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
         $model = ClassRegistry::init($objectTypeClass);
@@ -110,15 +151,97 @@ class ApiUploadComponent extends Object {
     }
 
     /**
+     * Given the file size of file to upload
+     * it checks if the upload quota configuration is exceeded.
+     *
+     * @param int $fileSize The file size of file to upload
+     * @return void
+     */
+    public function checkQuota($fileSize) {
+        if ($fileSize > $this->quota['maxFileSize']) {
+            $megaByte = round($this->quota['maxFileSize']/(1024*1024), 2);
+            throw new BeditaBadRequestException('File size exceeds the maximum allowed (' . $megaByte . ' MB)');
+        }
+
+        $objecTypesQuota = $this->quotaUsed();
+        if ($objecTypesQuota === false) {
+            throw new BeditaInternalErrorException('Error calculating the quota available');
+        }
+
+        // init total quota used with file to upload
+        $quotaUsed = ['size' => (int)$fileSize, 'number' => 1];
+
+        foreach ($objecTypesQuota as $type => $data) {
+            $quotaUsed['size'] += (int)$data['size'];
+            $quotaUsed['number'] += (int)$data['number'];
+        }
+
+        if ($quotaUsed['size'] > $this->quota['maxSizeAvailable']) {
+            $megaByte = round($this->quota['maxSizeAvailable']/(1024*1024), 2);
+            throw new BeditaForbiddenException('Allowed quota of ' . $megaByte . ' MB exceeded');
+        }
+
+        if ($quotaUsed['number'] > $this->quota['maxFilesAllowed']) {
+            throw new BeditaForbiddenException('Allowed number of files (' . $this->quota['maxFilesAllowed'] . ') exceeded.');
+        }
+    }
+
+    /**
+     * Return the upload quota occupied divided by object type.
+     *
+     * Event triggered:
+     *
+     * - Api.uploadQuota: pass to listener a list of objects uploadable and the authenticated user
+     *
+     *   The listener should be calculate the size occupied (in bytes) from all files linked to a specific object type
+     *   and the total number of files.
+     *   It should be return an array with object types as keys and the above information.
+     *   For example:
+     *
+     *   ```
+     *   array(
+     *       'image' => array(
+     *           'size' => 12345678,
+     *           'number' => 256
+     *        ),
+     *        'video' => array(
+     *           'size' => 123456789,
+     *           'number' => 15
+     *        ),
+     *   )
+     *   ```
+     *
+     *   The listener should be merge its results with `$event->result` to avoid to delete other results
+     *   calculated from another listener.
+     *
+     *   If the listener returns false or stop the event propagation the method return false.
+     *
+     * @return array|false It returns false if the quota calculation fails
+     */
+    public function quotaUsed() {
+        $eventData = array(
+            'uploadableObjects' => $this->controller->ApiValidator->uploadableObjects(),
+            'user' => $this->controller->ApiAuth->identify()
+        );
+        $event = BeLib::eventManager()->trigger('Api.uploadQuota', $eventData);
+
+        if ($event->result === false || !empty($event->stopped)) {
+            return false;
+        }
+
+        return is_array($event->result) ? $event->result : array();
+    }
+
+    /**
      * Read from php://input, put the content in a temporary file and return the File instance
      *
      * @return File
-     * @throws BeditaBadRequestException, BeditaInternalErrorException
+     * @throws BeditaBadRequestException, BeditaInternalErrorException, BeditaLengthRequiredException
      */
     public function source() {
         $contentLength = env('CONTENT_LENGTH');
         if (empty($contentLength)) {
-            throw new BeditaBadRequestException('Missing or invalid Content-Length in request headers');
+            throw new BeditaLengthRequiredException('Missing or invalid Content-Length in request headers');
         }
 
         $inputData = file_get_contents('php://input');

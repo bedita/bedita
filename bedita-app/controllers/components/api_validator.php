@@ -443,7 +443,7 @@ class ApiValidatorComponent extends Object {
     /**
      * Return true if $objectId parents are accessible for authorized user, false otherwise.
      * 'Accessible' means without 'frontend_access_with_block' permission set for groups that the user doesn't belong.
-     * 
+     *
      * @param int $objectId the object id
      * @return boolean
      */
@@ -967,9 +967,9 @@ class ApiValidatorComponent extends Object {
      * To be accepted as uploadable:
      *
      * - it must be writable
-     * - the related model must extends 'BeditaSimpleStreamModel', 'BeditaStreamModel' or implements an `apiUpload()` method
+     * - the related model must extend 'BeditaSimpleStreamModel', 'BeditaStreamModel' or implements an `apiUpload()` method
      *
-     * @param string $objectType The object type 
+     * @param string $objectType The object type
      * @return void
      */
     public function isObjectTypeUploadable($objectType) {
@@ -993,11 +993,29 @@ class ApiValidatorComponent extends Object {
     }
 
     /**
+     * Retrun an array of object types that support upload
+     *
+     * @return array
+     */
+    public function uploadableObjects() {
+        $uploadableObjects = array();
+        foreach ($this->writableObjects as $objectType) {
+            if (!$this->isObjectTypeUploadable($objectType)) {
+                continue;
+            }
+
+            $uploadableObjects[] = $objectType;
+        }
+
+        return $uploadableObjects;
+    }
+
+    /**
      * Check if an `$objectType` supports upload.
-     * If `$metaData` is passed it checks them too. 
+     * If `$metaData` is passed it checks them too.
      *
      * @param string $objectType The object type
-     * @param array $metaData The meta data to check  
+     * @param array $metaData The meta data to check
      * @return void
      * @throws BeditaBadRequestException When object type doesn't support upload
      */
@@ -1014,9 +1032,9 @@ class ApiValidatorComponent extends Object {
 
     /**
      * Validate a mime type against an object type.
-     * It uses validate_resource.mime.ObjectModel configuration 
+     * It uses validate_resource.mime.ObjectModel configuration
      *
-     * @param string $mimeType The mime type to validate  
+     * @param string $mimeType The mime type to validate
      * @param string $objectType The object type on which validate the mime type
      * @return bool
      */
