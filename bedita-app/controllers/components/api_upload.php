@@ -71,10 +71,24 @@ class ApiUploadComponent extends Object {
 
         $quotaConf = !empty($settings['quota']) ? $settings['quota'] : Configure::read('api.upload.quota');
         if (is_array($quotaConf)) {
-            $this->quota = $quotaConf + $this->quota;
+            $this->setQuota($quotaConf);
         }
 
         BeLib::eventManager()->bind('Api.uploadQuota', array('Stream', 'apiUploadQuota'));
+    }
+
+    /**
+     * Set quota configuration and return it
+     *
+     * Replace `self::$quota` conf with the new one in `$quotaConf` passed.
+     * If `$quotaConf` missing of some keys the related value already set are maintained
+     *
+     * @param array $quotaConf The quota configuration
+     * @return array
+     */
+    public function setQuota(array $quotaConf = array()) {
+        $this->quota = $quotaConf + $this->quota;
+        return $this->quota;
     }
 
     /**
