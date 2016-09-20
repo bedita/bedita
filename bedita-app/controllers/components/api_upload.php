@@ -55,8 +55,8 @@ class ApiUploadComponent extends Object {
      * @var array
      */
     protected $quota = array(
-        'maxFileSize' => 50*1024*1024,
-        'maxSizeAvailable' => 500*1024*1024,
+        'maxFileSize' => 52428800,  // 50 * 1024^2
+        'maxSizeAvailable' => 524288000,  // 500 * 1024^2
         'maxFilesAllowed' => 500
     );
 
