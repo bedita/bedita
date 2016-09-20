@@ -222,12 +222,12 @@ class ApiUploadComponent extends Object {
      * Read from php://input, put the content in a temporary file and return the File instance
      *
      * @return File
-     * @throws BeditaBadRequestException, BeditaInternalErrorException
+     * @throws BeditaBadRequestException, BeditaInternalErrorException, BeditaLengthRequiredException
      */
     public function source() {
         $contentLength = env('CONTENT_LENGTH');
         if (empty($contentLength)) {
-            throw new BeditaBadRequestException('Missing or invalid Content-Length in request headers');
+            throw new BeditaLengthRequiredException('Missing or invalid Content-Length in request headers');
         }
 
         $inputData = file_get_contents('php://input');
