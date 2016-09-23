@@ -184,11 +184,15 @@ class ApiUploadComponent extends Object {
 
         if ($quotaUsed['size'] > $this->quota['maxSizeAvailable']) {
             $megaByte = round($this->quota['maxSizeAvailable']/(1024*1024), 2);
-            throw new BeditaForbiddenException('Allowed quota of ' . $megaByte . ' MB exceeded');
+            throw new BeditaForbiddenException('Allowed quota of ' . $megaByte . ' MB exceeded', [
+                'errorCode' => 'UPLOAD_QUOTA_EXCEEDED'
+            ]);
         }
 
         if ($quotaUsed['number'] > $this->quota['maxFilesAllowed']) {
-            throw new BeditaForbiddenException('Allowed number of files (' . $this->quota['maxFilesAllowed'] . ') exceeded.');
+            throw new BeditaForbiddenException('Allowed number of ' . $this->quota['maxFilesAllowed'] . ' files exceeded.', [
+                'errorCode' => 'UPLOAD_FILES_LIMIT'
+            ]);
         }
     }
 
