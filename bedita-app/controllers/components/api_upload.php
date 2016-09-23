@@ -191,7 +191,7 @@ class ApiUploadComponent extends Object {
 
         if ($quotaUsed['number'] > $this->quota['maxFilesAllowed']) {
             throw new BeditaForbiddenException('Allowed number of ' . $this->quota['maxFilesAllowed'] . ' files exceeded.', [
-                'errorCode' => 'UPLOAD_FILES_LIMIT'
+                'errorCode' => 'UPLOAD_FILES_LIMIT_EXCEEDED'
             ]);
         }
     }

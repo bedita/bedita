@@ -42,7 +42,7 @@ return array(
     'UPLOAD_QUOTA_EXCEEDED' => array(
         'description' => 'Upload quota available exceeded',
     ),
-    'UPLOAD_FILES_LIMIT' => array(
+    'UPLOAD_FILES_LIMIT_EXCEEDED' => array(
         'description' => 'Maximum number of files allowed exceeded',
     )
 );
