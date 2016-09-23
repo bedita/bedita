@@ -106,6 +106,12 @@ class TranslationsController extends ModulesController {
 		$searchText = ClassRegistry::init("SearchText");
 		$searchText->saveLangTexts($this->data['LangText']);
 		$this->Transaction->commit();
+		// invalidate cache for object master
+		$BEObject = ClassRegistry::init('BEObject');
+		if ($BEObject->isCacheableOn()) {
+	        $BEObject->setObjectsToClean($this->data['master_id']);
+	        $BEObject->clearCache();
+    	}
 		$this->userInfoMessage(__("Translation saved", true));
 		$this->eventInfo("translation saved");
 	}
@@ -120,6 +126,12 @@ class TranslationsController extends ModulesController {
 			array("LangText.object_id = '$id'","LangText.lang = '$lang'")
 		);
 		$this->Transaction->commit();
+		// invalidate cache for object master
+		$BEObject = ClassRegistry::init('BEObject');
+		if ($BEObject->isCacheableOn()) {
+	        $BEObject->setObjectsToClean($id);
+	        $BEObject->clearCache();
+    	}
 		$this->userInfoMessage(__("Translation deleted", true) . " - $lang,$id ");
 		$this->eventInfo("translation $lang for object $id deleted");
 	}
