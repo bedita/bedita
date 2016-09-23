@@ -1,6 +1,6 @@
 <script type="text/javascript">
 'use strict';
-
+var refreshUrl = "{$html->here}";
 var urlDelete = "{$html->url('deleteCategories/')}",
     messages = {
         'bulkDelete': "{t}Are you sure that you want to delete the selected item(s)?{/t}",
@@ -8,6 +8,13 @@ var urlDelete = "{$html->url('deleteCategories/')}",
     };
 
 $(document).ready(function() {
+    $("#pageDim").bind("change", function() {
+        if (refreshUrl.indexOf('/limit') > 0) {
+            refreshUrl = refreshUrl.substring(0,refreshUrl.indexOf('limit')-1);
+        }
+        document.location = refreshUrl + "/limit:" + this.value;
+    } );
+
     $('#bulkDelete, #bulkMerge').bind('click', function() {
         return confirm(messages[$(this).prop('id')]);
     });
@@ -58,14 +65,61 @@ $(document).ready(function() {
 });
 </script>
 
+	{assign_associative var="optionsPagDisable" style="display: inline;"}
+	{assign var="pagParams" value=$paginator->params()}
+    <table>
+        <tr>
+            <td>
+                <span class="evidence">{$pagParams.count}&nbsp;</span> {t}categories{/t}
+                {assign var='label_page' value=$tr->t('Page',true)}
+            </td>
+            <td>
+                {if $paginator->hasPrev()}
+                    {$paginator->first($label_page)}
+                {else}
+                    {t}page{/t}
+                {/if} 
+                <span class="evidence"> {$paginator->current()}</span>
+                {t}of{/t} 
+                <span class="evidence"> 
+                {if $paginator->hasNext()}
+                    {$paginator->last($pagParams.pageCount)}
+                {else}
+                    {$paginator->current()}
+                {/if}
+                </span>
+            </td>
+            {assign var='label_next' value=$tr->t('next',true)}
+            {assign var='label_prev' value=$tr->t('prev',true)}
+            <td>{$paginator->next($label_next,null,$label_next,$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
+            <td>{$paginator->prev($label_prev,null,$label_prev,$optionsPagDisable)}  <span class="evidence"> &nbsp;</span></td>
+            <td>
+                {t}Page size{/t}:
+                <select name="dim" id="pageDim">
+                    <option value="5"{if $pagParams.options.limit == 5} selected="selected"{/if}>5</option>
+                    <option value="10"{if $pagParams.options.limit == 10} selected="selected"{/if}>10</option>
+                    <option value="20"{if $pagParams.options.limit == 20} selected="selected"{/if}>20</option>
+                    <option value="50"{if $pagParams.options.limit == 50} selected="selected"{/if}>50</option>
+                    <option value="100"{if $pagParams.options.limit == 100} selected="selected"{/if}>100</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    {assign var='label_id' value=$tr->t('id',true)}
+    {assign var='label_label' value=$tr->t('label',true)}
+    {assign var='label_nickname' value=$tr->t('unique name',true)}
+    {assign var='label_status' value=$tr->t('status',true)}
+    {assign var='label_publication' value=$tr->t('publication',true)}
+
     <table class="indexlist js-header-float">
         <thead>
             <tr>
                 <th><input type="checkbox" class="selectAll" /></th>
-                <th>{t}label{/t}</th>
-                <th>{t}unique name{/t}</th>
-                <th>{t}status{/t}</th>
-                <th>{t}publication{/t}</th>
+                <th>{$paginator->sort($label_label,'label')}</th>
+                <th>{$paginator->sort($label_nickname,'unique name')}</th>
+                <th>{$paginator->sort($label_status,'status')}</th>
+                <th>{$paginator->sort($label_publication,'publication')}</th>
                 <th>Id</th>
                 <th>&nbsp;</th>
             </tr>
