@@ -16,7 +16,8 @@ var no_items_checked_msg = "{t}No items selected{/t}";
 
 {include file="inc/menucommands.tpl" method="index" fixed=true}
 
-{$view->element('toolbar')}
+{assign_associative var="params" noitem="true"}
+{$view->element('toolbar', $params)}
 
 <div class="mainfull">
 
