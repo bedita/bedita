@@ -7,7 +7,7 @@ use Cake\Core\Configure\Engine\IniConfig;
 use Cake\ORM\TableRegistry;
 
 /**
- * Register tables.
+ * Plug table locator.
  */
 TableRegistry::locator(new TableLocator());
 

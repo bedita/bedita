@@ -39,7 +39,7 @@ class TableLocator extends CakeLocator
         }
 
         $className = App::className($options['className'], 'Model/Table', 'Table');
-        if ($className) {
+        if ($className !== false) {
             return $className;
         }
 
