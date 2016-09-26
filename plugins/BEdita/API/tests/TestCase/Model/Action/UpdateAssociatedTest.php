@@ -64,18 +64,6 @@ class UpdateAssociatedTest extends TestCase
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function tearDown()
-    {
-        TableRegistry::remove('FakeTags');
-        TableRegistry::remove('FakeArticles');
-        TableRegistry::remove('FakeAnimals');
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testInvocation` test case.
      *
      * @return array

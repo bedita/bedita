@@ -45,10 +45,6 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testSuccessfulLogin()
     {
-        // Force event listener on `Auth.afterIdentify` to be re-attached.
-        TableRegistry::remove('Users');
-        TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
-
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',

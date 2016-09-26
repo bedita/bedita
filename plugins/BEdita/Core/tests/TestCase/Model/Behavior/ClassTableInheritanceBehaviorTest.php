@@ -86,24 +86,6 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->fakeAnimals);
-        unset($this->fakeMammals);
-        unset($this->fakeFelines);
-
-        TableRegistry::remove('FakeAnimals');
-        TableRegistry::remove('FakeMammals');
-        TableRegistry::remove('FakeFelines');
-
-        parent::tearDown();
-    }
-
-    /**
      * Data provider for `testAddBehavior` test case.
      *
      * @return array
