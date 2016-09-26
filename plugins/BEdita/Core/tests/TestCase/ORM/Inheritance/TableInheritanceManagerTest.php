@@ -51,21 +51,8 @@ class TableInheritanceManagerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->fakeFelines = TableRegistry::get('FakeFelines');
-    }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->fakeFelines);
-
-        TableRegistry::remove('FakeFelines');
-
-        parent::tearDown();
     }
 
     /**

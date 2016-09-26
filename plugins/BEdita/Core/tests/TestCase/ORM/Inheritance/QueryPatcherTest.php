@@ -85,22 +85,6 @@ class QueryPatcherTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->fakeFelines);
-        unset($this->fakeMammals);
-
-        TableRegistry::remove('FakeFelines');
-        TableRegistry::remove('FakeMammals');
-
-        parent::tearDown();
-    }
-
-    /**
      * testNewQueryPatcherWithWrongTable method
      *
      * @return void

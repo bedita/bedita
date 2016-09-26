@@ -77,25 +77,6 @@ class ExtensionOfTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
-    {
-        unset($this->fakeFelines);
-        unset($this->fakeMammals);
-        unset($this->fakeAnimals);
-
-        TableRegistry::remove('FakeFelines');
-        TableRegistry::remove('FakeMammals');
-        TableRegistry::remove('FakeAnimals');
-        TableRegistry::remove('FakeArticles');
-
-        parent::tearDown();
-    }
-
-    /**
      * Test __constructor to see if Model.afterDelete is set
      *
      * @return void
