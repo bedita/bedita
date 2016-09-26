@@ -48,15 +48,35 @@ class BeditaException extends Exception {
 	const ERROR = 'ERROR';
 
     /**
+     * The complete list of error codes
+     * where keys are the string codes and values are array describing the error. 
+     *
+     * @var string
+     */
+    protected $internalCodes = array();
+
+    /**
+     * The internal error code thrown
+     *
+     * @var string
+     */
+    protected $errorCode = null;
+
+    /**
      * Constructor
+     *
+     * `$details` can contain some special keys:
+     *
+     * - cause: the cause that has caused the error
+     * - errorCode: the internal error code 
      *
      * @param string $message If no message is given 'Unexpected error, operation failed' will be the message
      * @param mixed $details The exception details
      * @param $res The result status
      * @param int $code Status code, defaults to 500
      */
-	public function __construct($message = NULL, $details = NULL, $res  = self::ERROR, $code = 500) {
-   		if(empty($message)) {
+	public function __construct($message = NULL, $details = NULL, $res = self::ERROR, $code = 500) {
+   		if (empty($message)) {
    			$message = __('Unexpected error, operation failed', true);
    		}
    		$this->errorDetails = $message;
@@ -65,6 +85,9 @@ class BeditaException extends Exception {
    				foreach ($details as $k => $v) {
                     if ($k == 'cause') {
                         $this->cause = $v;
+                    }
+                    if ($k == 'errorCode') {
+                        $this->errorCode = $v;
                     }
    					if (is_array($v)) {
    						$this->errorDetails .= " - [$k] : array(" . implode(", ", $v) . ")";
@@ -80,10 +103,62 @@ class BeditaException extends Exception {
    		if ($code >= 100 && $code < 600) {
    			$this->httpCode = $code;
    		}
+
+        $this->initInternalCodes();
+
         parent::__construct($message, $code);
     }
+
+    /**
+     * Initialize the array of internal codes `self::internalCodes` and return it
+     *
+     * @return array
+     */
+    protected function initInternalCodes() {
+        $this->loadErrorCodes(BEDITA_CORE_PATH . DS . 'config' . DS . 'error.codes.php');
+
+        if (BACKEND_APP) {
+            return $this->internalCodes;
+        }
+
+        $this->loadErrorCodes(APP . DS . 'config' . DS . 'error.codes.php');
+
+        return $this->internalCodes;
+    }
+
+    /**
+     * Load a file containing error codes adding them to those already presents
+     *
+     * @param string $filePath The file path to load
+     * @return array
+     */
+    protected function loadErrorCodes($filePath) {
+		if (!file_exists($filePath )) {
+            return;
+        }
+
+        $errorCodes = include $filePath;
+        if (empty($errorCodes) || !is_array($errorCodes)) {
+            return;
+        }
+        
+        $this->internalCodes = $this->internalCodes + $errorCodes;
+    }
+
+    /**
+     * Return an array containing the internal error code if exists
+     *
+     * @return array
+     */
+    public function getInternalCode() {
+        if (!array_key_exists($this->errorCode, $this->internalCodes)) {
+            return array();
+        }
+
+        return array('code' => $this->errorCode) + $this->internalCodes[$this->errorCode]; 
+    }
     
-    public function  getDetails() {
+    public function getDetails() {
     	return $this->errorDetails;
     }
     

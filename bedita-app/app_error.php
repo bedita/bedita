@@ -66,7 +66,7 @@ class AppError extends ErrorHandler {
 	 * 'code' => null, // the error code
 	 * 'message' => null, // the error message
 	 * 'details' => null, // the error details
-	 * 'moreInfo' => null, // the url to look for more information
+	 * 'moreInfo' => null, // other useful information
 	 * 'url' => null // the url that has caused the error
 	 * ```
 	 *
@@ -100,6 +100,9 @@ class AppError extends ErrorHandler {
 				if ($exception instanceof BeditaException) {
 					$this->error['status'] = $exception->getHttpCode();
 			        $this->error['details'] = Sanitize::clean($exception->getDetails(), $options);
+                    $internalCode = $exception->getInternalCode();
+                    $this->error['code'] = !empty($internalCode['code']) ? $internalCode['code'] : null;
+                    $this->error['more_info'] = !empty($internalCode['description']) ? $internalCode['description'] : null;
 			        $messages['result'] = $exception->result;
 			        $this->errorTrace = $exception->errorTrace();
 			    } else {
