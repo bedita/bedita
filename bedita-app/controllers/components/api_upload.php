@@ -166,9 +166,14 @@ class ApiUploadComponent extends Object {
     public function checkQuota($fileSize) {
         if ($fileSize > $this->quota['maxFileSize']) {
             $megaByte = round($this->quota['maxFileSize']/(1024*1024), 2);
-            throw new BeditaBadRequestException('File size exceeds the maximum allowed (' . $megaByte . ' MB)', [
-                'errorCode' => 'UPLOAD_MAX_FILESIZE_EXCEEDED'
-            ]);
+            throw new BeditaBadRequestException('File size exceeds the maximum allowed (' . $megaByte . ' MB)', array(
+                'errorCode' => array(
+                    'UPLOAD_MAX_FILESIZE_EXCEEDED' => array(
+                        'max_file_size' => $this->quota['maxFileSize'],
+                        'file_size' => $fileSize
+                    )
+                )
+            ));
         }
 
         $objecTypesQuota = $this->quotaUsed();
@@ -186,15 +191,25 @@ class ApiUploadComponent extends Object {
 
         if ($quotaUsed['size'] > $this->quota['maxSizeAvailable']) {
             $megaByte = round($this->quota['maxSizeAvailable']/(1024*1024), 2);
-            throw new BeditaForbiddenException('Allowed quota of ' . $megaByte . ' MB exceeded', [
-                'errorCode' => 'UPLOAD_QUOTA_EXCEEDED'
-            ]);
+            throw new BeditaForbiddenException('Allowed quota of ' . $megaByte . ' MB exceeded', array(
+                'errorCode' => array(
+                    'UPLOAD_QUOTA_EXCEEDED' => array(
+                        'quota_available' => $this->quota['maxSizeAvailable'],
+                        'quota_used' => $quotaUsed['size'] - $fileSize,
+                        'file_size' => $fileSize
+                    )
+                )
+            ));
         }
 
         if ($quotaUsed['number'] > $this->quota['maxFilesAllowed']) {
-            throw new BeditaForbiddenException('Allowed number of ' . $this->quota['maxFilesAllowed'] . ' files exceeded.', [
-                'errorCode' => 'UPLOAD_FILES_LIMIT_EXCEEDED'
-            ]);
+            throw new BeditaForbiddenException('Allowed number of ' . $this->quota['maxFilesAllowed'] . ' files exceeded.', array(
+                'errorCode' => array(
+                    'UPLOAD_FILES_LIMIT_EXCEEDED' => array(
+                        'max_files_allowed' => $this->quota['maxFilesAllowed']
+                    )
+                )
+            ));
         }
     }
 
