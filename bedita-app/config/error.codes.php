@@ -42,6 +42,9 @@ return array(
     'UPLOAD_QUOTA_EXCEEDED' => array(
         'description' => 'Upload quota available exceeded',
     ),
+    'UPLOAD_MAX_FILESIZE_EXCEEDED' => array(
+        'description' => 'Upload max file size exceeded',
+    ),
     'UPLOAD_FILES_LIMIT_EXCEEDED' => array(
         'description' => 'Maximum number of files allowed exceeded',
     )

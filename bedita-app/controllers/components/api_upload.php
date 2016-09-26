@@ -166,7 +166,9 @@ class ApiUploadComponent extends Object {
     public function checkQuota($fileSize) {
         if ($fileSize > $this->quota['maxFileSize']) {
             $megaByte = round($this->quota['maxFileSize']/(1024*1024), 2);
-            throw new BeditaBadRequestException('File size exceeds the maximum allowed (' . $megaByte . ' MB)');
+            throw new BeditaBadRequestException('File size exceeds the maximum allowed (' . $megaByte . ' MB)', [
+                'errorCode' => 'UPLOAD_MAX_FILESIZE_EXCEEDED'
+            ]);
         }
 
         $objecTypesQuota = $this->quotaUsed();
