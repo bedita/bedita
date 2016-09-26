@@ -65,13 +65,14 @@ class BeErrorCode {
      * @param array $info Additional error information
      * @return void
      */
-    public function __construct($errorCode, array $info = array()) {
-        if (!array_key_exists($errorCode, $this->validCodes())) {
+    public function __construct($errorCode = '', array $info = array()) {
+        $validCodes = $this->validCodes();
+        if (!array_key_exists($errorCode, $validCodes)) {
             return;
         }
 
         $this->code = $errorCode;
-        $this->info = $info + $this->info;
+        $this->info = $info + $validCodes[$errorCode] + $this->info;
     }
 
     /**

@@ -117,7 +117,7 @@ class BeditaException extends Exception {
     public function setErrorCode($errorCode) {
         if (is_array($errorCode)) {
             $code = key($errorCode);
-            $options = $errorCode[$code];
+            $options = is_array($errorCode[$code]) ? $errorCode[$code] : array($errorCode[$code]);
         } else {
             $code = $errorCode;
             $options = array();

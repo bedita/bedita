@@ -98,7 +98,7 @@ class BeLib {
      * @param array $options An array of options to initialize the error code object
      * @return BeErrorCode
      */
-    public static function errorCode($errorCode, array $options) {
+    public static function errorCode($errorCode, array $options = array()) {
         $fileName = strtolower($errorCode);
         $className = Inflector::camelize($fileName);
         $errorCodePath = DS . 'libs' . DS . 'errors' . DS . 'codes' . DS; 
