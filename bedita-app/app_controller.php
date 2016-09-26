@@ -27,7 +27,7 @@ App::import('Lib', 'BeLib');
  */
 class AppController extends Controller {
 
-    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'Perms', 'BeEmbedMedia', 'SessionFilter');
+    public $helpers = array('Javascript', 'Html', 'BeForm', 'Beurl', 'Tr', 'Session', 'Perms', 'BeEmbedMedia', 'SessionFilter', 'Paginator');
 
     public $components = array(
         'BeAuth',
@@ -1575,18 +1575,22 @@ abstract class ModulesController extends AppController {
         if (is_null($type)) {
             return;
         }
-        $categoryModel = ClassRegistry::init('Category');
-        $this->set('categories', $categoryModel->find('all', array(
-            'conditions' => array('Category.object_type_id' => $type), 'order' => 'label'
-        )));
+        $this->paginate = array(
+            'fields' => array('Category.id','Category.label','Category.name','Category.status'),
+            'conditions' => array('object_type_id' => $type),
+            'limit' => 10,
+            'order' => 'label'
+        );
+        $categories = $this->paginate('Category');
+        $this->set('categories', $categories);
         $this->set('object_type_id', $type);
         $this->set('areasList', ClassRegistry::init('BEObject')->find('list', array(
-                                        'conditions' => 'object_type_id=' . Configure::read('objectTypes.area.id'),
-                                        'order' => 'title',
-                                        'fields' => 'BEObject.title'
-                                        )
-                                    )
-                                );
+                'conditions' => 'object_type_id=' . Configure::read('objectTypes.area.id'),
+                'order' => 'title',
+                'fields' => 'BEObject.title'
+                )
+            )
+        );
 	}
 
     /**
