@@ -92,6 +92,34 @@ class BeLib {
     }
 
 	/**
+     * Return the instance of BeErrorCode or other specific error code object
+     *
+     * @param string $errorCode The error code
+     * @param array $options An array of options to initialize the error code object
+     * @return BeErrorCode
+     */
+    public static function errorCode($errorCode, array $options) {
+        $fileName = strtolower($errorCode);
+        $className = Inflector::camelize($fileName);
+        $errorCodePath = DS . 'libs' . DS . 'errors' . DS . 'codes' . DS; 
+        $filePath = $errorCodePath . $fileName . '.php';
+
+        $found = App::import('File', $className, array('file' =>  APP . $filePath)); 
+
+        if (!$found && !BACKEND_APP) {
+            $found = App::import('File', $className, array('file' => BEDITA_CORE_PATH . $filePath));
+        }
+
+        if ($found) {
+            return new $className($errorCode, $options);
+        }
+
+        App::import('File', 'BeErrorCode', array('file' => BEDITA_CORE_PATH . $errorCodePath . 'be_error_code.php'));
+
+        return new BeErrorCode($errorCode, $options);
+    }
+
+	/**
 	 * check if a class name is a BEdita object type
 	 *
 	 * @param string $name the class name
