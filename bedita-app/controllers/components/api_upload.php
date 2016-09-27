@@ -177,7 +177,7 @@ class ApiUploadComponent extends Object {
         }
 
         // init total quota used with file to upload
-        $quotaUsed = ['size' => (int)$fileSize, 'number' => 1];
+        $quotaUsed = array('size' => (int)$fileSize, 'number' => 1);
 
         foreach ($objecTypesQuota as $type => $data) {
             $quotaUsed['size'] += (int)$data['size'];
