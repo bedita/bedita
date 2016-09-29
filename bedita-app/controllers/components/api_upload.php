@@ -127,7 +127,7 @@ class ApiUploadComponent extends Object {
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
         $model = ClassRegistry::init($objectTypeClass);
-        if (method_exists($model, 'apiUpload')) {
+        if ($model instanceof Uploadable) {
             $targetPath = $model->apiUpload($source, array(
                 'fileName' => $safeFileName,
                 'hashFile' => $hashFile,
@@ -346,7 +346,7 @@ class ApiUploadComponent extends Object {
 
         $objectTypeClass = Configure::read('objectTypes.' . $objectType . '.model');
         $model = ClassRegistry::init($objectTypeClass);
-        if (method_exists($model, 'apiUpload')) {
+        if ($model instanceof Uploadable) {
             return $model->apiUploadTransformData($uploadData);
         }
 
