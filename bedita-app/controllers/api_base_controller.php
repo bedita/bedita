@@ -1841,10 +1841,23 @@ abstract class ApiBaseController extends FrontendController {
      * @return poster data array
      */
     private function posterData($id, array $thumbConf = array()) {
-        $poster = $this->BEObject->getPoster($id);
-        $poster['id'] = (int) $poster['id'];
-        $beThumb = BeLib::getObject('BeThumb');
-        $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        $objectType = $this->BEObject->getType($id);
+
+        if ($objectType != "UserContent") {
+            $poster = $this->BEObject->getPoster($id);
+            $poster['id'] = (int) $poster['id'];
+            $beThumb = BeLib::getObject('BeThumb');
+            $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        } else {
+            // UserContents
+            $UserContentModel = ClassRegistry::init($objectType);
+            $poster = $UserContentModel->getPoster($id);
+
+            $poster['id'] = (int) $poster['id'];
+            $beThumb = BeLib::getObject('BeThumb');
+            $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        }
+
         return $poster;
     }
 

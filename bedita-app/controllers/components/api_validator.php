@@ -985,7 +985,7 @@ class ApiValidatorComponent extends Object {
 
         $parentClass = get_parent_class($model);
         $validParentClasses = array('BeditaSimpleStreamModel', 'BeditaStreamModel');
-        if (!in_array($parentClass, $validParentClasses) && !$model instanceof Uploadable ) {
+        if (!in_array($parentClass, $validParentClasses) && !$model instanceof UploadableInterface ) {
             return false;
         }
 

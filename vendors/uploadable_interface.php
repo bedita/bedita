@@ -23,7 +23,7 @@
  * Uploadable Model Interface
  */
 
-interface Uploadable {
+interface UploadableInterface {
 
 	public function apiUpload(File $file, array $options = array());
 
@@ -31,6 +31,6 @@ interface Uploadable {
 
     public function apiUploadQuota(array $uploadableObjects, array $user, $event);
 
-
+    // public function apiCreateThumb();
 }
 ?>
