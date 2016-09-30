@@ -32,8 +32,6 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      * {@inheritDoc}
      *
      * If `self::$fields` is empty trying to use table schema loaded in configuration
-     *
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function init()
     {
@@ -47,7 +45,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
             $this->fields = $this->fieldsFromConf();
         }
 
-        $this->dispatchEvent('TestFixure.beforeBuildSchema');
+        $this->dispatchEvent('TestFixture.beforeBuildSchema');
 
         parent::init();
     }
@@ -116,13 +114,13 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * The conventional method map is:
      *
-     * - TestFixure.beforeBuildSchema => beforeBuildSchema
+     * - TestFixture.beforeBuildSchema => beforeBuildSchema
      *
      * @return array
      */
     public function implementedEvents()
     {
-        $eventMap = ['TestFixure.beforeBuildSchema' => 'beforeBuildSchema'];
+        $eventMap = ['TestFixture.beforeBuildSchema' => 'beforeBuildSchema'];
         $events = [];
 
         foreach ($eventMap as $event => $method) {
