@@ -71,12 +71,12 @@ class BeditaShellTest extends TestCase
     {
         return [
             'noSetup' => [
-                ['y'],
+                ['y', 'n', 'n'],
                 [],
                 ['pippo', 'pippo']
             ],
             'nada' => [
-                [],
+                ['n', 'n', 'n'],
             ]
         ];
     }
@@ -91,8 +91,6 @@ class BeditaShellTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
-        $yesNo = array_merge($yesNo, array_fill(0, 3 - count($yesNo), 'n'));
-
         $mapChoice = [
             ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', $yesNo[0]],
             ['Proceed with setup?', ['y', 'n'], 'n', $yesNo[1]],
@@ -102,8 +100,12 @@ class BeditaShellTest extends TestCase
         $this->io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
-        $dbConfig = array_merge($dbConfig, array_fill(0, 4 - count($dbConfig), ''));
-        $userPass = array_merge($userPass, array_fill(0, 2 - count($userPass), ''));
+        if (empty($dbConfig)) {
+            $dbConfig = array_fill(0, 4, '');
+        }
+        if (empty($userPass)) {
+            $userPass = array_fill(0, 2, '');
+        }
 
         $map = [
             ['Host?', null, $dbConfig[0]],
