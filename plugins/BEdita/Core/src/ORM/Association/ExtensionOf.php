@@ -88,11 +88,18 @@ class ExtensionOf extends BelongsTo
             return $row;
         }
 
+        // remove key corresponding to source alias
+        $row[$sourceAlias] = array_diff_assoc($row[$sourceAlias], [$sourceAlias => true]);
+
         $properties = $row[$nestKey];
         if ($properties instanceof Entity) {
             $properties = $properties->getOriginalValues();
         }
-        $row[$sourceAlias] += $properties;
+
+        // get properties except key corresponding to target alias
+        if (is_array($properties)) {
+            $row[$sourceAlias] += array_diff_assoc($properties, [$this->target()->alias() => true]);
+        }
         unset($row[$nestKey]);
 
         return $row;
@@ -171,64 +178,4 @@ class ExtensionOf extends BelongsTo
 
         return array_diff_key($propertyValues, array_flip($sourceProperties));
     }
-
-    /**
-     * Override `\Cake\ORM\Association::_appendFields()`
-     * to append target fields set with `\Cake\ORM\Query::select()`
-     * without target table alias.
-     *
-     * The following steps are executed for each field in `$query` select clause:
-     *
-     * - if field doesn't contain "." and it belongs to target table then build `TargetTableAlias.field`
-     * - if field contains "." but doesn't contain source alias `SourceTableAlias.` then leave unchanged
-     * - if field contains "." and it's a source table field then leave unchanged
-     * - if no above conditions is satisfied then it doesn't exists in source table so set it for target table
-     *   `TargetTableAlias.field` delegating to any ExtensionOf association linked to target table
-     *
-     * {@inheritDoc}
-     */
-    protected function _appendFields($query, $surrogate, $options)
-    {
-        $selectClause = $query->clause('select');
-        if (empty($selectClause)) {
-            return parent::_appendFields($query, $surrogate, $options);
-        }
-
-        $source = $this->source();
-        $target = $this->target();
-        $targetSelect = [];
-
-        foreach ($selectClause as $key => $val) {
-            if (!is_string($val)) {
-                continue;
-            }
-
-            if (strpos($val, '.') === false && $target->hasField($val)) {
-                $selectClause[$key] = $target->alias() . '.' . $val;
-                continue;
-            }
-
-            if (strpos($val, $source->alias() . '.') === false) {
-                continue;
-            }
-
-            $field = str_replace($source->alias() . '.', '', $val);
-            if ($source->hasField($field)) {
-                continue;
-            }
-
-            unset($selectClause[$key]);
-            $targetSelect[] = $field;
-        }
-
-        $selectClause += $query->aliasFields($targetSelect, $target->alias());
-        $query->select($selectClause, true);
-
-        return parent::_appendFields($query, $surrogate, $options);
-    }
-
-    // public function attachTo(Query $query, array $options = [])
-    // {
-        // use query traverse
-    // }
 }

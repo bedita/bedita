@@ -67,17 +67,18 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
+        $options = ['className' => 'BEdita\Core\ORM\Table'];
+        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $options);
         $this->fakeAnimals->hasMany('FakeArticles');
 
-        $this->fakeMammals = TableRegistry::get('FakeMammals');
+        $this->fakeMammals = TableRegistry::get('FakeMammals', $options);
         $this->fakeMammals->addBehavior('BEdita/Core.ClassTableInheritance', [
             'table' => [
                 'tableName' => 'FakeAnimals'
             ]
         ]);
 
-        $this->fakeFelines = TableRegistry::get('FakeFelines');
+        $this->fakeFelines = TableRegistry::get('FakeFelines', $options);
         $this->fakeFelines->addBehavior('BEdita/Core.ClassTableInheritance', [
             'table' => [
                 'tableName' => 'FakeMammals'
@@ -433,5 +434,191 @@ class ClassTableInheritanceBehaviorTest extends TestCase
         $this->assertCount(1, $this->fakeFelines->findById($result->id));
         $this->assertCount(1, $this->fakeMammals->findById($result->id));
         $this->assertCount(1, $this->fakeAnimals->findById($result->id));
+    }
+
+    /**
+     * Data provider for `testFixClause` test case.
+     *
+     * @return array
+     */
+    public function selectProvider()
+    {
+        return [
+            'fieldsFromAllInherited' => [
+                ['family', 'subclass', 'name'],
+                ['family', 'subclass', 'name']
+            ],
+            'fieldsFromAncestor' => [
+                ['name'],
+                ['name']
+            ],
+            'fieldsFromParent' => [
+                ['subclass'],
+                ['subclass']
+            ],
+        ];
+    }
+
+    /**
+     * testSelect
+     *
+     * @return void
+     *
+     * @dataProvider selectProvider
+     * @coversNothing
+     */
+    public function testSelect($expected, $select)
+    {
+        static $allColumns = null;
+        if ($allColumns === null) {
+            $allColumns = $this->fakeFelines->schema()->columns();
+            foreach ($this->fakeFelines->inheritedTables(true) as $t) {
+                $allColumns = array_merge($allColumns, $t->schema()->columns());
+            }
+            $allColumns = array_unique($allColumns);
+        }
+
+        $unexpectedFields = array_diff($allColumns, $expected);
+
+        $felines = $this->fakeFelines->find()->select($select);
+
+        foreach ($felines as $f) {
+            foreach ($expected as $field) {
+                $this->assertTrue($f->has($field));
+            }
+
+            foreach ($unexpectedFields as $field) {
+                $this->assertFalse($f->has($field));
+            }
+        }
+    }
+
+    /**
+     * testClauses
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testClauses()
+    {
+        // add some row
+        $data = [
+            'legs' => 4,
+            'subclass' => 'Another Sublcass',
+            'family' => 'big cats'
+        ];
+
+        foreach (['tiger', 'lion', 'leopard'] as $animal) {
+            $data['name'] = $animal;
+            $feline = $this->fakeFelines->newEntity($data);
+            $this->fakeFelines->save($feline);
+        }
+
+        $query = $this->fakeFelines->find();
+        $result = $query->select(['subclass', 'count' => $query->func()->count('*')])
+            ->group(['subclass'])
+            ->hydrate(false);
+
+        foreach ($result as $item) {
+            if ($item['subclass'] == 'Eutheria') {
+                $this->assertEquals(1, $item['count']);
+            } elseif ($item['subclass'] == 'Another Sublcass') {
+                $this->assertEquals(3, $item['count']);
+            }
+        }
+    }
+
+    /**
+     * Provider for `testFindList`
+     *
+     * @return array
+     */
+    public function findListProvider()
+    {
+        return [
+            'fieldsOnMain' => [
+                [
+                    1 => 'purring cats',
+                    4 => 'big cats',
+                    5 => 'big cats',
+                    6 => 'big cats',
+                ],
+                [
+                    'keyField' => 'id',
+                    'valueField' => 'family'
+                ],
+                ['id' => 'asc']
+            ],
+            'fieldsOnMainAndParent' => [
+                [
+                    1 => 'Eutheria',
+                    4 => 'Another Sublcass',
+                    5 => 'Another Sublcass',
+                    6 => 'Another Sublcass',
+                ],
+                [
+                    'keyField' => 'id',
+                    'valueField' => 'subclass'
+                ],
+                ['id' => 'asc']
+            ],
+            'fieldsOnParentAndAncestor' => [
+                [
+                    'cat' => 'Eutheria',
+                    'leopard' => 'Another Sublcass',
+                    'lion' => 'Another Sublcass',
+                    'tiger' => 'Another Sublcass',
+                ],
+                [
+                    'keyField' => 'name',
+                    'valueField' => 'subclass'
+                ],
+                ['name' => 'asc']
+            ],
+            'fieldsOnAncestor' => [
+                [
+                    'cat' => 4,
+                    'leopard' => 4,
+                    'lion' => 4,
+                    'tiger' => 4,
+                ],
+                [
+                    'keyField' => 'name',
+                    'valueField' => 'legs'
+                ],
+                ['name' => 'asc']
+            ]
+        ];
+    }
+
+    /**
+     * testFindList
+     *
+     * @return void
+     *
+     * @dataProvider findListProvider
+     * @coversNothing
+     */
+    public function testFindList($expected, $listParams, $order)
+    {
+        // add some row
+        $data = [
+            'legs' => 4,
+            'subclass' => 'Another Sublcass',
+            'family' => 'big cats'
+        ];
+
+        foreach (['tiger', 'lion', 'leopard'] as $animal) {
+            $data['name'] = $animal;
+            $feline = $this->fakeFelines->newEntity($data);
+            $this->fakeFelines->save($feline);
+        }
+
+        $query = $this->fakeFelines->find('list', $listParams);
+        $query->order($order);
+
+        $result = $query->toArray();
+        $this->assertEquals($expected, $result);
     }
 }

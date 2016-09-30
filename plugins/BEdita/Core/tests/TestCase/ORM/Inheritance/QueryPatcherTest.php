@@ -247,7 +247,13 @@ class QueryPatcherTest extends TestCase
                 'id',
             ],
             'selectArray' => [
-                ['FakeFelines.id', 'FakeAnimals.legs', 'FakeMammals.subclass', 'FakeAnimals.name', 'sc' => 'FakeMammals.subclass'],
+                [
+                    'FakeFelines.id',
+                    'FakeAnimals.legs',
+                    'FakeMammals.subclass',
+                    'FakeAnimals.name',
+                    'sc' => 'FakeMammals.subclass',
+                ],
                 'select',
                 ['id', 'legs', 'subclass', 'FakeAnimals.name', 'sc' => 'subclass'],
             ],
@@ -403,7 +409,7 @@ class QueryPatcherTest extends TestCase
             'custom_name' => 'FakeAnimals.name',
             'FakeMammals.subclass',
             'FakeFelines.family',
-            'count' => $query->func()->count('FakeFelines.id')
+            'count' => $query->func()->count('FakeFelines.id'),
         ];
         foreach ($selectClause as $k => $s) {
             $this->assertEquals($selectExpected[$k], $s);
@@ -443,7 +449,7 @@ class QueryPatcherTest extends TestCase
             $sql = preg_replace('/(\s){2,}/', ' ', $sql);
 
             $expected = 'SELECT FakeAnimals.name AS `custom_name`, FakeMammals.subclass AS `FakeMammals__subclass`, ' .
-                'FakeFelines.family AS `FakeFelines__family`, (COUNT(FakeFelines.id)) AS `count` ' .
+                'FakeFelines.family AS `FakeFelines__family`, (COUNT(FakeFelines.id)) AS `count`, ' .
                 'FROM fake_felines FakeFelines INNER JOIN fake_mammals FakeMammals ON FakeMammals.id = (FakeFelines.id) ' .
                 'INNER JOIN fake_animals FakeAnimals ON FakeAnimals.id = (FakeMammals.id) ' .
                 'WHERE (FakeFelines.family = :c0 AND FakeFelines.id = :c1) ' .

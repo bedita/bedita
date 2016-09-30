@@ -215,34 +215,4 @@ class ExtensionOfTest extends TestCase
 
         $this->assertEquals(0, $articles);
     }
-
-    public function testSelect()
-    {
-        $assoc = new ExtensionOf('FakeAnimals', [
-            'sourceTable' => $this->fakeMammals,
-            'foreignKey' => $this->fakeMammals->primaryKey()
-        ]);
-        $this->fakeMammals->associations()->add($assoc->name(), $assoc);
-
-        $assoc = new ExtensionOf('FakeMammals', [
-            'sourceTable' => $this->fakeFelines,
-            'foreignKey' => $this->fakeFelines->primaryKey()
-        ]);
-        $this->fakeFelines->associations()->add($assoc->name(), $assoc);
-
-        $feline = $this->fakeFelines->find()
-            ->contain('FakeMammals.FakeAnimals')
-            // ->select(['pippo' => 'name', 'subclass', 'family']);
-            ->select(['id', 'name', 'subclass', 'family']);
-            // ->select($this->fakeFelines->FakeMammals->FakeAnimals->FakeArticles)
-            // ->autoFields(true)
-            // ->contain('FakeArticles');
-
-            // ->first();
-
-
-        debug($feline->sql());
-
-        debug($feline->toArray());
-    }
 }
