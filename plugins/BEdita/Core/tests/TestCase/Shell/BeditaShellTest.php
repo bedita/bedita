@@ -67,27 +67,53 @@ class BeditaShellTest extends TestCase
         $this->assertArrayHasKey('setup', $subCommands);
     }
 
+    public function setupInputProvider()
+    {
+        return [
+            'noSetup' => [
+                ['y'],
+                [],
+                ['pippo', 'pippo']
+            ],
+            'nada' => [
+                [],
+            ]
+        ];
+    }
+
     /**
      * Test setup method
      *
      * @return void
+     * @dataProvider setupInputProvider
      */
-    public function testSetup()
+    public function testSetup($yesNo, $dbConfig = [], $userPass = [])
     {
         $this->fixtureManager->shutDown();
 
+        $yesNo = array_merge($yesNo, array_fill(0, 3 - count($yesNo), 'n'));
+
         $mapChoice = [
-            ['Proceed with database creation?', ['y', 'n'], 'n', 'y'],
-            ['Overwrite current admin user?', ['y', 'n'], 'n', 'y'],
+            ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', $yesNo[0]],
+            ['Proceed with setup?', ['y', 'n'], 'n', $yesNo[1]],
+            ['Overwrite current admin user?', ['y', 'n'], 'n', $yesNo[2]]
         ];
 
         $this->io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
+        $dbConfig = array_merge($dbConfig, array_fill(0, 4 - count($dbConfig), ''));
+        $userPass = array_merge($userPass, array_fill(0, 2 - count($userPass), ''));
+
         $map = [
-            ['username: ', null, 'pippo'],
-            ['password: ', null, 'pippo']
+            ['Host?', null, $dbConfig[0]],
+            ['Database?', null, $dbConfig[1]],
+            ['Username?', null, $dbConfig[2]],
+            ['Password?', null, $dbConfig[3]],
+            ['username: ', null, $userPass[0]],
+            ['password: ', null, $userPass[1]]
         ];
+
         $this->io->method('ask')
              ->will($this->returnValueMap($map));
 
@@ -98,11 +124,12 @@ class BeditaShellTest extends TestCase
 
         $this->BeditaShell->setup();
 
-        $usersTable = TableRegistry::get('Users');
-        $user = $usersTable->get(1);
-
-        $this->assertFalse($user->blocked);
-        $this->assertEquals('pippo', $user->username);
+        if ($userPass[0]) {
+            $usersTable = TableRegistry::get('Users');
+            $user = $usersTable->get(1);
+            $this->assertFalse($user->blocked);
+            $this->assertEquals($userPass[0], $user->username);
+        }
 
         $schema = Database::currentSchema();
         if (!empty($schema)) {

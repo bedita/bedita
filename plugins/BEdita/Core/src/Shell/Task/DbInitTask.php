@@ -26,6 +26,11 @@ class DbInitTask extends Shell
 {
 
     /**
+     * DB configuration to use
+     */
+    public $dbConfig = 'default';
+
+    /**
      * Initialize BE4 database schema
      * SQL schema in BEdita/Core/config/schema/be4-schema-<vendor>.sql
      *
@@ -35,14 +40,14 @@ class DbInitTask extends Shell
     {
         $this->out('Creating new database schema...');
         $schemaDir = Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS;
-        $info = Database::basicInfo();
+        $info = Database::basicInfo($this->dbConfig);
         $schemaFile = $schemaDir . 'be4-schema-' . $info['vendor'] . '.sql';
         if (!file_exists($schemaFile)) {
             $this->abort('Schema file not found: ' . $schemaFile);
         }
         $sqlSchema = file_get_contents($schemaFile);
         try {
-            $result = Database::executeTransaction($sqlSchema);
+            $result = Database::executeTransaction($sqlSchema, $this->dbConfig);
             if (!$result['success']) {
                 $this->abort('Error creating database schema: ' . $result['error']);
             }

@@ -16,7 +16,7 @@ use BEdita\Core\Utility\Database;
 use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Core\Configure\Engine\JsonConfig;
-use Cake\Core\Plugin;
+use Cake\Datasource\ConnectionManager;
 use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
@@ -31,6 +31,21 @@ use Cake\Utility\Inflector;
  */
 class BeditaShell extends Shell
 {
+
+    /**
+     * User input data array
+     */
+    protected $userInputData = null;
+
+    /**
+     * Is configuration modified from startup default?
+     */
+    protected $configModified = false;
+
+    /**
+     * Temporary configuration name used in initial setup
+     */
+    const TEMP_SETUP_CFG = '__temp_setup__';
 
     /**
      * {@inheritDoc}
@@ -68,29 +83,38 @@ class BeditaShell extends Shell
      */
     public function setup()
     {
-        $info = Database::basicInfo();
-        $this->info('Current database configuration');
-        $this->info(' * Host: ' . $info['host']);
-        $this->info(' * Database: ' . $info['database']);
-        $this->info(' * Vendor: ' . $info['vendor']);
-        $this->info('Checking database connection....');
-        $res = Database::connectionTest();
-        if (!$res['success']) {
-            $this->warn('Unable to connect');
-            $this->log('connection test message: ' . $res['error'], 'debug');
-            $this->warn('==> Please check your database configuration in config/app.php file');
-            $this->warn("==> See 'DataSources' => 'default' array");
+        $res = $this->databaseConnection();
+        if (!$res) {
+            $this->warn('Setup stopped');
+            if (isset($this->userInputData)) {
+                $this->warn('==> Please check your database connection parameters');
+            }
 
             return;
         }
+
+        if (empty($this->userInputData)) {
+            $info = Database::basicInfo();
+            $this->info('Current database configuration');
+            $this->info(' * Host: ' . $info['host']);
+            $this->info(' * Database: ' . $info['database']);
+            $this->info(' * Vendor: ' . $info['vendor']);
+        }
+
         $this->info('Database connection is OK');
         $this->hr();
+
 
         $this->info('Checking database schema....');
         if (!$this->initSchema()) {
             return;
         }
         $this->hr();
+        if (!empty($this->userInputData)) {
+            if (!$this->saveConnectionData()) {
+                return;
+            }
+        }
 
         $this->info('Checking filesystem permissions....');
         $this->checkFs();
@@ -127,7 +151,7 @@ class BeditaShell extends Shell
             $this->info('Database schema is OK');
         } else {
             $this->out('Database is empty');
-            $res = $this->in('Proceed with database creation?', ['y', 'n'], 'n');
+            $res = $this->in('Proceed with database schema and data initialization?', ['y', 'n'], 'n');
             if ($res != 'y') {
                 $this->info('Database creation aborted. Bye.');
 
@@ -179,6 +203,127 @@ class BeditaShell extends Shell
         $this->out(' group: ' . $group['name']);
         $perms = substr(decoct(fileperms($dirPath)), 2);
         $this->out(' perms: ' . $perms);
+    }
+
+    /**
+     * Check if database connection is working
+     *
+     * @return bool True on success, false on error
+     */
+    protected function checkDbConnection()
+    {
+        $res = Database::connectionTest();
+        if (!$res['success']) {
+            $this->warn('Unable to connect');
+            $this->err('Error message: ' . $res['error']);
+            if ($this->configModified) {
+                $this->warn('==> Please check your database configuration in config/app.php file');
+                $this->warn("==> See 'DataSources' => 'default' array");
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check database connection parameters
+     * On a fresh install placeholders should be found, if placeholders are not found
+     * a manual edit is required
+     *
+     * @return bool True on success, false otherwise
+     */
+    protected function databaseConnection()
+    {
+        $this->configModified = false;
+        $dbParams = Database::basicInfo();
+        $fields = ['host', 'database', 'username', 'password'];
+        foreach ($fields as $name) {
+            $expected = '__BE4_DB_' . strtoupper($name) . '__';
+            if (empty($dbParams[$name]) || $dbParams[$name] !== $expected) {
+                $this->configModified = true;
+            }
+        }
+
+        if ($this->configModified) {
+            $this->warn('Configuration file has been modified!');
+
+            return $this->checkDbConnection();
+        }
+
+        $this->info('A working database connection is needed in order to continue');
+        $this->info('Parameter needed are: host, database, username, password');
+        $res = $this->in('Proceed with setup?', ['y', 'n'], 'n');
+        if ($res != 'y') {
+            $this->info('Database setup stopped');
+
+            return false;
+        }
+
+        $this->dbConnectionUserInput();
+        $dbParams = array_merge($dbParams, $this->userInputData);
+        $dbParams['className'] = 'Cake\Database\Connection';
+        ConnectionManager::config(self::TEMP_SETUP_CFG, $dbParams);
+        ConnectionManager::alias(self::TEMP_SETUP_CFG, 'default');
+
+        return $this->checkDbConnection();
+    }
+
+    /**
+     * Save database connection data in config/app.php file
+     *
+     * @return bool True on success, false otherwise
+     */
+    protected function saveConnectionData()
+    {
+        if (!is_writable(CONFIG . 'app.php')) {
+            $this->warn('Unable to update configuration file');
+            $this->warn('==> Please check write permission on config/app.php file');
+
+            return false;
+        }
+
+        $content = file_get_contents(CONFIG . 'app.php');
+        $fields = ['host', 'database', 'username', 'password'];
+        foreach ($fields as $name) {
+            $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
+            $content = str_replace($placeHolder, $this->userInputData[$name], $content);
+        }
+
+        // TODO: better php check for $content?
+        $eval = eval(str_replace('<?php', '', $content));
+        if (empty($eval) || !is_array($eval)) {
+            $this->error('Error updating configuration parameters');
+
+            return false;
+        }
+
+        $result = file_put_contents(CONFIG . 'app.php', $content);
+        $this->configModified = true;
+        if (!$result) {
+            $this->warn('Error updating configuration file');
+
+            return false;
+        }
+
+        $this->info('Configuration updated in config/app.php');
+
+        return true;
+    }
+
+    /**
+     * Get database connection parameters from user
+     *
+     * @return void
+     */
+    protected function dbConnectionUserInput()
+    {
+        $this->userInputData = [];
+        $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
+        $this->userInputData['database'] = $this->in('Database?');
+        $this->userInputData['username'] = $this->in('Username?');
+        $this->userInputData['password'] = $this->in('Password?');
     }
 
     /**
