@@ -14,6 +14,7 @@
 namespace BEdita\API\Error;
 
 use Cake\Core\Configure;
+use Cake\Core\Plugin;
 use Cake\Error\Debugger;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 
@@ -51,8 +52,34 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
             $this->controller->JsonApi->error($code, $message, '', array_filter(compact('trace')));
             $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
+        } else {
+            $builder = $this->controller->viewBuilder();
+            $builder->plugin('BEdita/API');
+            $this->controller->set('method', $this->controller->request->method());
+            $this->controller->set('responseBody', $this->jsonError($code, $message, $trace));
         }
 
         return parent::render();
+    }
+
+    /**
+     * Build json error string for HTML error display
+     *
+     * @param string $code Error code
+     * @param string $message Error message
+     * @param string $trace Error stacktrace
+     * @return string JSON error
+     */
+    public function jsonError($code, $message, $trace)
+    {
+        $res = [
+            'error' => [
+                'status' => $code,
+                'title' => $message,
+                'meta' => array_filter(compact('trace'))
+            ]
+        ];
+
+        return json_encode($res);
     }
 }
