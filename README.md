@@ -1,14 +1,30 @@
-# BEdita, API-first content management framework
+# BEdita, API-first content management
 
 [![Build Status](https://travis-ci.org/bedita/bedita.svg?branch=4-develop)](https://travis-ci.org/bedita/bedita)
 [![Code Coverage](https://codecov.io/gh/bedita/bedita/branch/4-develop/graph/badge.svg)](https://codecov.io/gh/bedita/bedita/branch/4-develop)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=4-develop)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=4-develop)
 [![Dependency Status](https://gemnasium.com/badges/github.com/bedita/bedita.svg)](https://gemnasium.com/github.com/bedita/bedita)
 
+BEdita is a tool to handle the data of your mobile, IoT, web and desktop applications.
+
+It's a full fledged content management solution with:
+ * an HTTP REST driven server application with a complete API to model, create, modify and retrieve data
+ * a default backend web application
+ * tools and scripts to create applications upon its HTTP API
+
+BEdita is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
+[Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com)
+in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) and [InfluxDb](https://www.influxdata.com/time-series-platform/influxdb/) to boost
+performance and scale up to Big Data scenarios.
+
+[JSON-API](http://jsonapi.org) is the primary, although not unique, exchange data format.
+
+Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
+
 ## Install
 
 Prerequisites:
- * PHP >= 5.5.9 or PHP 7
+ * PHP 7 (recommended) or PHP >= 5.5.9
  * MySQL >= 5.5
  * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
@@ -24,10 +40,10 @@ Prerequisites:
  ```
 
 3. Configure your database connection editing `Datasources.default` in `config/app.php`
-4. Run shell script to initialize the database
+4. Run shell script to initialize the database and create first admin user
 
  ```bash
- $ bin/cake db_admin init
+ $ bin/cake bedita setup
  ```
 
 5. If you have configured a virtualhost in your webserver you can point

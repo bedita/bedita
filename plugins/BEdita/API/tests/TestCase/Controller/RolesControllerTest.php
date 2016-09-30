@@ -27,12 +27,7 @@ class RolesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -77,6 +72,14 @@ class RolesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/roles/1',
                     ],
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/roles/1/relationships/users',
+                                'related' => 'http://api.example.com/roles/1/users',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -90,6 +93,14 @@ class RolesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/roles/2',
+                    ],
+                    'relationships' => [
+                        'users' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/roles/2/relationships/users',
+                                'related' => 'http://api.example.com/roles/2/users',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -180,6 +191,14 @@ class RolesControllerTest extends IntegrationTestCase
                     'unchangeable' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
+                ],
+                'relationships' => [
+                    'users' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/roles/1/relationships/users',
+                            'related' => 'http://api.example.com/roles/1/users',
+                        ],
+                    ],
                 ],
             ],
         ];

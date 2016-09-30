@@ -1,22 +1,15 @@
 <?php
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\ORM\Locator\TableLocator;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
 use Cake\ORM\TableRegistry;
 
 /**
- * Register tables.
+ * Plug table locator.
  */
-TableRegistry::config('AuthProviders', ['className' => 'BEdita/Core.AuthProviders']);
-TableRegistry::config('ExternalAuth', ['className' => 'BEdita/Core.ExternalAuth']);
-TableRegistry::config('ObjectTypes', ['className' => 'BEdita/Core.ObjectTypes']);
-TableRegistry::config('Config', ['className' => 'BEdita/Core.Config']);
-TableRegistry::config('Roles', ['className' => 'BEdita/Core.Roles']);
-TableRegistry::config('Users', ['className' => 'BEdita/Core.Users']);
-
-TableRegistry::config('Objects', ['className' => 'BEdita/Core.Objects']);
-TableRegistry::config('Profiles', ['className' => 'BEdita/Core.Profiles']);
+TableRegistry::locator(new TableLocator());
 
 /**
  * Load 'core' configuration parameters

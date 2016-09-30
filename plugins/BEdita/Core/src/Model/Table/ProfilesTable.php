@@ -41,7 +41,6 @@ class ProfilesTable extends Table
         $this->addBehavior('BEdita/Core.ClassTableInheritance', [
             'table' => [
                 'tableName' => 'Objects',
-                'className' => 'BEdita/Core.Objects',
             ],
         ]);
     }
