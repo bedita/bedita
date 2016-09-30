@@ -449,7 +449,7 @@ class QueryPatcherTest extends TestCase
             $sql = preg_replace('/(\s){2,}/', ' ', $sql);
 
             $expected = 'SELECT FakeAnimals.name AS `custom_name`, FakeMammals.subclass AS `FakeMammals__subclass`, ' .
-                'FakeFelines.family AS `FakeFelines__family`, (COUNT(FakeFelines.id)) AS `count`, ' .
+                'FakeFelines.family AS `FakeFelines__family`, (COUNT(FakeFelines.id)) AS `count` ' .
                 'FROM fake_felines FakeFelines INNER JOIN fake_mammals FakeMammals ON FakeMammals.id = (FakeFelines.id) ' .
                 'INNER JOIN fake_animals FakeAnimals ON FakeAnimals.id = (FakeMammals.id) ' .
                 'WHERE (FakeFelines.family = :c0 AND FakeFelines.id = :c1) ' .
