@@ -1,4 +1,5 @@
 <?php
+use Cake\Auth\WeakPasswordHasher;
 use Migrations\AbstractMigration;
 
 class Alpha extends AbstractMigration
@@ -1492,6 +1493,82 @@ class Alpha extends AbstractMigration
                 ]
             )
             ->create();
+
+        $this->table('object_types')
+            ->insert([
+                [
+                    'id' => 1,
+                    'name' => 'object',
+                    'pluralized' => 'objects',
+                    'description' => 'Base BEdita object type, to be extended by concrete implementations',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'profile',
+                    'pluralized' => 'profiles',
+                    'description' => 'Generic person profile',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Profiles',
+                ],
+                [
+                    'id' => 3,
+                    'name' => 'user',
+                    'pluralized' => 'users',
+                    'description' => 'BEdita user profile',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Users',
+                ],
+            ])
+            ->save();
+
+        $this->table('objects')
+            ->insert([
+                'id' => 1,
+                'object_type_id' => 3,
+                'status' => 'on',
+                'uname' => 'bedita',
+                'locked' => 1,
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+                'lang' => 'eng',
+                'created_by' => 1,
+                'modified_by' => 1,
+            ])
+            ->save();
+
+        $this->table('profiles')
+            ->insert([
+                'id' => 1,
+            ])
+            ->save();
+
+        $this->table('users')
+            ->insert([
+                'id' => 1,
+                'username' => 'bedita',
+                'password_hash' => (new WeakPasswordHasher(['hashType' => 'md5']))->hash('password1'),
+            ])
+            ->save();
+
+        $this->table('roles')
+            ->insert([
+                'id' => 1,
+                'name' => 'admin',
+                'description' => 'Administrators\' role',
+                'unchangeable' => 1,
+                'created' => date('Y-m-d H:i:s'),
+                'modified' => date('Y-m-d H:i:s'),
+            ])
+            ->save();
+
+        $this->table('roles_users')
+            ->insert([
+                'role_id' => 1,
+                'user_id' => 1,
+            ])
+            ->save();
 
         $this->table('annotations')
             ->addForeignKey(
