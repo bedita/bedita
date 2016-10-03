@@ -1,6 +1,7 @@
 language: php
 
 php:
+  - 5.5
   - 5.6
   - 7.0
   - hhvm
@@ -45,6 +46,8 @@ matrix:
       env: RUN_CS=1 RUN_TESTS=0
 
   exclude:
+    - php: 5.5
+      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - php: 7.0
       env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - php: hhvm
@@ -52,6 +55,7 @@ matrix:
 
   allow_failures:
     - php: hhvm
+    - php: 5.5
 
 before_script:
   - |
