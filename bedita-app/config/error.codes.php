@@ -33,9 +33,19 @@
  * For example:
  *
  * ```
- * throw new BeditaForbiddenException('Error during upload', ['errorCode' => 'UPLOAD_QUOTA_EXCEEDED']);
+ * throw new BeditaForbiddenException('Error during upload', array('errorCode' => 'UPLOAD_QUOTA_EXCEEDED'));
  * ```
  *
+ * or you can pass an array with the error code as key and a set of details as value.
+ * For example:
+ *
+ * ```
+ * throw new BeditaForbiddenException('Error during upload', [
+ *     'errorCode' => array(
+ *         'UPLOAD_QUOTA_EXCEEDED' => array('quotaAvailable' => '150 MB', 'quotaUsed' => '25 MB')
+ *     )
+ * ]);
+ * ```
  */
 
 return array(

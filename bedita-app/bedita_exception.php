@@ -48,17 +48,10 @@ class BeditaException extends Exception {
 	const ERROR = 'ERROR';
 
     /**
-     * The complete list of error codes
-     * where keys are the string codes and values are array describing the error. 
+     * The instance of the error code thrown
      *
-     * @var string
-     */
-    protected $internalCodes = array();
-
-    /**
-     * The internal error code thrown
-     *
-     * @var string
+     * @see libs/errors/codes/be_error_code.php
+     * @var BeErrorCode
      */
     protected $errorCode = null;
 
@@ -87,7 +80,8 @@ class BeditaException extends Exception {
                         $this->cause = $v;
                     }
                     if ($k == 'errorCode') {
-                        $this->errorCode = $v;
+                        $this->setErrorCode($v);
+                        $v = $this->errorCode->code();
                     }
    					if (is_array($v)) {
    						$this->errorDetails .= " - [$k] : array(" . implode(", ", $v) . ")";
@@ -104,58 +98,42 @@ class BeditaException extends Exception {
    			$this->httpCode = $code;
    		}
 
-        $this->initInternalCodes();
-
         parent::__construct($message, $code);
     }
 
     /**
-     * Initialize the array of internal codes `self::internalCodes` and return it
+     * Set a `BeErrorCode` defined by `$errorCode`.
      *
-     * @return array
+     * `$errorCode` can be a string as `'UPLOAD_QUOTA_EXCEEDED'`
+     * or an array with the error code as key and details as value.
+     * If it's a string or an array with empty values the default details
+     * defined in `config/error.codes.php` is used.
+     *
+     * @see libs/errors/codes/be_error_code.php
+     * @see BeLib::errorCode()
+     * @param array|string $errorCode The error code configuration 
+     * @return BeErrorCode|null
      */
-    protected function initInternalCodes() {
-        $this->loadErrorCodes(BEDITA_CORE_PATH . DS . 'config' . DS . 'error.codes.php');
-
-        if (BACKEND_APP) {
-            return $this->internalCodes;
+    public function setErrorCode($errorCode) {
+        if (is_array($errorCode)) {
+            $code = key($errorCode);
+            $options = is_array($errorCode[$code]) ? $errorCode[$code] : array($errorCode[$code]);
+        } else {
+            $code = $errorCode;
+            $options = array();
         }
 
-        $this->loadErrorCodes(APP . DS . 'config' . DS . 'error.codes.php');
-
-        return $this->internalCodes;
+        $this->errorCode = BeLib::errorCode($code, $options);
     }
 
     /**
-     * Load a file containing error codes adding them to those already presents
+     * Return the instance of `BeErrorCode` or null if error code is not been set.
      *
-     * @param string $filePath The file path to load
-     * @return array
+     * @see libs/errors/codes/be_error_code.php
+     * @return BeErrorCode|null
      */
-    protected function loadErrorCodes($filePath) {
-		if (!file_exists($filePath )) {
-            return;
-        }
-
-        $errorCodes = include $filePath;
-        if (empty($errorCodes) || !is_array($errorCodes)) {
-            return;
-        }
-        
-        $this->internalCodes = $this->internalCodes + $errorCodes;
-    }
-
-    /**
-     * Return an array containing the internal error code if exists
-     *
-     * @return array
-     */
-    public function getInternalCode() {
-        if (!array_key_exists($this->errorCode, $this->internalCodes)) {
-            return array();
-        }
-
-        return array('code' => $this->errorCode) + $this->internalCodes[$this->errorCode]; 
+    public function getErrorCode() {
+        return $this->errorCode; 
     }
     
     public function getDetails() {

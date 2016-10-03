@@ -100,9 +100,9 @@ class AppError extends ErrorHandler {
 				if ($exception instanceof BeditaException) {
 					$this->error['status'] = $exception->getHttpCode();
 			        $this->error['details'] = Sanitize::clean($exception->getDetails(), $options);
-                    $internalCode = $exception->getInternalCode();
-                    $this->error['code'] = !empty($internalCode['code']) ? $internalCode['code'] : null;
-                    $this->error['more_info'] = !empty($internalCode['description']) ? $internalCode['description'] : null;
+                    $errorCode = $exception->getErrorCode();
+					$this->error['code'] = !empty($errorCode) ? $errorCode->code() : null;
+                    $this->error['more_info'] = !empty($errorCode) ? $errorCode->info() : null;
 			        $messages['result'] = $exception->result;
 			        $this->errorTrace = $exception->errorTrace();
 			    } else {
