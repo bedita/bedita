@@ -89,7 +89,7 @@ class ExtensionOf extends BelongsTo
         }
 
         // remove key corresponding to source alias
-        $row[$sourceAlias] = array_diff_assoc($row[$sourceAlias], [$sourceAlias => true]);
+        $row[$sourceAlias] = array_diff_key($row[$sourceAlias], array_flip([$sourceAlias]));
 
         $properties = $row[$nestKey];
         if ($properties instanceof Entity) {
@@ -98,7 +98,7 @@ class ExtensionOf extends BelongsTo
 
         // get properties except key corresponding to target alias
         if (is_array($properties)) {
-            $row[$sourceAlias] += array_diff_assoc($properties, [$this->target()->alias() => true]);
+            $row[$sourceAlias] += array_diff_key($properties, array_flip([$this->target()->alias()]));
         }
         unset($row[$nestKey]);
 
