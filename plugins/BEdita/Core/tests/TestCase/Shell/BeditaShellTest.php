@@ -168,11 +168,14 @@ class BeditaShellTest extends TestCase
 
         $res = $this->BeditaShell->setup();
 
-        if ($userPass[0]) {
+        if ($yesNo[2] === 'y') {
+            $this->assertTrue($res);
             $usersTable = TableRegistry::get('Users');
             $user = $usersTable->get(1);
             $this->assertFalse($user->blocked);
             $this->assertEquals($userPass[0], $user->username);
+        } else {
+            $this->assertFalse($res);
         }
 
         $this->dbCleanup();
@@ -206,6 +209,11 @@ class BeditaShellTest extends TestCase
     public function testFake2()
     {
         $this->fixtureManager->shutDown();
+
+        $info = Database::basicInfo();
+        if ($info['vendor'] != 'mysql') {
+            $this->markTestSkipped('MySQL only supported (for now)');
+        }
 
         $fakeParams = $this->fakeDbSetup('__test-temp__');
         ConnectionManager::alias('__test-temp__', 'default');
@@ -248,6 +256,9 @@ class BeditaShellTest extends TestCase
         $this->fixtureManager->shutDown();
 
         $info = Database::basicInfo();
+        if ($info['vendor'] != 'mysql') {
+            $this->markTestSkipped('MySQL only supported (for now)');
+        }
 
         $fakeParams = $this->fakeDbSetup('__test-temp__');
         ConnectionManager::alias('__test-temp__', 'default');
@@ -307,6 +318,9 @@ class BeditaShellTest extends TestCase
         $this->loadFixtures('Config');
 
         $info = Database::basicInfo();
+        if ($info['vendor'] != 'mysql') {
+            $this->markTestSkipped('MySQL only supported (for now)');
+        }
 
         $mapChoice = [
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
@@ -338,6 +352,10 @@ class BeditaShellTest extends TestCase
              ->will($this->returnValueMap($mapChoice));
 
         $info = Database::basicInfo();
+        if ($info['vendor'] != 'mysql') {
+            $this->markTestSkipped('MySQL only supported (for now)');
+        }
+
         $map = [
             ['username: ', null, ''],
             ['password: ', null, '']

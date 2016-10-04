@@ -43,9 +43,9 @@ class BeditaShell extends Shell
     protected $configModified = false;
 
     /**
-     * Configuration file path?
+     * Configuration file path
      */
-    public $configPath = CONFIG . 'app.php';
+    public $configPath = null;
 
     /**
      * Default initial user name
@@ -296,6 +296,9 @@ class BeditaShell extends Shell
      */
     protected function saveConnectionData()
     {
+        if (empty($this->configPath)) {
+            $this->configPath = CONFIG . 'app.php';
+        }
         if (!is_writable($this->configPath)) {
             $this->warn('Unable to update configuration file');
             $this->warn('==> Please check write permission on config/app.php file');
