@@ -366,7 +366,7 @@ class BeditaShellTest extends TestCase
         $this->BeditaShell->setup();
 
         $this->BeditaShell->defaultUsername = 'bedita';
-        $this->expectException('\Cake\Console\Exception\StopException');
+        $this->setExpectedException('\Cake\Console\Exception\StopException');
         $this->BeditaShell->setup();
         $this->dbCleanup();
     }
