@@ -375,11 +375,14 @@ class BeditaShellTest extends TestCase
 
     protected function dbCleanup()
     {
-        $schema = Database::currentSchema();
-        if (!empty($schema)) {
-            $res = Database::executeTransaction($this->dropTablesSql($schema));
-            $this->assertNotEmpty($res);
-            $this->assertEquals($res['success'], true);
+        $info = Database::basicInfo();
+        if ($info['vendor'] === 'mysql') {
+            $schema = Database::currentSchema();
+            if (!empty($schema)) {
+                $res = Database::executeTransaction($this->dropTablesSql($schema));
+                $this->assertNotEmpty($res);
+                $this->assertEquals($res['success'], true);
+            }
         }
         if (ConnectionManager::config('__temp_setup__')) {
             ConnectionManager::drop('__temp_setup__');
