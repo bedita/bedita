@@ -113,4 +113,67 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(401);
     }
+
+    /**
+     * Test read logged user data.
+     *
+     * @return void
+     *
+     */
+    public function testLoggedUser()
+    {
+        $result = $this->doLogin();
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => 'Bearer ' . $result['meta']['jwt']
+            ],
+        ]);
+
+        $this->get('/auth');
+        $this->assertResponseCode(200);
+        $result = json_decode($this->_response->body(), true);
+        $this->assertNotEmpty($result);
+    }
+
+    /**
+     * Test read logged user fail.
+     *
+     * @return void
+     *
+     */
+    public function testLoggedUserFail()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+
+        $this->get('/auth');
+        $this->assertResponseCode(401);
+    }
+
+    /**
+     * Perform login and return JWT data
+     *
+     * @return array Auth endpoint response data
+     */
+    protected function doLogin()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/auth', ['username' => 'first user', 'password_hash' => 'password1']);
+        $result = json_decode($this->_response->body(), true);
+        $this->assertResponseCode(200);
+
+        return $result;
+    }
 }

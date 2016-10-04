@@ -105,4 +105,21 @@ class LoginController extends AppController
         $this->set('_serialize', []);
         $this->set('_meta', compact('jwt', 'renew'));
     }
+
+    /**
+     * Read logged user data.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
+     */
+    public function user()
+    {
+        $this->request->allowMethod('get');
+
+        $user = $this->Auth->identify();
+        if (!$user) {
+            throw new UnauthorizedException(__('User not logged'));
+        }
+        $this->set('_serialize', compact('user'));
+    }
 }
