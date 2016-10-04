@@ -43,6 +43,21 @@ class BeditaShell extends Shell
     protected $configModified = false;
 
     /**
+     * Configuration file path?
+     */
+    public $configPath = CONFIG . 'app.php';
+
+    /**
+     * Default initial user name
+     */
+    public $defaultUsername = 'bedita';
+
+    /**
+     * Default initial user id
+     */
+    public $defaultUserId = 1;
+
+    /**
      * Temporary configuration name used in initial setup
      */
     const TEMP_SETUP_CFG = '__temp_setup__';
@@ -79,7 +94,7 @@ class BeditaShell extends Shell
     /**
      * Setup or check BE4 instance
      *
-     * @return void
+     * @return bool True on setup terminated with success, false on error or user stop
      */
     public function setup()
     {
@@ -90,7 +105,7 @@ class BeditaShell extends Shell
                 $this->warn('==> Please check your database connection parameters');
             }
 
-            return;
+            return false;
         }
 
         if (empty($this->userInputData)) {
@@ -107,12 +122,12 @@ class BeditaShell extends Shell
 
         $this->info('Checking database schema....');
         if (!$this->initSchema()) {
-            return;
+            return false;
         }
         $this->hr();
         if (!empty($this->userInputData)) {
             if (!$this->saveConnectionData()) {
-                return;
+                return false;
             }
         }
 
@@ -123,6 +138,8 @@ class BeditaShell extends Shell
         $this->info('Set admin user....');
         $this->adminUser();
         $this->hr();
+
+        return true;
     }
 
     /**
@@ -146,7 +163,9 @@ class BeditaShell extends Shell
                         }
                     }
                 }
-                $this->abort('Unable to proceed with setup, please check your database');
+                $this->err('Unable to proceed with setup, please check your database');
+
+                return false;
             }
             $this->info('Database schema is OK');
         } else {
@@ -277,14 +296,14 @@ class BeditaShell extends Shell
      */
     protected function saveConnectionData()
     {
-        if (!is_writable(CONFIG . 'app.php')) {
+        if (!is_writable($this->configPath)) {
             $this->warn('Unable to update configuration file');
             $this->warn('==> Please check write permission on config/app.php file');
 
             return false;
         }
 
-        $content = file_get_contents(CONFIG . 'app.php');
+        $content = file_get_contents($this->configPath);
         $fields = ['host', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
@@ -294,20 +313,15 @@ class BeditaShell extends Shell
         // TODO: better php check for $content?
         $eval = eval(str_replace('<?php', '', $content));
         if (empty($eval) || !is_array($eval)) {
-            $this->error('Error updating configuration parameters');
+            $this->err('Error updating configuration parameters');
 
             return false;
         }
 
-        $result = file_put_contents(CONFIG . 'app.php', $content);
+        file_put_contents($this->configPath, $content);
         $this->configModified = true;
-        if (!$result) {
-            $this->warn('Error updating configuration file');
 
-            return false;
-        }
-
-        $this->info('Configuration updated in config/app.php');
+        $this->info('Configuration updated in ' . $this->configPath);
 
         return true;
     }
@@ -334,12 +348,9 @@ class BeditaShell extends Shell
     protected function adminUser()
     {
         $usersTable = TableRegistry::get('Users');
-        $adminUser = $usersTable->get(1);
-        if (empty($adminUser)) {
-            $this->abort('Unable to find default admin user (with id = 1)');
-        }
+        $adminUser = $usersTable->get($this->defaultUserId);
 
-        if ($adminUser->username !== 'bedita') {
+        if ($adminUser->username !== $this->defaultUsername) {
             $this->info('An admin user has already been set: ' . $adminUser->username);
             $res = $this->in('Overwrite current admin user?', ['y', 'n'], 'n');
             if ($res != 'y') {
