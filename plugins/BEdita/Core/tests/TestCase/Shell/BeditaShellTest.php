@@ -37,7 +37,6 @@ class BeditaShellTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.config',
-        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -88,7 +87,9 @@ class BeditaShellTest extends TestCase
      */
     public function tearDown()
     {
+        $this->excludeFromDrop[] = 'config';
         $this->dbCleanup();
+
         unset($this->BeditaShell);
 
         parent::tearDown();
@@ -351,7 +352,6 @@ class BeditaShellTest extends TestCase
         $this->BeditaShell->defaultUsername = 'bedita';
         $this->expectException('\Cake\Console\Exception\StopException');
         $this->BeditaShell->setup();
-
     }
 
 
