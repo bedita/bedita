@@ -364,12 +364,12 @@ class BeditaShellTest extends TestCase
              ->will($this->returnValueMap($map));
 
         $this->BeditaShell->defaultUsername = 'somename';
-        $res = $this->BeditaShell->setup();
-        $this->assertTrue($res);
+        $this->BeditaShell->setup();
 
         $this->BeditaShell->defaultUsername = 'bedita';
         $this->expectException('\Cake\Console\Exception\StopException');
         $this->BeditaShell->setup();
+        $this->dbCleanup();
     }
 
 
