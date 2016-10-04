@@ -300,10 +300,9 @@ class BeditaShellTest extends TestCase
         $res = $this->BeditaShell->setup();
         $this->assertFalse($res);
 
-        $this->dbCleanup();
-
         ConnectionManager::alias('test', 'default');
         ConnectionManager::drop('__test-temp__');
+        $this->dbCleanup();
     }
 
 
