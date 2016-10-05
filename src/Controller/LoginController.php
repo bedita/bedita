@@ -112,14 +112,15 @@ class LoginController extends AppController
      * @return void
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
      */
-    public function user()
+    public function whoami()
     {
         $this->request->allowMethod('get');
 
-        $user = $this->Auth->identify();
+        $user = $this->Auth->user();
         if (!$user) {
             throw new UnauthorizedException(__('User not logged'));
         }
-        $this->set('_serialize', compact('user'));
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 }
