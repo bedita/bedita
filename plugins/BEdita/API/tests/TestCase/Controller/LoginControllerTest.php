@@ -61,20 +61,20 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertNotNull($lastLogin);
         $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
 
-        return $result['meta']['renew'];
+        return $result['meta'];
     }
 
     /**
      * Test login method with renew token.
      *
-     * @param string $renewToken Renew token.
+     * @param array $meta Login metadata.
      * @return void
      *
      * @depends testSuccessfulLogin
      * @covers ::login()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testSuccessfulRenew($renewToken)
+    public function testSuccessfulRenew(array $meta)
     {
         sleep(1);
 
@@ -82,7 +82,7 @@ class LoginControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'Authorization' => sprintf('Bearer %s', $renewToken),
+                'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
 
@@ -90,7 +90,7 @@ class LoginControllerTest extends IntegrationTestCase
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
-        $this->assertTextNotEquals($renewToken, $result['meta']['renew']);
+        $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
     }
 
     /**
@@ -111,6 +111,53 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->post('/auth', ['username' => 'first user', 'password_hash' => 'wrongPassword']);
 
+        $this->assertResponseCode(401);
+    }
+
+    /**
+     * Test read logged user data.
+     *
+     * @param array $meta Login metadata.
+     * @return void
+     *
+     * @depends testSuccessfulLogin
+     * @covers ::whoami()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
+     */
+    public function testLoggedUser(array $meta)
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Authorization' => sprintf('Bearer %s', $meta['jwt']),
+            ],
+        ]);
+
+        $this->get('/auth');
+        $this->assertResponseCode(200);
+        $result = json_decode($this->_response->body(), true);
+        $this->assertNotEmpty($result);
+    }
+
+    /**
+     * Test read logged user fail.
+     *
+     * @return void
+     *
+     * @covers ::whoami()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
+     */
+    public function testLoggedUserFail()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+
+        $this->get('/auth');
         $this->assertResponseCode(401);
     }
 }

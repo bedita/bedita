@@ -134,8 +134,13 @@ Router::plugin(
         // Login.
         $routes->connect(
             '/auth',
-            ['controller' => 'Login', 'action' => 'login'],
+            ['controller' => 'Login', 'action' => 'login', '_method' => 'POST'],
             ['_name' => 'login']
+        );
+        $routes->connect(
+            '/auth',
+            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
+            ['_name' => 'login:whoami']
         );
     }
 );
