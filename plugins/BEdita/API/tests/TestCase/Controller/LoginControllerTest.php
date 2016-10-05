@@ -61,20 +61,20 @@ class LoginControllerTest extends IntegrationTestCase
         $this->assertNotNull($lastLogin);
         $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
 
-        return $result['meta']['renew'];
+        return $result['meta'];
     }
 
     /**
      * Test login method with renew token.
      *
-     * @param string $renewToken Renew token.
+     * @param array $meta Login metadata.
      * @return void
      *
      * @depends testSuccessfulLogin
      * @covers ::login()
      * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testSuccessfulRenew($renewToken)
+    public function testSuccessfulRenew(array $meta)
     {
         sleep(1);
 
@@ -82,7 +82,7 @@ class LoginControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'Authorization' => sprintf('Bearer %s', $renewToken),
+                'Authorization' => sprintf('Bearer %s', $meta['renew']),
             ],
         ]);
 
@@ -90,7 +90,7 @@ class LoginControllerTest extends IntegrationTestCase
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
-        $this->assertTextNotEquals($renewToken, $result['meta']['renew']);
+        $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
     }
 
     /**
@@ -117,18 +117,20 @@ class LoginControllerTest extends IntegrationTestCase
     /**
      * Test read logged user data.
      *
+     * @param array $meta Login metadata.
      * @return void
      *
+     * @depends testSuccessfulLogin
+     * @covers ::whoami()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
-    public function testLoggedUser()
+    public function testLoggedUser(array $meta)
     {
-        $result = $this->doLogin();
-
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'Authorization' => 'Bearer ' . $result['meta']['jwt']
+                'Authorization' => sprintf('Bearer %s', $meta['jwt']),
             ],
         ]);
 
@@ -143,6 +145,8 @@ class LoginControllerTest extends IntegrationTestCase
      *
      * @return void
      *
+     * @covers ::whoami()
+     * @covers \BEdita\API\Auth\JwtAuthenticate::authenticate()
      */
     public function testLoggedUserFail()
     {
@@ -155,25 +159,5 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->get('/auth');
         $this->assertResponseCode(401);
-    }
-
-    /**
-     * Perform login and return JWT data
-     *
-     * @return array Auth endpoint response data
-     */
-    protected function doLogin()
-    {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->post('/auth', ['username' => 'first user', 'password_hash' => 'password1']);
-        $result = json_decode($this->_response->body(), true);
-        $this->assertResponseCode(200);
-
-        return $result;
     }
 }
