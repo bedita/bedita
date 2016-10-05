@@ -135,12 +135,12 @@ Router::plugin(
         $routes->connect(
             '/auth',
             ['controller' => 'Login', 'action' => 'login', '_method' => 'POST'],
-            ['_name' => 'login:login']
+            ['_name' => 'login']
         );
         $routes->connect(
             '/auth',
-            ['controller' => 'Login', 'action' => 'user', '_method' => 'GET'],
-            ['_name' => 'login:user']
+            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
+            ['_name' => 'login:whoami']
         );
     }
 );
