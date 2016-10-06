@@ -84,6 +84,18 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/status' => [
+                        'href' => 'http://api.example.com/status',
+                        'hints' => [
+                            'allow' => [
+                                'GET'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ]
+                        ],
+                    ],
                 ],
             ],
         ];
