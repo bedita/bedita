@@ -22,6 +22,11 @@ Router::plugin(
     ],
     function (RouteBuilder $routes) {
         // Home.
+        $routes->redirect(
+            '/',
+            ['_name' => 'api:home'],
+            ['persist' => true]
+        );
         $routes->connect(
             '/home',
             ['controller' => 'Home', 'action' => 'index'],
