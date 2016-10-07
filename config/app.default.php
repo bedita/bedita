@@ -169,7 +169,7 @@ return [
      */
     'Error' => [
         'errorLevel' => E_ALL,
-        'exceptionRenderer' => 'Cake\Error\ExceptionRenderer',
+        'exceptionRenderer' => 'BEdita\API\Error\ExceptionRenderer',
         'skipLog' => [],
         'log' => true,
         'trace' => true,
