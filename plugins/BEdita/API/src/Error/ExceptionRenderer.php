@@ -53,13 +53,41 @@ class ExceptionRenderer extends CakeExceptionRenderer
             $this->controller->JsonApi->error($code, $message, '', array_filter(compact('trace')));
             $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
         } else {
-            $builder = $this->controller->viewBuilder();
-            $builder->plugin('BEdita/API');
+            $this->setupView();
             $this->controller->set('method', $this->controller->request->method());
             $this->controller->set('responseBody', $this->jsonError($code, $message, $trace));
         }
 
         return parent::render();
+    }
+
+    /**
+     * Setup the view params used in rendering.
+     *
+     * If BEdita/API plugin is loaded set the view builder to use it
+     * else add the plugin template path to configured template paths
+     * to assure to find it.
+     *
+     * @return void
+     */
+    protected function setupView()
+    {
+        if (Plugin::loaded('BEdita/API')) {
+            $this->controller->viewBuilder()->plugin('BEdita/API');
+
+            return;
+        }
+
+        $templatePaths = array_merge([dirname(__DIR__) . DS . 'Template' . DS], Configure::read('App.paths.templates'));
+        Configure::write('App.paths.templates', $templatePaths);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function _template(\Exception $exception, $method, $code)
+    {
+        return $this->template = 'error';
     }
 
     /**
