@@ -31,6 +31,6 @@ interface UploadableInterface {
 
     public function apiUploadQuota(array $uploadableObjects, array $user, $event);
 
-    // public function apiCreateThumb();
+    public function apiCreateThumbnail($id = null, $thumbConf = array());
 }
 ?>

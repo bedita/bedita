@@ -1842,21 +1842,22 @@ abstract class ApiBaseController extends FrontendController {
      */
     private function posterData($id, array $thumbConf = array()) {
         $objectType = $this->BEObject->getType($id);
+        $model = ClassRegistry::init($objectType);
 
-        if ($objectType != "UserContent") {
-            $poster = $this->BEObject->getPoster($id);
-            $poster['id'] = (int) $poster['id'];
-            $beThumb = BeLib::getObject('BeThumb');
-            $poster['uri'] = $beThumb->image($poster, $thumbConf);
+        if ($model && $model instanceof UploadableInterface){
+            $poster = $model->apiCreateThumbnail($id, $thumbConf);
         } else {
-            // UserContents
-            $UserContentModel = ClassRegistry::init($objectType);
-            $poster = $UserContentModel->getPoster($id);
-
-            $poster['id'] = (int) $poster['id'];
+            $poster = $this->BEObject->getPoster($id);
+            if (!$poster) {
+                $poster['id'] = $id;
+            }
             $beThumb = BeLib::getObject('BeThumb');
             $poster['uri'] = $beThumb->image($poster, $thumbConf);
         }
+        if (!$poster) {
+            throw new BeditaBadRequestException();
+        }
+        $poster['id'] = (int) $poster['id'];
 
         return $poster;
     }
