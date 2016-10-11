@@ -33,6 +33,13 @@ Router::plugin(
             ['_name' => 'home']
         );
 
+        // Status.
+        $routes->connect(
+            '/status',
+            ['controller' => 'Status', 'action' => 'index'],
+            ['_name' => 'status']
+        );
+
         // Objects.
         $routes->connect(
             '/objects',
