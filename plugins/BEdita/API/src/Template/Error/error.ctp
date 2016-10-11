@@ -1,6 +1,7 @@
 <?php
+$statusCode = $this->response->httpCodes($this->response->statusCode());
 $this->layout = 'html';
-$this->assign('title', __('BEdita 4 - API Error') . ' ' . $this->response->statusCode());
+$this->assign('title', __('BEdita 4 - API Error') . ': ' . key($statusCode) . ' ' . current($statusCode));
 
 $this->append('css', '
     <style>
