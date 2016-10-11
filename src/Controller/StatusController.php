@@ -29,6 +29,8 @@ class StatusController extends AppController
      */
     public function index()
     {
+        $this->request->allowMethod('get');
+
         $status = System::status();
         $this->set('_meta', compact('status'));
         $this->set('_serialize', []);
