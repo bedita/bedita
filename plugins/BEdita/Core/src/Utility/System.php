@@ -38,13 +38,13 @@ class System
     {
         $env = 'ok';
         $errors = [];
-        $check = self::checkPHP();
+        $check = static::checkPHP();
         if (!$check['success']) {
             $env = 'error';
             $errors['php'] = $check['messages'];
         }
 
-        $check = self::checkFS();
+        $check = static::checkFS();
         if (!$check['success']) {
             $env = 'error';
             $errors['fs'] = $check['messages'];
@@ -78,7 +78,7 @@ class System
     {
         $success = true;
         $messages = [];
-        self::loadRequirements();
+        static::loadRequirements();
         $required = Configure::read('Requirements');
         if (!version_compare(PHP_VERSION, $required['phpMin'], '>=')) {
             $success = false;
@@ -106,7 +106,7 @@ class System
     {
         $success = true;
         $messages = [];
-        self::loadRequirements();
+        static::loadRequirements();
 
         foreach (Configure::read('Requirements.writable') as $wr) {
             if (!is_writable($wr)) {
