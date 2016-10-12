@@ -32,7 +32,6 @@
 		'status' => false
 	]
 }
-
 {$options = array_merge($defaultOptions, $options|default:[])}
 
 <div class="tab{if $view->SessionFilter->check()} open filteractive{/if}"><h2>{t}filters{/t}</h2></div>

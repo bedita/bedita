@@ -215,16 +215,19 @@ available options:
 			{/if}
 			<div class="cell" id="statusfilter">
 				{if $view->SessionFilter->check('status') || !$view->SessionFilter->check()}
-					{$status = $view->SessionFilter->read('status')}
+					{$s = $view->SessionFilter->read('status')}
+					{if !empty($s)}
+						{$statusFilter = $s}
+					{/if}
 				{/if}
 				<label>{t}status{/t}:</label>
 					{foreach item='label' key='key' from=$statusLabels}
 						<fieldset style="display:inline; border-left:1px solid gray;
 							padding:5px 10px 5px 10px">
 							<input type="checkbox" class="statusFilter" value="{$key}" id="status_{$key}" name="filter[status][{$key}]"
-							{if !empty($status) && !empty($status[{$key}])}
+							{if !empty($statusFilter) && !empty($statusFilter[{$key}])}
 								checked="checked"
-							{elseif empty($status)}
+							{elseif empty($statusFilter)}
 								checked="checked"
 							{/if}
 						    />
