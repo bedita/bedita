@@ -34,26 +34,36 @@ class BeditaShell extends Shell
 
     /**
      * User input data array
+     *
+     * @var array
      */
     protected $userInputData = null;
 
     /**
      * Is configuration modified from startup default?
+     *
+     * @var boolean
      */
     protected $configModified = false;
 
     /**
      * Configuration file path
+     *
+     * @var string
      */
     public $configPath = null;
 
     /**
      * Default initial user name
+     *
+     * @var string
      */
     public $defaultUsername = 'bedita';
 
     /**
      * Default initial user id
+     *
+     * @var int
      */
     public $defaultUserId = 1;
 

@@ -46,6 +46,8 @@ class BeditaShellTest extends TestCase
 
     /**
      * Exclude from drop tables action
+     *
+     * @var array
      */
     public $excludeFromDrop = [];
 

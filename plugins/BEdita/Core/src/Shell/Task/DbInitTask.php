@@ -27,6 +27,8 @@ class DbInitTask extends Shell
 
     /**
      * DB configuration to use
+     *
+     * @var string
      */
     public $dbConfig = 'default';
 
