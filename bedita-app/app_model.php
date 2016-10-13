@@ -1808,3 +1808,18 @@ abstract class BeditaExportFilter extends BEAppModel {
 	}
 
 };
+
+/**
+ * Uploadable Model Interface
+ */
+interface UploadableInterface {
+
+    public function apiUpload(File $file, array $options = array());
+
+    public function apiUploadTransformData(array $data);
+
+    public function apiUploadQuota(array $uploadableObjects, array $user, $event);
+
+    public function apiCreateThumbnail($id = null, $thumbConf = array());
+}
+
