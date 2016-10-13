@@ -21,7 +21,7 @@ use Cake\TestSuite\TestCase;
 /**
  * \BEdita\Core\Utility\System Test Case
  *
- * @covers \BEdita\Core\Utility\System
+ * @coversDefaultClass \BEdita\Core\Utility\System
  */
 class SystemTest extends TestCase
 {

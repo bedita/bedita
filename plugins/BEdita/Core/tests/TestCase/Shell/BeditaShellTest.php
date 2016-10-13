@@ -11,7 +11,7 @@ use Cake\TestSuite\TestCase;
 /**
  * \BEdita\Core\Shell\BeditaShell Test Case
  *
- * @covers \BEdita\Core\Shell\BeditaShell
+ * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
 class BeditaShellTest extends TestCase
 {
