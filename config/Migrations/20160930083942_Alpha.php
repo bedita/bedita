@@ -18,7 +18,6 @@ class Alpha extends AbstractMigration
      */
     public function up()
     {
-
         $columnTypes = $this->getAdapter()->getColumnTypes();
         $enum = in_array('enum', $columnTypes) ? 'enum' : 'string';
 
@@ -66,7 +65,7 @@ class Alpha extends AbstractMigration
             ->addColumn('params', 'text', [
                 'comment' => 'annotation parameters (serialized JSON)',
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addIndex(
@@ -176,7 +175,7 @@ class Alpha extends AbstractMigration
             ->addColumn('params', 'text', [
                 'comment' => 'external provider parameters',
                 'default' => null,
-                'limit' => 255,
+                'limit' => null,
                 'null' => false,
             ])
             ->addIndex(
@@ -454,7 +453,7 @@ class Alpha extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('mime_type', 'text', [
+            ->addColumn('mime_type', 'string', [
                 'comment' => 'resource mime type',
                 'default' => null,
                 'limit' => 255,
@@ -493,7 +492,7 @@ class Alpha extends AbstractMigration
                 'null' => true,
                 'signed' => false,
             ])
-            ->addColumn('provider', 'text', [
+            ->addColumn('provider', 'string', [
                 'comment' => 'external provider/service name',
                 'default' => null,
                 'limit' => 255,
@@ -505,7 +504,7 @@ class Alpha extends AbstractMigration
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('thumbnail', 'text', [
+            ->addColumn('thumbnail', 'string', [
                 'comment' => 'remote media thumbnail URL',
                 'default' => null,
                 'limit' => 255,
@@ -665,7 +664,7 @@ class Alpha extends AbstractMigration
             ->addColumn('params', 'text', [
                 'comment' => 'relation parameters (JSON format)',
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addIndex(
@@ -822,18 +821,18 @@ class Alpha extends AbstractMigration
             ])
             ->addColumn('description', 'text', [
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('body', 'text', [
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('extra', 'text', [
                 'comment' => 'object data extensions (JSON format)',
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addColumn('lang', 'char', [
@@ -911,13 +910,13 @@ class Alpha extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('name', 'text', [
+            ->addColumn('name', 'string', [
                 'comment' => 'person name, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('surname', 'text', [
+            ->addColumn('surname', 'string', [
                 'comment' => 'person surname, can be NULL',
                 'default' => null,
                 'limit' => 255,
@@ -929,13 +928,13 @@ class Alpha extends AbstractMigration
                 'limit' => 100,
                 'null' => true,
             ])
-            ->addColumn('person_title', 'text', [
+            ->addColumn('person_title', 'string', [
                 'comment' => 'person title, for example Sir, Madame, Prof, Doct, ecc., can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('gender', 'text', [
+            ->addColumn('gender', 'string', [
                 'comment' => 'gender, for example male, female, can be NULL',
                 'default' => null,
                 'limit' => 255,
@@ -959,13 +958,13 @@ class Alpha extends AbstractMigration
                 'limit' => null,
                 'null' => false,
             ])
-            ->addColumn('company_name', 'text', [
+            ->addColumn('company_name', 'string', [
                 'comment' => 'name of company, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('company_kind', 'text', [
+            ->addColumn('company_kind', 'string', [
                 'comment' => 'type of company, can be NULL',
                 'default' => null,
                 'limit' => 255,
@@ -977,31 +976,31 @@ class Alpha extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('city', 'text', [
+            ->addColumn('city', 'string', [
                 'comment' => 'city, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('zipcode', 'text', [
+            ->addColumn('zipcode', 'string', [
                 'comment' => 'zipcode, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('country', 'text', [
+            ->addColumn('country', 'string', [
                 'comment' => 'country, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('state_name', 'text', [
+            ->addColumn('state_name', 'string', [
                 'comment' => 'state, can be NULL',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('phone', 'text', [
+            ->addColumn('phone', 'string', [
                 'comment' => 'first phone number, can be NULL',
                 'default' => null,
                 'limit' => 255,
@@ -1189,7 +1188,7 @@ class Alpha extends AbstractMigration
                 'limit' => 100,
                 'null' => false,
             ])
-            ->addColumn('label', 'text', [
+            ->addColumn('label', 'string', [
                 'comment' => 'relation label',
                 'default' => null,
                 'limit' => 255,
@@ -1201,7 +1200,7 @@ class Alpha extends AbstractMigration
                 'limit' => 100,
                 'null' => false,
             ])
-            ->addColumn('inverse_label', 'text', [
+            ->addColumn('inverse_label', 'string', [
                 'comment' => 'inverse relation label',
                 'default' => null,
                 'limit' => 255,
@@ -1216,7 +1215,7 @@ class Alpha extends AbstractMigration
             ->addColumn('params', 'text', [
                 'comment' => 'relation parameters definitions (JSON format)',
                 'default' => null,
-                'limit' => 16777215,
+                'limit' => null,
                 'null' => true,
             ])
             ->addIndex(
@@ -1462,7 +1461,7 @@ class Alpha extends AbstractMigration
                 'limit' => 100,
                 'null' => false,
             ])
-            ->addColumn('password_hash', 'text', [
+            ->addColumn('password_hash', 'string', [
                 'comment' => 'login password hash, if empty external auth is used',
                 'default' => null,
                 'limit' => 255,
