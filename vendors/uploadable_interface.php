@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008-2014 ChannelWeb Srl, Chialab Srl
+ * Copyright 2016 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -22,10 +22,9 @@
 /**
  * Uploadable Model Interface
  */
-
 interface UploadableInterface {
 
-	public function apiUpload(File $file, array $options = array());
+    public function apiUpload(File $file, array $options = array());
 
     public function apiUploadTransformData(array $data);
 
@@ -33,4 +32,4 @@ interface UploadableInterface {
 
     public function apiCreateThumbnail($id = null, $thumbConf = array());
 }
-?>
+
