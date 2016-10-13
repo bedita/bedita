@@ -19,6 +19,7 @@ use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -147,7 +148,6 @@ class ExceptionRendererTest extends TestCase
                 [
                     'debug' => 1,
                 ],
-                false
             ],
             'debugOff' => [
                 [
@@ -156,48 +156,69 @@ class ExceptionRendererTest extends TestCase
                         'html' => true
                     ],
                 ],
-                false
             ],
-            'forceOutputSafe' => [
-                [
-                    'debug' => 1,
-                ],
-                false,
-                true
-            ],
-            'noPlugin' => [
+            'debugOnPluginOff' => [
                 [
                     'debug' => 1,
                 ],
                 true
             ],
-            'noPluginForceOutputSafe' => [
+            'debugOffPluginOff' => [
                 [
-                    'debug' => 1,
+                    'debug' => 0,
+                    'Accept' => [
+                        'html' => true
+                    ],
                 ],
-                true,
                 true
             ],
         ];
     }
 
     /**
-     * Test content type negotiation rules.
+     * Test render html error.
      *
      * @param array $config The configuration to use.
-     * @param bool $unloadPlugin If BEdita/API should be unloaded before testing.
-     * @param bool $forceOutputSafe If should be forced the fallback to _outputMessageSafe()
+     * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
      *
      * @dataProvider renderHtmlProvider
+     * @covers ::render()
+     * @covers ::setupView()
+     * @covers ::jsonError()
+     */
+    public function testRenderHtml($config, $unloadPlugin = false)
+    {
+        Configure::write($config);
+
+        if ($unloadPlugin) {
+            Plugin::unload('BEdita/API');
+        }
+
+        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
+        $renderer->controller->request->env('HTTP_ACCEPT', 'text/html');
+        $response = $renderer->render();
+
+        $this->checkResponseHtml($renderer, $response, $config['debug']);
+    }
+
+    /**
+     * Test render html error forcing the fallback to ::_outputMessageSafe()
+     *
+     * @param array $config The configuration to use.
+     * @param bool $unloadPlugin If unload BEdita/API before render.
+     * @return void
+     *
+     * @dataProvider renderHtmlProvider
+     * @covers ::render()
      * @covers ::setupView()
      * @covers ::jsonError()
      * @covers ::_outputMessageSafe()
      */
-    public function testRenderHtml($config, $unloadPlugin, $forceOutputSafe = false)
+    public function testRenderHtmlSafe($config, $unloadPlugin = false)
     {
         Configure::write($config);
-        // unload plugin to simulate error when BEdita/API is not already loaded
+
         if ($unloadPlugin) {
             Plugin::unload('BEdita/API');
         }
@@ -205,33 +226,30 @@ class ExceptionRendererTest extends TestCase
         $renderer = new ExceptionRenderer(new NotFoundException('test html'));
         $renderer->controller->request->env('HTTP_ACCEPT', 'text/html');
 
-        if ($forceOutputSafe) {
-            $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
-                // force missing layout exception
-                $event->subject()->viewBuilder()->layoutPath('find_me_if_you_can');
-            });
-        }
+        $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
+            // force missing layout exception
+            $event->subject()->viewBuilder()->layoutPath('find_me_if_you_can');
+        });
 
         $response = $renderer->render();
 
+        $this->assertEquals('', $renderer->controller->viewBuilder()->layoutPath());
+        $this->checkResponseHtml($renderer, $response, $config['debug']);
+    }
+
+    /**
+     *  Perform some asserts to check html response
+     *
+     * @param \BEdita\API\Error\ExceptionRenderer $renderer
+     * @param \Cake\Network\Response $response
+     * @param int $debug
+     * @return void
+     */
+    protected function checkResponseHtml(ExceptionRenderer $renderer, Response $response, $debug)
+    {
         $this->assertStringStartsWith('text/html', $response->type());
         $doctype = strpos(strtolower($response->body()), '<!doctype html>');
         $this->assertNotFalse($doctype);
-
-        $pluginApiTemplatePath = ROOT . DS . 'plugins' . DS . 'BEdita' . DS . 'API' . DS . 'src' . DS . 'Template' . DS;
-        $pathsTemplates = Configure::read('App.paths.templates');
-
-        if ($unloadPlugin) {
-            $this->assertNotEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
-            $this->assertContains($pluginApiTemplatePath, $pathsTemplates);
-        } else {
-            $this->assertEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
-            $this->assertNotContains($pluginApiTemplatePath, $pathsTemplates);
-        }
-
-        if ($forceOutputSafe) {
-            $this->assertEquals('', $renderer->controller->viewBuilder()->layoutPath());
-        }
 
         $this->assertArrayHasKey('responseBody', $renderer->controller->viewVars);
         $responseBody = json_decode($renderer->controller->viewVars['responseBody'], true);
@@ -242,81 +260,113 @@ class ExceptionRendererTest extends TestCase
         $this->assertArrayHasKey('meta', $responseBody['error']);
         $this->assertEquals(404, $responseBody['error']['status']);
         $this->assertEquals('test html', $responseBody['error']['title']);
-        if (!$config['debug']) {
+
+        if (!$debug) {
             $this->assertEmpty($responseBody['error']['meta']);
         } else {
             $this->assertNotEmpty($responseBody['error']['meta']);
             $this->assertArrayHasKey('trace', $responseBody['error']['meta']);
             $this->assertNotEmpty($responseBody['error']['meta']['trace']);
         }
+
+        $pluginApiTemplatePath = ROOT . DS . 'plugins' . DS . 'BEdita' . DS . 'API' . DS . 'src' . DS . 'Template' . DS;
+        $pathsTemplates = Configure::read('App.paths.templates');
+        if (Plugin::loaded('BEdita/API')) {
+            $this->assertEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
+            $this->assertNotContains($pluginApiTemplatePath, $pathsTemplates);
+        } else {
+            $this->assertNotEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
+            $this->assertContains($pluginApiTemplatePath, $pathsTemplates);
+        }
     }
 
     /**
-     * Data provider for `testRenderNoHtml` test case.
+     * Data provider for `testRenderJson` test case.
      *
      * @return array
      */
-    public function renderNoHtmlProvider()
+    public function renderJsonProvider()
     {
         return [
             'debugOn' => [
-                'application/json',
+                'application/vnd.api+json',
                 [
                     'debug' => 1,
                 ],
-                false
             ],
             'debugOff' => [
                 'text/html',
                 [
                     'debug' => 0,
+                    'Accept' => [
+                        'html' => false
+                    ]
                 ],
-                false
             ],
-            'forceOutputSafe' => [
+            'debugOnPluginOff' => [
                 'application/vnd.api+json',
-                [
-                    'debug' => 1,
-                ],
-                false,
-                true
-            ],
-            'noPlugin' => [
-                'application/json',
                 [
                     'debug' => 1,
                 ],
                 true
             ],
-            'noPluginForceOutputSafe' => [
-                'application/vnd.api+json',
+            'debugOffPluginOff' => [
+                'text/html',
                 [
-                    'debug' => 1,
+                    'debug' => 0,
+                    'Accept' => [
+                        'html' => false
+                    ]
                 ],
-                true,
                 true
             ],
         ];
     }
 
     /**
-     * Test content type negotiation rules.
+     * Test render json error
      *
      * @param string $accept Request's "Accept" header.
      * @param array $config The configuration to use.
-     * @param bool $unloadPlugin If BEdita/API should be unloaded before testing.
-     * @param bool $forceOutputSafe If should be forced the fallback to _outputMessageSafe()
+     * @param bool $unloadPlugin If unload BEdita/API before render.
      * @return void
      *
-     * @dataProvider renderNoHtmlProvider
+     * @dataProvider renderJsonProvider
+     * @covers ::setupView()
+     * @covers ::jsonError()
+     */
+    public function testRenderJson($accept, $config, $unloadPlugin = false)
+    {
+        Configure::write($config);
+
+        if ($unloadPlugin) {
+            Plugin::unload('BEdita/API');
+        }
+
+        $renderer = new ExceptionRenderer(new NotFoundException('test html'));
+        $renderer->controller->request->env('HTTP_ACCEPT', $accept);
+        $response = $renderer->render();
+
+        $this->checkResponseJson($renderer, $response, $config['debug']);
+    }
+
+    /**
+     * Test render json error forcing the fallback to ::_outputMessageSafe()
+     *
+     * @param string $accept Request's "Accept" header.
+     * @param array $config The configuration to use.
+     * @param bool $unloadPlugin If unload BEdita/API before render.
+     * @return void
+     *
+     * @dataProvider renderJsonProvider
      * @covers ::setupView()
      * @covers ::jsonError()
      * @covers ::_outputMessageSafe()
      */
-    public function testRenderNoHtml($accept, $config, $unloadPlugin, $forceOutputSafe = false)
+    public function testRenderJsonSafe($accept, $config, $unloadPlugin = false)
     {
         Configure::write($config);
-        // unload plugin to simulate error when BEdita/API is not already loaded
+
         if ($unloadPlugin) {
             Plugin::unload('BEdita/API');
         }
@@ -324,16 +374,27 @@ class ExceptionRendererTest extends TestCase
         $renderer = new ExceptionRenderer(new NotFoundException('test html'));
         $renderer->controller->request->env('HTTP_ACCEPT', $accept);
 
-        if ($forceOutputSafe) {
-            $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
-                throw new InternalErrorException();
-            });
-        }
+        $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
+            throw new InternalErrorException();
+        });
 
         $response = $renderer->render();
 
-        $contentTypeExpected = ($accept === 'application/json') ? $accept : 'application/vnd.api+json';
+        $this->checkResponseJson($renderer, $response, $config['debug']);
+    }
 
+    /**
+     *  Perform some asserts to check html response
+     *
+     * @param \BEdita\API\Error\ExceptionRenderer $renderer
+     * @param \Cake\Network\Response $response
+     * @param int $debug
+     * @return void
+     */
+    protected function checkResponseJson(ExceptionRenderer $renderer, Response $response, $debug)
+    {
+        $accept = $renderer->controller->request->header('accept');
+        $contentTypeExpected = ($accept == 'application/json') ? $accept : 'application/vnd.api+json';
         $this->assertStringStartsWith($contentTypeExpected, $response->type());
         $responseBody = json_decode($response->body(), true);
         $this->assertTrue(is_array($responseBody));
@@ -343,7 +404,7 @@ class ExceptionRendererTest extends TestCase
         $this->assertArrayHasKey('title', $responseBody['error']);
         $this->assertEquals(404, $responseBody['error']['status']);
         $this->assertEquals('test html', $responseBody['error']['title']);
-        if (!$config['debug']) {
+        if (!$debug) {
             $this->assertArrayNotHasKey('meta', $responseBody['error']);
         } else {
             $this->assertArrayHasKey('meta', $responseBody['error']);
