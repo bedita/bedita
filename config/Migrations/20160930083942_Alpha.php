@@ -2,11 +2,20 @@
 use Cake\Auth\WeakPasswordHasher;
 use Migrations\AbstractMigration;
 
+/**
+ * Database schema for Alpha release.
+ */
 class Alpha extends AbstractMigration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public $autoId = false;
 
+    /**
+     * {@inheritDoc}
+     */
     public function up()
     {
 
@@ -1916,6 +1925,9 @@ class Alpha extends AbstractMigration
             ->update();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function down()
     {
         $this->table('annotations')
