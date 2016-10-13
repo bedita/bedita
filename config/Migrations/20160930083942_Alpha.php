@@ -1564,7 +1564,7 @@ class Alpha extends AbstractMigration
             ->insert([
                 'id' => 1,
                 'name' => 'admin',
-                'description' => 'Administrators\' role',
+                'description' => 'Administrators role',
                 'unchangeable' => 1,
                 'created' => date('Y-m-d H:i:s'),
                 'modified' => date('Y-m-d H:i:s'),
