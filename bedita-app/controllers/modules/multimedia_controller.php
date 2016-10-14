@@ -3,7 +3,7 @@
  * 
  * BEdita - a semantic content management framework
  * 
- * Copyright 2008 ChannelWeb Srl, Chialab Srl
+ * Copyright 2008-2016 ChannelWeb Srl, Chialab Srl
  * 
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published 
@@ -22,12 +22,6 @@
 /**
  * Module Multimedia: management of Image, Audio, Video objects
  * 
- *
- * @version         $Revision$
- * @modifiedby      $LastChangedBy$
- * @lastmodified    $LastChangedDate$
- * 
- * $Id$
  */
 class MultimediaController extends ModulesController {
     var $name = 'Multimedia';
@@ -208,6 +202,12 @@ class MultimediaController extends ModulesController {
                     $this->userErrorMessage(__('Media file is missing', true) . ' -  ' . $url);
                     $this->eventError("multimedia missing file: " . $url);
                 }
+            }
+
+            // #707 check exceeding file size
+            if (!empty($obj['file_size']) && $name === 'image' && 
+                    ($obj['file_size'] > Configure::read('imgFilesizeLimit'))) {
+                $this->userWarnMessage(__('Image file is too big, unable to create thumbnails', true));
             }
 
             $this->set('objectProperty', $this->BeCustomProperty->setupForView($obj, Configure::read("objectTypes." . $model->name . ".id")));
