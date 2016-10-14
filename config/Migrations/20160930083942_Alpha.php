@@ -275,7 +275,7 @@ class Alpha extends AbstractMigration
                     'role_id',
                 ],
                 [
-                    'name' => 'applications_endapprole_uq',
+                    'name' => 'endpointpermissions_endapprole_uq',
                     'unique' => true,
                 ]
             )
@@ -284,7 +284,7 @@ class Alpha extends AbstractMigration
                     'application_id',
                 ],
                 [
-                    'name' => 'endpointspermissions_applicationid_idx',
+                    'name' => 'endpointpermissions_applicationid_idx',
                 ]
             )
             ->addIndex(
@@ -292,7 +292,7 @@ class Alpha extends AbstractMigration
                     'endpoint_id',
                 ],
                 [
-                    'name' => 'endpointspermissions_endpointid_idx',
+                    'name' => 'endpointpermissions_endpointid_idx',
                 ]
             )
             ->addIndex(
@@ -300,7 +300,7 @@ class Alpha extends AbstractMigration
                     'role_id',
                 ],
                 [
-                    'name' => 'endpointspermissions_roleid_idx',
+                    'name' => 'endpointpermissions_roleid_idx',
                 ]
             )
             ->create();
@@ -365,7 +365,7 @@ class Alpha extends AbstractMigration
                     'object_type_id',
                 ],
                 [
-                    'name' => 'endpoins_objecttypeid_idx',
+                    'name' => 'endpoints_objecttypeid_idx',
                 ]
             )
             ->create();
@@ -1607,7 +1607,7 @@ class Alpha extends AbstractMigration
                 'applications',
                 'id',
                 [
-                    'constraint' => 'endpointspermissions_applicationid_fk',
+                    'constraint' => 'endpointpermissions_applicationid_fk',
                     'update' => 'RESTRICT',
                     'delete' => 'RESTRICT'
                 ]
@@ -1617,7 +1617,7 @@ class Alpha extends AbstractMigration
                 'endpoints',
                 'id',
                 [
-                    'constraint' => 'endpointspermissions_endpointid_fk',
+                    'constraint' => 'endpointpermissions_endpointid_fk',
                     'update' => 'RESTRICT',
                     'delete' => 'RESTRICT'
                 ]
@@ -1627,7 +1627,7 @@ class Alpha extends AbstractMigration
                 'roles',
                 'id',
                 [
-                    'constraint' => 'endpointspermissions_roleid_fk',
+                    'constraint' => 'endpointpermissions_roleid_fk',
                     'update' => 'RESTRICT',
                     'delete' => 'RESTRICT'
                 ]
@@ -1640,7 +1640,7 @@ class Alpha extends AbstractMigration
                 'object_types',
                 'id',
                 [
-                    'constraint' => 'endpoins_objecttypeid_fk',
+                    'constraint' => 'endpoints_objecttypeid_fk',
                     'update' => 'RESTRICT',
                     'delete' => 'RESTRICT'
                 ]
