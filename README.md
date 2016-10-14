@@ -39,7 +39,7 @@ Prerequisites:
  $ composer install
  ```
 
-3. Configure your database connection editing `Datasources.default` in `config/app.php`
+3. Create an empty MySQL database
 4. Run shell script to initialize the database and create first admin user
 
  ```bash
