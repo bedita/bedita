@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2016-05-23 18:06:25\n"
+"POT-Creation-Date: 2016-10-14 15:19:55\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -25,6 +25,9 @@ msgid "1 week forward"
 msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
+msgstr ""
+
+msgid "A subsection (ID %d) has been removed from this parent by a concurrent editor! (Maybe you using another browser tab?)"
 msgstr ""
 
 msgid "Access forbidden to object"
@@ -892,6 +895,9 @@ msgid "IP accepted"
 msgstr ""
 
 msgid "IP banned"
+msgstr ""
+
+msgid "Image file is too big, unable to create thumbnails"
 msgstr ""
 
 msgid "Immutable group"

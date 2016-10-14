@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-12-11 10:40:01\n"
+"POT-Creation-Date: 2016-10-14 15:13:52\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -27,6 +27,11 @@ msgid "1 week forward"
 msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
+msgstr ""
+
+msgid ""
+"A subsection (ID %d) has been removed from this parent by a concurrent "
+"editor! (Maybe you using another browser tab?)"
 msgstr ""
 
 msgid "Access forbidden to object"
@@ -911,6 +916,9 @@ msgstr ""
 msgid "IP banned"
 msgstr ""
 
+msgid "Image file is too big, unable to create thumbnails"
+msgstr ""
+
 msgid "Immutable group"
 msgstr ""
 
@@ -1625,6 +1633,9 @@ msgstr ""
 msgid "Remove selected from category"
 msgstr ""
 
+msgid "Required file was not found: "
+msgstr ""
+
 msgid "Reserved method called from url"
 msgstr ""
 
@@ -1663,6 +1674,9 @@ msgstr "Seção borrada"
 
 msgid "Section saved"
 msgstr "Seção guardada"
+
+msgid "Section viewed not in publication tree"
+msgstr ""
 
 msgid "Sections"
 msgstr "Seções"
@@ -1843,6 +1857,9 @@ msgstr ""
 
 msgid ""
 "The content is fixed: it's not possible to change the position in the tree"
+msgstr ""
+
+msgid "The object you're about to clone contains relations"
 msgstr ""
 
 msgid "This content is not on publication tree. Continue?"

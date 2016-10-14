@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-05-23 18:06:25\n"
+"POT-Creation-Date: 2016-10-14 15:13:52\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -28,6 +28,13 @@ msgstr "1 settimana avanti"
 
 msgid "A new version of this is available. Do you want to update it?"
 msgstr "È disponibile una nuova versione del plugin. Vuoi aggiornarlo ora?"
+
+msgid ""
+"A subsection (ID %d) has been removed from this parent by a concurrent "
+"editor! (Maybe you using another browser tab?)"
+msgstr ""
+"Una sotto sezione (ID %d) è stata rimossa dalla sua posizione precedente "
+" da un editore concorrente! (Forse stai usando un altro tab del browser?)"
 
 msgid "Access forbidden to object"
 msgstr "Accesso all'oggetto vietato"
@@ -926,6 +933,9 @@ msgstr "IP accettato"
 
 msgid "IP banned"
 msgstr "IP rifiutato (banned)"
+
+msgid "Image file is too big, unable to create thumbnails"
+msgstr "Il file è troppo grande, impossibile creare la thumbnail"
 
 msgid "Immutable group"
 msgstr "Gruppo non modificabile"

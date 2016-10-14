@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2015-12-11 10:40:01\n"
+"POT-Creation-Date: 2016-10-14 15:13:52\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Nils-Christoph Fiedler <ncfiedler@fedoraproject.org>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -31,6 +31,11 @@ msgid "1 week forward"
 msgstr ""
 
 msgid "A new version of this is available. Do you want to update it?"
+msgstr ""
+
+msgid ""
+"A subsection (ID %d) has been removed from this parent by a concurrent "
+"editor! (Maybe you using another browser tab?)"
 msgstr ""
 
 msgid "Access forbidden to object"
@@ -931,6 +936,9 @@ msgstr "IP akzeptiert"
 msgid "IP banned"
 msgstr "IP verbannt"
 
+msgid "Image file is too big, unable to create thumbnails"
+msgstr ""
+
 msgid "Immutable group"
 msgstr "Unveränderliche Gruppe"
 
@@ -1657,6 +1665,9 @@ msgstr "Gewählte löschen aus"
 msgid "Remove selected from category"
 msgstr "Gewählte aus Kategorie löschen"
 
+msgid "Required file was not found: "
+msgstr ""
+
 msgid "Reserved method called from url"
 msgstr ""
 
@@ -1695,6 +1706,9 @@ msgstr "Sektion gelöscht"
 
 msgid "Section saved"
 msgstr "Sektion gespeichert"
+
+msgid "Section viewed not in publication tree"
+msgstr ""
 
 msgid "Sections"
 msgstr ""
@@ -1882,6 +1896,9 @@ msgstr ""
 "Der Inhalt ist fixiert: Es ist nicht möglich, seine Position im Baum zu "
 "verändernDer Inhalt ist fixiert: Es ist nicht möglich, seine Position im "
 "Baum zu verändern"
+
+msgid "The object you're about to clone contains relations"
+msgstr ""
 
 msgid "This content is not on publication tree. Continue?"
 msgstr ""
