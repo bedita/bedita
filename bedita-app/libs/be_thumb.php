@@ -210,6 +210,8 @@ class BeThumb {
             return $this->imgMissingFile;
         }
         if (!empty($data['file_size']) && $this->isExceedingSize($data['file_size'])) {
+            $this->log('Exceeding file size: ' . $data['file_size'] . 
+                ' max allowed: ' . Configure::read('imgFilesizeLimit') . ' uri: ' . $data['uri'], 'warn');
             return (!$this->imageInfo['remote'] ? Configure::read('mediaUrl') : '') . $this->imageInfo['path'];
         }
         // #769 - avoid file access
