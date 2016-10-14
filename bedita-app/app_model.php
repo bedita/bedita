@@ -1811,15 +1811,85 @@ abstract class BeditaExportFilter extends BEAppModel {
 
 /**
  * Uploadable Model Interface
+ *
+ * Define the methods that a Model must implement
+ * if it should support file upload through API and want to handle it
  */
 interface UploadableInterface {
 
+    /**
+     * Called during the upload action it receives the temporary file
+     * and move it to the wanted location.
+     *
+     * `$options` contains:
+     *
+     * - 'fileName' the safe file name that should be used saving file
+     * - 'hashFile' the file hash (md5) that can be used to know if file is already in the system
+     * - 'user' the user is doing upload
+     *
+     * @param File $file File object instance of temporary file.
+     * @param array $options Additional info about the upload request.
+     * @return string|false Path of uploaded file relative to base directory, or `false` on failure.
+     */
     public function apiUpload(File $file, array $options = array());
 
+    /**
+     * Transform data for uploaded object.
+     * Called from the API when the upload is finalized creating the object type
+     * with file uploaded associated to it.
+     *
+     * `$data` contains info about a file previously uploaded:
+     *
+     * - 'uri' the file url
+     * - 'name' the file name
+     * - 'mime_type' the file mime type
+     * - 'file_size' the file dimension
+     * - 'original_name' the original file name
+     * - 'hash_file' the file hash
+     *
+     * It must return an array of object's fields to save
+     *
+     * @param array $data Uploaded file data.
+     * @return array
+     */
     public function apiUploadTransformData(array $data);
 
+    /**
+     * Find quota usage.
+     *
+     * Given an array of uploadable object types and a user
+     * it calculates the quota usage and the total amount of
+     * uploaded objects for that user.
+     *
+     * The result must be merged with `$event->result` and returned in the form:
+     *
+     * ```
+     * array(
+     *     'object_type_name' => array(
+     *         'size' => 12345678,
+     *         'number' => 256
+     *      ),
+     * )
+     * ```
+     *
+     * This method is intended to be bound to `Api.uploadQuota` event
+     * triggered for example by `ApiUploadComponent`.
+     *
+     * @param array $uploadableObjects Array of uploadable object types.
+     * @param array $user User data.
+     * @param object $event Dispatched event.
+     * @return array
+     */
     public function apiUploadQuota(array $uploadableObjects, array $user, $event);
 
+    /**
+     * Create the thumbnail for the requested resource (if necessary) and returns the uri
+     *
+     * @param int $id The id of the object you want to create the thumbnail for.
+     * @param array $thumbConf The thumb configuration
+     *
+     * @return string local thumb path
+     */
     public function apiCreateThumbnail($id = null, $thumbConf = array());
 }
 
