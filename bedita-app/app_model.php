@@ -1890,6 +1890,6 @@ interface UploadableInterface {
      *
      * @return string local thumb path
      */
-    public function apiCreateThumbnail($id = null, $thumbConf = array());
+    public function apiCreateThumbnail($id, $thumbConf = array());
 }
 
