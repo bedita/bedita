@@ -466,6 +466,8 @@ class UsersController extends ModulesController {
     }
 
     /**
+     * Save single group from group view
+     *
      * @throws BeditaException
      */
     function saveGroup() {
@@ -476,9 +478,12 @@ class UsersController extends ModulesController {
         $groupId = $this->BeAuth->saveGroup($this->data);
         $groupName = $this->data['Group']['name'];
 
-        //manage users to group
-        if (!empty($this->data['users']) && !empty($groupName)) {
-            
+        // manage group users
+        if (!empty($groupName)) {
+            if (empty($this->data['users'])) {
+                $this->data['users'] = array();
+            }
+
             $g = $this->Group->findById($groupId);
             $usersInGroup = array();
         
