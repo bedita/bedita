@@ -16,7 +16,6 @@ use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
-use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Inflector;
 use Migrations\Migrations;
@@ -73,6 +72,9 @@ class CheckSchemaTask extends Shell
         }
 
         $connection = ConnectionManager::get($this->param('connection'));
+        if (!($connection instanceof Connection)) {
+            $this->abort('Unknown connection type');
+        }
 
         $this->checkMigrationsStatus($connection);
         $this->checkConventions($connection);
@@ -84,10 +86,10 @@ class CheckSchemaTask extends Shell
     /**
      * Check if all migrations have already been migrated.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
+     * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkMigrationsStatus(ConnectionInterface $connection)
+    protected function checkMigrationsStatus(Connection $connection)
     {
         $migrations = new Migrations(['connection' => $connection->configName()]);
         $status = $migrations->status();
@@ -205,15 +207,11 @@ class CheckSchemaTask extends Shell
     /**
      * Check if SQL conventions are followed.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
+     * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkConventions(ConnectionInterface $connection)
+    protected function checkConventions(Connection $connection)
     {
-        if (!($connection instanceof Connection)) {
-            return;
-        }
-
         $this->verbose('Checking SQL conventions:');
         $allColumns = [];
         $tables = $this->filterPhinxlogTables($connection->schemaCollection()->listTables());
@@ -264,10 +262,10 @@ class CheckSchemaTask extends Shell
     /**
      * Check if changes in schema occurred.
      *
-     * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
+     * @param \Cake\Database\Connection $connection Connection instance.
      * @return void
      */
-    protected function checkDiff(ConnectionInterface $connection)
+    protected function checkDiff(Connection $connection)
     {
         $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
         if (!($diffTask instanceof MigrationDiffTask)) {
@@ -365,6 +363,11 @@ class CheckSchemaTask extends Shell
             } else {
                 $this->verbose(sprintf('Table <comment>%s</comment>: <info>OK</info>', $table));
             }
+        }
+
+        if ($check) {
+            $this->verbose('');
+            $this->out('<info>Everything seems just fine. Have a nice day!</info>');
         }
 
         return $check;
