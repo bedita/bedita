@@ -1833,9 +1833,10 @@ abstract class ApiBaseController extends FrontendController {
         }
         return $thumbConf;
     }
-    
+
     /**
      * Returns poster data for a single object (used in /posters)
+     *
      * @param int $id
      * @param array $thumbConf
      * @return poster data array
@@ -1846,6 +1847,9 @@ abstract class ApiBaseController extends FrontendController {
 
         if ($model && $model instanceof UploadableInterface){
             $poster = $model->apiCreateThumbnail($id, $thumbConf);
+            if (!$poster) {
+                $poster = array('id' => $id, 'uri' => '');
+            }
         } else {
             $poster = $this->BEObject->getPoster($id);
             if (!$poster) {
@@ -1854,10 +1858,8 @@ abstract class ApiBaseController extends FrontendController {
             $beThumb = BeLib::getObject('BeThumb');
             $poster['uri'] = $beThumb->image($poster, $thumbConf);
         }
-        if (!$poster) {
-            throw new BeditaBadRequestException();
-        }
-        $poster['id'] = (int) $poster['id'];
+
+        $poster['id'] = (int)$poster['id'];
 
         return $poster;
     }
