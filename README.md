@@ -31,7 +31,7 @@ Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
 
 ## Install
 
-For a detailed setup overview see [Setup](http://bedita.readthedocs.io/en/4-develop/setup.html)
+For a detailed setup overview see [Setup Documentation](http://bedita.readthedocs.io/en/4-develop/setup.html)
 
 Quick setup in four steps.
 
@@ -57,8 +57,8 @@ Quick setup in four steps.
  ```
 
 See [Web Server setup](http://bedita.readthedocs.io/en/4-develop/setup.html#web-server)
-to configured a virtualhost in your webserver.
-To see first `/home` endpoint response you may point the browser to `http://your-vhost/home`
+to configure a virtualhost in your webserver.
+To see first [`/home` endpoint](http://bedita.readthedocs.io/en/4-develop/endpoints/home.html) response you may point the browser to `http://your-vhost/home`
 
 Otherwise, only for development or test setups, you can take advantage of PHP builtin server
 with this simple command:
@@ -76,9 +76,4 @@ with this simple command:
 ## Licensing
 
 BEdita is released under [LGPL](/bedita/bedita/blob/master/LICENSE.LGPL), Lesser General Public License.
-
-## More info
-
- * For an overview of BEdita please visit http://www.bedita.com/
- * Get support on [Google Groups](https://groups.google.com/forum/#!forum/bedita)
 
