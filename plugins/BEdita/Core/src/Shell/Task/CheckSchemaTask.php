@@ -117,7 +117,7 @@ class CheckSchemaTask extends Shell
     protected function filterPhinxlogTables(array $tables)
     {
         return array_filter($tables, function ($table) {
-            return ($table !== 'phinxlog' &&  substr($table, -strlen('_phinxlog')) !== '_phinxlog');
+            return ($table !== 'phinxlog' && substr($table, -strlen('_phinxlog')) !== '_phinxlog');
         });
     }
 

@@ -133,7 +133,8 @@ class InitSchemaTask extends Shell
      * @param \Cake\Datasource\ConnectionInterface $connection Connection instance.
      * @return void
      */
-    protected function migrate(ConnectionInterface $connection) {
+    protected function migrate(ConnectionInterface $connection)
+    {
         $this->out('Running migrations... ', 0);
         $migrations = new Migrations(['connection' => $connection->configName()]);
         if (!$migrations->migrate()) {
