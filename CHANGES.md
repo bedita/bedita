@@ -1,5 +1,94 @@
 # ChangeLog
 
+## Version 3.8.0 - Corylus
+
+### User-visible changes
+
+* [#758](https://github.com/bedita/bedita/issues/758) Make CKEditor auto correct smart-quotes (double and single)
+* [#881](https://github.com/bedita/bedita/issues/881) Publications: alert user if a section has no parent section or publication
+* [#817](https://github.com/bedita/bedita/issues/817) On object clone display user message on cloned relations/positions
+* [#816](https://github.com/bedita/bedita/issues/816) Multimedia: after clone, an empty object view appears
+* [#809](https://github.com/bedita/bedita/issues/809) ui: add filter on object status in list view
+* [#1010](https://github.com/bedita/bedita/issues/1010) Cannot remove last user from a group in the viewGroup page
+* [#990](https://github.com/bedita/bedita/issues/990) Categories for modules: data pagination
+* [#991](https://github.com/bedita/bedita/issues/991) saving translations doesn't invalidate object cache
+* [#944](https://github.com/bedita/bedita/issues/944) [bug] Ubiquitous sections
+* [#902](https://github.com/bedita/bedita/issues/902) Event calendar view: wrong "today" reponse
+* [#881](https://github.com/bedita/bedita/issues/881) Publications: alert user if a section has no parent section or publication
+* [#809](https://github.com/bedita/bedita/issues/809) ui: add filter on object status in list view
+* [#794](https://github.com/bedita/bedita/issues/794) YouTube shortened URL are not interpreted
+
+### Frontend changes
+
+* [#897](https://github.com/bedita/bedita/issues/897) don't load some relations in frontend / API
+* [#828](https://github.com/bedita/bedita/pull/828) Path cache implementation
+* [#812](https://github.com/bedita/bedita/issues/812) Automagic invalidation of FrontendController::objectCache array
+* [#791](https://github.com/bedita/bedita/issues/791) cache: add nickname and object_type_id object cache
+* [#801](https://github.com/bedita/bedita/issues/801) frontend: user signup gives error on card creation
+* [#810](https://github.com/bedita/bedita/issues/810) Missing a way to invalidate FrontendController::objectCache array
+* [#792](https://github.com/bedita/bedita/issues/792) cache: add generic cache for BeTree::getChildren calls
+
+### Developer-visible changes
+
+* [#719](https://github.com/bedita/bedita/issues/719) Handle error code in BeditaException
+* [#1009](https://github.com/bedita/bedita/issues/1009) allowing a custom configuration for filterform status field
+* [#707](https://github.com/bedita/bedita/issues/707) beEmbedMedia cannot make thumbs of big images
+* [#999](https://github.com/bedita/bedita/issues/999) Introducing Uploadable interface for model
+* [#976](https://github.com/bedita/bedita/issues/976) [API] Make configurable file size, max size and max number of files for /files endpoint
+* [#965](https://github.com/bedita/bedita/issues/965) Refactor DbAdmin::updateStreamFields
+* [#978](https://github.com/bedita/bedita/issues/978) loadObj caching, bugged behaviour when request binding differs from cached obj binding
+* [#960](https://github.com/bedita/bedita/issues/960) Use BeEmbedMedia for custom object types extending Streams
+* [#918](https://github.com/bedita/bedita/issues/918) [API] Introducing files upload
+* [#927](https://github.com/bedita/bedita/pull/927) API upload
+* [#928](https://github.com/bedita/bedita/issues/928) Add fields to products table
+* [#883](https://github.com/bedita/bedita/issues/883) [API] save section need to be handled
+* [#919](https://github.com/bedita/bedita/issues/919) [API] allow custom Validator and Formatter components from frontend.cfg.php
+* [#905](https://github.com/bedita/bedita/issues/905) Cannot save editor access to multiple objects
+* [#899](https://github.com/bedita/bedita/issues/899) Change the way relations are saved in backend to avoid exceeding max_input_vars
+* [#896](https://github.com/bedita/bedita/issues/896) indexing error when removing and creating sections in same script
+* [#892](https://github.com/bedita/bedita/issues/892) Avoid to cache items when the writing of index cache fails using Redis
+* [#886](https://github.com/bedita/bedita/issues/886) Error creating thumbnails on S3
+* [#888](https://github.com/bedita/bedita/issues/888) Behaviors attached to object model should be able to change tree structure
+* [#887](https://github.com/bedita/bedita/issues/887) Loading Permissions using object cache shouldn't remove Group.id or User.id
+* [#885](https://github.com/bedita/bedita/issues/885) Delete session cookie on logout when $config['Session.start'] is false
+* [#882](https://github.com/bedita/bedita/issues/882) Shell script to clean object cache by id or type
+* [#876](https://github.com/bedita/bedita/issues/876) Invalidate object cache saving relation in ObjectRelation model
+* [#877](https://github.com/bedita/bedita/issues/877) [API] Invalidate object Cache of parents saving object
+* [#875](https://github.com/bedita/bedita/issues/875) After new object save on a section, tree parents cache is empty
+* [#857](https://github.com/bedita/bedita/issues/857) Refactor BEAppModel::findObjects() to return the query built without execute it
+* [#853](https://github.com/bedita/bedita/issues/853) [API] cache Permission queries
+* [#843](https://github.com/bedita/bedita/issues/843) [API] cache Tree model queries
+* [#842](https://github.com/bedita/bedita/issues/842) [API] cache FrontendController queries
+* [#844](https://github.com/bedita/bedita/issues/844) [API] cache ApiFormatter queries
+* [#831](https://github.com/bedita/bedita/issues/831) Current date&time are used as part of the object cache key
+* [#841](https://github.com/bedita/bedita/issues/841) [API] Permits to filter on more categories and tags
+* [#834](https://github.com/bedita/bedita/issues/834) Events: cannot create dates from backend with php 5.3
+* [#830](https://github.com/bedita/bedita/issues/830) Improve performance of `BEObject::getPoster()`
+* [#827](https://github.com/bedita/bedita/issues/827) Hashjobs "closed" should not expire
+* [#824](https://github.com/bedita/bedita/issues/824) Add `getPath` cache
+* [#829](https://github.com/bedita/bedita/issues/829) Some thumbnails have a black border on the right
+* [#825](https://github.com/bedita/bedita/issues/825) [API] Protecting the publication makes API unusable
+* [#822](https://github.com/bedita/bedita/issues/822) Use JSON in hash_jobs.params and hash_jobs.result
+* [#821](https://github.com/bedita/bedita/issues/821) Enhance hash_jobs table: add result field, add 'in progress' status
+* [#817](https://github.com/bedita/bedita/issues/817) On object clone display user message on cloned relations/positions
+* [#818](https://github.com/bedita/bedita/issues/818) RestClientModel::request raises a PHP catchable fatal error
+* [#791](https://github.com/bedita/bedita/issues/791) cache: add nickname and object_type_id object cache
+* [#795](https://github.com/bedita/bedita/issues/795) RestClientModel: missing set headers method
+* [#803](https://github.com/bedita/bedita/issues/803) Avoid to save empty session when using database
+* [#799](https://github.com/bedita/bedita/issues/799) Add the ability to order relations displayed in every object view
+* [#797](https://github.com/bedita/bedita/issues/797) Add Travis CI tests for PHP 5.5 and 5.6
+* [#790](https://github.com/bedita/bedita/issues/790) shell: dbadmin::rebuildIndex add max and min ID to index
+* [#789](https://github.com/bedita/bedita/issues/789) Undefined variable `$searchText` when rebuilding index
+* [#788](https://github.com/bedita/bedita/issues/788) shell: activate 'debug' mode only with standard option
+* [#783](https://github.com/bedita/bedita/issues/783) shell: script to check and repair relations
+* [#784](https://github.com/bedita/bedita/issues/784) Make helpers in addons available in frontends
+* [#782](https://github.com/bedita/bedita/issues/782) Object Cache invalidation fails if 'prefix' is empty string
+* [#769](https://github.com/bedita/bedita/issues/769) optimize thumbnail presence check on Amazon S3
+* [#781](https://github.com/bedita/bedita/issues/781) object cache: Redis always uses 0 database
+* [#780](https://github.com/bedita/bedita/issues/780) shell: deploy script should also be non-interactive
+* [#779](https://github.com/bedita/bedita/issues/779) [API] Wrong count of objects requested in GET /objects/:id?embed[relations]=rel_name
+
+
 ## Version 3.7.0 - Corylus
 
 ### User-visible changes
