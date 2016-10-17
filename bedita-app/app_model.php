@@ -850,11 +850,6 @@ class BEAppModel extends AppModel {
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////
 
-// Internal class user for views
-class _emptyAfterFindView {
-	function afterFind($result) { return $result ; }
-}
-
 /**
  * BEdita base app object class. BEdita objects should extend BEAppObjectModel
  */
