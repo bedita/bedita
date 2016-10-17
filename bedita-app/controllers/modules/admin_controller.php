@@ -91,7 +91,9 @@ class AdminController extends ModulesController {
 				}
 				$this->set('message', $data['message']);
 				$this->set('class', $data['msgType']);
+				$this->ResponseHandler->enabled = false;
 				$data['htmlMsg'] = $this->render(null, null, ELEMENTS . 'message.tpl');
+				$this->ResponseHandler->enabled = true;
 				$this->output = "";
 			} catch (BeditaException $ex) {
 				$details = $ex->getDetails();
