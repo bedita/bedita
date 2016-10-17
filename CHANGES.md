@@ -14,8 +14,6 @@
 * [#991](https://github.com/bedita/bedita/issues/991) saving translations doesn't invalidate object cache
 * [#944](https://github.com/bedita/bedita/issues/944) [bug] Ubiquitous sections
 * [#902](https://github.com/bedita/bedita/issues/902) Event calendar view: wrong "today" reponse
-* [#881](https://github.com/bedita/bedita/issues/881) Publications: alert user if a section has no parent section or publication
-* [#809](https://github.com/bedita/bedita/issues/809) ui: add filter on object status in list view
 * [#794](https://github.com/bedita/bedita/issues/794) YouTube shortened URL are not interpreted
 
 ### Frontend changes
@@ -39,7 +37,6 @@
 * [#978](https://github.com/bedita/bedita/issues/978) loadObj caching, bugged behaviour when request binding differs from cached obj binding
 * [#960](https://github.com/bedita/bedita/issues/960) Use BeEmbedMedia for custom object types extending Streams
 * [#918](https://github.com/bedita/bedita/issues/918) [API] Introducing files upload
-* [#927](https://github.com/bedita/bedita/pull/927) API upload
 * [#928](https://github.com/bedita/bedita/issues/928) Add fields to products table
 * [#883](https://github.com/bedita/bedita/issues/883) [API] save section need to be handled
 * [#919](https://github.com/bedita/bedita/issues/919) [API] allow custom Validator and Formatter components from frontend.cfg.php
