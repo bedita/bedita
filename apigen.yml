@@ -12,6 +12,6 @@ exclude:
 
 accessLevels: [public, protected, private]
 templateTheme: bootstrap
-deprecated: true
+annotationGroups: deprecated
 download: true
 tree: true
