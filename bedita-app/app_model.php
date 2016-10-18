@@ -1878,12 +1878,13 @@ interface UploadableInterface {
     public function apiUploadQuota(array $uploadableObjects, array $user, $event);
 
     /**
-     * Create the thumbnail for the requested resource (if necessary) and returns the uri
+     * Create the thumbnail for the requested resource (if necessary)
+     * and returns an array containing the the uri of the thumb and the object id refered from thumb.
      *
      * @param int $id The id of the object you want to create the thumbnail for.
      * @param array $thumbConf The thumb configuration
-     *
-     * @return string local thumb path
+     * @return array|false It must return `false` if the thumb creation fails
+     *                     else the array must contain the keys `id` and `uri`
      */
     public function apiCreateThumbnail($id, $thumbConf = array());
 }
