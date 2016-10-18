@@ -32,7 +32,7 @@ App::import('Model', 'Document');
  * 
  * $Id$
  */
-class DumpModel extends AppModel {
+class MigrateDumpModel extends AppModel {
 	var $useTable = "objects";
 };
 
@@ -133,7 +133,7 @@ class MigrateShell extends Shell {
 		$db = ConnectionManager::getDataSource($dbCfg);
     	$dbName = $db->config['database'];
 		$this->out("Importing data from db config: $dbCfg - database=".$dbName);
-		$model = new DumpModel();
+		$model = new MigrateDumpModel();
 		$model->setDataSource($dbCfg);
 		
 		$scr = $this->params['script'];
