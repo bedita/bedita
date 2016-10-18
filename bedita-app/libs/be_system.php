@@ -161,6 +161,7 @@ class BeSystem {
             }
         } else {
             Cache::clear();
+            Cache::clear(false, '_cleanup');
         }
 
 		if ($frontendsToo) {
