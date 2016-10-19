@@ -18,8 +18,6 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Inflector;
-use Migrations\Migrations;
-use Migrations\Shell\Task\MigrationDiffTask;
 
 /**
  * Task to check if current schema is up to date, and if SQL standards are satisfied.
@@ -91,7 +89,8 @@ class CheckSchemaTask extends Shell
      */
     protected function checkMigrationsStatus(Connection $connection)
     {
-        $migrations = new Migrations(['connection' => $connection->configName()]);
+        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $migrations = new $className(['connection' => $connection->configName()]);
         $status = $migrations->status();
 
         $this->verbose('Checking migrations status:');
@@ -268,7 +267,8 @@ class CheckSchemaTask extends Shell
     protected function checkDiff(Connection $connection)
     {
         $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
-        if (!($diffTask instanceof MigrationDiffTask)) {
+        $className = 'Migrations\Shell\Task\MigrationDiffTask';
+        if (!($diffTask instanceof $className)) {
             return;
         }
 

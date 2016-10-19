@@ -16,7 +16,6 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
-use Migrations\Migrations;
 
 /**
  * Task to initialize database.
@@ -136,7 +135,8 @@ class InitSchemaTask extends Shell
     protected function migrate(ConnectionInterface $connection)
     {
         $this->out('Running migrations... ', 0);
-        $migrations = new Migrations(['connection' => $connection->configName()]);
+        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $migrations = new $className(['connection' => $connection->configName()]);
         if (!$migrations->migrate()) {
             $this->out('<error>FAIL</error>');
 
@@ -157,14 +157,15 @@ class InitSchemaTask extends Shell
             $this->params['seed'] = false;
         } elseif (!$this->param('seed')) {
             $question = 'Would you like to seed your database with an initial set of data?';
-            $this->params['seed'] = ($this->in($question, ['y', 'n'], 'n') === 'y');
+            $this->params['seed'] = ($this->in($question, ['y', 'n'], 'y') === 'y');
         }
         if (!$this->param('seed')) {
             return;
         }
 
         $this->out('Seeding data... ', 0);
-        $migrations = new Migrations(['connection' => $connection->configName()]);
+        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $migrations = new $className(['connection' => $connection->configName()]);
         if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'ObjectTypesSeed'])) {
             $this->out('<error>FAIL</error>');
 
