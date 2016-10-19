@@ -162,14 +162,15 @@ class ShellTestCase extends TestCase
      *
      * @param array $args Array of command line arguments.
      * @param array $extra Array of extra parameters to be passed directly to the shell class.
+     * @param \Cake\Console\ConsoleIo|null $io Console IO instance.
      * @return mixed Same value returned by invoked command.
      */
-    public function invoke(array $args, array $extra = [])
+    public function invoke(array $args, array $extra = [], ConsoleIo $io = null)
     {
         $shell = array_shift($args);
 
         $Shell = (new ShellDispatcher())->findShell($shell);
-        $Shell->io(new ConsoleIo($this->_out, $this->_err));
+        $Shell->io($io ?: new ConsoleIo($this->_out, $this->_err));
         $Shell->initialize();
 
         try {
