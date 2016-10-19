@@ -68,7 +68,7 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
-     * @expectedException Cake\Datasource\Exception\MissingDatasourceConfigException
+     * @expectedException \Cake\Datasource\Exception\MissingDatasourceConfigException
      */
     public function testMissingDatasourceConfigException()
     {
