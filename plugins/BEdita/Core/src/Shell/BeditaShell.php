@@ -70,7 +70,9 @@ class BeditaShell extends Shell
     {
         $info = Database::basicInfo();
         $this->info('Current database configuration');
-        $this->info(' * Host: ' . $info['host']);
+        if (!empty($info['host'])) {
+            $this->info(' * Host: ' . $info['host']);
+        }
         $this->info(' * Database: ' . $info['database']);
         $this->info(' * Vendor: ' . $info['vendor']);
         $this->info('Checking database connection....');
@@ -133,8 +135,9 @@ class BeditaShell extends Shell
 
                 return false;
             }
-            $dbInitTask = $this->Tasks->load('BEdita/Core.DbInit');
-            $dbInitTask->main();
+            $initSchemaTask = $this->Tasks->load('BEdita/Core.InitSchema');
+            $initSchemaTask->params['connection'] = 'default';
+            $initSchemaTask->main();
         }
 
         return true;
