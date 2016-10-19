@@ -15,8 +15,8 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Database\Connection;
-use Cake\Datasource\ConnectionManager;
 use Cake\Database\Schema\Table;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 
 /**

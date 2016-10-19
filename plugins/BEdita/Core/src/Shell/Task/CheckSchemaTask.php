@@ -90,7 +90,7 @@ class CheckSchemaTask extends Shell
      */
     protected function checkMigrationsStatus(Connection $connection)
     {
-        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
         $migrations = new $className(['connection' => $connection->configName()]);
         $status = $migrations->status();
 

@@ -135,7 +135,7 @@ class InitSchemaTask extends Shell
     protected function migrate(ConnectionInterface $connection)
     {
         $this->out('Running migrations... ', 0);
-        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
         $migrations = new $className(['connection' => $connection->configName()]);
         if (!$migrations->migrate()) {
             $this->out('<error>FAIL</error>');
@@ -164,7 +164,7 @@ class InitSchemaTask extends Shell
         }
 
         $this->out('Seeding data... ', 0);
-        $className = '\Migrations\Migrations';  // Avoid PHP fatal error if Migrations plugin isn't installed.
+        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
         $migrations = new $className(['connection' => $connection->configName()]);
         if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'ObjectTypesSeed'])) {
             $this->out('<error>FAIL</error>');
