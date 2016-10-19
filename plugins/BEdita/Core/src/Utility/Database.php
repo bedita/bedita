@@ -38,14 +38,13 @@ class Database
      */
     public static function currentSchema($dbConfig = 'default')
     {
-        if (!Cache::clear(false, '_cake_model_')) {
-            Log::write('error', 'Unable to remove internal cache before reading schema');
-        }
         $schema = [];
         $connection = ConnectionManager::get($dbConfig);
         if (!($connection instanceof Connection)) {
             return $schema;
         }
+
+        $connection->cacheMetadata(false);
 
         $collection = $connection->schemaCollection();
         $tables = $collection->listTables();
