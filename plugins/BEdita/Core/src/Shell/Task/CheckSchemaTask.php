@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Shell\Task;
 
+use Cake\Console\Exception\MissingTaskException;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
@@ -266,9 +267,11 @@ class CheckSchemaTask extends Shell
      */
     protected function checkDiff(Connection $connection)
     {
-        $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
-        $className = 'Migrations\Shell\Task\MigrationDiffTask';
-        if (!($diffTask instanceof $className)) {
+        try {
+            $diffTask = $this->Tasks->load('Migrations.MigrationDiff');
+        } catch (MissingTaskException $e) {
+            $this->err('Unable to check schema differences: ' . $e->getMessage());
+
             return;
         }
 

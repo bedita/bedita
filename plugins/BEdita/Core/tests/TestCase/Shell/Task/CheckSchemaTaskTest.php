@@ -105,7 +105,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            $this->markTestSkipped('Unable to use database connection');
+            throw new \RuntimeException('Unable to use database connection');
         }
 
         $table = new Table('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
@@ -131,7 +131,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            $this->markTestSkipped('Unable to use database connection');
+            throw new \RuntimeException('Unable to use database connection');
         }
 
         $table = $connection->schemaCollection()->describe('config');
@@ -157,7 +157,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            $this->markTestSkipped('Unable to use database connection');
+            throw new \RuntimeException('Unable to use database connection');
         }
 
         $table = $connection->schemaCollection()->describe('objects');
@@ -192,7 +192,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         $connection = ConnectionManager::get('default');
         if (!($connection instanceof Connection)) {
-            $this->markTestSkipped('Unable to use database connection');
+            throw new \RuntimeException('Unable to use database connection');
         }
 
         $table = new Table('foo_bar');
