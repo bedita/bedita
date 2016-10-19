@@ -2,44 +2,18 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\BeditaShell;
-use BEdita\Core\Utility\Database;
+use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Database\Connection;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
 
 /**
  * \BEdita\Core\Shell\BeditaShell Test Case
  *
  * @covers \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends TestCase
+class BeditaShellTest extends ShellTestCase
 {
-
-    /**
-     * ConsoleIo mock
-     *
-     * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
-     */
-    public $io;
-
-    /**
-     * Test subject
-     *
-     * @var \BEdita\Core\Shell\BeditaShell
-     */
-    public $BeditaShell;
-
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->BeditaShell = new BeditaShell($this->io);
-        $this->BeditaShell->initialize();
-    }
 
     /**
      * tearDown method
@@ -49,6 +23,18 @@ class BeditaShellTest extends TestCase
     public function tearDown()
     {
         unset($this->BeditaShell);
+
+        ConnectionManager::get('default')
+            ->disableConstraints(function (Connection $connection) {
+                $tables = $connection->schemaCollection()->listTables();
+
+                foreach ($tables as $table) {
+                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+                }
+            });
 
         parent::tearDown();
     }
@@ -61,7 +47,7 @@ class BeditaShellTest extends TestCase
      */
     public function testGetOptionParser()
     {
-        $parser = $this->BeditaShell->getOptionParser();
+        $parser = (new BeditaShell())->getOptionParser();
         $subCommands = $parser->subcommands();
         $this->assertCount(1, $subCommands);
         $this->assertArrayHasKey('setup', $subCommands);
@@ -76,56 +62,29 @@ class BeditaShellTest extends TestCase
     {
         $this->fixtureManager->shutDown();
 
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+
         $mapChoice = [
             ['Proceed with database creation?', ['y', 'n'], 'n', 'y'],
             ['Overwrite current admin user?', ['y', 'n'], 'n', 'y'],
+            ['Would you like to seed your database with an initial set of data?', ['y', 'n'], 'y', 'y'],
         ];
-
-        $this->io->method('askChoice')
+        $io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
         $map = [
             ['username: ', null, 'pippo'],
             ['password: ', null, 'pippo']
         ];
-        $this->io->method('ask')
+        $io->method('ask')
              ->will($this->returnValueMap($map));
 
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
-        }
-
-        $this->BeditaShell->setup();
+        $this->invoke(['bedita', 'setup'], [], $io);
 
         $usersTable = TableRegistry::get('Users');
         $user = $usersTable->get(1);
 
         $this->assertFalse($user->blocked);
         $this->assertEquals('pippo', $user->username);
-
-        $schema = Database::currentSchema();
-        if (!empty($schema)) {
-            $res = Database::executeTransaction($this->dropTablesSql($schema));
-            $this->assertNotEmpty($res);
-            $this->assertEquals($res['success'], true);
-        }
-    }
-
-    /**
-     * Returns SQL DROP statements to empty DB
-     *
-     * @param array $schema DB schema metadata
-     * @return array SQL drop statements
-     */
-    protected function dropTablesSql($schema)
-    {
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=0;';
-        foreach ($schema as $k => $v) {
-            $sql[] = 'DROP TABLE IF EXISTS ' . $k;
-        }
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
-
-        return $sql;
     }
 }
