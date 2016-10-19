@@ -22,7 +22,7 @@ cache:
 
 env:
   matrix:
-    - "DB=sqlite db_dsn='sqlite:///:memory:'"
+    - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
