@@ -62,7 +62,9 @@ class DbAdminShell extends Shell
         if ($this->param('connection')) {
             $info = ConnectionManager::get($this->param('connection'))->config();
 
-            $this->out('<info>Host</info>    : ' . $info['host']);
+            if (isset($info['host'])) {
+                $this->out('<info>Host</info>    : ' . $info['host']);
+            }
             $this->out('<info>Database</info>: ' . $info['database']);
             $this->out('<info>Vendor</info>  : ' . strtolower(call_user_func('end', explode('\\', $info['driver']))));
             $this->hr();
