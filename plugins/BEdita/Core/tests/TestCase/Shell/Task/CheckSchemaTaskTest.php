@@ -32,6 +32,8 @@ class CheckSchemaTaskTest extends ShellTestCase
     {
         parent::setUp();
 
+        $this->fixtureManager->shutDown();
+
         $this->invoke(['db_admin', 'init', '-fs']);
     }
 
@@ -43,6 +45,18 @@ class CheckSchemaTaskTest extends ShellTestCase
         parent::tearDown();
 
         Plugin::load('Migrations');
+
+        ConnectionManager::get('default')
+            ->disableConstraints(function (Connection $connection) {
+                $tables = $connection->schemaCollection()->listTables();
+
+                foreach ($tables as $table) {
+                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    foreach ($sql as $query) {
+                        $connection->query($query);
+                    }
+                }
+            });
     }
 
     /**
@@ -69,6 +83,11 @@ class CheckSchemaTaskTest extends ShellTestCase
      */
     public function testCheckSchema()
     {
+        $info = ConnectionManager::get('default')->config();
+        if (strstr('Mysql', $info['driver']) === false) {
+            $this->markTestSkipped('Successful schema checks happens only on default driver (currently MySQL)');
+        }
+
         $result = $this->invoke(['db_admin', 'check_schema']);
 
         $this->assertNotAborted();
@@ -184,7 +203,7 @@ class CheckSchemaTaskTest extends ShellTestCase
                 'null' => true,
                 'default' => null,
             ])
-            ->addColumn('4gustavo__suppOrto_', [
+            ->addColumn('42gustavo__suppOrto_', [
                 'type' => 'string',
                 'length' => 255,
                 'null' => true,
@@ -207,8 +226,8 @@ class CheckSchemaTaskTest extends ShellTestCase
         $this->assertNotAborted();
         $this->assertFalse($result);
         $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
-        $this->assertOutputContains('Column name "4gustavo__suppOrto_" is not valid');
+        $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
         $this->assertOutputContains('Index name "mytestindex" is not valid');
-        $this->assertOutputContains('Constraint name "foobar_uq" is not valid');
+        $this->assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
     }
 }

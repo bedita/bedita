@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Core\Plugin;
+use Cake\Datasource\ConnectionManager;
 
 /**
  * @covers \BEdita\Core\Shell\Task\SaveSchemaTask
@@ -32,6 +33,13 @@ class SaveSchemaTaskTest extends ShellTestCase
         Plugin::load('Migrations');
     }
 
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+
+        ConnectionManager::alias('test', 'default');
+    }
+
     /**
      * Test main execution.
      *
@@ -39,7 +47,7 @@ class SaveSchemaTaskTest extends ShellTestCase
      */
     public function testMain()
     {
-        $this->invoke(['db_admin', 'save_schema']);
+        $this->invoke(['db_admin', 'save_schema', '--connection=test']);
 
         $this->assertOutputContains('This command is DEPRECATED!');
     }
@@ -53,7 +61,7 @@ class SaveSchemaTaskTest extends ShellTestCase
     {
         Plugin::unload('Migrations');
 
-        $this->invoke(['db_admin', 'save_schema']);
+        $this->invoke(['db_admin', 'save_schema', '--connection=test']);
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
 
         $this->assertAborted();
