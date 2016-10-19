@@ -1505,7 +1505,6 @@ class Alpha extends AbstractMigration
         $this->table('object_types')
             ->insert([
                 [
-                    'id' => 1,
                     'name' => 'object',
                     'pluralized' => 'objects',
                     'description' => 'Base BEdita object type, to be extended by concrete implementations',
@@ -1513,7 +1512,6 @@ class Alpha extends AbstractMigration
                     'model' => 'Objects',
                 ],
                 [
-                    'id' => 2,
                     'name' => 'profile',
                     'pluralized' => 'profiles',
                     'description' => 'Generic person profile',
@@ -1521,7 +1519,6 @@ class Alpha extends AbstractMigration
                     'model' => 'Profiles',
                 ],
                 [
-                    'id' => 3,
                     'name' => 'user',
                     'pluralized' => 'users',
                     'description' => 'BEdita user profile',
@@ -1533,7 +1530,6 @@ class Alpha extends AbstractMigration
 
         $this->table('objects')
             ->insert([
-                'id' => 1,
                 'object_type_id' => 3,
                 'status' => 'on',
                 'uname' => 'bedita',
@@ -1562,7 +1558,6 @@ class Alpha extends AbstractMigration
 
         $this->table('roles')
             ->insert([
-                'id' => 1,
                 'name' => 'admin',
                 'description' => 'Administrators role',
                 'unchangeable' => 1,
