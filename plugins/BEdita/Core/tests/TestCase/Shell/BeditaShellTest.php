@@ -16,9 +16,17 @@ class BeditaShellTest extends ShellTestCase
 {
 
     /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->fixtureManager->shutDown();
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function tearDown()
     {
@@ -60,8 +68,6 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testSetup()
     {
-        $this->fixtureManager->shutDown();
-
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [

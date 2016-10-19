@@ -84,7 +84,7 @@ class CheckSchemaTaskTest extends ShellTestCase
     public function testCheckSchema()
     {
         $info = ConnectionManager::get('default')->config();
-        if (strstr('Mysql', $info['driver']) === false) {
+        if (strstr($info['driver'], 'Mysql') === false) {
             $this->markTestSkipped('Successful schema checks happens only on default driver (currently MySQL)');
         }
 
