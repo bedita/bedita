@@ -21,42 +21,53 @@ performance and scale up to Big Data scenarios.
 
 Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
 
-## Install
 
-Prerequisites:
+## Prerequisites
+
  * PHP 7 (recommended) or PHP >= 5.5.9
  * MySQL >= 5.5
  * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 
-1. Clone repository
-2. Run composer install
+## Install
 
+For a detailed setup overview see [Setup Documentation](http://bedita.readthedocs.io/en/4-develop/setup.html)
+
+Quick setup in four steps.
+
+1. Clone repository
 
  ```bash
  $ git clone -b 4-develop https://github.com/bedita/bedita.git
+ ```
+
+2. Run composer install
+
+ ```bash
  $ cd bedita
  $ composer install
  ```
 
-3. Configure your database connection editing `Datasources.default` in `config/app.php`
+3. Create an empty MySQL database
+
 4. Run shell script to initialize the database and create first admin user
 
  ```bash
  $ bin/cake bedita setup
  ```
 
-5. If you have configured a virtualhost in your webserver you can point
- the browser to `http://your-vhost/home` or you can take advantage of
- PHP server launching it with
+See [Web Server setup](http://bedita.readthedocs.io/en/4-develop/setup.html#web-server)
+to configure a virtualhost in your webserver.
+To see first [`/home` endpoint](http://bedita.readthedocs.io/en/4-develop/endpoints/home.html) response you may point the browser to `http://your-vhost/home`
+
+Otherwise, only for development or test setups, you can take advantage of PHP builtin server
+with this simple command:
 
  ```bash
  $ bin/cake server
  ```
 
- and following the link shown pointing to `/home` endpoint,
- for example `http://localhost:8765/home`
-
+ and see `/home` endpoint response pointing to `http://localhost:8765/home`
 
 ## Documentation
 
@@ -65,9 +76,4 @@ Prerequisites:
 ## Licensing
 
 BEdita is released under [LGPL](/bedita/bedita/blob/master/LICENSE.LGPL), Lesser General Public License.
-
-## More info
-
- * For an overview of BEdita please visit http://www.bedita.com/
- * Get support on [Google Groups](https://groups.google.com/forum/#!forum/bedita)
 

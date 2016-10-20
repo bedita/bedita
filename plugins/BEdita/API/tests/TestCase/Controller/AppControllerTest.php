@@ -14,14 +14,17 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use Cake\Core\Configure;
+use Cake\Datasource\ConnectionManager;
+use Cake\Event\EventManager;
+use Cake\Network\Exception\InternalErrorException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * @covers \BEdita\API\Controller\AppController
+ * @coversDefaultClass \BEdita\API\Controller\AppController
  */
 class AppControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
@@ -30,6 +33,17 @@ class AppControllerTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.roles',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        ConnectionManager::alias('test', 'default');
+        ConnectionManager::drop('__fail_db_connection');
+
+        parent::tearDown();
+    }
 
     /**
      * Data provider for `testContentType` test case.
@@ -56,7 +70,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlNotAllowed' => [
                 406,
-                null,
+                'application/vnd.api+json',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 0,
@@ -96,6 +110,7 @@ class AppControllerTest extends IntegrationTestCase
      * @dataProvider contentTypeProvider
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
+     * @covers \BEdita\API\Error\ExceptionRenderer::render()
      */
     public function testContentType($expectedCode, $expectedContentType, $accept, array $config = null)
     {
@@ -108,9 +123,190 @@ class AppControllerTest extends IntegrationTestCase
         $this->get('/roles');
 
         $this->assertResponseCode($expectedCode);
-        if ($expectedContentType) {
-            $this->assertContentType($expectedContentType);
+        $this->assertContentType($expectedContentType);
+    }
+
+    /**
+     * Data provider for `testContentType` test case.
+     *
+     * @return array
+     */
+    public function contentTypeErrorProvider()
+    {
+        return [
+            'notFoundJson' => [
+                404,
+                'application/json; charset=UTF-8',
+                'application/json',
+                new NotFoundException(),
+            ],
+            'notFoundJsonapi' => [
+                404,
+                'application/vnd.api+json',
+                'application/vnd.api+json',
+                new NotFoundException(),
+            ],
+            'notFoundHtmlDebug' => [
+                404,
+                'text/html; charset=UTF-8',
+                'text/html,application/xhtml+xml',
+                new NotFoundException(),
+                [
+                    'debug' => 1,
+                    'Accept.html' => 0,
+                ],
+            ],
+            'notFoundHtmlAccepted' => [
+                404,
+                'text/html; charset=UTF-8',
+                'text/html,application/xhtml+xml',
+                new NotFoundException(),
+                [
+                    'debug' => 0,
+                    'Accept.html' => 1,
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test content type negotiation rules when error occurs.
+     *
+     * @param int $expectedCode Expected response code.
+     * @param string|null $expectedContentType Expected content type.
+     * @param string $accept Request's "Accept" header.
+     * @param array|null $config Configuration to be written.
+     * @return void
+     *
+     * @dataProvider contentTypeErrorProvider
+     * @covers \BEdita\API\Controller\Component\JsonApiComponent::startup()
+     * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
+     * @covers \BEdita\API\Error\ExceptionRenderer::render()
+     */
+    public function testContentTypeError($expectedCode, $expectedContentType, $accept, $error, array $config = null)
+    {
+        Configure::write($config);
+
+        $events = ['Controller.initialize', 'Controller.beforeRender'];
+
+        foreach ($events as $name) {
+            $this->_controller = null;
+            $this->injectError($name, $error);
+
+            $this->configRequest([
+                'headers' => ['Accept' => $accept],
+            ]);
+            $this->get('/roles');
+            $this->assertEquals($expectedCode, $this->_response->statusCode(), 'Error with event ' . $name);
+            $this->assertContentType($expectedContentType, 'Error with event ' . $name);
         }
+    }
+
+    /**
+     * Helper method to inject error throwing an exception when an event is triggered
+     *
+     * @param string $eventName The event name
+     * @param \Exception $exception The exception to throw when the event is triggered
+     * @return void
+     */
+    protected function injectError($eventName, \Exception $exception)
+    {
+        $listener = function ($event) use ($exception, &$listener) {
+            // immediately off the listener to assure to execute just one time
+            EventManager::instance()->off($event->name(), $listener);
+            throw $exception;
+        };
+
+        EventManager::instance()->on($eventName, $listener);
+    }
+
+    /**
+     * Data provider for `testHtmlResponseTemplates` test case.
+     *
+     * @return array
+     */
+    public function htmlResponseTemplatesProvider()
+    {
+        return [
+            'success' => [
+                200,
+                '/roles'
+            ],
+            'missingRoute' => [
+                404,
+                '/find_me_if_you_can'
+            ],
+            'missingRecord' => [
+                404,
+                '/roles/9999999'
+            ],
+            'methodNotAllowed' => [
+                405,
+                '/roles'
+            ],
+        ];
+    }
+
+    /**
+     * Test templates on HTML response.
+     *
+     * @param int $expectedCode Expected response code.
+     * @param string $endpoint The endpoint to call
+     * @return void
+     *
+     * @dataProvider htmlResponseTemplatesProvider
+     * @covers ::html()
+     * @covers \BEdita\API\Error\ExceptionRenderer::render()
+     */
+    public function testHtmlResponseTemplates($expectedCode, $endpoint)
+    {
+        Configure::write('debug', 1);
+
+        // use $_SERVER array to assure using the right HTTP_ACCEPT header also if request
+        // is recreated from globals as in \Cake\Error\ExceptionRenderer::_getController()
+        $_SERVER['HTTP_ACCEPT'] = 'text/html';
+
+        if ($expectedCode == 405) {
+            $this->post($endpoint);
+        } else {
+            $this->get($endpoint);
+        }
+
+        $this->assertResponseCode($expectedCode);
+        $this->assertLayout('html.ctp');
+        $this->assertResponseContains('<!DOCTYPE html>');
+        if ($expectedCode < 400) {
+            $this->assertTemplate('html.ctp');
+        } else {
+            $this->assertTemplate('error.ctp');
+        }
+    }
+
+    /**
+     * Test DB connection failure
+     *
+     * @return void
+     * @covers \BEdita\API\Error\ExceptionRenderer::render()
+     */
+    public function testDBFail()
+    {
+        // change db connection to simulate db connection fails
+        $connection = ConnectionManager::get('default');
+        $dbConf = $connection->config();
+        $dbConf['database'] = '__fail_db_connection';
+        unset($dbConf['name']);
+        ConnectionManager::config('__fail_db_connection', $dbConf);
+        ConnectionManager::alias('__fail_db_connection', 'default');
+
+        // use $_SERVER array to assure using the right HTTP_ACCEPT header also
+        // if request is recreated from globals as in \Cake\Error\ExceptionRenderer::_getController()
+        $_SERVER['HTTP_ACCEPT'] = 'application/vnd.api+json';
+
+        $this->get('/roles');
+
+        $this->assertResponseCode(500);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseNotContains('<!DOCTYPE html>');
     }
 
     /**

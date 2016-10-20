@@ -33,7 +33,7 @@ class HomeController extends AppController
 
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/users', '/roles', '/object_types'];
+        $endPoints = ['/objects', '/users', '/roles', '/object_types', '/status'];
         foreach ($endPoints as $e) {
             $resources[$e] = [
                 'href' => $baseUrl . $e,

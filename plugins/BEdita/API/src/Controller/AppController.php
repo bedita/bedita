@@ -152,12 +152,14 @@ class AppController extends Controller
         $method = $this->request->method();
         $url = $this->request->here();
 
+        $viewBuilder = $this->viewBuilder();
+
         // render JSON API response
         try {
             $this->request->env('HTTP_ACCEPT', 'application/json');
             $this->loadComponent('BEdita/API.JsonApi');
 
-            $this->viewBuilder()->className('BEdita/API.JsonApi');
+            $viewBuilder->className('BEdita/API.JsonApi');
             $this->invokeAction();
             $responseBody = $this->render()->body();
 
@@ -171,20 +173,19 @@ class AppController extends Controller
 
             $this->components()->unload('JsonApi');
             unset($this->JsonApi);
+            $viewBuilder->template('Common/html');
         } catch (\Exception $exception) {
             $renderer = new ExceptionRenderer($exception);
             $response = $renderer->render();
             $responseBody = $response->body();
             $this->response->statusCode($response->statusCode());
+            $viewBuilder->template('Error/error');
         }
 
         $this->set(compact('method', 'responseBody', 'url'));
 
         // render HTML
-        $this->viewBuilder()
-            ->className('View')
-            ->template('Common/html');
-
+        $viewBuilder->className('View');
         $this->response->type('html');
 
         return $this->render();

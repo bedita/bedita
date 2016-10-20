@@ -16,6 +16,7 @@ namespace BEdita\API\Controller;
 use Cake\Controller\Component\AuthComponent;
 use Cake\Core\Configure;
 use Cake\Network\Exception\UnauthorizedException;
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -37,34 +38,38 @@ class LoginController extends AppController
     {
         parent::initialize();
 
-        $this->Auth->config(
-            'authenticate',
-            [
-                AuthComponent::ALL => [
-                    'scope' => [
-                        'blocked' => false,
+        $this->Auth->deny();
+
+        if ($this->request->param('action') === 'login') {
+            $this->Auth->config(
+                'authenticate',
+                [
+                    AuthComponent::ALL => [
+                        'scope' => [
+                            'blocked' => false,
+                        ],
+                        'contain' => ['Roles'],
                     ],
-                    'contain' => ['Roles'],
-                ],
-                'Form' => [
-                    'fields' => [
-                        'username' => 'username',
-                        'password' => 'password_hash',
-                    ],
-                    'passwordHasher' => [
-                        'className' => 'Fallback',
-                        'hashers' => [
-                            'Default',
-                            'Weak' => ['hashType' => 'md5'],
+                    'Form' => [
+                        'fields' => [
+                            'username' => 'username',
+                            'password' => 'password_hash',
+                        ],
+                        'passwordHasher' => [
+                            'className' => 'Fallback',
+                            'hashers' => [
+                                'Default',
+                                'Weak' => ['hashType' => 'md5'],
+                            ],
                         ],
                     ],
+                    'BEdita/API.Jwt' => [
+                        'queryDatasource' => true,
+                    ],
                 ],
-                'BEdita/API.Jwt' => [
-                    'queryDatasource' => true,
-                ],
-            ],
-            false
-        );
+                false
+            );
+        }
     }
 
     /**
@@ -104,5 +109,26 @@ class LoginController extends AppController
 
         $this->set('_serialize', []);
         $this->set('_meta', compact('jwt', 'renew'));
+    }
+
+    /**
+     * Read logged user data.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception if user not logged.
+     */
+    public function whoami()
+    {
+        $this->request->allowMethod('get');
+
+        $userId = $this->Auth->user('id');
+        if (!$userId) {
+            $this->Auth->getAuthenticate('BEdita/API.Jwt')->unauthenticated($this->request, $this->response);
+        }
+
+        $user = TableRegistry::get('Users')->get($userId);
+
+        $this->set(compact('user'));
+        $this->set('_serialize', ['user']);
     }
 }
