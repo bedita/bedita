@@ -41,18 +41,6 @@ class SaveSchemaTaskTest extends ShellTestCase
     }
 
     /**
-     * Test main execution.
-     *
-     * @return void
-     */
-    public function testMain()
-    {
-        $this->invoke(['db_admin', 'save_schema', '--connection=test']);
-
-        $this->assertOutputContains('This command is DEPRECATED!');
-    }
-
-    /**
      * Test controlled failure on missing "Migrations" plugin.
      *
      * @return void
