@@ -266,7 +266,8 @@ abstract class ApiBaseController extends FrontendController {
         '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
         'objects' => array('id', 'filter[object_type]', 'filter[substring]', 'filter[query]', 'embed[relations]', '_pagination'),
-        'posters' => array('id', 'width', 'height', 'mode')
+        'posters' => array('id', 'width', 'height', 'mode'),
+        'categories' => array('id','filter[object_type]')
     );
 
     /**
