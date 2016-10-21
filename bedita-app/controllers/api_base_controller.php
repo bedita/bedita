@@ -72,7 +72,7 @@ abstract class ApiBaseController extends FrontendController {
      *
      * @var array
      */
-    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters', 'files');
+    private $defaultEndPoints = array('objects', 'auth', 'me', 'posters', 'files', 'categories');
 
     /**
      * The default binding level
@@ -217,6 +217,7 @@ abstract class ApiBaseController extends FrontendController {
             'sections',
             'descendants',
             'siblings',
+            'categories'
             //'ancestors',
             //'parents'
         ),
@@ -1646,6 +1647,43 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Load categories of object $id
+     *
+     * @param int $id
+     * @return void
+     */
+    protected function getObjectsCategories($id) {
+        if (func_num_args() > 1) {
+            throw new BeditaBadRequestException();
+        }
+
+        $objCatModel = ClassRegistry::init('ObjectCategory');
+        $categoryModel = ClassRegistry::init('Category');
+        $data = $objCatModel->find('all', array(
+            'fields' => array('category_id'),
+            'conditions' => array(
+                'ObjectCategory.object_id' => $id),
+            'group' => 'category_id'
+        ));
+        $data = Set::classicExtract($data, '{n}.ObjectCategory');
+        $ids = Set::classicExtract($data, '{n}.category_id');
+        $objectTypeId = $this->BEObject->findObjectTypeId($id);
+
+        if (!empty($ids)) {
+            $conditions['Category.id'] = $ids;
+        }
+
+        $conditions['Category.object_type_id'] = $objectTypeId;
+
+        $categories = $categoryModel->find('all', array(
+            'conditions' => $conditions,
+            'order' => 'label'
+        ));
+
+        $this->setData($categories);
+    }
+
+    /**
      * Load relations of object $id setting data for response
      *
      * @param int $id the main object id
@@ -2074,4 +2112,94 @@ abstract class ApiBaseController extends FrontendController {
         }
         return false;
     }
+
+    private function checkCategoryParams() {
+        if (empty($this->data['id'])) {
+            if (empty($this->data['object_type']) || empty($this->data['label'])) {
+                throw new BeditaBadRequestException('categories: when creating a category object_type and name cannot be missing');
+            }
+        }
+    }
+
+    protected function postCategories() {
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
+        }
+
+        if (empty($this->data)) {
+            throw new BeditaBadRequestException('Missing data to save');
+        }
+
+        $this->checkCategoryParams();
+
+        $isNew = (empty($this->data['id'])) ? true : false;
+        $catModel = ClassRegistry::init('Category');
+        $this->data = $this->formatCategory($this->data);
+
+        if ($isNew) {
+            $this->data['status'] = 'on';
+        }
+
+        $this->Transaction->begin();
+        $catModel->create();
+        $catModel->set($this->data);
+        $catModel->save();
+        $this->Transaction->commit();
+
+        $savedObjectId = $catModel->id;
+
+        if ($isNew) {
+            $this->ResponseHandler->sendStatus(201);
+            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/categories/' . $savedObjectId);
+        }
+
+        $res = $catModel->find('first', array('conditions' => array('id' => $savedObjectId)));
+        $this->setData($res);
+    }
+
+
+    protected function getCategories($objectId = null) {
+        $urlParams = $this->ApiFormatter->formatUrlParams();
+
+        if(!empty($urlParams['filter']) && !empty($urlParams['filter']['object_type'])) {
+            $objectType = $urlParams['filter']['object_type'];
+        }
+
+        $categoryModel = ClassRegistry::init('Category');
+        $conditions = array(
+            'Category.status' => 'on'
+        );
+
+        if (!empty($objectId)) {
+            $conditions['Category.id'] = $objectId;
+        }
+
+        if (!empty($objectType)) {
+            $conditions['Category.object_type_id'] = $objectType;
+        }
+
+        $categories = $categoryModel->find('all', array(
+            'conditions' => $conditions,
+            'order' => 'label'
+        ));
+
+        $this->setData($categories);
+    }
+
+    private function formatCategory($data) {
+        if(!empty($data['object_type'])) {
+            $objectTypeId = Configure::read('objectTypes.' . $data['object_type'] . '.id');
+            unset($data['object_type']);
+            $data['object_type_id'] = $objectTypeId;
+        } else {
+            $catModel = ClassRegistry::init('Category');
+            $conditions = array('id' => $data['id']);
+            $res = $catModel->find('first', array('conditions' => $conditions));
+
+            $data['object_type_id'] = $res['object_type_id'];
+        }
+        return $data;
+    }
+
+
 }
