@@ -23,7 +23,7 @@ use Cake\TestSuite\TestCase;
  *
  * @since 4.0.0
  */
-class ShellTestCase extends TestCase
+abstract class ShellTestCase extends TestCase
 {
     /**
      * Mocked stdout.
