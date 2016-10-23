@@ -35,6 +35,15 @@ class UsersController extends ResourcesController
     /**
      * {@inheritDoc}
      */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'roles' => ['roles'],
+        ],
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
     public function initialize()
     {
         parent::initialize();
