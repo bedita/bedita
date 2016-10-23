@@ -25,7 +25,7 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
-class UsersController extends AppController
+class UsersController extends ResourcesController
 {
     /**
      * {@inheritDoc}
@@ -40,7 +40,7 @@ class UsersController extends AppController
         parent::initialize();
 
         $this->set('_type', 'users');
-        if (isset($this->JsonApi)) {
+        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['users']);
         }
     }
