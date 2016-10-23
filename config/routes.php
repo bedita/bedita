@@ -128,6 +128,11 @@ Router::plugin(
             ['_name' => 'users:view']
         );
         $routes->connect(
+            '/users/:user_id/roles',
+            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'users:roles']
+        );
+        $routes->connect(
             '/users',
             ['controller' => 'Users', 'action' => 'add', '_method' => 'POST'],
             ['_name' => 'users:add']
@@ -141,6 +146,11 @@ Router::plugin(
             '/users/*',
             ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'users:delete']
+        );
+        $routes->connect(
+            '/users/:id/relationships/:relationship',
+            ['controller' => 'Users', 'action' => 'relationships'],
+            ['_name' => 'users:relationships']
         );
 
         // Login.
