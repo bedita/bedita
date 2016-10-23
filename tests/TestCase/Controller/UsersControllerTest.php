@@ -110,6 +110,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
                 [
                     'id' => '5',
@@ -157,6 +165,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/roles',
+                                'self' => 'http://api.example.com/users/5/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
             ],
         ];
@@ -250,6 +266,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
             ],
         ];
@@ -373,6 +397,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login_err' => null,
                     'num_login_err' => 1,
                 ],
+                'relationships' => [
+                    'roles' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/roles',
+                            'self' => 'http://api.example.com/users/1/relationships/roles'
+                        ]
+                    ]
+                ]
             ],
         ];
 
