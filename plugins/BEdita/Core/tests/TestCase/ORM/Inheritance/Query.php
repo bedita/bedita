@@ -13,17 +13,17 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
-use BEdita\Core\ORM\Inheritance\QueryPatcher;
+use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\ORM\Inheritance\QueryPatcher} Test Case
+ * {@see \BEdita\Core\ORM\Inheritance\Query} Test Case
  *
- * @coversDefaultClass \BEdita\Core\ORM\Inheritance\QueryPatcher
+ * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Query
  */
-class QueryPatcherTest extends TestCase
+class QueryTest extends TestCase
 {
     /**
      * Fixtures
@@ -59,6 +59,13 @@ class QueryPatcherTest extends TestCase
     public $fakeFelines;
 
     /**
+     * Table options used for initialization
+     *
+     * @var \Cake\ORM\Table
+     */
+    protected $tableOptions = ['className' => 'BEdita\Core\ORM\Inheritance\Table'];
+
+    /**
      * setUp method
      *
      * @return void
@@ -67,34 +74,14 @@ class QueryPatcherTest extends TestCase
     {
         parent::setUp();
 
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals');
+        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $this->tableOptions);
         $this->fakeAnimals->hasMany('FakeArticles');
 
-        $this->fakeMammals = TableRegistry::get('FakeMammals');
-        $this->fakeMammals->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'FakeAnimals'
-            ]
-        ]);
+        $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
+        $this->fakeMammals->extensionOf('FakeAnimals');
 
-        $this->fakeFelines = TableRegistry::get('FakeFelines');
-        $this->fakeFelines->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'FakeMammals'
-            ]
-        ]);
-    }
-
-    /**
-     * testNewQueryPatcherWithWrongTable method
-     *
-     * @return void
-     * @covers ::__construct()
-     */
-    public function testNewQueryPatcherWithWrongTable()
-    {
-        $this->setExpectedException('\InvalidArgumentException');
-        new QueryPatcher($this->fakeAnimals);
+        $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
+        $this->fakeFelines->extensionOf('FakeMammals');
     }
 
     /**
@@ -125,8 +112,8 @@ class QueryPatcherTest extends TestCase
      */
     public function testBuildContainString($expected, $tableName)
     {
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
-        $containString = $queryPatcher->buildContainString($tableName);
+        $query = new Query($this->fakeFelines->connection(), $this->fakeFelines);
+        $containString = $query->buildContainString($tableName);
         $this->assertEquals($expected, $containString);
     }
 
@@ -160,20 +147,19 @@ class QueryPatcherTest extends TestCase
     }
 
     /**
-     * testPatchContain
+     * testFixContain
      *
      * @param array $expected Expected result.
      * @param array $contain The contain data.
      * @return void
      *
      * @dataProvider patchContainProvider
-     * @covers ::contain()
+     * @covers ::fixContain()
      */
-    public function testPatchContain($expected, $contain)
+    public function testFixContain($expected, $contain)
     {
         $query = $this->fakeFelines->find()->contain($contain);
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
-        $queryPatcher->patch($query)->contain();
+        $query->fixContain();
         $this->assertEquals($expected, $query->contain());
     }
 
@@ -224,13 +210,13 @@ class QueryPatcherTest extends TestCase
      * @return void
      *
      * @dataProvider aliasFieldProvider
-     * @covers ::aliasField()
+     * @covers ::fixAliasField()
      * @covers ::extractField()
      */
-    public function testAliasField($expected, $field)
+    public function testFixAliasField($expected, $field)
     {
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
-        $this->assertEquals($expected, $queryPatcher->aliasField($field));
+        $query = new Query($this->fakeFelines->connection(), $this->fakeFelines);
+        $this->assertEquals($expected, $query->fixAliasField($field));
     }
 
     /**
@@ -295,15 +281,13 @@ class QueryPatcherTest extends TestCase
      *
      * @dataProvider fixClauseProvider
      * @covers ::fixClause()
-     * @covers ::aliasField()
+     * @covers ::fixAliasField()
      * @covers ::extractField()
      */
     public function testFixClause($expected, $clause, $data)
     {
         $query = $this->fakeFelines->find();
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
-        $queryPatcher->patch($query)
-            ->fixClause($data, $clause);
+        $query->fixClause($data, $clause);
 
         if (!is_bool($data)) {
             $this->assertEquals($expected, $query->clause($clause));
@@ -311,7 +295,7 @@ class QueryPatcherTest extends TestCase
 
         // start from Query::clause()
         $query->{$clause}($data, true);
-        $queryPatcher->fixClause(null, $clause);
+        $query->fixClause(null, $clause);
         $this->assertEquals($expected, $query->clause($clause));
     }
 
@@ -319,22 +303,21 @@ class QueryPatcherTest extends TestCase
      * testFixExpression
      *
      * @covers ::fixExpression()
-     * @covers ::aliasField()
+     * @covers ::fixAliasField()
      * @covers ::extractField()
      */
     public function testFixExpression()
     {
         $query = $this->fakeFelines->find();
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
 
         // where: test \Cake\Database\Expression\FieldInterface case
         $where = ['id' => 1, 'name' => 'cat'];
         $whereExpected = ['FakeFelines.id' => 1, 'FakeAnimals.name' => 'cat'];
         $query->where($where);
         $whereExpression = $query->clause('where');
-        $whereExpression->iterateParts(function ($value, $key) use ($queryPatcher, $whereExpected) {
+        $whereExpression->iterateParts(function ($value, $key) use ($query, $whereExpected) {
             $whereKeys = array_keys($whereExpected);
-            $queryPatcher->fixExpression($value);
+            $query->fixExpression($value);
             $expected = $whereKeys[$key];
             $this->assertEquals($expected, $value->getField());
             $this->assertEquals($whereExpected[$expected], $value->getValue());
@@ -345,8 +328,8 @@ class QueryPatcherTest extends TestCase
         // order: test \Cake\Database\Expression\QueryExpression case
         $query->order(['subclass' => 'ASC']);
         $orderExpression = $query->clause('order');
-        $queryPatcher->fixExpression($orderExpression);
-        $orderExpression->iterateParts(function ($value, $key) use ($queryPatcher) {
+        $query->fixExpression($orderExpression);
+        $orderExpression->iterateParts(function ($value, $key) use ($query) {
             $this->assertEquals('FakeMammals.subclass', $key);
 
             return $value;
@@ -362,7 +345,7 @@ class QueryPatcherTest extends TestCase
         ];
         foreach ($identifierTest as $test => $expected) {
             $identifierExpression = new IdentifierExpression($test);
-            $queryPatcher->fixExpression($identifierExpression);
+            $query->fixExpression($identifierExpression);
             $this->assertEquals($expected, $identifierExpression->getIdentifier());
         }
     }
@@ -370,15 +353,17 @@ class QueryPatcherTest extends TestCase
     /**
      * testAll
      *
-     * @covers ::all()
-     * @covers ::contain()
+     * This test create a useless and maybe not valid SQL query but it is intended
+     * to check that all query parts are fixed in the right way
+     *
+     * @covers ::fixAll()
+     * @covers ::fixContain()
      * @covers ::fixClause()
      * @covers ::fixExpression()
      */
     public function testAll()
     {
         $query = $this->fakeFelines->find();
-        $queryPatcher = new QueryPatcher($this->fakeFelines);
 
         $query->select([
             'custom_name' => 'name',
@@ -391,7 +376,7 @@ class QueryPatcherTest extends TestCase
             ->group('legs')
             ->order(['subclass' => 'ASC']);
 
-        $queryPatcher->patch($query)->all();
+        $query->fixAll();
 
         // contain
         $this->assertEquals(
@@ -437,7 +422,7 @@ class QueryPatcherTest extends TestCase
 
         // order
         $orderClause = $query->clause('order');
-        $orderClause->iterateParts(function ($value, $key) use ($queryPatcher) {
+        $orderClause->iterateParts(function ($value, $key) {
             $this->assertEquals('FakeMammals.subclass', $key);
 
             return $value;

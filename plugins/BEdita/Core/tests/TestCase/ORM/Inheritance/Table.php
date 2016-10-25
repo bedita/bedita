@@ -11,21 +11,22 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\TestCase\Model\Behavior;
+namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
-use BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior;
-use BEdita\Core\ORM\Inheritance\TableInheritanceManager;
+use BEdita\Core\ORM\Association\ExtensionOf;
+use BEdita\Core\ORM\Inheritance\Query;
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior} Test Case
+ * {@see \BEdita\Core\ORM\Inheritance\Table} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior
+ * @coversDefaultClass \BEdita\Core\ORM\Inheritance\Table
  */
-class ClassTableInheritanceBehaviorTest extends TestCase
+class TableTest extends TestCase
 {
-
     /**
      * Fixtures
      *
@@ -60,6 +61,13 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     public $fakeFelines;
 
     /**
+     * Table options used for initialization
+     *
+     * @var \Cake\ORM\Table
+     */
+    protected $tableOptions = ['className' => 'BEdita\Core\ORM\Inheritance\Table'];
+
+    /**
      * setUp method
      *
      * @return void
@@ -67,99 +75,211 @@ class ClassTableInheritanceBehaviorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $options = ['className' => 'BEdita\Core\ORM\Table'];
-        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $options);
-        $this->fakeAnimals->hasMany('FakeArticles');
 
-        $this->fakeMammals = TableRegistry::get('FakeMammals', $options);
-        $this->fakeMammals->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'FakeAnimals'
-            ]
-        ]);
-
-        $this->fakeFelines = TableRegistry::get('FakeFelines', $options);
-        $this->fakeFelines->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'FakeMammals'
-            ]
-        ]);
+        $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
+        $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
+        $this->fakeAnimals = TableRegistry::get('FakeAnimals', $this->tableOptions);
     }
 
     /**
-     * Data provider for `testAddBehavior` test case.
+     * Setup inheritance associations
+     *
+     * @return void
+     */
+    protected function setupAssociations()
+    {
+        $this->fakeMammals->extensionOf('FakeAnimals');
+        $this->fakeFelines->extensionOf('FakeMammals');
+        $this->fakeAnimals->hasMany('FakeArticles');
+    }
+
+    /**
+     * test query
+     *
+     * @return void
+     * @covers ::query()
+     */
+    public function testQuery()
+    {
+        $this->assertInstanceOf('\BEdita\Core\ORM\Inheritance\Query', $this->fakeFelines->query());
+    }
+
+    /**
+     * test setup ExtensionOf association
+     *
+     * @return void
+     * @covers ::extensionOf()
+     */
+    public function testExtensionOf()
+    {
+        $this->assertTrue(method_exists($this->fakeFelines, 'extensionOf'));
+        $extensionOf = $this->fakeFelines->associations()->type('ExtensionOf');
+        $this->assertCount(0, $extensionOf);
+        $this->fakeFelines->extensionOf('FakeMammals', $this->tableOptions);
+        $extensionOf = $this->fakeFelines->associations()->type('ExtensionOf');
+        $this->assertCount(1, $extensionOf);
+
+        $extensionOf = current($extensionOf);
+        $this->assertEquals(TableRegistry::get('FakeMammals'), $extensionOf->target());
+
+        // trying to add another extensionOf association on the same table
+        $this->setExpectedExceptionRegExp('\RuntimeException', '/.*has already an ExtensionOf association with.*/');
+        $this->fakeFelines->extensionOf('FakeAnimals', $this->tableOptions);
+    }
+
+    /**
+     * test implementedEvents to see when inheritance listeners are bound
+     *
+     * @return void
+     * @covers ::implementedEvents()
+     */
+    public function testImplementedEvents()
+    {
+        $implementedEvents = $this->fakeFelines->implementedEvents();
+        $expected = [
+            'Model.beforeFind' => 'inheritanceBeforeFind',
+            'Model.beforeSave' => 'inheritanceBeforeSave',
+        ];
+        $this->assertEquals($expected, $implementedEvents);
+
+        $mockTable = $this->getMockBuilder($this->tableOptions['className'])
+            ->setMethods([
+                'beforeFind',
+                'beforeSave',
+            ])
+            ->getMock();
+
+        $implementedEvents = $mockTable->implementedEvents();
+        $expected = [
+            'Model.beforeFind' => [
+                ['callable' => 'beforeFind'],
+                ['callable' => 'inheritanceBeforeFind']
+            ],
+            'Model.beforeSave' => [
+                ['callable' => 'beforeSave'],
+                ['callable' => 'inheritanceBeforeSave']
+            ],
+        ];
+        $this->assertEquals($expected, $implementedEvents);
+    }
+
+    /**
+     * Data provider for testTriggerEvents
      *
      * @return array
      */
-    public function addBehaviorProvider()
+    public function triggerEventsProvider()
     {
         return [
-            'noConf' => [
-                false,
-                []
-            ],
-            'missingTableName' => [
-                false,
+            'beforeFind' => [
                 [
-                    'table' => ['className' => 'Cake\ORM\Table']
-                ]
-            ],
-            'confTable' => [
-                [
-                    'tableName' => 'FakeMammals',
-                    'className' => null,
+                    'beforeFind' => 'called as first',
+                    'inheritanceBeforeFind' => 'called as second'
                 ],
-                [
-                    'table' => ['tableName' => 'FakeMammals']
-                ]
+                'Model.beforeFind'
             ],
-            'confTableAndClassName' => [
+            'beforeSave' => [
                 [
-                    'tableName' => 'FakeMammals',
-                    'className' => 'Cake\ORM\Table',
+                    'beforeSave' => 'called as first',
+                    'inheritanceBeforeSave' => 'called as second'
                 ],
-                [
-                    'table' => [
-                        'tableName' => 'FakeMammals',
-                        'className' => 'Cake\ORM\Table'
-                    ]
-                ]
+                'Model.beforeSave'
             ]
         ];
     }
 
     /**
-     * testAddBehavior method
+     * test that listeners are really triggered
      *
+     * @param array $expected The expected results
+     * @param string $eventName The even name to trigger
      * @return void
-     *
-     * @dataProvider addBehaviorProvider
-     * @covers ::initialize()
+     * @dataProvider triggerEventsProvider
+     * @covers ::implementedEvents()
      */
-    public function testAddBehavior($expected, $conf)
+    public function testTriggerEvents($expected, $eventName)
     {
-        TableInheritanceManager::removeTable($this->fakeFelines, 'FakeMammals');
-        $this->fakeFelines->removeBehavior('ClassTableInheritance');
+        $method = str_replace('Model.', '', $eventName);
+        $iMethod = 'inheritance' . ucfirst($method);
 
-        if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
+        $mockTable = $this->getMockBuilder($this->tableOptions['className'])
+            ->setMethods([
+                'beforeFind',
+                'beforeSave',
+                'inheritanceBeforeFind',
+                'inheritanceBeforeSave',
+            ])
+            ->getMock();
+
+        $mockTable->expects($this->once())->method($method)
+            ->will($this->returnValue([$method => 'called as first']));
+
+        $callback = function ($event) use ($iMethod) {
+            return array_merge($event->result, [$iMethod => 'called as second']);
+        };
+        $mockTable->expects($this->once())->method($iMethod)
+            ->will($this->returnCallback($callback));
+
+        if ($eventName == 'Model.beforeFind') {
+            $mockQuery = $this->getMockBuilder('\BEdita\Core\ORM\Inheritance\Query')
+                ->setConstructorArgs([null, null])
+                ->getMock();
+
+            $event = $mockTable->dispatchEvent('Model.beforeFind', [
+                $mockQuery,
+                new \ArrayObject(),
+                true
+            ]);
+        } else {
+            $event = $mockTable->dispatchEvent('Model.beforeSave', [
+                $mockTable->newEntity(),
+                new \ArrayObject()
+            ]);
         }
 
-        $this->fakeFelines->addBehavior('BEdita/Core.ClassTableInheritance', $conf);
-        $inheritedTable = current($this->fakeFelines->inheritedTables());
+        $this->assertEquals($expected, $event->result);
+    }
 
-        $this->assertEquals($expected['tableName'], $inheritedTable->alias());
-        $this->assertEquals($expected['className'], $this->fakeFelines->association($inheritedTable->alias())->className());
+    /**
+     * Test inherited tables
+     *
+     * @return void
+     * @covers ::inheritedTables()
+     * @covers ::isTableInherited()
+     */
+    public function testInheritedTables()
+    {
+        $this->setupAssociations();
+
+        $mammalsInheritance = current($this->fakeMammals->inheritedTables());
+
+        $this->assertEquals('FakeAnimals', $mammalsInheritance->alias());
+
+        $felinesInheritance = current($this->fakeFelines->inheritedTables());
+        $this->assertEquals('FakeMammals', $felinesInheritance->alias());
+
+        $felinesDeepInheritance = array_map(function ($inherited) {
+            return $inherited->alias();
+        }, $this->fakeFelines->inheritedTables(true));
+
+        $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+
+        $this->assertTrue($this->fakeFelines->isTableInherited('FakeAnimals', true));
+        $this->assertFalse($this->fakeFelines->isTableInherited('FakeAnimals'));
+        $this->assertTrue($this->fakeFelines->isTableInherited('FakeMammals', true));
+        $this->assertTrue($this->fakeFelines->isTableInherited('FakeMammals'));
     }
 
     /**
      * Test basic find
      *
      * @return void
-     * @coversNothing
+     * @covers ::inheritanceBeforeFind()
      */
     public function testBasicFind()
     {
+        $this->setupAssociations();
+
         // find felines
         $felines = $this->fakeFelines->find();
         $this->assertEquals(1, $felines->count());
@@ -224,10 +344,12 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * Test find using contain
      *
      * @return void
-     * @covers ::patchContain()
+     * @covers ::inheritanceBeforeFind()
      */
     public function testContainFind()
     {
+        $this->setupAssociations();
+
         $felines = $this->fakeFelines
             ->find()
             ->contain('FakeArticles');
@@ -414,12 +536,14 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider saveProvider
-     * @covers ::beforeSave()
+     * @covers ::inheritanceBeforeSave()
      * @covers \BEdita\Core\ORM\Association\ExtensionOf::saveAssociated()
      * @covers \BEdita\Core\ORM\Association\ExtensionOf::targetPropertiesValues()
      */
     public function testSave($expected, $data)
     {
+        $this->setupAssociations();
+
         $feline = $this->fakeFelines->newEntity();
         if (!empty($data['id'])) {
             $feline = $this->fakeFelines->get($data['id']);
@@ -465,18 +589,20 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider selectProvider
-     * @coversNothing
+     * @covers ::inheritanceBeforeFind()
+     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_calculateColumnMap()
+     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_groupResult()
+     * @covers \BEdita\Core\ORM\Association\ExtensionOf::transformRow()
      */
     public function testSelect($expected, $select)
     {
-        static $allColumns = null;
-        if ($allColumns === null) {
-            $allColumns = $this->fakeFelines->schema()->columns();
-            foreach ($this->fakeFelines->inheritedTables(true) as $t) {
-                $allColumns = array_merge($allColumns, $t->schema()->columns());
-            }
-            $allColumns = array_unique($allColumns);
+        $this->setupAssociations();
+
+        $allColumns = $this->fakeFelines->schema()->columns();
+        foreach ($this->fakeFelines->inheritedTables(true) as $t) {
+            $allColumns = array_merge($allColumns, $t->schema()->columns());
         }
+        $allColumns = array_unique($allColumns);
 
         $unexpectedFields = array_diff($allColumns, $expected);
 
@@ -498,10 +624,13 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      *
      * @return void
      *
-     * @coversNothing
+     * @covers \BEdita\Core\ORM\Inheritance\Query::fixClause()
+     * @covers \BEdita\Core\ORM\Inheritance\Query::fixExpression()
      */
     public function testClauses()
     {
+        $this->setupAssociations();
+
         // add some row
         $data = [
             'legs' => 4,
@@ -598,10 +727,14 @@ class ClassTableInheritanceBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider findListProvider
-     * @coversNothing
+     * @covers ::inheritanceBeforeFind()
+     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_calculateColumnMap()
+     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_groupResult()
      */
     public function testFindList($expected, $listParams, $order)
     {
+        $this->setupAssociations();
+
         // add some row
         $data = [
             'legs' => 4,

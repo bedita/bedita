@@ -13,36 +13,23 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use BEdita\Core\ORM\Inheritance\ResultSet;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Expression\FieldInterface;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
-use Cake\ORM\Query;
-use Cake\ORM\Table;
+use Cake\Datasource\RepositoryInterface;
+use Cake\ORM\Query as CakeQuery;
+use Cake\ORM\Table as CakeTable;
 
 /**
- * QueryPatcher class.
- *
- * Patch the original Query instance using the Table inheritance
+ * Extends `\Cake\ORM\Query` to use custom `ResultSet` to better handle query results in CTI.
+ * Also add useful methods to patch the query clauses in CTI context.
  *
  * @since 4.0.0
  */
-class QueryPatcher
+class Query extends CakeQuery
 {
-    /**
-     * Table instance.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected $table = null;
-
-    /**
-     * Query instance.
-     *
-     * @var \Cake\ORM\Query
-     */
-    protected $query = null;
-
     /**
      * It keeps trace of inheritance to avoid repeated operations
      *
@@ -51,35 +38,51 @@ class QueryPatcher
     protected $inheritanceMap = [];
 
     /**
-     * The alias checker used to extract fields name aliased with table alias
+     * The alias checker used to extract fields name aliased with `self::_repository` alias.
+     * It needs to boost performance using `substr()` in case of repeated replaces.
+     *
+     * Contains the two keys:
+     * - `string` the string to check i.e. `TableAlias.`
+     * - `length` the length of the string to check
      *
      * @var array
+     * @see self::aliasChecker()
+     * @see self::extractField()
      */
-    protected $aliasChecker = [
-        'string' => '',
-        'length' => 0
-    ];
+    protected $aliasChecker = [];
 
     /**
-     * Constructor.
+     * It replaces `\Cake\Datasource\QueryTrait::repository()` calling it
+     * and setup the `self::aliasChecker` if needed
      *
-     * @param \Cake\ORM\Table $table The Table instance
+     * {@inheritDoc}
      */
-    public function __construct(Table $table)
+    protected function aliasChecker($table)
     {
-        if (!$table->hasBehavior('ClassTableInheritance')) {
-            throw new \InvalidArgumentException(sprintf(
-                'Table %s must use ClassTableInheritance behavior',
-                $table->alias()
-            ));
-        }
-        $this->table = $table;
-        $this->aliasChecker['string'] = $table->alias() . '.';
-        $this->aliasChecker['length'] = strlen($this->aliasChecker['string']);
+        $checker = $table->alias() . '.';
+
+        return $this->aliasChecker = ['string' => $checker, 'length' => strlen($checker)];
     }
 
     /**
-     * Return the complete table inheritance of `$this->table`.
+     * {@inheritDoc}
+     */
+    protected function _execute()
+    {
+        $this->triggerBeforeFind();
+        if ($this->_results) {
+            $decorator = $this->_decoratorClass();
+
+            return new $decorator($this->_results);
+        }
+
+        $statement = $this->eagerLoader()->loadExternal($this, $this->execute());
+
+        return new ResultSet($this, $statement);
+    }
+
+    /**
+     * Return the complete table inheritance of `$this->_repository`.
      * Once obtained it returns its value without recalculate it.
      *
      * @return array
@@ -90,34 +93,22 @@ class QueryPatcher
             return $this->inheritanceMap['tables'];
         }
 
-        $this->inheritanceMap['tables'] = $this->table->inheritedTables(true);
+        $this->inheritanceMap['tables'] = $this->_repository->inheritedTables(true);
 
         return $this->inheritanceMap['tables'];
     }
 
     /**
-     * Prepare the Query to patch
+     * Execute all the fixes to work right in CTI context
+     * and return the query patched
      *
-     * @param \Cake\ORM\Query $query The Query to patch
      * @return $this
      */
-    public function patch(Query $query)
+    public function fixAll()
     {
-        $this->query = $query;
+        $this->fixContain();
 
-        return $this;
-    }
-
-    /**
-     * Execute all the patches and return the query patched
-     *
-     * @return \Cake\ORM\Query
-     */
-    public function all()
-    {
-        $this->contain();
-
-        return $this->query
+        return $this
             ->traverseExpressions([$this, 'fixExpression'])
             ->traverse(
                 [$this, 'fixClause'],
@@ -129,18 +120,18 @@ class QueryPatcher
      * Arrange contain mapping tables to the right association
      *
      * * add inherited tables
-     * * arrange tables in \Cake\ORM\Query::contain() to the right inherited table
+     * * arrange tables in `self::contain()` to the right inherited table
      * * override contain data with that calculated
      *
      * @return $this
      */
-    public function contain()
+    public function fixContain()
     {
-        $inheritedTables = array_map(function (Table $table) {
+        $inheritedTables = array_map(function (CakeTable $table) {
             return $table->alias();
         }, $this->inheritedTables());
 
-        $contain = $this->query->contain();
+        $contain = $this->contain();
         $contain += array_fill_keys($inheritedTables, []);
         $result = [];
 
@@ -152,7 +143,7 @@ class QueryPatcher
             $result[$containString] = $tableContain;
         }
 
-        $this->query->contain($result, true);
+        $this->contain($result, true);
 
         return $this;
     }
@@ -170,7 +161,7 @@ class QueryPatcher
      */
     public function buildContainString($tableName)
     {
-        if ($this->table->association($tableName)) {
+        if ($this->_repository->association($tableName)) {
             return $tableName;
         }
 
@@ -185,7 +176,6 @@ class QueryPatcher
 
         return false;
     }
-
     /**
      * Fix sql clause mapping inherited fields.
      *
@@ -201,7 +191,7 @@ class QueryPatcher
      */
     public function fixClause($clauseData, $clause)
     {
-        $clauseData = $clauseData ?: $this->query->clause($clause);
+        $clauseData = $clauseData ?: $this->clause($clause);
         if (empty($clauseData) || is_bool($clauseData) || $clauseData instanceof ExpressionInterface) {
             return $this;
         }
@@ -215,10 +205,10 @@ class QueryPatcher
                 continue;
             }
 
-            $clauseData[$key] = $this->aliasField($data);
+            $clauseData[$key] = $this->fixAliasField($data);
         }
 
-        $this->query->{$clause}($clauseData, true);
+        $this->{$clause}($clauseData, true);
 
         return $this;
     }
@@ -233,7 +223,7 @@ class QueryPatcher
     {
         if ($expression instanceof IdentifierExpression) {
             $identifier = $expression->getIdentifier();
-            $expression->setIdentifier($this->aliasField($identifier));
+            $expression->setIdentifier($this->fixAliasField($identifier));
 
             return $this;
         }
@@ -241,7 +231,7 @@ class QueryPatcher
         if ($expression instanceof FieldInterface) {
             $field = $expression->getField();
             if (is_string($field)) {
-                $expression->setField($this->aliasField($field));
+                $expression->setField($this->fixAliasField($field));
             }
 
             return $this;
@@ -250,11 +240,11 @@ class QueryPatcher
         if ($expression instanceof QueryExpression) {
             $expression->iterateParts(function ($value, &$key) {
                 if (!is_numeric($key)) {
-                    $key = $this->aliasField($key);
+                    $key = $this->fixAliasField($key);
                 }
 
                 if (is_string($value)) {
-                    return $this->aliasField($value);
+                    return $this->fixAliasField($value);
                 }
 
                 return $value;
@@ -266,6 +256,7 @@ class QueryPatcher
 
     /**
      * Given a `$field` return itself aliased as `TableAlias.column_name`
+     * eventually using the right inherited table
      *
      * If `$field` doesn't correspond to any inherited table columns
      * then return it without any change.
@@ -273,7 +264,7 @@ class QueryPatcher
      * @param string $field The field string
      * @return string
      */
-    public function aliasField($field)
+    public function fixAliasField($field)
     {
         $field = $this->extractField($field);
 
@@ -281,8 +272,8 @@ class QueryPatcher
             return $field;
         }
 
-        if ($this->table->hasField($field)) {
-            return $this->table->alias() . '.' . $field;
+        if ($this->_repository->hasField($field)) {
+            return $this->_repository->alias() . '.' . $field;
         }
 
         foreach ($this->inheritedTables() as $inherited) {
@@ -304,6 +295,10 @@ class QueryPatcher
      */
     protected function extractField($field)
     {
+        if (empty($this->aliasChecker)) {
+            $this->aliasChecker($this->_repository);
+        }
+
         $aliasedWith = substr($field, 0, $this->aliasChecker['length']);
         if ($aliasedWith == $this->aliasChecker['string']) {
             $field = substr($field, $this->aliasChecker['length']);

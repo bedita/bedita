@@ -72,6 +72,7 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
+        $this->Users->associations()->removeAll();
         $this->Users->initialize([]);
         $this->assertEquals('users', $this->Users->table());
         $this->assertEquals('id', $this->Users->primaryKey());

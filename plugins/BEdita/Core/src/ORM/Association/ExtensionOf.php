@@ -96,9 +96,9 @@ class ExtensionOf extends BelongsTo
             $properties = $properties->getOriginalValues();
         }
 
-        // get properties except key corresponding to target alias
+        // get properties except key corresponding to $nestKey
         if (is_array($properties)) {
-            $row[$sourceAlias] += array_diff_key($properties, array_flip([$this->target()->alias()]));
+            $row[$sourceAlias] += array_diff_key($properties, array_flip([$nestKey]));
         }
         unset($row[$nestKey]);
 
