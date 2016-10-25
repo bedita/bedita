@@ -21,7 +21,7 @@ use Cake\Utility\Inflector;
 /**
  * \BEdita\Core\Utility\Database Test Case
  *
- * @covers \BEdita\Core\Utility\Database
+ * @coversDefaultClass \BEdita\Core\Utility\Database
  */
 class DatabaseTest extends TestCase
 {

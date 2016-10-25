@@ -17,6 +17,7 @@ use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Error\ErrorHandler;
 use Cake\Event\EventManager;
+use Cake\Log\Log;
 use Cake\Network\Request;
 
 /**
@@ -26,14 +27,14 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
     Configure::load('api', 'database');
 }
 
-/** Set API exception renderer. This also requires error handler to be reset. */
-Configure::write('Error.exceptionRenderer', 'BEdita\API\Error\ExceptionRenderer');
-restore_error_handler();
-restore_exception_handler();
-if (PHP_SAPI === 'cli') {
-    (new ConsoleErrorHandler(Configure::read('Error')))->register();
-} else {
-    (new ErrorHandler(Configure::read('Error')))->register();
+/**
+ * When debug is active and ExceptionRenderer configured is different
+ * from BEdita\API\Error\ExceptionRenderer then write an info log.
+ * If you want to use a different renderer comment it to avoid writing log
+ */
+$exceptionRenderer = Configure::read('Error.exceptionRenderer');
+if ($exceptionRenderer !== 'BEdita\API\Error\ExceptionRenderer' && Configure::read('debug')) {
+    Log::info('ExceptionRenderer used is ' . $exceptionRenderer . '.  BEdita/API should use BEdita\API\Error\ExceptionRenderer.');
 }
 
 /** Add custom request detectors. */

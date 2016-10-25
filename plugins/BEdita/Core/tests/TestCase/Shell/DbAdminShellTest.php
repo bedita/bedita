@@ -19,7 +19,7 @@ use Cake\TestSuite\TestCase;
 /**
  * \BEdita\Core\Shell\DbAdminShell Test Case
  *
- * @covers \BEdita\Core\Shell\DbAdminShell
+ * @coversDefaultClass \BEdita\Core\Shell\DbAdminShell
  */
 class DbAdminShellTest extends TestCase
 {
