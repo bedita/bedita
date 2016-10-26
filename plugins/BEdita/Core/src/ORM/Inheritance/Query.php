@@ -52,12 +52,12 @@ class Query extends CakeQuery
     protected $aliasChecker = [];
 
     /**
-     * It replaces `\Cake\Datasource\QueryTrait::repository()` calling it
-     * and setup the `self::aliasChecker` if needed
+     * Setup `self::$aliasChecker`
      *
-     * {@inheritDoc}
+     * @param \Cake\ORM\Table $table The table on which build the checker
+     * @return array
      */
-    protected function aliasChecker($table)
+    protected function aliasChecker(CakeTable $table)
     {
         $checker = $table->alias() . '.';
 
@@ -82,9 +82,10 @@ class Query extends CakeQuery
     }
 
     /**
-     * Return the complete table inheritance of `$this->_repository`.
+     * Helper method to get the complete table inheritance of `$this->_repository`.
      * Once obtained it returns its value without recalculate it.
      *
+     * @see \BEdita\Core\ORM\Inheritance\Table::inheritedTables
      * @return array
      */
     protected function inheritedTables()
