@@ -197,7 +197,7 @@ class Table extends CakeTable
         }
 
         $association = array_shift($associations);
-        if (!$nested || !($association->target() instanceof BEdita\Core\ORM\Inheritance\Table)) {
+        if (!$nested || !($association->target() instanceof \BEdita\Core\ORM\Inheritance\Table)) {
             return [$association->target()];
         }
 
