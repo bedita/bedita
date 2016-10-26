@@ -38,7 +38,9 @@ class ProfilesTable extends Table
         $this->primaryKey('id');
         $this->displayField('name');
 
-        $this->extensionOf('Objects');
+        $this->extensionOf('Objects', [
+            'className' => 'BEdita/Core.Objects'
+        ]);
     }
 
     /**

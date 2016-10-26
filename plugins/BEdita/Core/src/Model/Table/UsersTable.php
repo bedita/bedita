@@ -54,7 +54,9 @@ class UsersTable extends Table
             'className' => 'BEdita/Core.Roles',
         ]);
 
-        $this->extensionOf('Profiles');
+        $this->extensionOf('Profiles', [
+            'className' => 'BEdita/Core.Profiles'
+        ]);
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
