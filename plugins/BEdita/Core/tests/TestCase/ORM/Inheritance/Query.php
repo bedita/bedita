@@ -119,7 +119,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * Data provider for `testPatchContain` test case.
+     * Data provider for `testFixContain` test case.
      *
      * @return array
      */
@@ -167,7 +167,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * Data provider for `testAliasField` test case.
+     * Data provider for `testFixAliasField` test case.
      *
      * @return array
      */
@@ -178,9 +178,13 @@ class QueryTest extends TestCase
                 'FakeFelines.id',
                 'id',
             ],
-            'aliasRight' => [
-                'FakeFelines.family',
-                'FakeFelines.family',
+            'notFoundField' => [
+                'title',
+                'title',
+            ],
+            'aliasRight2' => [
+                'FakeMammals.subclass',
+                'FakeMammals.subclass',
             ],
             'inheritedAlias' => [
                 'FakeMammals.subclass',
@@ -206,7 +210,7 @@ class QueryTest extends TestCase
     }
 
     /**
-     * testAliasField
+     * testFixAliasField
      *
      * @param string $expected Expected result.
      * @param string $field The starting field.
@@ -284,8 +288,6 @@ class QueryTest extends TestCase
      *
      * @dataProvider fixClauseProvider
      * @covers ::fixClause()
-     * @covers ::fixAliasField()
-     * @covers ::extractField()
      */
     public function testFixClause($expected, $clause, $data)
     {
@@ -306,8 +308,6 @@ class QueryTest extends TestCase
      * testFixExpression
      *
      * @covers ::fixExpression()
-     * @covers ::fixAliasField()
-     * @covers ::extractField()
      */
     public function testFixExpression()
     {

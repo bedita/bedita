@@ -245,14 +245,14 @@ class TableTest extends TestCase
      *
      * @return void
      * @covers ::inheritedTables()
-     * @covers ::isTableInherited()
      */
     public function testInheritedTables()
     {
+        $this->assertEquals([], $this->fakeFelines->inheritedTables());
+
         $this->setupAssociations();
 
         $mammalsInheritance = current($this->fakeMammals->inheritedTables());
-
         $this->assertEquals('FakeAnimals', $mammalsInheritance->alias());
 
         $felinesInheritance = current($this->fakeFelines->inheritedTables());
@@ -263,7 +263,20 @@ class TableTest extends TestCase
         }, $this->fakeFelines->inheritedTables(true));
 
         $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+    }
 
+    /**
+     * Test inherited tables
+     *
+     * @return void
+     * @covers ::isTableInherited()
+     */
+    public function testIsTableInherited()
+    {
+        $this->assertFalse($this->fakeFelines->isTableInherited('FakeMammals'));
+        $this->assertFalse($this->fakeFelines->isTableInherited('FakeMammals', true));
+
+        $this->setupAssociations();
         $this->assertTrue($this->fakeFelines->isTableInherited('FakeAnimals', true));
         $this->assertFalse($this->fakeFelines->isTableInherited('FakeAnimals'));
         $this->assertTrue($this->fakeFelines->isTableInherited('FakeMammals', true));
@@ -271,12 +284,35 @@ class TableTest extends TestCase
     }
 
     /**
-     * Test basic find
+     * testBasicFindWithoutInheritance
      *
      * @return void
      * @covers ::inheritanceBeforeFind()
      */
-    public function testBasicFind()
+    public function testBasicFindWithoutInheritance()
+    {
+        // find felines
+        $felines = $this->fakeFelines->find();
+        $this->assertEquals(1, $felines->count());
+
+        $feline = $felines->first();
+        $expected = [
+            'id' => 1,
+            'family' => 'purring cats'
+        ];
+        $result = $feline->extract($felines->first()->visibleProperties());
+        ksort($expected);
+        ksort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * testBasicFindWithInheritance
+     *
+     * @return void
+     * @covers ::inheritanceBeforeFind()
+     */
+    public function testBasicFindWithInheritance()
     {
         $this->setupAssociations();
 
@@ -623,9 +659,6 @@ class TableTest extends TestCase
      * testClauses
      *
      * @return void
-     *
-     * @covers \BEdita\Core\ORM\Inheritance\Query::fixClause()
-     * @covers \BEdita\Core\ORM\Inheritance\Query::fixExpression()
      */
     public function testClauses()
     {
@@ -727,9 +760,6 @@ class TableTest extends TestCase
      * @return void
      *
      * @dataProvider findListProvider
-     * @covers ::inheritanceBeforeFind()
-     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_calculateColumnMap()
-     * @covers \BEdita\Core\ORM\Inheritance\ResultSet::_groupResult()
      */
     public function testFindList($expected, $listParams, $order)
     {
