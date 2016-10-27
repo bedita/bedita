@@ -1013,16 +1013,8 @@ class BeditaShell extends BeditaBaseShell {
 	}
 
 	public function filters() {
-		$filters = array();
-		$models = App::objects('model', null, false);
-		foreach ($models as $modName) {
-			$modClass = ClassRegistry::init($modName);
-			if ($modClass instanceof BeditaImportFilter) {
-				$filters['import'][$modClass->name()] = $modName;
-			} else if ($modClass instanceof BeditaExportFilter) {
-				$filters['export'][$modClass->name()] = $modName;
-			}
-		}
+		$this->initConfig();
+		$filters = Configure::read('filters');
 		$this->out("\n" . '(import)' . "\n");
 		foreach ($filters['import'] as $k => $v) {
 			$this->out($k . ': ' . $v);
