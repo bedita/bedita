@@ -1113,6 +1113,9 @@ class BeditaShell extends BeditaBaseShell {
         $this->out("    -id <dest-section-id>\t optional section/area id destination of imported objects");
         $this->out("    - ... - specific filter params may be passed to filter");
         $this->out(' ');
+		$this->out('13. filters: list import/export filters');
+  		$this->out(' ');
+  		$this->out('   Usage: filters');
 	}
 }
 
