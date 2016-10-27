@@ -1011,7 +1011,28 @@ class BeditaShell extends BeditaBaseShell {
 	    $result = $filterModel->import($impFile, $options);
 	    $this->out($result["objects"] . " objects created in import ");
 	}
-	
+
+	public function filters() {
+		$filters = array();
+		$models = App::objects('model', null, false);
+		foreach ($models as $modName) {
+			$modClass = ClassRegistry::init($modName);
+			if ($modClass instanceof BeditaImportFilter) {
+				$filters['import'][$modClass->name()] = $modName;
+			} else if ($modClass instanceof BeditaExportFilter) {
+				$filters['export'][$modClass->name()] = $modName;
+			}
+		}
+		$this->out("\n" . '(import)' . "\n");
+		foreach ($filters['import'] as $k => $v) {
+			$this->out($k . ': ' . $v);
+		}
+		$this->out("\n" . '(export)' . "\n");
+		foreach ($filters['export'] as $k => $v) {
+			$this->out($k . ': ' . $v);
+		}
+	}
+
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
