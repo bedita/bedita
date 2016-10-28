@@ -119,6 +119,7 @@ class JsonApi
         $relationships = [];
         $associations = TableRegistry::get($entity->source())->associations();
         $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
+        $hidden = $entity->hiddenProperties();
 
         $btmJunctionAliases = array_map(
             function (BelongsToMany $val) {
@@ -130,7 +131,7 @@ class JsonApi
         foreach ($associations as $association) {
             list(, $type) = namespaceSplit(get_class($association));
             $name = $association->property();
-            if (!($association instanceof Association) || $type === 'ExtensionOf' || $name == 'external_auth' ||
+            if (!($association instanceof Association) || $type === 'ExtensionOf' || in_array($name, $hidden) ||
                 ($type === 'HasMany' && in_array($association->target()->alias(), $btmJunctionAliases))) {
                 continue;
             }
