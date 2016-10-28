@@ -137,9 +137,9 @@ class RolesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/roles?user_id=1',
-                'first' => 'http://api.example.com/roles?user_id=1',
-                'last' => 'http://api.example.com/roles?user_id=1',
+                'self' => 'http://api.example.com/users/1/roles',
+                'first' => 'http://api.example.com/users/1/roles',
+                'last' => 'http://api.example.com/users/1/roles',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
