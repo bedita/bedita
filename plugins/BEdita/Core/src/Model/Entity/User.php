@@ -57,6 +57,7 @@ class User extends Profile
      */
     protected $_hidden = [
         'password_hash',
+        'external_auth',
     ];
 
     /**
