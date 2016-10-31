@@ -1135,7 +1135,8 @@ class ApiValidatorComponent extends Object {
 
         // Status.
         if (count($this->getAllowedCategoryStatuses()) === 1 && empty($category['status'])) {
-            $category['status'] = $this->getAllowedCategoryStatuses()[0];
+            $allowedStatuses = $this->getAllowedCategoryStatuses();
+            $category['status'] = reset($allowedStatuses);
         }
 
         $this->isCategoryWritable($category);
