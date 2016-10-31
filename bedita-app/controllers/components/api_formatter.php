@@ -780,11 +780,11 @@ class ApiFormatterComponent extends Object {
             $object['RelatedObject'] = $this->formatRelationsForSave($object['relations']);
             unset($object['relations']);
         }
-        if (!empty($object['categories'])) {
+        if (array_key_exists('categories', $object) && is_array($object['categories'])) {
             $object['Category'] = $this->formatCategoriesForSave($object['categories'], $object['object_type_id']);
             unset($object['categories']);
         }
-        if (!empty($object['tags'])) {
+        if (array_key_exists('tags', $object) && is_array($object['tags'])) {
             $tags = $this->formatTagsForSave($object['tags']);
             $object['Category'] = (!empty($object['Category'])) ? array_merge($object['Category'], $tags) : $tags;
             unset($object['tags']);
