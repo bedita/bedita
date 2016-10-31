@@ -1034,4 +1034,25 @@ class ApiFormatterComponent extends Object {
         return $this->urlParams;
     }
 
+    /**
+     * Format a category for output.
+     *
+     * @param array $category Category data.
+     * @return array
+     */
+    public function formatCategory(array $category) {
+        foreach (array('area_id', 'id', 'object_type_id', 'parent_id', 'priority') as $property) {
+            if (!array_key_exists($property, $category)) {
+                continue;
+            }
+
+            $category[$property] = (int)$category[$property] ?: null;
+        }
+
+        if (!empty($category['object_type_id'])) {
+            $category['object_type'] = Configure::read("objectTypes.{$category['object_type_id']}.name");
+        }
+
+        return $category;
+    }
 }

@@ -1057,4 +1057,111 @@ class ApiValidatorComponent extends Object {
 
         return false;
     }
+
+    /**
+     * Get a list of allowed category status(-es).
+     *
+     * @return array
+     */
+    public function getAllowedCategoryStatuses() {
+        return array_intersect($this->controller->getStatus(), array('on', 'off'));
+    }
+
+    /**
+     * Checks if a category is accessible.
+     *
+     * @param array $category Category details.
+     * @return bool
+     * @throws BeditaNotFoundException Throws an exception if category data is empty.
+     * @throws BeditaBadRequestException Throws an exception if `status` is invalid.
+     * @throws BeditaForbiddenException Throws an exception if `object_type_id` is not writable.
+     */
+    public function isCategoryWritable(array $category) {
+        if (empty($category) || empty($category['status']) || empty($category['object_type_id'])) {
+            throw new BeditaNotFoundException();
+        }
+        if (!in_array($category['status'], $this->getAllowedCategoryStatuses())) {
+            throw new BeditaBadRequestException('Field `status` must be one of: ' . implode(', ', $this->getAllowedCategoryStatuses()));
+        }
+        if (!$this->isObjectTypeWritable($category['object_type_id'])) {
+            throw new BeditaForbiddenException(sprintf('Object type %s is not writable', Configure::read("objectTypes.{$category['object_type_id']}.name")));
+        }
+        if (array_key_exists('area_id', $category) && !is_null($category['area_id']) && $category['area_id'] != Configure::read('frontendAreaId')) {
+            throw new BeditaBadRequestException('Field `area_id` must be either NULL, or ' . Configure::read('frontendAreaId'));
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate a category's data.
+     *
+     * @param array $category Category data.
+     * @param bool $merge Is this a patch or a complete replacement for resource?
+     * @return void
+     * @throws BeditaNotFoundException Throws an exception if trying to patch a non-existing category.
+     * @throws BeditaBadRequestException Throws an exception on validation failure.
+     */
+    public function checkCategory(array &$category, $merge = true) {
+        $allowedAreaIds = array(null, (int)Configure::read('frontendAreaId'));
+
+        $isNew = true;
+        $previousData = array();
+        if (!empty($category['id'])) {
+            $isNew = false;
+            $previousData = ClassRegistry::init('Category')->find('first', array('conditions' => array('id' => $category['id'])));
+            try {
+                $this->isCategoryWritable($previousData);
+            } catch (Exception $e) {
+                throw new BeditaForbiddenException('You have no write access to this category');
+            }
+        }
+
+        // Object type.
+        if (empty($category['object_type']) || is_numeric($category['object_type']) || !is_array(Configure::read('objectTypes.' . $category['object_type']))) {
+            throw new BeditaBadRequestException('Field `object_type` is required and must be a valid object type name');
+        }
+        $category['object_type_id'] = (int)Configure::read(sprintf('objectTypes.%s.id', $category['object_type']));
+        unset($category['object_type']);
+        if (!$isNew && $category['object_type_id'] != $previousData['object_type_id']) {
+            throw new BeditaBadRequestException('Field `object_type` cannot be updated');
+        }
+
+        if ($merge) {
+            $category = array_merge($category, array_diff_key($previousData, $category));
+        } elseif (!array_key_exists('area_id', $category)) {
+            $category['area_id'] = (int)Configure::read('frontendAreaId');
+        }
+
+        // Status.
+        if (count($this->getAllowedCategoryStatuses()) === 1 && empty($category['status'])) {
+            $category['status'] = $this->getAllowedCategoryStatuses()[0];
+        }
+
+        $this->isCategoryWritable($category);
+
+        // Label.
+        if (empty($category['label'])) {
+            throw new BeditaBadRequestException('Field `label` is required');
+        }
+
+        // Name.
+        if (empty($category['name'])) {
+            throw new BeditaBadRequestException('Field `name` is required');
+        }
+        $conditions = array(
+            'name' => $category['name'],
+        );
+        if (!$isNew) {
+            $conditions['id <>'] = $category['id'];
+        }
+        if (ClassRegistry::init('Category')->find('count', compact('conditions'))) {
+            throw new BeditaBadRequestException('Field `name` must be unique');
+        }
+
+        // Parent, parent path, priority.
+        if (!empty($category['parent_id']) || !empty($category['parent_path']) || !empty($category['priority'])) {
+            throw new BeditaBadRequestException('Fields `parent_id`, `parent_path` and `priority` are not supported yet');
+        }
+    }
 }

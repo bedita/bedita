@@ -267,7 +267,7 @@ abstract class ApiBaseController extends FrontendController {
         '_pagination' => array('page', 'page_size'),
         'objects' => array('id', 'filter[object_type]', 'filter[substring]', 'filter[query]', 'embed[relations]', '_pagination'),
         'posters' => array('id', 'width', 'height', 'mode'),
-        'categories' => array('id','filter[object_type]')
+        'categories' => array('id', 'filter[object_type]', '_pagination'),
     );
 
     /**
@@ -2114,14 +2114,75 @@ abstract class ApiBaseController extends FrontendController {
         return false;
     }
 
-    private function checkCategoryParams() {
-        if (empty($this->data['id'])) {
-            if (empty($this->data['object_type']) || empty($this->data['label'])) {
-                throw new BeditaBadRequestException('categories: when creating a category object_type and name cannot be missing');
+
+    /**
+     * GET /categories
+     *
+     * If $categoryId is passed try to load a category with that id or name
+     *
+     * @param int|string $categoryId a category id or name
+     * @return void
+     */
+    protected function getCategories($categoryId = null) {
+        $urlParams = $this->ApiFormatter->formatUrlParams();
+        if (!empty($urlParams['filter']['object_type'])) {
+            $urlParams['filter']['object_type'] = Configure::read("objectTypes.{$urlParams['filter']['object_type']}.id");
+        }
+
+        $Category = ClassRegistry::init('Category');
+        $conditions = array(
+            'Category.status' => $this->ApiValidator->getAllowedCategoryStatuses(),
+            'OR' => array(
+                'Category.area_id IS NULL',
+                'Category.area_id' => Configure::read('frontendAreaId'),
+            ),
+        );
+
+        if (!empty($categoryId)) {
+            if (is_numeric($categoryId)) {
+                $conditions['Category.id'] = $categoryId;
+            } else {
+                $conditions['Category.name'] = $categoryId;
             }
+
+            $entity = $Category->find('first', compact('conditions'));
+
+            if (!empty($urlParams['filter']['object_type']) && (int)$entity['object_type_id'] !== (int)$urlParams['filter']['object_type']) {
+                throw new BeditaNotFoundException(null, 'Object type mismatch');
+            }
+
+            $this->setData($this->ApiFormatter->formatCategory($entity));
+        } else {
+            $this->setupPagination();
+
+            if (!empty($urlParams['filter']['object_type'])) {
+                $conditions['Category.object_type_id'] = $urlParams['filter']['object_type'];
+            }
+
+            $categories = $Category->find('all', array(
+                'conditions' => $conditions,
+                'order' => 'label',
+                'limit' => $this->paginationOptions['pageSize'],
+                'page' => $this->paginationOptions['page'],
+            ));
+            $total = $Category->find('count', compact('conditions'));
+
+            $this->setData(array_map(array($this->ApiFormatter, 'formatCategory'), $categories));
+            $this->setPaging(array(
+                'page' => $this->paginationOptions['page'],
+                'page_size' => $this->paginationOptions['pageSize'],
+                'page_count' => count($categories),
+                'total' => $total,
+                'total_pages' => ceil($total / $this->paginationOptions['pageSize']),
+            ));
         }
     }
 
+    /**
+     * POST /categories
+     *
+     * @return void
+     */
     protected function postCategories() {
         if (!$this->ApiAuth->identify()) {
             throw new BeditaUnauthorizedException();
@@ -2131,76 +2192,91 @@ abstract class ApiBaseController extends FrontendController {
             throw new BeditaBadRequestException('Missing data to save');
         }
 
-        $this->checkCategoryParams();
+        if (func_num_args() > 0) {
+            throw new BeditaMethodNotAllowedException('POST /categories/:id is not supported');
+        }
 
-        $isNew = (empty($this->data['id'])) ? true : false;
-        $catModel = ClassRegistry::init('Category');
-        $this->data = $this->formatCategory($this->data);
+        $this->ApiValidator->checkCategory($this->data, strtolower($this->getRequestMethod()) == 'post');
+
+        $isNew = empty($this->data['id']);
+        $Category = ClassRegistry::init('Category');
 
         if ($isNew) {
-            $this->data['status'] = 'on';
+            $Category->create();
         }
 
         $this->Transaction->begin();
-        $catModel->create();
-        $catModel->set($this->data);
-        $catModel->save();
+        if (!$Category->save($this->data)) {
+            throw new BeditaInternalErrorException('Could not save category');
+        }
         $this->Transaction->commit();
-
-        $savedObjectId = $catModel->id;
 
         if ($isNew) {
             $this->ResponseHandler->sendStatus(201);
-            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/categories/' . $savedObjectId);
+            $this->ResponseHandler->sendHeader('Location', $this->baseUrl() . '/categories/' . $Category->id);
         }
 
-        $res = $catModel->find('first', array('conditions' => array('id' => $savedObjectId)));
-        $this->setData($res);
+        $this->getCategories($Category->id);
     }
 
-
-    protected function getCategories($objectId = null) {
-        $urlParams = $this->ApiFormatter->formatUrlParams();
-
-        if(!empty($urlParams['filter']) && !empty($urlParams['filter']['object_type'])) {
-            $objectType = $urlParams['filter']['object_type'];
+    /**
+     * PUT /categories
+     *
+     * @return void
+     */
+    protected function putCategories() {
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
         }
 
-        $categoryModel = ClassRegistry::init('Category');
-        $conditions = array(
-            'Category.status' => 'on'
-        );
-
-        if (!empty($objectId)) {
-            $conditions['Category.id'] = $objectId;
+        if (empty($this->data)) {
+            throw new BeditaBadRequestException('Missing data to save');
         }
 
-        if (!empty($objectType)) {
-            $conditions['Category.object_type_id'] = $objectType;
+        if (func_num_args() != 1) {
+            throw new BeditaMethodNotAllowedException('PUT /categories/ requires an ID');
         }
 
-        $categories = $categoryModel->find('all', array(
-            'conditions' => $conditions,
-            'order' => 'label'
-        ));
+        $id = func_get_arg(0);
+        if (empty($this->data['id']) || $this->data['id'] != $id) {
+            throw new BeditaBadRequestException('Conflicting IDs');
+        }
 
-        $this->setData($categories);
+        $this->postCategories();
     }
 
-    private function formatCategory($data) {
-        if(!empty($data['object_type'])) {
-            $objectTypeId = Configure::read('objectTypes.' . $data['object_type'] . '.id');
-            unset($data['object_type']);
-            $data['object_type_id'] = $objectTypeId;
-        } else {
-            $catModel = ClassRegistry::init('Category');
-            $conditions = array('id' => $data['id']);
-            $res = $catModel->find('first', array('conditions' => $conditions));
-
-            $data['object_type_id'] = $res['object_type_id'];
+    /**
+     * DELETE /categories/:id
+     *
+     * @param int|string $categoryId
+     * @param string $filterType can be a value between those defined in self::allowedObjectsUrlPath['delete']
+     * @return void
+     */
+    protected function deleteCategories($categoryId = null, $filterType = null) {
+        if (!$this->ApiAuth->identify()) {
+            throw new BeditaUnauthorizedException();
         }
-        return $data;
+        if (empty($categoryId)) {
+            throw new BeditaMethodNotAllowedException('Unsupported endpoint for DELETE request. It should be /categories/:id');
+        }
+        if (!empty($this->params['form']) || !empty($this->data)) {
+            throw new BeditaBadRequestException('DELETE do not support input data');
+        }
+
+        $Category = ClassRegistry::init('Category');
+        if (!is_numeric($categoryId)) {
+            $categoryId = $Category->field('id', array('name' => $categoryId));
+        }
+
+        $data = $Category->find('first', array('conditions' => array('id' => $categoryId)));
+        try {
+            $this->ApiValidator->isCategoryWritable($data);
+        } catch (Exception $e) {
+            throw new BeditaForbiddenException('You have no write access to this category');
+        }
+
+        $Category->delete($categoryId);
+
+        $this->emptyResponse();
     }
-
-
 }
