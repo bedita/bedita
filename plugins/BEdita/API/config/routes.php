@@ -22,10 +22,22 @@ Router::plugin(
     ],
     function (RouteBuilder $routes) {
         // Home.
+        $routes->redirect(
+            '/',
+            ['_name' => 'api:home'],
+            ['persist' => true]
+        );
         $routes->connect(
             '/home',
             ['controller' => 'Home', 'action' => 'index'],
             ['_name' => 'home']
+        );
+
+        // Status.
+        $routes->connect(
+            '/status',
+            ['controller' => 'Status', 'action' => 'index'],
+            ['_name' => 'status']
         );
 
         // Objects.
@@ -134,8 +146,13 @@ Router::plugin(
         // Login.
         $routes->connect(
             '/auth',
-            ['controller' => 'Login', 'action' => 'login'],
+            ['controller' => 'Login', 'action' => 'login', '_method' => 'POST'],
             ['_name' => 'login']
+        );
+        $routes->connect(
+            '/auth',
+            ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
+            ['_name' => 'login:whoami']
         );
     }
 );

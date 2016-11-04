@@ -13,8 +13,10 @@
 
 namespace BEdita\Core\Utility;
 
+use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
+use Cake\Log\Log;
 
 /**
  * Database utilities class
@@ -36,6 +38,9 @@ class Database
      */
     public static function currentSchema($dbConfig = 'default')
     {
+        if (!Cache::clear(false, '_cake_model_')) {
+            Log::write('error', 'Unable to remove internal cache before reading schema');
+        }
         $schema = [];
         $connection = ConnectionManager::get($dbConfig);
         if (!($connection instanceof Connection)) {
@@ -152,6 +157,27 @@ class Database
         return $config;
     }
 
+
+    /**
+     * See if Database connection is available and working correctly
+     *
+     * @param string $dbConfig input database configuration ('default' as default)
+     *
+     * @return array containing keys: 'success' (boolean), 'error' (string with error message)
+     */
+    public static function connectionTest($dbConfig = 'default')
+    {
+        $res = ['success' => false, 'error' => ''];
+        try {
+            $connection = ConnectionManager::get($dbConfig);
+            $res['success'] = $connection->connect();
+        } catch (\Exception $e) {
+            $res['error'] = $e->getMessage();
+        }
+
+        return $res;
+    }
+
     /**
      * Split a multi-statement SQL query into chunks.
      *
@@ -172,6 +198,9 @@ class Database
                 $query = '';
             }
         }
+        if (!empty($query)) {
+            $queries[] = $query;
+        }
 
         return $queries;
     }
@@ -191,10 +220,14 @@ class Database
     public static function executeTransaction($sql, $dbConfig = 'default')
     {
         $res = [];
-        $connection = ConnectionManager::get($dbConfig);
         try {
+            $connection = ConnectionManager::get($dbConfig);
             $res = $connection->transactional(function (Connection $conn) use ($sql) {
-                $queries = static::splitSqlQueries($sql);
+                if (!is_array($sql)) {
+                    $queries = static::splitSqlQueries($sql);
+                } else {
+                    $queries = $sql;
+                }
 
                 $success = true;
                 $rowCount = 0;

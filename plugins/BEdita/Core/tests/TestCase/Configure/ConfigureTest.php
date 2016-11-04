@@ -15,8 +15,6 @@ namespace BEdita\Core\Test\TestCase\Configure;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
 use Cake\Core\Configure;
-use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
