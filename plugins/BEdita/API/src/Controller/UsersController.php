@@ -39,7 +39,6 @@ class UsersController extends AppController
     {
         parent::initialize();
 
-        $this->set('_type', 'users');
         if (isset($this->JsonApi)) {
             $this->JsonApi->config('resourceTypes', ['users']);
         }
@@ -91,6 +90,7 @@ class UsersController extends AppController
         $this->request->allowMethod('post');
 
         $user = $this->Users->newEntity($this->request->data);
+        $user->type = $this->request->data('type');
         $user->created_by = 1; // TODO: depends on authenticated user.
         $user->modified_by = 1;
         if (!$this->Users->save($user)) {

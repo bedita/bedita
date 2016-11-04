@@ -166,7 +166,7 @@ class DataSeedShell extends Shell
 
         foreach ($entities as &$data) {
             $data += [
-                'object_type_id' => 1, // TODO: auto set in #971
+                'type' => 'users',
                 'username' => $this->faker->unique()->userName,
                 'password_hash' => $this->faker->password,
                 'last_login' => Time::createFromTimestamp(

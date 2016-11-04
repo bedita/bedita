@@ -38,7 +38,6 @@ class ObjectTypesController extends AppController
     {
         parent::initialize();
 
-        $this->set('_type', 'object_types');
         if (isset($this->JsonApi)) {
             $this->JsonApi->config('resourceTypes', ['object_types']);
         }

@@ -58,42 +58,42 @@ class JsonApi
     }
 
     /**
-     * Extract API endpoint for item.
+     * Extract type and API endpoint for item.
      *
      * @param \Cake\ORM\Entity|array $item Item.
      * @param string|null $type Original item type.
-     * @return mixed
+     * @return array Array with item's type and API endpoint.
      */
-    protected static function extractEndpoint($item, $type)
+    protected static function extractType($item, $type)
     {
-        if ($type === null && isset($item['type'])) {
-            return $item['type'];
+        $endpoint = $type;
+
+        if (isset($item['type'])) {
+            $type = $item['type'];
+        } elseif ($item instanceof Entity) {
+            $type = TableRegistry::get($item->source())->table();
         }
 
-        return $type;
+        if ($endpoint === null) {
+            $endpoint = $type;
+        }
+
+        return [$type, $endpoint];
     }
 
     /**
-     * Extract item's ID, type and attributes.
+     * Extract item's ID and attributes.
      *
      * @param array $item Item's data.
-     * @param string|null $type Original item type.
-     * @return array Array with item's ID, type and attributes.
+     * @return array Array with item's ID and attributes.
      */
-    protected static function extractAttributes(array $item, $type)
+    protected static function extractAttributes(array $item)
     {
         if (empty($item['id'])) {
             throw new \InvalidArgumentException('Key `id` is mandatory');
         }
         $id = (string)$item['id'];
-        unset($item['id']);
-
-        if ($type === null && isset($item['type'])) {
-            $type = $item['type'];
-        } elseif ($type === 'objects' && isset($item['object_type'], $item['object_type']['name'])) {
-            $type = $item['object_type']['name'];
-        }
-        unset($item['type'], $item['object_type']);
+        unset($item['id'], $item['type']);
 
         array_walk(
             $item,
@@ -104,7 +104,7 @@ class JsonApi
             }
         );
 
-        return [$id, $type, $item];
+        return [$id, $item];
     }
 
     /**
@@ -187,7 +187,7 @@ class JsonApi
             throw new \InvalidArgumentException('Unsupported item type');
         }
 
-        $endpoint = static::extractEndpoint($item, $type);
+        list($type, $endpoint) = static::extractType($item, $type);
 
         if ($item instanceof Entity) {
             $relationships = static::extractRelationships($item, $endpoint);
@@ -202,7 +202,7 @@ class JsonApi
             return [];
         }
 
-        list($id, $type, $attributes) = static::extractAttributes($item, $type);
+        list($id, $attributes) = static::extractAttributes($item);
         if (empty($attributes)) {
             unset($attributes);
         }
