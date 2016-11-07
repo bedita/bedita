@@ -59,6 +59,7 @@ class User extends Profile
         'object_type_id',
         'object_type',
         'password_hash',
+        'external_auth',
     ];
 
     /**

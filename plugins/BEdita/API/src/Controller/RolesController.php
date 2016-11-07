@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\Query;
 use Cake\Routing\Router;
 
 /**
@@ -61,6 +62,12 @@ class RolesController extends ResourcesController
     public function index()
     {
         $query = $this->Roles->find('all');
+
+        if ($userId = $this->request->param('user_id')) {
+            $query = $query->innerJoinWith('Users', function (Query $query) use ($userId) {
+                return $query->where(['Users.id' => $userId]);
+            });
+        }
 
         $roles = $this->paginate($query);
 
