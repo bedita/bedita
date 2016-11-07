@@ -49,7 +49,6 @@ class RolesController extends ResourcesController
     {
         parent::initialize();
 
-        $this->set('_type', 'roles');
         if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['roles']);
         }
