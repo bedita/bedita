@@ -100,10 +100,7 @@ class ProfilesTableTest extends TestCase
                 [
                     'name' => 'Channelweb Srl',
                     'company' => true,
-                    'object_type_id' => 2,
                     'uname' => 'object-associated-' . md5(microtime()),
-                    'status' => 'draft',
-                    'lang' => 'eng',
                 ],
             ],
             'notUniqueEmail' => [
@@ -136,6 +133,7 @@ class ProfilesTableTest extends TestCase
         $profile = $this->Profiles->newEntity($data);
         $profile->created_by = 1;
         $profile->modified_by = 1;
+        $profile->type = 'profiles';
 
         $error = (bool)$profile->errors();
         $this->assertEquals($expected, !$error, print_r($profile->errors(), true));
@@ -174,7 +172,6 @@ class ProfilesTableTest extends TestCase
             'state_name',
             'phone',
             'website',
-            'object_type_id',
             'status',
             'uname',
             'locked',
@@ -189,7 +186,8 @@ class ProfilesTableTest extends TestCase
             'created_by',
             'modified_by',
             'publish_start',
-            'publish_end'
+            'publish_end',
+            'type',
         ];
 
         sort($expectedProperties);

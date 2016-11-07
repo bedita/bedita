@@ -56,6 +56,8 @@ class User extends Profile
      * {@inheritDoc}
      */
     protected $_hidden = [
+        'object_type_id',
+        'object_type',
         'password_hash',
         'external_auth',
     ];

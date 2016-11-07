@@ -62,9 +62,8 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'user',
+                    'type' => 'users',
                     'attributes' => [
-                        'object_type_id' => 3,
                         'status' => 'on',
                         'uname' => 'first-user',
                         'locked' => true,
@@ -87,9 +86,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '2',
-                    'type' => 'document',
+                    'type' => 'documents',
                     'attributes' => [
-                        'object_type_id' => 1,
                         'status' => 'on',
                         'uname' => 'title-one',
                         'locked' => true,
@@ -115,9 +113,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '3',
-                    'type' => 'document',
+                    'type' => 'documents',
                     'attributes' => [
-                        'object_type_id' => 1,
                         'status' => 'draft',
                         'uname' => 'title-two',
                         'locked' => false,
@@ -140,9 +137,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '4',
-                    'type' => 'profile',
+                    'type' => 'profiles',
                     'attributes' => [
-                        'object_type_id' => 2,
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
                         'locked' => false,
@@ -165,9 +161,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '5',
-                    'type' => 'user',
+                    'type' => 'users',
                     'attributes' => [
-                        'object_type_id' => 3,
                         'status' => 'on',
                         'uname' => 'second-user',
                         'locked' => false,
@@ -269,9 +264,8 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 'id' => '2',
-                'type' => 'document',
+                'type' => 'documents',
                 'attributes' => [
-                    'object_type_id' => 1,
                     'status' => 'on',
                     'uname' => 'title-one',
                     'locked' => true,
