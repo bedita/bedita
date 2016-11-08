@@ -36,22 +36,12 @@ class RolesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('roles');
-        $this->primaryKey('id');
         $this->displayField('name');
 
-        $this->addBehavior('Timestamp', [
-            'events' => [
-                'Model.beforeSave' => [
-                    'created' => 'new',
-                    'modified' => 'always',
-                ]
-            ],
-        ]);
+        $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('Users', [
-            'className' => 'BEdita/Core.Users',
-        ]);
+        $this->belongsToMany('Users');
+        $this->hasMany('EndpointPermissions');
     }
 
     /**

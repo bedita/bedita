@@ -25,6 +25,7 @@ use Cake\ORM\Entity;
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
  * @property \BEdita\Core\Model\Entity\User[] $users
+ * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
  *
  * @since 4.0.0
  */
@@ -38,5 +39,12 @@ class Role extends Entity
         '*' => true,
         'id' => false,
         'unchangeable' => false,
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'endpoint_permissions',
     ];
 }
