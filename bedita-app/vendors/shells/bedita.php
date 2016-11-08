@@ -1011,7 +1011,24 @@ class BeditaShell extends BeditaBaseShell {
 	    $result = $filterModel->import($impFile, $options);
 	    $this->out($result["objects"] . " objects created in import ");
 	}
-	
+
+	public function filters() {
+		$this->initConfig();
+		$filters = Configure::read('filters');
+		$filtername = "\n" . '(import) <filtername> available: ';
+		foreach ($filters['import'] as $k => $v) {
+			$filtername.= ' ' . $k;
+		}
+		$this->out($filtername);
+		$this->out('(import) Usage: importFilter -f <file-to-import-path> -filter <filtername> [-id <dest-section-id>] [....]');
+		$filtername = "\n" . '(import) <filtername> available: ';
+		foreach ($filters['export'] as $k => $v) {
+			$filtername.= ' ' . $k;
+		}
+		$this->out($filtername);
+		$this->out('(export) Usage: exportFilter -f <filename> -filter <filtername> -id <object-id>');
+	}
+
 	function help() {
         $this->out('Available functions:');
   		$this->out(' ');
@@ -1100,6 +1117,9 @@ class BeditaShell extends BeditaBaseShell {
         $this->out("    -id <dest-section-id>\t optional section/area id destination of imported objects");
         $this->out("    - ... - specific filter params may be passed to filter");
         $this->out(' ');
+		$this->out('13. filters: list import/export filters');
+  		$this->out(' ');
+  		$this->out('   Usage: filters');
 	}
 }
 
