@@ -1015,14 +1015,18 @@ class BeditaShell extends BeditaBaseShell {
 	public function filters() {
 		$this->initConfig();
 		$filters = Configure::read('filters');
-		$this->out("\n" . '(import)' . "\n");
+		$filtername = "\n" . '(import) <filtername> available: ';
 		foreach ($filters['import'] as $k => $v) {
-			$this->out($k . ': ' . $v);
+			$filtername.= ' ' . $k;
 		}
-		$this->out("\n" . '(export)' . "\n");
+		$this->out($filtername);
+		$this->out('(import) Usage: importFilter -f <file-to-import-path> -filter <filtername> [-id <dest-section-id>] [....]');
+		$filtername = "\n" . '(import) <filtername> available: ';
 		foreach ($filters['export'] as $k => $v) {
-			$this->out($k . ': ' . $v);
+			$filtername.= ' ' . $k;
 		}
+		$this->out($filtername);
+		$this->out('(export) Usage: exportFilter -f <filename> -filter <filtername> -id <object-id>');
 	}
 
 	function help() {
