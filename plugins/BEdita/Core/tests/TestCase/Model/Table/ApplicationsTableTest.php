@@ -92,12 +92,14 @@ class ApplicationsTableTest extends TestCase
                 true,
                 [
                     'name' => 'Unique Application Name',
+                    'description' => 'app description'
                 ],
             ],
             'notUniqueName' => [
                 false,
                 [
                     'name' => 'First app',
+                    'description' => 'app description'
                 ],
             ],
             'missingName' => [
@@ -171,7 +173,10 @@ class ApplicationsTableTest extends TestCase
         if ($update) {
             $application = $this->Applications->get(1);
         } else {
-            $application = $this->Applications->newEntity(['name' => 'Second App']);
+            $application = $this->Applications->newEntity([
+                'name' => 'Second App',
+                'description' => 'app description'
+            ]);
         }
 
         if ($apiKey) {
