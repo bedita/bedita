@@ -25,7 +25,7 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\UsersTable $Users
  */
-class UsersController extends AppController
+class UsersController extends ResourcesController
 {
     /**
      * {@inheritDoc}
@@ -35,12 +35,20 @@ class UsersController extends AppController
     /**
      * {@inheritDoc}
      */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'roles' => ['roles'],
+        ],
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
     public function initialize()
     {
         parent::initialize();
 
-        $this->set('_type', 'users');
-        if (isset($this->JsonApi)) {
+        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['users']);
         }
     }
@@ -91,6 +99,7 @@ class UsersController extends AppController
         $this->request->allowMethod('post');
 
         $user = $this->Users->newEntity($this->request->data);
+        $user->type = $this->request->data('type');
         $user->created_by = 1; // TODO: depends on authenticated user.
         $user->modified_by = 1;
         if (!$this->Users->save($user)) {
