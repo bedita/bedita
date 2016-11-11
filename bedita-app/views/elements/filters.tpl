@@ -29,7 +29,8 @@
 		'mediaTypes' => false,
 		'url' => $html->url("/")|cat:$view->params.controller|cat:'/'|cat:$view->params.action,
 		'tags' => true,
-		'status' => false
+		'status' => false,
+		'editorial' => true
 	]
 }
 {$options = array_merge($defaultOptions, $options|default:[])}

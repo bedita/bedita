@@ -529,6 +529,8 @@ class BEObject extends BEAppModel {
             unset($data['user_created']);
         }
 
+        $this->setPublisher();
+
         // nickname: verify nick and status change, object not fixed
         if(isset($data['id'])) {
             $currObj = $this->find("first", array(
@@ -751,6 +753,32 @@ class BEObject extends BEAppModel {
      */
     private function _isCurrentUserAdmin() {
         return !is_null(Configure::read('beditaTestUserId')) || in_array('administrator', ClassRegistry::init('User')->getGroups($this->_getIDCurrentUser()));
+    }
+
+    /**
+     * Set the publisher to use.
+     *
+     * In frontend no takes action.
+     * In backend set `defaultPublisher` if configured and publisher in data is empty
+     *
+     * @return void
+     */
+    private function setPublisher() {
+        if (isset($this->data[$this->name])) {
+            $data = &$this->data[$this->name];
+        } else {
+            $data = &$this->data;
+        }
+
+        if (!array_key_exists('publisher', $data) || !BACKEND_APP) {
+            return;
+        }
+        
+        $defaultPublisher = Configure::read('defaultPublisher');
+
+        if (!empty($defaultPublisher) && empty($data['publisher'])) {
+            $data['publisher'] = $defaultPublisher;
+        }
     }
 
     /**

@@ -1200,4 +1200,24 @@ class BuildFilterBehavior extends ModelBehavior {
             }
         }
     }
+
+    /**
+     * Filter editorial contents.
+     *
+     * If `$value` is true it filters by `objects.publisher` not null and not empty
+     * If `$value` is false it filters by `objects.publisher` null or empty
+     *
+     * @param string $s Start quote sql
+     * @param string $e End quote sql
+     * @param  string $value The filter
+     * @return void
+     */
+    protected function editorialFilter($s, $e, $value) {
+        $field = "{$s}BEObject{$e}.{$s}publisher{$e}";
+        if (((bool)$value && $value !== 'false')) {
+            $this->conditions[] = "($field IS NOT NULL && $field <> '')"; 
+        } else {
+            $this->conditions[] = "($field IS NULL || $field = '')";;
+        }
+    }
 }
