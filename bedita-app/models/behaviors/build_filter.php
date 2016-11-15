@@ -1215,7 +1215,7 @@ class BuildFilterBehavior extends ModelBehavior {
     protected function editorialFilter($s, $e, $value) {
         $field = "{$s}BEObject{$e}.{$s}publisher{$e}";
         if (((bool)$value && $value !== 'false')) {
-            $this->conditions[] = "($field IS NOT NULL && $field <> '')"; 
+            $this->conditions[] = "($field IS NOT NULL AND $field <> '')"; 
         } else {
             $this->conditions[] = "($field IS NULL || $field = '')";;
         }
