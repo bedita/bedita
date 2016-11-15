@@ -323,6 +323,11 @@ $config['objectCakeCache'] = true;
 // $config['useDatePicker'] = false;
 
 /**
- * The default publisher used for every object created in backend.
+ * Configuration for editorial contents.
+ *
+ * Options are:
+ * - 'defaultPublisher' The default publisher used for every object created in backend.
  */
-// $config['defaultPublisher'] = 'BEdita';
+// $config['editorialContents'] = array(
+//     'defaultPublisher' => 'BEdita CMS',
+// );

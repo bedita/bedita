@@ -14,8 +14,7 @@ available options:
 	'categories' => true or array('label' => 'myLabel'),
 	'mediaType' => false,
 	'tags' => false,
-	'status' => true or array() of labels,
-	'editorial' => true
+	'status' => true or array() of labels
 ]
 -->
 *}
@@ -234,19 +233,18 @@ available options:
 						    />
 							<a href="javascript: uncheckOther('{$key}');">{t}{$label}{/t}</a>
 
-							</fieldset>
+						</fieldset>
 					{/foreach}
-				</fieldset>
 			</div>
 		{/if}
 
-		{if !empty($filters.editorial)}
-			<div class="cell categories">
-				<label>{t}contents{/t}:</label>
+		{if !empty($conf->editorialContents)}
+			<div class="cell editorial">
+				<label>{t}editorial and user contents{/t}:</label>
 				<select name="filter[editorial]" id="editorial">
 					<option value="" {if !$view->SessionFilter->check('editorial')}selected="selected"{/if}>{t}all{/t}</option>
 					<option value="true" {if $view->SessionFilter->read('editorial') === 'true'}selected="selected"{/if}>{t}editorial{/t}</option>
-					<option value="false" {if $view->SessionFilter->read('editorial') === 'false'}selected="selected"{/if}>{t}not editorial{/t}</option>
+					<option value="false" {if $view->SessionFilter->read('editorial') === 'false'}selected="selected"{/if}>{t}user contents{/t}</option>
 				</select>
 			</div>
 		{/if}

@@ -756,10 +756,11 @@ class BEObject extends BEAppModel {
     }
 
     /**
-     * Set the publisher to use.
+     * Set the publisher to use in object creation.
      *
+     * In editing mode (id not empty) no takes action.
      * In frontend no takes action.
-     * In backend set `defaultPublisher` if configured and publisher in data is empty
+     * In backend set `editorialContents.defaultPublisher` if configured and publisher in data is empty
      *
      * @return void
      */
@@ -770,11 +771,11 @@ class BEObject extends BEAppModel {
             $data = &$this->data;
         }
 
-        if (!array_key_exists('publisher', $data) || !BACKEND_APP) {
+        if (!empty($data['id']) || !BACKEND_APP) {
             return;
         }
-        
-        $defaultPublisher = Configure::read('defaultPublisher');
+
+        $defaultPublisher = Configure::read('editorialContents.defaultPublisher');
 
         if (!empty($defaultPublisher) && empty($data['publisher'])) {
             $data['publisher'] = $defaultPublisher;
