@@ -60,7 +60,12 @@
 	{if empty($excludedParts) || !in_array('publisher',$excludedParts)}
 	<tr>
 		<th>{t}publisher{/t}:</th>
-		<td><input type="text" name="data[publisher]" value="{$object.publisher|default:''|escape}" /></td>
+		<td>
+			<input type="text" name="data[publisher]" value="{$object.publisher|default:''|escape}" />
+			{if !empty($conf->editorialContents)}
+				({t}An empty publisher means "not editorial content"{/t})
+			{/if}	
+		</td>
 	</tr>
 	{/if}
 	{if empty($excludedParts) || !in_array('rights',$excludedParts)}
