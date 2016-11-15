@@ -1217,7 +1217,7 @@ class BuildFilterBehavior extends ModelBehavior {
         if (((bool)$value && $value !== 'false')) {
             $this->conditions[] = "($field IS NOT NULL AND $field <> '')"; 
         } else {
-            $this->conditions[] = "($field IS NULL || $field = '')";;
+            $this->conditions[] = "($field IS NULL OR $field = '')";;
         }
     }
 }
