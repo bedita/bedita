@@ -233,9 +233,19 @@ available options:
 						    />
 							<a href="javascript: uncheckOther('{$key}');">{t}{$label}{/t}</a>
 
-							</fieldset>
+						</fieldset>
 					{/foreach}
-				</fieldset>
+			</div>
+		{/if}
+
+		{if !empty($conf->editorialContents)}
+			<div class="cell editorial">
+				<label>{t}editorial and user contents{/t}:</label>
+				<select name="filter[editorial]" id="editorial">
+					<option value="" {if !$view->SessionFilter->check('editorial')}selected="selected"{/if}>{t}all{/t}</option>
+					<option value="true" {if $view->SessionFilter->read('editorial') === 'true'}selected="selected"{/if}>{t}editorial{/t}</option>
+					<option value="false" {if $view->SessionFilter->read('editorial') === 'false'}selected="selected"{/if}>{t}user contents{/t}</option>
+				</select>
 			</div>
 		{/if}
 
