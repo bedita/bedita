@@ -13,20 +13,24 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Datasource\EntityInterface;
+use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Security;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 
 /**
- * Roles Model
+ * Applications Model
  *
- * @property \Cake\ORM\Association\BelongsToMany $Users
+ * @property \Cake\ORM\Association\HasMany $EndpointPermissions
  *
  * @since 4.0.0
  */
-class RolesTable extends Table
+class ApplicationsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *
@@ -37,10 +41,7 @@ class RolesTable extends Table
         parent::initialize($config);
 
         $this->displayField('name');
-
         $this->addBehavior('Timestamp');
-
-        $this->belongsToMany('Users');
         $this->hasMany('EndpointPermissions');
     }
 
@@ -52,20 +53,20 @@ class RolesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->naturalNumber('id')
+            ->integer('id')
             ->allowEmpty('id', 'create')
 
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('name')
+            ->notEmpty('api_key')
+            ->add('api_key', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+
+            ->requirePresence('name', 'create')
             ->notEmpty('name')
+            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->allowEmpty('description')
 
-            ->boolean('unchangeable')
-            ->allowEmpty('unchangeable')
-
-            ->boolean('backend_auth')
-            ->allowEmpty('backend_auth');
+            ->boolean('enabled')
+            ->notEmpty('enabled');
 
         return $validator;
     }
@@ -78,7 +79,35 @@ class RolesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->isUnique(['name']));
+        $rules->add($rules->isUnique(['api_key']));
 
         return $rules;
+    }
+
+    /**
+     * Generate the api key on application creation
+     *
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @param \ArrayObject $options The save options
+     * @return void
+     */
+    public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
+    {
+        if (!$entity->isNew() || !empty($entity->api_key)) {
+            return;
+        }
+
+        $entity->api_key = $this->generateApiKey();
+    }
+
+    /**
+     * Generate a unique api key
+     *
+     * @return string
+     */
+    public function generateApiKey()
+    {
+        return Security::hash(Text::uuid(), 'sha1');
     }
 }

@@ -16,35 +16,30 @@ namespace BEdita\Core\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * Role Entity.
+ * Endpoint Entity
  *
  * @property int $id
  * @property string $name
  * @property string $description
- * @property bool $unchangeable
  * @property \Cake\I18n\Time $created
  * @property \Cake\I18n\Time $modified
- * @property \BEdita\Core\Model\Entity\User[] $users
+ * @property bool $enabled
+ * @property int $object_type_id
+ *
+ * @property \BEdita\Core\Model\Entity\ObjectType $object_type
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
  *
  * @since 4.0.0
  */
-class Role extends Entity
+class Endpoint extends Entity
 {
-
     /**
      * {@inheritDoc}
      */
     protected $_accessible = [
         '*' => true,
         'id' => false,
-        'unchangeable' => false,
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $_hidden = [
-        'endpoint_permissions',
+        'created' => false,
+        'modified' => false,
     ];
 }

@@ -13,20 +13,22 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Roles Model
+ * EndpointPermissions Model
  *
- * @property \Cake\ORM\Association\BelongsToMany $Users
+ * @property \Cake\ORM\Association\BelongsTo $Endpoints
+ * @property \Cake\ORM\Association\BelongsTo $Applications
+ * @property \Cake\ORM\Association\BelongsTo $Roles
  *
  * @since 4.0.0
  */
-class RolesTable extends Table
+class EndpointPermissionsTable extends Table
 {
-
     /**
      * {@inheritDoc}
      *
@@ -36,12 +38,14 @@ class RolesTable extends Table
     {
         parent::initialize($config);
 
-        $this->displayField('name');
+        $this->table('endpoint_permissions');
+        $this->displayField('id');
 
-        $this->addBehavior('Timestamp');
-
-        $this->belongsToMany('Users');
-        $this->hasMany('EndpointPermissions');
+        $this->belongsTo('Endpoints', [
+            'joinType' => 'INNER',
+        ]);
+        $this->belongsTo('Applications');
+        $this->belongsTo('Roles');
     }
 
     /**
@@ -52,20 +56,12 @@ class RolesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
+            ->integer('id')
+            ->allowEmpty('id', 'create');
 
-            ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('name')
-            ->notEmpty('name')
-
-            ->allowEmpty('description')
-
-            ->boolean('unchangeable')
-            ->allowEmpty('unchangeable')
-
-            ->boolean('backend_auth')
-            ->allowEmpty('backend_auth');
+        $validator
+            ->integer('permission')
+            ->notEmpty('permission');
 
         return $validator;
     }
@@ -77,7 +73,9 @@ class RolesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['name']));
+        $rules->add($rules->existsIn(['endpoint_id'], 'Endpoints'));
+        $rules->add($rules->existsIn(['application_id'], 'Applications'));
+        $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
     }

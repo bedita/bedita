@@ -73,6 +73,9 @@ class RolesTableTest extends TestCase
         $this->assertEquals('name', $this->Roles->displayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Roles->Users);
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\UsersTable', $this->Roles->Users->target());
+        $this->assertInstanceOf('\Cake\ORM\Association\hasMany', $this->Roles->EndpointPermissions);
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Roles->EndpointPermissions->target());
     }
 
     /**
