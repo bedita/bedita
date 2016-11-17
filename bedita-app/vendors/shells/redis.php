@@ -73,6 +73,7 @@ class RedisShell extends BeditaBaseShell {
         $redis->setOption(Redis::OPT_SCAN, Redis::SCAN_RETRY);
         $count = 0;
         $check = 0;
+        $del = 0;
         while ($arrKeys = $redis->scan($it)) {
             foreach ($arrKeys as $key) {
                 $count++;
@@ -87,13 +88,17 @@ class RedisShell extends BeditaBaseShell {
                             $indexKey = 'objects_' . $id . '_index';
                             $val = $redis->get($indexKey);
                             if (empty($val)) {
-                                $this->out("index not found $indexKey");
+                                $this->out("index not found $indexKey for key $key");
+                                $this->deleteKey($redis, $key);
+                                $del++;
                             } else {
                                 $keyToSearch = substr($key,8);
                                 if (!stripos($val,$keyToSearch)) {
                                     $this->out("\nchecking key: $key, id: $id, index: $indexKey - key $keyToSearch not found in $indexKey value");
                                     $this->out($val);
                                     $check++;
+                                    $this->deleteKey($redis, $key);
+                                    $del++;
                                 }
                             }
                         }
@@ -104,7 +109,7 @@ class RedisShell extends BeditaBaseShell {
                 }
             }
         }
-        $this->out("$count keys analyzed. $check keys found with integrity problems");
+        $this->out("$count keys analyzed. $check keys found with integrity problems. $del keys deleted.");
         $this->out('----------------------------------');
     }
 
@@ -184,6 +189,11 @@ class RedisShell extends BeditaBaseShell {
                 $this->out($out);
             }
         }
+    }
+
+    private function deleteKey($redis, $key) {
+        $redis->delete($key);
+        $this->out("Key $key deleted");
     }
 
     private function getRedisConn() {
@@ -277,10 +287,14 @@ class RedisShell extends BeditaBaseShell {
         }
         $tmp = substr($key,$start);
         $len = 0;
-        if (stripos($tmp,'_')) {
-            $len = stripos($tmp,'_');
-        } elseif (stripos($tmp,'-')) {
-            $len = stripos($tmp,'-');
+        $len1 = (stripos($tmp,'_')) ? stripos($tmp,'_') : null;
+        $len2 = (stripos($tmp,'-')) ? stripos($tmp,'-') : null;
+        if ($len1 != null && $len2 != null) {
+            $len = min(array($len1,$len2));    
+        } else if ($len1 !=null) {
+            $len = $len1;
+        } else {
+            $len = $len2;
         }
         return substr($key,$start,$len);
     }
