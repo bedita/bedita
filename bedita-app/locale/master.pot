@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2016-10-14 15:19:55\n"
+"POT-Creation-Date: 2016-11-17 11:36:09\n"
 "MIME-Version: 1.0"
 "Content-Transfer-Encoding: 8bit\n"
 "Language-Team: BEdita I18N & I10N Team\n"
@@ -79,6 +79,9 @@ msgid "All modules"
 msgstr ""
 
 msgid "All unsaved changes will be lost"
+msgstr ""
+
+msgid "An empty publisher means \"not editorial content\""
 msgstr ""
 
 msgid "Annotation type or object_id missing"
@@ -2427,6 +2430,12 @@ msgstr ""
 msgid "editor"
 msgstr ""
 
+msgid "editorial"
+msgstr ""
+
+msgid "editorial and user contents"
+msgstr ""
+
 msgid "email"
 msgstr ""
 
@@ -3388,6 +3397,9 @@ msgid "use template"
 msgstr ""
 
 msgid "user"
+msgstr ""
+
+msgid "user contents"
 msgstr ""
 
 msgid "userid"

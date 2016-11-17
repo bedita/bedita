@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-10-14 15:13:52\n"
+"POT-Creation-Date: 2016-11-17 11:29:27\n"
 "PO-Revision-Date: \n"
 "Last-Translator: taleo <supertaleo@libero.it>\n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -84,6 +84,9 @@ msgstr ""
 
 msgid "All unsaved changes will be lost"
 msgstr "Todas las modificaciones que no han sido guardadas serán perdidas"
+
+msgid "An empty publisher means \"not editorial content\""
+msgstr ""
 
 msgid "Annotation type or object_id missing"
 msgstr "Falta el tipo de annotación u el object_id"
@@ -2480,6 +2483,12 @@ msgstr "editar"
 msgid "editor"
 msgstr "editor"
 
+msgid "editorial"
+msgstr ""
+
+msgid "editorial and user contents"
+msgstr ""
+
 msgid "email"
 msgstr "email"
 
@@ -3448,6 +3457,9 @@ msgstr "utilizar template"
 
 msgid "user"
 msgstr "usuario"
+
+msgid "user contents"
+msgstr ""
 
 msgid "userid"
 msgstr ""
