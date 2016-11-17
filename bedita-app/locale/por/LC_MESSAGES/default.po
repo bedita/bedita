@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: BEdita 3\n"
-"POT-Creation-Date: 2016-10-14 15:13:52\n"
+"POT-Creation-Date: 2016-11-17 11:29:27\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: Bedita I18N & I10N Team\n"
@@ -83,6 +83,9 @@ msgid "All modules"
 msgstr ""
 
 msgid "All unsaved changes will be lost"
+msgstr ""
+
+msgid "An empty publisher means \"not editorial content\""
 msgstr ""
 
 msgid "Annotation type or object_id missing"
@@ -2462,6 +2465,12 @@ msgstr ""
 msgid "editor"
 msgstr ""
 
+msgid "editorial"
+msgstr ""
+
+msgid "editorial and user contents"
+msgstr ""
+
 msgid "email"
 msgstr ""
 
@@ -3426,6 +3435,9 @@ msgstr ""
 
 msgid "user"
 msgstr "usuário"
+
+msgid "user contents"
+msgstr ""
 
 msgid "userid"
 msgstr ""
