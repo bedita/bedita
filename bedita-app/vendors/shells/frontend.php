@@ -27,6 +27,7 @@ require_once 'bedita_base.php';
 class FrontendShell extends BeditaBaseShell {
 
     private $repositories = array(
+        'boilerplate-api' => 'https://github.com/bedita/boilerplate-api.git',
         'boilerplate' => 'https://github.com/bedita/boilerplate.git',
         'web-starter-kit' => 'https://github.com/bedita/web-starter-kit.git',
         'responsive' => 'https://github.com/bedita/responsive.git',
