@@ -44,7 +44,7 @@ class ObjectsController extends AppController
     public function index()
     {
         $query = $this->Objects->find('all')
-            ->where(['deleted' => false])
+            ->where(['deleted' => 0])
             ->contain(['ObjectTypes']);
 
         $objects = $this->paginate($query);
@@ -63,7 +63,7 @@ class ObjectsController extends AppController
     {
         $object = $this->Objects->get($id, [
             'contain' => ['ObjectTypes'],
-            'conditions' => ['deleted' => false]
+            'conditions' => ['deleted' => 0]
         ]);
 
         $this->set(compact('object'));
