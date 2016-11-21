@@ -40,6 +40,7 @@ class User extends Profile
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'deleted' => false,
         'locked' => false,
         'created' => false,
         'modified' => false,
@@ -60,6 +61,7 @@ class User extends Profile
         'object_type',
         'password_hash',
         'external_auth',
+        'deleted',
     ];
 
     /**
