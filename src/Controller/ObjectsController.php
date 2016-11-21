@@ -44,6 +44,7 @@ class ObjectsController extends AppController
     public function index()
     {
         $query = $this->Objects->find('all')
+            ->where(['deleted' => false])
             ->contain(['ObjectTypes']);
 
         $objects = $this->paginate($query);
@@ -61,7 +62,8 @@ class ObjectsController extends AppController
     public function view($id)
     {
         $object = $this->Objects->get($id, [
-            'contain' => ['ObjectTypes']
+            'contain' => ['ObjectTypes'],
+            'conditions' => ['deleted' => false]
         ]);
 
         $this->set(compact('object'));
