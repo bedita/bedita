@@ -55,6 +55,7 @@ class Object extends Entity
         'object_type_id' => false,
         'object_type' => false,
         'type' => false,
+        'deleted' => false,
         'locked' => false,
         'created' => false,
         'modified' => false,
@@ -76,6 +77,7 @@ class Object extends Entity
     protected $_hidden = [
         'object_type_id',
         'object_type',
+        'deleted',
     ];
 
     /**

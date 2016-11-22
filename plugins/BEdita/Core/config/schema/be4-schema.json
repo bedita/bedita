@@ -1237,7 +1237,7 @@
                 "length": null,
                 "null": false,
                 "default": "draft",
-                "comment": "object status: on, draft, off, deleted",
+                "comment": "object status: on, draft, off",
                 "precision": null
             },
             "uname": {
@@ -1255,6 +1255,14 @@
                 "null": false,
                 "default": "0",
                 "comment": "locked flag: some fields (status, uname,...) cannot be changed",
+                "precision": null
+            },
+            "deleted": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "0",
+                "comment": "deleted flag: if true object is in trashcan, default false",
                 "precision": null
             },
             "created": {
@@ -1419,6 +1427,13 @@
                 "type": "index",
                 "columns": [
                     "object_type_id"
+                ],
+                "length": []
+            },
+            "objects_deleted_idx": {
+                "type": "index",
+                "columns": [
+                    "deleted"
                 ],
                 "length": []
             },

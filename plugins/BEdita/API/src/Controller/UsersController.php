@@ -60,7 +60,7 @@ class UsersController extends ResourcesController
      */
     public function index()
     {
-        $query = $this->Users->find('all');
+        $query = $this->Users->find('all')->where(['deleted' => 0]);
 
         if ($roleId = $this->request->param('role_id')) {
             $query = $query->innerJoinWith('Roles', function (Query $query) use ($roleId) {
@@ -82,7 +82,9 @@ class UsersController extends ResourcesController
      */
     public function view($id)
     {
-        $user = $this->Users->get($id);
+        $user = $this->Users->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
@@ -131,7 +133,9 @@ class UsersController extends ResourcesController
             throw new ConflictException('IDs don\' match');
         }
 
-        $user = $this->Users->get($id);
+        $user = $this->Users->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
         $user = $this->Users->patchEntity($user, $this->request->data);
         $user->modified_by = 1; // TODO: depends on authenticated user.
         if (!$this->Users->save($user)) {
@@ -153,8 +157,22 @@ class UsersController extends ResourcesController
     {
         $this->request->allowMethod('delete');
 
-        $user = $this->Users->get($id);
-        if (!$this->Users->delete($user)) {
+// TODO:  $this->Users->save() not working as expected
+/*
+        $user = $this->Users->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
+        $user->deleted = true;
+        if (!$this->Users->save($user)) {
+            throw new InternalErrorException('Could not delete user');
+        }
+*/
+        $objectsTable = \Cake\ORM\TableRegistry::get('Objects');
+        $object = $objectsTable->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
+        $object->deleted = true;
+        if (!$objectsTable->save($object)) {
             throw new InternalErrorException('Could not delete user');
         }
 

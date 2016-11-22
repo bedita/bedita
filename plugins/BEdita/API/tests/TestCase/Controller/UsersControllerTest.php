@@ -489,7 +489,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/6');
+        $this->assertHeader('Location', 'http://api.example.com/users/7');
         $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
@@ -644,6 +644,17 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Users')->exists(['Users.id' => 5]));
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/users/5');
+        $this->assertResponseCode(404);
+
+        $userDeleted = TableRegistry::get('Users')->get(5);
+        $this->assertEquals($userDeleted->deleted, 1);
     }
 }

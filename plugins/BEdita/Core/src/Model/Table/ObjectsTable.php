@@ -84,6 +84,9 @@ class ObjectsTable extends Table
             ->boolean('locked')
             ->notEmpty('locked')
 
+            ->boolean('deleted')
+            ->notEmpty('deleted')
+
             ->dateTime('published')
             ->allowEmpty('published')
 
