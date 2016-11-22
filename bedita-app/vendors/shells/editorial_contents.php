@@ -80,7 +80,15 @@ class EditorialContentsShell extends BeditaBaseShell
                     ),
                 ),
             ),
-            'conditions' => array('BEObject.publisher' => null),
+            'conditions' => array(
+                'OR' => array(
+                    'BEObject.publisher' => null,
+                    'AND' => array(
+                        'BEObject.publisher' => '',
+                        '1 = 1',
+                    ),
+                ),
+            ),
         ));
         $count = $count[0]['count'];
 
@@ -100,7 +108,7 @@ class EditorialContentsShell extends BeditaBaseShell
                 '    INNER JOIN `groups_users` ON (`groups_users`.`user_id` = `objects`.`user_created`)' . PHP_EOL .
                 '    INNER JOIN `groups` ON (`groups`.`id` = `groups_users`.`group_id`)' . PHP_EOL .
                 '    SET `objects`.`publisher` = \'%s\'' . PHP_EOL .
-                '    WHERE `objects`.`publisher` IS NULL AND `groups`.`backend_auth` = 1',
+                '    WHERE (`objects`.`publisher` IS NULL OR `objects`.`publisher` = \'\') AND `groups`.`backend_auth` = 1',
                 Sanitize::escape($publisher)
             )
         );
