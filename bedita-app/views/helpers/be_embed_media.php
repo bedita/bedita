@@ -53,12 +53,6 @@ class BeEmbedMediaHelper extends AppHelper {
     public $helpers = array('Html', 'BeEmbedFlash', 'BeEmbedHtml5');
 
     public function __construct() {
-        // get configuration parameters
-        $this->conf = Configure::read('media') ;
-        $this->conf['root'] = Configure::read('mediaRoot');
-        $this->conf['url'] = Configure::read('mediaUrl');
-        $this->conf['tmp'] = Configure::read('tmp');
-        $this->conf['imgMissingFile'] = Configure::read('imgMissingFile');
         $this->beThumb = BeLib::getObject('BeThumb');
     }
 
@@ -92,6 +86,8 @@ class BeEmbedMediaHelper extends AppHelper {
      *
      */
     public function object($obj, $params = null, $htmlAttributes = array()) {
+        // #1036 update configure values
+        $this->getCurrentConf();
         // get object type
         $model = $this->getType($obj);
         $params['presentation'] = (!empty($params['presentation'])) ? $params['presentation'] : $this->defaultPresentation[$model];
@@ -107,6 +103,24 @@ class BeEmbedMediaHelper extends AppHelper {
         // output HTML
         return $output;
     }
+
+    /**
+     * update object properties according to current configure values for:
+     * - media
+     * - mediaRoot
+     * - mediaUrl
+     * - tmp
+     * - imgMissingFile
+     */
+    protected function getCurrentConf() {
+        // get configuration parameters
+        $this->conf = Configure::read('media') ;
+        $this->conf['root'] = Configure::read('mediaRoot');
+        $this->conf['url'] = Configure::read('mediaUrl');
+        $this->conf['tmp'] = Configure::read('tmp');
+        $this->conf['imgMissingFile'] = Configure::read('imgMissingFile');
+    }
+
 
     /**
      * get img tag for thumbnail
