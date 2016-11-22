@@ -1069,7 +1069,12 @@ class Tree extends BEAppModel
                 )
             )
         ));
-        $options['conditions']['NOT']['BEObject.object_type_id'] = $sectionObjectTypeId;
+
+		if (empty($options['conditions']['NOT'])) {
+			$options['conditions']['NOT'] = array();
+		}
+        $options['conditions']['NOT'] = array('BEObject.object_type_id' => $sectionObjectTypeId) + $options['conditions']['NOT'];
+
         return $this->countChildren($parentId, $options);
     }
 

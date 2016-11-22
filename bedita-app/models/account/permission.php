@@ -444,7 +444,7 @@ class Permission extends BEAppModel
         $options += array(
             'relation' => null,
             'count' => false,
-            'status' => null
+            'objectConditions' => array(),
         );
 
         $objectsForbidden = false;
@@ -484,14 +484,14 @@ class Permission extends BEAppModel
             );
 
             // if status is defined add join with objects
-            if (!empty($options['status'])) {
+            if (!empty($options['objectConditions'])) {
                 $joins[] = array(
                     'table' => 'objects',
                     'alias' => 'BEObject',
                     'type' => 'inner',
-                    'conditions' => array(
-                        'Permission.object_id = BEObject.id',
-                        'BEObject.status' => $options['status']
+                    'conditions' => array_merge(
+                        array('Permission.object_id = BEObject.id'),
+                        $options['objectConditions']
                     )
                 );
             }

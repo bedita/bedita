@@ -468,22 +468,28 @@ class ApiFormatterComponent extends Object {
      * )
      * ```
      *
+     * It uses self::controller::relatedObjectsFilter() to eventually add conditions
+     *
      * @param array $object the object on which to count the relations
      * @return array
      */
     public function formatRelationsCount(array $object) {
         $relations = array();
         $objectRelation = ClassRegistry::init('ObjectRelation');
+        $relationsFilter = $this->controller->relatedObjectsFilter();
         // count all relations
         $countRel = null;
         if ($this->controller->BeObjectCache) {
-            $cacheOpts = array($this->controller->getStatus());
+            $cacheOpts = array($this->controller->getStatus(), $relationsFilter);
             $countRel = $this->controller->BeObjectCache->read($object['id'], $cacheOpts, 'relations-count');
         }
+
+        $conditions = array('ObjectRelation.id' => $object['id']) + $relationsFilter;
+
         if (empty($countRel)) {
             $countRel = $objectRelation->find('all', array(
                 'fields' => array('COUNT(ObjectRelation.id) as count', 'ObjectRelation.switch'),
-                'conditions' => array('ObjectRelation.id' => $object['id']),
+                'conditions' => $conditions,
                 'group' => 'ObjectRelation.switch',
                 'joins' => array(
                     array(
@@ -506,11 +512,12 @@ class ApiFormatterComponent extends Object {
         // count not accessible relations
         $permission = ClassRegistry::init('Permission');
         $user = $this->controller->ApiAuth->getUser();
+        $conditionsForbidden = array('BEObject.status' => $this->controller->getStatus()) + $relationsFilter;
         $countForbidden = $permission->relatedObjectsNotAccessibile(
             $object['id'],
             array(
                 'count' => true,
-                'status' => $this->controller->getStatus()
+                'objectConditions' => $conditionsForbidden
             ),
             $user
         );
@@ -524,9 +531,15 @@ class ApiFormatterComponent extends Object {
                 if ($excludeRelations && in_array($switch, $excludeRelations)) {
                     continue;
                 }
+
                 if (isset($countForbidden[$switch])) {
                     $count -= $countForbidden[$switch];
                 }
+
+                if ($count == 0) {
+                    continue;
+                }
+
                 $relations[$switch] = array(
                     'count' => (int) $count,
                     'url' => $url . $switch
@@ -554,13 +567,16 @@ class ApiFormatterComponent extends Object {
      * )
      * ```
      *
+     * It uses self::controller::childrenFilter() to eventually add conditions
+     *
      * @param array $object the object on which to count children
      * @return array
      */
     public function formatChildrenCount(array $object) {
         $tree = ClassRegistry::init('Tree');
+        $conditions = array('BEObject.status' => $this->controller->getStatus()) + $this->controller->childrenFilter();
         $options = array(
-            'conditions' => array('BEObject.status' => $this->controller->getStatus()),
+            'conditions' => $conditions,
             'joins' => array()
         );
         $countContents = $tree->countChildrenContents($object['id'], $options);
@@ -583,7 +599,7 @@ class ApiFormatterComponent extends Object {
         $user = $this->controller->ApiAuth->getUser();
         if (!empty($user)) {
             $groupsIds = (!empty($user['groupsIds'])) ? $user['groupsIds'] : array();
-            $permissionJoin['conditions']['NOT'] = array('Permission.ugid' => $groupsIds);
+            $options['conditions']['NOT']['Permission.ugid'] = $groupsIds;
             $countContentsForbidden -= $tree->countChildrenContents($object['id'], $options);
             $countSectionsForbidden -= $tree->countChildrenSections($object['id'], $options);
         }
