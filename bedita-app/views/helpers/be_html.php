@@ -154,4 +154,56 @@ class BeHtmlHelper extends HtmlHelper {
         return $text;
     }
 
+    /**
+     * Append timestamp to an asset to help invalidate browsers' cache.
+     *
+     * @param string $path File path.
+     * @return string
+     */
+    public function assetTimestamp($path) {
+        $timestampMode = Configure::read('Asset.timestamp');
+        if (empty($timestampMode) || ($timestampMode === true && Configure::read('debug') === 0) || strpos($path, '?') !== false) {
+            return $path;
+        }
+
+        $hashMethod = function($path) use ($timestampMode) {
+            switch ($timestampMode) {
+                case 'md5':
+                    return @md5_file($path);
+                case 'md5-short':
+                    return substr(@md5_file($path), 0, 7);
+                case 'sha1':
+                    return @sha1_file($path);
+                case 'sha1-short':
+                    return substr(@md5_file($path), 0, 7);
+                case 'git':
+                    return @shell_exec(sprintf('git -C %s rev-parse HEAD', escapeshellarg(basename($path))));
+                case 'git-short':
+                    return @shell_exec(sprintf('git -C %s rev-parse --short HEAD', escapeshellarg(basename($path))));
+                default:
+                    return @filemtime($path);
+            }
+        };
+
+        $filepath = preg_replace('/^' . preg_quote($this->webroot, '/') . '/', '', $path);
+        $webrootPath = WWW_ROOT . str_replace('/', DS, $filepath);
+        if (file_exists($webrootPath)) {
+            return $path . '?' . $hashMethod($webrootPath);
+        }
+
+        $segments = explode('/', ltrim($filepath, '/'));
+        if ($segments[0] === 'theme') {
+            $theme = $segments[1];
+            unset($segments[0], $segments[1]);
+            $themePath = App::themePath($theme) . 'webroot' . DS . implode(DS, $segments);
+
+            return $path . '?' . $hashMethod($themePath);
+        }
+
+        $plugin = $segments[0];
+        unset($segments[0]);
+        $pluginPath = App::pluginPath($plugin) . 'webroot' . DS . implode(DS, $segments);
+
+        return $path . '?' . $hashMethod($pluginPath);
+    }
 }
