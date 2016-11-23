@@ -33,6 +33,9 @@ class BeHtmlHelper extends HtmlHelper {
      */
     protected $currLang = null;
 
+    /**
+     * Class constructor.
+     */
     public function __construct(array $options = array()) {
         if (!empty($options['currLang'])) {
             $this->currLang = $options['currLang'];
@@ -98,21 +101,30 @@ class BeHtmlHelper extends HtmlHelper {
     public function url ($url = null, $full = false, array $mergeParams = null) {
         return parent::url($this->parse($url, $mergeParams), $full);
     }
-    
+
+    /**
+     * Hyphenate a string.
+     *
+     * @param string $text Text to be hyphenated.
+     * @param string|null $lang Text language.
+     * @param string[] $excludeSelectors CSS selectors of elements to be skipped when hyphenating.
+     * @param string[] $excludeSelectorsDefault Same as above, but by default. (???)
+     * @return string Hyphenated string.
+     */
     public function hyphen($text, $lang = null, $excludeSelectors = array('.formula'), $excludeSelectorDefaults = array('pre', 'code', 'embed', 'object', 'iframe', 'img', 'svg', 'video', 'audio', 'script', 'style', 'head', 'sub', 'sup')) {
         if (empty($lang)) {
             $lang = Configure::read('defaultLang');
         }
-    
+
         App::Import('Vendor', 'simple_html_dom');
         App::import('Vendor', 'Hyphenator', array('file' => 'hyphenator' . DS . 'Hyphenator.php'));
-    
+
         $hyphenator = ClassRegistry::getObject('Hyphenator');
         if (!$hyphenator) {
             $hyphenator = new Hyphenator();
             ClassRegistry::addObject('Hyphenator', $hyphenator);
         }
-    
+
         $excludeSelectors = array_merge($excludeSelectorDefaults, $excludeSelectors);
         $restore = array();
         if (!empty($excludeSelectors)) {
@@ -132,13 +144,13 @@ class BeHtmlHelper extends HtmlHelper {
             }
             $text = $body->innertext;
         }
-    
+
         $text = $hyphenator->hyphenate($text, $lang);
-    
+
         foreach ($restore as $key => $value) {
             $text = str_replace('<!-- be-not-hyphen-' . $key . ' -->', $value, $text);
         }
-    
+
         return $text;
     }
 
