@@ -162,12 +162,13 @@ class BeHtmlHelper extends HtmlHelper {
      */
     public function assetTimestamp($path) {
         $timestampMode = Configure::read('Asset.timestamp');
-        if (empty($timestampMode) || ($timestampMode === true && Configure::read('debug') === 0) || strpos($path, '?') !== false) {
+        if (($timestampMode !== 'force' && ($timestampMode !== true || Configure::read('debug') === 0)) || strpos($path, '?') !== false) {
             return $path;
         }
 
-        $hashMethod = function($path) use ($timestampMode) {
-            switch ($timestampMode) {
+        $timestampAlg = Configure::read('Asset.algorithm');
+        $hashMethod = function($path) use ($timestampAlg) {
+            switch ($timestampAlg) {
                 case 'md5':
                     return @md5_file($path);
                 case 'md5-short':
