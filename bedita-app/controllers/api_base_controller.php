@@ -701,7 +701,7 @@ abstract class ApiBaseController extends FrontendController {
      * Since the filter is used both in `BEAppModel::findObjects()` than in `Model::find()`
      * the `$conditions` must be written in CakePHP way to ensure compatibility with both methods.
      *
-     * Since is also used to count relations and the count conditions are limited to `BEObject`
+     * Since is also used to count children and the count conditions are limited to `BEObject`
      * that filter must be limited to that.
      *
      * If no param is passed it returns the current filter.
