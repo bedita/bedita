@@ -667,6 +667,63 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Set and return the related objects filter.
+     *
+     * Since the filter is used both in `BEAppModel::findObjects()` than in `Model::find()`
+     * the `$conditions` must be written in CakePHP way to ensure compatibility with both methods.
+     *
+     * Since is also used to count relations and the count conditions are limited to `BEObject`
+     * that filter must be limited to that.
+     *
+     * If no param is passed it returns the current filter.
+     * Pass an empty array to empty the filter.
+     *
+     * @see self::getObjectsRelations()
+     * @see self::addRelatedObjects()
+     * @see ApiFormatter::formatRelationsCount()
+     * @param array|null $conditions The conditions used to set filter.
+     * @return array
+     */
+    public function relatedObjectsFilter($conditions = null) {
+        static $relatedFilter = array();
+
+        if (!is_array($conditions)) {
+            return $relatedFilter;
+        }
+
+        $relatedFilter = $conditions;
+        return $relatedFilter;
+    }
+
+    /**
+     * Set and return the children objects filter.
+     *
+     * Since the filter is used both in `BEAppModel::findObjects()` than in `Model::find()`
+     * the `$conditions` must be written in CakePHP way to ensure compatibility with both methods.
+     *
+     * Since is also used to count children and the count conditions are limited to `BEObject`
+     * that filter must be limited to that.
+     *
+     * If no param is passed it returns the current filter.
+     * Pass an empty array to empty the filter.
+     *
+     * @see self::responseChildren()
+     * @see ApiFormatter::formatChildrenCount()
+     * @param array|null $conditions The conditions used to set filter.
+     * @return array
+     */
+    public function childrenFilter($conditions = null) {
+        static $childrenFilter = array();
+
+        if (!is_array($conditions)) {
+            return $childrenFilter;
+        }
+
+        $childrenFilter = $conditions;
+        return $childrenFilter;
+    }
+
+    /**
      * GET /objects
      *
      * If $name is passed try to load an object with that id or nickname
@@ -811,7 +868,10 @@ abstract class ApiBaseController extends FrontendController {
     protected function addRelatedObjects(array $object, array $relations) {
         foreach ($relations as $relName => $dim) {
             if ($this->ApiValidator->isRelationValid($relName, $object['object_type'])) {
-                $relObj = $this->loadRelatedObjects($object['id'], $relName, array('dim' => $dim));
+                $relObj = $this->loadRelatedObjects($object['id'], $relName, array(
+                    'dim' => $dim,
+                    'filter' => $this->relatedObjectsFilter()
+                ));
                 if (!empty($relObj['items'])) {
                     $relObjs = $this->ApiFormatter->formatObjects(
                         $relObj['items'],
@@ -1492,8 +1552,12 @@ abstract class ApiBaseController extends FrontendController {
 
     /**
      * Get children of $parentId object, prepare and set response data
-     * The response is automatically paginated using self::paginationOptions
-     * self::$objectsFilter is used to populate $options['filter']
+     * The response is automatically paginated using `self::$paginationOptions`
+     * `self::$objectsFilter` and `self::childrenFilter()` are recursively merged and used to populate the filter.
+     * 
+     * `$options` available are:
+     * - 'explodeRelations' If the relations should be exploded (default false)
+     * - 'filter' An array of filter merged with `self::$objectsFilter` and `self::childrenFilter()`
      *
      * @see FrontendController::loadSectionObjects()
      * @param int $parentId the parent id
@@ -1501,9 +1565,9 @@ abstract class ApiBaseController extends FrontendController {
      * @return void
      */
     protected function responseChildren($parentId, array $options = array()) {
-        $defaultOptions = array('explodeRelations' => false);
+        $defaultOptions = array('explodeRelations' => false, 'filter' => array());
         $options = array_merge($defaultOptions, $this->paginationOptions, $options);
-        $options['filter'] = !empty($options['filter']) ? array_merge($this->objectsFilter, $options['filter']) : $this->objectsFilter;
+        $options['filter'] = Set::merge($this->objectsFilter, $this->childrenFilter(), $options['filter']);
         // assure to have result in 'children' key
         $options['itemsTogether'] = true;
         $user = $this->ApiAuth->getUser();
@@ -1671,7 +1735,7 @@ abstract class ApiBaseController extends FrontendController {
             if ($relatedId === null) {
                 $defaultOptions = array(
                     'explodeRelations' => false,
-                    'filter' => $this->objectsFilter
+                    'filter' => Set::merge($this->objectsFilter, $this->relatedObjectsFilter())
                 );
                 $options = array_merge($defaultOptions, $this->paginationOptions);
                 $result = $this->loadRelatedObjects($id, $relation, $options);
