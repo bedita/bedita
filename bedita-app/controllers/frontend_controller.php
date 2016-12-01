@@ -2366,7 +2366,7 @@ abstract class FrontendController extends AppController {
      * @param string $service_type
      * @param string $hash
      * @return void
-     * @throws BeditaInternalErrorException
+     * @throws BeditaInternalErrorException, BeditaBadRequestException
      */
     public function hashjob($service_type=null, $hash=null) {
         try {
@@ -2377,6 +2377,7 @@ abstract class FrontendController extends AppController {
             $this->Transaction->rollback();
             $this->userErrorMessage($ex->getMessage());
             $this->eventError($ex->getDetails());
+            throw new BeditaBadRequestException($ex->getMessage(), $ex->getDetails());
         } catch (BeditaException $ex) {
             $this->Transaction->rollback();
             throw new BeditaInternalErrorException($ex->getMessage(), $ex->getDetails());
