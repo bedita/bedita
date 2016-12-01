@@ -13,7 +13,7 @@ function relatedRefreshButton() {
 
 function addObjToAssocRelated(url, postdata) {
 	$("#loadingDownloadRel").show();
-	$.post(url, postdata, function(html){
+	return $.post(url, postdata, function(html){
 		$("#loadingDownloadRel").hide();
 		var newTrs = $(html);
 		var tbody = $("#relationType_" + postdata.relation + " table:first").find("tbody");
