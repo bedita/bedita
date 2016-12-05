@@ -85,6 +85,11 @@ class ResponseHandlerComponent extends Object {
         if ($this->RequestHandler->isAjax()) {
            $this->controller->layout = 'ajax';
         }
+
+        if (empty($controller->params['action'])) {
+            return;
+        }
+
         if (!$this->type || !in_array($this->type, $this->typesHandled)) {
             $action = $controller->params['action'];
             if (!BACKEND_APP && $action == 'route' && !empty($controller->params['pass'][0])) {
