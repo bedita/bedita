@@ -513,6 +513,9 @@ class CakeSession extends Object {
 						ini_set('session.serialize_handler', 'php');
 						ini_set('session.use_cookies', 1);
 						ini_set('session.name', Configure::read('Session.cookie'));
+                        if (Configure::read('Session.domain')) {
+                            ini_set('session.cookie_domain', Configure::read('Session.domain'));
+                        }
 						ini_set('session.cookie_lifetime', $this->cookieLifeTime);
 						ini_set('session.cookie_path', $this->path);
 						ini_set('session.auto_start', 0);
