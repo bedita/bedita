@@ -96,61 +96,6 @@ paths:
         '400':
           description: Invalid data supplied
 
-    patch:
-      tags:
-        - users
-      summary: Modify user
-      description: Modify user data
-      operationId: modifyUser
-      produces:
-        - application/json
-        - application/vnd.api+json
-      parameters:
-        - in: body
-          name: body
-          description: User data
-          required: true
-          schema:
-            properties:
-              data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            properties:
-              data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
-              links:
-                type: object
-              meta:
-                type: object
-        '400':
-          description: Invalid data supplied
-        '409':
-          description: Conflict - IDs don't match
-
-
   '/users/{id}':
     get:
       tags:
@@ -190,6 +135,53 @@ paths:
                 type: object
         '404':
           description: User not found
+
+    patch:
+      tags:
+        - users
+      summary: Modify user
+      description: Modify user data
+      operationId: modifyUser
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to be fetched.'
+          required: true
+          type: integer
+        - name: user
+          in: body
+          description: 'User data.'
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+        '400':
+          description: Invalid data supplied
+        '409':
+          description: Conflict - IDs don't match
 
     delete:
       tags:
@@ -395,6 +387,7 @@ definitions:
         type: string
       status:
         type: string
+        enum: ['on', 'off', 'draft']
       uname:
         type: string
       locked:
