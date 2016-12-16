@@ -1,0 +1,423 @@
+swagger: '2.0'
+info:
+  title: BEdita users management
+  description: BEdita users management
+  termsOfService: 'http://swagger.io/terms/'
+  version: 1.0.0
+host: be4-dev.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /users:
+    get:
+      description: Returns users data
+      summary: Retrieve a list of users
+      operationId: getUsers
+      tags:
+        - users
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+
+    post:
+      tags:
+        - users
+      summary: Create user
+      description: User creation
+      operationId: createUser
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - in: body
+          name: body
+          description: User data
+          required: true
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+        '400':
+          description: Invalid data supplied
+
+  '/users/{id}':
+    get:
+      tags:
+        - users
+      summary: Get user by user id
+      description: ''
+      operationId: getUserById
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to be fetched.'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+        '404':
+          description: User not found
+
+    patch:
+      tags:
+        - users
+      summary: Modify user
+      description: Modify user data
+      operationId: modifyUser
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to be fetched.'
+          required: true
+          type: integer
+        - name: user
+          in: body
+          description: 'User data.'
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+        '400':
+          description: Invalid data supplied
+        '409':
+          description: Conflict - IDs don't match
+
+    delete:
+      tags:
+        - users
+      summary: Remove user by user id
+      description: ''
+      operationId: deleteUserById
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to remove.'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+        '404':
+          description: User not found
+
+  '/users/{id}/roles':
+    get:
+      tags:
+        - users
+      summary: Get roles by user id
+      description: ''
+      operationId: getRolesUserById
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to be fetched.'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['roles']
+                    attributes:
+                      $ref: '#/definitions/Role'
+              links:
+                type: object
+              meta:
+                type: object
+
+  '/users/{id}/relationships/roles':
+    post:
+      tags:
+        - users
+      summary: Add user role by user id
+      description: ''
+      operationId: addUserRoleById
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to remove.'
+          required: true
+          type: integer
+        - name: role
+          in: body
+          description: 'Role data.'
+          required: true
+          schema:
+            $ref: '#/definitions/ParamRole'
+      responses:
+        '200':
+          description: Successful operation
+    delete:
+      tags:
+        - users
+      summary: Remove user role by user id
+      description: ''
+      operationId: deleteUserRoleById
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the user to remove.'
+          required: true
+          type: integer
+        - name: role
+          in: body
+          description: 'Role data.'
+          required: true
+          schema:
+            $ref: '#/definitions/ParamRole'
+      responses:
+        '200':
+          description: Successful operation
+
+definitions:
+  ParamRole:
+    properties:
+      schema:
+        required: ["id", "type"]
+        properties:
+          id:
+            type: integer
+          type:
+            type: string
+            enum: ['roles']
+  Role:
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      unchangeable:
+        type: boolean
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+  User:
+    properties:
+      username:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+      blocked:
+        type: boolean
+      last_login:
+        type: string
+        format: date-time
+      last_login_err:
+        type: string
+        format: date-time
+      num_login_err:
+        type: integer
+      email:
+        type: string
+      person_title:
+        type: string
+      gender:
+        type: string
+      birthdate:
+        type: string
+        format: date-time
+      deathdate:
+        type: string
+        format: date-time
+      company:
+        type: boolean
+      company_name:
+        type: string
+      company_kind:
+        type: string
+      street_address:
+        type: string
+      city:
+        type: string
+      zipcode:
+        type: string
+      country:
+        type: string
+      state_name:
+        type: string
+      phone:
+        type: string
+      website:
+        type: string
+      status:
+        type: string
+        enum: ['on', 'off', 'draft']
+      uname:
+        type: string
+      locked:
+        type: boolean
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+      published:
+        type: string
+        format: date-time
+      title:
+        type: string
+      description:
+        type: string
+      body:
+        type: string
+      extra:
+        type: string
+      lang:
+        type: string
+      created_by:
+        type: integer
+      modified_by:
+        type: integer
+      publish_start:
+        type: string
+        format: date-time
+      publish_end:
+        type: string
+        format: date-time
