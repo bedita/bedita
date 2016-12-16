@@ -1,10 +1,10 @@
 swagger: '2.0'
 info:
-  title: BEdita users management
-  description: BEdita users management
-  termsOfService: 'http://swagger.io/terms/'
-  version: 1.0.0
-host: be4-dev.bedita.net
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
 basePath: /
 schemes:
   - https

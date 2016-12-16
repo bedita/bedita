@@ -1,0 +1,61 @@
+swagger: '2.0'
+info:
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /roles:
+    get:
+      description: Returns roles
+      summary: Retrieve a list of roles
+      operationId: getRoles
+      tags:
+        - roles
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ['id', 'type']
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['roles']
+                    attributes:
+                      $ref: '#/definitions/Role'
+              links:
+                type: object
+              meta:
+                type: object
+
+definitions:
+  Role:
+    properties:
+      name:
+        type: string
+      description:
+        type: string
+      unchangeable:
+        type: boolean
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
