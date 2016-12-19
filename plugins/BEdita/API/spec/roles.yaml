@@ -240,7 +240,7 @@ paths:
         - roles
       summary: Add users by role id
       description: ''
-      operationId: addUserRoleById
+      operationId: addUserByRoleId
       produces:
         - application/json
         - application/vnd.api+json
@@ -264,7 +264,7 @@ paths:
         - roles
       summary: Remove user role by role id
       description: ''
-      operationId: deleteUserRoleById
+      operationId: deleteUserByRoleId
       produces:
         - application/json
         - application/vnd.api+json
