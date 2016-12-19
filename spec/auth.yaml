@@ -1,0 +1,42 @@
+swagger: '2.0'
+info:
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /auth:
+    post:
+      description: authentication process
+      summary: Perform auth
+      tags:
+        - auth
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - in: body
+          name: body
+          description: Authentication data
+          required: true
+          schema:
+            $ref: '#/definitions/AuthParam'
+      responses:
+        '200':
+          description: Login successfull
+        '401':
+          description: Unauthorized user, or invalid renew token
+definitions:
+  AuthParam:
+    properties:
+      username:
+        type: string
+      password_hash:
+        type: string

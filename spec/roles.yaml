@@ -13,7 +13,6 @@ paths:
     get:
       description: Returns roles
       summary: Retrieve a list of roles
-      operationId: getRoles
       tags:
         - roles
       consumes:
@@ -49,7 +48,6 @@ paths:
         - roles
       summary: Create role
       description: Role creation
-      operationId: createRole
       produces:
         - application/json
         - application/vnd.api+json
@@ -90,7 +88,6 @@ paths:
         - roles
       summary: Get role by role id
       description: ''
-      operationId: getRoleById
       produces:
         - application/json
         - application/vnd.api+json
@@ -131,7 +128,6 @@ paths:
         - roles
       summary: Modify role
       description: Modify role data
-      operationId: modifyRole
       produces:
         - application/json
         - application/vnd.api+json
@@ -178,7 +174,6 @@ paths:
         - roles
       summary: Remove role by role id
       description: ''
-      operationId: deleteRoleById
       produces:
         - application/json
         - application/vnd.api+json
@@ -202,7 +197,6 @@ paths:
         - roles
       summary: Get users by role id
       description: ''
-      operationId: getUsersRoleById
       produces:
         - application/json
         - application/vnd.api+json
@@ -240,7 +234,6 @@ paths:
         - roles
       summary: Add users by role id
       description: ''
-      operationId: addUserByRoleId
       produces:
         - application/json
         - application/vnd.api+json
@@ -264,7 +257,6 @@ paths:
         - roles
       summary: Remove user role by role id
       description: ''
-      operationId: deleteUserByRoleId
       produces:
         - application/json
         - application/vnd.api+json
