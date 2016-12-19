@@ -144,7 +144,7 @@ paths:
           description: 'User data.'
           required: true
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/EditUserParam'
       responses:
         '200':
           description: Successful operation
@@ -187,26 +187,8 @@ paths:
           required: true
           type: integer
       responses:
-        '200':
-          description: Successful operation
-          schema:
-            properties:
-              data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
-              links:
-                type: object
-              meta:
-                type: object
+        '204':
+          description: Successful operation | No content
         '404':
           description: User not found
 
@@ -309,9 +291,21 @@ definitions:
             enum: ['users']
           attributes:
             $ref: '#/definitions/User'
+  EditUserParam:
+    properties:
+      data:
+        required: [ "id", "type", "attributes" ]
+        properties:
+          id:
+            type: integer
+          type:
+            type: string
+            enum: ['users']
+          attributes:
+            $ref: '#/definitions/User'
   RoleParam:
     properties:
-      schema:
+      data:
         required: ["id", "type"]
         properties:
           id:
