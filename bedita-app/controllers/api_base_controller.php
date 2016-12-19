@@ -466,6 +466,8 @@ abstract class ApiBaseController extends FrontendController {
     protected function checkLogin() {
         if ($this->ApiAuth->identify()) {
             $this->logged = true;
+        } elseif (Configure::read('api.protected')) {
+            throw new BeditaUnauthorizedException();
         }
     }
 
