@@ -59,17 +59,7 @@ paths:
           description: Role data
           required: true
           schema:
-            properties:
-              data:
-                type: object
-                schema:
-                  required: ["type"]
-                  properties:
-                    type:
-                      type: string
-                      enum: ['roles']
-                    attributes:
-                      $ref: '#/definitions/Role'
+            $ref: '#/definitions/NewRoleParam'
       responses:
         '200':
           description: Successful operation
@@ -78,7 +68,7 @@ paths:
               data:
                 type: array
                 items:
-                  required: ["id", "type"]
+                  required: ['id', 'type']
                   properties:
                     id:
                       type: integer
@@ -96,6 +86,16 @@ paths:
 
 
 definitions:
+  NewRoleParam:
+    properties:
+      data:
+        required: [ "type", "attributes" ]
+        properties:
+          type:
+            type: string
+            enum: ['roles']
+          attributes:
+            $ref: '#/definitions/Role'
   Role:
     properties:
       id:

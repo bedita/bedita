@@ -59,17 +59,7 @@ paths:
           description: User data
           required: true
           schema:
-            properties:
-              data:
-                type: object
-                schema:
-                  required: ["type"]
-                  properties:
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
+            $ref: '#/definitions/NewUserParam'
       responses:
         '200':
           description: Successful operation
@@ -279,7 +269,7 @@ paths:
           description: 'Role data.'
           required: true
           schema:
-            $ref: '#/definitions/ParamRole'
+            $ref: '#/definitions/RoleParam'
       responses:
         '200':
           description: Successful operation
@@ -303,13 +293,23 @@ paths:
           description: 'Role data.'
           required: true
           schema:
-            $ref: '#/definitions/ParamRole'
+            $ref: '#/definitions/RoleParam'
       responses:
         '200':
           description: Successful operation
 
 definitions:
-  ParamRole:
+  NewUserParam:
+    properties:
+      data:
+        required: [ "type", "attributes" ]
+        properties:
+          type:
+            type: string
+            enum: ['users']
+          attributes:
+            $ref: '#/definitions/User'
+  RoleParam:
     properties:
       schema:
         required: ["id", "type"]
@@ -336,6 +336,8 @@ definitions:
   User:
     properties:
       username:
+        type: string
+      password:
         type: string
       name:
         type: string
