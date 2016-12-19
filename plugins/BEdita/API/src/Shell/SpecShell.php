@@ -100,10 +100,9 @@ class SpecShell extends Shell
             if ($file !== self::YAML_SPEC_FILE) {
                 $yamlData = Yaml::parse(file_get_contents($dir->pwd() . DS . $file));
                 $be4Spec = array_merge($yamlData, $be4Spec);
-                $be4Spec['paths'] = array_merge(
-                    empty($yamlData['paths']) ? [] : $yamlData['paths'],
-                    $be4Spec['paths']
-                );
+                if (!empty($yamlData['paths'])) {
+                    $be4Spec['paths'] += $yamlData['paths'];
+                }
                 $be4Spec['definitions'] = array_merge(
                     empty($yamlData['definitions']) ? [] : $yamlData['definitions'],
                     $be4Spec['definitions']
