@@ -1,0 +1,69 @@
+swagger: '2.0'
+info:
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /home:
+    get:
+      description: API endpoints info
+      summary: Retrieve a list of endpoints available
+      tags:
+        - home
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Home200Response'
+definitions:
+  Home200Response:
+    properties:
+      links:
+        properties:
+          self:
+            type: string
+          home:
+            type: string
+      meta:
+        properties:
+          resources:
+            $ref: '#/definitions/MetaResources'
+  MetaResources:
+    properties:
+      '/objects':
+        $ref: '#/definitions/Resource'
+      '/users':
+        $ref: '#/definitions/Resource'
+      '/roles':
+        $ref: '#/definitions/Resource'
+      '/object_types':
+        $ref: '#/definitions/Resource'
+      '/status':
+        $ref: '#/definitions/Resource'
+  Resource:
+    properties:
+      href:
+        type: string
+      hints:
+        $ref: '#/definitions/Hint'
+  Hint:
+    properties:
+      allow:
+        type: array
+        items:
+          type: string
+      formats:
+        type: array
+        items:
+          type: string

@@ -9,12 +9,12 @@ basePath: /
 schemes:
   - https
 paths:
-  /users:
+  /roles:
     get:
-      description: Returns users data
-      summary: Retrieve a list of users
+      description: Returns roles
+      summary: Retrieve a list of roles
       tags:
-        - users
+        - roles
       consumes:
         - application/json
         - application/vnd.api+json
@@ -29,15 +29,15 @@ paths:
               data:
                 type: array
                 items:
-                  required: ["id", "type"]
+                  required: ['id', 'type']
                   properties:
                     id:
                       type: integer
                     type:
                       type: string
-                      enum: ['users']
+                      enum: ['roles']
                     attributes:
-                      $ref: '#/definitions/User'
+                      $ref: '#/definitions/Role'
               links:
                 type: object
               meta:
@@ -45,19 +45,19 @@ paths:
 
     post:
       tags:
-        - users
-      summary: Create user
-      description: User creation
+        - roles
+      summary: Create role
+      description: Role creation
       produces:
         - application/json
         - application/vnd.api+json
       parameters:
         - in: body
           name: body
-          description: User data
+          description: Role data
           required: true
           schema:
-            $ref: '#/definitions/NewUserParam'
+            $ref: '#/definitions/NewRoleParam'
       responses:
         '200':
           description: Successful operation
@@ -66,15 +66,15 @@ paths:
               data:
                 type: array
                 items:
-                  required: ["id", "type"]
+                  required: ['id', 'type']
                   properties:
                     id:
                       type: integer
                     type:
                       type: string
-                      enum: ['users']
+                      enum: ['roles']
                     attributes:
-                      $ref: '#/definitions/User'
+                      $ref: '#/definitions/Role'
               links:
                 type: object
               meta:
@@ -82,11 +82,11 @@ paths:
         '400':
           description: Invalid data supplied
 
-  '/users/{id}':
+  '/roles/{id}':
     get:
       tags:
-        - users
-      summary: Get user by user id
+        - roles
+      summary: Get role by role id
       description: ''
       produces:
         - application/json
@@ -94,112 +94,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: 'The id of the user to be fetched.'
-          required: true
-          type: integer
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            properties:
-              data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
-              links:
-                type: object
-              meta:
-                type: object
-        '404':
-          description: User not found
-
-    patch:
-      tags:
-        - users
-      summary: Modify user
-      description: Modify user data
-      produces:
-        - application/json
-        - application/vnd.api+json
-      parameters:
-        - name: id
-          in: path
-          description: 'The id of the user to be fetched.'
-          required: true
-          type: integer
-        - name: user
-          in: body
-          description: 'User data.'
-          required: true
-          schema:
-            $ref: '#/definitions/EditUserParam'
-      responses:
-        '200':
-          description: Successful operation
-          schema:
-            properties:
-              data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['users']
-                    attributes:
-                      $ref: '#/definitions/User'
-              links:
-                type: object
-              meta:
-                type: object
-        '400':
-          description: Invalid data supplied
-        '409':
-          description: Conflict - IDs don't match
-
-    delete:
-      tags:
-        - users
-      summary: Remove user by user id
-      description: ''
-      produces:
-        - application/json
-        - application/vnd.api+json
-      parameters:
-        - name: id
-          in: path
-          description: 'The id of the user to remove.'
-          required: true
-          type: integer
-      responses:
-        '204':
-          description: Successful operation | No content
-        '404':
-          description: User not found
-
-  '/users/{id}/roles':
-    get:
-      tags:
-        - users
-      summary: Get roles by user id
-      description: ''
-      produces:
-        - application/json
-        - application/vnd.api+json
-      parameters:
-        - name: id
-          in: path
-          description: 'The id of the user to be fetched.'
+          description: 'The id of the role to be fetched.'
           required: true
           type: integer
       responses:
@@ -223,20 +118,23 @@ paths:
                 type: object
               meta:
                 type: object
+        '404':
+          description: Role not found
+          schema:
+            $ref: '#/definitions/404Response'
 
-  '/users/{id}/relationships/roles':
-    post:
+    patch:
       tags:
-        - users
-      summary: Add user role by user id
-      description: ''
+        - roles
+      summary: Modify role
+      description: Modify role data
       produces:
         - application/json
         - application/vnd.api+json
       parameters:
         - name: id
           in: path
-          description: 'The id of the user to remove.'
+          description: 'The id of the role to be fetched.'
           required: true
           type: integer
         - name: role
@@ -244,14 +142,120 @@ paths:
           description: 'Role data.'
           required: true
           schema:
-            $ref: '#/definitions/RoleParam'
+            $ref: '#/definitions/EditRoleParam'
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['roles']
+                    attributes:
+                      $ref: '#/definitions/Role'
+              links:
+                type: object
+              meta:
+                type: object
+        '400':
+          description: Invalid data supplied
+        '409':
+          description: Conflict - IDs don't match
+
+    delete:
+      tags:
+        - roles
+      summary: Remove role by role id
+      description: ''
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the role to remove.'
+          required: true
+          type: integer
+      responses:
+        '204':
+          description: Successful operation | No content
+        '404':
+          description: Role not found
+          schema:
+            $ref: '#/definitions/404Response'
+
+  '/roles/{id}/users':
+    get:
+      tags:
+        - roles
+      summary: Get users by role id
+      description: ''
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the role whose users should be fetched.'
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+              links:
+                type: object
+              meta:
+                type: object
+
+  '/roles/{id}/relationships/users':
+    post:
+      tags:
+        - roles
+      summary: Add users by role id
+      description: ''
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: id
+          in: path
+          description: 'The id of the role.'
+          required: true
+          type: integer
+        - name: user
+          in: body
+          description: 'User data.'
+          required: true
+          schema:
+            $ref: '#/definitions/UserParam'
       responses:
         '200':
           description: Successful operation
     delete:
       tags:
-        - users
-      summary: Remove user role by user id
+        - roles
+      summary: Remove user role by role id
       description: ''
       produces:
         - application/json
@@ -259,31 +263,31 @@ paths:
       parameters:
         - name: id
           in: path
-          description: 'The id of the user to remove.'
+          description: 'The id of the role.'
           required: true
           type: integer
-        - name: role
+        - name: user
           in: body
-          description: 'Role data.'
+          description: 'User data.'
           required: true
           schema:
-            $ref: '#/definitions/RoleParam'
+            $ref: '#/definitions/UserParam'
       responses:
         '200':
           description: Successful operation
 
 definitions:
-  NewUserParam:
+  NewRoleParam:
     properties:
       data:
         required: [ "type", "attributes" ]
         properties:
           type:
             type: string
-            enum: ['users']
+            enum: ['roles']
           attributes:
-            $ref: '#/definitions/User'
-  EditUserParam:
+            $ref: '#/definitions/Role'
+  EditRoleParam:
     properties:
       data:
         required: [ "id", "type", "attributes" ]
@@ -292,21 +296,13 @@ definitions:
             type: integer
           type:
             type: string
-            enum: ['users']
-          attributes:
-            $ref: '#/definitions/User'
-  RoleParam:
-    properties:
-      data:
-        required: ["id", "type"]
-        properties:
-          id:
-            type: integer
-          type:
-            type: string
             enum: ['roles']
+          attributes:
+            $ref: '#/definitions/Role'
   Role:
     properties:
+      id:
+        type: integer
       name:
         type: string
       description:
@@ -319,6 +315,16 @@ definitions:
       modified:
         type: string
         format: date-time
+  UserParam:
+    properties:
+      data:
+        required: ["id", "type"]
+        properties:
+          id:
+            type: integer
+          type:
+            type: string
+            enum: ['users']
   User:
     properties:
       username:
@@ -407,3 +413,22 @@ definitions:
       publish_end:
         type: string
         format: date-time
+  404Response:
+    type: object
+    properties:
+      error:
+        type: object
+        properties:
+          status:
+            type: integer
+            enum: ['404']
+          title:
+            type: string
+            enum: ['Not Found']
+      links:
+        type: object
+        properties:
+          self:
+            type: string
+          home:
+            type: string

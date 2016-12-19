@@ -1,0 +1,13 @@
+swagger: '2.0'
+info:
+  title: BEdita 4 API
+  description: BEdita 4 base endpoints specification
+  termsOfService: 'http://swagger.io/terms/'
+  version: 1.0.0
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+
+definitions:
