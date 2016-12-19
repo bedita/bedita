@@ -84,7 +84,7 @@ paths:
                       type: integer
                     type:
                       type: string
-                      enum: ['users']
+                      enum: ['roles']
                     attributes:
                       $ref: '#/definitions/Role'
               links:
