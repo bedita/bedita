@@ -44,9 +44,62 @@ paths:
               meta:
                 type: object
 
+    post:
+      tags:
+        - roles
+      summary: Create role
+      description: Role creation
+      operationId: createRole
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - in: body
+          name: body
+          description: Role data
+          required: true
+          schema:
+            properties:
+              data:
+                type: object
+                schema:
+                  required: ["type"]
+                  properties:
+                    type:
+                      type: string
+                      enum: ['roles']
+                    attributes:
+                      $ref: '#/definitions/Role'
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ["id", "type"]
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/Role'
+              links:
+                type: object
+              meta:
+                type: object
+        '400':
+          description: Invalid data supplied
+
+
 definitions:
   Role:
     properties:
+      id:
+        type: integer
       name:
         type: string
       description:
