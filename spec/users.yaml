@@ -13,7 +13,6 @@ paths:
     get:
       description: Returns users data
       summary: Retrieve a list of users
-      operationId: getUsers
       tags:
         - users
       consumes:
@@ -49,7 +48,6 @@ paths:
         - users
       summary: Create user
       description: User creation
-      operationId: createUser
       produces:
         - application/json
         - application/vnd.api+json
@@ -90,7 +88,6 @@ paths:
         - users
       summary: Get user by user id
       description: ''
-      operationId: getUserById
       produces:
         - application/json
         - application/vnd.api+json
@@ -129,7 +126,6 @@ paths:
         - users
       summary: Modify user
       description: Modify user data
-      operationId: modifyUser
       produces:
         - application/json
         - application/vnd.api+json
@@ -176,7 +172,6 @@ paths:
         - users
       summary: Remove user by user id
       description: ''
-      operationId: deleteUserById
       produces:
         - application/json
         - application/vnd.api+json
@@ -198,7 +193,6 @@ paths:
         - users
       summary: Get roles by user id
       description: ''
-      operationId: getRolesUserById
       produces:
         - application/json
         - application/vnd.api+json
@@ -236,7 +230,6 @@ paths:
         - users
       summary: Add user role by user id
       description: ''
-      operationId: addRoleByUserId
       produces:
         - application/json
         - application/vnd.api+json
@@ -260,7 +253,6 @@ paths:
         - users
       summary: Remove user role by user id
       description: ''
-      operationId: deleteRoleByUserId
       produces:
         - application/json
         - application/vnd.api+json
