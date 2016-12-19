@@ -33,6 +33,9 @@ class BeHtmlHelper extends HtmlHelper {
      */
     protected $currLang = null;
 
+    /**
+     * Class constructor.
+     */
     public function __construct(array $options = array()) {
         if (!empty($options['currLang'])) {
             $this->currLang = $options['currLang'];
@@ -98,21 +101,30 @@ class BeHtmlHelper extends HtmlHelper {
     public function url ($url = null, $full = false, array $mergeParams = null) {
         return parent::url($this->parse($url, $mergeParams), $full);
     }
-    
+
+    /**
+     * Hyphenate a string.
+     *
+     * @param string $text Text to be hyphenated.
+     * @param string|null $lang Text language.
+     * @param string[] $excludeSelectors CSS selectors of elements to be skipped when hyphenating.
+     * @param string[] $excludeSelectorsDefault Same as above, but by default. (???)
+     * @return string Hyphenated string.
+     */
     public function hyphen($text, $lang = null, $excludeSelectors = array('.formula'), $excludeSelectorDefaults = array('pre', 'code', 'embed', 'object', 'iframe', 'img', 'svg', 'video', 'audio', 'script', 'style', 'head', 'sub', 'sup')) {
         if (empty($lang)) {
             $lang = Configure::read('defaultLang');
         }
-    
+
         App::Import('Vendor', 'simple_html_dom');
         App::import('Vendor', 'Hyphenator', array('file' => 'hyphenator' . DS . 'Hyphenator.php'));
-    
+
         $hyphenator = ClassRegistry::getObject('Hyphenator');
         if (!$hyphenator) {
             $hyphenator = new Hyphenator();
             ClassRegistry::addObject('Hyphenator', $hyphenator);
         }
-    
+
         $excludeSelectors = array_merge($excludeSelectorDefaults, $excludeSelectors);
         $restore = array();
         if (!empty($excludeSelectors)) {
@@ -132,14 +144,67 @@ class BeHtmlHelper extends HtmlHelper {
             }
             $text = $body->innertext;
         }
-    
+
         $text = $hyphenator->hyphenate($text, $lang);
-    
+
         foreach ($restore as $key => $value) {
             $text = str_replace('<!-- be-not-hyphen-' . $key . ' -->', $value, $text);
         }
-    
+
         return $text;
     }
 
+    /**
+     * Append timestamp to an asset to help invalidate browsers' cache.
+     *
+     * @param string $path File path.
+     * @return string
+     */
+    public function assetTimestamp($path) {
+        $timestampMode = Configure::read('Asset.timestamp');
+        if (($timestampMode !== 'force' && ($timestampMode !== true || Configure::read('debug') === 0)) || strpos($path, '?') !== false) {
+            return $path;
+        }
+
+        $timestampAlg = Configure::read('Asset.algorithm');
+        $hashMethod = function($path) use ($timestampAlg) {
+            switch ($timestampAlg) {
+                case 'md5':
+                    return @md5_file($path);
+                case 'md5-short':
+                    return substr(@md5_file($path), 0, 7);
+                case 'sha1':
+                    return @sha1_file($path);
+                case 'sha1-short':
+                    return substr(@md5_file($path), 0, 7);
+                case 'git':
+                    return @shell_exec(sprintf('git -C %s rev-parse HEAD', escapeshellarg(basename($path))));
+                case 'git-short':
+                    return @shell_exec(sprintf('git -C %s rev-parse --short HEAD', escapeshellarg(basename($path))));
+                default:
+                    return @filemtime($path);
+            }
+        };
+
+        $filepath = preg_replace('/^' . preg_quote($this->webroot, '/') . '/', '', $path);
+        $webrootPath = WWW_ROOT . str_replace('/', DS, $filepath);
+        if (file_exists($webrootPath)) {
+            return $path . '?' . $hashMethod($webrootPath);
+        }
+
+        $segments = explode('/', ltrim($filepath, '/'));
+        if ($segments[0] === 'theme') {
+            $theme = $segments[1];
+            unset($segments[0], $segments[1]);
+            $themePath = App::themePath($theme) . 'webroot' . DS . implode(DS, $segments);
+
+            return $path . '?' . $hashMethod($themePath);
+        }
+
+        $plugin = $segments[0];
+        unset($segments[0]);
+        $pluginPath = App::pluginPath($plugin) . 'webroot' . DS . implode(DS, $segments);
+
+        return $path . '?' . $hashMethod($pluginPath);
+    }
 }
