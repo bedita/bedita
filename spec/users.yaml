@@ -61,12 +61,10 @@ paths:
           schema:
             properties:
               data:
-                type: array
-                items:
-                  required: ["id", "type"]
+                type: object
+                schema:
+                  required: ["type"]
                   properties:
-                    id:
-                      type: integer
                     type:
                       type: string
                       enum: ['users']
