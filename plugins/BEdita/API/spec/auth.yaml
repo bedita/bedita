@@ -92,7 +92,7 @@ paths:
               data:
                 type: array
                 items:
-                  required: ["id", "type"]
+                  required: ['id', 'type']
                   properties:
                     id:
                       type: integer
