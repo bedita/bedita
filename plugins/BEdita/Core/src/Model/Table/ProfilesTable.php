@@ -43,6 +43,11 @@ class ProfilesTable extends Table
                 'tableName' => 'Objects',
             ],
         ]);
+
+        $this->addBehavior('BEdita/Core.UniqueName', [
+            'sourceField' => 'title',
+            'prefix' => 'profile-'
+        ]);
     }
 
     /**
