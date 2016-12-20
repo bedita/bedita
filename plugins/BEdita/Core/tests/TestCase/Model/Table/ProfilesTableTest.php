@@ -100,7 +100,6 @@ class ProfilesTableTest extends TestCase
                 [
                     'name' => 'Channelweb Srl',
                     'company' => true,
-                    'uname' => 'object-associated-' . md5(microtime()),
                 ],
             ],
             'notUniqueEmail' => [
@@ -108,7 +107,6 @@ class ProfilesTableTest extends TestCase
                 [
                     'email' => 'gustavo.supporto@channelweb.it',
                     'object_type_id' => 2,
-                    'uname' => 'object-associated-' . md5(microtime()),
                     'status' => 'draft',
                     'lang' => 'eng',
                 ],

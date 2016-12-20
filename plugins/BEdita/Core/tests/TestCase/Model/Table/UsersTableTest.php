@@ -92,7 +92,6 @@ class UsersTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'uname' => 'some-unique-value',
                     'username' => 'some_unique_value',
                     'password_hash' => null,
                 ],
@@ -115,7 +114,7 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @coversNothing
+     *
      */
     public function testValidation($expected, array $data)
     {
