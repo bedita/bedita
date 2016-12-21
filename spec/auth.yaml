@@ -18,7 +18,7 @@ paths:
 
         ```
         username: johndoe
-        password_hash: ******
+        password: ******
         ```
 
         You renew token with POST /auth, using header parameter Authorization. For example:
@@ -43,7 +43,7 @@ paths:
           minLength: 8
           maxLength: 64
           type: string
-        - name: password_hash
+        - name: password
           in: formData
           required: false
           type: string
