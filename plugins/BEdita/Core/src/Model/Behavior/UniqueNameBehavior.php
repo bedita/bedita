@@ -21,9 +21,9 @@ use Cake\Utility\Text;
 /**
  * UniqueName behavior
  *
- * Creates or updates unique name of objects (see `objects.uname` field).
+ * Creates or updates a unique name of objects (see `objects.uname` field).
  *
- * Unique name is created tyipically from object title or from object type in case of missing title.
+ * Unique name is created tyipically from object title or from other object properties in case of missing title.
  * An object type may impose custom rule.
  * Name must be unique inside current project.
  *
@@ -43,7 +43,7 @@ class UniqueNameBehavior extends Behavior
     ];
 
     /**
-     * Setup unique name a BEdita object $entity if a new entity is created
+     * Setup unique name of a BEdita object $entity if a new entity is created
      * Unique name is built using a friendly url `slug` version of a `sourceField` (default 'title')
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
