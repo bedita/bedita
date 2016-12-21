@@ -281,15 +281,27 @@ class Stream extends BEAppModel
 		if (empty($filename)) {
 			$filename = basename($path);
 		}
-		if (function_exists("finfo_open") && file_exists($path)) {
+
+        $mime_type = $this->getMimeTypeByExtension($filename);
+
+        if (function_exists("finfo_open") && file_exists($path)) {
 			if(PHP_VERSION < 5.3) {
 				$file_info = finfo_open(FILEINFO_MIME, APP_PATH.'config'.DS.'magic');
 			} else {
 				$file_info = finfo_open(FILEINFO_MIME_TYPE);
 			}
-			$mime_type = ($file_info)? finfo_file($file_info, $path) : $this->getMimeTypeByExtension($filename);
-		} else {
-			$mime_type = $this->getMimeTypeByExtension($filename);
+            $magic_mime_type = ($file_info)? finfo_file($file_info, $path) : $mime_type;
+
+            // fix for compressed SVGs
+            if ($mime_type == 'image/svg+xml' && $mime_type != $magic_mime_type) {
+                $handle = fopen($path, 'r');
+                $contents = fread($handle, 5);
+                if ($contents === '<svg ') {
+                    return $mime_type;
+                }
+                fclose($handle);
+            }
+            $mime_type = $magic_mime_type;
 		}
 		return $mime_type;
 	}
