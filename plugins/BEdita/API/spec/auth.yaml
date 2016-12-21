@@ -109,8 +109,8 @@ definitions:
   Relantionship:
     properties:
       roles:
-        $ref: '#/definitions/Role'
-  Role:
+        $ref: '#/definitions/RelationShipRole'
+  RelationShipRole:
     properties:
       links:
         $ref: '#/definitions/RoleLink'
