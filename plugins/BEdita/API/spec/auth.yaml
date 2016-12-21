@@ -51,7 +51,7 @@ paths:
           name: Authorization
           description: Use token prefixed with 'Bearer'
           required: false
-          format: string
+          type: string
       responses:
         '200':
           description: Login successfull
@@ -83,7 +83,7 @@ paths:
           name: Authorization
           description: I.e. 'Bearer eyJ...2T8'
           required: true
-          format: string
+          type: string
       responses:
         '200':
           description: Success
