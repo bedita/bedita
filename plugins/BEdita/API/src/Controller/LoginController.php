@@ -82,6 +82,11 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('post');
 
+        if (!empty($this->request->data)) {
+            $this->request->data['password_hash'] = $this->request->data['password'];
+            unset($this->request->data['password']);
+        }
+
         $user = $this->Auth->identify();
         if (!$user) {
             throw new UnauthorizedException(__('Login not successful'));

@@ -52,7 +52,7 @@ class LoginControllerTest extends IntegrationTestCase
             ],
         ]);
 
-        $this->post('/auth', ['username' => 'first user', 'password_hash' => 'password1']);
+        $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -109,7 +109,7 @@ class LoginControllerTest extends IntegrationTestCase
             ],
         ]);
 
-        $this->post('/auth', ['username' => 'first user', 'password_hash' => 'wrongPassword']);
+        $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
 
         $this->assertResponseCode(401);
     }
