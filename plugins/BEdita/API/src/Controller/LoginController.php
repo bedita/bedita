@@ -82,7 +82,7 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('post');
 
-        if (!empty($this->request->data)) {
+        if (!empty($this->request->data['password'])) {
             $this->request->data['password_hash'] = $this->request->data['password'];
             unset($this->request->data['password']);
         }
