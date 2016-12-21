@@ -38,10 +38,14 @@ paths:
                       enum: ['roles']
                     attributes:
                       $ref: '#/definitions/Role'
+                    links:
+                      $ref: '#/definitions/LinkSelf'
+                    relationships:
+                      $ref: '#/definitions/RelationshipUser'
               links:
-                type: object
+                $ref: '#/definitions/LinkPagination'
               meta:
-                type: object
+                $ref: '#/definitions/MetaPagination'
 
     post:
       tags:
@@ -64,21 +68,19 @@ paths:
           schema:
             properties:
               data:
-                type: array
-                items:
-                  required: ['id', 'type']
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['roles']
-                    attributes:
-                      $ref: '#/definitions/Role'
+                required: ["id", "type"]
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                    enum: ['roles']
+                  attributes:
+                    $ref: '#/definitions/Role'
+                  relationships:
+                    $ref: '#/definitions/RelationshipUser'
               links:
-                type: object
-              meta:
-                type: object
+                $ref: '#/definitions/Link'
         '400':
           description: Invalid data supplied
 
@@ -103,21 +105,19 @@ paths:
           schema:
             properties:
               data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['roles']
-                    attributes:
-                      $ref: '#/definitions/Role'
+                required: ["id", "type"]
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                    enum: ['roles']
+                  attributes:
+                    $ref: '#/definitions/Role'
+                  relationships:
+                    $ref: '#/definitions/RelationshipUser'
               links:
-                type: object
-              meta:
-                type: object
+                $ref: '#/definitions/Link'
         '404':
           description: Role not found
           schema:
@@ -149,21 +149,19 @@ paths:
           schema:
             properties:
               data:
-                type: array
-                items:
-                  required: ["id", "type"]
-                  properties:
-                    id:
-                      type: integer
-                    type:
-                      type: string
-                      enum: ['roles']
-                    attributes:
-                      $ref: '#/definitions/Role'
+                required: ["id", "type"]
+                properties:
+                  id:
+                    type: integer
+                  type:
+                    type: string
+                    enum: ['roles']
+                  attributes:
+                    $ref: '#/definitions/Role'
+                  relationships:
+                    $ref: '#/definitions/RelationshipUser'
               links:
-                type: object
-              meta:
-                type: object
+                $ref: '#/definitions/Link'
         '400':
           description: Invalid data supplied
         '409':
@@ -223,10 +221,14 @@ paths:
                       enum: ['users']
                     attributes:
                       $ref: '#/definitions/User'
+                    links:
+                      $ref: '#/definitions/LinkSelf'
+                    relationships:
+                      $ref: '#/definitions/RelationshipRole'
               links:
-                type: object
+                $ref: '#/definitions/LinkPagination'
               meta:
-                type: object
+                $ref: '#/definitions/MetaPagination'
 
   '/roles/{id}/relationships/users':
     post:
@@ -277,6 +279,70 @@ paths:
           description: Successful operation
 
 definitions:
+  RelationshipUser:
+    properties:
+      users:
+        properties:
+          links:
+            properties:
+              related:
+                type: string
+              self:
+                type: string
+  RelationshipRole:
+    properties:
+      roles:
+        properties:
+          links:
+            properties:
+              related:
+                type: string
+              self:
+                type: string
+  LinkSelf:
+    properties:
+      self:
+        type: string
+  LinkPagination:
+    properties:
+      self:
+        type: string
+      home:
+        type: string
+      first:
+        type: string
+      last:
+        type: string
+      prev:
+        type: string
+      next:
+        type: string
+  MetaPagination:
+    properties:
+      pagination:
+        properties:
+          count:
+            type: integer
+          page:
+            type: integer
+          page_count:
+            type: integer
+          page_items:
+            type: integer
+          page_size:
+            type: integer
+  Link:
+    properties:
+      self:
+        type: string
+      home:
+        type: string
+  Meta:
+    properties:
+      jwt:
+        type: string
+      renew:
+        type: string
   NewRoleParam:
     properties:
       data:
