@@ -33,24 +33,24 @@ class RedisShell extends BeditaBaseShell {
             'nickname' => 0,
             'hash' => 0
         );
+        $sizes = array(
+            'index' => 0,
+            'type' => 0,
+            'path' => 0,
+            'perms' => 0,
+            'parent' => 0,
+            'children' => 0,
+            'nickname' => 0,
+            'hash' => 0
+        );
         while ($arrKeys = $redis->scan($it)) {
             foreach ($arrKeys as $key) {
-                if ($this->isIndexKey($key)) {
-                    $count['index']++; 
-                } else if ($this->isTypeKey($key)) {
-                    $count['type']++; 
-                } else if ($this->isPathKey($key)) {
-                    $count['path']++; 
-                } else if ($this->isPermsKey($key)) {
-                    $count['perms']++; 
-                } else if ($this->isParentKey($key)) {
-                    $count['parent']++; 
-                } else if ($this->isChildrenKey($key)) {
-                    $count['children']++; 
-                } else if ($this->isNicknameKey($key)) {
-                    $count['nickname']++; 
-                } else if ($this->isHash($key)) {
-                    $count['hash']++; 
+                $managedKey = $this->managedKey($key);
+                if (!empty($managedKey)) {
+                    $val = $redis->get($key);
+                    $s = strlen($val);
+                    $count[$managedKey]++;
+                    $sizes[$managedKey]+= $s;
                 } else {
                     $this->out($key);
                 }
@@ -58,7 +58,8 @@ class RedisShell extends BeditaBaseShell {
         }
         $out = '';
         foreach ($count as $k => $v) {
-            $out.= "\n\t$k: $v";
+            $avg = ($v != 0) ? $sizes[$k] / $v : 0;
+            $out.= "\n\t$k: $v | size: " . $sizes[$k] . ' | average size: ' . $avg;
         }
         $this->out("keys: $out");
         $this->out('----------------------------------');
@@ -299,6 +300,26 @@ class RedisShell extends BeditaBaseShell {
         return substr($key,$start,$len);
     }
 
+    private function managedKey($key) {
+        if ($this->isIndexKey($key)) {
+            return 'index'; 
+        } else if ($this->isTypeKey($key)) {
+            return 'type';
+        } else if ($this->isPathKey($key)) {
+            return 'path'; 
+        } else if ($this->isPermsKey($key)) {
+            return 'perms'; 
+        } else if ($this->isParentKey($key)) {
+            return 'parent'; 
+        } else if ($this->isChildrenKey($key)) {
+            return 'children'; 
+        } else if ($this->isNicknameKey($key)) {
+            return 'nickname'; 
+        } else if ($this->isHash($key)) {
+            return 'hash'; 
+        }
+        return null;
+    }
     public function help() {
         $this->hr();
         $this->out('redis script shell usage:');
