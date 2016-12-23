@@ -768,6 +768,12 @@ abstract class ApiBaseController extends FrontendController {
                 $args = func_get_args();
                 $args[0] = $id;
                 call_user_func_array(array($this, 'routeObjectsFilterType'), $args);
+
+                if (!empty($urlParams['embed']['relations']) && !empty($this->responseData['data']['objects'])) {
+                    foreach ($this->responseData['data']['objects'] as &$o) {
+                        $o = $this->addRelatedObjects($o, $urlParams['embed']['relations']);
+                    }
+                }
             } else {
                 $options = array('explodeRelations' => false);
                 if (!empty($this->params['url']['binding']) && in_array($this->params['url']['binding'], $this->allowedModelBindings)) {
