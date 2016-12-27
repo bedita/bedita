@@ -47,7 +47,6 @@ class HomeController extends AppController
                     ],
                     'display' => [
                         'label' => Inflector::camelize(substr($e, 1)),
-                        'description' => $e . ' endpoint',
                         'color' => '#' . $randomColor
                     ]
                 ],
