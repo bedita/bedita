@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use Cake\Routing\Router;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/home` endpoint.
@@ -35,14 +36,20 @@ class HomeController extends AppController
 
         $endPoints = ['/objects', '/users', '/roles', '/object_types', '/status'];
         foreach ($endPoints as $e) {
+            $randomColor = substr(md5($e . 'color'), 0, 6);
             $resources[$e] = [
                 'href' => $baseUrl . $e,
                 'hints' => [
-                    'allow' => ['GET'],
+                    'allow' => ['GET', 'POST', 'PATCH', 'DELETE'],
                     'formats' => [
                         'application/json',
                         'application/vnd.api+json',
                     ],
+                    'display' => [
+                        'label' => Inflector::camelize(substr($e, 1)),
+                        'description' => $e . ' endpoint',
+                        'color' => '#' . $randomColor
+                    ]
                 ],
             ];
         }
