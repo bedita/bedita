@@ -55,7 +55,7 @@ class DataCleanupBehavior extends Behavior
     {
         $config = $this->config();
         foreach ($data as $key => $value) {
-            if ($value === null && isset($config['fields'][$key])) {
+            if (($value === null || $value === '') && isset($config['fields'][$key])) {
                 $data[$key] = $config['fields'][$key];
             }
         }

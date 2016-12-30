@@ -55,6 +55,16 @@ class DataCleanupBehaviorTest extends TestCase
                     'status' => 'draft'
                 ]
             ],
+            'status2' => [
+                [
+                    'username' => 'lorem',
+                    'password_hash' => 'ipsum',
+                    'status' => '',
+                ],
+                [
+                    'status' => 'draft'
+                ]
+            ],
             'deleted' => [
                 [
                     'username' => 'lorem',
