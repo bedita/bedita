@@ -60,6 +60,11 @@ class UsersTable extends Table
             ],
         ]);
 
+        $this->addBehavior('BEdita/Core.UniqueName', [
+            'sourceField' => 'username',
+            'prefix' => 'user-'
+        ]);
+
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
 
