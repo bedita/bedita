@@ -14,6 +14,7 @@
 namespace BEdita\API\Error;
 
 use Cake\Core\Configure;
+use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Plugin;
 use Cake\Error\Debugger;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
@@ -44,6 +45,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $code = $this->_code($this->error);
         $message = $this->_message($this->error, $code);
+        $detail = $this->errorDetail($this->error);
         $trace = null;
         if ($isDebug) {
             $trace = Debugger::formatTrace($this->_unwrap($this->error)->getTrace(), [
@@ -67,10 +69,72 @@ class ExceptionRenderer extends CakeExceptionRenderer
             'checkMediaType' => $this->controller->request->is('jsonapi'),
         ]);
 
-        $this->controller->JsonApi->error($code, $message, '', array_filter(compact('trace')));
+        $this->controller->JsonApi->error($code, $message, $detail, array_filter(compact('trace')));
         $this->controller->RequestHandler->renderAs($this->controller, 'jsonapi');
 
         return parent::render();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function _message(\Exception $error, $code)
+    {
+        $message = parent::_message($error, $code);
+        if (empty($message) && $error instanceof CakeException) {
+            $errorAttributes = $error->getAttributes();
+            if (!empty($errorAttributes['title'])) {
+                $message = $errorAttributes['title'];
+            }
+        }
+
+        return $message;
+    }
+
+    /**
+     * Human readable error detail from error attributes
+     * In case of 'detail' array, format like this is expected
+     *  [
+     *    ['field1' => ['unique' => 'The provided value is invalid']],
+     *    ['field2' => [...]],
+     *  ],
+     *
+     *
+     *
+     * @param \Exception $error Exception.
+     * @return string Error message
+     */
+    protected function errorDetail(\Exception $error)
+    {
+        if (!$error instanceof CakeException) {
+            return '';
+        }
+
+        $errorAttributes = $this->error->getAttributes();
+        if (empty($errorAttributes['detail'])) {
+            return '';
+        }
+        $d = $errorAttributes['detail'];
+        if (is_string($d)) {
+            return $d;
+        }
+        $res = '';
+        if (is_array($d)) {
+            foreach ($d as $errDetail) {
+                if (is_array($errDetail)) {
+                    foreach ($errDetail as $item => $desc) {
+                        $res .= " '$item' : ";
+                        if (is_array($desc)) {
+                            foreach ($desc as $cause => $w) {
+                                $res .= " [$cause] $w";
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $res;
     }
 
     /**
