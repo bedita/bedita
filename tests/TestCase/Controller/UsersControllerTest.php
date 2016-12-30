@@ -472,7 +472,6 @@ class UsersControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'users',
             'attributes' => [
-                'uname' => 'gustavo-supporto-user',
                 'username' => 'gustavo_supporto',
                 'password_hash' => 'aiuto',
             ],
