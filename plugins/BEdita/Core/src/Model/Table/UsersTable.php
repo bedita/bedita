@@ -45,6 +45,8 @@ class UsersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
             'className' => 'BEdita/Core.ExternalAuth',
