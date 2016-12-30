@@ -101,7 +101,8 @@ class RolesController extends ResourcesController
 
         $role = $this->Roles->newEntity($this->request->data);
         if (!$this->Roles->save($role)) {
-            throw new BadRequestException('Invalid data');
+            $this->log('Role add failed ' . json_encode($role->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$role->errors()]]);
         }
 
         $this->response->statusCode(201);
@@ -132,7 +133,8 @@ class RolesController extends ResourcesController
         $role = $this->Roles->get($id);
         $role = $this->Roles->patchEntity($role, $this->request->data);
         if (!$this->Roles->save($role)) {
-            throw new BadRequestException('Invalid data');
+            $this->log('Role edit failed ' . json_encode($role->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$role->errors()]]);
         }
 
         $this->set(compact('role'));

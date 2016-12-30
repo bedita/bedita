@@ -106,7 +106,7 @@ class UsersController extends ResourcesController
         $user->modified_by = 1;
         if (!$this->Users->save($user)) {
             $this->log('User creation failed ' . json_encode($user->errors()), 'error');
-            throw new BadRequestException('Invalid data');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$user->errors()]]);
         }
 
         $this->response->statusCode(201);
@@ -141,7 +141,7 @@ class UsersController extends ResourcesController
         $user->modified_by = 1; // TODO: depends on authenticated user.
         if (!$this->Users->save($user)) {
             $this->log('User edit failed ' . json_encode($user->errors()), 'error');
-            throw new BadRequestException('Invalid data');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$user->errors()]]);
         }
 
         $this->set(compact('user'));
