@@ -129,6 +129,7 @@ class ProfilesTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
+        // TODO: should work commenting these 2 lines, but it doesn't... why???
         $profile->created_by = 1;
         $profile->modified_by = 1;
         $profile->type = 'profiles';
