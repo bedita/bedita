@@ -18,11 +18,14 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Property Types - available property types
+ * Properties Model
+ *
+ * @property \Cake\ORM\Association\BelongsTo $PropertyTypes
+ * @property \Cake\ORM\Association\BelongsTo $ObjectTypes
  *
  * @since 4.0.0
  */
-class PropertyTypesTable extends Table
+class PropertiesTable extends Table
 {
 
     /**
@@ -34,12 +37,20 @@ class PropertyTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('property_types');
-        $this->primaryKey('id');
+        $this->displayField('name');
 
-        $this->hasMany('Properties', [
+        $this->addBehavior('Timestamp');
+
+        $this->belongsTo('PropertyTypes', [
             'foreignKey' => 'property_type_id',
-            'className' => 'BEdita/Core.Properties',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.PropertyTypes'
+        ]);
+
+        $this->belongsTo('ObjectTypes', [
+            'foreignKey' => 'object_type_id',
+            'joinType' => 'INNER',
+            'className' => 'BEdita/Core.ObjectTypes'
         ]);
     }
 
@@ -51,11 +62,20 @@ class PropertyTypesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->requirePresence('name', 'create')
-            ->notEmpty('name')
-            ->alphaNumeric('name')
+            ->naturalNumber('id')
+            ->allowEmpty('id', 'create')
 
-            ->allowEmpty('params');
+            ->requirePresence('name')
+            ->notEmpty('name')
+
+            ->allowEmpty('description')
+
+            ->boolean('enabled')
+            ->notEmpty('enabled')
+
+            ->boolean('multiple')
+            ->notEmpty('multiple');
+
 
         return $validator;
     }
@@ -67,7 +87,9 @@ class PropertyTypesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['name']));
+        $rules->add($rules->isUnique(['name', 'object_type_id']));
+        $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
+        $rules->add($rules->existsIn(['property_type_id'], 'PropertyTypes'));
 
         return $rules;
     }
