@@ -47,6 +47,8 @@ class UsersTable extends Table
 
         $this->addBehavior('BEdita/Core.DataCleanup');
 
+        $this->addBehavior('BEdita/Core.UserModified');
+
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
             'className' => 'BEdita/Core.ExternalAuth',

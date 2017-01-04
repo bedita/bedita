@@ -120,8 +120,6 @@ class UsersTableTest extends TestCase
     {
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data);
-        $user->created_by = 1;
-        $user->modified_by = 1;
         $user->type = 'users';
 
         $error = (bool)$user->errors();
