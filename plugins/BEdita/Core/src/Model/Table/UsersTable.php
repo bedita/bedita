@@ -13,10 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -58,10 +58,8 @@ class UsersTable extends Table
             'className' => 'BEdita/Core.Roles',
         ]);
 
-        $this->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'Profiles',
-            ],
+        $this->extensionOf('Profiles', [
+            'className' => 'BEdita/Core.Profiles'
         ]);
 
         $this->addBehavior('BEdita/Core.UniqueName', [

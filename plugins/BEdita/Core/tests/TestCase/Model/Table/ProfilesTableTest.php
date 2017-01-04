@@ -74,17 +74,13 @@ class ProfilesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Profiles->removeBehavior('ClassTableInheritance');
+        $this->Profiles->associations()->removeAll();
         $this->Profiles->initialize([]);
         $this->assertEquals('profiles', $this->Profiles->table());
         $this->assertEquals('id', $this->Profiles->primaryKey());
         $this->assertEquals('name', $this->Profiles->displayField());
 
         $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
-        $this->assertInstanceOf(
-            '\BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior',
-            $this->Profiles->behaviors()->get('ClassTableInheritance')
-        );
     }
 
     /**
