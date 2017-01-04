@@ -81,12 +81,7 @@ class ObjectsTableTest extends TestCase
                 [
                     'title' => 'title three',
                     'description' => 'another description',
-                    'object_type_id' => 1,
-                    'status' => 'draft',
                     'uname' => 'title-three',
-                    'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                 ],
             ],
             'notUniqueUname' => [
@@ -94,23 +89,9 @@ class ObjectsTableTest extends TestCase
                 [
                     'title' => 'title four',
                     'description' => 'another description',
-                    'object_type_id' => 1,
                     'status' => 'on',
                     'uname' => 'title-one',
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
-                ],
-            ],
-            'notExistsInObjectTypes' => [
-                false,
-                [
-                    'object_type_id' => 9999,
-                    'status' => 'draft',
-                    'uname' => 'title-one',
-                    'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                 ],
             ],
         ];
@@ -128,15 +109,11 @@ class ObjectsTableTest extends TestCase
      */
     public function testValidation($expected, array $data)
     {
-        $object = $this->Objects->newEntity($data, [
-            'accessibleFields' => [
-                'created_by' => true,
-                'modified_by' => true,
-            ]
-        ]);
+        $object = $this->Objects->newEntity($data);
+        $object->type = 'documents';
 
         $error = (bool)$object->errors();
-        $this->assertEquals($expected, !$error, print_r($object->errors(), true));
+        $this->assertEquals($expected, !$error);
 
         if ($expected) {
             $success = $this->Objects->save($object);
@@ -156,6 +133,7 @@ class ObjectsTableTest extends TestCase
                 [
                     2 => 'title one',
                     3 => 'title two',
+                    6 => 'title one deleted',
                 ],
                 [1],
             ],
@@ -164,6 +142,7 @@ class ObjectsTableTest extends TestCase
                     2 => 'title one',
                     3 => 'title two',
                     4 => 'Gustavo Supporto profile',
+                    6 => 'title one deleted',
                 ],
                 ['document', 'profiles'],
             ],

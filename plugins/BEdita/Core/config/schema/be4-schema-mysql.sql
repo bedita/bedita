@@ -125,9 +125,10 @@ CREATE TABLE objects (
 
   id INT UNSIGNED NOT NULL AUTO_INCREMENT,
   object_type_id SMALLINT UNSIGNED NOT NULL COMMENT 'object type id',
-  status ENUM('on', 'off', 'draft', 'deleted') NOT NULL DEFAULT 'draft'  COMMENT 'object status: on, draft, off, deleted',
+  status ENUM('on', 'off', 'draft') NOT NULL DEFAULT 'draft'  COMMENT 'object status: on, draft, off',
   uname VARCHAR(255) NOT NULL               COMMENT 'unique and url friendly resource name (slug)',
   locked BOOLEAN NOT NULL DEFAULT 0         COMMENT 'locked flag: some fields (status, uname,...) cannot be changed',
+  deleted BOOLEAN NOT NULL DEFAULT 0        COMMENT 'deleted flag: if true object is in trashcan, default false',
   created DATETIME NOT NULL                 COMMENT 'creation date',
   modified DATETIME NOT NULL                COMMENT 'last modification date',
   published DATETIME NULL                   COMMENT 'publication date, status set to ON',
@@ -145,6 +146,7 @@ CREATE TABLE objects (
   PRIMARY KEY (id),
   UNIQUE KEY objects_uname_uq (uname),
   INDEX objects_objtype_idx (object_type_id),
+  INDEX objects_deleted_idx (deleted),
 
   CONSTRAINT objects_objtype_fk FOREIGN KEY (object_type_id)
     REFERENCES object_types(id)

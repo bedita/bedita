@@ -47,6 +47,8 @@ class ObjectsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.UserModified');
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
@@ -84,6 +86,9 @@ class ObjectsTable extends Table
             ->boolean('locked')
             ->notEmpty('locked')
 
+            ->boolean('deleted')
+            ->notEmpty('deleted')
+
             ->dateTime('published')
             ->allowEmpty('published')
 
@@ -96,14 +101,6 @@ class ObjectsTable extends Table
             ->allowEmpty('extra')
 
             ->allowEmpty('lang')
-
-            ->naturalNumber('created_by')
-            ->requirePresence('created_by', 'create')
-            ->notEmpty('created_by')
-
-            ->naturalNumber('modified_by')
-            ->requirePresence('modified_by')
-            ->notEmpty('modified_by')
 
             ->dateTime('publish_start')
             ->allowEmpty('publish_start')
@@ -123,6 +120,8 @@ class ObjectsTable extends Table
     {
         $rules->add($rules->isUnique(['uname']));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
+        $rules->add($rules->existsIn(['created_by'], 'CreatedByUser'));
+        $rules->add($rules->existsIn(['modified_by'], 'ModifiedByUser'));
 
         return $rules;
     }

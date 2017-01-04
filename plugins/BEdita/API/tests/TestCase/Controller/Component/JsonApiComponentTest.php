@@ -244,7 +244,7 @@ class JsonApiComponentTest extends TestCase
         $expected = [
             'status' => '500',
             'title' => 'Example error',
-            'description' => 'Example description',
+            'detail' => 'Example description',
             'meta' => [
                 'key' => 'Example metadata',
             ],

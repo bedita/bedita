@@ -52,6 +52,18 @@ Router::plugin(
             ['_name' => 'objects:view']
         );
 
+        // Roles and Users rules that must be on top
+        $routes->connect(
+            '/users/:user_id/roles',
+            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'users:roles']
+        );
+        $routes->connect(
+            '/roles/:role_id/users',
+            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'roles:users']
+        );
+
         // Roles.
         $routes->connect(
             '/roles',
@@ -62,11 +74,6 @@ Router::plugin(
             '/roles/*',
             ['controller' => 'Roles', 'action' => 'view', '_method' => 'GET'],
             ['_name' => 'roles:view']
-        );
-        $routes->connect(
-            '/roles/:role_id/users',
-            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'roles:users']
         );
         $routes->connect(
             '/roles',
@@ -141,6 +148,11 @@ Router::plugin(
             '/users/*',
             ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'users:delete']
+        );
+        $routes->connect(
+            '/users/:id/relationships/:relationship',
+            ['controller' => 'Users', 'action' => 'relationships'],
+            ['_name' => 'users:relationships']
         );
 
         // Login.

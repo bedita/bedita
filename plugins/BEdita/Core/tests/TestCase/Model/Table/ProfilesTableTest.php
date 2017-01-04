@@ -74,17 +74,13 @@ class ProfilesTableTest extends TestCase
      */
     public function testInitialize()
     {
-        $this->Profiles->removeBehavior('ClassTableInheritance');
+        $this->Profiles->associations()->removeAll();
         $this->Profiles->initialize([]);
         $this->assertEquals('profiles', $this->Profiles->table());
         $this->assertEquals('id', $this->Profiles->primaryKey());
         $this->assertEquals('name', $this->Profiles->displayField());
 
         $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
-        $this->assertInstanceOf(
-            '\BEdita\Core\Model\Behavior\ClassTableInheritanceBehavior',
-            $this->Profiles->behaviors()->get('ClassTableInheritance')
-        );
     }
 
     /**
@@ -100,10 +96,6 @@ class ProfilesTableTest extends TestCase
                 [
                     'name' => 'Channelweb Srl',
                     'company' => true,
-                    'object_type_id' => 2,
-                    'uname' => 'object-associated-' . md5(microtime()),
-                    'status' => 'draft',
-                    'lang' => 'eng',
                 ],
             ],
             'notUniqueEmail' => [
@@ -111,7 +103,6 @@ class ProfilesTableTest extends TestCase
                 [
                     'email' => 'gustavo.supporto@channelweb.it',
                     'object_type_id' => 2,
-                    'uname' => 'object-associated-' . md5(microtime()),
                     'status' => 'draft',
                     'lang' => 'eng',
                 ],
@@ -134,8 +125,10 @@ class ProfilesTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $profile = $this->Profiles->newEntity($data);
+        // TODO: should work commenting these 2 lines, but it doesn't... why???
         $profile->created_by = 1;
         $profile->modified_by = 1;
+        $profile->type = 'profiles';
 
         $error = (bool)$profile->errors();
         $this->assertEquals($expected, !$error, print_r($profile->errors(), true));
@@ -174,7 +167,6 @@ class ProfilesTableTest extends TestCase
             'state_name',
             'phone',
             'website',
-            'object_type_id',
             'status',
             'uname',
             'locked',
@@ -189,7 +181,8 @@ class ProfilesTableTest extends TestCase
             'created_by',
             'modified_by',
             'publish_start',
-            'publish_end'
+            'publish_end',
+            'type',
         ];
 
         sort($expectedProperties);

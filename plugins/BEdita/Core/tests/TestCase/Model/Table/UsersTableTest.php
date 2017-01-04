@@ -72,6 +72,7 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
+        $this->Users->associations()->removeAll();
         $this->Users->initialize([]);
         $this->assertEquals('users', $this->Users->table());
         $this->assertEquals('id', $this->Users->primaryKey());
@@ -92,8 +93,6 @@ class UsersTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'object_type_id' => 3,
-                    'uname' => 'some-unique-value',
                     'username' => 'some_unique_value',
                     'password_hash' => null,
                 ],
@@ -116,14 +115,13 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     * @coversNothing
+     *
      */
     public function testValidation($expected, array $data)
     {
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data);
-        $user->set('created_by', 1);
-        $user->set('modified_by', 1);
+        $user->type = 'users';
 
         $error = (bool)$user->errors();
         $this->assertEquals($expected, !$error);

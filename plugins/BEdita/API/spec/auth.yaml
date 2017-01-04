@@ -1,0 +1,221 @@
+swagger: '2.0'
+info:
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /auth:
+    post:
+      description: |
+        Authentication process and token renewal.
+
+        You do auth with POST /auth, passing auth data in as formData parameters. For instance:
+
+        ```
+        username: johndoe
+        password: ******
+        ```
+
+        You renew token with POST /auth, using header parameter Authorization. For example:
+
+        ```
+        Authorization: 'Bearer eyJ0eXAiOi...2ljSerKQygk2T8'
+        ```
+      summary: Perform auth or renew token
+      tags:
+        - auth
+      consumes:
+        - application/x-www-form-urlencoded
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - name: username
+          in: formData
+          required: false
+          pattern: '[a-z0-9]{8,64}'
+          minLength: 8
+          maxLength: 64
+          type: string
+        - name: password
+          in: formData
+          required: false
+          type: string
+        - in: header
+          name: Authorization
+          description: Use token prefixed with 'Bearer'
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Login successfull
+          schema:
+            properties:
+              links:
+                $ref: '#/definitions/Link'
+              meta:
+                $ref: '#/definitions/Meta'
+        '401':
+          description: Unauthorized user, or invalid renew token
+    get:
+      description: |
+        Get logged user profile data.
+        Use token prefixed specifing parameter Authorization in Header with value 'Bearer $renewToken'. For example:
+
+        'Bearer eyJ0eXAiOi...2ljSerKQygk2T8'
+      summary: Get auth data
+      tags:
+        - auth
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      parameters:
+        - in: header
+          name: Authorization
+          description: I.e. 'Bearer eyJ...2T8'
+          required: true
+          type: string
+      responses:
+        '200':
+          description: Success
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  required: ['id', 'type']
+                  properties:
+                    id:
+                      type: integer
+                    type:
+                      type: string
+                      enum: ['users']
+                    attributes:
+                      $ref: '#/definitions/User'
+                    relationships:
+                      $ref: '#/definitions/Relantionship'
+              links:
+                $ref: '#/definitions/Link'
+definitions:
+  Relantionship:
+    properties:
+      roles:
+        $ref: '#/definitions/RelationShipRole'
+  RelationShipRole:
+    properties:
+      links:
+        $ref: '#/definitions/RoleLink'
+  RoleLink:
+    properties:
+      related:
+        type: string
+      self:
+        type: string
+  Link:
+    properties:
+      self:
+        type: string
+      home:
+        type: string
+  Meta:
+    properties:
+      jwt:
+        type: string
+      renew:
+        type: string
+  User:
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+      blocked:
+        type: boolean
+      last_login:
+        type: string
+        format: date-time
+      last_login_err:
+        type: string
+        format: date-time
+      num_login_err:
+        type: integer
+      email:
+        type: string
+      person_title:
+        type: string
+      gender:
+        type: string
+      birthdate:
+        type: string
+        format: date-time
+      deathdate:
+        type: string
+        format: date-time
+      company:
+        type: boolean
+      company_name:
+        type: string
+      company_kind:
+        type: string
+      street_address:
+        type: string
+      city:
+        type: string
+      zipcode:
+        type: string
+      country:
+        type: string
+      state_name:
+        type: string
+      phone:
+        type: string
+      website:
+        type: string
+      status:
+        type: string
+        enum: ['on', 'off', 'draft']
+      uname:
+        type: string
+      locked:
+        type: boolean
+      created:
+        type: string
+        format: date-time
+      modified:
+        type: string
+        format: date-time
+      published:
+        type: string
+        format: date-time
+      title:
+        type: string
+      description:
+        type: string
+      body:
+        type: string
+      extra:
+        type: string
+      lang:
+        type: string
+      created_by:
+        type: integer
+      modified_by:
+        type: integer
+      publish_start:
+        type: string
+        format: date-time
+      publish_end:
+        type: string
+        format: date-time

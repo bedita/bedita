@@ -40,6 +40,7 @@ class User extends Profile
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'deleted' => false,
         'locked' => false,
         'created' => false,
         'modified' => false,
@@ -56,7 +57,11 @@ class User extends Profile
      * {@inheritDoc}
      */
     protected $_hidden = [
+        'object_type_id',
+        'object_type',
         'password_hash',
+        'external_auth',
+        'deleted',
     ];
 
     /**

@@ -24,7 +24,7 @@ class ObjectsController extends AppController
     /**
      * {@inheritDoc}
      */
-    public $modelClass = 'BEdita/Core.Objects';
+    public $modelClass = 'Objects';
 
     /**
      * {@inheritDoc}
@@ -44,6 +44,7 @@ class ObjectsController extends AppController
     public function index()
     {
         $query = $this->Objects->find('all')
+            ->where(['deleted' => 0])
             ->contain(['ObjectTypes']);
 
         $objects = $this->paginate($query);
@@ -61,7 +62,8 @@ class ObjectsController extends AppController
     public function view($id)
     {
         $object = $this->Objects->get($id, [
-            'contain' => ['ObjectTypes']
+            'contain' => ['ObjectTypes'],
+            'conditions' => ['deleted' => 0]
         ]);
 
         $this->set(compact('object'));

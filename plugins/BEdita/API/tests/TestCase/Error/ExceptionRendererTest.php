@@ -69,6 +69,57 @@ class ExceptionRendererTest extends TestCase
      *
      * @return array
      */
+    public function errDetailsProvider()
+    {
+        return [
+            'simple' => [
+                'err msg',
+                'err msg',
+            ],
+            'detail' => [
+                ['title' => 'err title', 'detail' => 'err detail'],
+                'err title',
+                'err detail'
+            ],
+            'detailArray' => [
+                ['title' => 'new title', 'detail' => [['field' => ['cause' => 'err detail']]]],
+                'new title',
+                " 'field' :  [cause] err detail"
+            ]
+        ];
+    }
+
+    /**
+     * Test error detail on response
+     *
+     * @param bool $expected Expected result.
+     * @param string $accept Request's "Accept" header
+     * @param array $config The configuration to use.
+     * @return void
+     *
+     * @dataProvider errDetailsProvider
+     * @covers ::render()
+     * @covers ::_message()
+     * @covers ::errorDetail()
+     */
+    public function testErrorDetails($errorMessage, $title, $detail = '')
+    {
+        $renderer = new ExceptionRenderer(new NotFoundException($errorMessage));
+        $renderer->controller->request->env('HTTP_ACCEPT', 'application/json');
+        $response = $renderer->render();
+
+        $responseBody = json_decode($response->body(), true);
+        $this->assertEquals($title, $responseBody['error']['title']);
+        if ($detail) {
+            $this->assertEquals($detail, $responseBody['error']['detail']);
+        }
+    }
+
+    /**
+     * Data provider for `testIsHtmlToSend` test case.
+     *
+     * @return array
+     */
     public function isHtmlToSendProvider()
     {
         return [
@@ -384,7 +435,7 @@ class ExceptionRendererTest extends TestCase
     }
 
     /**
-     *  Perform some asserts to check html response
+     *  Perform some asserts to check JSON response
      *
      * @param \BEdita\API\Error\ExceptionRenderer $renderer
      * @param \Cake\Network\Response $response

@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -38,10 +38,13 @@ class ProfilesTable extends Table
         $this->primaryKey('id');
         $this->displayField('name');
 
-        $this->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'Objects',
-            ],
+        $this->extensionOf('Objects', [
+            'className' => 'BEdita/Core.Objects'
+        ]);
+
+        $this->addBehavior('BEdita/Core.UniqueName', [
+            'sourceField' => 'title',
+            'prefix' => 'profile-'
         ]);
     }
 

@@ -15,6 +15,7 @@ namespace BEdita\API\Controller;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
+use Cake\ORM\Query;
 use Cake\Routing\Router;
 
 /**
@@ -48,7 +49,6 @@ class RolesController extends ResourcesController
     {
         parent::initialize();
 
-        $this->set('_type', 'roles');
         if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
             $this->JsonApi->config('resourceTypes', ['roles']);
         }
@@ -62,6 +62,12 @@ class RolesController extends ResourcesController
     public function index()
     {
         $query = $this->Roles->find('all');
+
+        if ($userId = $this->request->param('user_id')) {
+            $query = $query->innerJoinWith('Users', function (Query $query) use ($userId) {
+                return $query->where(['Users.id' => $userId]);
+            });
+        }
 
         $roles = $this->paginate($query);
 
@@ -95,7 +101,8 @@ class RolesController extends ResourcesController
 
         $role = $this->Roles->newEntity($this->request->data);
         if (!$this->Roles->save($role)) {
-            throw new BadRequestException('Invalid data');
+            $this->log('Role add failed ' . json_encode($role->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$role->errors()]]);
         }
 
         $this->response->statusCode(201);
@@ -126,7 +133,8 @@ class RolesController extends ResourcesController
         $role = $this->Roles->get($id);
         $role = $this->Roles->patchEntity($role, $this->request->data);
         if (!$this->Roles->save($role)) {
-            throw new BadRequestException('Invalid data');
+            $this->log('Role edit failed ' . json_encode($role->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$role->errors()]]);
         }
 
         $this->set(compact('role'));

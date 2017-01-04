@@ -378,7 +378,7 @@ class BeditaShell extends Shell
         $data['password_hash'] = $this->in('password: ');
         $adminUser = $usersTable->patchEntity($adminUser, $data);
         $adminUser->blocked = false;
-        if (!$usersTable->save($adminUser)) {
+        if (!$usersTable->save($adminUser, ['associated' => false])) {
              $this->abort('Error saving admin user data');
         }
 

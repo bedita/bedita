@@ -62,9 +62,8 @@ class ObjectsControllerTest extends IntegrationTestCase
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'user',
+                    'type' => 'users',
                     'attributes' => [
-                        'object_type_id' => 3,
                         'status' => 'on',
                         'uname' => 'first-user',
                         'locked' => true,
@@ -87,9 +86,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '2',
-                    'type' => 'document',
+                    'type' => 'documents',
                     'attributes' => [
-                        'object_type_id' => 1,
                         'status' => 'on',
                         'uname' => 'title-one',
                         'locked' => true,
@@ -115,9 +113,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '3',
-                    'type' => 'document',
+                    'type' => 'documents',
                     'attributes' => [
-                        'object_type_id' => 1,
                         'status' => 'draft',
                         'uname' => 'title-two',
                         'locked' => false,
@@ -140,9 +137,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '4',
-                    'type' => 'profile',
+                    'type' => 'profiles',
                     'attributes' => [
-                        'object_type_id' => 2,
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
                         'locked' => false,
@@ -165,9 +161,8 @@ class ObjectsControllerTest extends IntegrationTestCase
                 ],
                 [
                     'id' => '5',
-                    'type' => 'user',
+                    'type' => 'users',
                     'attributes' => [
-                        'object_type_id' => 3,
                         'status' => 'on',
                         'uname' => 'second-user',
                         'locked' => false,
@@ -269,9 +264,8 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'data' => [
                 'id' => '2',
-                'type' => 'document',
+                'type' => 'documents',
                 'attributes' => [
-                    'object_type_id' => 1,
                     'status' => 'on',
                     'uname' => 'title-one',
                     'locked' => true,
@@ -306,6 +300,79 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test deleted object method.
+     *
+     * @return void
+     */
+    public function testDeleted()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/objects/6',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [
+                'id' => '6',
+                'type' => 'documents',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'title-one-deleted',
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
+                    'title' => 'title one deleted',
+                    'description' => 'description removed',
+                    'body' => 'body no more',
+                    'extra' => [
+                        'abstract' => 'what?',
+                    ],
+                    'lang' => 'eng',
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00'
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/objects/6');
+        $result = json_decode($this->_response->body(), true);
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+
+        // restore object -> deleted = false
+        $objectsTable = TableRegistry::get('Objects');
+        $object = $objectsTable->get(6);
+        $object->deleted = false;
+        $success = $objectsTable->save($object);
+        $this->assertEquals(true, (bool)$success);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/objects/6');
+        $result = json_decode($this->_response->body(), true);
+        unset($result['data']['attributes']['modified']);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+
+        // undo restore -> deleted = true
+        $object->deleted = true;
+        $success = $objectsTable->save($object);
+        $this->assertEquals(true, (bool)$success);
     }
 
     /**

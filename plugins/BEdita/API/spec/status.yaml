@@ -1,0 +1,45 @@
+swagger: '2.0'
+info:
+  title:
+  description:
+  termsOfService:
+  version:
+host: be4-test.bedita.net
+basePath: /
+schemes:
+  - https
+paths:
+  /status:
+    get:
+      description: API endpoints status
+      summary: Retrieve API status
+      tags:
+        - status
+      consumes:
+        - application/json
+        - application/vnd.api+json
+      produces:
+        - application/json
+        - application/vnd.api+json
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: '#/definitions/Status200Response'
+definitions:
+  Status200Response:
+    properties:
+      links:
+        properties:
+          self:
+            type: string
+          home:
+            type: string
+      meta:
+        properties:
+          status:
+            $ref: '#/definitions/Environment'
+  Environment:
+    properties:
+      environment:
+        type: string

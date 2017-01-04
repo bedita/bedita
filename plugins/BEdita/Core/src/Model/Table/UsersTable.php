@@ -13,10 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\RulesChecker;
-use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
@@ -45,6 +45,10 @@ class UsersTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
+        $this->addBehavior('BEdita/Core.UserModified');
+
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
             'className' => 'BEdita/Core.ExternalAuth',
@@ -54,10 +58,13 @@ class UsersTable extends Table
             'className' => 'BEdita/Core.Roles',
         ]);
 
-        $this->addBehavior('BEdita/Core.ClassTableInheritance', [
-            'table' => [
-                'tableName' => 'Profiles',
-            ],
+        $this->extensionOf('Profiles', [
+            'className' => 'BEdita/Core.Profiles'
+        ]);
+
+        $this->addBehavior('BEdita/Core.UniqueName', [
+            'sourceField' => 'username',
+            'prefix' => 'user-'
         ]);
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
