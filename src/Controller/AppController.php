@@ -13,6 +13,7 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Error\ExceptionRenderer;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
@@ -75,6 +76,9 @@ class AppController extends Controller
             'storage' => 'Memory',
         ]);
         $this->Auth->allow();
+        if ($this->name !== 'Login') {
+            LoggedUser::setUser($this->Auth->identify());
+        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(

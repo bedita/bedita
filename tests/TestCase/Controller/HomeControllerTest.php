@@ -40,11 +40,15 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/objects',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET', 'POST', 'PATCH', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
                                 'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Objects',
+                                'color' => '#6103c1'
                             ]
                         ],
                     ],
@@ -52,11 +56,15 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/users',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET', 'POST', 'PATCH', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
                                 'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Users',
+                                'color' => '#032813'
                             ]
                         ],
                     ],
@@ -64,11 +72,15 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/roles',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET', 'POST', 'PATCH', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
                                 'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Roles',
+                                'color' => '#7b2bac'
                             ]
                         ],
                     ],
@@ -76,11 +88,15 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/object_types',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET', 'POST', 'PATCH', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
                                 'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'ObjectTypes',
+                                'color' => '#6b2d02'
                             ]
                         ],
                     ],
@@ -88,11 +104,15 @@ class HomeControllerTest extends IntegrationTestCase
                         'href' => 'http://api.example.com/status',
                         'hints' => [
                             'allow' => [
-                                'GET'
+                                'GET', 'POST', 'PATCH', 'DELETE'
                             ],
                             'formats' => [
                                 'application/json',
                                 'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Status',
+                                'color' => '#88206a'
                             ]
                         ],
                     ],

@@ -98,7 +98,6 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
-                        'object_type_id' => 3,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
@@ -110,6 +109,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
                 [
                     'id' => '5',
@@ -145,7 +152,6 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
-                        'object_type_id' => 3,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'second user',
@@ -157,6 +163,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/roles',
+                                'self' => 'http://api.example.com/users/5/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
             ],
         ];
@@ -238,7 +252,6 @@ class UsersControllerTest extends IntegrationTestCase
                         'state_name' => null,
                         'phone' => null,
                         'website' => null,
-                        'object_type_id' => 3,
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
@@ -250,6 +263,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
                     ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles'
+                            ]
+                        ]
+                    ]
                 ],
             ],
         ];
@@ -364,7 +385,6 @@ class UsersControllerTest extends IntegrationTestCase
                     'state_name' => null,
                     'phone' => null,
                     'website' => null,
-                    'object_type_id' => 3,
                     'publish_start' => null,
                     'publish_end' => null,
                     'username' => 'first user',
@@ -373,6 +393,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'last_login_err' => null,
                     'num_login_err' => 1,
                 ],
+                'relationships' => [
+                    'roles' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/users/1/roles',
+                            'self' => 'http://api.example.com/users/1/relationships/roles'
+                        ]
+                    ]
+                ]
             ],
         ];
 
@@ -444,8 +472,6 @@ class UsersControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'users',
             'attributes' => [
-                'object_type_id' => 3,
-                'uname' => 'gustavo-supporto-user',
                 'username' => 'gustavo_supporto',
                 'password_hash' => 'aiuto',
             ],
@@ -462,7 +488,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/6');
+        $this->assertHeader('Location', 'http://api.example.com/users/7');
         $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
@@ -617,6 +643,17 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('Users')->exists(['Users.id' => 5]));
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/users/5');
+        $this->assertResponseCode(404);
+
+        $userDeleted = TableRegistry::get('Users')->get(5);
+        $this->assertEquals($userDeleted->deleted, 1);
     }
 }
