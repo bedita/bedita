@@ -4,6 +4,7 @@ namespace BEdita\Core\Test\TestCase\Shell;
 use BEdita\Core\Shell\BeditaShell;
 use BEdita\Core\TestSuite\ShellTestCase;
 use Cake\Database\Connection;
+use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 
@@ -23,20 +24,6 @@ class BeditaShellTest extends ShellTestCase
     const CONNECTION_NAME = 'test_tmp';
 
     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.config',
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public $autoFixtures = false;
-
-    /**
      * {@inheritDoc}
      */
     public function setUp()
@@ -44,6 +31,9 @@ class BeditaShellTest extends ShellTestCase
         parent::setUp();
 
         $this->fixtureManager->shutDown();
+
+        ConnectionManager::config(static::CONNECTION_NAME, $this->fakeDbParams());
+        ConnectionManager::alias(static::CONNECTION_NAME, 'default');
     }
 
     /**
@@ -51,47 +41,45 @@ class BeditaShellTest extends ShellTestCase
      */
     public function tearDown()
     {
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop(self::CONNECTION_NAME);
-        ConnectionManager::drop(BeditaShell::TEMP_SETUP_CFG);
+        $defaultConnection = ConnectionManager::get('default');
+        if ($defaultConnection instanceof Connection && $defaultConnection->isConnected()) {
+            $defaultConnection
+                ->disableConstraints(function (Connection $connection) {
+                    $tables = $connection->schemaCollection()->listTables();
 
-        $this->fixtureManager->shutDown();
-
-        ConnectionManager::get('default')
-            ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
-
-                foreach ($tables as $table) {
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
-                    foreach ($sql as $query) {
-                        $connection->query($query);
+                    foreach ($tables as $table) {
+                        $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                        foreach ($sql as $query) {
+                            $connection->query($query);
+                        }
                     }
-                }
-            });
+                });
+        }
+
+        ConnectionManager::alias('test', 'default');
+        ConnectionManager::drop(static::CONNECTION_NAME);
+        ConnectionManager::drop(BeditaShell::TEMP_SETUP_CFG);
 
         parent::tearDown();
     }
 
     /**
-     * Set up a fake DB configuration.
+     * Get parameters for fake DB configuration.
      *
-     * @param string $configName Database config name.
      * @return array
      */
-    protected function fakeDbSetup($configName = self::CONNECTION_NAME)
+    protected function fakeDbParams()
     {
-        $fake = [
+        $fakeParams = [
             'className' => 'Cake\Database\Connection',
             'host' => '__BE4_DB_HOST__',
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
         ];
+        $fakeParams = array_merge(ConnectionManager::get('default', false)->config(), $fakeParams);
 
-        ConnectionManager::config($configName, array_merge(ConnectionManager::get('default')->config(), $fake));
-        ConnectionManager::alias($configName, 'default');
-
-        return $fake;
+        return $fakeParams;
     }
 
     /**
@@ -139,6 +127,8 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testSetup(array $yesNo, array $dbConfig = [], array $userPass = [])
     {
+        ConnectionManager::alias('test', 'default');
+
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
@@ -198,8 +188,6 @@ class BeditaShellTest extends ShellTestCase
         $io->method('askChoice')
             ->will($this->returnValueMap($mapChoice));
 
-        $this->fakeDbSetup();
-
         $res = $this->invoke(['bedita', 'setup'], [], $io);
         $this->assertFalse($res);
     }
@@ -211,7 +199,7 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testFake2()
     {
-        $fakeParams = $this->fakeDbSetup();
+        $fakeParams = $this->fakeDbParams();
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -244,9 +232,11 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testFake3()
     {
-        $config = ConnectionManager::get('default')->config();
+        ConnectionManager::alias('test', 'default');
 
-        $this->fakeDbSetup();
+        $config = ConnectionManager::get('test', false)->config();
+
+        $this->fakeDbParams();
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -270,18 +260,17 @@ class BeditaShellTest extends ShellTestCase
 
         $fakeCfg = TMP . '_test_app.php.tmp';
         copy(CONFIG . 'app.default.php', $fakeCfg);
-//        $this->BeditaShell->configPath = $fakeCfg;
 
-        $this->invoke(['bedita', 'setup'], [], $io);
+        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
         $this->assertNotAborted();
-//        $this->assertTrue($res);
+        $this->assertTrue($res);
 
         unlink($fakeCfg);
-        $res = $this->invoke(['bedita', 'setup'], [], $io);
+        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
         $this->assertFalse($res);
 
         touch($fakeCfg);
-        $res = $this->invoke(['bedita', 'setup'], [], $io);
+        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
         $this->assertFalse($res);
     }
 
@@ -292,7 +281,17 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testInitSchemaFailure()
     {
-        $this->loadFixtures('Config');
+        ConnectionManager::alias('test', 'default');
+
+        $connection = ConnectionManager::get('default');
+        if (!($connection instanceof Connection)) {
+            throw new \RuntimeException('Unable to use database connection');
+        }
+
+        $table = new Table('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
+        foreach ($table->createSql($connection) as $statement) {
+            $connection->query($statement);
+        }
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -313,6 +312,8 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testAdminUserFailure()
     {
+        ConnectionManager::alias('test', 'default');
+
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
@@ -329,11 +330,12 @@ class BeditaShellTest extends ShellTestCase
         $io->method('ask')
              ->will($this->returnValueMap($map));
 
-//        $this->BeditaShell->defaultUsername = 'somename';
-        $this->invoke(['bedita', 'setup'], [], $io);
+        BeditaShell::$defaultUsername = 'gustavo';
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
+        $this->assertTrue($res);
 
-//        $this->BeditaShell->defaultUsername = 'bedita';
-        $this->invoke(['bedita', 'setup'], [], $io);
-        $this->assertAborted();
+        BeditaShell::$defaultUsername = 'bedita';
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
+        $this->assertFalse($res);
     }
 }

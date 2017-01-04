@@ -13,7 +13,6 @@
 namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utility\Database;
-use Cake\Cache\Cache;
 use Cake\Console\Shell;
 use Cake\Core\Configure\Engine\JsonConfig;
 use Cake\Datasource\ConnectionManager;
@@ -47,28 +46,23 @@ class BeditaShell extends Shell
     protected $configModified = false;
 
     /**
-     * Configuration file path
-     *
-     * @var string
-     */
-    public $configPath = null;
-
-    /**
      * Default initial user name
      *
      * @var string
      */
-    public $defaultUsername = 'bedita';
+    public static $defaultUsername = 'bedita';
 
     /**
      * Default initial user id
      *
      * @var int
      */
-    public $defaultUserId = 1;
+    const DEFAULT_USER_ID = 1;
 
     /**
-     * Temporary configuration name used in initial setup
+     * Temporary configuration name used in initial setup.
+     *
+     * @var string
      */
     const TEMP_SETUP_CFG = '__temp_setup__';
 
@@ -93,6 +87,11 @@ class BeditaShell extends Shell
                         'short' => 'y',
                         'required' => false,
                         'default' => true,
+                    ],
+                    'config-file' => [
+                        'help' => 'Configuration file',
+                        'required' => false,
+                        'default' => CONFIG . 'app.php',
                     ],
                 ],
             ],
@@ -224,7 +223,7 @@ class BeditaShell extends Shell
      */
     protected function checkDir($dirPath, $label)
     {
-        $file = new File($dirPath);
+        new File($dirPath);
         $this->out('Checking ' . $label . ' (' . $dirPath . ')');
         if (!is_dir($dirPath)) {
             $this->abort('Folder ' . $dirPath . ' not found, please check your installation!');
@@ -309,17 +308,14 @@ class BeditaShell extends Shell
      */
     protected function saveConnectionData()
     {
-        if (empty($this->configPath)) {
-            $this->configPath = CONFIG . 'app.php';
-        }
-        if (!is_writable($this->configPath)) {
+        if (!is_writable($this->param('config-file'))) {
             $this->warn('Unable to update configuration file');
             $this->warn('==> Please check write permission on config/app.php file');
 
             return false;
         }
 
-        $content = file_get_contents($this->configPath);
+        $content = file_get_contents($this->param('config-file'));
         $fields = ['host', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
@@ -334,10 +330,10 @@ class BeditaShell extends Shell
             return false;
         }
 
-        file_put_contents($this->configPath, $content);
+        file_put_contents($this->param('config-file'), $content);
         $this->configModified = true;
 
-        $this->info('Configuration updated in ' . $this->configPath);
+        $this->info('Configuration updated in ' . $this->param('config-file'));
 
         return true;
     }
@@ -364,9 +360,9 @@ class BeditaShell extends Shell
     protected function adminUser()
     {
         $usersTable = TableRegistry::get('Users');
-        $adminUser = $usersTable->get($this->defaultUserId);
+        $adminUser = $usersTable->get(static::DEFAULT_USER_ID);
 
-        if ($adminUser->username !== $this->defaultUsername) {
+        if ($adminUser->username !== static::$defaultUsername) {
             $this->info('An admin user has already been set: ' . $adminUser->username);
             $res = $this->in('Overwrite current admin user?', ['y', 'n'], 'n');
             if ($res != 'y') {
