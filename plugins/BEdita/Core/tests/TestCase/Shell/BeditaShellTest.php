@@ -129,6 +129,11 @@ class BeditaShellTest extends ShellTestCase
     {
         ConnectionManager::alias('test', 'default');
 
+        $info = ConnectionManager::get('default')->config();
+        if (strstr($info['driver'], 'Sqlite') !== false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite');
+        }
+
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
