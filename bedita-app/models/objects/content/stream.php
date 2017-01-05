@@ -296,10 +296,10 @@ class Stream extends BEAppModel
             if ($mime_type == 'image/svg+xml' && $mime_type != $magic_mime_type) {
                 $handle = fopen($path, 'r');
                 $contents = fread($handle, 5);
+                fclose($handle);
                 if ($contents === '<svg ') {
                     return $mime_type;
                 }
-                fclose($handle);
             }
             $mime_type = $magic_mime_type;
 		}
