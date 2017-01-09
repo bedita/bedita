@@ -488,7 +488,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/users/7');
+        $this->assertHeader('Location', 'http://api.example.com/users/8');
         $this->assertTrue(TableRegistry::get('Users')->exists(['username' => 'gustavo_supporto']));
     }
 
