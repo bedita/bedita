@@ -24,9 +24,11 @@ use Cake\ORM\TableRegistry;
  * @property int $id
  * @property string $name
  * @property int $object_type_id
+ * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property string $object_type_name
  * @property int $property_type_id
  * @property \BEdita\Core\Model\Entity\PropertyType $property_type
- * @property string $property
+ * @property string $property_type_name
  * @property bool $multiple
  * @property string $options_list
  * @property \Cake\I18n\Time $created
@@ -45,6 +47,7 @@ class Property extends Entity
         '*' => true,
         'id' => false,
         'object_type_id' => false,
+        'object_type' => false,
         'property_type_id' => false,
         'property_type' => false,
         'property' => false,
@@ -57,7 +60,8 @@ class Property extends Entity
      * {@inheritDoc}
      */
     protected $_virtual = [
-        'property',
+        'property_type_name',
+        'object_type_name',
     ];
 
     /**
@@ -65,17 +69,18 @@ class Property extends Entity
      */
     protected $_hidden = [
         'object_type_id',
+        'object_type',
         'property_type_id',
         'property_type',
         'enabled',
     ];
 
     /**
-     * Getter for `property` virtual property.
+     * Getter for `property_type_name` virtual property.
      *
      * @return string
      */
-    protected function _getProperty()
+    protected function _getPropertyTypeName()
     {
         if (!$this->property_type) {
             try {
@@ -91,20 +96,58 @@ class Property extends Entity
     }
 
     /**
-     * Setter for `property` virtual property.
+     * Setter for `property_type_name` virtual property.
      *
      * @param string $property Property type name.
      * @return string
      */
-    protected function _setProperty($property)
+    protected function _setPropertyTypeName($property)
     {
         try {
-            $this->property_type = TableRegistry::get('PropertyTypes')->get($property);
+            $this->property_type = TableRegistry::get('PropertyTypes')->findByName($property)->first();
             $this->property_type_id = $this->property_type->id;
         } catch (RecordNotFoundException $e) {
             return null;
         }
 
         return $property;
+    }
+
+    /**
+     * Getter for `object_type_name` virtual property.
+     *
+     * @return string
+     */
+    protected function _getObjectTypeName()
+    {
+        if (!$this->object_type) {
+            try {
+                $this->object_type = TableRegistry::get('ObjectTypes')->get($this->object_type_id);
+            } catch (RecordNotFoundException $e) {
+                return null;
+            } catch (InvalidPrimaryKeyException $e) {
+                return null;
+            }
+        }
+
+        return $this->object_type->pluralized;
+    }
+
+    /**
+     * Setter for `object_type` virtual property.
+     *
+     * @param string $objectType Object type name.
+     * @return string
+     */
+    protected function _setObjectTypeName($objectTypeName)
+    {
+        try {
+            $this->object_type = TableRegistry::get('ObjectTypes')->get($objectTypeName);
+            $this->object_type_id = $this->object_type->id;
+        } catch (RecordNotFoundException $e) {
+            return null;
+        }
+
+        return $objectTypeName;
     }
 }

@@ -23,6 +23,7 @@ use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
  * Base controller for CRUD actions on generic resources.
@@ -53,6 +54,8 @@ abstract class ResourcesController extends AppController
     public function initialize()
     {
         parent::initialize();
+
+        $this->set(['_allowedAssociations' => $this->config('allowedAssociations')]);
 
         if (isset($this->JsonApi) && $this->request->param('action') == 'relationships') {
             $this->JsonApi->config(
@@ -95,6 +98,9 @@ abstract class ResourcesController extends AppController
 
         $id = $this->request->param('id');
         $relationship = $this->request->param('relationship');
+
+        $allowAssoc = Inflector::underscore($this->name);
+        $this->set(['_allowedAssociations' => [ $allowAssoc => [$allowAssoc]]]);
 
         $Association = $this->findAssociation($relationship);
 

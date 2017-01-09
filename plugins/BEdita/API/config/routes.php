@@ -96,6 +96,18 @@ Router::plugin(
             ['_name' => 'roles:relationships']
         );
 
+
+        // Object Types and Properties rules that must be on top
+        $routes->connect(
+            '/object_types/:object_type_id/properties',
+            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'object_types:properties']
+        );
+        $routes->connect(
+            '/properties/:property_id/object_types',
+            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'properties:object_types']
+        );
         // Object Types.
         $routes->connect(
             '/object_types',
@@ -122,6 +134,45 @@ Router::plugin(
             ['controller' => 'ObjectTypes', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'object_types:delete']
         );
+
+        $routes->connect(
+            '/object_types/:id/relationships/:relationship',
+            ['controller' => 'ObjectTypes', 'action' => 'relationships'],
+            ['_name' => 'object_types:relationships']
+        );
+        // Properties.
+        $routes->connect(
+            '/properties',
+            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'properties:index']
+        );
+        $routes->connect(
+            '/properties/*',
+            ['controller' => 'Properties', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'properties:view']
+        );
+        $routes->connect(
+            '/properties',
+            ['controller' => 'Properties', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'properties:add']
+        );
+        $routes->connect(
+            '/properties/*',
+            ['controller' => 'Properties', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'properties:edit']
+        );
+        $routes->connect(
+            '/properties/*',
+            ['controller' => 'Properties', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'properties:delete']
+        );
+        $routes->connect(
+            '/properties/:id/relationships/:relationship',
+            ['controller' => 'Properties', 'action' => 'relationships'],
+            ['_name' => 'properties:relationships']
+        );
+
+
 
         // Users.
         $routes->connect(

@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,9 +17,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
- * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
+ * @coversDefaultClass \BEdita\API\Controller\PropertiesController
  */
-class ObjectTypesControllerTest extends IntegrationTestCase
+class PropertiesControllerTest extends IntegrationTestCase
 {
 
     /**
@@ -28,7 +28,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types'
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.properties'
     ];
 
     /**
@@ -43,91 +45,169 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/object_types',
-                'first' => 'http://api.example.com/object_types',
-                'last' => 'http://api.example.com/object_types',
+                'self' => 'http://api.example.com/properties',
+                'first' => 'http://api.example.com/properties',
+                'last' => 'http://api.example.com/properties',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 3,
+                    'count' => 6,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 3,
+                    'page_items' => 6,
                     'page_size' => 20,
                 ],
             ],
             'data' => [
                 [
                     'id' => '1',
-                    'type' => 'object_types',
+                    'type' => 'properties',
                     'attributes' => [
-                        'name' => 'document',
-                        'pluralized' => 'documents',
-                        'alias' => 'Documents',
+                        'name' => 'title',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
-                        'plugin' => 'BEdita/Core',
-                        'model' => 'Objects',
-                        'table' => 'BEdita/Core.Objects'
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'documents',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_types/1',
+                        'self' => 'http://api.example.com/properties/1',
                     ],
                     'relationships' => [
-                        'properties' => [
+                        'object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/1/relationships/properties',
-                                'related' => 'http://api.example.com/object_types/1/properties',
+                                'self' => 'http://api.example.com/properties/1/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/1/object_types',
                             ],
                         ],
                     ],
                 ],
                 [
                     'id' => '2',
-                    'type' => 'object_types',
+                    'type' => 'properties',
                     'attributes' => [
-                        'name' => 'profile',
-                        'pluralized' => 'profiles',
-                        'alias' => 'Profiles',
+                        'name' => 'description',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
-                        'plugin' => 'BEdita/Core',
-                        'model' => 'Profiles',
-                        'table' => 'BEdita/Core.Profiles'
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'documents',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_types/2',
+                        'self' => 'http://api.example.com/properties/2',
                     ],
                     'relationships' => [
-                        'properties' => [
+                        'object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/2/relationships/properties',
-                                'related' => 'http://api.example.com/object_types/2/properties',
+                                'self' => 'http://api.example.com/properties/2/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/2/object_types',
                             ],
                         ],
                     ],
                 ],
                 [
                     'id' => '3',
-                    'type' => 'object_types',
+                    'type' => 'properties',
                     'attributes' => [
-                        'name' => 'user',
-                        'pluralized' => 'users',
-                        'alias' => 'Users',
-                        'description' => null,
-                        'plugin' => 'BEdita/Core',
-                        'model' => 'Users',
-                        'table' => 'BEdita/Core.Users'
+                        'name' => 'username',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
+                        'description' => 'Username, unique string',
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'users',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/object_types/3',
+                        'self' => 'http://api.example.com/properties/3',
                     ],
                     'relationships' => [
-                        'properties' => [
+                        'object_types' => [
                             'links' => [
-                                'self' => 'http://api.example.com/object_types/3/relationships/properties',
-                                'related' => 'http://api.example.com/object_types/3/properties',
+                                'self' => 'http://api.example.com/properties/3/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/3/object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '4',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'email',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
+                        'description' => 'User email',
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'users',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/properties/4',
+                    ],
+                    'relationships' => [
+                        'object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/properties/4/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/4/object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '5',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'birthdate',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
+                        'description' => null,
+                        'property_type_name' => 'date',
+                        'object_type_name' => 'profiles',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/properties/5',
+                    ],
+                    'relationships' => [
+                        'object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/properties/5/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/5/object_types',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '6',
+                    'type' => 'properties',
+                    'attributes' => [
+                        'name' => 'surname',
+                        'multiple' => false,
+                        'options_list' => null,
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
+                        'description' => null,
+                        'property_type_name' => 'string',
+                        'object_type_name' => 'profiles',
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/properties/6',
+                    ],
+                    'relationships' => [
+                        'object_types' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/properties/6/relationships/object_types',
+                                'related' => 'http://api.example.com/properties/6/object_types',
                             ],
                         ],
                     ],
@@ -141,7 +221,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/object_types');
+        $this->get('/properties');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -161,9 +241,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/object_types',
-                'first' => 'http://api.example.com/object_types',
-                'last' => 'http://api.example.com/object_types',
+                'self' => 'http://api.example.com/properties',
+                'first' => 'http://api.example.com/properties',
+                'last' => 'http://api.example.com/properties',
                 'prev' => null,
                 'next' => null,
                 'home' => 'http://api.example.com/home',
@@ -180,7 +260,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
-        TableRegistry::get('ObjectTypes')->deleteAll([]);
+        TableRegistry::get('Properties')->deleteAll([]);
 
         $this->configRequest([
             'headers' => [
@@ -188,7 +268,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/object_types');
+        $this->get('/properties');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -208,26 +288,27 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/object_types/1',
+                'self' => 'http://api.example.com/properties/1',
                 'home' => 'http://api.example.com/home',
             ],
             'data' => [
                 'id' => '1',
-                'type' => 'object_types',
+                'type' => 'properties',
                 'attributes' => [
-                    'name' => 'document',
-                    'pluralized' => 'documents',
-                    'alias' => 'Documents',
+                    'name' => 'title',
+                    'multiple' => false,
+                    'options_list' => null,
+                    'created' => '2016-12-31T23:09:23+00:00',
+                    'modified' => '2016-12-31T23:09:23+00:00',
                     'description' => null,
-                    'plugin' => 'BEdita/Core',
-                    'model' => 'Objects',
-                    'table' => 'BEdita/Core.Objects'
+                    'property_type_name' => 'string',
+                    'object_type_name' => 'documents',
                 ],
                 'relationships' => [
-                    'properties' => [
+                    'object_types' => [
                         'links' => [
-                            'self' => 'http://api.example.com/object_types/1/relationships/properties',
-                            'related' => 'http://api.example.com/object_types/1/properties',
+                            'self' => 'http://api.example.com/properties/1/relationships/object_types',
+                            'related' => 'http://api.example.com/properties/1/object_types',
                         ],
                     ],
                 ],
@@ -240,7 +321,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/object_types/1');
+        $this->get('/properties/1');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(200);
@@ -261,7 +342,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $expected = [
             'links' => [
-                'self' => 'http://api.example.com/object_types/99',
+                'self' => 'http://api.example.com/properties/999999',
                 'home' => 'http://api.example.com/home',
             ],
             'error' => [
@@ -275,7 +356,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Accept' => 'application/vnd.api+json',
             ],
         ]);
-        $this->get('/object_types/99');
+        $this->get('/properties/999999');
         $result = json_decode($this->_response->body(), true);
 
         $this->assertResponseCode(404);
@@ -300,15 +381,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     public function testAdd()
     {
         $data = [
-            'type' => 'object_types',
+            'type' => 'properties',
             'attributes' => [
-                'name' => 'my_object_type',
-                'pluralized' => 'my_object_types',
-                'alias' => 'My Object Type',
+                'name' => 'body',
+                'object_type_name' => 'documents',
+                'property_type_name' => 'string',
+                'multiple' => 0,
+                'options_list' => null,
                 'description' => null,
-                'plugin' => 'BEdita/Core',
-                'model' => 'Objects',
-                'table' => 'BEdita/Core.Objects'
             ],
         ];
 
@@ -319,12 +399,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/object_types', json_encode(compact('data')));
+        $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/object_types/4');
-        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
+        $this->assertHeader('Location', 'http://api.example.com/properties/7');
+        $this->assertTrue(TableRegistry::get('Properties')->exists(['name' => 'body']));
     }
 
     /**
@@ -335,16 +415,16 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::add()
      * @covers ::initialize()
      */
-    public function testAddInvalid()
+    public function testInvalidAdd()
     {
         $data = [
-            'type' => 'object_types',
+            'type' => 'properties',
             'attributes' => [
-                'description' => 'Anonymous object_type.',
+                'description' => 'Undefined property',
             ],
         ];
 
-        $count = TableRegistry::get('ObjectTypes')->find()->count();
+        $count = TableRegistry::get('Properties')->find()->count();
 
         $this->configRequest([
             'headers' => [
@@ -353,11 +433,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->post('/object_types', json_encode(compact('data')));
+        $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($count, TableRegistry::get('ObjectTypes')->find()->count());
+        $this->assertEquals($count, TableRegistry::get('Properties')->find()->count());
     }
 
     /**
@@ -372,9 +452,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
     {
         $data = [
             'id' => '1',
-            'type' => 'object_types',
+            'type' => 'properties',
             'attributes' => [
-                'name' => 'document new',
+                'name' => 'title',
+                'description' => 'nice description',
             ],
         ];
 
@@ -385,11 +466,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/object_types/1', json_encode(compact('data')));
+        $this->patch('/properties/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('nice description', TableRegistry::get('Properties')->get(1)->get('description'));
     }
 
     /**
@@ -400,11 +481,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @covers ::edit()
      * @covers ::initialize()
      */
-    public function testEditConflict()
+    public function testConflictEdit()
     {
         $data = [
             'id' => '1',
-            'type' => 'object_types',
+            'type' => 'properties',
             'attributes' => [
                 'name' => 'profile new',
             ],
@@ -417,12 +498,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/object_types/2', json_encode(compact('data')));
+        $this->patch('/properties/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
-        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
+        $this->assertEquals('title', TableRegistry::get('Properties')->get(1)->get('name'));
+        $this->assertEquals('description', TableRegistry::get('Properties')->get(2)->get('name'));
     }
 
     /**
@@ -442,10 +523,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->delete('/object_types/1');
+        $this->delete('/properties/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertFalse(TableRegistry::get('ObjectTypes')->exists(['id' => 1]));
+        $this->assertFalse(TableRegistry::get('Properties')->exists(['id' => 1]));
     }
 }

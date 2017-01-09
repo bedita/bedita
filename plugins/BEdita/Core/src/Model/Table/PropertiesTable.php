@@ -50,7 +50,8 @@ class PropertiesTable extends Table
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.ObjectTypes'
+            'className' => 'BEdita/Core.ObjectTypes',
+            'propertyName' => 'object_types'
         ]);
     }
 
