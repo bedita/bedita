@@ -34,7 +34,7 @@ class HomeController extends AppController
 
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/users', '/roles', '/object_types', '/status'];
+        $endPoints = ['/objects', '/users', '/roles', '/object_types', '/status', '/trash'];
         foreach ($endPoints as $e) {
             $randomColor = substr(md5($e . 'color'), 0, 6);
             $resources[$e] = [
