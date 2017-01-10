@@ -393,7 +393,8 @@ class DateItem extends BEAppModel
      * Return an array of column types to transform (cast)
      * Used to build consistent REST APIs
      *
-     * Add to table fields type 'days' as 'integerArray' to convert ["0", "1", ...] in [0, 1, ...]
+     * - Force 'start_date' and 'end_date' to be formatted as dates also when those fields are defined as BIGINT for handle historical dates
+     * - Add to table fields type 'days' as 'integerArray' to convert ["0", "1", ...] in [0, 1, ...]
      *
      * Possible options are:
      * - 'castable' an array of fields that the rest api would be cast to
@@ -404,6 +405,8 @@ class DateItem extends BEAppModel
      */
     public function apiTransformer(array $options = array()) {
         $transformer = parent::apiTransformer($options);
+        $transformer['start_date'] = 'datetime';
+        $transformer['end_date'] = 'datetime';
         $transformer['days'] = 'integerArray';
         return $transformer;
     }
