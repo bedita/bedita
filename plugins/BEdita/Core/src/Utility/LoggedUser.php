@@ -13,13 +13,19 @@
 
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\SingletonTrait;
+
 /**
- * Singleton class representing current logged user,
- * its id will be used to save objects, check permissions, update analytics
+ * Singleton class representing currently logged user.
+ *
+ * User information is retained to be used to save objects, check permissions, update analytics.
+ *
+ * @since 4.0.0
  */
 class LoggedUser
 {
-    private static $uniqueInstance = null;
+
+    use SingletonTrait;
 
     /**
      * User data MUST contain at least user 'id' as array key
@@ -32,38 +38,12 @@ class LoggedUser
     private $userData = [];
 
     /**
-     * Singleton constructor
-     * @codeCoverageIgnore
-     */
-    protected function __construct()
-    {
-    }
-
-    /**
-     * Singleton __clone
-     * @codeCoverageIgnore
-     * @return void
-     */
-    final private function __clone()
-    {
-    }
-
-    /**
-     * Singleton getInstance method
-     * @return CurrentUser instance
-     */
-    public static function getInstance()
-    {
-        return (self::$uniqueInstance === null) ? (self::$uniqueInstance = new self) : self::$uniqueInstance;
-    }
-
-    /**
      * Read singleton current user data
      * @return array
      */
     public static function getUser()
     {
-        return self::getInstance()->userData;
+        return static::getInstance()->userData;
     }
 
     /**
@@ -74,7 +54,7 @@ class LoggedUser
     {
         // TODO: remove 1 ID - temporary set to 1 to allow tests
         $id = 1;
-        $data = self::getInstance()->userData;
+        $data = static::getInstance()->userData;
         if (!empty($data['id'])) {
             $id = $data['id'];
         }
@@ -91,7 +71,7 @@ class LoggedUser
     public static function setUser($userData)
     {
         if (!empty($userData['id'])) {
-            self::getInstance()->userData = $userData;
+            static::getInstance()->userData = $userData;
         }
     }
 }
