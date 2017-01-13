@@ -110,4 +110,20 @@ class ApplicationsTable extends Table
     {
         return Security::hash(Text::uuid(), 'sha1');
     }
+
+    /**
+     * Find an active application by its API key.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array. It requires an `apiKey` key.
+     * @return \Cake\ORM\Query
+     */
+    public function findApiKey(Query $query, array $options)
+    {
+        return $query
+            ->where([
+                $this->aliasField('api_key') => $options['apiKey'],
+                $this->aliasField('enabled') => true,
+            ]);
+    }
 }
