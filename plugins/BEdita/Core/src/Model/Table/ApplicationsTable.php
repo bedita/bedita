@@ -94,11 +94,11 @@ class ApplicationsTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        if (!$entity->isNew() || !empty($entity->api_key)) {
+        if (!$entity->isNew() || $entity->has('api_key')) {
             return;
         }
 
-        $entity->api_key = $this->generateApiKey();
+        $entity->set('api_key', $this->generateApiKey());
     }
 
     /**
