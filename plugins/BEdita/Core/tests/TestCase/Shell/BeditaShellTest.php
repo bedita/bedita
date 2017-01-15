@@ -231,17 +231,53 @@ class BeditaShellTest extends ShellTestCase
     }
 
     /**
+     * Data provider fot `testFake3` test case.
+     *
+     * @return array
+     */
+    public function fake3Provider()
+    {
+        return [
+            'success' => [
+                true,
+                function ($file) {
+                    copy(CONFIG . 'app.default.php', $file);
+                },
+            ],
+            'missing' => [
+                false,
+                function ($file) {
+                    if (!file_exists($file)) {
+                        return;
+                    }
+
+                    unlink($file);
+                },
+            ],
+            'empty' => [
+                false,
+                function ($file) {
+                    touch($file);
+                },
+            ],
+        ];
+    }
+
+    /**
      * Test save connection to file failure
      *
+     * @param bool $success Expected success.
+     * @param callable $callback Callback to be invoked on temporary config file.
      * @return void
+     *
+     * @dataProvider fake3Provider
      */
-    public function testFake3()
+    public function testFake3($success, callable $callback)
     {
-        ConnectionManager::alias('test', 'default');
-
         $config = ConnectionManager::get('test', false)->config();
-
-        $this->fakeDbParams();
+        if (strstr($config['driver'], 'Sqlite') !== false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite');
+        }
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
@@ -253,7 +289,7 @@ class BeditaShellTest extends ShellTestCase
              ->will($this->returnValueMap($mapChoice));
 
         $map = [
-            ['Host?', null, isset($config['host']) ? $config['host'] : ''],
+            ['Host?', 'localhost', isset($config['host']) ? $config['host'] : ''],
             ['Database?', null, isset($config['database']) ? $config['database'] : ''],
             ['Username?', null, isset($config['username']) ? $config['username'] : ''],
             ['Password?', null, isset($config['password']) ? $config['password'] : ''],
@@ -264,19 +300,11 @@ class BeditaShellTest extends ShellTestCase
              ->will($this->returnValueMap($map));
 
         $fakeCfg = TMP . '_test_app.php.tmp';
-        copy(CONFIG . 'app.default.php', $fakeCfg);
+        $callback($fakeCfg);
 
         $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
         $this->assertNotAborted();
-        $this->assertTrue($res);
-
-        unlink($fakeCfg);
-        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
-        $this->assertFalse($res);
-
-        touch($fakeCfg);
-        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
-        $this->assertFalse($res);
+        $this->assertEquals($success, $res);
     }
 
     /**
@@ -311,11 +339,36 @@ class BeditaShellTest extends ShellTestCase
     }
 
     /**
+     * Data provider for `testAdminUserFailure` test case.
+     *
+     * @return array
+     */
+    public function adminUserFailureProvider()
+    {
+        return [
+            'success' => [
+                true,
+                false,
+                'gustavo',
+            ],
+            'failure' => [
+                null,
+                true,
+                'bedita',
+            ],
+        ];
+    }
+
+    /**
      * Test admin user setup failure
      *
+     * @param bool $success Expected success.
+     * @param bool $aborted Expected shell abortion.
+     * @param string $username Default username.
      * @return void
+     * @dataProvider adminUserFailureProvider
      */
-    public function testAdminUserFailure()
+    public function testAdminUserFailure($success, $aborted, $username)
     {
         ConnectionManager::alias('test', 'default');
 
@@ -335,12 +388,15 @@ class BeditaShellTest extends ShellTestCase
         $io->method('ask')
              ->will($this->returnValueMap($map));
 
-        BeditaShell::$defaultUsername = 'gustavo';
+        BeditaShell::$defaultUsername = $username;
         $res = $this->invoke(['bedita', 'setup'], [], $io);
-        $this->assertTrue($res);
-
-        BeditaShell::$defaultUsername = 'bedita';
-        $res = $this->invoke(['bedita', 'setup'], [], $io);
-        $this->assertFalse($res);
+        if ($success !== null) {
+            $this->assertEquals($success, $res);
+        }
+        if ($aborted) {
+            $this->assertAborted();
+        } else {
+            $this->assertNotAborted();
+        }
     }
 }

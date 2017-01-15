@@ -14,11 +14,10 @@ namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utility\Database;
 use Cake\Console\Shell;
-use Cake\Core\Configure\Engine\JsonConfig;
+use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Basic shell commands:
@@ -160,26 +159,15 @@ class BeditaShell extends Shell
      */
     protected function initSchema()
     {
-        $currentSchema = Database::currentSchema();
-        if (!empty($currentSchema)) {
-            $be4Schema = (new JsonConfig())->read('BEdita/Core.schema/be4-schema');
-            $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
-            if (!empty($schemaDiff)) {
-                $this->err('Schema differs from BEdita4 schema!');
-                $this->warn('Details:');
-                foreach ($schemaDiff as $key => $data) {
-                    foreach ($data as $type => $value) {
-                        foreach ($value as $v) {
-                            $this->warn($key . ' ' . Inflector::singularize($type) . ': ' . $v);
-                        }
-                    }
-                }
-                $this->err('Unable to proceed with setup, please check your database');
+        $connection = ConnectionManager::get('default');
+        if (!($connection instanceof Connection)) {
+            $this->err('Unable to use connection');
 
-                return false;
-            }
-            $this->info('Database schema is OK');
-        } else {
+            return false;
+        }
+
+        $tables = $connection->schemaCollection()->listTables();
+        if (empty($tables)) {
             $this->out('Database is empty');
             $res = $this->in('Proceed with database schema and data initialization?', ['y', 'n'], 'n');
             if ($res != 'y') {
@@ -187,22 +175,39 @@ class BeditaShell extends Shell
 
                 return false;
             }
+
             $initSchemaTask = $this->Tasks->load('BEdita/Core.InitSchema');
-            $initSchemaTask->params['connection'] = 'default';
+            $initSchemaTask->params['connection'] = $connection->configName();
             $initSchemaTask->main();
+
+            return true;
         }
+
+        $checkSchemaTask = $this->Tasks->load('BEdita/Core.CheckSchema');
+        $checkSchemaTask->params['connection'] = $connection->configName();
+        $checkSchemaTask->params['ignore-migration-status'] = true;
+        $ok = $checkSchemaTask->main();
+
+        if ($ok !== true) {
+            $this->warn('Schema is not up-to-date!');
+            $this->err('Unable to proceed with setup, please check your database');
+
+            return false;
+        }
+
+        $this->info('Database schema is OK');
 
         return true;
     }
 
     /**
-     * Initialize and check DB schema
+     * Check filesystem permissions.
      *
      * @return void
      */
     protected function checkFs()
     {
-        $httpdUser = exec("ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1");
+        $httpdUser = exec("ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\\  -f1");
         if (!empty($httpdUser)) {
             $this->info('HTTPD (webserver) user seems to be: ' . $httpdUser);
         } else {
@@ -330,7 +335,7 @@ class BeditaShell extends Shell
             return false;
         }
 
-        file_put_contents($this->param('config-file'), $content);
+        $this->createFile($this->param('config-file'), $content);
         $this->configModified = true;
 
         $this->info('Configuration updated in ' . $this->param('config-file'));

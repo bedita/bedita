@@ -54,6 +54,10 @@ class CheckSchemaTask extends Shell
                 'required' => false,
                 'default' => 'default',
                 'choices' => ConnectionManager::configured(),
+            ])
+            ->addOption('ignore-migration-status', [
+                'help' => 'Skip checks on migration status',
+                'boolean' => true,
             ]);
 
         return $parser;
@@ -75,7 +79,9 @@ class CheckSchemaTask extends Shell
             $this->abort('Unknown connection type');
         }
 
-        $this->checkMigrationsStatus($connection);
+        if (!$this->param('ignore-migration-status')) {
+            $this->checkMigrationsStatus($connection);
+        }
         $this->checkConventions($connection);
         $this->checkDiff($connection);
 
