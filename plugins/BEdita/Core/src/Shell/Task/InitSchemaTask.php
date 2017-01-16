@@ -156,7 +156,7 @@ class InitSchemaTask extends Shell
         if ($this->param('no-seed')) {
             $this->params['seed'] = false;
         } elseif (!$this->param('seed')) {
-            $question = 'Would you like to seed your database with an initial set of data?';
+            $question = 'Would you like to populate your database with an optional set of data?';
             $this->params['seed'] = ($this->in($question, ['y', 'n'], 'y') === 'y');
         }
         if (!$this->param('seed')) {

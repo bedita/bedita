@@ -174,7 +174,7 @@ class InitSchemaTaskTest extends ShellTestCase
             ->will(
                 $this->returnValueMap([
                     ['Do you really want to proceed?', ['y', 'n'], 'n', 'y'],
-                    ['Would you like to seed your database with an initial set of data?', ['y', 'n'], 'y', 'n'],
+                    ['Would you like to populate your database with an optional set of data?', ['y', 'n'], 'y', 'n'],
                 ])
             );
 
