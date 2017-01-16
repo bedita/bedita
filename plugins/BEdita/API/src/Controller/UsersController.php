@@ -156,22 +156,11 @@ class UsersController extends ResourcesController
     {
         $this->request->allowMethod('delete');
 
-// TODO:  $this->Users->save() not working as expected
-/*
         $user = $this->Users->get($id, [
             'conditions' => ['deleted' => 0]
         ]);
         $user->deleted = true;
         if (!$this->Users->save($user)) {
-            throw new InternalErrorException('Could not delete user');
-        }
-*/
-        $objectsTable = \Cake\ORM\TableRegistry::get('Objects');
-        $object = $objectsTable->get($id, [
-            'conditions' => ['deleted' => 0]
-        ]);
-        $object->deleted = true;
-        if (!$objectsTable->save($object)) {
             throw new InternalErrorException('Could not delete user');
         }
 
