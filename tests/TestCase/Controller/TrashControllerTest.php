@@ -255,7 +255,7 @@ class TrashControllerTest extends IntegrationTestCase
         ];
 
         // failure test
-        $data['id'] = '6666666666666';
+        $data['id'] = '66666';
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
@@ -263,7 +263,7 @@ class TrashControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->patch('/trash/6666666666666', json_encode(compact('data')));
+        $this->patch('/trash/66666', json_encode(compact('data')));
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
@@ -328,7 +328,7 @@ class TrashControllerTest extends IntegrationTestCase
                 'Content-Type' => 'application/vnd.api+json',
             ],
         ]);
-        $this->delete('/trash/77777777777777');
+        $this->delete('/trash/77777');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
     }
