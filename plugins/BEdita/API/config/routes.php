@@ -166,5 +166,27 @@ Router::plugin(
             ['controller' => 'Login', 'action' => 'whoami', '_method' => 'GET'],
             ['_name' => 'login:whoami']
         );
+
+        // Trash.
+        $routes->connect(
+            '/trash',
+            ['controller' => 'Trash', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'trash:index']
+        );
+        $routes->connect(
+            '/trash/*',
+            ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'trash:view']
+        );
+        $routes->connect(
+            '/trash/*',
+            ['controller' => 'Trash', 'action' => 'restore', '_method' => 'PATCH'],
+            ['_name' => 'trash:restore']
+        );
+        $routes->connect(
+            '/trash/*',
+            ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'trash:delete']
+        );
     }
 );

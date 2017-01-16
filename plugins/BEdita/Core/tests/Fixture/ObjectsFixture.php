@@ -122,6 +122,25 @@ class ObjectsFixture extends TestFixture
             'publish_start' => '2016-10-13 07:09:23',
             'publish_end' => '2016-10-13 07:09:23'
         ],
+        [
+            'object_type_id' => 1,
+            'status' => 'on',
+            'uname' => 'title-two-deleted',
+            'locked' => 0,
+            'deleted' => 1,
+            'created' => '2016-10-13 07:09:23',
+            'modified' => '2016-10-13 07:09:23',
+            'published' => '2016-10-13 07:09:23',
+            'title' => 'title two deleted',
+            'description' => 'description removed',
+            'body' => 'body no more',
+            'extra' => '{"abstract": "what?"}',
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => '2016-10-13 07:09:23',
+            'publish_end' => '2016-10-13 07:09:23'
+        ],
     ];
 
     /**
