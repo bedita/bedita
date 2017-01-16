@@ -167,8 +167,16 @@ class ExtensionOf extends BelongsTo
      */
     protected function targetPropertiesValues(EntityInterface $entity)
     {
-        $properties = $entity->visibleProperties() + $entity->hiddenProperties();
-        $propertyValues = $entity->extract($properties);
+        $properties = array_merge($entity->visibleProperties(), $entity->hiddenProperties());
+        $propertyValues = [];
+        foreach ($properties as $prop) {
+            $value = $entity->get($prop);
+            if ($value === null && !$entity->dirty($prop)) {
+                continue;
+            }
+
+            $propertyValues[$prop] = $value;
+        }
 
         $source = $this->source();
         $sourceProperties = array_diff($source->schema()->columns(), [$source->primaryKey()]);

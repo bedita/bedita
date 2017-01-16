@@ -147,4 +147,19 @@ class UsersTableTest extends TestCase
         $this->assertNotNull($lastLogin);
         $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
     }
+
+    /**
+     * Test deleted field on user deleted.
+     *
+     * @return void
+     */
+    public function testDeleted()
+    {
+        $user = $this->Users->get(1);
+        $user->deleted = true;
+        $success = $this->Users->save($user);
+        $this->assertTrue((bool)$success);
+        $deleted = $this->Users->get(1)->deleted;
+        $this->assertEquals(true, $deleted);
+    }
 }
