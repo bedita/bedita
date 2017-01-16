@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -11,6 +11,8 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 namespace BEdita\API\Controller;
+
+use Cake\Network\Exception\ConflictException;
 
 /**
  * Controller for `/trash` endpoint.
@@ -75,9 +77,9 @@ class TrashController extends AppController
      *
      * @param int $id Object ID.
      * @return void
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if role ID in the payload doesn't match
-     *      the role ID in the URL.
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
+     *      the object ID in the URL.
+     * @throws BeditaBadRequestException Throws an exception if an error occurs during restore.
      */
     public function restore($id)
     {
@@ -91,12 +93,12 @@ class TrashController extends AppController
             'conditions' => ['deleted' => 1]
         ]);
         if (empty($trash)) {
-            throw new InternalErrorException('Object ' . $id . ' not found in trash');
+            throw new BeditaBadRequestException('Object ' . $id . ' not found in trash');
         }
 
         $trash->deleted = false;
         if (!$this->Objects->save($trash)) {
-            throw new InternalErrorException('Could not restore object');
+            throw new BeditaBadRequestException('Could not restore object');
         }
 
         $this->noContentResponse();
@@ -108,13 +110,25 @@ class TrashController extends AppController
      * @param int $id Object ID.
      * @return void
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     * @throws BeditaBadRequestException Throws an exception if an error occurs during delete.
      */
     public function delete($id)
     {
         $this->request->allowMethod('delete');
 
-        $object = $this->Objects->get($id);
-        if (!$this->Objects->delete($object)) {
+        $trash = $this->Objects->get($id);
+        if (empty($trash)) {
+            throw new BeditaBadRequestException('Object ' . $id . ' not found');
+        }
+
+        $trash = $this->Objects->get($id, [
+            'conditions' => ['deleted' => 1]
+        ]);
+        if (empty($trash)) {
+            throw new BeditaBadRequestException('Object ' . $id . ' not found in trash');
+        }
+
+        if (!$this->Objects->delete($trash)) {
             throw new InternalErrorException('Could not delete object');
         }
 

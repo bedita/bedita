@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -12,6 +12,8 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\Model\Entity\Object;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -30,6 +32,16 @@ class TrashControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.object_types',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->Objects = TableRegistry::get('Objects');
+    }
 
     /**
      * Test index method.
@@ -241,6 +253,34 @@ class TrashControllerTest extends IntegrationTestCase
             'id' => '6',
             'type' => 'objects'
         ];
+
+        // failure test
+        $data['id'] = '6666666666666';
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/trash/6666666666666', json_encode(compact('data')));
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+
+        // conflict test
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/trash/666', json_encode(compact('data')));
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+
+        // success test
+        $data['id'] = '6';
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
@@ -249,9 +289,10 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/trash/6', json_encode(compact('data')));
-
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
+        $trash = $this->Objects->get(6);
+        $this->assertFalse($trash['deleted']);
     }
     /**
      * Test delete method.
@@ -260,6 +301,7 @@ class TrashControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
+        // success test
         $this->configRequest([
             'headers' => [
                 'Host' => 'api.example.com',
@@ -268,8 +310,26 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->delete('/trash/7');
-
         $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $notFound = false;
+        try {
+            $trash = $this->Objects->get(7);
+        } catch (RecordNotFoundException $e) {
+            $notFound = true;
+        }
+        $this->assertTrue($notFound);
+
+        // failure test
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->delete('/trash/77777777777777');
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
     }
 
