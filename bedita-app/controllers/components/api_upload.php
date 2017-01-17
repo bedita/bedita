@@ -133,6 +133,7 @@ class ApiUploadComponent extends Object {
                 'hashFile' => $hashFile,
                 'user' => $this->controller->ApiAuth->identify()
             ));
+            $source->delete();
         } else {
             $streamId = $this->BeFileHandler->hashFileExists($hashFile);
             if ($streamId !== false) {
