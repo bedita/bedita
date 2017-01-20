@@ -110,8 +110,10 @@ CREATE TABLE properties (
   options_list TEXT                           COMMENT 'property predefined options list (JSON)',
   created DATETIME NOT NULL                   COMMENT 'creation date',
   modified DATETIME NOT NULL                  COMMENT 'last modification date',
-  description TEXT NULL                       COMMENT 'brief propertty description',
+  description TEXT NULL                       COMMENT 'brief property description',
   enabled BOOL NOT NULL DEFAULT 1             COMMENT 'property active flag',
+  label TEXT NULL                             COMMENT 'property default label',
+  list_view BOOL NOT NULL DEFAULT 1           COMMENT 'property displayed in list view (backend operations)',
 
   PRIMARY KEY (id),
   UNIQUE properties_nametype_uq (name, object_type_id),

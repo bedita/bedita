@@ -1711,7 +1711,7 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "comment": "brief propertty description",
+                "comment": "brief property description",
                 "precision": null
             },
             "enabled": {
@@ -1720,6 +1720,22 @@
                 "null": false,
                 "default": "1",
                 "comment": "property active flag",
+                "precision": null
+            },
+            "label": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "property default label",
+                "precision": null
+            },
+            "list_view": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "1",
+                "comment": "property displayed in list view (backend operations)",
                 "precision": null
             }
         },

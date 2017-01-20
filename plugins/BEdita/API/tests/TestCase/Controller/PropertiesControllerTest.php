@@ -28,8 +28,8 @@ class PropertiesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.property_types',
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.properties'
     ];
 
@@ -74,6 +74,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
+                        'label' => null,
+                        'list_view' => true
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/1',
@@ -99,6 +101,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
+                        'label' => 'Brief description',
+                        'list_view' => false
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/2',
@@ -124,6 +128,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => 'Username, unique string',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
+                        'label' => null,
+                        'list_view' => true
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/3',
@@ -149,6 +155,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => 'User email',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
+                        'label' => null,
+                        'list_view' => true
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/4',
@@ -174,6 +182,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'property_type_name' => 'date',
                         'object_type_name' => 'profiles',
+                        'label' => 'Date of birth',
+                        'list_view' => false
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/5',
@@ -199,6 +209,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'profiles',
+                        'label' => null,
+                        'list_view' => true
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/6',
@@ -303,6 +315,8 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'description' => null,
                     'property_type_name' => 'string',
                     'object_type_name' => 'documents',
+                    'label' => null,
+                    'list_view' => true
                 ],
                 'relationships' => [
                     'object_types' => [

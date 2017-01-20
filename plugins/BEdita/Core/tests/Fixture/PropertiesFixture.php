@@ -26,6 +26,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => null,
             'enabled' => 1,
+            'label' => null,
+            'list_view' => true
         ],
         [
             'name' => 'description',
@@ -37,6 +39,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => null,
             'enabled' => 1,
+            'label' => 'Brief description',
+            'list_view' => false
         ],
         [
             'name' => 'username',
@@ -48,6 +52,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => 'Username, unique string',
             'enabled' => 1,
+            'label' => null,
+            'list_view' => true
         ],
         [
             'name' => 'email',
@@ -59,6 +65,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => 'User email',
             'enabled' => 1,
+            'label' => null,
+            'list_view' => true
         ],
         [
             'name' => 'birthdate',
@@ -70,6 +78,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => null,
             'enabled' => 1,
+            'label' => 'Date of birth',
+            'list_view' => false
         ],
         [
             'name' => 'surname',
@@ -81,6 +91,8 @@ class PropertiesFixture extends TestFixture
             'modified' => '2016-12-31 23:09:23',
             'description' => null,
             'enabled' => 1,
+            'label' => null,
+            'list_view' => true
         ],
     ];
 }

@@ -218,7 +218,7 @@ class DbAdminShell extends Shell
     protected function checkDuplicateColumns(array $schema)
     {
         $columns = [];
-        $allowed = ['created', 'description', 'enabled', 'modified', 'name', 'params'];
+        $allowed = ['created', 'description', 'enabled', 'modified', 'name', 'params', 'label'];
         foreach ($schema as $table => $data) {
             foreach ($data['columns'] as $name => $columnData) {
                 if ($name !== 'id' && (substr($name, -3) !== '_id') && !in_array($name, $allowed)) {

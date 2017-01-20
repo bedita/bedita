@@ -58,6 +58,7 @@ class DbAdminShellTest extends TestCase
      */
     public function tearDown()
     {
+        $this->fixtureManager->shutDown();
         unset($this->DbAdminShell);
 
         parent::tearDown();
