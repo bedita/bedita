@@ -85,6 +85,39 @@ class FrontendControllerTest extends BeditaTestCase {
         $this->deleteData();
     }
 
+    /**
+     * Test loading object by nickname.
+     */
+    public function testLoadObjByNick()
+    {
+        $this->saveDataAndConfig();
+        $nickname = ClassRegistry::init('BEObject')->getNicknameFromId($this->documentId);
+        try {
+            $document = $this->controller->loadObjByNick($nickname);
+            $this->assertTrue(!empty($document));
+        } catch (Exception $e) {
+            $this->fail($e->xdebug_message);
+        }
+        $this->deleteData();
+    }
+
+    /**
+     * Test loading object by nickname when the nickname does not exist.
+     */
+    public function testLoadObjByNickFailure()
+    {
+        $this->saveDataAndConfig();
+        try {
+            $document = $this->controller->loadObjByNick('this-nickname-does-not-exist');
+            $this->fail();
+        } catch (BeditaInternalErrorException $e) {
+            $this->assertEqual(__('Missing object id', true), $e->getMessage());
+        } catch (Exception $e) {
+            $this->fail($e->xdebug_message);
+        }
+        $this->deleteData();
+    }
+
     private function saveDataAndConfig() {
         $result = $this->Area->save($this->data['area']);
         if (!$result) {
