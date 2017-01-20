@@ -86,6 +86,44 @@ class FrontendControllerTest extends BeditaTestCase {
     }
 
     /**
+     * Test loading object with empty ID.
+     */
+    public function testLoadObjFailure() {
+        $this->saveDataAndConfig();
+
+        // Empty string.
+        try {
+            $document = $this->controller->loadObj('');
+            $this->fail();
+        } catch (BeditaInternalErrorException $e) {
+            $this->assertEqual(__('Missing object id', true), $e->getMessage());
+        } catch (Exception $e) {
+            $this->fail($e->xdebug_message);
+        }
+
+        // `null`
+        try {
+            $document = $this->controller->loadObj(null);
+            $this->fail();
+        } catch (BeditaInternalErrorException $e) {
+            $this->assertEqual(__('Missing object id', true), $e->getMessage());
+        } catch (Exception $e) {
+            $this->fail($e->xdebug_message);
+        }
+
+        // `false`
+        try {
+            $document = $this->controller->loadObj(false);
+            $this->fail();
+        } catch (BeditaInternalErrorException $e) {
+            $this->assertEqual(__('Missing object id', true), $e->getMessage());
+        } catch (Exception $e) {
+            $this->fail($e->xdebug_message);
+        }
+        $this->deleteData();
+    }
+
+    /**
      * Test loading object by nickname.
      */
     public function testLoadObjByNick()
@@ -107,11 +145,12 @@ class FrontendControllerTest extends BeditaTestCase {
     public function testLoadObjByNickFailure()
     {
         $this->saveDataAndConfig();
+        $nickname = 'this-nickname-does-not-exist';
         try {
-            $document = $this->controller->loadObjByNick('this-nickname-does-not-exist');
+            $document = $this->controller->loadObjByNick($nickname);
             $this->fail();
-        } catch (BeditaInternalErrorException $e) {
-            $this->assertEqual(__('Missing object id', true), $e->getMessage());
+        } catch (BeditaNotFoundException $e) {
+            $this->assertEqual(__('Content not found', true) . ' nick: ' . $nickname, $e->getMessage());
         } catch (Exception $e) {
             $this->fail($e->xdebug_message);
         }
