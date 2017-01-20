@@ -1194,7 +1194,12 @@ abstract class FrontendController extends AppController {
      * @return array
      */
     public function loadObjByNick($obj_nick, $blockAccess = true) {
-        return $this->loadObj($this->idFromNicknameCache($obj_nick), $blockAccess);
+        $id = $this->idFromNicknameCache($obj_nick);
+        if (empty($id)) {
+            throw new BeditaNotFoundException(__('Content not found', true) . ' nick: ' . $obj_nick);
+        }
+
+        return $this->loadObj($id, $blockAccess);
     }
 
     /**
@@ -1255,7 +1260,7 @@ abstract class FrontendController extends AppController {
      * @return array object detail
      */
     public function loadObj($obj_id, $blockAccess = true, $options = array()) {
-        if ($obj_id === null) {
+        if (empty($obj_id) || !is_numeric($obj_id)) {
             throw new BeditaInternalErrorException(
                 __('Missing object id', true),
                 'FrontendController::loadObj() require an object id'
