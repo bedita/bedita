@@ -301,6 +301,7 @@ class BeditaShellTest extends ShellTestCase
 
         $map = [
             ['Host?', 'localhost', isset($config['host']) ? $config['host'] : ''],
+            ['Port?', '3306', isset($config['port']) ? $config['port'] : ''],
             ['Database?', null, isset($config['database']) ? $config['database'] : ''],
             ['Username?', null, isset($config['username']) ? $config['username'] : ''],
             ['Password?', null, isset($config['password']) ? $config['password'] : ''],
