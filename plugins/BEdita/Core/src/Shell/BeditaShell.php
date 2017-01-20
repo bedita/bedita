@@ -13,13 +13,11 @@
 namespace BEdita\Core\Shell;
 
 use BEdita\Core\Utility\Database;
-use Cake\Cache\Cache;
 use Cake\Console\Shell;
-use Cake\Core\Configure\Engine\JsonConfig;
+use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\Filesystem\File;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Basic shell commands:
@@ -47,28 +45,23 @@ class BeditaShell extends Shell
     protected $configModified = false;
 
     /**
-     * Configuration file path
-     *
-     * @var string
-     */
-    public $configPath = null;
-
-    /**
      * Default initial user name
      *
      * @var string
      */
-    public $defaultUsername = 'bedita';
+    public static $defaultUsername = 'bedita';
 
     /**
      * Default initial user id
      *
      * @var int
      */
-    public $defaultUserId = 1;
+    const DEFAULT_USER_ID = 1;
 
     /**
-     * Temporary configuration name used in initial setup
+     * Temporary configuration name used in initial setup.
+     *
+     * @var string
      */
     const TEMP_SETUP_CFG = '__temp_setup__';
 
@@ -93,6 +86,11 @@ class BeditaShell extends Shell
                         'short' => 'y',
                         'required' => false,
                         'default' => true,
+                    ],
+                    'config-file' => [
+                        'help' => 'Configuration file',
+                        'required' => false,
+                        'default' => CONFIG . 'app.php',
                     ],
                 ],
             ],
@@ -121,7 +119,9 @@ class BeditaShell extends Shell
         if (empty($this->userInputData)) {
             $info = Database::basicInfo();
             $this->info('Current database configuration');
-            $this->info(' * Host: ' . $info['host']);
+            if (!empty($info['host'])) {
+                $this->info(' * Host: ' . $info['host']);
+            }
             $this->info(' * Database: ' . $info['database']);
             $this->info(' * Vendor: ' . $info['vendor']);
         }
@@ -159,26 +159,15 @@ class BeditaShell extends Shell
      */
     protected function initSchema()
     {
-        $currentSchema = Database::currentSchema();
-        if (!empty($currentSchema)) {
-            $be4Schema = (new JsonConfig())->read('BEdita/Core.schema/be4-schema');
-            $schemaDiff = Database::schemaCompare($be4Schema, $currentSchema);
-            if (!empty($schemaDiff)) {
-                $this->err('Schema differs from BEdita4 schema!');
-                $this->warn('Details:');
-                foreach ($schemaDiff as $key => $data) {
-                    foreach ($data as $type => $value) {
-                        foreach ($value as $v) {
-                            $this->warn($key . ' ' . Inflector::singularize($type) . ': ' . $v);
-                        }
-                    }
-                }
-                $this->err('Unable to proceed with setup, please check your database');
+        $connection = ConnectionManager::get('default');
+        if (!($connection instanceof Connection)) {
+            $this->err('Unable to use connection');
 
-                return false;
-            }
-            $this->info('Database schema is OK');
-        } else {
+            return false;
+        }
+
+        $tables = $connection->schemaCollection()->listTables();
+        if (empty($tables)) {
             $this->out('Database is empty');
             $res = $this->in('Proceed with database schema and data initialization?', ['y', 'n'], 'n');
             if ($res != 'y') {
@@ -186,21 +175,39 @@ class BeditaShell extends Shell
 
                 return false;
             }
-            $dbInitTask = $this->Tasks->load('BEdita/Core.DbInit');
-            $dbInitTask->main();
+
+            $initSchemaTask = $this->Tasks->load('BEdita/Core.InitSchema');
+            $initSchemaTask->params['connection'] = $connection->configName();
+            $initSchemaTask->main();
+
+            return true;
         }
+
+        $checkSchemaTask = $this->Tasks->load('BEdita/Core.CheckSchema');
+        $checkSchemaTask->params['connection'] = $connection->configName();
+        $checkSchemaTask->params['ignore-migration-status'] = true;
+        $ok = $checkSchemaTask->main();
+
+        if ($ok !== true) {
+            $this->warn('Schema is not up-to-date!');
+            $this->err('Unable to proceed with setup, please check your database');
+
+            return false;
+        }
+
+        $this->info('Database schema is OK');
 
         return true;
     }
 
     /**
-     * Initialize and check DB schema
+     * Check filesystem permissions.
      *
      * @return void
      */
     protected function checkFs()
     {
-        $httpdUser = exec("ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1");
+        $httpdUser = exec("ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\\  -f1");
         if (!empty($httpdUser)) {
             $this->info('HTTPD (webserver) user seems to be: ' . $httpdUser);
         } else {
@@ -221,7 +228,7 @@ class BeditaShell extends Shell
      */
     protected function checkDir($dirPath, $label)
     {
-        $file = new File($dirPath);
+        new File($dirPath);
         $this->out('Checking ' . $label . ' (' . $dirPath . ')');
         if (!is_dir($dirPath)) {
             $this->abort('Folder ' . $dirPath . ' not found, please check your installation!');
@@ -282,7 +289,7 @@ class BeditaShell extends Shell
         }
 
         $this->info('A working database connection is needed in order to continue');
-        $this->info('Parameter needed are: host, database, username, password');
+        $this->info('Parameter needed are: host, port, database, username, password');
         $res = $this->in('Proceed with setup?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->info('Database setup stopped');
@@ -306,18 +313,15 @@ class BeditaShell extends Shell
      */
     protected function saveConnectionData()
     {
-        if (empty($this->configPath)) {
-            $this->configPath = CONFIG . 'app.php';
-        }
-        if (!is_writable($this->configPath)) {
+        if (!is_writable($this->param('config-file'))) {
             $this->warn('Unable to update configuration file');
             $this->warn('==> Please check write permission on config/app.php file');
 
             return false;
         }
 
-        $content = file_get_contents($this->configPath);
-        $fields = ['host', 'database', 'username', 'password'];
+        $content = file_get_contents($this->param('config-file'));
+        $fields = ['host', 'port', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
             $content = str_replace($placeHolder, $this->userInputData[$name], $content);
@@ -331,10 +335,10 @@ class BeditaShell extends Shell
             return false;
         }
 
-        file_put_contents($this->configPath, $content);
+        $this->createFile($this->param('config-file'), $content);
         $this->configModified = true;
 
-        $this->info('Configuration updated in ' . $this->configPath);
+        $this->info('Configuration updated in ' . $this->param('config-file'));
 
         return true;
     }
@@ -348,6 +352,7 @@ class BeditaShell extends Shell
     {
         $this->userInputData = [];
         $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
+        $this->userInputData['port'] = $this->in('Port?', null, '3306');
         $this->userInputData['database'] = $this->in('Database?');
         $this->userInputData['username'] = $this->in('Username?');
         $this->userInputData['password'] = $this->in('Password?');
@@ -361,9 +366,9 @@ class BeditaShell extends Shell
     protected function adminUser()
     {
         $usersTable = TableRegistry::get('Users');
-        $adminUser = $usersTable->get($this->defaultUserId);
+        $adminUser = $usersTable->get(static::DEFAULT_USER_ID);
 
-        if ($adminUser->username !== $this->defaultUsername) {
+        if ($adminUser->username !== static::$defaultUsername) {
             $this->info('An admin user has already been set: ' . $adminUser->username);
             $res = $this->in('Overwrite current admin user?', ['y', 'n'], 'n');
             if ($res != 'y') {
