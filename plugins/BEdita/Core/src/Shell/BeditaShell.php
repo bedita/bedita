@@ -289,7 +289,7 @@ class BeditaShell extends Shell
         }
 
         $this->info('A working database connection is needed in order to continue');
-        $this->info('Parameter needed are: host, database, username, password');
+        $this->info('Parameter needed are: host, port, database, username, password');
         $res = $this->in('Proceed with setup?', ['y', 'n'], 'n');
         if ($res != 'y') {
             $this->info('Database setup stopped');
@@ -321,7 +321,7 @@ class BeditaShell extends Shell
         }
 
         $content = file_get_contents($this->param('config-file'));
-        $fields = ['host', 'database', 'username', 'password'];
+        $fields = ['host', 'port', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $placeHolder = '__BE4_DB_' . strtoupper($name) . '__';
             $content = str_replace($placeHolder, $this->userInputData[$name], $content);
@@ -352,6 +352,7 @@ class BeditaShell extends Shell
     {
         $this->userInputData = [];
         $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
+        $this->userInputData['port'] = $this->in('Port?', null, '3306');
         $this->userInputData['database'] = $this->in('Database?');
         $this->userInputData['username'] = $this->in('Username?');
         $this->userInputData['password'] = $this->in('Password?');

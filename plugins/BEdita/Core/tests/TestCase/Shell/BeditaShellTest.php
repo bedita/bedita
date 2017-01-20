@@ -73,6 +73,7 @@ class BeditaShellTest extends ShellTestCase
         $fakeParams = [
             'className' => 'Cake\Database\Connection',
             'host' => '__BE4_DB_HOST__',
+            'port' => '__BE4_DB_PORT__',
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
@@ -146,17 +147,18 @@ class BeditaShellTest extends ShellTestCase
              ->will($this->returnValueMap($mapChoice));
 
         if (empty($dbConfig)) {
-            $dbConfig = array_fill(0, 4, '');
+            $dbConfig = array_fill(0, 5, '');
         }
         if (empty($userPass)) {
             $userPass = array_fill(0, 2, '');
         }
 
         $map = [
-            ['Host?', null, $dbConfig[0]],
-            ['Database?', null, $dbConfig[1]],
-            ['Username?', null, $dbConfig[2]],
-            ['Password?', null, $dbConfig[3]],
+            ['Host?', 'localhost', $dbConfig[0]],
+            ['Port?', '3306', $dbConfig[1]],
+            ['Database?', null, $dbConfig[2]],
+            ['Username?', null, $dbConfig[3]],
+            ['Password?', null, $dbConfig[4]],
             ['username: ', null, $userPass[0]],
             ['password: ', null, $userPass[1]],
         ];
@@ -204,12 +206,21 @@ class BeditaShellTest extends ShellTestCase
      */
     public function testFake2()
     {
-        $fakeParams = $this->fakeDbParams();
+        $config = ConnectionManager::get('test', false)->config();
+        if (strstr($config['driver'], 'Sqlite') !== false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite');
+        }
+
+        $fakeParams = array_merge(
+            $config,
+            $this->fakeDbParams()
+        );
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $map = [
-            ['Host?', null, $fakeParams['host']],
+            ['Host?', 'localhost', $config['host']],
+            ['Port?', '3306', $fakeParams['port']],
             ['Database?', null, $fakeParams['database']],
             ['Username?', null, $fakeParams['username']],
             ['Password?', null, $fakeParams['password']],
@@ -275,8 +286,8 @@ class BeditaShellTest extends ShellTestCase
     public function testFake3($success, callable $callback)
     {
         $config = ConnectionManager::get('test', false)->config();
-        if (strstr($config['driver'], 'Sqlite') !== false) {
-            $this->markTestSkipped('Initial setup does not yet support SQLite');
+        if (strstr($config['driver'], 'Mysql') === false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite nor PostgreSQL');
         }
 
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
