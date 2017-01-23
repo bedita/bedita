@@ -145,8 +145,6 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->assertNotAborted();
         $this->assertCount(count($schema) + 2, $connection->schemaCollection()->listTables());
-
-        $this->assertGreaterThan($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
     }
 
     /**

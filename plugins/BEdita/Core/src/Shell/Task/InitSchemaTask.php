@@ -166,7 +166,7 @@ class InitSchemaTask extends Shell
         $this->out('Seeding data... ', 0);
         $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
         $migrations = new $className(['connection' => $connection->configName()]);
-        if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'ObjectTypesSeed'])) {
+        if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'InitialSeed'])) {
             $this->out('<error>FAIL</error>');
 
             $this->abort('Could not seed initial data set');
