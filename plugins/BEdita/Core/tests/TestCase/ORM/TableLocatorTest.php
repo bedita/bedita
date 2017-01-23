@@ -21,6 +21,15 @@ use Cake\TestSuite\TestCase;
  */
 class TableLocatorTest extends TestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.objects',
+    ];
 
     /**
      * Table locator instance.
@@ -62,6 +71,10 @@ class TableLocatorTest extends TestCase
             'fallbackWithPluginName' => [
                 'Cake\ORM\Table',
                 'BEdita/Core.ThisTableDoesNotExists',
+            ],
+            'fallbackObjectType' => [
+                'BEdita\Core\Model\Table\ObjectsTable',
+                'Documents'
             ],
         ];
     }

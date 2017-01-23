@@ -1525,6 +1525,20 @@ class Alpha extends AbstractMigration
                     'plugin' => 'BEdita/Core',
                     'model' => 'Users',
                 ],
+                [
+                    'name' => 'document',
+                    'pluralized' => 'documents',
+                    'description' => 'Generic document',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
+                [
+                    'name' => 'news',
+                    'pluralized' => 'news',
+                    'description' => 'Generic piece of news',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                ],
             ])
             ->save();
 
