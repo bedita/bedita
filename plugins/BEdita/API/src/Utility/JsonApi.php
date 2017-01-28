@@ -132,7 +132,7 @@ class JsonApi
 
         foreach ($associations as $association) {
             list(, $type) = namespaceSplit(get_class($association));
-            $name = Inflector::underscore($association->name());
+            $name = $association->property();
             if (!($association instanceof Association) || $type === 'ExtensionOf' || in_array($name, $hidden) ||
                 (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
                 ($type === 'HasMany' && in_array($association->target()->alias(), $btmJunctionAliases))) {
