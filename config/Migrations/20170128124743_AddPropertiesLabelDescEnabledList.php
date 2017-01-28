@@ -16,7 +16,7 @@ class AddPropertiesLabelDescEnabledList extends AbstractMigration
             ])
             ->addColumn('enabled', 'boolean', [
                 'comment' => 'property active flag',
-                'default' => 1,
+                'default' => true,
                 'length' => null,
                 'null' => false,
             ])
@@ -28,7 +28,7 @@ class AddPropertiesLabelDescEnabledList extends AbstractMigration
             ])
             ->addColumn('list_view', 'boolean', [
                 'comment' => 'property displayed in list view (backend operations)',
-                'default' => 1,
+                'default' => true,
                 'length' => null,
                 'null' => false,
             ])
