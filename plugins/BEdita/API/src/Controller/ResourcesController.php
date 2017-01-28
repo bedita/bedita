@@ -99,10 +99,13 @@ abstract class ResourcesController extends AppController
         $id = $this->request->param('id');
         $relationship = $this->request->param('relationship');
 
-        $allowAssoc = Inflector::underscore($this->name);
-        $this->set(['_allowedAssociations' => [ $allowAssoc => [$allowAssoc]]]);
-
         $Association = $this->findAssociation($relationship);
+        // Try to guess reverse association and implicitly add it to displayed associations.
+        $reverseAssociation = $Association->target()->association($this->modelClass);
+        if ($reverseAssociation !== null) {
+            $allowAssoc = $reverseAssociation->property();
+            $this->set(['_allowedAssociations' => [$allowAssoc => [$allowAssoc]]]);
+        }
 
         switch ($this->request->method()) {
             case 'PATCH':
