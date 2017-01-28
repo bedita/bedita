@@ -35,32 +35,12 @@ class AppControllerTest extends IntegrationTestCase
     ];
 
     /**
-     * The configuration to restore at the end of every unit test
-     *
-     * @var array
-     */
-    protected $backupConf = [];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->backupConf = [
-            'debug' => Configure::read('debug'),
-            'Accept.html' => Configure::read('Accept.html'),
-        ];
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function tearDown()
     {
-        foreach ($this->backupConf as $key => $val) {
-            Configure::write($key, $val);
-        }
+        ConnectionManager::alias('test', 'default');
+        ConnectionManager::drop('__fail_db_connection');
 
         parent::tearDown();
     }
@@ -327,10 +307,6 @@ class AppControllerTest extends IntegrationTestCase
         $this->assertResponseCode(500);
         $this->assertContentType('application/vnd.api+json');
         $this->assertResponseNotContains('<!DOCTYPE html>');
-
-        // restore db connection
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop('__fail_db_connection');
     }
 
     /**
