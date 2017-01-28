@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\TestSuite\Fixture;
 
-use Cake\Core\Configure;
+use Cake\Database\Schema\Table as Schema;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventListenerInterface;
@@ -32,8 +32,6 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      * {@inheritDoc}
      *
      * If `self::$fields` is empty trying to use table schema loaded in configuration
-     *
-     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function init()
     {
@@ -47,7 +45,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
             $this->fields = $this->fieldsFromConf();
         }
 
-        $this->dispatchEvent('TestFixure.beforeBuildSchema');
+        $this->dispatchEvent('TestFixture.beforeBuildSchema');
 
         parent::init();
     }
@@ -55,34 +53,53 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
     /**
      * Return fields for table defined in configuration.
      *
-     * Configuration has to be in 'schema.table_name' key defined as:
-     *
-     * - 'schema.table_name.columns' (required)
-     * - 'schema.table_name.constraints' (optional)
-     * - 'schema.table_name.indexes' (optional)
-     * - 'schema.table_name.options' (optional)
+     * Configuration is retrieved from `config/Migrations/schema-dump-default.lock` file.
      *
      * @return array
      */
     protected function fieldsFromConf()
     {
-        if (!Configure::check("schema.{$this->table}.columns")) {
+        $source = CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock';
+        if (!file_exists($source) || !is_readable($source)) {
             return [];
         }
 
-        $fields = Configure::read("schema.{$this->table}.columns");
-        foreach ($fields as &$field) {
-            unset($field['collate']);
+        $schema = unserialize(file_get_contents($source));
+        if (empty($schema[$this->table])) {
+            return [];
         }
 
-        $fields += [
-            '_constraints' => Configure::read("schema.{$this->table}.constraints") ?: [],
-            '_indexes' => Configure::read("schema.{$this->table}.indexes") ?: [],
-            '_options' => Configure::read("schema.{$this->table}.options") ?: [
-                'engine' => 'InnoDB',
-                'collation' => 'utf8_general_ci',
-            ],
-        ];
+        $table = $schema[$this->table];
+        if (!($table instanceof Schema)) {
+            return [];
+        }
+
+        $fields = array_flip($table->columns());
+        array_walk(
+            $fields,
+            function (&$column, $columnName) use ($table) {
+                $column = $table->column($columnName);
+                unset($column['collate']);
+            }
+        );
+
+        $fields['_constraints'] = array_flip($table->constraints());
+        array_walk(
+            $fields['_constraints'],
+            function (&$constraint, $constraintName) use ($table) {
+                $constraint = $table->constraint($constraintName);
+            }
+        );
+
+        $fields['_indexes'] = array_flip($table->indexes());
+        array_walk(
+            $fields['_indexes'],
+            function (&$index, $indexName) use ($table) {
+                $index = $table->index($indexName);
+            }
+        );
+
+        $fields['_options'] = $table->options();
 
         return $fields;
     }
@@ -97,13 +114,13 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      *
      * The conventional method map is:
      *
-     * - TestFixure.beforeBuildSchema => beforeBuildSchema
+     * - TestFixture.beforeBuildSchema => beforeBuildSchema
      *
      * @return array
      */
     public function implementedEvents()
     {
-        $eventMap = ['TestFixure.beforeBuildSchema' => 'beforeBuildSchema'];
+        $eventMap = ['TestFixture.beforeBuildSchema' => 'beforeBuildSchema'];
         $events = [];
 
         foreach ($eventMap as $event => $method) {

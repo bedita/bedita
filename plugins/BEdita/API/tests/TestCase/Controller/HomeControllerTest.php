@@ -116,6 +116,22 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/trash' => [
+                        'href' => 'http://api.example.com/trash',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Trash',
+                                'color' => '#f45336'
+                            ]
+                        ],
+                    ],
                 ],
             ],
         ];

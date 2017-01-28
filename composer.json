@@ -20,17 +20,24 @@
             "homepage": "http://www.channelweb.it"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/fquffio/phinx"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "cakephp/cakephp": "3.3.*",
         "mobiledetect/mobiledetectlib": "2.*",
         "cakephp/migrations": "~1.0",
+        "robmorgan/phinx": "dev-fix\/sqlite-update-column-commas as 0.6.5",
         "cakephp/plugin-installer": "*",
         "firebase/php-jwt": "~4.0"
     },
     "require-dev": {
         "psy/psysh": "@stable",
-        "cakephp/debug_kit": "~3.2",
+        "cakephp/debug_kit": "~3.2 !=3.5.1",
         "cakephp/bake": "~1.1",
         "phpunit/phpunit": "*",
         "cakephp/cakephp-codesniffer": "master-dev",

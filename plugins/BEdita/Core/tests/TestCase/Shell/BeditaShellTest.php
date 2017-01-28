@@ -2,99 +2,85 @@
 namespace BEdita\Core\Test\TestCase\Shell;
 
 use BEdita\Core\Shell\BeditaShell;
-use BEdita\Core\Utility\Database;
-use Cake\Core\Configure;
+use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Database\Connection;
+use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\TestCase;
 
 /**
  * \BEdita\Core\Shell\BeditaShell Test Case
  *
  * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends TestCase
+class BeditaShellTest extends ShellTestCase
 {
 
     /**
-     * ConsoleIo mock
+     * Temporary test connection name.
      *
-     * @var \Cake\Console\ConsoleIo|\PHPUnit_Framework_MockObject_MockObject
+     * @var string
      */
-    public $io;
+    const CONNECTION_NAME = 'test_tmp';
 
     /**
-     * Test subject
-     *
-     * @var \BEdita\Core\Shell\BeditaShell
-     */
-    public $BeditaShell;
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.config',
-    ];
-
-    /**
-     * @inheritDoc
-     */
-    public $autoFixtures = false;
-
-    /**
-     * Exclude from drop tables action
-     *
-     * @var array
-     */
-    public $excludeFromDrop = [];
-
-    /**
-     * setUp method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function setUp()
     {
         parent::setUp();
-        $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $this->BeditaShell = new BeditaShell($this->io);
-        $this->BeditaShell->initialize();
+
+        $this->fixtureManager->shutDown();
+
+        ConnectionManager::config(static::CONNECTION_NAME, $this->fakeDbParams());
+        ConnectionManager::alias(static::CONNECTION_NAME, 'default');
     }
-
-    protected function fakeDbSetup($configName, $prefix = '__BE4_', $suffix = '__')
-    {
-        $fake = [
-            'className' => 'Cake\Database\Connection',
-            'host' => $prefix . 'DB_HOST' . $suffix,
-            'username' => $prefix . 'DB_USERNAME' . $suffix,
-            'password' => $prefix . 'DB_PASSWORD' . $suffix,
-            'database' => $prefix . 'DB_DATABASE' . $suffix,
-        ];
-        $info = Database::basicInfo();
-        $fake = array_merge($info, $fake);
-        Configure::write('Datasources.' . $configName, $fake);
-        ConnectionManager::config($configName, $fake);
-
-        return $fake;
-    }
-
 
     /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function tearDown()
     {
-        $this->excludeFromDrop[] = 'config';
-        $this->dbCleanup();
+        $defaultConnection = ConnectionManager::get('default');
+        if ($defaultConnection instanceof Connection && $defaultConnection->isConnected()) {
+            $defaultConnection
+                ->disableConstraints(function (Connection $connection) {
+                    $tables = $connection->schemaCollection()->listTables();
 
-        unset($this->BeditaShell);
+                    foreach ($tables as $table) {
+                        $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                        foreach ($sql as $query) {
+                            $connection->query($query);
+                        }
+                    }
+                });
+        }
+
+        ConnectionManager::alias('test', 'default');
+        ConnectionManager::drop(static::CONNECTION_NAME);
+        ConnectionManager::drop(BeditaShell::TEMP_SETUP_CFG);
 
         parent::tearDown();
+    }
+
+    /**
+     * Get parameters for fake DB configuration.
+     *
+     * @return array
+     */
+    protected function fakeDbParams()
+    {
+        $fakeParams = [
+            'className' => 'Cake\Database\Connection',
+            'host' => '__BE4_DB_HOST__',
+            'port' => '__BE4_DB_PORT__',
+            'username' => '__BE4_DB_USERNAME__',
+            'password' => '__BE4_DB_PASSWORD__',
+            'database' => '__BE4_DB_DATABASE__',
+        ];
+        $fakeParams = array_merge(ConnectionManager::get('default', false)->config(), $fakeParams);
+
+        return $fakeParams;
     }
 
     /**
@@ -105,13 +91,18 @@ class BeditaShellTest extends TestCase
      */
     public function testGetOptionParser()
     {
-        $parser = $this->BeditaShell->getOptionParser();
+        $parser = (new BeditaShell())->getOptionParser();
         $subCommands = $parser->subcommands();
         $this->assertCount(1, $subCommands);
         $this->assertArrayHasKey('setup', $subCommands);
     }
 
-    public function setupInputProvider()
+    /**
+     * Data provider for `testSetup` test case.
+     *
+     * @return array
+     */
+    public function setupProvider()
     {
         return [
             'noSetup' => [
@@ -128,59 +119,64 @@ class BeditaShellTest extends TestCase
     /**
      * Test setup method
      *
+     * @param array $yesNo Answers to "y/n" questions.
+     * @param array $dbConfig Answers to db config questions.
+     * @param array $userPass Answers to user creation questions.
      * @return void
-     * @dataProvider setupInputProvider
+     *
+     * @dataProvider setupProvider
      */
-    public function testSetup($yesNo, $dbConfig = [], $userPass = [])
+    public function testSetup(array $yesNo, array $dbConfig = [], array $userPass = [])
     {
-        $this->fixtureManager->shutDown();
+        ConnectionManager::alias('test', 'default');
+
+        $info = ConnectionManager::get('default')->config();
+        if (strstr($info['driver'], 'Sqlite') !== false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite');
+        }
+
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
             ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', $yesNo[0]],
             ['Proceed with setup?', ['y', 'n'], 'n', $yesNo[1]],
-            ['Overwrite current admin user?', ['y', 'n'], 'n', $yesNo[2]]
+            ['Overwrite current admin user?', ['y', 'n'], 'n', $yesNo[2]],
+            ['Would you like to seed your database with an initial set of data?', ['y', 'n'], 'y', 'n'],
         ];
-
-        $this->io->method('askChoice')
+        $io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
         if (empty($dbConfig)) {
-            $dbConfig = array_fill(0, 4, '');
+            $dbConfig = array_fill(0, 5, '');
         }
         if (empty($userPass)) {
             $userPass = array_fill(0, 2, '');
         }
 
         $map = [
-            ['Host?', null, $dbConfig[0]],
-            ['Database?', null, $dbConfig[1]],
-            ['Username?', null, $dbConfig[2]],
-            ['Password?', null, $dbConfig[3]],
+            ['Host?', 'localhost', $dbConfig[0]],
+            ['Port?', '3306', $dbConfig[1]],
+            ['Database?', null, $dbConfig[2]],
+            ['Username?', null, $dbConfig[3]],
+            ['Password?', null, $dbConfig[4]],
             ['username: ', null, $userPass[0]],
-            ['password: ', null, $userPass[1]]
+            ['password: ', null, $userPass[1]],
         ];
-
-        $this->io->method('ask')
+        $io->method('ask')
              ->will($this->returnValueMap($map));
 
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
-        }
-
-        $res = $this->BeditaShell->setup();
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
 
         if ($yesNo[2] === 'y') {
+            $this->assertNotAborted();
             $this->assertTrue($res);
-            $usersTable = TableRegistry::get('Users');
-            $user = $usersTable->get(1);
+
+            $user = TableRegistry::get('Users')->get(1);
             $this->assertFalse($user->blocked);
             $this->assertEquals($userPass[0], $user->username);
         } else {
             $this->assertFalse($res);
         }
-
-        $this->dbCleanup();
     }
 
     /**
@@ -190,17 +186,17 @@ class BeditaShellTest extends TestCase
      */
     public function testFake()
     {
-        $this->fixtureManager->shutDown();
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
-        $this->fakeDbSetup('__test-temp__');
-        ConnectionManager::alias('__test-temp__', 'default');
+        $mapChoice = [
+            ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', 'n'],
+            ['Proceed with setup?', ['y', 'n'], 'n', 'n'],
+        ];
+        $io->method('askChoice')
+            ->will($this->returnValueMap($mapChoice));
 
-        $res = $this->BeditaShell->setup();
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
         $this->assertFalse($res);
-
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop('__test-temp__');
-        $this->dbCleanup();
     }
 
     /**
@@ -210,103 +206,118 @@ class BeditaShellTest extends TestCase
      */
     public function testFake2()
     {
-        $this->fixtureManager->shutDown();
-
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
+        $config = ConnectionManager::get('test', false)->config();
+        if (strstr($config['driver'], 'Sqlite') !== false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite');
         }
 
-        $fakeParams = $this->fakeDbSetup('__test-temp__');
-        ConnectionManager::alias('__test-temp__', 'default');
+        $fakeParams = array_merge(
+            $config,
+            $this->fakeDbParams()
+        );
+
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $map = [
-            ['Host?', null, $fakeParams['host']],
+            ['Host?', 'localhost', $config['host']],
+            ['Port?', '3306', $fakeParams['port']],
             ['Database?', null, $fakeParams['database']],
             ['Username?', null, $fakeParams['username']],
             ['Password?', null, $fakeParams['password']],
         ];
-        $this->io->method('ask')
-             ->will($this->returnValueMap($map));
+        $io->method('ask')
+            ->will($this->returnValueMap($map));
 
-        $res = $this->BeditaShell->setup();
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
         $this->assertFalse($res);
 
         $mapChoice = [
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
         ];
-        $this->io->method('askChoice')
-             ->will($this->returnValueMap($mapChoice));
+        $io->method('askChoice')
+            ->will($this->returnValueMap($mapChoice));
 
-        $res = $this->BeditaShell->setup();
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
         $this->assertFalse($res);
-
-
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop('__test-temp__');
-        $this->dbCleanup();
     }
 
+    /**
+     * Data provider fot `testFake3` test case.
+     *
+     * @return array
+     */
+    public function fake3Provider()
+    {
+        return [
+            'success' => [
+                true,
+                function ($file) {
+                    copy(CONFIG . 'app.default.php', $file);
+                },
+            ],
+            'missing' => [
+                false,
+                function ($file) {
+                    if (!file_exists($file)) {
+                        return;
+                    }
+
+                    unlink($file);
+                },
+            ],
+            'empty' => [
+                false,
+                function ($file) {
+                    touch($file);
+                },
+            ],
+        ];
+    }
 
     /**
      * Test save connection to file failure
      *
+     * @param bool $success Expected success.
+     * @param callable $callback Callback to be invoked on temporary config file.
      * @return void
+     *
+     * @dataProvider fake3Provider
      */
-    public function testFake3()
+    public function testFake3($success, callable $callback)
     {
-        $this->fixtureManager->shutDown();
-
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
+        $config = ConnectionManager::get('test', false)->config();
+        if (strstr($config['driver'], 'Mysql') === false) {
+            $this->markTestSkipped('Initial setup does not yet support SQLite nor PostgreSQL');
         }
 
-        $fakeParams = $this->fakeDbSetup('__test-temp__');
-        ConnectionManager::alias('__test-temp__', 'default');
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
             ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', 'y'],
         ];
-        $this->io->method('askChoice')
+        $io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
         $map = [
-            ['Host?', null, $info['host']],
-            ['Database?', null, $info['database']],
-            ['Username?', null, $info['username']],
-            ['Password?', null, $info['password']],
+            ['Host?', 'localhost', isset($config['host']) ? $config['host'] : ''],
+            ['Port?', '3306', isset($config['port']) ? $config['port'] : ''],
+            ['Database?', null, isset($config['database']) ? $config['database'] : ''],
+            ['Username?', null, isset($config['username']) ? $config['username'] : ''],
+            ['Password?', null, isset($config['password']) ? $config['password'] : ''],
             ['username: ', null, 'username'],
             ['password: ', null, '42']
         ];
-        $this->io->method('ask')
+        $io->method('ask')
              ->will($this->returnValueMap($map));
 
         $fakeCfg = TMP . '_test_app.php.tmp';
+        $callback($fakeCfg);
 
-        $res = copy(CONFIG . 'app.default.php', $fakeCfg);
-        $this->assertTrue($res);
-        $this->BeditaShell->configPath = $fakeCfg;
-
-        $this->BeditaShell->setup();
-        //$this->assertTrue($res);
-
-        $res = unlink($fakeCfg);
-        $this->assertTrue($res);
-        $res = $this->BeditaShell->setup();
-        $this->assertFalse($res);
-
-        $res = touch($fakeCfg);
-        $this->assertTrue($res);
-        $res = $this->BeditaShell->setup();
-        $this->assertFalse($res);
-
-        ConnectionManager::alias('test', 'default');
-        ConnectionManager::drop('__test-temp__');
-        $this->dbCleanup();
+        $res = $this->invoke(['bedita', 'setup', '--config-file', $fakeCfg], [], $io);
+        $this->assertNotAborted();
+        $this->assertEquals($success, $res);
     }
-
 
     /**
      * Test init schema failure
@@ -315,100 +326,89 @@ class BeditaShellTest extends TestCase
      */
     public function testInitSchemaFailure()
     {
-        $this->fixtureManager->shutDown();
-        $this->loadFixtures('Config');
+        ConnectionManager::alias('test', 'default');
 
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
+        $connection = ConnectionManager::get('default');
+        if (!($connection instanceof Connection)) {
+            throw new \RuntimeException('Unable to use database connection');
         }
+
+        $table = new Table('foo_bar', ['foo' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null]]);
+        foreach ($table->createSql($connection) as $statement) {
+            $connection->query($statement);
+        }
+
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
         ];
-        $this->io->method('askChoice')
+        $io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
 
-        $res = $this->BeditaShell->setup();
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
         $this->assertFalse($res);
+    }
 
-        $this->excludeFromDrop[] = 'config';
-        $this->dbCleanup();
+    /**
+     * Data provider for `testAdminUserFailure` test case.
+     *
+     * @return array
+     */
+    public function adminUserFailureProvider()
+    {
+        return [
+            'success' => [
+                true,
+                false,
+                'gustavo',
+            ],
+            'failure' => [
+                null,
+                true,
+                'bedita',
+            ],
+        ];
     }
 
     /**
      * Test admin user setup failure
      *
+     * @param bool $success Expected success.
+     * @param bool $aborted Expected shell abortion.
+     * @param string $username Default username.
      * @return void
+     * @dataProvider adminUserFailureProvider
      */
-    public function testAdminUserFailure()
+    public function testAdminUserFailure($success, $aborted, $username)
     {
-        $this->fixtureManager->shutDown();
+        ConnectionManager::alias('test', 'default');
+
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
             ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', 'y'],
         ];
-        $this->io->method('askChoice')
+        $io->method('askChoice')
              ->will($this->returnValueMap($mapChoice));
-
-        $info = Database::basicInfo();
-        if ($info['vendor'] != 'mysql') {
-            $this->markTestSkipped('MySQL only supported (for now)');
-        }
 
         $map = [
             ['username: ', null, ''],
-            ['password: ', null, '']
+            ['password: ', null, ''],
         ];
-        $this->io->method('ask')
+        $io->method('ask')
              ->will($this->returnValueMap($map));
 
-        $this->BeditaShell->defaultUsername = 'somename';
-        $this->BeditaShell->setup();
-
-        $this->BeditaShell->defaultUsername = 'bedita';
-        try {
-            $this->BeditaShell->setup();
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('\Cake\Console\Exception\StopException', $e);
+        BeditaShell::$defaultUsername = $username;
+        $res = $this->invoke(['bedita', 'setup'], [], $io);
+        if ($success !== null) {
+            $this->assertEquals($success, $res);
         }
-        $this->dbCleanup();
-    }
-
-
-    protected function dbCleanup()
-    {
-        $info = Database::basicInfo();
-        if ($info['vendor'] === 'mysql') {
-            $schema = Database::currentSchema();
-            if (!empty($schema)) {
-                $res = Database::executeTransaction($this->dropTablesSql($schema));
-                $this->assertNotEmpty($res);
-                $this->assertEquals($res['success'], true);
-            }
+        if ($aborted) {
+            $this->assertAborted();
+        } else {
+            $this->assertNotAborted();
         }
-        if (ConnectionManager::config('__temp_setup__')) {
-            ConnectionManager::drop('__temp_setup__');
-        }
-    }
-
-    /**
-     * Returns SQL DROP statements to empty DB
-     *
-     * @param array $schema DB schema metadata
-     * @return array SQL drop statements
-     */
-    protected function dropTablesSql($schema)
-    {
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=0;';
-        foreach ($schema as $k => $v) {
-            if (!in_array($k, $this->excludeFromDrop)) {
-                $sql[] = 'DROP TABLE IF EXISTS ' . $k;
-            }
-        }
-        $sql[] = 'SET FOREIGN_KEY_CHECKS=1;';
-
-        return $sql;
     }
 }

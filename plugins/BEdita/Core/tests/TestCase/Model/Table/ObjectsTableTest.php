@@ -110,8 +110,6 @@ class ObjectsTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $object = $this->Objects->newEntity($data);
-        $object->created_by = 1;
-        $object->modified_by = 1;
         $object->type = 'documents';
 
         $error = (bool)$object->errors();
@@ -136,6 +134,7 @@ class ObjectsTableTest extends TestCase
                     2 => 'title one',
                     3 => 'title two',
                     6 => 'title one deleted',
+                    7 => 'title two deleted',
                 ],
                 [1],
             ],
@@ -145,6 +144,7 @@ class ObjectsTableTest extends TestCase
                     3 => 'title two',
                     4 => 'Gustavo Supporto profile',
                     6 => 'title one deleted',
+                    7 => 'title two deleted',
                 ],
                 ['document', 'profiles'],
             ],

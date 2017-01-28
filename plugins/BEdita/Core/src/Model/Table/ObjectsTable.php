@@ -47,6 +47,8 @@ class ObjectsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.UserModified');
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',

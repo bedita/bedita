@@ -14,6 +14,8 @@
 namespace BEdita\Core\ORM\Locator;
 
 use Cake\Core\App;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Log\LogTrait;
 use Cake\ORM\Locator\TableLocator as CakeLocator;
 use Cake\Utility\Inflector;
 
@@ -24,6 +26,7 @@ use Cake\Utility\Inflector;
  */
 class TableLocator extends CakeLocator
 {
+    use LogTrait;
 
     /**
      * Gets the table class name.
@@ -44,6 +47,21 @@ class TableLocator extends CakeLocator
         }
 
         $options['className'] = sprintf('BEdita/Core.%s', $options['className']);
+
+        $className = App::className($options['className'], 'Model/Table', 'Table');
+        if ($className !== false) {
+            return $className;
+        }
+
+        try {
+            $objectTypes = $this->get('ObjectTypes', ['className' => 'BEdita/Core.ObjectTypes']);
+            $objectType = $objectTypes->get(Inflector::underscore($alias));
+            $options['className'] = $objectType->table;
+        } catch (\Exception $e) {
+            if (!($e instanceof RecordNotFoundException)) {
+                $this->log($e, 'warning');
+            }
+        }
 
         return App::className($options['className'], 'Model/Table', 'Table');
     }

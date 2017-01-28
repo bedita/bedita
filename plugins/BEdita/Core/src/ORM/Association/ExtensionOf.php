@@ -88,11 +88,18 @@ class ExtensionOf extends BelongsTo
             return $row;
         }
 
+        // remove key corresponding to source alias
+        $row[$sourceAlias] = array_diff_key($row[$sourceAlias], array_flip([$sourceAlias]));
+
         $properties = $row[$nestKey];
         if ($properties instanceof Entity) {
             $properties = $properties->getOriginalValues();
         }
-        $row[$sourceAlias] += $properties;
+
+        // get properties except key corresponding to $nestKey
+        if (is_array($properties)) {
+            $row[$sourceAlias] += array_diff_key($properties, array_flip([$nestKey]));
+        }
         unset($row[$nestKey]);
 
         return $row;
@@ -160,8 +167,16 @@ class ExtensionOf extends BelongsTo
      */
     protected function targetPropertiesValues(EntityInterface $entity)
     {
-        $properties = $entity->visibleProperties() + $entity->hiddenProperties();
-        $propertyValues = $entity->extract($properties);
+        $properties = array_merge($entity->visibleProperties(), $entity->hiddenProperties());
+        $propertyValues = [];
+        foreach ($properties as $prop) {
+            $value = $entity->get($prop);
+            if ($value === null && !$entity->dirty($prop)) {
+                continue;
+            }
+
+            $propertyValues[$prop] = $value;
+        }
 
         $source = $this->source();
         $sourceProperties = array_diff($source->schema()->columns(), [$source->primaryKey()]);

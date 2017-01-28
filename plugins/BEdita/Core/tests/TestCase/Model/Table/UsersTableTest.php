@@ -72,6 +72,7 @@ class UsersTableTest extends TestCase
      */
     public function testInitialization()
     {
+        $this->Users->associations()->removeAll();
         $this->Users->initialize([]);
         $this->assertEquals('users', $this->Users->table());
         $this->assertEquals('id', $this->Users->primaryKey());
@@ -120,8 +121,6 @@ class UsersTableTest extends TestCase
     {
         $user = $this->Users->newEntity();
         $this->Users->patchEntity($user, $data);
-        $user->created_by = 1;
-        $user->modified_by = 1;
         $user->type = 'users';
 
         $error = (bool)$user->errors();
@@ -147,5 +146,20 @@ class UsersTableTest extends TestCase
         $lastLogin = $this->Users->get(1)->get('last_login');
         $this->assertNotNull($lastLogin);
         $this->assertEquals(time(), $lastLogin->timestamp, '', 1);
+    }
+
+    /**
+     * Test deleted field on user deleted.
+     *
+     * @return void
+     */
+    public function testDeleted()
+    {
+        $user = $this->Users->get(1);
+        $user->deleted = true;
+        $success = $this->Users->save($user);
+        $this->assertTrue((bool)$success);
+        $deleted = $this->Users->get(1)->deleted;
+        $this->assertEquals(true, $deleted);
     }
 }
