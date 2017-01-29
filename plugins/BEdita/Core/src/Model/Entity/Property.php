@@ -136,7 +136,7 @@ class Property extends Entity
     /**
      * Setter for `object_type` virtual property.
      *
-     * @param string $objectType Object type name.
+     * @param string $objectTypeName Object type name.
      * @return string
      */
     protected function _setObjectTypeName($objectTypeName)
