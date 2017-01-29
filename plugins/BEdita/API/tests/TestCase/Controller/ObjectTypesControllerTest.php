@@ -75,6 +75,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/object_types/1',
                     ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/1/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/1/properties',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -91,6 +99,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/object_types/2',
                     ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/2/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/2/properties',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -106,6 +122,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/3',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/3/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/3/properties',
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -198,6 +222,14 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects'
+                ],
+                'relationships' => [
+                    'properties' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/object_types/1/relationships/properties',
+                            'related' => 'http://api.example.com/object_types/1/properties',
+                        ],
+                    ],
                 ],
             ],
         ];

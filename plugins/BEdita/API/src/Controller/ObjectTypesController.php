@@ -24,12 +24,21 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\ObjectTypesTable $ObjectTypes
  */
-class ObjectTypesController extends AppController
+class ObjectTypesController extends ResourcesController
 {
     /**
      * {@inheritDoc}
      */
     public $modelClass = 'ObjectTypes';
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_defaultConfig = [
+        'allowedAssociations' => [
+            'properties' => ['properties'],
+        ],
+    ];
 
     /**
      * {@inheritDoc}

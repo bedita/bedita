@@ -1294,7 +1294,7 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "comment": "",
+                "comment": "object title, can be emtpy",
                 "precision": null
             },
             "description": {
@@ -1302,7 +1302,7 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "comment": "",
+                "comment": "brief description, abstract",
                 "precision": null
             },
             "body": {
@@ -1310,7 +1310,7 @@
                 "length": 16777215,
                 "null": true,
                 "default": null,
-                "comment": "",
+                "comment": "long description, main object text",
                 "precision": null
             },
             "extra": {
@@ -1687,7 +1687,55 @@
                 "length": null,
                 "null": true,
                 "default": null,
-                "comment": "property predefined options list",
+                "comment": "property predefined options list (JSON)",
+                "precision": null
+            },
+            "created": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "creation date",
+                "precision": null
+            },
+            "modified": {
+                "type": "datetime",
+                "length": null,
+                "null": false,
+                "default": null,
+                "comment": "last modification date",
+                "precision": null
+            },
+            "description": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "brief property description",
+                "precision": null
+            },
+            "enabled": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "1",
+                "comment": "property active flag",
+                "precision": null
+            },
+            "label": {
+                "type": "text",
+                "length": null,
+                "null": true,
+                "default": null,
+                "comment": "property default label",
+                "precision": null
+            },
+            "list_view": {
+                "type": "boolean",
+                "length": null,
+                "null": false,
+                "default": "1",
+                "comment": "property displayed in list view (backend operations)",
                 "precision": null
             }
         },
