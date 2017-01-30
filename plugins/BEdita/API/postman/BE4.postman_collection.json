@@ -51,13 +51,13 @@
 							"formdata": [
 								{
 									"key": "username",
-									"value": "bedita",
+									"value": "{{username}}",
 									"type": "text",
 									"enabled": true
 								},
 								{
 									"key": "password_hash",
-									"value": "bedita",
+									"value": "{{password}}",
 									"type": "text",
 									"enabled": true
 								}
