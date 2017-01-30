@@ -56,7 +56,7 @@
 									"enabled": true
 								},
 								{
-									"key": "password_hash",
+									"key": "password",
 									"value": "{{password}}",
 									"type": "text",
 									"enabled": true
