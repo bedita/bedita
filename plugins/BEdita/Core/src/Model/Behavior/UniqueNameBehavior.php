@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 
 /**
@@ -40,6 +41,8 @@ class UniqueNameBehavior extends Behavior
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',
+        'separator' => '_',
+        'hashlength' => 6
     ];
 
     /**
@@ -53,10 +56,56 @@ class UniqueNameBehavior extends Behavior
     {
         $config = $this->config();
         $uname = $entity->get('uname');
-        if (empty($uname) && empty($entity->get('id'))) {
-            $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+        if (empty($uname)) {
+            $uname = $this->generateUniqueName($entity, $config, false);
         }
-        $entity->set('uname', strtolower($uname));
+        $id = !(empty($entity->get('id'))) ? $entity->get('id') : null;
+        while ($this->uniqueNameExists($uname, $id)) {
+            $uname = $this->generateUniqueName($entity, $config, true);
+        }
+
+        $entity->set('uname', $uname);
+    }
+
+    /**
+     * Generate unique name string from $config parameters.
+     * If $regenerate parameter is true, random hash is added to uname string.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @param array $config parameters to create unique name
+     * @param bool $regenerate if true it adds hash string to uname
+     * @return string uname
+     */
+    public function generateUniqueName(EntityInterface $entity, array $cfg, $regenerate = false)
+    {
+        $config = array_merge($this->config(), $cfg);
+        $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+        if ($regenerate) {
+            $hash = sha1(md5($uname));
+            if (!empty($config['hashlength'])) {
+                $hash = substr($hash, 0, $config['hashlength']);
+            }
+            $uname .= $config['separator'] . $hash;
+        }
+
+        return strtolower($uname);
+    }
+
+    /**
+     * Verify $uname is unique
+     *
+     * @param string $uname to check
+     * @param int $id object id
+     * @return bool
+     */
+    public function uniqueNameExists($uname, $id = null)
+    {
+        $options = ['uname' => $uname];
+        if (!empty($id)) {
+            $options['id <>'] = $id;
+        }
+
+        return TableRegistry::get('Objects')->exists($options);
     }
 
     /**
