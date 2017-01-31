@@ -389,7 +389,15 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+
+        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $entity = $ObjectTypes->get(1);
+        $this->assertEquals('document new', $entity->get('name'));
+
+        // restore previous values
+        $entity = $ObjectTypes->patchEntity($entity, ['name' => 'document']);
+        $success = $ObjectTypes->save($entity);
+        $this->assertTrue((bool)$success);
     }
 
     /**
@@ -421,7 +429,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document new', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
+        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
         $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
     }
 
