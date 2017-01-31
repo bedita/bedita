@@ -95,7 +95,7 @@ class UniqueNameBehavior extends Behavior
      * Verify $uname is unique
      *
      * @param string $uname to check
-     * @param int $id object id
+     * @param int $id object id to exclude from check
      * @return bool
      */
     public function uniqueNameExists($uname, $id = null)
