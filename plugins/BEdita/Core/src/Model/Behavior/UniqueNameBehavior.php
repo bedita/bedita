@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Text;
 
 /**
@@ -54,9 +55,47 @@ class UniqueNameBehavior extends Behavior
         $config = $this->config();
         $uname = $entity->get('uname');
         if (empty($uname) && empty($entity->get('id'))) {
-            $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+            $source = $entity->source();
+            $regenerate = false;
+            do {
+                $uname = $this->generateUniqueName($entity, $config, $regenerate);
+            } while ($regenerate = $this->uniqueNameExists($source, $uname));
         }
-        $entity->set('uname', strtolower($uname));
+        $entity->set('uname', $uname);
+    }
+
+    /**
+     * Generate unique name string from $config parameters.
+     * If $regenerate parameter is true, random hash is added to uname string.
+     *
+     * @param \Cake\Datasource\EntityInterface $entity The entity to save
+     * @param array $config parameters to create unique name
+     * @param bool $regenerate if true it adds hash string to uname
+     * @return string uname
+     */
+    public function generateUniqueName(EntityInterface $entity, array $config, $regenerate = false)
+    {
+        $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+        if ($regenerate) {
+            $hash = sha1(md5($uname));
+            $uname .= $hash;
+        }
+
+        return strtolower($uname);
+    }
+
+    /**
+     * Verify $uname is unique
+     *
+     * @param string $source table/entity
+     * @param string $uname to check
+     * @return bool
+     */
+    public function uniqueNameExists($source, $uname)
+    {
+        $result = TableRegistry::get($source)->exists(['uname' => $uname]);
+
+        return $result;
     }
 
     /**

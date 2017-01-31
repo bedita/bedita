@@ -91,7 +91,15 @@ class UniqueNameBehaviorTest extends TestCase
         $data['username'] = $input[0];
         $this->Users->patchEntity($user, $data);
         $this->Users->uniqueName($user);
+        $user->type = 'users';
+        $this->Users->save($user);
 
         $this->assertEquals($user['uname'], $input[1]);
+
+        $user2 = $this->Users->newEntity();
+        $this->Users->patchEntity($user2, $data);
+        $this->Users->uniqueName($user2);
+
+        $this->assertNotEquals($user2['uname'], $user['uname']);
     }
 }
