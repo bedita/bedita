@@ -41,6 +41,8 @@ class UniqueNameBehavior extends Behavior
         'sourceField' => 'title',
         'prefix' => '',
         'replacement' => '-',
+        'separator' => '_',
+        'hashlength' => 6
     ];
 
     /**
@@ -54,13 +56,14 @@ class UniqueNameBehavior extends Behavior
     {
         $config = $this->config();
         $uname = $entity->get('uname');
-        if (empty($uname) && empty($entity->get('id'))) {
-            $source = $entity->source();
-            $regenerate = false;
-            do {
-                $uname = $this->generateUniqueName($entity, $config, $regenerate);
-            } while ($regenerate = $this->uniqueNameExists($source, $uname));
+        if (empty($uname)) {
+            $uname = $this->generateUniqueName($entity, $config, false);
         }
+        $id = !(empty($entity->get('id'))) ? $entity->get('id') : null;
+        while ($this->uniqueNameExists($uname, $id)) {
+            $uname = $this->generateUniqueName($entity, $config, true);
+        }
+
         $entity->set('uname', $uname);
     }
 
@@ -73,12 +76,16 @@ class UniqueNameBehavior extends Behavior
      * @param bool $regenerate if true it adds hash string to uname
      * @return string uname
      */
-    public function generateUniqueName(EntityInterface $entity, array $config, $regenerate = false)
+    public function generateUniqueName(EntityInterface $entity, array $cfg, $regenerate = false)
     {
+        $config = array_merge($this->config(), $cfg);
         $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
         if ($regenerate) {
             $hash = sha1(md5($uname));
-            $uname .= $hash;
+            if (!empty($config['hashlength'])) {
+                $hash = substr($hash, 0, $config['hashlength']);
+            }
+            $uname .= $config['separator'] . $hash;
         }
 
         return strtolower($uname);
@@ -87,15 +94,18 @@ class UniqueNameBehavior extends Behavior
     /**
      * Verify $uname is unique
      *
-     * @param string $source table/entity
      * @param string $uname to check
+     * @param int $id object id
      * @return bool
      */
-    public function uniqueNameExists($source, $uname)
+    public function uniqueNameExists($uname, $id = null)
     {
-        $result = TableRegistry::get($source)->exists(['uname' => $uname]);
+        $options = ['uname' => $uname];
+        if (!empty($id)) {
+            $options['id <>'] = $id;
+        }
 
-        return $result;
+        return TableRegistry::get('Objects')->exists($options);
     }
 
     /**
