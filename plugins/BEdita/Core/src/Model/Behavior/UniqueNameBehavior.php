@@ -72,7 +72,7 @@ class UniqueNameBehavior extends Behavior
      * If $regenerate parameter is true, random hash is added to uname string.
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
-     * @param array $config parameters to create unique name
+     * @param array $cfg parameters to create unique name
      * @param bool $regenerate if true it adds hash string to uname
      * @return string uname
      */
