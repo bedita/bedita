@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\Model\Entity\Object;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
