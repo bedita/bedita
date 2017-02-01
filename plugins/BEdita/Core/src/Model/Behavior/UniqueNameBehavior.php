@@ -81,7 +81,8 @@ class UniqueNameBehavior extends Behavior
         $config = array_merge($this->config(), $cfg);
         $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
         if ($regenerate) {
-            $hash = sha1(md5($uname));
+            $hash = Text::uuid();
+            $hash = str_replace('-', '', $hash);
             if (!empty($config['hashlength'])) {
                 $hash = substr($hash, 0, $config['hashlength']);
             }
