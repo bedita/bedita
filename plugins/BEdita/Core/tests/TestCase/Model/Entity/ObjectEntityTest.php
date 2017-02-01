@@ -13,17 +13,17 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\Object;
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Entity\Object} Test Case
+ * {@see \BEdita\Core\Model\Entity\ObjectEntity} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Object
+ * @coversDefaultClass \BEdita\Core\Model\Entity\ObjectEntity
  */
-class ObjectTest extends TestCase
+class ObjectEntityTest extends TestCase
 {
 
     /**
@@ -87,7 +87,7 @@ class ObjectTest extends TestCase
             'modified_by' => 2
         ];
         $object = $this->Objects->patchEntity($object, $data);
-        if (!($object instanceof Object)) {
+        if (!($object instanceof ObjectEntity)) {
             throw new \InvalidArgumentException();
         }
 

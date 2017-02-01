@@ -37,6 +37,6 @@ namespace BEdita\Core\Model\Entity;
  *
  * @since 4.0.0
  */
-class Profile extends Object
+class Profile extends ObjectEntity
 {
 }

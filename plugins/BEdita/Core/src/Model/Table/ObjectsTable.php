@@ -42,6 +42,7 @@ class ObjectsTable extends Table
         parent::initialize($config);
 
         $this->table('objects');
+        $this->entityClass('BEdita\Core\Model\Entity\ObjectEntity');
         $this->primaryKey('id');
         $this->displayField('title');
 
