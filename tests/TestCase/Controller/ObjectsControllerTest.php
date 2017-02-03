@@ -81,7 +81,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/1',
+                        'self' => 'http://api.example.com/users/1',
                     ],
                 ],
                 [
@@ -108,7 +108,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/2',
+                        'self' => 'http://api.example.com/documents/2',
                     ],
                 ],
                 [
@@ -132,7 +132,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/3',
+                        'self' => 'http://api.example.com/documents/3',
                     ],
                 ],
                 [
@@ -156,7 +156,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/4',
+                        'self' => 'http://api.example.com/profiles/4',
                     ],
                 ],
                 [
@@ -180,7 +180,7 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'publish_end' => null,
                     ],
                     'links' => [
-                        'self' => 'http://api.example.com/objects/5',
+                        'self' => 'http://api.example.com/users/5',
                     ],
                 ],
             ],
