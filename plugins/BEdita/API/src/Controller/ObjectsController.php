@@ -12,6 +12,10 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\TableRegistry;
+
 /**
  * Controller for `/objects` endpoint.
  *
@@ -27,11 +31,28 @@ class ObjectsController extends AppController
     public $modelClass = 'Objects';
 
     /**
+     * The referred object type entity filled when `object_type` request param is set and valid
+     *
+     * @var \Cake\ORM\EntityInterface
+     */
+    protected $objectType = null;
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
     {
         parent::initialize();
+
+        $type = $this->request->param('object_type');
+        if (!empty($type)) {
+            try {
+                $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+                $this->Objects = TableRegistry::get($this->objectType->alias);
+            } catch (RecordNotFoundException $e) {
+                throw new NotFoundException('Endpoint does not exist');
+            }
+        }
 
         $this->set('_type', 'objects');
     }

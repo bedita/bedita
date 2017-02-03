@@ -40,18 +40,6 @@ Router::plugin(
             ['_name' => 'status']
         );
 
-        // Objects.
-        $routes->connect(
-            '/objects',
-            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'objects:index']
-        );
-        $routes->connect(
-            '/objects/*',
-            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'objects:view']
-        );
-
         // Roles and Users rules that must be on top
         $routes->connect(
             '/users/:user_id/roles',
@@ -187,6 +175,18 @@ Router::plugin(
             '/trash/*',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'trash:delete']
+        );
+
+        // Objects.
+        $routes->connect(
+            '/:object_type',
+            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'objects:index']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'objects:view']
         );
     }
 );
