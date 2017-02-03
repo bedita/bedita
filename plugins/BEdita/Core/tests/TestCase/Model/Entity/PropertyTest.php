@@ -13,25 +13,25 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\Object;
+use BEdita\Core\Model\Entity\Property;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Entity\Object} Test Case
+ * {@see \BEdita\Core\Model\Entity\Property} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Entity\Object
+ * @coversDefaultClass \BEdita\Core\Model\Entity\Property
  */
-class ObjectTest extends TestCase
+class PropertyTest extends TestCase
 {
 
     /**
      * Test subject's table
      *
-     * @var \BEdita\Core\Model\Table\ObjectsTable
+     * @var \BEdita\Core\Model\Table\PropertiesTable
      */
-    public $Objects;
+    public $Properties;
 
     /**
      * Fixtures
@@ -39,8 +39,9 @@ class ObjectTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.properties',
     ];
 
     /**
@@ -50,7 +51,7 @@ class ObjectTest extends TestCase
     {
         parent::setUp();
 
-        $this->Objects = TableRegistry::get('Objects');
+        $this->Properties = TableRegistry::get('Properties');
     }
 
     /**
@@ -58,7 +59,7 @@ class ObjectTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->Objects);
+        unset($this->Properties);
 
         parent::tearDown();
     }
@@ -71,32 +72,28 @@ class ObjectTest extends TestCase
      */
     public function testAccessible()
     {
-        $object = $this->Objects->get(1);
+        $property = $this->Properties->get(1);
 
-        $created = $object->created;
-        $modified = $object->modified;
-        $published = $object->published;
+        $created = $property->created;
+        $modified = $property->modified;
 
         $data = [
             'id' => 42,
-            'locked' => false,
+            'enabled' => false,
             'created' => '2016-01-01 12:00:00',
             'modified' => '2016-01-01 12:00:00',
             'published' => '2016-01-01 12:00:00',
-            'created_by' => 2,
-            'modified_by' => 2
+            'description' => 'another description'
         ];
-        $object = $this->Objects->patchEntity($object, $data);
-        if (!($object instanceof Object)) {
+        $property = $this->Properties->patchEntity($property, $data);
+        if (!($property instanceof Property)) {
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(1, $object->id);
-        $this->assertTrue($object->locked);
-        $this->assertEquals(1, $object->created_by);
-        $this->assertEquals(1, $object->modified_by);
-        $this->assertEquals($created, $object->created);
-        $this->assertEquals($modified, $object->modified);
-        $this->assertEquals($published, $object->published);
+        $this->assertEquals(1, $property->id);
+        $this->assertTrue($property->enabled);
+        $this->assertEquals($created, $property->created);
+        $this->assertEquals($modified, $property->modified);
+        $this->assertEquals($data['description'], $property->description);
     }
 }

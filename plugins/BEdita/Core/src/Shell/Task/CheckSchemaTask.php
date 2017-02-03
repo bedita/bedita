@@ -234,7 +234,7 @@ class CheckSchemaTask extends Shell
                 if ($column === $table) {
                     $errorMsg[] = 'same name as table';
                 }
-                if (!in_array($column, ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params']) && substr($column, -3) !== '_id') {
+                if (!in_array($column, ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params', 'label']) && substr($column, -3) !== '_id') {
                     if (array_key_exists($column, $allColumns)) {
                         $errorMsg[] = sprintf('already defined in "%s"', $allColumns[$column]);
                     }

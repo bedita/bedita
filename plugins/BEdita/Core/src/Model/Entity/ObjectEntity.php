@@ -43,7 +43,7 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class Object extends Entity
+class ObjectEntity extends Entity
 {
 
     /**

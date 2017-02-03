@@ -27,7 +27,7 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
- * @property \BEdita\Core\Model\Entity\Object[] $objects
+ * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  */
 class ObjectType extends Entity
 {

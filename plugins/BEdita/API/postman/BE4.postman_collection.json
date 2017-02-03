@@ -47,17 +47,17 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
+							"mode": "urlencoded",
+							"urlencoded": [
 								{
 									"key": "username",
-									"value": "bedita",
+									"value": "{{username}}",
 									"type": "text",
 									"enabled": true
 								},
 								{
-									"key": "password_hash",
-									"value": "bedita",
+									"key": "password",
+									"value": "{{password}}",
 									"type": "text",
 									"enabled": true
 								}

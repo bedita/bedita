@@ -55,6 +55,11 @@ class ObjectTypesTable extends Table
             'foreignKey' => 'object_type_id',
             'className' => 'BEdita/Core.Objects',
         ]);
+
+        $this->hasMany('Properties', [
+            'foreignKey' => 'property_type_id',
+            'className' => 'BEdita/Core.Properties',
+        ]);
     }
 
     /**
