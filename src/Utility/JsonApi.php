@@ -35,23 +35,24 @@ class JsonApi
      *
      * @param mixed $items Items to be formatted.
      * @param string|null $type Type of items. If missing, an attempt is made to obtain this info from each item's data.
+     * @param array $options Format data options, may include 'allowedAssociations' key to use in relationships.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData($items, $type = null)
+    public static function formatData($items, $type = null, $options = [])
     {
         if ($items instanceof Query || $items instanceof CollectionInterface) {
             $items = $items->toList();
         }
 
         if (!is_array($items) || !Hash::numeric(array_keys($items))) {
-            return static::formatItem($items, $type, false);
+            return static::formatItem($items, $type, false, $options);
         }
 
         $data = [];
         foreach ($items as $item) {
-            $data[] = static::formatItem($item, $type);
+            $data[] = static::formatItem($item, $type, true, $options);
         }
 
         return $data;
@@ -112,9 +113,10 @@ class JsonApi
      *
      * @param Entity $entity Entity item.
      * @param string $endpoint Default API endpoint for entity type.
+     * @param array $options Options, may include 'allowedAssociations' key.
      * @return array
      */
-    protected static function extractRelationships(Entity $entity, $endpoint)
+    protected static function extractRelationships(Entity $entity, $endpoint, $options = [])
     {
         $relationships = [];
         $associations = TableRegistry::get($entity->source())->associations();
@@ -132,6 +134,7 @@ class JsonApi
             list(, $type) = namespaceSplit(get_class($association));
             $name = $association->property();
             if (!($association instanceof Association) || $type === 'ExtensionOf' || in_array($name, $hidden) ||
+                (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
                 ($type === 'HasMany' && in_array($association->target()->alias(), $btmJunctionAliases))) {
                 continue;
             }
@@ -177,11 +180,12 @@ class JsonApi
      * @param \Cake\ORM\Entity|array $item Single entity item to be formatted.
      * @param string|null $type Type of item. If missing, an attempt is made to obtain this info from item's data.
      * @param bool $showLink Display item url in 'links.self', default is true
+     * @param array $options Format data options, may include 'allowedAssociations' key to use in relationships.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    protected static function formatItem($item, $type = null, $showLink = true)
+    protected static function formatItem($item, $type = null, $showLink = true, $options = [])
     {
         if (!is_array($item) && !($item instanceof Entity)) {
             throw new \InvalidArgumentException('Unsupported item type');
@@ -190,7 +194,7 @@ class JsonApi
         list($type, $endpoint) = static::extractType($item, $type);
 
         if ($item instanceof Entity) {
-            $relationships = static::extractRelationships($item, $endpoint);
+            $relationships = static::extractRelationships($item, $endpoint, $options);
             if (empty($relationships)) {
                 unset($relationships);
             }
