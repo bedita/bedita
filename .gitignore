@@ -16,11 +16,6 @@
 /vendor/*
 !/vendor/.gitkeep
 
-# BEdita 3 directories #
-########################
-/addons/*
-/frontends/*
-/modules/*
 
 # IDE and editor specific files #
 #################################
