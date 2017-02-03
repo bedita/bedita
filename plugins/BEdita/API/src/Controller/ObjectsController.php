@@ -44,8 +44,8 @@ class ObjectsController extends AppController
     {
         parent::initialize();
 
-        $type = $this->request->param('object_type');
-        if (!empty($type)) {
+        $type = $this->request->param('object_type') ?: 'objects';
+        if ($type != 'objects') {
             try {
                 $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
                 $this->Objects = TableRegistry::get($this->objectType->alias);
@@ -68,6 +68,10 @@ class ObjectsController extends AppController
             ->where(['deleted' => 0])
             ->contain(['ObjectTypes']);
 
+        if ($this->objectType) {
+            $query->andWhere(['object_type_id' => $this->objectType->id]);
+        }
+
         $objects = $this->paginate($query);
 
         $this->set(compact('objects'));
@@ -82,9 +86,13 @@ class ObjectsController extends AppController
      */
     public function view($id)
     {
+        $conditions = ['deleted' => 0];
+        if ($this->objectType) {
+            $conditions['object_type_id'] = $this->objectType->id;
+        }
         $object = $this->Objects->get($id, [
             'contain' => ['ObjectTypes'],
-            'conditions' => ['deleted' => 0]
+            'conditions' => $conditions
         ]);
 
         $this->set(compact('object'));
