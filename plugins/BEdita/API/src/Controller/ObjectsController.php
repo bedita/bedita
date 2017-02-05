@@ -13,8 +13,12 @@
 namespace BEdita\API\Controller;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Network\Exception\BadRequestException;
+use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
 
 /**
  * Controller for `/objects` endpoint.
@@ -97,5 +101,83 @@ class ObjectsController extends AppController
 
         $this->set(compact('object'));
         $this->set('_serialize', ['object']);
+    }
+
+    /**
+     * Add a new object.
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
+     */
+    public function add()
+    {
+        $this->request->allowMethod('post');
+
+        $object = $this->Objects->newEntity($this->request->data);
+        $object->type = $this->request->data('type');
+        if (!$this->Objects->save($object)) {
+            $this->log('Object creation failed  - ' . $object->type . ' - ' . json_encode($object->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
+        }
+
+        $this->response->statusCode(201);
+        $urlOptions = ['object_type' => $object->type, '_name' => 'api:objects:view', $object->id];
+        $this->response->header('Location', Router::url($urlOptions, true));
+
+        $this->set(compact('object'));
+        $this->set('_serialize', ['object']);
+    }
+
+    /**
+     * Edit an existing object.
+     *
+     * @param int $id Object ID.
+     * @return void
+     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
+     *      the URL object ID.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
+     */
+    public function edit($id)
+    {
+        $this->request->allowMethod('patch');
+
+        if ($this->request->data('id') != $id) {
+            throw new ConflictException('IDs don\' match');
+        }
+
+        $object = $this->Objects->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
+        $object = $this->Objects->patchEntity($object, $this->request->data);
+        if (!$this->Objects->save($object)) {
+            $this->log('Object edit failed ' . json_encode($object->errors()), 'error');
+            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
+        }
+
+        $this->set(compact('object'));
+        $this->set('_serialize', ['object']);
+    }
+
+    /**
+     * Delete an existing object.
+     *
+     * @param int $id object ID.
+     * @return void
+     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     */
+    public function delete($id)
+    {
+        $this->request->allowMethod('delete');
+
+        $object = $this->Objects->get($id, [
+            'conditions' => ['deleted' => 0]
+        ]);
+        $object->deleted = true;
+        if (!$this->Objects->save($object)) {
+            throw new InternalErrorException('Could not delete object');
+        }
+
+        $this->noContentResponse();
     }
 }
