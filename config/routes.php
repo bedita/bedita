@@ -239,5 +239,22 @@ Router::plugin(
             ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
             ['_name' => 'objects:view']
         );
+        $routes->connect(
+            '/:object_type',
+            ['controller' => 'Objects', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'objects:add']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'objects:edit']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'objects:delete']
+        );
+
+
     }
 );
