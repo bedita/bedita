@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -34,7 +35,8 @@ class HomeController extends AppController
 
         $baseUrl = Router::fullBaseUrl();
 
-        $endPoints = ['/objects', '/users', '/roles', '/object_types', '/status', '/trash'];
+        $endPoints = ['/objects', '/roles', '/object_types', '/status', '/trash'];
+        $endPoints = array_unique(array_merge($this->objectTypesEndpoints(), $endPoints));
         foreach ($endPoints as $e) {
             $randomColor = substr(md5($e . 'color'), 0, 6);
             $resources[$e] = [
@@ -55,5 +57,21 @@ class HomeController extends AppController
 
         $this->set('_meta', compact('resources'));
         $this->set('_serialize', []);
+    }
+
+    /**
+     * Returns available object types to list as endpoints
+     *
+     * @return array Array of object type names
+     */
+    protected function objectTypesEndpoints()
+    {
+        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'pluralized'])->toArray();
+        $endPoints = [];
+        foreach ($allTypes as $t) {
+            $endPoints[] = '/' . $t;
+        }
+
+        return $endPoints;
     }
 }
