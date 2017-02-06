@@ -39,9 +39,8 @@
         "psy/psysh": "@stable",
         "cakephp/debug_kit": "~3.2 !=3.5.1",
         "cakephp/bake": "~1.1",
-        "phpunit/phpunit": "*",
-        "cakephp/cakephp-codesniffer": "master-dev",
-        "phpmd/phpmd": "*",
+        "phpunit/phpunit": "<6.0",
+        "cakephp/cakephp-codesniffer": "~2.1",
         "fzaninotto/faker": "^1.5"
     },
     "autoload": {
@@ -65,8 +64,13 @@
         "post-install-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
         "post-update-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
         "post-create-project-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
-        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump"
-    },
-    "minimum-stability": "stable",
-    "prefer-stable": true
+        "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
+        "check": [
+            "@test",
+            "@cs-check"
+        ],
+        "cs-check": "phpcs --colors -p --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
+        "cs-fix": "phpcbf --colors --standard=vendor/cakephp/cakephp-codesniffer/CakePHP ./src ./tests",
+        "test": "phpunit --colors=always"
+    }
 }
