@@ -1,7 +1,7 @@
 {
     "name": "bedita/bedita",
     "type": "project",
-    "description": "BEdita manage app",
+    "description": "BEdita API-first content management server app",
     "homepage": "http://bedita.com",
     "license": "LGPL",
     "support": {
@@ -47,7 +47,6 @@
         "psr-4": {
             "BEdita\\Manage\\": "src",
             "BEdita\\API\\": "./plugins/BEdita/API/src",
-            "BEdita\\Auth\\": "./plugins/BEdita/Auth/src",
             "BEdita\\Core\\": "./plugins/BEdita/Core/src"
         }
     },
@@ -55,7 +54,6 @@
         "psr-4": {
             "BEdita\\Manage\\Test\\": "tests",
             "BEdita\\API\\Test\\": "./plugins/BEdita/API/tests",
-            "BEdita\\Auth\\Test\\": "./plugins/BEdita/Auth/tests",
             "BEdita\\Core\\Test\\": "./plugins/BEdita/Core/tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
