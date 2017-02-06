@@ -254,7 +254,5 @@ Router::plugin(
             ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'objects:delete']
         );
-
-
     }
 );
