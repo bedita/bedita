@@ -16,6 +16,10 @@
 /vendor/*
 !/vendor/.gitkeep
 
+# BEdita plugins floders #
+##########################
+/plugins/*
+!/plugins/BEdita
 
 # IDE and editor specific files #
 #################################
