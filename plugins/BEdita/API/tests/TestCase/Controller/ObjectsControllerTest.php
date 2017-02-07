@@ -561,7 +561,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ]);
         $this->patch('/news/3', json_encode(compact('data')));
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
     }
 
@@ -662,7 +662,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->delete('/documents/4');
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
     }
 }
