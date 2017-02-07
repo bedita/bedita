@@ -59,9 +59,11 @@ class MediaShell extends BeditaBaseShell {
         $missing = array();
         $mediaRoot = Configure::read('mediaRoot');
         $stream = ClassRegistry::init('Stream');
-        $streams = $stream->find('all');
-        foreach ($streams as $stream) {
-            $uri = $stream['Stream']['uri'];
+        $streams = $stream->find('list', array(
+            'fields' => array('id', 'uri'),
+            'contain' => array()
+        ));
+        foreach ($streams as $id => $uri) {
             if((stripos($uri, "/") === 0) && !file_exists($mediaRoot.$uri)) {
                 $missing[] = $uri;
             }
