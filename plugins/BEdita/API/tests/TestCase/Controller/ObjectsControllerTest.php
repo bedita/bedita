@@ -449,6 +449,36 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertTrue(TableRegistry::get('Documents')->exists(['uname' => 'a-new-document']));
     }
 
+    /**
+     * Test add method.
+     *
+     * @return void
+     *
+     * @covers ::add()
+     * @covers ::initialize()
+     */
+    public function testAddTypeFail()
+    {
+        $data = [
+            'type' => 'documents',
+            'attributes' => [
+                'title' => 'A new document',
+                'uname' => 'a-new-document',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/news', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+    }
 
     /**
      * Test edit method.
@@ -491,7 +521,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test edit method with ID conflict.
+     * Test edit method with ID and type conflict.
      *
      * @return void
      *
@@ -521,6 +551,18 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('title two', TableRegistry::get('Documents')->get(3)->get('title'));
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/news/3', json_encode(compact('data')));
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
     }
 
     /**
@@ -553,6 +595,19 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('title-one', TableRegistry::get('Documents')->get(2)->get('uname'));
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $data['id'] = 33;
+        $this->patch('/documents/33', json_encode(compact('data')));
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
     }
 
     /**
@@ -585,8 +640,29 @@ class ObjectsControllerTest extends IntegrationTestCase
         ]);
         $this->get('/documents/3');
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
 
         $docDeleted = TableRegistry::get('Documents')->get(7);
         $this->assertEquals($docDeleted->deleted, 1);
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->delete('/documents/33');
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->delete('/documents/4');
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
     }
 }
