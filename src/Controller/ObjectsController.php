@@ -115,6 +115,10 @@ class ObjectsController extends AppController
 
         $object = $this->Objects->newEntity($this->request->data);
         $object->type = $this->request->data('type');
+        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+            $this->log('Bad type on object creation ' . $object->type, 'error');
+            throw new BadRequestException('Invalid type');
+        }
         if (!$this->Objects->save($object)) {
             $this->log('Object creation failed  - ' . $object->type . ' - ' . json_encode($object->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
@@ -149,6 +153,12 @@ class ObjectsController extends AppController
         $object = $this->Objects->get($id, [
             'conditions' => ['deleted' => 0]
         ]);
+
+        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+            $this->log('Bad type on object edit ' . $object->type, 'error');
+            throw new BadRequestException('Invalid type');
+        }
+
         $object = $this->Objects->patchEntity($object, $this->request->data);
         if (!$this->Objects->save($object)) {
             $this->log('Object edit failed ' . json_encode($object->errors()), 'error');
@@ -173,6 +183,12 @@ class ObjectsController extends AppController
         $object = $this->Objects->get($id, [
             'conditions' => ['deleted' => 0]
         ]);
+
+        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+            $this->log('Bad type on object delete ' . $object->type, 'error');
+            throw new BadRequestException('Invalid type');
+        }
+
         $object->deleted = true;
         if (!$this->Objects->save($object)) {
             throw new InternalErrorException('Could not delete object');
