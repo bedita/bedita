@@ -54,6 +54,7 @@ class ObjectsController extends AppController
                 $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
                 $this->Objects = TableRegistry::get($this->objectType->alias);
             } catch (RecordNotFoundException $e) {
+                $this->log('Type endpoint does not exist ' . $type, 'error');
                 throw new NotFoundException('Endpoint does not exist');
             }
         }
@@ -87,6 +88,7 @@ class ObjectsController extends AppController
      *
      * @param int $id Object ID.
      * @return void
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
      */
     public function view($id)
     {
@@ -156,7 +158,7 @@ class ObjectsController extends AppController
 
         if ($this->objectType && $object->type !== $this->objectType->pluralized) {
             $this->log('Bad type on object edit ' . $object->type, 'error');
-            throw new BadRequestException('Invalid type');
+            throw new NotFoundException('Invalid type');
         }
 
         $object = $this->Objects->patchEntity($object, $this->request->data);
@@ -175,6 +177,7 @@ class ObjectsController extends AppController
      * @param int $id object ID.
      * @return void
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
+     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
      */
     public function delete($id)
     {
@@ -186,7 +189,7 @@ class ObjectsController extends AppController
 
         if ($this->objectType && $object->type !== $this->objectType->pluralized) {
             $this->log('Bad type on object delete ' . $object->type, 'error');
-            throw new BadRequestException('Invalid type');
+            throw new NotFoundException('Invalid type');
         }
 
         $object->deleted = true;
