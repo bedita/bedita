@@ -51,19 +51,17 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
+use BEdita\Core\Plugin;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
-// use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Core\Plugin;
 use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
 use Cake\Log\Log;
 use Cake\Mailer\Email;
 use Cake\Network\Request;
-// use Cake\Utility\Inflector;
 use Cake\Utility\Security;
 
 /*
@@ -225,22 +223,8 @@ Plugin::load(
     ['bootstrap' => true, 'routes' => true, 'ignoreMissing' => true]
 );
 
-/*
- * Only try to load DebugKit in development mode
- * Debug Kit should not be installed on a production system
+/**
+ * Load common plugins like 'Migrations' and 'DebugKit' or other custom / 3rd party plugins
+ * via configuration key 'Plugins'
  */
-if (Configure::read('debug')) {
-    try {
-        Plugin::load('BEdita/DebugKit', ['bootstrap' => true]);
-    } catch (\Cake\Core\Exception\MissingPluginException $e) {
-        // Do not halt if the plugin is missing
-    }
-
-    try {
-        Plugin::load('DebugKit', ['bootstrap' => true]);
-    } catch (\Cake\Core\Exception\MissingPluginException $e) {
-        // Do not halt if the plugin is missing
-    }
-}
-
-Plugin::load('Migrations');
+Plugin::loadFromConfig();

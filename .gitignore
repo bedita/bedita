@@ -16,11 +16,10 @@
 /vendor/*
 !/vendor/.gitkeep
 
-# BEdita 3 directories #
-########################
-/addons/*
-/frontends/*
-/modules/*
+# BEdita plugins floders #
+##########################
+/plugins/*
+!/plugins/BEdita
 
 # IDE and editor specific files #
 #################################

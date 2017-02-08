@@ -370,5 +370,20 @@ return [
      */
     'Accept' => [
         'html' => filter_var(env('ACCEPT_HTML', 'false'), FILTER_VALIDATE_BOOLEAN),
+    ],
+
+    /**
+     * Additional plugins to load with this format: 'PluginName' => load options array
+     * Where options array may contain
+     *
+     * - `debugOnly` - boolean - (default: false) Whether or not you want to load the plugin when in 'debug' mode only
+     * - `bootstrap` - boolean - (default: false) Whether or not you want the $plugin/config/bootstrap.php file loaded.
+     * - `routes` - boolean - (default: false) Whether or not you want to load the $plugin/config/routes.php file.
+     * - `ignoreMissing` - boolean - (default: false) Set to true to ignore missing bootstrap/routes files.
+     * - `autoload` - boolean - (default: false) Whether or not you want an autoloader registered
+     */
+    'Plugins' => [
+        'DebugKit' => ['debugOnly' => true, 'bootstrap' => true],
+//      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
     ]
 ];
