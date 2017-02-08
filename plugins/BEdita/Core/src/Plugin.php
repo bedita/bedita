@@ -47,7 +47,7 @@ class Plugin extends CakePlugin
         $plugins = Configure::read('Plugins');
         if ($plugins) {
             foreach ($plugins as $plugin => $options) {
-                $options = array_merge(self::$_defaults, $options);
+                $options = array_merge(static::$_defaults, $options);
                 if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
                     static::load($plugin, $options);
                 }
