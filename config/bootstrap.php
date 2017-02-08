@@ -51,12 +51,11 @@ require __DIR__ . '/paths.php';
  */
 require CORE_PATH . 'config' . DS . 'bootstrap.php';
 
-use BEdita\Core\Utility\Plugins;
+use BEdita\Core\Plugin;
 use Cake\Cache\Cache;
 use Cake\Console\ConsoleErrorHandler;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\PhpConfig;
-use Cake\Core\Plugin;
 use Cake\Database\Type;
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\ErrorHandler;
@@ -228,4 +227,4 @@ Plugin::load(
  * Load common plugins like 'Migrations' and 'DebugKit' or other custom / 3rd party plugins
  * via configuration key 'Plugins'
  */
-Plugins::loadFromConfig();
+Plugin::loadFromConfig();

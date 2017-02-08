@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,19 +10,18 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\TestCase\Utility;
+namespace BEdita\Core\Test\TestCase;
 
-use BEdita\Core\Utility\Plugins;
+use BEdita\Core\Plugin;
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Utility\Plugins Test Case
+ * \BEdita\Core\Plugin Test Case
  *
- * @coversDefaultClass \BEdita\Core\Utility\Plugins
+ * @coversDefaultClass \BEdita\Core\Plugin
  */
-class PluginsTest extends TestCase
+class PluginTest extends TestCase
 {
 
     /**
@@ -41,14 +40,14 @@ class PluginsTest extends TestCase
         Plugin::unload('Migrations');
         Configure::write('debug', 1);
         Configure::write('Plugins', $pluginsConfig);
-        Plugins::loadFromConfig();
+        Plugin::loadFromConfig();
         $this->assertTrue(Plugin::loaded('DebugKit'));
         $this->assertTrue(Plugin::loaded('Migrations'));
 
         Plugin::unload('DebugKit');
         Plugin::unload('Migrations');
         Configure::write('debug', 0);
-        Plugins::loadFromConfig();
+        Plugin::loadFromConfig();
         $this->assertFalse(Plugin::loaded('DebugKit'));
         $this->assertTrue(Plugin::loaded('Migrations'));
 
