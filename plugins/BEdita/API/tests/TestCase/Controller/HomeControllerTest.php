@@ -21,6 +21,15 @@ class HomeControllerTest extends IntegrationTestCase
 {
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.object_types'
+    ];
+
+    /**
      * Test index method.
      *
      * @return void
@@ -36,6 +45,38 @@ class HomeControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'resources' => [
+                    '/documents' => [
+                        'href' => 'http://api.example.com/documents',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Documents',
+                                'color' => '#852a36'
+                            ]
+                        ],
+                    ],
+                    '/profiles' => [
+                        'href' => 'http://api.example.com/profiles',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Profiles',
+                                'color' => '#622635'
+                            ]
+                        ],
+                    ],
                     '/objects' => [
                         'href' => 'http://api.example.com/objects',
                         'hints' => [
@@ -65,6 +106,22 @@ class HomeControllerTest extends IntegrationTestCase
                             'display' => [
                                 'label' => 'Users',
                                 'color' => '#032813'
+                            ]
+                        ],
+                    ],
+                    '/news' => [
+                        'href' => 'http://api.example.com/news',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'News',
+                                'color' => '#63e1d8'
                             ]
                         ],
                     ],

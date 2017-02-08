@@ -40,18 +40,6 @@ Router::plugin(
             ['_name' => 'status']
         );
 
-        // Objects.
-        $routes->connect(
-            '/objects',
-            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'objects:index']
-        );
-        $routes->connect(
-            '/objects/*',
-            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'objects:view']
-        );
-
         // Roles and Users rules that must be on top
         $routes->connect(
             '/users/:user_id/roles',
@@ -238,6 +226,33 @@ Router::plugin(
             '/trash/*',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'trash:delete']
+        );
+
+        // Objects.
+        $routes->connect(
+            '/:object_type',
+            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
+            ['_name' => 'objects:index']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
+            ['_name' => 'objects:view']
+        );
+        $routes->connect(
+            '/:object_type',
+            ['controller' => 'Objects', 'action' => 'add', '_method' => 'POST'],
+            ['_name' => 'objects:add']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'edit', '_method' => 'PATCH'],
+            ['_name' => 'objects:edit']
+        );
+        $routes->connect(
+            '/:object_type/*',
+            ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
+            ['_name' => 'objects:delete']
         );
     }
 );

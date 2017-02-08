@@ -212,8 +212,12 @@ class JsonApi
         }
 
         if ($showLink) {
+            $options = [];
+            if ($endpoint !== $type && $endpoint !== 'trash') {
+                $options['object_type'] = $type;
+            }
             $links = [
-                'self' => Router::url(['_name' => sprintf('api:%s:view', $endpoint), $id], true),
+                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), $id], true),
             ];
         }
 

@@ -54,7 +54,7 @@ class TableLocator extends CakeLocator
         }
 
         try {
-            $objectTypes = $this->get('ObjectTypes', ['className' => 'BEdita/Core.ObjectTypes']);
+            $objectTypes = $this->get('ObjectTypes');
             $objectType = $objectTypes->get(Inflector::underscore($alias));
             $options['className'] = $objectType->table;
         } catch (\Exception $e) {

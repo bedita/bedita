@@ -48,5 +48,12 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Users'
         ],
+        [
+            'name' => 'news',
+            'pluralized' => 'news',
+            'description' => null,
+            'plugin' => 'BEdita/Core',
+            'model' => 'Objects'
+        ],
     ];
 }
