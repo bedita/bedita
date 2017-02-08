@@ -19,6 +19,7 @@
 /.externalToolBuilders
 .DS_Store
 /.vscode
+/.history
 
 # /bedita-app/
 /bedita-app/.cache
