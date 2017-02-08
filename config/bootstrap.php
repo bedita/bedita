@@ -226,5 +226,6 @@ Plugin::load(
 
 /**
  * Load common plugins like 'Migrations' and 'DebugKit' or other custom / 3rd party plugins
+ * via configuration key 'Plugins'
  */
 Plugins::loadFromConfig();
