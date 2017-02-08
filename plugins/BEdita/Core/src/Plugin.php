@@ -49,7 +49,7 @@ class Plugin extends CakePlugin
             foreach ($plugins as $plugin => $options) {
                 $options = array_merge(self::$_defaults, $options);
                 if (!$options['debugOnly'] || ($options['debugOnly'] && Configure::read('debug'))) {
-                    Plugin::load($plugin, $options);
+                    self::load($plugin, $options);
                 }
             }
         }
