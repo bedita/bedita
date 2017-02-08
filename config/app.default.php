@@ -384,7 +384,6 @@ return [
      */
     'Plugins' => [
         'DebugKit' => ['debugOnly' => true, 'bootstrap' => true],
-        'Migrations' => ['debugOnly' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
     ]
 ];

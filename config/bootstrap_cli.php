@@ -35,6 +35,8 @@ try {
     // Do not halt if the plugin is missing
 }
 
+Plugin::load('Migrations');
+
 if (Configure::read('debug')) {
     class_alias('\Cake\ORM\TableRegistry', 'T');
 }
