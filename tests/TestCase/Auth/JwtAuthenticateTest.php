@@ -15,6 +15,7 @@ namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\JwtAuthenticate;
 use Cake\Auth\WeakPasswordHasher;
+use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Network\Request;
@@ -136,11 +137,11 @@ class JwtAuthenticateTest extends TestCase
      */
     public function testGetToken($expected, array $config, Request $request)
     {
-        $auth = new JwtAuthenticate($this->getMockBuilder('Cake\Controller\ComponentRegistry')->getMock(), $config);
+        $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
 
         $result = $auth->getToken($request);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -234,11 +235,11 @@ class JwtAuthenticateTest extends TestCase
         $debug = Configure::read('debug');
         Configure::write('debug', false);
 
-        $auth = new JwtAuthenticate($this->getMockBuilder('Cake\Controller\ComponentRegistry')->getMock(), $config);
+        $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
 
         $result = $auth->getUser($request);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
 
         Configure::write('debug', $debug);
     }
