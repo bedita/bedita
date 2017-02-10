@@ -4,6 +4,7 @@ php:
   - 5.5
   - 5.6
   - 7.0
+  - 7.1
   - hhvm
 
 sudo: required
@@ -24,7 +25,7 @@ env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
     - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+    - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
   global:
     - RUN_TESTS=1
 
@@ -32,24 +33,16 @@ matrix:
   fast_finish: true
 
   include:
-    - php: 7.0
-      env: "DB=mysql DB_VERSION=5.5 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - php: 7.0
+    - php: 7.1
       env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
-    - php: 7.0
-      env: "DB=pgsql DB_VERSION=9.3 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: 7.0
-      env: "DB=pgsql DB_VERSION=9.4 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: 7.0
+    - php: 7.1
       env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: 7.0
+    - php: 7.1
       env: RUN_CS=1 RUN_TESTS=0
 
   exclude:
-    - php: 7.0
-      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
     - php: hhvm
-      env: "DB=pgsql db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
 
   allow_failures:
     - php: 5.5
