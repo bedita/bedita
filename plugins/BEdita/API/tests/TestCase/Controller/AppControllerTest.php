@@ -15,8 +15,8 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -31,6 +31,8 @@ class AppControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.test_endpoint_permissions',
         'plugin.BEdita/Core.roles',
     ];
 
@@ -117,7 +119,10 @@ class AppControllerTest extends IntegrationTestCase
         Configure::write($config);
 
         $this->configRequest([
-            'headers' => ['Accept' => $accept],
+            'headers' => [
+                'Accept' => $accept,
+                'X-Api-Key' => 'API_KEY',
+            ],
         ]);
 
         $this->get('/roles');
@@ -175,6 +180,7 @@ class AppControllerTest extends IntegrationTestCase
      * @param int $expectedCode Expected response code.
      * @param string|null $expectedContentType Expected content type.
      * @param string $accept Request's "Accept" header.
+     * @param \Exception $error Error to be injected.
      * @param array|null $config Configuration to be written.
      * @return void
      *
@@ -183,7 +189,7 @@ class AppControllerTest extends IntegrationTestCase
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
      * @covers \BEdita\API\Error\ExceptionRenderer::render()
      */
-    public function testContentTypeError($expectedCode, $expectedContentType, $accept, $error, array $config = null)
+    public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, array $config = null)
     {
         Configure::write($config);
 
@@ -194,10 +200,13 @@ class AppControllerTest extends IntegrationTestCase
             $this->injectError($name, $error);
 
             $this->configRequest([
-                'headers' => ['Accept' => $accept],
+                'headers' => [
+                    'Accept' => $accept,
+                    'X-Api-Key' => 'API_KEY',
+                ],
             ]);
             $this->get('/roles');
-            $this->assertEquals($expectedCode, $this->_response->statusCode(), 'Error with event ' . $name);
+            static::assertEquals($expectedCode, $this->_response->statusCode(), 'Error with event ' . $name);
             $this->assertContentType($expectedContentType, 'Error with event ' . $name);
         }
     }
@@ -211,7 +220,7 @@ class AppControllerTest extends IntegrationTestCase
      */
     protected function injectError($eventName, \Exception $exception)
     {
-        $listener = function ($event) use ($exception, &$listener) {
+        $listener = function (Event $event) use ($exception, &$listener) {
             // immediately off the listener to assure to execute just one time
             EventManager::instance()->off($event->name(), $listener);
             throw $exception;
