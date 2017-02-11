@@ -38,8 +38,6 @@ class LoginController extends AppController
     {
         parent::initialize();
 
-        $this->Auth->deny();
-
         if ($this->request->param('action') === 'login') {
             $this->Auth->config(
                 'authenticate',
