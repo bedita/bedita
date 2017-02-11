@@ -22,6 +22,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class EndpointPermissionsFixture extends TestFixture
 {
+
     /**
      * Records
      *
