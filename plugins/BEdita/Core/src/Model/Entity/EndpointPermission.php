@@ -55,21 +55,28 @@ class EndpointPermission extends Entity
      *
      * @var int
      */
-    const PERM_NO = 0;
+    const PERM_NO = 0b00;
 
     /**
      * Grant permissions only on my contents.
      *
      * @var int
      */
-    const PERM_MINE = 1;
+    const PERM_MINE = 0b01;
+
+    /**
+     * Do not grant permissions and force other permissions to be ignored.
+     *
+     * @var int
+     */
+    const PERM_BLOCK = 0b10;
 
     /**
      * Grant permissions.
      *
      * @var int
      */
-    const PERM_YES = 3;
+    const PERM_YES = 0b11;
 
     /**
      * {@inheritDoc}
@@ -109,6 +116,8 @@ class EndpointPermission extends Entity
                 return false;
             case static::PERM_MINE:
                 return 'mine';
+            case static::PERM_BLOCK:
+                return 'block';
             case static::PERM_YES:
                 return true;
             default:
@@ -121,7 +130,7 @@ class EndpointPermission extends Entity
     /**
      * Encode a permission value.
      *
-     * @param mixed $value Value to be encoded. Can be either a boolean, or the string `mine`.
+     * @param mixed $value Value to be encoded. Can be either a boolean, or the strings `mine` and `block`.
      * @return int
      */
     public static function encode($value)
@@ -130,6 +139,8 @@ class EndpointPermission extends Entity
             switch (strtolower(trim($value))) {
                 case 'mine':
                     return static::PERM_MINE;
+                case 'block':
+                    return static::PERM_BLOCK;
             }
         }
 
