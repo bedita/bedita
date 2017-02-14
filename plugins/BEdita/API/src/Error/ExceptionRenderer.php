@@ -19,6 +19,7 @@ use Cake\Core\Plugin;
 use Cake\Error\Debugger;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Network\Request;
+use Zend\Diactoros\Stream;
 
 /**
  * Exception renderer.
@@ -56,14 +57,14 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         if ($this->isHtmlToSend()) {
             $this->setupView();
-            $this->controller->set('method', $this->controller->request->method());
+            $this->controller->set('method', $this->controller->request->getMethod());
             $this->controller->set('responseBody', $this->jsonError($code, $message, $trace));
 
             return parent::render();
         }
 
         $this->controller->loadComponent('RequestHandler');
-        $this->controller->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
+        $this->controller->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
         $this->controller->loadComponent('BEdita/API.JsonApi', [
             'contentType' => $this->controller->request->is('json') ? 'json' : null,
             'checkMediaType' => $this->controller->request->is('jsonapi'),
@@ -110,7 +111,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
             return '';
         }
 
-        $errorAttributes = $this->error->getAttributes();
+        $errorAttributes = $error->getAttributes();
         if (empty($errorAttributes['detail'])) {
             return '';
         }
@@ -165,12 +166,14 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $this->controller
             ->viewBuilder()
-            ->className('BEdita\API\View\JsonApiView');
+            ->setClassName('BEdita\API\View\JsonApiView');
 
         $view = $this->controller->createView();
-        $this->controller->response->body($view->render());
 
-        return $this->controller->response;
+        $stream = new Stream('php://memory', 'wb+');
+        $stream->write($view->render());
+
+        return $this->controller->response->withBody($stream);
     }
 
     /**
@@ -185,7 +188,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
     protected function setupView()
     {
         if (Plugin::loaded('BEdita/API')) {
-            $this->controller->viewBuilder()->plugin('BEdita/API');
+            $this->controller->viewBuilder()->setPlugin('BEdita/API');
 
             return;
         }

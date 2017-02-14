@@ -48,7 +48,7 @@ class ObjectTypesController extends ResourcesController
         parent::initialize();
 
         if (isset($this->JsonApi)) {
-            $this->JsonApi->config('resourceTypes', ['object_types']);
+            $this->JsonApi->setConfig('resourceTypes', ['object_types']);
         }
     }
 
@@ -91,13 +91,23 @@ class ObjectTypesController extends ResourcesController
     {
         $this->request->allowMethod('post');
 
-        $objectTypes = $this->ObjectTypes->newEntity($this->request->data);
+        $objectTypes = $this->ObjectTypes->newEntity($this->request->getData());
         if (!$this->ObjectTypes->save($objectTypes)) {
             throw new BadRequestException('Invalid data');
         }
 
-        $this->response->statusCode(201);
-        $this->response->header('Location', Router::url(['_name' => 'api:object_types:view', $objectTypes->id], true));
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader(
+                'Location',
+                Router::url(
+                    [
+                        '_name' => 'api:object_types:view',
+                        $objectTypes->id,
+                    ],
+                    true
+                )
+            );
 
         $this->set(compact('object_type'));
         $this->set('_serialize', ['object_type']);
@@ -117,12 +127,12 @@ class ObjectTypesController extends ResourcesController
     {
         $this->request->allowMethod('patch');
 
-        if ($this->request->data('id') != $id) {
+        if ($this->request->getData('id') != $id) {
             throw new ConflictException('IDs don\' match');
         }
 
         $objectType = $this->ObjectTypes->get($id);
-        $objectType = $this->ObjectTypes->patchEntity($objectType, $this->request->data);
+        $objectType = $this->ObjectTypes->patchEntity($objectType, $this->request->getData());
         if (!$this->ObjectTypes->save($objectType)) {
             throw new BadRequestException('Invalid data');
         }
@@ -135,7 +145,7 @@ class ObjectTypesController extends ResourcesController
      * Delete an existing object_type.
      *
      * @param int $id ObjectType ID.
-     * @return void
+     * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
@@ -147,6 +157,8 @@ class ObjectTypesController extends ResourcesController
             throw new InternalErrorException('Could not delete object_type');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withHeader('Content-Type', $this->request->contentType())
+            ->withStatus(204);
     }
 }
