@@ -643,6 +643,23 @@ class BuildFilterBehavior extends ModelBehavior {
     }
 
     /**
+     * filter to exclude tree branches for specified ids
+     *
+     * @param string $s, start quote sql
+     * @param string $e, end quote sql
+     * @param mixed $value, if not empty to exclude object with $value id and its descendants
+     */
+    protected function exclude_branchFilter($s, $e, $value = null) {
+        if (!empty($value)) {
+            foreach ($value as $v) {
+                $this->conditions[]['NOT'] = array(
+                    "{$s}BEObject{$e}.{$s}id{$e} IN (SELECT DISTINCT {$s}Tree{$e}.{$s}id{$e} FROM trees {$s}Tree{$e} WHERE {$s}Tree{$e}.{$s}object_path{$e} LIKE '%/$v/%')"
+                );
+            }
+        }
+    }
+
+    /**
      * add a count of Annotation objects as Comment, EditoreNote, etc...
      * If 'object_type_id' specified in BuildFilter::filter then get annotations for that object type/s
      *

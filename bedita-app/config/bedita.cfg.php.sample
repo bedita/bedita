@@ -331,3 +331,8 @@ $config['objectCakeCache'] = true;
 // $config['editorialContents'] = array(
 //     'defaultPublisher' => 'BEdita CMS',
 // );
+
+/**
+ * Configuration for publication/section Ids to exclude from tree visualization and management.
+ */
+// $config['excludeFromTreeIds'] = array();

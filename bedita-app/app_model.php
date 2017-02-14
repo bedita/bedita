@@ -422,6 +422,8 @@ class BEAppModel extends AppModel {
             $this->Behaviors->attach('BuildFilter');
         }
 
+        $filter['exclude_branch'] = Configure::read('excludeFromTreeIds');
+
         $afterFilter = $this->Behaviors->BuildFilter->prepareAfterFilter($filter, $order);
 
         $size = null;
