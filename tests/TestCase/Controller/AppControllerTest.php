@@ -55,7 +55,7 @@ class AppControllerTest extends IntegrationTestCase
         return [
             'json' => [
                 200,
-                'application/json; charset=UTF-8',
+                'application/json',
                 'application/json',
             ],
             'jsonapi' => [
@@ -79,7 +79,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlDebugMode' => [
                 200,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 1,
@@ -88,7 +88,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlAccepted' => [
                 200,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 0,
@@ -136,7 +136,7 @@ class AppControllerTest extends IntegrationTestCase
         return [
             'notFoundJson' => [
                 404,
-                'application/json; charset=UTF-8',
+                'application/json',
                 'application/json',
                 new NotFoundException(),
             ],
@@ -148,7 +148,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'notFoundHtmlDebug' => [
                 404,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 new NotFoundException(),
                 [
@@ -158,7 +158,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'notFoundHtmlAccepted' => [
                 404,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 new NotFoundException(),
                 [
