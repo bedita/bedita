@@ -651,9 +651,10 @@ class BuildFilterBehavior extends ModelBehavior {
      */
     protected function exclude_branchFilter($s, $e, $value = null) {
         if (!empty($value)) {
+            $objectTypes = Configure::read('objectTypes.area.id') . ',' . Configure::read('objectTypes.section.id');
             foreach ($value as $v) {
                 $this->conditions[]['NOT'] = array(
-                    "{$s}BEObject{$e}.{$s}id{$e} IN (SELECT DISTINCT {$s}Tree{$e}.{$s}id{$e} FROM trees {$s}Tree{$e} WHERE {$s}Tree{$e}.{$s}object_path{$e} LIKE '%/$v/%')"
+                    "{$s}BEObject{$e}.{$s}id{$e} IN (SELECT DISTINCT {$s}Tree{$e}.{$s}id{$e} FROM trees {$s}Tree{$e} WHERE {$s}Tree{$e}.{$s}object_path{$e} LIKE '%/$v/%') AND {$s}BEObject{$e}.{$s}object_type_id{$e} IN ($objectTypes)"
                 );
             }
         }

@@ -204,11 +204,27 @@ class Tree extends BEAppModel
     public function updateTree($id, $destination, array $options = array()) {
         $options += array(
             'area_id' => null,
-            'status' => array()
+            'status' => array(),
+			'mantain_hidden_branch' => true
         );
         if (!is_array($destination)) {
             $destination = (empty($destination))? array() : array($destination);
         }
+		$excludeFromTreeIds = Configure::read('excludeFromTreeIds');
+		if ($options['mantain_hidden_branch'] === true && !empty($excludeFromTreeIds)) {
+			foreach ($excludeFromTreeIds as $excludeFromTreeId) {
+				$result = $this->find('list', array(
+					'fields' => array('parent_id'),
+					'conditions' => array(
+						'id' => $id,
+						'object_path LIKE' => '%/' . $excludeFromTreeId . '/%'
+					)
+				));
+				if (!empty($result)) {
+					$destination = array_merge($destination, $result);
+				}
+			}
+		}
         $currParents = $this->getParents($id, $options['area_id'], $options['status'], false);
         // remove
         $remove = array_diff($currParents, $destination) ;
