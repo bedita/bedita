@@ -14,6 +14,7 @@ namespace BEdita\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
 use Cake\Database\Exception;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -52,7 +53,7 @@ class DatabaseConfig implements ConfigEngineInterface
         $values = [];
         $config = TableRegistry::get('Config');
         $query = $config->find()->select(['name', 'context', 'content']);
-        $query->where(function ($exp) {
+        $query->where(function (QueryExpression $exp) {
             return $exp->notIn('name', $this->reservedKeys);
         });
         if ($key) {
@@ -90,7 +91,7 @@ class DatabaseConfig implements ConfigEngineInterface
             $content = is_array($content) ? json_encode($content) : $this->valueToString($content);
             $entities[] = $table->newEntity(compact('name', 'context', 'content'));
         }
-        $table->connection()->transactional(function () use ($table, $entities) {
+        $table->getConnection()->transactional(function () use ($table, $entities) {
             foreach ($entities as $entity) {
                 if (!$table->save($entity, ['atomic' => false])) {
                     throw new Exception(sprintf('Config save failed: %s', print_r($entity->errors(), true)));

@@ -34,8 +34,8 @@ class PropertyTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('property_types');
-        $this->primaryKey('id');
+        $this->setTable('property_types');
+        $this->setPrimaryKey('id');
 
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',

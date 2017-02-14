@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -38,8 +37,8 @@ class EndpointPermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('endpoint_permissions');
-        $this->displayField('id');
+        $this->setTable('endpoint_permissions');
+        $this->setDisplayField('id');
 
         $this->belongsTo('Endpoints', [
             'joinType' => 'INNER',

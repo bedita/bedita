@@ -13,13 +13,8 @@
 
 namespace BEdita\Core\Utility;
 
-use BEdita\Core\Utility\Database;
-use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Database\Connection;
-use Cake\Datasource\ConnectionManager;
-use Cake\Log\Log;
 
 /**
  * Retrieve system information on service availability and general status

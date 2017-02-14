@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
-use BEdita\Core\ORM\Inheritance\ResultSet;
 use Cake\Database\ExpressionInterface;
 use Cake\Database\Expression\FieldInterface;
 use Cake\Database\Expression\IdentifierExpression;
@@ -54,10 +53,10 @@ class Query extends CakeQuery
     /**
      * Setup `self::$aliasChecker`
      *
-     * @param \Cake\ORM\Table $table The table on which build the checker
+     * @param \Cake\Datasource\RepositoryInterface $table The table on which build the checker
      * @return array
      */
-    protected function aliasChecker(CakeTable $table)
+    protected function aliasChecker(RepositoryInterface $table)
     {
         $checker = $table->alias() . '.';
 
@@ -76,7 +75,7 @@ class Query extends CakeQuery
             return new $decorator($this->_results);
         }
 
-        $statement = $this->eagerLoader()->loadExternal($this, $this->execute());
+        $statement = $this->getEagerLoader()->loadExternal($this, $this->execute());
 
         return new ResultSet($this, $statement);
     }
@@ -129,7 +128,7 @@ class Query extends CakeQuery
     public function fixContain()
     {
         $inheritedTables = array_map(function (CakeTable $table) {
-            return $table->alias();
+            return $table->getAlias();
         }, $this->inheritedTables());
 
         $contain = $this->contain();

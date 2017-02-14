@@ -34,7 +34,7 @@ class InitSchemaTask extends Shell
     {
         $parser = parent::getOptionParser();
         $parser
-            ->description([
+            ->setDescription([
                 'A new database schema is created using current DB connection.',
                 'BEWARE: all existing tables will be dropped!',
             ])
@@ -91,7 +91,7 @@ class InitSchemaTask extends Shell
      */
     protected function cleanup(ConnectionInterface $connection)
     {
-        if (!($connection instanceof Connection) || count($connection->schemaCollection()->listTables()) === 0) {
+        if (!($connection instanceof Connection) || count($connection->getSchemaCollection()->listTables()) === 0) {
             return;
         }
 
@@ -111,12 +111,12 @@ class InitSchemaTask extends Shell
         $this->out('Dropping all tables in database...');
         $connection
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
                     $this->verbose(sprintf(' - Dropping table <comment>%s</comment>... ', $table), 0);
 
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }

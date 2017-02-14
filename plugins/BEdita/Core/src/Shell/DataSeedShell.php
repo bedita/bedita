@@ -262,7 +262,7 @@ class DataSeedShell extends Shell
 
         $this->out('<info>Persisting entities...</info> ', 0);
         try {
-            $table->connection()->transactional(function () use ($table, $entities) {
+            $table->getConnection()->transactional(function () use ($table, $entities) {
                 foreach ($entities as $entity) {
                     if (!$table->save($entity, ['atomic' => false])) {
                         throw new StopException(sprintf('Application rules failed: %s', print_r($entity->errors(), true)));
