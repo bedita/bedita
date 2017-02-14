@@ -23,7 +23,6 @@ use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Base controller for CRUD actions on generic resources.
@@ -55,14 +54,14 @@ abstract class ResourcesController extends AppController
     {
         parent::initialize();
 
-        $this->set(['_allowedAssociations' => $this->config('allowedAssociations')]);
+        $this->set(['_allowedAssociations' => $this->getConfig('allowedAssociations')]);
 
-        if (isset($this->JsonApi) && $this->request->param('action') == 'relationships') {
-            $this->JsonApi->config(
+        if (isset($this->JsonApi) && $this->request->getParam('action') == 'relationships') {
+            $this->JsonApi->setConfig(
                 'resourceTypes',
-                $this->config(sprintf('allowedAssociations.%s', $this->request->param('relationship')))
+                $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship')))
             );
-            $this->JsonApi->config('clientGeneratedIds', true);
+            $this->JsonApi->setConfig('clientGeneratedIds', true);
         }
     }
 
@@ -75,7 +74,7 @@ abstract class ResourcesController extends AppController
      */
     protected function findAssociation($relationship)
     {
-        if (array_key_exists($relationship, $this->config('allowedAssociations'))) {
+        if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
             $associations = TableRegistry::get($this->modelClass)->associations();
             foreach ($associations as $association) {
                 if ($association->property() === $relationship) {
@@ -96,18 +95,18 @@ abstract class ResourcesController extends AppController
     {
         $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
 
-        $id = $this->request->param('id');
-        $relationship = $this->request->param('relationship');
+        $id = $this->request->getParam('id');
+        $relationship = $this->request->getParam('relationship');
 
         $Association = $this->findAssociation($relationship);
         // Try to guess reverse association and implicitly add it to displayed associations.
-        $reverseAssociation = $Association->target()->association($this->modelClass);
+        $reverseAssociation = $Association->getTarget()->association($this->modelClass);
         if ($reverseAssociation !== null) {
-            $allowAssoc = $reverseAssociation->property();
+            $allowAssoc = $reverseAssociation->getProperty();
             $this->set(['_allowedAssociations' => [$allowAssoc => [$allowAssoc]]]);
         }
 
-        switch ($this->request->method()) {
+        switch ($this->request->getMethod()) {
             case 'PATCH':
                 $action = new SetAssociated($Association);
                 break;
@@ -146,10 +145,9 @@ abstract class ResourcesController extends AppController
         }
 
         if ($count === 0) {
-            $this->response->header('Content-Type: ' . $this->request->contentType());
-            $this->response->statusCode(204);
-
-            return $this->response;
+            return $this->response
+                ->withHeader('Content-Type', $this->request->contentType())
+                ->withStatus(204);
         }
 
         $this->set(['_serialize' => []]);
