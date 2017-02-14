@@ -75,13 +75,13 @@ class QueryTest extends TestCase
         parent::setUp();
 
         $this->fakeAnimals = TableRegistry::get('FakeAnimals', $this->tableOptions);
-        $this->fakeAnimals->hasMany('FakeArticles');
+        $this->fakeAnimals->hasMany('FakeArticles', $this->tableOptions);
 
         $this->fakeMammals = TableRegistry::get('FakeMammals', $this->tableOptions);
-        $this->fakeMammals->extensionOf('FakeAnimals');
+        $this->fakeMammals->extensionOf('FakeAnimals', $this->tableOptions);
 
         $this->fakeFelines = TableRegistry::get('FakeFelines', $this->tableOptions);
-        $this->fakeFelines->extensionOf('FakeMammals');
+        $this->fakeFelines->extensionOf('FakeMammals', $this->tableOptions);
     }
 
     /**
