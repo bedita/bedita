@@ -1502,6 +1502,7 @@ abstract class ModulesController extends AppController {
 
             // #1078, #1080 - hidden subsection management
             $this->readonlyTreePaths($id);
+            $this->isInsideHiddenBranch($id);
         }
 
         $property = $this->BeCustomProperty->setupForView($obj, Configure::read('objectTypes.' . $name . '.id'));
@@ -1897,6 +1898,25 @@ abstract class ModulesController extends AppController {
                 $this->set('readonlyTreePaths', $paths);
             }
         }
+    }
+
+    /**
+     * Set 'isInsideHiddenBranch' for a specified $id passed, if $id is inside hidden branch id config 'excludeFromTreeIds'
+     * 
+     * @param int $id section id
+     * @return void
+     */
+    public function isInsideHiddenBranch($id) {
+        $hiddenParentIds = Configure::read('excludeFromTreeIds');
+        $isInsideHiddenBranch = (empty($hiddenParentIds)) ? false : in_array($id, $hiddenParentIds);
+        if (!$isInsideHiddenBranch) {
+            foreach ($hiddenParentIds as $parentId) {
+                if ($this->Tree->isParent($parentId, $id)) {
+                    $isInsideHiddenBranch = true;
+                }
+            }
+        }
+        $this->set('isInsideHiddenBranch', $isInsideHiddenBranch);
     }
 
     /**

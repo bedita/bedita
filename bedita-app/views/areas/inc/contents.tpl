@@ -39,9 +39,9 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
         {include file="inc/toolbar.tpl"}
     </div>
 {/if}
-
+{if !$isInsideHiddenBranch}
     {include file="inc/tools_commands.tpl" type="all"}
-
+{/if}
 </div>  
 
 </fieldset>

@@ -26,5 +26,7 @@
         {include file="inc/toolbar.tpl"}
     </div>
 {/if}
+{if !$isInsideHiddenBranch}
     {include file="inc/tools_commands.tpl" type="section"}
+{/if}
 </fieldset>
