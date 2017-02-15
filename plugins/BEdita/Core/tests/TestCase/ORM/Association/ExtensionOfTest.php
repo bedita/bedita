@@ -88,7 +88,7 @@ class ExtensionOfTest extends TestCase
 
         new ExtensionOf('FakeAnimals', [
             'sourceTable' => $this->fakeMammals,
-            'foreignKey' => $this->fakeMammals->primaryKey()
+            'foreignKey' => $this->fakeMammals->getPrimaryKey()
         ]);
 
         $count++;
@@ -105,15 +105,15 @@ class ExtensionOfTest extends TestCase
     {
         $assoc = new ExtensionOf('FakeAnimals', [
             'sourceTable' => $this->fakeMammals,
-            'foreignKey' => $this->fakeMammals->primaryKey()
+            'foreignKey' => $this->fakeMammals->getPrimaryKey()
         ]);
 
         $this->assertEquals(Association::ONE_TO_ONE, $assoc->type());
-        $this->assertEquals('INNER', $assoc->joinType());
-        $this->assertFalse($assoc->dependent());
-        $this->assertFalse($assoc->cascadeCallbacks());
-        $this->assertEquals($this->fakeAnimals->primaryKey(), $assoc->bindingKey());
-        $this->assertEquals('fake_animal', $assoc->property());
+        $this->assertEquals('INNER', $assoc->getJoinType());
+        $this->assertFalse($assoc->getDependent());
+        $this->assertFalse($assoc->getCascadeCallbacks());
+        $this->assertEquals($this->fakeAnimals->getPrimaryKey(), $assoc->getBindingKey());
+        $this->assertEquals('fake_animal', $assoc->getProperty());
         $this->assertFalse($assoc->isOwningSide($this->fakeMammals));
         $this->assertTrue($assoc->isOwningSide($this->fakeAnimals));
     }
@@ -154,15 +154,15 @@ class ExtensionOfTest extends TestCase
     {
         $assoc = new ExtensionOf('FakeAnimals', [
             'sourceTable' => $this->fakeMammals,
-            'foreignKey' => $this->fakeMammals->primaryKey()
+            'foreignKey' => $this->fakeMammals->getPrimaryKey()
         ]);
 
-        $this->fakeMammals->associations()->add($assoc->name(), $assoc);
+        $this->fakeMammals->associations()->add($assoc->getName(), $assoc);
         $mammal = $this->fakeMammals->newEntity($entityData);
 
         $lastInserted = $this->fakeAnimals
             ->find()
-            ->hydrate(false)
+            ->enableHydration(false)
             ->last();
 
         $expectedId = $lastInserted['id'] + 1;
@@ -182,15 +182,15 @@ class ExtensionOfTest extends TestCase
     {
         $assoc = new ExtensionOf('FakeAnimals', [
             'sourceTable' => $this->fakeMammals,
-            'foreignKey' => $this->fakeMammals->primaryKey()
+            'foreignKey' => $this->fakeMammals->getPrimaryKey()
         ]);
-        $this->fakeMammals->associations()->add($assoc->name(), $assoc);
+        $this->fakeMammals->associations()->add($assoc->getName(), $assoc);
 
         $assoc = new ExtensionOf('FakeMammals', [
             'sourceTable' => $this->fakeFelines,
-            'foreignKey' => $this->fakeFelines->primaryKey()
+            'foreignKey' => $this->fakeFelines->getPrimaryKey()
         ]);
-        $this->fakeFelines->associations()->add($assoc->name(), $assoc);
+        $this->fakeFelines->associations()->add($assoc->getName(), $assoc);
 
         $feline = $this->fakeFelines->find()
             ->contain('FakeMammals.FakeAnimals')

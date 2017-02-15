@@ -40,21 +40,21 @@ class QueryTest extends TestCase
     /**
      * Table FakeAnimals
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeAnimals;
 
     /**
      * Table FakeMammals
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeMammals;
 
     /**
      * Table FakeFelines
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeFelines;
 
@@ -113,7 +113,7 @@ class QueryTest extends TestCase
      */
     public function testBuildContainString($expected, $tableName)
     {
-        $query = new Query($this->fakeFelines->connection(), $this->fakeFelines);
+        $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
         $containString = $query->buildContainString($tableName);
         $this->assertEquals($expected, $containString);
     }
@@ -222,7 +222,7 @@ class QueryTest extends TestCase
      */
     public function testFixAliasField($expected, $field)
     {
-        $query = new Query($this->fakeFelines->connection(), $this->fakeFelines);
+        $query = new Query($this->fakeFelines->getConnection(), $this->fakeFelines);
         $this->assertEquals($expected, $query->fixAliasField($field));
     }
 
@@ -432,7 +432,7 @@ class QueryTest extends TestCase
         });
 
         // check sql just for MySQL
-        if ($query->connection()->driver() instanceof \Cake\Database\Driver\Mysql) {
+        if ($query->getConnection()->driver() instanceof \Cake\Database\Driver\Mysql) {
             $startQuote = $endQuote = '`';
         } else {
             $startQuote = $endQuote = '"';

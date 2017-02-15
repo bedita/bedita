@@ -103,7 +103,7 @@ class ConfigureTest extends TestCase
         }
 
         if (!$expected) {
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception'); // TODO: be more specific! Assertions on exceptions should be strict.
         }
 
         $result = Configure::dump($context, 'test-database', array_keys($data));

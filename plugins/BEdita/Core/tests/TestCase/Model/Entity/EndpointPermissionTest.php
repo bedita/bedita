@@ -24,7 +24,7 @@ use Cake\TestSuite\TestCase;
  *
  * @since 4.0.0
  */
-class EndpointTest extends TestCase
+class EndpointPermissionTest extends TestCase
 {
 
     /**
