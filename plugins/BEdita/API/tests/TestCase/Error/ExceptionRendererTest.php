@@ -279,7 +279,7 @@ class ExceptionRendererTest extends TestCase
 
         $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
             // force missing layout exception
-            $event->getSubject()->viewBuilder()->getLayoutPath('find_me_if_you_can');
+            $event->getSubject()->viewBuilder()->setLayoutPath('find_me_if_you_can');
         });
 
         $response = $renderer->render();
