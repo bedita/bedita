@@ -157,7 +157,8 @@ class EndpointPermission extends Entity
      * @param int|array $value Permission value. Can be either an integer, or an array with `read` and `write` keys.
      * @return int
      */
-    protected function _setPermission($value) {
+    protected function _setPermission($value)
+    {
         if (is_array($value)) {
             $read = static::encode(array_key_exists('read', $value) ? $value['read'] : $this->read);
             $write = static::encode(array_key_exists('write', $value) ? $value['write'] : $this->write);
