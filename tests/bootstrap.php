@@ -18,6 +18,9 @@ if (getenv('db_dsn')) {
     ConnectionManager::drop('test');
     ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
 }
+if (!defined('API_KEY')) {
+    define('API_KEY', 'API_KEY');
+}
 
 if (getenv('DEBUG_LOG_QUERIES')) {
     ConnectionManager::get('test')->logQueries(true);

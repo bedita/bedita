@@ -28,10 +28,13 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/API.applications',
+        'plugin.BEdita/API.endpoint_permissions',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
     ];
 
@@ -115,6 +118,7 @@ class RolesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles');
@@ -183,6 +187,7 @@ class RolesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/users/1/roles');
@@ -231,6 +236,7 @@ class RolesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles');
@@ -281,6 +287,7 @@ class RolesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles/1');
@@ -316,6 +323,7 @@ class RolesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles/99');
@@ -354,6 +362,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/roles', json_encode(compact('data')));
@@ -388,6 +397,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/roles', json_encode(compact('data')));
@@ -420,6 +430,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1', json_encode(compact('data')));
@@ -452,6 +463,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/2', json_encode(compact('data')));
@@ -485,6 +497,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1', json_encode(compact('data')));
@@ -509,6 +522,7 @@ class RolesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->delete('/roles/1');

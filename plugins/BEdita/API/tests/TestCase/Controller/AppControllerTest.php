@@ -31,9 +31,11 @@ class AppControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.test_endpoint_permissions',
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/API.applications',
+        'plugin.BEdita/API.endpoint_permissions',
     ];
 
     /**
@@ -121,7 +123,7 @@ class AppControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => $accept,
-                'X-Api-Key' => 'API_KEY',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
 

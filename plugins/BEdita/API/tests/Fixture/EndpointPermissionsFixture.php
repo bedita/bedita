@@ -11,14 +11,14 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\Fixture;
+namespace BEdita\API\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
  * Permissive endpoint permissions for tests.
  */
-class TestEndpointPermissionsFixture extends TestFixture
+class EndpointPermissionsFixture extends TestFixture
 {
 
     /**

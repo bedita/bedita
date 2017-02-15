@@ -28,8 +28,12 @@ class PropertiesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/API.applications',
+        'plugin.BEdita/API.endpoint_permissions',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.properties'
     ];
 
@@ -231,6 +235,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/properties');
@@ -278,6 +283,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/properties');
@@ -333,6 +339,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/properties/1');
@@ -368,6 +375,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/properties/999999');
@@ -411,6 +419,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/properties', json_encode(compact('data')));
@@ -445,6 +454,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/properties', json_encode(compact('data')));
@@ -478,6 +488,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/properties/1', json_encode(compact('data')));
@@ -510,6 +521,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/properties/2', json_encode(compact('data')));
@@ -535,6 +547,7 @@ class PropertiesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->delete('/properties/1');

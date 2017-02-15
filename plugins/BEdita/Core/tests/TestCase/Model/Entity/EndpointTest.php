@@ -22,7 +22,7 @@ use Cake\TestSuite\TestCase;
  *
  * @coversDefaultClass \BEdita\Core\Model\Entity\Endpoint
  */
-class EndpointTest extends TestCase
+class EndpointPermissionTest extends TestCase
 {
 
     /**
