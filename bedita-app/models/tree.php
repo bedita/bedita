@@ -631,7 +631,8 @@ class Tree extends BEAppModel
         ));
         foreach ($paths as $path) {
             $ids = array_filter(explode("/", $path));
-            if (empty($hiddenBranchIds) || !empty(array_intersect($ids, $hiddenBranchIds))) {
+			$intersection = (!empty($hiddenBranchIds)) ? array_intersect($ids, $hiddenBranchIds) : array();
+            if (!empty($intersection)) {
                 $titles = ClassRegistry::init('BEObject')->find('list', array(
                     'fields' => array('BEObject.id', 'BEObject.title'),
                     'conditions' => array('BEObject.id' => $ids)
