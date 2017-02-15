@@ -617,8 +617,22 @@ class Tree extends BEAppModel
 	}
 
     /**
-     * Titles path for branches related to $id passed
-     *
+     * Titles paths for branches related to $id passed
+     * Returns array, each element is like:
+	 * [
+     *     {
+     *         'ids' => [223481, 274603], // array of integers
+     *         'parentId' => 274603, // integer parent id
+     *         'idsPath' => '/223481/274603', // string representing ids path
+     *         'titles' => [
+     *             223481 => 'Publication A', // publication title
+     *             274603 => 'Section B' // section title
+     *          ],
+     *         'titlesPath' => 'Publication A > Section B' // string that concats titles
+     *     },,
+     *     // ...
+     * ]
+	 *
      * @param int $id object id
      * @param array $hiddenBranchIds ids
      * @return array tree descriptive data
@@ -654,6 +668,7 @@ class Tree extends BEAppModel
                 );
             }
         }
+		debug($result);exit;
         return $result;
     }
 

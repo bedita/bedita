@@ -1856,6 +1856,26 @@ abstract class ModulesController extends AppController {
         $this->{$method}();
     }
 
+    /*
+     * Set 'readonlyTreePaths' data for a specified $id passed, if $id resides in an hidden tree branch
+     * Data look like:
+	 * [
+     *     {
+     *         'ids' => [223481, 274603], // array of integers
+     *         'parentId' => 274603, // integer parent id
+     *         'idsPath' => '/223481/274603', // string representing ids path
+     *         'titles' => [
+     *             223481 => 'Publication A', // publication title
+     *             274603 => 'Section B' // section title
+     *          ],
+     *         'titlesPath' => 'Publication A > Section B' // string that concats titles
+     *     },
+     *     // ...
+     * ]
+     *
+     * @param int $id object id
+     * @return void
+     */
     public function readonlyTreePaths($id) {
         $hiddenParentIds = Configure::read('excludeFromTreeIds');
         if (!empty($hiddenParentIds)) {
