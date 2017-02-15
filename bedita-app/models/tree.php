@@ -668,7 +668,6 @@ class Tree extends BEAppModel
                 );
             }
         }
-		debug($result);exit;
         return $result;
     }
 
