@@ -51,3 +51,5 @@ script:
 notifications:
     email:
         - bedita-commits@channelweb.it
+    slack:
+        secure: DsljgLK6i8dSOIGpQ0Dy+19x4jrxuBux/ti7DReYCXCINrXEaecKE31PZmg5LBc4OQX+V707ygWXxcuurolCVb0N3Z2A/990e/tqn2HlurF7+SuN2aRzi+5mgkMaDsliQPuwlZ/HHIxmARnXF0vh/Z4ZV9hXOcGkVXvChDwefAw=
