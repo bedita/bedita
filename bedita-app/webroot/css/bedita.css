@@ -1859,9 +1859,9 @@ input#titleBEObject {
 
 INPUT.priority {
 	text-align:center; 
-	width:44px;
+	width:22px;
 	height:22px;
-	/*border-radius:100%  !important;*/
+	border-radius:100%  !important;
 	font-size: 11px;
 	border-width:0px !important;
 	color:#FFF !important;
