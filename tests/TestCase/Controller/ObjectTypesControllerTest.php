@@ -28,7 +28,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types'
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/API.applications',
+        'plugin.BEdita/API.endpoint_permissions',
     ];
 
     /**
@@ -163,6 +167,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/object_types');
@@ -210,6 +215,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/object_types');
@@ -262,6 +268,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/object_types/1');
@@ -297,6 +304,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/object_types/99');
@@ -341,6 +349,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/object_types', json_encode(compact('data')));
@@ -375,6 +384,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/object_types', json_encode(compact('data')));
@@ -407,6 +417,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/object_types/1', json_encode(compact('data')));
@@ -447,6 +458,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/object_types/2', json_encode(compact('data')));
@@ -472,6 +484,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
+                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->delete('/object_types/1');
