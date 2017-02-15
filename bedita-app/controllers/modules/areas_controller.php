@@ -81,6 +81,8 @@ class AreasController extends ModulesController {
                 $this->userErrorMessage(__('Section viewed not in publication tree', true));
                 $this->eventError('section not in tree, id: ' . $id);
             }
+                    // #1078, #1080 - hidden subsection management
+                    $this->readonlyTreePaths($id);
 		} else if (!empty($this->params['named']['branch'])) {
 			$parentId = $this->params['named']['branch'];
 		}
@@ -111,11 +113,15 @@ class AreasController extends ModulesController {
 		$dir = ($this->viewVars["object"]["priority_order"] == "asc")? true : false;
 		$this->paginatedList($id, $filter, $order, $dir, $page, $dim);
 
-		// get no paginated children sections
+		// get children sections and paginate
 		$filter["object_type_id"] = Configure::read("objectTypes.section.id");
 		$filter["count_permission"] = true;
-		$sections = $this->BeTree->getChildren($id, null, $filter, "priority", $dir);
+		$filter['exclude_branch'] = false;
+		$spage = !empty($this->params['named']['sections-page']) ? $this->params['named']['sections-page'] : 1;
+		$sdim = !empty($this->params['named']['sections-dim']) ? $this->params['named']['sections-dim'] : 10;
+		$sections = $this->BeTree->getChildren($id, null, $filter, 'priority', true, $spage, $sdim);
 		$this->set("sections", $sections["items"]);
+		$this->set("sectionsToolbar", $sections['toolbar']);
 	}
 
 	function viewArea($id = null) {

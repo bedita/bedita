@@ -15,6 +15,12 @@ $(document).ready(function(){
 
 	{if $object.fixed}{t}The content is fixed: it's not possible to change the position in the tree{/t}{/if}
 	
+	{if !empty($readonlyTreePaths)}
+		{foreach $readonlyTreePaths as $pathData}
+			{* available fields: ids, idsPath, titles, titlesPath *}
+			<div><input type="checkbox" checked="checked" disabled="disabled" />{$pathData.titlesPath}</div>
+		{/foreach}
+	{/if}
 	{if empty($tree)}
 		{t}No tree found{/t}
 	{else}

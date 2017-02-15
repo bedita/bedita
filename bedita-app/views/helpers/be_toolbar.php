@@ -46,8 +46,9 @@ class BeToolbarHelper extends AppHelper {
 	 * 
 	 * @param array $toolbar
 	 */
-	public function init(&$toolbar) {
+	public function init(&$toolbar, $prefix = '') {
 		$this->params['toolbar'] = $toolbar;
+		$this->params['prefix'] = $prefix;
 	}
 
 	/**
@@ -148,7 +149,7 @@ class BeToolbarHelper extends AppHelper {
 		unset($data["page"]);
 		unset($data["dim"]);
 		$url = $this->getUrl($data);
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value +'/page:1'" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/" . $this->paramName('dim') . ":'+ this[this.selectedIndex].value +'/page:1'" ;
 
 		$tmp = array() ;
 		foreach ($options as $k) $tmp[$k] = $k ;
@@ -176,7 +177,7 @@ class BeToolbarHelper extends AppHelper {
 		if($this->params["action"] == "index" && !preg_match("/\/(index$|index\/)/i", $url )) {
 			$url .= "/".$this->params["action"];
 		}
-		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/dim:'+ this[this.selectedIndex].value" ;
+		$htmlAttributes['onchange'] = "document.location = '{$url}'+'/" . $this->paramName('dim') . ":'+ this[this.selectedIndex].value" ;
 
 		return $this->Form->select($selectId, $options, $this->params['toolbar']['dim'], $htmlAttributes, false) ;
 	}
@@ -369,9 +370,19 @@ class BeToolbarHelper extends AppHelper {
 	
 	private function getUrl ($data) {
 		$data['plugin'] = "";
+		if (!empty($this->params['prefix']) && !empty($data['page'])) {
+			$data[$this->params['prefix'] . 'page'] = $data['page'];
+			unset($data['page']);
+		}
 		return Router::url($data) ;
 	}
-	
+
+	private function paramName($name) {
+		if (!empty($this->params['prefix'])) {
+			return $this->params['prefix'] . $name;
+		}
+		return $name;
+	}
 }
 
 ?>

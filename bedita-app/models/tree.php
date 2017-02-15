@@ -617,6 +617,46 @@ class Tree extends BEAppModel
 	}
 
     /**
+     * Titles path for branches related to $id passed
+     *
+     * @param int $id object id
+     * @param array $hiddenBranchIds ids
+     * @return array tree descriptive data
+     */
+    public function titlesPaths($id, $hiddenBranchIds = array()) {
+        $result = array();
+        $paths = $this->find('list', array(
+            'fields' => 'Tree.parent_path',
+            'conditions' => array('Tree.id' => $id)
+        ));
+        foreach ($paths as $path) {
+            $ids = array_filter(explode("/", $path));
+            if (empty($hiddenBranchIds) || !empty(array_intersect($ids, $hiddenBranchIds))) {
+                $titles = ClassRegistry::init('BEObject')->find('list', array(
+                    'fields' => array('BEObject.id', 'BEObject.title'),
+                    'conditions' => array('BEObject.id' => $ids)
+                ));
+                $idsPath = $path;
+                $titlesPath = '';
+                foreach ($titles as $key => $value) {
+                    if (!empty($titlesPath)) {
+                        $titlesPath.= ' > ';
+                    }
+                    $titlesPath.= $value;
+                }
+                $result[] = array(
+                    'ids' => $ids,
+                    'parentId' => end(array_values($ids)),
+                    'idsPath' => $idsPath,
+                    'titles' => $titles,
+                    'titlesPath' => $titlesPath
+                );
+            }
+        }
+        return $result;
+    }
+
+    /**
      * check if an object is on the tree
      *
      * @param integer $id

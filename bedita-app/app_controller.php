@@ -1182,6 +1182,7 @@ abstract class ModulesController extends AppController {
         $this->set('sectionSel',$sectionSel);
         $this->set('pubSel',$pubSel);
         $this->set('objects', $objects['items']);
+        $this->set('objectsToolbar', $objects['toolbar']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
         $this->set('listTags', $listTags);
@@ -1498,6 +1499,9 @@ abstract class ModulesController extends AppController {
             $previews = $this->previewsForObject($parents_id, $obj['nickname']);
 
             $this->historyItem['object_id'] = $id;
+
+            // #1078, #1080 - hidden subsection management
+            $this->readonlyTreePaths($id);
         }
 
         $property = $this->BeCustomProperty->setupForView($obj, Configure::read('objectTypes.' . $name . '.id'));
@@ -1850,6 +1854,29 @@ abstract class ModulesController extends AppController {
         }
         $this->action = $method;
         $this->{$method}();
+    }
+
+    public function readonlyTreePaths($id) {
+        $hiddenParentIds = Configure::read('excludeFromTreeIds');
+        if (!empty($hiddenParentIds)) {
+            $paths = null;
+            if (in_array($id, $hiddenParentIds)) {
+                $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+            } else {
+                $hasHiddenParent = false;
+                foreach ($hiddenParentIds as $parentId) {
+                    if ($this->Tree->isParent($parentId, $id)) {
+                        $hasHiddenParent = true;
+                    }
+                }
+                if ($hasHiddenParent) {
+                    $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+                }
+            }
+            if (!empty($paths)) {
+                $this->set('readonlyTreePaths', $paths);
+            }
+        }
     }
 
     /**
