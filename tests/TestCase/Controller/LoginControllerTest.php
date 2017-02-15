@@ -30,7 +30,7 @@ class LoginControllerTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/API.endpoints',
         'plugin.BEdita/API.applications',
         'plugin.BEdita/API.endpoint_permissions',
         'plugin.BEdita/Core.objects',
