@@ -86,9 +86,9 @@ class JsonApiComponentTest extends TestCase
     {
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()), $config);
 
-        $this->assertEquals($expectedMimeType, $component->response->getMimeType('jsonapi'));
-        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('inputTypeMap'));
-        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->config('viewClassMap'));
+        $this->assertEquals($expectedMimeType, $component->getController()->response->getMimeType('jsonapi'));
+        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('inputTypeMap'));
+        $this->assertArrayHasKey('jsonapi', $component->RequestHandler->getConfig('viewClassMap'));
     }
 
     /**
@@ -297,7 +297,7 @@ class JsonApiComponentTest extends TestCase
     public function testParseInput($expected, $input)
     {
         if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
+            $this->expectException('\InvalidArgumentException');
         }
 
         $component = new JsonApiComponent(new ComponentRegistry(new Controller()));
@@ -376,7 +376,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowedResourceTypes($expected, $types, array $data)
     {
         if (!$expected) {
-            $this->setExpectedException('\Cake\Network\Exception\ConflictException');
+            $this->expectException('\Cake\Network\Exception\ConflictException');
         }
 
         $request = new Request([
@@ -453,7 +453,7 @@ class JsonApiComponentTest extends TestCase
     public function testAllowClientGeneratedIds($expected, array $data)
     {
         if (!$expected) {
-            $this->setExpectedException('\Cake\Network\Exception\ForbiddenException');
+            $this->expectException('\Cake\Network\Exception\ForbiddenException');
         }
 
         $request = new Request([
