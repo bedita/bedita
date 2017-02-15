@@ -92,9 +92,9 @@ class ExceptionRendererTest extends TestCase
     /**
      * Test error detail on response
      *
-     * @param bool $expected Expected result.
-     * @param string $accept Request's "Accept" header
-     * @param array $config The configuration to use.
+     * @param string $errorMessage Expected error message.
+     * @param string $title Expected error title.
+     * @param string $detail Additional details.
      * @return void
      *
      * @dataProvider errDetailsProvider
@@ -108,7 +108,7 @@ class ExceptionRendererTest extends TestCase
         $renderer->controller->request->env('HTTP_ACCEPT', 'application/json');
         $response = $renderer->render();
 
-        $responseBody = json_decode($response->body(), true);
+        $responseBody = json_decode((string)$response->getBody(), true);
         $this->assertEquals($title, $responseBody['error']['title']);
         if ($detail) {
             $this->assertEquals($detail, $responseBody['error']['detail']);
@@ -279,12 +279,12 @@ class ExceptionRendererTest extends TestCase
 
         $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
             // force missing layout exception
-            $event->subject()->viewBuilder()->layoutPath('find_me_if_you_can');
+            $event->getSubject()->viewBuilder()->getLayoutPath('find_me_if_you_can');
         });
 
         $response = $renderer->render();
 
-        $this->assertEquals('', $renderer->controller->viewBuilder()->layoutPath());
+        $this->assertEquals('', $renderer->controller->viewBuilder()->getLayoutPath());
         $this->checkResponseHtml($renderer, $response, $config['debug']);
     }
 
@@ -299,7 +299,7 @@ class ExceptionRendererTest extends TestCase
     protected function checkResponseHtml(ExceptionRenderer $renderer, Response $response, $debug)
     {
         $this->assertStringStartsWith('text/html', $response->type());
-        $doctype = strpos(strtolower($response->body()), '<!doctype html>');
+        $doctype = strpos(strtolower((string)$response->getBody()), '<!doctype html>');
         $this->assertNotFalse($doctype);
 
         $this->assertArrayHasKey('responseBody', $renderer->controller->viewVars);
@@ -323,10 +323,10 @@ class ExceptionRendererTest extends TestCase
         $pluginApiTemplatePath = ROOT . DS . 'plugins' . DS . 'BEdita' . DS . 'API' . DS . 'src' . DS . 'Template' . DS;
         $pathsTemplates = Configure::read('App.paths.templates');
         if (Plugin::loaded('BEdita/API')) {
-            $this->assertEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
+            $this->assertEquals('BEdita/API', $renderer->controller->viewBuilder()->getPlugin());
             $this->assertNotContains($pluginApiTemplatePath, $pathsTemplates);
         } else {
-            $this->assertNotEquals('BEdita/API', $renderer->controller->viewBuilder()->plugin());
+            $this->assertNotEquals('BEdita/API', $renderer->controller->viewBuilder()->getPlugin());
             $this->assertContains($pluginApiTemplatePath, $pathsTemplates);
         }
     }
@@ -425,7 +425,7 @@ class ExceptionRendererTest extends TestCase
         $renderer = new ExceptionRenderer(new NotFoundException('test html'));
         $renderer->controller->request->env('HTTP_ACCEPT', $accept);
 
-        $renderer->controller->eventManager()->on('Controller.beforeRender', function (Event $event) {
+        $renderer->controller->eventManager()->on('Controller.beforeRender', function () {
             throw new InternalErrorException();
         });
 
@@ -444,10 +444,10 @@ class ExceptionRendererTest extends TestCase
      */
     protected function checkResponseJson(ExceptionRenderer $renderer, Response $response, $debug)
     {
-        $accept = $renderer->controller->request->header('accept');
+        $accept = $renderer->controller->request->getHeaderLine('accept');
         $contentTypeExpected = ($accept == 'application/json') ? $accept : 'application/vnd.api+json';
         $this->assertStringStartsWith($contentTypeExpected, $response->type());
-        $responseBody = json_decode($response->body(), true);
+        $responseBody = json_decode((string)$response->getBody(), true);
         $this->assertTrue(is_array($responseBody));
 
         $this->assertArrayHasKey('error', $responseBody);

@@ -464,7 +464,7 @@ class JsonApiTest extends TestCase
     public function testFormatData($expected, callable $items, $type = null)
     {
         if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
+            $this->expectException('\InvalidArgumentException');
         }
 
         $result = JsonApi::formatData($items($this->Roles), $type);
@@ -487,7 +487,7 @@ class JsonApiTest extends TestCase
     public function testParseData($expected, array $items)
     {
         if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
+            $this->expectException('\InvalidArgumentException');
         }
 
         $result = JsonApi::parseData($items);
