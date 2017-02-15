@@ -24,7 +24,7 @@ use Cake\TestSuite\TestCase;
  *
  * @since 4.0.0
  */
-class EndpointTest extends TestCase
+class EndpointPermissionTest extends TestCase
 {
 
     /**
@@ -40,6 +40,7 @@ class EndpointTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',

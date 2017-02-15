@@ -24,11 +24,6 @@ class EndpointPermissionsFixture extends TestFixture
     /**
      * {@inheritDoc}
      */
-    public $table = 'endpoint_permissions';
-
-    /**
-     * {@inheritDoc}
-     */
     public $records = [
         [
             'endpoint_id' => null,

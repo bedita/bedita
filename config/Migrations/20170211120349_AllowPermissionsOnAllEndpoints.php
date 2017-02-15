@@ -15,12 +15,31 @@ class AllowPermissionsOnAllEndpoints extends AbstractMigration
     public function up()
     {
         $this->table('endpoint_permissions')
+            ->dropForeignKey(
+                'endpoint_id'
+            );
+
+        $this->table('endpoint_permissions')
             ->changeColumn('endpoint_id', 'integer', [
                 'comment' => 'link to endpoints.id',
                 'default' => null,
                 'limit' => 5,
                 'null' => true,
+                'signed' => false,
             ])
+            ->update();
+
+        $this->table('endpoint_permissions')
+            ->addForeignKey(
+                'endpoint_id',
+                'endpoints',
+                'id',
+                [
+                    'constraint' => 'endpointpermissions_endpointid_fk',
+                    'update' => 'RESTRICT',
+                    'delete' => 'RESTRICT'
+                ]
+            )
             ->update();
     }
 
@@ -30,12 +49,31 @@ class AllowPermissionsOnAllEndpoints extends AbstractMigration
     public function down()
     {
         $this->table('endpoint_permissions')
+            ->dropForeignKey(
+                'endpoint_id'
+            );
+
+        $this->table('endpoint_permissions')
             ->changeColumn('endpoint_id', 'integer', [
                 'comment' => 'link to endpoints.id',
                 'default' => null,
                 'length' => 5,
                 'null' => false,
+                'signed' => false,
             ])
+            ->update();
+
+        $this->table('endpoint_permissions')
+            ->addForeignKey(
+                'endpoint_id',
+                'endpoints',
+                'id',
+                [
+                    'constraint' => 'endpointpermissions_endpointid_fk',
+                    'update' => 'RESTRICT',
+                    'delete' => 'RESTRICT'
+                ]
+            )
             ->update();
     }
 }
