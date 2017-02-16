@@ -30,10 +30,10 @@ class EndpointPermissionsFixture extends TestFixture
      */
     public $records = [
         [
-            'endpoint_id' => 1,
-            'application_id' => 1,
-            'role_id' => 1,
-            'permission' => 1
+            'endpoint_id' => null,
+            'application_id' => null,
+            'role_id' => null,
+            'permission' => 0b1111,
         ],
     ];
 }

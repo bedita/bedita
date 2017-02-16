@@ -31,12 +31,6 @@ class SaveSchemaTaskTest extends ShellTestCase
         parent::tearDown();
 
         Plugin::load('Migrations');
-    }
-
-    public static function tearDownAfterClass()
-    {
-        parent::tearDownAfterClass();
-
         ConnectionManager::alias('test', 'default');
     }
 
@@ -49,7 +43,7 @@ class SaveSchemaTaskTest extends ShellTestCase
     {
         Plugin::unload('Migrations');
 
-        $this->invoke(['db_admin', 'save_schema', '--connection=test']);
+        $this->invoke(['db_admin', 'save_schema']);
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
 
         $this->assertAborted();

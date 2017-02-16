@@ -29,7 +29,7 @@ class ApplicationsFixture extends TestFixture
      */
     public $records = [
         [
-            'api_key' => 'API_KEY',
+            'api_key' => API_KEY,
             'name' => 'First app',
             'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat.',
             'created' => '2016-10-28 07:10:57',
