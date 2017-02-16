@@ -37,8 +37,6 @@ matrix:
       env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - php: 7.1
       env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
-    - php: 7.1
-      env: RUN_CS=1 RUN_TESTS=0
 
   exclude:
     - php: hhvm
@@ -86,7 +84,6 @@ before_script:
 
 script:
   - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
-  - if [ "$RUN_CS" = '1' ]; then vendor/bin/phpcs -n -p --extensions=php --standard=vendor/cakephp/cakephp-codesniffer/CakePHP --ignore=/Migrations/,/Seeds/ ./config ./src ./tests ./plugins/*/*/config ./plugins/*/*/src ./plugins/*/*/tests; fi
 
 after_success:
   - if [ "$RUN_TESTS" = '1' ]; then bash <(curl -s https://codecov.io/bash); fi
