@@ -204,11 +204,27 @@ class Tree extends BEAppModel
     public function updateTree($id, $destination, array $options = array()) {
         $options += array(
             'area_id' => null,
-            'status' => array()
+            'status' => array(),
+			'mantain_hidden_branch' => true
         );
         if (!is_array($destination)) {
             $destination = (empty($destination))? array() : array($destination);
         }
+		$excludeFromTreeIds = Configure::read('excludeFromTreeIds');
+		if ($options['mantain_hidden_branch'] === true && !empty($excludeFromTreeIds)) {
+			foreach ($excludeFromTreeIds as $excludeFromTreeId) {
+				$result = $this->find('list', array(
+					'fields' => array('parent_id'),
+					'conditions' => array(
+						'id' => $id,
+						'object_path LIKE' => '%/' . $excludeFromTreeId . '/%'
+					)
+				));
+				if (!empty($result)) {
+					$destination = array_merge($destination, $result);
+				}
+			}
+		}
         $currParents = $this->getParents($id, $options['area_id'], $options['status'], false);
         // remove
         $remove = array_diff($currParents, $destination) ;
@@ -599,6 +615,61 @@ class Tree extends BEAppModel
 
 		return true;
 	}
+
+    /**
+     * Titles paths for branches related to $id passed
+     * Returns array, each element is like:
+	 * [
+     *     {
+     *         'ids' => [223481, 274603], // array of integers
+     *         'parentId' => 274603, // integer parent id
+     *         'idsPath' => '/223481/274603', // string representing ids path
+     *         'titles' => [
+     *             223481 => 'Publication A', // publication title
+     *             274603 => 'Section B' // section title
+     *          ],
+     *         'titlesPath' => 'Publication A > Section B' // string that concats titles
+     *     },,
+     *     // ...
+     * ]
+	 *
+     * @param int $id object id
+     * @param array $hiddenBranchIds ids
+     * @return array tree descriptive data
+     */
+    public function titlesPaths($id, $hiddenBranchIds = array()) {
+        $result = array();
+        $paths = $this->find('list', array(
+            'fields' => 'Tree.parent_path',
+            'conditions' => array('Tree.id' => $id)
+        ));
+        foreach ($paths as $path) {
+            $ids = array_filter(explode("/", $path));
+			$intersection = (!empty($hiddenBranchIds)) ? array_intersect($ids, $hiddenBranchIds) : array();
+            if (!empty($intersection)) {
+                $titles = ClassRegistry::init('BEObject')->find('list', array(
+                    'fields' => array('BEObject.id', 'BEObject.title'),
+                    'conditions' => array('BEObject.id' => $ids)
+                ));
+                $idsPath = $path;
+                $titlesPath = '';
+                foreach ($titles as $key => $value) {
+                    if (!empty($titlesPath)) {
+                        $titlesPath.= ' > ';
+                    }
+                    $titlesPath.= $value;
+                }
+                $result[] = array(
+                    'ids' => $ids,
+                    'parentId' => end(array_values($ids)),
+                    'idsPath' => $idsPath,
+                    'titles' => $titles,
+                    'titlesPath' => $titlesPath
+                );
+            }
+        }
+        return $result;
+    }
 
     /**
      * check if an object is on the tree

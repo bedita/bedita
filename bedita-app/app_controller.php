@@ -1182,6 +1182,7 @@ abstract class ModulesController extends AppController {
         $this->set('sectionSel',$sectionSel);
         $this->set('pubSel',$pubSel);
         $this->set('objects', $objects['items']);
+        $this->set('objectsToolbar', $objects['toolbar']);
         $this->set('properties', $properties);
         $this->set('availableRelations', $availableRelations);
         $this->set('listTags', $listTags);
@@ -1498,6 +1499,10 @@ abstract class ModulesController extends AppController {
             $previews = $this->previewsForObject($parents_id, $obj['nickname']);
 
             $this->historyItem['object_id'] = $id;
+
+            // #1078, #1080 - hidden subsection management
+            $this->readonlyTreePaths($id);
+            $this->isInsideHiddenBranch($id);
         }
 
         $property = $this->BeCustomProperty->setupForView($obj, Configure::read('objectTypes.' . $name . '.id'));
@@ -1850,6 +1855,68 @@ abstract class ModulesController extends AppController {
         }
         $this->action = $method;
         $this->{$method}();
+    }
+
+    /*
+     * Set 'readonlyTreePaths' data for a specified $id passed, if $id resides in an hidden tree branch
+     * Data look like:
+	 * [
+     *     {
+     *         'ids' => [223481, 274603], // array of integers
+     *         'parentId' => 274603, // integer parent id
+     *         'idsPath' => '/223481/274603', // string representing ids path
+     *         'titles' => [
+     *             223481 => 'Publication A', // publication title
+     *             274603 => 'Section B' // section title
+     *          ],
+     *         'titlesPath' => 'Publication A > Section B' // string that concats titles
+     *     },
+     *     // ...
+     * ]
+     *
+     * @param int $id object id
+     * @return void
+     */
+    public function readonlyTreePaths($id) {
+        $hiddenParentIds = Configure::read('excludeFromTreeIds');
+        if (!empty($hiddenParentIds)) {
+            $paths = null;
+            if (in_array($id, $hiddenParentIds)) {
+                $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+            } else {
+                $hasHiddenParent = false;
+                foreach ($hiddenParentIds as $parentId) {
+                    if ($this->Tree->isParent($parentId, $id)) {
+                        $hasHiddenParent = true;
+                    }
+                }
+                if ($hasHiddenParent) {
+                    $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+                }
+            }
+            if (!empty($paths)) {
+                $this->set('readonlyTreePaths', $paths);
+            }
+        }
+    }
+
+    /**
+     * Set 'isInsideHiddenBranch' for a specified $id passed, if $id is inside hidden branch id config 'excludeFromTreeIds'
+     * 
+     * @param int $id section id
+     * @return void
+     */
+    public function isInsideHiddenBranch($id) {
+        $hiddenParentIds = Configure::read('excludeFromTreeIds');
+        $isInsideHiddenBranch = (empty($hiddenParentIds)) ? false : in_array($id, $hiddenParentIds);
+        if (!$isInsideHiddenBranch) {
+            foreach ($hiddenParentIds as $parentId) {
+                if ($this->Tree->isParent($parentId, $id)) {
+                    $isInsideHiddenBranch = true;
+                }
+            }
+        }
+        $this->set('isInsideHiddenBranch', $isInsideHiddenBranch);
     }
 
     /**

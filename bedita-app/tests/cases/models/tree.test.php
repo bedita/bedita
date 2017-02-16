@@ -392,6 +392,46 @@ class TreeTestCase extends BeditaTestCase {
 		//echo $this->buildHtmlTree($tree);
 	}
 
+	public function testExcludedFromTree() {
+		$excludedIds = Configure::read('excludeFromTreeIds');
+		$idParent1 = $this->savedIds['Publication 1'];
+		$idParent2 = $this->savedIds['Publication 2'];
+		$children1 = 4;
+		$children2 = 5;
+		$testDesc = "Tree->getAll($idParent1)";
+		Configure::write('excludeFromTreeIds', array($idParent1));
+		// excludeFromTreeIds $idParent1 - exclude_branch-filter-false
+		$filter = array('exclude_branch' => false);
+		$tree = $this->Tree->getAll($idParent1, null, null, $filter);
+		$res = ( isset($tree[0]['children']) && (count($tree[0]['children']) === $children1) );
+		if ($this->assertTrue($res, "[$testDesc | exclude_branch-filter-false] Error verifying parent Publication 1 (id=". $idParent1 .")")) {
+			pr("<span style='color: green'>[$testDesc | exclude_branch-filter-false] Publication 1 (id=". $idParent1 .") has $children1 children visible</span>");
+		}
+		// excludeFromTreeIds $idParent1 - unset exclude_branch-filter
+		unset($filter['exclude_branch']);
+		$tree = $this->Tree->getAll($idParent1, null, null, $filter);
+		$res = ( isset($tree[0]['children']) && (count($tree[0]['children']) === 0) );
+		if ($this->assertTrue($res, "[$testDesc | exclude_branch-filter unset] Error verifying parent Publication 1 (id=". $idParent1 .")")) {
+			pr("<span style='color: green'>[$testDesc | exclude_branch-filter unset] Publication 1 (id=". $idParent1 .") has 0 children visible</span>");
+		}
+		// excludeFromTreeIds $idParent2 - verify other parent $idParent2 - exclude_branch-filter-false
+		$filter = array('exclude_branch' => false);
+		$tree = $this->Tree->getAll($idParent2, null, null, $filter);
+		$res = ( !empty($tree[0]['children']) && (count($tree[0]['children']) === $children2) );
+		if ($this->assertTrue($res, "[$testDesc | exclude_branch-filter-false] Error verifying parent Publication 2 (id=". $idParent2 .")")) {
+			pr("<span style='color: green'>[$testDesc | exclude_branch-filter-false] Publication 2 (id=". $idParent2 .") has $children2 children visible</span>");
+		}
+		// excludeFromTreeIds $idParent - verify other parent $idParent2 - exclude_branch-filter unset
+		unset($filter['exclude_branch']);
+		$tree = $this->Tree->getAll($idParent2, null, null, $filter) ;
+		$res = ( !empty($tree[0]['children']) && (count($tree[0]['children']) === 5) );
+		if ($this->assertTrue($res, "[$testDesc | exclude_branch-filter unset] Error verifying parent Publication 2 (id=". $idParent2 .")")) {
+			pr("<span style='color: green'>[$testDesc | exclude_branch-filter unset] Publication 2 (id=". $idParent2 .") has $children2 children visible</span>");
+		}
+		// end
+		Configure::write('excludeFromTreeIds', $excludedIds);
+	}
+
 	public function __construct () {
 		parent::__construct('Tree', dirname(__FILE__)) ;
 	}

@@ -39,6 +39,13 @@
 			<tr>
 				<td><label>{t}reside in{/t}:</label></td>
 				<td>
+				{if !empty($readonlyTreePaths)}
+					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
+					{foreach $readonlyTreePaths as $pathData}
+						<option value="{$pathData.parentId}">{$pathData.titlesPath}</option>
+					{/foreach}
+					</select>
+				{else}
 					<select id="areaSectionAssoc" class="areaSectionAssociation" name="data[parent_id]">
 						{if !empty($parent_id)}
 							{$beTree->option($tree, $parent_id)}
@@ -46,11 +53,10 @@
 							{$beTree->option($tree)}
 						{/if}
 					</select>
-					
+				{/if}
 					{if $object|default:false && ($object.fixed == 1)}
 						<input id="areaSectionAssoc" type="hidden" name="data[parent_id]" value="{$parent_id}" />
 					{/if}
-					
 				</td>
 			</tr>
 			<tr>

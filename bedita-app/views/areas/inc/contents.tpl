@@ -5,6 +5,7 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
 //-->
 </script>
 
+{$beToolbar->init($objectsToolbar)}
 {$relcount = $beToolbar->size()}
 
 <div class="tab"><h2 {if $relcount == 0}class="empty"{/if}>{t}Contents{/t} {if $relcount > 0} &nbsp; <span class="relnumb">{$relcount}</span>{/if}</h2></div>
@@ -38,9 +39,9 @@ var pageUrl = "{$beurl->getUrl('object_type_id')}";
         {include file="inc/toolbar.tpl"}
     </div>
 {/if}
-
+{if !$isInsideHiddenBranch}
     {include file="inc/tools_commands.tpl" type="all"}
-
+{/if}
 </div>  
 
 </fieldset>
