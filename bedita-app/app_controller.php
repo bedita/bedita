@@ -1908,7 +1908,11 @@ abstract class ModulesController extends AppController {
      */
     public function isInsideHiddenBranch($id) {
         $hiddenParentIds = Configure::read('excludeFromTreeIds');
-        $isInsideHiddenBranch = (empty($hiddenParentIds)) ? false : in_array($id, $hiddenParentIds);
+        if (empty($hiddenParentIds)) {
+            return $this->set('isInsideHiddenBranch', false);
+        }
+
+        $isInsideHiddenBranch = in_array($id, $hiddenParentIds);
         if (!$isInsideHiddenBranch) {
             foreach ($hiddenParentIds as $parentId) {
                 if ($this->Tree->isParent($parentId, $id)) {
