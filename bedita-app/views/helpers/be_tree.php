@@ -42,7 +42,15 @@ class BeTreeHelper extends AppHelper {
 		'radio'	=> "<input type=\"radio\" name=\"data[destination]\" value=\"%s\" %s/>",
 	);
 
+	var $hiddenBranchLabel = '*';
+	var $excludeFromTreeIds;
+
 	protected $treeParams = array();
+
+	public function __construct() {
+		$conf = Configure::getInstance();
+		$this->excludeFromTreeIds = Configure::read('excludeFromTreeIds');
+	}
 
 	/**
 	 * beforeRender callback
@@ -282,7 +290,9 @@ class BeTreeHelper extends AppHelper {
 				}
 
 				$output .= h($publication['title']);
-
+				if (!empty($this->excludeFromTreeIds) && in_array($publication['id'], $this->excludeFromTreeIds)) {
+					$output.= ' ' . $this->hiddenBranchLabel;
+				}
 				$output .= '</a>';
 
 				$output .= '</h2>';
@@ -399,6 +409,9 @@ class BeTreeHelper extends AppHelper {
 					$params .= ' data-loaded="true"';
 				}
 				$path = h(mb_strtoupper($publication["title"]));
+				if (!empty($this->excludeFromTreeIds) && in_array($publication['id'], $this->excludeFromTreeIds)) {
+					$path.= ' ' . $this->hiddenBranchLabel;
+				}
 				$params .= ($selId == $publication["id"])? ' selected' : '';
 				$output .= sprintf($this->tags['option'], $publication["id"], $params, $path) ;
 				if (!empty($publication["children"])) {
@@ -470,7 +483,11 @@ class BeTreeHelper extends AppHelper {
 
 			}
 
-			$res .= h($section["title"]) . "</a>";
+			$res .= h($section["title"]);
+			if (!empty($this->excludeFromTreeIds) && in_array($section['id'], $this->excludeFromTreeIds)) {
+				$res.= ' ' . $this->hiddenBranchLabel;
+			}
+			$res .= "</a>";
 
 			if (!empty($inputType) && !empty($this->tags[$inputType])) {
 				$res .= "<a target='_blank' title='go to this section' href='".$this->Html->url('/areas/view/').$section['id']."'> › </a>";
@@ -518,6 +535,9 @@ class BeTreeHelper extends AppHelper {
 			$params = ' class="depth' . $numInd . '"';
 			$params .= ($selId == $section['id'])? ' selected' : '';
 			$npath = $path . ' > ' . h($section["title"]);
+			if (!empty($this->excludeFromTreeIds) && in_array($section['id'], $this->excludeFromTreeIds)) {
+				$npath.= ' ' . $this->hiddenBranchLabel;
+			}
 			$res .= sprintf($this->tags['option'], $section["id"], $params, $npath) ;
 			if (!empty($section["children"])) {
 				$res .= $this->optionBranch($section["children"], $selId, $numInd+$this->numInd, $indentation, $npath);
