@@ -37,6 +37,8 @@ matrix:
       env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://bedita:bedita@127.0.0.1:33060/bedita_test'"
     - php: 7.1
       env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres:postgres@127.0.0.1:54320/bedita_test'"
+    - php: 7.1
+      env: RUN_PHPSTAN=1 RUN_TESTS=0
 
   exclude:
     - php: hhvm
@@ -84,6 +86,10 @@ before_script:
 
 script:
   - if [ "$RUN_TESTS" = '1' ]; then vendor/bin/phpunit --coverage-clover=clover.xml; fi
+  - |
+    if [ "$RUN_PHPSTAN" = '1' ]; then
+      docker run -v $PWD:/app phpstan/phpstan analyse --no-progress /app/src /app/plugins/BEdita/API/src /app/plugins/BEdita/Core/src
+    fi
 
 after_success:
   - if [ "$RUN_TESTS" = '1' ]; then bash <(curl -s https://codecov.io/bash); fi
