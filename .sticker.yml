@@ -6,7 +6,6 @@ branches:
   ignore:
     - 3-corylus
     - master
-    - issue/v3/*
 files:
   ignore:
     - */Migrations/*
