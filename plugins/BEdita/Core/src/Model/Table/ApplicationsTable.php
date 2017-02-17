@@ -120,6 +120,10 @@ class ApplicationsTable extends Table
      */
     public function findApiKey(Query $query, array $options)
     {
+        if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
+            throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
+        }
+
         return $query
             ->where([
                 $this->aliasField('api_key') => $options['apiKey'],

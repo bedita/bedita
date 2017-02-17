@@ -204,4 +204,53 @@ class ApplicationsTableTest extends TestCase
             }
         }
     }
+
+    /**
+     * Data provider for `testFindApiKey` test case.
+     *
+     * @return array
+     */
+    public function findApiKeyProvider()
+    {
+        return [
+            'found' => [
+                1,
+                API_KEY,
+            ],
+            'disabled' => [
+                0,
+                'abcdef12345',
+            ],
+            'invalid' => [
+                0,
+                'invalid',
+            ],
+            'badMethodException' => [
+                new \BadMethodCallException('Required option "apiKey" must be a not empty string'),
+                ['this', 'is', 'not', 'a', 'string'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by API key.
+     *
+     * @param int|\Exception $expected Expected count.
+     * @param string $apiKey API key.
+     * @return void
+     *
+     * @covers ::findApiKey()
+     * @dataProvider findApiKeyProvider()
+     */
+    public function testFindApiKey($expected, $apiKey)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
+
+        static::assertSame($expected, $count);
+    }
 }

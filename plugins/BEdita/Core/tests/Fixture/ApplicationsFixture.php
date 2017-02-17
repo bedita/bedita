@@ -36,5 +36,13 @@ class ApplicationsFixture extends TestFixture
             'modified' => '2016-10-28 07:10:57',
             'enabled' => 1,
         ],
+        [
+            'api_key' => 'abcdef12345',
+            'name' => 'Disabled app',
+            'description' => 'This app has been disabled',
+            'created' => '2017-02-17 15:51:29',
+            'modified' => '2017-02-17 15:51:29',
+            'enabled' => 0,
+        ],
     ];
 }
