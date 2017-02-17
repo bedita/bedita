@@ -17,6 +17,14 @@ use BEdita\Core\SingletonTrait;
 use Cake\TestSuite\TestCase;
 
 /**
+ * Fake singleton class for the sake of testing.
+ */
+class MySingletonClass
+{
+    use SingletonTrait;
+}
+
+/**
  * {@see BEdita\Core\SingletonTrait} Test Case
  *
  * @covers \BEdita\Core\SingletonTrait
@@ -31,9 +39,9 @@ class SingletonTraitTest extends TestCase
      */
     public function testNotInstantiable()
     {
-        $class = new \ReflectionClass(SingletonTrait::class);
+        $class = new \ReflectionClass(MySingletonClass::class);
 
-        $this->assertFalse($class->isInstantiable());
+        static::assertFalse($class->isInstantiable());
     }
 
     /**
@@ -43,8 +51,22 @@ class SingletonTraitTest extends TestCase
      */
     public function testNotCloneable()
     {
-        $class = new \ReflectionClass(SingletonTrait::class);
+        $class = new \ReflectionClass(MySingletonClass::class);
 
-        $this->assertFalse($class->isCloneable());
+        static::assertFalse($class->isCloneable());
+    }
+
+    /**
+     * Test instance getter.
+     *
+     * @return void
+     */
+    public function testGetInstance()
+    {
+        $instance = MySingletonClass::getInstance();
+
+        $anotherInstance = MySingletonClass::getInstance();
+
+        static::assertSame($instance, $anotherInstance);
     }
 }

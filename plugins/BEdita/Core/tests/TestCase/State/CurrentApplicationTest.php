@@ -71,12 +71,12 @@ class CurrentApplicationTest extends TestCase
      */
     public function testGetApplication()
     {
-        $this->assertNull(null, CurrentApplication::getApplication());
+        static::assertNull(null, CurrentApplication::getApplication());
 
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
 
-        $this->assertSame($application, CurrentApplication::getApplication());
+        static::assertSame($application, CurrentApplication::getApplication());
     }
 
     /**
@@ -92,7 +92,7 @@ class CurrentApplicationTest extends TestCase
         $application = $this->Applications->get(1);
         CurrentApplication::setApplication($application);
 
-        $this->assertAttributeSame($application, 'application', CurrentApplication::getInstance());
+        static::assertAttributeSame($application, 'application', CurrentApplication::getInstance());
     }
 
     /**
@@ -108,8 +108,8 @@ class CurrentApplicationTest extends TestCase
         CurrentApplication::setFromApiKey($apiKey);
 
         $application = CurrentApplication::getApplication();
-        $this->assertNotNull($application);
-        $this->assertEquals(1, $application->id);
+        static::assertNotNull($application);
+        static::assertEquals(1, $application->id);
     }
 
     /**
