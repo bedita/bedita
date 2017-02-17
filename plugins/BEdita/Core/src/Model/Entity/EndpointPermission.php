@@ -106,22 +106,21 @@ class EndpointPermission extends Entity
      * Decode a permission value.
      *
      * @param int $value Integer representing a permission value.
-     * @param \Cake\ORM\Entity|null $entity Entity to be used as context in logs in case of an invalid value.
      * @return bool|string
      */
-    public static function decode($value, Entity $entity = null)
+    public static function decode($value)
     {
         switch ($value) {
-            case static::PERM_NO:
-                return false;
-            case static::PERM_MINE:
-                return 'mine';
-            case static::PERM_BLOCK:
-                return 'block';
             case static::PERM_YES:
                 return true;
+            case static::PERM_BLOCK:
+                return 'block';
+            case static::PERM_MINE:
+                return 'mine';
+            case static::PERM_NO:
+                return false;
             default:
-                Log::alert(sprintf('Invalid permission value "%d"', $value), compact('entity'));
+                Log::alert(sprintf('Invalid permission value "%d"', $value));
 
                 return false;
         }
@@ -182,7 +181,7 @@ class EndpointPermission extends Entity
      */
     protected function _getRead()
     {
-        return static::decode($this->permission >> static::PERM_READ & static::PERM_YES, $this);
+        return static::decode($this->permission >> static::PERM_READ & static::PERM_YES);
     }
 
     /**
@@ -205,7 +204,7 @@ class EndpointPermission extends Entity
      */
     protected function _getWrite()
     {
-        return static::decode($this->permission >> static::PERM_WRITE & static::PERM_YES, $this);
+        return static::decode($this->permission >> static::PERM_WRITE & static::PERM_YES);
     }
 
     /**
