@@ -38,7 +38,7 @@ class ObjectRelationsTable extends Table
         $this->displayField('left_id');
         $this->primaryKey(['left_id', 'relation_id', 'right_id']);
 
-        $this->belongsTo('Objects', [
+        $this->belongsTo('LeftObjects', [
             'foreignKey' => 'left_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
@@ -48,7 +48,7 @@ class ObjectRelationsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Relations'
         ]);
-        $this->belongsTo('Objects', [
+        $this->belongsTo('RightObjects', [
             'foreignKey' => 'right_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'

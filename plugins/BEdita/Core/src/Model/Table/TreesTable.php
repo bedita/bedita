@@ -48,7 +48,7 @@ class TreesTable extends Table
             'className' => 'BEdita/Core.Trees',
             'foreignKey' => 'parent_id'
         ]);
-        $this->belongsTo('Objects', [
+        $this->belongsTo('RootObjects', [
             'foreignKey' => 'root_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
