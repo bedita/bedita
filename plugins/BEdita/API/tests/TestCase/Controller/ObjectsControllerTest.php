@@ -306,6 +306,9 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test deleted object method.
      *
      * @return void
+     *
+     * @covers ::view()
+     * @covers ::initialize()
      */
     public function testDeleted()
     {

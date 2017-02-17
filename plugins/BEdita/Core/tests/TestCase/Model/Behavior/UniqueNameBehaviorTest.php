@@ -82,6 +82,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider uniqueUserProvider
+     * @covers ::uniqueName()
      */
     public function testUniqueUser($input)
     {
@@ -135,6 +136,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider generateUniqueUserProvider
+     * @covers ::generateUniqueName()
      */
     public function testGenerateUniqueName($input)
     {
@@ -203,6 +205,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider uniqueNameExistsProvider
+     * @covers ::uniqueNameExists()
      */
     public function testUniqueNameExists($input)
     {

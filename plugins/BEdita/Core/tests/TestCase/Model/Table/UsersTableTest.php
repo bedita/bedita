@@ -115,7 +115,7 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     *
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
@@ -152,6 +152,8 @@ class UsersTableTest extends TestCase
      * Test deleted field on user deleted.
      *
      * @return void
+     *
+     * @coversNothing
      */
     public function testDeleted()
     {

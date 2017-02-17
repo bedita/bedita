@@ -21,7 +21,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @covers \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class UserModifiedBehaviorTest extends TestCase
 {
