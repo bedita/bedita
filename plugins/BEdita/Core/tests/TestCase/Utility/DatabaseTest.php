@@ -49,6 +49,8 @@ class DatabaseTest extends TestCase
      * Test currentSchema method
      *
      * @return void
+     *
+     * @covers ::currentSchema()
      */
     public function testCurrentSchema()
     {
@@ -68,7 +70,9 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
+     *
      * @expectedException \Cake\Datasource\Exception\MissingDatasourceConfigException
+     * @covers ::currentSchema()
      */
     public function testMissingDatasourceConfigException()
     {
@@ -79,6 +83,9 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
+     *
+     * @covers ::schemaCompare()
+     * @covers ::compareSchemaItems()
      */
     public function testSchemaCompare()
     {
@@ -119,6 +126,8 @@ class DatabaseTest extends TestCase
      * Test basicInfo method
      *
      * @return void
+     *
+     * @covers ::basicInfo()
      */
     public function testBasicInfo()
     {
@@ -136,6 +145,8 @@ class DatabaseTest extends TestCase
      * Test connectionTest method
      *
      * @return void
+     *
+     * @covers ::connectionTest()
      */
     public function testConnectionTest()
     {
@@ -168,7 +179,10 @@ class DatabaseTest extends TestCase
      * Test executeTransaction method
      *
      * @return void
+     *
      * @dataProvider sqlExecute
+     * @covers ::splitSqlQueries()
+     * @covers ::executeTransaction()
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {

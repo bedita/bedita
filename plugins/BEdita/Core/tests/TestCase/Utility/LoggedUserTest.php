@@ -18,7 +18,7 @@ use Cake\TestSuite\TestCase;
 /**
  * \BEdita\Core\Utility\LoggedUser Test Case
  *
- * @coversDefaultClass \BEdita\Core\Utility\LoggedUser
+ * @covers \BEdita\Core\Utility\LoggedUser
  */
 class LoggedUserTest extends TestCase
 {

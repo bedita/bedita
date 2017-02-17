@@ -19,6 +19,10 @@ use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Configure\Engine\DatabaseConfig} Test Case
+ *
+ * @todo Isn't this a dupe of {@see \BEdita\Core\Test\TestCase\Configure\Engine\DatabaseConfigTest}?
+ *
+ * @coversDefaultClass \BEdita\Core\Configure\Engine\DatabaseConfig
  */
 class ConfigureTest extends TestCase
 {
@@ -46,6 +50,8 @@ class ConfigureTest extends TestCase
      * Test read method
      *
      * @return void
+     * @covers ::read()
+     * @covers ::valueFromString()
      */
     public function testRead()
     {
@@ -94,6 +100,8 @@ class ConfigureTest extends TestCase
      * @return void
      *
      * @dataProvider configProvider
+     * @covers ::dump()
+     * @covers ::valueToString()
      */
     public function testDump($expected, $context, $data)
     {

@@ -20,6 +20,8 @@ use Cake\TestSuite\TestCase;
 
 /**
  * {@see \BEdita\Core\Configure\Engine\DatabaseConfig} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Configure\Engine\DatabaseConfig
  */
 class DatabaseConfigTest extends TestCase
 {
@@ -67,6 +69,8 @@ class DatabaseConfigTest extends TestCase
      * Test read method
      *
      * @return void
+     * @covers ::read()
+     * @covers ::valueFromString()
      */
     public function testRead()
     {
@@ -120,6 +124,8 @@ class DatabaseConfigTest extends TestCase
      * @return void
      *
      * @dataProvider configProvider
+     * @covers ::dump()
+     * @covers ::valueToString()
      */
     public function testDump($expected, $context, $data)
     {
