@@ -18,7 +18,7 @@ use Cake\TestSuite\TestCase;
 /**
  * \BEdita\API\Shell\SpecShell Test Case
  *
- * @coversDefaultClass \BEdita\Core\Shell\SpecShell
+ * @coversDefaultClass \BEdita\API\Shell\SpecShell
  */
 class SpecShellTest extends TestCase
 {
@@ -47,7 +47,7 @@ class SpecShellTest extends TestCase
         parent::setUp();
         $this->io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
         $this->SpecShell = new SpecShell($this->io);
-         $this->SpecShell->initialize();
+        $this->SpecShell->initialize();
     }
 
     /**
@@ -79,6 +79,8 @@ class SpecShellTest extends TestCase
      * Test generate method
      *
      * @return void
+     *
+     * @covers ::generate()
      */
     public function testGenerate()
     {

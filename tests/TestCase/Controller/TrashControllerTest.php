@@ -297,6 +297,7 @@ class TrashControllerTest extends IntegrationTestCase
         $trash = $this->Objects->get(6);
         $this->assertFalse($trash['deleted']);
     }
+
     /**
      * Test delete method.
      *
