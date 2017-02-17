@@ -26,10 +26,9 @@ class TreesTable extends Table
 {
 
     /**
-     * Initialize method
+     * {@inheritDoc}
      *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -60,10 +59,9 @@ class TreesTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * {@inheritDoc}
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -95,11 +93,9 @@ class TreesTable extends Table
     }
 
     /**
-     * Returns a rules checker object that will be used for validating
-     * application integrity.
+     * {@inheritDoc}
      *
-     * @param \Cake\ORM\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\ORM\RulesChecker
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {

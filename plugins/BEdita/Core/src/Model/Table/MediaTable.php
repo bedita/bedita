@@ -20,11 +20,10 @@ use Cake\Validation\Validator;
 class MediaTable extends Table
 {
 
-    /**
-     * Initialize method
+     /**
+     * {@inheritDoc}
      *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -36,10 +35,9 @@ class MediaTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * {@inheritDoc}
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
