@@ -49,12 +49,14 @@ matrix:
     - php: hhvm
 
 before_script:
+  - curl -o wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && chmod +x wait-for-it.sh
   - |
     if [ "$DB" = 'mysql' ]; then
       if [ -n "$DB_VERSION" ]; then
         docker pull mysql:$DB_VERSION
         docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
         docker ps -a
+        ./wait-for-it.sh 127.0.0.1:33060 -s -- echo 'MySQL is up'
       else
         mysql -e 'CREATE DATABASE bedita_test;'
       fi
@@ -65,6 +67,7 @@ before_script:
         docker pull postgres:$DB_VERSION
         docker run -d -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=bedita_test -p 127.0.0.1:54320:5432 postgres:$DB_VERSION
         docker ps -a
+        ./wait-for-it.sh 127.0.0.1:54320 -s -- echo 'PostgreSQL is up'
       else
         psql -c 'CREATE DATABASE bedita_test;' -U postgres
       fi
