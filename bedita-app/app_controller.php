@@ -1158,7 +1158,7 @@ abstract class ModulesController extends AppController {
         } elseif (!empty($id)) {
             $expandBranch[] = $id;
         }
-        $treeModel = ClassRegistry::init("Tree");
+        $treeModel = ClassRegistry::init('Tree');
         $tree = $treeModel->getAllRoots($user['userid'], null, array('count_permission' => true), $expandBranch);
 
         // get available relations
@@ -1878,20 +1878,21 @@ abstract class ModulesController extends AppController {
      * @return void
      */
     public function readonlyTreePaths($id) {
+        $treeModel = ClassRegistry::init('Tree');
         $hiddenParentIds = Configure::read('excludeFromTreeIds');
         if (!empty($hiddenParentIds)) {
             $paths = null;
             if (in_array($id, $hiddenParentIds)) {
-                $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+                $paths = $treeModel->titlesPaths($id, $hiddenParentIds);
             } else {
                 $hasHiddenParent = false;
                 foreach ($hiddenParentIds as $parentId) {
-                    if ($this->Tree->isParent($parentId, $id)) {
+                    if ($treeModel->isParent($parentId, $id)) {
                         $hasHiddenParent = true;
                     }
                 }
                 if ($hasHiddenParent) {
-                    $paths = $this->Tree->titlesPaths($id, $hiddenParentIds);
+                    $paths = $treeModel->titlesPaths($id, $hiddenParentIds);
                 }
             }
             if (!empty($paths)) {
@@ -1914,8 +1915,9 @@ abstract class ModulesController extends AppController {
 
         $isInsideHiddenBranch = in_array($id, $hiddenParentIds);
         if (!$isInsideHiddenBranch) {
+            $treeModel = ClassRegistry::init('Tree');
             foreach ($hiddenParentIds as $parentId) {
-                if ($this->Tree->isParent($parentId, $id)) {
+                if ($treeModel->isParent($parentId, $id)) {
                     $isInsideHiddenBranch = true;
                 }
             }
