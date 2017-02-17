@@ -230,6 +230,7 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
         TableRegistry::get('Roles')->deleteAll([]);
 
         $this->configRequest([
