@@ -20,7 +20,7 @@ use Cake\Validation\Validator;
 class MediaTable extends Table
 {
 
-     /**
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
