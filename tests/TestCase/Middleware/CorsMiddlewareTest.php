@@ -20,8 +20,6 @@ use Zend\Diactoros\Response;
 
 /**
  * Test for RoutingMiddleware
- *
- * @coversDefaultClass \BEdita\API\Middleware\CorsMiddleware
  */
 class CorsMiddlewareTest extends TestCase
 {
@@ -298,12 +296,7 @@ class CorsMiddlewareTest extends TestCase
      * @return void
      *
      * @dataProvider corsProvider
-     * @covers ::__invoke()
-     * @covers ::preflight()
-     * @covers ::buildCors()
-     * @covers ::checkAccessControlRequestMethod()
-     * @covers ::checkAccessControlRequestHeaders()
-     * @covers ::isConfigured()
+     * @covers \BEdita\API\Middleware\CorsMiddleware
      * @covers \BEdita\API\Network\CorsBuilder::build()
      */
     public function testCors($expectedStatus, $expectedCorsHeaders, $server, $corsConfig)

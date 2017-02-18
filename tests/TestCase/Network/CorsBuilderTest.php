@@ -21,7 +21,7 @@ use Zend\Diactoros\Response;
 /**
  * Test for RoutingMiddleware
  *
- * @coversDefaultClass \BEdita\API\Network\CorsBuilder
+ * @covers \BEdita\API\Network\CorsBuilder
  */
 class CorsBuilderTest extends TestCase
 {
@@ -39,8 +39,6 @@ class CorsBuilderTest extends TestCase
      * Test build CORS response
      *
      * @return void
-     *
-     * @covers ::build()
      */
     public function testBuild()
     {
