@@ -22,11 +22,11 @@
     ],
     "require": {
         "php": ">=5.6.0",
-        "cakephp/cakephp": "3.4.*",
+        "cakephp/cakephp": "~3.4.1",
         "firebase/php-jwt": "~3.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
+        "phpunit/phpunit": "<6.0",
         "cakephp/cakephp-codesniffer": "master-dev",
         "phpmd/phpmd": "*"
     },
