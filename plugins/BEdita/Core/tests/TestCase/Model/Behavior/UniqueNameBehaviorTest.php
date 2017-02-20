@@ -291,4 +291,28 @@ class UniqueNameBehaviorTest extends TestCase
         $behavior->beforeMarshal(new Event('Dummy'), $dataObj, new ArrayObject());
         $this->assertEquals('documents', $dataObj['uname']);
     }
+
+    /**
+     * test uniqueName() conflicts / missing
+     *
+     * @return void
+     *
+     * @covers ::uniqueName()
+     */
+    public function testUniqueNameMissing()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+
+        $data = ['title' => 'Some data', 'uname' => 'some-data'];
+        $document = $Documents->newEntity($data);
+
+        $document->set('uname', '');
+        $behavior->uniqueName($document);
+        $this->assertEquals($document->get('uname'), 'some-data');
+
+        $document->set('uname', 'first-user');
+        $behavior->uniqueName($document);
+        $this->assertNotEquals($document->get('uname'), 'documents');
+    }
 }
