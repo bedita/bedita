@@ -62,7 +62,6 @@ class CorsMiddleware
      *
      * @see self::corsConfig
      * @param array|null $corsConfig CORS configuration
-     * @return void
      */
     public function __construct($corsConfig = null)
     {

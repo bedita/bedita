@@ -15,7 +15,7 @@ namespace BEdita\API\Model\Action;
 
 use BEdita\Core\Model\Action\UpdateAssociated as ParentAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Utility\Hash;
 
 /**
@@ -36,7 +36,7 @@ class UpdateAssociated
     /**
      * Request instance.
      *
-     * @var \Cake\Network\Request
+     * @var \Cake\Http\ServerRequest
      */
     protected $request;
 
@@ -44,9 +44,9 @@ class UpdateAssociated
      * Command constructor.
      *
      * @param \BEdita\Core\Model\Action\UpdateAssociated $Action Associations update action.
-     * @param \Cake\Network\Request $request Request instance.
+     * @param \Cake\Http\ServerRequest $request Request instance.
      */
-    public function __construct(ParentAction $Action, Request $request)
+    public function __construct(ParentAction $Action, ServerRequest $request)
     {
         $this->Action = $Action;
         $this->request = $request;
@@ -60,11 +60,11 @@ class UpdateAssociated
      */
     public function __invoke($primaryKey)
     {
-        $sourceEntity = $this->Action->association()->source()->get($primaryKey);
+        $sourceEntity = $this->Action->association()->getSource()->get($primaryKey);
 
-        $targetPrimaryKeys = (array)$this->request->data('id') ?: Hash::extract($this->request->data, '{*}.id');
+        $targetPrimaryKeys = (array)$this->request->getData('id') ?: Hash::extract($this->request->getData(), '{*}.id');
         $targetPrimaryKeys = array_unique($targetPrimaryKeys);
-        $primaryKeyField = $this->Action->association()->primaryKey();
+        $primaryKeyField = $this->Action->association()->getPrimaryKey();
         $targetPKField = $this->Action->association()->aliasField($primaryKeyField);
 
         $targetEntities = null;
@@ -76,7 +76,7 @@ class UpdateAssociated
 
             if ($targetEntities->count() !== count($targetPrimaryKeys)) {
                 throw new RecordNotFoundException(
-                    __('Record not found in table "{0}"', $this->Action->association()->target()->table()),
+                    __('Record not found in table "{0}"', $this->Action->association()->getTarget()->getTable()),
                     400
                 );
             }

@@ -193,7 +193,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -240,7 +240,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -295,7 +295,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects/2');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -348,7 +348,6 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects/6');
-        $result = json_decode($this->_response->body(), true);
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
@@ -366,7 +365,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects/6');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
         unset($result['data']['attributes']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -406,7 +405,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/objects/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

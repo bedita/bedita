@@ -13,9 +13,7 @@
 namespace BEdita\API\Test\TestCase\Network;
 
 use BEdita\API\Network\CorsBuilder;
-use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 
 /**
