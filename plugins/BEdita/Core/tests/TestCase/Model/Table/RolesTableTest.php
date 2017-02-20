@@ -68,14 +68,14 @@ class RolesTableTest extends TestCase
     public function testInitialization()
     {
         $this->Roles->initialize([]);
-        $this->assertEquals('roles', $this->Roles->table());
-        $this->assertEquals('id', $this->Roles->primaryKey());
-        $this->assertEquals('name', $this->Roles->displayField());
+        $this->assertEquals('roles', $this->Roles->getTable());
+        $this->assertEquals('id', $this->Roles->getPrimaryKey());
+        $this->assertEquals('name', $this->Roles->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Roles->Users);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\UsersTable', $this->Roles->Users->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\UsersTable', $this->Roles->Users->getTarget());
         $this->assertInstanceOf('\Cake\ORM\Association\hasMany', $this->Roles->EndpointPermissions);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Roles->EndpointPermissions->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Roles->EndpointPermissions->getTarget());
     }
 
     /**

@@ -155,7 +155,7 @@ class JsonApiViewTest extends TestCase
     {
         $Controller = new Controller(new Request(), new Response());
         $Controller->set($data);
-        $Controller->viewBuilder()->className('BEdita/API.JsonApi');
+        $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 
         $result = $Controller->createView()->render(false);
 

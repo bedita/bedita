@@ -91,7 +91,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/roles/1/relationships/users');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -154,7 +154,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -198,7 +198,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -275,7 +275,7 @@ class ResourcesControllerTest extends IntegrationTestCase
         ]);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/roles/1/relationships/users', 'DELETE', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -348,7 +348,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -383,7 +383,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -453,7 +453,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
@@ -484,7 +484,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/roles/1/relationships/this_relationship_does_not_exist');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -523,7 +523,7 @@ class ResourcesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');

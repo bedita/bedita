@@ -13,16 +13,14 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\EndpointPermission;
+use BEdita\Core\Model\Entity\Endpoint;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * {@see \BEdita\Core\Model\Entity\EndpointPermission} Test Case
+ * {@see \BEdita\Core\Model\Entity\Endpoint} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Entity\EndpointPermission
- *
- * @since 4.0.0
+ * @coversDefaultClass \BEdita\Core\Model\Entity\Endpoint
  */
 class EndpointTest extends TestCase
 {
@@ -30,9 +28,9 @@ class EndpointTest extends TestCase
     /**
      * Test subject's table
      *
-     * @var \BEdita\Core\Model\Table\EndpointPermissionsTable
+     * @var \BEdita\Core\Model\Table\EndpointsTable
      */
-    public $EndpointPermissions;
+    public $Endpoints;
 
     /**
      * Fixtures
@@ -40,10 +38,8 @@ class EndpointTest extends TestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
     ];
 
     /**
@@ -53,7 +49,7 @@ class EndpointTest extends TestCase
     {
         parent::setUp();
 
-        $this->EndpointPermissions = TableRegistry::get('EndpointPermissions');
+        $this->Endpoints = TableRegistry::get('Endpoints');
     }
 
     /**
@@ -61,7 +57,7 @@ class EndpointTest extends TestCase
      */
     public function tearDown()
     {
-        unset($this->EndpointPermissions);
+        unset($this->Endpoints);
 
         parent::tearDown();
     }
@@ -74,16 +70,23 @@ class EndpointTest extends TestCase
      */
     public function testAccessible()
     {
-        $endpointPermission = $this->EndpointPermissions->get(1);
+        $endpoint = $this->Endpoints->get(1);
+
+        $created = $endpoint->created;
+        $modified = $endpoint->modified;
 
         $data = [
             'id' => 42,
+            'created' => '2016-01-01 12:00:00',
+            'modified' => '2016-01-01 12:00:00',
         ];
-        $endpointPermission = $this->EndpointPermissions->patchEntity($endpointPermission, $data);
-        if (!($endpointPermission instanceof EndpointPermission)) {
+        $endpoint = $this->Endpoints->patchEntity($endpoint, $data);
+        if (!($endpoint instanceof Endpoint)) {
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals(1, $endpointPermission->id);
+        $this->assertEquals(1, $endpoint->id);
+        $this->assertEquals($created, $endpoint->created);
+        $this->assertEquals($modified, $endpoint->modified);
     }
 }

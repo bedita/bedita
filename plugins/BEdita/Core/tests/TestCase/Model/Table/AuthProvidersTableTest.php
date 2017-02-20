@@ -69,11 +69,11 @@ class AuthProvidersTableTest extends TestCase
     public function testInitialization()
     {
         $this->AuthProviders->initialize([]);
-        $schema = $this->AuthProviders->schema();
+        $schema = $this->AuthProviders->getSchema();
 
-        $this->assertEquals('auth_providers', $this->AuthProviders->table());
-        $this->assertEquals('id', $this->AuthProviders->primaryKey());
-        $this->assertEquals('name', $this->AuthProviders->displayField());
+        $this->assertEquals('auth_providers', $this->AuthProviders->getTable());
+        $this->assertEquals('id', $this->AuthProviders->getPrimaryKey());
+        $this->assertEquals('name', $this->AuthProviders->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->AuthProviders->ExternalAuth);
 

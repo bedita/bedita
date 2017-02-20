@@ -44,10 +44,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         ConnectionManager::get('default')
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }
@@ -94,7 +94,7 @@ class InitSchemaTaskTest extends ShellTestCase
         $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
         return TableRegistry::get('ObjectTypes')->find()->count();
     }
@@ -121,7 +121,7 @@ class InitSchemaTaskTest extends ShellTestCase
         $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -144,7 +144,7 @@ class InitSchemaTaskTest extends ShellTestCase
         $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 2, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 2, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -181,7 +181,7 @@ class InitSchemaTaskTest extends ShellTestCase
         $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
         $this->assertEquals($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
     }

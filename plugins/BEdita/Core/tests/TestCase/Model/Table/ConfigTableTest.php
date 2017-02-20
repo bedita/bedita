@@ -68,8 +68,8 @@ class ConfigTableTest extends TestCase
     public function testInitialization()
     {
         $this->Config->initialize([]);
-        $this->assertEquals('config', $this->Config->table());
-        $this->assertEquals('name', $this->Config->primaryKey());
+        $this->assertEquals('config', $this->Config->getTable());
+        $this->assertEquals('name', $this->Config->getPrimaryKey());
     }
 
     /**
