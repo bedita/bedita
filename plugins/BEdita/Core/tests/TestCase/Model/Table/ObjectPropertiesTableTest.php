@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ObjectPropertiesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
