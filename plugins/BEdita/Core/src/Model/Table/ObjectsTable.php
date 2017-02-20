@@ -48,6 +48,8 @@ class ObjectsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
         $this->addBehavior('BEdita/Core.UserModified');
 
         $this->belongsTo('ObjectTypes', [
@@ -65,6 +67,8 @@ class ObjectsTable extends Table
             'foreignKey' => 'modified_by',
             'className' => 'BEdita/Core.Users'
         ]);
+
+        $this->addBehavior('BEdita/Core.UniqueName');
     }
 
     /**

@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
+use ArrayObject;
 use BEdita\Core\Model\Behavior\UniqueNameBehavior;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -135,6 +137,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider generateUniqueUserProvider
+     * @covers ::generateUniqueName()
      */
     public function testGenerateUniqueName($input)
     {
@@ -211,5 +214,81 @@ class UniqueNameBehaviorTest extends TestCase
         $result = $behavior->uniqueNameExists($input[0], $input[1]);
 
         $this->assertEquals($result, $input[2]);
+    }
+
+    /**
+     * Data provider for `testUniqueNameFromValue` test case.
+     *
+     * @return array
+     */
+    public function uniqueFromValueProvider()
+    {
+        return [
+            'simpleNoConf' => [
+               'Dummy expressions: olè, ça va',
+               'dummy-expressions-ole-ca-va',
+               [],
+               false,
+            ],
+            'customConfig' => [
+                'ROMANES EUNT DOMUS!',
+                'pre_romanes_eunt_domus',
+                [
+                    'prefix' => 'pre_',
+                    'replacement' => '_',
+                ],
+                false
+            ],
+            'regenerate' => [
+                'Romani ite domum!',
+                'romani-ite-domum_',
+                [
+                    'separator' => '_',
+                    'hashlength' => 6,
+                ],
+                true
+            ],
+        ];
+    }
+
+    /**
+     * test uniqueNameFromValue()
+     *
+     * @return void
+     *
+     * @dataProvider uniqueFromValueProvider
+     * @covers ::uniqueNameFromValue()
+     */
+    public function testUniqueNameFromValue($value, $expected, $cfg, $regenerate)
+    {
+        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
+        $result = $behavior->uniqueNameFromValue($value, $cfg, $regenerate);
+
+        if ($regenerate) {
+            $cfg = array_merge($behavior->config(), $cfg);
+            $result = substr($result, 0, strlen($result) - $cfg['hashlength']);
+        }
+        $this->assertEquals($result, $expected);
+    }
+
+
+    /**
+     * test uniqueNameFromValue()
+     *
+     * @return void
+     *
+     * @dataProvider uniqueFromValueProvider
+     * @covers ::beforeMarshal()
+     */
+    public function testBeforeMarshal()
+    {
+        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
+        $data = [
+            'title' => '',
+            'type' => 'documents'
+        ];
+        $dataObj = new ArrayObject($data);
+        $behavior->beforeMarshal(new Event('Dummy'), $dataObj, new ArrayObject());
+        $this->assertEquals('documents', $dataObj['uname']);
     }
 }
