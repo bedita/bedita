@@ -43,18 +43,26 @@ abstract class UpdateAssociated
     }
 
     /**
-     * Getter/setter for association.
+     * Getter for association.
      *
-     * @param \Cake\ORM\Association|null $Association New association to be set.
      * @return \Cake\ORM\Association
      */
-    public function association(Association $Association = null)
+    public function getAssociation()
     {
-        if ($Association !== null) {
-            $this->Association = $Association;
-        }
-
         return $this->Association;
+    }
+
+    /**
+     * Setter for association.
+     *
+     * @param \Cake\ORM\Association $association Association.
+     * @return $this
+     */
+    public function setAssociation(Association $association)
+    {
+        $this->Association = $association;
+
+        return $this;
     }
 
     /**
