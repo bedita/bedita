@@ -37,7 +37,7 @@ class ObjectsController extends AppController
     /**
      * The referred object type entity filled when `object_type` request param is set and valid
      *
-     * @var \Cake\ORM\EntityInterface
+     * @var \BEdita\Core\Model\Entity\ObjectType
      */
     protected $objectType = null;
 
@@ -48,7 +48,7 @@ class ObjectsController extends AppController
     {
         parent::initialize();
 
-        $type = $this->request->param('object_type') ?: 'objects';
+        $type = $this->request->getParam('object_type') ?: 'objects';
         if ($type != 'objects') {
             try {
                 $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
@@ -115,8 +115,8 @@ class ObjectsController extends AppController
     {
         $this->request->allowMethod('post');
 
-        $object = $this->Objects->newEntity($this->request->data);
-        $object->type = $this->request->data('type');
+        $object = $this->Objects->newEntity($this->request->getData());
+        $object->type = $this->request->getData('type');
         if ($this->objectType && $object->type !== $this->objectType->pluralized) {
             $this->log('Bad type on object creation ' . $object->type, 'error');
             throw new BadRequestException('Invalid type');
@@ -126,9 +126,19 @@ class ObjectsController extends AppController
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
         }
 
-        $this->response->statusCode(201);
-        $urlOptions = ['object_type' => $object->type, '_name' => 'api:objects:view', $object->id];
-        $this->response->header('Location', Router::url($urlOptions, true));
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader(
+                'Location',
+                Router::url(
+                    [
+                        'object_type' => $object->type,
+                        '_name' => 'api:objects:view',
+                        $object->id,
+                    ],
+                    true
+                )
+            );
 
         $this->set(compact('object'));
         $this->set('_serialize', ['object']);
@@ -148,7 +158,7 @@ class ObjectsController extends AppController
     {
         $this->request->allowMethod('patch');
 
-        if ($this->request->data('id') != $id) {
+        if ($this->request->getData('id') != $id) {
             throw new ConflictException('IDs don\' match');
         }
 
@@ -161,7 +171,7 @@ class ObjectsController extends AppController
             throw new NotFoundException('Invalid type');
         }
 
-        $object = $this->Objects->patchEntity($object, $this->request->data);
+        $object = $this->Objects->patchEntity($object, $this->request->getData());
         if (!$this->Objects->save($object)) {
             $this->log('Object edit failed ' . json_encode($object->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
@@ -175,7 +185,7 @@ class ObjectsController extends AppController
      * Delete an existing object.
      *
      * @param int $id object ID.
-     * @return void
+     * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
      */
@@ -197,6 +207,8 @@ class ObjectsController extends AppController
             throw new InternalErrorException('Could not delete object');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withHeader('Content-Type', $this->request->contentType())
+            ->withStatus(204);
     }
 }

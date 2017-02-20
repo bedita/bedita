@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Behavior;
 
 use ArrayObject;
-use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
 
@@ -53,7 +52,7 @@ class DataCleanupBehavior extends Behavior
      */
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
-        $config = $this->config();
+        $config = $this->getConfig();
         foreach ($data as $key => $value) {
             if (($value === null || $value === '') && isset($config['fields'][$key])) {
                 $data[$key] = $config['fields'][$key];

@@ -99,7 +99,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
             }
         );
 
-        $fields['_options'] = $table->options();
+        $fields['_options'] = $table->getOptions();
 
         return $fields;
     }

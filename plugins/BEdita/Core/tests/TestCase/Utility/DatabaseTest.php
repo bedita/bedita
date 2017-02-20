@@ -13,8 +13,6 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
-use Cake\Core\Plugin;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
@@ -150,6 +148,11 @@ class DatabaseTest extends TestCase
         $this->assertNotEmpty($res['error']);
     }
 
+    /**
+     * Data provider for `testExecuteTransaction` test case.
+     *
+     * @return array
+     */
     public function sqlExecute()
     {
         return [
@@ -167,7 +170,13 @@ class DatabaseTest extends TestCase
     /**
      * Test executeTransaction method
      *
+     * @param string $sql SQL to be executed.
+     * @param bool $success Expected success.
+     * @param int $rowCount Expected amount of affected rows.
+     * @param int $queryCount Expected amount of returned rows.
+     * @param string $dbConfig Connection name.
      * @return void
+     *
      * @dataProvider sqlExecute
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')

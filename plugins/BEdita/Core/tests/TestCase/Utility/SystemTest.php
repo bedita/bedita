@@ -74,6 +74,12 @@ class SystemTest extends TestCase
         $this->assertNotEmpty($result['errors']);
     }
 
+    /**
+     * Set up a fake database connection.
+     *
+     * @param string $configName Connection name.
+     * @return void
+     */
     protected function fakeDbSetup($configName)
     {
         $fake = [
@@ -84,6 +90,6 @@ class SystemTest extends TestCase
         $info = Database::basicInfo();
         $fake = array_merge($info, $fake);
         Configure::write('Datasources.' . $configName, $fake);
-        ConnectionManager::config($configName, $fake);
+        ConnectionManager::setConfig($configName, $fake);
     }
 }

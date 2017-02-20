@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -32,9 +31,9 @@ class ObjectPermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('object_permissions');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('object_permissions');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',

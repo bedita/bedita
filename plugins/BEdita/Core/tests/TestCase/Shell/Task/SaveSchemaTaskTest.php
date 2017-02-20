@@ -33,6 +33,9 @@ class SaveSchemaTaskTest extends ShellTestCase
         Plugin::load('Migrations');
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function tearDownAfterClass()
     {
         parent::tearDownAfterClass();

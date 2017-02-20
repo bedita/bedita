@@ -60,9 +60,9 @@ class ObjectsTableTest extends TestCase
     public function testInitialization()
     {
         $this->Objects->initialize([]);
-        $this->assertEquals('objects', $this->Objects->table());
-        $this->assertEquals('id', $this->Objects->primaryKey());
-        $this->assertEquals('title', $this->Objects->displayField());
+        $this->assertEquals('objects', $this->Objects->getTable());
+        $this->assertEquals('id', $this->Objects->getPrimaryKey());
+        $this->assertEquals('title', $this->Objects->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Objects->ObjectTypes);
         $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Objects->behaviors()->get('Timestamp'));
@@ -182,7 +182,7 @@ class ObjectsTableTest extends TestCase
     public function testFindType($expected, array $types)
     {
         if (!$expected) {
-            $this->setExpectedException('\Cake\Datasource\Exception\RecordNotFoundException');
+            $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         }
 
         $result = $this->Objects->find('list')->find('type', $types)->toArray();

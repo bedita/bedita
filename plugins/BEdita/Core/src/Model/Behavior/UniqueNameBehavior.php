@@ -59,7 +59,7 @@ class UniqueNameBehavior extends Behavior
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         }
-        $id = !(empty($entity->get('id'))) ? $entity->get('id') : null;
+        $id = !empty($entity->get('id')) ? $entity->get('id') : null;
         while ($this->uniqueNameExists($uname, $id)) {
             $uname = $this->generateUniqueName($entity, [], true);
         }
@@ -95,7 +95,7 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueNameFromValue($value, array $cfg = [], $regenerate = false)
     {
-        $config = array_merge($this->config(), $cfg);
+        $config = array_merge($this->getConfig(), $cfg);
         $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
         if ($regenerate) {
             $hash = Text::uuid();
@@ -108,7 +108,6 @@ class UniqueNameBehavior extends Behavior
 
         return strtolower($uname);
     }
-
 
     /**
      * Verify $uname is unique

@@ -13,10 +13,8 @@
 
 namespace BEdita\Core\Utility;
 
-use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\Log\Log;
 
 /**
  * Database utilities class
@@ -46,7 +44,7 @@ class Database
 
         $connection->cacheMetadata(false);
 
-        $collection = $connection->schemaCollection();
+        $collection = $connection->getSchemaCollection();
         $tables = $collection->listTables();
         foreach ($tables as $tableName) {
             $schema[$tableName] = [];

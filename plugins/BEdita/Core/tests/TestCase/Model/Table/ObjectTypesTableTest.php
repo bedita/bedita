@@ -77,9 +77,9 @@ class ObjectTypesTableTest extends TestCase
     {
         $this->ObjectTypes->initialize([]);
 
-        $this->assertEquals('object_types', $this->ObjectTypes->table());
-        $this->assertEquals('id', $this->ObjectTypes->primaryKey());
-        $this->assertEquals('name', $this->ObjectTypes->displayField());
+        $this->assertEquals('object_types', $this->ObjectTypes->getTable());
+        $this->assertEquals('id', $this->ObjectTypes->getPrimaryKey());
+        $this->assertEquals('name', $this->ObjectTypes->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->ObjectTypes->Objects);
     }
@@ -243,7 +243,7 @@ class ObjectTypesTableTest extends TestCase
     public function testGet($expected, $primaryKey)
     {
         if (!$expected) {
-            $this->setExpectedException('\Cake\Datasource\Exception\RecordNotFoundException');
+            $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         }
 
         $entity = $this->ObjectTypes->get($primaryKey);

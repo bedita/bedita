@@ -166,7 +166,7 @@ class BeditaShell extends Shell
             return false;
         }
 
-        $tables = $connection->schemaCollection()->listTables();
+        $tables = $connection->getSchemaCollection()->listTables();
         if (empty($tables)) {
             $this->out('Database is empty');
             $res = $this->in('Proceed with database schema and data initialization?', ['y', 'n'], 'n');
@@ -300,7 +300,7 @@ class BeditaShell extends Shell
         $this->dbConnectionUserInput();
         $dbParams = array_merge($dbParams, $this->userInputData);
         $dbParams['className'] = 'Cake\Database\Connection';
-        ConnectionManager::config(self::TEMP_SETUP_CFG, $dbParams);
+        ConnectionManager::setConfig(self::TEMP_SETUP_CFG, $dbParams);
         ConnectionManager::alias(self::TEMP_SETUP_CFG, 'default');
 
         return $this->checkDbConnection();
