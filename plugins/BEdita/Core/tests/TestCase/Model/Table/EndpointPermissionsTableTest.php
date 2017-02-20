@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\EndpointPermissionsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -78,16 +77,16 @@ class EndpointPermissionsTableTest extends TestCase
     public function testInitialize()
     {
         $this->EndpointPermissions->initialize([]);
-        $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->table());
-        $this->assertEquals('id', $this->EndpointPermissions->primaryKey());
-        $this->assertEquals('id', $this->EndpointPermissions->displayField());
+        $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->getTable());
+        $this->assertEquals('id', $this->EndpointPermissions->getPrimaryKey());
+        $this->assertEquals('id', $this->EndpointPermissions->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Endpoints);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointsTable', $this->EndpointPermissions->Endpoints->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointsTable', $this->EndpointPermissions->Endpoints->getTarget());
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Applications);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\ApplicationsTable', $this->EndpointPermissions->Applications->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\ApplicationsTable', $this->EndpointPermissions->Applications->getTarget());
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Roles);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\RolesTable', $this->EndpointPermissions->Roles->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\RolesTable', $this->EndpointPermissions->Roles->getTarget());
     }
 
     /**

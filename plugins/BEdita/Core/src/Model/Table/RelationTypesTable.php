@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -32,9 +31,9 @@ class RelationTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('relation_types');
-        $this->displayField('relation_id');
-        $this->primaryKey(['relation_id', 'object_type_id', 'side']);
+        $this->setTable('relation_types');
+        $this->setDisplayField('relation_id');
+        $this->setPrimaryKey(['relation_id', 'object_type_id', 'side']);
 
         $this->belongsTo('Relations', [
             'foreignKey' => 'relation_id',

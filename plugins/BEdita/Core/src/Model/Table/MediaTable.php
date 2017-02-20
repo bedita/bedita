@@ -1,8 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
@@ -29,9 +27,9 @@ class MediaTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('media');
-        $this->displayField('name');
-        $this->primaryKey('id');
+        $this->setTable('media');
+        $this->setDisplayField('name');
+        $this->setPrimaryKey('id');
     }
 
     /**

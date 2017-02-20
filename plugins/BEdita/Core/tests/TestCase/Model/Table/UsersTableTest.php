@@ -74,9 +74,9 @@ class UsersTableTest extends TestCase
     {
         $this->Users->associations()->removeAll();
         $this->Users->initialize([]);
-        $this->assertEquals('users', $this->Users->table());
-        $this->assertEquals('id', $this->Users->primaryKey());
-        $this->assertEquals('username', $this->Users->displayField());
+        $this->assertEquals('users', $this->Users->getTable());
+        $this->assertEquals('id', $this->Users->getPrimaryKey());
+        $this->assertEquals('username', $this->Users->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->Users->ExternalAuth);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Users->Roles);

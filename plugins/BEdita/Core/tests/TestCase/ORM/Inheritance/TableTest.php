@@ -13,10 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
-use BEdita\Core\ORM\Association\ExtensionOf;
-use BEdita\Core\ORM\Inheritance\Query;
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
-use Cake\Event\Event;
+use Cake\ORM\Table as CakeTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -42,28 +41,28 @@ class TableTest extends TestCase
     /**
      * Table FakeAnimals
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeAnimals;
 
     /**
      * Table FakeMammals
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeMammals;
 
     /**
      * Table FakeFelines
      *
-     * @var \Cake\ORM\Table
+     * @var \BEdita\Core\ORM\Inheritance\Table
      */
     public $fakeFelines;
 
     /**
      * Table options used for initialization
      *
-     * @var \Cake\ORM\Table
+     * @var array
      */
     protected $tableOptions = ['className' => 'BEdita\Core\ORM\Inheritance\Table'];
 
@@ -123,7 +122,8 @@ class TableTest extends TestCase
         $this->assertEquals(TableRegistry::get('FakeMammals'), $extensionOf->target());
 
         // trying to add another extensionOf association on the same table
-        $this->setExpectedExceptionRegExp('\RuntimeException', '/.*has already an ExtensionOf association with.*/');
+        $this->expectException('\RuntimeException');
+        $this->expectExceptionMessageRegExp('/.*has already an ExtensionOf association with.*/');
         $this->fakeFelines->extensionOf('FakeAnimals', $this->tableOptions);
     }
 
@@ -258,8 +258,8 @@ class TableTest extends TestCase
         $felinesInheritance = current($this->fakeFelines->inheritedTables());
         $this->assertEquals('FakeMammals', $felinesInheritance->alias());
 
-        $felinesDeepInheritance = array_map(function ($inherited) {
-            return $inherited->alias();
+        $felinesDeepInheritance = array_map(function (Table $inherited) {
+            return $inherited->getAlias();
         }, $this->fakeFelines->inheritedTables(true));
 
         $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
@@ -336,7 +336,7 @@ class TableTest extends TestCase
         $this->assertFalse($feline->dirty());
 
         // hydrate false
-        $felines = $this->fakeFelines->find()->hydrate(false);
+        $felines = $this->fakeFelines->find()->enableHydration(false);
         $this->assertEquals(1, $felines->count());
 
         $result = $felines->first();
@@ -345,7 +345,7 @@ class TableTest extends TestCase
         $this->assertEquals($expected, $result);
 
         // find mammals
-        $mammals = $this->fakeMammals->find()->hydrate(false);
+        $mammals = $this->fakeMammals->find()->enableHydration(false);
         $this->assertEquals(2, $mammals->count());
 
         $expected = [
@@ -569,6 +569,8 @@ class TableTest extends TestCase
     /**
      * testSave method
      *
+     * @param array $expected Expected result.
+     * @param array $data Data.
      * @return void
      *
      * @dataProvider saveProvider
@@ -622,6 +624,8 @@ class TableTest extends TestCase
     /**
      * testSelect
      *
+     * @param array $expected Expected result.
+     * @param array $select Select clause.
      * @return void
      *
      * @dataProvider selectProvider
@@ -634,9 +638,13 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        $allColumns = $this->fakeFelines->schema()->columns();
+        $allColumns = $this->fakeFelines->getSchema()->columns();
         foreach ($this->fakeFelines->inheritedTables(true) as $t) {
-            $allColumns = array_merge($allColumns, $t->schema()->columns());
+            if (!($t instanceof CakeTable)) {
+                $this->fail('Unexpected table object');
+            }
+
+            $allColumns = array_merge($allColumns, $t->getSchema()->columns());
         }
         $allColumns = array_unique($allColumns);
 
@@ -645,6 +653,10 @@ class TableTest extends TestCase
         $felines = $this->fakeFelines->find()->select($select);
 
         foreach ($felines as $f) {
+            if (!($f instanceof EntityInterface)) {
+                $this->fail('Unexpected entity');
+            }
+
             foreach ($expected as $field) {
                 $this->assertTrue($f->has($field));
             }
@@ -680,7 +692,7 @@ class TableTest extends TestCase
         $query = $this->fakeFelines->find();
         $result = $query->select(['subclass', 'count' => $query->func()->count('*')])
             ->group(['subclass'])
-            ->hydrate(false);
+            ->enableHydration(false);
 
         foreach ($result as $item) {
             if ($item['subclass'] == 'Eutheria') {
@@ -757,6 +769,9 @@ class TableTest extends TestCase
     /**
      * testFindList
      *
+     * @param array $expected Expected results.
+     * @param array $listParams Options for `find('list')`.
+     * @param array $order Order clause.
      * @return void
      *
      * @dataProvider findListProvider

@@ -53,7 +53,7 @@ class SetAssociatedTest extends TestCase
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
-            ->source()
+            ->getSource()
             ->belongsTo('FakeAnimals');
 
         TableRegistry::get('FakeAnimals')
@@ -144,20 +144,21 @@ class SetAssociatedTest extends TestCase
     public function testInvocation($expected, $table, $association, $entity, $related)
     {
         if ($expected instanceof \Exception) {
-            $this->setExpectedException(get_class($expected), $expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $association = TableRegistry::get($table)->association($association);
         $action = new SetAssociated($association);
 
-        $entity = $association->source()->get($entity, ['contain' => [$association->name()]]);
+        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
         $relatedEntities = null;
         if (is_int($related)) {
-            $relatedEntities = $association->target()->get($related);
+            $relatedEntities = $association->getTarget()->get($related);
         } elseif (is_array($related)) {
-            $relatedEntities = $association->target()->find()
+            $relatedEntities = $association->getTarget()->find()
                 ->where([
-                    $association->target()->primaryKey() . ' IN' => $related,
+                    $association->getTarget()->getPrimaryKey() . ' IN' => $related,
                 ])
                 ->toArray();
         }
@@ -166,12 +167,12 @@ class SetAssociatedTest extends TestCase
 
         $count = 0;
         if ($related !== null) {
-            $count = $association->target()->find()
+            $count = $association->getTarget()->find()
                 ->matching(
-                    Inflector::camelize($association->source()->table()),
+                    Inflector::camelize($association->getSource()->getTable()),
                     function (Query $query) use ($association, $entity) {
                         return $query->where([
-                            $association->source()->aliasField($association->source()->primaryKey()) => $entity->id,
+                            $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
                         ]);
                     }
                 )

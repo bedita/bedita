@@ -54,7 +54,7 @@ class ListAssociatedTest extends TestCase
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
-            ->source()
+            ->getSource()
             ->belongsTo('FakeAnimals');
 
         TableRegistry::get('FakeAnimals')
@@ -123,7 +123,8 @@ class ListAssociatedTest extends TestCase
     public function testInvocation($expected, $table, $association, $id)
     {
         if ($expected instanceof \Exception) {
-            $this->setExpectedException(get_class($expected), $expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
         $association = TableRegistry::get($table)->association($association);
@@ -132,7 +133,7 @@ class ListAssociatedTest extends TestCase
         $result = $action($id);
 
         if ($result instanceof Query) {
-            $result = $result->hydrate(false)->toArray();
+            $result = $result->enableHydration(false)->toArray();
         } elseif ($result instanceof EntityInterface) {
             $result = $result->toArray();
         }

@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\Table as Schema;
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -41,10 +41,10 @@ class ObjectsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('objects');
-        $this->entityClass('BEdita\Core\Model\Entity\ObjectEntity');
-        $this->primaryKey('id');
-        $this->displayField('title');
+        $this->setTable('objects');
+        $this->setEntityClass('BEdita\Core\Model\Entity\ObjectEntity');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('title');
 
         $this->addBehavior('Timestamp');
 
@@ -132,7 +132,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(Schema $schema)
+    protected function _initializeSchema(TableSchema $schema)
     {
         $schema->columnType('extra', 'json');
 
@@ -160,7 +160,7 @@ class ObjectsTable extends Table
         }
         unset($type);
 
-        $query->where([$this->alias() . '.object_type_id IN' => $options]);
+        $query->where([$this->aliasField('object_type_id') . ' IN' => $options]);
 
         return $query;
     }

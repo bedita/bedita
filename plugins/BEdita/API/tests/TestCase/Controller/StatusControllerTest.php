@@ -48,7 +48,7 @@ class StatusControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/status');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

@@ -44,7 +44,7 @@ class CheckSchemaTask extends Shell
     {
         $parser = parent::getOptionParser();
         $parser
-            ->description([
+            ->setDescription([
                 'Current schema is compared with versioned schema dump to check if it is up to date.',
                 'Also, migrations status and SQL naming conventions are checked.',
             ])
@@ -220,11 +220,11 @@ class CheckSchemaTask extends Shell
     {
         $this->verbose('Checking SQL conventions:');
         $allColumns = [];
-        $tables = $this->filterPhinxlogTables($connection->schemaCollection()->listTables());
+        $tables = $this->filterPhinxlogTables($connection->getSchemaCollection()->listTables());
         foreach ($tables as $table) {
             $this->verbose(sprintf(' - Checking table <comment>%s</comment>... ', $table), 0);
 
-            $schema = $connection->schemaCollection()->describe($table);
+            $schema = $connection->getSchemaCollection()->describe($table);
             $errors = [];
 
             $errors['table']['naming'] = $this->checkSymbol($table);

@@ -182,7 +182,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/users');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -282,7 +282,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/roles/1/users');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -329,7 +329,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/users');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -411,7 +411,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/users/1');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -446,7 +446,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/users/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

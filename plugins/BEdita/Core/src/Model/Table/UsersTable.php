@@ -39,9 +39,9 @@ class UsersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('users');
-        $this->primaryKey('id');
-        $this->displayField('username');
+        $this->setTable('users');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('username');
 
         $this->addBehavior('Timestamp');
 
@@ -122,7 +122,7 @@ class UsersTable extends Table
      */
     public function login(Event $event)
     {
-        $data = $event->data();
+        $data = $event->getData();
 
         if (empty($data[0]['id'])) {
             return;

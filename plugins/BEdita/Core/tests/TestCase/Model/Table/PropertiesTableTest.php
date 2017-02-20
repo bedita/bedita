@@ -59,9 +59,9 @@ class PropertiesTableTest extends TestCase
     public function testInitialization()
     {
         $this->Properties->initialize([]);
-        $this->assertEquals('properties', $this->Properties->table());
-        $this->assertEquals('id', $this->Properties->primaryKey());
-        $this->assertEquals('name', $this->Properties->displayField());
+        $this->assertEquals('properties', $this->Properties->getTable());
+        $this->assertEquals('id', $this->Properties->getPrimaryKey());
+        $this->assertEquals('name', $this->Properties->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->ObjectTypes);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->Properties->PropertyTypes);

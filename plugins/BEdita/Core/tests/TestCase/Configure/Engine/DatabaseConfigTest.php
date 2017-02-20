@@ -14,8 +14,6 @@
 namespace BEdita\Core\Test\TestCase\Configure\Engine;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
-use Cake\Database\Exception;
-use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -130,7 +128,7 @@ class DatabaseConfigTest extends TestCase
     public function testDump($expected, $context, $data)
     {
         if (!$expected) {
-            $this->setExpectedException('Exception');
+            $this->expectException('Exception'); // TODO: be more specific! Assertions on exceptions should be strict.
         }
         $check = $this->DatabaseConfig->dump($context, $data);
         $this->assertEquals($expected, $check);

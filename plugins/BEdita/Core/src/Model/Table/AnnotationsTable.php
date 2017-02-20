@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -34,9 +33,9 @@ class AnnotationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('annotations');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('annotations');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->addBehavior('Timestamp');
 

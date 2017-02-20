@@ -48,10 +48,10 @@ class CheckSchemaTaskTest extends ShellTestCase
 
         ConnectionManager::get('default')
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }
@@ -134,7 +134,7 @@ class CheckSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $table = $connection->schemaCollection()->describe('config');
+        $table = $connection->getSchemaCollection()->describe('config');
         foreach ($table->dropSql($connection) as $statement) {
             $connection->query($statement);
         }
@@ -160,7 +160,7 @@ class CheckSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $table = $connection->schemaCollection()->describe('objects');
+        $table = $connection->getSchemaCollection()->describe('objects');
         $constraints = $table->constraints();
         foreach ($table->dropConstraintSql($connection) as $statement) {
             $connection->query($statement);

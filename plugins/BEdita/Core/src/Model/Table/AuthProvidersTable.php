@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\Table as Schema;
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -37,9 +37,9 @@ class AuthProvidersTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('auth_providers');
-        $this->primaryKey('id');
-        $this->displayField('name');
+        $this->setTable('auth_providers');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('name');
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'auth_provider_id',
@@ -88,7 +88,7 @@ class AuthProvidersTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(Schema $schema)
+    protected function _initializeSchema(TableSchema $schema)
     {
         $schema->columnType('params', 'json');
 

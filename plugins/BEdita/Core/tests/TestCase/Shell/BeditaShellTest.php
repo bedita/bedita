@@ -32,7 +32,7 @@ class BeditaShellTest extends ShellTestCase
 
         $this->fixtureManager->shutDown();
 
-        ConnectionManager::config(static::CONNECTION_NAME, $this->fakeDbParams());
+        ConnectionManager::setConfig(static::CONNECTION_NAME, $this->fakeDbParams());
         ConnectionManager::alias(static::CONNECTION_NAME, 'default');
     }
 
@@ -45,10 +45,10 @@ class BeditaShellTest extends ShellTestCase
         if ($defaultConnection instanceof Connection && $defaultConnection->isConnected()) {
             $defaultConnection
                 ->disableConstraints(function (Connection $connection) {
-                    $tables = $connection->schemaCollection()->listTables();
+                    $tables = $connection->getSchemaCollection()->listTables();
 
                     foreach ($tables as $table) {
-                        $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                        $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                         foreach ($sql as $query) {
                             $connection->query($query);
                         }
@@ -78,7 +78,7 @@ class BeditaShellTest extends ShellTestCase
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
         ];
-        $fakeParams = array_merge(ConnectionManager::get('default', false)->config(), $fakeParams);
+        $fakeParams = array_merge(ConnectionManager::get('test', false)->config(), $fakeParams);
 
         return $fakeParams;
     }
