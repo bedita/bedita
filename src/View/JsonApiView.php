@@ -56,6 +56,10 @@ class JsonApiView extends JsonView
             $error = $this->viewVars['_error'];
         }
 
+        if (!empty($error['status'])) {
+            $error['status'] = (string)$error['status'];
+        }
+
         if (!empty($this->viewVars['_links'])) {
             $links = $this->viewVars['_links'];
         }

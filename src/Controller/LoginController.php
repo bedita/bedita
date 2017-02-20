@@ -40,8 +40,8 @@ class LoginController extends AppController
 
         $this->Auth->deny();
 
-        if ($this->request->param('action') === 'login') {
-            $this->Auth->config(
+        if ($this->request->getParam('action') === 'login') {
+            $this->Auth->setConfig(
                 'authenticate',
                 [
                     AuthComponent::ALL => [
@@ -82,9 +82,10 @@ class LoginController extends AppController
     {
         $this->request->allowMethod('post');
 
-        if (!empty($this->request->data['password'])) {
-            $this->request->data['password_hash'] = $this->request->data['password'];
-            unset($this->request->data['password']);
+        if ($this->request->getData('password')) {
+            $this->request = $this->request
+                ->withData('password_hash', $this->request->getData('password'))
+                ->withData('password', null);
         }
 
         $user = $this->Auth->identify();

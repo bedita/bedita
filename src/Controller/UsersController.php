@@ -48,8 +48,8 @@ class UsersController extends ResourcesController
     {
         parent::initialize();
 
-        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
-            $this->JsonApi->config('resourceTypes', ['users']);
+        if (isset($this->JsonApi) && $this->request->getParam('action') != 'relationships') {
+            $this->JsonApi->setConfig('resourceTypes', ['users']);
         }
     }
 
@@ -62,7 +62,8 @@ class UsersController extends ResourcesController
     {
         $query = $this->Users->find('all')->where(['deleted' => 0]);
 
-        if ($roleId = $this->request->param('role_id')) {
+        $roleId = $this->request->getParam('role_id');
+        if ($roleId !== false) {
             $query = $query->innerJoinWith('Roles', function (Query $query) use ($roleId) {
                 return $query->where(['Roles.id' => $roleId]);
             });
@@ -100,15 +101,25 @@ class UsersController extends ResourcesController
     {
         $this->request->allowMethod('post');
 
-        $user = $this->Users->newEntity($this->request->data);
-        $user->type = $this->request->data('type');
+        $user = $this->Users->newEntity($this->request->getData());
+        $user->type = $this->request->getData('type');
         if (!$this->Users->save($user)) {
             $this->log('User creation failed ' . json_encode($user->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$user->errors()]]);
         }
 
-        $this->response->statusCode(201);
-        $this->response->header('Location', Router::url(['_name' => 'api:users:view', $user->id], true));
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader(
+                'Location',
+                Router::url(
+                    [
+                        '_name' => 'api:users:view',
+                        $user->id,
+                    ],
+                    true
+                )
+            );
 
         $this->set(compact('user'));
         $this->set('_serialize', ['user']);
@@ -128,14 +139,14 @@ class UsersController extends ResourcesController
     {
         $this->request->allowMethod('patch');
 
-        if ($this->request->data('id') != $id) {
+        if ($this->request->getData('id') != $id) {
             throw new ConflictException('IDs don\' match');
         }
 
         $user = $this->Users->get($id, [
             'conditions' => ['deleted' => 0]
         ]);
-        $user = $this->Users->patchEntity($user, $this->request->data);
+        $user = $this->Users->patchEntity($user, $this->request->getData());
         if (!$this->Users->save($user)) {
             $this->log('User edit failed ' . json_encode($user->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$user->errors()]]);
@@ -149,7 +160,7 @@ class UsersController extends ResourcesController
      * Delete an existing user.
      *
      * @param int $id User ID.
-     * @return void
+     * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
@@ -164,6 +175,8 @@ class UsersController extends ResourcesController
             throw new InternalErrorException('Could not delete user');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withHeader('Content-Type', $this->request->contentType())
+            ->withStatus(204);
     }
 }

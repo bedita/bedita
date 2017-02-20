@@ -127,7 +127,7 @@ class PaginatorComponentTest extends TestCase
         $request = new Request(compact('query'));
         $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
         if ($whitelist) {
-            $component->config('whitelist', $whitelist, false);
+            $component->setConfig('whitelist', $whitelist, false);
         }
 
         $options = $component->mergeOptions($alias, $settings);
@@ -183,7 +183,7 @@ class PaginatorComponentTest extends TestCase
         $this->loadFixtures('Roles');
 
         if ($expected === false) {
-            $this->setExpectedException('Cake\Network\Exception\BadRequestException');
+            $this->expectException('Cake\Network\Exception\BadRequestException');
         }
 
         $request = new Request(['query' => compact('sort')]);
