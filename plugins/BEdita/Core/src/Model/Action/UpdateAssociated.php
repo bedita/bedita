@@ -66,8 +66,8 @@ abstract class UpdateAssociated
     protected function existing(EntityInterface $entity)
     {
         $list = new ListAssociated($this->Association);
-        $sourcePrimaryKey = (array)$this->Association->source()->primaryKey();
-        $bindingKey = (array)$this->Association->bindingKey();
+        $sourcePrimaryKey = (array)$this->Association->getSource()->getPrimaryKey();
+        $bindingKey = (array)$this->Association->getBindingKey();
 
         $existing = $list($entity->extract($sourcePrimaryKey));
 

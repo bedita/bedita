@@ -34,7 +34,7 @@ class RemoveAssociated extends UpdateAssociated
      */
     protected function diff(EntityInterface $entity, array $relatedEntities)
     {
-        $bindingKey = (array)$this->Association->bindingKey();
+        $bindingKey = (array)$this->Association->getBindingKey();
         $existing = $this->existing($entity);
 
         $diff = [];
@@ -68,7 +68,7 @@ class RemoveAssociated extends UpdateAssociated
             }
 
 
-            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+            return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 $relatedEntities = $this->diff($entity, $relatedEntities);
 
                 $this->Association->unlink($entity, $relatedEntities);

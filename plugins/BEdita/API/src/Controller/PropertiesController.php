@@ -49,8 +49,8 @@ class PropertiesController extends ResourcesController
     {
         parent::initialize();
 
-        if (isset($this->JsonApi) && $this->request->param('action') != 'relationships') {
-            $this->JsonApi->config('resourceTypes', ['properties']);
+        if (isset($this->JsonApi) && $this->request->getParam('action') != 'relationships') {
+            $this->JsonApi->setConfig('resourceTypes', ['properties']);
         }
     }
 
@@ -63,7 +63,8 @@ class PropertiesController extends ResourcesController
     {
         $query = $this->Properties->find('all');
 
-        if ($objectTypeId = $this->request->param('object_type_id')) {
+        $objectTypeId = $this->request->getParam('object_type_id');
+        if ($objectTypeId !== false) {
             $query = $query->innerJoinWith('ObjectTypes', function (Query $query) use ($objectTypeId) {
                 return $query->where(['ObjectTypes.id' => $objectTypeId]);
             });
@@ -99,14 +100,24 @@ class PropertiesController extends ResourcesController
     {
         $this->request->allowMethod('post');
 
-        $property = $this->Properties->newEntity($this->request->data);
+        $property = $this->Properties->newEntity($this->request->getData());
         if (!$this->Properties->save($property)) {
             $this->log('Property add failed ' . json_encode($property->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$property->errors()]]);
         }
 
-        $this->response->statusCode(201);
-        $this->response->header('Location', Router::url(['_name' => 'api:properties:view', $property->id], true));
+        $this->response = $this->response
+            ->withStatus(201)
+            ->withHeader(
+                'Location',
+                Router::url(
+                    [
+                        '_name' => 'api:properties:view',
+                        $property->id,
+                    ],
+                    true
+                )
+            );
 
         $this->set(compact('property'));
         $this->set('_serialize', ['property']);
@@ -126,12 +137,12 @@ class PropertiesController extends ResourcesController
     {
         $this->request->allowMethod('patch');
 
-        if ($this->request->data('id') != $id) {
+        if ($this->request->getData('id') != $id) {
             throw new ConflictException('IDs don\'t match');
         }
 
         $property = $this->Properties->get($id);
-        $property = $this->Properties->patchEntity($property, $this->request->data);
+        $property = $this->Properties->patchEntity($property, $this->request->getData());
         if (!$this->Properties->save($property)) {
             $this->log('Property edit failed ' . json_encode($property->errors()), 'error');
             throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$property->errors()]]);
@@ -145,7 +156,7 @@ class PropertiesController extends ResourcesController
      * Delete an existing Property.
      *
      * @param int $id Property ID.
-     * @return void
+     * @return \Cake\Network\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      */
     public function delete($id)
@@ -157,6 +168,8 @@ class PropertiesController extends ResourcesController
             throw new InternalErrorException('Could not delete Property');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withHeader('Content-Type', $this->request->contentType())
+            ->withStatus(204);
     }
 }

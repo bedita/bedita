@@ -54,7 +54,7 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueName(EntityInterface $entity)
     {
-        $config = $this->config();
+        $config = $this->getConfig();
         $uname = $entity->get('uname');
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity, $config, false);
@@ -78,7 +78,7 @@ class UniqueNameBehavior extends Behavior
      */
     public function generateUniqueName(EntityInterface $entity, array $cfg, $regenerate = false)
     {
-        $config = array_merge($this->config(), $cfg);
+        $config = array_merge($this->getConfig(), $cfg);
         $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
         if ($regenerate) {
             $hash = Text::uuid();

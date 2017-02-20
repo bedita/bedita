@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -11,7 +10,7 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsTo $Objects
  * @property \Cake\ORM\Association\BelongsTo $ParentTrees
- * @property \Cake\ORM\Association\BelongsTo $Objects
+ * @property \Cake\ORM\Association\BelongsTo $RootObjects
  * @property \Cake\ORM\Association\HasMany $ChildTrees
  *
  * @method \BEdita\Core\Model\Entity\Tree get($primaryKey, $options = [])
@@ -34,9 +33,9 @@ class TreesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('trees');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('trees');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->belongsTo('Objects', [
             'foreignKey' => 'object_id',

@@ -36,7 +36,7 @@ class SetAssociated extends UpdateAssociated
      */
     protected function diff(EntityInterface $entity, $relatedEntities)
     {
-        $bindingKey = (array)$this->Association->bindingKey();
+        $bindingKey = (array)$this->Association->getBindingKey();
         $existing = $this->existing($entity);
 
         $diff = 0;
@@ -86,13 +86,13 @@ class SetAssociated extends UpdateAssociated
         }
 
         if ($this->Association instanceof BelongsTo) {
-            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+            return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 return $this->belongsTo($entity, $relatedEntities);
             });
         }
 
         if ($this->Association instanceof HasOne) {
-            return $this->Association->connection()->transactional(function () use ($entity, $relatedEntities) {
+            return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 return $this->hasOne($entity, $relatedEntities);
             });
         }
@@ -136,16 +136,16 @@ class SetAssociated extends UpdateAssociated
         if ($existing === null && $relatedEntity === null) {
             return 0;
         } elseif ($relatedEntity !== null) {
-            $bindingKey = $relatedEntity->extract((array)$this->Association->bindingKey());
+            $bindingKey = $relatedEntity->extract((array)$this->Association->getBindingKey());
 
             if ($bindingKey == $existing) {
                 return 0;
             }
         }
 
-        $entity->set($this->Association->property(), $relatedEntity);
+        $entity->set($this->Association->getProperty(), $relatedEntity);
 
-        return $this->Association->source()->save($entity) ? 1 : false;
+        return $this->Association->getSource()->save($entity) ? 1 : false;
     }
 
     /**
@@ -162,7 +162,7 @@ class SetAssociated extends UpdateAssociated
         if ($existing === null && $relatedEntity === null) {
             return 0;
         } elseif ($relatedEntity !== null) {
-            $primaryKey = $relatedEntity->extract((array)$this->Association->primaryKey());
+            $primaryKey = $relatedEntity->extract((array)$this->Association->getPrimaryKey());
 
             if ($primaryKey == $existing) {
                 return 0;
@@ -170,10 +170,10 @@ class SetAssociated extends UpdateAssociated
         }
 
         $relatedEntity->set(array_combine(
-            (array)$this->Association->foreignKey(),
-            $entity->extract((array)$this->Association->bindingKey())
+            (array)$this->Association->getForeignKey(),
+            $entity->extract((array)$this->Association->getBindingKey())
         ));
 
-        return $this->Association->target()->save($relatedEntity) ? 1 : false;
+        return $this->Association->getTarget()->save($relatedEntity) ? 1 : false;
     }
 }

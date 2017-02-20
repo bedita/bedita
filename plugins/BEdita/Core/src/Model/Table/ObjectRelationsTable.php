@@ -1,7 +1,6 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -9,9 +8,9 @@ use Cake\Validation\Validator;
 /**
  * ObjectRelations Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Objects
+ * @property \Cake\ORM\Association\BelongsTo $LeftObjects
  * @property \Cake\ORM\Association\BelongsTo $Relations
- * @property \Cake\ORM\Association\BelongsTo $Objects
+ * @property \Cake\ORM\Association\BelongsTo $RightObjects
  *
  * @method \BEdita\Core\Model\Entity\ObjectRelation get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\ObjectRelation newEntity($data = null, array $options = [])
@@ -33,9 +32,9 @@ class ObjectRelationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('object_relations');
-        $this->displayField('left_id');
-        $this->primaryKey(['left_id', 'relation_id', 'right_id']);
+        $this->setTable('object_relations');
+        $this->setDisplayField('left_id');
+        $this->setPrimaryKey(['left_id', 'relation_id', 'right_id']);
 
         $this->belongsTo('LeftObjects', [
             'foreignKey' => 'left_id',

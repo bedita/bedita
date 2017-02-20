@@ -47,9 +47,9 @@ class ObjectTypesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('object_types');
-        $this->primaryKey('id');
-        $this->displayField('name');
+        $this->setTable('object_types');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('name');
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
@@ -136,7 +136,7 @@ class ObjectTypesTable extends Table
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table "%s"',
-                    $this->table()
+                    $this->getTable()
                 ));
             }
 

@@ -56,15 +56,15 @@ class ExtensionOf extends BelongsTo
     {
         parent::__construct($alias, $options);
 
-        $this->source()
+        $this->getSource()
             ->eventManager()
             ->on(
                 'Model.afterDelete',
                 function (Event $event, Entity $entity, \ArrayObject $options) {
-                    $bindingKey = (array)$this->bindingKey();
-                    $entity = $this->target()->get($entity->extract($bindingKey));
+                    $bindingKey = (array)$this->getBindingKey();
+                    $entity = $this->getTarget()->get($entity->extract($bindingKey));
 
-                    return $this->target()->delete($entity, ['_primary' => false] + $options->getArrayCopy());
+                    return $this->getTarget()->delete($entity, ['_primary' => false] + $options->getArrayCopy());
                 }
             );
     }
@@ -82,7 +82,7 @@ class ExtensionOf extends BelongsTo
      */
     public function transformRow($row, $nestKey, $joined, $targetProperty = null)
     {
-        $sourceAlias = $this->source()->alias();
+        $sourceAlias = $this->getSource()->getAlias();
         $nestKey = $nestKey ?: $this->_name;
         if (!isset($row[$sourceAlias])) {
             return $row;
@@ -119,33 +119,33 @@ class ExtensionOf extends BelongsTo
 
                 return $val;
             },
-            $this->target()->schema()->defaultValues()
+            $this->getTarget()->getSchema()->defaultValues()
         );
         $propertiesToRemove = array_keys($defaultValues);
 
-        $targetEntity = $this->target()->newEntity($defaultValues, [
+        $targetEntity = $this->getTarget()->newEntity($defaultValues, [
             'accessibleFields' => ['*' => true],
         ]);
         $targetEntity->isNew($entity->isNew());
-        $targetEntity = $this->target()->patchEntity($targetEntity, $targetData, [
+        $targetEntity = $this->getTarget()->patchEntity($targetEntity, $targetData, [
             'accessibleFields' => ['*' => true],
         ]);
         if (!$entity->isNew()) {
-            $targetEntity->dirty($this->bindingKey(), true);
+            $targetEntity->dirty($this->getBindingKey(), true);
         }
 
         if (empty($targetEntity) || !($targetEntity instanceof EntityInterface)) {
             return $entity;
         }
 
-        $targetEntity = $this->target()->save($targetEntity, $options);
+        $targetEntity = $this->getTarget()->save($targetEntity, $options);
         if (!$targetEntity) {
             return false;
         }
 
         $properties = array_combine(
-            (array)$this->foreignKey(),
-            $targetEntity->extract((array)$this->bindingKey())
+            (array)$this->getForeignKey(),
+            $targetEntity->extract((array)$this->getBindingKey())
         );
         $properties += $targetEntity->extract($targetEntity->visibleProperties() + $targetEntity->hiddenProperties());
         if (isset($propertiesToRemove)) {
@@ -178,10 +178,10 @@ class ExtensionOf extends BelongsTo
             $propertyValues[$prop] = $value;
         }
 
-        $source = $this->source();
-        $sourceProperties = array_diff($source->schema()->columns(), [$source->primaryKey()]);
+        $source = $this->getSource();
+        $sourceProperties = array_diff($source->getSchema()->columns(), [$source->getPrimaryKey()]);
         foreach ($source->associations()->keys() as $key) {
-            $sourceProperties[] = $source->association($key)->property();
+            $sourceProperties[] = $source->association($key)->getProperty();
         }
 
         return array_diff_key($propertyValues, array_flip($sourceProperties));

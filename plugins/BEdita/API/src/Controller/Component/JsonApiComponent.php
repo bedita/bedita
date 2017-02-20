@@ -61,14 +61,14 @@ class JsonApiComponent extends Component
     {
         $contentType = self::CONTENT_TYPE;
         if (!empty($config['contentType'])) {
-            $contentType = $this->response->getMimeType($config['contentType']) ?: $config['contentType'];
+            $contentType = $this->getController()->response->getMimeType($config['contentType']) ?: $config['contentType'];
         }
-        $this->response->type([
+        $this->getController()->response->type([
             'jsonapi' => $contentType,
         ]);
 
-        $this->RequestHandler->config('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
-        $this->RequestHandler->config('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
+        $this->RequestHandler->setConfig('inputTypeMap.jsonapi', [[$this, 'parseInput']]); // Must be lowercase because reasons.
+        $this->RequestHandler->setConfig('viewClassMap.jsonapi', 'BEdita/API.JsonApi');
     }
 
     /**
@@ -106,7 +106,7 @@ class JsonApiComponent extends Component
      */
     public function error($status, $title, $detail, array $meta = null)
     {
-        $controller = $this->_registry->getController();
+        $controller = $this->getController();
 
         $status = (string)$status;
 
@@ -123,31 +123,33 @@ class JsonApiComponent extends Component
      */
     public function getLinks()
     {
+        $request = $this->getController()->request;
         $links = [
-            'self' => Router::reverse($this->request, true),
+            'self' => Router::reverse($request, true),
             'home' => Router::url(['_name' => 'api:home'], true),
         ];
 
-        if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
-            $request = $this->request;
-            $paging = reset($request->params['paging']);
+        $paging = $request->getParam('paging');
+        if (!empty($paging) && is_array($paging)) {
+            $paging = reset($paging);
+            $query = $request->getQueryParams();
 
-            $request->query['page'] = null;
-            $links['first'] = Router::reverse($request, true);
+            $query['page'] = null;
+            $links['first'] = Router::reverse($request->withQueryParams($query), true);
 
-            $request->query['page'] = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
-            $links['last'] = Router::reverse($request, true);
+            $query['page'] = ($paging['pageCount'] > 1) ? $paging['pageCount'] : null;
+            $links['last'] = Router::reverse($request->withQueryParams($query), true);
 
             $links['prev'] = null;
             if ($paging['prevPage']) {
-                $request->query['page'] = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
-                $links['prev'] = Router::reverse($request, true);
+                $query['page'] = ($paging['page'] > 2) ? $paging['page'] - 1 : null;
+                $links['prev'] = Router::reverse($request->withQueryParams($query), true);
             }
 
             $links['next'] = null;
             if ($paging['nextPage']) {
-                $request->query['page'] = $paging['page'] + 1;
-                $links['next'] = Router::reverse($request, true);
+                $query['page'] = $paging['page'] + 1;
+                $links['next'] = Router::reverse($request->withQueryParams($query), true);
             }
         }
 
@@ -163,8 +165,9 @@ class JsonApiComponent extends Component
     {
         $meta = [];
 
-        if (!empty($this->request->params['paging']) && is_array($this->request->params['paging'])) {
-            $paging = reset($this->request->params['paging']);
+        $paging = $this->getController()->request->getParam('paging');
+        if (!empty($paging) && is_array($paging)) {
+            $paging = reset($paging);
             $paging += [
                 'current' => null,
                 'page' => null,
@@ -195,7 +198,7 @@ class JsonApiComponent extends Component
      */
     protected function allowedResourceTypes($types, array $data = null)
     {
-        $data = ($data === null) ? $this->request->data : $data;
+        $data = ($data === null) ? $this->getController()->request->getData() : $data;
         if (!$data || !$types) {
             return;
         }
@@ -230,7 +233,7 @@ class JsonApiComponent extends Component
      */
     protected function allowClientGeneratedIds($allow = true, array $data = null)
     {
-        $data = ($data === null) ? $this->request->data : $data;
+        $data = ($data === null) ? $this->getController()->request->getData() : $data;
         if (!$data || $allow) {
             return;
         }
@@ -267,23 +270,23 @@ class JsonApiComponent extends Component
      */
     public function startup(Event $event)
     {
-        $controller = $event->subject();
+        $controller = $event->getSubject();
         if (!($controller instanceof Controller)) {
             return;
         }
 
         $this->RequestHandler->renderAs($controller, 'jsonapi');
 
-        if ($this->config('checkMediaType') && trim($this->request->header('accept')) != self::CONTENT_TYPE) {
+        if ($this->getConfig('checkMediaType') && trim($controller->request->getHeaderLine('accept')) != self::CONTENT_TYPE) {
             // http://jsonapi.org/format/#content-negotiation-servers
-            throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $this->request->accepts()) . '"');
+            throw new UnsupportedMediaTypeException('Bad request content type "' . implode('" "', $controller->request->accepts()) . '"');
         }
 
-        if ($this->request->is(['post', 'patch'])) {
-            $this->allowedResourceTypes($this->config('resourceTypes'));
+        if ($controller->request->is(['post', 'patch'])) {
+            $this->allowedResourceTypes($this->getConfig('resourceTypes'));
         }
 
-        if ($this->request->is('post') && !$this->config('clientGeneratedIds')) {
+        if ($controller->request->is('post') && !$this->getConfig('clientGeneratedIds')) {
             $this->allowClientGeneratedIds(false);
         }
     }
@@ -296,7 +299,7 @@ class JsonApiComponent extends Component
      */
     public function beforeRender(Event $event)
     {
-        $controller = $event->subject();
+        $controller = $event->getSubject();
         if (!($controller instanceof Controller)) {
             return;
         }
