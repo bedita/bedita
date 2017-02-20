@@ -78,7 +78,7 @@ class BeditaShellTest extends ShellTestCase
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
         ];
-        $fakeParams = array_merge(ConnectionManager::get('default', false)->config(), $fakeParams);
+        $fakeParams = array_merge(ConnectionManager::get('test', false)->config(), $fakeParams);
 
         return $fakeParams;
     }
