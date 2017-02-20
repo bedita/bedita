@@ -96,4 +96,168 @@ class PropertyTest extends TestCase
         $this->assertEquals($modified, $property->modified);
         $this->assertEquals($data['description'], $property->description);
     }
+
+    /**
+     * Data provider for `testGetObjectTypeName` test case.
+     *
+     * @return array
+     */
+    public function getObjectTypeNameProvider()
+    {
+        return [
+            'document' => [
+                'documents',
+                1,
+            ],
+            'non existent' => [
+                null,
+                -1,
+            ],
+            'invalid' => [
+                null,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test magic getter for object type name property.
+     *
+     * @param string|null $expected Expected object type name.
+     * @param mixed $objectTypeId Object type ID.
+     * @return void
+     *
+     * @covers ::_getObjectTypeName()
+     * @dataProvider getObjectTypeNameProvider()
+     */
+    public function testGetObjectTypeName($expected, $objectTypeId)
+    {
+        $entity = new Property();
+        $entity->object_type_id = $objectTypeId;
+
+        $objectTypeName = $entity->object_type_name;
+
+        static::assertSame($expected, $objectTypeName);
+    }
+
+    /**
+     * Data provider for `testSetObjectTypeName` test case.
+     *
+     * @return array
+     */
+    public function setObjectTypeNameProvider()
+    {
+        return [
+            'document' => [
+                1,
+                'documents',
+            ],
+            'non existent' => [
+                null,
+                'this type does not exist',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for object type name property.
+     *
+     * @param string|null $expected Expected object type ID.
+     * @param mixed $objectTypeName Object type name.
+     * @return void
+     *
+     * @covers ::_setObjectTypeName()
+     * @dataProvider setObjectTypeNameProvider()
+     */
+    public function testSetObjectTypeName($expected, $objectTypeName)
+    {
+        $entity = new Property();
+        $entity->object_type_name = $objectTypeName;
+
+        $objectTypeId = $entity->object_type_id;
+
+        static::assertSame($expected, $objectTypeId);
+    }
+
+    /**
+     * Data provider for `testGetPropertyTypeName` test case.
+     *
+     * @return array
+     */
+    public function getPropertyTypeNameProvider()
+    {
+        return [
+            'document' => [
+                'string',
+                1,
+            ],
+            'non existent' => [
+                null,
+                -1,
+            ],
+            'invalid' => [
+                null,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test magic getter for property type name property.
+     *
+     * @param string|null $expected Expected property type name.
+     * @param mixed $propertyTypeId Property type ID.
+     * @return void
+     *
+     * @covers ::_getPropertyTypeName()
+     * @dataProvider getPropertyTypeNameProvider()
+     */
+    public function testGetPropertyTypeName($expected, $propertyTypeId)
+    {
+        $entity = new Property();
+        $entity->property_type_id = $propertyTypeId;
+
+        $propertyTypeName = $entity->property_type_name;
+
+        static::assertSame($expected, $propertyTypeName);
+    }
+
+    /**
+     * Data provider for `testSetPropertyTypeName` test case.
+     *
+     * @return array
+     */
+    public function setPropertyTypeNameProvider()
+    {
+        return [
+            'document' => [
+                1,
+                'string',
+            ],
+            'non existent' => [
+                null,
+                'this type does not exist',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for property type name property.
+     *
+     * @param string|null $expected Expected property type ID.
+     * @param mixed $propertyTypeName Property type name.
+     * @return void
+     *
+     * @covers ::_setPropertyTypeName()
+     * @dataProvider setPropertyTypeNameProvider()
+     */
+    public function testSetPropertyTypeName($expected, $propertyTypeName)
+    {
+        $entity = new Property();
+        $entity->property_type_name = $propertyTypeName;
+
+        $propertyTypeId = $entity->property_type_id;
+
+        static::assertSame($expected, $propertyTypeId);
+    }
 }
