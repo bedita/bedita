@@ -18,6 +18,7 @@ use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -144,11 +145,11 @@ class JwtAuthenticateTest extends TestCase
     }
 
     /**
-     * Data provider for `testGetUser` test case.
+     * Data provider for `testAuthenticate` test case.
      *
      * @return array
      */
-    public function getUserProvider()
+    public function authenticateProvider()
     {
         $payload = ['someData' => 'someValue'];
 
@@ -206,6 +207,7 @@ class JwtAuthenticateTest extends TestCase
                         'plugin' => 'BEdita/API',
                         'controller' => 'Login',
                         'action' => 'login',
+                        '_method' => 'POST',
                     ],
                     'environment' => [
                         'HTTP_AUTHORIZATION' => 'Bearer ' . $invalidToken,
@@ -224,23 +226,21 @@ class JwtAuthenticateTest extends TestCase
      * @param \Cake\Network\Request $request Request.
      * @return void
      *
-     * @dataProvider getUserProvider
+     * @dataProvider authenticateProvider
+     * @covers ::authenticate()
      * @covers ::getUser()
      * @covers ::getPayload()
      * @covers ::decode()
      */
-    public function testGetUser($expected, array $config, Request $request)
+    public function testAuthenticate($expected, array $config, Request $request)
     {
-        $debug = Configure::read('debug');
         Configure::write('debug', false);
 
         $auth = new JwtAuthenticate($this->getMockBuilder('Cake\Controller\ComponentRegistry')->getMock(), $config);
 
-        $result = $auth->getUser($request);
+        $result = $auth->authenticate($request, new Response());
 
         $this->assertEquals($expected, $result);
-
-        Configure::write('debug', $debug);
     }
 
     /**
@@ -260,6 +260,46 @@ class JwtAuthenticateTest extends TestCase
         ]);
 
         $auth = new JwtAuthenticate($controller->components(), []);
+
+        $auth->unauthenticated($controller->request, $controller->response);
+    }
+
+    /**
+     * Test `unauthenticated` method.
+     *
+     * @return void
+     *
+     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedExceptionMessage Invalid audience
+     * @covers ::unauthenticated()
+     */
+    public function testUnauthenticatedWithInternalErrorMessage()
+    {
+        Configure::write('debug', false);
+
+        $request = new Request([
+            'params' => [
+                'plugin' => 'BEdita/API',
+                'controller' => 'Login',
+                'action' => 'login',
+                '_method' => 'POST',
+            ],
+            'environment' => [
+                'HTTP_AUTHORIZATION' => 'Bearer ' . JWT::encode(['aud' => 'http://example.org'], Security::salt()),
+                'HTTP_HOST' => 'api.example.com',
+            ],
+        ]);
+
+        $controller = new Controller($request);
+        $controller->loadComponent('Auth', [
+            'authError' => 'MyExceptionMessage',
+        ]);
+
+        $auth = new JwtAuthenticate($controller->components(), []);
+
+        $result = $auth->authenticate($controller->request, $controller->response);
+
+        static::assertFalse($result);
 
         $auth->unauthenticated($controller->request, $controller->response);
     }
