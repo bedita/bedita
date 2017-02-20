@@ -75,6 +75,13 @@ class RemoveAssociatedTest extends TestCase
                 1,
                 null,
             ],
+            'alreadyNotExisting' => [
+                0,
+                'FakeTags',
+                'FakeArticles',
+                2,
+                1,
+            ],
             'belongsToMany' => [
                 1,
                 'FakeTags',
