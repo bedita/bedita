@@ -295,6 +295,6 @@ class UniqueNameBehaviorTest extends TestCase
 
         $document->set('uname', 'first-user');
         $behavior->uniqueName($document);
-        $this->assertNotEquals($document->get('uname'), 'documents');
+        $this->assertNotEquals($document->get('uname'), 'first-user');
     }
 }
