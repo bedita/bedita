@@ -137,6 +137,16 @@ class ObjectTypesTableTest extends TestCase
                     'model' => 'Objects',
                 ],
             ],
+            'notUniqueNotNew' => [
+                false,
+                [
+                    'id' => 1,
+                    'name' => 'profile',
+                    'pluralized' => 'profiles',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Profiles',
+                ],
+            ],
         ];
     }
 
@@ -154,6 +164,9 @@ class ObjectTypesTableTest extends TestCase
     {
         $objectType = $this->ObjectTypes->newEntity();
         $this->ObjectTypes->patchEntity($objectType, $data);
+        if (!empty($data['id'])) {
+            $objectType->isNew(false);
+        }
 
         $success = $this->ObjectTypes->save($objectType);
         $this->assertEquals($expected, (bool)$success);
