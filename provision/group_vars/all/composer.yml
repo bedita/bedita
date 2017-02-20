@@ -1,9 +1,0 @@
-###
-# Composer
-###
----
-composer_packages:
-  cakephp/cakephp-codesniffer: "*"
-  phpmd/phpmd: "*"
-  phpunit/phpunit: "*"
-  squizlabs/php_codesniffer: "*"
