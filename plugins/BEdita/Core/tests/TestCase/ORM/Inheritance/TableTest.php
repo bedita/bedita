@@ -88,9 +88,9 @@ class TableTest extends TestCase
      */
     protected function setupAssociations()
     {
-        $this->fakeMammals->extensionOf('FakeAnimals', $this->tableOptions);
-        $this->fakeFelines->extensionOf('FakeMammals', $this->tableOptions);
-        $this->fakeAnimals->hasMany('FakeArticles', $this->tableOptions);
+        $this->fakeMammals->extensionOf('FakeAnimals');
+        $this->fakeFelines->extensionOf('FakeMammals');
+        $this->fakeAnimals->hasMany('FakeArticles');
     }
 
     /**
