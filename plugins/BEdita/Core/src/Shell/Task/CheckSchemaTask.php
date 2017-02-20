@@ -36,6 +36,13 @@ class CheckSchemaTask extends Shell
     protected $messages = [];
 
     /**
+     * List of SQL reserved words.
+     *
+     * @var array
+     */
+    protected $reservedWords = [];
+
+    /**
      * {@inheritDoc}
      *
      * @codeCoverageIgnore
@@ -139,17 +146,18 @@ class CheckSchemaTask extends Shell
      */
     protected function checkSymbol($symbol, array $options = null)
     {
-        static $reservedWords = [];
-        if (empty($reservedWords)) {
-            $reservedWords = file(Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS . 'sql_reserved_words.txt');
+        if (empty($this->reservedWords)) {
+            $this->reservedWords = file(
+                Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS . 'sql_reserved_words.txt'
+            );
             array_walk(
-                $reservedWords,
+                $this->reservedWords,
                 function (&$word) {
                     $word = strtoupper(trim($word));
                 }
             );
-            $reservedWords = array_filter(
-                $reservedWords,
+            $this->reservedWords = array_filter(
+                $this->reservedWords,
                 function ($word) {
                     return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, ['NAME', 'STATUS']);
                 }
@@ -157,7 +165,7 @@ class CheckSchemaTask extends Shell
         }
 
         $errors = [];
-        if (in_array(strtoupper($symbol), $reservedWords)) {
+        if (in_array(strtoupper($symbol), $this->reservedWords)) {
             $errors[] = 'reserved word';
         }
         if ($symbol !== Inflector::underscore($symbol)) {
