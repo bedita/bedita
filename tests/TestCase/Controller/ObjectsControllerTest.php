@@ -430,7 +430,6 @@ class ObjectsControllerTest extends IntegrationTestCase
             'type' => 'documents',
             'attributes' => [
                 'title' => 'A new document',
-                'uname' => 'a-new-document',
             ],
         ];
 
@@ -446,7 +445,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/documents/8');
-        $this->assertTrue(TableRegistry::get('Documents')->exists(['uname' => 'a-new-document']));
+        $this->assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
     /**
