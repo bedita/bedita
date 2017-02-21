@@ -94,6 +94,20 @@ class ObjectsTableTest extends TestCase
                     'lang' => 'eng',
                 ],
             ],
+            'titleOnly' => [
+                true,
+                [
+                    'title' => 'title only',
+                ],
+            ],
+            'emptyForm' => [
+                true,
+                [
+                    'title' => 'just another title',
+                    'uname' => null,
+                    'status' => null,
+                ],
+            ],
         ];
     }
 
