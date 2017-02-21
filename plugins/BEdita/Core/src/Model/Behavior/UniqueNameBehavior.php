@@ -77,7 +77,7 @@ class UniqueNameBehavior extends Behavior
      */
     public function generateUniqueName(EntityInterface $entity, array $cfg = [], $regenerate = false)
     {
-        $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->config('sourceField');
+        $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->getConfig('sourceField');
         $fieldValue = $entity->get($field);
 
         return $this->uniqueNameFromValue($fieldValue, $cfg, $regenerate);
@@ -149,7 +149,7 @@ class UniqueNameBehavior extends Behavior
     public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
     {
         if (empty($data['uname']) && empty($data['id'])) {
-            $field = $this->config('sourceField');
+            $field = $this->getConfig('sourceField');
             $fieldValue = '';
             if (!empty($data[$field])) {
                 $fieldValue = $data[$field];
