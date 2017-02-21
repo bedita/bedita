@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
@@ -51,6 +52,8 @@ class TrashControllerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
+
+        CurrentApplication::setFromApiKey(API_KEY);
     }
 
     /**
@@ -141,7 +144,6 @@ class TrashControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/trash');
@@ -189,7 +191,6 @@ class TrashControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/trash');
@@ -244,7 +245,6 @@ class TrashControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/trash/6');
@@ -286,7 +286,6 @@ class TrashControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/trash/666', json_encode(compact('data')));
@@ -300,7 +299,6 @@ class TrashControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/trash/6', json_encode(compact('data')));
@@ -322,7 +320,6 @@ class TrashControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->delete('/trash/7');
@@ -342,7 +339,6 @@ class TrashControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->delete('/trash/77777');
@@ -375,7 +371,6 @@ class TrashControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/trash/99');

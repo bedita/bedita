@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\System;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -33,6 +34,16 @@ class StatusControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test index method.
@@ -58,7 +69,6 @@ class StatusControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/status');

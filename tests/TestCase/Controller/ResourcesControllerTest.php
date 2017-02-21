@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -38,6 +39,16 @@ class ResourcesControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles_users',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test relationships method to list existing relationships.
@@ -91,7 +102,6 @@ class ResourcesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles/1/relationships/users');
@@ -117,7 +127,6 @@ class ResourcesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles/99/relationships/users');
@@ -156,7 +165,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
@@ -201,7 +209,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
@@ -235,7 +242,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->post('/roles/1/relationships/users', json_encode(compact('data')));
@@ -279,7 +285,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
@@ -314,7 +319,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
@@ -355,7 +359,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
@@ -391,7 +394,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
@@ -425,7 +427,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
@@ -463,7 +464,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));
@@ -495,7 +495,6 @@ class ResourcesControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/roles/1/relationships/this_relationship_does_not_exist');
@@ -535,7 +534,6 @@ class ResourcesControllerTest extends IntegrationTestCase
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
                 'Content-Type' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->patch('/roles/1/relationships/users', json_encode(compact('data')));

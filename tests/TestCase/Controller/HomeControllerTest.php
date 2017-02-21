@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\TestSuite\IntegrationTestCase;
 
 /**
@@ -32,6 +33,16 @@ class HomeControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test index method.
@@ -201,7 +212,6 @@ class HomeControllerTest extends IntegrationTestCase
             'headers' => [
                 'Host' => 'api.example.com',
                 'Accept' => 'application/vnd.api+json',
-                'X-Api-Key' => API_KEY,
             ],
         ]);
         $this->get('/home');

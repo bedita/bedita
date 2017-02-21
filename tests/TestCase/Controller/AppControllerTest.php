@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
@@ -37,6 +38,16 @@ class AppControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * {@inheritDoc}
@@ -123,7 +134,6 @@ class AppControllerTest extends IntegrationTestCase
         $this->configRequest([
             'headers' => [
                 'Accept' => $accept,
-                'X-Api-Key' => API_KEY,
             ],
         ]);
 
@@ -204,7 +214,6 @@ class AppControllerTest extends IntegrationTestCase
             $this->configRequest([
                 'headers' => [
                     'Accept' => $accept,
-                    'X-Api-Key' => 'API_KEY',
                 ],
             ]);
             $this->get('/roles');
