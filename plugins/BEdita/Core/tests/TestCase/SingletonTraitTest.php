@@ -13,16 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase;
 
-use BEdita\Core\SingletonTrait;
 use Cake\TestSuite\TestCase;
-
-/**
- * Fake singleton class for the sake of testing.
- */
-class MySingletonClass
-{
-    use SingletonTrait;
-}
 
 /**
  * {@see BEdita\Core\SingletonTrait} Test Case
