@@ -15,7 +15,7 @@ namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\AnonymousAuthenticate;
 use Cake\Controller\ComponentRegistry;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 
@@ -36,7 +36,7 @@ class AnonymousAuthenticateTest extends TestCase
             '_anonymous' => true,
         ];
 
-        $request = new Request();
+        $request = new ServerRequest();
         $response = new Response();
 
         $auth = new AnonymousAuthenticate(new ComponentRegistry());
