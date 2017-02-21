@@ -203,19 +203,19 @@ class EndpointPermissionsTableTest extends TestCase
     {
         return [
             'auth' => [
-                2,
+                3,
                 1,
             ],
             'home' => [
-                3,
+                4,
                 2,
             ],
             'null' => [
-                1,
+                2,
                 '',
             ],
             'auth,home' => [
-                4,
+                5,
                 [1, 2],
             ],
         ];
@@ -247,7 +247,7 @@ class EndpointPermissionsTableTest extends TestCase
     {
         return [
             'application one' => [
-                1,
+                2,
                 1,
             ],
             'application two' => [
@@ -287,19 +287,19 @@ class EndpointPermissionsTableTest extends TestCase
     {
         return [
             'first' => [
-                3,
+                4,
                 1,
             ],
             'second' => [
-                3,
+                4,
                 2,
             ],
             'null' => [
-                2,
+                3,
                 '',
             ],
             'first,second' => [
-                4,
+                5,
                 [1, 2],
             ],
         ];
