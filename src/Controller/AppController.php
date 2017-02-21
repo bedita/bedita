@@ -76,9 +76,6 @@ class AppController extends Controller
             'unauthorizedRedirect' => false,
             'storage' => 'Memory',
         ]);
-        if ($this->name !== 'Login') {
-            LoggedUser::setUser($this->Auth->identify());
-        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(

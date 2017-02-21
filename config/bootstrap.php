@@ -13,7 +13,9 @@
 
 use BEdita\API\Controller\Component\JsonApiComponent;
 use BEdita\API\Middleware\CorsMiddleware;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Log\Log;
@@ -58,9 +60,13 @@ Request::addDetector('jsonapi', function (Request $request) {
  *
  * @see \BEdita\API\Middleware\CorsMiddleware to more info on CORS configuration
  */
-EventManager::instance()->on('Server.buildMiddleware', function ($event, MiddlewareQueue $middleware) {
+EventManager::instance()->on('Server.buildMiddleware', function (Event $event, MiddlewareQueue $middleware) {
     $middleware->insertAfter(
         'Cake\Error\Middleware\ErrorHandlerMiddleware',
         new CorsMiddleware(Configure::read('CORS'))
     );
+});
+
+EventManager::instance()->on('Auth.afterIdentify', function (Event $event, array $user) {
+    LoggedUser::setUser($user);
 });
