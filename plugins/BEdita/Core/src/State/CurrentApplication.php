@@ -57,10 +57,10 @@ class CurrentApplication
     /**
      * Set current application.
      *
-     * @param \BEdita\Core\Model\Entity\Application $application Application instance.
+     * @param \BEdita\Core\Model\Entity\Application|null $application Application instance.
      * @return self
      */
-    public function set(Application $application)
+    public function set(Application $application = null)
     {
         $this->application = $application;
 
