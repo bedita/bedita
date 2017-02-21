@@ -59,8 +59,7 @@ class UniqueNameBehavior extends Behavior
         if (empty($uname)) {
             $uname = $this->generateUniqueName($entity);
         }
-        $id = !empty($entity->get('id')) ? $entity->get('id') : null;
-        while ($this->uniqueNameExists($uname, $id)) {
+        while ($this->uniqueNameExists($uname, $entity->get('id'))) {
             $uname = $this->generateUniqueName($entity, [], true);
         }
 
@@ -133,7 +132,6 @@ class UniqueNameBehavior extends Behavior
      * @param \Cake\Event\Event $event The event dispatched
      * @param \Cake\Datasource\EntityInterface $entity The entity to save
      * @return void
-     * @codeCoverageIgnore
      */
     public function beforeSave(Event $event, EntityInterface $entity)
     {
@@ -152,7 +150,12 @@ class UniqueNameBehavior extends Behavior
     {
         if (empty($data['uname']) && empty($data['id'])) {
             $field = $this->config('sourceField');
-            $fieldValue = !empty($data[$field]) ? $data[$field] : (!empty($data['type']) ? $data['type'] : '');
+            $fieldValue = '';
+            if (!empty($data[$field])) {
+                $fieldValue = $data[$field];
+            } elseif (!empty($data['type'])) {
+                $fieldValue = $data['type'];
+            }
             $data['uname'] = $this->uniqueNameFromValue($fieldValue);
         }
     }
