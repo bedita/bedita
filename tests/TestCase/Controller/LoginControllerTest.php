@@ -57,7 +57,7 @@ class LoginControllerTest extends IntegrationTestCase
         ]);
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
 
@@ -92,7 +92,7 @@ class LoginControllerTest extends IntegrationTestCase
         ]);
 
         $this->post('/auth', []);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
@@ -143,7 +143,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->get('/auth');
         $this->assertResponseCode(200);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertNotEmpty($result);
     }
 

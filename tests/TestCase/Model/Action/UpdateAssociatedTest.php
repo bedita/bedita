@@ -16,7 +16,7 @@ namespace BEdita\API\Test\TestCase\Model\Action;
 use BEdita\API\Model\Action\UpdateAssociated;
 use BEdita\Core\Model\Action\SetAssociated;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -56,7 +56,7 @@ class UpdateAssociatedTest extends TestCase
             ->belongsToMany('FakeTags', [
                 'joinTable' => 'fake_articles_tags',
             ])
-            ->source()
+            ->getSource()
             ->belongsTo('FakeAnimals');
 
         TableRegistry::get('FakeAnimals')
@@ -165,11 +165,12 @@ class UpdateAssociatedTest extends TestCase
     public function testInvocation($expected, $table, $association, $id, $data)
     {
         if ($expected instanceof \Exception) {
-            $this->setExpectedException(get_class($expected), $expected->getMessage());
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
         }
 
-        $request = new Request();
-        $request->data = $data;
+        $request = new ServerRequest();
+        $request = $request->withParsedBody($data);
         $association = TableRegistry::get($table)->association($association);
         $parentAction = new SetAssociated($association);
         $action = new UpdateAssociated($parentAction, $request);
@@ -178,12 +179,12 @@ class UpdateAssociatedTest extends TestCase
 
         $count = 0;
         if ($data !== null) {
-            $count = $association->target()->find()
+            $count = $association->getTarget()->find()
                 ->matching(
-                    Inflector::camelize($association->source()->table()),
+                    Inflector::camelize($association->getSource()->getTable()),
                     function (Query $query) use ($association, $id) {
                         return $query->where([
-                            $association->source()->aliasField($association->source()->primaryKey()) => $id,
+                            $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $id,
                         ]);
                     }
                 )
