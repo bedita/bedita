@@ -14,6 +14,7 @@
 namespace BEdita\Core\Utility;
 
 use BEdita\Core\SingletonTrait;
+use Cake\Utility\Hash;
 
 /**
  * Singleton class representing currently logged user.
@@ -28,8 +29,9 @@ class LoggedUser
     use SingletonTrait;
 
     /**
-     * User data MUST contain at least user 'id' as array key
-     * valid examples:
+     * User data MUST contain at least user 'id' as array key.
+     *
+     * Valid examples:
      *   - ['id' => 1]
      *   - ['id' => 1, 'username' => 'bedita']
      *
@@ -38,7 +40,8 @@ class LoggedUser
     private $userData = [];
 
     /**
-     * Read singleton current user data
+     * Read singleton current user data.
+     *
      * @return array
      */
     public static function getUser()
@@ -47,25 +50,19 @@ class LoggedUser
     }
 
     /**
-     * Read from singleton current user id
-     * @return int Logged user id or NULL if no current user is set
+     * Read from singleton current user ID.
+     *
+     * @return int|null Logged user ID, or `null` if no current user is set.
      */
     public static function id()
     {
-        // TODO: remove 1 ID - temporary set to 1 to allow tests
-        $id = 1;
-        $data = static::getInstance()->userData;
-        if (!empty($data['id'])) {
-            $id = $data['id'];
-        }
-
-        return $id;
+        return Hash::get(static::getInstance()->userData, 'id');
     }
 
     /**
-     * Set singleton current user data
+     * Set singleton current user data.
      *
-     * @param array $userData User data array
+     * @param array $userData User data array.
      * @return void
      */
     public static function setUser($userData)
