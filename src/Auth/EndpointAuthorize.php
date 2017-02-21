@@ -73,12 +73,7 @@ class EndpointAuthorize extends BaseAuthorize
         $this->request = $request;
 
         $application = $this->getApplication();
-
         $endpoint = $this->getEndpoint();
-        if ($endpoint === null) {
-            return true;
-        }
-
         $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
 
         $this->authorized = $this->checkPermissions($permissions);
@@ -163,7 +158,7 @@ class EndpointAuthorize extends BaseAuthorize
      * @return \Cake\ORM\Query
      * @todo Future optimization: Permissions that are `0` on the two bits that are interesting for the current request can be excluded...
      */
-    protected function getPermissions($user, Application $application, Endpoint $endpoint)
+    protected function getPermissions($user, Application $application, Endpoint $endpoint = null)
     {
         $roleIds = Hash::extract($user, 'roles.{n}.id');
         $applicationId = $application->id;
