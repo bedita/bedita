@@ -14,7 +14,7 @@
 namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\Network\Response;
 
 /**
@@ -28,7 +28,7 @@ class AnonymousAuthenticate extends BaseAuthenticate
     /**
      * {@inheritDoc}
      */
-    public function authenticate(Request $request, Response $response)
+    public function authenticate(ServerRequest $request, Response $response)
     {
         return $this->getUser($request);
     }
@@ -36,7 +36,7 @@ class AnonymousAuthenticate extends BaseAuthenticate
     /**
      * {@inheritDoc}
      */
-    public function getUser(Request $request)
+    public function getUser(ServerRequest $request)
     {
         return [
             '_anonymous' => true,
