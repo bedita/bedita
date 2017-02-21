@@ -72,11 +72,7 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $this->request = $request;
 
-        try {
-            $application = $this->getApplication();
-        } catch (RecordNotFoundException $e) {
-            throw new ForbiddenException(__d('bedita', 'Missing or invalid API key'));
-        }
+        $application = $this->getApplication();
 
         $endpoint = $this->getEndpoint();
         if ($endpoint === null) {
@@ -106,14 +102,21 @@ class EndpointAuthorize extends BaseAuthorize
      * Get application for request.
      *
      * @return \BEdita\Core\Model\Entity\Application|null
+     * @throws \Cake\Network\Exception\ForbiddenException Throws an exception if API key is missing or invalid.
      */
     protected function getApplication()
     {
         $application = CurrentApplication::getApplication();
         if ($application === null) {
-            CurrentApplication::setFromApiKey(
-                $this->request->getHeaderLine($this->_config['apiKeyHeaderName'])
-            );
+            try {
+                CurrentApplication::setFromApiKey(
+                    $this->request->getHeaderLine($this->_config['apiKeyHeaderName'])
+                );
+            } catch (\BadMethodCallException $e) {
+                throw new ForbiddenException(__d('bedita', 'Missing API key'));
+            } catch (RecordNotFoundException $e) {
+                throw new ForbiddenException(__d('bedita', 'Invalid API key'));
+            }
 
             $application = CurrentApplication::getApplication();
         }
