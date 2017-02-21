@@ -19,8 +19,8 @@ use BEdita\Core\Model\Entity\EndpointPermission;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
-use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -49,7 +49,7 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * Request object instance.
      *
-     * @var \Cake\Network\Request
+     * @var \Cake\Http\ServerRequest
      */
     protected $request;
 
@@ -68,7 +68,7 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * {@inheritDoc}
      */
-    public function authorize($user, Request $request)
+    public function authorize($user, ServerRequest $request)
     {
         $this->request = $request;
 
@@ -112,7 +112,7 @@ class EndpointAuthorize extends BaseAuthorize
         $application = CurrentApplication::getApplication();
         if ($application === null) {
             CurrentApplication::setFromApiKey(
-                $this->request->header($this->_config['apiKeyHeaderName'])
+                $this->request->getHeaderLine($this->_config['apiKeyHeaderName'])
             );
 
             $application = CurrentApplication::getApplication();
