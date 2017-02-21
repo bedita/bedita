@@ -13,7 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\Model\Behavior\UniqueNameBehavior;
+use ArrayObject;
+use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -56,22 +57,16 @@ class UniqueNameBehaviorTest extends TestCase
     {
         return [
             'simple' => [
-                [
-                    'Great Lion',
-                    'user-great-lion'
-                ]
+                'Great Lion',
+                'user-great-lion',
             ],
             'accents' => [
-                [
-                    'Oèù yahìì',
-                    'user-oeu-yahii'
-                ]
+                'Oèù yahìì',
+                'user-oeu-yahii',
             ],
             'others' => [
-                [
-                    '¬5654@-BIG STRING',
-                    'user-5654-big-string'
-                ]
+                '¬5654@-BIG STRING',
+                'user-5654-big-string',
             ],
         ];
     }
@@ -79,22 +74,23 @@ class UniqueNameBehaviorTest extends TestCase
     /**
      * testUnique method
      *
+     * @param string $username Username.
+     * @param string $uname Expected unique name.
      * @return void
      *
      * @dataProvider uniqueUserProvider
      */
-    public function testUniqueUser($input)
+    public function testUniqueUser($username, $uname)
     {
-        $this->Users = TableRegistry::get('Users');
-        $user = $this->Users->newEntity();
+        $Users = TableRegistry::get('Users');
+        $user = $Users->newEntity();
 
-        $data['username'] = $input[0];
-        $this->Users->patchEntity($user, $data);
-        $this->Users->uniqueName($user);
+        $Users->patchEntity($user, compact('username'));
+        $Users->uniqueName($user);
         $user->type = 'users';
-        $this->Users->save($user);
+        $Users->save($user);
 
-        $this->assertEquals($user['uname'], $input[1]);
+        $this->assertEquals($user['uname'], $uname);
     }
 
     /**
@@ -106,45 +102,42 @@ class UniqueNameBehaviorTest extends TestCase
     {
         return [
             'defaultConfig' => [
+                'Dummy Person',
+                'John Doe',
                 [
-                    'Dummy Person',
-                    'John Doe',
-                    [
-                    ]
-                ]
+                ],
             ],
             'customConfig' => [
+                'Another Dummy Person',
+                'Julia Doe',
                 [
-                    'Another Dummy Person',
-                    'Julia Doe',
-                    [
-                        'sourceField' => 'name',
-                        'prefix' => 'u_',
-                        'replacement' => ':',
-                        'separator' => '|',
-                        'hashlength' => 3
-                    ]
-                ]
-            ]
+                    'sourceField' => 'name',
+                    'prefix' => 'u_',
+                    'replacement' => ':',
+                    'separator' => '|',
+                    'hashlength' => 3
+                ],
+            ],
         ];
     }
 
     /**
      * testGenerate method
      *
+     * @param string $username Username.
+     * @param string $name Full name.
+     * @param array $config Configuration.
      * @return void
      *
      * @dataProvider generateUniqueUserProvider
+     * @covers ::generateUniqueName()
      */
-    public function testGenerateUniqueName($input)
+    public function testGenerateUniqueName($username, $name, $config)
     {
-        $this->Users = TableRegistry::get('Users');
-        $user = $this->Users->newEntity();
-        $data['username'] = $input[0];
-        $data['name'] = $input[1];
-        $this->Users->patchEntity($user, $data);
-        $config = $input[2];
-        $behavior = $this->Users->behaviors()->get('UniqueName');
+        $Users = TableRegistry::get('Users');
+        $user = $Users->newEntity();
+        $Users->patchEntity($user, compact('username', 'name'));
+        $behavior = $Users->behaviors()->get('UniqueName');
         $uname1 = $behavior->generateUniqueName($user, $config);
         $uname2 = $behavior->generateUniqueName($user, $config, true);
 
@@ -160,56 +153,148 @@ class UniqueNameBehaviorTest extends TestCase
     {
         return [
             'uname exists, id null' => [
-                [
-                    'first-user',
-                    null,
-                    true
-                ]
+                'first-user',
+                null,
+                true,
             ],
             'uname exists, no collision' => [
-                [
-                    'first-user',
-                    1,
-                    false
-                ]
+                'first-user',
+                1,
+                false,
             ],
             'uname exists, collision' => [
-                [
-                    'first-user',
-                    2,
-                    true
-                ]
+                'first-user',
+                2,
+                true,
             ],
             'uname does not exist, id null' => [
-                [
-                    'aaaaa-bbbbb-ccccc',
-                    null,
-                    false
-                ]
+                'aaaaa-bbbbb-ccccc',
+                null,
+                false,
             ],
             'uname does not exist, id not null' => [
-                [
-                    'aaaaa-bbbbb-ccccc',
-                    1,
-                    false
-                ]
-            ]
+                'aaaaa-bbbbb-ccccc',
+                1,
+                false,
+            ],
         ];
     }
 
     /**
      * testNameExists method
      *
+     * @param string $uname Unique name to check.
+     * @param int|null $id ID to exclude.
+     * @param bool $expected Expected result.
      * @return void
-     *
      * @dataProvider uniqueNameExistsProvider
      */
-    public function testUniqueNameExists($input)
+    public function testUniqueNameExists($uname, $id, $expected)
     {
-        $this->Users = TableRegistry::get('Users');
-        $behavior = $this->Users->behaviors()->get('UniqueName');
-        $result = $behavior->uniqueNameExists($input[0], $input[1]);
+        $Users = TableRegistry::get('Users');
+        $behavior = $Users->behaviors()->get('UniqueName');
+        $result = $behavior->uniqueNameExists($uname, $id);
 
-        $this->assertEquals($result, $input[2]);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testUniqueNameFromValue` test case.
+     *
+     * @return array
+     */
+    public function uniqueFromValueProvider()
+    {
+        return [
+            'simpleNoConf' => [
+               'Dummy expressions: olè, ça va',
+               'dummy-expressions-ole-ca-va',
+               [],
+               false,
+            ],
+            'customConfig' => [
+                'ROMANES EUNT DOMUS!',
+                'pre_romanes_eunt_domus',
+                [
+                    'prefix' => 'pre_',
+                    'replacement' => '_',
+                ],
+                false
+            ],
+            'regenerate' => [
+                'Romani ite domum!',
+                'romani-ite-domum_',
+                [
+                    'separator' => '_',
+                    'hashlength' => 6,
+                ],
+                true
+            ],
+        ];
+    }
+
+    /**
+     * test uniqueNameFromValue()
+     *
+     * @return void
+     *
+     * @dataProvider uniqueFromValueProvider
+     * @covers ::uniqueNameFromValue()
+     */
+    public function testUniqueNameFromValue($value, $expected, $cfg, $regenerate)
+    {
+        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
+        $result = $behavior->uniqueNameFromValue($value, $cfg, $regenerate);
+
+        if ($regenerate) {
+            $cfg = array_merge($behavior->config(), $cfg);
+            $result = substr($result, 0, strlen($result) - $cfg['hashlength']);
+        }
+        $this->assertEquals($result, $expected);
+    }
+
+
+    /**
+     * test uniqueNameFromValue()
+     *
+     * @return void
+     *
+     * @dataProvider uniqueFromValueProvider
+     * @covers ::beforeMarshal()
+     */
+    public function testBeforeMarshal()
+    {
+        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
+        $data = [
+            'title' => '',
+            'type' => 'documents'
+        ];
+        $dataObj = new ArrayObject($data);
+        $behavior->beforeMarshal(new Event('Dummy'), $dataObj, new ArrayObject());
+        $this->assertEquals('documents', $dataObj['uname']);
+    }
+
+    /**
+     * test uniqueName() conflicts / missing
+     *
+     * @return void
+     *
+     * @covers ::uniqueName()
+     */
+    public function testUniqueNameMissing()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $behavior = $Documents->behaviors()->get('UniqueName');
+
+        $data = ['title' => 'Some data', 'uname' => 'some-data'];
+        $document = $Documents->newEntity($data);
+
+        $document->set('uname', '');
+        $behavior->uniqueName($document);
+        $this->assertEquals($document->get('uname'), 'some-data');
+
+        $document->set('uname', 'first-user');
+        $behavior->uniqueName($document);
+        $this->assertNotEquals($document->get('uname'), 'first-user');
     }
 }

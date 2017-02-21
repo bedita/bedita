@@ -73,8 +73,8 @@ class ListAssociated
      */
     protected function primaryKeyConditions($primaryKey)
     {
-        $source = $this->Association->source();
-        $primaryKeyFields = array_map([$source, 'aliasField'], (array)$source->primaryKey());
+        $source = $this->Association->getSource();
+        $primaryKeyFields = array_map([$source, 'aliasField'], (array)$source->getPrimaryKey());
 
         $primaryKey = (array)$primaryKey;
         if (count($primaryKeyFields) !== count($primaryKey)) {
@@ -85,7 +85,7 @@ class ListAssociated
 
             throw new InvalidPrimaryKeyException(__(
                 'Record not found in table "{0}" with primary key [{1}]',
-                $source->table(),
+                $source->getTable(),
                 implode($primaryKey, ', ')
             ));
         }
@@ -103,23 +103,23 @@ class ListAssociated
      */
     protected function buildQuery($primaryKey)
     {
-        $source = $this->Association->source();
+        $source = $this->Association->getSource();
         $conditions = $this->primaryKeyConditions($primaryKey);
 
         $existing = $source->find()
             ->where($conditions)
             ->count();
         if (!$existing) {
-            throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->table()));
+            throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
 
-        $primaryKeyFields = array_map([$this->Association, 'aliasField'], (array)$this->Association->primaryKey());
+        $primaryKeyFields = array_map([$this->Association, 'aliasField'], (array)$this->Association->getPrimaryKey());
 
         $query = $source->find()
-            ->innerJoinWith($this->Association->name())
+            ->innerJoinWith($this->Association->getName())
             ->select($primaryKeyFields)
             ->where($conditions)
-            ->autoFields(false)
+            ->enableAutoFields(false)
             ->formatResults(function (ResultSetInterface $results) {
                 return $results->map(function ($row) {
                     if (!isset($row['_matchingData']) || !is_array($row['_matchingData'])) {

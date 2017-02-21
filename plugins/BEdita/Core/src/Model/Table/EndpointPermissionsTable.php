@@ -40,8 +40,8 @@ class EndpointPermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('endpoint_permissions');
-        $this->displayField('id');
+        $this->setTable('endpoint_permissions');
+        $this->setDisplayField('id');
 
         $this->belongsTo('Endpoints', [
             'joinType' => 'INNER',

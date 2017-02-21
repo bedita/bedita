@@ -205,7 +205,7 @@ class HomeControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/home');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

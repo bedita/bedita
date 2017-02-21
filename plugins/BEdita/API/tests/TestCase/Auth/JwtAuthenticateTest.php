@@ -18,7 +18,7 @@ use Cake\Auth\WeakPasswordHasher;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Network\Request;
+use Cake\Http\ServerRequest;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -54,7 +54,7 @@ class JwtAuthenticateTest extends TestCase
             'header' => [
                 'myToken',
                 [],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer myToken'],
                 ]),
             ],
@@ -63,7 +63,7 @@ class JwtAuthenticateTest extends TestCase
                 [
                     'header' => 'X-Api-Jwt',
                 ],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_X_API_JWT' => 'Bearer myToken'],
                 ]),
             ],
@@ -72,21 +72,21 @@ class JwtAuthenticateTest extends TestCase
                 [
                     'headerPrefix' => 'MyBearer',
                 ],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'MyBearer myToken'],
                 ]),
             ],
             'headerWrongPrefix' => [
                 null,
                 [],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'WrongBearer myToken'],
                 ]),
             ],
             'query' => [
                 'myToken',
                 [],
-                new Request([
+                new ServerRequest([
                     'query' => ['token' => 'myToken'],
                 ]),
             ],
@@ -95,7 +95,7 @@ class JwtAuthenticateTest extends TestCase
                 [
                     'queryParam' => 'token_jwt',
                 ],
-                new Request([
+                new ServerRequest([
                     'query' => ['token_jwt' => 'myToken'],
                 ]),
             ],
@@ -104,14 +104,14 @@ class JwtAuthenticateTest extends TestCase
                 [
                     'queryParam' => null,
                 ],
-                new Request([
+                new ServerRequest([
                     'query' => ['token' => 'myToken'],
                 ]),
             ],
             'both' => [
                 'myToken',
                 [],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer myToken'],
                     'query' => ['token' => 'myOtherToken'],
                 ]),
@@ -119,7 +119,7 @@ class JwtAuthenticateTest extends TestCase
             'missing' => [
                 null,
                 [],
-                new Request(),
+                new ServerRequest(),
             ],
         ];
     }
@@ -129,13 +129,13 @@ class JwtAuthenticateTest extends TestCase
      *
      * @param string|null $expected Expected result.
      * @param array $config Configuration.
-     * @param \Cake\Network\Request $request Request.
+     * @param \Cake\Http\ServerRequest $request Request.
      * @return void
      *
      * @dataProvider getTokenProvider
      * @covers ::getToken()
      */
-    public function testGetToken($expected, array $config, Request $request)
+    public function testGetToken($expected, array $config, ServerRequest $request)
     {
         $auth = new JwtAuthenticate(new ComponentRegistry(), $config);
 
@@ -162,7 +162,7 @@ class JwtAuthenticateTest extends TestCase
             'default' => [
                 $payload,
                 [],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $token],
                 ]),
             ],
@@ -180,7 +180,7 @@ class JwtAuthenticateTest extends TestCase
                     'userModel' => 'BEdita/API.Users',
                     'queryDatasource' => true,
                 ],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $renewToken],
                 ]),
             ],
@@ -190,19 +190,19 @@ class JwtAuthenticateTest extends TestCase
                     'userModel' => 'BEdita/API.Users',
                     'queryDatasource' => true,
                 ],
-                new Request([
+                new ServerRequest([
                     'environment' => ['HTTP_AUTHORIZATION' => 'Bearer ' . $token],
                 ]),
             ],
             'missingToken' => [
                 false,
                 [],
-                new Request(),
+                new ServerRequest(),
             ],
             'invalidToken' => [
                 false,
                 [],
-                new Request([
+                new ServerRequest([
                     'params' => [
                         'plugin' => 'BEdita/API',
                         'controller' => 'Login',
@@ -222,7 +222,7 @@ class JwtAuthenticateTest extends TestCase
      *
      * @param array|false $expected Expected result.
      * @param array $config Configuration.
-     * @param \Cake\Network\Request $request Request.
+     * @param \Cake\Http\ServerRequest $request Request.
      * @return void
      *
      * @dataProvider getUserProvider
@@ -230,7 +230,7 @@ class JwtAuthenticateTest extends TestCase
      * @covers ::getPayload()
      * @covers ::decode()
      */
-    public function testGetUser($expected, array $config, Request $request)
+    public function testGetUser($expected, array $config, ServerRequest $request)
     {
         $debug = Configure::read('debug');
         Configure::write('debug', false);

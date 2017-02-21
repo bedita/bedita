@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -239,7 +238,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/properties');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -287,7 +286,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/properties');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -343,7 +342,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/properties/1');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -379,7 +378,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/properties/999999');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

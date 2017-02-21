@@ -34,9 +34,9 @@ class ProfilesTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('profiles');
-        $this->primaryKey('id');
-        $this->displayField('name');
+        $this->setTable('profiles');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('name');
 
         $this->extensionOf('Objects', [
             'className' => 'BEdita/Core.Objects'

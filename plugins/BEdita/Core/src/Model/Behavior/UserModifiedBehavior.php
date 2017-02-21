@@ -11,7 +11,7 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\CORE\Model\Behavior;
+namespace BEdita\Core\Model\Behavior;
 
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;

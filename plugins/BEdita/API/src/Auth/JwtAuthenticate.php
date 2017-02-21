@@ -15,8 +15,8 @@ namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
 use Cake\Core\Configure;
+use Cake\Http\ServerRequest;
 use Cake\Network\Exception\UnauthorizedException;
-use Cake\Network\Request;
 use Cake\Network\Response;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
@@ -110,11 +110,11 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Get user record based on info available in JWT.
      *
-     * @param \Cake\Network\Request $request The request object.
+     * @param \Cake\Http\ServerRequest $request The request object.
      * @param \Cake\Network\Response $response Response object.
      * @return array|false User record array or false on failure.
      */
-    public function authenticate(Request $request, Response $response)
+    public function authenticate(ServerRequest $request, Response $response)
     {
         return $this->getUser($request);
     }
@@ -122,10 +122,10 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Get user record based on info available in JWT.
      *
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Cake\Http\ServerRequest $request Request object.
      * @return array|false User record array, `false` on failure.
      */
-    public function getUser(Request $request)
+    public function getUser(ServerRequest $request)
     {
         $payload = $this->getPayload($request);
 
@@ -145,11 +145,11 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Get payload data.
      *
-     * @param \Cake\Network\Request $request Request instance or null
+     * @param \Cake\Http\ServerRequest $request Request instance or null
      * @return object|false Payload object on success, `false` on failure.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
-    public function getPayload(Request $request)
+    public function getPayload(ServerRequest $request)
     {
         $token = $this->getToken($request);
         if ($token) {
@@ -162,14 +162,14 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Get token from header or query string.
      *
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Cake\Http\ServerRequest $request Request object.
      * @return string|null Token string if found else null.
      */
-    public function getToken(Request $request)
+    public function getToken(ServerRequest $request)
     {
         $config = $this->_config;
 
-        $header = trim($request->header($config['header']));
+        $header = trim($request->getHeaderLine($config['header']));
         $headerPrefix = strtolower(trim($config['headerPrefix'])) . ' ';
         $headerPrefixLength = strlen($headerPrefix);
         if ($header && strtolower(substr($header, 0, $headerPrefixLength)) == $headerPrefix) {
@@ -177,7 +177,7 @@ class JwtAuthenticate extends BaseAuthenticate
         }
 
         if (!empty($this->_config['queryParam'])) {
-            return $this->token = $request->query($this->_config['queryParam']);
+            return $this->token = $request->getQuery($this->_config['queryParam']);
         }
 
         return null;
@@ -187,11 +187,11 @@ class JwtAuthenticate extends BaseAuthenticate
      * Decode JWT token.
      *
      * @param string $token JWT token to decode.
-     * @param \Cake\Network\Request $request Request object.
+     * @param \Cake\Http\ServerRequest $request Request object.
      * @return array|false The token's payload as a PHP object, `false` on failure.
      * @throws \Exception Throws an exception if the token could not be decoded and debug is active.
      */
-    protected function decode($token, Request $request)
+    protected function decode($token, ServerRequest $request)
     {
         try {
             $payload = JWT::decode($token, Security::salt(), $this->_config['allowedAlgorithms']);
@@ -218,14 +218,14 @@ class JwtAuthenticate extends BaseAuthenticate
     /**
      * Handles an unauthenticated access attempt.
      *
-     * @param \Cake\Network\Request $request A request object.
+     * @param \Cake\Http\ServerRequest $request A request object.
      * @param \Cake\Network\Response $response A response object.
      * @return void
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception.
      */
-    public function unauthenticated(Request $request, Response $response)
+    public function unauthenticated(ServerRequest $request, Response $response)
     {
-        $message = $this->_registry->getController()->Auth->config('authError');
+        $message = $this->_registry->getController()->Auth->getConfig('authError');
         if ($this->error) {
             $message = $this->error->getMessage();
         }

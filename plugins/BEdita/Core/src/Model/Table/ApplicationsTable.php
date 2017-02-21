@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Table;
 
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Security;
@@ -40,7 +39,7 @@ class ApplicationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->displayField('name');
+        $this->setDisplayField('name');
         $this->addBehavior('Timestamp');
         $this->hasMany('EndpointPermissions');
     }

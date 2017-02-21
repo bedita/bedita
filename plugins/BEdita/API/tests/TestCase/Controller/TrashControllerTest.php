@@ -12,7 +12,6 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
@@ -36,6 +35,13 @@ class TrashControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.objects',
     ];
+
+    /**
+     * Objects table instance.
+     *
+     * @var \BEdita\Core\Model\Table\ObjectsTable
+     */
+    protected $Objects;
 
     /**
      * {@inheritDoc}
@@ -139,7 +145,7 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/trash');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -187,7 +193,7 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/trash');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -242,7 +248,7 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/trash/6');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -324,7 +330,7 @@ class TrashControllerTest extends IntegrationTestCase
         $this->assertContentType('application/vnd.api+json');
         $notFound = false;
         try {
-            $trash = $this->Objects->get(7);
+            $this->Objects->get(7);
         } catch (RecordNotFoundException $e) {
             $notFound = true;
         }
@@ -373,7 +379,7 @@ class TrashControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/trash/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

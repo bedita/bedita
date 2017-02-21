@@ -14,7 +14,6 @@
 namespace BEdita\Core\ORM\Inheritance;
 
 use BEdita\Core\ORM\Association\ExtensionOf;
-use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Table as CakeTable;
@@ -39,7 +38,7 @@ class Table extends CakeTable
      */
     public function query()
     {
-        return new Query($this->connection(), $this);
+        return new Query($this->getConnection(), $this);
     }
 
     /**
@@ -75,7 +74,7 @@ class Table extends CakeTable
      * * prepare format result method
      *
      * @param \Cake\Event\Event $event The event dispatched
-     * @param \Cake\ORM\Query $query The query object
+     * @param \BEdita\Core\ORM\Inheritance\Query $query The query object
      * @param \ArrayObject $options Options
      * @param bool $primary Indicates whether or not this is the root query or an associated query
      * @return void
@@ -105,7 +104,7 @@ class Table extends CakeTable
             return;
         }
 
-        $property = $this->association($inheritedTable->alias())->property();
+        $property = $this->association($inheritedTable->alias())->getProperty();
 
         $entity->dirty($property, true);
     }
@@ -148,19 +147,19 @@ class Table extends CakeTable
         if (!empty($alreadyExists)) {
             throw new \RuntimeException(sprintf(
                 '"%s" has already an ExtensionOf association with %s',
-                $this->alias(),
-                $alreadyExists[0]->target()->alias()
+                $this->getAlias(),
+                $alreadyExists[0]->getTarget()->getAlias()
             ));
         }
 
         $options = array_merge($options, [
             'sourceTable' => $this,
-            'foreignKey' => $this->primaryKey(),
+            'foreignKey' => $this->getPrimaryKey(),
         ]);
         $options = array_diff_key($options, array_flip(['joinType', 'dependent']));
         $association = new ExtensionOf($associated, $options);
 
-        return $this->_associations->add($association->name(), $association);
+        return $this->_associations->add($association->getName(), $association);
     }
 
     /**
@@ -174,7 +173,7 @@ class Table extends CakeTable
     {
         $inheritedTables = $this->inheritedTables($nested);
         $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
-            return $table->alias() === $tableName;
+            return $table->getAlias() === $tableName;
         });
 
         return count($found) > 0;
@@ -197,7 +196,7 @@ class Table extends CakeTable
         }
 
         $association = array_shift($associations);
-        if (!$nested || !($association->target() instanceof \BEdita\Core\ORM\Inheritance\Table)) {
+        if (!$nested || !($association->target() instanceof Table)) {
             return [$association->target()];
         }
 

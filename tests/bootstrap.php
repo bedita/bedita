@@ -16,7 +16,7 @@ use Cake\Log\Log;
 
 if (getenv('db_dsn')) {
     ConnectionManager::drop('test');
-    ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
+    ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 }
 if (!defined('API_KEY')) {
     define('API_KEY', 'API_KEY');
@@ -24,7 +24,7 @@ if (!defined('API_KEY')) {
 
 if (getenv('DEBUG_LOG_QUERIES')) {
     ConnectionManager::get('test')->logQueries(true);
-    Log::config('queries', [
+    Log::setConfig('queries', [
         'className' => 'Console',
         'stream' => 'php://stdout',
         'scopes' => ['queriesLog'],

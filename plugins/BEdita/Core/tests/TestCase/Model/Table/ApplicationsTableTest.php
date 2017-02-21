@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -71,13 +70,13 @@ class ApplicationsTableTest extends TestCase
     public function testInitialize()
     {
         $this->Applications->initialize([]);
-        $this->assertEquals('applications', $this->Applications->table());
-        $this->assertEquals('id', $this->Applications->primaryKey());
-        $this->assertEquals('name', $this->Applications->displayField());
+        $this->assertEquals('applications', $this->Applications->getTable());
+        $this->assertEquals('id', $this->Applications->getPrimaryKey());
+        $this->assertEquals('name', $this->Applications->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Applications->behaviors()->get('Timestamp'));
         $this->assertInstanceOf('\Cake\ORM\Association\hasMany', $this->Applications->EndpointPermissions);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Applications->EndpointPermissions->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Applications->EndpointPermissions->getTarget());
     }
 
     /**

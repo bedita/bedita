@@ -76,9 +76,9 @@ class ProfilesTableTest extends TestCase
     {
         $this->Profiles->associations()->removeAll();
         $this->Profiles->initialize([]);
-        $this->assertEquals('profiles', $this->Profiles->table());
-        $this->assertEquals('id', $this->Profiles->primaryKey());
-        $this->assertEquals('name', $this->Profiles->displayField());
+        $this->assertEquals('profiles', $this->Profiles->getTable());
+        $this->assertEquals('id', $this->Profiles->getPrimaryKey());
+        $this->assertEquals('name', $this->Profiles->getDisplayField());
 
         $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
     }
@@ -212,7 +212,7 @@ class ProfilesTableTest extends TestCase
 
         foreach ($inheritanceTables as $table) {
             try {
-                $entity = $table->get($id);
+                $table->get($id);
                 $this->fail(ucfirst($table) . ' record not deleted');
             } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
                 continue;
