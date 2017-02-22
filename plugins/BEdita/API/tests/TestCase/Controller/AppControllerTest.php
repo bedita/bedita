@@ -13,6 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
@@ -31,8 +32,22 @@ class AppControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoint_permissions',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * {@inheritDoc}
@@ -117,7 +132,9 @@ class AppControllerTest extends IntegrationTestCase
         Configure::write($config);
 
         $this->configRequest([
-            'headers' => ['Accept' => $accept],
+            'headers' => [
+                'Accept' => $accept,
+            ],
         ]);
 
         $this->get('/roles');
@@ -195,10 +212,12 @@ class AppControllerTest extends IntegrationTestCase
             $this->injectError($name, $error);
 
             $this->configRequest([
-                'headers' => ['Accept' => $accept],
+                'headers' => [
+                    'Accept' => $accept,
+                ],
             ]);
             $this->get('/roles');
-            $this->assertEquals($expectedCode, $this->_response->getStatusCode(), 'Error with event ' . $name);
+            static::assertEquals($expectedCode, $this->_response->getStatusCode(), 'Error with event ' . $name);
             $this->assertContentType($expectedContentType, 'Error with event ' . $name);
         }
     }

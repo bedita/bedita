@@ -21,6 +21,9 @@ require_once 'vendor/autoload.php';
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
+if (!defined('API_KEY')) {
+    define('API_KEY', 'API_KEY');
+}
 Configure::write('debug', true);
 Configure::write('App', [
     'namespace' => 'App',

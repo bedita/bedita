@@ -16,22 +16,12 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Utility\LoggedUser Test Case
+ * {@see \BEdita\Core\Utility\LoggedUser} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Utility\LoggedUser
+ * @covers \BEdita\Core\Utility\LoggedUser
  */
 class LoggedUserTest extends TestCase
 {
-
-    /**
-     * Test singleton
-     */
-    public function testFail()
-    {
-        $reflection = new \ReflectionClass('\BEdita\Core\Utility\LoggedUser');
-        $this->assertFalse($reflection->isCloneable());
-        $this->assertFalse($reflection->getConstructor()->isPublic());
-    }
 
     /**
      * Test user data
@@ -42,7 +32,7 @@ class LoggedUserTest extends TestCase
     {
         $userData = LoggedUser::getUser();
 
-        LoggedUser::setUser(false);
+        LoggedUser::setUser([]);
         $this->assertEquals($userData['id'], LoggedUser::id());
 
         LoggedUser::setUser(['id' => 10, 'somefield' => 'somevalue']);

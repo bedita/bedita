@@ -13,8 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\QueryExpression;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -77,5 +80,86 @@ class EndpointPermissionsTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
+    }
+
+    /**
+     * Find permissions by endpoint.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByEndpoint(Query $query, array $options)
+    {
+        $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
+        if (empty($ids)) {
+            return $query->where([
+                $this->aliasField('endpoint_id') . ' IS' => null,
+            ]);
+        }
+
+        return $query->where(function (QueryExpression $expr) use ($ids) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids) {
+                $field = $this->aliasField('endpoint_id');
+
+                return $expr
+                    ->in($field, $ids)
+                    ->isNull($field);
+            });
+        });
+    }
+
+    /**
+     * Find permissions by application.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByApplication(Query $query, array $options)
+    {
+        $id = Hash::get($options, 'applicationId');
+        if (empty($id)) {
+            return $query->where([
+                $this->aliasField('application_id') . ' IS' => null,
+            ]);
+        }
+
+        return $query->where(function (QueryExpression $expr) use ($id) {
+            return $expr->or_(function (QueryExpression $expr) use ($id) {
+                $field = $this->aliasField('application_id');
+
+                return $expr
+                    ->eq($field, $id)
+                    ->isNull($field);
+            });
+        });
+    }
+
+    /**
+     * Find permissions by role.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByRole(Query $query, array $options)
+    {
+        $ids = array_filter((array)Hash::get($options, 'roleIds', []));
+        if (empty($ids)) {
+            return $query->where([
+                $this->aliasField('role_id') . ' IS' => null,
+            ]);
+        }
+
+        return $query->where(function (QueryExpression $expr) use ($ids) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids) {
+                $field = $this->aliasField('role_id');
+
+                return $expr
+                    ->in($field, $ids)
+                    ->isNull($field);
+            });
+        });
     }
 }

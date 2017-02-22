@@ -193,4 +193,132 @@ class EndpointPermissionsTableTest extends TestCase
         $success = $this->EndpointPermissions->save($endpointPermission);
         $this->assertEquals($expected, (bool)$success, print_r($endpointPermission->errors(), true));
     }
+
+    /**
+     * Data provider for `testFindByEndpoint` test case.
+     *
+     * @return array
+     */
+    public function findByEndpointProvider()
+    {
+        return [
+            'auth' => [
+                3,
+                1,
+            ],
+            'home' => [
+                4,
+                2,
+            ],
+            'null' => [
+                2,
+                '',
+            ],
+            'auth,home' => [
+                5,
+                [1, 2],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by endpoint ID.
+     *
+     * @param int $expected Expected count.
+     * @param array|int $endpointIds Endpoint id(s).
+     * @return void
+     *
+     * @covers ::findByEndpoint()
+     * @dataProvider findByEndpointProvider()
+     */
+    public function testFindByEndpoint($expected, $endpointIds)
+    {
+        $count = $this->EndpointPermissions->find('byEndpoint', compact('endpointIds'))->count();
+
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindByApplication` test case.
+     *
+     * @return array
+     */
+    public function findByApplicationProvider()
+    {
+        return [
+            'application one' => [
+                2,
+                1,
+            ],
+            'application two' => [
+                4,
+                2,
+            ],
+            'null' => [
+                1,
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by application ID.
+     *
+     * @param int $expected Expected count.
+     * @param int $applicationId Application id.
+     * @return void
+     *
+     * @covers ::findByApplication()
+     * @dataProvider findByApplicationProvider()
+     */
+    public function testFindByApplication($expected, $applicationId)
+    {
+        $count = $this->EndpointPermissions->find('byApplication', compact('applicationId'))->count();
+
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindByRole` test case.
+     *
+     * @return array
+     */
+    public function findByRoleProvider()
+    {
+        return [
+            'first' => [
+                4,
+                1,
+            ],
+            'second' => [
+                4,
+                2,
+            ],
+            'null' => [
+                3,
+                '',
+            ],
+            'first,second' => [
+                5,
+                [1, 2],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by role ID.
+     *
+     * @param int $expected Expected count.
+     * @param array|int $roleIds Role id(s).
+     * @return void
+     *
+     * @covers ::findByRole()
+     * @dataProvider findByRoleProvider()
+     */
+    public function testFindByRole($expected, $roleIds)
+    {
+        $count = $this->EndpointPermissions->find('byRole', compact('roleIds'))->count();
+
+        static::assertSame($expected, $count);
+    }
 }

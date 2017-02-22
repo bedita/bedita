@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -27,10 +28,24 @@ class PropertiesControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoint_permissions',
+        'plugin.BEdita/Core.property_types',
         'plugin.BEdita/Core.properties'
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test index method.

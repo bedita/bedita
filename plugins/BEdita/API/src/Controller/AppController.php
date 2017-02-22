@@ -69,16 +69,13 @@ class AppController extends Controller
         }
 
         $this->loadComponent('Auth', [
-            'authenticate' => ['BEdita/API.Jwt'],
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint'],
             'loginAction' => ['_name' => 'api:login'],
             'loginRedirect' => ['_name' => 'api:login'],
             'unauthorizedRedirect' => false,
             'storage' => 'Memory',
         ]);
-        $this->Auth->allow();
-        if ($this->name !== 'Login') {
-            LoggedUser::setUser($this->Auth->identify());
-        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
