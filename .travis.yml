@@ -54,6 +54,7 @@ before_script:
         docker pull mysql:$DB_VERSION
         docker run -d -e MYSQL_ROOT_PASSWORD=root -e MYSQL_USER=bedita -e MYSQL_PASSWORD=bedita -e MYSQL_DATABASE=bedita_test -p 127.0.0.1:33060:3306 mysql:$DB_VERSION
         docker ps -a
+        sleep 5
         ./wait-for-it.sh 127.0.0.1:33060 -s -- echo 'MySQL is up'
       else
         mysql -e 'CREATE DATABASE bedita_test;'

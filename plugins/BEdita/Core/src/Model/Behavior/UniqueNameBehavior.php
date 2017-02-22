@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
@@ -54,14 +55,12 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueName(EntityInterface $entity)
     {
-        $config = $this->getConfig();
         $uname = $entity->get('uname');
         if (empty($uname)) {
-            $uname = $this->generateUniqueName($entity, $config, false);
+            $uname = $this->generateUniqueName($entity);
         }
-        $id = !(empty($entity->get('id'))) ? $entity->get('id') : null;
-        while ($this->uniqueNameExists($uname, $id)) {
-            $uname = $this->generateUniqueName($entity, $config, true);
+        while ($this->uniqueNameExists($uname, $entity->get('id'))) {
+            $uname = $this->generateUniqueName($entity, [], true);
         }
 
         $entity->set('uname', $uname);
@@ -76,10 +75,27 @@ class UniqueNameBehavior extends Behavior
      * @param bool $regenerate if true it adds hash string to uname
      * @return string uname
      */
-    public function generateUniqueName(EntityInterface $entity, array $cfg, $regenerate = false)
+    public function generateUniqueName(EntityInterface $entity, array $cfg = [], $regenerate = false)
+    {
+        $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->getConfig('sourceField');
+        $fieldValue = $entity->get($field);
+
+        return $this->uniqueNameFromValue($fieldValue, $cfg, $regenerate);
+    }
+
+    /**
+     * Generate unique name string from $config parameters.
+     * If $regenerate parameter is true, random hash is added to uname string.
+     *
+     * @param string $value String to use in unique name creation
+     * @param array $cfg parameters to create unique name
+     * @param bool $regenerate if true it adds hash string to uname
+     * @return string uname
+     */
+    public function uniqueNameFromValue($value, array $cfg = [], $regenerate = false)
     {
         $config = array_merge($this->getConfig(), $cfg);
-        $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+        $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
         if ($regenerate) {
             $hash = Text::uuid();
             $hash = str_replace('-', '', $hash);
@@ -120,5 +136,27 @@ class UniqueNameBehavior extends Behavior
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $this->uniqueName($entity);
+    }
+
+    /**
+     * Setup initial unique name when a new Entity is being created with empty `uname` field
+     *
+     * @param \Cake\Event\Event $event The event dispatched
+     * @param ArrayObject $data The input data to save
+     * @param ArrayObject $options Operation options (unused)
+     * @return void
+     */
+    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
+    {
+        if (empty($data['uname']) && empty($data['id'])) {
+            $field = $this->getConfig('sourceField');
+            $fieldValue = '';
+            if (!empty($data[$field])) {
+                $fieldValue = $data[$field];
+            } elseif (!empty($data['type'])) {
+                $fieldValue = $data['type'];
+            }
+            $data['uname'] = $this->uniqueNameFromValue($fieldValue);
+        }
     }
 }

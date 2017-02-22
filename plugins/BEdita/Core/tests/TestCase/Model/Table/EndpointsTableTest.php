@@ -97,7 +97,7 @@ class EndpointsTableTest extends TestCase
             'notUniqueName' => [
                 false,
                 [
-                    'name' => 'roles',
+                    'name' => 'home',
                 ],
             ],
             'missingName' => [
@@ -148,7 +148,7 @@ class EndpointsTableTest extends TestCase
             'notUnique' => [
                 false,
                 [
-                    'name' => 'roles'
+                    'name' => 'home'
                 ]
             ]
         ];

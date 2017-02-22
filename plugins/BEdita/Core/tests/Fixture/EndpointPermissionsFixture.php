@@ -22,6 +22,7 @@ use BEdita\Core\TestSuite\Fixture\TestFixture;
  */
 class EndpointPermissionsFixture extends TestFixture
 {
+
     /**
      * Records
      *
@@ -29,10 +30,34 @@ class EndpointPermissionsFixture extends TestFixture
      */
     public $records = [
         [
-            'endpoint_id' => 1,
+            'endpoint_id' => null,
+            'application_id' => null,
+            'role_id' => null,
+            'permission' => 0,
+        ],
+        [
+            'endpoint_id' => null,
             'application_id' => 1,
+            'role_id' => null,
+            'permission' => 0b1111,
+        ],
+        [
+            'endpoint_id' => 2,
+            'application_id' => 2,
             'role_id' => 1,
-            'permission' => 1
+            'permission' => 0b1001,
+        ],
+        [
+            'endpoint_id' => 2,
+            'application_id' => 2,
+            'role_id' => 2,
+            'permission' => 0,
+        ],
+        [
+            'endpoint_id' => 1,
+            'application_id' => 2,
+            'role_id' => null,
+            'permission' => 0b1101,
         ],
     ];
 }

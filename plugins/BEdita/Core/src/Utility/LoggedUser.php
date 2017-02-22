@@ -13,17 +13,25 @@
 
 namespace BEdita\Core\Utility;
 
+use BEdita\Core\SingletonTrait;
+use Cake\Utility\Hash;
+
 /**
- * Singleton class representing current logged user,
- * its id will be used to save objects, check permissions, update analytics
+ * Singleton class representing currently logged user.
+ *
+ * User information is retained to be used to save objects, check permissions, update analytics.
+ *
+ * @since 4.0.0
  */
 class LoggedUser
 {
-    private static $uniqueInstance = null;
+
+    use SingletonTrait;
 
     /**
-     * User data MUST contain at least user 'id' as array key
-     * valid examples:
+     * User data MUST contain at least user 'id' as array key.
+     *
+     * Valid examples:
      *   - ['id' => 1]
      *   - ['id' => 1, 'username' => 'bedita']
      *
@@ -32,66 +40,35 @@ class LoggedUser
     private $userData = [];
 
     /**
-     * Singleton constructor
-     * @codeCoverageIgnore
-     */
-    protected function __construct()
-    {
-    }
-
-    /**
-     * Singleton __clone
-     * @codeCoverageIgnore
-     * @return void
-     */
-    final private function __clone()
-    {
-    }
-
-    /**
-     * Singleton getInstance method
-     * @return CurrentUser instance
-     */
-    public static function getInstance()
-    {
-        return (self::$uniqueInstance === null) ? (self::$uniqueInstance = new self) : self::$uniqueInstance;
-    }
-
-    /**
-     * Read singleton current user data
+     * Read singleton current user data.
+     *
      * @return array
      */
     public static function getUser()
     {
-        return self::getInstance()->userData;
+        return static::getInstance()->userData;
     }
 
     /**
-     * Read from singleton current user id
-     * @return int Logged user id or NULL if no current user is set
+     * Read from singleton current user ID.
+     *
+     * @return int|null Logged user ID, or `null` if no current user is set.
      */
     public static function id()
     {
-        // TODO: remove 1 ID - temporary set to 1 to allow tests
-        $id = 1;
-        $data = self::getInstance()->userData;
-        if (!empty($data['id'])) {
-            $id = $data['id'];
-        }
-
-        return $id;
+        return Hash::get(static::getInstance()->userData, 'id');
     }
 
     /**
-     * Set singleton current user data
+     * Set singleton current user data.
      *
-     * @param array $userData User data array
+     * @param array $userData User data array.
      * @return void
      */
     public static function setUser($userData)
     {
         if (!empty($userData['id'])) {
-            self::getInstance()->userData = $userData;
+            static::getInstance()->userData = $userData;
         }
     }
 }
