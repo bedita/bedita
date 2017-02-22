@@ -17,7 +17,7 @@
 	{/literal}
 </script>
 
-{$view->element('modulesmenu',['searchDestination' => 'results'])}
+{$view->element('modulesmenu')}
 
 {include file="inc/menuleft.tpl"}
 

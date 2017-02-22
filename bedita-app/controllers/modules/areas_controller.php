@@ -47,8 +47,8 @@ class AreasController extends ModulesController {
         if (!empty($id)) {
             $this->redirect('/areas/view/' . $id);
         }
-
         $conf = Configure::getInstance();
+        $filter['exclude_branch'] = false;
         $filter['object_type_id'] = array(
             $conf->objectTypes['area']['id'],
             $conf->objectTypes['section']['id'],
@@ -56,7 +56,6 @@ class AreasController extends ModulesController {
         $filter['count_annotation'] = array('Comment', 'EditorNote');
         $this->paginatedList($id, $filter, $order, $dir, $page, $dim);
         $this->loadCategories($filter['object_type_id']);
-
         $this->set('objectTypeIds', $filter['object_type_id']);
 	}
 
