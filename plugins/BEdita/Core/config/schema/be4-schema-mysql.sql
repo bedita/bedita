@@ -330,6 +330,26 @@ CREATE TABLE profiles (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'user profiles, addressbook data' ;
 
 
+CREATE TABLE locations (
+  id INT UNSIGNED NOT NULL,
+--  coords GEOMETRY NULL              COMMENT 'location geometry coordinates, like points or polygons with geo data' ,
+  coords_system TINYTEXT NULL       COMMENT 'coordinates system used',
+  address TEXT NULL                 COMMENT 'generic address, street name and number or other format',
+  locality TINYTEXT NULL            COMMENT 'city/town/village or generic settlement',
+  postal_code CHAR(12) NULL         COMMENT 'postal code or ZIP code',
+  country_name TINYTEXT NULL        COMMENT 'country name',
+  region TINYTEXT NULL              COMMENT 'region, state or province inside a country',
+
+  PRIMARY KEY (id),
+
+  CONSTRAINT locations_id_fk FOREIGN KEY (id)
+    REFERENCES objects(id)
+      ON DELETE CASCADE
+      ON UPDATE NO ACTION
+
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT = 'locations including geo data and address details' ;
+
+
 -- ------------------
 --   USERS & AUTH
 -- ------------------
