@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -27,9 +28,23 @@ class ObjectsControllerTest extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoint_permissions',
+        'plugin.BEdita/Core.objects',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test index method.
@@ -432,7 +447,6 @@ class ObjectsControllerTest extends IntegrationTestCase
             'type' => 'documents',
             'attributes' => [
                 'title' => 'A new document',
-                'uname' => 'a-new-document',
             ],
         ];
 
@@ -448,7 +462,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         $this->assertHeader('Location', 'http://api.example.com/documents/8');
-        $this->assertTrue(TableRegistry::get('Documents')->exists(['uname' => 'a-new-document']));
+        $this->assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
     /**

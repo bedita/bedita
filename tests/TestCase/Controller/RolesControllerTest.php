@@ -12,6 +12,7 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\Core\State\CurrentApplication;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
@@ -28,12 +29,25 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.endpoints',
+        'plugin.BEdita/Core.applications',
+        'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
+    }
 
     /**
      * Test index method.
@@ -225,6 +239,7 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
         TableRegistry::get('Roles')->deleteAll([]);
 
         $this->configRequest([
