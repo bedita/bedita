@@ -98,7 +98,7 @@ class ApplicationsTable extends Table
             return;
         }
 
-        $entity->set('api_key', $this->generateApiKey());
+        $entity->set('api_key', static::generateApiKey());
     }
 
     /**
@@ -106,7 +106,7 @@ class ApplicationsTable extends Table
      *
      * @return string
      */
-    public function generateApiKey()
+    public static function generateApiKey()
     {
         return Security::hash(Text::uuid(), 'sha1');
     }
