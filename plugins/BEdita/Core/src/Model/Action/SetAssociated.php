@@ -157,11 +157,15 @@ class SetAssociated extends UpdateAssociated
      */
     protected function hasOne(EntityInterface $entity, EntityInterface $relatedEntity = null)
     {
+        $foreignKey = (array)$this->Association->getForeignKey();
+        $bindingKeyValue = $entity->extract((array)$this->Association->getBindingKey());
         $existing = $this->existing($entity);
 
         if ($existing === null && $relatedEntity === null) {
             return 0;
-        } elseif ($relatedEntity !== null) {
+        }
+
+        if ($relatedEntity !== null) {
             $primaryKey = $relatedEntity->extract((array)$this->Association->getPrimaryKey());
 
             if ($primaryKey == $existing) {
@@ -169,9 +173,24 @@ class SetAssociated extends UpdateAssociated
             }
         }
 
+        $this->Association->getTarget()->updateAll(
+            array_combine(
+                $foreignKey,
+                array_fill(0, count($foreignKey), null)
+            ),
+            array_combine(
+                $foreignKey,
+                $bindingKeyValue
+            )
+        );
+
+        if ($relatedEntity === null) {
+            return 0;
+        }
+
         $relatedEntity->set(array_combine(
-            (array)$this->Association->getForeignKey(),
-            $entity->extract((array)$this->Association->getBindingKey())
+            $foreignKey,
+            $bindingKeyValue
         ));
 
         return $this->Association->getTarget()->save($relatedEntity) ? 1 : false;
