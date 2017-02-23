@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
@@ -91,7 +92,7 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--no-force', '--no-seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
         $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
@@ -118,7 +119,7 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--force', '--no-seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
         $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
