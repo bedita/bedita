@@ -35,6 +35,7 @@ class SetAssociatedTest extends TestCase
         'plugin.BEdita/Core.fake_articles',
         'plugin.BEdita/Core.fake_tags',
         'plugin.BEdita/Core.fake_articles_tags',
+        'plugin.BEdita/Core.fake_labels',
     ];
 
     /**
@@ -44,10 +45,15 @@ class SetAssociatedTest extends TestCase
     {
         parent::setUp();
 
+        TableRegistry::get('FakeLabels')
+            ->belongsTo('FakeTags');
+
         TableRegistry::get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
-            ]);
+            ])
+            ->getSource()
+            ->hasOne('FakeLabels');
 
         TableRegistry::get('FakeArticles')
             ->belongsToMany('FakeTags', [
@@ -126,6 +132,34 @@ class SetAssociatedTest extends TestCase
                 1,
                 1,
             ],
+            'hasOne' => [
+                1,
+                'FakeTags',
+                'FakeLabels',
+                1,
+                1,
+            ],
+            'hasOneEmpty' => [
+                0,
+                'FakeTags',
+                'FakeLabels',
+                1,
+                null,
+            ],
+            'hasOneNothingToDo' => [
+                0,
+                'FakeTags',
+                'FakeLabels',
+                1,
+                2,
+            ],
+            'hasOneNothingToDoEmpty' => [
+                0,
+                'FakeTags',
+                'FakeLabels',
+                2,
+                null,
+            ],
         ];
     }
 
@@ -179,7 +213,7 @@ class SetAssociatedTest extends TestCase
                 ->count();
         }
 
-        $this->assertEquals($expected, $result);
-        $this->assertEquals(count($related), $count);
+        static::assertEquals($expected, $result);
+        static::assertEquals(count($related), $count);
     }
 }
