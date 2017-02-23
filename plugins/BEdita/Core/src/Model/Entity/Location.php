@@ -7,7 +7,7 @@ use Cake\ORM\Entity;
  * Location Entity
  *
  * @property int $id
- * @property string $coords_system
+ * @property string $coords
  * @property string $address
  * @property string $locality
  * @property string $postal_code

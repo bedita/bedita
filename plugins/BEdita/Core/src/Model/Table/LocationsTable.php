@@ -49,7 +49,7 @@ class LocationsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->allowEmpty('coords_system');
+            ->allowEmpty('coords');
 
         $validator
             ->allowEmpty('address');

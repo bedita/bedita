@@ -17,10 +17,11 @@ class LocationsTable extends AbstractMigration
                 'signed' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('coords_system', 'text', [
-                'comment' => 'coordinates system used',
+            ->addColumn('coords', 'string', [
+                'after' => 'id',
+                'comment' => 'geometry coordinates, like points or poligons',
                 'default' => null,
-                'limit' => 255,
+                'length' => null,
                 'null' => true,
             ])
             ->addColumn('address', 'text', [
@@ -29,7 +30,7 @@ class LocationsTable extends AbstractMigration
                 'limit' => null,
                 'null' => true,
             ])
-            ->addColumn('locality', 'text', [
+            ->addColumn('locality', 'string', [
                 'comment' => 'city/town/village or generic settlement',
                 'default' => null,
                 'limit' => 255,
@@ -41,13 +42,13 @@ class LocationsTable extends AbstractMigration
                 'limit' => 12,
                 'null' => true,
             ])
-            ->addColumn('country_name', 'text', [
+            ->addColumn('country_name', 'string', [
                 'comment' => 'country name',
                 'default' => null,
                 'limit' => 255,
                 'null' => true,
             ])
-            ->addColumn('region', 'text', [
+            ->addColumn('region', 'string', [
                 'comment' => 'region, state or province inside a country',
                 'default' => null,
                 'limit' => 255,
@@ -61,6 +62,7 @@ class LocationsTable extends AbstractMigration
                 'objects',
                 'id',
                 [
+                    'constraint' => 'locations_id_fk',
                     'update' => 'NO_ACTION',
                     'delete' => 'CASCADE'
                 ]

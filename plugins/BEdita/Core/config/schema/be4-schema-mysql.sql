@@ -332,8 +332,7 @@ CREATE TABLE profiles (
 
 CREATE TABLE locations (
   id INT UNSIGNED NOT NULL,
---  coords GEOMETRY NULL              COMMENT 'location geometry coordinates, like points or polygons with geo data' ,
-  coords_system TINYTEXT NULL       COMMENT 'coordinates system used',
+  coords GEOMETRY NULL              COMMENT 'location geometry coordinates, like points or polygons with geo data' ,
   address TEXT NULL                 COMMENT 'generic address, street name and number or other format',
   locality TINYTEXT NULL            COMMENT 'city/town/village or generic settlement',
   postal_code CHAR(12) NULL         COMMENT 'postal code or ZIP code',
