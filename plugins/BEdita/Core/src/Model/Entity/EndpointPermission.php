@@ -110,20 +110,26 @@ class EndpointPermission extends Entity
      */
     public static function decode($value)
     {
-        switch ($value) {
-            case static::PERM_YES:
-                return true;
-            case static::PERM_BLOCK:
-                return 'block';
-            case static::PERM_MINE:
-                return 'mine';
-            case static::PERM_NO:
-                return false;
-            default:
-                Log::alert(sprintf('Invalid permission value "%d"', $value));
-
-                return false;
+        if (is_string($value) && is_numeric($value)) {
+            $value = (int)$value;
         }
+
+        if ($value === static::PERM_YES) {
+            return true;
+        }
+        if ($value === static::PERM_BLOCK) {
+            return 'block';
+        }
+        if ($value === static::PERM_MINE) {
+            return 'mine';
+        }
+        if ($value === static::PERM_NO) {
+            return false;
+        }
+
+        Log::alert(sprintf('Invalid permission value "%d"', $value));
+
+        return false;
     }
 
     /**
@@ -135,11 +141,12 @@ class EndpointPermission extends Entity
     public static function encode($value)
     {
         if (is_string($value)) {
-            switch (strtolower(trim($value))) {
-                case 'mine':
-                    return static::PERM_MINE;
-                case 'block':
-                    return static::PERM_BLOCK;
+            $value = strtolower(trim($value));
+            if ($value === 'mine') {
+                return static::PERM_MINE;
+            }
+            if ($value === 'block') {
+                return static::PERM_BLOCK;
             }
         }
 
