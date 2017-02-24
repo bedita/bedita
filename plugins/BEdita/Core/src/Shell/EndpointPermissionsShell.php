@@ -13,6 +13,7 @@
 namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
+use Cake\ORM\TableRegistry;
 
 /**
  * Endpoint permissions shell commands:
@@ -44,12 +45,12 @@ class EndpointPermissionsShell extends ResourcesShell
             'parser' => [
                 'description' => [
                     'Create a new endpoint permission.',
-                    'First argument (required) indicates endpoint permission\'s read mask.',
-                    'Second argument (optional) indicates endpoint permission\'s write mask.'
+                    'First argument (required) indicates endpoint permission\'s read permission.',
+                    'Second argument (required) indicates endpoint permission\'s write permission.'
                 ],
                 'arguments' => [
-                    'read' => ['help' => 'Read mask', 'required' => true],
-                    'write' => ['help' => 'Write mask', 'required' => true]
+                    'read' => ['help' => 'Read permission', 'required' => true, 'choices' => ['true', 'false', 'block', 'mine']],
+                    'write' => ['help' => 'Write permission', 'required' => true, 'choices' => ['true', 'false', 'mine', 'block']], // @TODO: invert order, when arguments-with-same-choices bug will be solved (ConsoleInputArgument::usage())
                 ],
                 'options' => [
                     'application' => ['help' => 'Application name|id', 'required' => false],
@@ -65,12 +66,49 @@ class EndpointPermissionsShell extends ResourcesShell
     /**
      * create a new endpoint permission
      *
+     * @param string $read permission: can be 'true', 'false', 'block', 'mine'
+     * @param string $write permission: can be 'true', 'false', 'block', 'mine'
      * @return void
      */
-    public function create()
+    public function create($read, $write)
     {
-        $this->out('usage: bin/cake endpoint_permissions create <read> <write> [--application=<name|id>] [--endpoint=<name|id>] [--role=<name|id>]');
-        $this->out('... coming soon');
+        $entity = TableRegistry::get($this->modelClass)->newEntity();
+        $entity->read = $read;
+        $entity->write = $write;
+        if (!empty($this->params['application'])) {
+            $tmpId = $this->params['application'];
+            if (!is_numeric($tmpId)) {
+                $tmpId = TableRegistry::get('Applications')
+                    ->find()
+                    ->where(['name' => $tmpId])
+                    ->firstOrFail()
+                    ->id;
+            }
+            $entity->application_id = $tmpId;
+        }
+        if (!empty($this->params['endpoint'])) {
+            $tmpId = $this->params['endpoint'];
+            if (!is_numeric($tmpId)) {
+                $tmpId = TableRegistry::get('Endpoints')
+                    ->find()
+                    ->where(['name' => $tmpId])
+                    ->firstOrFail()
+                    ->id;
+            }
+            $entity->endpoint_id = $tmpId;
+        }
+        if (!empty($this->params['role'])) {
+            $tmpId = $this->params['role'];
+            if (!is_numeric($tmpId)) {
+                $tmpId = TableRegistry::get('Roles')
+                    ->find()
+                    ->where(['name' => $tmpId])
+                    ->firstOrFail()
+                    ->id;
+            }
+            $entity->role_id = $tmpId;
+        }
+        parent::processCreate($entity);
     }
 
     /**

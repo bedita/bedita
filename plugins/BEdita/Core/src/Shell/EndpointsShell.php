@@ -13,6 +13,7 @@
 namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
+use Cake\ORM\TableRegistry;
 
 /**
  * Endpoint shell commands:
@@ -89,12 +90,16 @@ class EndpointsShell extends ResourcesShell
     /**
      * create a new endpoint
      *
+     * @param string $name application's name
+     * @param string $description application's description
      * @return void
      */
-    public function create()
+    public function create($name, $description = null)
     {
-        $this->out('usage: bin/cake endpoints create <name> [<description>] [--object-type=<name|id>]');
-        $this->out('... coming soon');
+        $entity = TableRegistry::get($this->modelClass)->newEntity();
+        $entity->name = $name;
+        $entity->description = $description;
+        parent::processCreate($entity);
     }
 
     /**

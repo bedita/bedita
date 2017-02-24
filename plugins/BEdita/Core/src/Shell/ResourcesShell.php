@@ -13,6 +13,7 @@
 namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
+use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -44,6 +45,14 @@ abstract class ResourcesShell extends Shell
     public function getOptionParser()
     {
         $parser = parent::getOptionParser();
+        $parser->addSubcommand('create', [
+            'help' => 'create a new entity',
+            'parser' => [
+                'description' => [
+                    'Create a new entity.'
+                ]
+            ]
+        ]);
         $parser->addSubcommand('ls', [
             'help' => 'list entities',
             'parser' => [
@@ -70,6 +79,18 @@ abstract class ResourcesShell extends Shell
         ]);
 
         return $parser;
+    }
+
+    /**
+     * save data for entity
+     *
+     * @param \Cake\ORM\Entity $entity
+     * @return void
+     */
+    public function processCreate(Entity $entity)
+    {
+        TableRegistry::get($this->modelClass)->save($entity);
+        $this->out('Record ' . $entity->id . ' saved');
     }
 
     /**

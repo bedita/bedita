@@ -100,12 +100,16 @@ class ApplicationsShell extends ResourcesShell
     /**
      * create a new application
      *
+     * @param string $name application's name
+     * @param string $description application's description
      * @return void
      */
-    public function create()
+    public function create($name, $description = null)
     {
-        $this->out('usage: bin/cake applications create <name> [<description>]');
-        $this->out('... coming soon');
+        $entity = TableRegistry::get($this->modelClass)->newEntity();
+        $entity->name = $name;
+        $entity->description = $description;
+        parent::processCreate($entity);
     }
 
     /**
