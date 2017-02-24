@@ -45,23 +45,23 @@
     },
     "autoload": {
         "psr-4": {
-            "BEdita\\Manage\\": "src",
+            "BEdita\\App\\": "src",
             "BEdita\\API\\": "./plugins/BEdita/API/src",
             "BEdita\\Core\\": "./plugins/BEdita/Core/src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "BEdita\\Manage\\Test\\": "tests",
+            "BEdita\\App\\Test\\": "tests",
             "BEdita\\API\\Test\\": "./plugins/BEdita/API/tests",
             "BEdita\\Core\\Test\\": "./plugins/BEdita/Core/tests",
             "Cake\\Test\\": "./vendor/cakephp/cakephp/tests"
         }
     },
     "scripts": {
-        "post-install-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
-        "post-update-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
-        "post-create-project-cmd": "BEdita\\Manage\\Console\\Installer::postInstall",
+        "post-install-cmd": "BEdita\\App\\Console\\Installer::postInstall",
+        "post-update-cmd": "BEdita\\App\\Console\\Installer::postInstall",
+        "post-create-project-cmd": "BEdita\\App\\Console\\Installer::postInstall",
         "post-autoload-dump": "Cake\\Composer\\Installer\\PluginInstaller::postAutoloadDump",
         "check": [
             "@test",
