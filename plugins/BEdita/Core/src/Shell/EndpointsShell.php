@@ -105,23 +105,23 @@ class EndpointsShell extends ResourcesShell
     /**
      * enable an existing endpoint
      *
+     * @param mixed $id endpoint name|id
      * @return void
      */
-    public function enable()
+    public function enable($id)
     {
-        $this->out('usage: bin/cake endpoints enable <name|id>');
-        $this->out('... coming soon');
+        $this->modifyEndpoint($id, 'enabled', true);
     }
 
     /**
      * disable an existing endpoint
      *
+     * @param mixed $id endpoint name|id
      * @return void
      */
-    public function disable()
+    public function disable($id)
     {
-        $this->out('usage: bin/cake endpoints disable <name|id>');
-        $this->out('... coming soon');
+        $this->modifyEndpoint($id, 'enabled', false);
     }
 
     /**
@@ -140,5 +140,33 @@ class EndpointsShell extends ResourcesShell
                 ->id;
         }
         parent::rm($id);
+    }
+
+    /**
+     * modify an existing endpoint, by id, setting value $value for field $field
+     *
+     * @param mixed $id application name|id
+     * @param string $field entity field
+     * @param mixed $value value for field
+     * @return void
+     */
+    private function modifyEndpoint($id, $field, $value)
+    {
+        $model = TableRegistry::get($this->modelClass);
+        if (!is_numeric($id)) {
+            $id = TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail()
+                ->id;
+        }
+        $entity = $model->get($id);
+        $operation = 'modified';
+        if ($field === 'enabled') {
+            $entity->enabled = $value;
+            $operation = ($entity->enabled) ? 'enabled' : 'disabled';
+        }
+        $result = $model->save($entity);
+        $this->out('Record ' . $id . ' ' . $operation);
     }
 }
