@@ -20,6 +20,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
 /**
@@ -133,6 +134,7 @@ class ObjectTypesTable extends Table
                     ->toArray()
             );
 
+            $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table "%s"',

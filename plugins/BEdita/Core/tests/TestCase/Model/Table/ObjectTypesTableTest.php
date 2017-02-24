@@ -219,6 +219,19 @@ class ObjectTypesTableTest extends TestCase
                 ],
                 'documents',
             ],
+            'notUnderscored' => [
+                [
+                    'id' => 1,
+                    'name' => 'document',
+                    'pluralized' => 'documents',
+                    'description' => null,
+                    'alias' => 'Documents',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'table' => 'BEdita/Core.Objects',
+                ],
+                'Documents',
+            ],
             'missingId' => [
                 false,
                 99,
