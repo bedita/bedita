@@ -115,40 +115,40 @@ class ApplicationsShell extends ResourcesShell
     /**
      * enable an existing application
      *
+     * @param mixed $id application name|id
      * @return void
      */
-    public function enable()
+    public function enable($id)
     {
-        $this->out('usage: bin/cake applications enable <name|id>');
-        $this->out('... coming soon');
+        $this->modifyApplication($id, 'enabled', true);
     }
 
     /**
      * disable an existing application
      *
+     * @param mixed $id application name|id
      * @return void
      */
-    public function disable()
+    public function disable($id)
     {
-        $this->out('usage: bin/cake applications disable <name|id>');
-        $this->out('... coming soon');
+        $this->modifyApplication($id, 'enabled', false);
     }
 
     /**
      * renew API token for an existing application
      *
+     * @param mixed $id application name|id
      * @return void
      */
-    public function renewToken()
+    public function renewToken($id)
     {
-        $this->out('usage: bin/cake applications renew_token <name|id>');
-        $this->out('... coming soon');
+        $this->modifyApplication($id, 'api_key', true);
     }
 
     /**
      * remove an existing application
      *
-     * @param int $id
+     * @param mixed $id application name|id
      * @return void
      */
     public function rm($id)
@@ -161,5 +161,35 @@ class ApplicationsShell extends ResourcesShell
                 ->id;
         }
         parent::rm($id);
+    }
+
+    /**
+     * modify an existing application, by id, setting value $value for field $field
+     *
+     * @param mixed $id application name|id
+     * @param string $field entity field
+     * @param mixed $value value for field
+     * @return void
+     */
+    private function modifyApplication($id, $field, $value)
+    {
+        $model = TableRegistry::get($this->modelClass);
+        if (!is_numeric($id)) {
+            $id = TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail()
+                ->id;
+        }
+        $entity = $model->get($id);
+        $operation = 'modified';
+        if ($field === 'enabled') {
+            $entity->enabled = $value;
+            $operation = ($entity->enabled) ? 'enabled' : 'disabled';
+        } else if ($field === 'api_key' && $value) {
+            $entity->api_key = $model->generateApiKey();
+        }
+        $result = $model->save($entity);
+        $this->out('Record ' . $id . ' ' . $operation);
     }
 }
