@@ -52,6 +52,8 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.UserModified');
 
+        $this->addBehavior('BEdita/Core.Relations');
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',

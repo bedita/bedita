@@ -38,6 +38,8 @@ class ProfilesTable extends Table
         $this->setPrimaryKey('id');
         $this->setDisplayField('name');
 
+        $this->addBehavior('BEdita/Core.Relations');
+
         $this->extensionOf('Objects', [
             'className' => 'BEdita/Core.Objects'
         ]);
