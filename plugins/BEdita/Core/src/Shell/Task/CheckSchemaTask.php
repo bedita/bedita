@@ -144,7 +144,7 @@ class CheckSchemaTask extends Shell
     {
         static $reservedWords = [];
         if (empty($reservedWords)) {
-            $reservedWords = file(Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS . 'sql_reserved_words.txt');
+            $reservedWords = file(Plugin::configPath('BEdita/Core') . DS . 'schema' . DS . 'sql_reserved_words.txt');
             array_walk(
                 $reservedWords,
                 function (&$word) {
@@ -287,7 +287,7 @@ class CheckSchemaTask extends Shell
         $this->verbose('Checking schema differences:');
 
         $diffTask->connection = $connection->configName();
-        $diffTask->plugin = 'BEdita/Core';
+        $diffTask->params['plugin'] = 'BEdita/Core';
         $diffTask->setup();
 
         $diff = $diffTask->templateData();
