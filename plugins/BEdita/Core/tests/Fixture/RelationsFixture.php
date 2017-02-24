@@ -29,7 +29,6 @@ class RelationsFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
             'name' => 'test',
             'label' => 'Test relation',
             'inverse_name' => 'inverse_test',
