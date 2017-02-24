@@ -83,6 +83,13 @@ class DatabaseConfigTest extends TestCase
         ];
         $this->assertEquals($expected, $configData['Key2']);
         $this->assertArrayNotHasKey('IntVal', $configData);
+
+        foreach (['lowercaseGroup', 'uppercaseGroup'] as $context) {
+            $configData = $this->DatabaseConfig->read($context);
+            $this->assertTrue($configData[$context . '.trueVal']);
+            $this->assertFalse($configData[$context . '.falseVal']);
+            $this->assertNull($configData[$context . '.nullVal']);
+        }
     }
 
     /**
@@ -99,6 +106,9 @@ class DatabaseConfigTest extends TestCase
                 [
                     'Name3' => 'some value',
                     'Name4' => 'other data',
+                    'nullConf' => null,
+                    'trueConf' => true,
+                    'falseConf' => false
                 ],
             ],
             'failure' => [
@@ -109,6 +119,17 @@ class DatabaseConfigTest extends TestCase
                     'Name.Four' => 'other data',
                 ],
             ],
+            'avoidReservedWords' => [
+                [
+                    'Name5' => 'just another name',
+                ],
+                'appcontext',
+                [
+                    'Name5' => 'just another name',
+                    'Datasources' => 'You cannot touch me!',
+                    'Cache' => 'Me too :('
+                ]
+            ]
         ];
     }
 
@@ -128,13 +149,15 @@ class DatabaseConfigTest extends TestCase
     public function testDump($expected, $context, $data)
     {
         if (!$expected) {
-            $this->expectException('Exception'); // TODO: be more specific! Assertions on exceptions should be strict.
+            $this->expectException('Cake\Database\Exception');
         }
         $check = $this->DatabaseConfig->dump($context, $data);
-        $this->assertEquals($expected, $check);
+        $this->assertEquals((bool)$expected, $check);
 
         $configData = $this->DatabaseConfig->read($context);
-        foreach ($data as $key => $value) {
+
+        $expectedData = !is_array($expected) ? $data : $expected;
+        foreach ($expectedData as $key => $value) {
             $this->assertArrayHasKey($key, $configData);
             $this->assertEquals($value, $configData[$key]);
         }
