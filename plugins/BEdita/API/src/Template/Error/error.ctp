@@ -6,7 +6,7 @@ $this->assign('title', __('BEdita 4 - API Error') . ': ' . key($statusCode) . ' 
 $this->append('css', '
     <style>
         h1::before {
-            content: "\26AB";
+            content: "\26D4";
             color: #D33C44;
             font-size: 1em;
             margin-right: 0.5em;
