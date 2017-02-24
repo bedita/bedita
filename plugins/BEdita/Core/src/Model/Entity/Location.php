@@ -14,21 +14,16 @@
 namespace BEdita\Core\Model\Entity;
 
 /**
- * Media Entity
+ * Location Entity
  *
  * @property int $id
- * @property string $uri
- * @property string $name
- * @property string $mime_type
- * @property int $file_size
- * @property string $hash_file
- * @property string $original_name
- * @property int $width
- * @property int $height
- * @property string $provider
- * @property string $media_uid
- * @property string $thumbnail
+ * @property string $coords
+ * @property string $address
+ * @property string $locality
+ * @property string $postal_code
+ * @property string $country_name
+ * @property string $region
  */
-class Media extends ObjectEntity
+class Location extends ObjectEntity
 {
 }
