@@ -82,18 +82,6 @@ class EndpointsShell extends ResourcesShell
                 ]
             ]
         ]);
-        $parser->addSubcommand('rm', [
-            'help' => 'remove an existing endpoint',
-            'parser' => [
-                'description' => [
-                    'Remove an endpoint.',
-                    'First argument (required) indicates endpoint\'s id|name.'
-                ],
-                'arguments' => [
-                    'name|id' => ['help' => 'Endpoints name|id', 'required' => true]
-                ]
-            ]
-        ]);
 
         return $parser;
     }
@@ -132,13 +120,20 @@ class EndpointsShell extends ResourcesShell
     }
 
     /**
-     * remove an existing endpoint
+     * remove an existing application
      *
+     * @param int $id
      * @return void
      */
-    public function rm()
+    public function rm($id)
     {
-        $this->out('usage: bin/cake endpoints rm <name|id>');
-        $this->out('... coming soon');
+        if (!is_numeric($id)) {
+            $id = TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail()
+                ->id;
+        }
+        parent::rm($id);
     }
 }

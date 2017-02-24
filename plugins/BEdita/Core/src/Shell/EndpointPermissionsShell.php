@@ -58,22 +58,6 @@ class EndpointPermissionsShell extends ResourcesShell
                 ]
             ]
         ]);
-        $parser->addSubcommand('rm', [
-            'help' => 'remove an existing endpoint permission',
-            'parser' => [
-                'description' => [
-                    'Remove an endpoint permission.',
-                    'Option --application (optional) provides listing by application\'s name|id.',
-                    'Option --endpoint (optional) provides listing by endpoint\'s name|id.',
-                    'Option --role (optional) provides listing by role\'s name|id.',
-                ],
-                'options' => [
-                    'application' => ['help' => 'Application name|id', 'required' => false],
-                    'endpoint' => ['help' => 'Endpoint name|id', 'required' => false],
-                    'role' => ['help' => 'Role name|id', 'required' => false]
-                ]
-            ]
-        ]);
 
         return $parser;
     }
@@ -90,13 +74,20 @@ class EndpointPermissionsShell extends ResourcesShell
     }
 
     /**
-     * remove an existing endpoint permission
+     * remove an existing application
      *
+     * @param int $id
      * @return void
      */
-    public function rm()
+    public function rm($id)
     {
-        $this->out('usage: bin/cake endpoint_permissions rm [--application=<name|id>] [--endpoint=<name|id>] [--role=<name|id>]');
-        $this->out('... coming soon');
+        if (!is_numeric($id)) {
+            $id = TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail()
+                ->id;
+        }
+        parent::rm($id);
     }
 }

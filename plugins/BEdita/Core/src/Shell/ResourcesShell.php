@@ -56,6 +56,18 @@ abstract class ResourcesShell extends Shell
                 ]
             ]
         ]);
+        $parser->addSubcommand('rm', [
+            'help' => 'remove an entity',
+            'parser' => [
+                'description' => [
+                    'Remove an entity.',
+                    'First argument (required) indicates entity\'s id|name.'
+                ],
+                'arguments' => [
+                    'name|id' => ['help' => 'Entity\'s name|id', 'required' => true]
+                ]
+            ]
+        ]);
 
         return $parser;
     }
@@ -81,5 +93,19 @@ abstract class ResourcesShell extends Shell
         }
         $results = $query->toArray();
         $this->out($results ?: 'empty set');
+    }
+
+    /**
+     * Remove entity
+     *
+     * @param int $id
+     * @return void
+     */
+    public function rm($id)
+    {
+        $model = TableRegistry::get($this->modelClass);
+        $entity = $model->get($id);
+        $result = $model->delete($entity);
+        $this->out('Record ' . $id . ' deleted');
     }
 }

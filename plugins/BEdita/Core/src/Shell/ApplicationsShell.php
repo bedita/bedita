@@ -13,6 +13,7 @@
 namespace BEdita\Core\Shell;
 
 use Cake\Console\Shell;
+use Cake\ORM\TableRegistry;
 
 /**
  * Application shell commands:
@@ -92,18 +93,6 @@ class ApplicationsShell extends ResourcesShell
                 ]
             ]
         ]);
-        $parser->addSubcommand('rm', [
-            'help' => 'remove an existing application',
-            'parser' => [
-                'description' => [
-                    'Remove an application.',
-                    'First argument (required) indicates application\'s id|name.'
-                ],
-                'arguments' => [
-                    'name|id' => ['help' => 'Applications name|id', 'required' => true]
-                ]
-            ]
-        ]);
 
         return $parser;
     }
@@ -155,11 +144,18 @@ class ApplicationsShell extends ResourcesShell
     /**
      * remove an existing application
      *
+     * @param int $id
      * @return void
      */
-    public function rm()
+    public function rm($id)
     {
-        $this->out('usage: bin/cake applications rm <name|id>');
-        $this->out('... coming soon');
+        if (!is_numeric($id)) {
+            $id = TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail()
+                ->id;
+        }
+        parent::rm($id);
     }
 }
