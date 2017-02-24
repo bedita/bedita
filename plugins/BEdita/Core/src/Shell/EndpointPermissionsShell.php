@@ -112,20 +112,13 @@ class EndpointPermissionsShell extends ResourcesShell
     }
 
     /**
-     * remove an existing application
+     * remove an existing endpoint permission by id
      *
-     * @param int $id
+     * @param int $id endpoint permission id
      * @return void
      */
     public function rm($id)
     {
-        if (!is_numeric($id)) {
-            $id = TableRegistry::get($this->modelClass)
-                ->find()
-                ->where(['name' => $id])
-                ->firstOrFail()
-                ->id;
-        }
         parent::rm($id);
     }
 }

@@ -90,8 +90,8 @@ class EndpointsShell extends ResourcesShell
     /**
      * create a new endpoint
      *
-     * @param string $name application's name
-     * @param string $description application's description
+     * @param string $name endpoint's name
+     * @param string $description endpoint's description
      * @return void
      */
     public function create($name, $description = null)
@@ -125,9 +125,9 @@ class EndpointsShell extends ResourcesShell
     }
 
     /**
-     * remove an existing application
+     * remove an existing endpoint
      *
-     * @param int $id
+     * @param mixed $id endpoint's is|name
      * @return void
      */
     public function rm($id)
@@ -145,7 +145,7 @@ class EndpointsShell extends ResourcesShell
     /**
      * modify an existing endpoint, by id, setting value $value for field $field
      *
-     * @param mixed $id application name|id
+     * @param mixed $id endpoint name|id
      * @param string $field entity field
      * @param mixed $value value for field
      * @return void

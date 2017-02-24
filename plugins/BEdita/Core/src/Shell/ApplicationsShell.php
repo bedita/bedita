@@ -186,7 +186,7 @@ class ApplicationsShell extends ResourcesShell
         if ($field === 'enabled') {
             $entity->enabled = $value;
             $operation = ($entity->enabled) ? 'enabled' : 'disabled';
-        } else if ($field === 'api_key' && $value) {
+        } elseif ($field === 'api_key' && $value) {
             $entity->api_key = $model->generateApiKey();
         }
         $result = $model->save($entity);

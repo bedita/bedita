@@ -84,7 +84,7 @@ abstract class ResourcesShell extends Shell
     /**
      * save data for entity
      *
-     * @param \Cake\ORM\Entity $entity
+     * @param \Cake\ORM\Entity $entity entity to save
      * @return void
      */
     public function processCreate(Entity $entity)
@@ -117,9 +117,9 @@ abstract class ResourcesShell extends Shell
     }
 
     /**
-     * Remove entity
+     * Remove entity by id
      *
-     * @param int $id
+     * @param int $id entity id
      * @return void
      */
     public function rm($id)
