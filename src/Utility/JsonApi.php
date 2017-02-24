@@ -113,10 +113,11 @@ class JsonApi
      *
      * @param Entity $entity Entity item.
      * @param string $endpoint Default API endpoint for entity type.
+     * @param string|null $type Type of item.
      * @param array $options Options, may include 'allowedAssociations' key.
      * @return array
      */
-    protected static function extractRelationships(Entity $entity, $endpoint, $options = [])
+    protected static function extractRelationships(Entity $entity, $endpoint, $type = null, $options = [])
     {
         $relationships = [];
         $associations = TableRegistry::get($entity->getSource())->associations();
@@ -131,34 +132,35 @@ class JsonApi
         );
 
         foreach ($associations as $association) {
-            list(, $type) = namespaceSplit(get_class($association));
+            list(, $associationType) = namespaceSplit(get_class($association));
             $name = $association->property();
-            if (!($association instanceof Association) || $type === 'ExtensionOf' || in_array($name, $hidden) ||
+            if (!($association instanceof Association) || $associationType === 'ExtensionOf' || in_array($name, $hidden) ||
                 (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
-                ($type === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))) {
+                ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))) {
                 continue;
             }
 
             try {
-                $self = Router::url(
-                    [
-                        '_name' => sprintf('api:%s:relationships', $endpoint),
-                        'id' => $entity->id,
-                        'relationship' => $name,
-                    ],
-                    true
-                );
+                $options = [
+                    '_name' => sprintf('api:%s:relationships', $endpoint),
+                    'id' => $entity->id,
+                    'relationship' => $name,
+                ];
+                if ($endpoint !== $type && $endpoint !== 'trash') {
+                    $options['object_type'] = $type;
+                }
+
+                $self = Router::url($options, true);
             } catch (MissingRouteException $e) {
             }
 
             try {
-                $related = Router::url(
-                    [
-                        '_name' => sprintf('api:%s:%s', $endpoint, $name),
-                        $relatedParam => $entity->id,
-                    ],
-                    true
-                );
+                $options = [
+                    '_name' => sprintf('api:%s:%s', $endpoint, $name),
+                    $relatedParam => $entity->id,
+                ];
+
+                $related = Router::url($options, true);
             } catch (MissingRouteException $e) {
             }
 
@@ -194,7 +196,7 @@ class JsonApi
         list($type, $endpoint) = static::extractType($item, $type);
 
         if ($item instanceof Entity) {
-            $relationships = static::extractRelationships($item, $endpoint, $options);
+            $relationships = static::extractRelationships($item, $endpoint, $type, $options);
             if (empty($relationships)) {
                 unset($relationships);
             }
