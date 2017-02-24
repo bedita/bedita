@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Configure\Engine;
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -136,7 +137,7 @@ class DatabaseConfigTest extends TestCase
     /**
      * Test dump method
      *
-     * @param bool $expected Expected result.
+     * @param bool|array $expected Expected result.
      * @param string $context Config group context.
      * @param array $data Config data array.
      *
@@ -160,6 +161,58 @@ class DatabaseConfigTest extends TestCase
         foreach ($expectedData as $key => $value) {
             $this->assertArrayHasKey($key, $configData);
             $this->assertEquals($value, $configData[$key]);
+        }
+    }
+
+    /**
+     * Test read method using Configure class
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testReadByConfigure()
+    {
+        Configure::config('test-database', $this->DatabaseConfig);
+        Configure::load('group1', 'test-database');
+
+        $this->assertTrue(Configure::read('Name2'));
+        $this->assertEquals('some data', Configure::read('Key2.test1'));
+        $this->assertEquals('other data', Configure::read('Key2.test2'));
+    }
+
+    /**
+     * Test dump method using Configure class
+     *
+     * @param bool|array $expected Expected result.
+     * @param string $context Config group context.
+     * @param array $data Config data array.
+     *
+     * @return void
+     *
+     * @dataProvider configProvider
+     * @coversNothing
+     */
+    public function testDumpByConfigureClass($expected, $context, $data)
+    {
+        Configure::config('test-database', $this->DatabaseConfig);
+        foreach ($data as $key => $value) {
+            Configure::write($key, $value);
+        }
+
+        if (!$expected) {
+            $this->expectException('Cake\Database\Exception');
+        }
+
+        $result = Configure::dump($context, 'test-database', array_keys($data));
+
+        $this->assertEquals((bool)$expected, $result);
+
+        Configure::load($context, 'test-database', false);
+        $expectedData = !is_array($expected) ? $data : $expected;
+        foreach ($data as $key => $value) {
+            $cfgVal = Configure::read($key);
+            $this->assertEquals($value, $cfgVal);
         }
     }
 }
