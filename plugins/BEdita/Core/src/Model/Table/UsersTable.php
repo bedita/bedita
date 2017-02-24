@@ -51,16 +51,13 @@ class UsersTable extends Table
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'user_id',
-            'className' => 'BEdita/Core.ExternalAuth',
         ]);
 
         $this->belongsToMany('Roles', [
-            'className' => 'BEdita/Core.Roles',
+            'through' => 'RolesUsers',
         ]);
 
-        $this->extensionOf('Profiles', [
-            'className' => 'BEdita/Core.Profiles'
-        ]);
+        $this->extensionOf('Profiles');
 
         $this->addBehavior('BEdita/Core.UniqueName', [
             'sourceField' => 'username',
