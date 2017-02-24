@@ -80,6 +80,7 @@ class RolesUsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['role_id', 'user_id']));
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 

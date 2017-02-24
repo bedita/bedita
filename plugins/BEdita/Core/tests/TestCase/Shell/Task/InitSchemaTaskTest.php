@@ -142,10 +142,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--no-force', '--seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 2, $connection->getSchemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -179,7 +179,7 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init'], [], $io);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
         $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
