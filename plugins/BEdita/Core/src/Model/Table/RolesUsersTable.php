@@ -35,10 +35,9 @@ class RolesUsersTable extends Table
 {
 
     /**
-     * Initialize method
+     * {@inheritDoc}
      *
-     * @param array $config The configuration for the Table.
-     * @return void
+     * @codeCoverageIgnore
      */
     public function initialize(array $config)
     {
@@ -61,10 +60,9 @@ class RolesUsersTable extends Table
     }
 
     /**
-     * Default validation rules.
+     * {@inheritDoc}
      *
-     * @param \Cake\Validation\Validator $validator Validator instance.
-     * @return \Cake\Validation\Validator
+     * @codeCoverageIgnore
      */
     public function validationDefault(Validator $validator)
     {
@@ -77,6 +75,8 @@ class RolesUsersTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function buildRules(RulesChecker $rules)
     {
