@@ -28,6 +28,8 @@ use Cake\Utility\Inflector;
  * @property string $model
  * @property string $table
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
+ * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
+ * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  */
 class ObjectType extends Entity
 {
@@ -51,6 +53,14 @@ class ObjectType extends Entity
     protected $_virtual = [
         'alias',
         'table',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'left_relations',
+        'right_relations',
     ];
 
     /**

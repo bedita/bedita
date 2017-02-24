@@ -54,12 +54,31 @@ class ObjectTypesTable extends Table
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.Objects',
+            'className' => 'Objects',
         ]);
 
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',
-            'className' => 'BEdita/Core.Properties',
+            'className' => 'Properties',
+        ]);
+
+        $this->belongsToMany('LeftRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'left',
+            ],
+        ]);
+        $this->belongsToMany('RightRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'right',
+            ],
         ]);
     }
 
