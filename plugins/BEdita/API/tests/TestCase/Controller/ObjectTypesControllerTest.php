@@ -66,10 +66,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 4,
+                    'count' => 5,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 4,
+                    'page_items' => 5,
                     'page_size' => 20,
                 ],
             ],
@@ -166,6 +166,30 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                             'links' => [
                                 'self' => 'http://api.example.com/object_types/4/relationships/properties',
                                 'related' => 'http://api.example.com/object_types/4/properties',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '5',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'name' => 'location',
+                        'pluralized' => 'locations',
+                        'alias' => 'Locations',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Locations',
+                        'table' => 'BEdita/Core.Locations'
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/object_types/5',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/5/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/5/properties',
                             ],
                         ],
                     ],
@@ -361,7 +385,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/object_types/5');
+        $this->assertHeader('Location', 'http://api.example.com/object_types/6');
         $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
     }
 
