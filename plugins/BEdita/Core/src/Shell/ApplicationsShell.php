@@ -26,16 +26,13 @@ use Cake\Console\Shell;
  *
  * @since 4.0.0
  */
-class ApplicationsShell extends Shell
+class ApplicationsShell extends ResourcesShell
 {
 
     /**
      * {@inheritDoc}
      */
-    public function initialize()
-    {
-        parent::initialize();
-    }
+    public $modelClass = 'Applications';
 
     /**
      * {@inheritDoc}
@@ -56,18 +53,6 @@ class ApplicationsShell extends Shell
                 'arguments' => [
                     'name' => ['help' => 'Application name', 'required' => true],
                     'description' => ['help' => 'Application description', 'required' => false]
-                ]
-            ]
-        ]);
-        $parser->addSubcommand('ls', [
-            'help' => 'list existing applications',
-            'parser' => [
-                'description' => [
-                    'List applications.',
-                    'Option --enabled (optional) forces only enabled applications listing.'
-                ],
-                'options' => [
-                    'enabled' => ['help' => 'List enabled applications', 'required' => false]
                 ]
             ]
         ]);
@@ -131,17 +116,6 @@ class ApplicationsShell extends Shell
     public function create()
     {
         $this->out('usage: bin/cake applications create <name> [<description>]');
-        $this->out('... coming soon');
-    }
-
-    /**
-     * list existing applications
-     *
-     * @return void
-     */
-    public function ls()
-    {
-        $this->out('usage: bin/cake applications ls [--enabled]');
         $this->out('... coming soon');
     }
 

@@ -25,16 +25,13 @@ use Cake\Console\Shell;
  *
  * @since 4.0.0
  */
-class EndpointsShell extends Shell
+class EndpointsShell extends ResourcesShell
 {
 
     /**
      * {@inheritDoc}
      */
-    public function initialize()
-    {
-        parent::initialize();
-    }
+    public $modelClass = 'Endpoints';
 
     /**
      * {@inheritDoc}
@@ -58,18 +55,6 @@ class EndpointsShell extends Shell
                 ],
                 'options' => [
                     'object-type' => ['help' => 'Object type name|id', 'required' => false]
-                ]
-            ]
-        ]);
-        $parser->addSubcommand('ls', [
-            'help' => 'list existing endpoints',
-            'parser' => [
-                'description' => [
-                    'List endpoints.',
-                    'Option --enabled (optional) forces only enabled endpoints listing.'
-                ],
-                'options' => [
-                    'enabled' => ['help' => 'List enabled endpoints', 'required' => false]
                 ]
             ]
         ]);
@@ -121,17 +106,6 @@ class EndpointsShell extends Shell
     public function create()
     {
         $this->out('usage: bin/cake endpoints create <name> [<description>] [--object-type=<name|id>]');
-        $this->out('... coming soon');
-    }
-
-    /**
-     * list existing endpoints
-     *
-     * @return void
-     */
-    public function ls()
-    {
-        $this->out('usage: bin/cake endpoints ls [--enabled]');
         $this->out('... coming soon');
     }
 

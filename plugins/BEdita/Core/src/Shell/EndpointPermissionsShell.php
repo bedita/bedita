@@ -23,16 +23,13 @@ use Cake\Console\Shell;
  *
  * @since 4.0.0
  */
-class EndpointPermissionsShell extends Shell
+class EndpointPermissionsShell extends ResourcesShell
 {
 
     /**
      * {@inheritDoc}
      */
-    public function initialize()
-    {
-        parent::initialize();
-    }
+    public $modelClass = 'EndpointPermissions';
 
     /**
      * {@inheritDoc}
@@ -53,22 +50,6 @@ class EndpointPermissionsShell extends Shell
                 'arguments' => [
                     'read' => ['help' => 'Read mask', 'required' => true],
                     'write' => ['help' => 'Write mask', 'required' => true]
-                ],
-                'options' => [
-                    'application' => ['help' => 'Application name|id', 'required' => false],
-                    'endpoint' => ['help' => 'Endpoint name|id', 'required' => false],
-                    'role' => ['help' => 'Role name|id', 'required' => false]
-                ]
-            ]
-        ]);
-        $parser->addSubcommand('ls', [
-            'help' => 'list existing endpoint permissions',
-            'parser' => [
-                'description' => [
-                    'List endpoint permissions.',
-                    'Option --application (optional) provides listing by application\'s name|id.',
-                    'Option --endpoint (optional) provides listing by endpoint\'s name|id.',
-                    'Option --role (optional) provides listing by role\'s name|id.',
                 ],
                 'options' => [
                     'application' => ['help' => 'Application name|id', 'required' => false],
@@ -105,17 +86,6 @@ class EndpointPermissionsShell extends Shell
     public function create()
     {
         $this->out('usage: bin/cake endpoint_permissions create <read> <write> [--application=<name|id>] [--endpoint=<name|id>] [--role=<name|id>]');
-        $this->out('... coming soon');
-    }
-
-    /**
-     * list existing endpoint permissions
-     *
-     * @return void
-     */
-    public function ls()
-    {
-        $this->out('usage: bin/cake endpoint_permissions ls [--application=<name|id>] [--endpoint=<name|id>] [--role=<name|id>]');
         $this->out('... coming soon');
     }
 
