@@ -27,10 +27,6 @@ use Cake\TestSuite\TestCase;
  */
 class JsonApiComponentTest extends TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public $autoFixtures = false;
 
     /**
      * Fixtures.
@@ -38,6 +34,9 @@ class JsonApiComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.roles',
     ];
 
@@ -211,8 +210,6 @@ class JsonApiComponentTest extends TestCase
      */
     public function testPagination(array $expectedLinks, array $expectedMeta, array $query)
     {
-        $this->loadFixtures('Roles');
-
         $request = new Request([
             'params' => [
                 'plugin' => 'BEdita/API',
