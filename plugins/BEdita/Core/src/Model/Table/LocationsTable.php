@@ -40,13 +40,15 @@ class LocationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('locations');
-        $this->displayField('id');
-        $this->primaryKey('id');
+        $this->setTable('locations');
+        $this->setDisplayField('id');
+        $this->setPrimaryKey('id');
 
         $this->extensionOf('Objects', [
             'className' => 'BEdita/Core.Objects'
         ]);
+
+        $this->addBehavior('BEdita/Core.Relations');
     }
 
     /**
