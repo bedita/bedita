@@ -40,7 +40,9 @@ class RolesTable extends Table
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsToMany('Users');
+        $this->belongsToMany('Users', [
+            'through' => 'RolesUsers',
+        ]);
         $this->hasMany('EndpointPermissions', [
             'dependent' => true,
         ]);
