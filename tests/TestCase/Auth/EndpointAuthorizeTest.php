@@ -75,6 +75,13 @@ class EndpointAuthorizeTest extends IntegrationTestCase
             'missing API key' => [
                 new ForbiddenException('Missing API key'),
                 [],
+                [
+                    'disallowAnonymousApplications' => true,
+                ],
+            ],
+            'anonymous application' => [
+                null,
+                [],
             ],
         ];
     }
@@ -103,7 +110,11 @@ class EndpointAuthorizeTest extends IntegrationTestCase
 
         $authorize->authorize([], $request);
 
-        static::assertEquals($expected, CurrentApplication::getApplication()->id);
+        if ($expected === null) {
+            static::assertNull(CurrentApplication::getApplication());
+        } else {
+            static::assertEquals($expected, CurrentApplication::getApplication()->id);
+        }
     }
 
     /**
@@ -249,5 +260,45 @@ class EndpointAuthorizeTest extends IntegrationTestCase
 
         static::assertSame(!empty($expected), $result);
         static::assertAttributeSame($expected, 'authorized', $authorize);
+    }
+
+    /**
+     * Test default permissive behavior.
+     *
+     * @return void
+     *
+     * @covers ::authorize()
+     * @covers ::getPermissions()
+     * @covers ::checkPermissions()
+     */
+    public function testAllowByDefault()
+    {
+        TableRegistry::get('EndpointPermissions')->deleteAll([]);
+
+        $environment = [
+            'REQUEST_METHOD' => 'POST',
+        ];
+        $request = new ServerRequest(compact('environment', 'uri'));
+
+        $controller = new Controller();
+        $controller->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint'],
+        ]);
+        $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        if (!($authorize instanceof EndpointAuthorize)) {
+            static::fail('Unexpected authorization object');
+        }
+
+        $result = $authorize->authorize(
+            [
+                '_anonymous' => true,
+            ],
+            $request
+        );
+
+        static::assertTrue($result);
+        static::assertAttributeSame(true, 'authorized', $authorize);
     }
 }
