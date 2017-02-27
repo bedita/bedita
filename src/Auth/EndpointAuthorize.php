@@ -188,6 +188,7 @@ class EndpointAuthorize extends BaseAuthorize
             if ($count === 0) {
                 $result = EndpointPermission::PERM_YES;
             }
+
             return EndpointPermission::decode($result);
         }
 
