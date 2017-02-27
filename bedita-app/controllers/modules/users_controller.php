@@ -78,18 +78,17 @@ class UsersController extends ModulesController {
      */
     protected function getUsers($conditions = array()) {
         $query = $this->SessionFilter->read('query');
-        if (empty($this->params["form"]["filter"]) || ($query && strlen($query) <= 3)) {
+        if (($this->RequestHandler->isPost() && empty($this->params['form']['filter'])) || ($query && strlen($query) <= 3)) {
             $this->SessionFilter->clean();
         } elseif ($query) {
             $conditions = array(
-                "OR" => array(
-                    "User.userid LIKE" => $query . "%",
-                    "User.realname LIKE" => "%" . $query . "%",
-                    "User.email LIKE" => "%" . $query . "%"
+                'OR' => array(
+                    'User.userid LIKE' => $query . '%',
+                    'User.realname LIKE' => '%' . $query . '%',
+                    'User.email LIKE' => '%' . $query . '%'
                 )
             );
         }
-
         $users = $this->paginate('User', $conditions);
         return $users;
     }
