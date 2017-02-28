@@ -75,6 +75,13 @@ class AddAssociatedTest extends TestCase
                 1,
                 null,
             ],
+            'alreadyPresent' => [
+                0,
+                'FakeTags',
+                'FakeArticles',
+                1,
+                1,
+            ],
             'belongsToMany' => [
                 1,
                 'FakeTags',

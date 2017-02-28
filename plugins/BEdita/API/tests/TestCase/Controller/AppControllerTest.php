@@ -394,6 +394,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider apiKeysProvider
+     * @covers ::apiKeyCheck()
      */
     public function testApiKeys($expectedCode, $apiKeyCfg, $apiKeyReq = null, $origin = null)
     {
@@ -416,6 +417,8 @@ class AppControllerTest extends IntegrationTestCase
      * Test API meta info header.
      *
      * @return void
+     *
+     * @covers ::initialize()
      */
     public function testMetaInfo()
     {

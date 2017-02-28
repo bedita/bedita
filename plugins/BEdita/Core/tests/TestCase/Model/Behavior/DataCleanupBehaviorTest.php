@@ -87,6 +87,7 @@ class DataCleanupBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider cleanupProvider
+     * @covers ::beforeMarshal()
      */
     public function testDataCleanup(array $inputData, array $expected)
     {

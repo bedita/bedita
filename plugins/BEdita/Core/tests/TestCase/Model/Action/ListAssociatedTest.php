@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociated;
 use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
@@ -82,6 +83,12 @@ class ListAssociatedTest extends TestCase
                 'FakeTags',
                 'FakeArticles',
                 99,
+            ],
+            'invalidPrimaryKey' => [
+                new InvalidPrimaryKeyException('Record not found in table "fake_tags" with primary key [\'invalid\', \'pk\']'),
+                'FakeTags',
+                'FakeArticles',
+                ['invalid', 'pk'],
             ],
             'hasMany' => [
                 [

@@ -104,7 +104,9 @@ class Property extends Entity
     protected function _setPropertyTypeName($property)
     {
         try {
-            $this->property_type = TableRegistry::get('PropertyTypes')->findByName($property)->first();
+            $this->property_type = TableRegistry::get('PropertyTypes')->find()
+                ->where(['name' => $property])
+                ->firstOrFail();
             $this->property_type_id = $this->property_type->id;
         } catch (RecordNotFoundException $e) {
             return null;
