@@ -165,20 +165,34 @@ class RelationShell extends BeditaBaseShell {
         $rightObjectTypes = $this->objectTypesIdsForObjectNames($relationData,'right');
         $objRels = $this->relationsByNameAndObjectTypes($relationName, $leftObjectTypes, $rightObjectTypes);
         $leftToRight = count($objRels);
+        $leftToRightAll = $this->countRelation($relationName);
         if (!empty($relationData['inverse']) && ($relationData['inverse'] != $relationName) ) {
             $relationInverse = $relationData['inverse'];
             $objRels = $this->relationsByNameAndObjectTypes($relationInverse, $rightObjectTypes, $leftObjectTypes);
             $rightToLeft = count($objRels);
+            $rightToLeftAll = $this->countRelation($relationInverse);
             if ($leftToRight == $rightToLeft) {
-                $this->out("[left]->'$relationName'->[right]: $leftToRight");
-                $this->out("[right]->'$relationInverse'->[left]: $rightToLeft");
+                $this->out("L-R [left]->'$relationName'->[right]: $leftToRight");
+                $this->out("L-R [right]->'$relationInverse'->[left]: $rightToLeft");
             } else if ($leftToRight < $rightToLeft) {
-                $this->out("[left]->'$relationName'->[right]: $leftToRight => should be $rightToLeft");
-                $this->out("[right]->'$relationInverse'->[left]: $rightToLeft");
+                $this->out("L-R [left]->'$relationName'->[right]: $leftToRight => should be $rightToLeft");
+                $this->out("L-R [right]->'$relationInverse'->[left]: $rightToLeft");
                 $result = 'corrupted data';
             } else {
-                $this->out("[left]->'$relationName'->[right]: $leftToRight");
-                $this->out("[right]->'$relationInverse'->[left]: $rightToLeft => should be $leftToRight");
+                $this->out("L-R [left]->'$relationName'->[right]: $leftToRight");
+                $this->out("L-R [right]->'$relationInverse'->[left]: $rightToLeft => should be $leftToRight");
+                $result = 'corrupted data';
+            }
+            if ($leftToRightAll == $rightToLeftAll) {
+                $this->out("ALL [left]->'$relationName'->[right]: $leftToRightAll");
+                $this->out("ALL [right]->'$relationInverse'->[left]: $rightToLeftAll");
+            } else if ($leftToRightAll < $rightToLeftAll) {
+                $this->out("ALL [left]->'$relationName'->[right]: $leftToRightAll => should be $rightToLeftAll");
+                $this->out("ALL [right]->'$relationInverse'->[left]: $rightToLeftAll");
+                $result = 'corrupted data';
+            } else {
+                $this->out("ALL [left]->'$relationName'->[right]: $leftToRightAll");
+                $this->out("ALL [right]->'$relationInverse'->[left]: $rightToLeftAll => should be $leftToRightAll");
                 $result = 'corrupted data';
             }
         } else {
@@ -269,22 +283,16 @@ class RelationShell extends BeditaBaseShell {
                     if (!empty($ot)) {
                         $objectTypesIds[] = $ot;
                     }
-                }            
+                }
             }
+        } else {
+            $objectTypesIds = Configure::read('objectTypes.related.id');
         }
         return $objectTypesIds;
     }
 
     private function relationsByNameAndObjectTypes($relationName, $leftObjectTypes, $rightObjectTypes) {
-        $leftCondition = array('ObjectLeft.id = ObjectRelation.id');
-        if (!empty($leftObjectTypes)) {
-            $leftCondition['ObjectLeft.object_type_id'] = $leftObjectTypes;
-        }
-        $rightCondition = array('ObjectRight.id = ObjectRelation.object_id');
-        if (!empty($rightCondition)) {
-            $rightCondition['ObjectRight.object_type_id'] = $rightObjectTypes;
-        }
-        $result = ClassRegistry::init('ObjectRelation')->find('all', array(
+        return ClassRegistry::init('ObjectRelation')->find('all', array(
             'conditions' => array(
                 'switch' => $relationName
             ),
@@ -293,17 +301,30 @@ class RelationShell extends BeditaBaseShell {
                     'table' => 'objects',
                     'alias' => 'ObjectLeft',
                     'type' => 'inner',
-                    'conditions' => $leftCondition
+                    'conditions' => array(
+                        'ObjectLeft.id = ObjectRelation.id',
+                        'ObjectLeft.object_type_id' => $leftObjectTypes
+                    )
                 ),
                 array(
                     'table' => 'objects',
                     'alias' => 'ObjectRight',
                     'type' => 'inner',
-                    'conditions' => $rightCondition
+                    'conditions' => array(
+                        'ObjectRight.id = ObjectRelation.object_id',
+                        'ObjectRight.object_type_id' => $rightObjectTypes
+                    )
                 )
             )
         ));
-        return $result;
+    }
+
+    private function countRelation($relationName) {
+        return ClassRegistry::init('ObjectRelation')->find('count', array(
+            'conditions' => array(
+                'switch' => $relationName
+            )
+        ));
     }
 
     private function init() {
