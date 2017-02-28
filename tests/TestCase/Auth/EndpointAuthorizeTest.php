@@ -275,7 +275,7 @@ class EndpointAuthorizeTest extends IntegrationTestCase
     {
         // Ensure no permissions apply to `/home` endpoint.
         TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
-        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id' => 2]);
+        TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
 
         $environment = [
             'REQUEST_METHOD' => 'POST',
