@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -71,6 +70,9 @@ class RelationsBehavior extends Behavior
                 'conditions' => [
                     'ObjectRelations.relation_id' => $relation->id,
                 ],
+                'sort' => [
+                    'ObjectRelations.priority' => 'asc',
+                ],
             ]);
         }
 
@@ -83,6 +85,9 @@ class RelationsBehavior extends Behavior
                 'targetForeignKey' => 'left_id',
                 'conditions' => [
                     'ObjectRelations.relation_id' => $relation->id,
+                ],
+                'sort' => [
+                    'ObjectRelations.inv_priority' => 'asc',
                 ],
             ]);
         }
