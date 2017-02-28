@@ -259,6 +259,9 @@ class TrashControllerTest extends IntegrationTestCase
      * Test delete restore method.
      *
      * @return void
+     *
+     * @covers ::restore()
+     * @covers ::initialize()
      */
     public function testRestore()
     {
@@ -307,10 +310,14 @@ class TrashControllerTest extends IntegrationTestCase
         $trash = $this->Objects->get(6);
         $this->assertFalse($trash['deleted']);
     }
+
     /**
      * Test delete method.
      *
      * @return void
+     *
+     * @covers ::delete()
+     * @covers ::initialize()
      */
     public function testDelete()
     {

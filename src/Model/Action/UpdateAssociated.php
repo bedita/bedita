@@ -60,23 +60,23 @@ class UpdateAssociated
      */
     public function __invoke($primaryKey)
     {
-        $sourceEntity = $this->Action->association()->getSource()->get($primaryKey);
+        $sourceEntity = $this->Action->getAssociation()->getSource()->get($primaryKey);
 
         $targetPrimaryKeys = (array)$this->request->getData('id') ?: Hash::extract($this->request->getData(), '{*}.id');
         $targetPrimaryKeys = array_unique($targetPrimaryKeys);
-        $primaryKeyField = $this->Action->association()->getPrimaryKey();
-        $targetPKField = $this->Action->association()->aliasField($primaryKeyField);
+        $primaryKeyField = $this->Action->getAssociation()->getPrimaryKey();
+        $targetPKField = $this->Action->getAssociation()->aliasField($primaryKeyField);
 
         $targetEntities = null;
         if (count($targetPrimaryKeys)) {
-            $targetEntities = $this->Action->association()->find()
+            $targetEntities = $this->Action->getAssociation()->find()
                 ->where([
                     $targetPKField . ' IN' => $targetPrimaryKeys,
                 ]);
 
             if ($targetEntities->count() !== count($targetPrimaryKeys)) {
                 throw new RecordNotFoundException(
-                    __('Record not found in table "{0}"', $this->Action->association()->getTarget()->getTable()),
+                    __('Record not found in table "{0}"', $this->Action->getAssociation()->getTarget()->getTable()),
                     400
                 );
             }
