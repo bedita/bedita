@@ -72,7 +72,7 @@ class AppController extends Controller
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
             'authorize' => [
                 'BEdita/API.Endpoint' => [
-                    'disallowAnonymousApplications' => Configure::read('disallowAnonymousApplications'),
+                    'disallowAnonymousApplications' => Configure::read('Security.disallowAnonymousApplications'),
                 ],
             ],
             'loginAction' => ['_name' => 'api:login'],
