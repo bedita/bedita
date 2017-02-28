@@ -76,7 +76,8 @@ class EndpointAuthorize extends BaseAuthorize
         $application = $this->getApplication();
         $endpoint = $this->getEndpoint();
         $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
-        if (empty($permissions) && (!$endpoint || $this->getPermissions(false, $application, $endpoint)->count() === 0)) {
+        $allPermissions = $this->getPermissions(false, $application, $endpoint);
+        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
             $this->authorized = true;
 
             return $this->authorized;
