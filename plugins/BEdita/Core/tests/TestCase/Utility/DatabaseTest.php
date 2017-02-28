@@ -13,6 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
@@ -62,6 +63,15 @@ class DatabaseTest extends TestCase
         foreach ($fixtures as $f) {
             $this->assertArrayHasKey(Inflector::underscore($f), $schema);
         }
+
+        // test not valid Connection object
+        $mockConnection = $this->createMock('\Cake\Datasource\ConnectionInterface');
+        ConnectionManager::setConfig('__wrongConnection', $mockConnection);
+
+        $schema = Database::currentSchema('__wrongConnection');
+        $this->assertEquals([], $schema);
+
+        ConnectionManager::drop('__wrongConnection');
     }
 
     /**
@@ -174,7 +184,7 @@ class DatabaseTest extends TestCase
              "UPDATE profiles SET person_title='Spiritual Guide' WHERE id = 1;", true, 2, 2],
             ["SELECT name from config;\n" . "SELECT name from profiles;", true, 13, 2],
             ["SELECT something", false, 0, 0],
-            [["SAY NO TO SQL", " ", "NOSQL NOPARTY"], false, 0, 0],
+            [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
         ];
     }
 
@@ -201,5 +211,71 @@ class DatabaseTest extends TestCase
         $this->assertEquals($success, $res['success']);
         $this->assertEquals($rowCount, $res['rowCount']);
         $this->assertEquals($queryCount, $res['queryCount']);
+    }
+
+    /**
+     * Data provider for `testExecuteTransactionStatementError` test case.
+     *
+     * @return array
+     */
+    public function connectionErrorProvider()
+    {
+        return [
+            'errorExecute' => [
+                ['execute' => false]
+            ],
+            'errorCodeTrue' => [
+                [
+                    'execute' => true,
+                    'errorCode' => true
+                ]
+            ],
+            'errorCodeDefined' => [
+                [
+                    'execute' => true,
+                    'errorCode' => '00001'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test `executeTransaction()` simulating errors with database statement
+     *
+     * @param array $statementMethods An array of methods (array keys) and return values (array values) to mock on `\Cake\Database\StatementInterface`.
+     * @return void
+     *
+     * @dataProvider connectionErrorProvider
+     * @covers ::executeTransaction()
+     */
+    public function testExecuteTransactionStatementError($statementMethods)
+    {
+        $mockStatement = $this->createMock('\Cake\Database\StatementInterface');
+        foreach ($statementMethods as $name => $value) {
+            $mockStatement->method($name)
+                ->willReturn($value);
+        }
+
+        $mockConnection = $this->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->setMethods(['prepare', 'begin', 'commit', 'rollback', '__debugInfo'])
+            ->getMock();
+
+        $mockConnection->method('prepare')
+            ->willReturn($mockStatement);
+
+        $dbConfig = '__mockConnectionError';
+
+        ConnectionManager::setConfig($dbConfig, $mockConnection);
+
+        $res = Database::executeTransaction(['SELECT nothing'], $dbConfig);
+        $this->assertNotEmpty($res);
+        $this->assertEquals('Could not execute statement', $res['error']);
+        $this->assertEquals(false, $res['success']);
+        $this->assertEquals(0, $res['rowCount']);
+        $this->assertEquals(0, $res['queryCount']);
+
+        ConnectionManager::drop($dbConfig);
     }
 }
