@@ -20,6 +20,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
 /**
@@ -53,12 +54,31 @@ class ObjectTypesTable extends Table
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.Objects',
+            'className' => 'Objects',
         ]);
 
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',
-            'className' => 'BEdita/Core.Properties',
+            'className' => 'Properties',
+        ]);
+
+        $this->belongsToMany('LeftRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'left',
+            ],
+        ]);
+        $this->belongsToMany('RightRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'right',
+            ],
         ]);
     }
 
@@ -133,6 +153,7 @@ class ObjectTypesTable extends Table
                     ->toArray()
             );
 
+            $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table "%s"',

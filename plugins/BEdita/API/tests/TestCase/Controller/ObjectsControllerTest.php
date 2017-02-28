@@ -29,6 +29,8 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',

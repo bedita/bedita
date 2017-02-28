@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
@@ -37,8 +50,8 @@ class RelationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('Relations') ? [] : ['className' => 'BEdita\Core\Model\Table\RelationsTable'];
-        $this->Relations = TableRegistry::get('Relations', $config);
+
+        $this->Relations = TableRegistry::get('Relations');
     }
 
     /**
@@ -54,32 +67,59 @@ class RelationsTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testValidation` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function validationProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'valid' => [
+                true,
+                [
+                    'name' => 'my_relation',
+                    'label' => 'My Relation',
+                    'inverse_name' => 'my_inverse_relation',
+                    'inverse_label' => 'My Inverse Relation',
+                    'description' => 'null',
+                    'params' => [
+                        [
+                            'name' => 'param1',
+                            'type' => 'string',
+                        ],
+                    ],
+                ],
+            ],
+            'notUnique' => [
+                false,
+                [
+                    'name' => 'test',
+                    'label' => 'Some label',
+                    'inverse_name' => 'tset',
+                    'inverse_label' => 'Same label :)',
+                    'description' => null,
+                    'params' => null,
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test validation.
      *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
      * @return void
+     *
+     * @dataProvider validationProvider
+     * @coversNothing
      */
-    public function testValidationDefault()
+    public function testValidation($expected, array $data)
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $objectType = $this->Relations->newEntity();
+        $this->Relations->patchEntity($objectType, $data);
 
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $success = $this->Relations->save($objectType);
+        static::assertEquals($expected, (bool)$success);
     }
 }

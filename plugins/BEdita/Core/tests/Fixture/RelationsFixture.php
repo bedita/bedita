@@ -1,11 +1,23 @@
 <?php
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * RelationsFixture
- *
+ * Fixture for `relations` table.
  */
 class RelationsFixture extends TestFixture
 {
@@ -17,13 +29,12 @@ class RelationsFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
-            'name' => 'Lorem ipsum dolor sit amet',
-            'label' => 'Lorem ipsum dolor sit amet',
-            'inverse_name' => 'Lorem ipsum dolor sit amet',
-            'inverse_label' => 'Lorem ipsum dolor sit amet',
-            'description' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-            'params' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.'
+            'name' => 'test',
+            'label' => 'Test relation',
+            'inverse_name' => 'inverse_test',
+            'inverse_label' => 'Inverse test relation',
+            'description' => 'Sample description.',
+            'params' => null,
         ],
     ];
 }

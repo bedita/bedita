@@ -55,7 +55,7 @@ class TableLocator extends CakeLocator
 
         try {
             $objectTypes = $this->get('ObjectTypes');
-            $objectType = $objectTypes->get(Inflector::underscore($alias));
+            $objectType = $objectTypes->get($alias);
             $options['className'] = $objectType->table;
         } catch (\Exception $e) {
             if (!($e instanceof RecordNotFoundException)) {

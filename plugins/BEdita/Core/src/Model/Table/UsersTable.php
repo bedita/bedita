@@ -64,6 +64,8 @@ class UsersTable extends Table
             'prefix' => 'user-'
         ]);
 
+        $this->addBehavior('BEdita/Core.Relations');
+
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
     }
 
