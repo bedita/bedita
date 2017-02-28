@@ -1484,6 +1484,7 @@ class DataTransfer extends BEAppModel
         );
         if (!empty($this->import['allRelations'][$relation['switch']]['inverse'])) {
             $relation['inverse'] = $this->import['allRelations'][$relation['switch']]['inverse'];
+            $relationData['inverse'] = $relation['inverse'];
         }
         if (!empty($relation['priority'])) {
             $relationData['priority'] = $relation['priority'];
