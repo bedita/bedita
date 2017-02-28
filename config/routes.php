@@ -254,5 +254,10 @@ Router::plugin(
             ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'objects:delete']
         );
+        $routes->connect(
+            '/:object_type/:id/relationships/:relationship',
+            ['controller' => 'Objects', 'action' => 'relationships'],
+            ['_name' => 'objects:relationships']
+        );
     }
 );
