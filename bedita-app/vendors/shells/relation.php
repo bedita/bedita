@@ -276,6 +276,14 @@ class RelationShell extends BeditaBaseShell {
     }
 
     private function relationsByNameAndObjectTypes($relationName, $leftObjectTypes, $rightObjectTypes) {
+        $leftCondition = array('ObjectLeft.id = ObjectRelation.id');
+        if (!empty($leftObjectTypes)) {
+            $leftCondition['ObjectLeft.object_type_id'] = $leftObjectTypes;
+        }
+        $rightCondition = array('ObjectRight.id = ObjectRelation.object_id');
+        if (!empty($rightCondition)) {
+            $rightCondition['ObjectRight.object_type_id'] = $rightObjectTypes;
+        }
         $result = ClassRegistry::init('ObjectRelation')->find('all', array(
             'conditions' => array(
                 'switch' => $relationName
@@ -285,19 +293,13 @@ class RelationShell extends BeditaBaseShell {
                     'table' => 'objects',
                     'alias' => 'ObjectLeft',
                     'type' => 'inner',
-                    'conditions' => array(
-                        'ObjectLeft.id = ObjectRelation.id',
-                        'ObjectLeft.object_type_id' => $leftObjectTypes
-                    )
+                    'conditions' => $leftCondition
                 ),
                 array(
                     'table' => 'objects',
                     'alias' => 'ObjectRight',
                     'type' => 'inner',
-                    'conditions' => array(
-                        'ObjectRight.id = ObjectRelation.object_id',
-                        'ObjectRight.object_type_id' => $rightObjectTypes
-                    )
+                    'conditions' => $rightCondition
                 )
             )
         ));
