@@ -26,14 +26,15 @@ class DataSeedShellTest extends ShellTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.config',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public $autoFixtures = false;
 
     /**
      * Test validation with invalid table name.
@@ -42,7 +43,6 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testUnsupportedTable()
     {
-        $this->loadFixtures('Config');
         $this->invoke(['data_seed', 'insert', '-t', 'thisTableDoesNotExist']);
 
         $this->assertAborted();
@@ -56,7 +56,6 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testInvalidFields()
     {
-        $this->loadFixtures('Config');
         $this->invoke(['data_seed', 'insert', '-f', 'someField=someValue,someOtherInvalidField']);
 
         $this->assertAborted();
@@ -70,7 +69,6 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testValidationErrors()
     {
-        $this->loadFixtures('Config', 'Roles');
         $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '1', '-f', 'unchangeable=no']);
 
         $this->assertAborted();
@@ -84,7 +82,6 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testBuildRulesErrors()
     {
-        $this->loadFixtures('Config', 'Roles');
         $this->invoke(['data_seed', 'insert', '-t', 'roles', '-n', '2', '-f', 'name=double']);
 
         $this->assertAborted();
@@ -98,8 +95,6 @@ class DataSeedShellTest extends ShellTestCase
      */
     public function testRoleSeeding()
     {
-        $this->loadFixtures('Config', 'Roles');
-
         $Roles = TableRegistry::get('Roles');
         $before = $Roles->find('all')->count();
 

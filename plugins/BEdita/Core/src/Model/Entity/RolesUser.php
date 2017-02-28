@@ -16,16 +16,16 @@ namespace BEdita\Core\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * RelationType Entity
+ * RolesUser Entity
  *
- * @property int $relation_id
- * @property int $object_type_id
- * @property string $side
+ * @property int $id
+ * @property int $role_id
+ * @property int $user_id
  *
- * @property \BEdita\Core\Model\Entity\Relation $relation
- * @property \BEdita\Core\Model\Entity\ObjectType $object_type
+ * @property \BEdita\Core\Model\Entity\Role $role
+ * @property \BEdita\Core\Model\Entity\User $user
  */
-class RelationType extends Entity
+class RolesUser extends Entity
 {
 
     /**
@@ -33,5 +33,6 @@ class RelationType extends Entity
      */
     protected $_accessible = [
         '*' => true,
+        'id' => false
     ];
 }

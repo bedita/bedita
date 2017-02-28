@@ -34,7 +34,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.properties'
+        'plugin.BEdita/Core.properties',
     ];
 
     /**

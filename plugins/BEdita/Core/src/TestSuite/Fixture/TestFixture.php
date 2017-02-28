@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\TestSuite\Fixture;
 
+use Cake\Core\Plugin;
 use Cake\Database\Schema\Table as Schema;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -59,7 +60,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      */
     protected function fieldsFromConf()
     {
-        $source = CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock';
+        $source = Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock';
         if (!file_exists($source) || !is_readable($source)) {
             return [];
         }

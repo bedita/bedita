@@ -18,22 +18,20 @@ use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Annotations Model
+ * RolesUsers Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Objects
+ * @property \Cake\ORM\Association\BelongsTo $Roles
  * @property \Cake\ORM\Association\BelongsTo $Users
  *
- * @method \BEdita\Core\Model\Entity\Annotation get($primaryKey, $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation newEntity($data = null, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation[] newEntities(array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation[] patchEntities($entities, array $data, array $options = [])
- * @method \BEdita\Core\Model\Entity\Annotation findOrCreate($search, callable $callback = null, $options = [])
- *
- * @mixin \Cake\ORM\Behavior\TimestampBehavior
+ * @method \BEdita\Core\Model\Entity\RolesUser get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\RolesUser findOrCreate($search, callable $callback = null, $options = [])
  */
-class AnnotationsTable extends Table
+class RolesUsersTable extends Table
 {
 
     /**
@@ -45,16 +43,14 @@ class AnnotationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->setTable('annotations');
-        $this->setDisplayField('id');
+        $this->setTable('roles_users');
         $this->setPrimaryKey('id');
+        $this->setDisplayField('id');
 
-        $this->addBehavior('Timestamp');
-
-        $this->belongsTo('Objects', [
-            'foreignKey' => 'object_id',
+        $this->belongsTo('Roles', [
+            'foreignKey' => 'role_id',
             'joinType' => 'INNER',
-            'className' => 'BEdita/Core.Objects'
+            'className' => 'BEdita/Core.Roles'
         ]);
         $this->belongsTo('Users', [
             'foreignKey' => 'user_id',
@@ -74,12 +70,6 @@ class AnnotationsTable extends Table
             ->integer('id')
             ->allowEmpty('id', 'create');
 
-        $validator
-            ->allowEmpty('description');
-
-        $validator
-            ->allowEmpty('params');
-
         return $validator;
     }
 
@@ -90,7 +80,8 @@ class AnnotationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['object_id'], 'Objects'));
+        $rules->add($rules->isUnique(['role_id', 'user_id']));
+        $rules->add($rules->existsIn(['role_id'], 'Roles'));
         $rules->add($rules->existsIn(['user_id'], 'Users'));
 
         return $rules;

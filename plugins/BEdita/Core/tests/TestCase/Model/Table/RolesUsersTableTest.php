@@ -1,5 +1,4 @@
 <?php
-
 /**
  * BEdita, API-first content management framework
  * Copyright 2017 ChannelWeb Srl, Chialab Srl
@@ -18,17 +17,19 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\RelationTypesTable Test Case
+ * {@see \BEdita\Core\Model\Table\RolesUsersTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\RolesUsersTable
  */
-class RelationTypesTableTest extends TestCase
+class RolesUsersTableTest extends TestCase
 {
 
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\RelationTypesTable
+     * @var \BEdita\Core\Model\Table\RolesUsersTable
      */
-    public $RelationTypes;
+    public $RolesUsers;
 
     /**
      * Fixtures
@@ -36,31 +37,32 @@ class RelationTypesTableTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function setUp()
     {
         parent::setUp();
 
-        $this->RelationTypes = TableRegistry::get('RelationTypes');
+        $this->RolesUsers = TableRegistry::get('RolesUsers');
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function tearDown()
     {
-        unset($this->RelationTypes);
+        unset($this->RolesUsers);
 
         parent::tearDown();
     }
@@ -73,28 +75,18 @@ class RelationTypesTableTest extends TestCase
     public function validationProvider()
     {
         return [
-            'validLeft' => [
+            'valid' => [
                 true,
                 [
-                    'object_type_id' => 3,
-                    'relation_id' => 1,
-                    'side' => 'left',
+                    'role_id' => 2,
+                    'user_id' => 1,
                 ],
             ],
-            'validRight' => [
-                true,
-                [
-                    'object_type_id' => 3,
-                    'relation_id' => 1,
-                    'side' => 'right',
-                ],
-            ],
-            'invalidSide' => [
+            'notUnique' => [
                 false,
                 [
-                    'object_type_id' => 3,
-                    'relation_id' => 1,
-                    'side' => 'Dark side of the Moon',
+                    'role_id' => 1,
+                    'user_id' => 1,
                 ],
             ],
         ];
@@ -107,15 +99,15 @@ class RelationTypesTableTest extends TestCase
      * @param array $data Data to be validated.
      * @return void
      *
-     * @dataProvider validationProvider
+     * @dataProvider validationProvider()
      * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
-        $objectType = $this->RelationTypes->newEntity();
-        $this->RelationTypes->patchEntity($objectType, $data);
+        $objectType = $this->RolesUsers->newEntity();
+        $this->RolesUsers->patchEntity($objectType, $data);
 
-        $success = $this->RelationTypes->save($objectType);
+        $success = $this->RolesUsers->save($objectType);
         static::assertEquals($expected, (bool)$success);
     }
 }
