@@ -76,6 +76,11 @@ class EndpointAuthorize extends BaseAuthorize
         $application = $this->getApplication();
         $endpoint = $this->getEndpoint();
         $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
+        if (empty($permissions) && (!$endpoint || $this->getPermissions(false, $application, $endpoint)->count() === 0)) {
+            $this->authorized = true;
+
+            return $this->authorized;
+        }
 
         $this->authorized = $this->checkPermissions($permissions);
 
@@ -156,7 +161,7 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * Get list of applicable permissions.
      *
-     * @param mixed $user Authenticated (or anonymous) user.
+     * @param array|\ArrayAccess|false $user Authenticated (or anonymous) user.
      * @param \BEdita\Core\Model\Entity\Application|null $application Current application.
      * @param \BEdita\Core\Model\Entity\Endpoint|null $endpoint Current endpoint.
      * @return \Cake\ORM\Query
@@ -164,14 +169,20 @@ class EndpointAuthorize extends BaseAuthorize
      */
     protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null)
     {
-        $roleIds = Hash::extract($user, 'roles.{n}.id');
         $applicationId = $application ? $application->id : null;
         $endpointIds = $endpoint ? [$endpoint->id] : [];
 
-        return TableRegistry::get('EndpointPermissions')
-            ->find('byRole', compact('roleIds'))
+        $query = TableRegistry::get('EndpointPermissions')
             ->find('byApplication', compact('applicationId'))
             ->find('byEndpoint', compact('endpointIds'));
+
+        if ($user !== false) {
+            $roleIds = Hash::extract($user, 'roles.{n}.id');
+            $query = $query
+                ->find('byRole', compact('roleIds'));
+        }
+
+        return $query;
     }
 
     /**
@@ -182,21 +193,12 @@ class EndpointAuthorize extends BaseAuthorize
      */
     protected function checkPermissions(array $permissions)
     {
-        $result = EndpointPermission::PERM_NO;
-        if (empty($permissions)) {
-            $count = TableRegistry::get('EndpointPermissions')->find()->count();
-            if ($count === 0) {
-                $result = EndpointPermission::PERM_YES;
-            }
-
-            return EndpointPermission::decode($result);
-        }
-
         $shift = EndpointPermission::PERM_READ;
         if (!$this->request->is(['get', 'head'])) {
             $shift = EndpointPermission::PERM_WRITE;
         }
 
+        $result = EndpointPermission::PERM_NO;
         foreach ($permissions as $permission) {
             $permission = $permission->permission >> $shift & EndpointPermission::PERM_YES;
             $result = $result | $permission;
