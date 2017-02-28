@@ -70,7 +70,11 @@ class AppController extends Controller
 
         $this->loadComponent('Auth', [
             'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
-            'authorize' => ['BEdita/API.Endpoint'],
+            'authorize' => [
+                'BEdita/API.Endpoint' => [
+                    'disallowAnonymousApplications' => Configure::read('Security.disallowAnonymousApplications'),
+                ],
+            ],
             'loginAction' => ['_name' => 'api:login'],
             'loginRedirect' => ['_name' => 'api:login'],
             'unauthorizedRedirect' => false,
