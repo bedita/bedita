@@ -31,8 +31,11 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
 
     /**
      * Plugin used for tables and fields metadata.
+     *
      * These metadata are read from schema file in its `config/Migrations` folder.
-     * Defaults to: `BEdita/Core`
+     * Defaults to: `BEdita/Core`.
+     *
+     * @var string
      */
     protected $schemaPlugin = 'BEdita/Core';
 
