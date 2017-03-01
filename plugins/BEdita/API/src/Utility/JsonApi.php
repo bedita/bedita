@@ -148,6 +148,17 @@ class JsonApi
 
                 $related = Router::url($options, true);
             } catch (MissingRouteException $e) {
+                try {
+                    $options = [
+                        '_name' => sprintf('api:%s:related', $endpoint),
+                        'controller' => $endpoint,
+                        'related_id' => $entity->id,
+                        'relationship' => $name,
+                    ];
+
+                    $related = Router::url($options, true);
+                } catch (MissingRouteException $e) {
+                }
             }
 
             if (empty($self) && empty($related)) {

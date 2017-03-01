@@ -214,6 +214,11 @@ Router::plugin(
 
         // Objects.
         $routes->connect(
+            '/:object_type/:related_id/:relationship',
+            ['controller' => 'Objects', 'action' => 'index'],
+            ['_name' => 'objects:related']
+        );
+        $routes->connect(
             '/:object_type',
             ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'objects:index']
