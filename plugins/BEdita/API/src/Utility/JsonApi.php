@@ -13,15 +13,11 @@
 namespace BEdita\API\Utility;
 
 use Cake\Collection\CollectionInterface;
-use Cake\ORM\Association;
-use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * JSON API formatter API.
