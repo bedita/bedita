@@ -62,25 +62,40 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
     }
 
     /**
-     * Return fields for table defined in configuration.
+     * Get table schema reading from configuration.
      *
      * Configuration is retrieved from `config/Migrations/schema-dump-default.lock` file.
+     * Return false when it fails to load `TableSchema` from configuration.
+     *
+     * @return \Cake\Database\Schema\TableSchema|false
+     */
+    protected function getTableSchemaFromConf()
+    {
+        if (!Plugin::loaded($this->schemaPlugin)) {
+            return false;
+        }
+
+        $source = Plugin::configPath($this->schemaPlugin) . DS . 'Migrations' . DS . 'schema-dump-default.lock';
+        if (!file_exists($source) || !is_readable($source)) {
+            return false;
+        }
+
+        $schema = unserialize(file_get_contents($source));
+        if (empty($schema[$this->table])) {
+            return false;
+        }
+
+        return $schema[$this->table];
+    }
+
+    /**
+     * Return fields for table defined in configuration.
      *
      * @return array
      */
     protected function fieldsFromConf()
     {
-        $source = Plugin::configPath($this->schemaPlugin) . DS . 'Migrations' . DS . 'schema-dump-default.lock';
-        if (!file_exists($source) || !is_readable($source)) {
-            return [];
-        }
-
-        $schema = unserialize(file_get_contents($source));
-        if (empty($schema[$this->table])) {
-            return [];
-        }
-
-        $table = $schema[$this->table];
+        $table = $this->getTableSchemaFromConf();
         if (!($table instanceof Schema)) {
             return [];
         }
