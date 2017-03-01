@@ -799,7 +799,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::initialize()
      * @covers ::relationships()
-     * @covers ::findAssociation()
      */
     public function testListAssociations()
     {
@@ -882,7 +881,6 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::initialize()
      * @covers ::relationships()
-     * @covers ::findAssociation()
      */
     public function testListAssociationsNotFound()
     {
