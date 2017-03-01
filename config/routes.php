@@ -47,7 +47,7 @@ Router::plugin(
         $routes->connect(
             '/:relationship/:related_id/:controller',
             ['action' => 'related', '_method' => 'GET'],
-            ['_name' => 'related']
+            ['_name' => 'resources:related']
         );
 
         // Roles.
