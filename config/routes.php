@@ -47,7 +47,7 @@ Router::plugin(
         $routes->connect(
             '/:relationship/:related_id/:controller',
             ['action' => 'related', '_method' => 'GET'],
-            ['_name' => 'resources:related']
+            ['_name' => 'resources:related', 'controller' => 'object_types|properties|roles|users']
         );
 
         // Roles.
@@ -215,7 +215,7 @@ Router::plugin(
         // Objects.
         $routes->connect(
             '/:object_type/:related_id/:relationship',
-            ['controller' => 'Objects', 'action' => 'index'],
+            ['controller' => 'Objects', 'action' => 'related'],
             ['_name' => 'objects:related']
         );
         $routes->connect(
