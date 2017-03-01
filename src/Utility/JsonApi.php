@@ -71,8 +71,6 @@ class JsonApi
 
         if (isset($item['type'])) {
             $type = $item['type'];
-        } elseif ($item instanceof Entity) {
-            $type = TableRegistry::get($item->getSource())->getTable();
         }
 
         if ($endpoint === null) {
@@ -119,27 +117,18 @@ class JsonApi
      */
     protected static function extractRelationships(Entity $entity, $endpoint, $type = null, $options = [])
     {
-        $relationships = [];
-        $associations = TableRegistry::get($entity->getSource())->associations();
+        $associations = (array)$entity->get('relationships') ?: [];
         $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
-        $hidden = $entity->getHidden();
 
-        $btmJunctionAliases = array_map(
-            function (BelongsToMany $val) {
-                return $val->junction()->getAlias();
-            },
-            $associations->type('BelongsToMany')
-        );
+        if (!empty($options['allowedAssociations'])) {
+            $associations = array_intersect(
+                $associations,
+                array_keys(array_filter($options['allowedAssociations']))
+            );
+        }
 
-        foreach ($associations as $association) {
-            list(, $associationType) = namespaceSplit(get_class($association));
-            $name = $association->property();
-            if (!($association instanceof Association) || $associationType === 'ExtensionOf' || in_array($name, $hidden) ||
-                (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
-                ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))) {
-                continue;
-            }
-
+        $relationships = [];
+        foreach ($associations as $name) {
             try {
                 $options = [
                     '_name' => sprintf('api:%s:relationships', $endpoint),
