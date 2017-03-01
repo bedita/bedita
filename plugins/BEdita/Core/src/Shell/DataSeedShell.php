@@ -188,7 +188,7 @@ class DataSeedShell extends Shell
     {
         return [
             'name' => $this->faker->sentence(1),
-            'pluralized' => $this->faker->sentence(1),
+            'singular' => $this->faker->sentence(1),
             'description' => $this->faker->paragraph,
             'plugin' => $this->faker->sentence(1),
             'model' => $this->faker->sentence(1)
