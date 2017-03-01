@@ -123,7 +123,7 @@ class JsonApiComponent extends Component
      */
     public function getLinks()
     {
-        $request = $this->getController()->request;
+        $request = $this->getController()->request->withParam('pass', []);
         $links = [
             'self' => Router::reverse($request, true),
             'home' => Router::url(['_name' => 'api:home'], true),

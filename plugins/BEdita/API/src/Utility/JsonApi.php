@@ -219,7 +219,7 @@ class JsonApi
                 $options['object_type'] = $type;
             }
             $links = [
-                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), $id], true),
+                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), 'id' => $id], true),
             ];
         }
 
