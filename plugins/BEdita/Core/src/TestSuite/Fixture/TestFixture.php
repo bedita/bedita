@@ -29,6 +29,8 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
 {
     use EventDispatcherTrait;
 
+    protected $schemaPlugin = 'BEdita/Core';
+
     /**
      * {@inheritDoc}
      *
@@ -60,7 +62,7 @@ class TestFixture extends CakeFixture implements EventListenerInterface, EventDi
      */
     protected function fieldsFromConf()
     {
-        $source = Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock';
+        $source = Plugin::configPath($this->schemaPlugin) . DS . 'Migrations' . DS . 'schema-dump-default.lock';
         if (!file_exists($source) || !is_readable($source)) {
             return [];
         }
