@@ -160,6 +160,7 @@ class JsonApi
             $relationships[$name] = [
                 'links' => compact('related', 'self'),
             ];
+            unset($related, $self);
         }
 
         return $relationships;
