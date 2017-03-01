@@ -63,11 +63,16 @@ class RolesController extends ResourcesController
     {
         $query = $this->Roles->find('all');
 
-        $userId = $this->request->getParam('user_id');
-        if ($userId !== false) {
-            $query = $query->innerJoinWith('Users', function (Query $query) use ($userId) {
-                return $query->where(['Users.id' => $userId]);
-            });
+        $relatedId = $this->request->getParam('related_id');
+        if ($relatedId !== false) {
+            $relationship = $this->request->getParam('relationship');
+            $Association = $this->findAssociation($relationship);
+            $query = $query->innerJoinWith(
+                $Association->getName(),
+                function (Query $query) use ($Association, $relatedId) {
+                    return $query->where([$Association->aliasField('id') => $relatedId]);
+                }
+            );
         }
 
         $roles = $this->paginate($query);

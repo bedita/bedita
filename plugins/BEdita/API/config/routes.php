@@ -11,6 +11,7 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
+use Cake\Routing\Route\InflectedRoute;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 
@@ -21,6 +22,8 @@ Router::plugin(
         '_namePrefix' => 'api:',
     ],
     function (RouteBuilder $routes) {
+        $routes->routeClass(InflectedRoute::class);
+
         // Home.
         $routes->redirect(
             '/',
@@ -40,16 +43,11 @@ Router::plugin(
             ['_name' => 'status']
         );
 
-        // Roles and Users rules that must be on top
+        // Link to related resources.
         $routes->connect(
-            '/users/:user_id/roles',
-            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'users:roles']
-        );
-        $routes->connect(
-            '/roles/:role_id/users',
-            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'roles:users']
+            '/:relationship/:related_id/:controller',
+            ['action' => 'related', '_method' => 'GET'],
+            ['_name' => 'related']
         );
 
         // Roles.
@@ -84,18 +82,6 @@ Router::plugin(
             ['_name' => 'roles:relationships']
         );
 
-
-        // Object Types and Properties rules that must be on top
-        $routes->connect(
-            '/object_types/:object_type_id/properties',
-            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'object_types:properties']
-        );
-        $routes->connect(
-            '/properties/:property_id/object_types',
-            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'properties:object_types']
-        );
         // Object Types.
         $routes->connect(
             '/object_types',
@@ -122,12 +108,12 @@ Router::plugin(
             ['controller' => 'ObjectTypes', 'action' => 'delete', '_method' => 'DELETE'],
             ['_name' => 'object_types:delete', 'pass' => ['id']]
         );
-
         $routes->connect(
             '/object_types/:id/relationships/:relationship',
             ['controller' => 'ObjectTypes', 'action' => 'relationships'],
             ['_name' => 'object_types:relationships']
         );
+
         // Properties.
         $routes->connect(
             '/properties',
@@ -159,8 +145,6 @@ Router::plugin(
             ['controller' => 'Properties', 'action' => 'relationships'],
             ['_name' => 'properties:relationships']
         );
-
-
 
         // Users.
         $routes->connect(

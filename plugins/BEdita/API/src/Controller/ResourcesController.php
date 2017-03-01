@@ -66,6 +66,26 @@ abstract class ResourcesController extends AppController
     }
 
     /**
+     * Paginated list of resources.
+     *
+     * @return void
+     */
+    public abstract function index();
+
+    /**
+     * Paginated list of related resources.
+     *
+     * This method is an alias of {@see self::index()}. However, this is required because of how routes
+     * are matched by Cake.
+     *
+     * @return void
+     */
+    public function related()
+    {
+        $this->index();
+    }
+
+    /**
      * Find the association corresponding to the relationship name.
      *
      * @param string $relationship Relationship name.
