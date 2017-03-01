@@ -140,10 +140,10 @@ class JsonApi
 
             try {
                 $options = [
-                    '_name' => 'api:related',
+                    '_name' => 'api:resources:related',
                     'controller' => $name,
                     'related_id' => $entity->id,
-                    'relationship' => $endpoint,
+                    'relationship' => $type,
                 ];
 
                 $related = Router::url($options, true);
