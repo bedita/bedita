@@ -18,6 +18,7 @@ use BEdita\Core\Model\Action\ListRelatedObjects;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+use Cake\Utility\Inflector;
 
 /**
  * @coversDefaultClass \BEdita\Core\Model\Action\ListRelatedObjects
@@ -50,21 +51,7 @@ class ListRelatedObjectsTest extends TestCase
      */
     public function testConstructInvalidTable()
     {
-        new ListRelatedObjects(TableRegistry::get('ObjectTypes'), 'test');
-    }
-
-    /**
-     * Test constructor with a relation name that is not valid for the passed object type.
-     *
-     * @return void
-     *
-     * @covers ::__construct()
-     * @expectedException \Cake\Network\Exception\NotFoundException
-     * @expectedExceptionMessage Relation "invalid_relation" does not exist for object type "documents"
-     */
-    public function testConstructInvalidRelation()
-    {
-        new ListRelatedObjects(TableRegistry::get('Documents'), 'InvalidRelation');
+        new ListRelatedObjects(TableRegistry::get('ObjectTypes')->association('Properties'));
     }
 
     /**
@@ -76,7 +63,7 @@ class ListRelatedObjectsTest extends TestCase
      */
     public function testConstruct()
     {
-        $Action = new ListRelatedObjects(TableRegistry::get('Documents'), 'test');
+        $Action = new ListRelatedObjects(TableRegistry::get('Documents')->association('Test'), 'test');
 
         static::assertAttributeInstanceOf(BelongsToMany::class, 'Association', $Action);
         static::assertAttributeInstanceOf(ListAssociated::class, 'Action', $Action);
@@ -148,7 +135,7 @@ class ListRelatedObjectsTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id)
     {
-        $Action = new ListRelatedObjects(TableRegistry::get($objectType), $relation);
+        $Action = new ListRelatedObjects(TableRegistry::get($objectType)->association(Inflector::camelize($relation)));
 
         $result = json_decode(json_encode($Action($id)->toArray()), true);
 

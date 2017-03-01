@@ -13,9 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Network\Exception\NotFoundException;
-use Cake\ORM\Table;
-use Cake\Utility\Inflector;
+use Cake\ORM\Association;
 
 /**
  * Command to list associated objects.
@@ -42,30 +40,17 @@ class ListRelatedObjects
     /**
      * Command constructor.
      *
-     * @param \Cake\ORM\Table $Table Table object instance.
-     * @param string $relation Relation name.
+     * @param \Cake\ORM\Association $Association Association.
      */
-    public function __construct(Table $Table, $relation)
+    public function __construct(Association $Association)
     {
-        if (!$Table->hasBehavior('Relations')) {
+        if (!$Association->getSource()->hasBehavior('Relations')) {
             throw new \InvalidArgumentException(
-                __d('bedita', 'Table "{0}" does not implement relations', $Table->getRegistryAlias())
+                __d('bedita', 'Table "{0}" does not implement relations', $Association->getSource()->getRegistryAlias())
             );
         }
 
-        $associationName = Inflector::camelize($relation);
-        if (!$Table->associations()->has($associationName)) {
-            throw new NotFoundException(
-                __d(
-                    'bedita',
-                    'Relation "{0}" does not exist for object type "{1}"',
-                    Inflector::underscore($relation),
-                    Inflector::underscore($Table->getAlias())
-                )
-            );
-        }
-
-        $this->Association = $Table->association($associationName);
+        $this->Association = $Association;
         $this->Action = new ListAssociated($this->Association);
     }
 
