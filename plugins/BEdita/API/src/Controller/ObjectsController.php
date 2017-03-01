@@ -12,11 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\ListRelatedObjects;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 
@@ -210,5 +212,39 @@ class ObjectsController extends AppController
         return $this->response
             ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
+    }
+
+    /**
+     * View and manage relationships.
+     *
+     * @return \Cake\Network\Response|null
+     */
+    public function relationships()
+    {
+        $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
+
+        $id = $this->request->getParam('id');
+        $relationship = $this->request->getParam('relationship');
+
+        switch ($this->request->getMethod()) {
+            case 'PATCH':
+            case 'POST':
+            case 'DELETE':
+                throw new NotImplementedException(__d('bedita', 'Not yet implemented'));
+
+            case 'GET':
+            default:
+                $action = new ListRelatedObjects($this->Objects, $relationship);
+                $data = $action($id);
+
+                $data = $this->paginate($data);
+
+                $this->set(compact('data'));
+                $this->set([
+                    '_serialize' => ['data'],
+                ]);
+
+                return null;
+        }
     }
 }
