@@ -8,21 +8,13 @@ class RemovePluralized extends AbstractMigration
 
     public function up()
     {
+
         $this->table('object_types')
-            ->addColumn('singular', 'string', [
-                'after' => 'name',
-                'comment' => 'singular object type name',
-                'default' => null,
-                'length' => 50,
-                'null' => true,
-            ])
+            ->renameColumn('name', 'singular')
             ->update();
 
-        $this->query('UPDATE object_types set singular = name');
-        $this->query('UPDATE object_types set name = pluralized');
-
         $this->table('object_types')
-            ->changeColumn('singular', 'string', ['null' => false])
+            ->renameColumn('pluralized', 'name')
             ->update();
 
         $this->table('object_types')
@@ -40,11 +32,6 @@ class RemovePluralized extends AbstractMigration
         $this->table('object_types')
             ->removeIndexByName('objecttypes_plural_uq')
             ->update();
-
-        $this->table('object_types')
-            ->removeColumn('pluralized')
-            ->update();
-
     }
 
     public function down()
@@ -70,4 +57,3 @@ class RemovePluralized extends AbstractMigration
             ->update();
     }
 }
-
