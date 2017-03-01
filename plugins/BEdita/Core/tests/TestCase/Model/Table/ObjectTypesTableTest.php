@@ -52,7 +52,8 @@ class ObjectTypesTableTest extends TestCase
     {
         parent::setUp();
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
@@ -63,6 +64,10 @@ class ObjectTypesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->ObjectTypes);
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
         parent::tearDown();
     }

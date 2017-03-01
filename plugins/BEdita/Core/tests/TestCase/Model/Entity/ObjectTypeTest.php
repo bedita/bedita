@@ -50,8 +50,6 @@ class ObjectTypeTest extends TestCase
     {
         parent::setUp();
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
-
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
 
