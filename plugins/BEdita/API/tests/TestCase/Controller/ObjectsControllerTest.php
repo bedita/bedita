@@ -793,12 +793,130 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
+     * Test related method to list related objects.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::related()
+     * @covers ::findAssociation()
+     */
+    public function testRelated()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/test',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/documents/2/test',
+                'last' => 'http://api.example.com/documents/2/test',
+                'prev' => null,
+                'next' => null,
+            ],
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'body' => null,
+                        'extra' => null,
+                        'publish_start' => null,
+                        'publish_end' => null
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'publish_start' => null,
+                        'publish_end' => null
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/documents/2/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
      * Test relationships method to list existing relationships.
      *
      * @return void
      *
      * @covers ::initialize()
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testListAssociations()
     {
@@ -881,6 +999,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @covers ::initialize()
      * @covers ::relationships()
+     * @covers ::findAssociation()
      */
     public function testListAssociationsNotFound()
     {
