@@ -118,7 +118,6 @@ class JsonApi
     protected static function extractRelationships(Entity $entity, $endpoint, $type = null, $options = [])
     {
         $associations = (array)$entity->get('relationships') ?: [];
-        $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
 
         if (!empty($options['allowedAssociations'])) {
             $associations = array_intersect(
@@ -145,8 +144,10 @@ class JsonApi
 
             try {
                 $options = [
-                    '_name' => sprintf('api:%s:%s', $endpoint, $name),
-                    $relatedParam => $entity->id,
+                    '_name' => 'api:related',
+                    'controller' => $name,
+                    'related_id' => $entity->id,
+                    'relationship' => $endpoint,
                 ];
 
                 $related = Router::url($options, true);
