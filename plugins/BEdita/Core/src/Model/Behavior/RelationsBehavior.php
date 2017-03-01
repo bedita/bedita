@@ -29,6 +29,9 @@ class RelationsBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'objectType' => null,
+        'implementedMethods' => [
+            'getRelations' => 'getRelations',
+        ],
     ];
 
     /**
@@ -91,5 +94,22 @@ class RelationsBehavior extends Behavior
                 ],
             ]);
         }
+    }
+
+    /**
+     * Get a list of all available relations indexed by their name with regards of side.
+     *
+     * @return \BEdita\Core\Model\Entity\Relation[]
+     */
+    public function getRelations()
+    {
+        $relations = collection($this->objectType->left_relations)
+            ->indexBy('name')
+            ->append(
+                collection($this->objectType->right_relations)
+                    ->indexBy('inverse_name')
+            );
+
+        return $relations->toArray();
     }
 }
