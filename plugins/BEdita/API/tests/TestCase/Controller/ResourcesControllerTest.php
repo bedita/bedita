@@ -81,10 +81,10 @@ class ResourcesControllerTest extends IntegrationTestCase
                         'roles' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
-                                'self' => 'http://api.example.com/users/1/relationships/roles'
-                            ]
-                        ]
-                    ]
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'meta' => [
