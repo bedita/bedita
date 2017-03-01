@@ -385,14 +385,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'relationships' => [
                     'test' => [
                         'links' => [
-                            'related' => 'http://api.example.com/documents/3/test',
-                            'self' => 'http://api.example.com/documents/3/relationships/test',
+                            'related' => 'http://api.example.com/documents/2/test',
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
-                            'related' => 'http://api.example.com/documents/3/inverse_test',
-                            'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
                         ],
                     ],
                 ],
@@ -452,14 +452,14 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'relationships' => [
                     'test' => [
                         'links' => [
-                            'related' => 'http://api.example.com/documents/3/test',
-                            'self' => 'http://api.example.com/documents/3/relationships/test',
+                            'related' => 'http://api.example.com/documents/6/test',
+                            'self' => 'http://api.example.com/documents/6/relationships/test',
                         ],
                     ],
                     'inverse_test' => [
                         'links' => [
-                            'related' => 'http://api.example.com/documents/3/inverse_test',
-                            'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/6/inverse_test',
+                            'self' => 'http://api.example.com/documents/6/relationships/inverse_test',
                         ],
                     ],
                 ],
