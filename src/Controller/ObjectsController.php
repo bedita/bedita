@@ -117,7 +117,7 @@ class ObjectsController extends AppController
 
         $object = $this->Objects->newEntity($this->request->getData());
         $object->type = $this->request->getData('type');
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+        if ($this->objectType && $object->type !== $this->objectType->name) {
             $this->log('Bad type on object creation ' . $object->type, 'error');
             throw new BadRequestException('Invalid type');
         }
@@ -166,7 +166,7 @@ class ObjectsController extends AppController
             'conditions' => ['deleted' => 0]
         ]);
 
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+        if ($this->objectType && $object->type !== $this->objectType->name) {
             $this->log('Bad type on object edit ' . $object->type, 'error');
             throw new NotFoundException('Invalid type');
         }
@@ -197,7 +197,7 @@ class ObjectsController extends AppController
             'conditions' => ['deleted' => 0]
         ]);
 
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
+        if ($this->objectType && $object->type !== $this->objectType->name) {
             $this->log('Bad type on object delete ' . $object->type, 'error');
             throw new NotFoundException('Invalid type');
         }

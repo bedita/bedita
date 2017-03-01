@@ -66,7 +66,7 @@ class HomeController extends AppController
      */
     protected function objectTypesEndpoints()
     {
-        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'pluralized'])->toArray();
+        $allTypes = TableRegistry::get('ObjectTypes')->find('list', ['valueField' => 'name'])->toArray();
         $endPoints = [];
         foreach ($allTypes as $t) {
             $endPoints[] = '/' . $t;
