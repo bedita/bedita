@@ -25,4 +25,6 @@ use Cake\ORM\Entity;
  */
 class PropertyType extends Entity
 {
+
+    use JsonApiTrait;
 }

@@ -33,6 +33,8 @@ use Cake\ORM\Entity;
 class Relation extends Entity
 {
 
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */
