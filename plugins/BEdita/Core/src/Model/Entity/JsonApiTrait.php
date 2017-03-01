@@ -31,14 +31,14 @@ trait JsonApiTrait
      *
      * @return string[]
      */
-    public abstract function getHidden();
+    abstract public function getHidden();
 
     /**
      * Getter for source model registry alias.
      *
      * @return string
      */
-    public abstract function getSource();
+    abstract public function getSource();
 
     /**
      * Magic getter for `type` property.
