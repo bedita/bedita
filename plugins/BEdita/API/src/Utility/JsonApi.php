@@ -151,7 +151,7 @@ class JsonApi
                 try {
                     $options = [
                         '_name' => sprintf('api:%s:related', $endpoint),
-                        'controller' => $endpoint,
+                        'object_type' => $type,
                         'related_id' => $entity->id,
                         'relationship' => $name,
                     ];
