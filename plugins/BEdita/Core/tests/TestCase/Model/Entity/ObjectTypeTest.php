@@ -156,8 +156,8 @@ class ObjectTypeTest extends TestCase
      * @return void
      *
      * @dataProvider getSetSingularProvider
-     * @covers ::_getsingular()
-     * @covers ::_setsingular()
+     * @covers ::_getSingular()
+     * @covers ::_setSingular()
      */
     public function testGetSetSingular($expected, $name, $singular)
     {
@@ -190,7 +190,7 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * Data provider for `testGetSetsingular` test case.
+     * Data provider for `testGetSetTable` test case.
      *
      * @return array
      */
