@@ -70,7 +70,7 @@ abstract class ResourcesController extends AppController
      *
      * @return void
      */
-    public abstract function index();
+    abstract public function index();
 
     /**
      * Paginated list of related resources.
