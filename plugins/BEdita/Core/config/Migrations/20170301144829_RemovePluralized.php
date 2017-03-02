@@ -1,6 +1,9 @@
 <?php
 use Migrations\AbstractMigration;
 
+/**
+ * Make pluralized form the most significant column for `object_types` table.
+ */
 class RemovePluralized extends AbstractMigration
 {
 
@@ -82,7 +85,7 @@ class RemovePluralized extends AbstractMigration
                     'pluralized',
                 ],
                 [
-                    'name' => 'objecttypes_pluralized_uq',
+                    'name' => 'objecttypes_plural_uq',
                     'unique' => true,
                 ]
             )
