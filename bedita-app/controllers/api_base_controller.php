@@ -1913,7 +1913,7 @@ abstract class ApiBaseController extends FrontendController {
      * @param array $thumbConf
      * @return poster data array
      */
-    private function posterData($id, array $thumbConf = array()) {
+    protected function posterData($id, array $thumbConf = array()) {
         $objectType = $this->BEObject->getType($id);
         $model = ClassRegistry::init($objectType);
 
