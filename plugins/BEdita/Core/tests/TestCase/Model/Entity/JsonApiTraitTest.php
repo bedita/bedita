@@ -111,7 +111,7 @@ class JsonApiTraitTest extends TestCase
         $role = $this->Roles->newEntity();
         $role->setHidden(['users' => true], true);
 
-        $relationships = $role->get('relationships');
+        $relationships = $role->relationships;
 
         static::assertSame([], $relationships);
     }
