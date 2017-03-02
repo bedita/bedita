@@ -132,7 +132,7 @@ class Property extends Entity
             }
         }
 
-        return $this->object_type->pluralized;
+        return $this->object_type->name;
     }
 
     /**
