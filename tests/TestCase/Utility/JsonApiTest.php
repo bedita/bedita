@@ -476,7 +476,7 @@ class JsonApiTest extends TestCase
 
         $result = JsonApi::formatData($items($this->Roles), $type);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -499,6 +499,66 @@ class JsonApiTest extends TestCase
 
         $result = JsonApi::parseData($items);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test generation of relationships links.
+     *
+     * @return void
+     *
+     * @covers ::formatData
+     * @covers ::formatItem
+     * @covers ::extractType
+     * @covers ::extractAttributes
+     * @covers ::extractRelationships
+     */
+    public function testFallbackLinks()
+    {
+        $expected = [
+            'id' => '2',
+            'type' => 'documents',
+            'attributes' => [
+                'status' => 'on',
+                'uname' => 'title-one',
+                'locked' => true,
+                'created' => '2016-05-13T07:09:23+00:00',
+                'modified' => '2016-05-13T07:09:23+00:00',
+                'published' => '2016-05-13T07:09:23+00:00',
+                'title' => 'title one',
+                'description' => 'description here',
+                'body' => 'body here',
+                'extra' => [
+                    'abstract' => 'abstract here',
+                    'list' => ['one', 'two', 'three'],
+                ],
+                'lang' => 'eng',
+                'created_by' => 1,
+                'modified_by' => 1,
+                'publish_start' => '2016-05-13T07:09:23+00:00',
+                'publish_end' => '2016-05-13T07:09:23+00:00',
+            ],
+            'relationships' => [
+                'test' => [
+                    'links' => [
+                        'related' => '/documents/2/test',
+                        'self' => '/documents/2/relationships/test',
+                    ],
+                ],
+                'inverse_test' => [
+                    'links' => [
+                        'related' => '/documents/2/inverse_test',
+                        'self' => '/documents/2/relationships/inverse_test',
+                    ],
+                ],
+            ],
+        ];
+
+        $result = JsonApi::formatData(
+            TableRegistry::get('Documents')->get(2),
+            'objects'
+        );
+
+        static::assertEquals($expected, $result);
     }
 }
