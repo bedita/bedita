@@ -4,10 +4,20 @@ use Migrations\AbstractMigration;
 class RemovePluralized extends AbstractMigration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public $autoId = false;
 
+    /**
+     * {@inheritdoc}
+     */
     public function up()
     {
+        $this->table('object_types')
+            ->removeIndexByName('objecttypes_name_uq')
+            ->removeIndexByName('objecttypes_plural_uq')
+            ->update();
 
         $this->table('object_types')
             ->renameColumn('name', 'singular')
@@ -20,6 +30,15 @@ class RemovePluralized extends AbstractMigration
         $this->table('object_types')
             ->addIndex(
                 [
+                    'name',
+                ],
+                [
+                    'name' => 'objecttypes_name_uq',
+                    'unique' => true,
+                ]
+            )
+            ->addIndex(
+                [
                     'singular',
                 ],
                 [
@@ -28,29 +47,42 @@ class RemovePluralized extends AbstractMigration
                 ]
             )
             ->update();
-
-        $this->table('object_types')
-            ->removeIndexByName('objecttypes_plural_uq')
-            ->update();
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function down()
     {
         $this->table('object_types')
-            ->addColumn('pluralized', 'string', [
-                'after' => 'name',
-                'comment' => 'pluralized object type name',
-                'default' => null,
-                'length' => 50,
-                'null' => false,
-            ])
-            ->removeColumn('singular')
+            ->removeIndexByName('objecttypes_name_uq')
+            ->removeIndexByName('objecttypes_singular_uq')
+            ->update();
+
+        $this->table('object_types')
+            ->renameColumn('name', 'pluralized')
+            ->update();
+
+        $this->table('object_types')
+            ->renameColumn('singular', 'name')
+            ->update();
+
+        $this->table('object_types')
+            ->addIndex(
+                [
+                    'name',
+                ],
+                [
+                    'name' => 'objecttypes_name_uq',
+                    'unique' => true,
+                ]
+            )
             ->addIndex(
                 [
                     'pluralized',
                 ],
                 [
-                    'name' => 'objecttypes_plural_uq',
+                    'name' => 'objecttypes_pluralized_uq',
                     'unique' => true,
                 ]
             )
