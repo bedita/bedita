@@ -211,6 +211,7 @@ class UsersControllerTest extends IntegrationTestCase
      * @return void
      *
      * @covers ::index()
+     * @covers ::related()
      * @covers ::initialize()
      */
     public function testIndexRoles()
