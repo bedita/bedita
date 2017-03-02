@@ -34,7 +34,7 @@ class ObjectsHandler
         $objectType = TableRegistry::get('ObjectTypes')->get($type);
         $table = TableRegistry::get($objectType->model);
         $entity = $table->newEntity($data);
-        $entity->type = $type;
+        $entity->type = $objectType->name;
         $saveResult = $table->save($entity);
 
         // restore current user
