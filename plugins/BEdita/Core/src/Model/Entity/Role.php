@@ -32,6 +32,8 @@ use Cake\ORM\Entity;
 class Role extends Entity
 {
 
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */

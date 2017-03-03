@@ -11,6 +11,7 @@ require dirname(__DIR__) . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR 
 
 $_SERVER['PHP_SELF'] = '/';
 
+use Cake\Cache\Cache;
 use Cake\Datasource\ConnectionManager;
 use Cake\Log\Log;
 
@@ -21,6 +22,9 @@ if (getenv('db_dsn')) {
 if (!defined('API_KEY')) {
     define('API_KEY', 'API_KEY');
 }
+
+Cache::drop('_bedita_object_types_');
+Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
 if (getenv('DEBUG_LOG_QUERIES')) {
     ConnectionManager::get('test')->logQueries(true);

@@ -15,7 +15,6 @@ namespace BEdita\Core\Model\Behavior;
 
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
-use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Inflector;
 
@@ -30,6 +29,9 @@ class RelationsBehavior extends Behavior
      */
     protected $_defaultConfig = [
         'objectType' => null,
+        'implementedMethods' => [
+            'getRelations' => 'getRelations',
+        ],
     ];
 
     /**
@@ -71,6 +73,9 @@ class RelationsBehavior extends Behavior
                 'conditions' => [
                     'ObjectRelations.relation_id' => $relation->id,
                 ],
+                'sort' => [
+                    'ObjectRelations.priority' => 'asc',
+                ],
             ]);
         }
 
@@ -84,7 +89,27 @@ class RelationsBehavior extends Behavior
                 'conditions' => [
                     'ObjectRelations.relation_id' => $relation->id,
                 ],
+                'sort' => [
+                    'ObjectRelations.inv_priority' => 'asc',
+                ],
             ]);
         }
+    }
+
+    /**
+     * Get a list of all available relations indexed by their name with regards of side.
+     *
+     * @return \BEdita\Core\Model\Entity\Relation[]
+     */
+    public function getRelations()
+    {
+        $relations = collection($this->objectType->left_relations)
+            ->indexBy('name')
+            ->append(
+                collection($this->objectType->right_relations)
+                    ->indexBy('inverse_name')
+            );
+
+        return $relations->toArray();
     }
 }

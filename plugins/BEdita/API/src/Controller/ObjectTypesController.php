@@ -61,6 +61,18 @@ class ObjectTypesController extends ResourcesController
     {
         $query = $this->ObjectTypes->find('all');
 
+        $relatedId = $this->request->getParam('related_id');
+        if ($relatedId !== false) {
+            $relationship = $this->request->getParam('relationship');
+            $Association = $this->findAssociation($relationship);
+            $query = $query->innerJoinWith(
+                $Association->getName(),
+                function (Query $query) use ($Association, $relatedId) {
+                    return $query->where([$Association->aliasField('id') => $relatedId]);
+                }
+            );
+        }
+
         $objectTypes = $this->paginate($query);
 
         $this->set(compact('objectTypes'));

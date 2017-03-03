@@ -40,6 +40,9 @@ use Cake\ORM\TableRegistry;
  */
 class Property extends Entity
 {
+
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */

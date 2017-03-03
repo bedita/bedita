@@ -4,8 +4,7 @@ namespace BEdita\Core\Test\Fixture;
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
 /**
- * ObjectRelationsFixture
- *
+ * Fixture for `object_relations` table.
  */
 class ObjectRelationsFixture extends TestFixture
 {
@@ -17,12 +16,28 @@ class ObjectRelationsFixture extends TestFixture
      */
     public $records = [
         [
-            'left_id' => 1,
+            'left_id' => 2,
             'relation_id' => 1,
-            'right_id' => 1,
+            'right_id' => 4,
+            'priority' => 1,
+            'inv_priority' => 2,
+            'params' => '',
+        ],
+        [
+            'left_id' => 3,
+            'relation_id' => 1,
+            'right_id' => 4,
             'priority' => 1,
             'inv_priority' => 1,
-            'params' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.'
+            'params' => '',
+        ],
+        [
+            'left_id' => 2,
+            'relation_id' => 1,
+            'right_id' => 3,
+            'priority' => 2,
+            'inv_priority' => 1,
+            'params' => '',
         ],
     ];
 }

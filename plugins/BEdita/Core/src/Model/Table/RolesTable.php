@@ -22,6 +22,14 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\BelongsToMany $Users
  *
+ * @method \BEdita\Core\Model\Entity\Role get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Role patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Role findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @since 4.0.0
  */
 class RolesTable extends Table

@@ -34,6 +34,8 @@ use Cake\Utility\Inflector;
 class ObjectType extends Entity
 {
 
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */

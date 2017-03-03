@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\Model\Behavior\RelationsBehavior;
+use BEdita\Core\Model\Entity\Relation;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -21,7 +21,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\RelationsBehavior} Test Case
  *
- * @covers \BEdita\Core\Model\Behavior\RelationsBehavior
+ * @coversDefaultClass \BEdita\Core\Model\Behavior\RelationsBehavior
  */
 class RelationsBehaviorTest extends TestCase
 {
@@ -43,6 +43,8 @@ class RelationsBehaviorTest extends TestCase
      * Test initial setup
      *
      * @return void
+     *
+     * @covers ::initialize()
      */
     public function testInitialization()
     {
@@ -54,5 +56,30 @@ class RelationsBehaviorTest extends TestCase
         static::assertInstanceOf(BelongsToMany::class, $Documents->association('Test'));
         static::assertInstanceOf(BelongsToMany::class, $Documents->association('InverseTest'));
         static::assertInstanceOf(BelongsToMany::class, $Profiles->association('InverseTest'));
+    }
+
+    /**
+     * Test getter of relations.
+     *
+     * @return void
+     *
+     * @covers ::getRelations()
+     */
+    public function testGetRelations()
+    {
+        $expected = [
+            'test',
+            'inverse_test',
+        ];
+
+        $Documents = TableRegistry::get('Documents');
+
+        static::assertTrue($Documents->behaviors()->hasMethod('getRelations'));
+
+        $relations = $Documents->behaviors()->call('getRelations');
+        static::assertEquals($expected, array_keys($relations));
+        foreach ($relations as $relation) {
+            static::assertInstanceOf(Relation::class, $relation);
+        }
     }
 }

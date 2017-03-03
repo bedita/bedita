@@ -13,6 +13,7 @@
 
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Routing\Route\InflectedRoute;
 
 Router::plugin(
     'BEdita/API',
@@ -21,6 +22,8 @@ Router::plugin(
         '_namePrefix' => 'api:',
     ],
     function (RouteBuilder $routes) {
+        $routes->routeClass(InflectedRoute::class);
+
         // Home.
         $routes->redirect(
             '/',
@@ -40,16 +43,11 @@ Router::plugin(
             ['_name' => 'status']
         );
 
-        // Roles and Users rules that must be on top
+        // Link to related resources.
         $routes->connect(
-            '/users/:user_id/roles',
-            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'users:roles']
-        );
-        $routes->connect(
-            '/roles/:role_id/users',
-            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'roles:users']
+            '/:relationship/:related_id/:controller',
+            ['action' => 'related', '_method' => 'GET'],
+            ['_name' => 'resources:related', 'controller' => 'object_types|properties|roles|users']
         );
 
         // Roles.
@@ -59,9 +57,9 @@ Router::plugin(
             ['_name' => 'roles:index']
         );
         $routes->connect(
-            '/roles/*',
+            '/roles/:id',
             ['controller' => 'Roles', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'roles:view']
+            ['_name' => 'roles:view', 'pass' => ['id']]
         );
         $routes->connect(
             '/roles',
@@ -69,14 +67,14 @@ Router::plugin(
             ['_name' => 'roles:add']
         );
         $routes->connect(
-            '/roles/*',
+            '/roles/:id',
             ['controller' => 'Roles', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'roles:edit']
+            ['_name' => 'roles:edit', 'pass' => ['id']]
         );
         $routes->connect(
-            '/roles/*',
+            '/roles/:id',
             ['controller' => 'Roles', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'roles:delete']
+            ['_name' => 'roles:delete', 'pass' => ['id']]
         );
         $routes->connect(
             '/roles/:id/relationships/:relationship',
@@ -84,18 +82,6 @@ Router::plugin(
             ['_name' => 'roles:relationships']
         );
 
-
-        // Object Types and Properties rules that must be on top
-        $routes->connect(
-            '/object_types/:object_type_id/properties',
-            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'object_types:properties']
-        );
-        $routes->connect(
-            '/properties/:property_id/object_types',
-            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'properties:object_types']
-        );
         // Object Types.
         $routes->connect(
             '/object_types',
@@ -103,9 +89,9 @@ Router::plugin(
             ['_name' => 'object_types:index']
         );
         $routes->connect(
-            '/object_types/*',
+            '/object_types/:id',
             ['controller' => 'ObjectTypes', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'object_types:view']
+            ['_name' => 'object_types:view', 'pass' => ['id']]
         );
         $routes->connect(
             '/object_types',
@@ -113,21 +99,21 @@ Router::plugin(
             ['_name' => 'object_types:add']
         );
         $routes->connect(
-            '/object_types/*',
+            '/object_types/:id',
             ['controller' => 'ObjectTypes', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'object_types:edit']
+            ['_name' => 'object_types:edit', 'pass' => ['id']]
         );
         $routes->connect(
-            '/object_types/*',
+            '/object_types/:id',
             ['controller' => 'ObjectTypes', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'object_types:delete']
+            ['_name' => 'object_types:delete', 'pass' => ['id']]
         );
-
         $routes->connect(
             '/object_types/:id/relationships/:relationship',
             ['controller' => 'ObjectTypes', 'action' => 'relationships'],
             ['_name' => 'object_types:relationships']
         );
+
         // Properties.
         $routes->connect(
             '/properties',
@@ -135,9 +121,9 @@ Router::plugin(
             ['_name' => 'properties:index']
         );
         $routes->connect(
-            '/properties/*',
+            '/properties/:id',
             ['controller' => 'Properties', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'properties:view']
+            ['_name' => 'properties:view', 'pass' => ['id']]
         );
         $routes->connect(
             '/properties',
@@ -145,22 +131,20 @@ Router::plugin(
             ['_name' => 'properties:add']
         );
         $routes->connect(
-            '/properties/*',
+            '/properties/:id',
             ['controller' => 'Properties', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'properties:edit']
+            ['_name' => 'properties:edit', 'pass' => ['id']]
         );
         $routes->connect(
-            '/properties/*',
+            '/properties/:id',
             ['controller' => 'Properties', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'properties:delete']
+            ['_name' => 'properties:delete', 'pass' => ['id']]
         );
         $routes->connect(
             '/properties/:id/relationships/:relationship',
             ['controller' => 'Properties', 'action' => 'relationships'],
             ['_name' => 'properties:relationships']
         );
-
-
 
         // Users.
         $routes->connect(
@@ -169,9 +153,9 @@ Router::plugin(
             ['_name' => 'users:index']
         );
         $routes->connect(
-            '/users/*',
+            '/users/:id',
             ['controller' => 'Users', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'users:view']
+            ['_name' => 'users:view', 'pass' => ['id']]
         );
         $routes->connect(
             '/users',
@@ -179,14 +163,14 @@ Router::plugin(
             ['_name' => 'users:add']
         );
         $routes->connect(
-            '/users/*',
+            '/users/:id',
             ['controller' => 'Users', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'users:edit']
+            ['_name' => 'users:edit', 'pass' => ['id']]
         );
         $routes->connect(
-            '/users/*',
+            '/users/:id',
             ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'users:delete']
+            ['_name' => 'users:delete', 'pass' => ['id']]
         );
         $routes->connect(
             '/users/:id/relationships/:relationship',
@@ -213,31 +197,36 @@ Router::plugin(
             ['_name' => 'trash:index']
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'trash:view']
+            ['_name' => 'trash:view', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'restore', '_method' => 'PATCH'],
-            ['_name' => 'trash:restore']
+            ['_name' => 'trash:restore', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'trash:delete']
+            ['_name' => 'trash:delete', 'pass' => ['id']]
         );
 
         // Objects.
+        $routes->connect(
+            '/:object_type/:related_id/:relationship',
+            ['controller' => 'Objects', 'action' => 'related'],
+            ['_name' => 'objects:related']
+        );
         $routes->connect(
             '/:object_type',
             ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
             ['_name' => 'objects:index']
         );
         $routes->connect(
-            '/:object_type/*',
+            '/:object_type/:id',
             ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'objects:view']
+            ['_name' => 'objects:view', 'pass' => ['id']]
         );
         $routes->connect(
             '/:object_type',
@@ -245,14 +234,14 @@ Router::plugin(
             ['_name' => 'objects:add']
         );
         $routes->connect(
-            '/:object_type/*',
+            '/:object_type/:id',
             ['controller' => 'Objects', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'objects:edit']
+            ['_name' => 'objects:edit', 'pass' => ['id']]
         );
         $routes->connect(
-            '/:object_type/*',
+            '/:object_type/:id',
             ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'objects:delete']
+            ['_name' => 'objects:delete', 'pass' => ['id']]
         );
         $routes->connect(
             '/:object_type/:id/relationships/:relationship',
