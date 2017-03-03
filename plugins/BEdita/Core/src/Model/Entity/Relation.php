@@ -65,7 +65,7 @@ class Relation extends Entity
      * @param string $name Relation name.
      * @return string
      */
-    public function _setName($name)
+    protected function _setName($name)
     {
         return Inflector::dasherize($name);
     }
@@ -76,7 +76,7 @@ class Relation extends Entity
      * @param string $inverseName Relation inverse name.
      * @return string
      */
-    public function _setInverseName($inverseName)
+    protected function _setInverseName($inverseName)
     {
         return Inflector::dasherize($inverseName);
     }
@@ -86,7 +86,7 @@ class Relation extends Entity
      *
      * @return string
      */
-    public function _getAlias()
+    protected function _getAlias()
     {
         return Inflector::camelize(Inflector::underscore($this->name));
     }
@@ -96,7 +96,7 @@ class Relation extends Entity
      *
      * @return string
      */
-    public function _getInverseAlias()
+    protected function _getInverseAlias()
     {
         return Inflector::camelize(Inflector::underscore($this->inverse_name));
     }
