@@ -66,4 +66,29 @@ class ObjectsHandlerTest extends TestCase
         $result = ObjectsHandler::remove($userId);
         $this->assertTrue($result);
     }
+
+    /**
+     * Test `create` failure
+     *
+     * @return void
+     * @covers ::create()
+     * @expectedException Cake\Console\Exception\StopException
+     */
+    public function testCreateException()
+    {
+        $data = [];
+        ObjectsHandler::create('users', $data);
+    }
+
+    /**
+     * Test `delete` failure
+     *
+     * @return void
+     * @covers ::create()
+     * @expectedException Cake\Datasource\Exception\RecordNotFoundException
+     */
+    public function testDeleteException()
+    {
+        ObjectsHandler::remove(123456);
+    }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace BEdita\Core\Utility;
 
+use Cake\Console\Exception\StopException;
+use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Migrations\AbstractSeed;
 
@@ -36,6 +38,10 @@ class ObjectsHandler
         $entity = $table->newEntity($data);
         $entity->type = $objectType->name;
         $saveResult = $table->save($entity);
+        if (!$saveResult) {
+            Log::write('error', 'Object creation failed  - ' . $type . ' - ' . json_encode($entity->errors()));
+            throw new StopException(['title' => 'Invalid data', 'detail' => [$entity->errors()]]);
+        }
 
         // restore current user
         LoggedUser::setUser($currentUser);
