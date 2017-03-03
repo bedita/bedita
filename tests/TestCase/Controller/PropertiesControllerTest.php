@@ -94,14 +94,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/1',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/1/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/1/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '2',
@@ -120,14 +112,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/2',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/2/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/2/object_types',
-                            ],
-                        ],
                     ],
                 ],
                 [
@@ -148,14 +132,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/3',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/3/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/3/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '4',
@@ -174,14 +150,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/4',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/4/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/4/object_types',
-                            ],
-                        ],
                     ],
                 ],
                 [
@@ -202,14 +170,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/5',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/5/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/5/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '6',
@@ -228,14 +188,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/6',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/6/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/6/object_types',
-                            ],
-                        ],
                     ],
                 ],
             ],
@@ -331,14 +283,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'object_type_name' => 'documents',
                     'label' => null,
                     'list_view' => true
-                ],
-                'relationships' => [
-                    'object_types' => [
-                        'links' => [
-                            'self' => 'http://api.example.com/properties/1/relationships/object_types',
-                            'related' => 'http://api.example.com/properties/1/object_types',
-                        ],
-                    ],
                 ],
             ],
         ];
