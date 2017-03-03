@@ -16,7 +16,6 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Relations behavior
