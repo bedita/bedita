@@ -23,6 +23,7 @@ use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
  * Base controller for CRUD actions on generic resources.
@@ -94,6 +95,7 @@ abstract class ResourcesController extends AppController
      */
     protected function findAssociation($relationship)
     {
+        $relationship = Inflector::underscore($relationship);
         if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
             $associations = TableRegistry::get($this->modelClass)->associations();
             foreach ($associations as $association) {
