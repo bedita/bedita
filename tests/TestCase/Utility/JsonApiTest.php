@@ -545,10 +545,10 @@ class JsonApiTest extends TestCase
                         'self' => '/documents/2/relationships/test',
                     ],
                 ],
-                'inverse_test' => [
+                'inverse-test' => [
                     'links' => [
-                        'related' => '/documents/2/inverse_test',
-                        'self' => '/documents/2/relationships/inverse_test',
+                        'related' => '/documents/2/inverse-test',
+                        'self' => '/documents/2/relationships/inverse-test',
                     ],
                 ],
             ],
