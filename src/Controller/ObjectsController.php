@@ -12,13 +12,17 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\Core\Model\Action\ListRelatedObjects;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
+use Cake\Network\Exception\NotImplementedException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
+use Cake\Utility\Inflector;
 
 /**
  * Controller for `/objects` endpoint.
@@ -27,8 +31,9 @@ use Cake\Routing\Router;
  *
  * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
-class ObjectsController extends AppController
+class ObjectsController extends ResourcesController
 {
+
     /**
      * {@inheritDoc}
      */
@@ -48,13 +53,15 @@ class ObjectsController extends AppController
     {
         parent::initialize();
 
-        $type = $this->request->getParam('object_type') ?: 'objects';
+        $type = $this->request->getParam('object_type', 'objects');
         if ($type != 'objects') {
             try {
                 $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
-                $this->Objects = TableRegistry::get($this->objectType->alias);
+                $this->modelClass = $this->objectType->alias;
+                $this->Objects = TableRegistry::get($this->modelClass);
             } catch (RecordNotFoundException $e) {
                 $this->log('Type endpoint does not exist ' . $type, 'error');
+
                 throw new NotFoundException('Endpoint does not exist');
             }
         }
@@ -81,6 +88,42 @@ class ObjectsController extends AppController
 
         $this->set(compact('objects'));
         $this->set('_serialize', ['objects']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function related()
+    {
+        $relationship = $this->request->getParam('relationship');
+        $relatedId = $this->request->getParam('related_id');
+
+        $Association = $this->findAssociation($relationship);
+
+        $action = new ListRelatedObjects($Association);
+        $query = $action($relatedId);
+
+        $query = $query->select($Association, true);
+
+        $objects = $this->paginate($query);
+
+        $this->set(compact('objects'));
+        $this->set([
+            '_serialize' => ['objects'],
+        ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function findAssociation($relationship)
+    {
+        $behaviorRegistry = $this->Objects->behaviors();
+        if ($behaviorRegistry->hasMethod('getRelations') && array_key_exists($relationship, $behaviorRegistry->call('getRelations'))) {
+            return $this->Objects->association(Inflector::camelize($relationship));
+        }
+
+        return parent::findAssociation($relationship);
     }
 
     /**
@@ -210,5 +253,43 @@ class ObjectsController extends AppController
         return $this->response
             ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
+    }
+
+    /**
+     * View and manage relationships.
+     *
+     * @return \Cake\Network\Response|null
+     */
+    public function relationships()
+    {
+        $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
+
+        $id = $this->request->getParam('id');
+        $relationship = $this->request->getParam('relationship');
+
+        $Association = $this->findAssociation($relationship);
+
+        switch ($this->request->getMethod()) {
+            case 'PATCH':
+            case 'POST':
+            case 'DELETE':
+                throw new NotImplementedException(__d('bedita', 'Not yet implemented'));
+
+            case 'GET':
+            default:
+                $action = new ListRelatedObjects($Association);
+                $data = $action($id);
+
+                if ($data instanceof Query) {
+                    $data = $this->paginate($data);
+                }
+
+                $this->set(compact('data'));
+                $this->set([
+                    '_serialize' => ['data'],
+                ]);
+
+                return null;
+        }
     }
 }

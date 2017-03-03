@@ -13,15 +13,11 @@
 namespace BEdita\API\Utility;
 
 use Cake\Collection\CollectionInterface;
-use Cake\ORM\Association;
-use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * JSON API formatter API.
@@ -71,8 +67,6 @@ class JsonApi
 
         if (isset($item['type'])) {
             $type = $item['type'];
-        } elseif ($item instanceof Entity) {
-            $type = TableRegistry::get($item->getSource())->getTable();
         }
 
         if ($endpoint === null) {
@@ -119,27 +113,17 @@ class JsonApi
      */
     protected static function extractRelationships(Entity $entity, $endpoint, $type = null, $options = [])
     {
+        $associations = (array)$entity->get('relationships') ?: [];
+
+        if (!empty($options['allowedAssociations'])) {
+            $associations = array_intersect(
+                $associations,
+                array_keys(array_filter($options['allowedAssociations']))
+            );
+        }
+
         $relationships = [];
-        $associations = TableRegistry::get($entity->getSource())->associations();
-        $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
-        $hidden = $entity->getHidden();
-
-        $btmJunctionAliases = array_map(
-            function (BelongsToMany $val) {
-                return $val->junction()->getAlias();
-            },
-            $associations->type('BelongsToMany')
-        );
-
-        foreach ($associations as $association) {
-            list(, $associationType) = namespaceSplit(get_class($association));
-            $name = $association->property();
-            if (!($association instanceof Association) || $associationType === 'ExtensionOf' || in_array($name, $hidden) ||
-                (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
-                ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))) {
-                continue;
-            }
-
+        foreach ($associations as $name) {
             try {
                 $options = [
                     '_name' => sprintf('api:%s:relationships', $endpoint),
@@ -156,12 +140,25 @@ class JsonApi
 
             try {
                 $options = [
-                    '_name' => sprintf('api:%s:%s', $endpoint, $name),
-                    $relatedParam => $entity->id,
+                    '_name' => 'api:resources:related',
+                    'controller' => $name,
+                    'related_id' => $entity->id,
+                    'relationship' => $type,
                 ];
 
                 $related = Router::url($options, true);
             } catch (MissingRouteException $e) {
+                try {
+                    $options = [
+                        '_name' => sprintf('api:%s:related', $endpoint),
+                        'object_type' => $type,
+                        'related_id' => $entity->id,
+                        'relationship' => $name,
+                    ];
+
+                    $related = Router::url($options, true);
+                } catch (MissingRouteException $e) {
+                }
             }
 
             if (empty($self) && empty($related)) {
@@ -171,6 +168,7 @@ class JsonApi
             $relationships[$name] = [
                 'links' => compact('related', 'self'),
             ];
+            unset($related, $self);
         }
 
         return $relationships;
@@ -219,7 +217,7 @@ class JsonApi
                 $options['object_type'] = $type;
             }
             $links = [
-                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), $id], true),
+                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), 'id' => $id], true),
             ];
         }
 

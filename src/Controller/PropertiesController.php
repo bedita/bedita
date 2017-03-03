@@ -63,17 +63,22 @@ class PropertiesController extends ResourcesController
     {
         $query = $this->Properties->find('all');
 
-        $objectTypeId = $this->request->getParam('object_type_id');
-        if ($objectTypeId !== false) {
-            $query = $query->innerJoinWith('ObjectTypes', function (Query $query) use ($objectTypeId) {
-                return $query->where(['ObjectTypes.id' => $objectTypeId]);
-            });
+        $relatedId = $this->request->getParam('related_id');
+        if ($relatedId !== false) {
+            $relationship = $this->request->getParam('relationship');
+            $Association = $this->findAssociation($relationship);
+            $query = $query->innerJoinWith(
+                $Association->getName(),
+                function (Query $query) use ($Association, $relatedId) {
+                    return $query->where([$Association->aliasField('id') => $relatedId]);
+                }
+            );
         }
 
-        $Properties = $this->paginate($query);
+        $properties = $this->paginate($query);
 
-        $this->set(compact('Properties'));
-        $this->set('_serialize', ['Properties']);
+        $this->set(compact('properties'));
+        $this->set('_serialize', ['properties']);
     }
 
     /**
