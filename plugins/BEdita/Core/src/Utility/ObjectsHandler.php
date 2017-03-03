@@ -17,11 +17,12 @@ use Cake\Console\Exception\StopException;
 use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
-use Migrations\AbstractSeed;
 
 /**
  * Utility operations on objects mainly for seeding and shell commands.
- * DON'T use these methods in an API response: various importan checks like permissions, current user and application...
+ * These operations are only available on CLI with 'debug' activated.
+ * *DON'T* use these methods in an API response: various important checks on permissions,
+ * users and applications are missing.
  *
  * @internal
  */
