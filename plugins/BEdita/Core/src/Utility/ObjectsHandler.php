@@ -1,7 +1,20 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Utility;
 
 use Cake\Console\Exception\StopException;
+use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Migrations\AbstractSeed;
@@ -9,9 +22,29 @@ use Migrations\AbstractSeed;
 /**
  * Utility operations on objects mainly for seeding and shell commands.
  * DON'T use these methods in an API response: various importan checks like permissions, current user and application...
+ *
+ * @internal
  */
 class ObjectsHandler
 {
+
+    /**
+     * Enable or disable operations - only
+     * Only on CLI with 'debug' class methods will be enabled.
+     *
+     * @return void
+     * @throws \Cake\Console\Exception\StopException
+     */
+    protected static function checkEnvironment()
+    {
+        $isCli = PHP_SAPI === 'cli';
+        $debug = Configure::read('debug');
+        if (!($isCli && $debug)) {
+            throw new StopException(['title' => 'Not available',
+                'detail' => 'Operation avilable only in CLI environment with in debug mode']);
+        }
+    }
+
     /**
      * Create a new object of type $type from $data array
      * Input data array is of the form
@@ -20,13 +53,16 @@ class ObjectsHandler
      * If user data is missing current user is used if present
      * or sytem user (with 'id' = 1)
      *
+     *
      * @param string|int $type Object type name or id
      * @param array $data Input data array
      * @param array $user User performing action data
+     * @throws \Cake\Console\Exception\StopException
      * @return \Cake\Datasource\EntityInterface|bool Entity created or false on error
      */
     public static function create($type, $data, $user = [])
     {
+        static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
         if (empty($user)) {
             $user = empty($currentUser) ? ['id' => 1] : $currentUser;
@@ -53,10 +89,12 @@ class ObjectsHandler
      * COMPLETELY and IRREVOCABLY remove an object from the database.
      *
      * @param int $id Object to remove id
+     * @throws \Cake\Console\Exception\StopException
      * @return bool success or failure
      */
     public static function remove($id)
     {
+        static::checkEnvironment();
         $objectsTable = TableRegistry::get('Objects');
         $entity = $objectsTable->get($id);
 

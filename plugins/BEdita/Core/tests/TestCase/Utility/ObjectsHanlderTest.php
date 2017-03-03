@@ -13,6 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\ObjectsHandler;
+use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -44,6 +45,7 @@ class ObjectsHandlerTest extends TestCase
      * @return void
      * @covers ::create()
      * @covers ::remove()
+     * @covers ::checkEnvironment()
      */
     public function testCreateRemove()
     {
@@ -90,5 +92,19 @@ class ObjectsHandlerTest extends TestCase
     public function testDeleteException()
     {
         ObjectsHandler::remove(123456);
+    }
+
+    /**
+     * Test `checkEnvironment'
+     *
+     * @return void
+     * @covers ::checkEnvironment()
+     * @expectedException Cake\Console\Exception\StopException
+     */
+    public function testEnvironment()
+    {
+        Configure::write('debug', false);
+        ObjectsHandler::create('documents', []);
+        Configure::write('debug', true);
     }
 }
