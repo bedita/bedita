@@ -10,7 +10,7 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\TestCase\TestSuite;
+namespace BEdita\Core\Test\TestCase\TestSuite\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 use BEdita\Core\Test\Fixture\ObjectsFixture;
