@@ -51,7 +51,6 @@ class PropertiesTable extends Table
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.ObjectTypes',
-            'propertyName' => 'object_types'
         ]);
     }
 
