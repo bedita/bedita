@@ -135,7 +135,8 @@ class ListRelatedObjectsTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id)
     {
-        $Action = new ListRelatedObjects(TableRegistry::get($objectType)->association(Inflector::camelize($relation)));
+        $alias = Inflector::camelize(Inflector::underscore($relation));
+        $Action = new ListRelatedObjects(TableRegistry::get($objectType)->association($alias));
 
         $result = json_decode(json_encode($Action($id)->toArray()), true);
 

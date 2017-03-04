@@ -17,6 +17,7 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Inflector;
 
 /**
  * Trait for exposing useful properties required for JSON API response formatting at the entity level.
