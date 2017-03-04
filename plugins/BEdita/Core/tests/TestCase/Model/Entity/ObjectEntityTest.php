@@ -195,7 +195,7 @@ class ObjectEntityTest extends TestCase
     {
         $expected = [
             'test',
-            'inverse-test',
+            'inverse_test',
         ];
 
         $entity = TableRegistry::get('Documents')->newEntity();
@@ -216,7 +216,7 @@ class ObjectEntityTest extends TestCase
     public function testGetRelationshipsOfAssociated()
     {
         $expected = [
-            'inverse-test',
+            'inverse_test',
         ];
 
         $entity = TableRegistry::get('Documents')->association('Test')->newEntity();

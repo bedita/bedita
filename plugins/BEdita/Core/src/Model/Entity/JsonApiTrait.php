@@ -93,7 +93,7 @@ trait JsonApiTrait
                 continue;
             }
 
-            $relationships[] = Inflector::dasherize($name);
+            $relationships[] = $name;
         }
 
         return $relationships;

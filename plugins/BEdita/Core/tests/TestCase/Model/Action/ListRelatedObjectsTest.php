@@ -115,7 +115,7 @@ class ListRelatedObjectsTest extends TestCase
                     ],
                 ],
                 'Profiles',
-                'inverse-test',
+                'inverse_test',
                 4,
             ],
         ];

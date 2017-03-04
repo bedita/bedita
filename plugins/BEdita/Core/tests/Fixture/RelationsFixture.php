@@ -31,7 +31,7 @@ class RelationsFixture extends TestFixture
         [
             'name' => 'test',
             'label' => 'Test relation',
-            'inverse_name' => 'inverse-test',
+            'inverse_name' => 'inverse_test',
             'inverse_label' => 'Inverse test relation',
             'description' => 'Sample description.',
             'params' => null,

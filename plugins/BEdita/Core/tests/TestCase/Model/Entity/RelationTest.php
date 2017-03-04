@@ -76,7 +76,7 @@ class RelationTest extends TestCase
 
         $data = [
             'id' => 42,
-            'name' => 'patched-name',
+            'name' => 'patched_name',
         ];
         $relation = $this->Relations->patchEntity($relation, $data);
         if (!($relation instanceof Relation)) {
@@ -84,7 +84,7 @@ class RelationTest extends TestCase
         }
 
         static::assertEquals(1, $relation->id);
-        static::assertEquals('patched-name', $relation->name);
+        static::assertEquals('patched_name', $relation->name);
     }
 
     /**
@@ -105,7 +105,7 @@ class RelationTest extends TestCase
             static::fail(sprintf('Unexpected entity class "%s"', get_class($relation)));
         }
 
-        static::assertEquals('foo-bar', $relation->name);
+        static::assertEquals('foo_bar', $relation->name);
         static::assertEquals('FooBar', $relation->alias);
     }
 
@@ -120,14 +120,14 @@ class RelationTest extends TestCase
     public function testSetInverseName()
     {
         $data = [
-            'inverse_name' => 'bar_foo',
+            'inverse_name' => 'bar-foo',
         ];
         $relation = $this->Relations->newEntity($data);
         if (!($relation instanceof Relation)) {
             static::fail(sprintf('Unexpected entity class "%s"', get_class($relation)));
         }
 
-        static::assertEquals('bar-foo', $relation->inverse_name);
+        static::assertEquals('bar_foo', $relation->inverse_name);
         static::assertEquals('BarFoo', $relation->inverse_alias);
     }
 }

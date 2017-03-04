@@ -69,7 +69,7 @@ class RelationsBehaviorTest extends TestCase
     {
         $expected = [
             'test',
-            'inverse-test',
+            'inverse_test',
         ];
 
         $Documents = TableRegistry::get('Documents');
