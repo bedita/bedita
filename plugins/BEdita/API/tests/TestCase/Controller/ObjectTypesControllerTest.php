@@ -358,7 +358,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -396,7 +396,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAddInvalid()
@@ -429,7 +429,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -469,7 +469,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testEditConflict()
@@ -502,7 +502,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testDelete()

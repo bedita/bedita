@@ -61,6 +61,7 @@ class ObjectType extends Entity
      * {@inheritDoc}
      */
     protected $_hidden = [
+        'objects',
         'left_relations',
         'right_relations',
     ];

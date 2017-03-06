@@ -403,7 +403,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -440,7 +440,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testInvalidAdd()
@@ -473,7 +473,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -506,7 +506,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testConflictEdit()
@@ -539,7 +539,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::view()
      * @covers ::initialize()
      */
     public function testDelete()

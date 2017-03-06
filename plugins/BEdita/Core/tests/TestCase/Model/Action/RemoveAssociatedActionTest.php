@@ -13,16 +13,17 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\SetAssociatedAction;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\SetAssociatedAction<extended>
+ * @covers \BEdita\Core\Model\Action\RemoveAssociatedAction
+ * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
  */
-class SetAssociatedTest extends TestCase
+class RemoveAssociatedActionTest extends TestCase
 {
 
     /**
@@ -35,7 +36,6 @@ class SetAssociatedTest extends TestCase
         'plugin.BEdita/Core.fake_articles',
         'plugin.BEdita/Core.fake_tags',
         'plugin.BEdita/Core.fake_articles_tags',
-        'plugin.BEdita/Core.fake_labels',
     ];
 
     /**
@@ -45,15 +45,10 @@ class SetAssociatedTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeLabels')
-            ->belongsTo('FakeTags');
-
         TableRegistry::get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
-            ])
-            ->getSource()
-            ->hasOne('FakeLabels');
+            ]);
 
         TableRegistry::get('FakeArticles')
             ->belongsToMany('FakeTags', [
@@ -74,15 +69,22 @@ class SetAssociatedTest extends TestCase
     public function invocationProvider()
     {
         return [
-            'belongsToManyEmpty' => [
-                1,
+            'nothingToDo' => [
+                0,
                 'FakeTags',
                 'FakeArticles',
                 1,
                 null,
             ],
-            'belongsToManyNothingToDo' => [
+            'alreadyNotExisting' => [
                 0,
+                'FakeTags',
+                'FakeArticles',
+                2,
+                1,
+            ],
+            'belongsToMany' => [
+                1,
                 'FakeTags',
                 'FakeArticles',
                 1,
@@ -92,73 +94,17 @@ class SetAssociatedTest extends TestCase
                 2,
                 'FakeAnimals',
                 'FakeArticles',
-                2,
-                [1, 2],
-            ],
-            'hasManyNothingToDo' => [
-                0,
-                'FakeAnimals',
-                'FakeArticles',
                 1,
                 [1, 2],
             ],
-            'unsupportedMultipleEntities' => [
-                new \InvalidArgumentException(
-                    'Unable to link multiple entities'
+            'belongsTo' => [
+                new \RuntimeException(
+                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"'
                 ),
                 'FakeArticles',
                 'FakeAnimals',
                 1,
                 [1, 2],
-            ],
-            'belongsToEmpty' => [
-                1,
-                'FakeArticles',
-                'FakeAnimals',
-                1,
-                null,
-            ],
-            'belongsTo' => [
-                1,
-                'FakeArticles',
-                'FakeAnimals',
-                1,
-                2,
-            ],
-            'belongsToNothingToDo' => [
-                0,
-                'FakeArticles',
-                'FakeAnimals',
-                1,
-                1,
-            ],
-            'hasOne' => [
-                1,
-                'FakeTags',
-                'FakeLabels',
-                1,
-                1,
-            ],
-            'hasOneEmpty' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                1,
-                null,
-            ],
-            'hasOneNothingToDo' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                1,
-                2,
-            ],
-            'hasOneNothingToDoEmpty' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                2,
-                null,
             ],
         ];
     }
@@ -183,7 +129,7 @@ class SetAssociatedTest extends TestCase
         }
 
         $association = TableRegistry::get($table)->association($association);
-        $action = new SetAssociatedAction(compact('association'));
+        $action = new RemoveAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
         $relatedEntities = null;
@@ -202,6 +148,9 @@ class SetAssociatedTest extends TestCase
         $count = 0;
         if ($related !== null) {
             $count = $association->getTarget()->find()
+                ->where([
+                    $association->getTarget()->aliasField($association->getTarget()->getPrimaryKey()) . ' IN' => $related,
+                ])
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
                     function (Query $query) use ($association, $entity) {
@@ -213,7 +162,7 @@ class SetAssociatedTest extends TestCase
                 ->count();
         }
 
-        static::assertEquals($expected, $result);
-        static::assertEquals(count($related), $count);
+        $this->assertEquals($expected, $result);
+        $this->assertEquals(0, $count);
     }
 }

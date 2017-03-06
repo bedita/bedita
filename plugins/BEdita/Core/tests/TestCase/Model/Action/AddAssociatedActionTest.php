@@ -13,16 +13,17 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\RemoveAssociatedAction<extended>
+ * @covers \BEdita\Core\Model\Action\AddAssociatedAction
+ * @covers \BEdita\Core\Model\Action\UpdateAssociatedAction
  */
-class RemoveAssociatedTest extends TestCase
+class AddAssociatedActionTest extends TestCase
 {
 
     /**
@@ -75,11 +76,11 @@ class RemoveAssociatedTest extends TestCase
                 1,
                 null,
             ],
-            'alreadyNotExisting' => [
+            'alreadyPresent' => [
                 0,
                 'FakeTags',
                 'FakeArticles',
-                2,
+                1,
                 1,
             ],
             'belongsToMany' => [
@@ -87,18 +88,18 @@ class RemoveAssociatedTest extends TestCase
                 'FakeTags',
                 'FakeArticles',
                 1,
-                1,
+                2,
             ],
             'hasMany' => [
                 2,
                 'FakeAnimals',
                 'FakeArticles',
-                1,
+                2,
                 [1, 2],
             ],
             'belongsTo' => [
                 new \RuntimeException(
-                    'Unable to remove existing links with association of type "Cake\ORM\Association\BelongsTo"'
+                    'Unable to add additional links with association of type "Cake\ORM\Association\BelongsTo"'
                 ),
                 'FakeArticles',
                 'FakeAnimals',
@@ -128,7 +129,7 @@ class RemoveAssociatedTest extends TestCase
         }
 
         $association = TableRegistry::get($table)->association($association);
-        $action = new RemoveAssociatedAction(compact('association'));
+        $action = new AddAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
         $relatedEntities = null;
@@ -162,6 +163,6 @@ class RemoveAssociatedTest extends TestCase
         }
 
         $this->assertEquals($expected, $result);
-        $this->assertEquals(0, $count);
+        $this->assertEquals(count($related), $count);
     }
 }

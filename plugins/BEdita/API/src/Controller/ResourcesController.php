@@ -15,14 +15,21 @@ namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\AddAssociatedAction;
+use BEdita\Core\Model\Action\DeleteEntityAction;
+use BEdita\Core\Model\Action\GetEntityAction;
 use BEdita\Core\Model\Action\ListAssociatedAction;
+use BEdita\Core\Model\Action\ListEntitiesAction;
 use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Router;
+use Cake\Utility\Inflector;
 
 /**
  * Base controller for CRUD actions on generic resources.
@@ -48,41 +55,32 @@ abstract class ResourcesController extends AppController
     ];
 
     /**
+     * Table.
+     *
+     * @var \Cake\ORM\Table
+     */
+    protected $Table;
+
+    /**
      * {@inheritDoc}
      */
     public function initialize()
     {
         parent::initialize();
 
-        $this->set(['_allowedAssociations' => $this->getConfig('allowedAssociations')]);
+        if (isset($this->JsonApi)) {
+            $this->JsonApi->setConfig('resourceTypes', [Inflector::underscore($this->name)]);
 
-        if (isset($this->JsonApi) && $this->request->getParam('action') == 'relationships') {
-            $this->JsonApi->setConfig(
-                'resourceTypes',
-                $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship')))
-            );
-            $this->JsonApi->setConfig('clientGeneratedIds', true);
+            if ($this->request->getParam('action') === 'relationships') {
+                $this->JsonApi->setConfig(
+                    'resourceTypes',
+                    $this->getConfig(sprintf('allowedAssociations.%s', $this->request->getParam('relationship')))
+                );
+                $this->JsonApi->setConfig('clientGeneratedIds', true);
+            }
         }
-    }
 
-    /**
-     * Paginated list of resources.
-     *
-     * @return void
-     */
-    abstract public function index();
-
-    /**
-     * Paginated list of related resources.
-     *
-     * This method is an alias of {@see self::index()}. However, this is required because of how routes
-     * are matched by Cake.
-     *
-     * @return void
-     */
-    public function related()
-    {
-        $this->index();
+        $this->Table = TableRegistry::get($this->modelClass);
     }
 
     /**
@@ -95,7 +93,7 @@ abstract class ResourcesController extends AppController
     protected function findAssociation($relationship)
     {
         if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
-            $associations = TableRegistry::get($this->modelClass)->associations();
+            $associations = $this->Table->associations();
             foreach ($associations as $association) {
                 if ($association->property() === $relationship) {
                     return $association;
@@ -103,7 +101,120 @@ abstract class ResourcesController extends AppController
             }
         }
 
-        throw new NotFoundException(__('Relationship "{0}" does not exist', $relationship));
+        throw new NotFoundException(__d('bedita', 'Relationship "{0}" does not exist', $relationship));
+    }
+
+    /**
+     * Paginated list of resources.
+     *
+     * @return \Cake\Network\Response|null
+     */
+    public function index()
+    {
+        $this->request->allowMethod(['get', 'post']);
+
+        if ($this->request->is('post')) {
+            // Add a new entity.
+            $entity = $this->Table->newEntity();
+            $action = new SaveEntityAction(['table' => $this->Table]);
+
+            $data = $this->request->getData();
+            $entity = $action(compact('entity', 'data'));
+
+            return $this->response
+                ->withStatus(201)
+                ->withHeader(
+                    'Location',
+                    Router::url(
+                        [
+                            '_name' => 'api:resources:view',
+                            'controller' => $this->name,
+                            'id' => $entity->id,
+                        ],
+                        true
+                    )
+                );
+        }
+
+        // List existing entities.
+        $action = new ListEntitiesAction(['table' => $this->Table]);
+        $query = $action();
+
+        $data = $this->paginate($query);
+
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
+
+        return null;
+    }
+
+    /**
+     * View entity's details.
+     *
+     * @param mixed $id Entity ID.
+     * @return \Cake\Network\Response|null
+     */
+    public function view($id)
+    {
+        $this->request->allowMethod(['get', 'patch', 'delete']);
+
+        $action = new GetEntityAction(['table' => $this->Table]);
+        $entity = $action(['primaryKey' => $id]);
+
+        if ($this->request->is('delete')) {
+            // Delete an entity.
+            $action = new DeleteEntityAction(['table' => $this->Table]);
+
+            if (!$action(compact('entity'))) {
+                throw new InternalErrorException(__d('bedita', 'Delete failed'));
+            }
+
+            return $this->response
+                ->withHeader('Content-Type', $this->request->contentType())
+                ->withStatus(204);
+        }
+
+        if ($this->request->is('patch')) {
+            // Patch an existing entity.
+            if ($this->request->getData('id') != $id) {
+                throw new ConflictException(__d('bedita', 'IDs don\'t match'));
+            }
+
+            $action = new SaveEntityAction(['table' => $this->Table]);
+
+            $data = $this->request->getData();
+            $entity = $action(compact('entity', 'data'));
+        }
+
+        $this->set(compact('entity'));
+        $this->set('_serialize', ['entity']);
+
+        return null;
+    }
+
+    /**
+     * Paginated list of related resources.
+     *
+     * @return void
+     */
+    public function related()
+    {
+        $this->request->allowMethod(['get']);
+
+        $relationship = $this->request->getParam('relationship');
+        $relatedId = $this->request->getParam('related_id');
+
+        $association = $this->findAssociation($relationship);
+
+        $action = new ListAssociatedAction(compact('association'));
+        $query = $action(['primaryKey' => $relatedId]);
+
+        $query = $query->select($association, true);
+
+        $data = $this->paginate($query);
+
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
     }
 
     /**
@@ -119,12 +230,6 @@ abstract class ResourcesController extends AppController
         $relationship = $this->request->getParam('relationship');
 
         $association = $this->findAssociation($relationship);
-        // Try to guess reverse association and implicitly add it to displayed associations.
-        $reverseAssociation = $association->getTarget()->association($this->modelClass);
-        if ($reverseAssociation !== null) {
-            $allowAssoc = $reverseAssociation->getProperty();
-            $this->set(['_allowedAssociations' => [$allowAssoc => [$allowAssoc]]]);
-        }
 
         switch ($this->request->getMethod()) {
             case 'PATCH':

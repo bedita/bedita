@@ -1,7 +1,7 @@
 <?php
 /**
  * BEdita, API-first content management framework
- * Copyright 2016 ChannelWeb Srl, Chialab Srl
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
  *
  * This file is part of BEdita: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -10,32 +10,37 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Controller;
 
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\InternalErrorException;
-use Cake\ORM\Query;
-use Cake\Routing\Router;
+namespace BEdita\Core\Model\Action;
 
 /**
- * Controller for `/users` endpoint.
+ * Command to get an entity.
  *
  * @since 4.0.0
  */
-class UsersController extends ObjectsController
+class GetEntityAction extends BaseAction
 {
+
     /**
-     * {@inheritDoc}
+     * Table.
+     *
+     * @var \Cake\ORM\Table
      */
-    public $modelClass = 'Users';
+    protected $Table;
 
     /**
      * {@inheritDoc}
      */
-    protected $_defaultConfig = [
-        'allowedAssociations' => [
-            'roles' => ['roles'],
-        ],
-    ];
+    protected function initialize(array $data)
+    {
+        $this->Table = $this->getConfig('table');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function execute(array $data = [])
+    {
+        return $this->Table->get($data['primaryKey']);
+    }
 }

@@ -21,9 +21,9 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListRelatedObjects
+ * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
  */
-class ListRelatedObjectsTest extends TestCase
+class ListRelatedObjectsActionTest extends TestCase
 {
 
     /**
@@ -101,7 +101,6 @@ class ListRelatedObjectsTest extends TestCase
      * @param int $id ID.
      * @return void
      *
-     * @covers ::__invoke()
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $objectType, $relation, $id)

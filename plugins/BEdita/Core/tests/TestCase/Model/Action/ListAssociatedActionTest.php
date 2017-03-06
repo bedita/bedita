@@ -24,7 +24,7 @@ use Cake\TestSuite\TestCase;
 /**
  * @covers \BEdita\Core\Model\Action\ListAssociatedAction
  */
-class ListAssociatedTest extends TestCase
+class ListAssociatedActionTest extends TestCase
 {
 
     /**
