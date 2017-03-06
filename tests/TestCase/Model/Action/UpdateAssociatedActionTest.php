@@ -25,7 +25,7 @@ use Cake\Utility\Inflector;
 /**
  * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
  */
-class UpdateAssociatedTest extends TestCase
+class UpdateAssociatedActionTest extends TestCase
 {
 
     /**

@@ -45,12 +45,8 @@ class JsonApiView extends JsonView
             }
 
             $data = parent::_dataToSerialize($serialize) ?: [];
-            $options = [];
-            if (isset($this->viewVars['_allowedAssociations'])) {
-                $options['allowedAssociations'] = $this->viewVars['_allowedAssociations'];
-            }
             if ($data) {
-                $data = JsonApi::formatData(reset($data), $type, $options);
+                $data = JsonApi::formatData(reset($data), $type);
             }
         } else {
             $error = $this->viewVars['_error'];
