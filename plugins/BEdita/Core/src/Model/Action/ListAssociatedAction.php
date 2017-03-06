@@ -16,8 +16,9 @@ namespace BEdita\Core\Model\Action;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
-use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
+use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
 
 /**
@@ -25,7 +26,7 @@ use Cake\ORM\Association\HasOne;
  *
  * @since 4.0.0
  */
-class ListAssociated
+class ListAssociatedAction extends BaseAction
 {
 
     /**
@@ -36,26 +37,23 @@ class ListAssociated
     protected $Association;
 
     /**
-     * Command constructor.
-     *
-     * @param \Cake\ORM\Association $Association Association.
+     * {@inheritDoc}
      */
-    public function __construct(Association $Association)
+    protected function initialize(array $config)
     {
-        $this->Association = $Association;
+        $this->Association = $this->getConfig('association');
     }
 
     /**
-     * Find existing relations.
+     * {@inheritDoc}
      *
-     * @param mixed $primaryKey Primary key of entity to find associations for.
      * @return \Cake\ORM\Query|\Cake\Datasource\EntityInterface|null
      * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if an invalid
      *      primary key is passed.
      */
-    public function __invoke($primaryKey)
+    public function execute(array $data = [])
     {
-        $query = $this->buildQuery($primaryKey);
+        $query = $this->buildQuery($data['primaryKey']);
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();
@@ -131,6 +129,10 @@ class ListAssociated
                     return $row;
                 });
             });
+
+        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
+            $query = $query->order($this->Association->sort());
+        }
 
         return $query;
     }

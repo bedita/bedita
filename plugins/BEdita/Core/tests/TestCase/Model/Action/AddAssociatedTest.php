@@ -13,14 +13,14 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\AddAssociated;
+use BEdita\Core\Model\Action\AddAssociatedAction;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\AddAssociated<extended>
+ * @covers \BEdita\Core\Model\Action\AddAssociatedAction<extended>
  */
 class AddAssociatedTest extends TestCase
 {
@@ -128,7 +128,7 @@ class AddAssociatedTest extends TestCase
         }
 
         $association = TableRegistry::get($table)->association($association);
-        $action = new AddAssociated($association);
+        $action = new AddAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
         $relatedEntities = null;
@@ -142,7 +142,7 @@ class AddAssociatedTest extends TestCase
                 ->toArray();
         }
 
-        $result = $action($entity, $relatedEntities);
+        $result = $action(compact('entity', 'relatedEntities'));
 
         $count = 0;
         if ($related !== null) {

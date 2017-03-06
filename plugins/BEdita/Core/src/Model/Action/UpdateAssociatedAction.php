@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Datasource\EntityInterface;
-use Cake\ORM\Association;
 use Cake\ORM\Query;
 
 /**
@@ -22,7 +21,7 @@ use Cake\ORM\Query;
  *
  * @since 4.0.0
  */
-abstract class UpdateAssociated
+abstract class UpdateAssociatedAction extends BaseAction
 {
 
     /**
@@ -33,36 +32,11 @@ abstract class UpdateAssociated
     protected $Association;
 
     /**
-     * Command constructor.
-     *
-     * @param \Cake\ORM\Association $Association Association.
+     * {@inheritDoc}
      */
-    public function __construct(Association $Association)
+    protected function initialize(array $config)
     {
-        $this->Association = $Association;
-    }
-
-    /**
-     * Getter for association.
-     *
-     * @return \Cake\ORM\Association
-     */
-    public function getAssociation()
-    {
-        return $this->Association;
-    }
-
-    /**
-     * Setter for association.
-     *
-     * @param \Cake\ORM\Association $association Association.
-     * @return $this
-     */
-    public function setAssociation(Association $association)
-    {
-        $this->Association = $association;
-
-        return $this;
+        $this->Association = $this->getConfig('association');
     }
 
     /**
@@ -73,11 +47,11 @@ abstract class UpdateAssociated
      */
     protected function existing(EntityInterface $entity)
     {
-        $list = new ListAssociated($this->Association);
+        $list = new ListAssociatedAction(['association' => $this->Association]);
         $sourcePrimaryKey = (array)$this->Association->getSource()->getPrimaryKey();
         $bindingKey = (array)$this->Association->getBindingKey();
 
-        $existing = $list($entity->extract($sourcePrimaryKey));
+        $existing = $list(['primaryKey' => $entity->extract($sourcePrimaryKey)]);
 
         if ($existing instanceof EntityInterface) {
             return $existing
@@ -96,11 +70,19 @@ abstract class UpdateAssociated
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function execute(array $data = [])
+    {
+        return $this->update($data['entity'], $data['relatedEntities']);
+    }
+
+    /**
      * Perform update.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
      * @return int|false
      */
-    abstract public function __invoke(EntityInterface $entity, $relatedEntities);
+    abstract protected function update(EntityInterface $entity, $relatedEntities);
 }

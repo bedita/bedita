@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\ListAssociated;
+use BEdita\Core\Model\Action\ListAssociatedAction;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
@@ -22,7 +22,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListAssociated
+ * @covers \BEdita\Core\Model\Action\ListAssociatedAction
  */
 class ListAssociatedTest extends TestCase
 {
@@ -135,9 +135,9 @@ class ListAssociatedTest extends TestCase
         }
 
         $association = TableRegistry::get($table)->association($association);
-        $action = new ListAssociated($association);
+        $action = new ListAssociatedAction(compact('association'));
 
-        $result = $action($id);
+        $result = $action(['primaryKey' => $id]);
 
         if ($result instanceof Query) {
             $result = $result->enableHydration(false)->toArray();

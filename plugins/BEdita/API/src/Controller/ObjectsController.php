@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\ListRelatedObjects;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
@@ -95,22 +95,22 @@ class ObjectsController extends ResourcesController
      */
     public function related()
     {
+        $this->request->allowMethod(['get']);
+
         $relationship = $this->request->getParam('relationship');
         $relatedId = $this->request->getParam('related_id');
 
-        $Association = $this->findAssociation($relationship);
+        $association = $this->findAssociation($relationship);
 
-        $action = new ListRelatedObjects($Association);
-        $query = $action($relatedId);
+        $action = new ListRelatedObjectsAction(compact('association'));
+        $query = $action(['primaryKey' => $relatedId]);
 
-        $query = $query->select($Association, true);
+        $query = $query->select($association, true);
 
         $objects = $this->paginate($query);
 
         $this->set(compact('objects'));
-        $this->set([
-            '_serialize' => ['objects'],
-        ]);
+        $this->set('_serialize', ['objects']);
     }
 
     /**
@@ -267,7 +267,7 @@ class ObjectsController extends ResourcesController
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
 
-        $Association = $this->findAssociation($relationship);
+        $association = $this->findAssociation($relationship);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -277,8 +277,8 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
-                $action = new ListRelatedObjects($Association);
-                $data = $action($id);
+                $action = new ListRelatedObjectsAction(compact('association'));
+                $data = $action(['primaryKey' => $id]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);

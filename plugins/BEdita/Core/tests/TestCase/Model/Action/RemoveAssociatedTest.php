@@ -13,14 +13,14 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\RemoveAssociated;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\RemoveAssociated<extended>
+ * @covers \BEdita\Core\Model\Action\RemoveAssociatedAction<extended>
  */
 class RemoveAssociatedTest extends TestCase
 {
@@ -128,7 +128,7 @@ class RemoveAssociatedTest extends TestCase
         }
 
         $association = TableRegistry::get($table)->association($association);
-        $action = new RemoveAssociated($association);
+        $action = new RemoveAssociatedAction(compact('association'));
 
         $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
         $relatedEntities = null;
@@ -142,7 +142,7 @@ class RemoveAssociatedTest extends TestCase
                 ->toArray();
         }
 
-        $result = $action($entity, $relatedEntities);
+        $result = $action(compact('entity', 'relatedEntities'));
 
         $count = 0;
         if ($related !== null) {

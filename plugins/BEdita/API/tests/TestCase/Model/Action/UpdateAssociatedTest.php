@@ -13,8 +13,8 @@
 
 namespace BEdita\API\Test\TestCase\Model\Action;
 
-use BEdita\API\Model\Action\UpdateAssociated;
-use BEdita\Core\Model\Action\SetAssociated;
+use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
@@ -23,7 +23,7 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\API\Model\Action\UpdateAssociated
+ * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
  */
 class UpdateAssociatedTest extends TestCase
 {
@@ -172,10 +172,10 @@ class UpdateAssociatedTest extends TestCase
         $request = new ServerRequest();
         $request = $request->withParsedBody($data);
         $association = TableRegistry::get($table)->association($association);
-        $parentAction = new SetAssociated($association);
-        $action = new UpdateAssociated($parentAction, $request);
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
-        $result = $action($id);
+        $result = $action(['primaryKey' => $id]);
 
         $count = 0;
         if ($data !== null) {

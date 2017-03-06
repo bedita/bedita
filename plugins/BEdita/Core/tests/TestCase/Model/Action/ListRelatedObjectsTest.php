@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\ListAssociated;
-use BEdita\Core\Model\Action\ListRelatedObjects;
+use BEdita\Core\Model\Action\ListAssociatedAction;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,35 +39,6 @@ class ListRelatedObjectsTest extends TestCase
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
     ];
-
-    /**
-     * Test constructor with a table that does not have the required behavior.
-     *
-     * @return void
-     *
-     * @covers ::__construct()
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Table "ObjectTypes" does not implement relations
-     */
-    public function testConstructInvalidTable()
-    {
-        new ListRelatedObjects(TableRegistry::get('ObjectTypes')->association('Properties'));
-    }
-
-    /**
-     * Test constructor with valid arguments.
-     *
-     * @return void
-     *
-     * @covers ::__construct()
-     */
-    public function testConstruct()
-    {
-        $Action = new ListRelatedObjects(TableRegistry::get('Documents')->association('Test'), 'test');
-
-        static::assertAttributeInstanceOf(BelongsToMany::class, 'Association', $Action);
-        static::assertAttributeInstanceOf(ListAssociated::class, 'Action', $Action);
-    }
 
     /**
      * Data provider for `testInvocation` test case.
@@ -135,9 +106,10 @@ class ListRelatedObjectsTest extends TestCase
      */
     public function testInvocation($expected, $objectType, $relation, $id)
     {
-        $Action = new ListRelatedObjects(TableRegistry::get($objectType)->association(Inflector::camelize($relation)));
+        $association = TableRegistry::get($objectType)->association(Inflector::camelize($relation));
+        $Action = new ListRelatedObjectsAction(compact('association'));
 
-        $result = json_decode(json_encode($Action($id)->toArray()), true);
+        $result = json_decode(json_encode($Action(['primaryKey' => $id])->toArray()), true);
 
         static::assertEquals($expected, $result);
     }
