@@ -13,11 +13,11 @@
 
 namespace BEdita\API\Controller;
 
-use BEdita\API\Model\Action\UpdateAssociated;
-use BEdita\Core\Model\Action\AddAssociated;
-use BEdita\Core\Model\Action\ListAssociated;
-use BEdita\Core\Model\Action\RemoveAssociated;
-use BEdita\Core\Model\Action\SetAssociated;
+use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\AddAssociatedAction;
+use BEdita\Core\Model\Action\ListAssociatedAction;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
@@ -118,9 +118,9 @@ abstract class ResourcesController extends AppController
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
 
-        $Association = $this->findAssociation($relationship);
+        $association = $this->findAssociation($relationship);
         // Try to guess reverse association and implicitly add it to displayed associations.
-        $reverseAssociation = $Association->getTarget()->association($this->modelClass);
+        $reverseAssociation = $association->getTarget()->association($this->modelClass);
         if ($reverseAssociation !== null) {
             $allowAssoc = $reverseAssociation->getProperty();
             $this->set(['_allowedAssociations' => [$allowAssoc => [$allowAssoc]]]);
@@ -128,21 +128,21 @@ abstract class ResourcesController extends AppController
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
-                $action = new SetAssociated($Association);
+                $action = new SetAssociatedAction(compact('association'));
                 break;
 
             case 'POST':
-                $action = new AddAssociated($Association);
+                $action = new AddAssociatedAction(compact('association'));
                 break;
 
             case 'DELETE':
-                $action = new RemoveAssociated($Association);
+                $action = new RemoveAssociatedAction(compact('association'));
                 break;
 
             case 'GET':
             default:
-                $action = new ListAssociated($Association);
-                $data = $action($id);
+                $action = new ListAssociatedAction(compact('association'));
+                $data = $action(['primaryKey' => $id]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);
@@ -157,11 +157,11 @@ abstract class ResourcesController extends AppController
                 return null;
         }
 
-        $action = new UpdateAssociated($action, $this->request);
-        $count = $action($id);
+        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $count = $action(['primaryKey' => $id]);
 
         if ($count === false) {
-            throw new InternalErrorException(__('Could not update relationship "{0}"', $relationship));
+            throw new InternalErrorException(__d('bedita', 'Could not update relationship "{0}"', $relationship));
         }
 
         if ($count === 0) {
