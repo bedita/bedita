@@ -49,6 +49,6 @@ class DeleteObjectAction extends BaseAction
 
         $entity->set('deleted', true);
 
-        return $this->Table->save($entity);
+        return (bool)$this->Table->save($entity);
     }
 }
