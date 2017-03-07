@@ -19,7 +19,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * @covers \BEdita\Core\Model\Action\ListEntitiesAction
+ * @coversDefaultClass \BEdita\Core\Model\Action\ListEntitiesAction
  */
 class ListEntitiesActionTest extends TestCase
 {
@@ -31,21 +31,121 @@ class ListEntitiesActionTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals',
+        'plugin.BEdita/Core.fake_articles',
     ];
+
+    /**
+     * Data provider for `testParseFilter` test case.
+     *
+     * @return array
+     */
+    public function parseFilterProvider()
+    {
+        return [
+            'normal' => [
+                [
+                    'filter' => 'key=value',
+                    'dangling' => null,
+                    'gustavo' => 'supporto',
+                    'empty' => null,
+                ],
+                'filter=key=value,dangling,gustavo=supporto,empty=null',
+            ],
+            'empty' => [
+                [],
+                ',=value',
+            ],
+            'array' => [
+                [
+                    'key' => 'value',
+                ],
+                [
+                    'key' => 'value',
+                ],
+            ],
+            'not a string' => [
+                [],
+                123,
+            ],
+        ];
+    }
+
+    /**
+     * Test filter parser.
+     *
+     * @param array $expected Expected result.
+     * @param string $filter Filter to be parsed
+     * @return void
+     *
+     * @dataProvider parseFilterProvider()
+     * @covers ::parseFilter()
+     */
+    public function testParseFilter(array $expected, $filter)
+    {
+        $result = ListEntitiesAction::parseFilter($filter);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
+     * Data provider for `testExecute` test case.
+     *
+     * @return array
+     */
+    public function executeProvider()
+    {
+        return [
+            'plain' => [
+                [
+                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                    ['id' => 2, 'name' => 'koala', 'legs' => 4],
+                    ['id' => 3, 'name' => 'eagle', 'legs' => 2],
+                ],
+                null,
+            ],
+            'field' => [
+                [
+                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                    ['id' => 2, 'name' => 'koala', 'legs' => 4],
+                ],
+                [
+                    'legs' => 4
+                ],
+            ],
+            'field (null)' => [
+                [],
+                'legs=null',
+            ],
+            'association' => [
+                [
+                    ['id' => 1, 'name' => 'cat', 'legs' => 4],
+                ],
+                'fake_articles=1',
+            ],
+        ];
+    }
 
     /**
      * Test command execution.
      *
+     * @param array $expected Expected results.
+     * @param mixed $filter Filter.
      * @return void
+     *
+     * @dataProvider executeProvider()
+     * @covers ::initialize()
+     * @covers ::buildFilter()
+     * @covers ::execute()
      */
-    public function testExecute()
+    public function testExecute(array $expected, $filter)
     {
         $table = TableRegistry::get('FakeAnimals');
+        $table->hasMany('FakeArticles');
         $action = new ListEntitiesAction(compact('table'));
 
-        $result = $action();
+        $result = $action(compact('filter'));
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(3, $result->count());
+        static::assertSame($expected, $result->enableHydration(false)->toArray());
     }
 }

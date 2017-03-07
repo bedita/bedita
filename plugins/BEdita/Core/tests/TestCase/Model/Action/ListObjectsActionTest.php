@@ -84,4 +84,22 @@ class ListObjectsActionTest extends TestCase
         static::assertInstanceOf(Query::class, $result);
         static::assertSame(2, $result->count());
     }
+
+    /**
+     * Test command execution with a custom filter.
+     *
+     * @return void
+     */
+    public function testExecutedCustomFilter()
+    {
+        $table = TableRegistry::get('Objects');
+        $action = new ListObjectsAction(compact('table'));
+
+        $result = $action([
+            'filter' => 'published=null',
+        ]);
+
+        static::assertInstanceOf(Query::class, $result);
+        static::assertSame(4, $result->count());
+    }
 }

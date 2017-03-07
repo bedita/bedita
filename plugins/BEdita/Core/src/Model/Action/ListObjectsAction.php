@@ -49,15 +49,25 @@ class ListObjectsAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $conditions = [
+        $filter = [
             'deleted' => (int)!empty($data['deleted']),
         ];
         if (!empty($this->objectType)) {
-            $conditions['object_type_id'] = $this->objectType->id;
+            $filter['object_type_id'] = $this->objectType->id;
         }
 
-        return $this->Table->find()
-            ->contain('ObjectTypes')
-            ->where($conditions);
+        if (!empty($data['filter'])) {
+            $filter = array_merge(
+                ListEntitiesAction::parseFilter($data['filter']),
+                $filter // Later values overwrite previous ones.
+            );
+        }
+
+        $action = new ListEntitiesAction(['table' => $this->Table]);
+
+        $query = $action->execute(compact('filter'));
+
+        return $query
+            ->contain('ObjectTypes');
     }
 }
