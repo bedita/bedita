@@ -176,7 +176,7 @@ abstract class ResourcesController extends AppController
 
         if ($this->request->is('patch')) {
             // Patch an existing entity.
-            if ($this->request->getData('id') != $id) {
+            if ($this->request->getData('id') !== $id) {
                 throw new ConflictException(__d('bedita', 'IDs don\'t match'));
             }
 
