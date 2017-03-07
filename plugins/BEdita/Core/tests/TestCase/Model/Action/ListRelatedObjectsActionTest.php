@@ -15,7 +15,9 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociatedAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
@@ -106,9 +108,10 @@ class ListRelatedObjectsActionTest extends TestCase
     public function testInvocation($expected, $objectType, $relation, $id)
     {
         $association = TableRegistry::get($objectType)->association(Inflector::camelize($relation));
-        $Action = new ListRelatedObjectsAction(compact('association'));
+        $action = new ListRelatedObjectsAction(compact('association'));
 
-        $result = json_decode(json_encode($Action(['primaryKey' => $id])->toArray()), true);
+        $result = $action(['primaryKey' => $id, 'list' => true]);
+        $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);
     }

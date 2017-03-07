@@ -137,13 +137,8 @@ class ListAssociatedActionTest extends TestCase
         $association = TableRegistry::get($table)->association($association);
         $action = new ListAssociatedAction(compact('association'));
 
-        $result = $action(['primaryKey' => $id]);
-
-        if ($result instanceof Query) {
-            $result = $result->enableHydration(false)->toArray();
-        } elseif ($result instanceof EntityInterface) {
-            $result = $result->toArray();
-        }
+        $result = $action(['primaryKey' => $id, 'list' => true]);
+        $result = json_decode(json_encode($result->toArray()), true);
 
         $this->assertEquals($expected, $result);
     }

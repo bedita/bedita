@@ -33,7 +33,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
             return $result;
         }
 
-        if ($this->Association->getSchema()->column('object_type_id') !== null) {
+        if ($this->Association->hasField('object_type_id') && !empty($data['list'])) {
             $result = $result
                 ->select([$this->Association->aliasField('object_type_id')]);
         }

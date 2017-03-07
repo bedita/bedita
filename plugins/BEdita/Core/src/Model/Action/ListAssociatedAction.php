@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
@@ -20,6 +21,8 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
+use Cake\ORM\Query;
+use Cake\ORM\Table;
 
 /**
  * Command to list entities associated to another entity.
@@ -53,7 +56,7 @@ class ListAssociatedAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $query = $this->buildQuery($data['primaryKey']);
+        $query = $this->buildQuery($data['primaryKey'], !empty($data['list']));
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();
@@ -95,13 +98,15 @@ class ListAssociatedAction extends BaseAction
      * Build the query object.
      *
      * @param mixed $primaryKey Primary key.
+     * @param bool $list Should full objects be returned, or a simple list?
      * @return \Cake\ORM\Query
      * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if trying to fetch associations
      *      for a missing resource.
      */
-    protected function buildQuery($primaryKey)
+    protected function buildQuery($primaryKey, $list)
     {
         $source = $this->Association->getSource();
+        $target = $this->Association->getTarget();
         $conditions = $this->primaryKeyConditions($primaryKey);
 
         $existing = $source->find()
@@ -111,11 +116,36 @@ class ListAssociatedAction extends BaseAction
             throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
 
-        $primaryKeyFields = array_map([$this->Association, 'aliasField'], (array)$this->Association->getPrimaryKey());
+        $builder = null;
+        $select = $target;
+        if ($list) {
+            $select = array_map([$target, 'aliasField'], (array)$target->getPrimaryKey());
+        } elseif ($target instanceof InheritanceTable) {
+            $select = array_map([$target, 'aliasField'], $target->getSchema()->columns());
+
+            $inheritedTables = $target->inheritedTables(true);
+            foreach ($inheritedTables as $inheritedTable) {
+                $select = array_merge(
+                    $select,
+                    array_map([$inheritedTable, 'aliasField'], $inheritedTable->getSchema()->columns())
+                );
+            }
+
+            $inheritedTables = array_reverse($inheritedTables);
+            foreach ($inheritedTables as $inheritedTable) {
+                if (!$inheritedTable instanceof Table) {
+                    continue;
+                }
+
+                $builder = function (Query $query) use ($inheritedTable, $builder) {
+                    return $query->innerJoinWith($inheritedTable->getAlias(), $builder);
+                };
+            }
+        }
 
         $query = $source->find()
-            ->innerJoinWith($this->Association->getName())
-            ->select($primaryKeyFields)
+            ->innerJoinWith($this->Association->getName(), $builder)
+            ->select($select)
             ->where($conditions)
             ->enableAutoFields(false)
             ->formatResults(function (ResultSetInterface $results) {
