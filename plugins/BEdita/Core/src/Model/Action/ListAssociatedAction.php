@@ -21,6 +21,7 @@ use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
+use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
 
@@ -106,7 +107,6 @@ class ListAssociatedAction extends BaseAction
     protected function buildQuery($primaryKey, $list)
     {
         $source = $this->Association->getSource();
-        $target = $this->Association->getTarget();
         $conditions = $this->primaryKeyConditions($primaryKey);
 
         $existing = $source->find()
@@ -115,6 +115,49 @@ class ListAssociatedAction extends BaseAction
         if (!$existing) {
             throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
+
+        list($builder, $select) = $this->getQueryClauses($list);
+
+        $query = $source->find()
+            ->innerJoinWith($this->Association->getName(), $builder)
+            ->select($select)
+            ->where($conditions)
+            ->formatResults(function (ResultSetInterface $results) {
+                return $results->map(function ($row) {
+                    if (!isset($row['_matchingData']) || !is_array($row['_matchingData'])) {
+                        return $row;
+                    }
+
+                    $result = array_shift($row['_matchingData']);
+
+                    foreach ($row['_matchingData'] as $entity) {
+                        if ($entity instanceof Entity) {
+                            $entity = $entity->getOriginalValues();
+                        }
+
+                        $result->set($entity, ['setter' => false, 'guard' => false]);
+                    }
+
+                    return $result;
+                });
+            });
+
+        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
+            $query = $query->order($this->Association->sort());
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get clauses for query.
+     *
+     * @param bool $list Should only associated entity's primary key be selected?
+     * @return array
+     */
+    protected function getQueryClauses($list)
+    {
+        $target = $this->Association->getTarget();
 
         $builder = null;
         $select = $target;
@@ -143,27 +186,6 @@ class ListAssociatedAction extends BaseAction
             }
         }
 
-        $query = $source->find()
-            ->innerJoinWith($this->Association->getName(), $builder)
-            ->select($select)
-            ->where($conditions)
-            ->enableAutoFields(false)
-            ->formatResults(function (ResultSetInterface $results) {
-                return $results->map(function ($row) {
-                    if (!isset($row['_matchingData']) || !is_array($row['_matchingData'])) {
-                        return $row;
-                    }
-
-                    $row = current($row['_matchingData']);
-
-                    return $row;
-                });
-            });
-
-        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $query = $query->order($this->Association->sort());
-        }
-
-        return $query;
+        return [$builder, $select];
     }
 }
