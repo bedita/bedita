@@ -44,7 +44,9 @@ class DeleteObjectAction extends BaseAction
         $entity = $data['entity'];
 
         if (!empty($data['hard'])) {
-            return $this->Table->delete($entity);
+            $action = new DeleteEntityAction(['table' => $this->Table]);
+
+            return $action(compact('entity'));
         }
 
         $entity->set('deleted', true);
