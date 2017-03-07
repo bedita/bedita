@@ -78,7 +78,7 @@ class ListEntitiesAction extends BaseAction
      * Build a filter and return modified query object.
      *
      * @param \Cake\ORM\Query $query Query object instance.
-     * @param array $filter
+     * @param array $filter Filter data.
      * @return \Cake\ORM\Query
      */
     protected function buildFilter(Query $query, array $filter)
