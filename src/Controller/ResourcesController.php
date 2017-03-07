@@ -207,9 +207,7 @@ abstract class ResourcesController extends AppController
         $association = $this->findAssociation($relationship);
 
         $action = new ListAssociatedAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId]);
-
-        $query = $query->select($association, true);
+        $query = $action->execute(['primaryKey' => $relatedId]);
 
         $data = $this->paginate($query);
 
@@ -247,7 +245,7 @@ abstract class ResourcesController extends AppController
             case 'GET':
             default:
                 $action = new ListAssociatedAction(compact('association'));
-                $data = $action(['primaryKey' => $id]);
+                $data = $action(['primaryKey' => $id, 'list' => true]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);

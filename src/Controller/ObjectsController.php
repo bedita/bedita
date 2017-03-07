@@ -131,29 +131,6 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * {@inheritDoc}
-     */
-    public function related()
-    {
-        $this->request->allowMethod(['get']);
-
-        $relationship = $this->request->getParam('relationship');
-        $relatedId = $this->request->getParam('related_id');
-
-        $association = $this->findAssociation($relationship);
-
-        $action = new ListRelatedObjectsAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId]);
-
-        $query = $query->select($association, true);
-
-        $objects = $this->paginate($query);
-
-        $this->set(compact('objects'));
-        $this->set('_serialize', ['objects']);
-    }
-
-    /**
      * View entity's details.
      *
      * @param mixed $id Entity ID.
@@ -198,6 +175,27 @@ class ObjectsController extends ResourcesController
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function related()
+    {
+        $this->request->allowMethod(['get']);
+
+        $relationship = $this->request->getParam('relationship');
+        $relatedId = $this->request->getParam('related_id');
+
+        $association = $this->findAssociation($relationship);
+
+        $action = new ListRelatedObjectsAction(compact('association'));
+        $query = $action(['primaryKey' => $relatedId]);
+
+        $objects = $this->paginate($query);
+
+        $this->set(compact('objects'));
+        $this->set('_serialize', ['objects']);
+    }
+
+    /**
      * View and manage relationships.
      *
      * @return \Cake\Network\Response|null
@@ -220,7 +218,7 @@ class ObjectsController extends ResourcesController
             case 'GET':
             default:
                 $action = new ListRelatedObjectsAction(compact('association'));
-                $data = $action(['primaryKey' => $id]);
+                $data = $action(['primaryKey' => $id, 'list' => true]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);
