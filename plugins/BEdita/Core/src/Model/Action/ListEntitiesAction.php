@@ -58,7 +58,7 @@ class ListEntitiesAction extends BaseAction
 
         $result = [];
         foreach ($filter as $condition) {
-            list($key, $value) = explode('=', $condition, 2) + [null, null];
+            list($key, $value) = explode('=', $condition, 2) + [null, true];
 
             $key = trim($key);
             if ($key === '') {
@@ -88,6 +88,10 @@ class ListEntitiesAction extends BaseAction
 
             if ($this->Table->hasFinder($key)) {
                 // Finder.
+                if ($value === true) {
+                    $value = [];
+                }
+
                 $query = $query->find($key, (array)$value);
 
                 continue;
