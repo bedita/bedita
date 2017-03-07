@@ -65,6 +65,7 @@ class SaveEntityAction extends BaseAction
 
             throw new InternalErrorException(__d('bedita', 'Save failed'));
         }
+
         return $success;
     }
 }

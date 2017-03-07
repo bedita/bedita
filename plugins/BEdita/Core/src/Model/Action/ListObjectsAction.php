@@ -13,9 +13,6 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\InternalErrorException;
-
 /**
  * Command to save an entity.
  *
@@ -59,7 +56,7 @@ class ListObjectsAction extends BaseAction
             $conditions['object_type_id'] = $this->objectType->id;
         }
 
-       return $this->Table->find()
+        return $this->Table->find()
             ->contain('ObjectTypes')
             ->where($conditions);
     }
