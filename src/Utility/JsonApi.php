@@ -95,13 +95,18 @@ class JsonApi
             $url = Router::url($options, true);
         } catch (MissingRouteException $e) {
             $options['_name'] = sprintf('api:%s:%s', $endpoint, $name);
-            $options['object_type'] = $type;
             unset($options['controller']);
 
             try {
                 $url = Router::url($options, true);
             } catch (MissingRouteException $e) {
-                // Do not halt if route is missing.
+                $options['object_type'] = $type;
+
+                try {
+                    $url = Router::url($options, true);
+                } catch (MissingRouteException $e) {
+                    // Do not halt if route is missing.
+                }
             }
         }
 
