@@ -70,8 +70,8 @@ Router::plugin(
         );
         $routes->connect(
             '/:controller/:id',
-            ['action' => 'view'],
-            ['_name' => 'resources:view', 'pass' => ['id'], 'controller' => $resourcesControllers]
+            ['action' => 'resource'],
+            ['_name' => 'resources:resource', 'pass' => ['id'], 'controller' => $resourcesControllers]
         );
         $routes->connect(
             '/:controller/:related_id/:relationship',
@@ -93,7 +93,7 @@ Router::plugin(
         $routes->connect(
             '/trash/:id',
             ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'trash:view', 'pass' => ['id']]
+            ['_name' => 'trash:resource', 'pass' => ['id']]
         );
         $routes->connect(
             '/trash/:id',
@@ -114,8 +114,8 @@ Router::plugin(
         );
         $routes->connect(
             '/:object_type/:id',
-            ['controller' => 'Objects', 'action' => 'view'],
-            ['_name' => 'objects:view', 'pass' => ['id']]
+            ['controller' => 'Objects', 'action' => 'resource'],
+            ['_name' => 'objects:resource', 'pass' => ['id']]
         );
         $routes->connect(
             '/:object_type/:related_id/:relationship',

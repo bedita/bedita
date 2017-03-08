@@ -218,7 +218,7 @@ class JsonApi
         }
 
         if ($showLink) {
-            $self = static::buildUrl('view', $endpoint, $type, compact('id'));
+            $self = static::buildUrl('resource', $endpoint, $type, compact('id'));
 
             $links = compact('self');
         }

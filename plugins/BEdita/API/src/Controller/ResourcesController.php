@@ -131,7 +131,7 @@ abstract class ResourcesController extends AppController
                     'Location',
                     Router::url(
                         [
-                            '_name' => 'api:resources:view',
+                            '_name' => 'api:resources:resource',
                             'controller' => $this->name,
                             'id' => $entity->id,
                         ],
@@ -162,7 +162,7 @@ abstract class ResourcesController extends AppController
      * @param mixed $id Entity ID.
      * @return \Cake\Network\Response|null
      */
-    public function view($id)
+    public function resource($id)
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
