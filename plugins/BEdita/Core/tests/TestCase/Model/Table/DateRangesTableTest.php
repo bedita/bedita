@@ -1,4 +1,16 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\DateRangesTable;
@@ -27,30 +39,6 @@ class DateRangesTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.date_ranges',
-        // 'plugin.b_edita/core.properties',
-        // 'plugin.b_edita/core.property_types',
-        // 'plugin.b_edita/core.left_relations',
-        // 'plugin.b_edita/core.object_relations',
-        // 'plugin.b_edita/core.left_objects',
-        // 'plugin.b_edita/core.created_by_user',
-        // 'plugin.b_edita/core.external_auth',
-        // 'plugin.b_edita/core.users',
-        // 'plugin.b_edita/core.roles',
-        // 'plugin.b_edita/core.roles_users',
-        // 'plugin.b_edita/core.endpoint_permissions',
-        // 'plugin.b_edita/core.endpoints',
-        // 'plugin.b_edita/core.applications',
-        // 'plugin.b_edita/core.profiles',
-        // 'plugin.b_edita/core.user_prof',
-        // 'plugin.b_edita/core.modified_by_user',
-        // 'plugin.b_edita/core.prof_user',
-        // 'plugin.b_edita/core.auth_providers',
-        // 'plugin.b_edita/core.relations',
-        // 'plugin.b_edita/core.left_object_types',
-        // 'plugin.b_edita/core.relation_types',
-        // 'plugin.b_edita/core.right_relations',
-        // 'plugin.b_edita/core.right_object_types',
-        // 'plugin.b_edita/core.right_objects'
     ];
 
     /**
