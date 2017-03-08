@@ -57,7 +57,7 @@ class SaveEntityAction extends BaseAction
 
                 throw new BadRequestException([
                     'title' => __d('bedita', 'Invalid data'),
-                    'detail' => [$errors],
+                    'detail' => $errors,
                 ]);
             }
 
