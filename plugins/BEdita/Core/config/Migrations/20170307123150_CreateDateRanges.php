@@ -50,6 +50,22 @@ class CreateDateRanges extends AbstractMigration
                     'name' => 'dateranges_objectid_idx',
                 ]
             )
+            ->addIndex(
+                [
+                    'start_date',
+                ],
+                [
+                    'name' => 'dateranges_startdate_idx',
+                ]
+            )
+            ->addIndex(
+                [
+                    'end_date',
+                ],
+                [
+                    'name' => 'dateranges_enddate_idx',
+                ]
+            )
             ->create();
 
         $this->table('date_ranges')
