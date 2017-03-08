@@ -92,6 +92,7 @@ abstract class ResourcesController extends AppController
      */
     protected function findAssociation($relationship)
     {
+        $relationship = Inflector::underscore($relationship);
         if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
             $associations = $this->Table->associations();
             foreach ($associations as $association) {
