@@ -13,6 +13,7 @@
 namespace BEdita\API\Utility;
 
 use Cake\Collection\CollectionInterface;
+use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\Routing\Exception\MissingRouteException;
@@ -106,6 +107,7 @@ class JsonApi
                     $url = Router::url($options, true);
                 } catch (MissingRouteException $e) {
                     // Do not halt if route is missing.
+                    Log::debug('Unable to build URL', compact('name', 'endpoint', 'type', 'options'));
                 }
             }
         }
