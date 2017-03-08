@@ -349,7 +349,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testSingle()
@@ -418,7 +418,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDeleted()
@@ -507,7 +507,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
@@ -548,7 +548,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -580,7 +580,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAddTypeFail()
@@ -602,7 +602,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ]);
         $this->post('/news', json_encode(compact('data')));
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
     }
 
@@ -611,7 +611,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -651,7 +651,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditConflict()
@@ -687,7 +687,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         ]);
         $this->patch('/news/3', json_encode(compact('data')));
 
-        $this->assertResponseCode(404);
+        $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
     }
 
@@ -696,7 +696,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditInvalid()
@@ -741,7 +741,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDelete()
@@ -1010,6 +1010,27 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->get('/documents/99/relationships/test');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test failure on object type not found.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     */
+    public function testObjectTypeNotFound()
+    {
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/invalid_object_type');
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');

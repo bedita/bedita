@@ -13,9 +13,9 @@
 
 namespace BEdita\API\Model\Action;
 
-use BEdita\Core\Model\Action\UpdateAssociated as ParentAction;
+use BEdita\Core\Model\Action\BaseAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\ServerRequest;
+use Cake\ORM\Association;
 use Cake\Utility\Hash;
 
 /**
@@ -23,13 +23,13 @@ use Cake\Utility\Hash;
  *
  * @since 4.0.0
  */
-class UpdateAssociated
+class UpdateAssociatedAction extends BaseAction
 {
 
     /**
      * Add associated action.
      *
-     * @var \BEdita\Core\Model\Action\UpdateAssociated
+     * @var \BEdita\Core\Model\Action\UpdateAssociatedAction
      */
     protected $Action;
 
@@ -41,42 +41,41 @@ class UpdateAssociated
     protected $request;
 
     /**
-     * Command constructor.
-     *
-     * @param \BEdita\Core\Model\Action\UpdateAssociated $Action Associations update action.
-     * @param \Cake\Http\ServerRequest $request Request instance.
+     * {@inheritDoc}
      */
-    public function __construct(ParentAction $Action, ServerRequest $request)
+    protected function initialize(array $data)
     {
-        $this->Action = $Action;
-        $this->request = $request;
+        $this->Action = $this->getConfig('action');
+        $this->request = $this->getConfig('request');
     }
 
     /**
-     * Add new relations.
-     *
-     * @param mixed $primaryKey Source entity primary key.
-     * @return int|false
+     * {@inheritDoc}
      */
-    public function __invoke($primaryKey)
+    public function execute(array $data = [])
     {
-        $sourceEntity = $this->Action->getAssociation()->getSource()->get($primaryKey);
+        $association = $this->Action->getConfig('association');
+        if (!($association instanceof Association)) {
+            throw new \LogicException(__d('bedita', 'Unknown association type'));
+        }
+
+        $sourceEntity = $association->getSource()->get($data['primaryKey']);
 
         $targetPrimaryKeys = (array)$this->request->getData('id') ?: Hash::extract($this->request->getData(), '{*}.id');
         $targetPrimaryKeys = array_unique($targetPrimaryKeys);
-        $primaryKeyField = $this->Action->getAssociation()->getPrimaryKey();
-        $targetPKField = $this->Action->getAssociation()->aliasField($primaryKeyField);
+        $primaryKeyField = $association->getPrimaryKey();
+        $targetPKField = $association->aliasField($primaryKeyField);
 
         $targetEntities = null;
         if (count($targetPrimaryKeys)) {
-            $targetEntities = $this->Action->getAssociation()->find()
+            $targetEntities = $association->find()
                 ->where([
                     $targetPKField . ' IN' => $targetPrimaryKeys,
                 ]);
 
             if ($targetEntities->count() !== count($targetPrimaryKeys)) {
                 throw new RecordNotFoundException(
-                    __('Record not found in table "{0}"', $this->Action->getAssociation()->getTarget()->getTable()),
+                    __('Record not found in table "{0}"', $association->getTarget()->getTable()),
                     400
                 );
             }
@@ -84,6 +83,6 @@ class UpdateAssociated
             $targetEntities = (count($targetPrimaryKeys) > 1) ? $targetEntities->toArray() : $targetEntities->firstOrFail();
         }
 
-        return call_user_func($this->Action, $sourceEntity, $targetEntities);
+        return $this->Action->execute(['entity' => $sourceEntity, 'relatedEntities' => $targetEntities]);
     }
 }

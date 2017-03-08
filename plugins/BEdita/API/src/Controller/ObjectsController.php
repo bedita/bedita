@@ -12,15 +12,18 @@
  */
 namespace BEdita\API\Controller;
 
-use BEdita\Core\Model\Action\ListRelatedObjects;
+use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Action\ListObjectsAction;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
 
@@ -28,8 +31,6 @@ use Cake\Utility\Inflector;
  * Controller for `/objects` endpoint.
  *
  * @since 4.0.0
- *
- * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
 class ObjectsController extends ResourcesController
 {
@@ -53,16 +54,20 @@ class ObjectsController extends ResourcesController
     {
         parent::initialize();
 
-        $type = $this->request->getParam('object_type', 'objects');
-        if ($type != 'objects') {
+        $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
+        if ($type !== false && $type !== 'objects') {
             try {
                 $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
                 $this->modelClass = $this->objectType->alias;
-                $this->Objects = TableRegistry::get($this->modelClass);
+                $this->Table = TableRegistry::get($this->modelClass);
             } catch (RecordNotFoundException $e) {
-                $this->log('Type endpoint does not exist ' . $type, 'error');
+                $this->log(sprintf('Object type "%s" does not exist', $type), 'error', ['request' => $this->request]);
 
-                throw new NotFoundException('Endpoint does not exist');
+                throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
+            }
+
+            if (isset($this->JsonApi)) {
+                $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
             }
         }
 
@@ -70,19 +75,116 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * Paginated objects list.
-     *
-     * @return void
+     * {@inheritDoc}
+     */
+    protected function findAssociation($relationship)
+    {
+        $behaviorRegistry = $this->Table->behaviors();
+        if ($behaviorRegistry->hasMethod('getRelations') && array_key_exists($relationship, $behaviorRegistry->call('getRelations'))) {
+            return $this->Table->association(Inflector::camelize(Inflector::underscore($relationship)));
+        }
+
+        return parent::findAssociation($relationship);
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function index()
     {
-        $query = $this->Objects->find('all')
-            ->where(['deleted' => 0])
-            ->contain(['ObjectTypes']);
+        $this->request->allowMethod(['get', 'post']);
 
-        if ($this->objectType) {
-            $query->andWhere(['object_type_id' => $this->objectType->id]);
+        if ($this->request->is('post')) {
+            // Add a new entity.
+            $entity = $this->Table->newEntity();
+            $entity->set('type', $this->request->getData('type'));
+            $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+
+            $data = $this->request->getData();
+            $entity = $action(compact('entity', 'data'));
+
+            return $this->response
+                ->withStatus(201)
+                ->withHeader(
+                    'Location',
+                    Router::url(
+                        [
+                            '_name' => 'api:objects:resource',
+                            'object_type' => $this->objectType->name,
+                            'id' => $entity->id,
+                        ],
+                        true
+                    )
+                );
         }
+
+        // List existing entities.
+        $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+        $query = $action();
+
+        $data = $this->paginate($query);
+
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resource($id)
+    {
+        $this->request->allowMethod(['get', 'patch', 'delete']);
+
+        $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+        $entity = $action(['primaryKey' => $id]);
+
+        if ($this->request->is('delete')) {
+            // Delete an entity.
+            $action = new DeleteObjectAction(['table' => $this->Table]);
+
+            if (!$action(compact('entity'))) {
+                throw new InternalErrorException(__d('bedita', 'Delete failed'));
+            }
+
+            return $this->response
+                ->withHeader('Content-Type', $this->request->contentType())
+                ->withStatus(204);
+        }
+
+        if ($this->request->is('patch')) {
+            // Patch an existing entity.
+            if ($this->request->getData('id') !== $id) {
+                throw new ConflictException(__d('bedita', 'IDs don\'t match'));
+            }
+
+            $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+
+            $data = $this->request->getData();
+            $entity = $action(compact('entity', 'data'));
+        }
+
+        $this->set(compact('entity'));
+        $this->set('_serialize', ['entity']);
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function related()
+    {
+        $this->request->allowMethod(['get']);
+
+        $relationship = $this->request->getParam('relationship');
+        $relatedId = $this->request->getParam('related_id');
+
+        $association = $this->findAssociation($relationship);
+
+        $action = new ListRelatedObjectsAction(compact('association'));
+        $query = $action(['primaryKey' => $relatedId]);
 
         $objects = $this->paginate($query);
 
@@ -93,173 +195,6 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function related()
-    {
-        $relationship = $this->request->getParam('relationship');
-        $relatedId = $this->request->getParam('related_id');
-
-        $Association = $this->findAssociation($relationship);
-
-        $action = new ListRelatedObjects($Association);
-        $query = $action($relatedId);
-
-        $query = $query->select($Association, true);
-
-        $objects = $this->paginate($query);
-
-        $this->set(compact('objects'));
-        $this->set([
-            '_serialize' => ['objects'],
-        ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function findAssociation($relationship)
-    {
-        $behaviorRegistry = $this->Objects->behaviors();
-        if ($behaviorRegistry->hasMethod('getRelations') && array_key_exists($relationship, $behaviorRegistry->call('getRelations'))) {
-            return $this->Objects->association(Inflector::camelize(Inflector::underscore($relationship)));
-        }
-
-        return parent::findAssociation($relationship);
-    }
-
-    /**
-     * Get single object data.
-     *
-     * @param int $id Object ID.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
-     */
-    public function view($id)
-    {
-        $conditions = ['deleted' => 0];
-        if ($this->objectType) {
-            $conditions['object_type_id'] = $this->objectType->id;
-        }
-        $object = $this->Objects->get($id, [
-            'contain' => ['ObjectTypes'],
-            'conditions' => $conditions
-        ]);
-
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Add a new object.
-     *
-     * @return void
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
-     */
-    public function add()
-    {
-        $this->request->allowMethod('post');
-
-        $object = $this->Objects->newEntity($this->request->getData());
-        $object->type = $this->request->getData('type');
-        if ($this->objectType && $object->type !== $this->objectType->name) {
-            $this->log('Bad type on object creation ' . $object->type, 'error');
-            throw new BadRequestException('Invalid type');
-        }
-        if (!$this->Objects->save($object)) {
-            $this->log('Object creation failed  - ' . $object->type . ' - ' . json_encode($object->errors()), 'error');
-            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
-        }
-
-        $this->response = $this->response
-            ->withStatus(201)
-            ->withHeader(
-                'Location',
-                Router::url(
-                    [
-                        'object_type' => $object->type,
-                        '_name' => 'api:objects:view',
-                        $object->id,
-                    ],
-                    true
-                )
-            );
-
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Edit an existing object.
-     *
-     * @param int $id Object ID.
-     * @return void
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
-     *      the URL object ID.
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
-     */
-    public function edit($id)
-    {
-        $this->request->allowMethod('patch');
-
-        if ($this->request->getData('id') != $id) {
-            throw new ConflictException('IDs don\' match');
-        }
-
-        $object = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 0]
-        ]);
-
-        if ($this->objectType && $object->type !== $this->objectType->name) {
-            $this->log('Bad type on object edit ' . $object->type, 'error');
-            throw new NotFoundException('Invalid type');
-        }
-
-        $object = $this->Objects->patchEntity($object, $this->request->getData());
-        if (!$this->Objects->save($object)) {
-            $this->log('Object edit failed ' . json_encode($object->errors()), 'error');
-            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
-        }
-
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Delete an existing object.
-     *
-     * @param int $id object ID.
-     * @return \Cake\Network\Response
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
-     */
-    public function delete($id)
-    {
-        $this->request->allowMethod('delete');
-
-        $object = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 0]
-        ]);
-
-        if ($this->objectType && $object->type !== $this->objectType->name) {
-            $this->log('Bad type on object delete ' . $object->type, 'error');
-            throw new NotFoundException('Invalid type');
-        }
-
-        $object->deleted = true;
-        if (!$this->Objects->save($object)) {
-            throw new InternalErrorException('Could not delete object');
-        }
-
-        return $this->response
-            ->withHeader('Content-Type', $this->request->contentType())
-            ->withStatus(204);
-    }
-
-    /**
-     * View and manage relationships.
-     *
-     * @return \Cake\Network\Response|null
-     */
     public function relationships()
     {
         $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
@@ -267,7 +202,7 @@ class ObjectsController extends ResourcesController
         $id = $this->request->getParam('id');
         $relationship = $this->request->getParam('relationship');
 
-        $Association = $this->findAssociation($relationship);
+        $association = $this->findAssociation($relationship);
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
@@ -277,8 +212,8 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
-                $action = new ListRelatedObjects($Association);
-                $data = $action($id);
+                $action = new ListRelatedObjectsAction(compact('association'));
+                $data = $action(['primaryKey' => $id, 'list' => true]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);

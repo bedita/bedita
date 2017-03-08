@@ -18,11 +18,11 @@ use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 
 /**
- * Command to remove links between entities.
+ * Command to add links between entities.
  *
  * @since 4.0.0
  */
-class RemoveAssociated extends UpdateAssociated
+class AddAssociatedAction extends UpdateAssociatedAction
 {
 
     /**
@@ -40,7 +40,7 @@ class RemoveAssociated extends UpdateAssociated
         $diff = [];
         foreach ($relatedEntities as $relatedEntity) {
             $primaryKey = $relatedEntity->extract($bindingKey);
-            if (!in_array($primaryKey, $existing)) {
+            if (in_array($primaryKey, $existing)) {
                 continue;
             }
 
@@ -51,14 +51,14 @@ class RemoveAssociated extends UpdateAssociated
     }
 
     /**
-     * Remove existing relations.
+     * Add new relations.
      *
      * @param \Cake\Datasource\EntityInterface $entity Source entity.
      * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
      * @return int|false Number of updated relationships, or `false` on failure.
      * @throws \RuntimeException Throws an exception if an unsupported association is passed.
      */
-    public function __invoke(EntityInterface $entity, $relatedEntities)
+    protected function update(EntityInterface $entity, $relatedEntities)
     {
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             if ($relatedEntities === null) {
@@ -67,18 +67,15 @@ class RemoveAssociated extends UpdateAssociated
                 $relatedEntities = [$relatedEntities];
             }
 
-
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 $relatedEntities = $this->diff($entity, $relatedEntities);
 
-                $this->Association->unlink($entity, $relatedEntities);
-
-                return count($relatedEntities);
+                return $this->Association->link($entity, $relatedEntities) ? count($relatedEntities) : false;
             });
         }
 
         throw new \RuntimeException(
-            __('Unable to remove existing links with association of type "{0}"', get_class($this->Association))
+            __d('bedita', 'Unable to add additional links with association of type "{0}"', get_class($this->Association))
         );
     }
 }

@@ -11,18 +11,21 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Test\TestCase\Model\Action;
+namespace BEdita\API\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\SetAssociated;
+use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\SetAssociatedAction;
+use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\ServerRequest;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\SetAssociated<extended>
+ * @covers \BEdita\API\Model\Action\UpdateAssociatedAction
  */
-class SetAssociatedTest extends TestCase
+class UpdateAssociatedActionTest extends TestCase
 {
 
     /**
@@ -35,7 +38,6 @@ class SetAssociatedTest extends TestCase
         'plugin.BEdita/Core.fake_articles',
         'plugin.BEdita/Core.fake_tags',
         'plugin.BEdita/Core.fake_articles_tags',
-        'plugin.BEdita/Core.fake_labels',
     ];
 
     /**
@@ -45,15 +47,10 @@ class SetAssociatedTest extends TestCase
     {
         parent::setUp();
 
-        TableRegistry::get('FakeLabels')
-            ->belongsTo('FakeTags');
-
         TableRegistry::get('FakeTags')
             ->belongsToMany('FakeArticles', [
                 'joinTable' => 'fake_articles_tags',
-            ])
-            ->getSource()
-            ->hasOne('FakeLabels');
+            ]);
 
         TableRegistry::get('FakeArticles')
             ->belongsToMany('FakeTags', [
@@ -74,33 +71,42 @@ class SetAssociatedTest extends TestCase
     public function invocationProvider()
     {
         return [
+            'belongsToManyDuplicateEntry' => [
+                1,
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    ['id' => 1],
+                    ['id' => 2],
+                    ['id' => 2],
+                ],
+            ],
             'belongsToManyEmpty' => [
                 1,
                 'FakeTags',
                 'FakeArticles',
                 1,
-                null,
+                [],
             ],
             'belongsToManyNothingToDo' => [
                 0,
                 'FakeTags',
                 'FakeArticles',
                 1,
-                1,
-            ],
-            'hasMany' => [
-                2,
-                'FakeAnimals',
-                'FakeArticles',
-                2,
-                [1, 2],
+                [
+                    ['id' => 1],
+                ],
             ],
             'hasManyNothingToDo' => [
                 0,
                 'FakeAnimals',
                 'FakeArticles',
                 1,
-                [1, 2],
+                [
+                    ['id' => 1],
+                    ['id' => 2],
+                ],
             ],
             'unsupportedMultipleEntities' => [
                 new \InvalidArgumentException(
@@ -109,56 +115,37 @@ class SetAssociatedTest extends TestCase
                 'FakeArticles',
                 'FakeAnimals',
                 1,
-                [1, 2],
-            ],
-            'belongsToEmpty' => [
-                1,
-                'FakeArticles',
-                'FakeAnimals',
-                1,
-                null,
+                [
+                    ['id' => 1],
+                    ['id' => 2],
+                ],
             ],
             'belongsTo' => [
                 1,
                 'FakeArticles',
                 'FakeAnimals',
                 1,
-                2,
+                [
+                    'id' => 2,
+                ],
             ],
             'belongsToNothingToDo' => [
                 0,
                 'FakeArticles',
                 'FakeAnimals',
                 1,
-                1,
+                [
+                    'id' => 1,
+                ],
             ],
-            'hasOne' => [
-                1,
-                'FakeTags',
-                'FakeLabels',
-                1,
-                1,
-            ],
-            'hasOneEmpty' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                1,
-                null,
-            ],
-            'hasOneNothingToDo' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                1,
+            'missingEntity' => [
+                new RecordNotFoundException('Record not found in table "fake_animals"'),
+                'FakeArticles',
+                'FakeAnimals',
                 2,
-            ],
-            'hasOneNothingToDoEmpty' => [
-                0,
-                'FakeTags',
-                'FakeLabels',
-                2,
-                null,
+                [
+                    'id' => 99,
+                ],
             ],
         ];
     }
@@ -169,51 +156,42 @@ class SetAssociatedTest extends TestCase
      * @param bool|\Exception Expected result.
      * @param string $table Table to use.
      * @param string $association Association to use.
-     * @param int $entity Entity to update relations for.
-     * @param int|int[]|null $related Related entity(-ies).
+     * @param int $id Entity ID to update relations for.
+     * @param int|int[]|null $data Related entity(-ies).
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $table, $association, $entity, $related)
+    public function testInvocation($expected, $table, $association, $id, $data)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
+        $request = new ServerRequest();
+        $request = $request->withParsedBody($data);
         $association = TableRegistry::get($table)->association($association);
-        $action = new SetAssociated($association);
+        $parentAction = new SetAssociatedAction(compact('association'));
+        $action = new UpdateAssociatedAction(['action' => $parentAction, 'request' => $request]);
 
-        $entity = $association->getSource()->get($entity, ['contain' => [$association->getName()]]);
-        $relatedEntities = null;
-        if (is_int($related)) {
-            $relatedEntities = $association->getTarget()->get($related);
-        } elseif (is_array($related)) {
-            $relatedEntities = $association->getTarget()->find()
-                ->where([
-                    $association->getTarget()->getPrimaryKey() . ' IN' => $related,
-                ])
-                ->toArray();
-        }
-
-        $result = $action($entity, $relatedEntities);
+        $result = $action(['primaryKey' => $id]);
 
         $count = 0;
-        if ($related !== null) {
+        if ($data !== null) {
             $count = $association->getTarget()->find()
                 ->matching(
                     Inflector::camelize($association->getSource()->getTable()),
-                    function (Query $query) use ($association, $entity) {
+                    function (Query $query) use ($association, $id) {
                         return $query->where([
-                            $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $entity->id,
+                            $association->getSource()->aliasField($association->getSource()->getPrimaryKey()) => $id,
                         ]);
                     }
                 )
                 ->count();
         }
 
-        static::assertEquals($expected, $result);
-        static::assertEquals(count($related), $count);
+        $this->assertEquals($expected, $result);
+        $this->assertEquals(count(array_unique($data, SORT_REGULAR)), $count);
     }
 }

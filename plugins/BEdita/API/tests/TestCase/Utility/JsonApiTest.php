@@ -464,6 +464,7 @@ class JsonApiTest extends TestCase
      * @dataProvider formatDataProvider
      * @covers ::formatData
      * @covers ::formatItem
+     * @covers ::buildUrl
      * @covers ::extractType
      * @covers ::extractAttributes
      * @covers ::extractRelationships
@@ -509,6 +510,7 @@ class JsonApiTest extends TestCase
      *
      * @covers ::formatData
      * @covers ::formatItem
+     * @covers ::buildUrl
      * @covers ::extractType
      * @covers ::extractAttributes
      * @covers ::extractRelationships

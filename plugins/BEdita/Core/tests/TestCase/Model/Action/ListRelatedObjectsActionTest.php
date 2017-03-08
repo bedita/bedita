@@ -13,17 +13,19 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\ListAssociated;
-use BEdita\Core\Model\Action\ListRelatedObjects;
+use BEdita\Core\Model\Action\ListAssociatedAction;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association\BelongsToMany;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @coversDefaultClass \BEdita\Core\Model\Action\ListRelatedObjects
+ * @covers \BEdita\Core\Model\Action\ListRelatedObjectsAction
  */
-class ListRelatedObjectsTest extends TestCase
+class ListRelatedObjectsActionTest extends TestCase
 {
 
     /**
@@ -39,35 +41,6 @@ class ListRelatedObjectsTest extends TestCase
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
     ];
-
-    /**
-     * Test constructor with a table that does not have the required behavior.
-     *
-     * @return void
-     *
-     * @covers ::__construct()
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Table "ObjectTypes" does not implement relations
-     */
-    public function testConstructInvalidTable()
-    {
-        new ListRelatedObjects(TableRegistry::get('ObjectTypes')->association('Properties'));
-    }
-
-    /**
-     * Test constructor with valid arguments.
-     *
-     * @return void
-     *
-     * @covers ::__construct()
-     */
-    public function testConstruct()
-    {
-        $Action = new ListRelatedObjects(TableRegistry::get('Documents')->association('Test'), 'test');
-
-        static::assertAttributeInstanceOf(BelongsToMany::class, 'Association', $Action);
-        static::assertAttributeInstanceOf(ListAssociated::class, 'Action', $Action);
-    }
 
     /**
      * Data provider for `testInvocation` test case.
@@ -130,15 +103,16 @@ class ListRelatedObjectsTest extends TestCase
      * @param int $id ID.
      * @return void
      *
-     * @covers ::__invoke()
      * @dataProvider invocationProvider()
      */
     public function testInvocation($expected, $objectType, $relation, $id)
     {
         $alias = Inflector::camelize(Inflector::underscore($relation));
-        $Action = new ListRelatedObjects(TableRegistry::get($objectType)->association($alias));
+        $association = TableRegistry::get($objectType)->association($alias);
+        $action = new ListRelatedObjectsAction(compact('association'));
 
-        $result = json_decode(json_encode($Action($id)->toArray()), true);
+        $result = $action(['primaryKey' => $id, 'list' => true]);
+        $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);
     }
