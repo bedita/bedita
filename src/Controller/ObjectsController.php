@@ -109,7 +109,7 @@ class ObjectsController extends ResourcesController
                     'Location',
                     Router::url(
                         [
-                            '_name' => 'api:objects:view',
+                            '_name' => 'api:objects:resource',
                             'object_type' => $this->objectType->name,
                             'id' => $entity->id,
                         ],
@@ -133,7 +133,7 @@ class ObjectsController extends ResourcesController
     /**
      * {@inheritDoc}
      */
-    public function view($id)
+    public function resource($id)
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
