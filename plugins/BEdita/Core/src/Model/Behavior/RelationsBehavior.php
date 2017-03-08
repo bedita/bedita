@@ -16,7 +16,6 @@ namespace BEdita\Core\Model\Behavior;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Inflector;
 
 /**
  * Relations behavior
@@ -65,7 +64,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the left side.
         foreach ($this->objectType->left_relations as $relation) {
-            $this->getTable()->belongsToMany(Inflector::camelize($relation->name), [
+            $this->getTable()->belongsToMany($relation->alias, [
                 'className' => 'Objects',
                 'through' => 'ObjectRelations',
                 'foreignKey' => 'left_id',
@@ -81,7 +80,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the right side.
         foreach ($this->objectType->right_relations as $relation) {
-            $this->getTable()->belongsToMany(Inflector::camelize($relation->inverse_name), [
+            $this->getTable()->belongsToMany($relation->inverse_alias, [
                 'className' => 'Objects',
                 'through' => 'ObjectRelations',
                 'foreignKey' => 'right_id',

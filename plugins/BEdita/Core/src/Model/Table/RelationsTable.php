@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -114,8 +115,15 @@ class RelationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['name']));
-        $rules->add($rules->isUnique(['inverse_name']));
+        $rules
+            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+                'errorField' => 'name',
+                'message' => __d('cake', 'This value is already in use'),
+            ])
+            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+                'errorField' => 'inverse_name',
+                'message' => __d('cake', 'This value is already in use'),
+            ]);
 
         return $rules;
     }

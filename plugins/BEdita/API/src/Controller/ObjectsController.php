@@ -81,7 +81,7 @@ class ObjectsController extends ResourcesController
     {
         $behaviorRegistry = $this->Table->behaviors();
         if ($behaviorRegistry->hasMethod('getRelations') && array_key_exists($relationship, $behaviorRegistry->call('getRelations'))) {
-            return $this->Table->association(Inflector::camelize($relationship));
+            return $this->Table->association(Inflector::camelize(Inflector::underscore($relationship)));
         }
 
         return parent::findAssociation($relationship);
