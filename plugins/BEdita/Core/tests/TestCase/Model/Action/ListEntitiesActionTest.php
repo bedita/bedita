@@ -45,7 +45,7 @@ class ListEntitiesActionTest extends TestCase
             'normal' => [
                 [
                     'filter' => 'key=value',
-                    'dangling' => null,
+                    'dangling' => true,
                     'gustavo' => 'supporto',
                     'empty' => null,
                 ],

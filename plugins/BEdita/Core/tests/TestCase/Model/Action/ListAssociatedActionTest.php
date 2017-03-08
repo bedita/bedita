@@ -14,10 +14,8 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociatedAction;
-use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -35,6 +33,7 @@ class ListAssociatedActionTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals',
         'plugin.BEdita/Core.fake_articles',
+        'plugin.BEdita/Core.fake_mammals',
         'plugin.BEdita/Core.fake_tags',
         'plugin.BEdita/Core.fake_articles_tags',
     ];
@@ -60,6 +59,13 @@ class ListAssociatedActionTest extends TestCase
 
         TableRegistry::get('FakeAnimals')
             ->hasMany('FakeArticles');
+
+        TableRegistry::get('FakeMammals', ['className' => 'BEdita\Core\ORM\Inheritance\Table'])
+            ->extensionOf('FakeAnimals');
+
+        TableRegistry::get('FakeMammalArticles')
+            ->setTable('fake_articles')
+            ->belongsTo('FakeMammals', ['foreignKey' => 'fake_animal_id']);
     }
 
     /**
@@ -113,6 +119,18 @@ class ListAssociatedActionTest extends TestCase
                 'FakeAnimals',
                 1,
             ],
+            'inheritedTables' => [
+                [
+                    'id' => 1,
+                    'name' => 'cat',
+                    'legs' => 4,
+                    'subclass' => 'Eutheria',
+                ],
+                'FakeMammalArticles',
+                'FakeMammals',
+                1,
+                false,
+            ],
         ];
     }
 
@@ -123,11 +141,12 @@ class ListAssociatedActionTest extends TestCase
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $id Entity ID to list relations for.
+     * @param bool $list Should entities be listed as a list?
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $table, $association, $id)
+    public function testInvocation($expected, $table, $association, $id, $list = true)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
@@ -137,9 +156,9 @@ class ListAssociatedActionTest extends TestCase
         $association = TableRegistry::get($table)->association($association);
         $action = new ListAssociatedAction(compact('association'));
 
-        $result = $action(['primaryKey' => $id, 'list' => true]);
+        $result = $action(['primaryKey' => $id] + compact('list'));
         $result = json_decode(json_encode($result->toArray()), true);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
     }
 }
