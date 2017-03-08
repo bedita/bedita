@@ -12,12 +12,6 @@
  */
 namespace BEdita\API\Controller;
 
-use Cake\Network\Exception\BadRequestException;
-use Cake\Network\Exception\ConflictException;
-use Cake\Network\Exception\InternalErrorException;
-use Cake\ORM\Query;
-use Cake\Routing\Router;
-
 /**
  * Controller for `/users` endpoint.
  *
