@@ -131,10 +131,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * View entity's details.
-     *
-     * @param mixed $id Entity ID.
-     * @return \Cake\Network\Response|null
+     * {@inheritDoc}
      */
     public function view($id)
     {
@@ -196,9 +193,7 @@ class ObjectsController extends ResourcesController
     }
 
     /**
-     * View and manage relationships.
-     *
-     * @return \Cake\Network\Response|null
+     * {@inheritDoc}
      */
     public function relationships()
     {

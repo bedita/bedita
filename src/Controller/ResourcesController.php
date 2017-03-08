@@ -106,7 +106,10 @@ abstract class ResourcesController extends AppController
     }
 
     /**
-     * Paginated list of resources.
+     * List and add entities.
+     *
+     * This action represents a collection of resources.
+     * If the request is a `POST` request, this action creates a new resource.
      *
      * @return \Cake\Network\Response|null
      */
@@ -150,7 +153,11 @@ abstract class ResourcesController extends AppController
     }
 
     /**
-     * View entity's details.
+     * View and manage single entities.
+     *
+     * This action represents a single resource.
+     * If the request is a `PATCH` request, this action updates an existing resource.
+     * If the request is a `DELETE` request, this action deletes an existing resource.
      *
      * @param mixed $id Entity ID.
      * @return \Cake\Network\Response|null
@@ -196,6 +203,8 @@ abstract class ResourcesController extends AppController
     /**
      * Paginated list of related resources.
      *
+     * This action represents a collection of related resources.
+     *
      * @return void
      */
     public function related()
@@ -218,6 +227,11 @@ abstract class ResourcesController extends AppController
 
     /**
      * View and manage relationships.
+     *
+     * This action represents a collection of relationships.
+     * If the request is a `PATCH` request, this action completely replaces the set of existing relationships.
+     * If the request is a `POST` request, this action adds new relationships.
+     * If the request is a `DELETE` request, this action deletes existing relationships.
      *
      * @return \Cake\Network\Response|null
      */
