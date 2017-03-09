@@ -97,4 +97,45 @@ class DateRangesTable extends Table
 
         return $rules;
     }
+
+    /**
+     * Find objects by date range.
+     *
+     * Create a query to filter objects using start and end date conditions.
+     * Accepted options are:
+     *   - 'startAfter' or 'startBefore' to find objects having `date_ranges.start_date` after or before param passed
+     *   - 'endAfter' or 'endBefore' to find objects having `date_ranges.end_date` after or before param passed
+     *
+     * ```
+     * $table->find('date', ['startAfter' => '2017-03-01'], 'Events');
+     * ```
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @param string $objectType Name of object type to filter like 'Events'.
+     * @return \Cake\ORM\Query
+     */
+    public function findDate(Query $query, array $options, $objectType = 'Objects')
+    {
+        $accepted = [
+            'startAfter' => 'start_date > ',
+            'startBefore' => 'start_date < ',
+            'endAfter' => 'end_date > ',
+            'endBefore' => 'end_date < ',
+        ];
+        $options = array_intersect_key($options, $accepted);
+        if ($options) {
+            $subquery = $this->find()
+                ->select(['id'])
+                ->where($this->alias() . '.object_id = ' . $objectType . '.id');
+            foreach ($options as $key => $value) {
+                $subquery = $subquery->andWhere($this->alias() . '.' . $accepted[$key] . "'" . $value . "'");
+            }
+            $query = $query->andWhere(function ($exp, $q) use ($subquery) {
+                    return $exp->exists($subquery);
+            });
+        }
+
+        return $query;
+    }
 }

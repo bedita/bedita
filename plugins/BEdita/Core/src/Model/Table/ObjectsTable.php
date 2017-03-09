@@ -175,4 +175,16 @@ class ObjectsTable extends Table
 
         return $query;
     }
+
+    /**
+     * Find by date range using `DateRanges` table findDate filter
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return \Cake\ORM\Query
+     */
+    public function findDate(Query $query, array $options)
+    {
+        return TableRegistry::get('DateRanges')->findDate($query, $options, $this->alias());
+    }
 }

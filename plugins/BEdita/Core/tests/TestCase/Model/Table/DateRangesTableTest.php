@@ -18,7 +18,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\DateRangesTable Test Case
+ * {@see \BEdita\Core\Model\Table\DateRangesTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\DateRangesTable
  */
 class DateRangesTableTest extends TestCase
 {
@@ -65,32 +67,69 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testFindDate` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function findDateProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'startAfter' => [
+                [
+                    'startAfter' => '2017-01-01',
+                ],
+                1,
+            ],
+            'startBefore' => [
+                [
+                    'startBefore' => '2017-01-01',
+                ],
+                0,
+            ],
+            'endBefore' => [
+                [
+                    'endBefore' => '2017-01-01',
+                ],
+                0,
+            ],
+            'endAfter' => [
+                [
+                    'endAfter' => '2017-01-01',
+                ],
+                1,
+            ],
+            'combinedOK' => [
+                [
+                    'startAfter' => '2017-03-01',
+                    'endBefore' => '2017-04-01',
+                ],
+                1,
+            ],
+            'combinedKO' => [
+                [
+                    'startBefore' => '2017-01-01',
+                    'endAfter' => '2017-05-01',
+                ],
+                0,
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test object date range finder.
      *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
      * @return void
+     *
+     * @dataProvider findDateProvider
+     * @covers ::findDate()
      */
-    public function testValidationDefault()
+    public function testFindDate($conditions, $numExpected)
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $objects = TableRegistry::get('Objects');
+        $result = $objects->find()->find('date', $conditions)->toArray();
 
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertEquals($numExpected, count($result));
     }
 }
