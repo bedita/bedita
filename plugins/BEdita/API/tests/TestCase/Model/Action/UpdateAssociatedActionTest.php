@@ -82,6 +82,16 @@ class UpdateAssociatedActionTest extends TestCase
                     ['id' => 2],
                 ],
             ],
+            'belongsToManySingleDuplicateEntry' => [
+                2,
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    ['id' => 2],
+                    ['id' => 2],
+                ],
+            ],
             'belongsToManyEmpty' => [
                 1,
                 'FakeTags',
