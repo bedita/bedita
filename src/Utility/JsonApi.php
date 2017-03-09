@@ -132,7 +132,13 @@ class JsonApi
         array_walk(
             $item,
             function (&$attribute) {
-                if ($attribute instanceof \JsonSerializable) {
+                if (is_array($attribute)) {
+                    foreach ($attribute as &$value) {
+                        if (is_array($value)) {
+                            unset($value['id'], $value['object_id']);
+                        }
+                    }
+                } elseif ($attribute instanceof \JsonSerializable) {
                     $attribute = json_decode(json_encode($attribute), true);
                 }
             }

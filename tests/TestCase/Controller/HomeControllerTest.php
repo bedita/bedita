@@ -156,6 +156,22 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/events' => [
+                        'href' => 'http://api.example.com/events',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Events',
+                                'color' => '#44d1ab'
+                            ]
+                        ],
+                    ],
                     '/roles' => [
                         'href' => 'http://api.example.com/roles',
                         'hints' => [
