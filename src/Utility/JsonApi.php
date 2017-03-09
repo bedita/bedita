@@ -275,6 +275,10 @@ class JsonApi
             $data += $item['attributes'];
         }
 
+        if (isset($item['meta']) && is_array($item['meta'])) {
+            $data['_meta'] = $item['meta'];
+        }
+
         return $data;
     }
 }
