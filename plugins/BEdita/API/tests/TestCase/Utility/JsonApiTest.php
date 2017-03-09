@@ -603,6 +603,4 @@ class JsonApiTest extends TestCase
 
         static::assertEquals($expected, $result);
     }
-
-
 }
