@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
@@ -64,7 +65,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the left side.
         foreach ($this->objectType->left_relations as $relation) {
-            $this->getTable()->belongsToMany($relation->alias, [
+            $this->relatedTo($relation->alias, [
                 'className' => 'Objects',
                 'through' => 'ObjectRelations',
                 'foreignKey' => 'left_id',
@@ -80,7 +81,7 @@ class RelationsBehavior extends Behavior
 
         // Add relations to the right side.
         foreach ($this->objectType->right_relations as $relation) {
-            $this->getTable()->belongsToMany($relation->inverse_alias, [
+            $this->relatedTo($relation->inverse_alias, [
                 'className' => 'Objects',
                 'through' => 'ObjectRelations',
                 'foreignKey' => 'right_id',
@@ -93,6 +94,31 @@ class RelationsBehavior extends Behavior
                 ],
             ]);
         }
+    }
+
+    /**
+     * Creates a new RelatedTo association between this table and a target
+     * table. A "belongs to many" association is a M-N relationship.
+     *
+     * Target table can be inferred by its name, which is provided in the
+     * first argument, or you can either pass the class name to be instantiated or
+     * an instance of it directly.
+     *
+     * The options array accept the same keys as {@see \Cake\ORM\Table::belongsToMany()}.
+     *
+     * This method will return the association object that was built.
+     *
+     * @param string $associated The alias for the target table. This is used to
+     *      uniquely identify the association.
+     * @param array $options List of options to configure the association definition.
+     * @return \Cake\ORM\Association
+     */
+    protected function relatedTo($associated, array $options = [])
+    {
+        $options += ['sourceTable' => $this->getTable()];
+        $association = new RelatedTo($associated, $options);
+
+        return $this->getTable()->associations()->add($association->getName(), $association);
     }
 
     /**
