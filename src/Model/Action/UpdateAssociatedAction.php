@@ -19,7 +19,7 @@ use Cake\ORM\Association;
 use Cake\Utility\Hash;
 
 /**
- * Command to add links between entities.
+ * Command to update links between entities.
  *
  * @since 4.0.0
  */
@@ -67,7 +67,7 @@ class UpdateAssociatedAction extends BaseAction
         $targetPKField = $association->aliasField($primaryKeyField);
 
         $targetEntities = null;
-        if (count($targetPrimaryKeys)) {
+        if (!empty($targetPrimaryKeys)) {
             $targetEntities = $association->find()
                 ->where([
                     $targetPKField . ' IN' => $targetPrimaryKeys,
