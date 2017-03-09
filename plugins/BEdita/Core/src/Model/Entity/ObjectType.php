@@ -27,6 +27,7 @@ use Cake\Utility\Inflector;
  * @property string $plugin
  * @property string $model
  * @property string $table
+ * @property array $associations
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
@@ -47,6 +48,7 @@ class ObjectType extends Entity
         'plugin' => true,
         'model' => true,
         'table' => true,
+        'associations' => true,
     ];
 
     /**

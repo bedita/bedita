@@ -54,6 +54,11 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
+        $this->hasMany('DateRanges', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.DateRanges',
+        ]);
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
