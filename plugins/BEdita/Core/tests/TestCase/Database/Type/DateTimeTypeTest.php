@@ -17,9 +17,9 @@ use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Database\Type\DateTimeType Test Case
+ * {@see \BEdita\Core\Database\Type\DateTimeType} Test Case
  *
- * @covers \BEdita\Core\Database\Type\DateTimeType
+ * @coversDefaultClass \BEdita\Core\Database\Type\DateTimeType
  */
 class DateTimeTypeTest extends TestCase
 {
