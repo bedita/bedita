@@ -26,10 +26,6 @@ class DateTimeType extends CakeDateTimeType
      */
     public function marshal($value)
     {
-        if ($value instanceof DateTimeInterface) {
-            return $value;
-        }
-
         return Time::parse($value);
     }
 }

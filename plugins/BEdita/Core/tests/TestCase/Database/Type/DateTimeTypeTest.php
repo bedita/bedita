@@ -33,10 +33,6 @@ class DateTimeTypeTest extends TestCase
     public function testMarshal()
     {
         $dateTimeType = new DateTimeType();
-        $date = Time::now();
-        $result = $dateTimeType->marshal($date);
-        $this->assertEquals($date->nice(), $result->nice());
-
         $date = '2017-03-02 11:22:33';
         $result = $dateTimeType->marshal($date);
         $this->assertEquals(Time::parse($date)->toUnixString(), $result->toUnixString());
