@@ -859,31 +859,84 @@ class DbadminShell extends BeditaBaseShell {
 	public function massRemove() {
 
 		if(empty($this->params['type'])) {
-			$this->out("Parameter -type mandatory [object type]");
+			$this->out('Parameter -type mandatory [object type]');
 			return;
 		}
-
+		// force delete (it continues, on errors)
+		$force = (!empty($this->params['f']));
+		// max number of elements to delete at each iterations
+		$limit = (!empty($this->params['n'])) ? $this->params['n'] : 100;
 		$type = $this->params['type'];
-		$objTypeId = Configure::read("objectTypes." . $type . ".id");
+		$objTypeId = Configure::read('objectTypes.' . $type . '.id');
 		if(empty($objTypeId)) {
-			$this->out("object type " . $type . " not found");
+			$this->out('object type ' . $type . ' not found');
 		}
 
-		$model = ClassRegistry::init("BEObject");
+		$model = ClassRegistry::init('BEObject');
 
-		$modelType = Configure::read("objectTypes." . $type . ".model");
-		$this->out("Removing all " . $modelType ." from your instance");
-		$ans = $this->in("Proceed??? [y/n]");
-		if($ans != "y") {
-			$this->out("Bye");
+		$modelType = Configure::read('objectTypes.' . $type . '.model');
+		$this->out('Removing all ' . $modelType .' from your instance');
+		$ans = $this->in('Proceed??? [y/n]');
+		if($ans != 'y') {
+			$this->out('Bye');
 			return;
 		}
-		$res = $model->deleteAll("BEObject.object_type_id = '$objTypeId'");
-		if($res == false) {
-			$this->out("Error removing items");
-			return;
+		$counter = 0;
+		$count = $model->find('count', array('conditions' => array('BEObject.object_type_id' => $objTypeId)));
+		$skipids = array();
+		$conditions = array('BEObject.object_type_id' => $objTypeId);
+		App::import('Component', 'Transaction');
+		$transaction = new TransactionComponent('default');
+		while ($count > 0) {
+			$transaction->begin();
+			if (!empty($skipids)) {
+				$conditions[] = array('NOT' => array('BEObject.id' => $skipids));
+			}
+			$ids = $model->find('list', array(
+				'fields' => array('id', 'id'),
+				'conditions' => $conditions,
+				'contain' => array(),
+				'limit' => $limit
+			));
+			
+			$treeIds = ClassRegistry::init('Tree')->find('list', array(
+				'fields' => array('id', 'id'),
+				'conditions' => array('id' => $ids),
+				'contain' => array(),
+				'limit' => $limit,
+				'group' => array('id')
+			));
+			$res = ClassRegistry::init('Tree')->deleteAll(array('id' => $treeIds));
+			if ($res == false) {
+				$this->out('Error removing items from tree');
+				if ($force) {
+					$skipids = array_merge($skipids, $ids);
+				} else {
+					$transaction->rollback();
+					return;
+				}
+			}
+			$res = $model->deleteAll(array('BEObject.id' => $ids));
+			if ($res == false) {
+				$this->out('Error removing items');
+				if ($force) {
+					$skipids = array_merge($skipids, $ids);
+				} else {
+					$transaction->rollback();
+					return;
+				}
+			} else {
+				$deleted = count($ids);
+				$counter += count($ids);
+				$this->out('Deleted ' . $deleted . ' items [total deleted: ' . $counter . ']');
+			}
+			$count = $model->find('count', array('conditions' => array('BEObject.object_type_id' => $objTypeId)));
+			if (empty($ids)) {
+				$count = 0;
+			}
+			$transaction->commit();
 		}
-		$this->out("Done");
+		$this->out('Done');
 	}
 
 
@@ -1080,7 +1133,7 @@ class DbadminShell extends BeditaBaseShell {
   		$this->out(' ');
         $this->out("18. massRemove: massive removal of object type from system");
         $this->out(' ');
-        $this->out('    Usage: massRemove -type <model-type> ');
+        $this->out('    Usage: massRemove -type <model-type> [-n <number> (items to remove per-iteration)] [-f (force/continue delete, on errors)]');
         $this->out(' ');
 		$this->out("19. clonePublication: clone a complete tree structure starting from publication id");
         $this->out(' ');
