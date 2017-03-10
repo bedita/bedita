@@ -24,6 +24,7 @@ use Cake\ORM\Association\HasOne;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 
 /**
  * Command to list entities associated to another entity.
@@ -57,7 +58,7 @@ class ListAssociatedAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $query = $this->buildQuery($data['primaryKey'], !empty($data['list']));
+        $query = $this->buildQuery($data['primaryKey'], !empty($data['list']), !empty($data['joinData']));
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();
@@ -100,11 +101,12 @@ class ListAssociatedAction extends BaseAction
      *
      * @param mixed $primaryKey Primary key.
      * @param bool $list Should full objects be returned, or a simple list?
+     * @param bool $joinData Should join data be fetched and returned?
      * @return \Cake\ORM\Query
      * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if trying to fetch associations
      *      for a missing resource.
      */
-    protected function buildQuery($primaryKey, $list)
+    protected function buildQuery($primaryKey, $list, $joinData)
     {
         $source = $this->Association->getSource();
         $conditions = $this->primaryKeyConditions($primaryKey);
@@ -128,6 +130,13 @@ class ListAssociatedAction extends BaseAction
                         return $row;
                     }
 
+                    $joinData = null;
+                    if ($this->Association instanceof BelongsToMany) {
+                        $junctionAlias = $this->Association->junction()->getAlias();
+                        $joinData = Hash::get($row['_matchingData'], $junctionAlias);
+                        unset($row['_matchingData'][$junctionAlias]);
+                    }
+
                     $result = array_shift($row['_matchingData']);
 
                     foreach ($row['_matchingData'] as $entity) {
@@ -138,12 +147,19 @@ class ListAssociatedAction extends BaseAction
                         $result->set($entity, ['setter' => false, 'guard' => false]);
                     }
 
+                    if (!empty($joinData)) {
+                        $result->set('_joinData', $joinData);
+                    }
+
                     return $result;
                 });
             });
 
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             $query = $query->order($this->Association->sort());
+        }
+        if ($joinData && $this->Association instanceof BelongsToMany) {
+            $query = $query->select($this->Association->junction());
         }
 
         return $query;
