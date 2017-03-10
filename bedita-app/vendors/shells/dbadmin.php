@@ -896,6 +896,22 @@ class DbadminShell extends BeditaBaseShell {
 				'limit' => $limit
 			));
 			$ids = Set::extract('/BEObject/id', $objs);
+			$treeIds = ClassRegistry::init('Tree')->find('all', array(
+				'fields' => array('id'),
+				'conditions' => array('id' => $ids),
+				'contain' => array(),
+				'limit' => $limit
+			));
+			$treeIds = Set::extract('/Tree/id', $treeIds);
+			$res = ClassRegistry::init('Tree')->deleteAll(array('id' => $treeIds));
+			if ($res == false) {
+				$this->out('Error removing items from tree');
+				if ($force) {
+					$skipids = array_merge($skipids, $ids);
+				} else {
+					return;
+				}
+			}
 			$res = $model->deleteAll(array('BEObject.id' => $ids));
 			if ($res == false) {
 				$this->out('Error removing items');
