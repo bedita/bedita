@@ -67,7 +67,6 @@ class RemoveAssociatedAction extends UpdateAssociatedAction
                 $relatedEntities = [$relatedEntities];
             }
 
-
             return $this->Association->getConnection()->transactional(function () use ($entity, $relatedEntities) {
                 $relatedEntities = $this->diff($entity, $relatedEntities);
 

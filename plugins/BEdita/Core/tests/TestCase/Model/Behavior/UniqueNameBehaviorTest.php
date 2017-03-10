@@ -257,7 +257,6 @@ class UniqueNameBehaviorTest extends TestCase
         $this->assertEquals($result, $expected);
     }
 
-
     /**
      * test uniqueNameFromValue()
      *
