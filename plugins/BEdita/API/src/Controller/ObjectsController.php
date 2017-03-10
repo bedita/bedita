@@ -52,6 +52,16 @@ class ObjectsController extends ResourcesController
      */
     public function initialize()
     {
+        if ($this->request->getParam('action') === 'relationships') {
+            $name = $this->request->getParam('relationship');
+            $allowedTypes = TableRegistry::get('ObjectTypes')
+                ->find('byRelation', compact('name'))
+                ->find('list')
+                ->toArray();
+
+            $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
+        }
+
         parent::initialize();
 
         $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
