@@ -185,6 +185,6 @@ class ObjectsTable extends Table
      */
     public function findDateRanges(Query $query, array $options)
     {
-        return TableRegistry::get('DateRanges')->findDateRanges($query, $options, $this->alias());
+        return TableRegistry::get('DateRanges')->findDateRanges($query, $options, $this->getAlias());
     }
 }

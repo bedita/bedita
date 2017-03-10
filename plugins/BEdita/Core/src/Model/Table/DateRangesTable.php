@@ -70,11 +70,9 @@ class DateRangesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->dateTime('start_date')
             ->allowEmpty('start_date');
 
         $validator
-            ->dateTime('end_date')
             ->allowEmpty('end_date');
 
         $validator
@@ -124,18 +122,18 @@ class DateRangesTable extends Table
     public function findDateRanges(Query $query, array $options, $objectAlias = 'Objects')
     {
         $options = array_intersect_key($options, ['start_date' => 0, 'end_date' => 0]);
-        if ($options) {
+        if (!empty($options)) {
             $conditions = [];
             $subopts = ['gt' => '>', 'lt' => '<', 'ge' => '>=', 'le' => '<='];
             foreach ($options as $key => $value) {
                 if (is_array($value) && ($k = key($value)) && !empty($subopts[$k])) {
-                    $conditions[] = sprintf("%s.%s %s '%s'", $this->alias(), $key, $subopts[$k], $value[$k]);
+                    $conditions[] = sprintf("%s.%s %s '%s'", $this->getAlias(), $key, $subopts[$k], $value[$k]);
                 }
             }
 
-            if ($conditions) {
+            if (!empty($conditions)) {
                 $subquery = $this->find()->select(['id'])
-                            ->where(sprintf('%s.object_id = %s.id', $this->alias(), $objectAlias))
+                            ->where(sprintf('%s.object_id = %s.id', $this->getAlias(), $objectAlias))
                             ->andWhere($conditions);
                 $query = $query->where(function ($exp, $q) use ($subquery) {
                         return $exp->exists($subquery);
