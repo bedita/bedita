@@ -885,30 +885,34 @@ class DbadminShell extends BeditaBaseShell {
 		$count = $model->find('count', array('conditions' => array('BEObject.object_type_id' => $objTypeId)));
 		$skipids = array();
 		$conditions = array('BEObject.object_type_id' => $objTypeId);
+		App::import('Component', 'Transaction');
+		$transaction = new TransactionComponent('default');
 		while ($count > 0) {
+			$transaction->begin();
 			if (!empty($skipids)) {
 				$conditions[] = array('NOT' => array('BEObject.id' => $skipids));
 			}
-			$objs = $model->find('all', array(
-				'fields' => array('id'),
+			$ids = $model->find('list', array(
+				'fields' => array('id', 'id'),
 				'conditions' => $conditions,
 				'contain' => array(),
 				'limit' => $limit
 			));
-			$ids = Set::extract('/BEObject/id', $objs);
-			$treeIds = ClassRegistry::init('Tree')->find('all', array(
-				'fields' => array('id'),
+			
+			$treeIds = ClassRegistry::init('Tree')->find('list', array(
+				'fields' => array('id', 'id'),
 				'conditions' => array('id' => $ids),
 				'contain' => array(),
-				'limit' => $limit
+				'limit' => $limit,
+				'group' => array('id')
 			));
-			$treeIds = Set::extract('/Tree/id', $treeIds);
 			$res = ClassRegistry::init('Tree')->deleteAll(array('id' => $treeIds));
 			if ($res == false) {
 				$this->out('Error removing items from tree');
 				if ($force) {
 					$skipids = array_merge($skipids, $ids);
 				} else {
+					$transaction->rollback();
 					return;
 				}
 			}
@@ -918,6 +922,7 @@ class DbadminShell extends BeditaBaseShell {
 				if ($force) {
 					$skipids = array_merge($skipids, $ids);
 				} else {
+					$transaction->rollback();
 					return;
 				}
 			} else {
@@ -929,6 +934,7 @@ class DbadminShell extends BeditaBaseShell {
 			if (empty($ids)) {
 				$count = 0;
 			}
+			$transaction->commit();
 		}
 		$this->out('Done');
 	}
