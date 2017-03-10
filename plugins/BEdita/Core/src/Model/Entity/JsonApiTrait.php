@@ -87,7 +87,7 @@ trait JsonApiTrait
             $name = $association->property();
             if (!($association instanceof Association) ||
                 $associationType === 'ExtensionOf' ||
-                in_array($name, $hidden) || $name === 'date_ranges' ||
+                in_array($name, $hidden) ||
                 ($associationType === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))
             ) {
                 continue;
