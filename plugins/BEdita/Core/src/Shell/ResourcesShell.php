@@ -12,6 +12,8 @@
  */
 namespace BEdita\Core\Shell;
 
+use BEdita\Core\Model\Action\DeleteEntityAction;
+use BEdita\Core\Model\Action\ListEntitiesAction;
 use Cake\Console\Shell;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
@@ -100,18 +102,8 @@ abstract class ResourcesShell extends Shell
      */
     public function ls()
     {
-        $query = TableRegistry::get($this->modelClass)->find('all');
-        if (!empty($this->params['filter'])) {
-            $pairs = explode(',', $this->params['filter']);
-            $pairs = array_filter(array_map(function ($pair) {
-                return array_filter(explode('=', $pair, 2));
-            }, $pairs));
-            foreach ($pairs as $p) {
-                if (!empty($p[1])) {
-                    $query->where([$p[0] => $p[1]]);
-                }
-            }
-        }
+        $action = new ListEntitiesAction(['table' => TableRegistry::get($this->modelClass)]);
+        $query = $action(['filter' => $this->param('filter')]);
         $results = $query->toArray();
         $this->out($results ?: 'empty set');
     }
@@ -124,9 +116,29 @@ abstract class ResourcesShell extends Shell
      */
     public function rm($id)
     {
-        $model = TableRegistry::get($this->modelClass);
-        $entity = $model->get($id);
-        $result = $model->delete($entity);
+        $entity = $this->getEntity($id);
+        $action = new DeleteEntityAction(['table' => TableRegistry::get($this->modelClass)]);
+        if (!$action(compact('entity'))) {
+            $this->abort('Record ' . $id . ' could not be deleted');
+        }
         $this->out('Record ' . $id . ' deleted');
+    }
+
+    /**
+     * Return entity by $id name|id
+     *
+     * @param mixed $id entity name|id
+     * @return \Cake\ORM\Entity entity
+     */
+    protected function getEntity($id)
+    {
+        if (!is_numeric($id)) {
+            return TableRegistry::get($this->modelClass)
+                ->find()
+                ->where(['name' => $id])
+                ->firstOrFail();
+        }
+
+        return TableRegistry::get($this->modelClass)->get($id);
     }
 }

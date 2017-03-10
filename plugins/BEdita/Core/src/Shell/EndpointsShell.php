@@ -125,24 +125,6 @@ class EndpointsShell extends ResourcesShell
     }
 
     /**
-     * remove an existing endpoint
-     *
-     * @param mixed $id endpoint's is|name
-     * @return void
-     */
-    public function rm($id)
-    {
-        if (!is_numeric($id)) {
-            $id = TableRegistry::get($this->modelClass)
-                ->find()
-                ->where(['name' => $id])
-                ->firstOrFail()
-                ->id;
-        }
-        parent::rm($id);
-    }
-
-    /**
      * modify an existing endpoint, by id, setting value $value for field $field
      *
      * @param mixed $id endpoint name|id

@@ -110,15 +110,4 @@ class EndpointPermissionsShell extends ResourcesShell
         }
         parent::processCreate($entity);
     }
-
-    /**
-     * remove an existing endpoint permission by id
-     *
-     * @param int $id endpoint permission id
-     * @return void
-     */
-    public function rm($id)
-    {
-        parent::rm($id);
-    }
 }
