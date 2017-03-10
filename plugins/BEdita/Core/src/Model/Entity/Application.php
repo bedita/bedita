@@ -30,6 +30,9 @@ use Cake\ORM\Entity;
  */
 class Application extends Entity
 {
+
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */

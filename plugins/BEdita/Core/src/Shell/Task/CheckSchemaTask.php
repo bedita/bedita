@@ -19,6 +19,7 @@ use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
 use Cake\Utility\Inflector;
+use Migrations\Migrations;
 
 /**
  * Task to check if current schema is up to date, and if SQL standards are satisfied.
@@ -34,6 +35,13 @@ class CheckSchemaTask extends Shell
      * @var array
      */
     protected $messages = [];
+
+    /**
+     * List of SQL reserved words.
+     *
+     * @var array
+     */
+    protected $reservedWords = [];
 
     /**
      * {@inheritDoc}
@@ -96,8 +104,10 @@ class CheckSchemaTask extends Shell
      */
     protected function checkMigrationsStatus(Connection $connection)
     {
-        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
-        $migrations = new $className(['connection' => $connection->configName()]);
+        $migrations = new Migrations([
+            'connection' => $connection->configName(),
+            'plugin' => 'BEdita/Core',
+        ]);
         $status = $migrations->status();
 
         $this->verbose('Checking migrations status:');
@@ -139,17 +149,18 @@ class CheckSchemaTask extends Shell
      */
     protected function checkSymbol($symbol, array $options = null)
     {
-        static $reservedWords = [];
-        if (empty($reservedWords)) {
-            $reservedWords = file(Plugin::path('BEdita/Core') . 'config' . DS . 'schema' . DS . 'sql_reserved_words.txt');
+        if (empty($this->reservedWords)) {
+            $this->reservedWords = file(
+                Plugin::configPath('BEdita/Core') . DS . 'schema' . DS . 'sql_reserved_words.txt'
+            );
             array_walk(
-                $reservedWords,
+                $this->reservedWords,
                 function (&$word) {
                     $word = strtoupper(trim($word));
                 }
             );
-            $reservedWords = array_filter(
-                $reservedWords,
+            $this->reservedWords = array_filter(
+                $this->reservedWords,
                 function ($word) {
                     return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, ['NAME', 'STATUS']);
                 }
@@ -157,7 +168,7 @@ class CheckSchemaTask extends Shell
         }
 
         $errors = [];
-        if (in_array(strtoupper($symbol), $reservedWords)) {
+        if (in_array(strtoupper($symbol), $this->reservedWords)) {
             $errors[] = 'reserved word';
         }
         if ($symbol !== Inflector::underscore($symbol)) {
@@ -284,6 +295,7 @@ class CheckSchemaTask extends Shell
         $this->verbose('Checking schema differences:');
 
         $diffTask->connection = $connection->configName();
+        $diffTask->params['plugin'] = 'BEdita/Core';
         $diffTask->setup();
 
         $diff = $diffTask->templateData();

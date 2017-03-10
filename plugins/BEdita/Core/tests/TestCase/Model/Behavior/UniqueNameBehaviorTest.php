@@ -33,6 +33,8 @@ class UniqueNameBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -79,6 +81,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @return void
      *
      * @dataProvider uniqueUserProvider
+     * @covers ::uniqueName()
      */
     public function testUniqueUser($username, $uname)
     {
@@ -188,6 +191,7 @@ class UniqueNameBehaviorTest extends TestCase
      * @param bool $expected Expected result.
      * @return void
      * @dataProvider uniqueNameExistsProvider
+     * @covers ::uniqueNameExists()
      */
     public function testUniqueNameExists($uname, $id, $expected)
     {

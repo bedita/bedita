@@ -39,7 +39,10 @@ class ObjectEntityTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
     ];
 
     /**
@@ -97,5 +100,130 @@ class ObjectEntityTest extends TestCase
         $this->assertEquals($created, $object->created);
         $this->assertEquals($modified, $object->modified);
         $this->assertEquals($published, $object->published);
+    }
+
+    /**
+     * Data provider for `testGetType` test case.
+     *
+     * @return array
+     */
+    public function getTypeProvider()
+    {
+        return [
+            'document' => [
+                'documents',
+                1,
+            ],
+            'non existent' => [
+                null,
+                -1,
+            ],
+            'invalid' => [
+                null,
+                null,
+            ],
+        ];
+    }
+
+    /**
+     * Test magic getter for type property.
+     *
+     * @param string|null $expected Expected type.
+     * @param mixed $objectTypeId Object type ID.
+     * @return void
+     *
+     * @covers ::_getType()
+     * @dataProvider getTypeProvider()
+     */
+    public function testGetType($expected, $objectTypeId)
+    {
+        $entity = new ObjectEntity();
+        $entity->object_type_id = $objectTypeId;
+
+        $type = $entity->type;
+
+        static::assertSame($expected, $type);
+    }
+
+    /**
+     * Data provider for `testSetType` test case.
+     *
+     * @return array
+     */
+    public function setTypeProvider()
+    {
+        return [
+            'document' => [
+                1,
+                'documents',
+            ],
+            'non existent' => [
+                null,
+                'this type does not exist',
+            ],
+        ];
+    }
+
+    /**
+     * Test magic setter for type property.
+     *
+     * @param string|null $expected Expected object type ID.
+     * @param mixed $type Type.
+     * @return void
+     *
+     * @covers ::_setType()
+     * @dataProvider setTypeProvider()
+     */
+    public function testSetType($expected, $type)
+    {
+        $entity = new ObjectEntity();
+        $entity->type = $type;
+
+        $objectTypeId = $entity->object_type_id;
+
+        static::assertSame($expected, $objectTypeId);
+    }
+
+    /**
+     * Test magic getter for relations.
+     *
+     * @return void
+     *
+     * @covers ::_getRelationships()
+     */
+    public function testGetRelationships()
+    {
+        $expected = [
+            'test',
+            'inverse_test',
+        ];
+
+        $entity = TableRegistry::get('Documents')->newEntity();
+        $entity->set('type', 'documents');
+
+        $relations = $entity->get('relationships') ?: [];
+
+        static::assertSame($expected, $relations);
+    }
+
+    /**
+     * Test magic getter for relations.
+     *
+     * @return void
+     *
+     * @covers ::_getRelationships()
+     */
+    public function testGetRelationshipsOfAssociated()
+    {
+        $expected = [
+            'inverse_test',
+        ];
+
+        $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
+        $entity->set('type', 'profile');
+
+        $relations = $entity->get('relationships') ?: [];
+
+        static::assertSame($expected, $relations);
     }
 }

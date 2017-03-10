@@ -1,6 +1,20 @@
 <?php
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -35,13 +49,24 @@ class RelationsTable extends Table
         $this->setDisplayField('name');
         $this->setPrimaryKey('id');
 
-        $this->hasMany('ObjectRelations', [
+        $this->hasMany('ObjectRelations');
+        $this->belongsToMany('LeftObjectTypes', [
+            'className' => 'ObjectTypes',
+            'through' => 'RelationTypes',
             'foreignKey' => 'relation_id',
-            'className' => 'BEdita/Core.ObjectRelations'
+            'targetForeignKey' => 'object_type_id',
+            'conditions' => [
+                'RelationTypes.side' => 'left',
+            ],
         ]);
-        $this->hasMany('RelationTypes', [
+        $this->belongsToMany('RightObjectTypes', [
+            'className' => 'ObjectTypes',
+            'through' => 'RelationTypes',
             'foreignKey' => 'relation_id',
-            'className' => 'BEdita/Core.RelationTypes'
+            'targetForeignKey' => 'object_type_id',
+            'conditions' => [
+                'RelationTypes.side' => 'right',
+            ],
         ]);
     }
 
@@ -90,9 +115,28 @@ class RelationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->isUnique(['name']));
-        $rules->add($rules->isUnique(['inverse_name']));
+        $rules
+            ->add(new IsUniqueAmongst(['name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+                'errorField' => 'name',
+                'message' => __d('cake', 'This value is already in use'),
+            ])
+            ->add(new IsUniqueAmongst(['inverse_name' => ['name', 'inverse_name']]), '_isUniqueAmongst', [
+                'errorField' => 'inverse_name',
+                'message' => __d('cake', 'This value is already in use'),
+            ]);
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->columnType('params', 'json');
+
+        return $schema;
     }
 }

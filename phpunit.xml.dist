@@ -5,6 +5,7 @@
     stopOnFailure="false"
     syntaxCheck="false"
     bootstrap="./tests/bootstrap.php"
+    forceCoversAnnotation="true"
     >
     <php>
         <ini name="memory_limit" value="-1"/>
@@ -14,7 +15,7 @@
 
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="BEdita 4 Manage Test Suite">
+        <testsuite name="BEdita 4 App Test Suite">
             <directory>./tests/TestCase</directory>
         </testsuite>
         <!-- Add plugin test suites here. -->

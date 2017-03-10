@@ -163,8 +163,10 @@ class ApplicationsTableTest extends TestCase
      *
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
-     *
      * @return void
+     *
+     * @covers ::beforeSave()
+     * @covers ::generateApiKey()
      * @dataProvider apiKeyGenerationProvider
      */
     public function testApiKeyGeneration($apiKey, $update)

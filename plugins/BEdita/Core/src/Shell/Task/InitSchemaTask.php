@@ -16,6 +16,7 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
+use Migrations\Migrations;
 
 /**
  * Task to initialize database.
@@ -135,8 +136,10 @@ class InitSchemaTask extends Shell
     protected function migrate(ConnectionInterface $connection)
     {
         $this->out('Running migrations... ', 0);
-        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
-        $migrations = new $className(['connection' => $connection->configName()]);
+        $migrations = new Migrations([
+            'connection' => $connection->configName(),
+            'plugin' => 'BEdita/Core',
+        ]);
         if (!$migrations->migrate()) {
             $this->out('<error>FAIL</error>');
 
@@ -164,8 +167,10 @@ class InitSchemaTask extends Shell
         }
 
         $this->out('Seeding data... ', 0);
-        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
-        $migrations = new $className(['connection' => $connection->configName()]);
+        $migrations = new Migrations([
+            'connection' => $connection->configName(),
+            'plugin' => 'BEdita/Core',
+        ]);
         if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'InitialSeed'])) {
             $this->out('<error>FAIL</error>');
 

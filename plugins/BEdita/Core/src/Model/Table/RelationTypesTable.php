@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Model\Table;
 
 use Cake\ORM\RulesChecker;
@@ -55,7 +68,9 @@ class RelationTypesTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->allowEmpty('side', 'create');
+            ->inList('side', ['left', 'right'])
+            ->notEmpty('side')
+            ->requirePresence('side', 'create');
 
         return $validator;
     }
@@ -67,6 +82,7 @@ class RelationTypesTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
+        $rules->add($rules->isUnique(['relation_id', 'object_type_id', 'side']));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));
         $rules->add($rules->existsIn(['object_type_id'], 'ObjectTypes'));
 

@@ -46,6 +46,8 @@ use Cake\ORM\TableRegistry;
 class ObjectEntity extends Entity
 {
 
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -75,6 +77,8 @@ class ObjectEntity extends Entity
      * {@inheritDoc}
      */
     protected $_hidden = [
+        'created_by_user',
+        'modified_by_user',
         'object_type_id',
         'object_type',
         'deleted',
@@ -97,7 +101,7 @@ class ObjectEntity extends Entity
             }
         }
 
-        return $this->object_type->pluralized;
+        return $this->object_type->name;
     }
 
     /**
@@ -116,5 +120,22 @@ class ObjectEntity extends Entity
         }
 
         return $type;
+    }
+
+    /**
+     * Getter for `relationships` virtual property.
+     *
+     * @return string[]
+     */
+    protected function _getRelationships()
+    {
+        $Table = TableRegistry::get($this->type ?: $this->getSource());
+
+        $entity = $this;
+        if ($Table->getRegistryAlias() !== $this->getSource()) {
+            $entity = $Table->newEntity();
+        }
+
+        return static::listAssociations($Table, $entity->getHidden());
     }
 }

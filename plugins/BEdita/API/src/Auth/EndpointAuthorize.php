@@ -36,6 +36,7 @@ class EndpointAuthorize extends BaseAuthorize
      * {@inheritDoc}
      */
     protected $_defaultConfig = [
+        'disallowAnonymousApplications' => false,
         'apiKeyHeaderName' => 'X-Api-Key',
     ];
 
@@ -75,6 +76,12 @@ class EndpointAuthorize extends BaseAuthorize
         $application = $this->getApplication();
         $endpoint = $this->getEndpoint();
         $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
+        $allPermissions = $this->getPermissions(false, $application, $endpoint);
+        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
+            $this->authorized = true;
+
+            return $this->authorized;
+        }
 
         $this->authorized = $this->checkPermissions($permissions);
 
@@ -103,10 +110,13 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $application = CurrentApplication::getApplication();
         if ($application === null) {
+            $header = $this->request->getHeaderLine($this->_config['apiKeyHeaderName']);
+            if (empty($header) && empty($this->_config['disallowAnonymousApplications'])) {
+                return null;
+            }
+
             try {
-                CurrentApplication::setFromApiKey(
-                    $this->request->getHeaderLine($this->_config['apiKeyHeaderName'])
-                );
+                CurrentApplication::setFromApiKey($header);
             } catch (\BadMethodCallException $e) {
                 throw new ForbiddenException(__d('bedita', 'Missing API key'));
             } catch (RecordNotFoundException $e) {
@@ -152,22 +162,28 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * Get list of applicable permissions.
      *
-     * @param mixed $user Authenticated (or anonymous) user.
-     * @param \BEdita\Core\Model\Entity\Application $application Current application.
+     * @param array|\ArrayAccess|false $user Authenticated (or anonymous) user.
+     * @param \BEdita\Core\Model\Entity\Application|null $application Current application.
      * @param \BEdita\Core\Model\Entity\Endpoint|null $endpoint Current endpoint.
      * @return \Cake\ORM\Query
      * @todo Future optimization: Permissions that are `0` on the two bits that are interesting for the current request can be excluded...
      */
-    protected function getPermissions($user, Application $application, Endpoint $endpoint = null)
+    protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null)
     {
-        $roleIds = Hash::extract($user, 'roles.{n}.id');
-        $applicationId = $application->id;
+        $applicationId = $application ? $application->id : null;
         $endpointIds = $endpoint ? [$endpoint->id] : [];
 
-        return TableRegistry::get('EndpointPermissions')
-            ->find('byRole', compact('roleIds'))
+        $query = TableRegistry::get('EndpointPermissions')
             ->find('byApplication', compact('applicationId'))
             ->find('byEndpoint', compact('endpointIds'));
+
+        if ($user !== false) {
+            $roleIds = Hash::extract($user, 'roles.{n}.id');
+            $query = $query
+                ->find('byRole', compact('roleIds'));
+        }
+
+        return $query;
     }
 
     /**

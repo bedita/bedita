@@ -57,5 +57,47 @@ class ConfigFixture extends TestFixture
             'created' => '2016-06-13 17:34:56',
             'modified' => '2016-06-14 16:38:02',
         ],
+        [
+            'name' => 'lowercaseGroup.trueVal',
+            'context' => 'lowercaseGroup',
+            'content' => 'true',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'lowercaseGroup.falseVal',
+            'context' => 'lowercaseGroup',
+            'content' => 'false',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'lowercaseGroup.nullVal',
+            'context' => 'lowercaseGroup',
+            'content' => 'null',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'uppercaseGroup.trueVal',
+            'context' => 'uppercaseGroup',
+            'content' => 'TRUE',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'uppercaseGroup.falseVal',
+            'context' => 'uppercaseGroup',
+            'content' => 'FALSE',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ],
+        [
+            'name' => 'uppercaseGroup.nullVal',
+            'context' => 'uppercaseGroup',
+            'content' => 'NULL',
+            'created' => '2016-06-16 12:34:56',
+            'modified' => '2016-06-16 12:38:02',
+        ]
     ];
 }

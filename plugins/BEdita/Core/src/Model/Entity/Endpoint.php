@@ -33,6 +33,9 @@ use Cake\ORM\Entity;
  */
 class Endpoint extends Entity
 {
+
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */

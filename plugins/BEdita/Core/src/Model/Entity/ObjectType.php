@@ -21,16 +21,20 @@ use Cake\Utility\Inflector;
  *
  * @property int $id
  * @property string $name
- * @property string $pluralized
+ * @property string $singular
  * @property string $alias
  * @property string $description
  * @property string $plugin
  * @property string $model
  * @property string $table
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
+ * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
+ * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  */
 class ObjectType extends Entity
 {
+
+    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
@@ -38,7 +42,7 @@ class ObjectType extends Entity
     protected $_accessible = [
         '*' => false,
         'name' => true,
-        'pluralized' => true,
+        'singular' => true,
         'description' => true,
         'plugin' => true,
         'model' => true,
@@ -51,6 +55,15 @@ class ObjectType extends Entity
     protected $_virtual = [
         'alias',
         'table',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'objects',
+        'left_relations',
+        'right_relations',
     ];
 
     /**
@@ -67,32 +80,32 @@ class ObjectType extends Entity
     }
 
     /**
-     * Getter for property `pluralized`.
+     * Getter for property `singular`.
      *
-     * If `pluralized` field is not set or empty, use inflected form of `name`.
+     * If `singular` field is not set or empty, use inflected form of `name`.
      *
      * @return string
      */
-    protected function _getPluralized()
+    protected function _getSingular()
     {
-        if (!empty($this->_properties['pluralized'])) {
-            return $this->_properties['pluralized'];
+        if (!empty($this->_properties['singular'])) {
+            return $this->_properties['singular'];
         }
 
-        return Inflector::pluralize($this->name);
+        return Inflector::singularize($this->name);
     }
 
     /**
-     * Setter for property `pluralized`.
+     * Setter for property `singular`.
      *
-     * Force `pluralized` field to be underscored via inflector.
+     * Force `singular` field to be underscored via inflector.
      *
-     * @param string|null $pluralized Object type pluralized name.
+     * @param string|null $singular Object type singular name.
      * @return string
      */
-    protected function _setPluralized($pluralized)
+    protected function _setSingular($singular)
     {
-        return Inflector::underscore($pluralized);
+        return Inflector::underscore($singular);
     }
 
     /**
@@ -102,7 +115,7 @@ class ObjectType extends Entity
      */
     protected function _getAlias()
     {
-        return Inflector::camelize($this->pluralized);
+        return Inflector::camelize($this->name);
     }
 
     /**

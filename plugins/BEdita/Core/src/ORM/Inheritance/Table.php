@@ -30,6 +30,8 @@ use Cake\ORM\Table as CakeTable;
  * Every Table can inherit just one table and eventually inherits other tables by nested inheritance
  *
  * @since 4.0.0
+ *
+ * @method \BEdita\Core\ORM\Inheritance\Query find($type = 'all', $options = [])
  */
 class Table extends CakeTable
 {
@@ -186,7 +188,7 @@ class Table extends CakeTable
      * To get the the all nested inherited tables pass `$nested = true`.
      *
      * @param bool $nested If it must return all the inherited tables or just direct inherited table
-     * @return array
+     * @return \Cake\ORM\Table[]
      */
     public function inheritedTables($nested = false)
     {

@@ -13,15 +13,12 @@
 namespace BEdita\API\Utility;
 
 use Cake\Collection\CollectionInterface;
-use Cake\ORM\Association;
-use Cake\ORM\Association\BelongsToMany;
+use Cake\Log\Log;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
-use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * JSON API formatter API.
@@ -35,24 +32,23 @@ class JsonApi
      *
      * @param mixed $items Items to be formatted.
      * @param string|null $type Type of items. If missing, an attempt is made to obtain this info from each item's data.
-     * @param array $options Format data options, may include 'allowedAssociations' key to use in relationships.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    public static function formatData($items, $type = null, $options = [])
+    public static function formatData($items, $type = null)
     {
         if ($items instanceof Query || $items instanceof CollectionInterface) {
             $items = $items->toList();
         }
 
         if (!is_array($items) || !Hash::numeric(array_keys($items))) {
-            return static::formatItem($items, $type, false, $options);
+            return static::formatItem($items, $type, false);
         }
 
         $data = [];
         foreach ($items as $item) {
-            $data[] = static::formatItem($item, $type, true, $options);
+            $data[] = static::formatItem($item, $type, true);
         }
 
         return $data;
@@ -71,8 +67,6 @@ class JsonApi
 
         if (isset($item['type'])) {
             $type = $item['type'];
-        } elseif ($item instanceof Entity) {
-            $type = TableRegistry::get($item->getSource())->getTable();
         }
 
         if ($endpoint === null) {
@@ -80,6 +74,45 @@ class JsonApi
         }
 
         return [$type, $endpoint];
+    }
+
+    /**
+     * Build URL to be used in `links` object.
+     *
+     * @param string $name Route name.
+     * @param string $endpoint Endpoint.
+     * @param string $type Resource type.
+     * @param array $options Additional options.
+     * @return string|null
+     */
+    protected static function buildUrl($name, $endpoint, $type, array $options = [])
+    {
+        $url = null;
+
+        $options['_name'] = sprintf('api:resources:%s', $name);
+        $options['controller'] = $type;
+
+        try {
+            $url = Router::url($options, true);
+        } catch (MissingRouteException $e) {
+            $options['_name'] = sprintf('api:%s:%s', $endpoint, $name);
+            unset($options['controller']);
+
+            try {
+                $url = Router::url($options, true);
+            } catch (MissingRouteException $e) {
+                $options['object_type'] = $type;
+
+                try {
+                    $url = Router::url($options, true);
+                } catch (MissingRouteException $e) {
+                    // Do not halt if route is missing.
+                    Log::debug('Unable to build URL', compact('name', 'endpoint', 'type', 'options'));
+                }
+            }
+        }
+
+        return $url;
     }
 
     /**
@@ -113,61 +146,35 @@ class JsonApi
      *
      * @param Entity $entity Entity item.
      * @param string $endpoint Default API endpoint for entity type.
-     * @param array $options Options, may include 'allowedAssociations' key.
+     * @param string|null $type Type of item.
      * @return array
      */
-    protected static function extractRelationships(Entity $entity, $endpoint, $options = [])
+    protected static function extractRelationships(Entity $entity, $endpoint, $type = null)
     {
+        $associations = (array)$entity->get('relationships') ?: [];
+
         $relationships = [];
-        $associations = TableRegistry::get($entity->getSource())->associations();
-        $relatedParam = sprintf('%s_id', Inflector::singularize($endpoint));
-        $hidden = $entity->getHidden();
+        foreach ($associations as $name) {
+            unset($related, $self);
 
-        $btmJunctionAliases = array_map(
-            function (BelongsToMany $val) {
-                return $val->junction()->getAlias();
-            },
-            $associations->type('BelongsToMany')
-        );
+            // Relationships.
+            $self = static::buildUrl('relationships', $endpoint, $type, [
+                'id' => $entity->id,
+                'relationship' => $name,
+            ]);
 
-        foreach ($associations as $association) {
-            list(, $type) = namespaceSplit(get_class($association));
-            $name = $association->property();
-            if (!($association instanceof Association) || $type === 'ExtensionOf' || in_array($name, $hidden) ||
-                (isset($options['allowedAssociations']) && empty($options['allowedAssociations'][$name])) ||
-                ($type === 'HasMany' && in_array($association->getTarget()->getAlias(), $btmJunctionAliases))) {
-                continue;
-            }
-
-            try {
-                $self = Router::url(
-                    [
-                        '_name' => sprintf('api:%s:relationships', $endpoint),
-                        'id' => $entity->id,
-                        'relationship' => $name,
-                    ],
-                    true
-                );
-            } catch (MissingRouteException $e) {
-            }
-
-            try {
-                $related = Router::url(
-                    [
-                        '_name' => sprintf('api:%s:%s', $endpoint, $name),
-                        $relatedParam => $entity->id,
-                    ],
-                    true
-                );
-            } catch (MissingRouteException $e) {
-            }
+            // Related objects.
+            $related = static::buildUrl('related', $endpoint, $type, [
+                'related_id' => $entity->id,
+                'relationship' => $name,
+            ]);
 
             if (empty($self) && empty($related)) {
                 continue;
             }
 
             $relationships[$name] = [
-                'links' => compact('related', 'self'),
+                'links' => array_filter(compact('related', 'self')),
             ];
         }
 
@@ -180,12 +187,11 @@ class JsonApi
      * @param \Cake\ORM\Entity|array $item Single entity item to be formatted.
      * @param string|null $type Type of item. If missing, an attempt is made to obtain this info from item's data.
      * @param bool $showLink Display item url in 'links.self', default is true
-     * @param array $options Format data options, may include 'allowedAssociations' key to use in relationships.
      * @return array
      * @throws \InvalidArgumentException Throws an exception if `$item` could not be converted to array, or
      *      if required key `id` is unset or empty.
      */
-    protected static function formatItem($item, $type = null, $showLink = true, $options = [])
+    protected static function formatItem($item, $type = null, $showLink = true)
     {
         if (!is_array($item) && !($item instanceof Entity)) {
             throw new \InvalidArgumentException('Unsupported item type');
@@ -194,7 +200,7 @@ class JsonApi
         list($type, $endpoint) = static::extractType($item, $type);
 
         if ($item instanceof Entity) {
-            $relationships = static::extractRelationships($item, $endpoint, $options);
+            $relationships = static::extractRelationships($item, $endpoint, $type);
             if (empty($relationships)) {
                 unset($relationships);
             }
@@ -212,13 +218,9 @@ class JsonApi
         }
 
         if ($showLink) {
-            $options = [];
-            if ($endpoint !== $type && $endpoint !== 'trash') {
-                $options['object_type'] = $type;
-            }
-            $links = [
-                'self' => Router::url($options + ['_name' => sprintf('api:%s:view', $endpoint), $id], true),
-            ];
+            $self = static::buildUrl('resource', $endpoint, $type, compact('id'));
+
+            $links = compact('self');
         }
 
         return compact('id', 'type', 'attributes', 'links', 'relationships');

@@ -20,7 +20,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @covers \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class UserModifiedBehaviorTest extends TestCase
 {
@@ -32,6 +32,8 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',

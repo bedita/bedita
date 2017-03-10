@@ -33,6 +33,8 @@ class AppControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',
@@ -392,6 +394,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider apiKeysProvider
+     * @covers ::apiKeyCheck()
      */
     public function testApiKeys($expectedCode, $apiKeyCfg, $apiKeyReq = null, $origin = null)
     {
@@ -414,6 +417,8 @@ class AppControllerTest extends IntegrationTestCase
      * Test API meta info header.
      *
      * @return void
+     *
+     * @covers ::initialize()
      */
     public function testMetaInfo()
     {

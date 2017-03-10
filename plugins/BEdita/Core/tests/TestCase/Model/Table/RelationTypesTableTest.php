@@ -1,4 +1,17 @@
 <?php
+
+/**
+ * BEdita, API-first content management framework
+ * Copyright 2017 ChannelWeb Srl, Chialab Srl
+ *
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
+ */
+
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
@@ -24,7 +37,6 @@ class RelationTypesTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.relations',
     ];
@@ -37,8 +49,8 @@ class RelationTypesTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $config = TableRegistry::exists('RelationTypes') ? [] : ['className' => 'BEdita\Core\Model\Table\RelationTypesTable'];
-        $this->RelationTypes = TableRegistry::get('RelationTypes', $config);
+
+        $this->RelationTypes = TableRegistry::get('RelationTypes');
     }
 
     /**
@@ -54,32 +66,56 @@ class RelationTypesTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testValidation` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function validationProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'validLeft' => [
+                true,
+                [
+                    'object_type_id' => 3,
+                    'relation_id' => 1,
+                    'side' => 'left',
+                ],
+            ],
+            'validRight' => [
+                true,
+                [
+                    'object_type_id' => 3,
+                    'relation_id' => 1,
+                    'side' => 'right',
+                ],
+            ],
+            'invalidSide' => [
+                false,
+                [
+                    'object_type_id' => 3,
+                    'relation_id' => 1,
+                    'side' => 'Dark side of the Moon',
+                ],
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test validation.
      *
+     * @param bool $expected Expected result.
+     * @param array $data Data to be validated.
      * @return void
+     *
+     * @dataProvider validationProvider
+     * @coversNothing
      */
-    public function testValidationDefault()
+    public function testValidation($expected, array $data)
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $objectType = $this->RelationTypes->newEntity();
+        $this->RelationTypes->patchEntity($objectType, $data);
 
-    /**
-     * Test buildRules method
-     *
-     * @return void
-     */
-    public function testBuildRules()
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $success = $this->RelationTypes->save($objectType);
+        static::assertEquals($expected, (bool)$success);
     }
 }

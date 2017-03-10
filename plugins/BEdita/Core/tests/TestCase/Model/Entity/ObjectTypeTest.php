@@ -50,8 +50,6 @@ class ObjectTypeTest extends TestCase
     {
         parent::setUp();
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
-
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
 
@@ -98,8 +96,8 @@ class ObjectTypeTest extends TestCase
     {
         $expected = [
             'id' => 1,
-            'name' => 'document',
-            'pluralized' => 'documents',
+            'name' => 'documents',
+            'singular' => 'document',
             'alias' => 'Documents',
             'description' => null,
             'plugin' => 'BEdita/Core',
@@ -135,39 +133,39 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * Data provider for `testGetSetPluralized` test case.
+     * Data provider for `testGetSetSingular` test case.
      *
      * @return array
      */
-    public function getSetPluralizedProvider()
+    public function getSetSingularProvider()
     {
         return [
-            'default' => ['foo_bars', 'foo_bar', 'FooBars'],
-            'missing' => ['foo_bars', 'foo_bar', null],
+            'default' => ['foo_bar', 'foo_bars', 'FooBar'],
+            'missing' => ['foo_bar', 'foo_bars', null],
         ];
     }
 
     /**
-     * Test getter/setter method for `pluralized`.
+     * Test getter/setter method for `singular`.
      *
      * @param string $expected Expected result.
      * @param string $name Object type name.
-     * @param string|null $pluralized Object type pluralized name.
+     * @param string|null $singular Object type singular name.
      * @return void
      *
-     * @dataProvider getSetPluralizedProvider
-     * @covers ::_getPluralized()
-     * @covers ::_setPluralized()
+     * @dataProvider getSetSingularProvider
+     * @covers ::_getSingular()
+     * @covers ::_setSingular()
      */
-    public function testGetSetPluralized($expected, $name, $pluralized)
+    public function testGetSetSingular($expected, $name, $singular)
     {
-        $data = compact('name', 'pluralized');
+        $data = compact('name', 'singular');
         $objectType = $this->ObjectTypes->newEntity($data);
         if (!($objectType instanceof ObjectType)) {
             throw new \InvalidArgumentException();
         }
 
-        $this->assertEquals($expected, $objectType->pluralized);
+        $this->assertEquals($expected, $objectType->singular);
     }
 
     /**
@@ -179,7 +177,7 @@ class ObjectTypeTest extends TestCase
     public function testGetAlias()
     {
         $data = [
-            'name' => 'foo_bar',
+            'name' => 'foo_bars',
         ];
         $objectType = $this->ObjectTypes->newEntity($data);
         if (!($objectType instanceof ObjectType)) {
@@ -190,7 +188,7 @@ class ObjectTypeTest extends TestCase
     }
 
     /**
-     * Data provider for `testGetSetPluralized` test case.
+     * Data provider for `testGetSetTable` test case.
      *
      * @return array
      */

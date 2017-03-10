@@ -34,7 +34,7 @@ class PropertiesControllerTest extends IntegrationTestCase
         'plugin.BEdita/Core.applications',
         'plugin.BEdita/Core.endpoint_permissions',
         'plugin.BEdita/Core.property_types',
-        'plugin.BEdita/Core.properties'
+        'plugin.BEdita/Core.properties',
     ];
 
     /**
@@ -94,14 +94,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/1',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/1/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/1/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '2',
@@ -120,14 +112,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/2',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/2/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/2/object_types',
-                            ],
-                        ],
                     ],
                 ],
                 [
@@ -148,14 +132,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/3',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/3/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/3/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '4',
@@ -174,14 +150,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/4',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/4/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/4/object_types',
-                            ],
-                        ],
                     ],
                 ],
                 [
@@ -202,14 +170,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/properties/5',
                     ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/5/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/5/object_types',
-                            ],
-                        ],
-                    ],
                 ],
                 [
                     'id' => '6',
@@ -228,14 +188,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/6',
-                    ],
-                    'relationships' => [
-                        'object_types' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/properties/6/relationships/object_types',
-                                'related' => 'http://api.example.com/properties/6/object_types',
-                            ],
-                        ],
                     ],
                 ],
             ],
@@ -260,7 +212,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEmpty()
@@ -307,7 +259,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testSingle()
@@ -332,14 +284,6 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'label' => null,
                     'list_view' => true
                 ],
-                'relationships' => [
-                    'object_types' => [
-                        'links' => [
-                            'self' => 'http://api.example.com/properties/1/relationships/object_types',
-                            'related' => 'http://api.example.com/properties/1/object_types',
-                        ],
-                    ],
-                ],
             ],
         ];
 
@@ -362,7 +306,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
@@ -403,7 +347,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -440,7 +384,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testInvalidAdd()
@@ -473,7 +417,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -506,7 +450,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testConflictEdit()
@@ -539,7 +483,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDelete()

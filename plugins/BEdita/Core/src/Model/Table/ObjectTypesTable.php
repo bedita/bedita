@@ -20,6 +20,7 @@ use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
 /**
@@ -53,12 +54,31 @@ class ObjectTypesTable extends Table
 
         $this->hasMany('Objects', [
             'foreignKey' => 'object_type_id',
-            'className' => 'BEdita/Core.Objects',
+            'className' => 'Objects',
         ]);
 
         $this->hasMany('Properties', [
             'foreignKey' => 'property_type_id',
-            'className' => 'BEdita/Core.Properties',
+            'className' => 'Properties',
+        ]);
+
+        $this->belongsToMany('LeftRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'left',
+            ],
+        ]);
+        $this->belongsToMany('RightRelations', [
+            'className' => 'Relations',
+            'through' => 'RelationTypes',
+            'foreignKey' => 'object_type_id',
+            'targetForeignKey' => 'relation_id',
+            'conditions' => [
+                'RelationTypes.side' => 'right',
+            ],
         ]);
     }
 
@@ -79,8 +99,8 @@ class ObjectTypesTable extends Table
             ->add('name', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
-            ->allowEmpty('pluralized')
-            ->add('pluralized', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
+            ->allowEmpty('singular')
+            ->add('singular', 'unique', ['rule' => 'validateUnique', 'provider' => 'table']);
 
         $validator
             ->allowEmpty('description');
@@ -104,12 +124,12 @@ class ObjectTypesTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules
-            ->add(new IsUniqueAmongst(['name' => ['name', 'pluralized']]), '_isUniqueAmongst', [
+            ->add(new IsUniqueAmongst(['name' => ['name', 'singular']]), '_isUniqueAmongst', [
                 'errorField' => 'name',
                 'message' => __d('cake', 'This value is already in use'),
             ])
-            ->add(new IsUniqueAmongst(['pluralized' => ['name', 'pluralized']]), '_isUniqueAmongst', [
-                'errorField' => 'pluralized',
+            ->add(new IsUniqueAmongst(['singular' => ['name', 'singular']]), '_isUniqueAmongst', [
+                'errorField' => 'singular',
                 'message' => __d('cake', 'This value is already in use'),
             ]);
 
@@ -128,11 +148,12 @@ class ObjectTypesTable extends Table
                     ->toArray()
             );
             $allTypes += array_flip(
-                $this->find('list', ['valueField' => 'pluralized'])
-                    ->cache('map_pluralized', self::CACHE_CONFIG)
+                $this->find('list', ['valueField' => 'singular'])
+                    ->cache('map_singular', self::CACHE_CONFIG)
                     ->toArray()
             );
 
+            $primaryKey = Inflector::underscore($primaryKey);
             if (!isset($allTypes[$primaryKey])) {
                 throw new RecordNotFoundException(sprintf(
                     'Record not found in table "%s"',
@@ -165,8 +186,8 @@ class ObjectTypesTable extends Table
         if ($entity->dirty('name')) {
             Cache::delete('map', self::CACHE_CONFIG);
         }
-        if ($entity->dirty('pluralized')) {
-            Cache::delete('map_pluralized', self::CACHE_CONFIG);
+        if ($entity->dirty('singular')) {
+            Cache::delete('map_singular', self::CACHE_CONFIG);
         }
     }
 
@@ -182,6 +203,6 @@ class ObjectTypesTable extends Table
     {
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
-        Cache::delete('map_pluralized', self::CACHE_CONFIG);
+        Cache::delete('map_singular', self::CACHE_CONFIG);
     }
 }
