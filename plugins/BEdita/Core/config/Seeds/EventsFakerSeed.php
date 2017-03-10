@@ -18,28 +18,17 @@ class EventsFakerSeed extends AbstractSeed
             'description' => $faker->optional()->paragraph,
             'body' => $faker->optional()->text,
             'description' => $faker->paragraph,
+            'date_ranges' => [
+                [
+                    'start_date' => new Time($faker->dateTimeBetween('-30 days', '+30 days')),
+                    'end_date' => null
+                ],
+                [
+                    'start_date' => new Time($faker->dateTimeBetween('-7 days', '-2 days')),
+                    'end_date' => new Time($faker->dateTimeBetween('+2 days', '+5 days')),
+                ],
+            ],
         ];
         $entity = ObjectsHandler::create('events', $data);
-
-        $data = [
-            [
-                'object_id' => $entity->id,
-                'start_date' => $faker->dateTimeBetween($startDate = '-30 days', $endDate = '+30 days')
-                                    ->format('Y-m-d H:i:s'),
-                'end_date' => null
-            ],
-            [
-                'object_id' => $entity->id,
-                'start_date' => $faker->dateTimeBetween($startDate = '-7 days', $endDate = '-2 days')
-                                    ->format('Y-m-d H:i:s'),
-                'end_date' => $faker->dateTimeBetween($startDate = '+2 days', $endDate = '+5 days')
-                                    ->format('Y-m-d H:i:s'),
-            ]
-        ];
-        $table = $this->table('date_ranges');
-        foreach ($data as $row) {
-            $table->reset();
-            $table->insert($row)->saveData();
-        }
     }
 }
