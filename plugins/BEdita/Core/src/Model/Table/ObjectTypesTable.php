@@ -18,6 +18,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
@@ -28,7 +29,8 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $Objects
  * @property \Cake\ORM\Association\HasMany $Properties
- * @property \Cake\ORM\Association\HasMany $RelationTypes
+ * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
+ * @property \Cake\ORM\Association\BelongsToMany $RightRelations
  */
 class ObjectTypesTable extends Table
 {
@@ -204,5 +206,68 @@ class ObjectTypesTable extends Table
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
         Cache::delete('map_singular', self::CACHE_CONFIG);
+    }
+
+    /**
+     * Find allowed object types by relation name and side.
+     *
+     * This finder returns a list of object types that are allowed for the
+     * relation specified by the required option `name`. You can specify the
+     * side of the relation you want to retrieve allowed object types for by
+     * passing an additional option `side` (default: `'right'`).
+     *
+     * If the specified relation name is actually the name of an inverse relation,
+     * this finder automatically takes care of "swapping" sides, always returning
+     * correct results.
+     *
+     * ### Example
+     *
+     * ```php
+     * // Find object types allowed on the "right" side:
+     * TableRegistry::get('ObjectTypes')
+     *     ->find('byRelation', ['name' => 'my_relation']);
+     *
+     * // Find a list of object type names allowed on the "left" side of the inverse relation:
+     * TableRegistry::get('ObjectTypes')
+     *     ->find('byRelation', ['name' => 'my_inverse_relation', 'side' => 'left'])
+     *     ->find('list')
+     *     ->toArray();
+     * ```
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The `name` key is required, while `side` is optional
+     *      and assumed to be `'right'` by default.
+     * @return \Cake\ORM\Query
+     */
+    protected function findByRelation(Query $query, array $options = [])
+    {
+        if (empty($options['name'])) {
+            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+        }
+        $name = $options['name'];
+
+        $leftField = 'inverse_name';
+        $rightField = 'name';
+        if (!empty($options['side']) && $options['side'] !== 'right') {
+            $leftField = 'name';
+            $rightField = 'inverse_name';
+        }
+
+        $query = $query->select($this->aliasField('name'));
+        $queryCopy = clone $query;
+
+        return $query
+            ->matching('LeftRelations', function (Query $query) use ($name, $leftField) {
+                return $query->where([
+                    $this->LeftRelations->aliasField($leftField) => $name,
+                ]);
+            })
+            ->unionAll(
+                $queryCopy->matching('RightRelations', function (Query $query) use ($name, $rightField) {
+                    return $query->where([
+                        $this->RightRelations->aliasField($rightField) => $name,
+                    ]);
+                })
+            );
     }
 }
