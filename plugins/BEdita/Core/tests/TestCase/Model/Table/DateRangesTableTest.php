@@ -76,39 +76,39 @@ class DateRangesTableTest extends TestCase
         return [
             'startAfter' => [
                 [
-                    'startAfter' => '2017-01-01',
+                    'start_date' => ['gt' => '2017-01-01'],
                 ],
                 1,
             ],
             'startBefore' => [
                 [
-                    'startBefore' => '2017-01-01',
+                    'start_date' => ['lt' => '2017-01-01'],
                 ],
                 0,
             ],
             'endBefore' => [
                 [
-                    'endBefore' => '2017-01-01',
+                    'end_date' => ['le' => '2017-01-01'],
                 ],
                 0,
             ],
             'endAfter' => [
                 [
-                    'endAfter' => '2017-01-01',
+                    'end_date' => ['ge' => '2017-01-01'],
                 ],
                 1,
             ],
             'combinedOK' => [
                 [
-                    'startAfter' => '2017-03-01',
-                    'endBefore' => '2017-04-01',
+                    'start_date' => ['gt' => '2017-03-01'],
+                    'end_date' => ['lt' => '2017-04-01'],
                 ],
                 1,
             ],
             'combinedKO' => [
                 [
-                    'startBefore' => '2017-01-01',
-                    'endAfter' => '2017-05-01',
+                    'start_date' => ['lt' => '2017-01-01'],
+                    'end_date' => ['gt' => '2017-05-01'],
                 ],
                 0,
             ],
@@ -116,19 +116,19 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * Test object date range finder.
+     * Test object date ranges finder.
      *
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
      * @return void
      *
      * @dataProvider findDateProvider
-     * @covers ::findDate()
+     * @covers ::findDateRanges()
      */
     public function testFindDate($conditions, $numExpected)
     {
         $objects = TableRegistry::get('Objects');
-        $result = $objects->find()->find('date', $conditions)->toArray();
+        $result = $objects->find('dateRanges', $conditions)->toArray();
 
         $this->assertEquals($numExpected, count($result));
     }

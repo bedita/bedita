@@ -183,8 +183,8 @@ class ObjectsTable extends Table
      * @param array $options Array of acceptable date range conditions.
      * @return \Cake\ORM\Query
      */
-    public function findDate(Query $query, array $options)
+    public function findDateRanges(Query $query, array $options)
     {
-        return TableRegistry::get('DateRanges')->findDate($query, $options, $this->alias());
+        return TableRegistry::get('DateRanges')->findDateRanges($query, $options, $this->alias());
     }
 }

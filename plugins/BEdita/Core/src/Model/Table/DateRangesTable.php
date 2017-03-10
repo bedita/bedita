@@ -103,37 +103,44 @@ class DateRangesTable extends Table
      *
      * Create a query to filter objects using start and end date conditions.
      * Accepted options are:
-     *   - 'startAfter' or 'startBefore' to find objects having `date_ranges.start_date` after or before param passed
-     *   - 'endAfter' or 'endBefore' to find objects having `date_ranges.end_date` after or before param passed
+     *   - 'start_date' or 'end_date'
+     *   - mandatory sub-option must be one of 'gt' (greather than), 'lt' (less than),
+     *          'ge' (greater or equal), 'le' (less or equal) with a date
      *
+     * Examples
      * ```
-     * $table->find('date', ['startAfter' => '2017-03-01'], 'Events');
+     * // find events with a start date after '2017-03-01'
+     * $table->find('dateRanges', ['start_date' => ['gt' => '2017-03-01']], 'Events');
+     *
+     * // find events with an ending date before '2017-05-01 22:00:00'
+     * $table->find('dateRanges', ['end_date' => ['lt' => '2017-05-01 22:00:00']], 'Events');
      * ```
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
-     * @param string $objectType Name of object type to filter like 'Events'.
+     * @param string $objectAlias Name of object type to filter like 'Events'.
      * @return \Cake\ORM\Query
      */
-    public function findDate(Query $query, array $options, $objectType = 'Objects')
+    public function findDateRanges(Query $query, array $options, $objectAlias = 'Objects')
     {
-        $accepted = [
-            'startAfter' => 'start_date > ',
-            'startBefore' => 'start_date < ',
-            'endAfter' => 'end_date > ',
-            'endBefore' => 'end_date < ',
-        ];
-        $options = array_intersect_key($options, $accepted);
+        $options = array_intersect_key($options, ['start_date' => 0, 'end_date' => 0]);
         if ($options) {
-            $subquery = $this->find()
-                ->select(['id'])
-                ->where($this->alias() . '.object_id = ' . $objectType . '.id');
+            $conditions = [];
+            $subopts = ['gt' => '>', 'lt' => '<', 'ge' => '>=', 'le' => '<='];
             foreach ($options as $key => $value) {
-                $subquery = $subquery->andWhere($this->alias() . '.' . $accepted[$key] . "'" . $value . "'");
+                if (is_array($value) && ($k = key($value)) && !empty($subopts[$k])) {
+                    $conditions[] = sprintf("%s.%s %s '%s'", $this->alias(), $key, $subopts[$k], $value[$k]);
+                }
             }
-            $query = $query->andWhere(function ($exp, $q) use ($subquery) {
-                    return $exp->exists($subquery);
-            });
+
+            if ($conditions) {
+                $subquery = $this->find()->select(['id'])
+                            ->where(sprintf('%s.object_id = %s.id', $this->alias(), $objectAlias))
+                            ->andWhere($conditions);
+                $query = $query->where(function ($exp, $q) use ($subquery) {
+                        return $exp->exists($subquery);
+                });
+            }
         }
 
         return $query;

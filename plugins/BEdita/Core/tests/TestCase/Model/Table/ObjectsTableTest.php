@@ -192,16 +192,16 @@ class ObjectsTableTest extends TestCase
     }
 
     /**
-     * Test object date range finder.
+     * Test object date ranges finder.
      * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
      *
      * @return void
      *
-     * @covers ::findDate()
+     * @covers ::findDateRanges()
      */
-    public function testFindDate()
+    public function testFindDateRanges()
     {
-        $result = $this->Objects->find()->find('date', ['startAfter' => '2017-12-31'])->toArray();
-        $this->assertEmpty($result);
+        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017']])->toArray();
+        $this->assertNotEmpty($result);
     }
 }
