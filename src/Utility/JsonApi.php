@@ -119,7 +119,7 @@ class JsonApi
      * Extract item's ID and attributes.
      *
      * @param array $item Item's data.
-     * @return array Array with item's ID and attributes.
+     * @return array Array with item's ID, attributes, and metadata.
      */
     protected static function extractAttributes(array $item)
     {
@@ -138,7 +138,13 @@ class JsonApi
             }
         );
 
-        return [$id, $item];
+        $meta = [];
+        if (!empty($item['_joinData'])) {
+            $meta = $item['_joinData'];
+        }
+        unset($item['_joinData']);
+
+        return [$id, $item, $meta];
     }
 
     /**
@@ -212,9 +218,12 @@ class JsonApi
             return [];
         }
 
-        list($id, $attributes) = static::extractAttributes($item);
+        list($id, $attributes, $meta) = static::extractAttributes($item);
         if (empty($attributes)) {
             unset($attributes);
+        }
+        if (empty($meta)) {
+            unset($meta);
         }
 
         if ($showLink) {
@@ -223,7 +232,7 @@ class JsonApi
             $links = compact('self');
         }
 
-        return compact('id', 'type', 'attributes', 'links', 'relationships');
+        return compact('id', 'type', 'attributes', 'links', 'relationships', 'meta');
     }
 
     /**
