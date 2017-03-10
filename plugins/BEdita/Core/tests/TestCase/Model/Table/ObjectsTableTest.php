@@ -201,7 +201,7 @@ class ObjectsTableTest extends TestCase
      */
     public function testFindDateRanges()
     {
-        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017']])->toArray();
+        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
         $this->assertNotEmpty($result);
     }
 }
