@@ -129,7 +129,6 @@ class BeditaShell extends Shell
         $this->info('Database connection is OK');
         $this->hr();
 
-
         $this->info('Checking database schema....');
         if (!$this->initSchema()) {
             return false;
