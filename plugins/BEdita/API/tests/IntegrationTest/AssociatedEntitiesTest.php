@@ -12,48 +12,14 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use BEdita\Core\State\CurrentApplication;
 use Cake\I18n\Time;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * Test CRUD operations on objects with associated entities
  *
  */
-class AssociatedEntitiesTest extends IntegrationTestCase
+class AssociatedEntitiesTest extends ApiIntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.date_ranges',
-        'plugin.BEdita/Core.locations',
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        CurrentApplication::setFromApiKey(API_KEY);
-    }
 
     /**
      * Data provider for `testEventAssoc`
@@ -70,7 +36,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                             'end_date' => '2017-04-01 12:12:12',
                         ],
                         [
-                            'start_date' => '2017-04-01 12:12:12',
+                            'start_date' => '2017-04-01T00:00:00+00:00',
                         ],
                     ],
                 ],
@@ -90,7 +56,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                     'title' => 'New years eve',
                     'date_ranges' => [
                         [
-                            'start_date' => '2017-12-31T23:59:59',
+                            'start_date' => '2017-12-31T23:59:59Z',
+                            'end_date' => '2018-01-01'
                         ],
                     ]
                 ],
@@ -98,7 +65,8 @@ class AssociatedEntitiesTest extends IntegrationTestCase
                     'title' => 'Happy new year!',
                     'date_ranges' => [
                         [
-                            'start_date' => '2018-01-01',
+                            'start_date' => '2017-03-08T00:00:00+00:00',
+                            'end_date' => '2018-01-02 10:30'
                         ],
                     ]
                 ]
@@ -117,8 +85,7 @@ class AssociatedEntitiesTest extends IntegrationTestCase
     public function testEventAssoc($attributes, $modified)
     {
         $type = 'events';
-        $lastObject = TableRegistry::get('Objects')->find()->select('id')->order(['id' => 'DESC'])->first();
-        $lastId = $lastObject->id;
+        $lastId = $this->lastObjectId();
 
         // ADD
         $data = [
@@ -126,25 +93,14 @@ class AssociatedEntitiesTest extends IntegrationTestCase
             'attributes' => $attributes,
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST');
         $endpoint = '/' . $type;
         $this->post($endpoint, json_encode(compact('data')));
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
 
         // VIEW
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $lastId++;
         $this->get("/$type/$lastId");
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -154,13 +110,13 @@ class AssociatedEntitiesTest extends IntegrationTestCase
         $resultDates = $result['data']['attributes']['date_ranges'];
         $expectedDates = $attributes['date_ranges'];
         $this->assertEquals(count($resultDates), count($expectedDates));
-        $count = count($resultDates);
+        $count = count($expectedDates);
         for ($i = 0; $i < $count; $i++) {
-            foreach ($resultDates[$i] as $k => $d) {
-                if (!empty($d)) {
-                    $exp = Time::parse($expectedDates[$i][$k])->jsonSerialize();
-                    $this->assertEquals($d, $exp);
-                }
+            foreach ($expectedDates[$i] as $k => $d) {
+                $found = $resultDates[$i][$k];
+                $exp = new \DateTime($d);
+                $exp = $exp->format('Y-m-d\TH:i:s+00:00');
+                $this->assertEquals($found, $exp);
             }
         }
 
@@ -170,37 +126,19 @@ class AssociatedEntitiesTest extends IntegrationTestCase
             'type' => $type,
             'attributes' => $modified,
         ];
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH');
         $this->patch("/$type/$lastId", json_encode(compact('data')));
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         // DELETE
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE');
         $this->delete("/$type/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
         // EMPTY TRASH
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE');
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
