@@ -15,6 +15,7 @@ namespace BEdita\Core\Database\Type;
 
 use Cake\Database\Type\DateTimeType as CakeDateTimeType;
 use Cake\I18n\Time;
+use DateTimeInterface;
 
 /**
  * Custom DateTimeType class with simplified marshal
@@ -23,9 +24,28 @@ class DateTimeType extends CakeDateTimeType
 {
     /**
      * {@inheritDoc}
+     *
+     * Accepted date time formats are
+     *  - 2017-01-01                    YYYY-MM-DD
+     *  - 2017-01-01 11:22              YYYY-MM-DD hh:mm
+     *  - 2017-01-01T11:22:33           YYYY-MM-DDThh:mm:ss
+     *  - 2017-01-01T11:22:33Z          YYYY-MM-DDThh:mm:ssZ
+     *  - 2017-01-01T19:20+01:00        YYYY-MM-DDThh:mmTZD
+     *  - 2017-01-01T11:22:33+01:00     YYYY-MM-DDThh:mm:ssTZD
+     *  - 2017-01-01T19:20:30.45+01:00  YYYY-MM-DDThh:mm:ss.sTZD
+     *
+     * See ISO 8601 subset as defined here https://www.w3.org/TR/NOTE-datetime:
      */
     public function marshal($value)
     {
-        return Time::parse($value);
+        if ($value instanceof DateTimeInterface) {
+            return $value;
+        }
+
+        if (preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
+            $value = Time::parse($value);
+        }
+
+        return $value;
     }
 }
