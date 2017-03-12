@@ -12,11 +12,13 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Model\Action\UpdateAssociatedAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
@@ -216,6 +218,9 @@ class ObjectsController extends ResourcesController
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
+                $action = new SetRelatedObjectsAction(compact('association'));
+                break;
+
             case 'POST':
             case 'DELETE':
                 throw new NotImplementedException(__d('bedita', 'Not yet implemented'));
@@ -236,5 +241,32 @@ class ObjectsController extends ResourcesController
 
                 return null;
         }
+
+        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $count = $action(['primaryKey' => $id]);
+
+        if ($count === false) {
+            throw new InternalErrorException(__d('bedita', 'Could not update relationship "{0}"', $relationship));
+        }
+
+        if (is_array($count)) {
+            $action = new ListRelatedObjectsAction(compact('association'));
+            $data = $action(['primaryKey' => $id, 'list' => true, 'only' => $count]);
+
+            $count = count($count);
+        }
+
+        if ($count === 0) {
+            return $this->response
+                ->withHeader('Content-Type', $this->request->contentType())
+                ->withStatus(204);
+        }
+
+        $this->set(compact('data'));
+        $this->set([
+            '_serialize' => ['data'],
+        ]);
+
+        return null;
     }
 }

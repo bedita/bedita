@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
@@ -58,7 +59,7 @@ class ListAssociatedAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        $query = $this->buildQuery($data['primaryKey'], !empty($data['list']), !empty($data['joinData']));
+        $query = $this->buildQuery($data['primaryKey'], $data);
 
         if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
             return $query->first();
@@ -100,14 +101,16 @@ class ListAssociatedAction extends BaseAction
      * Build the query object.
      *
      * @param mixed $primaryKey Primary key.
-     * @param bool $list Should full objects be returned, or a simple list?
-     * @param bool $joinData Should join data be fetched and returned?
+     * @param array $options Additional options.
      * @return \Cake\ORM\Query
      * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if trying to fetch associations
      *      for a missing resource.
      */
-    protected function buildQuery($primaryKey, $list, $joinData)
+    protected function buildQuery($primaryKey, array $options)
     {
+        $list = !empty($options['list']);
+        $joinData = !empty($options['joinData']);
+
         $source = $this->Association->getSource();
         $conditions = $this->primaryKeyConditions($primaryKey);
 
@@ -154,6 +157,17 @@ class ListAssociatedAction extends BaseAction
                     return $result;
                 });
             });
+
+
+        if (!empty($options['only'])) {
+            $query = $query
+                ->andWhere(function (QueryExpression $exp) use ($options) {
+                    return $exp->in(
+                        $this->Association->aliasField($this->Association->getPrimaryKey()),
+                        $options['only']
+                    );
+                });
+        }
 
         if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
             $query = $query->order($this->Association->sort());
