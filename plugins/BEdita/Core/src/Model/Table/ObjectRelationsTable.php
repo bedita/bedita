@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -83,10 +84,22 @@ class ObjectRelationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['left_id'], 'Objects'));
+        $rules->add($rules->existsIn(['left_id'], 'LeftObjects'));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));
-        $rules->add($rules->existsIn(['right_id'], 'Objects'));
+        $rules->add($rules->existsIn(['right_id'], 'RightObjects'));
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->columnType('params', 'json');
+
+        return $schema;
     }
 }

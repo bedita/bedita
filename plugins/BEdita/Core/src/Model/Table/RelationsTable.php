@@ -19,6 +19,7 @@ use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
 /**
@@ -154,7 +155,7 @@ class RelationsTable extends Table
         if (empty($options['name'])) {
             throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        $name = $options['name'];
+        $name = Inflector::underscore($options['name']);
 
         return $query->where(function (QueryExpression $exp) use ($name) {
             return $exp->or_(function (QueryExpression $exp) use ($name) {
