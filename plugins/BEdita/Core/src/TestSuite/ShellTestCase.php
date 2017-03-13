@@ -48,6 +48,8 @@ abstract class ShellTestCase extends TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function setUp()
     {
@@ -59,6 +61,8 @@ abstract class ShellTestCase extends TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function tearDown()
     {
