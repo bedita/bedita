@@ -73,10 +73,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 6,
+                    'count' => 7,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 6,
+                    'page_items' => 7,
                     'page_size' => 20,
                 ],
             ],
@@ -278,6 +278,30 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/locations/8',
+                    ],
+                ],
+                [
+                    'id' => '9',
+                    'type' => 'events',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'event-one',
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2016-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'title' => 'first event',
+                        'description' => 'event description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/events/9',
                     ],
                 ],
             ],
@@ -571,7 +595,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/documents/9');
+        $this->assertHeader('Location', 'http://api.example.com/documents/10');
         $this->assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
