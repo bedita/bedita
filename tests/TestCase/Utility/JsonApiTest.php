@@ -563,44 +563,4 @@ class JsonApiTest extends TestCase
 
         static::assertEquals($expected, $result);
     }
-
-    /**
-     * Test {@see \BEdita\Core\Utility\JsonApi::formatData()} and
-     * {@see \BEdita\Core\Utility\JsonApi::extractAttributes()} methods.
-     *
-     * @return void
-     *
-     * @covers ::formatData
-     * @covers ::formatItem
-     * @covers ::extractAttributes
-     */
-    public function testFormatDataArray()
-    {
-        $item = [
-            'id' => 1,
-            'type' => 'events',
-            'date_ranges' => [
-                [
-                    'id' => 1,
-                    'object_id' => 1,
-                    'start' => 'now',
-                ]
-            ]
-        ];
-        $expected = [
-            'id' => 1,
-            'type' => 'events',
-            'attributes' => [
-                'date_ranges' => [
-                    [
-                        'start' => 'now',
-                    ]
-                ]
-            ]
-        ];
-
-        $result = JsonApi::formatData($item);
-
-        static::assertEquals($expected, $result);
-    }
 }
