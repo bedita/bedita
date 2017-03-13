@@ -23,12 +23,6 @@ App::import('Component', 'Transaction');
 
 /**
  * Class that provides relation repair utility methods
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class RelationRepair extends BEAppModel
 {
@@ -38,8 +32,7 @@ class RelationRepair extends BEAppModel
      * Do repair relation $relationName
      *
      * @param string $relationName relation name
-     * @param int number of ObjectRelation records repaired (-1 on error)
-     * @return array result description
+     * @return int number of ObjectRelation records repaired (-1 on error)
      */
     public function repair($relationName) {
         $repaired = 0;
@@ -115,4 +108,3 @@ class RelationRepair extends BEAppModel
         return $fixed;
     }
 }
-?>

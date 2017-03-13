@@ -21,17 +21,18 @@
 
 /**
  * Class that provides relation check utility methods
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class RelationCheck extends BEAppModel
 {
     public $useTable = false;
 
+    /**
+     * Check relation data consistency for relation $relationName, populating properly $messageBuffer with info about check
+     *
+     * @param string $relationName relation name
+     * @param array $messageBuffer messages about check
+     * @return array info about check
+     */
     public function checkRelation($relationName, &$messageBuffer) {
         $result = true;
         $relationStats = ClassRegistry::init('RelationStats');
@@ -63,7 +64,16 @@ class RelationCheck extends BEAppModel
         return $result;
     }
 
-
+    /**
+     * check counts consistency for relation data, by types (allowed types by model and all types), populating properly $messageBuffer with info about check
+     *
+     * @param string $relationName relation name
+     * @param int $countRelAllowedTypes number of relation data found for allowed types
+     * @param int $countRelAllTypes number of relation data found for all types
+     * @param array $allowedTypes object types allowed per relation
+     * @param array $messageBuffer messages about check
+     * @return void
+     */
     private function checkTypesForRelation($relationName, $countRelAllowedTypes, $countRelAllTypes, $allowedTypes, &$messageBuffer) {
         if ($countRelAllowedTypes != $countRelAllTypes) {
             $messageBuffer[] = abs($countRelAllTypes - $countRelAllowedTypes) . ' records refer to a type not related to relation "' . $relationName . '" (MODEL-RELATED-TYPES-COUNT: ' . $countRelAllowedTypes . ' / ALL-TYPES-COUNT: ' . $countRelAllTypes . ')';
@@ -78,21 +88,31 @@ class RelationCheck extends BEAppModel
         }
     }
 
-    private function checkCounts($info, $relationName, $relationInverse, $count1, $count2, &$messageBuffer) {
-        if ($count1 === $count2) {
-            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $count1";
-            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $count2";
+    /**
+     * verify counts consistency for relation and inverse, populating properly $messageBuffer with info about check
+     *
+     * @param string $info prefix info for messages in buffer
+     * @param string $relationName relation name
+     * @param string $relationInverse relation inverse
+     * @param int $countRelation number of elements by relation
+     * @param int $countInverse number of elements by relation inverse
+     * @param array $messageBuffer messages about check
+     * @return bool result
+     */
+    private function checkCounts($info, $relationName, $relationInverse, $countRelation, $countInverse, &$messageBuffer) {
+        if ($countRelation === $countInverse) {
+            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $countRelation";
+            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $countInverse";
             return true;
-        } else if ($count1 < $count2) {
-            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $count1 => should be $count2";
-            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $count2";
+        } else if ($countRelation < $countInverse) {
+            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $countRelation => should be $countInverse";
+            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $countInverse";
             return false;
         } else {
-            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $count1";
-            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $count2 => should be $count1";
+            $messageBuffer[] = "$info [left]->'$relationName'->[right]: $countRelation";
+            $messageBuffer[] = "$info [right]->'$relationInverse'->[left]: $countInverse => should be $countRelation";
             return false;
         }
         return true;
     }
 }
-?>

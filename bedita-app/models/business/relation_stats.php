@@ -21,12 +21,6 @@
 
 /**
  * Class that provides relation statistics
- * 
- * @version			$Revision$
- * @modifiedby 		$LastChangedBy$
- * @lastmodified	$LastChangedDate$
- * 
- * $Id$
  */
 class RelationStats extends BEAppModel
 {
@@ -218,6 +212,11 @@ class RelationStats extends BEAppModel
         return $objectTypesIds;
     }
 
+    /**
+     * Return ordered object types related names, getting them from config keys objectTypes.related.id
+     *
+     * @return array related object types names
+     */
     private function objectTypesRelatedNames() {
         $result = array();
         $objectTypeIds = Configure::read('objectTypes.related.id');
@@ -228,4 +227,3 @@ class RelationStats extends BEAppModel
         return $result;
     }
 }
-?>
