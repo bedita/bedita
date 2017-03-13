@@ -1,9 +1,17 @@
 <?php
 use Migrations\AbstractMigration;
 
+/**
+ * Add `associations` column to `object_types` table.
+ *
+ * @see https://github.com/bedita/bedita/pull/1138
+ */
 class AddAssociations extends AbstractMigration
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public function up()
     {
         $this->table('object_types')
@@ -30,6 +38,9 @@ class AddAssociations extends AbstractMigration
             ->save();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function down()
     {
         $this->table('object_types')
