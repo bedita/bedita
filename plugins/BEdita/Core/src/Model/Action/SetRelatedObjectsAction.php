@@ -83,11 +83,7 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
     }
 
     /**
-     * Perform update.
-     *
-     * @param \Cake\Datasource\EntityInterface $entity Source entity.
-     * @param \Cake\Datasource\EntityInterface|\Cake\Datasource\EntityInterface[]|null $relatedEntities Related entity(-ies).
-     * @return array|false
+     * {@inheritDoc}
      */
     protected function update(EntityInterface $entity, $relatedEntities)
     {
