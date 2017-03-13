@@ -75,7 +75,6 @@ class RelationRepair extends BEAppModel
         $objRel = ClassRegistry::init('ObjectRelation');
         foreach ($objRels as $relRecord) {
             $rc = $relRecord['ObjectRelation'];
-            $rcDesc = 'id: ' . $rc['id'] . ', object_id:' . $rc['object_id']; 
             if ($relationInverse == null || $objRel->relationExists($rc['object_id'], $rc['id'], $relationInverse)) {
                 continue; // relation seems ok
             } else {
