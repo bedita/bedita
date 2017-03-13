@@ -60,7 +60,7 @@ class RelationShell extends BeditaBaseShell {
             if ($result === false) {
                 $ans = $this->in('Do you want to try to fix relation data? [y/n]');
                 if ($ans === 'y') {
-                    $repaired = $relationRepair->relationRepair($relationName);
+                    $repaired = $relationRepair->repair($relationName);
                     $this->out($repaired . ' ObjectRelation records repaired');
                 }
             }
@@ -82,7 +82,7 @@ class RelationShell extends BeditaBaseShell {
             exit;
         }
         $this->out($relationStats->getDescription($relationName));
-        $repaired = ClassRegistry::init('RelationRepair')->relationRepair($relationName);
+        $repaired = ClassRegistry::init('RelationRepair')->repair($relationName);
         $this->out($repaired . ' ObjectRelation records repaired');
     }
 
