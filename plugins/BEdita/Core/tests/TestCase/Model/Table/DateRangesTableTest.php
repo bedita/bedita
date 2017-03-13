@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\DateRangesTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -44,9 +43,7 @@ class DateRangesTableTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function setUp()
     {
@@ -55,9 +52,7 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function tearDown()
     {
@@ -98,6 +93,19 @@ class DateRangesTableTest extends TestCase
                 ],
                 1,
             ],
+            'equals' => [
+                [
+                    'start_date' => '2017-03-07 12:40:19',
+                    'end_date' => ['eq' => '2017-03-08 21:40:19'],
+                ],
+                1,
+            ],
+            'notEquals' => [
+                [
+                    'start_date' => ['ne' => '2017-03-07 12:40:19'],
+                ],
+                0,
+            ],
             'combinedOK' => [
                 [
                     'start_date' => ['gt' => '2017-03-01'],
@@ -111,6 +119,12 @@ class DateRangesTableTest extends TestCase
                     'end_date' => ['gt' => '2017-05-01'],
                 ],
                 0,
+            ],
+            'multipleConditions' => [
+                [
+                    'start_date' => ['>=' => '2017-03-07', '<' => '2017-03-08'],
+                ],
+                1,
             ],
         ];
     }
@@ -127,9 +141,8 @@ class DateRangesTableTest extends TestCase
      */
     public function testFindDate($conditions, $numExpected)
     {
-        $objects = TableRegistry::get('Objects');
-        $result = $objects->find('dateRanges', $conditions)->toArray();
+        $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
 
-        $this->assertEquals($numExpected, count($result));
+        static::assertEquals($numExpected, count($result));
     }
 }
