@@ -54,6 +54,11 @@ class ObjectsTable extends Table
 
         $this->addBehavior('BEdita/Core.Relations');
 
+        $this->hasMany('DateRanges', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.DateRanges',
+        ]);
+
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
@@ -169,5 +174,21 @@ class ObjectsTable extends Table
         $query->where([$this->aliasField('object_type_id') . ' IN' => $options]);
 
         return $query;
+    }
+
+    /**
+     * Find by date range using `DateRanges` table findDate filter
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return \Cake\ORM\Query
+     */
+    public function findDateRanges(Query $query, array $options)
+    {
+        return $query
+            ->distinct([$this->aliasField($this->getPrimaryKey())])
+            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                return $query->find('dateRanges', $options);
+            });
     }
 }

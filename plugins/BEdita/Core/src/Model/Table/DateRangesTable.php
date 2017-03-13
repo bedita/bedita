@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -70,11 +71,9 @@ class DateRangesTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->dateTime('start_date')
             ->allowEmpty('start_date');
 
         $validator
-            ->dateTime('end_date')
             ->allowEmpty('end_date');
 
         $validator
@@ -96,5 +95,83 @@ class DateRangesTable extends Table
         $rules->add($rules->existsIn(['object_id'], 'Objects'));
 
         return $rules;
+    }
+
+    /**
+     * Find objects by date range.
+     *
+     * Create a query to filter objects using start and end date conditions.
+     * Accepted options are:
+     *   - 'start_date' or 'end_date'
+     *   - mandatory sub-option must be one of 'gt' (greather than), 'lt' (less than),
+     *          'ge' (greater or equal), 'le' (less or equal) with a date
+     *
+     * Examples
+     * ```
+     * // find events with a start date after '2017-03-01'
+     * $table->find('dateRanges', ['start_date' => ['gt' => '2017-03-01']]);
+     *
+     * // find events with an ending date before '2017-05-01 22:00:00'
+     * $table->find('dateRanges', ['end_date' => ['lt' => '2017-05-01 22:00:00']]);
+     * ```
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return \Cake\ORM\Query
+     */
+    public function findDateRanges(Query $query, array $options)
+    {
+        $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
+
+        return $query->where(function (QueryExpression $exp) use ($options) {
+            foreach ($options as $field => $conditions) {
+                $field = $this->aliasField($field);
+
+                if (!is_array($conditions)) {
+                    $exp = $exp->eq($field, $conditions);
+
+                    continue;
+                }
+
+                foreach ($conditions as $operator => $value) {
+                    switch ($operator) {
+                        case 'eq':
+                        case '=':
+                            $exp = $exp->eq($field, $value);
+                            break;
+
+                        case 'neq':
+                        case 'ne':
+                        case '!=':
+                        case '<>':
+                            $exp = $exp->notEq($field, $value);
+                            break;
+
+                        case 'lt':
+                        case '<':
+                            $exp = $exp->lt($field, $value);
+                            break;
+
+                        case 'lte':
+                        case 'le':
+                        case '<=':
+                            $exp = $exp->lte($field, $value);
+                            break;
+
+                        case 'gt':
+                        case '>':
+                            $exp = $exp->gt($field, $value);
+                            break;
+
+                        case 'gte':
+                        case 'ge':
+                        case '>=':
+                            $exp = $exp->gte($field, $value);
+                    }
+                }
+            }
+
+            return $exp;
+        });
     }
 }

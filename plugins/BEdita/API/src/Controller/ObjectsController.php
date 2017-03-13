@@ -118,9 +118,11 @@ class ObjectsController extends ResourcesController
                 );
         }
 
+        $filter = $this->request->getQuery('filter');
+
         // List existing entities.
         $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $query = $action();
+        $query = $action(compact('filter'));
 
         $data = $this->paginate($query);
 

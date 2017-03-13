@@ -84,19 +84,19 @@ class ListEntitiesAction extends BaseAction
     protected function buildFilter(Query $query, array $filter)
     {
         foreach ($filter as $key => $value) {
-            $camelizedKey = Inflector::camelize($key);
-
-            if ($this->Table->hasFinder($key)) {
+            $variableKey = Inflector::variable($key);
+            if ($this->Table->hasFinder($variableKey)) {
                 // Finder.
                 if ($value === true) {
                     $value = [];
                 }
 
-                $query = $query->find($key, (array)$value);
+                $query = $query->find($variableKey, (array)$value);
 
                 continue;
             }
 
+            $camelizedKey = Inflector::camelize($key);
             if ($this->Table->associations()->has($camelizedKey)) {
                 // Associated match (primary key only).
                 $target = $this->Table->association($camelizedKey)->getTarget();

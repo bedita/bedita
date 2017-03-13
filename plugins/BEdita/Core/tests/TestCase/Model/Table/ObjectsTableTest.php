@@ -29,6 +29,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.date_ranges',
     ];
 
     /**
@@ -188,5 +189,19 @@ class ObjectsTableTest extends TestCase
         $result = $this->Objects->find('list')->find('type', $types)->toArray();
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test object date ranges finder.
+     * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
+     *
+     * @return void
+     *
+     * @covers ::findDateRanges()
+     */
+    public function testFindDateRanges()
+    {
+        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
+        $this->assertNotEmpty($result);
     }
 }

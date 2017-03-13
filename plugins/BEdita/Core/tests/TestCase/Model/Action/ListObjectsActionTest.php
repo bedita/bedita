@@ -33,6 +33,7 @@ class ListObjectsActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
     ];
 
@@ -49,7 +50,7 @@ class ListObjectsActionTest extends TestCase
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(6, $result->count());
+        static::assertSame(7, $result->count());
     }
 
     /**
@@ -59,14 +60,14 @@ class ListObjectsActionTest extends TestCase
      */
     public function testExecuteObjectTypeFilter()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('Documents');
+        $objectType = TableRegistry::get('ObjectTypes')->get('Events');
         $table = TableRegistry::get('Objects');
         $action = new ListObjectsAction(compact('table', 'objectType'));
 
         $result = $action();
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(2, $result->count());
+        static::assertSame(1, $result->count());
     }
 
     /**
@@ -100,6 +101,6 @@ class ListObjectsActionTest extends TestCase
         ]);
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame(4, $result->count());
+        static::assertSame(5, $result->count());
     }
 }
