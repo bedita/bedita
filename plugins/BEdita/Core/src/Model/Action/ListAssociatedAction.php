@@ -158,7 +158,6 @@ class ListAssociatedAction extends BaseAction
                 });
             });
 
-
         if (!empty($options['only'])) {
             $query = $query
                 ->andWhere(function (QueryExpression $exp) use ($options) {
