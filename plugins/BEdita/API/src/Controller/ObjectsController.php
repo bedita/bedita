@@ -13,16 +13,17 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -222,8 +223,12 @@ class ObjectsController extends ResourcesController
                 break;
 
             case 'POST':
+                $action = new AddRelatedObjectsAction(compact('association'));
+                break;
+
             case 'DELETE':
-                throw new NotImplementedException(__d('bedita', 'Not yet implemented'));
+                $action = new RemoveAssociatedAction(compact('association'));
+                break;
 
             case 'GET':
             default:

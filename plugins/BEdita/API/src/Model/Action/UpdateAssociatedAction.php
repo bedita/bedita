@@ -115,7 +115,7 @@ class UpdateAssociatedAction extends BaseAction
             }
 
             $meta = Hash::get($datum, '_meta');
-            if ($association instanceof BelongsToMany && $meta !== null) {
+            if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
                 $targetEntities[$id]->_joinData = $association->junction()->newEntity($meta);
             }
         }
