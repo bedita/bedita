@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -108,39 +109,69 @@ class DateRangesTable extends Table
      * Examples
      * ```
      * // find events with a start date after '2017-03-01'
-     * $table->find('dateRanges', ['start_date' => ['gt' => '2017-03-01']], 'Events');
+     * $table->find('dateRanges', ['start_date' => ['gt' => '2017-03-01']]);
      *
      * // find events with an ending date before '2017-05-01 22:00:00'
-     * $table->find('dateRanges', ['end_date' => ['lt' => '2017-05-01 22:00:00']], 'Events');
+     * $table->find('dateRanges', ['end_date' => ['lt' => '2017-05-01 22:00:00']]);
      * ```
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
-     * @param string $objectAlias Name of object type to filter like 'Events'.
      * @return \Cake\ORM\Query
      */
-    public function findDateRanges(Query $query, array $options, $objectAlias = 'Objects')
+    public function findDateRanges(Query $query, array $options)
     {
-        $options = array_intersect_key($options, ['start_date' => 0, 'end_date' => 0]);
-        if (!empty($options)) {
-            $conditions = [];
-            $subopts = ['gt' => '>', 'lt' => '<', 'ge' => '>=', 'le' => '<='];
-            foreach ($options as $key => $value) {
-                if (is_array($value) && ($k = key($value)) && !empty($subopts[$k])) {
-                    $conditions[] = sprintf("%s.%s %s '%s'", $this->getAlias(), $key, $subopts[$k], $value[$k]);
+        $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
+
+        return $query->where(function (QueryExpression $exp) use ($options) {
+            foreach ($options as $field => $conditions) {
+                $field = $this->aliasField($field);
+
+                if (!is_array($conditions)) {
+                    $exp = $exp->eq($field, $conditions);
+
+                    continue;
+                }
+
+                foreach ($conditions as $operator => $value) {
+                    switch ($operator) {
+                        case 'eq':
+                        case '=':
+                            $exp = $exp->eq($field, $value);
+                            break;
+
+                        case 'neq':
+                        case 'ne':
+                        case '!=':
+                        case '<>':
+                            $exp = $exp->notEq($field, $value);
+                            break;
+
+                        case 'lt':
+                        case '<':
+                            $exp = $exp->lt($field, $value);
+                            break;
+
+                        case 'lte':
+                        case 'le':
+                        case '<=':
+                            $exp = $exp->lte($field, $value);
+                            break;
+
+                        case 'gt':
+                        case '>':
+                            $exp = $exp->gt($field, $value);
+                            break;
+
+                        case 'gte':
+                        case 'ge':
+                        case '>=':
+                            $exp = $exp->gte($field, $value);
+                    }
                 }
             }
 
-            if (!empty($conditions)) {
-                $subquery = $this->find()->select(['id'])
-                            ->where(sprintf('%s.object_id = %s.id', $this->getAlias(), $objectAlias))
-                            ->andWhere($conditions);
-                $query = $query->where(function ($exp, $q) use ($subquery) {
-                        return $exp->exists($subquery);
-                });
-            }
-        }
-
-        return $query;
+            return $exp;
+        });
     }
 }

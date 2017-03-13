@@ -185,6 +185,10 @@ class ObjectsTable extends Table
      */
     public function findDateRanges(Query $query, array $options)
     {
-        return TableRegistry::get('DateRanges')->findDateRanges($query, $options, $this->getAlias());
+        return $query
+            ->distinct([$this->aliasField($this->getPrimaryKey())])
+            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                return $query->find('dateRanges', $options);
+            });
     }
 }
