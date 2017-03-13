@@ -80,19 +80,48 @@ class SimpleShell extends Shell
 class ShellTestCaseTest extends ShellTestCase
 {
     /**
+     * Data provider for testInvoke()
+     *
+     * @return array
+     */
+    public function invokeProvider()
+    {
+        return [
+            'ok' => [
+                0,
+                'writeOutput'
+            ],
+            'errorInfo' => [
+                0,
+                'writeError'
+            ],
+            'fatalError' => [
+                1,
+                'writeFatalError'
+            ],
+            'abort' => [
+                1,
+                'writeAbort'
+            ]
+        ];
+    }
+
+    /**
      * Test invoke
      *
      * @return void
+     * @dataProvider invokeProvider
      * @covers ::invoke()
      */
-    public function testInvoke()
+    public function testInvoke($expected, $shellMethod)
     {
-        $ret = $this->invoke([SimpleShell::class, 'writeOutput']);
-        $this->assertEquals(0, $ret);
-
-        $ret = $this->invoke([SimpleShell::class, 'writeAbort']);
-        $this->assertEquals(1, $ret);
-        $this->assertAborted();
+        $ret = $this->invoke([SimpleShell::class, $shellMethod]);
+        $this->assertEquals($expected, $ret);
+        if ($expected === 0) {
+            $this->assertNotAborted();
+        } elseif ($expected === 1) {
+            $this->assertAborted();
+        }
     }
 
     /**
