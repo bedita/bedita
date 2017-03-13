@@ -52,6 +52,17 @@ class ObjectRelationsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
         ]);
+
+        $this->addBehavior('BEdita/Core.Priority', [
+            'fields' => [
+                'priority' => [
+                    'scope' => ['left_id', 'relation_id'],
+                ],
+                'inv_priority' => [
+                    'scope' => ['right_id', 'relation_id'],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -62,14 +73,10 @@ class ObjectRelationsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('priority')
-            ->requirePresence('priority', 'create')
-            ->notEmpty('priority');
+            ->nonNegativeInteger('priority');
 
         $validator
-            ->integer('inv_priority')
-            ->requirePresence('inv_priority', 'create')
-            ->notEmpty('inv_priority');
+            ->nonNegativeInteger('inv_priority');
 
         $validator
             ->allowEmpty('params');
