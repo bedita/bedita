@@ -136,6 +136,8 @@ class ObjectEntity extends Entity
             $entity = $Table->newEntity();
         }
 
-        return static::listAssociations($Table, $entity->getHidden());
+        $relationships = static::listAssociations($Table, $entity->getHidden());
+
+        return array_diff($relationships, ['date_ranges']);
     }
 }

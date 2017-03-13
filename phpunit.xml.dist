@@ -21,6 +21,7 @@
         <!-- Add plugin test suites here. -->
         <testsuite name="BEdita 4 API Test Suite">
             <directory>./plugins/BEdita/API/tests/TestCase</directory>
+            <directory>./plugins/BEdita/API/tests/IntegrationTest</directory>
         </testsuite>
         <testsuite name="BEdita 4 Core Test Suite">
             <directory>./plugins/BEdita/Core/tests/TestCase</directory>

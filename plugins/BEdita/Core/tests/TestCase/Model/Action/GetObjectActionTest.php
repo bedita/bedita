@@ -32,6 +32,7 @@ class GetObjectActionTest extends TestCase
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.objects',
     ];
 
@@ -45,9 +46,9 @@ class GetObjectActionTest extends TestCase
         $table = TableRegistry::get('Objects');
         $action = new GetObjectAction(compact('table'));
 
-        $result = $action(['primaryKey' => 2]);
+        $result = $action(['primaryKey' => 9]);
 
-        static::assertEquals($table->get(2, ['contain' => ['ObjectTypes']]), $result);
+        static::assertEquals($table->get(9, ['contain' => ['ObjectTypes']]), $result);
     }
 
     /**
@@ -59,11 +60,11 @@ class GetObjectActionTest extends TestCase
      */
     public function testExecuteObjectTypeFilter()
     {
-        $objectType = TableRegistry::get('ObjectTypes')->get('News');
+        $objectType = TableRegistry::get('ObjectTypes')->get('Events');
         $table = TableRegistry::get('Objects');
         $action = new GetObjectAction(compact('table', 'objectType'));
 
-        $action(['primaryKey' => 2]);
+        $result = $action(['primaryKey' => 8]);
     }
 
     /**

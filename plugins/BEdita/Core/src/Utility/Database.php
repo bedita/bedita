@@ -154,7 +154,6 @@ class Database
         return $config;
     }
 
-
     /**
      * See if Database connection is available and working correctly
      *

@@ -29,8 +29,7 @@ class DateRangesFixture extends TestFixture
      */
     public $records = [
         [
-            'id' => 1,
-            'object_id' => 1,
+            'object_id' => 9,
             'start_date' => '2017-03-07 12:40:19',
             'end_date' => '2017-03-08 21:40:19',
             'params' => ''

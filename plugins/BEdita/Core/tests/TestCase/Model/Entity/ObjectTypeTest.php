@@ -103,6 +103,7 @@ class ObjectTypeTest extends TestCase
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
             'table' => 'BEdita/Core.Objects',
+            'associations' => null,
         ];
 
         $objectType = $this->ObjectTypes->get(1);

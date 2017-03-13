@@ -52,8 +52,14 @@ class ListObjectsAction extends BaseAction
         $filter = [
             'deleted' => (int)!empty($data['deleted']),
         ];
+        $contain = ['ObjectTypes'];
         if (!empty($this->objectType)) {
             $filter['object_type_id'] = $this->objectType->id;
+
+            $assoc = $this->objectType->associations;
+            if (!empty($assoc)) {
+                $contain = array_merge($contain, $assoc);
+            }
         }
 
         if (!empty($data['filter'])) {
@@ -68,6 +74,6 @@ class ListObjectsAction extends BaseAction
         $query = $action->execute(compact('filter'));
 
         return $query
-            ->contain('ObjectTypes');
+            ->contain($contain);
     }
 }

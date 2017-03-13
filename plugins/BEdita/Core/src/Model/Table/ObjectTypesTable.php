@@ -15,6 +15,7 @@ namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
 use Cake\Cache\Cache;
+use Cake\Database\Schema\TableSchema;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Event\Event;
@@ -115,6 +116,9 @@ class ObjectTypesTable extends Table
             ->requirePresence('model', 'create')
             ->notEmpty('model');
 
+        $validator
+            ->allowEmpty('associations');
+
         return $validator;
     }
 
@@ -136,6 +140,18 @@ class ObjectTypesTable extends Table
             ]);
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->columnType('associations', 'json');
+
+        return $schema;
     }
 
     /**

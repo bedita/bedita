@@ -52,13 +52,16 @@ class GetObjectAction extends BaseAction
         $conditions = [
             'deleted' => (int)!empty($data['deleted']),
         ];
+        $contain = ['ObjectTypes'];
         if (!empty($this->objectType)) {
             $conditions['object_type_id'] = $this->objectType->id;
+
+            $assoc = $this->objectType->associations;
+            if (!empty($assoc)) {
+                $contain = array_merge($contain, $assoc);
+            }
         }
 
-        return $this->Table->get($data['primaryKey'], [
-            'contain' => ['ObjectTypes'],
-            'conditions' => $conditions,
-        ]);
+        return $this->Table->get($data['primaryKey'], compact('conditions', 'contain'));
     }
 }
