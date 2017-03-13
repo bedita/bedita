@@ -84,6 +84,8 @@ class SetRelatedObjectsAction extends UpdateRelatedObjectsAction
 
     /**
      * {@inheritDoc}
+     *
+     * @return array|false
      */
     protected function update(EntityInterface $entity, $relatedEntities)
     {
