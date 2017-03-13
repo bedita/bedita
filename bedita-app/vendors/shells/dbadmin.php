@@ -1028,6 +1028,80 @@ class DbadminShell extends BeditaBaseShell {
 		$transaction->commit();
 	}
 
+	/**
+	 * Versions of objects util: limit to <n> values per object, by param '-limit'
+	 *
+	 * @return void
+	 */
+	public function versions() {
+		if (empty($this->params['limit'])) {
+			$this->out('Parameter -limit mandatory [number of versions allowed]');
+			return;
+		}
+		$limit = $this->params['limit'];
+		App::import('Component', 'Transaction');
+		// find objects with more than <limit> versions
+		$versionModel = ClassRegistry::init('Version');
+		$ids = $versionModel->find('list', array(
+			'fields' => array('object_id'),
+			'conditions' => array('revision >= ' . $this->params['limit']),
+			'contain' => array()
+		));
+		$ids = array_unique($ids);
+		$this->out('Updating version (it can take some time...)');
+		foreach ($ids as $object_id) {
+			$versions = $versionModel->find('list', array(
+				'fields' => array('id', 'revision'),
+				'conditions' => array('object_id' => $object_id),
+				'contain' => array(),
+				'order' => array('revision DESC')
+			));
+			if (count($versions) >= $limit) {
+				$transaction = new TransactionComponent('default');
+				$transaction->begin();
+				$counter = $limit;
+				$insertList = array();
+				foreach ($versions as $versionId => $revision) {
+					if ($counter > 0) { // update row => set new revision number to $counter
+						$insertList[] = $versionId;
+					}
+					$counter--;
+				}
+				$objectVersions = array();
+				if (!empty($insertList)) {
+					$revision = 1;
+					$objectVersions = $versionModel->find('all', array(
+						'fields' => array('object_id', 'revision', 'user_id', 'created', 'diff'),
+						'conditions' => array('Version.id' => $insertList),
+						'contain' => array()
+					));
+					foreach ($objectVersions as &$objVersion) {
+						$objVersion['Version']['revision'] = $revision++;
+					}
+				}
+				
+				// remove all versions per-object
+				$versionModel->create();
+				if (!$versionModel->deleteAll(array('Version.object_id' => $object_id))) {
+					$this->out('Error on delete versions for object_id ' . $object_id);
+					$transaction->rollback();
+				}
+				// insert back newest <limit> versions
+				if (!empty($objectVersions)) {
+					foreach ($objectVersions as $newVersion) {
+						$versionModel->create();
+						if (!$versionModel->save($newVersion['Version'])) {
+							$this->out('Error on save version for object_id ' . $object_id);
+							$transaction->rollback();
+						}
+					}
+				}
+				$transaction->commit();
+			}
+		}
+		$this->out('Versions updated');
+	}
+
 	function help() {
 		$this->out('Available functions:');
         $this->out('1. rebuildIndex: rebuild search texts index');
@@ -1141,6 +1215,10 @@ class DbadminShell extends BeditaBaseShell {
         $this->out(' ');
 		$this->out("    -nicknameSuffix <suffix> \t suffix that will be append at original nicknames (nick-<suffix>)");
         $this->out("    -keepTitle \t the cloned objects keep the original titles");
+        $this->out(' ');
+        $this->out("20. versions: remove object versions, limiting to a max number of versions");
+        $this->out(' ');
+        $this->out('    Usage: versions -limit <number> (versions allowed)');
         $this->out(' ');
 	}
 
