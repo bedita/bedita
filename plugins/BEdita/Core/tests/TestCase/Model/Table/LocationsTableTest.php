@@ -2,6 +2,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\LocationsTable;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -55,22 +56,53 @@ class LocationsTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testFindGeo` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function findGeoProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'nearPoint' => [
+                [
+                    'center' => '44.4944876,11.3464721',
+                ],
+                1,
+            ],
+            'nearArray' => [
+                [
+                    'center' => [44.4944183, 11.3464055],
+                ],
+                1,
+            ],
+            'otherFilter' => [
+                [
+                    'coords' => [44.4944183, 11.3464055],
+                ],
+                1,
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test findGeo finder method.
      *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
      * @return void
+     *
+     * @dataProvider findGeoProvider
+     * @covers ::findGeo()
      */
-    public function testValidationDefault()
+    public function testFindGeo($conditions, $numExpected)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $info = ConnectionManager::get('default')->config();
+        if (strstr($info['driver'], 'Mysql') === false) {
+            $this->markTestSkipped('Only MySQL supported in testFindGeo');
+        }
+
+        $result = $this->Locations->find('geo', $conditions)->toArray();
+
+        static::assertEquals($numExpected, count($result));
     }
 }
