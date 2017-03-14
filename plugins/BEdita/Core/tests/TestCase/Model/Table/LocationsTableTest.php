@@ -7,7 +7,9 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\LocationsTable Test Case
+ * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\LocationsTable
  */
 class LocationsTableTest extends TestCase
 {
