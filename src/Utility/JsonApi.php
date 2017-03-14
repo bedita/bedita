@@ -212,6 +212,11 @@ class JsonApi
             return [];
         }
 
+        if (!empty($item['meta'])) {
+            $meta = $item['meta'];
+            unset($item['meta']);
+        }
+
         list($id, $attributes) = static::extractAttributes($item);
         if (empty($attributes)) {
             unset($attributes);
@@ -223,7 +228,7 @@ class JsonApi
             $links = compact('self');
         }
 
-        return compact('id', 'type', 'attributes', 'links', 'relationships');
+        return compact('id', 'type', 'attributes', 'links', 'relationships', 'meta');
     }
 
     /**
