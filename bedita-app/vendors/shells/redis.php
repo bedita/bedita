@@ -1,21 +1,42 @@
 <?php
 /*-----8<--------------------------------------------------------------------
- *
-* BEdita - a semantic content management framework
-*
-* Copyright 2015 ChannelWeb Srl, Chialab Srl
-*
-*------------------------------------------------------------------->8-----
-*/
+ * 
+ * BEdita - a semantic content management framework
+ * 
+ * Copyright 2008-2017 ChannelWeb Srl, Chialab Srl
+ * 
+ * This file is part of BEdita: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published 
+ * by the Free Software Foundation, either version 3 of the License, or 
+ * (at your option) any later version.
+ * BEdita is distributed WITHOUT ANY WARRANTY; without even the implied 
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Lesser General Public License for more details.
+ * You should have received a copy of the GNU Lesser General Public License 
+ * version 3 along with BEdita (see LICENSE.LGPL).
+ * If not, see <http://gnu.org/licenses/lgpl-3.0.html>.
+ * 
+ *------------------------------------------------------------------->8-----
+ */
 
 require_once APP . DS . 'vendors' . DS . 'shells'. DS . 'bedita_base.php';
 
+/**
+ * Redis shell - manage redis cache data
+ */
 class RedisShell extends BeditaBaseShell {
 
     protected $skipKeysPrefix = array(
         'objects_nickname-'
     );
 
+    /**
+     * List cache keys
+     * Usage: ./cake.sh redis ls
+     * It requires phpredis >= 2.2.5
+     *
+     * @return void
+     */
     public function ls() {
         $this->out('----------------------------------');
         $this->out('List keys (grouped by type)');
@@ -65,6 +86,13 @@ class RedisShell extends BeditaBaseShell {
         $this->out('----------------------------------');
     }
 
+    /**
+     * Check integrity keys, scanning redis data
+     * Usage: ./cake.sh redis check
+     * It requires phpredis >= 2.2.5
+     *
+     * @return void
+     */
     public function check() {
         $this->out('----------------------------------');
         $this->out('Check integrity keys');
@@ -114,6 +142,14 @@ class RedisShell extends BeditaBaseShell {
         $this->out('----------------------------------');
     }
 
+    /**
+     * Show cached data by id
+     * Param -id is required
+     * Usage: ./cake.sh redis show -id <objectId>
+     * It requires phpredis >= 2.2.5
+     *
+     * @return void
+     */
     public function show() {
         $this->out('----------------------------------');
         $this->out('Show keys by id');
@@ -137,6 +173,13 @@ class RedisShell extends BeditaBaseShell {
         }
     }
 
+    /**
+     * Count keys by id
+     * Usage: ./cake.sh redis countById [-v (verbose) -log <logFile>]
+     * It requires phpredis >= 2.2.5
+     *
+     * @return void
+     */
     public function countById() {
         $this->out('----------------------------------');
         $this->out('Count keys by id');
@@ -191,6 +234,75 @@ class RedisShell extends BeditaBaseShell {
             }
         }
     }
+
+    /**
+     * Count cache data by prefix
+     * Argument 0 is required (=> prefix)
+     * Usage: ./cake.sh redis countByPrefix <prefix>
+     *
+     * @return void
+     */
+    public function countByPrefix(){
+        if (empty($this->args[0])) {
+            return array();
+        }
+        $prefix = $this->args[0];
+        $redis = $this->getRedisConn();
+        $keys = $redis->keys($prefix.'*');
+        $redis->close();
+        $this->out(count($keys) . ' keys found with prefix "' . $prefix . '"');
+    }
+
+    /**
+     * Clear cache data by prefix
+     * Argument 0 is required (=> prefix)
+     * Usage: ./cake.sh redis clearByPrefix <prefix>
+     *
+     * @return void
+     */
+    public function clearByPrefix(){
+        if (empty($this->args[0])) {
+            return array();
+        }
+        $prefix = $this->args[0];
+        $redis = $this->getRedisConn();
+        $keys = $redis->keys($prefix.'*');
+        if (!empty($keys)) {
+            $response = $this->in(count($keys) . ' keys will be deleted. Continue?', array('y', 'n'), 'n');
+            if ($response == 'n') {
+                $redis->close();
+                $this->out('Bye');
+                return;
+            }
+            foreach ($keys as $key) {
+                $redis->delete($key);
+            }
+        }
+        $redis->close();
+        $this->out(count($keys) . ' keys deleted');
+    }
+
+    /**
+     * Help for redis shell script
+     *
+     * @return void
+     */
+    public function help() {
+        $this->hr();
+        $this->out('redis script shell usage:');
+        $this->out('');
+        $this->out('./cake.sh redis check // consistency check for entire objects db');
+        $this->out('./cake.sh redis clearByPrefix <prefix> // remove cache keys starting with <prefix> string');
+        $this->out('./cake.sh redis countByPrefix <prefix> // count cache keys starting with <prefix> string');
+        $this->out('./cake.sh redis countById [-v (verbose mode|default off) -limit <n> (default 10) -log <logFile>] // count keys occurences by ids');
+        $this->out('./cake.sh redis ls // list keys group by type');
+        $this->out('./cake.sh redis show -id <objectId> // show keys for specified id');
+        $this->out('');
+    }
+
+    /*********************/
+    /* private functions */
+    /*********************/
 
     private function deleteKey($redis, $key) {
         $redis->delete($key);
@@ -320,15 +432,4 @@ class RedisShell extends BeditaBaseShell {
         }
         return null;
     }
-    public function help() {
-        $this->hr();
-        $this->out('redis script shell usage:');
-        $this->out('');
-        $this->out('./cake.sh redis check // consistency check for entire objects db');
-        $this->out('./cake.sh redis countById [-v (verbose mode|default off) -limit <n> (default 10) -log <logFile>] // count keys occurences by ids');
-        $this->out('./cake.sh redis ls // list keys group by type');
-        $this->out('./cake.sh redis show -id <objectId> // show keys for specified id');
-        $this->out('');
-    }
 }
-?>
