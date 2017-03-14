@@ -244,7 +244,13 @@ class RedisShell extends BeditaBaseShell {
      */
     public function countByPrefix(){
         if (empty($this->args[0])) {
-            return array();
+            $this->out('Argument 0 is required');
+            return;
+        }
+        $response = $this->in('Method KEYS can be very slow. Do NOT use this method in PRODUCTION enviroment. Continue?', array('y', 'n'), 'n');
+        if ($response === 'n') {
+            $this->out('Bye');
+            return;
         }
         $prefix = $this->args[0];
         $redis = $this->getRedisConn();
@@ -262,7 +268,13 @@ class RedisShell extends BeditaBaseShell {
      */
     public function clearByPrefix(){
         if (empty($this->args[0])) {
-            return array();
+            $this->out('Argument 0 is required');
+            return;
+        }
+        $response = $this->in('Method KEYS can be very slow. Do NOT use this method in PRODUCTION enviroment. Continue?', array('y', 'n'), 'n');
+        if ($response === 'n') {
+            $this->out('Bye');
+            return;
         }
         $prefix = $this->args[0];
         $redis = $this->getRedisConn();
