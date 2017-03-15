@@ -503,7 +503,6 @@ class JsonApiTest extends TestCase
         ];
     }
 
-
     /**
      * Test {@see \BEdita\Core\Utility\JsonApi::parseData()} and
      * {@see \BEdita\Core\Utility\JsonApi::parseItem()} methods.
