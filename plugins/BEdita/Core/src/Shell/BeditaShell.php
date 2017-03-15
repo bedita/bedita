@@ -272,7 +272,7 @@ class BeditaShell extends Shell
     protected function databaseConnection()
     {
         $this->configModified = false;
-        $dbParams = Database::basicInfo();
+        $dbParams = Database::basicInfo('default', false);
         $fields = ['host', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $expected = '__BE4_DB_' . strtoupper($name) . '__';

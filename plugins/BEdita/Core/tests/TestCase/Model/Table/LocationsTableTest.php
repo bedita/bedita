@@ -99,8 +99,8 @@ class LocationsTableTest extends TestCase
     public function testFindGeo($conditions, $numExpected)
     {
         $info = Database::basicInfo();
-        if (strstr($info['driver'], 'Mysql') === false || ($info['version'] < '5.7.6')) {
-            $this->markTestSkipped('Only MySQL >= 5.7.6 supported in testFindGeo');
+        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
+            $this->markTestSkipped('Only MySQL >= 5.7 supported in testFindGeo');
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
