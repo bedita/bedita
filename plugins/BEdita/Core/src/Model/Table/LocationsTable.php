@@ -120,8 +120,7 @@ class LocationsTable extends Table
         $distance = 'meta__distance';
 
         return $query->select([$distance => 'ST_Distance_sphere(ST_GeomFromText(' . $coords . '), ST_GeomFromText(\'POINT(' . $center . ')\'))'])
-                ->select($this)
-                ->select(TableRegistry::get('Objects'))
+                ->enableAutoFields(true)
                 ->order([$distance => 'ASC']);
     }
 }
