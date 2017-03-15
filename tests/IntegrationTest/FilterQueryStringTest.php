@@ -101,8 +101,7 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
         $info = Database::basicInfo();
-        if (strstr($info['driver'], 'Mysql') === false
-            && (!empty($info['version']) && $info['version'] >= '5.7.6')) {
+        if (strstr($info['driver'], 'Mysql') === false || ($info['version'] < '5.7.6')) {
             $this->markTestSkipped('Only MySQL >= 5.7.6 supported in testFindGeo');
         }
 
