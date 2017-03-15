@@ -148,8 +148,13 @@ class Database
      */
     public static function basicInfo($dbConfig = 'default')
     {
-        $config = ConnectionManager::get($dbConfig)->config();
+        $connection = ConnectionManager::get($dbConfig);
+        $config = $connection->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
+        if ($config['vendor'] !== 'sqlite') {
+            $version = $connection->execute('SELECT VERSION()')->fetch();
+            $config['version'] = implode('', $version);
+        }
 
         return $config;
     }

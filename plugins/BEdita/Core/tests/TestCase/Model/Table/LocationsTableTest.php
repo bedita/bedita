@@ -2,7 +2,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\LocationsTable;
-use Cake\Datasource\ConnectionManager;
+use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -98,9 +98,10 @@ class LocationsTableTest extends TestCase
      */
     public function testFindGeo($conditions, $numExpected)
     {
-        $info = ConnectionManager::get('default')->config();
-        if (strstr($info['driver'], 'Mysql') === false) {
-            $this->markTestSkipped('Only MySQL supported in testFindGeo');
+        $info = Database::basicInfo();
+        if (strstr($info['driver'], 'Mysql') === false
+            && (!empty($info['version']) && $info['version'] >= '5.7.6')) {
+            $this->markTestSkipped('Only MySQL >= 5.7.6 supported in testFindGeo');
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
