@@ -151,6 +151,7 @@ class Database
         $connection = ConnectionManager::get($dbConfig);
         $config = $connection->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
+        $config['version'] = 'unknown';
         if ($config['vendor'] !== 'sqlite') {
             $version = $connection->execute('SELECT VERSION()')->fetch();
             $config['version'] = implode('', $version);
