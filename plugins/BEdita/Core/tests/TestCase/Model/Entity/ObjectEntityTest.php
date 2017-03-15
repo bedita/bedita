@@ -122,6 +122,16 @@ class ObjectEntityTest extends TestCase
                 null,
                 null,
             ],
+            'typeFromSource' => [
+                'documents',
+                null,
+                ['source' => 'Documents'],
+            ],
+            'invalidTypeFromSource' => [
+                null,
+                null,
+                ['source' => 'NotValidObjectTable'],
+            ],
         ];
     }
 
@@ -130,14 +140,15 @@ class ObjectEntityTest extends TestCase
      *
      * @param string|null $expected Expected type.
      * @param mixed $objectTypeId Object type ID.
+     * @param array $options Configuration options for entity.
      * @return void
      *
      * @covers ::_getType()
      * @dataProvider getTypeProvider()
      */
-    public function testGetType($expected, $objectTypeId)
+    public function testGetType($expected, $objectTypeId, $options = [])
     {
-        $entity = new ObjectEntity();
+        $entity = new ObjectEntity([], $options);
         $entity->object_type_id = $objectTypeId;
 
         $type = $entity->type;

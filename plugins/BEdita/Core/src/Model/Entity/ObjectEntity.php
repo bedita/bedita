@@ -93,7 +93,8 @@ class ObjectEntity extends Entity
     {
         if (!$this->object_type) {
             try {
-                $this->object_type = TableRegistry::get('ObjectTypes')->get($this->object_type_id);
+                $typeId = $this->object_type_id ?: $this->getSource();
+                $this->object_type = TableRegistry::get('ObjectTypes')->get($typeId);
             } catch (RecordNotFoundException $e) {
                 return null;
             } catch (InvalidPrimaryKeyException $e) {
