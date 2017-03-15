@@ -12,7 +12,7 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use Cake\Datasource\ConnectionManager;
+use BEdita\Core\Utility\Database;
 use Cake\I18n\Time;
 use Cake\Utility\Hash;
 
@@ -100,9 +100,10 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
      */
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
-        $info = ConnectionManager::get('default')->config();
-        if (strstr($info['driver'], 'Mysql') === false) {
-            $this->markTestSkipped('Only MySQL supported in testFindGeo');
+        $info = Database::basicInfo();
+        if (strstr($info['driver'], 'Mysql') === false
+            && (!empty($info['version']) && $info['version'] >= '5.7.6')) {
+            $this->markTestSkipped('Only MySQL >= 5.7.6 supported in testFindGeo');
         }
 
         $this->configRequestHeaders();
