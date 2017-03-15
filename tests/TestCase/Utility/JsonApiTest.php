@@ -365,7 +365,58 @@ class JsonApiTest extends TestCase
                     ];
                 },
             ],
+
+            'metaExample' => [
+                [
+                    'id' => '1',
+                    'type' => 'customType',
+                    'attributes' => [
+                        'key' => 'value',
+                    ],
+                    'meta' => [
+                        'mkey' => 'mvalue',
+                    ],
+                ],
+                function () {
+                    return [
+                        'id' => '1',
+                        'type' => 'customType',
+                        'key' => 'value',
+                        'meta' => [
+                            'mkey' => 'mvalue',
+                        ],
+                    ];
+                },
+            ],
         ];
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Utility\JsonApi::formatData()} and
+     * {@see \BEdita\Core\Utility\JsonApi::formatItem()} methods.
+     *
+     * @param array|bool $expected Expected result. If `false`, an exception is expected.
+     * @param callable $items A callable that returns the items to be converted.
+     * @param string|null $type Type of items.
+     * @return void
+     *
+     * @dataProvider formatDataProvider
+     * @covers ::formatData
+     * @covers ::formatItem
+     * @covers ::buildUrl
+     * @covers ::extractType
+     * @covers ::extractAttributes
+     * @covers ::extractRelationships
+     */
+    public function testFormatData($expected, callable $items, $type = null)
+    {
+        if ($expected === false) {
+            $this->expectException('\InvalidArgumentException');
+        }
+
+        $result = JsonApi::formatData($items($this->Roles), $type);
+
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -452,33 +503,6 @@ class JsonApiTest extends TestCase
         ];
     }
 
-    /**
-     * Test {@see \BEdita\Core\Utility\JsonApi::formatData()} and
-     * {@see \BEdita\Core\Utility\JsonApi::formatItem()} methods.
-     *
-     * @param array|bool $expected Expected result. If `false`, an exception is expected.
-     * @param callable $items A callable that returns the items to be converted.
-     * @param string|null $type Type of items.
-     * @return void
-     *
-     * @dataProvider formatDataProvider
-     * @covers ::formatData
-     * @covers ::formatItem
-     * @covers ::buildUrl
-     * @covers ::extractType
-     * @covers ::extractAttributes
-     * @covers ::extractRelationships
-     */
-    public function testFormatData($expected, callable $items, $type = null)
-    {
-        if ($expected === false) {
-            $this->expectException('\InvalidArgumentException');
-        }
-
-        $result = JsonApi::formatData($items($this->Roles), $type);
-
-        static::assertEquals($expected, $result);
-    }
 
     /**
      * Test {@see \BEdita\Core\Utility\JsonApi::parseData()} and
