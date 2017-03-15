@@ -88,11 +88,11 @@ class LocationsTable extends Table
 
     /**
      * Find objects by geo coordinates.
+     * Create a query to filter objects using geo data: location objects are
+     * ordered by distance, from the nearest to the farthest using a center geo point.
      *
-     * Create a query to filter objects using geo data.
      * Accepted options are:
-     *   - 'center' with point coordinates (latitude and longitude)
-     *   - 'distance' max distance in meters
+     *   - 'center' with point coordinates, latitude and longitude
      *
      * Examples
      * ```
