@@ -13,9 +13,12 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use BadMethodCallException;
 use BEdita\Core\ORM\Association\ExtensionOf;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Association;
+use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 
 /**
@@ -83,7 +86,7 @@ class Table extends CakeTable
      */
     public function inheritanceBeforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
     {
-        if (!$primary || empty($this->inheritedTables())) {
+        if (!$primary || $this->inheritedTable() === null) {
             return;
         }
 
@@ -101,12 +104,12 @@ class Table extends CakeTable
      */
     public function inheritanceBeforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        $inheritedTable = current($this->inheritedTables());
-        if (empty($inheritedTable)) {
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
             return;
         }
 
-        $property = $this->association($inheritedTable->alias())->getProperty();
+        $property = $this->association($inheritedTable->getAlias())->getProperty();
 
         $entity->dirty($property, true);
     }
@@ -145,12 +148,12 @@ class Table extends CakeTable
      */
     public function extensionOf($associated, array $options = [])
     {
-        $alreadyExists = $this->associations()->type('ExtensionOf');
-        if (!empty($alreadyExists)) {
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
             throw new \RuntimeException(sprintf(
                 '"%s" has already an ExtensionOf association with %s',
                 $this->getAlias(),
-                $alreadyExists[0]->getTarget()->getAlias()
+                $inheritedTable->getAlias()
             ));
         }
 
@@ -182,6 +185,22 @@ class Table extends CakeTable
     }
 
     /**
+     * Return the inherited table from current table.
+     *
+     * @return \Cake\ORM\Table|null
+     */
+    public function inheritedTable()
+    {
+        $association = $this->associations()->type('ExtensionOf');
+        $association = current($association);
+        if (!($association instanceof Association)) {
+            return null;
+        }
+
+        return $association->getTarget();
+    }
+
+    /**
      * Return the inherited tables from current Table.
      *
      * By default return the direct inherited table (no nested).
@@ -192,16 +211,51 @@ class Table extends CakeTable
      */
     public function inheritedTables($nested = false)
     {
-        $associations = $this->_associations->type('ExtensionOf');
-        if (empty($associations)) {
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
             return [];
         }
 
-        $association = array_shift($associations);
-        if (!$nested || !($association->target() instanceof Table)) {
-            return [$association->target()];
+        if (!$nested || !($inheritedTable instanceof self)) {
+            return [$inheritedTable];
         }
 
-        return array_merge([$association->target()], $association->target()->inheritedTables(true));
+        return array_merge([$inheritedTable], $inheritedTable->inheritedTables(true));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasFinder($type)
+    {
+        if (parent::hasFinder($type) === true) {
+            return true;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
+            return $inheritedTable->hasFinder($type);
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function callFinder($type, CakeQuery $query, array $options = [])
+    {
+        if (parent::hasFinder($type)) {
+            return parent::callFinder($type, $query, $options);
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
+            return $inheritedTable->callFinder($type, $query, $options);
+        }
+
+        throw new BadMethodCallException(
+            sprintf('Unknown finder method "%s"', $type)
+        );
     }
 }
