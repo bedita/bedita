@@ -336,3 +336,15 @@ $config['objectCakeCache'] = true;
  * Configuration for publication/section Ids to exclude from tree visualization and management.
  */
 // $config['excludeFromTreeIds'] = array();
+
+/**
+ * Configuration for statistics module - uncomment to activate statistics features
+ */
+//      'evolution' => true, // stats about last 5 months of activity
+//      'comments' => true, // stats about user comments
+//      'objectsusers' => true, // stats about user activity
+//      'usergroups' => true, // stats about user/groups
+//      'relations' => true, // stats about relations
+//      'publications' => true, // stats about publications
+//      'editors' => true, // status about content editors
+// );
