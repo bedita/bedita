@@ -49,10 +49,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
         $detail = $this->errorDetail($this->error);
         $trace = null;
         if ($isDebug) {
-            $trace = Debugger::formatTrace($this->_unwrap($this->error)->getTrace(), [
-                'format' => 'array',
-                'args' => false,
-            ]);
+            $trace = explode("\n", $this->_unwrap($this->error)->getTraceAsString());
         }
 
         if ($this->isHtmlToSend()) {
