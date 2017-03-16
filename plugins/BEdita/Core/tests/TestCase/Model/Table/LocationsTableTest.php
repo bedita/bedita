@@ -2,11 +2,14 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\LocationsTable;
+use BEdita\Core\Utility\Database;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\LocationsTable Test Case
+ * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\LocationsTable
  */
 class LocationsTableTest extends TestCase
 {
@@ -55,22 +58,53 @@ class LocationsTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Data provider for `testFindGeo` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testInitialize()
+    public function findGeoProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'nearPoint' => [
+                [
+                    'center' => '44.4944876,11.3464721',
+                ],
+                1,
+            ],
+            'nearArray' => [
+                [
+                    'center' => [44.4944183, 11.3464055],
+                ],
+                1,
+            ],
+            'otherFilter' => [
+                [
+                    'coords' => [44.4944183, 11.3464055],
+                ],
+                1,
+            ],
+        ];
     }
 
     /**
-     * Test validationDefault method
+     * Test findGeo finder method.
      *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
      * @return void
+     *
+     * @dataProvider findGeoProvider
+     * @covers ::findGeo()
      */
-    public function testValidationDefault()
+    public function testFindGeo($conditions, $numExpected)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $info = Database::basicInfo();
+        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
+            $this->markTestSkipped('Only MySQL >= 5.7 supported in testFindGeo');
+        }
+
+        $result = $this->Locations->find('geo', $conditions)->toArray();
+
+        static::assertEquals($numExpected, count($result));
     }
 }

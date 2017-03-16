@@ -146,6 +146,7 @@ class DatabaseTest extends TestCase
         if ($info['vendor'] != 'sqlite') {
             $this->assertArrayHasKey('host', $info);
             $this->assertArrayHasKey('username', $info);
+            $this->assertArrayHasKey('version', $info);
         }
     }
 
