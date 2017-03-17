@@ -14,10 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Expression\FunctionExpression;
 use Cake\ORM\Query;
-use Cake\ORM\RulesChecker;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -113,14 +111,23 @@ class LocationsTable extends Table
         }
         if (is_array($center)) {
             $center = implode(' ', $center);
-        } else {
-            $center = str_replace(',', ' ', $center);
         }
-        $coords = $this->aliasField('coords');
+        $center = sprintf('POINT(%s)', str_replace(',', ' ', $center));
         $distance = 'meta__distance';
 
-        return $query->select([$distance => 'ST_Distance_sphere(ST_GeomFromText(' . $coords . '), ST_GeomFromText(\'POINT(' . $center . ')\'))'])
-                ->enableAutoFields(true)
-                ->order([$distance => 'ASC']);
+        $distanceExpression = new FunctionExpression(
+            'ST_Distance_sphere',
+            [
+                new FunctionExpression('ST_GeomFromText', [$this->aliasField('coords') => 'identifier']),
+                new FunctionExpression('ST_GeomFromText', [$center]),
+            ],
+            [],
+            'float'
+        );
+
+        return $query
+            ->select([$distance => $distanceExpression])
+            ->enableAutoFields(true)
+            ->order([$distance => 'ASC']);
     }
 }
