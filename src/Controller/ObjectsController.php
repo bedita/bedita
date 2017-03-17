@@ -271,7 +271,7 @@ class ObjectsController extends ResourcesController
 
         $this->set(compact('data'));
         $this->set([
-            '_serialize' => ['data'],
+            '_serialize' => isset($data) ? ['data'] : [],
         ]);
 
         return null;
