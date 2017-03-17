@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -22,10 +22,10 @@ use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
 /**
- * @covers \BEdita\Core\Model\Action\AddRelatedObjectsAction
+ * @covers \BEdita\Core\Model\Action\SetRelatedObjectsAction
  * @covers \BEdita\Core\Model\Action\UpdateRelatedObjectsAction
  */
-class AddRelatedObjectsActionTest extends TestCase
+class SetRelatedObjectsActionTest extends TestCase
 {
 
     /**
@@ -69,11 +69,24 @@ class AddRelatedObjectsActionTest extends TestCase
                 ],
             ],
             'empty' => [
-                [],
+                [3, 4],
                 'Documents',
                 'test',
                 2,
                 [],
+            ],
+            'remove' => [
+                [3],
+                'Documents',
+                'test',
+                2,
+                [
+                    4 => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
+                ],
             ],
             'add' => [
                 [2],
@@ -83,6 +96,11 @@ class AddRelatedObjectsActionTest extends TestCase
                 [
                     2 => [
                         'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                    4 => [
+                        'priority' => 1,
                         'inv_priority' => 1,
                         'params' => null,
                     ],
@@ -110,6 +128,11 @@ class AddRelatedObjectsActionTest extends TestCase
                 3,
                 [
                     2 => null,
+                    4 => [
+                        'priority' => 1,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
                 ],
             ],
         ];
@@ -136,7 +159,7 @@ class AddRelatedObjectsActionTest extends TestCase
 
         $alias = Inflector::camelize(Inflector::underscore($relation));
         $association = TableRegistry::get($objectType)->association($alias);
-        $action = new AddRelatedObjectsAction(compact('association'));
+        $action = new SetRelatedObjectsAction(compact('association'));
 
         $entity = $association->getSource()->get($id);
         $relatedEntities = [];
