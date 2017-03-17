@@ -18,7 +18,7 @@ class LocationsFixture extends TestFixture
     public $records = [
         [
             'id' => 8,
-            'coords' => 'POINT(44,4944183 11,3464055)',
+            'coords' => 'POINT(44.4944183 11.3464055)',
             'address' => 'Piazza di Porta Ravegnana',
             'locality' => 'Bologna',
             'postal_code' => '40126',

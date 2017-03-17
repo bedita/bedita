@@ -14,7 +14,8 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Inheritance\Table;
-use Cake\ORM\RulesChecker;
+use Cake\Database\Expression\FunctionExpression;
+use Cake\ORM\Query;
 use Cake\Validation\Validator;
 
 /**
@@ -81,5 +82,52 @@ class LocationsTable extends Table
             ->allowEmpty('region');
 
         return $validator;
+    }
+
+    /**
+     * Find objects by geo coordinates.
+     * Create a query to filter objects using geo data: location objects are
+     * ordered by distance, from the nearest to the farthest using a center geo point.
+     *
+     * Accepted options are:
+     *   - 'center' with point coordinates, latitude and longitude
+     *
+     * Examples
+     * ```
+     * // find location objects near a given center, string with comma separated values or array
+     * $table->find('geo', ['center' => '44.4944183,11.3464055']);
+     * $table->find('geo', ['center' => [44.4944183 ,11.3464055]]);
+     * ```
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable geo localization conditions.
+     * @return \Cake\ORM\Query
+     */
+    public function findGeo(Query $query, array $options)
+    {
+        $center = !empty($options['center']) ? $options['center'] : [];
+        if (empty($center)) {
+            return $query;
+        }
+        if (is_array($center)) {
+            $center = implode(' ', $center);
+        }
+        $center = sprintf('POINT(%s)', str_replace(',', ' ', $center));
+        $distance = 'meta__distance';
+
+        $distanceExpression = new FunctionExpression(
+            'ST_Distance_sphere',
+            [
+                new FunctionExpression('ST_GeomFromText', [$this->aliasField('coords') => 'identifier']),
+                new FunctionExpression('ST_GeomFromText', [$center]),
+            ],
+            [],
+            'float'
+        );
+
+        return $query
+            ->select([$distance => $distanceExpression])
+            ->enableAutoFields(true)
+            ->order([$distance => 'ASC']);
     }
 }

@@ -127,7 +127,8 @@ class JsonApi
             throw new \InvalidArgumentException('Key `id` is mandatory');
         }
         $id = (string)$item['id'];
-        unset($item['id'], $item['type']);
+        $meta = Hash::get($item, 'meta', []);
+        unset($item['id'], $item['type'], $item['meta']);
 
         array_walk(
             $item,
@@ -138,9 +139,8 @@ class JsonApi
             }
         );
 
-        $meta = [];
         if (!empty($item['_joinData'])) {
-            $meta = $item['_joinData'];
+            $meta += $item['_joinData'];
         }
         unset($item['_joinData']);
 
