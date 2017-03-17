@@ -868,6 +868,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                             ],
                         ],
                     ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -905,6 +910,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                    ],
+                    'meta' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
                     ],
                 ],
             ],
@@ -968,6 +978,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                             ],
                         ],
                     ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -988,6 +1003,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                    ],
+                    'meta' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
                     ],
                 ],
             ],

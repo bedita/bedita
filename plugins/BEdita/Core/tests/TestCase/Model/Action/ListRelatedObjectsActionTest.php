@@ -13,11 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
-use BEdita\Core\Model\Action\ListAssociatedAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
-use Cake\Datasource\EntityInterface;
-use Cake\ORM\Association\BelongsToMany;
-use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
@@ -55,10 +51,20 @@ class ListRelatedObjectsActionTest extends TestCase
                     [
                         'id' => 4,
                         'type' => 'profiles',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                     [
                         'id' => 3,
                         'type' => 'documents',
+                        '_joinData' => [
+                            'priority' => 2,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 'Documents',
@@ -70,6 +76,11 @@ class ListRelatedObjectsActionTest extends TestCase
                     [
                         'id' => 4,
                         'type' => 'profiles',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 'Documents',
@@ -81,10 +92,20 @@ class ListRelatedObjectsActionTest extends TestCase
                     [
                         'id' => 3,
                         'type' => 'documents',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
                     ],
                     [
                         'id' => 2,
                         'type' => 'documents',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
                     ],
                 ],
                 'Profiles',
