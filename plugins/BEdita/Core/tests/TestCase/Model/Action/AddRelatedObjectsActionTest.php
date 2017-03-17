@@ -158,6 +158,6 @@ class AddRelatedObjectsActionTest extends TestCase
 
         $result = $action(compact('entity', 'relatedEntities'));
 
-        static::assertEquals($expected, $result);
+        static::assertEquals($expected, $result, '', 0, 10, true);
     }
 }
