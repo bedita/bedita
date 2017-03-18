@@ -40,6 +40,9 @@ class AddRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -159,5 +162,22 @@ class AddRelatedObjectsActionTest extends TestCase
         $result = $action(compact('entity', 'relatedEntities'));
 
         static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test invocation of command with fallback to default action.
+     *
+     * @return void
+     */
+    public function testInvocationFallback()
+    {
+        $association = TableRegistry::get('Users')->association('Roles');
+        $entity = $association->getSource()->get(1);
+        $relatedEntities = $association->getTarget()->find()->toArray();
+
+        $action = new AddRelatedObjectsAction(compact('association'));
+        $result = $action(compact('entity', 'relatedEntities'));
+
+        static::assertSame(1, $result);
     }
 }
