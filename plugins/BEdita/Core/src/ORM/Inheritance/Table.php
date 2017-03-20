@@ -258,4 +258,21 @@ class Table extends CakeTable
             sprintf('Unknown finder method "%s"', $type)
         );
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bool $inheritedFields Should fields from inherited tables be considered?
+     */
+    public function hasField($field, $inheritedFields = false)
+    {
+        $result = parent::hasField($field);
+        $inheritedTable = $this->inheritedTable();
+
+        if ($result || !$inheritedFields || $inheritedTable === null) {
+            return $result;
+        }
+
+        return $inheritedTable->hasField($field, true);
+    }
 }
