@@ -13,7 +13,6 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\Core\Utility\Database;
-use Cake\I18n\Time;
 use Cake\Utility\Hash;
 
 /**
@@ -64,7 +63,7 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, count($result['data']));
+        static::assertEquals($expected, count($result['data']));
     }
 
     /**
@@ -102,7 +101,7 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
     {
         $info = Database::basicInfo();
         if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
-            $this->markTestSkipped('Only MySQL >= 5.7 supported in findGeo filter');
+            static::markTestSkipped('Only MySQL >= 5.7 supported in findGeo filter');
         }
 
         $this->configRequestHeaders();
@@ -110,8 +109,8 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals(count($expected), count($result['data']));
+        static::assertEquals(count($expected), count($result['data']));
         $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
-        $this->assertEquals($expected, $resultDistance);
+        static::assertEquals($expected, $resultDistance);
     }
 }
