@@ -91,7 +91,7 @@ class ListObjectsActionTest extends TestCase
      *
      * @return void
      */
-    public function testExecutedCustomFilter()
+    public function testExecuteCustomFilter()
     {
         $table = TableRegistry::get('Objects');
         $action = new ListObjectsAction(compact('table'));
