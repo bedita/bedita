@@ -92,8 +92,7 @@ class ObjectsTable extends Table
 
             ->notEmpty('status')
 
-            ->requirePresence('uname', 'create')
-            ->notEmpty('uname')
+            ->allowEmpty('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->boolean('locked')
