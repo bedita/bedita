@@ -119,7 +119,7 @@ class JsonApi
      * Extract item's ID and attributes.
      *
      * @param array $item Item's data.
-     * @return array Array with item's ID and attributes.
+     * @return array Array with item's ID, attributes, and metadata.
      */
     protected static function extractAttributes(array $item)
     {
@@ -127,7 +127,8 @@ class JsonApi
             throw new \InvalidArgumentException('Key `id` is mandatory');
         }
         $id = (string)$item['id'];
-        unset($item['id'], $item['type']);
+        $meta = Hash::get($item, 'meta', []);
+        unset($item['id'], $item['type'], $item['meta']);
 
         array_walk(
             $item,
@@ -138,7 +139,12 @@ class JsonApi
             }
         );
 
-        return [$id, $item];
+        if (!empty($item['_joinData'])) {
+            $meta += $item['_joinData'];
+        }
+        unset($item['_joinData']);
+
+        return [$id, $item, $meta];
     }
 
     /**
@@ -212,14 +218,12 @@ class JsonApi
             return [];
         }
 
-        if (!empty($item['meta'])) {
-            $meta = $item['meta'];
-            unset($item['meta']);
-        }
-
-        list($id, $attributes) = static::extractAttributes($item);
+        list($id, $attributes, $meta) = static::extractAttributes($item);
         if (empty($attributes)) {
             unset($attributes);
+        }
+        if (empty($meta)) {
+            unset($meta);
         }
 
         if ($showLink) {
@@ -278,6 +282,10 @@ class JsonApi
 
         if (isset($item['attributes']) && is_array($item['attributes'])) {
             $data += $item['attributes'];
+        }
+
+        if (isset($item['meta']) && is_array($item['meta'])) {
+            $data['_meta'] = $item['meta'];
         }
 
         return $data;
