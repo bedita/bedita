@@ -28,6 +28,7 @@ class ListRelatedObjectsAction extends ListAssociatedAction
      */
     public function execute(array $data = [])
     {
+        $data += ['joinData' => true];
         $result = parent::execute($data);
         if (!($result instanceof Query)) {
             return $result;

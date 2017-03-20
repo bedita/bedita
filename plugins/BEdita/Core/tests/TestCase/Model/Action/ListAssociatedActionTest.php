@@ -129,7 +129,40 @@ class ListAssociatedActionTest extends TestCase
                 'FakeMammalArticles',
                 'FakeMammals',
                 1,
-                false,
+                [
+                    'list' => false,
+                ],
+            ],
+            'only' => [
+                [
+                    ['id' => 1],
+                ],
+                'FakeAnimals',
+                'FakeArticles',
+                1,
+                [
+                    'list' => true,
+                    'only' => 1,
+                ],
+            ],
+            'joinData' => [
+                [
+                    [
+                        'id' => 1,
+                        '_joinData' => [
+                            'id' => 1,
+                            'fake_article_id' => 1,
+                            'fake_tag_id' => 1,
+                        ],
+                    ],
+                ],
+                'FakeTags',
+                'FakeArticles',
+                1,
+                [
+                    'list' => true,
+                    'joinData' => true,
+                ],
             ],
         ];
     }
@@ -141,22 +174,25 @@ class ListAssociatedActionTest extends TestCase
      * @param string $table Table to use.
      * @param string $association Association to use.
      * @param int $id Entity ID to list relations for.
-     * @param bool $list Should entities be listed as a list?
+     * @param array $options Additional options for action.
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $table, $association, $id, $list = true)
+    public function testInvocation($expected, $table, $association, $id, array $options = null)
     {
         if ($expected instanceof \Exception) {
             $this->expectException(get_class($expected));
             $this->expectExceptionMessage($expected->getMessage());
         }
 
+        if ($options === null) {
+            $options = ['list' => true];
+        }
         $association = TableRegistry::get($table)->association($association);
         $action = new ListAssociatedAction(compact('association'));
 
-        $result = $action(['primaryKey' => $id] + compact('list'));
+        $result = $action(['primaryKey' => $id] + $options);
         $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);

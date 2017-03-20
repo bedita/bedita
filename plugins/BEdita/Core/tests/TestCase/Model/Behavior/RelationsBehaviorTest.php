@@ -45,6 +45,7 @@ class RelationsBehaviorTest extends TestCase
      * @return void
      *
      * @covers ::initialize()
+     * @covers ::relatedTo()
      */
     public function testInitialization()
     {
