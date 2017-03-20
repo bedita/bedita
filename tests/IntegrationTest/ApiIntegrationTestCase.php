@@ -13,7 +13,6 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\Core\State\CurrentApplication;
-use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\IntegrationTestCase;
 
