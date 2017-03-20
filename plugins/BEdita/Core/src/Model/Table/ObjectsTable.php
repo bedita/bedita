@@ -57,6 +57,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
         ]);
 
         $this->belongsTo('ObjectTypes', [
@@ -91,8 +92,7 @@ class ObjectsTable extends Table
 
             ->notEmpty('status')
 
-            ->requirePresence('uname', 'create')
-            ->notEmpty('uname')
+            ->allowEmpty('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->boolean('locked')
