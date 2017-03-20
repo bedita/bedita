@@ -3,7 +3,6 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-use Cake\Utility\Text;
 
 /**
  * {@see \BEdita\Core\Model\Table\ObjectsTable} Test Case
