@@ -13,17 +13,30 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\ProfilesValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\RulesChecker;
-use Cake\Validation\Validator;
 
 /**
  * Profiles Model
+ *
+ * @method \BEdita\Core\Model\Entity\Profile get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\Profile findOrCreate($search, callable $callback = null, $options = [])
  *
  * @since 4.0.0
  */
 class ProfilesTable extends Table
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = ProfilesValidator::class;
 
     /**
      * {@inheritDoc}
@@ -48,59 +61,6 @@ class ProfilesTable extends Table
             'sourceField' => 'title',
             'prefix' => 'profile-'
         ]);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
-
-            ->allowEmpty('name')
-
-            ->allowEmpty('surname')
-
-            ->email('email')
-            ->allowEmpty('email')
-            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-
-            ->allowEmpty('person_title')
-
-            ->allowEmpty('gender')
-
-            ->date('birthdate')
-            ->allowEmpty('birthdate')
-
-            ->date('deathdate')
-            ->allowEmpty('deathdate')
-
-            ->boolean('company')
-            ->allowEmpty('company')
-
-            ->allowEmpty('company_name')
-
-            ->allowEmpty('company_kind')
-
-            ->allowEmpty('street_address')
-
-            ->allowEmpty('city')
-
-            ->allowEmpty('zipcode')
-
-            ->allowEmpty('country')
-
-            ->allowEmpty('state_name')
-
-            ->allowEmpty('phone')
-
-            ->allowEmpty('website');
-
-        return $validator;
     }
 
     /**

@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\UsersValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\ORM\RulesChecker;
-use Cake\Validation\Validator;
 
 /**
  * Users Model
@@ -25,10 +25,23 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  * @property \Cake\ORM\Association\BelongsToMany $Roles
  *
+ * @method \BEdita\Core\Model\Entity\User get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\User newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @since 4.0.0
  */
 class UsersTable extends Table
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = UsersValidator::class;
 
     /**
      * {@inheritDoc}
@@ -67,38 +80,6 @@ class UsersTable extends Table
         $this->addBehavior('BEdita/Core.Relations');
 
         EventManager::instance()->on('Auth.afterIdentify', [$this, 'login']);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->naturalNumber('id')
-            ->allowEmpty('id', 'create')
-
-            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
-            ->requirePresence('username', 'create')
-            ->notEmpty('username')
-
-            ->allowEmpty('password_hash')
-
-            ->boolean('blocked')
-            ->allowEmpty('blocked')
-
-            ->dateTime('last_login')
-            ->allowEmpty('last_login')
-
-            ->dateTime('last_login_err')
-            ->allowEmpty('last_login_err')
-
-            ->naturalNumber('num_login_err')
-            ->allowEmpty('num_login_err');
-
-        return $validator;
     }
 
     /**

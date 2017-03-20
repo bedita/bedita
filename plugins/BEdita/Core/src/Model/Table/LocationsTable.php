@@ -13,10 +13,10 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Validation\LocationsValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Database\Expression\FunctionExpression;
 use Cake\ORM\Query;
-use Cake\Validation\Validator;
 
 /**
  * Locations Model
@@ -31,6 +31,11 @@ use Cake\Validation\Validator;
  */
 class LocationsTable extends Table
 {
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_validatorClass = LocationsValidator::class;
 
     /**
      * {@inheritDoc}
@@ -53,38 +58,6 @@ class LocationsTable extends Table
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @codeCoverageIgnore
-     */
-    public function validationDefault(Validator $validator)
-    {
-        $validator
-            ->integer('id')
-            ->allowEmpty('id', 'create');
-
-        $validator
-            ->allowEmpty('coords');
-
-        $validator
-            ->allowEmpty('address');
-
-        $validator
-            ->allowEmpty('locality');
-
-        $validator
-            ->allowEmpty('postal_code');
-
-        $validator
-            ->allowEmpty('country_name');
-
-        $validator
-            ->allowEmpty('region');
-
-        return $validator;
-    }
-
-    /**
      * Find objects by geo coordinates.
      * Create a query to filter objects using geo data: location objects are
      * ordered by distance, from the nearest to the farthest using a center geo point.
@@ -96,7 +69,7 @@ class LocationsTable extends Table
      * ```
      * // find location objects near a given center, string with comma separated values or array
      * $table->find('geo', ['center' => '44.4944183,11.3464055']);
-     * $table->find('geo', ['center' => [44.4944183 ,11.3464055]]);
+     * $table->find('geo', ['center' => [44.4944183, 11.3464055]]);
      * ```
      *
      * @param \Cake\ORM\Query $query Query object instance.
