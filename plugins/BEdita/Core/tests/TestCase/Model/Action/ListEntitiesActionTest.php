@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListEntitiesAction;
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -32,7 +33,21 @@ class ListEntitiesActionTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals',
         'plugin.BEdita/Core.fake_articles',
+        'plugin.BEdita/Core.fake_mammals',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        TableRegistry::get('FakeAnimals', ['className' => Table::class])
+            ->hasMany('FakeArticles');
+        TableRegistry::get('FakeMammals', ['className' => Table::class])
+            ->extensionOf('FakeAnimals');
+    }
 
     /**
      * Data provider for `testParseFilter` test case.
@@ -109,7 +124,7 @@ class ListEntitiesActionTest extends TestCase
                     ['id' => 2, 'name' => 'koala', 'legs' => 4],
                 ],
                 [
-                    'legs' => 4
+                    'legs' => 4,
                 ],
             ],
             'field (null)' => [
@@ -122,6 +137,15 @@ class ListEntitiesActionTest extends TestCase
                 ],
                 'fake_articles=1',
             ],
+            'inheritedField' => [
+                [
+                    ['id' => 1, 'name' => 'cat', 'legs' => 4, 'subclass' => 'Eutheria'],
+                ],
+                [
+                    'name' => 'cat',
+                ],
+                'FakeMammals',
+            ],
         ];
     }
 
@@ -130,6 +154,7 @@ class ListEntitiesActionTest extends TestCase
      *
      * @param array $expected Expected results.
      * @param mixed $filter Filter.
+     * @param string $table Table name.
      * @return void
      *
      * @dataProvider executeProvider()
@@ -137,15 +162,14 @@ class ListEntitiesActionTest extends TestCase
      * @covers ::buildFilter()
      * @covers ::execute()
      */
-    public function testExecute(array $expected, $filter)
+    public function testExecute(array $expected, $filter, $table = 'FakeAnimals')
     {
-        $table = TableRegistry::get('FakeAnimals');
-        $table->hasMany('FakeArticles');
+        $table = TableRegistry::get($table);
         $action = new ListEntitiesAction(compact('table'));
 
         $result = $action(compact('filter'));
 
         static::assertInstanceOf(Query::class, $result);
-        static::assertSame($expected, $result->enableHydration(false)->toArray());
+        static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
 }
