@@ -18,7 +18,7 @@ use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\RelationsTable Test Case
+ * @coversDefaultClass \BEdita\Core\Model\Table\RelationsTable
  */
 class RelationsTableTest extends TestCase
 {
@@ -121,5 +121,57 @@ class RelationsTableTest extends TestCase
 
         $success = $this->Relations->save($objectType);
         static::assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Data provider for `testFindByName` test case.
+     *
+     * @return array
+     */
+    public function findByNameProvider()
+    {
+        return [
+            'error' => [
+                new \LogicException('Missing required parameter "name"'),
+                [],
+            ],
+            'name' => [
+                [1],
+                ['name' => 'test'],
+            ],
+            'inverse name' => [
+                [1],
+                ['name' => 'InverseTest'],
+            ],
+            'not found' => [
+                [],
+                ['name' => 'relation_does_not_exist'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by relation name.
+     *
+     * @param array\\Exception $expected Expected results.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @covers ::findByName()
+     * @dataProvider findByNameProvider()
+     */
+    public function testFindByName($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->Relations
+            ->find('byName', $options)
+            ->extract('id')
+            ->toArray();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
     }
 }

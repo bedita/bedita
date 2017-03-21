@@ -71,6 +71,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
         ]);
 
         $this->belongsTo('ObjectTypes', [

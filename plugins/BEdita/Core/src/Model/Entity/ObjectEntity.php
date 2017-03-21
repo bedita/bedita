@@ -40,6 +40,7 @@ use Cake\ORM\TableRegistry;
  * @property int $modified_by
  * @property \Cake\I18n\Time $publish_start
  * @property \Cake\I18n\Time $publish_end
+ * @property \Bedita\Core\Model\Entity\DateRange[] $date_ranges
  *
  * @since 4.0.0
  */

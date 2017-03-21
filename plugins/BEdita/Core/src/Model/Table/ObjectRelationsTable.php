@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -51,6 +52,17 @@ class ObjectRelationsTable extends Table
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.Objects'
         ]);
+
+        $this->addBehavior('BEdita/Core.Priority', [
+            'fields' => [
+                'priority' => [
+                    'scope' => ['left_id', 'relation_id'],
+                ],
+                'inv_priority' => [
+                    'scope' => ['right_id', 'relation_id'],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -61,14 +73,10 @@ class ObjectRelationsTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('priority')
-            ->requirePresence('priority', 'create')
-            ->notEmpty('priority');
+            ->nonNegativeInteger('priority');
 
         $validator
-            ->integer('inv_priority')
-            ->requirePresence('inv_priority', 'create')
-            ->notEmpty('inv_priority');
+            ->nonNegativeInteger('inv_priority');
 
         $validator
             ->allowEmpty('params');
@@ -83,10 +91,22 @@ class ObjectRelationsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['left_id'], 'Objects'));
+        $rules->add($rules->existsIn(['left_id'], 'LeftObjects'));
         $rules->add($rules->existsIn(['relation_id'], 'Relations'));
-        $rules->add($rules->existsIn(['right_id'], 'Objects'));
+        $rules->add($rules->existsIn(['right_id'], 'RightObjects'));
 
         return $rules;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
+     */
+    protected function _initializeSchema(TableSchema $schema)
+    {
+        $schema->columnType('params', 'json');
+
+        return $schema;
     }
 }

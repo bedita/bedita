@@ -121,7 +121,7 @@ class ListEntitiesAction extends BaseAction
                 continue;
             }
 
-            if ($this->Table->hasField($key)) {
+            if ($this->Table->hasField($key, true)) {
                 // Filter on single field.
                 $key = $this->Table->aliasField($key);
                 if ($value === null) {

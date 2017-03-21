@@ -365,8 +365,27 @@ class JsonApiTest extends TestCase
                     ];
                 },
             ],
-
-            'metaExample' => [
+            'joinData' => [
+                [
+                    'id' => '17',
+                    'type' => 'customType',
+                    'meta' => [
+                        'complex' => ['meta', 'data'],
+                        'number' => 1,
+                    ],
+                ],
+                function () {
+                    return [
+                        'id' => 17,
+                        'type' => 'customType',
+                        '_joinData' => [
+                            'complex' => ['meta', 'data'],
+                            'number' => 1,
+                        ],
+                    ];
+                },
+            ],
+            'meta' => [
                 [
                     'id' => '1',
                     'type' => 'customType',
@@ -493,6 +512,26 @@ class JsonApiTest extends TestCase
                     'id' => '17',
                     'attributes' => [
                         'description' => 'Seventeen comes just after sixteen',
+                    ],
+                ],
+            ],
+            'meta' => [
+                [
+                    'type' => 'customType',
+                    'name' => 'Gustavo',
+                    '_meta' => [
+                        'complex' => ['meta', 'data'],
+                        'number' => 1,
+                    ],
+                ],
+                [
+                    'type' => 'customType',
+                    'attributes' => [
+                        'name' => 'Gustavo',
+                    ],
+                    'meta' => [
+                        'complex' => ['meta', 'data'],
+                        'number' => 1,
                     ],
                 ],
             ],

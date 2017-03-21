@@ -828,6 +828,8 @@ class TableTest extends TestCase
     /**
      * Test `callFinder` method.
      *
+     * @return void
+     *
      * @covers ::callFinder()
      */
     public function testCallFinder()
@@ -843,6 +845,8 @@ class TableTest extends TestCase
     /**
      * Test `callFinder` method.
      *
+     * @return void
+     *
      * @covers ::callFinder()
      * @expectedException \BadMethodCallException
      * @expectedExceptionMessage Unknown finder method "gustavo"
@@ -850,5 +854,21 @@ class TableTest extends TestCase
     public function testCallMissingFinder()
     {
         $this->fakeAnimals->find('gustavo');
+    }
+
+    /**
+     * Test `hasField` method.
+     *
+     * @return void
+     *
+     * @covers ::hasField()
+     */
+    public function testHasField()
+    {
+        $this->setupAssociations();
+
+        static::assertTrue($this->fakeMammals->hasField('legs', true));
+        static::assertFalse($this->fakeMammals->hasField('legs', false));
+        static::assertTrue($this->fakeAnimals->hasField('legs'));
     }
 }

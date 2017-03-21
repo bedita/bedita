@@ -333,4 +333,60 @@ class ObjectTypesTableTest extends TestCase
         $this->assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
         $this->assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
+
+    /**
+     * Data provider for `testFindByRelation` test case.
+     *
+     * @return array
+     */
+    public function findByRelationProvider()
+    {
+        return [
+            'error' => [
+                new \LogicException('Missing required parameter "name"'),
+                [],
+            ],
+            'right' => [
+                ['documents', 'profiles'],
+                ['name' => 'test'],
+            ],
+            'left' => [
+                ['documents'],
+                ['name' => 'test', 'side' => 'left'],
+            ],
+            'inverse right' => [
+                ['documents'],
+                ['name' => 'inverse_test'],
+            ],
+            'inverse left' => [
+                ['documents', 'profiles'],
+                ['name' => 'inverse_test', 'side' => 'left'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by relation name.
+     *
+     * @param array\\Exception $expected Expected results.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @covers ::findByRelation()
+     * @dataProvider findByRelationProvider()
+     */
+    public function testFindByRelation($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->ObjectTypes
+            ->find('byRelation', $options)
+            ->find('list')
+            ->toArray();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
 }

@@ -35,4 +35,13 @@ class RolesUser extends Entity
         '*' => true,
         'id' => false
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $_hidden = [
+        'id',
+        'role_id',
+        'user_id',
+    ];
 }

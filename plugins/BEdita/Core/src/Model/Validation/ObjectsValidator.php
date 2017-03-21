@@ -44,7 +44,7 @@ class ObjectsValidator extends Validator
             ->notEmpty('status')
 
             ->ascii('uname')
-            ->notEmpty('uname')
+            ->allowEmpty('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'objectsTable'])
 
             ->boolean('locked')

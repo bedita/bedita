@@ -12,15 +12,18 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
 use BEdita\Core\Model\Action\DeleteObjectAction;
 use BEdita\Core\Model\Action\GetObjectAction;
 use BEdita\Core\Model\Action\ListObjectsAction;
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotImplementedException;
 use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Exception\MissingRouteException;
@@ -52,6 +55,16 @@ class ObjectsController extends ResourcesController
      */
     public function initialize()
     {
+        if ($this->request->getParam('action') === 'relationships') {
+            $name = $this->request->getParam('relationship');
+            $allowedTypes = TableRegistry::get('ObjectTypes')
+                ->find('byRelation', compact('name'))
+                ->find('list')
+                ->toArray();
+
+            $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
+        }
+
         parent::initialize();
 
         $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
@@ -208,9 +221,16 @@ class ObjectsController extends ResourcesController
 
         switch ($this->request->getMethod()) {
             case 'PATCH':
+                $action = new SetRelatedObjectsAction(compact('association'));
+                break;
+
             case 'POST':
+                $action = new AddRelatedObjectsAction(compact('association'));
+                break;
+
             case 'DELETE':
-                throw new NotImplementedException(__d('bedita', 'Not yet implemented'));
+                $action = new RemoveAssociatedAction(compact('association'));
+                break;
 
             case 'GET':
             default:
@@ -228,5 +248,32 @@ class ObjectsController extends ResourcesController
 
                 return null;
         }
+
+        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $count = $action(['primaryKey' => $id]);
+
+        if ($count === false) {
+            throw new InternalErrorException(__d('bedita', 'Could not update relationship "{0}"', $relationship));
+        }
+
+        if (is_array($count)) {
+            $action = new ListRelatedObjectsAction(compact('association'));
+            $data = $action(['primaryKey' => $id, 'list' => true, 'only' => $count]);
+
+            $count = count($count);
+        }
+
+        if ($count === 0) {
+            return $this->response
+                ->withHeader('Content-Type', $this->request->contentType())
+                ->withStatus(204);
+        }
+
+        $this->set(compact('data'));
+        $this->set([
+            '_serialize' => isset($data) ? ['data'] : [],
+        ]);
+
+        return null;
     }
 }
