@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Model\Entity\ObjectEntity;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
@@ -42,7 +43,7 @@ class ObjectsTable extends Table
         parent::initialize($config);
 
         $this->setTable('objects');
-        $this->setEntityClass('BEdita\Core\Model\Entity\ObjectEntity');
+        $this->setEntityClass(ObjectEntity::class);
         $this->setPrimaryKey('id');
         $this->setDisplayField('title');
 
