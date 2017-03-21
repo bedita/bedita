@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Validation;
 
+use Cake\ORM\TableRegistry;
+
 /**
  * Validator for users.
  *
@@ -23,13 +25,17 @@ class UsersValidator extends ProfilesValidator
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct()
     {
         parent::__construct();
 
+        $this->setProvider('usersTable', TableRegistry::get('Users'));
+
         $this
-            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->add('username', 'unique', ['rule' => 'validateUnique', 'provider' => 'usersTable'])
             ->requirePresence('username', 'create')
             ->notEmpty('username')
 

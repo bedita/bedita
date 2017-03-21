@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Validation;
 
+use Cake\ORM\TableRegistry;
+
 /**
  * Validator for profiles.
  *
@@ -23,10 +25,14 @@ class ProfilesValidator extends ObjectsValidator
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->setProvider('profilesTable', TableRegistry::get('Profiles'));
 
         $this
             ->allowEmpty('name')
@@ -35,7 +41,7 @@ class ProfilesValidator extends ObjectsValidator
 
             ->email('email')
             ->allowEmpty('email')
-            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->add('email', 'unique', ['rule' => 'validateUnique', 'provider' => 'profilesTable'])
 
             ->allowEmpty('person_title')
 

@@ -23,6 +23,8 @@ class LocationsValidator extends ObjectsValidator
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct()
     {

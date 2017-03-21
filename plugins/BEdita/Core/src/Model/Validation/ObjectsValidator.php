@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Validation;
 
+use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -25,10 +26,14 @@ class ObjectsValidator extends Validator
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function __construct()
     {
         parent::__construct();
+
+        $this->setProvider('objectsTable', TableRegistry::get('Objects'));
 
         $this
             ->naturalNumber('id')
@@ -40,7 +45,7 @@ class ObjectsValidator extends Validator
 
             ->ascii('uname')
             ->notEmpty('uname')
-            ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
+            ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'objectsTable'])
 
             ->boolean('locked')
             ->allowEmpty('locked')
