@@ -114,9 +114,9 @@ class ObjectsController extends ResourcesController
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
             $data = $this->request->getData();
-            $entity = $action(compact('entity', 'data'));
+            $data = $action(compact('entity', 'data'));
 
-            return $this->response
+            $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
@@ -124,25 +124,23 @@ class ObjectsController extends ResourcesController
                         [
                             '_name' => 'api:objects:resource',
                             'object_type' => $this->objectType->name,
-                            'id' => $entity->id,
+                            'id' => $data->id,
                         ],
                         true
                     )
                 );
+        } else {
+            // List existing entities.
+            $filter = $this->request->getQuery('filter');
+
+            $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+            $query = $action(compact('filter'));
+
+            $data = $this->paginate($query);
         }
-
-        $filter = $this->request->getQuery('filter');
-
-        // List existing entities.
-        $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $query = $action(compact('filter'));
-
-        $data = $this->paginate($query);
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
-
-        return null;
     }
 
     /**

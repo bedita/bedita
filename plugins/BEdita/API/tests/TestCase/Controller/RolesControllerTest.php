@@ -29,6 +29,8 @@ class RolesControllerTest extends IntegrationTestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',
@@ -303,11 +305,13 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->post('/roles', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
         $this->assertHeader('Location', 'http://api.example.com/roles/3');
-        $this->assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+        static::assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
     }
 
     /**
