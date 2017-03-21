@@ -19,7 +19,6 @@ use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
-
 /**
  * Validator for SQL conventions.
  *
