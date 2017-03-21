@@ -10,14 +10,16 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
+
 namespace BEdita\Core\Shell\Task;
 
+use BEdita\Core\Model\Validation\SqlConventionsValidator;
 use Cake\Console\Exception\MissingTaskException;
 use Cake\Console\Shell;
 use Cake\Core\Plugin;
 use Cake\Database\Connection;
-use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Migrations\Migrations;
 
@@ -143,82 +145,20 @@ class CheckSchemaTask extends Shell
      * Check if a symbol is valid.
      *
      * @param string $symbol Symbol to check.
-     * @param array|null $options Index or constraint options.
+     * @param array $context Index or constraint options.
      * @return array
      * @internal
      */
-    protected function checkSymbol($symbol, array $options = null)
+    protected function checkSymbol($symbol, array $context = [])
     {
-        if (empty($this->reservedWords)) {
-            $this->reservedWords = file(
-                Plugin::configPath('BEdita/Core') . DS . 'schema' . DS . 'sql_reserved_words.txt'
-            );
-            array_walk(
-                $this->reservedWords,
-                function (&$word) {
-                    $word = strtoupper(trim($word));
-                }
-            );
-            $this->reservedWords = array_filter(
-                $this->reservedWords,
-                function ($word) {
-                    return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, ['NAME', 'STATUS']);
-                }
-            );
+        $validator = new SqlConventionsValidator();
+        foreach ($context as $key => $value) {
+            $validator->setProvider($key, $value);
         }
 
-        $errors = [];
-        if (in_array(strtoupper($symbol), $this->reservedWords)) {
-            $errors[] = 'reserved word';
-        }
-        if ($symbol !== Inflector::underscore($symbol)) {
-            $errors[] = 'not underscored';
-        }
-        if (substr($symbol, 0, 1) === '_') {
-            $errors[] = 'starts with "_"';
-        }
-        if (substr($symbol, -1) === '_') {
-            $errors[] = 'ends with "_"';
-        }
-        if (strpos($symbol, '__') !== false) {
-            $errors[] = 'contains "__"';
-        }
-        if (is_numeric(substr($symbol, 0, 1))) {
-            $errors[] = 'starts with a digit';
-        }
-        if ($options !== null) {
-            $prefix = str_replace('_', '', $options['table']) . '_';
-            switch ($options['type']) {
-                case Table::CONSTRAINT_PRIMARY:
-                    if ($symbol === 'primary') {
-                        return [];
-                    }
-                    $suffix = '_pk';
-                    break;
-                case Table::CONSTRAINT_FOREIGN:
-                    $suffix = '_fk';
-                    break;
-                case Table::CONSTRAINT_UNIQUE:
-                    $suffix = '_uq';
-                    break;
-                case Table::INDEX_FULLTEXT:
-                case Table::INDEX_INDEX:
-                default:
-                    $suffix = '_idx';
-            }
+        $errors = $validator->errors(compact('symbol'));
 
-            if (substr($symbol, 0, strlen($prefix)) !== $prefix) {
-                $errors[] = sprintf('should start with "%s"', $prefix);
-            }
-            if (substr($symbol, -strlen($suffix)) !== $suffix) {
-                $errors[] = sprintf('should end with "%s"', $suffix);
-            }
-            if ($symbol === $prefix . substr($suffix, 1)) {
-                $errors[] = 'should have a unique identifier between prefix and suffix';
-            }
-        }
-
-        return $errors;
+        return Hash::get($errors, 'symbol', []);
     }
 
     /**
@@ -241,17 +181,11 @@ class CheckSchemaTask extends Shell
             $errors['table']['naming'] = $this->checkSymbol($table);
 
             foreach ($schema->columns() as $column) {
-                $errorMsg = $this->checkSymbol($column);
-                if ($column === $table) {
-                    $errorMsg[] = 'same name as table';
-                }
-                if (!in_array($column, ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params', 'label']) && substr($column, -3) !== '_id') {
-                    if (array_key_exists($column, $allColumns)) {
-                        $errorMsg[] = sprintf('already defined in "%s"', $allColumns[$column]);
-                    }
-                    $allColumns[$column] = $table;
-                }
-                $errors['column'][$column]['naming'] = $errorMsg;
+                $errors['column'][$column]['naming'] = $this->checkSymbol(
+                    $column,
+                    compact('table', 'allColumns')
+                );
+                $allColumns[$column] = $table;
             }
 
             foreach ($schema->indexes() as $index) {
