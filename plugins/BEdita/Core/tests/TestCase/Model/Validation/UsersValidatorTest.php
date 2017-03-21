@@ -61,11 +61,9 @@ class UsersValidatorTest extends TestCase
             'empty fields' => [
                 [
                     'status._empty',
-                    'uname._empty',
                 ],
                 [
                     'status' => '',
-                    'uname' => null,
                     'username' => 0,
                 ],
             ],

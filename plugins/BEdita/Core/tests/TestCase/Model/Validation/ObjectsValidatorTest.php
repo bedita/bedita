@@ -57,11 +57,9 @@ class ObjectsValidatorTest extends TestCase
             'empty fields' => [
                 [
                     'status._empty',
-                    'uname._empty',
                 ],
                 [
                     'status' => '',
-                    'uname' => null,
                 ],
             ],
             'invalid types' => [
