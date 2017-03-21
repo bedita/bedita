@@ -111,7 +111,7 @@ abstract class ResourcesController extends AppController
      * This action represents a collection of resources.
      * If the request is a `POST` request, this action creates a new resource.
      *
-     * @return \Cake\Network\Response|null
+     * @return void
      */
     public function index()
     {
@@ -123,9 +123,9 @@ abstract class ResourcesController extends AppController
             $action = new SaveEntityAction(['table' => $this->Table]);
 
             $data = $this->request->getData();
-            $entity = $action(compact('entity', 'data'));
+            $data = $action(compact('entity', 'data'));
 
-            return $this->response
+            $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
@@ -133,23 +133,21 @@ abstract class ResourcesController extends AppController
                         [
                             '_name' => 'api:resources:resource',
                             'controller' => $this->name,
-                            'id' => $entity->id,
+                            'id' => $data->id,
                         ],
                         true
                     )
                 );
+        } else {
+            // List existing entities.
+            $action = new ListEntitiesAction(['table' => $this->Table]);
+            $query = $action();
+
+            $data = $this->paginate($query);
         }
-
-        // List existing entities.
-        $action = new ListEntitiesAction(['table' => $this->Table]);
-        $query = $action();
-
-        $data = $this->paginate($query);
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
-
-        return null;
     }
 
     /**
@@ -160,7 +158,7 @@ abstract class ResourcesController extends AppController
      * If the request is a `DELETE` request, this action deletes an existing resource.
      *
      * @param mixed $id Entity ID.
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function resource($id)
     {
@@ -233,7 +231,7 @@ abstract class ResourcesController extends AppController
      * If the request is a `POST` request, this action adds new relationships.
      * If the request is a `DELETE` request, this action deletes existing relationships.
      *
-     * @return \Cake\Network\Response|null
+     * @return \Cake\Http\Response|null
      */
     public function relationships()
     {
