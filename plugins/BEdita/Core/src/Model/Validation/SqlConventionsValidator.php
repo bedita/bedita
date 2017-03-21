@@ -54,18 +54,18 @@ class SqlConventionsValidator extends Validator
 {
 
     /**
-     * List of reserved words to be allowed anyway.
+     * Comma-separated list of reserved words to be allowed anyway.
      *
-     * @var string[]
+     * @var string
      */
-    const ALLOWED_RESERVED_WORDS = ['NAME', 'STATUS'];
+    const ALLOWED_RESERVED_WORDS = 'NAME,STATUS';
 
     /**
-     * List of columns that can be duplicated across several tables.
+     * Comma-separated list of columns that can be duplicated across several tables.
      *
-     * @var string[]
+     * @var string
      */
-    const ALLOWED_DUPLICATES = ['created', 'description', 'enabled', 'id', 'modified', 'name', 'params', 'label'];
+    const ALLOWED_DUPLICATES = 'created,description,enabled,id,modified,name,params,label';
 
     /**
      * List of reserved words.
@@ -86,6 +86,7 @@ class SqlConventionsValidator extends Validator
         }
 
         $fileName = Plugin::configPath('BEdita/Core') . DS . 'schema' . DS . 'sql_reserved_words.txt';
+        $allowed = explode(',', static::ALLOWED_RESERVED_WORDS);
         static::$reservedWords = array_filter(
             array_map(
                 function ($word) {
@@ -93,8 +94,8 @@ class SqlConventionsValidator extends Validator
                 },
                 file($fileName)
             ),
-            function ($word) {
-                return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, static::ALLOWED_RESERVED_WORDS);
+            function ($word) use ($allowed) {
+                return !empty($word) && substr($word, 0, 1) !== '#' && !in_array($word, $allowed);
             }
         );
 
@@ -289,7 +290,8 @@ class SqlConventionsValidator extends Validator
      */
     public static function globalName($symbol, array $context)
     {
-        if (in_array($symbol, static::ALLOWED_DUPLICATES) || substr($symbol, -3) === '_id') {
+        $allowedDuplicates = explode(',', static::ALLOWED_DUPLICATES);
+        if (in_array($symbol, $allowedDuplicates) || substr($symbol, -3) === '_id') {
             // Known dupes.
             return true;
         }
