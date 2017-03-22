@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
 use ArrayObject;
+use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -107,8 +108,7 @@ class UniqueNameBehaviorTest extends TestCase
             'defaultConfig' => [
                 'Dummy Person',
                 'John Doe',
-                [
-                ],
+                [],
             ],
             'customConfig' => [
                 'Another Dummy Person',
@@ -121,6 +121,13 @@ class UniqueNameBehaviorTest extends TestCase
                     'hashlength' => 3
                 ],
             ],
+            'emptySourceField' => [
+                'super_secret',
+                '',
+                [
+                    'sourceField' => 'name',
+                ],
+            ]
         ];
     }
 
@@ -258,26 +265,6 @@ class UniqueNameBehaviorTest extends TestCase
     }
 
     /**
-     * test uniqueNameFromValue()
-     *
-     * @return void
-     *
-     * @dataProvider uniqueFromValueProvider
-     * @covers ::beforeMarshal()
-     */
-    public function testBeforeMarshal()
-    {
-        $behavior = TableRegistry::get('Objects')->behaviors()->get('UniqueName');
-        $data = [
-            'title' => '',
-            'type' => 'documents'
-        ];
-        $dataObj = new ArrayObject($data);
-        $behavior->beforeMarshal(new Event('Dummy'), $dataObj, new ArrayObject());
-        $this->assertEquals('documents', $dataObj['uname']);
-    }
-
-    /**
      * test uniqueName() conflicts / missing
      *
      * @return void
@@ -299,5 +286,34 @@ class UniqueNameBehaviorTest extends TestCase
         $document->set('uname', 'first-user');
         $behavior->uniqueName($document);
         $this->assertNotEquals($document->get('uname'), 'first-user');
+
+        $document->set('uname', '');
+        $document->set('title', '');
+        $behavior->uniqueName($document);
+        static::assertContains('documents_', $document->get('uname'));
+    }
+
+    /**
+     * test generate uname before save
+     *
+     * @return void
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSave()
+    {
+        $Documents = TableRegistry::get('Documents');
+        $entity = $Documents->newEntity([
+            'title' => 'uh là la'
+        ]);
+
+        $Documents->eventManager()->on('Model.beforeSave', function (Event $event, EntityInterface $entity) {
+            $uname = $entity->get('uname');
+            static::assertNotEmpty($uname);
+            static::assertEquals('uh-la-la', $uname);
+
+            return false;
+        });
+
+        $Documents->save($entity);
     }
 }
