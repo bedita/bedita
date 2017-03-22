@@ -139,7 +139,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     }
 
     /**
-     * Test setUserAuth
+     * Test getUserAuthHeader
      *
      * @return void
      * @covers ::getUserAuthHeader()
@@ -149,10 +149,23 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         $authHeader = $this->getUserAuthHeader();
         static::assertArrayHasKey('Authorization', $authHeader);
         static::assertContains('Bearer ', $authHeader['Authorization']);
+    }
+
+    /**
+     * Test authUser
+     *
+     * @return void
+     * @covers ::authUser()
+     */
+    public function testAuthUser()
+    {
+        $tokens = $this->authUser();
+        static::assertArrayHasKey('jwt', $tokens);
+        static::assertArrayHasKey('renew', $tokens);
 
         $this->expectException('Cake\Network\Exception\UnauthorizedException');
         $this->expectExceptionMessageRegExp('/^User is not authorized. Status: 401/');
-        $this->getUserAuthHeader('gustavo', 'supporto');
+        $this->authUser('gustavo', 'supporto');
     }
 
     /**

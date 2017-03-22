@@ -14,7 +14,6 @@ namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\TestSuite\IntegrationTestCase;
-use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 
 /**
@@ -485,7 +484,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $objectsTable = TableRegistry::get('Objects');
         $object = $objectsTable->get(6);
         $object->deleted = false;
-        LoggedUser::setUser(['id' => 1]);
+        $this->authUser();
         $success = $objectsTable->save($object);
         $this->assertEquals(true, (bool)$success);
 

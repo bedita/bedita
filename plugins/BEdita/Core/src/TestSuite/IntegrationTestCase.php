@@ -102,14 +102,32 @@ class IntegrationTestCase extends CakeIntegrationTestCase
     /**
      * Return the Authorization header starting from a username and a password.
      *
-     * It calls `POST /auth` to receive a valid jwt access token.
-     * If `$username` and `$password` are empty then a default user is used
-     *
      * @param string $username The user username
      * @param string $password The user password
      * @return array
      */
     public function getUserAuthHeader($username = null, $password = null)
+    {
+        $tokens = $this->authUser($username, $password);
+
+        return ['Authorization' => 'Bearer ' . $tokens['jwt']];
+    }
+
+    /**
+     * Authenticate an user and return the JWT access and renewal tokens obtained.
+     *
+     * This method is also useful to set user in `LoggedUser` singleton.
+     *
+     * It calls `POST /auth` to receive a valid jwt access token.
+     * If `$username` and `$password` are empty then a default user is used.
+     * To avoid conflicts with another request potentially prepared, for example calling `self::configRequest()`,
+     * the current request conf is saved and restored at the end of the /auth call.
+     *
+     * @param string $username The user username
+     * @param string $password The user password
+     * @return array
+     */
+    public function authUser($username = null, $password = null)
     {
         $fullBaseUrl = Router::fullBaseUrl();
         $prevRequest = $this->_request;
@@ -141,7 +159,7 @@ class IntegrationTestCase extends CakeIntegrationTestCase
         $this->_request = $prevRequest;
         $this->_response = null;
 
-        return ['Authorization' => 'Bearer ' . $body['meta']['jwt']];
+        return $body['meta'];
     }
 
     /**
