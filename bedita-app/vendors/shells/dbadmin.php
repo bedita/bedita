@@ -1073,6 +1073,7 @@ class DbadminShell extends BeditaBaseShell {
 					$objectVersions = $versionModel->find('all', array(
 						'fields' => array('object_id', 'revision', 'user_id', 'created', 'diff'),
 						'conditions' => array('Version.id' => $insertList),
+						'order' => array('revision ASC'),
 						'contain' => array()
 					));
 					foreach ($objectVersions as &$objVersion) {
