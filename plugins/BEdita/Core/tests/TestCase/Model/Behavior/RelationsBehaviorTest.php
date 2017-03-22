@@ -45,6 +45,8 @@ class RelationsBehaviorTest extends TestCase
      * @return void
      *
      * @covers ::initialize()
+     * @covers ::objectType()
+     * @covers ::setupRelations()
      * @covers ::relatedTo()
      */
     public function testInitialization()
@@ -54,9 +56,39 @@ class RelationsBehaviorTest extends TestCase
         $Documents = TableRegistry::get('Documents');
         $Profiles = TableRegistry::get('Profiles');
 
+        static::assertSame(1, $Documents->objectType()->id);
+        static::assertSame(2, $Profiles->objectType()->id);
+
         static::assertInstanceOf(BelongsToMany::class, $Documents->association('Test'));
+        static::assertSame('BEdita/Core.Objects', $Documents->association('Test')->className());
         static::assertInstanceOf(BelongsToMany::class, $Documents->association('InverseTest'));
+        static::assertSame('BEdita/Core.Objects', $Documents->association('InverseTest')->className());
         static::assertInstanceOf(BelongsToMany::class, $Profiles->association('InverseTest'));
+        static::assertSame('BEdita/Core.Objects', $Profiles->association('InverseTest')->className());
+
+        $before = count($Profiles->associations()->keys());
+        $Profiles->setupRelations('profiles');
+        $after = count($Profiles->associations()->keys());
+
+        static::assertSame($before, $after);
+    }
+
+    /**
+     * Test that no error occurs on an unknown object type, and no associations are set up.
+     *
+     * @return void
+     *
+     * @covers ::setupRelations()
+     */
+    public function testUnknownObjectType()
+    {
+        $FakeArticles = TableRegistry::get('FakeArticles');
+
+        $before = count($FakeArticles->associations()->keys());
+        $FakeArticles->addBehavior('BEdita/Core.Relations');
+        $after = count($FakeArticles->associations()->keys());
+
+        static::assertSame($before, $after);
     }
 
     /**
