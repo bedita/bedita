@@ -55,6 +55,7 @@ class RelationsBehaviorTest extends TestCase
 
         $Documents = TableRegistry::get('Documents');
         $Profiles = TableRegistry::get('Profiles');
+        $News = TableRegistry::get('News');
 
         static::assertSame(1, $Documents->objectType()->id);
         static::assertSame(2, $Profiles->objectType()->id);
@@ -65,6 +66,8 @@ class RelationsBehaviorTest extends TestCase
         static::assertSame('BEdita/Core.Objects', $Documents->association('InverseTest')->className());
         static::assertInstanceOf(BelongsToMany::class, $Profiles->association('InverseTest'));
         static::assertSame('BEdita/Core.Objects', $Profiles->association('InverseTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $News->association('AnotherTest'));
+        static::assertSame('BEdita/Core.Locations', $News->association('AnotherTest')->className());
 
         $before = count($Profiles->associations()->keys());
         $Profiles->setupRelations('profiles');
