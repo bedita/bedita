@@ -71,4 +71,14 @@ class LoggedUser
             static::getInstance()->userData = $userData;
         }
     }
+
+    /**
+     * Reset singleton current user data.
+     *
+     * @return void
+     */
+    public static function resetUser()
+    {
+        static::getInstance()->userData = [];
+    }
 }
