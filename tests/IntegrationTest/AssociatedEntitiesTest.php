@@ -12,8 +12,6 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use Cake\I18n\Time;
-
 /**
  * Test CRUD operations on objects with associated entities
  *
@@ -109,14 +107,14 @@ class AssociatedEntitiesTest extends ApiIntegrationTestCase
 
         $resultDates = $result['data']['attributes']['date_ranges'];
         $expectedDates = $attributes['date_ranges'];
-        $this->assertEquals(count($resultDates), count($expectedDates));
+        static::assertEquals(count($resultDates), count($expectedDates));
         $count = count($expectedDates);
         for ($i = 0; $i < $count; $i++) {
             foreach ($expectedDates[$i] as $k => $d) {
                 $found = $resultDates[$i][$k];
                 $exp = new \DateTime($d);
                 $exp = $exp->format('Y-m-d\TH:i:s+00:00');
-                $this->assertEquals($found, $exp);
+                static::assertEquals($found, $exp);
             }
         }
 
