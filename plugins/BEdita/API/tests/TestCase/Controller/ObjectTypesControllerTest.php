@@ -13,8 +13,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
@@ -229,12 +229,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -276,12 +271,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -329,12 +319,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -364,12 +349,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -407,13 +387,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
@@ -441,13 +415,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('ObjectTypes')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -473,13 +441,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/object_types/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -513,13 +475,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/object_types/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -538,13 +494,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/object_types/1');
 
         $this->assertResponseCode(204);

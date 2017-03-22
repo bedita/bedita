@@ -13,8 +13,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\UsersController
@@ -191,12 +191,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -238,12 +233,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Users')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -320,12 +310,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -355,12 +340,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -393,13 +373,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/users', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
@@ -427,13 +401,7 @@ class UsersControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('Users')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/users', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -459,13 +427,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/users/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -491,13 +453,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/users/5', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -524,13 +480,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/users/1', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -548,24 +498,13 @@ class UsersControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/users/5');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users/5');
         $this->assertResponseCode(404);
 
@@ -628,12 +567,7 @@ class UsersControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/users/1/roles');
         $result = json_decode((string)$this->_response->getBody(), true);
 

@@ -47,14 +47,16 @@ class UniqueNameTest extends ApiIntegrationTestCase
      */
     public function testDoubleInsert($attributes)
     {
-        $sendRequest = function ($type) use ($attributes) {
+        $authHeader = $this->getUserAuthHeader();
+
+        $sendRequest = function ($type) use ($attributes, $authHeader) {
             $data = [
                 'type' => $type,
                 'attributes' => $attributes,
             ];
             $endpoint = '/' . $type;
             $requestBody = json_encode(compact('data'));
-            $this->configRequestHeaders('POST');
+            $this->configRequestHeaders('POST', $authHeader);
 
             $this->post($endpoint, $requestBody);
 

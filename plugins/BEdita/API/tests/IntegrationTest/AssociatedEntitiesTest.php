@@ -91,7 +91,9 @@ class AssociatedEntitiesTest extends ApiIntegrationTestCase
             'attributes' => $attributes,
         ];
 
-        $this->configRequestHeaders('POST');
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('POST', $authHeader);
         $endpoint = '/' . $type;
         $this->post($endpoint, json_encode(compact('data')));
         $this->assertResponseCode(201);
@@ -124,19 +126,19 @@ class AssociatedEntitiesTest extends ApiIntegrationTestCase
             'type' => $type,
             'attributes' => $modified,
         ];
-        $this->configRequestHeaders('PATCH');
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch("/$type/$lastId", json_encode(compact('data')));
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
 
         // DELETE
-        $this->configRequestHeaders('DELETE');
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete("/$type/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
         // EMPTY TRASH
-        $this->configRequestHeaders('DELETE');
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete("/trash/$lastId");
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');

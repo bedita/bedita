@@ -13,8 +13,7 @@
 namespace BEdita\API\Test\IntegrationTest;
 
 use BEdita\Core\State\CurrentApplication;
-use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 
 /**
  * Base class for API integration tests
@@ -27,17 +26,6 @@ abstract class ApiIntegrationTestCase extends IntegrationTestCase
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.locations',
     ];
@@ -50,43 +38,5 @@ abstract class ApiIntegrationTestCase extends IntegrationTestCase
         parent::setUp();
 
         CurrentApplication::setFromApiKey(API_KEY);
-    }
-
-    /**
-     * Setup request header
-     * Defaults:
-     *   'Host' => 'api.example.com',
-     *   'Accept' => 'application/vnd.api+json',
-     *   'Content-Type' => 'application/vnd.api+json' (POST, PATCH, DELETE methods)
-     *
-     * @param $method string HTTP method
-     * @param $options array Header content options
-     * @return void
-     */
-    public function configRequestHeaders($method = 'GET', array $options = [])
-    {
-        $headers = [
-            'Host' => 'api.example.com',
-            'Accept' => 'application/vnd.api+json',
-        ];
-
-        if (in_array($method, ['POST', 'PATCH', 'DELETE'])) {
-            $headers['Content-Type'] = 'application/vnd.api+json';
-        }
-
-        $headers = array_merge($headers, $options);
-        $this->configRequest(compact('headers'));
-    }
-
-    /**
-     * Return last Object ID
-     *
-     * @return int
-     */
-    public function lastObjectId()
-    {
-        $lastObject = TableRegistry::get('Objects')->find()->select('id')->order(['id' => 'DESC'])->first();
-
-        return $lastObject->id;
     }
 }

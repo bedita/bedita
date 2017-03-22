@@ -13,8 +13,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\PropertiesController
@@ -193,12 +193,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -240,12 +235,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Properties')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -287,12 +277,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties/1');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -322,12 +307,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/properties/999999');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -364,13 +344,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
@@ -398,13 +372,7 @@ class PropertiesControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('Properties')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/properties', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -431,13 +399,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/properties/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -463,13 +425,7 @@ class PropertiesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/properties/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -488,13 +444,7 @@ class PropertiesControllerTest extends IntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/properties/1');
 
         $this->assertResponseCode(204);
