@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\Utility\Inflector;
 
@@ -120,19 +121,20 @@ class ListEntitiesAction extends BaseAction
                 continue;
             }
 
-            if ($this->Table->hasField($key)) {
+            if ($this->Table->hasField($key, true)) {
                 // Filter on single field.
+                $key = $this->Table->aliasField($key);
                 if ($value === null) {
-                    $query = $query->andWhere([
-                        $key . ' IS' => null,
-                    ]);
+                    $query = $query->andWhere(function (QueryExpression $exp) use ($key) {
+                        return $exp->isNull($key);
+                    });
 
                     continue;
                 }
 
-                $query = $query->andWhere([
-                    $key . ' IN' => (array)$value,
-                ]);
+                $query = $query->andWhere(function (QueryExpression $exp) use ($key, $value) {
+                    return $exp->in($key, (array)$value);
+                });
 
                 continue;
             }

@@ -79,6 +79,10 @@ class UniqueNameBehavior extends Behavior
     {
         $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->getConfig('sourceField');
         $fieldValue = $entity->get($field);
+        if (empty($fieldValue)) {
+            $fieldValue = (string)$entity->get('type');
+            $regenerate = true;
+        }
 
         return $this->uniqueNameFromValue($fieldValue, $cfg, $regenerate);
     }
@@ -136,27 +140,5 @@ class UniqueNameBehavior extends Behavior
     public function beforeSave(Event $event, EntityInterface $entity)
     {
         $this->uniqueName($entity);
-    }
-
-    /**
-     * Setup initial unique name when a new Entity is being created with empty `uname` field
-     *
-     * @param \Cake\Event\Event $event The event dispatched
-     * @param ArrayObject $data The input data to save
-     * @param ArrayObject $options Operation options (unused)
-     * @return void
-     */
-    public function beforeMarshal(Event $event, ArrayObject $data, ArrayObject $options)
-    {
-        if (empty($data['uname']) && empty($data['id'])) {
-            $field = $this->getConfig('sourceField');
-            $fieldValue = '';
-            if (!empty($data[$field])) {
-                $fieldValue = $data[$field];
-            } elseif (!empty($data['type'])) {
-                $fieldValue = $data['type'];
-            }
-            $data['uname'] = $this->uniqueNameFromValue($fieldValue);
-        }
     }
 }

@@ -14,12 +14,14 @@
 namespace BEdita\API\Model\Action;
 
 use BEdita\Core\Model\Action\BaseAction;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Association;
+use Cake\ORM\Association\BelongsToMany;
 use Cake\Utility\Hash;
 
 /**
- * Command to add links between entities.
+ * Command to update links between entities.
  *
  * @since 4.0.0
  */
@@ -59,30 +61,65 @@ class UpdateAssociatedAction extends BaseAction
             throw new \LogicException(__d('bedita', 'Unknown association type'));
         }
 
-        $sourceEntity = $association->getSource()->get($data['primaryKey']);
+        $entity = $association->getSource()->get($data['primaryKey']);
 
-        $targetPrimaryKeys = (array)$this->request->getData('id') ?: Hash::extract($this->request->getData(), '{*}.id');
-        $targetPrimaryKeys = array_unique($targetPrimaryKeys);
-        $primaryKeyField = $association->getPrimaryKey();
-        $targetPKField = $association->aliasField($primaryKeyField);
+        $requestData = $this->request->getData();
+        if (!Hash::numeric(array_keys($requestData))) {
+            $requestData = [$requestData];
+        }
 
-        $targetEntities = null;
-        if (count($targetPrimaryKeys)) {
-            $targetEntities = $association->find()
-                ->where([
-                    $targetPKField . ' IN' => $targetPrimaryKeys,
-                ]);
+        $relatedEntities = $this->getTargetEntities($requestData, $association);
+        $count = count($relatedEntities);
+        if ($count === 0) {
+            $relatedEntities = [];
+        } elseif ($count === 1) {
+            $relatedEntities = reset($relatedEntities);
+        }
 
-            if ($targetEntities->count() !== count($targetPrimaryKeys)) {
+        return $this->Action->execute(compact('entity', 'relatedEntities'));
+    }
+
+    /**
+     * Get target entities.
+     *
+     * @param array $data Request data.
+     * @param \Cake\ORM\Association $association Association.
+     * @return \Cake\Datasource\EntityInterface[]
+     */
+    protected function getTargetEntities(array $data, Association $association)
+    {
+        $target = $association->getTarget();
+        $primaryKeyField = $target->getPrimaryKey();
+        $targetPKField = $target->aliasField($primaryKeyField);
+
+        $targetPrimaryKeys = array_unique(Hash::extract($data, '{*}.id'));
+        if (empty($targetPrimaryKeys)) {
+            return [];
+        }
+
+        $targetEntities = $target->find()
+            ->where(function (QueryExpression $exp) use ($targetPKField, $targetPrimaryKeys) {
+                return $exp->in($targetPKField, $targetPrimaryKeys);
+            });
+
+        $targetEntities = $targetEntities->indexBy($primaryKeyField)->toArray();
+
+        foreach ($data as $datum) {
+            $id = Hash::get($datum, 'id');
+            $type = Hash::get($datum, 'type');
+            if (!isset($targetEntities[$id]) || ($targetEntities[$id]->has('type') && $targetEntities[$id]->get('type') !== $type)) {
                 throw new RecordNotFoundException(
-                    __('Record not found in table "{0}"', $association->getTarget()->getTable()),
+                    __('Record not found in table "{0}"', $type ?: $target->getTable()),
                     400
                 );
             }
 
-            $targetEntities = (count($targetPrimaryKeys) > 1) ? $targetEntities->toArray() : $targetEntities->firstOrFail();
+            $meta = Hash::get($datum, '_meta');
+            if (!$this->request->is('delete') && $association instanceof BelongsToMany && $meta !== null) {
+                $targetEntities[$id]->_joinData = $association->junction()->newEntity($meta);
+            }
         }
 
-        return $this->Action->execute(['entity' => $sourceEntity, 'relatedEntities' => $targetEntities]);
+        return $targetEntities;
     }
 }

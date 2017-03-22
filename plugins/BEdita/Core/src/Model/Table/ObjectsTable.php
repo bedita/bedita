@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -57,6 +57,7 @@ class ObjectsTable extends Table
         $this->hasMany('DateRanges', [
             'foreignKey' => 'object_id',
             'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
         ]);
 
         $this->belongsTo('ObjectTypes', [
@@ -91,8 +92,7 @@ class ObjectsTable extends Table
 
             ->notEmpty('status')
 
-            ->requirePresence('uname', 'create')
-            ->notEmpty('uname')
+            ->allowEmpty('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->boolean('locked')
@@ -165,15 +165,18 @@ class ObjectsTable extends Table
      */
     public function findType(Query $query, array $options)
     {
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
         foreach ($options as &$type) {
-            $type = $ObjectTypes->get($type)->id;
+            $type = $this->ObjectTypes->get($type)->id;
         }
         unset($type);
 
-        $query->where([$this->aliasField('object_type_id') . ' IN' => $options]);
-
-        return $query;
+        return $query
+            ->where(function (QueryExpression $exp) use ($options) {
+                return $exp->in(
+                    $this->aliasField($this->ObjectTypes->getForeignKey()),
+                    $options
+                );
+            });
     }
 
     /**

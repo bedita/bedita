@@ -12,7 +12,8 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use Cake\I18n\Time;
+use BEdita\Core\Utility\Database;
+use Cake\Utility\Hash;
 
 /**
  * Test Query String `filter`
@@ -62,6 +63,54 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
         $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, count($result['data']));
+        static::assertEquals($expected, count($result['data']));
+    }
+
+    /**
+     * Data provider for `testFilterGeo`
+     */
+    public function filterGeoProvider()
+    {
+        return [
+            'simple' => [
+               'filter[geo][center][]=44.4944183&filter[geo][center][]=11.3464055',
+               [
+                   0,
+               ]
+            ],
+            'array' => [
+               'filter[geo][center]=44.4944183,11.3464055',
+               [
+                   0,
+               ]
+            ]
+        ];
+    }
+
+    /**
+     * Test 'geo` filter
+     *
+     * @param $query string URL with query filter string
+     * @param $expected array Distance expected in response for every item
+     * @param $endpoint string Endpoint to use
+     *
+     * @dataProvider filterGeoProvider
+     * @coversNothing
+     */
+    public function testFilterGeo($query, $expected, $endpoint = '/locations')
+    {
+        $info = Database::basicInfo();
+        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
+            static::markTestSkipped('Only MySQL >= 5.7 supported in findGeo filter');
+        }
+
+        $this->configRequestHeaders();
+        $this->get($endpoint . '?' . $query);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals(count($expected), count($result['data']));
+        $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
+        static::assertEquals($expected, $resultDistance);
     }
 }

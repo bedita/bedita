@@ -51,7 +51,7 @@ abstract class UpdateAssociatedAction extends BaseAction
         $sourcePrimaryKey = (array)$this->Association->getSource()->getPrimaryKey();
         $bindingKey = (array)$this->Association->getBindingKey();
 
-        $existing = $list(['primaryKey' => $entity->extract($sourcePrimaryKey)]);
+        $existing = $list(['primaryKey' => $entity->extract($sourcePrimaryKey), 'list' => true]);
 
         if ($existing instanceof EntityInterface) {
             return $existing
