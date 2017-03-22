@@ -262,9 +262,9 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     private $defaultAllowedUrlParams = array(
-        '__all' => array('access_token'),
+        '__all' => array('access_token', 'lang'),
         '_pagination' => array('page', 'page_size'),
-        'objects' => array('id', 'filter[object_type]', 'filter[substring]', 'filter[query]', 'embed[relations]', '_pagination'),
+        'objects' => array('id', 'filter[object_type]', 'filter[substring]', 'filter[query]', 'embed[relations]', '_pagination', 'lang'),
         'posters' => array('id', 'width', 'height', 'mode')
     );
 
@@ -276,6 +276,12 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     protected $allowedUrlParams = array();
+
+    /**
+     * Query string lang value for objects endpoint
+     * Use: query string 'lang=<lang>', i.e. objects?lang=eng
+     */
+    protected $lang;
 
     /**
      * Constructor
@@ -726,6 +732,44 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
+     * Setup locale settings
+     * override FrontendController::setupLocale
+     * override AppController::setupLocale
+     *
+     * @see bedita-app/controllers/FrontendController#setupLocale()
+     * @see bedita-app/AppController#setupLocale()
+     */
+    protected function setupLocale() {
+        $lang = $this->lang;
+        if ($this->currLang === null || empty($this->currLang)) {
+            $conf = Configure::getInstance();
+            if (!empty($lang) && array_key_exists($lang, $conf->frontendLangs)) {
+                $this->currLang = $lang;
+            } else {
+                // HTTP autodetect
+                $l10n = new L10n();
+                $l10n->get();
+                $lang = $l10n->lang;
+                if (!empty($lang)) {
+                    if (array_key_exists($lang, $conf->frontendLangs)) {
+                        $this->currLang = $lang;
+                    } else if (!empty($conf->frontendLangsMap[$lang])) {
+                        $lang = $conf->frontendLangsMap[$lang];
+                        if (array_key_exists($lang, $conf->frontendLangs)) {
+                            $this->currLang = $lang;
+                        }
+                    }
+                }
+                if (empty($this->currLang)) {
+                    $this->currLang = $conf->frontendLang;
+                }
+            }
+            Configure::write('Config.language', $this->currLang);
+        }
+        $this->set('currLang', $this->currLang);
+    }
+
+    /**
      * GET /objects
      *
      * If $name is passed try to load an object with that id or nickname
@@ -737,6 +781,9 @@ abstract class ApiBaseController extends FrontendController {
     protected function getObjects($name = null, $filterType = null) {
         $this->setupObjectsFilter();
         $urlParams = $this->ApiFormatter->formatUrlParams();
+        if (!empty($urlParams['lang'])) {
+            $this->currLang = $this->lang = $urlParams['lang'];
+        }
         if (!empty($name)) {
             // GET /objects/:id supports only '__all' params
             if (empty($filterType)) {
