@@ -220,11 +220,11 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
     }
 
     public function stats() {
-        $areeStats = ClassRegistry::init('AreaStats');        
+        $areaModel = ClassRegistry::init('Area');        
         if (isset($this->params['id'])) {
-            $result = $areeStats->getArea($this->params['id'], true);
+            $result = $areaModel->getArea($this->params['id'], true);
         } else {
-            $result = $areeStats->getAreas(true);
+            $result = $areaModel->getAreas(true);
         }
         $noask = isset($this->params['noask']);
         if (!empty($result)) {
