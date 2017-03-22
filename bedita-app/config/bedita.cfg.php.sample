@@ -340,6 +340,7 @@ $config['objectCakeCache'] = true;
 /**
  * Configuration for statistics module - uncomment to activate statistics features
  */
+// $config['statistics'] = array(
 //      'evolution' => true, // stats about last 5 months of activity
 //      'comments' => true, // stats about user comments
 //      'objectsusers' => true, // stats about user activity

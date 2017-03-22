@@ -246,7 +246,10 @@ class StatisticsController extends ModulesController {
 	 }
 
 	 /**
-	  * @deprecated too slow on big data
+	  * Get objects for all users and set for view
+	  * It can be very slow on big data
+	  *
+	  * @return void
 	  */
 	 private function objectsForUser() {
 	 	$users = $this->User->find('all', array(
@@ -291,8 +294,8 @@ class StatisticsController extends ModulesController {
 
 	/**
 	 * Set groups/users statistics
-	 *
-	 * @deprecated too slow on big data
+	 * It can be very slow on big data
+	 * 
 	 * @return void
 	 */
 	private function usersGroups() {
