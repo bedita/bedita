@@ -14,8 +14,8 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\LoginController
@@ -61,11 +61,8 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testSuccessfulLogin()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
@@ -118,12 +115,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testFailedLogin()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST');
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
 
@@ -166,12 +158,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testLoggedUserFail()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
 
         $this->get('/auth');
         $this->assertResponseCode(401);

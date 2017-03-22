@@ -13,8 +13,9 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
+use BEdita\Core\TestSuite\IntegrationTestCase;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
@@ -307,12 +308,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -354,12 +350,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Objects')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -423,12 +414,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/2');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -490,12 +476,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -504,15 +485,11 @@ class ObjectsControllerTest extends IntegrationTestCase
         $objectsTable = TableRegistry::get('Objects');
         $object = $objectsTable->get(6);
         $object->deleted = false;
+        LoggedUser::setUser(['id' => 1]);
         $success = $objectsTable->save($object);
         $this->assertEquals(true, (bool)$success);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
         $result = json_decode((string)$this->_response->getBody(), true);
         unset($result['data']['attributes']['modified']);
@@ -584,13 +561,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -619,13 +590,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/news', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -931,12 +896,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1024,12 +984,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/relationships/test');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1049,12 +1004,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testListAssociationsNotFound()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/99/relationships/test');
 
         $this->assertResponseCode(404);
@@ -1117,13 +1067,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1199,13 +1143,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1237,13 +1175,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
@@ -1280,13 +1212,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
@@ -1314,13 +1240,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
         $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
 
@@ -1385,13 +1305,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1421,13 +1335,7 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $data = [];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1468,13 +1376,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
 
         $this->assertResponseCode(204);
@@ -1505,13 +1407,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1537,12 +1433,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             'title' => 'Relationship "this_relationship_does_not_exist" does not exist',
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/2/relationships/this_relationship_does_not_exist');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1575,13 +1466,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -1600,12 +1485,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      */
     public function testObjectTypeNotFound()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/invalid_object_type');
 
         $this->assertResponseCode(404);

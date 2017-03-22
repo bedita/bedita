@@ -13,7 +13,7 @@
 namespace BEdita\API\Test\TestCase\Controller;
 
 use BEdita\Core\State\CurrentApplication;
-use Cake\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\HomeController
@@ -240,12 +240,7 @@ class HomeControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/home');
         $result = json_decode((string)$this->_response->getBody(), true);
 
