@@ -30,6 +30,6 @@ class ProfilesFakerSeed extends AbstractSeed
             'phone' => $faker->phoneNumber,
             'website' => 'www.' . $faker->domainName,
         ];
-        ObjectsHandler::create('profiles', $data);
+        ObjectsHandler::save('profiles', $data);
     }
 }

@@ -16,6 +16,6 @@ class UsersFakerSeed extends AbstractSeed
             'password' => $faker->password,
             'email' => $faker->email,
         ];
-        ObjectsHandler::create('users', $data);
+        ObjectsHandler::save('users', $data);
     }
 }
