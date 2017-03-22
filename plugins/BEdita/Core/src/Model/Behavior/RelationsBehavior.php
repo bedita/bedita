@@ -57,7 +57,7 @@ class RelationsBehavior extends Behavior
     /**
      * Getter/setter for object type.
      *
-     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type entity, name or ID.
      * @return \BEdita\Core\Model\Entity\ObjectType|null
      */
     public function objectType($objectType = null)
