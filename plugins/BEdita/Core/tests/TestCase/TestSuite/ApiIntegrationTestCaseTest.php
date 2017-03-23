@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Test\TestCase\TestSuite;
 
+use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\Event;
@@ -99,11 +100,16 @@ class IntegrationTestCaseTest extends ApiIntegrationTestCase
     public function testSetUp()
     {
         EventManager::instance()->off('Auth.afterIdentify');
+        CurrentApplication::getInstance()->set(null);
         static::assertCount(0, EventManager::instance()->listeners('Auth.afterIdentify'));
         static::assertEquals([], LoggedUser::getUser());
+        static::assertNull(CurrentApplication::getApplication());
 
+        LoggedUser::setUser(['id' => 1]);
         $this->setUp();
+        static::assertEquals([], LoggedUser::getUser());
         static::assertCount(1, EventManager::instance()->listeners('Auth.afterIdentify'));
+        static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
 
         $expected = [
             'id' => 9999,
@@ -129,8 +135,11 @@ class IntegrationTestCaseTest extends ApiIntegrationTestCase
         $event = new Event('Auth.afterIdentify', null, [$user]);
         EventManager::instance()->dispatch($event);
         static::assertEquals($user, LoggedUser::getUser());
+        static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
+
         $this->tearDown();
         static::assertEquals([], LoggedUser::getUser());
+        static::assertNull(CurrentApplication::getApplication());
     }
 
     /**

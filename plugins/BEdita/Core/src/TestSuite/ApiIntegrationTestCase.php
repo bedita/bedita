@@ -82,6 +82,7 @@ abstract class ApiIntegrationTestCase extends CakeIntegrationTestCase
     {
         parent::setUp();
 
+        LoggedUser::resetUser();
         CurrentApplication::setFromApiKey(API_KEY);
 
         EventManager::instance()->on('Auth.afterIdentify', function (Event $event, array $user) {
@@ -97,6 +98,7 @@ abstract class ApiIntegrationTestCase extends CakeIntegrationTestCase
         parent::tearDown();
 
         LoggedUser::resetUser();
+        CurrentApplication::getInstance()->set(null);
     }
 
     /**
