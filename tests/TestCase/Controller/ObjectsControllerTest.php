@@ -597,6 +597,8 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
+        static::assertArrayHasKey('attributes', $result['data']);
+        static::assertArrayHasKey('status', $result['data']['attributes']);
         $this->assertHeader('Location', 'http://api.example.com/documents/10');
         static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
