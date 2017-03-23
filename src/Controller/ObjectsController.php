@@ -116,6 +116,9 @@ class ObjectsController extends ResourcesController
             $data = $this->request->getData();
             $data = $action(compact('entity', 'data'));
 
+            $action = new GetObjectAction(['table' => $this->Table]);
+            $data = $action(['primaryKey' => $data->id]);
+
             $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
