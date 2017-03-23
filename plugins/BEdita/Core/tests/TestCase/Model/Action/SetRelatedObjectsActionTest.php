@@ -15,6 +15,7 @@ namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use BEdita\Core\ORM\Association\RelatedTo;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\TableRegistry;
@@ -44,6 +45,26 @@ class SetRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.roles_users',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
 
     /**
      * Data provider for `testInvocation` test case.
