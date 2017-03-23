@@ -257,6 +257,20 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
                     'links' => [
                         'self' => 'http://api.example.com/locations/8',
                     ],
+                    'relationships' => [
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/another_test',
+                            ],
+                        ],
+                        'inverse_another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/inverse_another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '9',
@@ -545,6 +559,8 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
         static::assertArrayHasKey('data', $result);
+        static::assertArrayHasKey('attributes', $result['data']);
+        static::assertArrayHasKey('status', $result['data']['attributes']);
         $this->assertHeader('Location', 'http://api.example.com/documents/10');
         static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }

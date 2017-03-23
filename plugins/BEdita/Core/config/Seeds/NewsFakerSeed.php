@@ -18,6 +18,6 @@ class NewsFakerSeed extends AbstractSeed
             'body' => $faker->optional()->text,
             'description' => $faker->paragraph,
         ];
-        ObjectsHandler::create('news', $data);
+        ObjectsHandler::save('news', $data);
     }
 }

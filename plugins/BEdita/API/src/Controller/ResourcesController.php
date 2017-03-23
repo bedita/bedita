@@ -94,11 +94,9 @@ abstract class ResourcesController extends AppController
     {
         $relationship = Inflector::underscore($relationship);
         if (array_key_exists($relationship, $this->getConfig('allowedAssociations'))) {
-            $associations = $this->Table->associations();
-            foreach ($associations as $association) {
-                if ($association->property() === $relationship) {
-                    return $association;
-                }
+            $association = $this->Table->associations()->getByProperty($relationship);
+            if ($association !== null) {
+                return $association;
             }
         }
 
@@ -124,6 +122,9 @@ abstract class ResourcesController extends AppController
 
             $data = $this->request->getData();
             $data = $action(compact('entity', 'data'));
+
+            $action = new GetEntityAction(['table' => $this->Table]);
+            $data = $action(['primaryKey' => $data->id]);
 
             $this->response = $this->response
                 ->withStatus(201)

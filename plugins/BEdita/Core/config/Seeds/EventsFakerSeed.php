@@ -29,6 +29,6 @@ class EventsFakerSeed extends AbstractSeed
                 ],
             ],
         ];
-        $entity = ObjectsHandler::create('events', $data);
+        $entity = ObjectsHandler::save('events', $data);
     }
 }
