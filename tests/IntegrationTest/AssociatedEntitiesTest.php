@@ -12,12 +12,21 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+
 /**
  * Test CRUD operations on objects with associated entities
  *
  */
 class AssociatedEntitiesTest extends ApiIntegrationTestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.date_ranges',
+        'plugin.BEdita/Core.locations',
+    ];
 
     /**
      * Data provider for `testEventAssoc`

@@ -12,31 +12,15 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
-use BEdita\Core\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
  */
-class TrashControllerTest extends IntegrationTestCase
+class TrashControllerTest extends ApiIntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-        'plugin.BEdita/Core.objects',
-    ];
-
     /**
      * Objects table instance.
      *
@@ -52,8 +36,6 @@ class TrashControllerTest extends IntegrationTestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
-
-        CurrentApplication::setFromApiKey(API_KEY);
     }
 
     /**

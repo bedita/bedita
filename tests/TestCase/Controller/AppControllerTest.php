@@ -13,8 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
-use BEdita\Core\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
@@ -24,33 +23,8 @@ use Cake\Network\Exception\NotFoundException;
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
  */
-class AppControllerTest extends IntegrationTestCase
+class AppControllerTest extends ApiIntegrationTestCase
 {
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.relations',
-        'plugin.BEdita/Core.relation_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        CurrentApplication::setFromApiKey(API_KEY);
-    }
-
     /**
      * {@inheritDoc}
      */
