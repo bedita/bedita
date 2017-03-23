@@ -730,8 +730,8 @@ abstract class ApiBaseController extends FrontendController {
      * override FrontendController::setupLocale
      * override AppController::setupLocale
      *
-     * @see bedita-app/controllers/FrontendController#setupLocale()
-     * @see bedita-app/AppController#setupLocale()
+     * @see FrontendController#setupLocale()
+     * @see AppController#setupLocale()
      */
     protected function setupLocale() {
     }
