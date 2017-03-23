@@ -262,7 +262,7 @@ abstract class ApiBaseController extends FrontendController {
      * @var array
      */
     private $defaultAllowedUrlParams = array(
-        '__all' => array('access_token', 'lang'),
+        '__all' => array('access_token'),
         '_pagination' => array('page', 'page_size'),
         'objects' => array('id', 'filter[object_type]', 'filter[substring]', 'filter[query]', 'embed[relations]', '_pagination', 'lang'),
         'posters' => array('id', 'width', 'height', 'mode')
@@ -756,9 +756,9 @@ abstract class ApiBaseController extends FrontendController {
         $this->setupObjectsFilter();
         $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($name)) {
-            // GET /objects/:id supports only '__all' params
+            // GET /objects/:id supports only 'embed', '__all' and 'lang' params
             if (empty($filterType)) {
-                $this->ApiValidator->setAllowedUrlParams('objects', array('embed[relations]', '__all'), false);
+                $this->ApiValidator->setAllowedUrlParams('objects', array('embed[relations]', 'lang', '__all'), false);
                 if (!$this->ApiValidator->isUrlParamsValid('objects')) {
                     $validParams = implode(', ', $this->ApiValidator->getAllowedUrlParams('objects'));
                     throw new BeditaBadRequestException(
