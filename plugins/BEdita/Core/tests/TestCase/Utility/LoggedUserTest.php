@@ -22,6 +22,13 @@ use Cake\TestSuite\TestCase;
  */
 class LoggedUserTest extends TestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        LoggedUser::resetUser();
+    }
 
     /**
      * Test user data
@@ -30,15 +37,15 @@ class LoggedUserTest extends TestCase
      */
     public function testUserData()
     {
-        $userData = LoggedUser::getUser();
+        $this->assertEquals([], LoggedUser::getUser());
+
+        $userData = ['id' => 10, 'somefield' => 'somevalue'];
+        LoggedUser::setUser($userData);
+        $this->assertEquals(10, LoggedUser::id());
 
         LoggedUser::setUser([]);
         $this->assertEquals($userData['id'], LoggedUser::id());
 
-        LoggedUser::setUser(['id' => 10, 'somefield' => 'somevalue']);
-        $this->assertEquals(10, LoggedUser::id());
-
-        LoggedUser::setUser($userData);
         $this->assertEquals($userData, LoggedUser::getUser());
     }
 }

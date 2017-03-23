@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\ObjectsHandler;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -38,6 +39,26 @@ class ObjectsHandlerTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
 
     /**
      * Test `create` and `remove` method
