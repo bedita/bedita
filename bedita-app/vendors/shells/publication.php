@@ -170,12 +170,95 @@ Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidu
         }
     }
 
+    public function remove() {
+        $this->hr();
+        if (!isset($this->params['ids'])) {
+            $this->out('Missing param -ids');
+            $this->out('Bye');
+            return;
+        }
+        $dbCfg = "default";
+        App::import('Component', 'Transaction');
+        $transaction = new TransactionComponent($dbCfg);
+        $ids = explode(',', $this->params['ids']);
+        foreach ($ids as $id) {
+            $area = ClassRegistry::init('Area')->find('all', array(
+                'fields' => array('id'),
+                'conditions' => array('id' => $id),
+                'contain' => array()
+            ));
+            if (empty($area)) {
+                $this->out('Publication ' . $id . ' not found');
+            } else {
+                $transaction->begin();
+                $tree = ClassRegistry::init('Tree')->find('all', array(
+                    'fields' => array('id'),
+                    'conditions' => array('id' => $id),
+                    'contain' => array()
+                ));
+                if (!empty($tree)) {
+                    $res = ClassRegistry::init('Tree')->removeTree($id);
+                    if ($res === false) {
+                        $this->out('Error in deleting tree for publication ' . $id);
+                        $transaction->rollback();
+                        break;
+                    } else {
+                        $this->out('Publication ' . $id . ' tree deleted');
+                    }
+                }
+                $res = ClassRegistry::init('BEObject')->delete($id);
+                if ($res === false) {
+                    $this->out('Error in deleting publication ' . $id);
+                    $transaction->rollback();
+                    break;
+                } else {
+                    $this->out('Publication ' . $id . ' deleted');
+                }
+                $transaction->commit();                
+            }
+        }
+    }
+
+    public function stats() {
+        $areaModel = ClassRegistry::init('Area');        
+        if (isset($this->params['id'])) {
+            $result = $areaModel->getArea($this->params['id'], true);
+        } else {
+            $result = $areaModel->getAreas(true);
+        }
+        $noask = isset($this->params['noask']);
+        if (!empty($result)) {
+            $this->out(count(array_keys($result)) . ' publication(s) found');
+            $this->out('-------------------------------------------------------------------');
+            foreach ($result as $r) {
+                $this->out('id: "' . $r['id'] . '" | title: "' . $r['title'] . '" | status: "' . $r['status'] . '"');
+                $this->out('-------------------------------------------------------------------');
+                $this->out($r['count']['allTypes'] . ' objects');
+                foreach ($r['count']['byType'] as $otype => $count) {
+                    $this->out('|=> ' . $count . ' ' . $otype . '(s)');
+                }
+                $this->out('-------------------------------------------------------------------');
+
+                $response = ($noask) ? 'y' : $this->in('Continue?', array('y', 'n'), 'y');
+                if ($response === 'n') {
+                    $this->out("Bye");
+                    return;
+                }
+                $this->out('-------------------------------------------------------------------');
+            }
+        } else {
+            $this->out('No publication found');
+        }
+    }
+
     public function help() {
         $this->hr();
         $this->out('publication script shell usage:');
         $this->out('');
         $this->out('./cake.sh publication create [-d <depth> [-ns <sublevel-number-of-sections>] [-nd <leafs-number-of-documents>]');
         $this->out('./cake.sh publication createContents [-t <type>] [-n <number>] [-pid <parentId>] [-tpf <titlePostFix>] [-uri <uriInsideMediaFolder>]');
+        $this->out('./cake.sh publication remove -ids <publicationIds> (comma separated id list string)');
+        $this->out('./cake.sh publication stats [-id <publicationId>] [-noask (interactive mode off)]');
         $this->out('');
     }
 
