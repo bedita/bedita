@@ -280,6 +280,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'self' => 'http://api.example.com/locations/8',
                     ],
                     'relationships' => [
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/another_test',
+                            ],
+                        ],
                         'inverse_another_test' => [
                             'links' => [
                                 'related' => 'http://api.example.com/locations/8/inverse_another_test',

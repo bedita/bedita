@@ -37,6 +37,7 @@ class RelationsBehaviorTest extends TestCase
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.locations',
     ];
 
     /**
@@ -55,7 +56,7 @@ class RelationsBehaviorTest extends TestCase
 
         $Documents = TableRegistry::get('Documents');
         $Profiles = TableRegistry::get('Profiles');
-        $News = TableRegistry::get('News');
+        $Locations = TableRegistry::get('Locations');
 
         static::assertSame(1, $Documents->objectType()->id);
         static::assertSame(2, $Profiles->objectType()->id);
@@ -66,8 +67,10 @@ class RelationsBehaviorTest extends TestCase
         static::assertSame('BEdita/Core.Objects', $Documents->association('InverseTest')->className());
         static::assertInstanceOf(BelongsToMany::class, $Profiles->association('InverseTest'));
         static::assertSame('BEdita/Core.Objects', $Profiles->association('InverseTest')->className());
-        static::assertInstanceOf(BelongsToMany::class, $News->association('AnotherTest'));
-        static::assertSame('BEdita/Core.Locations', $News->association('AnotherTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Locations->association('AnotherTest'));
+        static::assertSame('BEdita/Core.Locations', $Locations->association('AnotherTest')->className());
+        static::assertInstanceOf(BelongsToMany::class, $Locations->association('InverseAnotherTest'));
+        static::assertSame('BEdita/Core.Locations', $Locations->association('InverseAnotherTest')->className());
 
         $before = count($Profiles->associations()->keys());
         $Profiles->setupRelations('profiles');
