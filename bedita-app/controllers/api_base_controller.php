@@ -726,7 +726,7 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Setup locale settings
+     * Setup locale settings - nothing to set, for api
      * override FrontendController::setupLocale
      * override AppController::setupLocale
      *
@@ -734,13 +734,6 @@ abstract class ApiBaseController extends FrontendController {
      * @see bedita-app/AppController#setupLocale()
      */
     protected function setupLocale() {
-        if (!empty($this->currLang)) {
-            $conf = Configure::getInstance();
-            if (!empty($this->currLang) && array_key_exists($this->currLang, $conf->frontendLangs)) {
-                Configure::write('Config.language', $this->currLang);
-                $this->set('currLang', $this->currLang);
-            }
-        }
     }
 
     /**
@@ -756,7 +749,10 @@ abstract class ApiBaseController extends FrontendController {
         $this->setupObjectsFilter();
         $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($urlParams['lang'])) {
-            $this->currLang = $urlParams['lang'];
+            $conf = Configure::getInstance();
+            if (array_key_exists($urlParams['lang'], $conf->frontendLangs)) {
+                $this->currLang = $urlParams['lang'];
+            }
         }
         if (!empty($name)) {
             // GET /objects/:id supports only '__all' params
