@@ -12,39 +12,14 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\State\CurrentApplication;
-use BEdita\Core\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use BEdita\Core\Utility\System;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\StatusController
  */
-class StatusControllerTest extends IntegrationTestCase
+class StatusControllerTest extends ApiIntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.endpoints',
-        'plugin.BEdita/Core.applications',
-        'plugin.BEdita/Core.endpoint_permissions',
-    ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        CurrentApplication::setFromApiKey(API_KEY);
-    }
-
     /**
      * Test index method.
      *

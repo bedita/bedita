@@ -13,11 +13,20 @@
 
 namespace BEdita\API\Test\IntegrationTest;
 
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+
 /**
  * Test on `uname` field
  */
 class UniqueNameTest extends ApiIntegrationTestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.locations',
+    ];
+
     /**
      * Data provider for testDoubleInsert
      *

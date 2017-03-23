@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\TestSuite;
 
+use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
@@ -22,12 +23,19 @@ use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
 
 /**
- * Base class for integration tests.
+ * Base class for API integration tests.
  *
  * @since 4.0.0
  */
-class IntegrationTestCase extends CakeIntegrationTestCase
+abstract class ApiIntegrationTestCase extends CakeIntegrationTestCase
 {
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = [];
+
     /**
      * The required fixtures for authentication.
      * They are added to fixtures present in test case class
@@ -73,6 +81,8 @@ class IntegrationTestCase extends CakeIntegrationTestCase
     public function setUp()
     {
         parent::setUp();
+
+        CurrentApplication::setFromApiKey(API_KEY);
 
         EventManager::instance()->on('Auth.afterIdentify', function (Event $event, array $user) {
             LoggedUser::setUser($user);

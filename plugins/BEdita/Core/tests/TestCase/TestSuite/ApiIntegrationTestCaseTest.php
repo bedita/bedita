@@ -12,23 +12,18 @@
  */
 namespace BEdita\Core\Test\TestCase\TestSuite;
 
-use BEdita\Core\TestSuite\IntegrationTestCase;
+use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 
 /**
- * {@see \BEdita\Core\TestSuite\IntegrationTestCase} Test Case
+ * {@see \BEdita\Core\TestSuite\ApiIntegrationTestCase} Test Case
  *
- * @coversDefaultClass \BEdita\Core\TestSuite\IntegrationTestCase
+ * @coversDefaultClass \BEdita\Core\TestSuite\ApiIntegrationTestCase
  */
-class IntegrationTestCaseTest extends IntegrationTestCase
+class IntegrationTestCaseTest extends ApiIntegrationTestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public $fixtures = [];
-
     /**
      * Data provider for addAuthFixtures
      *
@@ -86,7 +81,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testAuthFixtures($expected, $fixtures)
     {
-        $mock = $this->getMockBuilder(IntegrationTestCase::class)
+        $mock = $this->getMockBuilder(ApiIntegrationTestCase::class)
             ->disableOriginalConstructor()
             ->getMock();
 
