@@ -730,10 +730,17 @@ abstract class ApiBaseController extends FrontendController {
      * override FrontendController::setupLocale
      * override AppController::setupLocale
      *
-     * @see FrontendController#setupLocale()
-     * @see AppController#setupLocale()
+     * @see FrontendController::setupLocale()
+     * @see AppController::setupLocale()
      */
     protected function setupLocale() {
+        $urlParams = $this->ApiFormatter->formatUrlParams();
+        if (!empty($urlParams['lang'])) {
+            $conf = Configure::getInstance();
+            if (array_key_exists($urlParams['lang'], $conf->frontendLangs)) {
+                $this->currLang = $urlParams['lang'];
+            }
+        }
     }
 
     /**
@@ -748,12 +755,6 @@ abstract class ApiBaseController extends FrontendController {
     protected function getObjects($name = null, $filterType = null) {
         $this->setupObjectsFilter();
         $urlParams = $this->ApiFormatter->formatUrlParams();
-        if (!empty($urlParams['lang'])) {
-            $conf = Configure::getInstance();
-            if (array_key_exists($urlParams['lang'], $conf->frontendLangs)) {
-                $this->currLang = $urlParams['lang'];
-            }
-        }
         if (!empty($name)) {
             // GET /objects/:id supports only '__all' params
             if (empty($filterType)) {
