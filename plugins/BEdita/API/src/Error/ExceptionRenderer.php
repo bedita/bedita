@@ -16,7 +16,6 @@ namespace BEdita\API\Error;
 use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Plugin;
-use Cake\Error\Debugger;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Network\Request;
 use Zend\Diactoros\Stream;
@@ -207,7 +206,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
      *
      * @param string $code Error code
      * @param string $message Error message
-     * @param string $trace Error stacktrace
+     * @param array|null $trace Error stacktrace
      * @return string JSON error
      */
     public function jsonError($code, $message, $trace)
