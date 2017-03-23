@@ -515,12 +515,7 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/99');
         $result = json_decode((string)$this->_response->getBody(), true);
 
@@ -609,13 +604,7 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -648,13 +637,9 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -662,13 +647,7 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
         $this->assertEquals('title two', TableRegistry::get('Documents')->get(3)->get('title'));
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/news/3', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -693,26 +672,16 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('title-one', TableRegistry::get('Documents')->get(2)->get('uname'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $data['id'] = 33;
         $this->patch('/documents/33', json_encode(compact('data')));
 
@@ -730,24 +699,15 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/3');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/3');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -755,22 +715,12 @@ class ObjectsControllerTest extends ApiIntegrationTestCase
         $docDeleted = TableRegistry::get('Documents')->get(7);
         $this->assertEquals($docDeleted->deleted, 1);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/33');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/4');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
