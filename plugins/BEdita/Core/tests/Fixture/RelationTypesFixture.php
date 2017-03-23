@@ -43,6 +43,16 @@ class RelationTypesFixture extends TestFixture
             'object_type_id' => 2,
             'side' => 'right',
         ],
+        [
+            'relation_id' => 2,
+            'object_type_id' => 5,
+            'side' => 'left',
+        ],
+        [
+            'relation_id' => 2,
+            'object_type_id' => 5,
+            'side' => 'right',
+        ],
     ];
 
     /**

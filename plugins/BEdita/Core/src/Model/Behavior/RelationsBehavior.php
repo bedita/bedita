@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectType;
 use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
@@ -30,6 +31,8 @@ class RelationsBehavior extends Behavior
     protected $_defaultConfig = [
         'objectType' => null,
         'implementedMethods' => [
+            'objectType' => 'objectType',
+            'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',
         ],
     ];
@@ -48,52 +51,33 @@ class RelationsBehavior extends Behavior
     {
         parent::initialize($config);
 
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $this->setupRelations();
+    }
 
-        try {
-            $this->objectType = $ObjectTypes->get(
-                $this->getConfig('objectType') ?: $this->getTable()->getAlias()
-            );
-        } catch (RecordNotFoundException $e) {
-            return;
+    /**
+     * Getter/setter for object type.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type entity, name or ID.
+     * @return \BEdita\Core\Model\Entity\ObjectType|null
+     */
+    public function objectType($objectType = null)
+    {
+        if ($objectType === null) {
+            return $this->objectType;
         }
 
-        $this->objectType = $ObjectTypes->loadInto(
-            $this->objectType,
-            ['LeftRelations', 'RightRelations']
+        $table = TableRegistry::get('ObjectTypes');
+        if (!($objectType instanceof ObjectType)) {
+            $objectType = $table->get($objectType);
+        }
+        $table->loadInto(
+            $objectType,
+            ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes']
         );
 
-        // Add relations to the left side.
-        foreach ($this->objectType->left_relations as $relation) {
-            $this->relatedTo($relation->alias, [
-                'className' => 'Objects',
-                'through' => 'ObjectRelations',
-                'foreignKey' => 'left_id',
-                'targetForeignKey' => 'right_id',
-                'conditions' => [
-                    'ObjectRelations.relation_id' => $relation->id,
-                ],
-                'sort' => [
-                    'ObjectRelations.priority' => 'asc',
-                ],
-            ]);
-        }
+        $this->objectType = $objectType;
 
-        // Add relations to the right side.
-        foreach ($this->objectType->right_relations as $relation) {
-            $this->relatedTo($relation->inverse_alias, [
-                'className' => 'Objects',
-                'through' => 'ObjectRelations',
-                'foreignKey' => 'right_id',
-                'targetForeignKey' => 'left_id',
-                'conditions' => [
-                    'ObjectRelations.relation_id' => $relation->id,
-                ],
-                'sort' => [
-                    'ObjectRelations.inv_priority' => 'asc',
-                ],
-            ]);
-        }
+        return $this->objectType;
     }
 
     /**
@@ -119,6 +103,85 @@ class RelationsBehavior extends Behavior
         $association = new RelatedTo($associated, $options);
 
         return $this->getTable()->associations()->add($association->getName(), $association);
+    }
+
+    /**
+     * Set up relations for the current table.
+     *
+     * @param string|int|null $objectType Object type name or ID.
+     * @return void
+     */
+    public function setupRelations($objectType = null)
+    {
+        if ($objectType === null) {
+            $objectType = $this->getConfig('objectType') ?: $this->getTable()->getAlias();
+        }
+
+        try {
+            $objectType = $this->objectType($objectType);
+        } catch (RecordNotFoundException $e) {
+            return;
+        }
+
+        // Add relations to the left side.
+        foreach ($objectType->left_relations as $relation) {
+            if ($this->getTable()->association($relation->alias) !== null) {
+                continue;
+            }
+
+            $className = 'BEdita/Core.Objects';
+            if (count($relation->right_object_types) === 1) {
+                $className = $relation->right_object_types[0]->table;
+            }
+
+            $through = TableRegistry::get(
+                $relation->alias . 'ObjectRelations',
+                ['className' => 'ObjectRelations']
+            );
+
+            $this->relatedTo($relation->alias, [
+                'className' => $className,
+                'through' => $through->getRegistryAlias(),
+                'foreignKey' => 'left_id',
+                'targetForeignKey' => 'right_id',
+                'conditions' => [
+                    $through->aliasField('relation_id') => $relation->id,
+                ],
+                'sort' => [
+                    $through->aliasField('priority') => 'asc',
+                ],
+            ]);
+        }
+
+        // Add relations to the right side.
+        foreach ($objectType->right_relations as $relation) {
+            if ($this->getTable()->association($relation->inverse_alias) !== null) {
+                continue;
+            }
+
+            $className = 'BEdita/Core.Objects';
+            if (count($relation->left_object_types) === 1) {
+                $className = $relation->left_object_types[0]->table;
+            }
+
+            $through = TableRegistry::get(
+                $relation->inverse_alias . 'ObjectRelations',
+                ['className' => 'ObjectRelations']
+            );
+
+            $this->relatedTo($relation->inverse_alias, [
+                'className' => $className,
+                'through' => $through->getRegistryAlias(),
+                'foreignKey' => 'right_id',
+                'targetForeignKey' => 'left_id',
+                'conditions' => [
+                    $through->aliasField('relation_id') => $relation->id,
+                ],
+                'sort' => [
+                    $through->aliasField('inv_priority') => 'asc',
+                ],
+            ]);
+        }
     }
 
     /**
