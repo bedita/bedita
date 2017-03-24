@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use Cake\Database\Expression\QueryExpression;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Utility\Inflector;
 
@@ -81,6 +82,7 @@ class ListEntitiesAction extends BaseAction
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $filter Filter data.
      * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException
      */
     protected function buildFilter(Query $query, array $filter)
     {
@@ -138,6 +140,13 @@ class ListEntitiesAction extends BaseAction
 
                 continue;
             }
+
+            // No suitable filter was found
+            //$this->log('Filter not found ' . $key, 'error');
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'filter "' . $key . '" was not found',
+            ]);
         }
 
         return $query;

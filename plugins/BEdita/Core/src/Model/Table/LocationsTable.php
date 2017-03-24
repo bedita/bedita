@@ -14,7 +14,9 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Inheritance\Table;
+use BEdita\Core\Utility\Database;
 use Cake\Database\Expression\FunctionExpression;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\Validation\Validator;
 
@@ -31,6 +33,11 @@ use Cake\Validation\Validator;
  */
 class LocationsTable extends Table
 {
+    /**
+     * DB version supported
+     * @var array
+     */
+    protected $geoDbSupport = ['vendor' => 'mysql', 'version' => '5.7'];
 
     /**
      * {@inheritDoc}
@@ -102,17 +109,31 @@ class LocationsTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable geo localization conditions.
      * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException
      */
     public function findGeo(Query $query, array $options)
     {
         $center = !empty($options['center']) ? $options['center'] : [];
         if (empty($center)) {
-            return $query;
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => '"center" parameter was not found',
+            ]);
         }
         if (is_array($center)) {
             $center = implode(' ', $center);
         }
-        $center = sprintf('POINT(%s)', str_replace(',', ' ', $center));
+        $center = str_replace(',', ' ', $center);
+        if (!preg_match("/^(-?\d{1,3}\.\d{1,})\s+(-?\d{1,3}\.\d{1,})$/", $center)) {
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'bad geo data format: ' . $center,
+            ]);
+        }
+
+        $this->checkGeoDbSupport();
+
+        $center = sprintf('POINT(%s)', $center);
         $distance = 'meta__distance';
 
         $distanceExpression = new FunctionExpression(
@@ -129,5 +150,21 @@ class LocationsTable extends Table
             ->select([$distance => $distanceExpression])
             ->enableAutoFields(true)
             ->order([$distance => 'ASC']);
+    }
+
+    /**
+     * Check if current DB supports geo operations
+     *
+     * @return void
+     * @throws \Cake\Network\Exception\BadRequestException
+     */
+    public function checkGeoDbSupport()
+    {
+        if (!Database::supportedVersion($this->geoDbSupport)) {
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'operation supported only on MySQL 5.7',
+            ]);
+        }
     }
 }

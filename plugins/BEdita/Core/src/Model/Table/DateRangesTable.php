@@ -14,6 +14,7 @@
 namespace BEdita\Core\Model\Table;
 
 use Cake\Database\Expression\QueryExpression;
+use Cake\Network\Exception\BadRequestException;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -118,10 +119,18 @@ class DateRangesTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
      * @return \Cake\ORM\Query
+     * @throws \Cake\Network\Exception\BadRequestException
      */
     public function findDateRanges(Query $query, array $options)
     {
         $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
+
+        if (empty($options)) {
+            throw new BadRequestException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'start_date or end_date parameter missing',
+            ]);
+        }
 
         return $query->where(function (QueryExpression $exp) use ($options) {
             foreach ($options as $field => $conditions) {
