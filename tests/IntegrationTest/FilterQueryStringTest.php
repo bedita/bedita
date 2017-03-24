@@ -99,18 +99,18 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
      */
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
-        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
-            static::expectException('Cake\Network\Exception\BadRequestException');
-        }
-
         $this->configRequestHeaders();
         $this->get($endpoint . '?' . $query);
         $result = json_decode((string)$this->_response->getBody(), true);
-        $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals(count($expected), count($result['data']));
-        $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
-        static::assertEquals($expected, $resultDistance);
+        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+            $this->assertResponseCode(400);
+        } else {
+            $this->assertResponseCode(200);
+            static::assertEquals(count($expected), count($result['data']));
+            $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
+            static::assertEquals($expected, $resultDistance);
+        }
     }
 
     /**
