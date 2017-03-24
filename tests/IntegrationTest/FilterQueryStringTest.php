@@ -99,9 +99,8 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
      */
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
-        $info = Database::basicInfo();
-        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
-            static::markTestSkipped('Only MySQL >= 5.7 supported in findGeo filter');
+        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+            static::expectException('Cake\Network\Exception\BadRequestException');
         }
 
         $this->configRequestHeaders();
@@ -112,5 +111,48 @@ class FilterQueryStringTest extends ApiIntegrationTestCase
         static::assertEquals(count($expected), count($result['data']));
         $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
         static::assertEquals($expected, $resultDistance);
+    }
+
+    /**
+     * Data provider for `testBadFilter`
+     */
+    public function badFilterProvider()
+    {
+        return [
+            'simple' => [
+               'filter[geo][center]=44.4944183,11.3464055',
+               '/documents'
+            ],
+            'bad' => [
+               'filter[cool_filter]=top',
+            ],
+            'banana' => [
+               'filter[geo][banana]=44.4944183,11.3464055',
+               '/locations'
+            ],
+            // this will work after #1141 - currently gives a 500
+            // 'banana2' => [
+            //    'filter[date_ranges][banana][gt]=2017-01-01',
+            //    '/events'
+            // ],
+        ];
+    }
+
+    /**
+     * Test bad filters
+     *
+     * @param $query string URL with query filter string
+     * @param $endpoint string Endpoint to use
+     *
+     * @dataProvider badFilterProvider
+     * @coversNothing
+     */
+    public function testBadFilter($query, $endpoint = '/events')
+    {
+        $this->configRequestHeaders();
+        $this->get($endpoint . '?' . $query);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
     }
 }
