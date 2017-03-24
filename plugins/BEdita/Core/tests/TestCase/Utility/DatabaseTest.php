@@ -157,13 +157,13 @@ class DatabaseTest extends TestCase
      *
      * @covers ::supportedVersion()
      */
-    public function testSuppportedVersion()
+    public function testSupportedVersion()
     {
         $info = Database::basicInfo();
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
         static::assertTrue($result);
         $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'ZZZZ']);
-        static::assertFalse($result);
+        static::assertFalse(($info['vendor'] !== 'sqlite') ? $result : !$result);
         $result = Database::supportedVersion(['vendor' => 'mongodb']);
         static::assertFalse($result);
     }
