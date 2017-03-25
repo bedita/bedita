@@ -139,10 +139,10 @@ class DateRange extends Entity
      *
      * **Warning**: this method **does not** take `params` into account.
      *
-     * @param array[] ...$dateRanges Set of Date Ranges.
+     * @param \BEdita\Core\Model\Entity\DateRange[][] ...$dateRanges Set of Date Ranges.
      * @return \BEdita\Core\Model\Entity\DateRange[]
      */
-    public static function union(array ...$dateRanges)
+    public static function union(...$dateRanges)
     {
         $dateRanges = call_user_func_array('array_merge', $dateRanges);
 
