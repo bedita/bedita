@@ -51,7 +51,8 @@ class DateRange extends Entity
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
-    public function isBefore(DateRange $dateRange) {
+    public function isBefore(DateRange $dateRange)
+    {
         return $this->start_date < $dateRange->start_date && ($this->end_date === null || $this->end_date <= $dateRange->start_date);
     }
 
@@ -61,17 +62,19 @@ class DateRange extends Entity
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
-    public function isAfter(DateRange $dateRange) {
+    public function isAfter(DateRange $dateRange)
+    {
         return $this->start_date > $dateRange->start_date && ($dateRange->end_date === null || $this->start_date >= $dateRange->end_date);
     }
 
     /**
      * Normalize an array of Date Ranges by sorting and joining overlapping Date Ranges.
      *
-     * @param \BEdita\Core\Model\Entity\DateRange[] $dateRanges
+     * @param \BEdita\Core\Model\Entity\DateRange[] $dateRanges Set of Date Ranges.
      * @return \BEdita\Core\Model\Entity\DateRange[]
      */
-    public static function normalize(array $dateRanges) {
+    public static function normalize(array $dateRanges)
+    {
         if (empty($dateRanges)) {
             return [];
         }
@@ -162,7 +165,6 @@ class DateRange extends Entity
 
                     break;
                 }
-
 
                 $dateRange->start_date = $dateRange2->end_date;
 

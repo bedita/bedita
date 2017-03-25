@@ -575,7 +575,7 @@ class DateRangeTest extends TestCase
         $dateRanges1 = $this->DateRanges->newEntities($dateRanges1);
         $dateRanges2 = $this->DateRanges->newEntities($dateRanges2);
 
-        $result = DateRange::diff($dateRanges1,$dateRanges2);
+        $result = DateRange::diff($dateRanges1, $dateRanges2);
 
         $expected = json_decode(json_encode($expected), true);
         $result = json_decode(json_encode($result), true);
