@@ -450,6 +450,73 @@ class DateRangeTest extends TestCase
     }
 
     /**
+     * Test case for union method.
+     *
+     * @return void
+     *
+     * @covers ::union()
+     */
+    public function testUnion()
+    {
+        $expected = $this->DateRanges->newEntities([
+            [
+                'start_date' => '2017-01-01',
+                'end_date' => '2017-01-10',
+            ],
+            [
+                'start_date' => '2017-01-20',
+                'end_date' => null,
+            ],
+            [
+                'start_date' => '2017-02-01',
+                'end_date' => '2017-02-10',
+            ],
+        ]);
+
+        $dateRanges1 = $this->DateRanges->newEntities([
+            [
+                'start_date' => '2017-01-01',
+                'end_date' => '2017-01-05',
+            ],
+            [
+                'start_date' => '2017-01-20',
+                'end_date' => null,
+            ],
+        ]);
+        $dateRanges2 = $this->DateRanges->newEntities([
+            [
+                'start_date' => '2017-02-05',
+                'end_date' => null,
+            ],
+            [
+                'start_date' => '2017-01-20',
+                'end_date' => null,
+            ],
+        ]);
+        $dateRanges3 = $this->DateRanges->newEntities([
+            [
+                'start_date' => '2017-01-05',
+                'end_date' => '2017-01-10',
+            ],
+            [
+                'start_date' => '2017-02-01',
+                'end_date' => '2017-02-10',
+            ],
+            [
+                'start_date' => '2017-01-20',
+                'end_date' => null,
+            ],
+        ]);
+
+        $result = DateRange::union($dateRanges1, $dateRanges2, $dateRanges3);
+
+        $expected = json_decode(json_encode($expected), true);
+        $result = json_decode(json_encode($result), true);
+
+        static::assertSame($expected, $result);
+    }
+
+    /**
      * Data provider for `testDiff` test case.
      *
      * @return array
@@ -467,7 +534,7 @@ class DateRangeTest extends TestCase
                     ],
                 ],
             ],
-            'sort' => [
+            'complex' => [
                 [
                     [
                         'start_date' => '2017-01-01',

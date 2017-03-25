@@ -132,6 +132,24 @@ class DateRange extends Entity
     }
 
     /**
+     * Compute union of multiple sets of Date Ranges.
+     *
+     * This method computes union of multiple sets of Date Ranges.
+     * The result is returned in normalized form.
+     *
+     * **Warning**: this method **does not** take `params` into account.
+     *
+     * @param array[] ...$dateRanges Set of Date Ranges.
+     * @return \BEdita\Core\Model\Entity\DateRange[]
+     */
+    public static function union(array ...$dateRanges)
+    {
+        $dateRanges = call_user_func_array('array_merge', $dateRanges);
+
+        return static::normalize($dateRanges);
+    }
+
+    /**
      * Compute difference between two sets of Date Ranges.
      *
      * When computing complement of `$array1` with respect to `$array2`:
