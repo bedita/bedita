@@ -48,6 +48,12 @@ class DateRange extends Entity
     /**
      * Check if this Date Range is before the passed Date Range.
      *
+     * A Date Range is "before" another Date Range if its `end_date` is lower than,
+     * or equal, to the other Date Range's `start_date`. If `end_date` is `null`,
+     * for this purpose it assumes the same value as `start_date`.
+     *
+     * **Warning**: this method **does not** take `params` into account.
+     *
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
@@ -59,6 +65,12 @@ class DateRange extends Entity
     /**
      * Check if this Date Range is after the passed Date Range.
      *
+     * A Date Range is "after" another Date Range if its `start_date` is greater than,
+     * or equal, to the other Date Range's `end_date`. If `end_date` is `null`,
+     * for this purpose it assumes the same value as `start_date`.
+     *
+     * **Warning**: this method **does not** take `params` into account.
+     *
      * @param \BEdita\Core\Model\Entity\DateRange $dateRange Date Range being compared.
      * @return bool
      */
@@ -69,6 +81,13 @@ class DateRange extends Entity
 
     /**
      * Normalize an array of Date Ranges by sorting and joining overlapping Date Ranges.
+     *
+     * Normalization sorts Date Ranges in a set by `start_date` in ascending order.
+     * Also, if two or more Date Ranges do overlap, or are adjacent
+     * (i.e. `$d1->end_date === $d2->start_date`), they are merged in one Date Range.
+     * Duplicate Date Ranges are removed.
+     *
+     * **Warning**: this method **does not** take `params` into account.
      *
      * @param \BEdita\Core\Model\Entity\DateRange[] $dateRanges Set of Date Ranges.
      * @return \BEdita\Core\Model\Entity\DateRange[]
@@ -115,13 +134,29 @@ class DateRange extends Entity
     /**
      * Compute difference between two sets of Date Ranges.
      *
+     * When computing complement of `$array1` with respect to `$array2`:
+     *  - Date Ranges with `end_date = null` are treated as unit sets, all
+     *    other Date Ranges are considered intervals.
+     *  - complement of an interval with respect to another interval results
+     *    in the difference of the two sets.
+     *  - complement of an interval with respect to a unit set results in
+     *    the interval unmodified.
+     *  - complement of a unit sets with respect to an interval results in
+     *    either the unit set unmodified if they are not overlapping, or in
+     *    the empty set otherwise.
+     *  - complement of a unit sets with respect to another unit set results
+     *    in either the unit set unmodified if they are not the same, or in
+     *    the empty set otherwise.
+     *
+     * **Warning**: this method does **not** take `params` into account.
+     *
      * @param \BEdita\Core\Model\Entity\DateRange[] $array1 First set of Date Ranges.
      * @param \BEdita\Core\Model\Entity\DateRange[] $array2 Second set of Date Ranges.
      * @return \BEdita\Core\Model\Entity\DateRange[]
      */
     public static function diff(array $array1, array $array2)
     {
-        // Ensure array are normalized.
+        // Ensure arrays are normalized.
         $array1 = static::normalize($array1);
         $array2 = static::normalize($array2);
 
@@ -135,7 +170,7 @@ class DateRange extends Entity
 
             while (($dateRange2 = current($array2)) !== false) {
                 if ($dateRange->end_date === null && $dateRange2->end_date === null && $dateRange->start_date == $dateRange2->start_date) {
-                    // Discard range.
+                    // Unit sets match. Discard range.
                     $dateRange = null;
                     next($array2);
 
