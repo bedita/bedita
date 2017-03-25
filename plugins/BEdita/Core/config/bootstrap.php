@@ -40,5 +40,6 @@ if (!Configure::configured('ini')) {
  * Use custom DateTimeType
  */
 Type::set('datetime', new DateTimeType());
+Type::set('timestamp', new DateTimeType());
 
 Configure::load('BEdita/Core.bedita', 'ini');
