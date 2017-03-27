@@ -28,32 +28,6 @@ use Cake\Event\EventManager;
 class IntegrationTestCaseTest extends IntegrationTestCase
 {
     /**
-     * {@inheritDoc}
-     */
-    public function tearDown()
-    {
-        parent::tearDown();
-
-        // $this->fixtureManager->shutDown();
-
-        // ConnectionManager::get('default')
-        //     ->disableConstraints(function (Connection $connection) {
-        //         $tables = $connection->getSchemaCollection()->listTables();
-
-        //         foreach ($tables as $table) {
-        //             $t = $connection->getSchemaCollection()->describe($table);
-        //             if (empty($t)) {
-        //                 continue;
-        //             }
-        //             $sql = $t->dropSql($connection);
-        //             foreach ($sql as $query) {
-        //                 $connection->query($query);
-        //             }
-        //         }
-        //     });
-    }
-
-    /**
      * Data provider for addAuthFixtures
      *
      * @return array
