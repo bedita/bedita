@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use BEdita\Core\Model\Entity\ObjectType;
+use BEdita\Core\ORM\Association\RelatedTo;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Behavior;
 use Cake\ORM\TableRegistry;
@@ -29,6 +31,8 @@ class RelationsBehavior extends Behavior
     protected $_defaultConfig = [
         'objectType' => null,
         'implementedMethods' => [
+            'objectType' => 'objectType',
+            'setupRelations' => 'setupRelations',
             'getRelations' => 'getRelations',
         ],
     ];
@@ -47,49 +51,134 @@ class RelationsBehavior extends Behavior
     {
         parent::initialize($config);
 
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
+        $this->setupRelations();
+    }
+
+    /**
+     * Getter/setter for object type.
+     *
+     * @param \BEdita\Core\Model\Entity\ObjectType|string|int|null $objectType Object type entity, name or ID.
+     * @return \BEdita\Core\Model\Entity\ObjectType|null
+     */
+    public function objectType($objectType = null)
+    {
+        if ($objectType === null) {
+            return $this->objectType;
+        }
+
+        $table = TableRegistry::get('ObjectTypes');
+        if (!($objectType instanceof ObjectType)) {
+            $objectType = $table->get($objectType);
+        }
+        $table->loadInto(
+            $objectType,
+            ['LeftRelations.RightObjectTypes', 'RightRelations.LeftObjectTypes']
+        );
+
+        $this->objectType = $objectType;
+
+        return $this->objectType;
+    }
+
+    /**
+     * Creates a new RelatedTo association between this table and a target
+     * table. A "belongs to many" association is a M-N relationship.
+     *
+     * Target table can be inferred by its name, which is provided in the
+     * first argument, or you can either pass the class name to be instantiated or
+     * an instance of it directly.
+     *
+     * The options array accept the same keys as {@see \Cake\ORM\Table::belongsToMany()}.
+     *
+     * This method will return the association object that was built.
+     *
+     * @param string $associated The alias for the target table. This is used to
+     *      uniquely identify the association.
+     * @param array $options List of options to configure the association definition.
+     * @return \Cake\ORM\Association
+     */
+    protected function relatedTo($associated, array $options = [])
+    {
+        $options += ['sourceTable' => $this->getTable()];
+        $association = new RelatedTo($associated, $options);
+
+        return $this->getTable()->associations()->add($association->getName(), $association);
+    }
+
+    /**
+     * Set up relations for the current table.
+     *
+     * @param string|int|null $objectType Object type name or ID.
+     * @return void
+     */
+    public function setupRelations($objectType = null)
+    {
+        if ($objectType === null) {
+            $objectType = $this->getConfig('objectType') ?: $this->getTable()->getAlias();
+        }
 
         try {
-            $this->objectType = $ObjectTypes->get(
-                $this->getConfig('objectType') ?: $this->getTable()->getAlias()
-            );
+            $objectType = $this->objectType($objectType);
         } catch (RecordNotFoundException $e) {
             return;
         }
 
-        $this->objectType = $ObjectTypes->loadInto(
-            $this->objectType,
-            ['LeftRelations', 'RightRelations']
-        );
-
         // Add relations to the left side.
-        foreach ($this->objectType->left_relations as $relation) {
-            $this->getTable()->belongsToMany($relation->alias, [
-                'className' => 'Objects',
-                'through' => 'ObjectRelations',
+        foreach ($objectType->left_relations as $relation) {
+            if ($this->getTable()->association($relation->alias) !== null) {
+                continue;
+            }
+
+            $className = 'BEdita/Core.Objects';
+            if (count($relation->right_object_types) === 1) {
+                $className = $relation->right_object_types[0]->table;
+            }
+
+            $through = TableRegistry::get(
+                $relation->alias . 'ObjectRelations',
+                ['className' => 'ObjectRelations']
+            );
+
+            $this->relatedTo($relation->alias, [
+                'className' => $className,
+                'through' => $through->getRegistryAlias(),
                 'foreignKey' => 'left_id',
                 'targetForeignKey' => 'right_id',
                 'conditions' => [
-                    'ObjectRelations.relation_id' => $relation->id,
+                    $through->aliasField('relation_id') => $relation->id,
                 ],
                 'sort' => [
-                    'ObjectRelations.priority' => 'asc',
+                    $through->aliasField('priority') => 'asc',
                 ],
             ]);
         }
 
         // Add relations to the right side.
-        foreach ($this->objectType->right_relations as $relation) {
-            $this->getTable()->belongsToMany($relation->inverse_alias, [
-                'className' => 'Objects',
-                'through' => 'ObjectRelations',
+        foreach ($objectType->right_relations as $relation) {
+            if ($this->getTable()->association($relation->inverse_alias) !== null) {
+                continue;
+            }
+
+            $className = 'BEdita/Core.Objects';
+            if (count($relation->left_object_types) === 1) {
+                $className = $relation->left_object_types[0]->table;
+            }
+
+            $through = TableRegistry::get(
+                $relation->inverse_alias . 'ObjectRelations',
+                ['className' => 'ObjectRelations']
+            );
+
+            $this->relatedTo($relation->inverse_alias, [
+                'className' => $className,
+                'through' => $through->getRegistryAlias(),
                 'foreignKey' => 'right_id',
                 'targetForeignKey' => 'left_id',
                 'conditions' => [
-                    'ObjectRelations.relation_id' => $relation->id,
+                    $through->aliasField('relation_id') => $relation->id,
                 ],
                 'sort' => [
-                    'ObjectRelations.inv_priority' => 'asc',
+                    $through->aliasField('inv_priority') => 'asc',
                 ],
             ]);
         }

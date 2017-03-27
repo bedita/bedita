@@ -13,12 +13,14 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\DateRangesTable;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
- * BEdita\Core\Model\Table\DateRangesTable Test Case
+ * {@see \BEdita\Core\Model\Table\DateRangesTable} Test Case
+ *
+ * @coversDefaultClass \BEdita\Core\Model\Table\DateRangesTable
  */
 class DateRangesTableTest extends TestCase
 {
@@ -42,9 +44,7 @@ class DateRangesTableTest extends TestCase
     ];
 
     /**
-     * setUp method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function setUp()
     {
@@ -53,9 +53,7 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * tearDown method
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function tearDown()
     {
@@ -65,32 +63,105 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * Test initialize method
+     * Test marshalling of new entities.
      *
      * @return void
+     *
+     * @coversNothing
      */
-    public function testInitialize()
+    public function testMarshal()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $dateRange = $this->DateRanges->newEntity([
+            'start_date' => '2017-01-01',
+            'end_date' => '2017-01-10T17:18:19Z',
+        ]);
+
+        static::assertInstanceOf(Time::class, $dateRange->start_date);
+        static::assertInstanceOf(Time::class, $dateRange->end_date);
     }
 
     /**
-     * Test validationDefault method
+     * Data provider for `testFindDate` test case.
      *
-     * @return void
+     * @return array
      */
-    public function testValidationDefault()
+    public function findDateProvider()
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        return [
+            'startAfter' => [
+                [
+                    'start_date' => ['gt' => '2017-01-01'],
+                ],
+                1,
+            ],
+            'startBefore' => [
+                [
+                    'start_date' => ['lt' => '2017-01-01'],
+                ],
+                0,
+            ],
+            'endBefore' => [
+                [
+                    'end_date' => ['le' => '2017-01-01'],
+                ],
+                0,
+            ],
+            'endAfter' => [
+                [
+                    'end_date' => ['ge' => '2017-01-01'],
+                ],
+                1,
+            ],
+            'equals' => [
+                [
+                    'start_date' => '2017-03-07 12:40:19',
+                    'end_date' => ['eq' => '2017-03-08 21:40:19'],
+                ],
+                1,
+            ],
+            'notEquals' => [
+                [
+                    'start_date' => ['ne' => '2017-03-07 12:40:19'],
+                ],
+                0,
+            ],
+            'combinedOK' => [
+                [
+                    'start_date' => ['gt' => '2017-03-01'],
+                    'end_date' => ['lt' => '2017-04-01'],
+                ],
+                1,
+            ],
+            'combinedKO' => [
+                [
+                    'start_date' => ['lt' => '2017-01-01'],
+                    'end_date' => ['gt' => '2017-05-01'],
+                ],
+                0,
+            ],
+            'multipleConditions' => [
+                [
+                    'start_date' => ['>=' => '2017-03-07', '<' => '2017-03-08'],
+                ],
+                1,
+            ],
+        ];
     }
 
     /**
-     * Test buildRules method
+     * Test object date ranges finder.
      *
+     * @param array $conditions Date conditions.
+     * @param array|false $numExpected Number of expected results.
      * @return void
+     *
+     * @dataProvider findDateProvider
+     * @covers ::findDateRanges()
      */
-    public function testBuildRules()
+    public function testFindDate($conditions, $numExpected)
     {
-        $this->markTestIncomplete('Not implemented yet.');
+        $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
+
+        static::assertEquals($numExpected, count($result));
     }
 }

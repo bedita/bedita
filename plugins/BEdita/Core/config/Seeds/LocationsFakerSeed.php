@@ -20,6 +20,6 @@ class LocationsFakerSeed extends AbstractSeed
             'country' => $faker->country,
             'region' => $faker->stateAbbr,
         ];
-        ObjectsHandler::create('locations', $data);
+        ObjectsHandler::save('locations', $data);
     }
 }

@@ -91,17 +91,16 @@ class EndpointPermissionsTable extends Table
      */
     public function findByEndpoint(Query $query, array $options)
     {
+        $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
         if (empty($ids)) {
-            return $query->where([
-                $this->aliasField('endpoint_id') . ' IS' => null,
-            ]);
+            return $query->where(function (QueryExpression $expr) use ($field) {
+                return $expr->isNull($field);
+            });
         }
 
-        return $query->where(function (QueryExpression $expr) use ($ids) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids) {
-                $field = $this->aliasField('endpoint_id');
-
+        return $query->where(function (QueryExpression $expr) use ($ids, $field) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field) {
                 return $expr
                     ->in($field, $ids)
                     ->isNull($field);
@@ -118,16 +117,16 @@ class EndpointPermissionsTable extends Table
      */
     public function findByApplication(Query $query, array $options)
     {
+        $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
         if (empty($id)) {
-            return $query->where([
-                $this->aliasField('application_id') . ' IS' => null,
-            ]);
+            return $query->where(function (QueryExpression $expr) use ($field) {
+                return $expr->isNull($field);
+            });
         }
 
-        return $query->where(function (QueryExpression $expr) use ($id) {
-            return $expr->or_(function (QueryExpression $expr) use ($id) {
-                $field = $this->aliasField('application_id');
+        return $query->where(function (QueryExpression $expr) use ($id, $field) {
+            return $expr->or_(function (QueryExpression $expr) use ($id, $field) {
 
                 return $expr
                     ->eq($field, $id)
@@ -145,17 +144,16 @@ class EndpointPermissionsTable extends Table
      */
     public function findByRole(Query $query, array $options)
     {
+        $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
         if (empty($ids)) {
-            return $query->where([
-                $this->aliasField('role_id') . ' IS' => null,
-            ]);
+            return $query->where(function (QueryExpression $expr) use ($field) {
+                return $expr->isNull($field);
+            });
         }
 
-        return $query->where(function (QueryExpression $expr) use ($ids) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids) {
-                $field = $this->aliasField('role_id');
-
+        return $query->where(function (QueryExpression $expr) use ($ids, $field) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field) {
                 return $expr
                     ->in($field, $ids)
                     ->isNull($field);

@@ -20,6 +20,6 @@ class DocumentsFakerSeed extends AbstractSeed
             'description' => $faker->paragraph,
             'publish_start' => Time::now(),
         ];
-        ObjectsHandler::create('documents', $data);
+        ObjectsHandler::save('documents', $data);
     }
 }

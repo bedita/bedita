@@ -129,7 +129,6 @@ class BeditaShell extends Shell
         $this->info('Database connection is OK');
         $this->hr();
 
-
         $this->info('Checking database schema....');
         if (!$this->initSchema()) {
             return false;
@@ -273,7 +272,7 @@ class BeditaShell extends Shell
     protected function databaseConnection()
     {
         $this->configModified = false;
-        $dbParams = Database::basicInfo();
+        $dbParams = Database::basicInfo('default', false);
         $fields = ['host', 'database', 'username', 'password'];
         foreach ($fields as $name) {
             $expected = '__BE4_DB_' . strtoupper($name) . '__';

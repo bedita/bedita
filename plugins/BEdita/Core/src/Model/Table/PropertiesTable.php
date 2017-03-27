@@ -76,7 +76,6 @@ class PropertiesTable extends Table
             ->boolean('multiple')
             ->notEmpty('multiple');
 
-
         return $validator;
     }
 

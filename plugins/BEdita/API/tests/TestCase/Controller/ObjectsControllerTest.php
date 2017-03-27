@@ -73,10 +73,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 6,
+                    'count' => 7,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 6,
+                    'page_items' => 7,
                     'page_size' => 20,
                 ],
             ],
@@ -278,6 +278,44 @@ class ObjectsControllerTest extends IntegrationTestCase
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/locations/8',
+                    ],
+                    'relationships' => [
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/another_test',
+                            ],
+                        ],
+                        'inverse_another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/inverse_another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '9',
+                    'type' => 'events',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'event-one',
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2016-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'title' => 'first event',
+                        'description' => 'event description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/events/9',
                     ],
                 ],
             ],
@@ -568,11 +606,15 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ]);
         $this->post('/documents', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/documents/9');
-        $this->assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
+        static::assertArrayHasKey('data', $result);
+        static::assertArrayHasKey('attributes', $result['data']);
+        static::assertArrayHasKey('status', $result['data']['attributes']);
+        $this->assertHeader('Location', 'http://api.example.com/documents/10');
+        static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
     /**
@@ -844,6 +886,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                             ],
                         ],
                     ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -881,6 +928,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                    ],
+                    'meta' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
                     ],
                 ],
             ],
@@ -944,6 +996,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                             ],
                         ],
                     ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -964,6 +1021,11 @@ class ObjectsControllerTest extends IntegrationTestCase
                                 'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
                             ],
                         ],
+                    ],
+                    'meta' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
                     ],
                 ],
             ],
@@ -1013,6 +1075,536 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociations()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociationsDuplicateEntry()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => null,
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to delete existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testDeleteAssociations()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+            ],
+            [
+                'id' => '2',
+                'type' => 'documents',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to delete existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testDeleteAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociations()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociationsEmpty()
+    {
+        $expected = [
+            'data' => [],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => null,
+                ],
+            ],
+            [
+                'id' => '3',
+                'type' => 'documents',
+                'meta' => [
+                    'priority' => 2,
+                    'inv_priority' => 1,
+                    'params' => null,
+                ],
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to update relationships with a non-existing object ID.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testUpdateAssociationsMissingId()
+    {
+        $expected = [
+            'status' => '400',
+            'title' => 'Record not found in table "profiles"',
+        ];
+
+        $data = [
+            [
+                'id' => '99',
+                'type' => 'profiles',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test relationships method with a non-existing association.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testWrongAssociation()
+    {
+        $expected = [
+            'status' => '404',
+            'title' => 'Relationship "this_relationship_does_not_exist" does not exist',
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->get('/documents/2/relationships/this_relationship_does_not_exist');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test relationships method to update relationships with a wrong type.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testUpdateAssociationsUnsupportedType()
+    {
+        $expected = [
+            'status' => '409',
+            'title' => 'Unsupported resource type',
+        ];
+
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'myCustomType',
+            ],
+        ];
+
+        $this->configRequest([
+            'headers' => [
+                'Host' => 'api.example.com',
+                'Accept' => 'application/vnd.api+json',
+                'Content-Type' => 'application/vnd.api+json',
+            ],
+        ]);
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
     }
 
     /**

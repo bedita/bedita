@@ -160,6 +160,25 @@ class ObjectsFixture extends TestFixture
             'publish_start' => null,
             'publish_end' => null
         ],
+        [
+            'object_type_id' => 6,
+            'status' => 'on',
+            'uname' => 'event-one',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2017-03-08 07:09:23',
+            'modified' => '2016-03-08 08:30:00',
+            'published' => null,
+            'title' => 'first event',
+            'description' => 'event description goes here',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null
+        ],
     ];
 
     /**

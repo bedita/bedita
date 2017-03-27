@@ -40,6 +40,7 @@ use Cake\ORM\TableRegistry;
  * @property int $modified_by
  * @property \Cake\I18n\Time $publish_start
  * @property \Cake\I18n\Time $publish_end
+ * @property \Bedita\Core\Model\Entity\DateRange[] $date_ranges
  *
  * @since 4.0.0
  */
@@ -93,7 +94,8 @@ class ObjectEntity extends Entity
     {
         if (!$this->object_type) {
             try {
-                $this->object_type = TableRegistry::get('ObjectTypes')->get($this->object_type_id);
+                $typeId = $this->object_type_id ?: $this->getSource();
+                $this->object_type = TableRegistry::get('ObjectTypes')->get($typeId);
             } catch (RecordNotFoundException $e) {
                 return null;
             } catch (InvalidPrimaryKeyException $e) {
@@ -136,6 +138,8 @@ class ObjectEntity extends Entity
             $entity = $Table->newEntity();
         }
 
-        return static::listAssociations($Table, $entity->getHidden());
+        $relationships = static::listAssociations($Table, $entity->getHidden());
+
+        return array_diff($relationships, ['date_ranges']);
     }
 }

@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\ORM\Inheritance;
 
+use BEdita\Core\ORM\Inheritance\Query;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Table as CakeTable;
@@ -244,25 +245,27 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
+     * @covers ::inheritedTable()
      * @covers ::inheritedTables()
      */
     public function testInheritedTables()
     {
-        $this->assertEquals([], $this->fakeFelines->inheritedTables());
+        static::assertEquals(null, $this->fakeFelines->inheritedTable());
+        static::assertEquals([], $this->fakeFelines->inheritedTables());
 
         $this->setupAssociations();
 
-        $mammalsInheritance = current($this->fakeMammals->inheritedTables());
-        $this->assertEquals('FakeAnimals', $mammalsInheritance->alias());
+        $mammalsInheritance = $this->fakeMammals->inheritedTable();
+        static::assertEquals('FakeAnimals', $mammalsInheritance->getAlias());
 
-        $felinesInheritance = current($this->fakeFelines->inheritedTables());
-        $this->assertEquals('FakeMammals', $felinesInheritance->alias());
+        $felinesInheritance = $this->fakeFelines->inheritedTable();
+        static::assertEquals('FakeMammals', $felinesInheritance->getAlias());
 
         $felinesDeepInheritance = array_map(function (Table $inherited) {
             return $inherited->getAlias();
         }, $this->fakeFelines->inheritedTables(true));
 
-        $this->assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+        static::assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
     }
 
     /**
@@ -798,5 +801,74 @@ class TableTest extends TestCase
 
         $result = $query->toArray();
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test `hasFinder` method.
+     *
+     * @return void
+     *
+     * @covers ::hasFinder()
+     */
+    public function testHasFinder()
+    {
+        $this->setupAssociations();
+
+        static::assertFalse($this->fakeAnimals->hasFinder('children'));
+        static::assertFalse($this->fakeMammals->hasFinder('children'));
+        static::assertFalse($this->fakeFelines->hasFinder('children'));
+
+        $this->fakeMammals->addBehavior('Tree');
+
+        static::assertFalse($this->fakeAnimals->hasFinder('children'));
+        static::assertTrue($this->fakeMammals->hasFinder('children'));
+        static::assertTrue($this->fakeFelines->hasFinder('children'));
+    }
+
+    /**
+     * Test `callFinder` method.
+     *
+     * @return void
+     *
+     * @covers ::callFinder()
+     */
+    public function testCallFinder()
+    {
+        $this->setupAssociations();
+
+        $this->fakeMammals->addBehavior('Tree');
+
+        static::assertInstanceOf(Query::class, $this->fakeMammals->find('children', ['for' => 1, 'direct' => true]));
+        static::assertInstanceOf(Query::class, $this->fakeFelines->find('children', ['for' => 1, 'direct' => true]));
+    }
+
+    /**
+     * Test `callFinder` method.
+     *
+     * @return void
+     *
+     * @covers ::callFinder()
+     * @expectedException \BadMethodCallException
+     * @expectedExceptionMessage Unknown finder method "gustavo"
+     */
+    public function testCallMissingFinder()
+    {
+        $this->fakeAnimals->find('gustavo');
+    }
+
+    /**
+     * Test `hasField` method.
+     *
+     * @return void
+     *
+     * @covers ::hasField()
+     */
+    public function testHasField()
+    {
+        $this->setupAssociations();
+
+        static::assertTrue($this->fakeMammals->hasField('legs', true));
+        static::assertFalse($this->fakeMammals->hasField('legs', false));
+        static::assertTrue($this->fakeAnimals->hasField('legs'));
     }
 }

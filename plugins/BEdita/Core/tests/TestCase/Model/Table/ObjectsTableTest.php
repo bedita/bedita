@@ -29,6 +29,7 @@ class ObjectsTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.date_ranges',
     ];
 
     /**
@@ -188,5 +189,58 @@ class ObjectsTableTest extends TestCase
         $result = $this->Objects->find('list')->find('type', $types)->toArray();
 
         $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test object date ranges finder.
+     * {@see \BEdita\Core\Model\Table\DateRangesTable} for a more detailed test case
+     *
+     * @return void
+     *
+     * @covers ::findDateRanges()
+     */
+    public function testFindDateRanges()
+    {
+        $result = $this->Objects->find('dateRanges', ['start_date' => ['gt' => '2017-01-01']])->toArray();
+        $this->assertNotEmpty($result);
+    }
+
+    /**
+     * Test save of date ranges using 'replace' save strategy ({@see https://github.com/bedita/bedita/issues/1152}).
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testSaveDateRanges()
+    {
+        $object = $this->Objects->newEntity();
+        $object->type = 'events';
+
+        $data = [
+            'date_ranges' => [
+                [
+                    'start_date' => '1992-08-17',
+                ],
+            ],
+        ];
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+        if (!$object) {
+            static::fail('Unable to save object');
+        }
+
+        $data['date_ranges'][0]['start_date'] = date('Y-m-d');
+        $object = $this->Objects->patchEntity($object, $data);
+        $object = $this->Objects->save($object);
+        if (!$object) {
+            static::fail('Unable to save object');
+        }
+
+        $object = $this->Objects->get($object->id, ['contain' => ['DateRanges']]);
+
+        static::assertCount(1, $object->date_ranges);
+        static::assertSame(1, $this->Objects->DateRanges->find()->where(['object_id' => $object->id])->count());
+        static::assertSame(0, $this->Objects->DateRanges->find()->where(['object_id IS' => null])->count());
     }
 }

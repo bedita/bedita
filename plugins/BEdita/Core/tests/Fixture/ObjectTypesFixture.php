@@ -62,5 +62,13 @@ class ObjectTypesFixture extends TestFixture
             'plugin' => 'BEdita/Core',
             'model' => 'Locations'
         ],
+        [
+            'singular' => 'event',
+            'name' => 'events',
+            'description' => null,
+            'plugin' => 'BEdita/Core',
+            'model' => 'Objects',
+            'associations' => '["DateRanges"]',
+        ],
     ];
 }

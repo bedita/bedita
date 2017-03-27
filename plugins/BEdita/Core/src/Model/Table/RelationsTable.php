@@ -14,9 +14,12 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\Rule\IsUniqueAmongst;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Database\Schema\TableSchema;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 
 /**
@@ -138,5 +141,28 @@ class RelationsTable extends Table
         $schema->columnType('params', 'json');
 
         return $schema;
+    }
+
+    /**
+     * Find a relation by its name or inverse name.
+     *
+     * @param \Cake\ORM\Query $query Query object.
+     * @param array $options Additional options. The `name` key is required.
+     * @return \Cake\ORM\Query
+     */
+    protected function findByName(Query $query, array $options = [])
+    {
+        if (empty($options['name'])) {
+            throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
+        }
+        $name = Inflector::underscore($options['name']);
+
+        return $query->where(function (QueryExpression $exp) use ($name) {
+            return $exp->or_(function (QueryExpression $exp) use ($name) {
+                return $exp
+                    ->eq($this->aliasField('name'), $name)
+                    ->eq($this->aliasField('inverse_name'), $name);
+            });
+        });
     }
 }
