@@ -10,21 +10,49 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\Core\Test\TestCase\TestSuite;
+namespace BEdita\API\Test\TestCase\TestSuite;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
 use BEdita\Core\Utility\LoggedUser;
+use Cake\Database\Connection;
+use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 
 /**
- * {@see \BEdita\Core\TestSuite\ApiIntegrationTestCase} Test Case
+ * {@see \BEdita\API\TestSuite\IntegrationTestCase} Test Case
  *
- * @coversDefaultClass \BEdita\Core\TestSuite\ApiIntegrationTestCase
+ * @coversDefaultClass \BEdita\API\TestSuite\IntegrationTestCase
  */
-class IntegrationTestCaseTest extends ApiIntegrationTestCase
+class IntegrationTestCaseTest extends IntegrationTestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        // $this->fixtureManager->shutDown();
+
+        // ConnectionManager::get('default')
+        //     ->disableConstraints(function (Connection $connection) {
+        //         $tables = $connection->getSchemaCollection()->listTables();
+
+        //         foreach ($tables as $table) {
+        //             $t = $connection->getSchemaCollection()->describe($table);
+        //             if (empty($t)) {
+        //                 continue;
+        //             }
+        //             $sql = $t->dropSql($connection);
+        //             foreach ($sql as $query) {
+        //                 $connection->query($query);
+        //             }
+        //         }
+        //     });
+    }
+
     /**
      * Data provider for addAuthFixtures
      *
@@ -82,7 +110,7 @@ class IntegrationTestCaseTest extends ApiIntegrationTestCase
      */
     public function testAuthFixtures($expected, $fixtures)
     {
-        $mock = $this->getMockBuilder(ApiIntegrationTestCase::class)
+        $mock = $this->getMockBuilder(IntegrationTestCase::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -137,7 +165,7 @@ class IntegrationTestCaseTest extends ApiIntegrationTestCase
         static::assertEquals($user, LoggedUser::getUser());
         static::assertInstanceOf('\BEdita\Core\Model\Entity\Application', CurrentApplication::getApplication());
 
-        $this->tearDown();
+        parent::tearDown();
         static::assertEquals([], LoggedUser::getUser());
         static::assertNull(CurrentApplication::getApplication());
     }

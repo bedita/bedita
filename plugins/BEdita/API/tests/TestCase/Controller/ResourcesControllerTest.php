@@ -13,12 +13,12 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ResourcesController
  */
-class ResourcesControllerTest extends ApiIntegrationTestCase
+class ResourcesControllerTest extends IntegrationTestCase
 {
     /**
      * Test relationships method to list existing relationships.

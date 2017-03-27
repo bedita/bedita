@@ -13,7 +13,7 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
@@ -23,7 +23,7 @@ use Cake\Network\Exception\NotFoundException;
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
  */
-class AppControllerTest extends ApiIntegrationTestCase
+class AppControllerTest extends IntegrationTestCase
 {
     /**
      * {@inheritDoc}

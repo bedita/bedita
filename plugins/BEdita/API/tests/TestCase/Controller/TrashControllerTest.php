@@ -12,14 +12,14 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\TrashController
  */
-class TrashControllerTest extends ApiIntegrationTestCase
+class TrashControllerTest extends IntegrationTestCase
 {
     /**
      * Objects table instance.

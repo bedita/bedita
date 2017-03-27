@@ -13,12 +13,12 @@
 
 namespace BEdita\API\Test\IntegrationTest;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * Test on `uname` field
  */
-class UniqueNameTest extends ApiIntegrationTestCase
+class UniqueNameTest extends IntegrationTestCase
 {
     /**
      * {@inheritDoc}

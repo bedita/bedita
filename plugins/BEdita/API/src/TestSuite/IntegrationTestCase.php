@@ -11,7 +11,7 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\TestSuite;
+namespace BEdita\API\TestSuite;
 
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
@@ -27,7 +27,7 @@ use Cake\TestSuite\IntegrationTestCase as CakeIntegrationTestCase;
  *
  * @since 4.0.0
  */
-abstract class ApiIntegrationTestCase extends CakeIntegrationTestCase
+abstract class IntegrationTestCase extends CakeIntegrationTestCase
 {
     /**
      * Fixtures
