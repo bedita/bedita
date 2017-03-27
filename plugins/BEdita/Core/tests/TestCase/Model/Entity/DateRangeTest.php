@@ -649,4 +649,84 @@ class DateRangeTest extends TestCase
 
         static::assertEquals($expected, $result);
     }
+
+    /**
+     * Data provider for `testCheckWellFormed` test case.
+     *
+     * @return array
+     */
+    public function checkWellFormedProvider()
+    {
+        return [
+            'not a date range' => [
+                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "resource"'),
+                [
+                    fopen(__FILE__, 'r'),
+                ],
+                false,
+            ],
+            'not a date range /2' => [
+                new \LogicException('Invalid Date Range entity class: expected "BEdita\Core\Model\Entity\DateRange", got "Cake\ORM\TableRegistry"'),
+                [
+                    new TableRegistry(),
+                ],
+                false,
+            ],
+            'invalid start date' => [
+                new \LogicException('Invalid "start_date": expected "Cake\I18n\Time", got "NULL"'),
+                [
+                    [
+                        'start_date' => null,
+                        'end_date' => '2017-01-01',
+                    ],
+                ],
+            ],
+            'invalid end date' => [
+                new \LogicException('Invalid "end_date": expected "Cake\I18n\Time", got "string"'),
+                [
+                    [
+                        'start_date' => '2017-01-01',
+                        'end_date' => 'better than yesterday, worse than tomorrow',
+                    ],
+                ],
+            ],
+            'ok' => [
+                true,
+                [
+                    [
+                        'start_date' => '2017-01-01',
+                        'end_date' => null,
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test case for checker method.
+     *
+     * @param bool|\Exception $expected Expected result
+     * @param array $dateRanges Date Ranges.
+     * @param bool $marshal Should entities be marshalled first?
+     * @return void
+     *
+     * @covers ::checkWellFormed()
+     * @dataProvider checkWellFormedProvider()
+     */
+    public function testCheckWellFormed($expected, array $dateRanges, $marshal = true)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        if ($marshal) {
+            $dateRanges = $this->DateRanges->newEntities($dateRanges);
+        }
+
+        DateRange::checkWellFormed(...$dateRanges);
+
+        // If we reached this point, either we `$expect === true` or something went wrong.
+        static::assertTrue($expected);
+    }
 }

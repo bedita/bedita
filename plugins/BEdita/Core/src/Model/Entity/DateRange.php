@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use Cake\I18n\Time;
 use Cake\ORM\Entity;
 
 /**
@@ -59,6 +60,8 @@ class DateRange extends Entity
      */
     public function isBefore(DateRange $dateRange)
     {
+        static::checkWellFormed($this, $dateRange);
+
         return $this->start_date < $dateRange->start_date && ($this->end_date === null || $this->end_date <= $dateRange->start_date);
     }
 
@@ -76,6 +79,8 @@ class DateRange extends Entity
      */
     public function isAfter(DateRange $dateRange)
     {
+        static::checkWellFormed($this, $dateRange);
+
         return $this->start_date > $dateRange->start_date && ($dateRange->end_date === null || $this->start_date >= $dateRange->end_date);
     }
 
@@ -97,6 +102,7 @@ class DateRange extends Entity
         if (empty($dateRanges)) {
             return [];
         }
+        static::checkWellFormed(...$dateRanges);
 
         // Sort items.
         usort($dateRanges, function (DateRange $dateRange1, DateRange $dateRange2) {
@@ -230,5 +236,47 @@ class DateRange extends Entity
         }
 
         return $result;
+    }
+
+    /**
+     * Check that all the Date Ranges passed as arguments are actually well formed.
+     *
+     * A "well formed" Date Range is an instance of class {@see \BEdita\Core\Model\Entity\DateRange}
+     * whose field `start_date` is an instance of {@see Cake\I18n\Time} and field `end_date` is
+     * either `null` or an instance of {@see Cake\I18n\Time}.
+     *
+     * @param array ...$dateRanges Date Ranges to check.
+     * @return void
+     * @throws \LogicException Throws an exception if a malformed Date Range is encountered.
+     */
+    public static function checkWellFormed(... $dateRanges)
+    {
+        $getType = function ($var) {
+            if (!is_object($var)) {
+                return gettype($var);
+            }
+
+            return get_class($var);
+        };
+
+        foreach ($dateRanges as $dateRange) {
+            if (!($dateRange instanceof static)) {
+                throw new \LogicException(
+                    __d('bedita', 'Invalid Date Range entity class: expected "{0}", got "{1}"', static::class, $getType($dateRange))
+                );
+            }
+
+            if (!($dateRange->start_date instanceof Time)) {
+                throw new \LogicException(
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'start_date', Time::class, $getType($dateRange->start_date))
+                );
+            }
+
+            if (!($dateRange->end_date instanceof Time) && $dateRange->end_date !== null) {
+                throw new \LogicException(
+                    __d('bedita', 'Invalid "{0}": expected "{1}", got "{2}"', 'end_date', Time::class, $getType($dateRange->end_date))
+                );
+            }
+        }
     }
 }
