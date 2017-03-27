@@ -12,13 +12,13 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * Test CRUD operations on objects with associated entities
  *
  */
-class AssociatedEntitiesTest extends ApiIntegrationTestCase
+class AssociatedEntitiesTest extends IntegrationTestCase
 {
     /**
      * {@inheritDoc}

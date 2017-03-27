@@ -12,12 +12,12 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\HomeController
  */
-class HomeControllerTest extends ApiIntegrationTestCase
+class HomeControllerTest extends IntegrationTestCase
 {
     /**
      * Test index method.

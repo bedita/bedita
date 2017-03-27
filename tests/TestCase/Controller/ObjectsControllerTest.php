@@ -12,13 +12,13 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
  */
-class ObjectsControllerTest extends ApiIntegrationTestCase
+class ObjectsControllerTest extends IntegrationTestCase
 {
     /**
      * Fixtures

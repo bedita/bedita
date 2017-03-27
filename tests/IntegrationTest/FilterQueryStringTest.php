@@ -12,14 +12,14 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
-use BEdita\Core\TestSuite\ApiIntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\Database;
 use Cake\Utility\Hash;
 
 /**
  * Test Query String `filter`
  */
-class FilterQueryStringTest extends ApiIntegrationTestCase
+class FilterQueryStringTest extends IntegrationTestCase
 {
     /**
      * {@inheritDoc}
