@@ -51,7 +51,7 @@ class BeObjectCache {
      *
      * @var array
      */
-    private $blacklistOptions = ['user_created', 'user_modified'];
+    private $blacklistOptions = array('user_created', 'user_modified');
 
     /**
      * Constructor
