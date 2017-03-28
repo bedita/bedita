@@ -17,7 +17,6 @@ use BadMethodCallException;
 use BEdita\Core\ORM\Association\ExtensionOf;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
-use Cake\ORM\Association;
 use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 
@@ -148,12 +147,12 @@ class Table extends CakeTable
      */
     public function extensionOf($associated, array $options = [])
     {
-        $inheritedTable = $this->inheritedTable();
-        if ($inheritedTable !== null) {
+        $association = $this->getExtensionOf();
+        if ($association !== null) {
             throw new \RuntimeException(sprintf(
                 '"%s" has already an ExtensionOf association with %s',
                 $this->getAlias(),
-                $inheritedTable->getAlias()
+                $association->getAlias()
             ));
         }
 
@@ -185,15 +184,30 @@ class Table extends CakeTable
     }
 
     /**
+     * Get ExtensionOf association.
+     *
+     * @return \BEdita\Core\ORM\Association\ExtensionOf|null
+     */
+    public function getExtensionOf()
+    {
+        $association = $this->associations()->type('ExtensionOf');
+        $association = current($association);
+        if (!($association instanceof ExtensionOf)) {
+            return null;
+        }
+
+        return $association;
+    }
+
+    /**
      * Return the inherited table from current table.
      *
      * @return \Cake\ORM\Table|null
      */
     public function inheritedTable()
     {
-        $association = $this->associations()->type('ExtensionOf');
-        $association = current($association);
-        if (!($association instanceof Association)) {
+        $association = $this->getExtensionOf();
+        if ($association === null) {
             return null;
         }
 
@@ -221,6 +235,37 @@ class Table extends CakeTable
         }
 
         return array_merge([$inheritedTable], $inheritedTable->inheritedTables(true));
+    }
+
+    /**
+     * Find all common tables in inheritance chain.
+     *
+     * @param \Cake\ORM\Table $table Table to compare current table to.
+     * @return \Cake\ORM\Table[]
+     */
+    public function commonInheritance(CakeTable $table)
+    {
+        if (!($table instanceof self)) {
+            return in_array($table, $this->inheritedTables(true), true) ? [$table] : [];
+        }
+
+        $inherited = array_merge(
+            array_reverse($this->inheritedTables(true)),
+            [$this]
+        );
+        $table = array_merge(
+            array_reverse($table->inheritedTables(true)),
+            [$table]
+        );
+
+        $common = [];
+        $i = 0;
+        while (isset($inherited[$i]) && isset($table[$i]) && $inherited[$i] === $table[$i]) {
+            array_unshift($common, $inherited[$i]);
+            $i++;
+        }
+
+        return $common;
     }
 
     /**
@@ -274,5 +319,17 @@ class Table extends CakeTable
         }
 
         return $inheritedTable->hasField($field, true);
+    }
+
+    /**
+     * Perform operations when cloning table.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->_associations = clone $this->_associations;
+        $this->_behaviors = clone $this->_behaviors;
+        $this->_eventManager = clone $this->_eventManager;
     }
 }
