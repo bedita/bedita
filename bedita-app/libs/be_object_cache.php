@@ -47,6 +47,13 @@ class BeObjectCache {
     );
 
     /**
+     * Blacklist option items on which avoid to create cache.
+     *
+     * @var array
+     */
+    private $blacklistOptions = ['user_created', 'user_modified'];
+
+    /**
      * Constructor
      * Initialize cache config
      */
@@ -152,13 +159,53 @@ class BeObjectCache {
     }
 
     /**
-     * Read object from cache
+     * Return true if the object `$id` with `$options` is cacheable.
      *
-     * @param  int $id
-     * @param  array $options
-     * @return data array or false if no cache is found
+     * @param int $id The object id
+     * @param array $options The options used for build the cache
+     * @return boolean
+     */
+    public function isCacheable($id, array $options) {
+        if (empty($options) || array_key_exists('bindings_list', $options)) {
+            return true;
+        }
+
+        $flatOptions = Set::flatten($options);
+        $isCacheable = true;
+        foreach (array_keys($flatOptions) as $optionKey) {
+            if (is_numeric($optionKey)) {
+                continue;
+            }
+
+            foreach ($this->blacklistOptions as $itemPattern) {
+                if (preg_match("/$itemPattern/", $optionKey)) {
+                    $isCacheable = false;
+                    break;
+                }
+            }
+
+            if (!$isCacheable) {
+                break;
+            }
+        }
+
+        return $isCacheable;
+    }
+
+    /**
+     * Read object from cache.
+     *
+     * It returns the data cached or false if the object is not cacheable or the cache was not found
+     *
+     * @param int $id
+     * @param array $options
+     * @return array|false
      */
     public function read($id, array $options, $label = null) {
+        if (!$this->isCacheable($id, $options)) {
+            return false;
+        }
+
         $res = false;
         $cacheName = $this->cacheName($id, $options, $label);
         // use cache config if not using 'File' engine
@@ -210,12 +257,19 @@ class BeObjectCache {
     }
 
     /**
-     * Write object data to cache
+     * Write object data to cache.
      *
-     * @param  string $key
-     * @return boolean True if the data was successfully cached, false on failure
+     * It returns true if data was successfully cached
+     * or false if the data was not cacheable or the write fails
+     *
+     * @param string $key
+     * @return bool
      */
     public function write($id, array $options, $data, $label = null) {
+        if (!$this->isCacheable($id, $options)) {
+            return false;
+        }
+
         $cacheName = $this->cacheName($id, $options, $label);
         $res = false;
         // store index cache
