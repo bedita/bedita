@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -34,6 +35,7 @@ use Cake\Validation\Validator;
  */
 class DateRangesTable extends Table
 {
+    use QueryFilterTrait;
 
     /**
      * Initialize method
@@ -123,55 +125,11 @@ class DateRangesTable extends Table
     {
         $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
 
-        return $query->where(function (QueryExpression $exp) use ($options) {
-            foreach ($options as $field => $conditions) {
-                $field = $this->aliasField($field);
+        foreach ($options as $field => $conditions) {
+            $options[$this->aliasField($field)] = $conditions;
+            unset($options[$field]);
+        }
 
-                if (!is_array($conditions)) {
-                    $exp = $exp->eq($field, $conditions);
-
-                    continue;
-                }
-
-                foreach ($conditions as $operator => $value) {
-                    switch ($operator) {
-                        case 'eq':
-                        case '=':
-                            $exp = $exp->eq($field, $value);
-                            break;
-
-                        case 'neq':
-                        case 'ne':
-                        case '!=':
-                        case '<>':
-                            $exp = $exp->notEq($field, $value);
-                            break;
-
-                        case 'lt':
-                        case '<':
-                            $exp = $exp->lt($field, $value);
-                            break;
-
-                        case 'lte':
-                        case 'le':
-                        case '<=':
-                            $exp = $exp->lte($field, $value);
-                            break;
-
-                        case 'gt':
-                        case '>':
-                            $exp = $exp->gt($field, $value);
-                            break;
-
-                        case 'gte':
-                        case 'ge':
-                        case '>=':
-                            $exp = $exp->gte($field, $value);
-                    }
-                }
-            }
-
-            return $exp;
-        });
+        return $this->fieldsFilter($query, $options);
     }
 }
