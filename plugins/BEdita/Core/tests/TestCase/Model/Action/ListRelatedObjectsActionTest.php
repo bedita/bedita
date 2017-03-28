@@ -36,6 +36,7 @@ class ListRelatedObjectsActionTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.object_relations',
         'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.locations',
     ];
 
     /**
@@ -112,6 +113,44 @@ class ListRelatedObjectsActionTest extends TestCase
                 'inverse_test',
                 4,
             ],
+            [
+                [
+                    [
+                        'id' => 8,
+                        'type' => 'locations',
+                        'coords' => 'POINT(44.4944183 11.3464055)',
+                        'address' => 'Piazza di Porta Ravegnana',
+                        'locality' => 'Bologna',
+                        'postal_code' => '40126',
+                        'country_name' => 'Italy',
+                        'region' => 'Emilia-romagna',
+                        'status' => 'on',
+                        'uname' => 'the-two-towers',
+                        'locked' => false,
+                        'created' => '2017-02-20T07:09:23+00:00',
+                        'modified' => '2017-02-20T07:09:23+00:00',
+                        'published' => '2017-02-20T07:09:23+00:00',
+                        'title' => 'The Two Towers',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 1,
+                            'params' => null,
+                        ],
+                    ],
+                ],
+                'Locations',
+                'another_test',
+                8,
+                false,
+            ],
         ];
     }
 
@@ -122,17 +161,18 @@ class ListRelatedObjectsActionTest extends TestCase
      * @param string $objectType Object type name.
      * @param string $relation Relation name.
      * @param int $id ID.
+     * @param bool $list Should results be presented in a list format?
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $objectType, $relation, $id)
+    public function testInvocation($expected, $objectType, $relation, $id, $list = true)
     {
         $alias = Inflector::camelize(Inflector::underscore($relation));
         $association = TableRegistry::get($objectType)->association($alias);
         $action = new ListRelatedObjectsAction(compact('association'));
 
-        $result = $action(['primaryKey' => $id, 'list' => true]);
+        $result = $action(['primaryKey' => $id] + compact('list'));
         $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);
