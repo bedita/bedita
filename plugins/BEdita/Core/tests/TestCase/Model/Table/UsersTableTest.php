@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -54,6 +55,7 @@ class UsersTableTest extends TestCase
         parent::setUp();
 
         $this->Users = TableRegistry::get('Users');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -62,6 +64,7 @@ class UsersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Users);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }

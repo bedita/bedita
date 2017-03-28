@@ -96,13 +96,12 @@ class CorsMiddleware
             if ($request->getMethod() == 'OPTIONS') {
                 return $this->preflight($request, $response);
             }
-
             $response = $this->buildCors($request, $response);
-
-            return $next($request, $response);
         } catch (\Exception $e) {
             return $response->withStatus($e->getCode());
         }
+
+        return $next($request, $response);
     }
 
     /**

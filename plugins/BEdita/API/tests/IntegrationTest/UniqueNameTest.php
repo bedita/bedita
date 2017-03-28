@@ -13,11 +13,20 @@
 
 namespace BEdita\API\Test\IntegrationTest;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
+
 /**
  * Test on `uname` field
  */
-class UniqueNameTest extends ApiIntegrationTestCase
+class UniqueNameTest extends IntegrationTestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.locations',
+    ];
+
     /**
      * Data provider for testDoubleInsert
      *
@@ -47,14 +56,16 @@ class UniqueNameTest extends ApiIntegrationTestCase
      */
     public function testDoubleInsert($attributes)
     {
-        $sendRequest = function ($type) use ($attributes) {
+        $authHeader = $this->getUserAuthHeader();
+
+        $sendRequest = function ($type) use ($attributes, $authHeader) {
             $data = [
                 'type' => $type,
                 'attributes' => $attributes,
             ];
             $endpoint = '/' . $type;
             $requestBody = json_encode(compact('data'));
-            $this->configRequestHeaders('POST');
+            $this->configRequestHeaders('POST', $authHeader);
 
             $this->post($endpoint, $requestBody);
 

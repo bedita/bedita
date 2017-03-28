@@ -12,14 +12,22 @@
  */
 namespace BEdita\API\Test\IntegrationTest;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\Utility\Database;
 use Cake\Utility\Hash;
 
 /**
  * Test Query String `filter`
  */
-class FilterQueryStringTest extends ApiIntegrationTestCase
+class FilterQueryStringTest extends IntegrationTestCase
 {
+    /**
+     * {@inheritDoc}
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.date_ranges',
+        'plugin.BEdita/Core.locations',
+    ];
 
     /**
      * Data provider for `testFilterDate`

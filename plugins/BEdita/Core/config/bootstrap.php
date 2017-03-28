@@ -15,13 +15,6 @@ use Cake\ORM\TableRegistry;
 TableRegistry::locator(new TableLocator());
 
 /**
- * Default user with id = 1 for unit tests
- */
-if (defined('UNIT_TEST_RUN')) {
-    LoggedUser::setUser(['id' => 1]);
-}
-
-/**
  * Load 'core' configuration parameters
  */
 Configure::config('database', new DatabaseConfig());
