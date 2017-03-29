@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
@@ -151,28 +152,58 @@ class ListRelatedObjectsActionTest extends TestCase
                 8,
                 false,
             ],
+            [
+                [
+                    [
+                        'id' => 2,
+                        'type' => 'documents',
+                        '_joinData' => [
+                            'priority' => 1,
+                            'inv_priority' => 2,
+                            'params' => null,
+                        ],
+                    ],
+                ],
+                'Profiles',
+                'inverse_test',
+                4,
+                true,
+                [2],
+            ],
+            [
+                new RecordNotFoundException('Record not found in table "locations"'),
+                'Locations',
+                'another_test',
+                -1,
+            ],
         ];
     }
 
     /**
      * Test command invocation.
      *
-     * @param array $expected Expected result.
+     * @param array|\Exception $expected Expected result.
      * @param string $objectType Object type name.
      * @param string $relation Relation name.
      * @param int $id ID.
      * @param bool $list Should results be presented in a list format?
+     * @param array|null $only Filter related entities by ID.
      * @return void
      *
      * @dataProvider invocationProvider()
      */
-    public function testInvocation($expected, $objectType, $relation, $id, $list = true)
+    public function testInvocation($expected, $objectType, $relation, $id, $list = true, array $only = null)
     {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
         $alias = Inflector::camelize(Inflector::underscore($relation));
         $association = TableRegistry::get($objectType)->association($alias);
         $action = new ListRelatedObjectsAction(compact('association'));
 
-        $result = $action(['primaryKey' => $id] + compact('list'));
+        $result = $action(['primaryKey' => $id] + compact('list', 'only'));
         $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);
