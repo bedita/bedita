@@ -139,7 +139,12 @@ class ApplicationsShellTest extends ShellTestCase
     public function testEnable($id)
     {
         if ($this->applicationExists($id)) {
+            // enable by id
             $this->ApplicationsShell->enable($id);
+            $this->assertTrue($this->applicationEnabled($id));
+            // enable by name
+            $name = $this->applicationNameById($id);
+            $this->ApplicationsShell->enable($name);
             $this->assertTrue($this->applicationEnabled($id));
         }
     }
@@ -157,7 +162,12 @@ class ApplicationsShellTest extends ShellTestCase
     public function testDisable($id)
     {
         if ($this->applicationExists($id)) {
+            // disable by id
             $this->ApplicationsShell->disable($id);
+            $this->assertFalse($this->applicationEnabled($id));
+            // disable by name
+            $name = $this->applicationNameById($id);
+            $this->ApplicationsShell->disable($name);
             $this->assertFalse($this->applicationEnabled($id));
         }
     }
@@ -208,7 +218,7 @@ class ApplicationsShellTest extends ShellTestCase
     }
 
     /**
-     * Test renewToken method
+     * Test rm method
      *
      * @param int $id application identifier
      * @return void
