@@ -14,7 +14,6 @@
 namespace BEdita\Core\Model\Table;
 
 use BEdita\Core\ORM\QueryFilterTrait;
-use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
