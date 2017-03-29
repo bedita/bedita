@@ -25,7 +25,7 @@ trait QueryFilterTrait
 {
     /**
      * Create query filter using various operators on fields
-     * Options arrya must contain fields as keys and operators like
+     * Options array must contain fields as keys and operators like
      *   - 'gt' or '>' (greather than)
      *   - 'lt' or '<' (less than),
      *   - 'ge' or '>=' (greater or equal)
@@ -109,7 +109,6 @@ trait QueryFilterTrait
                         case 'ge':
                         case '>=':
                             $exp = $exp->gte($field, $value);
-
                     }
                 }
                 if (!empty($in)) {
