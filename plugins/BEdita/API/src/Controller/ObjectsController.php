@@ -198,9 +198,10 @@ class ObjectsController extends ResourcesController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
+        $filter = $this->request->getQuery('filter');
 
         $action = new ListRelatedObjectsAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId]);
+        $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         $objects = $this->paginate($query);
 
@@ -235,8 +236,10 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
+                $filter = $this->request->getQuery('filter');
+
                 $action = new ListRelatedObjectsAction(compact('association'));
-                $data = $action(['primaryKey' => $id, 'list' => true]);
+                $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);
