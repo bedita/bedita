@@ -98,7 +98,7 @@ abstract class ResourcesShell extends Shell
     /**
      * List entities
      *
-     * @return void
+     * @return array applications list
      */
     public function ls()
     {
@@ -106,6 +106,8 @@ abstract class ResourcesShell extends Shell
         $query = $action(['filter' => $this->param('filter')]);
         $results = $query->toArray();
         $this->out($results ?: 'empty set');
+
+        return $results;
     }
 
     /**
