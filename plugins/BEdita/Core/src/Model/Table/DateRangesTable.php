@@ -123,11 +123,10 @@ class DateRangesTable extends Table
     public function findDateRanges(Query $query, array $options)
     {
         $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
-
-        foreach ($options as $field => $conditions) {
-            $options[$this->aliasField($field)] = $conditions;
-            unset($options[$field]);
-        }
+        $options = array_combine(
+            array_map([$this, 'aliasField'], array_keys($options)),
+            array_values($options)
+        );
 
         return $this->fieldsFilter($query, $options);
     }
