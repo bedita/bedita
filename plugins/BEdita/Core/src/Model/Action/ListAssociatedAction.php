@@ -13,18 +13,19 @@
 
 namespace BEdita\Core\Model\Action;
 
-use BEdita\Core\ORM\Inheritance\Table as InheritanceTable;
 use Cake\Database\Expression\QueryExpression;
+use Cake\Datasource\EntityInterface;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Datasource\ResultSetInterface;
+use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Association\HasMany;
 use Cake\ORM\Association\HasOne;
-use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
 /**
@@ -36,6 +37,13 @@ class ListAssociatedAction extends BaseAction
 {
 
     /**
+     * Name of inverse association.
+     *
+     * @var string
+     */
+    const INVERSE_ASSOCIATION_NAME = 'InverseAssociation';
+
+    /**
      * Association.
      *
      * @var \Cake\ORM\Association
@@ -43,42 +51,34 @@ class ListAssociatedAction extends BaseAction
     protected $Association;
 
     /**
+     * Action used for listing entities.
+     *
+     * @var \BEdita\Core\Model\Action\BaseAction
+     */
+    protected $ListAction;
+
+    /**
      * {@inheritDoc}
      */
     protected function initialize(array $config)
     {
         $this->Association = $this->getConfig('association');
-    }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return \Cake\ORM\Query|\Cake\Datasource\EntityInterface|null
-     * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if an invalid
-     *      primary key is passed.
-     */
-    public function execute(array $data = [])
-    {
-        $query = $this->buildQuery($data['primaryKey'], $data);
-
-        if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
-            return $query->first();
-        }
-
-        return $query;
+        $table = $this->Association->getTarget();
+        $this->ListAction = new ListEntitiesAction(compact('table'));
     }
 
     /**
      * Build conditions for primary key.
      *
+     * @param \Cake\ORM\Table $table Table object.
      * @param mixed $primaryKey Primary key.
      * @return array
      * @throws \Cake\Datasource\Exception\InvalidPrimaryKeyException Throws an exception if primary key is invalid.
      */
-    protected function primaryKeyConditions($primaryKey)
+    protected function primaryKeyConditions(Table $table, $primaryKey)
     {
-        $source = $this->Association->getSource();
-        $primaryKeyFields = array_map([$source, 'aliasField'], (array)$source->getPrimaryKey());
+        $primaryKeyFields = array_map([$table, 'aliasField'], (array)$table->getPrimaryKey());
 
         $primaryKey = (array)$primaryKey;
         if (count($primaryKeyFields) !== count($primaryKey)) {
@@ -89,7 +89,7 @@ class ListAssociatedAction extends BaseAction
 
             throw new InvalidPrimaryKeyException(__(
                 'Record not found in table "{0}" with primary key [{1}]',
-                $source->getTable(),
+                $table->getTable(),
                 implode($primaryKey, ', ')
             ));
         }
@@ -98,21 +98,21 @@ class ListAssociatedAction extends BaseAction
     }
 
     /**
-     * Build the query object.
+     * Check that the entity for which associated entities should be listed actually exists.
      *
-     * @param mixed $primaryKey Primary key.
-     * @param array $options Additional options.
-     * @return \Cake\ORM\Query
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if trying to fetch associations
-     *      for a missing resource.
+     * @param array $data Data.
+     * @return void
+     * @throws \InvalidArgumentException Throws an exception if required option `primaryKey` is missing.
+     * @throws \Cake\Datasource\Exception\RecordNotFoundException Throws an exception if the record could not be found.
      */
-    protected function buildQuery($primaryKey, array $options)
+    protected function checkEntityExists(array $data)
     {
-        $list = !empty($options['list']);
-        $joinData = !empty($options['joinData']);
+        if (empty($data['primaryKey'])) {
+            throw new \InvalidArgumentException(__d('bedita', 'Missing required option "{0}"', 'primaryKey'));
+        }
 
         $source = $this->Association->getSource();
-        $conditions = $this->primaryKeyConditions($primaryKey);
+        $conditions = $this->primaryKeyConditions($source, $data['primaryKey']);
 
         $existing = $source->find()
             ->where($conditions)
@@ -120,101 +120,138 @@ class ListAssociatedAction extends BaseAction
         if (!$existing) {
             throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
-
-        list($builder, $select) = $this->getQueryClauses($list);
-
-        $query = $source->find()
-            ->innerJoinWith($this->Association->getName(), $builder)
-            ->select($select)
-            ->where($conditions)
-            ->formatResults(function (ResultSetInterface $results) {
-                return $results->map(function ($row) {
-                    if (!isset($row['_matchingData']) || !is_array($row['_matchingData'])) {
-                        return $row;
-                    }
-
-                    $joinData = null;
-                    if ($this->Association instanceof BelongsToMany) {
-                        $junctionAlias = $this->Association->junction()->getAlias();
-                        $joinData = Hash::get($row['_matchingData'], $junctionAlias);
-                        unset($row['_matchingData'][$junctionAlias]);
-                    }
-
-                    $result = array_shift($row['_matchingData']);
-
-                    foreach ($row['_matchingData'] as $entity) {
-                        if ($entity instanceof Entity) {
-                            $entity = $entity->getOriginalValues();
-                        }
-
-                        $result->set($entity, ['setter' => false, 'guard' => false]);
-                    }
-
-                    if (!empty($joinData)) {
-                        $result->set('_joinData', $joinData);
-                    }
-
-                    return $result;
-                });
-            });
-
-        if (!empty($options['only'])) {
-            $query = $query
-                ->andWhere(function (QueryExpression $exp) use ($options) {
-                    return $exp->in(
-                        $this->Association->aliasField($this->Association->getPrimaryKey()),
-                        $options['only']
-                    );
-                });
-        }
-
-        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
-            $query = $query->order($this->Association->sort());
-        }
-        if ($joinData && $this->Association instanceof BelongsToMany) {
-            $query = $query->select($this->Association->junction());
-        }
-
-        return $query;
     }
 
     /**
-     * Get clauses for query.
+     * Build inverse association for joining.
      *
-     * @param bool $list Should only associated entity's primary key be selected?
-     * @return array
+     * @return \Cake\ORM\Association
+     * @throws \LogicException Throws an exception if an Association of an unknown type is passed.
      */
-    protected function getQueryClauses($list)
+    protected function buildInverseAssociation()
     {
-        $target = $this->Association->getTarget();
+        $sourceTable = $this->Association->getTarget();
+        $targetTable = TableRegistry::get(static::INVERSE_ASSOCIATION_NAME, [
+            'className' => $this->Association->getSource()->getRegistryAlias(),
+        ]);
+        $targetTable->setTable($this->Association->getSource()->getTable());
 
-        $builder = null;
-        $select = $target;
-        if ($list) {
-            $select = array_map([$target, 'aliasField'], (array)$target->getPrimaryKey());
-        } elseif ($target instanceof InheritanceTable) {
-            $select = array_map([$target, 'aliasField'], $target->getSchema()->columns());
+        $options = compact('sourceTable', 'targetTable');
+        if ($this->Association instanceof HasOne || $this->Association instanceof HasMany) {
+            $options += [
+                'foreignKey' => $this->Association->getForeignKey(),
+                'bindingKey' => $this->Association->getBindingKey(),
+            ];
 
-            $inheritedTables = $target->inheritedTables(true);
-            foreach ($inheritedTables as $inheritedTable) {
-                $select = array_merge(
-                    $select,
-                    array_map([$inheritedTable, 'aliasField'], $inheritedTable->getSchema()->columns())
-                );
-            }
+            $association = new BelongsTo(static::INVERSE_ASSOCIATION_NAME, $options);
+        } elseif ($this->Association instanceof BelongsTo) {
+            $options += [
+                'foreignKey' => $this->Association->getForeignKey(),
+                'bindingKey' => $this->Association->getBindingKey(),
+            ];
 
-            $inheritedTables = array_reverse($inheritedTables);
-            foreach ($inheritedTables as $inheritedTable) {
-                if (!$inheritedTable instanceof Table) {
-                    continue;
-                }
+            $association = new HasMany(static::INVERSE_ASSOCIATION_NAME, $options);
+        } elseif ($this->Association instanceof BelongsToMany) {
+            $options += [
+                'through' => $this->Association->junction()->getRegistryAlias(),
+                'foreignKey' => $this->Association->getTargetForeignKey(),
+                'targetForeignKey' => $this->Association->getForeignKey(),
+                'conditions' => $this->Association->getConditions(),
+            ];
 
-                $builder = function (Query $query) use ($inheritedTable, $builder) {
-                    return $query->innerJoinWith($inheritedTable->getAlias(), $builder);
-                };
-            }
+            $association = new BelongsToMany(static::INVERSE_ASSOCIATION_NAME, $options);
+        } else {
+            throw new \LogicException(sprintf('Unknown association type "%s"', get_class($this->Association)));
         }
 
-        return [$builder, $select];
+        return $sourceTable->associations()->add($association->getName(), $association);
+    }
+
+    /**
+     * Build the query object.
+     *
+     * @param mixed $primaryKey Primary key
+     * @param array $data Data.
+     * @param \Cake\ORM\Association $inverseAssociation Inverse association.
+     * @return \Cake\ORM\Query
+     * @throws \LogicException Throws an exception if the result of the inner invoked action is not a Query object.
+     */
+    protected function buildQuery($primaryKey, array $data, Association $inverseAssociation)
+    {
+        $joinData = !empty($data['joinData']);
+        $list = !empty($data['list']);
+        $only = (array)Hash::get($data, 'only', []);
+        unset($data['joinData'], $data['list'], $data['only']);
+
+        $table = $this->Association->getTarget();
+        $query = $this->ListAction->execute($data);
+        if (!($query instanceof Query)) {
+            $type = is_object($query) ? get_class($query) : gettype($query);
+
+            throw new \LogicException(sprintf('Instance of "%s" expected, got "%s"', Query::class, $type));
+        }
+
+        if ($list) {
+            $primaryKeyFields = array_map([$table, 'aliasField'], (array)$table->getPrimaryKey());
+            $query = $query->select($primaryKeyFields);
+        }
+        if (!empty($only)) {
+            $query = $query->where(function (QueryExpression $exp) use ($table, $only) {
+                return $exp->in($table->aliasField($table->getPrimaryKey()), $only);
+            });
+        }
+        if ($this->Association instanceof BelongsToMany && $joinData) {
+            $query = $query->select($this->Association->junction());
+        }
+        if ($this->Association instanceof BelongsToMany || $this->Association instanceof HasMany) {
+            $query = $query->order($this->Association->sort());
+        }
+
+        $primaryKeyConditions = $this->primaryKeyConditions($inverseAssociation->getTarget(), $primaryKey);
+
+        return $query
+            ->enableAutoFields(!$list)
+            ->find($this->Association->getFinder())
+            ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($primaryKeyConditions) {
+                return $query->where($primaryKeyConditions);
+            })
+            ->formatResults(function (ResultSetInterface $results) use ($inverseAssociation) {
+                return $results->map(function (EntityInterface $entity) use ($inverseAssociation) {
+                    if (!($this->Association instanceof BelongsToMany)) {
+                        return $entity;
+                    }
+
+                    $joinData = Hash::get($entity, '_matchingData.' . $this->Association->junction()->getAlias());
+                    $entity->unsetProperty('_matchingData');
+                    $entity->setHidden([$inverseAssociation->getProperty()], true);
+
+                    if (!empty($joinData)) {
+                        $entity->set('_joinData', $joinData);
+                    }
+
+                    return $entity;
+                });
+            });
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return \Cake\ORM\Query|\Cake\Datasource\EntityInterface|null
+     */
+    public function execute(array $data = [])
+    {
+        $this->checkEntityExists($data);
+        $primaryKey = $data['primaryKey'];
+        unset($data['primaryKey']);
+
+        $inverseAssociation = $this->buildInverseAssociation();
+        $query = $this->buildQuery($primaryKey, $data, $inverseAssociation);
+
+        if ($this->Association instanceof HasOne || $this->Association instanceof BelongsTo) {
+            return $query->first();
+        }
+
+        return $query;
     }
 }
