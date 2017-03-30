@@ -14,8 +14,10 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\ListAssociatedAction;
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\ORM\Association;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -60,7 +62,7 @@ class ListAssociatedActionTest extends TestCase
         TableRegistry::get('FakeAnimals')
             ->hasMany('FakeArticles');
 
-        TableRegistry::get('FakeMammals', ['className' => 'BEdita\Core\ORM\Inheritance\Table'])
+        TableRegistry::get('FakeMammals', ['className' => Table::class])
             ->extensionOf('FakeAnimals');
 
         TableRegistry::get('FakeMammalArticles')
@@ -95,6 +97,12 @@ class ListAssociatedActionTest extends TestCase
                 'FakeTags',
                 'FakeArticles',
                 ['invalid', 'pk'],
+            ],
+            'missing primaryKey' => [
+                new \InvalidArgumentException('Missing required option "primaryKey"'),
+                'FakeTags',
+                'FakeArticles',
+                null,
             ],
             'hasMany' => [
                 [
@@ -196,5 +204,25 @@ class ListAssociatedActionTest extends TestCase
         $result = json_decode(json_encode($result->toArray()), true);
 
         static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test invocation of command with an unknown association type.
+     *
+     * @return void
+     *
+     * @expectedException \LogicException
+     * @expectedExceptionMessageRegExp /^Unknown association type "\w+"$/
+     */
+    public function testUnknownAssociationType()
+    {
+        $sourceTable = TableRegistry::get('FakeArticles');
+        $association = static::getMockForAbstractClass(Association::class, [
+            'TestAssociation',
+            compact('sourceTable'),
+        ]);
+
+        $action = new ListAssociatedAction(compact('association'));
+        $action(['primaryKey' => 1]);
     }
 }
