@@ -561,7 +561,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test add method.
+     * Test add wrong type method.
      *
      * @return void
      *
@@ -1432,6 +1432,66 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->get('/invalid_object_type');
 
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Provider for testMissingAuth
+     *
+     * @return void
+     */
+    public function missingAuthProvider()
+    {
+        return [
+            'get' => [
+                200,
+                'GET',
+                'documents',
+            ],
+            'post' => [
+                401,
+                'POST',
+                'documents',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'title' => 'A new document',
+                    ],
+                ],
+            ],
+            'patch' => [
+                401,
+                'PATCH',
+                'documents/2',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'id' => '2',
+                        'title' => 'Change title',
+                    ],
+                ],
+            ],
+            'delete' => [
+                401,
+                'DELETE',
+                'documents/2',
+            ],
+        ];
+    }
+
+    /**
+     * Test requests missing auth
+     *
+     * @return void
+     * @dataProvider missingAuthProvider
+     * @coversNothing
+     */
+    public function testMissingAuth($expected, $method, $endpoint, $data = [])
+    {
+        $this->configRequestHeaders($method);
+        $requestMethod = strtolower($method);
+        $this->$requestMethod('/' . $endpoint, json_encode(compact('data')));
+        $this->assertResponseCode($expected);
         $this->assertContentType('application/vnd.api+json');
     }
 }
