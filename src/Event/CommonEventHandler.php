@@ -15,10 +15,12 @@ namespace BEdita\API\Event;
 use BEdita\API\Middleware\CorsMiddleware;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
+use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\MiddlewareQueue;
 use Cake\Network\Exception\UnauthorizedException;
+use Cake\ORM\Table;
 
 /**
  * CommonEventsHandler class.
@@ -29,6 +31,13 @@ use Cake\Network\Exception\UnauthorizedException;
  */
 class CommonEventHandler implements EventListenerInterface
 {
+    /**
+     * A whitelist of plugins that skips `self::checkAuthorized()`
+     *
+     * @var array
+     */
+    protected $pluginWhitelist = ['DebugKit', 'Migrations'];
+
     /**
      * {@inheritDoc}
      */
@@ -64,7 +73,7 @@ class CommonEventHandler implements EventListenerInterface
     public function buildMiddlewareStack(Event $event, MiddlewareQueue $middleware)
     {
         $middleware->insertAfter(
-            'Cake\Error\Middleware\ErrorHandlerMiddleware',
+            ErrorHandlerMiddleware::class,
             new CorsMiddleware(Configure::read('CORS'))
         );
     }
@@ -79,6 +88,14 @@ class CommonEventHandler implements EventListenerInterface
      */
     public function checkAuthorized(Event $event)
     {
+        $subject = $event->getSubject();
+        if ($subject instanceof Table) {
+            list($plugin) = pluginSplit($subject->getRegistryAlias());
+            if (in_array($plugin, $this->pluginWhitelist)) {
+                return;
+            }
+        }
+
         if (LoggedUser::id() === null) {
             throw new UnauthorizedException('User not authorized');
         }

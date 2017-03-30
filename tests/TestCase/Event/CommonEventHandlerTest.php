@@ -19,6 +19,7 @@ use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Http\MiddlewareQueue;
 use Cake\Network\Exception\UnauthorizedException;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -26,6 +27,10 @@ use Cake\TestSuite\TestCase;
  */
 class CommonEventHandlerTest extends TestCase
 {
+    public $fixtures = [
+        'plugin.BEdita/Core.fake_animals'
+    ];
+
     /**
      * Test implemented events
      * @covers ::implementedEvents()
@@ -72,15 +77,36 @@ class CommonEventHandlerTest extends TestCase
      */
     public function checkAuthorizedProvider()
     {
+        $fakeAnimals = TableRegistry::get('FakeAnimals');
+        $pluginWhitelistfakeAnimals = TableRegistry::get('WhitelistFakeAnimals', [
+            'table' => 'fale_animals'
+        ]);
+        $pluginWhitelistfakeAnimals->setRegistryAlias('DebugKit.WhitelistFakeAnimals');
+
         return [
             'beforeSaveOk' => [
                 true,
                 new Event('Model.beforeSave'),
                 true,
             ],
+            'beforeSaveOkSubject' => [
+                true,
+                new Event('Model.beforeSave', $fakeAnimals),
+                true,
+            ],
+            'beforeSaveOkSubjectWhitelist' => [
+                true,
+                new Event('Model.beforeSave', $pluginWhitelistfakeAnimals),
+                false,
+            ],
             'beforeSaveError' => [
                 new UnauthorizedException('User not authorized'),
                 new Event('Model.beforeSave'),
+                false,
+            ],
+            'beforeSaveErrorSubject' => [
+                new UnauthorizedException('User not authorized'),
+                new Event('Model.beforeSave', $fakeAnimals),
                 false,
             ],
             'beforeDeleteOk' => [
@@ -88,9 +114,24 @@ class CommonEventHandlerTest extends TestCase
                 new Event('Model.beforeDelete'),
                 true,
             ],
+            'beforeDeleteOkSubject' => [
+                true,
+                new Event('Model.beforeDelete', $fakeAnimals),
+                true,
+            ],
+            'beforeDeleteOkSubjectWhitelist' => [
+                true,
+                new Event('Model.beforeDelete', $pluginWhitelistfakeAnimals),
+                false,
+            ],
             'beforeDeleteError' => [
                 new UnauthorizedException('User not authorized'),
-                new Event('Model.beforeSave'),
+                new Event('Model.beforeDelete'),
+                false,
+            ],
+            'beforeDeleteErrorSubject' => [
+                new UnauthorizedException('User not authorized'),
+                new Event('Model.beforeDelete', $fakeAnimals),
                 false,
             ],
         ];
