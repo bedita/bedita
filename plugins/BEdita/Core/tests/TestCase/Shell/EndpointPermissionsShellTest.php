@@ -19,6 +19,7 @@ class EndpointPermissionsShellTest extends ShellTestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.roles',
         'plugin.BEdita/Core.endpoints',
         'plugin.BEdita/Core.applications',
@@ -87,16 +88,16 @@ class EndpointPermissionsShellTest extends ShellTestCase
     {
         return [
             'super' => [
-                'true', 'true', ['application' => 'First App', 'endpoint' => 'auth', 'role' => 'first role']
+                'true', 'true', ['application' => 'First app', 'endpoint' => 'auth', 'role' => 'first role']
             ],
             'none' => [
-                'false', 'false', ['application' => 'First App', 'endpoint' => 'auth', 'role' => 'first role']
+                'false', 'false', ['application' => 'First app', 'endpoint' => 'auth', 'role' => 'first role']
             ],
             'readonly' => [
-                'true', 'false', ['application' => 'First App', 'endpoint' => 'auth', 'role' => 'first role']
+                'true', 'false', ['application' => 'First app', 'endpoint' => 'auth', 'role' => 'first role']
             ],
             'mine' => [
-                'mine', 'mine', ['application' => 'First App', 'endpoint' => 'auth', 'role' => 'first role']
+                'mine', 'mine', ['application' => 'First app', 'endpoint' => 'auth', 'role' => 'first role']
             ]
         ];
     }
