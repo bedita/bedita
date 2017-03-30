@@ -32,21 +32,19 @@ class ListRelatedObjectsAction extends ListAssociatedAction
     {
         parent::initialize($config);
 
-        if (!($this->Association instanceof RelatedTo)) {
-            return;
+        if ($this->Association instanceof RelatedTo) {
+            $objectTypes = TableRegistry::get('ObjectTypes')
+                ->find('byRelation', [
+                    'name' => $this->Association->getName(),
+                    'side' => 'right',
+                ])
+                ->toArray();
+            $table = $this->Association->getTarget();
+            if (count($objectTypes) === 1) {
+                $objectType = current($objectTypes);
+            }
+            $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
         }
-
-        $objectTypes = TableRegistry::get('ObjectTypes')
-            ->find('byRelation', [
-                'name' => $this->Association->getName(),
-                'side' => 'right',
-            ])
-            ->toArray();
-        $table = $this->Association->getTarget();
-        if (count($objectTypes) === 1) {
-            $objectType = current($objectTypes);
-        }
-        $this->ListAction = new ListObjectsAction(compact('table', 'objectType'));
     }
 
     /**
