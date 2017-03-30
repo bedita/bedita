@@ -13,9 +13,9 @@
 
 namespace BEdita\API\TestSuite;
 
+use BEdita\API\Event\CommonEventHandler;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Event\Event;
 use Cake\Event\EventManager;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
@@ -85,9 +85,7 @@ abstract class IntegrationTestCase extends CakeIntegrationTestCase
         LoggedUser::resetUser();
         CurrentApplication::setFromApiKey(API_KEY);
 
-        EventManager::instance()->on('Auth.afterIdentify', function (Event $event, array $user) {
-            LoggedUser::setUser($user);
-        });
+        EventManager::instance()->on(new CommonEventHandler());
     }
 
     /**
