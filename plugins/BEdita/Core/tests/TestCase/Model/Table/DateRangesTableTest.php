@@ -155,7 +155,7 @@ class DateRangesTableTest extends TestCase
     {
         $conditions = ['what_date' => ['lt' => '2017-01-01']];
 
-        static::expectException('Cake\Network\Exception\BadRequestException');
+        static::expectException('BEdita\Core\Exception\BadFilterException');
 
         $this->DateRanges->find('dateRanges', $conditions)->toArray();
     }

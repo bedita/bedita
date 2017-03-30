@@ -115,7 +115,7 @@ class LocationsTableTest extends TestCase
     public function testFindGeo($conditions, $numExpected)
     {
         if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
-            static::expectException('Cake\Network\Exception\BadRequestException');
+            static::expectException('BEdita\Core\Exception\BadFilterException');
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
@@ -154,7 +154,7 @@ class LocationsTableTest extends TestCase
      */
     public function testBadGeo($conditions)
     {
-        static::expectException('Cake\Network\Exception\BadRequestException');
+        static::expectException('BEdita\Core\Exception\BadFilterException');
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
     }
@@ -171,7 +171,7 @@ class LocationsTableTest extends TestCase
         $testLocations = new TestLocations();
         $testLocations->setGeoDbSupport(['vendor' => 'unknowndb']);
 
-        static::expectException('Cake\Network\Exception\BadRequestException');
+        static::expectException('BEdita\Core\Exception\BadFilterException');
 
         $result = $testLocations->checkGeoDbSupport();
     }
