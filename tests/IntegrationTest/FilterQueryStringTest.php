@@ -138,11 +138,10 @@ class FilterQueryStringTest extends IntegrationTestCase
                'filter[geo][banana]=44.4944183,11.3464055',
                '/locations'
             ],
-            // this will work after #1141 - currently gives a 500
-            // 'banana2' => [
-            //    'filter[date_ranges][banana][gt]=2017-01-01',
-            //    '/events'
-            // ],
+            'banana2' => [
+               'filter[date_ranges][banana][gt]=2017-01-01',
+               '/events'
+            ],
         ];
     }
 
