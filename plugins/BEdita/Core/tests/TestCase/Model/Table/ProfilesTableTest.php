@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +42,9 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
     ];
 
     /**
@@ -52,6 +56,7 @@ class ProfilesTableTest extends TestCase
     {
         parent::setUp();
         $this->Profiles = TableRegistry::get('Profiles');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -62,6 +67,7 @@ class ProfilesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Profiles);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }

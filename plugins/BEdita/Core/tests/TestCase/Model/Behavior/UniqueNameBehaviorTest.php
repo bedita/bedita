@@ -13,7 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use ArrayObject;
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
@@ -49,6 +49,18 @@ class UniqueNameBehaviorTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
     }
 
     /**

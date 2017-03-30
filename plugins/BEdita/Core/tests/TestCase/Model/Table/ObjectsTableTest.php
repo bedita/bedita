@@ -1,6 +1,7 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -40,6 +41,7 @@ class ObjectsTableTest extends TestCase
         parent::setUp();
 
         $this->Objects = TableRegistry::get('Objects');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**

@@ -383,8 +383,8 @@ class ObjectTypesTableTest extends TestCase
         }
 
         $result = $this->ObjectTypes
-            ->find('byRelation', $options)
             ->find('list')
+            ->find('byRelation', $options)
             ->toArray();
 
         static::assertEquals($expected, $result, '', 0, 10, true);

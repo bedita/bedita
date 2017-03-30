@@ -14,7 +14,7 @@
 namespace BEdita\Core\Model\Action;
 
 use BEdita\Core\Exception\BadFilterException;
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\Utility\Inflector;
 
@@ -25,6 +25,7 @@ use Cake\Utility\Inflector;
  */
 class ListEntitiesAction extends BaseAction
 {
+    use QueryFilterTrait;
 
     /**
      * Table.
@@ -126,17 +127,7 @@ class ListEntitiesAction extends BaseAction
             if ($this->Table->hasField($key, true)) {
                 // Filter on single field.
                 $key = $this->Table->aliasField($key);
-                if ($value === null) {
-                    $query = $query->andWhere(function (QueryExpression $exp) use ($key) {
-                        return $exp->isNull($key);
-                    });
-
-                    continue;
-                }
-
-                $query = $query->andWhere(function (QueryExpression $exp) use ($key, $value) {
-                    return $exp->in($key, (array)$value);
-                });
+                $query = $this->fieldsFilter($query, [$key => $value]);
 
                 continue;
             }
