@@ -21,14 +21,14 @@ use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
+use Cake\TestSuite\TestCase;
 use Psr\Http\Message\UriInterface;
 use Zend\Diactoros\Uri;
 
 /**
  * @coversDefaultClass \BEdita\API\Auth\EndpointAuthorize
  */
-class EndpointAuthorizeTest extends IntegrationTestCase
+class EndpointAuthorizeTest extends TestCase
 {
     /**
      * Fixtures
