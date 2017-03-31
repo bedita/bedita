@@ -13,7 +13,7 @@ use Cake\ORM\TableRegistry;
  *
  * @covers \BEdita\Core\Shell\BeditaShell
  */
-class BeditaShellTest extends ShellTestCase
+class ZZZBeditaShellTest extends ShellTestCase
 {
 
     /**
