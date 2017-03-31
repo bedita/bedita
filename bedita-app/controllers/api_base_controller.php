@@ -428,7 +428,6 @@ abstract class ApiBaseController extends FrontendController {
     protected function beforeCheckLogin() {
         $this->setupAuthComponent();
         $this->setupValidatorComponent();
-        $this->setupFormatterComponent();
         // Cross origin check.
         if (!$this->checkOrigin()) {
             throw new BeditaForbiddenException('Unallowed Origin');
@@ -533,9 +532,9 @@ abstract class ApiBaseController extends FrontendController {
     }
 
     /**
-     * Setup component used for authentication:
+     * Setup component used for format response and request data:
      *
-     * - check configuration (api.formatter.component) to see if adhoc component should be used and assign it to self::$ApiFormatter
+     * - check configuration (api.formatter.component) to see if adhoc component should be used and assign it to `self::$ApiFormatter`
      *
      * @return void
      */
@@ -734,6 +733,7 @@ abstract class ApiBaseController extends FrontendController {
      * @see AppController::setupLocale()
      */
     protected function setupLocale() {
+        $this->setupFormatterComponent();
         $urlParams = $this->ApiFormatter->formatUrlParams();
         if (!empty($urlParams['lang'])) {
             $conf = Configure::getInstance();
