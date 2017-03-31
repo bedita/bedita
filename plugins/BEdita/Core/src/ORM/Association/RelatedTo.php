@@ -23,4 +23,36 @@ use Cake\ORM\Association\BelongsToMany;
 class RelatedTo extends BelongsToMany
 {
 
+    /**
+     * Get sub-query for matching.
+     *
+     * @param array $options Options array.
+     * @return \Cake\ORM\Query
+     */
+    public function getSubQueryForMatching(array $options)
+    {
+        if (!isset($options['conditions'])) {
+            $options['conditions'] = [];
+        }
+        $junction = $this->junction();
+        $belongsTo = $junction->association($this->getSource()->getAlias());
+        $condition = $belongsTo->_joinCondition(['foreignKey' => $belongsTo->getForeignKey()]);
+
+        $subQuery = $this->find()
+            ->select(array_values($condition))
+            ->where($options['conditions'])
+            ->andWhere($this->junctionConditions());
+
+        if (!empty($options['queryBuilder'])) {
+            $subQuery = $options['queryBuilder']($subQuery);
+        }
+
+        $assoc = $junction->association($this->getTarget()->getAlias());
+        $conditions = $assoc->_joinCondition([
+            'foreignKey' => $this->getTargetForeignKey()
+        ]);
+        $subQuery = $this->_appendJunctionJoin($subQuery, $conditions);
+
+        return $subQuery;
+    }
 }
