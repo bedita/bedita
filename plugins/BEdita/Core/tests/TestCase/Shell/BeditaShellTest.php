@@ -105,13 +105,13 @@ class BeditaShellTest extends ShellTestCase
     public function setupProvider()
     {
         return [
-            'noDescription' => [
-                ['dummyApp'],
-                ['anotherDummy'],
-                ['moreDummy']
+            'noSetup' => [
+                ['y', 'n', 'y'],
+                [],
+                ['pippo', 'pippo']
             ],
-            'description' => [
-                ['dummyAppWithDesc', 'This is the description for the dummy app'],
+            'nada' => [
+                ['n', 'n', 'n'],
             ]
         ];
     }
