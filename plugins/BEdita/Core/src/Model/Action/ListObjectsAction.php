@@ -46,6 +46,8 @@ class ListObjectsAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     *
+     * @return \Cake\ORM\Query
      */
     public function execute(array $data = [])
     {

@@ -12,6 +12,7 @@
  */
 namespace BEdita\Core\Test\TestCase\Utility;
 
+use BEdita\Core\Utility\LoggedUser;
 use BEdita\Core\Utility\ObjectsHandler;
 use Cake\Core\Configure;
 use Cake\ORM\TableRegistry;
@@ -40,10 +41,30 @@ class ObjectsHandlerTest extends TestCase
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        LoggedUser::setUser(['id' => 1]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
+    }
+
+    /**
      * Test `create` and `remove` method
      *
      * @return void
-     * @covers ::create()
+     * @covers ::save()
      * @covers ::remove()
      * @covers ::checkEnvironment()
      */
@@ -51,13 +72,13 @@ class ObjectsHandlerTest extends TestCase
     {
         $data = ['username' => 'somenewusername', 'password' => 'somepassword'];
 
-        $entity = ObjectsHandler::create('users', $data);
+        $entity = ObjectsHandler::save('users', $data);
         $this->assertNotEmpty($entity);
         $userId = $entity->id;
         $this->assertInternalType('integer', $userId);
 
         $data = ['title' => 'a pragmatic title', 'description' => 'an agile descriptio'];
-        $entity = ObjectsHandler::create('documents', $data, ['id' => $userId]);
+        $entity = ObjectsHandler::save('documents', $data, ['id' => $userId]);
         $this->assertNotEmpty($entity);
         $docId = $entity->id;
         $this->assertInternalType('integer', $docId);
@@ -70,23 +91,37 @@ class ObjectsHandlerTest extends TestCase
     }
 
     /**
-     * Test `create` failure
+     * Test `save` failure
      *
      * @return void
-     * @covers ::create()
+     * @covers ::save()
      * @expectedException Cake\Console\Exception\StopException
      */
-    public function testCreateException()
+    public function testSaveException()
     {
         $data = [];
-        ObjectsHandler::create('users', $data);
+        ObjectsHandler::save('users', $data);
+    }
+
+    /**
+     * Test `save` existing object
+     *
+     * @return void
+     * @covers ::save()
+     */
+    public function testSaveExisting()
+    {
+        $data = ['id' => 5, 'description' => 'a new description'];
+        $entity = ObjectsHandler::save('users', $data);
+        $this->assertNotEmpty($entity);
+        $this->assertEquals(5, $entity->id);
     }
 
     /**
      * Test `delete` failure
      *
      * @return void
-     * @covers ::create()
+     * @covers ::remove()
      * @expectedException Cake\Datasource\Exception\RecordNotFoundException
      */
     public function testDeleteException()
@@ -104,7 +139,7 @@ class ObjectsHandlerTest extends TestCase
     public function testEnvironment()
     {
         Configure::write('debug', false);
-        ObjectsHandler::create('documents', []);
+        ObjectsHandler::save('documents', []);
         Configure::write('debug', true);
     }
 }

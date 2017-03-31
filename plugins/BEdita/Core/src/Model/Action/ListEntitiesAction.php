@@ -13,7 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\Utility\Inflector;
 
@@ -24,6 +25,7 @@ use Cake\Utility\Inflector;
  */
 class ListEntitiesAction extends BaseAction
 {
+    use QueryFilterTrait;
 
     /**
      * Table.
@@ -81,6 +83,7 @@ class ListEntitiesAction extends BaseAction
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $filter Filter data.
      * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     protected function buildFilter(Query $query, array $filter)
     {
@@ -124,20 +127,17 @@ class ListEntitiesAction extends BaseAction
             if ($this->Table->hasField($key, true)) {
                 // Filter on single field.
                 $key = $this->Table->aliasField($key);
-                if ($value === null) {
-                    $query = $query->andWhere(function (QueryExpression $exp) use ($key) {
-                        return $exp->isNull($key);
-                    });
-
-                    continue;
-                }
-
-                $query = $query->andWhere(function (QueryExpression $exp) use ($key, $value) {
-                    return $exp->in($key, (array)$value);
-                });
+                $query = $this->fieldsFilter($query, [$key => $value]);
 
                 continue;
             }
+
+            // No suitable filter was found
+            //$this->log('Filter not found ' . $key, 'error');
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'filter "' . $key . '" was not found',
+            ]);
         }
 
         return $query;

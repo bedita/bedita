@@ -41,27 +41,31 @@ class ObjectsHandler
         $isCli = PHP_SAPI === 'cli';
         $debug = Configure::read('debug');
         if (!($isCli && $debug)) {
+            $detail = 'Operation avilable only in CLI environment in "debug" mode';
+            Log::write('error', $detail);
             throw new StopException(['title' => 'Not available',
-                'detail' => 'Operation avilable only in CLI environment with in debug mode']);
+                'detail' => $detail]);
         }
     }
 
     /**
-     * Create a new object of type $type from $data array
+     * Save an object of type $type from $data array
      * Input data array is of the form
      * ['field1' => 'value1', 'field2' => 'value2']
      * User data must contain at least user 'id'.
      * If user data is missing current user is used if present
      * or sytem user (with 'id' = 1)
      *
+     * If $data['id'] is set, corresponding object is updated.
+     * On missing $data['id'] a new object is created.
      *
      * @param string|int $type Object type name or id
      * @param array $data Input data array
      * @param array $user User performing action data
      * @throws \Cake\Console\Exception\StopException
-     * @return \Cake\Datasource\EntityInterface|bool Entity created or false on error
+     * @return \Cake\Datasource\EntityInterface|bool Entity saved or false on error
      */
-    public static function create($type, $data, $user = [])
+    public static function save($type, $data, $user = [])
     {
         static::checkEnvironment();
         $currentUser = LoggedUser::getUser();
@@ -72,8 +76,13 @@ class ObjectsHandler
 
         $objectType = TableRegistry::get('ObjectTypes')->get($type);
         $table = TableRegistry::get($objectType->model);
-        $entity = $table->newEntity($data);
-        $entity->type = $objectType->name;
+        if (!empty($data['id'])) {
+            $entity = $table->get($data['id']);
+        } else {
+            $entity = $table->newEntity();
+        }
+        $entity = $table->patchEntity($entity, $data);
+        $entity->set('type', $objectType->name);
         $saveResult = $table->save($entity);
         if (!$saveResult) {
             Log::write('error', 'Object creation failed  - ' . $type . ' - ' . json_encode($entity->errors()));

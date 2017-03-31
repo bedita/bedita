@@ -44,6 +44,9 @@ class DateTimeType extends CakeDateTimeType
 
         if (preg_match('/^\d{4}(-\d\d(-\d\d([T ]\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i', $value)) {
             $value = Time::parse($value);
+            if ($value->getTimezone()->getName() === 'Z') {
+                $value = $value->setTimezone('UTC');
+            }
         }
 
         return $value;

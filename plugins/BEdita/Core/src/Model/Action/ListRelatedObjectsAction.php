@@ -13,7 +13,13 @@
 
 namespace BEdita\Core\Model\Action;
 
+use BEdita\Core\ORM\Association\RelatedTo;
+use Cake\Datasource\EntityInterface;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Query;
+use Cake\ORM\ResultSet;
+use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 
 /**
  * Command to list associated objects.
@@ -29,16 +35,86 @@ class ListRelatedObjectsAction extends ListAssociatedAction
     public function execute(array $data = [])
     {
         $data += ['joinData' => true];
-        $result = parent::execute($data);
-        if (!($result instanceof Query)) {
-            return $result;
+
+        if (!($this->Association instanceof RelatedTo)) {
+            return parent::execute($data);
         }
 
-        if ($this->Association->hasField('object_type_id') && !empty($data['list'])) {
-            $result = $result
-                ->select([$this->Association->aliasField('object_type_id')]);
+        $source = $this->Association->getSource();
+        $conditions = $this->primaryKeyConditions($data['primaryKey']);
+
+        $existing = $source->find()
+            ->where($conditions)
+            ->count();
+        if (!$existing) {
+            throw new RecordNotFoundException(__('Record not found in table "{0}"', $source->getTable()));
         }
 
-        return $result;
+        $table = $this->Association->getTarget();
+
+        $target = TableRegistry::get('InverseRelation', [
+            'className' => $source->getRegistryAlias(),
+        ]);
+        $target->setTable($source->getTable());
+
+        $options = [
+            'sourceTable' => $table,
+            'targetTable' => $target,
+            'through' => $this->Association->junction()->getRegistryAlias(),
+            'foreignKey' => $this->Association->getTargetForeignKey(),
+            'targetForeignKey' => $this->Association->getForeignKey(),
+            'conditions' => $this->Association->getConditions(),
+        ];
+        $association = new RelatedTo('InverseRelation', $options);
+
+        $inverseAssociation = $table->associations()->add($association->getName(), $association);
+
+        $objectTypes = TableRegistry::get('ObjectTypes')
+            ->find('byRelation', [
+                'name' => $this->Association->getName(),
+                'side' => 'right',
+            ])
+            ->toArray();
+        if (count($objectTypes) === 1) {
+            $objectType = current($objectTypes);
+        }
+
+        $action = new ListObjectsAction(compact('table', 'objectType'));
+        $query = $action->execute($data);
+
+        if (!empty($data['list'])) {
+            $query = $query
+                ->select([
+                    $table->aliasField($table->getPrimaryKey()),
+                    $table->aliasField('object_type_id'),
+                ]);
+        } else {
+            $query = $query->enableAutoFields(true);
+        }
+
+        if (!empty($data['only'])) {
+            $query = $query->where([
+                $table->aliasField($table->getPrimaryKey()) . ' IN' => (array)$data['only'],
+            ]);
+        }
+
+        return $query
+            ->select($this->Association->junction())
+            ->innerJoinWith($inverseAssociation->getName(), function (Query $query) use ($data, $inverseAssociation) {
+                return $query->where([$inverseAssociation->aliasField('id') => $data['primaryKey']]);
+            })
+            ->order($this->Association->sort())
+            ->formatResults(function (ResultSet $results) {
+                return $results->map(function (EntityInterface $entity) {
+                    $joinData = Hash::get($entity, '_matchingData.' . $this->Association->junction()->getAlias());
+                    $entity->unsetProperty('_matchingData');
+
+                    if (!empty($joinData)) {
+                        $entity->set('_joinData', $joinData);
+                    }
+
+                    return $entity;
+                });
+            });
     }
 }

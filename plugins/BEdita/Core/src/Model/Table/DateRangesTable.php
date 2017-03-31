@@ -13,7 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Expression\QueryExpression;
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -34,6 +35,7 @@ use Cake\Validation\Validator;
  */
 class DateRangesTable extends Table
 {
+    use QueryFilterTrait;
 
     /**
      * Initialize method
@@ -118,60 +120,23 @@ class DateRangesTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
      * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     public function findDateRanges(Query $query, array $options)
     {
         $options = array_intersect_key($options, array_flip(['start_date', 'end_date']));
+        $options = array_combine(
+            array_map([$this, 'aliasField'], array_keys($options)),
+            array_values($options)
+        );
 
-        return $query->where(function (QueryExpression $exp) use ($options) {
-            foreach ($options as $field => $conditions) {
-                $field = $this->aliasField($field);
+        if (empty($options)) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'start_date or end_date parameter missing',
+            ]);
+        }
 
-                if (!is_array($conditions)) {
-                    $exp = $exp->eq($field, $conditions);
-
-                    continue;
-                }
-
-                foreach ($conditions as $operator => $value) {
-                    switch ($operator) {
-                        case 'eq':
-                        case '=':
-                            $exp = $exp->eq($field, $value);
-                            break;
-
-                        case 'neq':
-                        case 'ne':
-                        case '!=':
-                        case '<>':
-                            $exp = $exp->notEq($field, $value);
-                            break;
-
-                        case 'lt':
-                        case '<':
-                            $exp = $exp->lt($field, $value);
-                            break;
-
-                        case 'lte':
-                        case 'le':
-                        case '<=':
-                            $exp = $exp->lte($field, $value);
-                            break;
-
-                        case 'gt':
-                        case '>':
-                            $exp = $exp->gt($field, $value);
-                            break;
-
-                        case 'gte':
-                        case 'ge':
-                        case '>=':
-                            $exp = $exp->gte($field, $value);
-                    }
-                }
-            }
-
-            return $exp;
-        });
+        return $this->fieldsFilter($query, $options);
     }
 }

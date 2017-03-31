@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -59,6 +60,24 @@ class DateRangesTableTest extends TestCase
         unset($this->DateRanges);
 
         parent::tearDown();
+    }
+
+    /**
+     * Test marshalling of new entities.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testMarshal()
+    {
+        $dateRange = $this->DateRanges->newEntity([
+            'start_date' => '2017-01-01',
+            'end_date' => '2017-01-10T17:18:19Z',
+        ]);
+
+        static::assertInstanceOf(Time::class, $dateRange->start_date);
+        static::assertInstanceOf(Time::class, $dateRange->end_date);
     }
 
     /**
@@ -130,7 +149,7 @@ class DateRangesTableTest extends TestCase
     }
 
     /**
-     * Test object date ranges finder.
+     * Test `dateRanges` finder.
      *
      * @param array $conditions Date conditions.
      * @param array|false $numExpected Number of expected results.
@@ -144,5 +163,19 @@ class DateRangesTableTest extends TestCase
         $result = $this->DateRanges->find('dateRanges', $conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
+    }
+
+    /**
+     * Test date ranges finder failure.
+     *
+     * @covers ::findDateRanges()
+     */
+    public function testFindDateFail()
+    {
+        $conditions = ['what_date' => ['lt' => '2017-01-01']];
+
+        static::expectException('BEdita\Core\Exception\BadFilterException');
+
+        $this->DateRanges->find('dateRanges', $conditions)->toArray();
     }
 }

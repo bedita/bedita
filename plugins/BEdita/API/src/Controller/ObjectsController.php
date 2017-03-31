@@ -58,8 +58,8 @@ class ObjectsController extends ResourcesController
         if ($this->request->getParam('action') === 'relationships') {
             $name = $this->request->getParam('relationship');
             $allowedTypes = TableRegistry::get('ObjectTypes')
-                ->find('byRelation', compact('name'))
                 ->find('list')
+                ->find('byRelation', compact('name'))
                 ->toArray();
 
             $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
@@ -114,9 +114,12 @@ class ObjectsController extends ResourcesController
             $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
 
             $data = $this->request->getData();
-            $entity = $action(compact('entity', 'data'));
+            $data = $action(compact('entity', 'data'));
 
-            return $this->response
+            $action = new GetObjectAction(['table' => $this->Table]);
+            $data = $action(['primaryKey' => $data->id]);
+
+            $this->response = $this->response
                 ->withStatus(201)
                 ->withHeader(
                     'Location',
@@ -124,25 +127,23 @@ class ObjectsController extends ResourcesController
                         [
                             '_name' => 'api:objects:resource',
                             'object_type' => $this->objectType->name,
-                            'id' => $entity->id,
+                            'id' => $data->id,
                         ],
                         true
                     )
                 );
+        } else {
+            // List existing entities.
+            $filter = $this->request->getQuery('filter');
+
+            $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+            $query = $action(compact('filter'));
+
+            $data = $this->paginate($query);
         }
-
-        $filter = $this->request->getQuery('filter');
-
-        // List existing entities.
-        $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
-        $query = $action(compact('filter'));
-
-        $data = $this->paginate($query);
 
         $this->set(compact('data'));
         $this->set('_serialize', ['data']);
-
-        return null;
     }
 
     /**
@@ -197,9 +198,10 @@ class ObjectsController extends ResourcesController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
+        $filter = $this->request->getQuery('filter');
 
         $action = new ListRelatedObjectsAction(compact('association'));
-        $query = $action(['primaryKey' => $relatedId]);
+        $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         $objects = $this->paginate($query);
 
@@ -234,8 +236,10 @@ class ObjectsController extends ResourcesController
 
             case 'GET':
             default:
+                $filter = $this->request->getQuery('filter');
+
                 $action = new ListRelatedObjectsAction(compact('association'));
-                $data = $action(['primaryKey' => $id, 'list' => true]);
+                $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);

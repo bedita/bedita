@@ -81,6 +81,18 @@ class LocationsTable extends AbstractMigration
                 ]
             )
             ->update();
+
+        $this->table('object_types')
+            ->insert([
+                [
+                    'name' => 'location',
+                    'pluralized' => 'locations',
+                    'description' => 'Location model with coords',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Locations',
+                ],
+            ])
+            ->save();
     }
 
     public function down()

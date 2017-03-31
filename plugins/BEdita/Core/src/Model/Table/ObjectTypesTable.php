@@ -260,7 +260,7 @@ class ObjectTypesTable extends Table
         if (empty($options['name'])) {
             throw new \LogicException(__d('bedita', 'Missing required parameter "{0}"', 'name'));
         }
-        $name = $options['name'];
+        $name = Inflector::underscore($options['name']);
 
         $leftField = 'inverse_name';
         $rightField = 'name';
@@ -269,8 +269,7 @@ class ObjectTypesTable extends Table
             $rightField = 'inverse_name';
         }
 
-        $query = $query->select($this->aliasField('name'));
-        $queryCopy = clone $query;
+        $queryCopy = $query->cleanCopy();
 
         return $query
             ->matching('LeftRelations', function (Query $query) use ($name, $leftField) {
