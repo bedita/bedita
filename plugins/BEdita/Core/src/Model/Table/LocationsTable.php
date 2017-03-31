@@ -13,8 +13,8 @@
 
 namespace BEdita\Core\Model\Table;
 
-use BEdita\Core\Model\Validation\LocationsValidator;
 use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Model\Validation\LocationsValidator;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\Database;
 use Cake\Database\Expression\FunctionExpression;
@@ -33,6 +33,7 @@ use Cake\ORM\Query;
  */
 class LocationsTable extends Table
 {
+
     /**
      * DB version supported
      * @var array
