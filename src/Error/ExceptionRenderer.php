@@ -18,7 +18,6 @@ use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Plugin;
 use Cake\Error\ExceptionRenderer as CakeExceptionRenderer;
 use Cake\Network\Request;
-use Zend\Diactoros\Stream;
 
 /**
  * Exception renderer.
@@ -166,10 +165,7 @@ class ExceptionRenderer extends CakeExceptionRenderer
 
         $view = $this->controller->createView();
 
-        $stream = new Stream('php://memory', 'wb+');
-        $stream->write($view->render());
-
-        return $this->controller->response->withBody($stream);
+        return $this->controller->response->withStringBody($view->render());
     }
 
     /**
