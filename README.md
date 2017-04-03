@@ -1,31 +1,31 @@
-# BEdita, API-first content management
+# BEdita, a back-end API
 
 [![Build Status](https://travis-ci.org/bedita/bedita.svg?branch=4-develop)](https://travis-ci.org/bedita/bedita)
 [![Code Coverage](https://codecov.io/gh/bedita/bedita/branch/4-develop/graph/badge.svg)](https://codecov.io/gh/bedita/bedita/branch/4-develop)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/bedita/bedita/badges/quality-score.png?b=4-develop)](https://scrutinizer-ci.com/g/bedita/bedita/?branch=4-develop)
 [![Dependency Status](https://gemnasium.com/badges/github.com/bedita/bedita.svg)](https://gemnasium.com/github.com/bedita/bedita)
 
-BEdita is a tool to handle the data of your mobile, IoT, web and desktop applications.
+BEdita 4 is a ready to use back-end API to handle the data of your mobile, IoT, web and desktop applications.
+It's also an extensible framework to build your custom back-end API solutions via plugins.
 
-It's a full fledged content management solution with:
- * an HTTP REST driven server application with a complete API to model, create, modify and retrieve data
- * a default backend web application
- * tools and scripts to create applications upon its HTTP API
+As its core it's a full fledged content management solution with:
+ * an HTTP driven server application with a complete REST API to model, create, modify and retrieve data
+ * a default admin web application (not yet available)
 
-BEdita is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
+BEdita 4 is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
 [Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com)
-in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) and [InfluxDb](https://www.influxdata.com/time-series-platform/influxdb/) to boost
+in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) or time series databases to boost
 performance and scale up to Big Data scenarios.
 
-[JSON-API](http://jsonapi.org) is the primary, although not unique, exchange data format.
+[JSON-API](http://jsonapi.org) is the primary exchange data format.
 
 Development is currently in alpha stage - DON'T USE IT ON A PRODUCTION SYSTEM
 
 
 ## Prerequisites
 
- * PHP 7 (recommended) or PHP >= 5.5.9
- * MySQL >= 5.5
+ * PHP 7 (recommended) or PHP 5.6
+ * MySQL 5.7 (recommended) or MySQL 5.6, Postgres 9.5/9.6
  * [Composer](https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 
