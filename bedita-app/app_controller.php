@@ -587,6 +587,10 @@ class AppController extends Controller {
     }
 
     protected function loadModelByType($modelClass) {
+        if (!is_string($modelClass)) {
+            throw new BeditaException(__('Model class must be a string. Given', true) . ' ' . gettype($modelClass));
+        }
+
         $model = ClassRegistry::init($modelClass);
         if($model === false) {
             throw new BeditaException(__('Object type not found - ', true).$modelClass);
