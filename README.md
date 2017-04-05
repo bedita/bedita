@@ -6,16 +6,14 @@
 [![Dependency Status](https://gemnasium.com/badges/github.com/bedita/bedita.svg)](https://gemnasium.com/github.com/bedita/bedita)
 
 BEdita 4 is a ready to use back-end API to handle the data of your mobile, IoT, web and desktop applications.
-It's also an extensible framework to build your custom back-end API solutions via plugins.
+It's also an extensible framework to build your custom back-end API via plugins.
 
-As its core it's a full fledged content management solution with:
+It provides a complete content management solution with:
  * an HTTP driven server application with a complete REST API to model, create, modify and retrieve data
  * a default admin web application (not yet available)
 
 BEdita 4 is built with [CakePHP 3](http://cakephp.org) and uses relational DBMS like [MySQL](http://www.mysql.com),
-[Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com)
-in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) or time series databases to boost
-performance and scale up to Big Data scenarios.
+[Postgres](https://www.postgresql.org) or [SQLite](http://sqlite.com) in conjunction with (optional) NoSQL systems like [Redis](http://redis.io/), [Elastic Search](https://www.elastic.co/) or time series databases to boost performance and scale up to Big Data scenarios.
 
 [JSON-API](http://jsonapi.org) is the primary exchange data format.
 
