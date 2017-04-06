@@ -17,6 +17,7 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -40,6 +41,14 @@ trait JsonApiTrait
      * @return string
      */
     abstract public function getSource();
+
+    /**
+     * Checks if a property is accessible.
+     *
+     * @param string $property Property name to check
+     * @return bool
+     */
+    abstract public function isAccessible($property);
 
     /**
      * Magic getter for `type` property.
@@ -97,5 +106,20 @@ trait JsonApiTrait
         }
 
         return $relationships;
+    }
+
+    /**
+     * Get array of meta properties.
+     *
+     * @return array
+     */
+    protected function _getMeta()
+    {
+        return array_filter(
+            array_keys($this->_properties),
+            function ($property) {
+                return !in_array($property, ['_joinData', '_matchingData']) && !$this->isAccessible($property);
+            }
+        );
     }
 }
