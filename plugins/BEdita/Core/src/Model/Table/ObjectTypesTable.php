@@ -272,13 +272,13 @@ class ObjectTypesTable extends Table
         $queryCopy = $query->cleanCopy();
 
         return $query
-            ->matching('LeftRelations', function (Query $query) use ($name, $leftField) {
+            ->innerJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
                 return $query->where([
                     $this->LeftRelations->aliasField($leftField) => $name,
                 ]);
             })
             ->unionAll(
-                $queryCopy->matching('RightRelations', function (Query $query) use ($name, $rightField) {
+                $queryCopy->innerJoinWith('RightRelations', function (Query $query) use ($name, $rightField) {
                     return $query->where([
                         $this->RightRelations->aliasField($rightField) => $name,
                     ]);
