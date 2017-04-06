@@ -115,4 +115,44 @@ class JsonApiTraitTest extends TestCase
 
         static::assertSame([], $relationships);
     }
+
+    /**
+     * Test magic getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::_getMeta()
+     */
+    public function testGetMeta()
+    {
+        $expected = [
+            'id',
+            'created',
+            'modified',
+            'unchangeable',
+        ];
+
+        $role = $this->Roles->get(1);
+
+        $meta = $role->meta;
+
+        static::assertEquals($expected, $meta, '', 0, 10, true);
+    }
+
+    /**
+     * Test magic getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::_getMeta()
+     */
+    public function testGetMetaNotAccessible()
+    {
+        $role = $this->Roles->get(1);
+        $role->setAccess('*', true);
+
+        $meta = $role->meta;
+
+        static::assertSame([], $meta);
+    }
 }
