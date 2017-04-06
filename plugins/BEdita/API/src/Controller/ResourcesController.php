@@ -141,8 +141,10 @@ abstract class ResourcesController extends AppController
                 );
         } else {
             // List existing entities.
+            $filter = $this->request->getQuery('filter');
+
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $query = $action();
+            $query = $action(compact('filter'));
 
             $data = $this->paginate($query);
         }
@@ -214,9 +216,10 @@ abstract class ResourcesController extends AppController
         $relatedId = $this->request->getParam('related_id');
 
         $association = $this->findAssociation($relationship);
+        $filter = $this->request->getQuery('filter');
 
         $action = new ListAssociatedAction(compact('association'));
-        $query = $action->execute(['primaryKey' => $relatedId]);
+        $query = $action->execute(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         $data = $this->paginate($query);
 
@@ -258,8 +261,10 @@ abstract class ResourcesController extends AppController
 
             case 'GET':
             default:
+                $filter = $this->request->getQuery('filter');
+
                 $action = new ListAssociatedAction(compact('association'));
-                $data = $action(['primaryKey' => $id, 'list' => true]);
+                $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
 
                 if ($data instanceof Query) {
                     $data = $this->paginate($data);
