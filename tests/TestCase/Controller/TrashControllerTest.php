@@ -73,21 +73,23 @@ class TrashControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-one-deleted',
-                        'locked' => false,
-                        'created' => '2016-10-13T07:09:23+00:00',
-                        'modified' => '2016-10-13T07:09:23+00:00',
-                        'published' => '2016-10-13T07:09:23+00:00',
                         'title' => 'title one deleted',
                         'description' => 'description removed',
                         'body' => 'body no more',
                         'extra' => [
-                            'abstract' => 'what?'
+                            'abstract' => 'what?',
                         ],
                         'lang' => 'eng',
+                        'publish_start' => '2016-10-13T07:09:23+00:00',
+                        'publish_end' => '2016-10-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-10-13T07:09:23+00:00',
+                        'modified' => '2016-10-13T07:09:23+00:00',
+                        'published' => '2016-10-13T07:09:23+00:00',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'publish_start' => '2016-10-13T07:09:23+00:00',
-                        'publish_end' => '2016-10-13T07:09:23+00:00'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/trash/6',
@@ -99,26 +101,28 @@ class TrashControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-two-deleted',
-                        'locked' => false,
-                        'created' => '2016-10-13T07:09:23+00:00',
-                        'modified' => '2016-10-13T07:09:23+00:00',
-                        'published' => '2016-10-13T07:09:23+00:00',
                         'title' => 'title two deleted',
                         'description' => 'description removed',
                         'body' => 'body no more',
                         'extra' => [
-                            'abstract' => 'what?'
+                            'abstract' => 'what?',
                         ],
                         'lang' => 'eng',
+                        'publish_start' => '2016-10-13T07:09:23+00:00',
+                        'publish_end' => '2016-10-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-10-13T07:09:23+00:00',
+                        'modified' => '2016-10-13T07:09:23+00:00',
+                        'published' => '2016-10-13T07:09:23+00:00',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'publish_start' => '2016-10-13T07:09:23+00:00',
-                        'publish_end' => '2016-10-13T07:09:23+00:00'
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/trash/7',
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -194,21 +198,23 @@ class TrashControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one-deleted',
-                    'locked' => false,
-                    'created' => '2016-10-13T07:09:23+00:00',
-                    'modified' => '2016-10-13T07:09:23+00:00',
-                    'published' => '2016-10-13T07:09:23+00:00',
                     'title' => 'title one deleted',
                     'description' => 'description removed',
                     'body' => 'body no more',
                     'extra' => [
-                        'abstract' => 'what?'
+                        'abstract' => 'what?',
                     ],
                     'lang' => 'eng',
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'modified' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-10-13T07:09:23+00:00',
-                    'publish_end' => '2016-10-13T07:09:23+00:00'
                 ],
             ],
         ];
