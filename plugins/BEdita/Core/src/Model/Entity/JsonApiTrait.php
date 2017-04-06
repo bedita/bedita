@@ -17,13 +17,15 @@ use Cake\ORM\Association;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
-use Cake\Utility\Hash;
-use Cake\Utility\Inflector;
 
 /**
  * Trait for exposing useful properties required for JSON API response formatting at the entity level.
  *
  * @since 4.0.0
+ *
+ * @property string $type
+ * @property string[] $relationships
+ * @property string[] $meta
  */
 trait JsonApiTrait
 {
@@ -111,15 +113,17 @@ trait JsonApiTrait
     /**
      * Get array of meta properties.
      *
-     * @return array
+     * @return string[]
      */
     protected function _getMeta()
     {
-        return array_filter(
-            array_keys($this->_properties),
-            function ($property) {
-                return !in_array($property, ['_joinData', '_matchingData']) && !$this->isAccessible($property);
-            }
+        return array_values(
+            array_filter(
+                array_keys($this->_properties),
+                function ($property) {
+                    return !in_array($property, ['_joinData', '_matchingData']) && !$this->isAccessible($property);
+                }
+            )
         );
     }
 }
