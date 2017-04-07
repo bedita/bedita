@@ -134,8 +134,6 @@ class LocationsTable extends Table
         $this->checkGeoDbSupport();
 
         $center = sprintf('POINT(%s)', $center);
-        $distance = 'meta__distance';
-
         $distanceExpression = new FunctionExpression(
             'ST_Distance_sphere',
             [
@@ -147,9 +145,9 @@ class LocationsTable extends Table
         );
 
         return $query
-            ->select([$distance => $distanceExpression])
+            ->select(['distance' => $distanceExpression])
             ->enableAutoFields(true)
-            ->order([$distance => 'ASC']);
+            ->order(['distance' => 'ASC']);
     }
 
     /**
