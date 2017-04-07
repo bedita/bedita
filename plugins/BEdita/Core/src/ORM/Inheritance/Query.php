@@ -93,7 +93,7 @@ class Query extends CakeQuery
             return $this->inheritanceMap['tables'];
         }
 
-        $this->inheritanceMap['tables'] = $this->_repository->inheritedTables(true);
+        $this->inheritanceMap['tables'] = $this->_repository->inheritedTables();
 
         return $this->inheritanceMap['tables'];
     }
