@@ -895,7 +895,7 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        static::assertTrue($this->fakeMammals->hasField('legs', true));
+        static::assertTrue($this->fakeMammals->hasField('legs'));
         static::assertFalse($this->fakeMammals->hasField('legs', false));
         static::assertTrue($this->fakeAnimals->hasField('legs'));
     }

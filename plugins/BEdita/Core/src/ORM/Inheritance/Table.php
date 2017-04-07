@@ -309,7 +309,7 @@ class Table extends CakeTable
      *
      * @param bool $inheritedFields Should fields from inherited tables be considered?
      */
-    public function hasField($field, $inheritedFields = false)
+    public function hasField($field, $inheritedFields = true)
     {
         $result = parent::hasField($field);
         $inheritedTable = $this->inheritedTable();
@@ -318,7 +318,7 @@ class Table extends CakeTable
             return $result;
         }
 
-        return $inheritedTable->hasField($field, true);
+        return $inheritedTable->hasField($field);
     }
 
     /**

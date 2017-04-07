@@ -272,12 +272,12 @@ class Query extends CakeQuery
             return $field;
         }
 
-        if ($this->_repository->hasField($field)) {
+        if ($this->_repository->hasField($field, false)) {
             return $this->_repository->alias() . '.' . $field;
         }
 
         foreach ($this->inheritedTables() as $inherited) {
-            if (!$inherited->hasField($field)) {
+            if (!$inherited->hasField($field, false)) {
                 continue;
             }
 
