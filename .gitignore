@@ -2,6 +2,7 @@
 #################################################
 /.vagrant/*
 /composer.lock
+/composer.local.json
 /config/app.php
 /coverage/*
 /docs/*

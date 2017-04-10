@@ -161,6 +161,25 @@ class Database
     }
 
     /**
+     * See if a DB vendor and min version matches current connection info on 'default'
+     *
+     * @param array $options Array containing 'vendor' (lower case - 'mysql', 'postgres', 'sqlite') and optionally 'version'
+     * @return bool True on match success, false otherwise
+     */
+    public static function supportedVersion($options)
+    {
+        $info = static::basicInfo();
+        if ($options['vendor'] !== $info['vendor']) {
+            return false;
+        }
+        if (!empty($options['version']) && $options['version'] > $info['version']) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * See if Database connection is available and working correctly
      *
      * @param string $dbConfig input database configuration ('default' as default)

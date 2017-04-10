@@ -65,19 +65,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'first-user',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
@@ -97,10 +99,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-one',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => '2016-05-13T07:09:23+00:00',
                         'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
@@ -109,10 +107,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'list' => ['one', 'two', 'three'],
                         ],
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/2',
@@ -138,19 +142,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'draft',
                         'uname' => 'title-two',
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
                         'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
                         'created_by' => 1,
                         'modified_by' => 2,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -176,19 +182,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'lang' => 'eng',
+                        'body' => null,
+                        'extra' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
                         'locked' => false,
                         'created' => '2016-05-13T07:09:23+00:00',
                         'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
-                        'title' => 'Gustavo Supporto profile',
-                        'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'body' => null,
-                        'extra' => null,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
@@ -208,19 +216,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'second-user',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
@@ -240,19 +250,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'the-two-towers',
-                        'locked' => false,
-                        'created' => '2017-02-20T07:09:23+00:00',
-                        'modified' => '2017-02-20T07:09:23+00:00',
-                        'published' => '2017-02-20T07:09:23+00:00',
                         'title' => 'The Two Towers',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-02-20T07:09:23+00:00',
+                        'modified' => '2017-02-20T07:09:23+00:00',
+                        'published' => '2017-02-20T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/locations/8',
@@ -278,19 +290,21 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'event-one',
-                        'locked' => false,
-                        'created' => '2017-03-08T07:09:23+00:00',
-                        'modified' => '2016-03-08T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'first event',
                         'description' => 'event description goes here',
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2016-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/events/9',
@@ -371,10 +385,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'locked' => true,
-                    'created' => '2016-05-13T07:09:23+00:00',
-                    'modified' => '2016-05-13T07:09:23+00:00',
-                    'published' => '2016-05-13T07:09:23+00:00',
                     'title' => 'title one',
                     'description' => 'description here',
                     'body' => 'body here',
@@ -383,10 +393,16 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'list' => ['one', 'two', 'three'],
                     ],
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                    'created_by' => 1,
+                    'modified_by' => 1,
                 ],
                 'relationships' => [
                     'test' => [
@@ -435,9 +451,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one-deleted',
-                    'locked' => false,
-                    'created' => '2016-10-13T07:09:23+00:00',
-                    'published' => '2016-10-13T07:09:23+00:00',
                     'title' => 'title one deleted',
                     'description' => 'description removed',
                     'body' => 'body no more',
@@ -445,10 +458,15 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'what?',
                     ],
                     'lang' => 'eng',
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-10-13T07:09:23+00:00',
-                    'publish_end' => '2016-10-13T07:09:23+00:00'
                 ],
                 'relationships' => [
                     'test' => [
@@ -483,7 +501,7 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->configRequestHeaders();
         $this->get('/objects/6');
         $result = json_decode((string)$this->_response->getBody(), true);
-        unset($result['data']['attributes']['modified']);
+        unset($result['data']['meta']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -561,7 +579,7 @@ class ObjectsControllerTest extends IntegrationTestCase
     }
 
     /**
-     * Test add method.
+     * Test add wrong type method.
      *
      * @return void
      *
@@ -753,19 +771,13 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Gustavo Supporto profile',
                         'description' => 'Some description about Gustavo',
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'body' => null,
                         'extra' => null,
                         'publish_start' => null,
-                        'publish_end' => null
+                        'publish_end' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
@@ -779,6 +791,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                         'priority' => 1,
                         'inv_priority' => 2,
                         'params' => null,
@@ -790,19 +808,13 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'draft',
                         'uname' => 'title-two',
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 2,
                         'publish_start' => null,
-                        'publish_end' => null
+                        'publish_end' => null,
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
@@ -822,6 +834,12 @@ class ObjectsControllerTest extends IntegrationTestCase
                         ],
                     ],
                     'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
                         'priority' => 2,
                         'inv_priority' => 1,
                         'params' => null,
@@ -1432,6 +1450,71 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->get('/invalid_object_type');
 
         $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Provider for testMissingAuth
+     *
+     * @return array
+     */
+    public function missingAuthProvider()
+    {
+        return [
+            'get' => [
+                200,
+                'GET',
+                'documents',
+            ],
+            'post' => [
+                401,
+                'POST',
+                'documents',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'title' => 'A new document',
+                    ],
+                ],
+            ],
+            'patch' => [
+                401,
+                'PATCH',
+                'documents/2',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'id' => '2',
+                        'title' => 'Change title',
+                    ],
+                ],
+            ],
+            'delete' => [
+                401,
+                'DELETE',
+                'documents/2',
+            ],
+        ];
+    }
+
+    /**
+     * Test requests missing auth
+     *
+     * @param int $expected Expected response code.
+     * @param string $method Request method.
+     * @param string $endpoint Endpoint.
+     * @param array $data Request data.
+     * @return void
+     *
+     * @dataProvider missingAuthProvider
+     * @coversNothing
+     */
+    public function testMissingAuth($expected, $method, $endpoint, array $data = [])
+    {
+        $this->configRequestHeaders($method);
+        $requestMethod = strtolower($method);
+        $this->$requestMethod('/' . $endpoint, json_encode(compact('data')));
+        $this->assertResponseCode($expected);
         $this->assertContentType('application/vnd.api+json');
     }
 }

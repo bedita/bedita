@@ -3,8 +3,17 @@ namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Model\Table\LocationsTable;
 use BEdita\Core\Utility\Database;
+use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
+
+class TestLocations extends LocationsTable
+{
+    public function setGeoDbSupport($options)
+    {
+        $this->geoDbSupport = $options;
+    }
+}
 
 /**
  * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
@@ -20,6 +29,13 @@ class LocationsTableTest extends TestCase
      * @var \BEdita\Core\Model\Table\LocationsTable
      */
     public $Locations;
+
+    /**
+     * Fake db params for geo test
+     *
+     * @var array
+     */
+    public $fakeDbParams = null;
 
     /**
      * Fixtures
@@ -54,6 +70,12 @@ class LocationsTableTest extends TestCase
     {
         unset($this->Locations);
 
+        if (!empty($this->fakeDbParams)) {
+            ConnectionManager::alias('test', 'default');
+            ConnectionManager::drop('__fake__');
+            $this->fakeDbParams = null;
+        }
+
         parent::tearDown();
     }
 
@@ -77,12 +99,6 @@ class LocationsTableTest extends TestCase
                 ],
                 1,
             ],
-            'otherFilter' => [
-                [
-                    'coords' => [44.4944183, 11.3464055],
-                ],
-                1,
-            ],
         ];
     }
 
@@ -98,13 +114,65 @@ class LocationsTableTest extends TestCase
      */
     public function testFindGeo($conditions, $numExpected)
     {
-        $info = Database::basicInfo();
-        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
-            $this->markTestSkipped('Only MySQL >= 5.7 supported in testFindGeo');
+        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+            static::expectException('BEdita\Core\Exception\BadFilterException');
         }
 
         $result = $this->Locations->find('geo', $conditions)->toArray();
 
         static::assertEquals($numExpected, count($result));
+    }
+
+    /**
+     * Data provider for `testBadGeo` test case.
+     *
+     * @return array
+     */
+    public function badGeoProvider()
+    {
+        return [
+            'gustavo' => [
+                [
+                    'gustavo' => '44.4944876,11.3464721',
+                ],
+            ],
+            'notgeo' => [
+                [
+                    'center' => ['somewhere', 11.3464055],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder error.
+     *
+     * @return void
+     *
+     * @dataProvider badGeoProvider
+     * @covers ::findGeo()
+     */
+    public function testBadGeo($conditions)
+    {
+        static::expectException('BEdita\Core\Exception\BadFilterException');
+
+        $result = $this->Locations->find('geo', $conditions)->toArray();
+    }
+
+    /**
+     * Test geo db support fail.
+     *
+     * @return void
+     *
+     * @covers ::checkGeoDbSupport()
+     */
+    public function testBadGeoDb()
+    {
+        $testLocations = new TestLocations();
+        $testLocations->setGeoDbSupport(['vendor' => 'unknowndb']);
+
+        static::expectException('BEdita\Core\Exception\BadFilterException');
+
+        $result = $testLocations->checkGeoDbSupport();
     }
 }

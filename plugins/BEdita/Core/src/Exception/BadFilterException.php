@@ -11,30 +11,24 @@
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
 
-namespace BEdita\Core\Model\Entity;
+namespace BEdita\Core\Exception;
+
+use Cake\Core\Exception\Exception;
 
 /**
- * Location Entity
- *
- * @property int $id
- * @property string $coords
- * @property string $address
- * @property string $locality
- * @property string $postal_code
- * @property string $country_name
- * @property string $region
+ * Exception raised when bad filter data are passed to Model/ORM classes
  */
-class Location extends ObjectEntity
+class BadFilterException extends Exception
 {
-
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
+     *
+     * Default error code 400
+     *
+     * @codeCoverageIgnore
      */
-    protected function _getMeta()
+    public function __construct($message, $code = 400, $previous = null)
     {
-        $meta = parent::_getMeta();
-        $meta[] = 'distance';
-
-        return $meta;
+        parent::__construct($message, $code, $previous);
     }
 }

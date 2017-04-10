@@ -27,6 +27,9 @@ class FilterQueryStringTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**
@@ -107,18 +110,80 @@ class FilterQueryStringTest extends IntegrationTestCase
      */
     public function testFilterGeo($query, $expected, $endpoint = '/locations')
     {
-        $info = Database::basicInfo();
-        if ($info['vendor'] !== 'mysql' || $info['version'] < '5.7') {
-            static::markTestSkipped('Only MySQL >= 5.7 supported in findGeo filter');
-        }
-
         $this->configRequestHeaders();
         $this->get($endpoint . '?' . $query);
         $result = json_decode((string)$this->_response->getBody(), true);
+        $this->assertContentType('application/vnd.api+json');
+        if (!Database::supportedVersion(['vendor' => 'mysql', 'version' => '5.7'])) {
+            $this->assertResponseCode(400);
+        } else {
+            $this->assertResponseCode(200);
+            static::assertEquals(count($expected), count($result['data']));
+            $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
+            static::assertEquals($expected, $resultDistance);
+        }
+    }
+
+    /**
+     * Data provider for `testBadFilter`
+     */
+    public function badFilterProvider()
+    {
+        return [
+            'simple' => [
+               'filter[geo][center]=44.4944183,11.3464055',
+               '/documents'
+            ],
+            'bad' => [
+               'filter[cool_filter]=top',
+            ],
+            'banana' => [
+               'filter[geo][banana]=44.4944183,11.3464055',
+               '/locations'
+            ],
+            'banana2' => [
+               'filter[date_ranges][banana][gt]=2017-01-01',
+               '/events'
+            ],
+        ];
+    }
+
+    /**
+     * Test bad filters
+     *
+     * @param $query string URL with query filter string
+     * @param $endpoint string Endpoint to use
+     *
+     * @dataProvider badFilterProvider
+     * @coversNothing
+     */
+    public function testBadFilter($query, $endpoint = '/events')
+    {
+        $this->configRequestHeaders();
+        $this->get($endpoint . '?' . $query);
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test finder of object types by relation.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFindByRelation()
+    {
+        $this->configRequestHeaders();
+
+        $this->get('/object_types?filter[by_relation][name]=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
-        static::assertEquals(count($expected), count($result['data']));
-        $resultDistance = Hash::extract($result['data'], '{n}.meta.distance');
-        static::assertEquals($expected, $resultDistance);
+
+        static::assertArrayHasKey('data', $result);
+        static::assertCount(2, $result['data']);
+        static::assertArrayNotHasKey('_matchingData', $result['data'][0]['attributes']);
     }
 }

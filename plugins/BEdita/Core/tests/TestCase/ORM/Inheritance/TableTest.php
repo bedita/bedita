@@ -245,20 +245,27 @@ class TableTest extends TestCase
      * Test inherited tables
      *
      * @return void
+     *
+     * @covers ::getExtensionOf()
      * @covers ::inheritedTable()
      * @covers ::inheritedTables()
      */
     public function testInheritedTables()
     {
+        static::assertNull($this->fakeFelines->getExtensionOf());
         static::assertEquals(null, $this->fakeFelines->inheritedTable());
         static::assertEquals([], $this->fakeFelines->inheritedTables());
 
         $this->setupAssociations();
 
+        $mammalsExtensionOf = $this->fakeMammals->getExtensionOf();
         $mammalsInheritance = $this->fakeMammals->inheritedTable();
+        static::assertEquals('FakeAnimals', $mammalsExtensionOf->getName());
         static::assertEquals('FakeAnimals', $mammalsInheritance->getAlias());
 
+        $felinesExtensionOf = $this->fakeFelines->getExtensionOf();
         $felinesInheritance = $this->fakeFelines->inheritedTable();
+        static::assertEquals('FakeMammals', $felinesExtensionOf->getName());
         static::assertEquals('FakeMammals', $felinesInheritance->getAlias());
 
         $felinesDeepInheritance = array_map(function (Table $inherited) {
@@ -266,6 +273,27 @@ class TableTest extends TestCase
         }, $this->fakeFelines->inheritedTables(true));
 
         static::assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
+    }
+
+    /**
+     * Test method to find common inheritance tables.
+     *
+     * @return void
+     *
+     * @covers ::commonInheritance()
+     */
+    public function testCommonInheritance()
+    {
+        $this->setupAssociations();
+
+        $expected = [$this->fakeMammals, $this->fakeAnimals];
+        $common = $this->fakeFelines->commonInheritance($this->fakeMammals);
+        $symmetricCommon = $this->fakeMammals->commonInheritance($this->fakeFelines);
+
+        static::assertSame($expected, $common);
+        static::assertSame($expected, $symmetricCommon);
+
+        static::assertSame([], $this->fakeAnimals->commonInheritance(TableRegistry::get('FakeArticles')));
     }
 
     /**
@@ -870,5 +898,26 @@ class TableTest extends TestCase
         static::assertTrue($this->fakeMammals->hasField('legs', true));
         static::assertFalse($this->fakeMammals->hasField('legs', false));
         static::assertTrue($this->fakeAnimals->hasField('legs'));
+    }
+
+    /**
+     * Test cloning of a table.
+     *
+     * @return void
+     *
+     * @covers ::__clone()
+     */
+    public function testClone()
+    {
+        $clone = clone $this->fakeAnimals;
+
+        static::assertEquals($clone->associations(), $this->fakeAnimals->associations());
+        static::assertNotSame($clone->associations(), $this->fakeAnimals->associations());
+
+        static::assertEquals($clone->behaviors(), $this->fakeAnimals->behaviors());
+        static::assertNotSame($clone->behaviors(), $this->fakeAnimals->behaviors());
+
+        static::assertEquals($clone->eventManager(), $this->fakeAnimals->eventManager());
+        static::assertNotSame($clone->eventManager(), $this->fakeAnimals->eventManager());
     }
 }

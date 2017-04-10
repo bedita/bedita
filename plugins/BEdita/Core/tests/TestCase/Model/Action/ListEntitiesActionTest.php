@@ -172,4 +172,22 @@ class ListEntitiesActionTest extends TestCase
         static::assertInstanceOf(Query::class, $result);
         static::assertEquals($expected, $result->enableHydration(false)->toArray());
     }
+
+    /**
+     * Test filter error.
+     *
+     * @return void
+     *
+     * @covers ::buildFilter()
+     * @covers ::execute()
+     */
+    public function testBadFilter()
+    {
+        $table = TableRegistry::get('FakeAnimals');
+        $action = new ListEntitiesAction(compact('table'));
+
+        static::expectException('BEdita\Core\Exception\BadFilterException');
+
+        $action(['filter' => 'really_cool_filter']);
+    }
 }

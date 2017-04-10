@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\QueryFilterTrait;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -119,6 +120,7 @@ class DateRangesTable extends Table
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Array of acceptable date range conditions.
      * @return \Cake\ORM\Query
+     * @throws \BEdita\Core\Exception\BadFilterException
      */
     public function findDateRanges(Query $query, array $options)
     {
@@ -127,6 +129,13 @@ class DateRangesTable extends Table
             array_map([$this, 'aliasField'], array_keys($options)),
             array_values($options)
         );
+
+        if (empty($options)) {
+            throw new BadFilterException([
+                'title' => __d('bedita', 'Invalid data'),
+                'detail' => 'start_date or end_date parameter missing',
+            ]);
+        }
 
         return $this->fieldsFilter($query, $options);
     }
