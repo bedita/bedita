@@ -119,16 +119,16 @@ class JsonApi
      * Extract item's ID and attributes.
      *
      * @param array $item Item's data.
+     * @param mixed $metaFields List of fields to be considered "metadata".
      * @return array Array with item's ID, attributes, and metadata.
      */
-    protected static function extractAttributes(array $item)
+    protected static function extractAttributes(array $item, $metaFields = null)
     {
         if (empty($item['id'])) {
             throw new \InvalidArgumentException('Key `id` is mandatory');
         }
         $id = (string)$item['id'];
-        $meta = Hash::get($item, 'meta', []);
-        unset($item['id'], $item['type'], $item['meta']);
+        unset($item['id'], $item['type']);
 
         array_walk(
             $item,
@@ -139,6 +139,15 @@ class JsonApi
             }
         );
 
+        $meta = [];
+        if (!empty($item['meta']) && is_array($item['meta']) && !Hash::numeric(array_keys($item['meta']))) {
+            $meta = $item['meta'];
+            unset($item['meta']);
+        }
+        if (is_array($metaFields) && Hash::numeric(array_keys($metaFields))) {
+            $meta += array_intersect_key($item, array_flip($metaFields));
+            $item = array_diff_key($item, array_flip($metaFields));
+        }
         if (!empty($item['_joinData'])) {
             $meta += $item['_joinData'];
         }
@@ -205,7 +214,9 @@ class JsonApi
 
         list($type, $endpoint) = static::extractType($item, $type);
 
+        $meta = null;
         if ($item instanceof Entity) {
+            $meta = $item->get('meta');
             $relationships = static::extractRelationships($item, $endpoint, $type);
             if (empty($relationships)) {
                 unset($relationships);
@@ -218,7 +229,7 @@ class JsonApi
             return [];
         }
 
-        list($id, $attributes, $meta) = static::extractAttributes($item);
+        list($id, $attributes, $meta) = static::extractAttributes($item, $meta);
         if (empty($attributes)) {
             unset($attributes);
         }

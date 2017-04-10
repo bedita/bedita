@@ -27,6 +27,9 @@ class FilterQueryStringTest extends IntegrationTestCase
     public $fixtures = [
         'plugin.BEdita/Core.date_ranges',
         'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**
@@ -158,8 +161,29 @@ class FilterQueryStringTest extends IntegrationTestCase
     {
         $this->configRequestHeaders();
         $this->get($endpoint . '?' . $query);
-        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test finder of object types by relation.
+     *
+     * @return void
+     *
+     * @coversNothing
+     */
+    public function testFindByRelation()
+    {
+        $this->configRequestHeaders();
+
+        $this->get('/object_types?filter[by_relation][name]=test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+
+        static::assertArrayHasKey('data', $result);
+        static::assertCount(2, $result['data']);
+        static::assertArrayNotHasKey('_matchingData', $result['data'][0]['attributes']);
     }
 }
