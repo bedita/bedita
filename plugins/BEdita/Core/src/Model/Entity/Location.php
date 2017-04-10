@@ -26,4 +26,15 @@ namespace BEdita\Core\Model\Entity;
  */
 class Location extends ObjectEntity
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function _getMeta()
+    {
+        $meta = parent::_getMeta();
+        $meta[] = 'distance';
+
+        return $meta;
+    }
 }

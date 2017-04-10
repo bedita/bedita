@@ -38,9 +38,9 @@ class Role extends Entity
      * {@inheritDoc}
      */
     protected $_accessible = [
-        '*' => true,
-        'id' => false,
-        'unchangeable' => false,
+        '*' => false,
+        'name' => true,
+        'description' => true,
     ];
 
     /**

@@ -82,6 +82,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -104,6 +106,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -134,6 +138,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -156,6 +162,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -186,6 +194,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -208,6 +218,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -237,6 +249,8 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -262,6 +276,8 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -585,10 +601,6 @@ class JsonApiTest extends TestCase
             'attributes' => [
                 'status' => 'on',
                 'uname' => 'title-one',
-                'locked' => true,
-                'created' => '2016-05-13T07:09:23+00:00',
-                'modified' => '2016-05-13T07:09:23+00:00',
-                'published' => '2016-05-13T07:09:23+00:00',
                 'title' => 'title one',
                 'description' => 'description here',
                 'body' => 'body here',
@@ -597,10 +609,16 @@ class JsonApiTest extends TestCase
                     'list' => ['one', 'two', 'three'],
                 ],
                 'lang' => 'eng',
-                'created_by' => 1,
-                'modified_by' => 1,
                 'publish_start' => '2016-05-13T07:09:23+00:00',
                 'publish_end' => '2016-05-13T07:09:23+00:00',
+            ],
+            'meta' => [
+                'locked' => true,
+                'created' => '2016-05-13T07:09:23+00:00',
+                'modified' => '2016-05-13T07:09:23+00:00',
+                'published' => '2016-05-13T07:09:23+00:00',
+                'created_by' => 1,
+                'modified_by' => 1,
             ],
             'relationships' => [
                 'test' => [
