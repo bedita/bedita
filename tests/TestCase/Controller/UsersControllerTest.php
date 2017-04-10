@@ -55,17 +55,11 @@ class UsersControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'first-user',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'name' => 'First',
                         'surname' => 'User',
                         'email' => 'first.user@example.com',
@@ -86,6 +80,14 @@ class UsersControllerTest extends IntegrationTestCase
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                         'blocked' => false,
                         'last_login' => null,
                         'last_login_err' => null,
@@ -98,10 +100,10 @@ class UsersControllerTest extends IntegrationTestCase
                         'roles' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
-                                'self' => 'http://api.example.com/users/1/relationships/roles'
-                            ]
-                        ]
-                    ]
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                    ],
                 ],
                 [
                     'id' => '5',
@@ -109,17 +111,11 @@ class UsersControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'second-user',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'name' => 'Second',
                         'surname' => 'User',
                         'email' => 'second.user@example.com',
@@ -140,6 +136,14 @@ class UsersControllerTest extends IntegrationTestCase
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'second user',
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                         'blocked' => false,
                         'last_login' => '2016-03-15T09:57:38+00:00',
                         'last_login_err' => '2016-03-15T09:57:38+00:00',
@@ -152,10 +156,10 @@ class UsersControllerTest extends IntegrationTestCase
                         'roles' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/5/roles',
-                                'self' => 'http://api.example.com/users/5/relationships/roles'
-                            ]
-                        ]
-                    ]
+                                'self' => 'http://api.example.com/users/5/relationships/roles',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];
@@ -232,17 +236,11 @@ class UsersControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'first-user',
-                    'locked' => true,
-                    'created' => '2016-05-13T07:09:23+00:00',
-                    'modified' => '2016-05-13T07:09:23+00:00',
-                    'published' => null,
                     'title' => 'Mr. First User',
                     'description' => null,
                     'body' => null,
                     'extra' => null,
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                     'name' => 'First',
                     'surname' => 'User',
                     'email' => 'first.user@example.com',
@@ -263,6 +261,14 @@ class UsersControllerTest extends IntegrationTestCase
                     'publish_start' => null,
                     'publish_end' => null,
                     'username' => 'first user',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => null,
+                    'created_by' => 1,
+                    'modified_by' => 1,
                     'blocked' => false,
                     'last_login' => null,
                     'last_login_err' => null,
@@ -272,10 +278,10 @@ class UsersControllerTest extends IntegrationTestCase
                     'roles' => [
                         'links' => [
                             'related' => 'http://api.example.com/users/1/roles',
-                            'self' => 'http://api.example.com/users/1/relationships/roles'
-                        ]
-                    ]
-                ]
+                            'self' => 'http://api.example.com/users/1/relationships/roles',
+                        ],
+                    ],
+                ],
             ],
         ];
 
@@ -517,6 +523,8 @@ class UsersControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',

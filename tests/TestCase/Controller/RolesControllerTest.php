@@ -55,6 +55,8 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -77,6 +79,8 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'second role',
                         'description' => 'this is a second role',
+                    ],
+                    'meta' => [
                         'unchangeable' => false,
                         'created' => '2016-04-15T11:59:12+00:00',
                         'modified' => '2016-04-15T11:59:13+00:00',
@@ -169,6 +173,8 @@ class RolesControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'name' => 'first role',
                     'description' => 'this is the very first role',
+                ],
+                'meta' => [
                     'unchangeable' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
@@ -417,17 +423,11 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'first-user',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'name' => 'First',
                         'surname' => 'User',
                         'email' => 'first.user@example.com',
@@ -448,6 +448,14 @@ class RolesControllerTest extends IntegrationTestCase
                         'publish_start' => null,
                         'publish_end' => null,
                         'username' => 'first user',
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
                         'blocked' => false,
                         'last_login' => null,
                         'last_login_err' => null,
@@ -460,10 +468,10 @@ class RolesControllerTest extends IntegrationTestCase
                         'roles' => [
                             'links' => [
                                 'related' => 'http://api.example.com/users/1/roles',
-                                'self' => 'http://api.example.com/users/1/relationships/roles'
-                            ]
-                        ]
-                    ]
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];
