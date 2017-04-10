@@ -274,6 +274,7 @@ class ObjectTypesTable extends Table
         }
 
         return $query
+            ->distinct()
             ->leftJoinWith('LeftRelations', function (Query $query) use ($name, $leftField) {
                 return $query->where(function (QueryExpression $exp) use ($name, $leftField) {
                     return $exp->eq($this->LeftRelations->aliasField($leftField), $name);
