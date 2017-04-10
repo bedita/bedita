@@ -66,13 +66,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'title',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/1',
@@ -85,13 +87,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'description',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'documents',
                         'label' => 'Brief description',
-                        'list_view' => false
+                        'list_view' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/2',
@@ -104,13 +108,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'username',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => 'Username, unique string',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/3',
@@ -123,13 +129,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'email',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => 'User email',
                         'property_type_name' => 'string',
                         'object_type_name' => 'users',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/4',
@@ -142,13 +150,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'birthdate',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'date',
                         'object_type_name' => 'profiles',
                         'label' => 'Date of birth',
-                        'list_view' => false
+                        'list_view' => false,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/5',
@@ -161,13 +171,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                         'name' => 'surname',
                         'multiple' => false,
                         'options_list' => null,
-                        'created' => '2016-12-31T23:09:23+00:00',
-                        'modified' => '2016-12-31T23:09:23+00:00',
                         'description' => null,
                         'property_type_name' => 'string',
                         'object_type_name' => 'profiles',
                         'label' => null,
-                        'list_view' => true
+                        'list_view' => true,
+                    ],
+                    'meta' => [
+                        'created' => '2016-12-31T23:09:23+00:00',
+                        'modified' => '2016-12-31T23:09:23+00:00',
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/properties/6',
@@ -249,13 +261,15 @@ class PropertiesControllerTest extends IntegrationTestCase
                     'name' => 'title',
                     'multiple' => false,
                     'options_list' => null,
-                    'created' => '2016-12-31T23:09:23+00:00',
-                    'modified' => '2016-12-31T23:09:23+00:00',
                     'description' => null,
                     'property_type_name' => 'string',
                     'object_type_name' => 'documents',
                     'label' => null,
-                    'list_view' => true
+                    'list_view' => true,
+                ],
+                'meta' => [
+                    'created' => '2016-12-31T23:09:23+00:00',
+                    'modified' => '2016-12-31T23:09:23+00:00',
                 ],
             ],
         ];
