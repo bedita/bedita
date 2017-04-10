@@ -34,6 +34,15 @@ use Cake\Validation\Validator;
  * @property \Cake\ORM\Association\HasMany $Properties
  * @property \Cake\ORM\Association\BelongsToMany $LeftRelations
  * @property \Cake\ORM\Association\BelongsToMany $RightRelations
+ *
+ * @method \BEdita\Core\Model\Entity\ObjectType newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\ObjectType findOrCreate($search, callable $callback = null, $options = [])
+ *
+ * @since 4.0.0
  */
 class ObjectTypesTable extends Table
 {
@@ -160,6 +169,8 @@ class ObjectTypesTable extends Table
 
     /**
      * {@inheritDoc}
+     *
+     * @return \BEdita\Core\Model\Entity\ObjectType
      */
     public function get($primaryKey, $options = [])
     {
@@ -226,6 +237,14 @@ class ObjectTypesTable extends Table
         Cache::delete('id_' . $entity->id, self::CACHE_CONFIG);
         Cache::delete('map', self::CACHE_CONFIG);
         Cache::delete('map_singular', self::CACHE_CONFIG);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function findAll(Query $query, array $options)
+    {
+        return $query->contain(['LeftRelations', 'RightRelations']);
     }
 
     /**
