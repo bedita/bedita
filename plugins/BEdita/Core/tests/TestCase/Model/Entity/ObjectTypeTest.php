@@ -222,12 +222,28 @@ class ObjectTypeTest extends TestCase
     public function testGetRelations()
     {
         $expected = [
-            'test',
             'inverse_test',
         ];
-        $objectType = $this->ObjectTypes->get(1);
+        $objectType = $this->ObjectTypes->get(2);
 
         static::assertEquals($expected, $objectType->relations, '', 0, 10, true);
+    }
+
+    /**
+     * Test getter for relations when associations haven't been loaded.
+     *
+     * @return void
+     *
+     * @covers ::_getRelations()
+     */
+    public function testGetRelationsAssociationsNotLoaded()
+    {
+        $objectType = $this->ObjectTypes->find()
+            ->contain(['LeftRelations'], true)
+            ->firstOrFail();
+
+        static::assertInstanceOf($this->ObjectTypes->getEntityClass(), $objectType);
+        static::assertNull($objectType->relations);
     }
 
     /**
