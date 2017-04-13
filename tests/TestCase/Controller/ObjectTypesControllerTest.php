@@ -62,6 +62,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
                     ],
+                    'meta' => [
+                        'relations' => [
+                            'test',
+                            'inverse_test',
+                        ],
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/1',
                     ],
@@ -86,6 +92,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Profiles',
                         'table' => 'BEdita/Core.Profiles',
                         'associations' => null,
+                    ],
+                    'meta' => [
+                        'relations' => [
+                            'inverse_test',
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/2',
@@ -112,6 +123,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'table' => 'BEdita/Core.Users',
                         'associations' => null,
                     ],
+                    'meta' => [
+                        'relations' => [],
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/3',
                     ],
@@ -136,6 +150,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => null,
+                    ],
+                    'meta' => [
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/4',
@@ -162,6 +179,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'table' => 'BEdita/Core.Locations',
                         'associations' => null,
                     ],
+                    'meta' => [
+                        'relations' => [
+                            'another_test',
+                            'inverse_another_test',
+                        ],
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/5',
                     ],
@@ -186,6 +209,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         'model' => 'Objects',
                         'table' => 'BEdita/Core.Objects',
                         'associations' => ['DateRanges'],
+                    ],
+                    'meta' => [
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/6',
@@ -280,6 +306,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
                     'associations' => null,
+                ],
+                'meta' => [
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'relationships' => [
                     'properties' => [
