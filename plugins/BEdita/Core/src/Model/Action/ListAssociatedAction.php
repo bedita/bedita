@@ -195,7 +195,7 @@ class ListAssociatedAction extends BaseAction
         } elseif ($target instanceof InheritanceTable) {
             $select = array_map([$target, 'aliasField'], $target->getSchema()->columns());
 
-            $inheritedTables = $target->inheritedTables(true);
+            $inheritedTables = $target->inheritedTables();
             foreach ($inheritedTables as $inheritedTable) {
                 $select = array_merge(
                     $select,

@@ -39,7 +39,7 @@ class ResultSet extends CakeResultSet
         parent::_calculateColumnMap($query);
 
         $repository = $query->repository();
-        $inheritedTables = $repository->inheritedTables(true);
+        $inheritedTables = $repository->inheritedTables();
         if (empty($inheritedTables)) {
             return;
         }
