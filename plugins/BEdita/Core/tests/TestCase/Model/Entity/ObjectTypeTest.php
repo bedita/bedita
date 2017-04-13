@@ -13,9 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Table\ObjectTypesTable;
-use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +38,8 @@ class ObjectTypeTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**
@@ -78,12 +77,9 @@ class ObjectTypeTest extends TestCase
             'name' => 'patched_name',
         ];
         $objectType = $this->ObjectTypes->patchEntity($objectType, $data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals(1, $objectType->id);
-        $this->assertEquals('patched_name', $objectType->name);
+        static::assertEquals(1, $objectType->id);
+        static::assertEquals('patched_name', $objectType->name);
     }
 
     /**
@@ -104,14 +100,15 @@ class ObjectTypeTest extends TestCase
             'model' => 'Objects',
             'table' => 'BEdita/Core.Objects',
             'associations' => null,
+            'relations' => [
+                'test',
+                'inverse_test',
+            ],
         ];
 
         $objectType = $this->ObjectTypes->get(1);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expected, $objectType->toArray());
+        static::assertEquals($expected, $objectType->toArray());
     }
 
     /**
@@ -126,11 +123,8 @@ class ObjectTypeTest extends TestCase
             'name' => 'FooBar',
         ];
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals('foo_bar', $objectType->name);
+        static::assertEquals('foo_bar', $objectType->name);
     }
 
     /**
@@ -162,11 +156,8 @@ class ObjectTypeTest extends TestCase
     {
         $data = compact('name', 'singular');
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expected, $objectType->singular);
+        static::assertEquals($expected, $objectType->singular);
     }
 
     /**
@@ -181,11 +172,8 @@ class ObjectTypeTest extends TestCase
             'name' => 'foo_bars',
         ];
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals('FooBars', $objectType->alias);
+        static::assertEquals('FooBars', $objectType->alias);
     }
 
     /**
@@ -218,12 +206,58 @@ class ObjectTypeTest extends TestCase
     {
         $data = compact('table');
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expectedPlugin, $objectType->plugin);
-        $this->assertEquals($expectedModel, $objectType->model);
-        $this->assertEquals($expected, $objectType->table);
+        static::assertEquals($expectedPlugin, $objectType->plugin);
+        static::assertEquals($expectedModel, $objectType->model);
+        static::assertEquals($expected, $objectType->table);
+    }
+
+    /**
+     * Test getter for relations.
+     *
+     * @return void
+     *
+     * @covers ::_getRelations()
+     */
+    public function testGetRelations()
+    {
+        $expected = [
+            'inverse_test',
+        ];
+        $objectType = $this->ObjectTypes->get(2);
+
+        static::assertEquals($expected, $objectType->relations, '', 0, 10, true);
+    }
+
+    /**
+     * Test getter for relations when associations haven't been loaded.
+     *
+     * @return void
+     *
+     * @covers ::_getRelations()
+     */
+    public function testGetRelationsAssociationsNotLoaded()
+    {
+        $objectType = $this->ObjectTypes->find()
+            ->contain(['LeftRelations'], true)
+            ->firstOrFail();
+
+        static::assertInstanceOf($this->ObjectTypes->getEntityClass(), $objectType);
+        static::assertNull($objectType->relations);
+    }
+
+    /**
+     * Test getter for meta fields.
+     *
+     * @return void
+     *
+     * @covers ::_getMeta()
+     */
+    public function testGetMeta()
+    {
+        $objectType = $this->ObjectTypes->newEntity();
+        $meta = $objectType->meta;
+
+        static::assertContains('relations', $meta);
     }
 }
