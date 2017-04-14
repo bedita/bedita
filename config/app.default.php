@@ -392,13 +392,12 @@ return [
     /**
      * Default pagination settings.
      *
-     * These settings will be merged with the configuration of BEdita paginator component
-     *
-     * - `maxLimit` - The maximum limit of items retrieved per call. Defaults to 100. (BEdita paginator component set a superlimit (@see \BEdita\API\Controller\Component\PaginatorComponent::absoluteLimit))
-     * - `limit` - The initial number of items per page. Defaults to 20.
+     * - `limit` - Default number of items per page (page_size). Defaults to 20.
+     * - `maxLimit` - The maximum numer of items retrievable using a `page_size` request per call. Defaults to 100.
+     *   This value cannot exceed a superlimit (@see \BEdita\API\Controller\Component\PaginatorComponent::MAX_LIMIT))
      */
     'Pagination' => [
-        'maxLimit' => 100,
         'limit' => 20,
+        'maxLimit' => 100,
     ]
 ];
