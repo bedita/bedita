@@ -34,12 +34,15 @@ class PaginatorComponent extends CakePaginatorComponent
         'whitelist' => ['page', 'page_size', 'sort'],
     ];
 
+    public $absoluteLimit = 500;
+
     /**
      * {@inheritDoc}
      */
     public function mergeOptions($alias, $settings)
     {
         $options = parent::mergeOptions($alias, $settings);
+        $options['maxLimit'] = min($options['maxLimit'], $this->absoluteLimit);
 
         if (!empty($options['page_size'])) {
             $options['limit'] = $options['page_size'];
