@@ -34,7 +34,7 @@ class PaginatorComponent extends CakePaginatorComponent
         'whitelist' => ['page', 'page_size', 'sort'],
     ];
 
-    public $absoluteLimit = 500;
+    protected $absoluteLimit = 500;
 
     /**
      * {@inheritDoc}
