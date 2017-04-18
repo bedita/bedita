@@ -37,13 +37,9 @@ class CommonEventHandlerTest extends TestCase
      */
     public function testImplementedEvents()
     {
-        static::assertCount(0, EventManager::instance()->listeners('Model.beforeSave'));
-        static::assertCount(0, EventManager::instance()->listeners('Model.beforeDelete'));
         static::assertCount(0, EventManager::instance()->listeners('Server.buildMiddleware'));
 
         EventManager::instance()->on(new CommonEventHandler());
-        static::assertCount(1, EventManager::instance()->listeners('Model.beforeSave'));
-        static::assertCount(1, EventManager::instance()->listeners('Model.beforeDelete'));
         static::assertCount(1, EventManager::instance()->listeners('Server.buildMiddleware'));
     }
 
@@ -68,99 +64,6 @@ class CommonEventHandlerTest extends TestCase
         static::assertCount(2, $middleware);
         static::assertInstanceOf(ErrorHandlerMiddleware::class, $middleware->get(0));
         static::assertInstanceOf('\BEdita\API\Middleware\CorsMiddleware', $middleware->get(1));
-    }
-
-    /**
-     * Data Provider for testCheckAuthorized
-     *
-     * @return void
-     */
-    public function checkAuthorizedProvider()
-    {
-        $fakeAnimals = TableRegistry::get('FakeAnimals');
-        $pluginWhitelistfakeAnimals = TableRegistry::get('WhitelistFakeAnimals', [
-            'table' => 'fale_animals'
-        ]);
-        $pluginWhitelistfakeAnimals->setRegistryAlias('DebugKit.WhitelistFakeAnimals');
-
-        return [
-            'beforeSaveOk' => [
-                true,
-                new Event('Model.beforeSave'),
-                true,
-            ],
-            'beforeSaveOkSubject' => [
-                true,
-                new Event('Model.beforeSave', $fakeAnimals),
-                true,
-            ],
-            'beforeSaveOkSubjectWhitelist' => [
-                true,
-                new Event('Model.beforeSave', $pluginWhitelistfakeAnimals),
-                false,
-            ],
-            'beforeSaveError' => [
-                new UnauthorizedException('User not authorized'),
-                new Event('Model.beforeSave'),
-                false,
-            ],
-            'beforeSaveErrorSubject' => [
-                new UnauthorizedException('User not authorized'),
-                new Event('Model.beforeSave', $fakeAnimals),
-                false,
-            ],
-            'beforeDeleteOk' => [
-                true,
-                new Event('Model.beforeDelete'),
-                true,
-            ],
-            'beforeDeleteOkSubject' => [
-                true,
-                new Event('Model.beforeDelete', $fakeAnimals),
-                true,
-            ],
-            'beforeDeleteOkSubjectWhitelist' => [
-                true,
-                new Event('Model.beforeDelete', $pluginWhitelistfakeAnimals),
-                false,
-            ],
-            'beforeDeleteError' => [
-                new UnauthorizedException('User not authorized'),
-                new Event('Model.beforeDelete'),
-                false,
-            ],
-            'beforeDeleteErrorSubject' => [
-                new UnauthorizedException('User not authorized'),
-                new Event('Model.beforeDelete', $fakeAnimals),
-                false,
-            ],
-        ];
-    }
-
-    /**
-     * test check authorized
-     *
-     * @return void
-     * @dataProvider checkAuthorizedProvider
-     * @covers ::checkAuthorized()
-     */
-    public function testCheckAuthorized($expected, $event, $userLogged)
-    {
-        EventManager::instance()->on(new CommonEventHandler());
-        if ($expected instanceof \Exception) {
-            $this->expectException(UnauthorizedException::class);
-            $this->expectExceptionMessage($expected->getMessage());
-        }
-
-        if ($userLogged) {
-            LoggedUser::setUser(['id' => 1]);
-        } else {
-            LoggedUser::resetUser();
-        }
-
-        EventManager::instance()->dispatch($event);
-
-        static::assertTrue($expected);
     }
 
     /**

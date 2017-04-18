@@ -13,10 +13,12 @@
 namespace BEdita\API\Controller;
 
 use BEdita\API\Error\ExceptionRenderer;
+use BEdita\API\Event\WriteActionsEventHandler;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
 use Cake\Event\Event;
+use Cake\Event\EventManager;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotAcceptableException;
 use Cake\Routing\DispatcherFactory;
@@ -51,6 +53,10 @@ class AppController extends Controller
 
         if (!$this->apiKeyCheck()) {
             throw new ForbiddenException('No valid API KEY found');
+        }
+
+        if (!$this->request->is('get')) {
+            EventManager::instance()->on(new WriteActionsEventHandler());
         }
 
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));

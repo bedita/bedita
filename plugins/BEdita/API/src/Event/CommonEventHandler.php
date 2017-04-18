@@ -19,8 +19,6 @@ use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Http\MiddlewareQueue;
-use Cake\Network\Exception\UnauthorizedException;
-use Cake\ORM\Table;
 
 /**
  * CommonEventsHandler class.
@@ -32,13 +30,6 @@ use Cake\ORM\Table;
 class CommonEventHandler implements EventListenerInterface
 {
     /**
-     * A whitelist of plugins that skips `self::checkAuthorized()`
-     *
-     * @var array
-     */
-    protected $pluginWhitelist = ['DebugKit', 'Migrations'];
-
-    /**
      * {@inheritDoc}
      */
     public function implementedEvents()
@@ -46,8 +37,6 @@ class CommonEventHandler implements EventListenerInterface
         return [
             'Server.buildMiddleware' => 'buildMiddlewareStack',
             'Auth.afterIdentify' => 'afterIdentify',
-            'Model.beforeSave' => 'checkAuthorized',
-            'Model.beforeDelete' => 'checkAuthorized',
         ];
     }
 
@@ -76,29 +65,6 @@ class CommonEventHandler implements EventListenerInterface
             ErrorHandlerMiddleware::class,
             new CorsMiddleware(Configure::read('CORS'))
         );
-    }
-
-    /**
-     * Check if user is logged.
-     * Called before saving/deleting resources.
-     *
-     * @param \Cake\Event\Event $event The event object
-     * @return void
-     * @throws \Cake\Network\Exception\UnauthorizedException
-     */
-    public function checkAuthorized(Event $event)
-    {
-        $subject = $event->getSubject();
-        if ($subject instanceof Table) {
-            list($plugin) = pluginSplit($subject->getRegistryAlias());
-            if (in_array($plugin, $this->pluginWhitelist)) {
-                return;
-            }
-        }
-
-        if (LoggedUser::id() === null) {
-            throw new UnauthorizedException('User not authorized');
-        }
     }
 
     /**
