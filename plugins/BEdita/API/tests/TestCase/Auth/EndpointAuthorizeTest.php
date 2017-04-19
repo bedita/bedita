@@ -278,7 +278,7 @@ class EndpointAuthorizeTest extends TestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
         ];
         $uri = new Uri('/home');
         $request = new ServerRequest(compact('environment', 'uri'));
@@ -320,7 +320,7 @@ class EndpointAuthorizeTest extends TestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
             'HTTP_X_API_KEY' => API_KEY,
         ];
         $uri = new Uri('/this/endpoint/definitely/doesnt/exist');
