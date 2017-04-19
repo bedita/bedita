@@ -73,19 +73,22 @@ class EndpointAuthorize extends BaseAuthorize
     {
         $this->request = $request;
 
+        // For anonymous users performing write operations, use strict mode.
+        $strict = ($this->isAnonymous($user) && !$this->request->is(['get', 'head']));
+
         $application = $this->getApplication();
         $endpoint = $this->getEndpoint();
-        $permissions = $this->getPermissions($user, $application, $endpoint)->toArray();
+        $permissions = $this->getPermissions($user, $application, $endpoint, $strict)->toArray();
         $allPermissions = $this->getPermissions(false, $application, $endpoint);
-        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
-            $this->authorized = true;
-
-            return $this->authorized;
-        }
 
         $this->authorized = $this->checkPermissions($permissions);
+        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
+            // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
+            // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
+            $this->authorized = !$strict;
+        }
 
-        if (!empty($user['_anonymous']) && $this->authorized !== true) {
+        if ($this->isAnonymous($user) && $this->authorized !== true) {
             // Anonymous user should not get a 403. Thus, we invoke authentication provider's
             // `unauthenticated()` method. Furthermore, for anonymous users, `mine` doesn't make any sense,
             // so we treat that as a non-authorized request.
@@ -98,6 +101,17 @@ class EndpointAuthorize extends BaseAuthorize
 
         // Authorization is granted for both `true` and `'mine'` values.
         return !empty($this->authorized);
+    }
+
+    /**
+     * Check if user is anonymous.
+     *
+     * @param array|\ArrayAccess $user User data.
+     * @return bool
+     */
+    public function isAnonymous($user)
+    {
+        return !empty($user['_anonymous']);
     }
 
     /**
@@ -165,17 +179,18 @@ class EndpointAuthorize extends BaseAuthorize
      * @param array|\ArrayAccess|false $user Authenticated (or anonymous) user.
      * @param \BEdita\Core\Model\Entity\Application|null $application Current application.
      * @param \BEdita\Core\Model\Entity\Endpoint|null $endpoint Current endpoint.
+     * @param bool $strict Use strict mode. Do not consider permissions set on all applications/endpoints.
      * @return \Cake\ORM\Query
      * @todo Future optimization: Permissions that are `0` on the two bits that are interesting for the current request can be excluded...
      */
-    protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null)
+    protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null, $strict = false)
     {
         $applicationId = $application ? $application->id : null;
         $endpointIds = $endpoint ? [$endpoint->id] : [];
 
         $query = TableRegistry::get('EndpointPermissions')
-            ->find('byApplication', compact('applicationId'))
-            ->find('byEndpoint', compact('endpointIds'));
+            ->find('byApplication', compact('applicationId', 'strict'))
+            ->find('byEndpoint', compact('endpointIds', 'strict'));
 
         if ($user !== false) {
             $roleIds = Hash::extract($user, 'roles.{n}.id');
