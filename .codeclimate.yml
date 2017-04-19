@@ -1,0 +1,30 @@
+---
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+      - php
+  fixme:
+    enabled: true
+  phan:
+    enabled: true
+    config:
+      file_extensions: "php"
+      backward-compatibility-checks: true
+      dead-code-detection: true
+  phpmd:
+    enabled: true
+ratings:
+  paths:
+  - "**.inc"
+  - "**.php"
+  - "**.ctp"
+exclude_paths:
+- "config/"
+- "tests/"
+- "vendor/"
+- "plugins/**/config/"
+- "plugins/**/tests/"
+- "plugins/**/vendor/"
