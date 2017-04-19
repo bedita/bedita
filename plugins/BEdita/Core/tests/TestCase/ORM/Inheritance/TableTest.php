@@ -270,7 +270,7 @@ class TableTest extends TestCase
 
         $felinesDeepInheritance = array_map(function (Table $inherited) {
             return $inherited->getAlias();
-        }, $this->fakeFelines->inheritedTables(true));
+        }, $this->fakeFelines->inheritedTables());
 
         static::assertEquals(['FakeMammals', 'FakeAnimals'], $felinesDeepInheritance);
     }
@@ -670,7 +670,7 @@ class TableTest extends TestCase
         $this->setupAssociations();
 
         $allColumns = $this->fakeFelines->getSchema()->columns();
-        foreach ($this->fakeFelines->inheritedTables(true) as $t) {
+        foreach ($this->fakeFelines->inheritedTables() as $t) {
             if (!($t instanceof CakeTable)) {
                 $this->fail('Unexpected table object');
             }
@@ -895,7 +895,7 @@ class TableTest extends TestCase
     {
         $this->setupAssociations();
 
-        static::assertTrue($this->fakeMammals->hasField('legs', true));
+        static::assertTrue($this->fakeMammals->hasField('legs'));
         static::assertFalse($this->fakeMammals->hasField('legs', false));
         static::assertTrue($this->fakeAnimals->hasField('legs'));
     }

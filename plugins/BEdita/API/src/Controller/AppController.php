@@ -55,7 +55,7 @@ class AppController extends Controller
 
         $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
-        $this->loadComponent('BEdita/API.Paginator');
+        $this->loadComponent('BEdita/API.Paginator', (array)Configure::read('Pagination'));
 
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
