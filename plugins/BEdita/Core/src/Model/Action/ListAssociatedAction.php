@@ -27,6 +27,7 @@ use Cake\ORM\Query;
 use Cake\ORM\Table;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
+use Cake\Utility\Inflector;
 
 /**
  * Command to list entities associated to another entity.
@@ -41,7 +42,7 @@ class ListAssociatedAction extends BaseAction
      *
      * @var string
      */
-    const INVERSE_ASSOCIATION_NAME = 'InverseAssociation';
+    const INVERSE_ASSOCIATION_NAME = '_InverseAssociation';
 
     /**
      * Association.
@@ -135,8 +136,9 @@ class ListAssociatedAction extends BaseAction
             'className' => $this->Association->getSource()->getRegistryAlias(),
         ]);
         $targetTable->setTable($this->Association->getSource()->getTable());
+        $propertyName = Inflector::underscore(static::INVERSE_ASSOCIATION_NAME);
 
-        $options = compact('sourceTable', 'targetTable');
+        $options = compact('propertyName', 'sourceTable', 'targetTable');
         if ($this->Association instanceof HasOne || $this->Association instanceof HasMany) {
             $options += [
                 'foreignKey' => $this->Association->getForeignKey(),
