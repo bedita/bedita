@@ -15,9 +15,9 @@ namespace BEdita\API\Auth;
 
 use Cake\Auth\BaseAuthenticate;
 use Cake\Core\Configure;
+use Cake\Http\Response;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\UnauthorizedException;
-use Cake\Network\Response;
 use Cake\Routing\Router;
 use Cake\Utility\Security;
 use Firebase\JWT\JWT;
@@ -219,7 +219,7 @@ class JwtAuthenticate extends BaseAuthenticate
      * Handles an unauthenticated access attempt.
      *
      * @param \Cake\Http\ServerRequest $request A request object.
-     * @param \Cake\Network\Response $response A response object.
+     * @param \Cake\Http\Response $response A response object.
      * @return void
      * @throws \Cake\Network\Exception\UnauthorizedException Throws an exception.
      */
