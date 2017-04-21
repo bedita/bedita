@@ -179,7 +179,6 @@ abstract class ResourcesController extends AppController
             }
 
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 
@@ -288,7 +287,6 @@ abstract class ResourcesController extends AppController
 
         if ($count === 0) {
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 

@@ -165,7 +165,6 @@ class ObjectsController extends ResourcesController
             }
 
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 
@@ -269,7 +268,6 @@ class ObjectsController extends ResourcesController
 
         if ($count === 0) {
             return $this->response
-                ->withHeader('Content-Type', $this->request->contentType())
                 ->withStatus(204);
         }
 
