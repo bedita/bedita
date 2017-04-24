@@ -23,6 +23,7 @@ use BEdita\Core\Model\Action\RemoveAssociatedAction;
 use BEdita\Core\Model\Action\SaveEntityAction;
 use BEdita\Core\Model\Action\SetAssociatedAction;
 use Cake\Core\InstanceConfigTrait;
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
@@ -104,6 +105,41 @@ abstract class ResourcesController extends AppController
     }
 
     /**
+     * Prepare a list of associations to be contained from `?include` query parameter.
+     *
+     * @param string $include Association(s) to be included.
+     * @return array
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if a
+     */
+    protected function prepareInclude($include)
+    {
+        if (!is_string($include)) {
+            throw new BadRequestException(
+                __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Must be a comma-separated string'))
+            );
+        }
+
+        $contain = [];
+        $include = array_filter(array_map('trim', explode(',', $include)));
+        foreach ($include as $relationship) {
+            if (strpos($relationship, '.') !== false) {
+                throw new BadRequestException(__d('bedita', 'Inclusion of nested resources is not yet supported'));
+            }
+
+            $association = $this->Table->associations()->getByProperty($relationship);
+            if (!array_key_exists($relationship, $this->getConfig('allowedAssociations')) || $association === null) {
+                throw new BadRequestException(
+                    __d('bedita', 'Invalid "{0}" query parameter ({1})', 'include', __d('bedita', 'Relationship "{0}" does not exist', $relationship))
+                );
+            }
+
+            $contain[] = $association->getName();
+        }
+
+        return $contain;
+    }
+
+    /**
      * List and add entities.
      *
      * This action represents a collection of resources.
@@ -142,9 +178,11 @@ abstract class ResourcesController extends AppController
         } else {
             // List existing entities.
             $filter = $this->request->getQuery('filter');
+            $include = $this->request->getQuery('include');
+            $contain = $include ? $this->prepareInclude($include) : [];
 
             $action = new ListEntitiesAction(['table' => $this->Table]);
-            $query = $action(compact('filter'));
+            $query = $action(compact('filter', 'contain'));
 
             $data = $this->paginate($query);
         }
@@ -167,8 +205,11 @@ abstract class ResourcesController extends AppController
     {
         $this->request->allowMethod(['get', 'patch', 'delete']);
 
+        $include = $this->request->getQuery('include');
+        $contain = $include ? $this->prepareInclude($include) : [];
+
         $action = new GetEntityAction(['table' => $this->Table]);
-        $entity = $action(['primaryKey' => $id]);
+        $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
 
         if ($this->request->is('delete')) {
             // Delete an entity.
@@ -271,9 +312,8 @@ abstract class ResourcesController extends AppController
 
                 $this->set(compact('data'));
                 $this->set([
-                        '_type' => $relationship,
-                        '_serialize' => ['data'],
-                    ]);
+                    '_serialize' => ['data'],
+                ]);
 
                 return null;
         }
