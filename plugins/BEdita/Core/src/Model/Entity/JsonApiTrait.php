@@ -265,7 +265,7 @@ trait JsonApiTrait
     /**
      * JSON API serializer.
      *
-     * @param int $options
+     * @param int $options Serializer options. Can be any combination of `JSONAPIOPT_*` constants defined in this class.
      * @return array
      */
     public function jsonApiSerialize($options = 0)
