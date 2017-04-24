@@ -439,4 +439,168 @@ class ResourcesControllerTest extends IntegrationTestCase
         $this->assertArrayHasKey('error', $result);
         $this->assertArraySubset($expected, $result['error']);
     }
+
+    /**
+     * Test included resources.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testInclude()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1?include=users',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [
+                'id' => '1',
+                'type' => 'roles',
+                'attributes' => [
+                    'name' => 'first role',
+                    'description' => 'this is the very first role',
+                ],
+                'meta' => [
+                    'unchangeable' => true,
+                    'created' => '2016-04-15T09:57:38+00:00',
+                    'modified' => '2016-04-15T09:57:38+00:00',
+                ],
+                'relationships' => [
+                    'users' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/roles/1/relationships/users',
+                            'related' => 'http://api.example.com/roles/1/users',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '1',
+                                'type' => 'users',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '1',
+                    'type' => 'users',
+                    'attributes' => [
+                        'username' => 'first user',
+                        'name' => 'First',
+                        'surname' => 'User',
+                        'email' => 'first.user@example.com',
+                        'person_title' => 'Mr.',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'status' => 'on',
+                        'uname' => 'first-user',
+                        'title' => 'Mr. First User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'blocked' => false,
+                        'last_login' => null,
+                        'last_login_err' => null,
+                        'num_login_err' => 1,
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/1',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/roles/1?include=users');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Data provider for `testIncludeError` test case.
+     *
+     * @return array
+     */
+    public function includeErrorProvider()
+    {
+        return [
+            'not a string' => [
+                400,
+                'Invalid "include" query parameter (Must be a comma-separated string)',
+                ['not', 'a', 'string'],
+            ],
+            'nested resources' => [
+                400,
+                'Inclusion of nested resources is not yet supported',
+                'users.roles',
+            ],
+            'not found' => [
+                400,
+                'Invalid "include" query parameter (Relationship "gustavo" does not exist)',
+                'users,gustavo',
+            ],
+        ];
+    }
+
+    /**
+     * Test included resources.
+     *
+     * @param int $expectedStatus Expected status.
+     * @param string $expectedErrorTitle Expected error message.
+     * @param mixed $include `include` query parameter.
+     * @return void
+     *
+     * @dataProvider includeErrorProvider()
+     * @covers ::prepareInclude()
+     */
+    public function testIncludeError($expectedStatus, $expectedErrorTitle, $include)
+    {
+        $expected = [
+            'status' => (string)$expectedStatus,
+            'title' => $expectedErrorTitle,
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/roles?' . http_build_query(compact('include')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode($expectedStatus);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
 }
