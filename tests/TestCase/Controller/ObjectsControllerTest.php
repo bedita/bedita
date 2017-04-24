@@ -1517,4 +1517,162 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertResponseCode($expected);
         $this->assertContentType('application/vnd.api+json');
     }
+
+    /**
+     * Test included resources.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testInclude()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2?include=test%2Cinverse_test',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [
+                'id' => '2',
+                'type' => 'documents',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'title-one',
+                    'title' => 'title one',
+                    'description' => 'description here',
+                    'body' => 'body here',
+                    'extra' => [
+                        'abstract' => 'abstract here',
+                        'list' => ['one', 'two', 'three'],
+                    ],
+                    'lang' => 'eng',
+                    'publish_start' => '2016-05-13T07:09:23+00:00',
+                    'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
+                            'related' => 'http://api.example.com/documents/2/test',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '4',
+                                'type' => 'profiles',
+                            ],
+                            [
+                                'id' => '3',
+                                'type' => 'documents',
+                            ],
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                        ],
+                        'data' => [],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test,inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
 }
