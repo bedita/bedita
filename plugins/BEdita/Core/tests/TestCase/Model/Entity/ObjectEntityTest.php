@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
 use BEdita\Core\Model\Entity\ObjectEntity;
+use BEdita\Core\Model\Table\ObjectsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -196,11 +197,114 @@ class ObjectEntityTest extends TestCase
     }
 
     /**
-     * Test magic getter for relations.
+     * Test getter for table.
      *
      * @return void
      *
-     * @covers ::_getRelationships()
+     * @covers ::getTable()
+     */
+    public function testGetTable()
+    {
+        $entity = new ObjectEntity();
+        $entity->type = 'documents';
+
+        $table = $entity->getTable();
+
+        static::assertInstanceOf(ObjectsTable::class, $table);
+        static::assertSame('documents', $table->getRegistryAlias());
+    }
+
+    /**
+     * Test getter for JSON API type.
+     *
+     * @return void
+     *
+     * @covers ::getType()
+     */
+    public function testGetTypeJsonApi()
+    {
+        $entity = new ObjectEntity();
+        $entity->type = 'documents';
+        $entity = $entity->jsonApiSerialize();
+
+        $type = $entity['type'];
+
+        static::assertSame('documents', $type);
+    }
+
+    /**
+     * Test getter for JSON API meta fields.
+     *
+     * @return void
+     *
+     * @covers ::getMeta()
+     */
+    public function testGetMeta()
+    {
+        $entity = new ObjectEntity();
+        $entity->type = 'documents';
+        $entity->created_by = 1;
+        $entity = $entity->jsonApiSerialize();
+
+        $meta = $entity['meta'];
+
+        static::assertArrayNotHasKey('type', $meta);
+    }
+
+    /**
+     * Test magic getter for JSON API links.
+     *
+     * @return void
+     *
+     * @covers ::getLinks()
+     */
+    public function testGetLinks()
+    {
+        $expected = [
+            'self' => '/documents/99',
+        ];
+
+        $entity = new ObjectEntity();
+        $entity->id = 99;
+        $entity->type = 'documents';
+        $entity = $entity->jsonApiSerialize();
+
+        $links = $entity['links'];
+
+        static::assertSame($expected, $links);
+    }
+
+    /**
+     * Test magic getter for JSON API links.
+     *
+     * @return void
+     *
+     * @covers ::getLinks()
+     */
+    public function testGetLinksDeleted()
+    {
+        $expected = [
+            'self' => '/trash/99',
+        ];
+
+        $entity = new ObjectEntity();
+        $entity->id = 99;
+        $entity->type = 'documents';
+        $entity->deleted = true;
+        $entity = $entity->jsonApiSerialize();
+
+        $links = $entity['links'];
+
+        static::assertSame($expected, $links);
+    }
+
+    /**
+     * Test magic getter for JSON API relations.
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
      */
     public function testGetRelationships()
     {
@@ -211,18 +315,20 @@ class ObjectEntityTest extends TestCase
 
         $entity = TableRegistry::get('Documents')->newEntity();
         $entity->set('type', 'documents');
+        $entity = $entity->jsonApiSerialize();
 
-        $relations = $entity->get('relationships') ?: [];
+        $relations = array_keys($entity['relationships']);
 
         static::assertSame($expected, $relations);
     }
 
     /**
-     * Test magic getter for relations.
+     * Test magic getter for JSON API relations.
      *
      * @return void
      *
-     * @covers ::_getRelationships()
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
      */
     public function testGetRelationshipsOfAssociated()
     {
@@ -232,9 +338,28 @@ class ObjectEntityTest extends TestCase
 
         $entity = TableRegistry::get('Documents')->association('Test')->newEntity();
         $entity->set('type', 'profile');
+        $entity = $entity->jsonApiSerialize();
 
-        $relations = $entity->get('relationships') ?: [];
+        $relations = array_keys($entity['relationships']);
 
         static::assertSame($expected, $relations);
+    }
+
+    /**
+     * Test magic getter for JSON API relations.
+     *
+     * @return void
+     *
+     * @covers ::listAssociations()
+     * @covers ::getRelationships()
+     */
+    public function testGetRelationshipsDeleted()
+    {
+        $entity = TableRegistry::get('Documents')->newEntity();
+        $entity->set('type', 'documents');
+        $entity->set('deleted', true);
+        $entity = $entity->jsonApiSerialize();
+
+        static::assertArrayNotHasKey('relationships', $entity);
     }
 }

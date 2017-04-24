@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -34,12 +35,10 @@ use Cake\Utility\Inflector;
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  */
-class ObjectType extends Entity
+class ObjectType extends Entity implements JsonApiSerializable
 {
 
-    use JsonApiTrait {
-        _getMeta as protected jsonApiMeta;
-    }
+    use JsonApiTrait;
 
     /**
      * {@inheritDoc}
@@ -173,18 +172,5 @@ class ObjectType extends Entity
         );
 
         return $relations;
-    }
-
-    /**
-     * Get array of meta properties.
-     *
-     * @return string[]
-     */
-    protected function _getMeta()
-    {
-        $meta = $this->jsonApiMeta();
-        $meta[] = 'relations';
-
-        return $meta;
     }
 }
