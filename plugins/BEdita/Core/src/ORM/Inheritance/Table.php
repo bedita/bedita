@@ -79,13 +79,11 @@ class Table extends CakeTable
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \BEdita\Core\ORM\Inheritance\Query $query The query object
-     * @param \ArrayObject $options Options
-     * @param bool $primary Indicates whether or not this is the root query or an associated query
      * @return void
      */
-    public function inheritanceBeforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    public function inheritanceBeforeFind(Event $event, Query $query)
     {
-        if (!$primary || $this->inheritedTable() === null) {
+        if ($this->inheritedTable() === null) {
             return;
         }
 
