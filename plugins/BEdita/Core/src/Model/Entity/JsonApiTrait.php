@@ -221,6 +221,7 @@ trait JsonApiTrait
             $relationships[$relationship] = compact('data') + [
                 'links' => compact('related', 'self'),
             ];
+            unset($data);
         }
 
         return [$relationships, $included];

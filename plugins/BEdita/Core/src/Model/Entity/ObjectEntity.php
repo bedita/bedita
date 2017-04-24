@@ -186,9 +186,16 @@ class ObjectEntity extends Entity implements JsonApiSerializable
                 true
             );
 
-            $relationships[$relationship] = [
+            if ($this->has($relationship)) {
+                $entities = $this->get($relationship);
+                $data = $this->getIncluded($entities);
+                $included = array_merge($included, $entities);
+            }
+
+            $relationships[$relationship] = compact('data') + [
                 'links' => compact('related', 'self'),
             ];
+            unset($data);
         }
 
         return [$relationships, $included];
