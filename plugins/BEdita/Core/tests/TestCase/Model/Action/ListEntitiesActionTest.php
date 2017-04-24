@@ -174,6 +174,61 @@ class ListEntitiesActionTest extends TestCase
     }
 
     /**
+     * Test command execution with contained entities.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::buildFilter()
+     * @covers ::execute()
+     */
+    public function testExecuteContain()
+    {
+        $expected = [
+            [
+                'id' => 1,
+                'name' => 'cat',
+                'legs' => 4,
+                'fake_articles' => [
+                    [
+                        'id' => 1,
+                        'title' => 'The cat',
+                        'body' => 'article body',
+                        'fake_animal_id' => 1,
+                    ],
+                    [
+                        'id' => 2,
+                        'title' => 'Puss in boots',
+                        'body' => 'text',
+                        'fake_animal_id' => 1,
+                    ],
+                ],
+            ],
+            [
+                'id' => 2,
+                'name' => 'koala',
+                'legs' => 4,
+                'fake_articles' => [],
+            ],
+            [
+                'id' => 3,
+                'name' => 'eagle',
+                'legs' => 2,
+                'fake_articles' => [],
+            ],
+        ];
+
+        $table = TableRegistry::get('FakeAnimals');
+        $contain = ['FakeArticles'];
+        $action = new ListEntitiesAction(compact('table'));
+
+        $result = $action(compact('contain'));
+
+        static::assertInstanceOf(Query::class, $result);
+        static::assertEquals($expected, $result->enableHydration(false)->toArray());
+    }
+
+    /**
      * Test filter error.
      *
      * @return void

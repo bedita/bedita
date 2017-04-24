@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Model\Action;
 
 use BEdita\Core\Model\Action\GetEntityAction;
+use BEdita\Core\ORM\Inheritance\Table;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -30,7 +31,19 @@ class GetEntityActionTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.fake_animals',
+        'plugin.BEdita/Core.fake_articles',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        TableRegistry::get('FakeAnimals', ['className' => Table::class])
+            ->hasMany('FakeArticles');
+    }
 
     /**
      * Test command execution.
@@ -45,5 +58,20 @@ class GetEntityActionTest extends TestCase
         $result = $action(['primaryKey' => 1]);
 
         static::assertEquals($table->get(1), $result);
+    }
+
+    /**
+     * Test command execution with contained entities.
+     *
+     * @return void
+     */
+    public function testExecuteContain()
+    {
+        $table = TableRegistry::get('FakeAnimals');
+        $action = new GetEntityAction(compact('table'));
+
+        $result = $action(['primaryKey' => 1, 'contain' => ['FakeArticles']]);
+
+        static::assertEquals($table->get(1, ['contain' => ['FakeArticles']]), $result);
     }
 }
