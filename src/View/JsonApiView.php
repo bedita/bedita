@@ -46,6 +46,8 @@ class JsonApiView extends JsonView
             }
             if (empty($included)) {
                 unset($included);
+            } else {
+                $included = JsonApi::formatData($included);
             }
         } else {
             $error = $this->viewVars['_error'];
