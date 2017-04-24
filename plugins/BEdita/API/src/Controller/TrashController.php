@@ -104,7 +104,6 @@ class TrashController extends AppController
         }
 
         return $this->response
-            ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
     }
 
@@ -137,7 +136,6 @@ class TrashController extends AppController
         }
 
         return $this->response
-            ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
     }
 }
