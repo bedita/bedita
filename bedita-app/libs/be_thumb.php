@@ -154,6 +154,9 @@ class BeThumb {
         );
         
         $this->inputParams = array();
+
+        $this->mediaRoot = Configure::read('mediaRoot');
+        $this->localThumbRoot = Configure::read('localThumbRoot');
     }
 
 	/**
