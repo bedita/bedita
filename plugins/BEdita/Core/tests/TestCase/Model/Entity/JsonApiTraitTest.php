@@ -209,7 +209,7 @@ class JsonApiTraitTest extends TestCase
      * @covers ::getIncluded()
      * @covers ::listAssociations()
      */
-    public function testGetRelationshipdIncluded()
+    public function testGetRelationshipsIncluded()
     {
         $expected = [
             'users' => [
@@ -233,6 +233,53 @@ class JsonApiTraitTest extends TestCase
 
         static::assertSame($expected, $relationships);
         static::assertCount(1, $included);
+    }
+
+    /**
+     * Test getter for relationships with included resources.
+     *
+     * @return void
+     *
+     * @covers ::getRelationships()
+     * @covers ::getIncluded()
+     * @covers ::listAssociations()
+     */
+    public function testGetRelationshipsIncludedEmpty()
+    {
+        $expected = [
+            'users' => [
+                'data' => [],
+                'links' => [
+                    'related' => '/roles/2/users',
+                    'self' => '/roles/2/relationships/users',
+                ],
+            ],
+        ];
+
+        $role = $this->Roles->get(2, ['contain' => ['Users']])->jsonApiSerialize();
+
+        $relationships = $role['relationships'];
+
+        static::assertSame($expected, $relationships);
+        static::assertArrayNotHasKey('included', $role);
+    }
+
+    /**
+     * Test getter for relationships with included resources.
+     *
+     * @return void
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Objects must implement "\Bedita\Core\Utility\JsonApiSerializable", got "string" instead.
+     * @covers ::getRelationships()
+     * @covers ::getIncluded()
+     * @covers ::listAssociations()
+     */
+    public function testGetRelationshipsIncludedNotSerializable()
+    {
+        $role = $this->Roles->get(2);
+        $role->users = 'Gustavo';
+        $role->jsonApiSerialize();
     }
 
     /**
