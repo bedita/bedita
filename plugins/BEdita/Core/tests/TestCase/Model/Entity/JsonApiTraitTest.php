@@ -270,7 +270,7 @@ class JsonApiTraitTest extends TestCase
      * @return void
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Objects must implement "\Bedita\Core\Utility\JsonApiSerializable", got "string" instead.
+     * @expectedExceptionMessage Objects must implement "BEdita\Core\Utility\JsonApiSerializable", got "string" instead
      * @covers ::getRelationships()
      * @covers ::getIncluded()
      * @covers ::listAssociations()
