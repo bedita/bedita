@@ -41,7 +41,10 @@ trait QueryFilterTrait
      *
      * // field1 in [1, 3, 10]
      * ['field1' => [1, 3, 10]];
-
+     *
+     * // a comma separated string has the same effect as a list of values
+     * ['field1' => '1,3,10'];
+     *
      * // field1 equals 10, field2 equals 1
      * ['field1' => 10, 'field1' => ['eq' => 1]];
      *
@@ -64,9 +67,13 @@ trait QueryFilterTrait
                 }
 
                 if (!is_array($conditions)) {
-                    $exp = $exp->eq($field, $conditions);
+                    if (is_string($conditions) && strpos($conditions, ',') !== false) {
+                        $conditions = explode(',', $conditions);
+                    } else {
+                        $exp = $exp->eq($field, $conditions);
 
-                    continue;
+                        continue;
+                    }
                 }
 
                 $in = [];
