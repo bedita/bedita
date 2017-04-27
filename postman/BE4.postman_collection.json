@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "BE4",
-		"_postman_id": "191b6ace-dac7-7553-4a68-081460133599",
+		"_postman_id": "5d6f8ac3-5440-8a3c-3904-f2729df5c7b4",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -21,9 +21,10 @@
 								"exec": [
 									"var responseJSON;",
 									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
+									"    responseJSON = JSON.parse(responseBody);",
 									"    tests[\"Status code is 200\"] = responseCode.code === 200;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    postman.setEnvironmentVariable(\"jwt\", responseJSON.meta.jwt);",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -127,8 +128,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -143,75 +144,6 @@
 			"name": "ObjectTypes",
 			"description": "",
 			"item": [
-				{
-					"name": "GET single object_type",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"exec": [
-									"var schema = {",
-									"    \"type\": \"object\",",
-									"    \"properties\": {",
-									"        \"data\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"id\": {\"type\": \"string\"},",
-									"                \"type\": {\"type\": \"string\"},",
-									"                \"attributes\": {\"type\": \"object\"},",
-									"            },",
-									"            \"required\": [\"id\", \"type\", \"attributes\"],",
-									"        },",
-									"        \"links\": {",
-									"            \"type\": \"object\",",
-									"            \"properties\": {",
-									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
-									"            },",
-									"            \"required\": [\"self\", \"home\"],",
-									"        },",
-									"    },",
-									"    \"required\": [\"data\",\"links\"],",
-									"};",
-									"var responseJSON;",
-									"try {",
-									"    responseJSON = JSON.parse(responseBody); ",
-									"    if (responseCode.code === 200) {",
-									"        tests[\"Status equals 200\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
-									"    } else if (responseCode.code === 404) {",
-									"        tests[\"Status code is 404\"] = true;",
-									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
-									"    }",
-									"} catch (e) {",
-									"    tests[\"Error in parsing response\"] = e;",
-									"}"
-								]
-							}
-						}
-					],
-					"request": {
-						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
-						"method": "GET",
-						"header": [
-							{
-								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
-								"description": ""
-							}
-						],
-						"body": {},
-						"description": "GET object_type by object_type_id"
-					},
-					"response": []
-				},
 				{
 					"name": "GET object_types",
 					"event": [
@@ -283,8 +215,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -306,6 +238,7 @@
 									"    responseJSON = JSON.parse(responseBody); ",
 									"    tests[\"Status code is 201\"] = responseCode.code === 201;",
 									"    tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    ",
 									"} catch (e) {",
 									"    tests[\"Error in parsing response\"] = e;",
 									"}"
@@ -326,6 +259,11 @@
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -333,6 +271,76 @@
 							"raw": "{\n    \"data\": {\n        \"type\": \"object_types\",\n        \"attributes\": {\n            \"name\" : \"dummyObjectType\",\n            \"pluralized\" : \"dummyObjectType\",\n            \"description\" : \"this is a dummy object type\",\n            \"plugin\" : \"plugin sample dummy\",\n            \"model\" : \"model sample dummy\"\n        }\n    }\n}"
 						},
 						"description": "POST ADD object_types"
+					},
+					"response": []
+				},
+				{
+					"name": "GET single object_type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var schema = {",
+									"    \"type\": \"object\",",
+									"    \"properties\": {",
+									"        \"data\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"id\": {\"type\": \"string\"},",
+									"                \"type\": {\"type\": \"string\"},",
+									"                \"attributes\": {\"type\": \"object\"},",
+									"            },",
+									"            \"required\": [\"id\", \"type\", \"attributes\"],",
+									"        },",
+									"        \"links\": {",
+									"            \"type\": \"object\",",
+									"            \"properties\": {",
+									"                \"self\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"                \"home\": {\"type\": \"string\", \"format\": \"uri\"},",
+									"            },",
+									"            \"required\": [\"self\", \"home\"],",
+									"        },",
+									"    },",
+									"    \"required\": [\"data\",\"links\"],",
+									"};",
+									"var responseJSON;",
+									"try {",
+									"    responseJSON = JSON.parse(responseBody); ",
+									"    if (responseCode.code === 200) {",
+									"        tests[\"Status equals 200\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"        tests[\"Valid data\"] = tv4.validate(responseJSON, schema);",
+									"        ",
+									"    } else if (responseCode.code === 404) {",
+									"        tests[\"Status code is 404\"] = true;",
+									"        tests[\"Content-Type is correct\"] = postman.getResponseHeader(\"Content-Type\") === 'application/vnd.api+json';",
+									"    }",
+									"} catch (e) {",
+									"    tests[\"Error in parsing response\"] = e;",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": "GET object_type by object_type_id"
 					},
 					"response": []
 				},
@@ -381,7 +389,7 @@
 						}
 					],
 					"request": {
-						"url": "{{be4Url}}/object_types/{{object_type_id}}",
+						"url": "{{be4Url}}/object_types/{{objectTypeId}}",
 						"method": "PATCH",
 						"header": [
 							{
@@ -392,6 +400,11 @@
 							{
 								"key": "Accept",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -435,8 +448,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -510,8 +523,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -591,8 +604,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -633,6 +646,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -702,6 +720,11 @@
 								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -743,8 +766,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -818,8 +841,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -899,8 +922,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -980,8 +1003,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1022,6 +1045,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1090,6 +1118,11 @@
 								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1132,8 +1165,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1174,6 +1207,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1241,11 +1279,6 @@
 						"header": [
 							{
 								"key": "Accept",
-								"value": "application/vnd.api+json",
-								"description": ""
-							},
-							{
-								"key": "Content-Type",
 								"value": "application/vnd.api+json",
 								"description": ""
 							}
@@ -1320,8 +1353,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1401,8 +1434,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1445,6 +1478,11 @@
 								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1486,8 +1524,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1561,8 +1599,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1642,8 +1680,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1723,8 +1761,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1765,6 +1803,11 @@
 							{
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1833,6 +1876,11 @@
 								"key": "Accept",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1872,8 +1920,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
@@ -1915,6 +1963,11 @@
 								"key": "Content-Type",
 								"value": "application/vnd.api+json",
 								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
 							}
 						],
 						"body": {
@@ -1955,8 +2008,8 @@
 								"description": ""
 							},
 							{
-								"key": "Content-Type",
-								"value": "application/vnd.api+json",
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
 								"description": ""
 							}
 						],
