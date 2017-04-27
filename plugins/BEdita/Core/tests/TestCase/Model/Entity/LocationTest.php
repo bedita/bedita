@@ -53,18 +53,16 @@ class LocationTest extends TestCase
     }
 
     /**
-     * Test magic getter for meta fields.
+     * Test accessible properties.
      *
      * @return void
      *
-     * @covers ::_getMeta()
+     * @covers ::__construct()
      */
     public function testGetMeta()
     {
         $location = $this->Locations->newEntity();
-        $meta = $location->get('meta');
 
-        static::assertTrue(is_array($meta));
-        static::assertContains('distance', $meta);
+        static::assertFalse($location->isAccessible('distance'));
     }
 }

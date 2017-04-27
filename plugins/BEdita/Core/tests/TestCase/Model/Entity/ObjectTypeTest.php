@@ -245,19 +245,4 @@ class ObjectTypeTest extends TestCase
         static::assertInstanceOf($this->ObjectTypes->getEntityClass(), $objectType);
         static::assertNull($objectType->relations);
     }
-
-    /**
-     * Test getter for meta fields.
-     *
-     * @return void
-     *
-     * @covers ::_getMeta()
-     */
-    public function testGetMeta()
-    {
-        $objectType = $this->ObjectTypes->newEntity();
-        $meta = $objectType->meta;
-
-        static::assertContains('relations', $meta);
-    }
 }

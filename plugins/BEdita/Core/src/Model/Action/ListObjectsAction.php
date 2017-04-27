@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Utility\Hash;
+
 /**
  * Command to save an entity.
  *
@@ -54,7 +56,7 @@ class ListObjectsAction extends BaseAction
         $filter = [
             'deleted' => (int)!empty($data['deleted']),
         ];
-        $contain = ['ObjectTypes'];
+        $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
         if (!empty($this->objectType)) {
             $filter['object_type_id'] = $this->objectType->id;
 
@@ -73,9 +75,6 @@ class ListObjectsAction extends BaseAction
 
         $action = new ListEntitiesAction(['table' => $this->Table]);
 
-        $query = $action->execute(compact('filter'));
-
-        return $query
-            ->contain($contain);
+        return $action->execute(compact('filter', 'contain'));
     }
 }

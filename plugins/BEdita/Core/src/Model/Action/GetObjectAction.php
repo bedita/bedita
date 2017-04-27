@@ -13,6 +13,8 @@
 
 namespace BEdita\Core\Model\Action;
 
+use Cake\Utility\Hash;
+
 /**
  * Command to get an object.
  *
@@ -52,7 +54,7 @@ class GetObjectAction extends BaseAction
         $conditions = [
             'deleted' => (int)!empty($data['deleted']),
         ];
-        $contain = ['ObjectTypes'];
+        $contain = array_merge(['ObjectTypes'], (array)Hash::get($data, 'contain'));
         if (!empty($this->objectType)) {
             $conditions['object_type_id'] = $this->objectType->id;
 
