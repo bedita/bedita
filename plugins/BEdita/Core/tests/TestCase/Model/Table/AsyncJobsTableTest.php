@@ -109,6 +109,7 @@ class AsyncJobsTableTest extends TestCase
             $connection = ConnectionManager::get('default');
 
             static::assertInstanceOf(AsyncJob::class, func_get_arg(1));
+            static::assertInternalType('integer', func_get_arg(2));
             static::assertTrue($connection->inTransaction());
         });
 

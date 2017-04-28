@@ -138,7 +138,8 @@ class AsyncJobsTable extends Table
             $entity->max_attempts -= 1;
             $entity->locked_until = new Time($duration);
 
-            $this->dispatchEvent('AsyncJob.lock', compact('entity', 'duration'));
+            $expires = $entity->locked_until->timestamp;
+            $this->dispatchEvent('AsyncJob.lock', compact('entity', 'expires'));
 
             return $this->saveOrFail($entity, ['atomic' => false]);
         });
@@ -171,7 +172,7 @@ class AsyncJobsTable extends Table
      * Finder for pending jobs.
      *
      * This finder returns a query object that filters asynchronous jobs that are
-     * still valid (`not_before` and `not_after` fields
+     * still valid (not completed, not yet expired, not locked, and have some attempts left).
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @return \Cake\ORM\Query
