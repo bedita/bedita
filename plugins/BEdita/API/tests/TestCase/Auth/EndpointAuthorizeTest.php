@@ -228,6 +228,7 @@ class EndpointAuthorizeTest extends TestCase
      *
      * @dataProvider authorizeProvider()
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
@@ -268,6 +269,7 @@ class EndpointAuthorizeTest extends TestCase
      * @return void
      *
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
@@ -278,7 +280,7 @@ class EndpointAuthorizeTest extends TestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['endpoint_id' => 2]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
         ];
         $uri = new Uri('/home');
         $request = new ServerRequest(compact('environment', 'uri'));
@@ -311,6 +313,7 @@ class EndpointAuthorizeTest extends TestCase
      * @return void
      *
      * @covers ::authorize()
+     * @covers ::isAnonymous()
      * @covers ::getPermissions()
      * @covers ::checkPermissions()
      */
@@ -320,7 +323,7 @@ class EndpointAuthorizeTest extends TestCase
         TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null]);
 
         $environment = [
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
             'HTTP_X_API_KEY' => API_KEY,
         ];
         $uri = new Uri('/this/endpoint/definitely/doesnt/exist');
@@ -346,5 +349,47 @@ class EndpointAuthorizeTest extends TestCase
 
         static::assertTrue($result);
         static::assertAttributeSame(true, 'authorized', $authorize);
+    }
+
+    /**
+     * Test default block of anonymous writes on an endpoint unless explicitly allowed.
+     *
+     * @return void
+     *
+     * @covers ::authorize()
+     * @covers ::isAnonymous()
+     * @covers ::getPermissions()
+     * @covers ::checkPermissions()
+     * @expectedException \Cake\Network\Exception\UnauthorizedException
+     * @expectedExceptionMessage Unauthorized
+     */
+    public function testBlockAnonymousWritesByDefault()
+    {
+        // Ensure no permissions apply to anonymous user on `/home` endpoint.
+        TableRegistry::get('EndpointPermissions')->deleteAll(['role_id IS' => null, 'endpoint_id' => 2]);
+
+        $environment = [
+            'REQUEST_METHOD' => 'POST',
+        ];
+        $uri = new Uri('/home');
+        $request = new ServerRequest(compact('environment', 'uri'));
+
+        $controller = new Controller();
+        $controller->loadComponent('Auth', [
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => ['BEdita/API.Endpoint'],
+        ]);
+        $authorize = $controller->Auth->getAuthorize('BEdita/API.Endpoint');
+
+        if (!($authorize instanceof EndpointAuthorize)) {
+            static::fail('Unexpected authorization object');
+        }
+
+        $authorize->authorize(
+            [
+                '_anonymous' => true,
+            ],
+            $request
+        );
     }
 }

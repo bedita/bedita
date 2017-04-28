@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 
 /**
@@ -28,7 +29,7 @@ use Cake\ORM\Entity;
  *
  * @property \BEdita\Core\Model\Entity\EndpointPermission[] $endpoint_permissions
  */
-class Application extends Entity
+class Application extends Entity implements JsonApiSerializable
 {
 
     use JsonApiTrait;

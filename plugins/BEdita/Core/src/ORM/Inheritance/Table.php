@@ -79,13 +79,11 @@ class Table extends CakeTable
      *
      * @param \Cake\Event\Event $event The event dispatched
      * @param \BEdita\Core\ORM\Inheritance\Query $query The query object
-     * @param \ArrayObject $options Options
-     * @param bool $primary Indicates whether or not this is the root query or an associated query
      * @return void
      */
-    public function inheritanceBeforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    public function inheritanceBeforeFind(Event $event, Query $query)
     {
-        if (!$primary || $this->inheritedTable() === null) {
+        if ($this->inheritedTable() === null) {
             return;
         }
 
@@ -175,12 +173,18 @@ class Table extends CakeTable
      */
     public function isTableInherited($tableName, $nested = false)
     {
-        $inheritedTables = $this->inheritedTables($nested);
-        $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
-            return $table->getAlias() === $tableName;
-        });
+        if ($nested) {
+            $inheritedTables = $this->inheritedTables();
+            $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
+                return $table->getAlias() === $tableName;
+            });
 
-        return count($found) > 0;
+            return count($found) > 0;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+
+        return $inheritedTable !== null && $inheritedTable->getAlias() === $tableName;
     }
 
     /**
@@ -217,24 +221,20 @@ class Table extends CakeTable
     /**
      * Return the inherited tables from current Table.
      *
-     * By default return the direct inherited table (no nested).
-     * To get the the all nested inherited tables pass `$nested = true`.
-     *
-     * @param bool $nested If it must return all the inherited tables or just direct inherited table
      * @return \Cake\ORM\Table[]
      */
-    public function inheritedTables($nested = false)
+    public function inheritedTables()
     {
         $inheritedTable = $this->inheritedTable();
         if ($inheritedTable === null) {
             return [];
         }
 
-        if (!$nested || !($inheritedTable instanceof self)) {
+        if (!($inheritedTable instanceof self)) {
             return [$inheritedTable];
         }
 
-        return array_merge([$inheritedTable], $inheritedTable->inheritedTables(true));
+        return array_merge([$inheritedTable], $inheritedTable->inheritedTables());
     }
 
     /**
@@ -246,15 +246,15 @@ class Table extends CakeTable
     public function commonInheritance(CakeTable $table)
     {
         if (!($table instanceof self)) {
-            return in_array($table, $this->inheritedTables(true), true) ? [$table] : [];
+            return in_array($table, $this->inheritedTables(), true) ? [$table] : [];
         }
 
         $inherited = array_merge(
-            array_reverse($this->inheritedTables(true)),
+            array_reverse($this->inheritedTables()),
             [$this]
         );
         $table = array_merge(
-            array_reverse($table->inheritedTables(true)),
+            array_reverse($table->inheritedTables()),
             [$table]
         );
 
@@ -309,7 +309,7 @@ class Table extends CakeTable
      *
      * @param bool $inheritedFields Should fields from inherited tables be considered?
      */
-    public function hasField($field, $inheritedFields = false)
+    public function hasField($field, $inheritedFields = true)
     {
         $result = parent::hasField($field);
         $inheritedTable = $this->inheritedTable();
@@ -318,7 +318,7 @@ class Table extends CakeTable
             return $result;
         }
 
-        return $inheritedTable->hasField($field, true);
+        return $inheritedTable->hasField($field);
     }
 
     /**

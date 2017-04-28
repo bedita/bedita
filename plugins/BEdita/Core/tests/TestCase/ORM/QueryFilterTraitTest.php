@@ -92,6 +92,12 @@ class QueryFilterTraitTest extends TestCase
                 ],
                 1,
             ],
+            'allLegsComma' => [
+                [
+                    'legs' => '2,3,4',
+                ],
+                3,
+            ],
             'allLegs' => [
                 [
                     'legs' => [2, 3, 4],

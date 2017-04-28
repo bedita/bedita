@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
 use Cake\Utility\Inflector;
 
@@ -33,7 +34,7 @@ use Cake\Utility\Inflector;
  * @property \BEdita\Core\Model\Entity\ObjectType[] $left_object_types
  * @property \BEdita\Core\Model\Entity\ObjectType[] $right_object_types
  */
-class Relation extends Entity
+class Relation extends Entity implements JsonApiSerializable
 {
 
     use JsonApiTrait;

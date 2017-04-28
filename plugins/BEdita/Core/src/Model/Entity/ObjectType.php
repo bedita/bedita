@@ -13,7 +13,9 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\ORM\Entity;
+use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 
 /**
@@ -28,11 +30,12 @@ use Cake\Utility\Inflector;
  * @property string $model
  * @property string $table
  * @property array $associations
+ * @property string[] $relations
  * @property \BEdita\Core\Model\Entity\ObjectEntity[] $objects
  * @property \BEdita\Core\Model\Entity\Relation[] $left_relations
  * @property \BEdita\Core\Model\Entity\Relation[] $right_relations
  */
-class ObjectType extends Entity
+class ObjectType extends Entity implements JsonApiSerializable
 {
 
     use JsonApiTrait;
@@ -57,6 +60,7 @@ class ObjectType extends Entity
     protected $_virtual = [
         'alias',
         'table',
+        'relations',
     ];
 
     /**
@@ -149,5 +153,24 @@ class ObjectType extends Entity
 
         $this->plugin = $plugin;
         $this->model = $model;
+    }
+
+    /**
+     * Getter for virtual property `relations`.
+     *
+     * @return string[]|null
+     */
+    protected function _getRelations()
+    {
+        if (!$this->has('left_relations') || !$this->has('right_relations')) {
+            return null;
+        }
+
+        $relations = array_merge(
+            Hash::extract($this->left_relations, '{n}.name'),
+            Hash::extract($this->right_relations, '{n}.inverse_name')
+        );
+
+        return $relations;
     }
 }

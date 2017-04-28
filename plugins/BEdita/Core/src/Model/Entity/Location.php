@@ -28,13 +28,12 @@ class Location extends ObjectEntity
 {
 
     /**
-     * {@inheritdoc}
+     * {@inheritDoc}
      */
-    protected function _getMeta()
+    public function __construct(array $properties = [], array $options = [])
     {
-        $meta = parent::_getMeta();
-        $meta[] = 'distance';
+        parent::__construct($properties, $options);
 
-        return $meta;
+        $this->setAccess('distance', false);
     }
 }

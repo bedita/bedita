@@ -387,5 +387,17 @@ return [
     'Plugins' => [
         'DebugKit' => ['debugOnly' => true, 'bootstrap' => true],
 //      'MyPlugin' => ['autoload' => true, 'bootstrap' => true, 'routes' => true],
+    ],
+
+    /**
+     * Default pagination settings.
+     *
+     * - `limit` - Default number of items per page (page_size). Defaults to 20.
+     * - `maxLimit` - The maximum numer of items retrievable using a `page_size` request per call. Defaults to 100.
+     *   This value cannot exceed a superlimit (@see \BEdita\API\Controller\Component\PaginatorComponent::MAX_LIMIT))
+     */
+    'Pagination' => [
+        'limit' => 20,
+        'maxLimit' => 100,
     ]
 ];

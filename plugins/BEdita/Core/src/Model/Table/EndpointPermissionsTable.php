@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\Comparison;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -85,6 +86,11 @@ class EndpointPermissionsTable extends Table
     /**
      * Find permissions by endpoint.
      *
+     * This finder accepts two options:
+     *  - `endpointIds`: an array of Endpoint IDs to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
+     *      (filter out endpoint permissions with `endpoint_id = NULL`).
+     *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Additional options.
      * @return \Cake\ORM\Query
@@ -93,23 +99,34 @@ class EndpointPermissionsTable extends Table
     {
         $field = $this->aliasField($this->Endpoints->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
-        if (empty($ids)) {
-            return $query->where(function (QueryExpression $expr) use ($field) {
-                return $expr->isNull($field);
-            });
-        }
+        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($ids, $field) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids, $field) {
-                return $expr
-                    ->in($field, $ids)
-                    ->isNull($field);
+        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+                if (!empty($ids)) {
+                    $expr = $expr->in($field, $ids);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$ids` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
+
+                return $expr;
             });
         });
     }
 
     /**
      * Find permissions by application.
+     *
+     * This finder accepts two options:
+     *  - `applicationId`: an Application ID to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all applications
+     *      (filter out endpoint permissions with `application_id = NULL`).
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Additional options.
@@ -119,24 +136,34 @@ class EndpointPermissionsTable extends Table
     {
         $field = $this->aliasField($this->Applications->getForeignKey());
         $id = Hash::get($options, 'applicationId');
-        if (empty($id)) {
-            return $query->where(function (QueryExpression $expr) use ($field) {
-                return $expr->isNull($field);
-            });
-        }
+        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($id, $field) {
-            return $expr->or_(function (QueryExpression $expr) use ($id, $field) {
+        return $query->where(function (QueryExpression $expr) use ($id, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($id, $field, $strict) {
+                if (!empty($id)) {
+                    $expr = $expr->eq($field, $id);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$id` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
 
-                return $expr
-                    ->eq($field, $id)
-                    ->isNull($field);
+                return $expr;
             });
         });
     }
 
     /**
      * Find permissions by role.
+     *
+     * This finder accepts two options:
+     *  - `roleIds`: an array of Role IDs to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all roles
+     *      (filter out endpoint permissions with `role_id = NULL`).
      *
      * @param \Cake\ORM\Query $query Query object instance.
      * @param array $options Additional options.
@@ -146,17 +173,23 @@ class EndpointPermissionsTable extends Table
     {
         $field = $this->aliasField($this->Roles->getForeignKey());
         $ids = array_filter((array)Hash::get($options, 'roleIds', []));
-        if (empty($ids)) {
-            return $query->where(function (QueryExpression $expr) use ($field) {
-                return $expr->isNull($field);
-            });
-        }
+        $strict = Hash::get($options, 'strict', false);
 
-        return $query->where(function (QueryExpression $expr) use ($ids, $field) {
-            return $expr->or_(function (QueryExpression $expr) use ($ids, $field) {
-                return $expr
-                    ->in($field, $ids)
-                    ->isNull($field);
+        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+                if (!empty($ids)) {
+                    $expr = $expr->in($field, $ids);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$ids` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
+
+                return $expr;
             });
         });
     }

@@ -112,6 +112,7 @@ class ListEntitiesAction extends BaseAction
 
                 $query = $query
                     ->distinct(array_map(
+                        // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
                         [$this->Table, 'aliasField'],
                         (array)$this->Table->getPrimaryKey()
                     ))
@@ -119,12 +120,10 @@ class ListEntitiesAction extends BaseAction
                         return $query->where($conditions);
                     });
 
-                // Avoid duplicate results when INNER JOIN-ing hasMany associations and similar.
-
                 continue;
             }
 
-            if ($this->Table->hasField($key, true)) {
+            if ($this->Table->hasField($key)) {
                 // Filter on single field.
                 $key = $this->Table->aliasField($key);
                 $query = $this->fieldsFilter($query, [$key => $value]);
@@ -145,6 +144,8 @@ class ListEntitiesAction extends BaseAction
 
     /**
      * {@inheritDoc}
+     *
+     * @return \Cake\ORM\Query
      */
     public function execute(array $data = [])
     {
@@ -152,6 +153,9 @@ class ListEntitiesAction extends BaseAction
 
         if (!empty($data['filter'])) {
             $query = $this->buildFilter($query, static::parseFilter($data['filter']));
+        }
+        if (!empty($data['contain'])) {
+            $query = $query->contain($data['contain']);
         }
 
         return $query;

@@ -31,16 +31,6 @@ class TrashController extends AppController
     public $modelClass = 'Objects';
 
     /**
-     * {@inheritDoc}
-     */
-    public function initialize()
-    {
-        parent::initialize();
-
-        $this->set('_type', 'trash');
-    }
-
-    /**
      * Paginated objects list.
      *
      * @return void
@@ -78,7 +68,7 @@ class TrashController extends AppController
      * Restore object, remove from trashcan
      *
      * @param int $id Object ID.
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during restore.
@@ -104,7 +94,6 @@ class TrashController extends AppController
         }
 
         return $this->response
-            ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
     }
 
@@ -112,7 +101,7 @@ class TrashController extends AppController
      * Delete object, remove from trashcan
      *
      * @param int $id Object ID.
-     * @return \Cake\Network\Response
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
      * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during delete.
      */
@@ -137,7 +126,6 @@ class TrashController extends AppController
         }
 
         return $this->response
-            ->withHeader('Content-Type', $this->request->contentType())
             ->withStatus(204);
     }
 }

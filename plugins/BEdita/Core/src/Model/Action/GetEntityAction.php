@@ -41,6 +41,10 @@ class GetEntityAction extends BaseAction
      */
     public function execute(array $data = [])
     {
-        return $this->Table->get($data['primaryKey']);
+        if (!empty($data['contain'])) {
+            $contain = $data['contain'];
+        }
+
+        return $this->Table->get($data['primaryKey'], compact('contain'));
     }
 }
