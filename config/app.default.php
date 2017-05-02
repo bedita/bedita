@@ -240,20 +240,26 @@ return [
     'Datasources' => [
         'default' => [
             'className' => 'Cake\Database\Connection',
+
+            /**
+             * Possible values for 'driver' are: Mysql, Postgres, Sqlite
+             * Simply replace Mysql with Posgres or Sqlite in 'driver' value
+             */
             'driver' => 'Cake\Database\Driver\Mysql',
-            'persistent' => false,
             'host' => '__BE4_DB_HOST__',
+
             /**
              * CakePHP will use the default DB port based on the driver selected
              * MySQL on MAMP uses port 8889, MAMP users will want to uncomment
              * the following line and set the port accordingly
              */
-            'port' => '____BE4_DB_PORT__',
+            'port' => '__BE4_DB_PORT__',
             'username' => '__BE4_DB_USERNAME__',
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
             'encoding' => 'utf8',
             'timezone' => 'UTC',
+            'persistent' => false,
             'flags' => [],
             'cacheMetadata' => true,
             'log' => false,
