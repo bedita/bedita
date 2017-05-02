@@ -359,7 +359,8 @@ class BeditaShell extends Shell
             return;
         }
         $this->userInputData['host'] = $this->in('Host?', null, 'localhost');
-        $this->userInputData['port'] = $this->in('Port?', null, '3306');
+        $defaultPort = ($this->userInputData['driver'] === 'Mysql') ? '3306' : '5432';
+        $this->userInputData['port'] = $this->in('Port?', null, $defaultPort);
         $this->userInputData['database'] = $this->in('Database?');
         $this->userInputData['username'] = $this->in('Username?');
         $this->userInputData['password'] = $this->in('Password?');

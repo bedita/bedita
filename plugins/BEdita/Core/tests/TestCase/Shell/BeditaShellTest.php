@@ -221,7 +221,7 @@ class BeditaShellTest extends ShellTestCase
 
         $map = [
             ['Host?', 'localhost', $config['host']],
-            ['Port?', '3306', $fakeParams['port']],
+            ['Port?', ($driver === 'Mysql') ? '3306' : '5432', $fakeParams['port']],
             ['Database?', null, $fakeParams['database']],
             ['Username?', null, $fakeParams['username']],
             ['Password?', null, $fakeParams['password']],
