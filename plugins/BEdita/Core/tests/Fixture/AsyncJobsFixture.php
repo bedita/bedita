@@ -23,8 +23,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => null,
-            'not_after' => null,
+            'scheduled_from' => null,
+            'expires' => null,
             'max_attempts' => 1,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
@@ -37,8 +37,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => '+1 day',
-            'not_after' => null,
+            'scheduled_from' => '+1 day',
+            'expires' => null,
             'max_attempts' => 1,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
@@ -51,8 +51,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => null,
-            'not_after' => null,
+            'scheduled_from' => null,
+            'expires' => null,
             'max_attempts' => 1,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
@@ -65,8 +65,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => null,
-            'not_after' => null,
+            'scheduled_from' => null,
+            'expires' => null,
             'max_attempts' => 1,
             'locked_until' => '+1 day',
             'created' => '2017-04-28 19:29:31',
@@ -79,8 +79,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => null,
-            'not_after' => null,
+            'scheduled_from' => null,
+            'expires' => null,
             'max_attempts' => 0,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
@@ -93,8 +93,8 @@ class AsyncJobsFixture extends TestFixture
             'service' => 'example',
             'priority' => 1,
             'payload' => '{"key":"value"}',
-            'not_before' => null,
-            'not_after' => '1992-08-17 19:29:31',
+            'scheduled_from' => null,
+            'expires' => '1992-08-17 19:29:31',
             'max_attempts' => 1,
             'locked_until' => null,
             'created' => '2017-04-28 19:29:31',
@@ -111,8 +111,8 @@ class AsyncJobsFixture extends TestFixture
         parent::__construct();
 
         foreach ($this->records as &$record) {
-            if (!empty($record['not_before'])) {
-                $record['not_before'] = date('Y-m-d H:i:s', strtotime($record['not_before']));
+            if (!empty($record['scheduled_from'])) {
+                $record['scheduled_from'] = date('Y-m-d H:i:s', strtotime($record['scheduled_from']));
             }
             if (!empty($record['locked_until'])) {
                 $record['locked_until'] = date('Y-m-d H:i:s', strtotime($record['locked_until']));

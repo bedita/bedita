@@ -90,12 +90,12 @@ class AsyncJobsTable extends Table
             ->allowEmpty('payload');
 
         $validator
-            ->dateTime('not_before')
-            ->allowEmpty('not_before');
+            ->dateTime('scheduled_from')
+            ->allowEmpty('scheduled_from');
 
         $validator
-            ->dateTime('not_after')
-            ->allowEmpty('not_after');
+            ->dateTime('expires')
+            ->allowEmpty('expires');
 
         $validator
             ->naturalNumber('max_attempts')
@@ -185,14 +185,14 @@ class AsyncJobsTable extends Table
             ->where(function (QueryExpression $exp) use ($now) {
                 return $exp->and_([
                     $exp->or_(function (QueryExpression $exp) use ($now) {
-                        $field = $this->aliasField('not_before');
+                        $field = $this->aliasField('scheduled_from');
 
                         return $exp
                             ->isNull($field)
                             ->lte($field, $now);
                     }),
                     $exp->or_(function (QueryExpression $exp) use ($now) {
-                        $field = $this->aliasField('not_after');
+                        $field = $this->aliasField('expires');
 
                         return $exp
                             ->isNull($field)
@@ -234,7 +234,7 @@ class AsyncJobsTable extends Table
                 },
                 $exp->or_([
                     function (QueryExpression $exp) use ($now) {
-                        return $exp->lt($this->aliasField('not_after'), $now);
+                        return $exp->lt($this->aliasField('expires'), $now);
                     },
                     $exp->and_([
                         function (QueryExpression $exp) {

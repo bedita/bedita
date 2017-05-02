@@ -37,13 +37,13 @@ class AddAsyncJobsTable extends AbstractMigration
                 'null' => true,
                 'comment' => 'JSON payload being passed to job runner',
             ])
-            ->addColumn('not_before', 'timestamp', [
+            ->addColumn('scheduled_from', 'timestamp', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
                 'comment' => 'Timestamp at which this job becomes valid',
             ])
-            ->addColumn('not_after', 'timestamp', [
+            ->addColumn('expires', 'timestamp', [
                 'default' => null,
                 'limit' => null,
                 'null' => true,
@@ -98,18 +98,18 @@ class AddAsyncJobsTable extends AbstractMigration
             )
             ->addIndex(
                 [
-                    'not_before',
+                    'scheduled_from',
                 ],
                 [
-                    'name' => 'asyncjobs_notbefore_idx',
+                    'name' => 'asyncjobs_scheduledfrom_idx',
                 ]
             )
             ->addIndex(
                 [
-                    'not_after',
+                    'expires',
                 ],
                 [
-                    'name' => 'asyncjobs_notafter_idx',
+                    'name' => 'asyncjobs_expires_idx',
                 ]
             )
             ->addIndex(

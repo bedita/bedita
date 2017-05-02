@@ -11,8 +11,8 @@ use Cake\ORM\Entity;
  * @property string $service
  * @property int $priority
  * @property array $payload
- * @property \Cake\I18n\Time $not_before
- * @property \Cake\I18n\Time $not_after
+ * @property \Cake\I18n\Time $scheduled_from
+ * @property \Cake\I18n\Time $expires
  * @property int $max_attempts
  * @property \Cake\I18n\Time $locked_until
  * @property \Cake\I18n\Time $created
@@ -33,8 +33,8 @@ class AsyncJob extends Entity
         'service' => true,
         'priority' => true,
         'payload' => true,
-        'not_before' => true,
-        'not_after' => true,
+        'scheduled_from' => true,
+        'expires' => true,
         'max_attempts' => true,
     ];
 
@@ -60,10 +60,10 @@ class AsyncJob extends Entity
         if ($this->locked_until !== null && $this->locked_until->gte($now)) {
             return 'locked';
         }
-        if ($this->max_attempts === 0 || ($this->not_after !== null && $this->not_after->lt($now))) {
+        if ($this->max_attempts === 0 || ($this->expires !== null && $this->expires->lt($now))) {
             return 'failed';
         }
-        if ($this->not_before !== null && $this->not_before->gt($now)) {
+        if ($this->scheduled_from !== null && $this->scheduled_from->gt($now)) {
             return 'planned';
         }
 
