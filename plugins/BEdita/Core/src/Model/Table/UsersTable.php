@@ -16,6 +16,7 @@ namespace BEdita\Core\Model\Table;
 use BEdita\Core\ORM\Inheritance\Table;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
+use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\Validation\Validator;
 
@@ -126,5 +127,26 @@ class UsersTable extends Table
         }
 
         $this->updateAll(['last_login' => time()], ['id' => $data[0]['id']]);
+    }
+
+    /**
+     * Find users by their external auth providers.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    protected function findExternalAuth(Query $query, array $options = [])
+    {
+        return $query->innerJoinWith('ExternalAuth', function (Query $query) use ($options) {
+            $query = $query->find('authProvider', $options);
+            if (!empty($options['provider_username'])) {
+                $query = $query->where([
+                    $this->ExternalAuth->aliasField('provider_username') => $options['provider_username'],
+                ]);
+            }
+
+            return $query;
+        });
     }
 }

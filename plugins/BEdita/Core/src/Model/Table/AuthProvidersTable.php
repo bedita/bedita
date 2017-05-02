@@ -23,6 +23,14 @@ use Cake\Validation\Validator;
  *
  * @property \Cake\ORM\Association\HasMany $ExternalAuth
  *
+ * @method \BEdita\Core\Model\Entity\AuthProvider get($primaryKey, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider newEntity($data = null, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[] newEntities(array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider|bool save(\Cake\Datasource\EntityInterface $entity, $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider[] patchEntities($entities, array $data, array $options = [])
+ * @method \BEdita\Core\Model\Entity\AuthProvider findOrCreate($search, callable $callback = null, $options = [])
+ *
  * @since 4.0.0
  */
 class AuthProvidersTable extends Table
@@ -43,7 +51,6 @@ class AuthProvidersTable extends Table
 
         $this->hasMany('ExternalAuth', [
             'foreignKey' => 'auth_provider_id',
-            'className' => 'BEdita/Core.ExternalAuth',
         ]);
     }
 
@@ -63,8 +70,7 @@ class AuthProvidersTable extends Table
             ->notEmpty('name')
 
             ->url('url')
-            ->requirePresence('url', 'create')
-            ->notEmpty('url')
+            ->allowEmpty('url', 'create')
 
             ->allowEmpty('params');
 

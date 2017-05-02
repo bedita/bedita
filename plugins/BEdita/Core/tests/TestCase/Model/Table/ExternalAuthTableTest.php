@@ -80,7 +80,7 @@ class ExternalAuthTableTest extends TestCase
 
         $this->assertEquals('external_auth', $this->ExternalAuth->getTable());
         $this->assertEquals('id', $this->ExternalAuth->getPrimaryKey());
-        $this->assertEquals('id', $this->ExternalAuth->getDisplayField());
+        $this->assertEquals('provider_username', $this->ExternalAuth->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->AuthProviders);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->Users);
