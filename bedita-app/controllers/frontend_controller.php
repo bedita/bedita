@@ -2396,11 +2396,12 @@ abstract class FrontendController extends AppController {
      * @return array (the keys are object's id)
      */
     protected function getPath($object_id) {
+        $publicationId = (!empty($this->publication['id'])) ? $this->publication['id'] : null; // it should not happen... but if it happens, no warnings on $this->publication['id']
         if ($this->BeObjectCache && ($pathArr = $this->BeObjectCache->readPathCache($object_id, $this->status))) {
             $firstParent = reset($pathArr);
-            if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $this->publication['id']) {
+            if (!empty($firstParent['area_id']) && $firstParent['area_id'] != $publicationId) {
                 throw new BeditaNotFoundException('Wrong publication: ' . $firstParent['area_id'] .
-                    ' expected: ' . $this->publication['id']);
+                    ' expected: ' . $publicationId);
             }
 
             return $pathArr;
@@ -2414,7 +2415,7 @@ abstract class FrontendController extends AppController {
             $row = $this->Tree->find('first', array(
                 'conditions' => array(
                     'Tree.id' => $object_id,
-                    'area_id' => $this->publication['id']
+                    'area_id' => $publicationId
                 ),
                 'limit' => 1,
                 'order' => array('menu' => 'desc', 'parent_path' => 'desc'),
