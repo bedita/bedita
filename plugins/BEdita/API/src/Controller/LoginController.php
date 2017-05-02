@@ -39,34 +39,42 @@ class LoginController extends AppController
         parent::initialize();
 
         if ($this->request->getParam('action') === 'login') {
-            $this->Auth->setConfig(
-                'authenticate',
-                [
-                    AuthComponent::ALL => [
-                        'scope' => [
-                            'blocked' => false,
-                        ],
-                        'contain' => ['Roles'],
+            $authenticationComponents = [
+                AuthComponent::ALL => [
+                    'scope' => [
+                        'blocked' => false,
                     ],
-                    'Form' => [
-                        'fields' => [
-                            'username' => 'username',
-                            'password' => 'password_hash',
-                        ],
-                        'passwordHasher' => [
-                            'className' => 'Fallback',
-                            'hashers' => [
-                                'Default',
-                                'Weak' => ['hashType' => 'md5'],
-                            ],
-                        ],
+                    'contain' => ['Roles'],
+                ],
+                'Form' => [
+                    'fields' => [
+                        'username' => 'username',
+                        'password' => 'password_hash',
                     ],
-                    'BEdita/API.Jwt' => [
-                        'queryDatasource' => true,
+                    'passwordHasher' => [
+                        'className' => 'Fallback',
+                        'hashers' => [
+                            'Default',
+                            'Weak' => ['hashType' => 'md5'],
+                        ],
                     ],
                 ],
-                false
-            );
+                'BEdita/API.Jwt' => [
+                    'queryDatasource' => true,
+                ],
+            ];
+
+            $uuidProvider = TableRegistry::get('AuthProviders')->find()->where(['name' => 'uuid'])->first();
+            if ($uuidProvider !== null) {
+                $authenticationComponents['BEdita/API.Uuid'] = [
+                        'contain' => ['Users.Roles'],
+                        'scope' => [
+                            'auth_provider_id' => $uuidProvider->id,
+                    ],
+                ];
+            }
+
+            $this->Auth->setConfig('authenticate', $authenticationComponents, false);
         }
     }
 
