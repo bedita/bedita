@@ -36,10 +36,10 @@ class ServiceRunner
 
     /**
      * Get a service class instance for a given $name.
-     * If no service with a given $name was registered a corresponding class in plugins and core namespaces
+     * If no service with a given $name was registered a corresponding class in plugins and core in 'Service' namespace
      * is searched.
      * Example:
-     * - service $name = 'example', look for \MyPlugin\Service\Example and then for \BEdita\Core\Service\Example
+     * - service $name = 'example', look for class \MyPlugin\Service\Example and then for \BEdita\Core\Service\Example
      *
      * @param string $name The service name you want to get.
      * @return \BEdita\Core\Job\JobService Service instance found
@@ -63,7 +63,7 @@ class ServiceRunner
         }
         if (!$classFound) {
             Log::write('error', 'service not found: ' . $name);
-            throw new \LogicException(__d('bedita', 'Unknown service'));
+            throw new \LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
         }
         $instance = new $classFound();
         static::register($name, $instance);
@@ -84,7 +84,7 @@ class ServiceRunner
     {
         if (!($instance instanceof JobService)) {
             Log::write('error', 'bad service class: ' . get_class($instance));
-            throw new \LogicException(__d('bedita', 'Bad service instance'));
+            throw new \LogicException(__d('bedita', 'Bad service class "{0}"', [get_class($instance)]));
         }
         static::$instances[$name] = $instance;
     }
@@ -111,14 +111,13 @@ class ServiceRunner
      */
     public static function run($uuid, $options = [])
     {
-        $locked = $run = false;
+        $locked = false;
         $AsyncJobs = TableRegistry::get('AsyncJobs');
         try {
             $job = $AsyncJobs->lock($uuid, Hash::get($options, 'lockPeriod', '+5 minutes'));
             $locked = true;
             $service = static::getService($job->service);
             $success = $service->run($job->payload, $options);
-            $run = true;
             $AsyncJobs->unlock($uuid, $success);
 
             return $success;
@@ -136,9 +135,13 @@ class ServiceRunner
     /**
      * Run pending jobs reading from async jobs table.
      * Using an optional max number of jobs as 'limit'
+     * Resulting array will contain
+     *  - 'count' number oj jobs executed
+     *  - 'success' uuids of jobs successfully executed
+     *  - 'success' uuids of failed jobs
      *
      * @param int $limit Max number of pending jobs to run.
-     * @return array Result details array with boolean flag for every uuid
+     * @return array Result details
      */
     public static function runPending($limit = 0)
     {

@@ -21,9 +21,7 @@ namespace BEdita\Core\Job;
 interface JobService
 {
     /**
-     * Run an async job.
-     *
-     * This method **MUST** return a resource object as per JSON API specifications.
+     * Run an async job using $payload input data and optional $options.
      *
      * @param array $payload Input data for running this job.
      * @param array $options Options for running this job.

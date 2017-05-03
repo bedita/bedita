@@ -108,8 +108,7 @@ class ServiceRunnerTest extends TestCase
      */
     public function testRun()
     {
-        $exampleService = new Example();
-        ServiceRunner::register('example', $exampleService);
+        ServiceRunner::register('example', new Example());
 
         $result = ServiceRunner::run('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
         $this->assertTrue($result);
@@ -137,14 +136,36 @@ class ServiceRunnerTest extends TestCase
      */
     public function testRunPending()
     {
-        $exampleService = new Example();
-        ServiceRunner::register('example', $exampleService);
+        ServiceRunner::register('example', new Example());
 
         $result = ServiceRunner::runPending(1);
         $expected = [
             'count' => 1,
             'success' => ['d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c'],
-            'failure' => []
+            'failure' => [],
+        ];
+        $this->assertNotEmpty($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test runPending fail
+     *
+     * @return void
+     * @covers ::runPending()
+     */
+    public function testRunPendingFail()
+    {
+        $mockService = $this->getMockBuilder(Example::class)->getMock();
+        $mockService->method('run')
+             ->will($this->returnValue(false));
+        ServiceRunner::register('example', $mockService);
+
+        $result = ServiceRunner::runPending(1);
+        $expected = [
+            'count' => 1,
+            'success' => [],
+            'failure' => ['d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c'],
         ];
         $this->assertNotEmpty($result);
         $this->assertEquals($expected, $result);

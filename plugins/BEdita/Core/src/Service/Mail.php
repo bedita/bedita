@@ -17,6 +17,7 @@ use BEdita\Core\Job\JobService;
 
 /**
  * Send single mail
+ * [Temporary dummy implementation]
  *
  * @since 4.0.0
  */
