@@ -24,6 +24,9 @@ use Cake\Validation\Validator;
 /**
  * Users Model
  *
+ * @property \Cake\ORM\Association\HasMany $ExternalAuth
+ * @property \Cake\ORM\Association\BelongsToMany $Roles
+ *
  * @method \BEdita\Core\Model\Entity\User get($primaryKey, $options = [])
  * @method \BEdita\Core\Model\Entity\User newEntity($data = null, array $options = [])
  * @method \BEdita\Core\Model\Entity\User[] newEntities(array $data, array $options = [])
@@ -31,9 +34,6 @@ use Cake\Validation\Validator;
  * @method \BEdita\Core\Model\Entity\User patchEntity(\Cake\Datasource\EntityInterface $entity, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\User[] patchEntities($entities, array $data, array $options = [])
  * @method \BEdita\Core\Model\Entity\User findOrCreate($search, callable $callback = null, $options = [])
- *
- * @property \Cake\ORM\Association\HasMany $ExternalAuth
- * @property \Cake\ORM\Association\BelongsToMany $Roles
  *
  * @mixin \Cake\ORM\Behavior\TimestampBehavior
  *
