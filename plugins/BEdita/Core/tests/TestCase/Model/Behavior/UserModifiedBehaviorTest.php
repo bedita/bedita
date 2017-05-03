@@ -52,7 +52,18 @@ class UserModifiedBehaviorTest extends TestCase
     {
         parent::setUp();
 
+        LoggedUser::setUser(['id' => 1]);
         $this->Objects = TableRegistry::get('Objects');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        parent::tearDown();
+
+        LoggedUser::resetUser();
     }
 
     /**
@@ -128,14 +139,12 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testHandleEvent()
     {
-        $userId = LoggedUser::id();
-
         $object = $this->Objects->newEntity();
         $object->type = 'documents';
         $object = $this->Objects->save($object);
 
-        static::assertSame($object->created_by, $userId);
-        static::assertSame($object->modified_by, $userId);
+        static::assertSame(1, $object->created_by);
+        static::assertSame(1, $object->modified_by);
 
         return $object;
     }
