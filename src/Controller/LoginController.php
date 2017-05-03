@@ -64,12 +64,15 @@ class LoginController extends AppController
                 ],
             ];
 
+            // TODO: better way to dynamically add external authentication components?
             $uuidProvider = TableRegistry::get('AuthProviders')->find()->where(['name' => 'uuid'])->first();
             if ($uuidProvider !== null) {
                 $authenticationComponents['BEdita/API.Uuid'] = [
-                        'contain' => ['Users.Roles'],
-                        'scope' => [
-                            'auth_provider_id' => $uuidProvider->id,
+                    'authProvider' => $uuidProvider,
+                    'finder' => [
+                        'externalAuth' => [
+                            'auth_provider' => $uuidProvider,
+                        ],
                     ],
                 ];
             }

@@ -37,6 +37,7 @@ class UuidAuthenticate extends BaseAuthenticate
     /**
      * Default config for this object.
      *
+     * - `authProvider` The AuthProvider entity associated to this authentication component.
      * - `fields` The fields to use to identify a user by.
      * - `userModel` The alias for users table, defaults to Users.
      * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
@@ -53,13 +54,14 @@ class UuidAuthenticate extends BaseAuthenticate
      * @var array
      */
     protected $_defaultConfig = [
+        'authProvider' => null,
         'fields' => [
             'username' => 'provider_username',
         ],
-        'userModel' => 'ExternalAuth',
+        'userModel' => 'Users',
         'scope' => [],
         'finder' => 'all',
-        'contain' => ['Users'],
+        'contain' => null,
         'passwordHasher' => 'Default',
         'header' => [
             'name' => 'Authorization',
@@ -71,26 +73,23 @@ class UuidAuthenticate extends BaseAuthenticate
     /**
      * Find a user by UUID.
      *
-     * @param string $uuid UUID
+     * @param string $username UUID.
      * @param null $password Password.
      * @return array|bool
      */
-    protected function _findUser($uuid, $password = null)
+    protected function _findUser($username, $password = null)
     {
-        $externalAuth = parent::_findUser($uuid, $password);
-        if (!empty($externalAuth['user'])) {
-            return $externalAuth['user'];
+        $externalAuth = parent::_findUser($username, $password);
+        if (!empty($externalAuth)) {
+            return $externalAuth;
         }
+
+        $authProvider = $this->_config['authProvider'];
 
         $Table = TableRegistry::get($this->_config['userModel']);
-        $entity = $Table->newEntity($this->_config['scope'] + [
-            $this->_config['fields']['username'] => $uuid,
-        ]);
-        if (!$Table->save($entity)) {
-            return false;
-        }
+        $Table->dispatchEvent('Auth.externalAuth', compact('authProvider', 'username'));
 
-        return $externalAuth['user'];
+        return parent::_findUser($username, $password);
     }
 
     /**
