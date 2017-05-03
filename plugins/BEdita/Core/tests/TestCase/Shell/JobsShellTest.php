@@ -42,15 +42,30 @@ class JobsShellTest extends ShellTestCase
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         // invoke without limit
-        $this->invoke(['jobs', 'run'], [], $io);
-
-        $pending = TableRegistry::get('AsyncJobs')->find('pending')->toArray();
-        $this->assertEmpty($pending);
+        $result = $this->invoke(['jobs', 'run'], [], $io);
+        $this->assertTrue($result);
 
         // invoke with limit
         $this->invoke(['jobs', 'run', '--limit', '10'], [], $io);
+        $this->assertTrue($result);
+    }
 
-        $pending = TableRegistry::get('AsyncJobs')->find('pending')->toArray();
-        $this->assertEmpty($pending);
+    /**
+     * Test run failure
+     *
+     * @return void
+     * @covers ::run()
+     */
+    public function testRunFail()
+    {
+        $mockService = $this->getMockBuilder(Example::class)->getMock();
+        $mockService->method('run')
+             ->will($this->returnValue(false));
+        ServiceRunner::register('example', $mockService);
+
+        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
+
+        $result = $this->invoke(['jobs', 'run'], [], $io);
+        $this->assertFalse($result);
     }
 }

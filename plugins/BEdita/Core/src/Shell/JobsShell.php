@@ -53,7 +53,7 @@ class JobsShell extends Shell
     /**
      * Run async pending jobs
      *
-     * @return void
+     * @return bool False on at least a job failure, true otherwise
      */
     public function run()
     {
@@ -71,6 +71,6 @@ class JobsShell extends Shell
         $this->out(sprintf('Failure:  %s', count($result['failure'])));
         $this->hr();
 
-        return true;
+        return empty($result['failure']);
     }
 }
