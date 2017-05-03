@@ -14,11 +14,13 @@
 namespace BEdita\API\Test\TestCase\Auth;
 
 use BEdita\API\Auth\EndpointAuthorize;
+use BEdita\Core\Model\Entity\Endpoint;
 use BEdita\Core\State\CurrentApplication;
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Controller;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\Network\Exception\UnauthorizedException;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -134,20 +136,40 @@ class EndpointAuthorizeTest extends TestCase
                 new Uri('/home/sweet/home'),
             ],
             '/' => [
-                null,
+                new Endpoint(
+                    [
+                        'name' => '',
+                        'enabled' => true
+                    ],
+                    [
+                        'source' => 'Endpoints'
+                    ]
+                ),
                 new Uri('/'),
             ],
             '/this/endpoint/definitely/doesnt/exist' => [
-                null,
+                new Endpoint(
+                    [
+                        'name' => 'this',
+                        'enabled' => true
+                    ],
+                    [
+                        'source' => 'Endpoints'
+                    ]
+                ),
                 new Uri('/this/endpoint/definitely/doesnt/exist'),
             ],
+            '/disabled/endpoint' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled/endpoint'),
+            ]
         ];
     }
 
     /**
      * Test getting endpoint from request.
      *
-     * @param int|\Exception $expected Expected endpoint ID.
+     * @param mixed $expected Expected endpoint ID, entity, or exception.
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @return void
      *
@@ -156,17 +178,22 @@ class EndpointAuthorizeTest extends TestCase
      */
     public function testGetEndpoint($expected, UriInterface $uri)
     {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
         CurrentApplication::setFromApiKey(API_KEY);
         $authorize = new EndpointAuthorize(new ComponentRegistry(), []);
         $request = new ServerRequest(compact('uri'));
 
         $authorize->authorize([], $request);
 
-        if ($expected === null) {
-            static::assertAttributeSame($expected, 'endpoint', $authorize);
-        } else {
-            static::assertAttributeEquals(TableRegistry::get('Endpoints')->get($expected), 'endpoint', $authorize);
+        if (is_int($expected)) {
+            $expected = TableRegistry::get('Endpoints')->get($expected);
         }
+
+        static::assertAttributeEquals($expected, 'endpoint', $authorize);
     }
 
     /**
@@ -212,6 +239,31 @@ class EndpointAuthorizeTest extends TestCase
                 new Uri('/unknown-endpoint'),
                 [
                     '_anonymous' => true,
+                ],
+            ],
+            'GET /disabled (anonymous)' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled'),
+                [
+                    '_anonymous' => true
+                ],
+            ],
+            'GET /disabled (role_id = 1)' => [
+                new NotFoundException('Resource not found.'),
+                new Uri('/disabled'),
+                [
+                    'roles' => [
+                        [
+                            'id' => 1,
+                        ],
+                    ],
+                ],
+            ],
+            'POST /signup whitelist (anonymous)' => [
+                true,
+                new Uri('/signup'),
+                [
+                    '_anonymous' => true
                 ],
             ],
         ];
