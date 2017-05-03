@@ -31,9 +31,9 @@ class AuthProvidersFixture extends TestFixture
             'params' => '{}',
         ],
         [
-            'name' => 'example_2',
-            'url' => 'https://example.org/oauth2',
-            'params' => '{"param":"value"}',
+            'name' => 'uuid',
+            'url' => null,
+            'params' => null,
         ],
     ];
 }

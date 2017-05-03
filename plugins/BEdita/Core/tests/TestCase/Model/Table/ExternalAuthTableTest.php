@@ -13,6 +13,9 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Exception\BadFilterException;
+use BEdita\Core\Utility\LoggedUser;
+use Cake\ORM\Association\BelongsTo;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -63,6 +66,7 @@ class ExternalAuthTableTest extends TestCase
     public function tearDown()
     {
         unset($this->ExternalAuth);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -78,14 +82,14 @@ class ExternalAuthTableTest extends TestCase
         $this->ExternalAuth->initialize([]);
         $schema = $this->ExternalAuth->getSchema();
 
-        $this->assertEquals('external_auth', $this->ExternalAuth->getTable());
-        $this->assertEquals('id', $this->ExternalAuth->getPrimaryKey());
-        $this->assertEquals('provider_username', $this->ExternalAuth->getDisplayField());
+        static::assertEquals('external_auth', $this->ExternalAuth->getTable());
+        static::assertEquals('id', $this->ExternalAuth->getPrimaryKey());
+        static::assertEquals('provider_username', $this->ExternalAuth->getDisplayField());
 
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->AuthProviders);
-        $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->Users);
+        static::assertInstanceOf(BelongsTo::class, $this->ExternalAuth->AuthProviders);
+        static::assertInstanceOf(BelongsTo::class, $this->ExternalAuth->Users);
 
-        $this->assertEquals('json', $schema->columnType('params'));
+        static::assertEquals('json', $schema->columnType('params'));
     }
 
     /**
@@ -142,6 +146,170 @@ class ExternalAuthTableTest extends TestCase
         $this->ExternalAuth->patchEntity($externalAuth, $data);
 
         $success = $this->ExternalAuth->save($externalAuth);
-        $this->assertEquals($expected, (bool)$success);
+        static::assertEquals($expected, (bool)$success);
+    }
+
+    /**
+     * Test before save callback when everything is already ok.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveNothingToDo()
+    {
+        $count = $this->ExternalAuth->Users->find()->count();
+        $entity = $this->ExternalAuth->newEntity([
+            'auth_provider_id' => 2,
+            'user_id' => 1,
+            'provider_username' => 'gustavo',
+        ]);
+
+        $result = $this->ExternalAuth->save($entity);
+        $countAfter = $this->ExternalAuth->Users->find()->count();
+
+        static::assertInstanceOf($this->ExternalAuth->getEntityClass(), $result);
+        static::assertSame($count, $countAfter);
+    }
+
+    /**
+     * Test before save callback that creates a new user.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveCreateUser()
+    {
+        LoggedUser::setUser(['id' => 1]);
+        $count = $this->ExternalAuth->Users->find()->count();
+        $entity = $this->ExternalAuth->newEntity([
+            'auth_provider_id' => 2,
+            'provider_username' => 'gustavo',
+        ]);
+
+        $result = $this->ExternalAuth->save($entity);
+        $countAfter = $this->ExternalAuth->Users->find()->count();
+
+        static::assertInstanceOf($this->ExternalAuth->getEntityClass(), $result);
+        static::assertSame($count + 1, $countAfter);
+        static::assertNotNull($entity->get('user_id'));
+
+        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'));
+
+        static::assertSame(1, $newUser->get('created_by'));
+        static::assertSame(1, $newUser->get('modified_by'));
+    }
+
+    /**
+     * Test before save callback that creates a new user and sets `created_by` to its own ID.
+     *
+     * @return void
+     *
+     * @covers ::beforeSave()
+     */
+    public function testBeforeSaveCreateUserCreatedByThemselves()
+    {
+        $count = $this->ExternalAuth->Users->find()->count();
+        $entity = $this->ExternalAuth->newEntity([
+            'auth_provider_id' => 2,
+            'provider_username' => 'gustavo',
+        ]);
+
+        $result = $this->ExternalAuth->save($entity);
+        $countAfter = $this->ExternalAuth->Users->find()->count();
+
+        static::assertInstanceOf($this->ExternalAuth->getEntityClass(), $result);
+        static::assertSame($count + 1, $countAfter);
+        static::assertNotNull($entity->get('user_id'));
+
+        $newUser = $this->ExternalAuth->Users->get($entity->get('user_id'));
+
+        static::assertSame($newUser->id, $newUser->get('created_by'));
+        static::assertSame($newUser->id, $newUser->get('modified_by'));
+    }
+
+    /**
+     * Data provider for `testFindAuthProvider` test case.
+     *
+     * @return array
+     */
+    public function findAuthProviderProvider() // Nice name, huh!?
+    {
+        return [
+            'missing parameter' => [
+                new BadFilterException([
+                    'title' => 'Invalid data',
+                    'detail' => '"auth_provider" parameter missing',
+                ]),
+                null,
+            ],
+            'name' => [
+                [
+                    [
+                        'id' => 1,
+                        'user_id' => 1,
+                        'auth_provider_id' => 1,
+                        'params' => null,
+                        'provider_username' => 'first_user',
+                    ],
+                ],
+                'example',
+            ],
+            'auth provider data' => [
+                [
+                    [
+                        'id' => 1,
+                        'user_id' => 1,
+                        'auth_provider_id' => 1,
+                        'params' => null,
+                        'provider_username' => 'first_user',
+                    ],
+                ],
+                [
+                    'id' => 1,
+                ],
+            ],
+            'id' => [
+                [
+                    [
+                        'id' => 1,
+                        'user_id' => 1,
+                        'auth_provider_id' => 1,
+                        'params' => null,
+                        'provider_username' => 'first_user',
+                    ],
+                ],
+                1,
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by auth provider.
+     *
+     * @param mixed $expected Expected result.
+     * @param $authProvider
+     * @return void
+     *
+     * @covers ::findAuthProvider()
+     * @dataProvider findAuthProviderProvider()
+     */
+    public function testFindAuthProvider($expected, $authProvider)
+    {
+        if ($expected instanceof \Exception) {
+            $this->expectException(get_class($expected));
+            $this->expectExceptionMessage($expected->getMessage());
+        }
+
+        $options = [
+            'auth_provider' => $authProvider,
+        ];
+        $result = $this->ExternalAuth
+            ->find('authProvider', $options)
+            ->enableHydration(false)
+            ->toArray();
+
+        static::assertSame($expected, $result);
     }
 }
