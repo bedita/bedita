@@ -33,13 +33,6 @@ class ServiceRunnerTest extends TestCase
 {
 
     /**
-     * Test subject
-     *
-     * @var \BEdita\Core\Job\ServiceRunner
-     */
-    public $ServiceRunner;
-
-    /**
      * Fixtures
      *
      * @var array
@@ -47,14 +40,6 @@ class ServiceRunnerTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.async_jobs',
     ];
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUp()
-    {
-        $this->ServiceRunner = new ServiceRunner();
-    }
 
     /**
      * Test getService method
@@ -65,12 +50,12 @@ class ServiceRunnerTest extends TestCase
      */
     public function testGetService()
     {
-        $result = $this->ServiceRunner->getService('mail');
+        $result = ServiceRunner::getService('mail');
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(\BEdita\Core\Job\JobService::class, $result);
 
         // test instance registry
-        $result2 = $this->ServiceRunner->getService('mail');
+        $result2 = ServiceRunner::getService('mail');
         $this->assertSame($result, $result2);
     }
 
@@ -83,7 +68,7 @@ class ServiceRunnerTest extends TestCase
     public function testGetServiceFail()
     {
         $this->expectException(\LogicException::class);
-        $this->ServiceRunner->getService('gustavo');
+        ServiceRunner::getService('gustavo');
     }
 
     /**
@@ -96,9 +81,9 @@ class ServiceRunnerTest extends TestCase
     public function testRegister()
     {
         $exampleService = new Example();
-        $this->ServiceRunner->register('example', $exampleService);
+        ServiceRunner::register('example', $exampleService);
 
-        $result = $this->ServiceRunner->getService('example');
+        $result = ServiceRunner::getService('example');
         $this->assertNotEmpty($result);
         $this->assertSame($exampleService, $result);
     }
@@ -112,7 +97,7 @@ class ServiceRunnerTest extends TestCase
     public function testRegisterFail()
     {
         $this->expectException(\LogicException::class);
-        $this->ServiceRunner->register('gustavo', $this);
+        ServiceRunner::register('gustavo', $this);
     }
 
     /**
@@ -124,9 +109,9 @@ class ServiceRunnerTest extends TestCase
     public function testRun()
     {
         $exampleService = new Example();
-        $this->ServiceRunner->register('example', $exampleService);
+        ServiceRunner::register('example', $exampleService);
 
-        $result = $this->ServiceRunner->run('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
+        $result = ServiceRunner::run('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
         $this->assertTrue($result);
     }
 
@@ -139,8 +124,8 @@ class ServiceRunnerTest extends TestCase
      */
     public function testRunFail()
     {
-        $this->ServiceRunner->reset();
-        $result = $this->ServiceRunner->run('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
+        ServiceRunner::reset();
+        $result = ServiceRunner::run('d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c');
         $this->assertFalse($result);
     }
 
@@ -153,10 +138,14 @@ class ServiceRunnerTest extends TestCase
     public function testRunPending()
     {
         $exampleService = new Example();
-        $this->ServiceRunner->register('example', $exampleService);
+        ServiceRunner::register('example', $exampleService);
 
-        $result = $this->ServiceRunner->runPending(1);
-        $expected = ['d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c' => true];
+        $result = ServiceRunner::runPending(1);
+        $expected = [
+            'count' => 1,
+            'success' => ['d6bb8c84-6b29-432e-bb84-c3c4b2c1b99c'],
+            'failure' => []
+        ];
         $this->assertNotEmpty($result);
         $this->assertEquals($expected, $result);
     }

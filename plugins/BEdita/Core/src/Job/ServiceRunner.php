@@ -15,7 +15,7 @@ namespace BEdita\Core\Job;
 
 use BEdita\Core\Job\JobService;
 use Cake\Core\Configure;
-use Cake\Log\LogTrait;
+use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -27,30 +27,12 @@ use Cake\Utility\Inflector;
  */
 class ServiceRunner
 {
-    use LogTrait;
-
-    /**
-     * Async Jobs table.
-     *
-     * @var \BEdita\Core\Model\Table\AsyncJobs
-     */
-    protected $AsyncJobs = null;
-
     /**
      * Registered instances.
      *
      * @var \BEdita\Core\Job\JobService[]
      */
-    protected $instances = [];
-
-    /**
-     * Default constructor
-     * @codeCoverageIgnore
-     */
-    public function __construct()
-    {
-        $this->AsyncJobs = TableRegistry::get('AsyncJobs');
-    }
+    protected static $instances = [];
 
     /**
      * Get a service class instance for a given $name.
@@ -63,10 +45,10 @@ class ServiceRunner
      * @return \BEdita\Core\Job\JobService Service instance found
      * @throws \LogicException
      */
-    public function getService($name)
+    public static function getService($name)
     {
-        if (!empty($this->instances[$name])) {
-            return $this->instances[$name];
+        if (!empty(static::$instances[$name])) {
+            return static::$instances[$name];
         }
         $className = Inflector::camelize($name);
         $plugins = array_keys(Configure::read('Plugins'));
@@ -80,11 +62,11 @@ class ServiceRunner
             }
         }
         if (!$classFound) {
-            $this->log('service not found: ' . $name, 'error');
+            Log::write('error', 'service not found: ' . $name);
             throw new \LogicException(__d('bedita', 'Unknown service'));
         }
         $instance = new $classFound();
-        $this->register($name, $instance);
+        static::register($name, $instance);
 
         return $instance;
     }
@@ -98,13 +80,13 @@ class ServiceRunner
      * @return void
      * @throws \LogicException
      */
-    public function register($name, $instance)
+    public static function register($name, $instance)
     {
         if (!($instance instanceof JobService)) {
-            $this->log('bad service class: ' . get_class($instance), 'error');
+            Log::write('error', 'bad service class: ' . get_class($instance));
             throw new \LogicException(__d('bedita', 'Bad service instance'));
         }
-        $this->instances[$name] = $instance;
+        static::$instances[$name] = $instance;
     }
 
     /**
@@ -112,9 +94,9 @@ class ServiceRunner
      *
      * @return void
      */
-    public function reset()
+    public static function reset()
     {
-        $this->instances = [];
+        static::$instances = [];
     }
 
     /**
@@ -127,23 +109,24 @@ class ServiceRunner
      * @param array $options Options for running this job.
      * @return bool True on success, false on failure
      */
-    public function run($uuid, $options = [])
+    public static function run($uuid, $options = [])
     {
         $locked = $run = false;
+        $AsyncJobs = TableRegistry::get('AsyncJobs');
         try {
-            $asyncJob = $this->AsyncJobs->lock($uuid, Hash::get($options, 'lockPeriod', '+5 minutes'));
+            $job = $AsyncJobs->lock($uuid, Hash::get($options, 'lockPeriod', '+5 minutes'));
             $locked = true;
-            $service = $this->getService($asyncJob->service);
-            $success = $service->run($asyncJob->payload, $options);
+            $service = static::getService($job->service);
+            $success = $service->run($job->payload, $options);
             $run = true;
-            $this->AsyncJobs->unlock($uuid, $success);
+            $AsyncJobs->unlock($uuid, $success);
 
             return $success;
         } catch (\Exception $e) {
-            $this->log('job run failed: ' . $e->getMessage(), 'error');
+            Log::write('error', 'job run failed: ' . $e->getMessage());
             if ($locked) {
                 // locked job failed, unlock
-                $this->AsyncJobs->unlock($uuid, false);
+                $AsyncJobs->unlock($uuid, false);
             }
 
             return false;
@@ -157,17 +140,23 @@ class ServiceRunner
      * @param int $limit Max number of pending jobs to run.
      * @return array Result details array with boolean flag for every uuid
      */
-    public function runPending($limit = 0)
+    public static function runPending($limit = 0)
     {
-        $results = [];
-        $pending = $this->AsyncJobs->find('pending')->select(['uuid']);
+        $results = ['success' => [], 'failure' => []];
+        $pending = TableRegistry::get('AsyncJobs')->find('pending')->select(['uuid']);
         if ($limit) {
             $pending->limit($limit);
         }
+        $count = 0;
         foreach ($pending as $job) {
-            $success = $this->run($job->uuid);
-            $results[$job->uuid] = $success;
+            if (static::run($job->uuid)) {
+                $results['success'][] = $job->uuid;
+            } else {
+                $results['failure'][] = $job->uuid;
+            }
+            $count++;
         }
+        $results['count'] = $count;
 
         return $results;
     }
