@@ -10,13 +10,11 @@
  *
  * See LICENSE.LGPL or <http://gnu.org/licenses/lgpl-3.0.html> for more details.
  */
-namespace BEdita\API\Test\TestCase\TestSuite;
+namespace BEdita\API\Test\TestCase;
 
 use BEdita\API\TestSuite\IntegrationTestCase;
 use BEdita\Core\State\CurrentApplication;
 use BEdita\Core\Utility\LoggedUser;
-use Cake\Database\Connection;
-use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
 use Cake\Event\EventManager;
 
