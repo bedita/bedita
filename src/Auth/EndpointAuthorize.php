@@ -21,6 +21,7 @@ use Cake\Auth\BaseAuthorize;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\ServerRequest;
 use Cake\Network\Exception\ForbiddenException;
+use Cake\Network\Exception\NotFoundException;
 use Cake\ORM\TableRegistry;
 use Cake\Utility\Hash;
 
@@ -34,10 +35,14 @@ class EndpointAuthorize extends BaseAuthorize
 
     /**
      * {@inheritDoc}
+     *
+     * Whitelisted endpoints will be authorized without check permissions
+     * unless a specific permission is set on those endpoints.
      */
     protected $_defaultConfig = [
         'disallowAnonymousApplications' => false,
         'apiKeyHeaderName' => 'X-Api-Key',
+        'endpointWhitelist' => ['signup'],
     ];
 
     /**
@@ -81,8 +86,13 @@ class EndpointAuthorize extends BaseAuthorize
         $permissions = $this->getPermissions($user, $application, $endpoint, $strict)->toArray();
         $allPermissions = $this->getPermissions(false, $application, $endpoint);
 
+        // If endpoint is in whitelist and no permission is set on it then it is authorized for anyone
+        if (in_array($endpoint->name, $this->getConfig('endpointWhitelist')) && ($endpoint->isNew() || $allPermissions->count() === 0)) {
+            return $this->authorized = true;
+        }
+
         $this->authorized = $this->checkPermissions($permissions);
-        if (empty($permissions) && (!$endpoint || $allPermissions->count() === 0)) {
+        if (empty($permissions) && ($endpoint->isNew() || $allPermissions->count() === 0)) {
             // If no permissions are set for an endpoint, assume the least restrictive permissions possible.
             // This does not apply to write operations for anonymous users: those **MUST** be explicitly allowed.
             $this->authorized = !$strict;
@@ -146,7 +156,8 @@ class EndpointAuthorize extends BaseAuthorize
     /**
      * Get endpoint for request.
      *
-     * @return \BEdita\Core\Model\Entity\Endpoint|null
+     * @return \BEdita\Core\Model\Entity\Endpoint
+     * @throws \Cake\Network\Exception\NotFoundException If endpoint is disabled
      */
     protected function getEndpoint()
     {
@@ -159,16 +170,26 @@ class EndpointAuthorize extends BaseAuthorize
             $endpointName = substr($endpointName, 0, $slashPos);
         }
 
-        if (empty($endpointName)) {
-            return null;
-        }
-
-        $this->endpoint = TableRegistry::get('Endpoints')->find()
+        $Endpoints = TableRegistry::get('Endpoints');
+        $this->endpoint = $Endpoints->find()
             ->where([
                 'Endpoints.name' => $endpointName,
-                'Endpoints.enabled' => true,
             ])
             ->first();
+
+        if (!$this->endpoint) {
+            $this->endpoint = $Endpoints->newEntity(
+                [
+                    'name' => $endpointName,
+                    'enabled' => true,
+                ],
+                ['validate' => false]
+            );
+        }
+
+        if (!$this->endpoint->enabled) {
+            throw new NotFoundException(__d('bedita', 'Resource not found.'));
+        }
 
         return $this->endpoint;
     }
@@ -186,7 +207,7 @@ class EndpointAuthorize extends BaseAuthorize
     protected function getPermissions($user, Application $application = null, Endpoint $endpoint = null, $strict = false)
     {
         $applicationId = $application ? $application->id : null;
-        $endpointIds = $endpoint ? [$endpoint->id] : [];
+        $endpointIds = $endpoint && !$endpoint->isNew() ? [$endpoint->id] : [];
 
         $query = TableRegistry::get('EndpointPermissions')
             ->find('byApplication', compact('applicationId', 'strict'))
