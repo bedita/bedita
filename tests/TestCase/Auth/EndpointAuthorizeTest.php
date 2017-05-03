@@ -169,7 +169,7 @@ class EndpointAuthorizeTest extends TestCase
     /**
      * Test getting endpoint from request.
      *
-     * @param int|\Cake\ORM\Entity $expected Expected endpoint ID or entity.
+     * @param mixed $expected Expected endpoint ID, entity, or exception.
      * @param \Psr\Http\Message\UriInterface $uri Request URI.
      * @return void
      *
