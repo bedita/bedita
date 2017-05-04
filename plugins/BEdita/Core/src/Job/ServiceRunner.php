@@ -61,7 +61,6 @@ class ServiceRunner
             }
         }
         if (!$classFound) {
-            Log::write('error', 'service not found: ' . $name);
             throw new \LogicException(__d('bedita', 'Unknown service "{0}"', [$name]));
         }
         $instance = new $classFound();
@@ -82,7 +81,6 @@ class ServiceRunner
     public static function register($name, $instance)
     {
         if (!($instance instanceof JobService)) {
-            Log::write('error', 'bad service class: ' . get_class($instance));
             throw new \LogicException(__d('bedita', 'Bad service class "{0}"', [get_class($instance)]));
         }
         static::$instances[$name] = $instance;
