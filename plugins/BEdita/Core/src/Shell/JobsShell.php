@@ -13,7 +13,6 @@
 namespace BEdita\Core\Shell;
 
 use BEdita\Core\Job\ServiceRunner;
-use Cake\Cache\Cache;
 use Cake\Console\Shell;
 
 /**

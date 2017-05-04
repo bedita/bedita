@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Job;
 
-use BEdita\Core\Job\JobService;
 use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
@@ -102,7 +101,7 @@ class ServiceRunner
     /**
      * Run a service with $payload data read from async jobs table
      *
-     * In $options array this parameters are available:
+     * In $options array these parameters are available:
      *  - 'lockPeriod' : lock time duration, specify in the form '+5 minutes'
      *
      * @param string $uuid UUID of the job to run.
@@ -136,9 +135,9 @@ class ServiceRunner
      * Run pending jobs reading from async jobs table.
      * Using an optional max number of jobs as 'limit'
      * Resulting array will contain
-     *  - 'count' number oj jobs executed
+     *  - 'count' number of jobs executed
      *  - 'success' uuids of jobs successfully executed
-     *  - 'success' uuids of failed jobs
+     *  - 'failure' uuids of failed jobs
      *
      * @param int $limit Max number of pending jobs to run.
      * @return array Result details
