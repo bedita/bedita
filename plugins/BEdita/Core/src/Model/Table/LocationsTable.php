@@ -147,6 +147,9 @@ class LocationsTable extends Table
         return $query
             ->select(['distance' => $distanceExpression])
             ->enableAutoFields(true)
+            ->where(function ($exp, $q) {
+                return $exp->isNotNull($this->aliasField('coords'));
+            })
             ->order(['distance' => 'ASC']);
     }
 
