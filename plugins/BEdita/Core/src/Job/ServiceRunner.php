@@ -140,11 +140,11 @@ class ServiceRunner
      * @param int $limit Max number of pending jobs to run.
      * @return array Result details
      */
-    public static function runPending($limit = 0)
+    public static function runPending($limit = null)
     {
         $results = ['success' => [], 'failure' => []];
         $pending = TableRegistry::get('AsyncJobs')->find('pending')->select(['uuid']);
-        if ($limit) {
+        if ($limit !== null) {
             $pending->limit($limit);
         }
         $count = 0;
