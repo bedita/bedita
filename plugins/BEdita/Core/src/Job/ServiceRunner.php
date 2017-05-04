@@ -51,7 +51,7 @@ class ServiceRunner
             return static::$instances[$name];
         }
         $className = Inflector::camelize($name);
-        $plugins = array_keys(Configure::read('Plugins'));
+        $plugins = array_keys((array)Configure::read('Plugins'));
         $plugins[] = 'BEdita/Core';
         $classFound = null;
         foreach ($plugins as $plugin) {

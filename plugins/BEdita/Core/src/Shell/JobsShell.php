@@ -40,7 +40,7 @@ class JobsShell extends Shell
                             'help' => 'Max number of jobs to run',
                             'short' => 'l',
                             'required' => false,
-                            'default' => 0,
+                            'default' => null,
                         ],
                     ],
                 ],
