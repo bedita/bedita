@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Job;
 
+use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\ORM\TableRegistry;
@@ -51,11 +52,11 @@ class ServiceRunner
         }
         $className = Inflector::camelize($name);
         $plugins = array_keys(Configure::read('Plugins'));
-        $plugins[] = 'BEdita\Core';
+        $plugins[] = 'BEdita/Core';
         $classFound = null;
         foreach ($plugins as $plugin) {
-            $fullName = '\\' . $plugin . '\Service\\' . $className;
-            if (class_exists($fullName)) {
+            $fullName = App::className("$plugin.$className", 'Service');
+            if ($fullName) {
                 $classFound = $fullName;
                 break;
             }
