@@ -22,7 +22,7 @@ use Cake\TestSuite\TestCase;
  */
 class MailTest extends TestCase
 {
-    protected $mailService;
+    protected $testOptions = ['profile' => 'test'];
 
     /**
      * {@inheritDoc}
@@ -33,14 +33,78 @@ class MailTest extends TestCase
     }
 
     /**
+     * Data provider for `testRun` test case.
+     *
+     * @return array
+     */
+    public function runProvider()
+    {
+        return [
+            'simple' => [
+                [
+                    'to' => 'me@localhost',
+                    'subject' => 'something',
+                    'message' => 'it works!'
+                ],
+                true,
+            ],
+            'missing' => [
+                [
+                    'to' => 'me@localhost',
+                ],
+                false,
+            ],
+            'mailer' => [
+                [
+                    'to' => 'me@localhost',
+                    'mailer' => 'User',
+                    'action' => 'welcome',
+                ],
+                true,
+            ],
+            'mailerPlugin' => [
+                [
+                    'to' => 'me@localhost',
+                    'mailer' => 'BEdita/Core.User',
+                    'action' => 'welcome',
+                ],
+                true,
+            ],
+            'noAction' => [
+                [
+                    'to' => 'me@localhost',
+                    'mailer' => 'Gustavo',
+                ],
+                false,
+            ],
+            'noMailer' => [
+                [
+                    'to' => 'me@localhost',
+                    'mailer' => 'Gustavo',
+                    'action' => 'support',
+                ],
+                false,
+            ],
+        ];
+    }
+
+    /**
      * Test run method
      *
+     * @param array $payload Payload data
+     * @param bool $success True on success, false otherwise
      * @return void
      * @covers ::run()
+     * @covers ::mailerSend()
+     * @dataProvider runProvider
      */
-    public function testRun()
+    public function testRun($payload, $success)
     {
-        $result = $this->mailService->run([]);
-        $this->assertTrue($result);
+        if (!$success) {
+            $this->expectException(\LogicException::class);
+        }
+        $mailService = new Mail();
+        $result = $mailService->run($payload, $this->testOptions);
+        $this->assertEquals($success, $result);
     }
 }
