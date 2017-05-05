@@ -7,7 +7,7 @@ php:
   - hhvm
 
 dist: trusty
-sudo: false
+sudo: required
 
 services:
   - memcached
@@ -15,7 +15,7 @@ services:
   - redis-server
 
 addons:
-#  mariadb: "10.1"
+  mariadb: "10.1"
   postgresql: "9.6"
 
 cache:
@@ -26,7 +26,7 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-#    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
+    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@localhost/bedita_test'"
     - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
