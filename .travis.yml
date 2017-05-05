@@ -10,12 +10,14 @@ dist: trusty
 sudo: false
 
 services:
+  - mariadb
   - memcached
-  - mysql
+#  - mysql
   - postgresql
   - redis-server
 
 addons:
+  mariadb: "10.2"
   postgresql: "9.6"
 
 cache:
@@ -26,8 +28,8 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://travis@127.0.0.1:3306/bedita_test'"
-    - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1:5432/bedita_test'"
+    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@127.0.0.1/bedita_test'"
+    - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
 
@@ -36,9 +38,11 @@ matrix:
 
   include:
     - php: 7.1
-      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://travis@127.0.0.1:3306/bedita_test'"
+      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@127.0.0.1/bedita_test'"
+      services:
+        - mysql
     - php: 7.1
-      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1:5432/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
       addons:
         postgresql: "9.5"
     - php: 7.1
@@ -48,7 +52,7 @@ matrix:
 
   exclude:
     - php: hhvm
-      env: "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1:5432/bedita_test'"
+      env: "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
 
   allow_failures:
     - php: hhvm
