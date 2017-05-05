@@ -58,7 +58,7 @@ matrix:
     - php: hhvm
 
 before_script:
-  - if [ "$DB" = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS bedita_test;'; fi
+  - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE IF NOT EXISTS bedita_test;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'create database bedita_test;' -U postgres; fi
 
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
