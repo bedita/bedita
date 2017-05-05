@@ -12,7 +12,6 @@ sudo: false
 services:
   - mariadb
   - memcached
-#  - mysql
   - postgresql
   - redis-server
 
@@ -28,7 +27,7 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@127.0.0.1/bedita_test'"
+    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://travis@0.0.0.0/bedita_test'"
     - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
@@ -38,9 +37,11 @@ matrix:
 
   include:
     - php: 7.1
-      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@127.0.0.1/bedita_test'"
+      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://travis@0.0.0.0/bedita_test'"
       services:
+        - memcached
         - mysql
+        - redis-server
       addons: {}
     - php: 7.1
       env: "DB=pgsql DB_VERSION=9.5 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
@@ -59,11 +60,11 @@ matrix:
     - php: hhvm
 
 before_script:
-  - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE IF NOT EXISTS bedita_test;'; fi
-  - if [ "$DB" = 'pgsql' ]; then psql -c 'create database bedita_test;' -U postgres; fi
-
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
   - composer install --prefer-dist --no-interaction
+
+  - if [ "$DB" = 'mysql' ]; then mysql -e 'CREATE DATABASE bedita_test;'; fi
+  - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
 
   - |
     if [ "$TRAVIS_PHP_VERSION" != 'hhvm' ]; then
