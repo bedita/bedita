@@ -17,6 +17,7 @@ use BEdita\Core\Exception\BadFilterException;
 use BEdita\Core\ORM\Inheritance\Table;
 use BEdita\Core\Utility\Database;
 use Cake\Database\Expression\FunctionExpression;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\Validation\Validator;
 
@@ -120,20 +121,20 @@ class LocationsTable extends Table
                 'detail' => '"center" parameter was not found',
             ]);
         }
-        if (is_array($center)) {
-            $center = implode(' ', $center);
+        if (!is_array($center)) {
+            $center = preg_split('/[\s,]/', $center, 2);
         }
-        $center = str_replace(',', ' ', $center);
-        if (!preg_match("/^(-?\d{1,3}\.\d{1,})\s+(-?\d{1,3}\.\d{1,})$/", $center)) {
+        $center = filter_var_array(array_values($center), FILTER_VALIDATE_FLOAT);
+        if (count($center) !== 2 || in_array(false, $center, true) || abs($center[0]) > 180 || abs($center[1]) > 90) {
             throw new BadFilterException([
                 'title' => __d('bedita', 'Invalid data'),
-                'detail' => 'bad geo data format: ' . $center,
+                'detail' => 'bad geo data format: ' . implode(' ', $center),
             ]);
         }
 
         $this->checkGeoDbSupport();
 
-        $center = sprintf('POINT(%s)', $center);
+        $center = sprintf('POINT(%s)', implode(' ', $center));
         $distanceExpression = new FunctionExpression(
             'ST_Distance_sphere',
             [
@@ -147,7 +148,7 @@ class LocationsTable extends Table
         return $query
             ->select(['distance' => $distanceExpression])
             ->enableAutoFields(true)
-            ->where(function ($exp, $q) {
+            ->where(function (QueryExpression $exp) {
                 return $exp->isNotNull($this->aliasField('coords'));
             })
             ->order(['distance' => 'ASC']);

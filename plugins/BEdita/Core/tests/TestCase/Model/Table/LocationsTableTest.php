@@ -1,19 +1,9 @@
 <?php
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\LocationsTable;
 use BEdita\Core\Utility\Database;
-use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
-
-class TestLocations extends LocationsTable
-{
-    public function setGeoDbSupport($options)
-    {
-        $this->geoDbSupport = $options;
-    }
-}
 
 /**
  * {@see \BEdita\Core\Model\Table\LocationsTable} Test Case
@@ -29,13 +19,6 @@ class LocationsTableTest extends TestCase
      * @var \BEdita\Core\Model\Table\LocationsTable
      */
     public $Locations;
-
-    /**
-     * Fake db params for geo test
-     *
-     * @var array
-     */
-    public $fakeDbParams = null;
 
     /**
      * Fixtures
@@ -58,6 +41,7 @@ class LocationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Locations = TableRegistry::get('Locations');
     }
 
@@ -70,12 +54,6 @@ class LocationsTableTest extends TestCase
     {
         unset($this->Locations);
 
-        if (!empty($this->fakeDbParams)) {
-            ConnectionManager::alias('test', 'default');
-            ConnectionManager::drop('__fake__');
-            $this->fakeDbParams = null;
-        }
-
         parent::tearDown();
     }
 
@@ -87,15 +65,21 @@ class LocationsTableTest extends TestCase
     public function findGeoProvider()
     {
         return [
-            'nearPoint' => [
+            'near point' => [
                 [
                     'center' => '44.4944876,11.3464721',
                 ],
                 1,
             ],
-            'nearArray' => [
+            'near array' => [
                 [
                     'center' => [44.4944183, 11.3464055],
+                ],
+                1,
+            ],
+            'near array with integer' => [
+                [
+                    'center' => [44, 11.3464055],
                 ],
                 1,
             ],
@@ -136,9 +120,24 @@ class LocationsTableTest extends TestCase
                     'gustavo' => '44.4944876,11.3464721',
                 ],
             ],
-            'notgeo' => [
+            'not geo' => [
                 [
                     'center' => ['somewhere', 11.3464055],
+                ],
+            ],
+            'not a hypersphere' => [
+                [
+                    'center' => [-5.54645654, 11.3464055, 12.5645745],
+                ],
+            ],
+            'out of range lat' => [
+                [
+                    'center' => [200, 0],
+                ],
+            ],
+            'out of range long' => [
+                [
+                    'center' => [0, 100],
                 ],
             ],
         ];
@@ -147,32 +146,32 @@ class LocationsTableTest extends TestCase
     /**
      * Test finder error.
      *
+     * @param array $conditions Filter options.
      * @return void
+     * @expectedException \BEdita\Core\Exception\BadFilterException
      *
      * @dataProvider badGeoProvider
      * @covers ::findGeo()
      */
     public function testBadGeo($conditions)
     {
-        static::expectException('BEdita\Core\Exception\BadFilterException');
-
-        $result = $this->Locations->find('geo', $conditions)->toArray();
+        $this->Locations->find('geo', $conditions)->toArray();
     }
 
     /**
      * Test geo db support fail.
      *
      * @return void
+     * @expectedException \BEdita\Core\Exception\BadFilterException
      *
      * @covers ::checkGeoDbSupport()
      */
     public function testBadGeoDb()
     {
-        $testLocations = new TestLocations();
-        $testLocations->setGeoDbSupport(['vendor' => 'unknowndb']);
+        $prop = new \ReflectionProperty(get_class($this->Locations), 'geoDbSupport');
+        $prop->setAccessible(true);
+        $prop->setValue($this->Locations, ['vendor' => 'unknowndb']);
 
-        static::expectException('BEdita\Core\Exception\BadFilterException');
-
-        $result = $testLocations->checkGeoDbSupport();
+        $this->Locations->checkGeoDbSupport();
     }
 }
