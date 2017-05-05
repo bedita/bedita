@@ -40,10 +40,12 @@ class Mail implements JobService
      * Send a single email directly or using a mailer class.
      *
      * $payload array data specify mail action and input data.
-     * Possible keys are:
+     *
+     * Possible $payload keys are:
      *  * 'profile' - Email configuration profile to use (default is 'default'), in profile sender and from fields are
-     *  * 'mailer' - Custom mailer class to use, if no namespace is spesified a class with same name is searched
-     *      in loaded plugins in `\MyPlugin\Mailer` namespace than in `\BEdita\Core\Mailer`
+     *  * 'mailer' - Custom mailer class to use, if a dot plugin syntax is used corresponding mailer class is loaded,
+     *      otherwise a matching mailer class is searched in loaded plugins, for instance in `\MyPlugin\Mailer` namespace,
+     *      then in `\BEdita\Core\Mailer`
      *  * 'action' - Mailer action to trigger - mandatory if 'mailer' is specified
      *  * 'params' - Optional additional parameters to pass to mailer
      *  * 'to' - Email recipient, mandatory if no 'mailer' is specified
@@ -55,6 +57,7 @@ class Mail implements JobService
      * @param array $payload Input data for this email job.
      * @param array $options Options for running this job.
      * @return bool True on success, false on failure
+     * @throws \LogicException On bad or missing input data
      */
     public function run($payload, $options = [])
     {
@@ -93,6 +96,7 @@ class Mail implements JobService
      * @param string $action Mailer action
      * @param array $options Mailer options
      * @return bool True on success, false on failure
+     * @throws \LogicException If no suitable mailer is found
      */
     protected function mailerSend($name, $action, $options)
     {
