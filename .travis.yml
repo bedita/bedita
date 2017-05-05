@@ -17,7 +17,7 @@ services:
   - redis-server
 
 addons:
-  mariadb: "10.2"
+  mariadb: "10.1"
   postgresql: "9.6"
 
 cache:
