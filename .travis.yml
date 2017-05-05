@@ -80,7 +80,7 @@ script:
     fi
   - |
     if [ "$RUN_PHPSTAN" = '1' ]; then
-      vendor/bin/phpstan analyse --no-progress /app/src /app/plugins/BEdita/API/src /app/plugins/BEdita/Core/src
+      vendor/bin/phpstan analyse --no-progress src plugins/BEdita/API/src plugins/BEdita/Core/src
     fi
 
 after_success:
