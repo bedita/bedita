@@ -2,7 +2,6 @@
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
 use BEdita\Core\Utility\Database;
-use Cake\Datasource\ConnectionManager;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -20,13 +19,6 @@ class LocationsTableTest extends TestCase
      * @var \BEdita\Core\Model\Table\LocationsTable
      */
     public $Locations;
-
-    /**
-     * Fake db params for geo test
-     *
-     * @var array
-     */
-    public $fakeDbParams = null;
 
     /**
      * Fixtures
@@ -49,6 +41,7 @@ class LocationsTableTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Locations = TableRegistry::get('Locations');
     }
 
@@ -60,12 +53,6 @@ class LocationsTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Locations);
-
-        if (!empty($this->fakeDbParams)) {
-            ConnectionManager::alias('test', 'default');
-            ConnectionManager::drop('__fake__');
-            $this->fakeDbParams = null;
-        }
 
         parent::tearDown();
     }
