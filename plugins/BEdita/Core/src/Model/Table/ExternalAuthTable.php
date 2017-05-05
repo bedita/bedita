@@ -132,11 +132,9 @@ class ExternalAuthTable extends Table
                     ->set('created_by', 1)
                     ->set('modified_by', 1);
             }
-            if (!$this->Users->save($user, ['atomic' => false])) {
-                return false;
-            }
+            $user = $this->Users->saveOrFail($user, ['atomic' => false]);
             if ($selfCreated) {
-                $this->Users->save(
+                $user = $this->Users->saveOrFail(
                     $user
                         ->set('created_by', $user->id)
                         ->set('modified_by', $user->id),

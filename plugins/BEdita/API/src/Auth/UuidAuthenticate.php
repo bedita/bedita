@@ -38,6 +38,8 @@ class UuidAuthenticate extends BaseAuthenticate
      * Default config for this object.
      *
      * - `authProvider` The AuthProvider entity associated to this authentication component.
+     * - `header` The header where the token is stored. Defaults to `'Authorization'`.
+     * - `headerPrefix` The prefix to the token in header. Defaults to `'UUID'`.
      * - `fields` The fields to use to identify a user by.
      * - `userModel` The alias for users table, defaults to Users.
      * - `finder` The finder method to use to fetch user record. Defaults to 'all'.
@@ -49,12 +51,13 @@ class UuidAuthenticate extends BaseAuthenticate
      *    config to the class. Defaults to 'Default'.
      * - Options `scope` and `contain` have been deprecated since 3.1. Use custom
      *   finder instead to modify the query to fetch user record.
-     * - `header` Where to retrieve a user's token.
      *
      * @var array
      */
     protected $_defaultConfig = [
         'authProvider' => null,
+        'header' => 'Authorization',
+        'headerPrefix' => 'UUID',
         'fields' => [
             'username' => 'provider_username',
         ],
@@ -63,11 +66,6 @@ class UuidAuthenticate extends BaseAuthenticate
         'finder' => 'all',
         'contain' => null,
         'passwordHasher' => 'Default',
-        'header' => [
-            'name' => 'Authorization',
-            'prefix' => 'UUID ',
-        ],
-        'message' => 'Missing or invalid token',
     ];
 
     /**
@@ -121,12 +119,12 @@ class UuidAuthenticate extends BaseAuthenticate
      */
     public function getToken(ServerRequest $request)
     {
-        $header = $request->getHeaderLine($this->_config['header']['name']);
+        $header = $request->getHeaderLine($this->_config['header']);
         if (!$header) {
             return false;
         }
 
-        $prefix = $this->_config['header']['prefix'];
+        $prefix = $this->_config['headerPrefix'] . ' ';
         if (strpos($header, $prefix) !== 0) {
             return false;
         }
@@ -144,6 +142,7 @@ class UuidAuthenticate extends BaseAuthenticate
      */
     public function unauthenticated(ServerRequest $request, Response $response)
     {
-        throw new UnauthorizedException($this->_config['message']);
+        $message = $this->_registry->getController()->Auth->getConfig('authError');
+        throw new UnauthorizedException($message);
     }
 }

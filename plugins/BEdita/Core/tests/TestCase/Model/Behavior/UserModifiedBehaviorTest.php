@@ -36,6 +36,8 @@ class UserModifiedBehaviorTest extends TestCase
         'plugin.BEdita/Core.relations',
         'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
     ];
 
     /**
@@ -150,6 +152,29 @@ class UserModifiedBehaviorTest extends TestCase
     }
 
     /**
+     * Test handling of events.
+     *
+     * @return void
+     *
+     * @expectedException \UnexpectedValueException
+     * @expectedExceptionMessage When should be one of "always", "new" or "existing". The passed value "sometimes" is invalid
+     * @covers ::handleEvent()
+     * @covers ::updateField()
+     */
+    public function testHandleEventFailure()
+    {
+        $this->Objects->behaviors()->get('UserModified')->setConfig('events', [
+            'Model.beforeSave' => [
+                'modified_by' => 'sometimes',
+            ],
+        ], false);
+
+        $object = $this->Objects->newEntity();
+        $object->type = 'documents';
+        $this->Objects->save($object);
+    }
+
+    /**
      * Test "touch" of an entity.
      *
      * @param \BEdita\Core\Model\Entity\ObjectEntity $object
@@ -166,5 +191,45 @@ class UserModifiedBehaviorTest extends TestCase
 
         static::assertSame(LoggedUser::id(), $object->created_by);
         static::assertSame(99, $object->modified_by);
+    }
+
+    /**
+     * Test "touch" of an entity with an unknown event.
+     *
+     * @return void
+     *
+     * @depends testHandleEvent
+     * @covers ::touchUser()
+     * @covers ::updateField()
+     */
+    public function testTouchUserUnknownEvent()
+    {
+        $object = $this->Objects->get(1);
+
+        $this->Objects->userId(99);
+        $this->Objects->touchUser($object, 'UnknownEvent');
+
+        static::assertSame(1, $object->created_by);
+        static::assertSame(1, $object->modified_by);
+    }
+
+    /**
+     * Test "touch" of an entity when one of the fields is dirty already.
+     *
+     * @return void
+     *
+     * @depends testHandleEvent
+     * @covers ::touchUser()
+     * @covers ::updateField()
+     */
+    public function testTouchUserDirtyField()
+    {
+        $object = $this->Objects->newEntity();
+        $object->type = 'documents';
+        $object->created_by = 5;
+        $this->Objects->saveOrFail($object);
+
+        static::assertSame(5, $object->created_by);
+        static::assertSame(1, $object->modified_by);
     }
 }
