@@ -27,7 +27,7 @@ cache:
 env:
   matrix:
     - "DB=sqlite db_dsn='sqlite:///tmp/test.sql'"
-    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://travis:@0.0.0.0/bedita_test'"
+    - "DB=mysql DB_VERSION=5.7 db_dsn='mysql://root@127.0.0.1/bedita_test'"
     - "DB=pgsql DB_VERSION=9.6 db_dsn='postgres://postgres@127.0.0.1/bedita_test'"
   global:
     - RUN_TESTS=1
@@ -37,7 +37,7 @@ matrix:
 
   include:
     - php: 7.1
-      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://travis:@0.0.0.0/bedita_test'"
+      env: "DB=mysql DB_VERSION=5.6 db_dsn='mysql://root@127.0.0.1/bedita_test'"
       services:
         - memcached
         - mysql
@@ -63,7 +63,7 @@ before_script:
   - if [ -n "$GH_TOKEN" ]; then composer config github-oauth.github.com ${GH_TOKEN}; fi
   - composer install --prefer-dist --no-interaction
 
-  - if [ "$DB" = 'mysql' ]; then mysql -e 'CREATE DATABASE bedita_test;'; fi
+  - if [ "$DB" = 'mysql' ]; then mysql -u root -e 'CREATE DATABASE bedita_test;'; fi
   - if [ "$DB" = 'pgsql' ]; then psql -c 'CREATE DATABASE bedita_test;' -U postgres; fi
 
   - |
