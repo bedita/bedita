@@ -48,6 +48,8 @@ abstract class ShellTestCase extends TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function setUp()
     {
@@ -59,6 +61,8 @@ abstract class ShellTestCase extends TestCase
 
     /**
      * {@inheritDoc}
+     *
+     * @codeCoverageIgnore
      */
     public function tearDown()
     {
@@ -96,7 +100,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertOutputEquals($expected, $message = '')
     {
-        $this->assertEquals($expected, $this->getOutput(), $message);
+        static::assertEquals($expected, $this->getOutput(), $message);
     }
 
     /**
@@ -108,7 +112,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertOutputContains($needle, $message = '')
     {
-        $this->assertContains($needle, $this->getOutput(), $message);
+        static::assertContains($needle, $this->getOutput(), $message);
     }
 
     /**
@@ -120,7 +124,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertErrorEquals($expected, $message = '')
     {
-        $this->assertEquals($expected, $this->getError(), $message);
+        static::assertEquals($expected, $this->getError(), $message);
     }
 
     /**
@@ -132,7 +136,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertErrorContains($needle, $message = '')
     {
-        $this->assertContains($needle, $this->getError(), $message);
+        static::assertContains($needle, $this->getError(), $message);
     }
 
     /**
@@ -143,7 +147,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertAborted($message = '')
     {
-        $this->assertTrue($this->aborted, $message);
+        static::assertTrue($this->aborted, $message);
     }
 
     /**
@@ -154,7 +158,7 @@ abstract class ShellTestCase extends TestCase
      */
     protected function assertNotAborted($message = '')
     {
-        $this->assertFalse($this->aborted, $message);
+        static::assertFalse($this->aborted, $message);
     }
 
     /**

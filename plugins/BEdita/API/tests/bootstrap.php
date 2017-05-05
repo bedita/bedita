@@ -21,6 +21,9 @@ require_once 'vendor/autoload.php';
 define('ROOT', $root . DS . 'tests' . DS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
 define('TMP', sys_get_temp_dir() . DS);
+if (!defined('API_KEY')) {
+    define('API_KEY', 'API_KEY');
+}
 Configure::write('debug', true);
 Configure::write('App', [
     'namespace' => 'App',
@@ -32,7 +35,7 @@ Configure::write('App', [
 if (!getenv('db_dsn')) {
     putenv('db_dsn=sqlite:///:memory:');
 }
-ConnectionManager::config('test', ['url' => getenv('db_dsn')]);
+ConnectionManager::setConfig('test', ['url' => getenv('db_dsn')]);
 Plugin::load('BEdita/API', [
     'path' => dirname(dirname(__FILE__)) . DS,
 ]);

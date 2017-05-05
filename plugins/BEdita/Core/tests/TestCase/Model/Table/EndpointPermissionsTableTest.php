@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\EndpointPermissionsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -78,16 +77,16 @@ class EndpointPermissionsTableTest extends TestCase
     public function testInitialize()
     {
         $this->EndpointPermissions->initialize([]);
-        $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->table());
-        $this->assertEquals('id', $this->EndpointPermissions->primaryKey());
-        $this->assertEquals('id', $this->EndpointPermissions->displayField());
+        $this->assertEquals('endpoint_permissions', $this->EndpointPermissions->getTable());
+        $this->assertEquals('id', $this->EndpointPermissions->getPrimaryKey());
+        $this->assertEquals('id', $this->EndpointPermissions->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Endpoints);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointsTable', $this->EndpointPermissions->Endpoints->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointsTable', $this->EndpointPermissions->Endpoints->getTarget());
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Applications);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\ApplicationsTable', $this->EndpointPermissions->Applications->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\ApplicationsTable', $this->EndpointPermissions->Applications->getTarget());
         $this->assertInstanceOf('\Cake\ORM\Association\belongsTo', $this->EndpointPermissions->Roles);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\RolesTable', $this->EndpointPermissions->Roles->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\RolesTable', $this->EndpointPermissions->Roles->getTarget());
     }
 
     /**
@@ -193,5 +192,166 @@ class EndpointPermissionsTableTest extends TestCase
         $endpointPermission = $this->EndpointPermissions->newEntity($data, ['validate' => false]);
         $success = $this->EndpointPermissions->save($endpointPermission);
         $this->assertEquals($expected, (bool)$success, print_r($endpointPermission->errors(), true));
+    }
+
+    /**
+     * Data provider for `testFindByEndpoint` test case.
+     *
+     * @return array
+     */
+    public function findByEndpointProvider()
+    {
+        return [
+            'auth' => [
+                3,
+                1,
+            ],
+            'home' => [
+                4,
+                2,
+            ],
+            'null' => [
+                2,
+                '',
+            ],
+            'auth,home' => [
+                5,
+                [1, 2],
+            ],
+            'auth (strict)' => [
+                1,
+                1,
+                true,
+            ],
+            'empty (strict)' => [
+                0,
+                '',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by endpoint ID.
+     *
+     * @param int $expected Expected count.
+     * @param array|int $endpointIds Endpoint id(s).
+     * @param bool $strict Is strict mode enabled?
+     * @return void
+     *
+     * @covers ::findByEndpoint()
+     * @dataProvider findByEndpointProvider()
+     */
+    public function testFindByEndpoint($expected, $endpointIds, $strict = false)
+    {
+        $count = $this->EndpointPermissions->find('byEndpoint', compact('endpointIds', 'strict'))->count();
+
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindByApplication` test case.
+     *
+     * @return array
+     */
+    public function findByApplicationProvider()
+    {
+        return [
+            'application one' => [
+                2,
+                1,
+            ],
+            'application two' => [
+                4,
+                2,
+            ],
+            'null' => [
+                1,
+                '',
+            ],
+            'application one (strict)' => [
+                1,
+                1,
+                true,
+            ],
+            'empty (strict)' => [
+                0,
+                '',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by application ID.
+     *
+     * @param int $expected Expected count.
+     * @param int $applicationId Application id.
+     * @param bool $strict Is strict mode enabled?
+     * @return void
+     *
+     * @covers ::findByApplication()
+     * @dataProvider findByApplicationProvider()
+     */
+    public function testFindByApplication($expected, $applicationId, $strict = false)
+    {
+        $count = $this->EndpointPermissions->find('byApplication', compact('applicationId', 'strict'))->count();
+
+        static::assertSame($expected, $count);
+    }
+
+    /**
+     * Data provider for `testFindByRole` test case.
+     *
+     * @return array
+     */
+    public function findByRoleProvider()
+    {
+        return [
+            'first' => [
+                4,
+                1,
+            ],
+            'second' => [
+                4,
+                2,
+            ],
+            'null' => [
+                3,
+                '',
+            ],
+            'first,second' => [
+                5,
+                [1, 2],
+            ],
+            'first (strict)' => [
+                1,
+                1,
+                true,
+            ],
+            'empty (strict)' => [
+                0,
+                '',
+                true,
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by role ID.
+     *
+     * @param int $expected Expected count.
+     * @param array|int $roleIds Role id(s).
+     * @param bool $strict Is strict mode enabled?
+     * @return void
+     *
+     * @covers ::findByRole()
+     * @dataProvider findByRoleProvider()
+     */
+    public function testFindByRole($expected, $roleIds, $strict = false)
+    {
+        $count = $this->EndpointPermissions->find('byRole', compact('roleIds', 'strict'))->count();
+
+        static::assertSame($expected, $count);
     }
 }

@@ -26,7 +26,7 @@ if (php_sapi_name() === 'cli-server') {
 }
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-use BEdita\Manage\Application;
+use BEdita\App\Application;
 use Cake\Http\Server;
 
 // Bind your application to the server.

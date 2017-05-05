@@ -53,9 +53,9 @@ class AppController extends Controller
             throw new ForbiddenException('No valid API KEY found');
         }
 
-        $this->response->header('X-BEdita-Version', Configure::read('BEdita.version'));
+        $this->response = $this->response->withHeader('X-BEdita-Version', Configure::read('BEdita.version'));
 
-        $this->loadComponent('BEdita/API.Paginator');
+        $this->loadComponent('BEdita/API.Paginator', (array)Configure::read('Pagination'));
 
         $this->loadComponent('RequestHandler');
         if ($this->request->is(['json', 'jsonapi'])) {
@@ -64,26 +64,27 @@ class AppController extends Controller
                 'checkMediaType' => $this->request->is('jsonapi'),
             ]);
 
-            $this->RequestHandler->config('inputTypeMap.json', [[$this->JsonApi, 'parseInput']], false);
-            $this->RequestHandler->config('viewClassMap.json', 'BEdita/API.JsonApi');
+            $this->RequestHandler->setConfig('inputTypeMap.json', [[$this->JsonApi, 'parseInput']], false);
+            $this->RequestHandler->setConfig('viewClassMap.json', 'BEdita/API.JsonApi');
         }
 
         $this->loadComponent('Auth', [
-            'authenticate' => ['BEdita/API.Jwt'],
+            'authenticate' => ['BEdita/API.Jwt', 'BEdita/API.Anonymous'],
+            'authorize' => [
+                'BEdita/API.Endpoint' => [
+                    'disallowAnonymousApplications' => Configure::read('Security.disallowAnonymousApplications'),
+                ],
+            ],
             'loginAction' => ['_name' => 'api:login'],
             'loginRedirect' => ['_name' => 'api:login'],
             'unauthorizedRedirect' => false,
             'storage' => 'Memory',
         ]);
-        $this->Auth->allow();
-        if ($this->name !== 'Login') {
-            LoggedUser::setUser($this->Auth->identify());
-        }
 
         if (empty(Router::fullBaseUrl())) {
             Router::fullBaseUrl(
                 rtrim(
-                    sprintf('%s://%s/%s', $this->request->scheme(), $this->request->host(), $this->request->base),
+                    sprintf('%s://%s/%s', $this->request->scheme(), $this->request->host(), $this->request->getAttribute('base')),
                     '/'
                 )
             );
@@ -130,13 +131,13 @@ class AppController extends Controller
     {
         $apiKeys = Configure::read('ApiKeys');
         if (!empty($apiKeys)) {
-            $requestKey = $this->request->header('X-Api-Key');
+            $requestKey = $this->request->getHeaderLine('X-Api-Key');
             if (!$requestKey || !isset($apiKeys[$requestKey])) {
                 return false;
             }
             $key = $apiKeys[$requestKey];
             if (!empty($key['origin']) && $key['origin'] !== '*' &&
-                $key['origin'] !== $this->request->header('Origin')) {
+                $key['origin'] !== $this->request->getHeaderLine('Origin')) {
                 return false;
             }
         }
@@ -153,8 +154,8 @@ class AppController extends Controller
     protected function html()
     {
         $this->request->allowMethod('get');
-        $method = $this->request->method();
-        $url = $this->request->here();
+        $method = $this->request->getMethod();
+        $url = $this->request->getRequestTarget();
 
         $viewBuilder = $this->viewBuilder();
 
@@ -163,9 +164,9 @@ class AppController extends Controller
             $this->request->env('HTTP_ACCEPT', 'application/json');
             $this->loadComponent('BEdita/API.JsonApi');
 
-            $viewBuilder->className('BEdita/API.JsonApi');
+            $viewBuilder->setClassName('BEdita/API.JsonApi');
             $this->invokeAction();
-            $responseBody = $this->render()->body();
+            $responseBody = (string)$this->render()->getBody();
 
             $this->dispatchEvent('Controller.shutdown');
             $dispatcher = DispatcherFactory::create();
@@ -177,34 +178,21 @@ class AppController extends Controller
 
             $this->components()->unload('JsonApi');
             unset($this->JsonApi);
-            $viewBuilder->template('Common/html');
+            $viewBuilder->setTemplate('Common/html');
         } catch (\Exception $exception) {
             $renderer = new ExceptionRenderer($exception);
             $response = $renderer->render();
-            $responseBody = $response->body();
-            $this->response->statusCode($response->statusCode());
-            $viewBuilder->template('Error/error');
+            $responseBody = (string)$response->getBody();
+            $this->response = $this->response->withStatus($response->getStatusCode());
+            $viewBuilder->setTemplate('Error/error');
         }
 
         $this->set(compact('method', 'responseBody', 'url'));
 
         // render HTML
-        $viewBuilder->className('View');
+        $viewBuilder->setClassName('View');
         $this->response->type('html');
 
         return $this->render();
-    }
-
-    /**
-     * Send a 204 No Content response with empty body.
-     *
-     * @return void
-     */
-    protected function noContentResponse()
-    {
-        $this->autoRender = false;
-        $this->response->header('Content-Type: ' . $this->request->contentType());
-        $this->response->statusCode(204);
-        $this->response->send();
     }
 }

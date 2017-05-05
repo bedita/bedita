@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Behavior;
 
+use ArrayObject;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
 use Cake\ORM\Behavior;
@@ -54,14 +55,12 @@ class UniqueNameBehavior extends Behavior
      */
     public function uniqueName(EntityInterface $entity)
     {
-        $config = $this->config();
         $uname = $entity->get('uname');
         if (empty($uname)) {
-            $uname = $this->generateUniqueName($entity, $config, false);
+            $uname = $this->generateUniqueName($entity);
         }
-        $id = !(empty($entity->get('id'))) ? $entity->get('id') : null;
-        while ($this->uniqueNameExists($uname, $id)) {
-            $uname = $this->generateUniqueName($entity, $config, true);
+        while ($this->uniqueNameExists($uname, $entity->get('id'))) {
+            $uname = $this->generateUniqueName($entity, [], true);
         }
 
         $entity->set('uname', $uname);
@@ -76,10 +75,31 @@ class UniqueNameBehavior extends Behavior
      * @param bool $regenerate if true it adds hash string to uname
      * @return string uname
      */
-    public function generateUniqueName(EntityInterface $entity, array $cfg, $regenerate = false)
+    public function generateUniqueName(EntityInterface $entity, array $cfg = [], $regenerate = false)
     {
-        $config = array_merge($this->config(), $cfg);
-        $uname = $config['prefix'] . Text::slug($entity->get($config['sourceField']), $config['replacement']);
+        $field = !empty($cfg['sourceField']) ? $cfg['sourceField'] : $this->getConfig('sourceField');
+        $fieldValue = $entity->get($field);
+        if (empty($fieldValue)) {
+            $fieldValue = (string)$entity->get('type');
+            $regenerate = true;
+        }
+
+        return $this->uniqueNameFromValue($fieldValue, $cfg, $regenerate);
+    }
+
+    /**
+     * Generate unique name string from $config parameters.
+     * If $regenerate parameter is true, random hash is added to uname string.
+     *
+     * @param string $value String to use in unique name creation
+     * @param array $cfg parameters to create unique name
+     * @param bool $regenerate if true it adds hash string to uname
+     * @return string uname
+     */
+    public function uniqueNameFromValue($value, array $cfg = [], $regenerate = false)
+    {
+        $config = array_merge($this->getConfig(), $cfg);
+        $uname = $config['prefix'] . Text::slug($value, $config['replacement']);
         if ($regenerate) {
             $hash = Text::uuid();
             $hash = str_replace('-', '', $hash);

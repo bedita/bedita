@@ -25,10 +25,6 @@ use Cake\TestSuite\TestCase;
  */
 class PaginatorComponentTest extends TestCase
 {
-    /**
-     * {@inheritDoc}
-     */
-    public $autoFixtures = false;
 
     /**
      * Fixtures.
@@ -36,6 +32,9 @@ class PaginatorComponentTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.roles',
     ];
 
@@ -127,7 +126,7 @@ class PaginatorComponentTest extends TestCase
         $request = new Request(compact('query'));
         $component = new PaginatorComponent(new ComponentRegistry(new Controller($request)), []);
         if ($whitelist) {
-            $component->config('whitelist', $whitelist, false);
+            $component->setConfig('whitelist', $whitelist, false);
         }
 
         $options = $component->mergeOptions($alias, $settings);
@@ -180,10 +179,8 @@ class PaginatorComponentTest extends TestCase
      */
     public function testValidateSort($expected, $sort = null)
     {
-        $this->loadFixtures('Roles');
-
         if ($expected === false) {
-            $this->setExpectedException('Cake\Network\Exception\BadRequestException');
+            $this->expectException('Cake\Network\Exception\BadRequestException');
         }
 
         $request = new Request(['query' => compact('sort')]);

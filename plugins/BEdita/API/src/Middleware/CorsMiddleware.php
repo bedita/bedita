@@ -62,7 +62,6 @@ class CorsMiddleware
      *
      * @see self::corsConfig
      * @param array|null $corsConfig CORS configuration
-     * @return void
      */
     public function __construct($corsConfig = null)
     {
@@ -97,13 +96,12 @@ class CorsMiddleware
             if ($request->getMethod() == 'OPTIONS') {
                 return $this->preflight($request, $response);
             }
-
             $response = $this->buildCors($request, $response);
-
-            return $next($request, $response);
         } catch (\Exception $e) {
             return $response->withStatus($e->getCode());
         }
+
+        return $next($request, $response);
     }
 
     /**

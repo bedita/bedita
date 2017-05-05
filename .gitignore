@@ -2,6 +2,7 @@
 #################################################
 /.vagrant/*
 /composer.lock
+/composer.local.json
 /config/app.php
 /coverage/*
 /docs/*
@@ -9,14 +10,14 @@
 /logs/*
 !/logs/.gitkeep
 /phpunit.xml
-/provision/roles/*
-!/provision/roles/.gitkeep
+/provision/*
 /tmp/*
 !/tmp/.gitkeep
+/Vagrantfile
 /vendor/*
 !/vendor/.gitkeep
 
-# BEdita plugins floders #
+# BEdita plugins folders #
 ##########################
 /plugins/*
 !/plugins/BEdita

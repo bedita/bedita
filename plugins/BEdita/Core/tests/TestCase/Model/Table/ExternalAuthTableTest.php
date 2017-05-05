@@ -38,6 +38,8 @@ class ExternalAuthTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -74,11 +76,11 @@ class ExternalAuthTableTest extends TestCase
     public function testInitialization()
     {
         $this->ExternalAuth->initialize([]);
-        $schema = $this->ExternalAuth->schema();
+        $schema = $this->ExternalAuth->getSchema();
 
-        $this->assertEquals('external_auth', $this->ExternalAuth->table());
-        $this->assertEquals('id', $this->ExternalAuth->primaryKey());
-        $this->assertEquals('id', $this->ExternalAuth->displayField());
+        $this->assertEquals('external_auth', $this->ExternalAuth->getTable());
+        $this->assertEquals('id', $this->ExternalAuth->getPrimaryKey());
+        $this->assertEquals('id', $this->ExternalAuth->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->AuthProviders);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsTo', $this->ExternalAuth->Users);

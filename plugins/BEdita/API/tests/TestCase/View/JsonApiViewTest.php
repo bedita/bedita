@@ -16,6 +16,8 @@ namespace BEdita\API\Test\TestCase\View;
 use Cake\Controller\Controller;
 use Cake\Network\Request;
 use Cake\Network\Response;
+use Cake\ORM\Table;
+use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -23,6 +25,48 @@ use Cake\TestSuite\TestCase;
  */
 class JsonApiViewTest extends TestCase
 {
+    /**
+     * Test subject
+     *
+     * @var \BEdita\Core\Model\Table\RolesTable
+     */
+    public $Roles;
+
+    /**
+     * Fixtures.
+     *
+     * @var array
+     */
+    public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
+    ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->Roles = TableRegistry::get('Roles');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function tearDown()
+    {
+        unset($this->Roles);
+
+        parent::tearDown();
+    }
 
     /**
      * Data provider for `testRenderWithoutView` test case.
@@ -32,24 +76,36 @@ class JsonApiViewTest extends TestCase
     public function renderWithoutViewProvider()
     {
         return [
-            'dataType' => [
+            'data' => [
                 json_encode([
                     'data' => [
                         'id' => '1',
-                        'type' => 'myType',
+                        'type' => 'roles',
                         'attributes' => [
-                            'myAttribute' => 'myValue',
+                            'name' => 'first role',
+                            'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
+                            'unchangeable' => true,
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
+                        ],
+                        'relationships' => [
+                            'users' => [
+                                'links' => [
+                                    'self' => '/roles/1/relationships/users',
+                                    'related' => '/roles/1/users',
+                                ],
+                            ],
                         ],
                     ],
                 ]),
-                [
-                    '_type' => 'myType',
-                    'object' => [
-                        'id' => 1,
-                        'myAttribute' => 'myValue',
-                    ],
-                    '_serialize' => true,
-                ],
+                function (Table $Table) {
+                    return [
+                        'object' => $Table->get(1),
+                        '_serialize' => true,
+                    ];
+                },
             ],
             'dataLinks' => [
                 json_encode([
@@ -58,23 +114,35 @@ class JsonApiViewTest extends TestCase
                     ],
                     'data' => [
                         'id' => '1',
-                        'type' => 'myType',
+                        'type' => 'roles',
                         'attributes' => [
-                            'myAttribute' => 'myValue',
+                            'name' => 'first role',
+                            'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
+                            'unchangeable' => true,
+                            'created' => '2016-04-15T09:57:38+00:00',
+                            'modified' => '2016-04-15T09:57:38+00:00',
+                        ],
+                        'relationships' => [
+                            'users' => [
+                                'links' => [
+                                    'self' => '/roles/1/relationships/users',
+                                    'related' => '/roles/1/users',
+                                ],
+                            ],
                         ],
                     ],
                 ]),
-                [
-                    'object' => [
-                        'id' => 1,
-                        'type' => 'myType',
-                        'myAttribute' => 'myValue',
-                    ],
-                    '_links' => [
-                        'self' => 'http://example.com/objects/1',
-                    ],
-                    '_serialize' => true,
-                ],
+                function (Table $Table) {
+                    return [
+                        'object' => $Table->get(1),
+                        '_links' => [
+                            'self' => 'http://example.com/objects/1',
+                        ],
+                        '_serialize' => true,
+                    ];
+                },
             ],
             'linksMeta' => [
                 json_encode([
@@ -151,14 +219,18 @@ class JsonApiViewTest extends TestCase
      *
      * @dataProvider renderWithoutViewProvider
      */
-    public function testRenderWithoutView($expected, array $data)
+    public function testRenderWithoutView($expected, $data)
     {
+        if (is_callable($data)) {
+            $data = $data($this->Roles);
+        }
+
         $Controller = new Controller(new Request(), new Response());
         $Controller->set($data);
-        $Controller->viewBuilder()->className('BEdita/API.JsonApi');
+        $Controller->viewBuilder()->setClassName('BEdita/API.JsonApi');
 
         $result = $Controller->createView()->render(false);
 
-        $this->assertJsonStringEqualsJsonString($expected, $result);
+        static::assertJsonStringEqualsJsonString($expected, $result);
     }
 }

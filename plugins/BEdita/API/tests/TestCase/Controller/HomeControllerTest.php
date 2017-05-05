@@ -12,23 +12,13 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\TestSuite\IntegrationTestCase;
+use BEdita\API\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\HomeController
  */
 class HomeControllerTest extends IntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types'
-    ];
-
     /**
      * Test index method.
      *
@@ -125,6 +115,38 @@ class HomeControllerTest extends IntegrationTestCase
                             ]
                         ],
                     ],
+                    '/locations' => [
+                        'href' => 'http://api.example.com/locations',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Locations',
+                                'color' => '#cc324f'
+                            ]
+                        ],
+                    ],
+                    '/events' => [
+                        'href' => 'http://api.example.com/events',
+                        'hints' => [
+                            'allow' => [
+                                'GET', 'POST', 'PATCH', 'DELETE'
+                            ],
+                            'formats' => [
+                                'application/json',
+                                'application/vnd.api+json'
+                            ],
+                            'display' => [
+                                'label' => 'Events',
+                                'color' => '#44d1ab'
+                            ]
+                        ],
+                    ],
                     '/roles' => [
                         'href' => 'http://api.example.com/roles',
                         'hints' => [
@@ -193,14 +215,9 @@ class HomeControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/home');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');

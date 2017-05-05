@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\Model\Behavior\DataCleanupBehavior;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -32,13 +31,15 @@ class DataCleanupBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
 
     /**
-     * Data provider for `testUnique` test case.
+     * Data provider for `testDataCleanup` test case.
      *
      * @return array
      */
@@ -81,15 +82,18 @@ class DataCleanupBehaviorTest extends TestCase
     /**
      * testDataCleanup method
      *
+     * @param array $inputData Input data.
+     * @param array $expected Expected result.
      * @return void
      *
      * @dataProvider cleanupProvider
+     * @covers ::beforeMarshal()
      */
-    public function testDataCleanup($inputData, $expected)
+    public function testDataCleanup(array $inputData, array $expected)
     {
-        $this->Users = TableRegistry::get('Users');
+        $Users = TableRegistry::get('Users');
 
-        $user = $this->Users->newEntity($inputData);
+        $user = $Users->newEntity($inputData);
         foreach ($expected as $k => $v) {
             $this->assertEquals($user[$k], $v);
         }

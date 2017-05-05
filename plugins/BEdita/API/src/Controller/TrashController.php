@@ -12,7 +12,9 @@
  */
 namespace BEdita\API\Controller;
 
+use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
+use Cake\Network\Exception\InternalErrorException;
 
 /**
  * Controller for `/trash` endpoint.
@@ -27,16 +29,6 @@ class TrashController extends AppController
      * {@inheritDoc}
      */
     public $modelClass = 'Objects';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function initialize()
-    {
-        parent::initialize();
-
-        $this->set('_type', 'trash');
-    }
 
     /**
      * Paginated objects list.
@@ -76,16 +68,16 @@ class TrashController extends AppController
      * Restore object, remove from trashcan
      *
      * @param int $id Object ID.
-     * @return void
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
      *      the object ID in the URL.
-     * @throws BeditaBadRequestException Throws an exception if an error occurs during restore.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during restore.
      */
     public function restore($id)
     {
         $this->request->allowMethod('patch');
 
-        if ($this->request->data('id') != $id) {
+        if ($this->request->getData('id') != $id) {
             throw new ConflictException('IDs don\' match');
         }
 
@@ -93,24 +85,25 @@ class TrashController extends AppController
             'conditions' => ['deleted' => 1]
         ]);
         if (empty($trash)) {
-            throw new BeditaBadRequestException('Object ' . $id . ' not found in trash');
+            throw new BadRequestException('Object ' . $id . ' not found in trash');
         }
 
         $trash->deleted = false;
         if (!$this->Objects->save($trash)) {
-            throw new BeditaBadRequestException('Could not restore object');
+            throw new BadRequestException('Could not restore object');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withStatus(204);
     }
 
     /**
      * Delete object, remove from trashcan
      *
      * @param int $id Object ID.
-     * @return void
+     * @return \Cake\Http\Response
      * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
-     * @throws BeditaBadRequestException Throws an exception if an error occurs during delete.
+     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if an error occurs during delete.
      */
     public function delete($id)
     {
@@ -118,20 +111,21 @@ class TrashController extends AppController
 
         $trash = $this->Objects->get($id);
         if (empty($trash)) {
-            throw new BeditaBadRequestException('Object ' . $id . ' not found');
+            throw new BadRequestException('Object ' . $id . ' not found');
         }
 
         $trash = $this->Objects->get($id, [
             'conditions' => ['deleted' => 1]
         ]);
         if (empty($trash)) {
-            throw new BeditaBadRequestException('Object ' . $id . ' not found in trash');
+            throw new BadRequestException('Object ' . $id . ' not found in trash');
         }
 
         if (!$this->Objects->delete($trash)) {
             throw new InternalErrorException('Could not delete object');
         }
 
-        $this->noContentResponse();
+        return $this->response
+            ->withStatus(204);
     }
 }

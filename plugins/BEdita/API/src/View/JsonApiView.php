@@ -31,29 +31,30 @@ class JsonApiView extends JsonView
     /**
      * {@inheritDoc}
      */
-    protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta', '_type'];
+    protected $_specialVars = ['_serialize', '_jsonOptions', '_jsonp', '_error', '_links', '_meta'];
 
     /**
      * {@inheritDoc}
      */
     protected function _dataToSerialize($serialize = true)
     {
-        $type = null;
         if (empty($this->viewVars['_error'])) {
-            if (!empty($this->viewVars['_type'])) {
-                $type = $this->viewVars['_type'];
-            }
-
             $data = parent::_dataToSerialize($serialize) ?: [];
-            $options = [];
-            if (isset($this->viewVars['_allowedAssociations'])) {
-                $options['allowedAssociations'] = $this->viewVars['_allowedAssociations'];
-            }
             if ($data) {
-                $data = JsonApi::formatData(reset($data), $type, $options);
+                $included = [];
+                $data = JsonApi::formatData(reset($data), $included);
+            }
+            if (empty($included)) {
+                unset($included);
+            } else {
+                $included = JsonApi::formatData($included);
             }
         } else {
             $error = $this->viewVars['_error'];
+        }
+
+        if (!empty($error['status'])) {
+            $error['status'] = (string)$error['status'];
         }
 
         if (!empty($this->viewVars['_links'])) {
@@ -68,6 +69,6 @@ class JsonApiView extends JsonView
             unset($data);
         }
 
-        return compact('error', 'data', 'links', 'meta');
+        return compact('error', 'data', 'links', 'meta', 'included');
     }
 }

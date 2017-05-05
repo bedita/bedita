@@ -1,23 +1,18 @@
 <?php
 
 use BEdita\Core\Configure\Engine\DatabaseConfig;
+use BEdita\Core\Database\Type\DateTimeType;
 use BEdita\Core\ORM\Locator\TableLocator;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\Core\Configure;
 use Cake\Core\Configure\Engine\IniConfig;
+use Cake\Database\Type;
 use Cake\ORM\TableRegistry;
 
 /**
  * Plug table locator.
  */
 TableRegistry::locator(new TableLocator());
-
-/**
- * Default user iwth id = 1 for unit tests
- */
-if (defined('UNIT_TEST_RUN')) {
-    LoggedUser::setUser(['id' => 1]);
-}
 
 /**
  * Load 'core' configuration parameters
@@ -33,4 +28,11 @@ if (!defined('UNIT_TEST_RUN') && (PHP_SAPI !== 'cli')) {
 if (!Configure::configured('ini')) {
     Configure::config('ini', new IniConfig());
 }
+
+/**
+ * Use custom DateTimeType
+ */
+Type::set('datetime', new DateTimeType());
+Type::set('timestamp', new DateTimeType());
+
 Configure::load('BEdita/Core.bedita', 'ini');

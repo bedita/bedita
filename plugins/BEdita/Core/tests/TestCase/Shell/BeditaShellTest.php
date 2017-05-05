@@ -11,7 +11,7 @@ use Cake\ORM\TableRegistry;
 /**
  * \BEdita\Core\Shell\BeditaShell Test Case
  *
- * @coversDefaultClass \BEdita\Core\Shell\BeditaShell
+ * @covers \BEdita\Core\Shell\BeditaShell
  */
 class BeditaShellTest extends ShellTestCase
 {
@@ -32,7 +32,7 @@ class BeditaShellTest extends ShellTestCase
 
         $this->fixtureManager->shutDown();
 
-        ConnectionManager::config(static::CONNECTION_NAME, $this->fakeDbParams());
+        ConnectionManager::setConfig(static::CONNECTION_NAME, $this->fakeDbParams());
         ConnectionManager::alias(static::CONNECTION_NAME, 'default');
     }
 
@@ -45,10 +45,10 @@ class BeditaShellTest extends ShellTestCase
         if ($defaultConnection instanceof Connection && $defaultConnection->isConnected()) {
             $defaultConnection
                 ->disableConstraints(function (Connection $connection) {
-                    $tables = $connection->schemaCollection()->listTables();
+                    $tables = $connection->getSchemaCollection()->listTables();
 
                     foreach ($tables as $table) {
-                        $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                        $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                         foreach ($sql as $query) {
                             $connection->query($query);
                         }
@@ -78,7 +78,7 @@ class BeditaShellTest extends ShellTestCase
             'password' => '__BE4_DB_PASSWORD__',
             'database' => '__BE4_DB_DATABASE__',
         ];
-        $fakeParams = array_merge(ConnectionManager::get('default', false)->config(), $fakeParams);
+        $fakeParams = array_merge(ConnectionManager::get('test', false)->config(), $fakeParams);
 
         return $fakeParams;
     }
@@ -207,6 +207,7 @@ class BeditaShellTest extends ShellTestCase
     public function testFake2()
     {
         $config = ConnectionManager::get('test', false)->config();
+        $driver = str_replace('Cake\Database\Driver\\', '', $config['driver']);
         if (strstr($config['driver'], 'Sqlite') !== false) {
             $this->markTestSkipped('Initial setup does not yet support SQLite');
         }
@@ -220,7 +221,7 @@ class BeditaShellTest extends ShellTestCase
 
         $map = [
             ['Host?', 'localhost', $config['host']],
-            ['Port?', '3306', $fakeParams['port']],
+            ['Port?', ($driver === 'Mysql') ? '3306' : '5432', $fakeParams['port']],
             ['Database?', null, $fakeParams['database']],
             ['Username?', null, $fakeParams['username']],
             ['Password?', null, $fakeParams['password']],
@@ -232,6 +233,7 @@ class BeditaShellTest extends ShellTestCase
         $this->assertFalse($res);
 
         $mapChoice = [
+            ['Driver?', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql', $driver],
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
         ];
         $io->method('askChoice')
@@ -286,6 +288,7 @@ class BeditaShellTest extends ShellTestCase
     public function testFake3($success, callable $callback)
     {
         $config = ConnectionManager::get('test', false)->config();
+        $driver = str_replace('Cake\Database\Driver\\', '', $config['driver']);
         if (strstr($config['driver'], 'Mysql') === false) {
             $this->markTestSkipped('Initial setup does not yet support SQLite nor PostgreSQL');
         }
@@ -293,6 +296,7 @@ class BeditaShellTest extends ShellTestCase
         $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
 
         $mapChoice = [
+            ['Driver?', ['Mysql', 'Postgres', 'Sqlite'], 'Mysql', $driver],
             ['Proceed with setup?', ['y', 'n'], 'n', 'y'],
             ['Proceed with database schema and data initialization?', ['y', 'n'], 'n', 'y'],
         ];

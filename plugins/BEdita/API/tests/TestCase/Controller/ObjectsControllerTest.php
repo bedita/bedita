@@ -12,23 +12,22 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectsController
  */
 class ObjectsControllerTest extends IntegrationTestCase
 {
-
     /**
      * Fixtures
      *
      * @var array
      */
     public $fixtures = [
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.locations',
+        'plugin.BEdita/Core.object_relations',
     ];
 
     /**
@@ -52,10 +51,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 5,
+                    'count' => 7,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 5,
+                    'page_items' => 7,
                     'page_size' => 20,
                 ],
             ],
@@ -66,22 +65,32 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'first-user',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Mr. First User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/users/1',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -90,10 +99,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'title-one',
-                        'locked' => true,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => '2016-05-13T07:09:23+00:00',
                         'title' => 'title one',
                         'description' => 'description here',
                         'body' => 'body here',
@@ -102,13 +107,33 @@ class ObjectsControllerTest extends IntegrationTestCase
                             'list' => ['one', 'two', 'three'],
                         ],
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => '2016-05-13T07:09:23+00:00',
                         'publish_end' => '2016-05-13T07:09:23+00:00',
                     ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => '2016-05-13T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/2',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/test',
+                                'self' => 'http://api.example.com/documents/2/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/2/inverse_test',
+                                'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -117,22 +142,38 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'draft',
                         'uname' => 'title-two',
-                        'locked' => false,
-                        'created' => '2016-05-12T07:09:23+00:00',
-                        'modified' => '2016-05-13T08:30:00+00:00',
-                        'published' => null,
                         'title' => 'title two',
                         'description' => 'description here',
                         'body' => 'body here',
                         'extra' => null,
                         'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
                         'created_by' => 1,
                         'modified_by' => 2,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -141,22 +182,32 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'lang' => 'eng',
+                        'body' => null,
+                        'extra' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
                         'locked' => false,
                         'created' => '2016-05-13T07:09:23+00:00',
                         'modified' => '2016-05-13T07:09:23+00:00',
                         'published' => null,
-                        'title' => 'Gustavo Supporto profile',
-                        'description' => 'Some description about Gustavo',
-                        'lang' => 'eng',
                         'created_by' => 1,
                         'modified_by' => 1,
-                        'body' => null,
-                        'extra' => null,
-                        'publish_start' => null,
-                        'publish_end' => null
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -165,35 +216,106 @@ class ObjectsControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'status' => 'on',
                         'uname' => 'second-user',
-                        'locked' => false,
-                        'created' => '2016-05-13T07:09:23+00:00',
-                        'modified' => '2016-05-13T07:09:23+00:00',
-                        'published' => null,
                         'title' => 'Miss Second User',
                         'description' => null,
                         'body' => null,
                         'extra' => null,
                         'lang' => 'eng',
-                        'created_by' => 1,
-                        'modified_by' => 1,
                         'publish_start' => null,
                         'publish_end' => null,
                     ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
                     'links' => [
                         'self' => 'http://api.example.com/users/5',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/5/roles',
+                                'self' => 'http://api.example.com/users/5/relationships/roles',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '8',
+                    'type' => 'locations',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'the-two-towers',
+                        'title' => 'The Two Towers',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-02-20T07:09:23+00:00',
+                        'modified' => '2017-02-20T07:09:23+00:00',
+                        'published' => '2017-02-20T07:09:23+00:00',
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/locations/8',
+                    ],
+                    'relationships' => [
+                        'another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/another_test',
+                            ],
+                        ],
+                        'inverse_another_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/locations/8/inverse_another_test',
+                                'self' => 'http://api.example.com/locations/8/relationships/inverse_another_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '9',
+                    'type' => 'events',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'event-one',
+                        'title' => 'first event',
+                        'description' => 'event description goes here',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2017-03-08T07:09:23+00:00',
+                        'modified' => '2016-03-08T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/events/9',
                     ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -233,14 +355,9 @@ class ObjectsControllerTest extends IntegrationTestCase
 
         TableRegistry::get('Objects')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -252,7 +369,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testSingle()
@@ -268,10 +385,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one',
-                    'locked' => true,
-                    'created' => '2016-05-13T07:09:23+00:00',
-                    'modified' => '2016-05-13T07:09:23+00:00',
-                    'published' => '2016-05-13T07:09:23+00:00',
                     'title' => 'title one',
                     'description' => 'description here',
                     'body' => 'body here',
@@ -280,22 +393,37 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'list' => ['one', 'two', 'three'],
                     ],
                     'lang' => 'eng',
-                    'created_by' => 1,
-                    'modified_by' => 1,
                     'publish_start' => '2016-05-13T07:09:23+00:00',
                     'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/test',
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                        ],
+                    ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/2');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -306,6 +434,9 @@ class ObjectsControllerTest extends IntegrationTestCase
      * Test deleted object method.
      *
      * @return void
+     *
+     * @covers ::resource()
+     * @covers ::initialize()
      */
     public function testDeleted()
     {
@@ -320,9 +451,6 @@ class ObjectsControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'status' => 'on',
                     'uname' => 'title-one-deleted',
-                    'locked' => false,
-                    'created' => '2016-10-13T07:09:23+00:00',
-                    'published' => '2016-10-13T07:09:23+00:00',
                     'title' => 'title one deleted',
                     'description' => 'description removed',
                     'body' => 'body no more',
@@ -330,22 +458,35 @@ class ObjectsControllerTest extends IntegrationTestCase
                         'abstract' => 'what?',
                     ],
                     'lang' => 'eng',
+                    'publish_start' => '2016-10-13T07:09:23+00:00',
+                    'publish_end' => '2016-10-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => false,
+                    'created' => '2016-10-13T07:09:23+00:00',
+                    'published' => '2016-10-13T07:09:23+00:00',
                     'created_by' => 1,
                     'modified_by' => 1,
-                    'publish_start' => '2016-10-13T07:09:23+00:00',
-                    'publish_end' => '2016-10-13T07:09:23+00:00'
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/test',
+                            'self' => 'http://api.example.com/documents/6/relationships/test',
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'related' => 'http://api.example.com/documents/6/inverse_test',
+                            'self' => 'http://api.example.com/documents/6/relationships/inverse_test',
+                        ],
+                    ],
                 ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
-        $result = json_decode($this->_response->body(), true);
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
@@ -353,18 +494,14 @@ class ObjectsControllerTest extends IntegrationTestCase
         $objectsTable = TableRegistry::get('Objects');
         $object = $objectsTable->get(6);
         $object->deleted = false;
+        $this->authUser();
         $success = $objectsTable->save($object);
         $this->assertEquals(true, (bool)$success);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/6');
-        $result = json_decode($this->_response->body(), true);
-        unset($result['data']['attributes']['modified']);
+        $result = json_decode((string)$this->_response->getBody(), true);
+        unset($result['data']['meta']['modified']);
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
@@ -380,7 +517,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
@@ -396,14 +533,9 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/objects/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -421,7 +553,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -430,31 +562,28 @@ class ObjectsControllerTest extends IntegrationTestCase
             'type' => 'documents',
             'attributes' => [
                 'title' => 'A new document',
-                'uname' => 'a-new-document',
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/documents', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/documents/8');
-        $this->assertTrue(TableRegistry::get('Documents')->exists(['uname' => 'a-new-document']));
+        static::assertArrayHasKey('data', $result);
+        static::assertArrayHasKey('attributes', $result['data']);
+        static::assertArrayHasKey('status', $result['data']['attributes']);
+        $this->assertHeader('Location', 'http://api.example.com/documents/10');
+        static::assertTrue(TableRegistry::get('Documents')->exists(['title' => 'A new document']));
     }
 
     /**
-     * Test add method.
+     * Test add wrong type method.
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAddTypeFail()
@@ -467,16 +596,10 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/news', json_encode(compact('data')));
 
-        $this->assertResponseCode(400);
+        $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
     }
 
@@ -485,7 +608,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -499,13 +622,7 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -525,7 +642,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditConflict()
@@ -538,13 +655,9 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -552,16 +665,10 @@ class ObjectsControllerTest extends IntegrationTestCase
         $this->assertEquals('title two', TableRegistry::get('Documents')->get(3)->get('title'));
         $this->assertEquals('title one', TableRegistry::get('Documents')->get(2)->get('title'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/news/3', json_encode(compact('data')));
 
-        $this->assertResponseCode(404);
+        $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
     }
 
@@ -570,7 +677,7 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditInvalid()
@@ -583,26 +690,16 @@ class ObjectsControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('PATCH', $authHeader);
         $this->patch('/documents/2', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals('title-one', TableRegistry::get('Documents')->get(2)->get('uname'));
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $authHeader);
         $data['id'] = 33;
         $this->patch('/documents/33', json_encode(compact('data')));
 
@@ -615,29 +712,20 @@ class ObjectsControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $authHeader = $this->getUserAuthHeader();
+
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/3');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/documents/3');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -645,24 +733,946 @@ class ObjectsControllerTest extends IntegrationTestCase
         $docDeleted = TableRegistry::get('Documents')->get(7);
         $this->assertEquals($docDeleted->deleted, 1);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/33');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $authHeader);
         $this->delete('/documents/4');
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test related method to list related objects.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::related()
+     * @covers ::findAssociation()
+     */
+    public function testRelated()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/test',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/documents/2/test',
+                'last' => 'http://api.example.com/documents/2/test',
+                'prev' => null,
+                'next' => null,
+            ],
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'lang' => 'eng',
+                        'body' => null,
+                        'extra' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to list existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testListAssociations()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+                'first' => 'http://api.example.com/documents/2/relationships/test',
+                'last' => 'http://api.example.com/documents/2/relationships/test',
+                'prev' => null,
+                'next' => null,
+            ],
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                ],
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 2,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 2,
+                    'page_size' => 20,
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2/relationships/test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to list existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testListAssociationsNotFound()
+    {
+        $this->configRequestHeaders();
+        $this->get('/documents/99/relationships/test');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociations()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociationsDuplicateEntry()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to add new relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testAddAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => null,
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
+        $this->post('/documents/2/relationships/test', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to delete existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testDeleteAssociations()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+            ],
+            [
+                'id' => '2',
+                'type' => 'documents',
+            ],
+        ];
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to delete existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testDeleteAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '2',
+                'type' => 'documents',
+            ],
+        ];
+
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
+        // Cannot use `IntegrationTestCase::delete()`, as it does not allow sending payload with the request.
+        $this->_sendRequest('/documents/2/relationships/test', 'DELETE', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociations()
+    {
+        $expected = [
+            'data' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                    'meta' => [
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => [
+                            'gustavo' => 'supporto',
+                        ],
+                    ],
+                ],
+            ],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => [
+                        'gustavo' => 'supporto',
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociationsEmpty()
+    {
+        $expected = [
+            'data' => [],
+            'links' => [
+                'self' => 'http://api.example.com/documents/2/relationships/test',
+                'home' => 'http://api.example.com/home',
+            ],
+        ];
+
+        $data = [];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test relationships method to replace existing relationships.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testSetAssociationsNoContent()
+    {
+        $data = [
+            [
+                'id' => '4',
+                'type' => 'profiles',
+                'meta' => [
+                    'priority' => 1,
+                    'inv_priority' => 2,
+                    'params' => null,
+                ],
+            ],
+            [
+                'id' => '3',
+                'type' => 'documents',
+                'meta' => [
+                    'priority' => 2,
+                    'inv_priority' => 1,
+                    'params' => null,
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+
+        $this->assertResponseCode(204);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertResponseEmpty();
+    }
+
+    /**
+     * Test relationships method to update relationships with a non-existing object ID.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testUpdateAssociationsMissingId()
+    {
+        $expected = [
+            'status' => '400',
+            'title' => 'Record not found in table "profiles"',
+        ];
+
+        $data = [
+            [
+                'id' => '99',
+                'type' => 'profiles',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(400);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test relationships method with a non-existing association.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testWrongAssociation()
+    {
+        $expected = [
+            'status' => '404',
+            'title' => 'Relationship "this_relationship_does_not_exist" does not exist',
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2/relationships/this_relationship_does_not_exist');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test relationships method to update relationships with a wrong type.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::relationships()
+     * @covers ::findAssociation()
+     */
+    public function testUpdateAssociationsUnsupportedType()
+    {
+        $expected = [
+            'status' => '409',
+            'title' => 'Unsupported resource type',
+        ];
+
+        $data = [
+            [
+                'id' => '1',
+                'type' => 'myCustomType',
+            ],
+        ];
+
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
+        $this->patch('/documents/2/relationships/test', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(409);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('error', $result);
+        static::assertArraySubset($expected, $result['error']);
+    }
+
+    /**
+     * Test failure on object type not found.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     */
+    public function testObjectTypeNotFound()
+    {
+        $this->configRequestHeaders();
+        $this->get('/invalid_object_type');
+
+        $this->assertResponseCode(404);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Provider for testMissingAuth
+     *
+     * @return array
+     */
+    public function missingAuthProvider()
+    {
+        return [
+            'get' => [
+                200,
+                'GET',
+                'documents',
+            ],
+            'post' => [
+                401,
+                'POST',
+                'documents',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'title' => 'A new document',
+                    ],
+                ],
+            ],
+            'patch' => [
+                401,
+                'PATCH',
+                'documents/2',
+                [
+                    'type' => 'documents',
+                    'attributes' => [
+                        'id' => '2',
+                        'title' => 'Change title',
+                    ],
+                ],
+            ],
+            'delete' => [
+                401,
+                'DELETE',
+                'documents/2',
+            ],
+        ];
+    }
+
+    /**
+     * Test requests missing auth
+     *
+     * @param int $expected Expected response code.
+     * @param string $method Request method.
+     * @param string $endpoint Endpoint.
+     * @param array $data Request data.
+     * @return void
+     *
+     * @dataProvider missingAuthProvider
+     * @coversNothing
+     */
+    public function testMissingAuth($expected, $method, $endpoint, array $data = [])
+    {
+        $this->configRequestHeaders($method);
+        $requestMethod = strtolower($method);
+        $this->$requestMethod('/' . $endpoint, json_encode(compact('data')));
+        $this->assertResponseCode($expected);
+        $this->assertContentType('application/vnd.api+json');
+    }
+
+    /**
+     * Test included resources.
+     *
+     * @return void
+     *
+     * @covers ::prepareInclude()
+     */
+    public function testInclude()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/documents/2?include=test%2Cinverse_test',
+                'home' => 'http://api.example.com/home',
+            ],
+            'data' => [
+                'id' => '2',
+                'type' => 'documents',
+                'attributes' => [
+                    'status' => 'on',
+                    'uname' => 'title-one',
+                    'title' => 'title one',
+                    'description' => 'description here',
+                    'body' => 'body here',
+                    'extra' => [
+                        'abstract' => 'abstract here',
+                        'list' => ['one', 'two', 'three'],
+                    ],
+                    'lang' => 'eng',
+                    'publish_start' => '2016-05-13T07:09:23+00:00',
+                    'publish_end' => '2016-05-13T07:09:23+00:00',
+                ],
+                'meta' => [
+                    'locked' => true,
+                    'created_by' => 1,
+                    'modified_by' => 1,
+                    'created' => '2016-05-13T07:09:23+00:00',
+                    'modified' => '2016-05-13T07:09:23+00:00',
+                    'published' => '2016-05-13T07:09:23+00:00',
+                ],
+                'relationships' => [
+                    'test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/test',
+                            'related' => 'http://api.example.com/documents/2/test',
+                        ],
+                        'data' => [
+                            [
+                                'id' => '4',
+                                'type' => 'profiles',
+                            ],
+                            [
+                                'id' => '3',
+                                'type' => 'documents',
+                            ],
+                        ],
+                    ],
+                    'inverse_test' => [
+                        'links' => [
+                            'self' => 'http://api.example.com/documents/2/relationships/inverse_test',
+                            'related' => 'http://api.example.com/documents/2/inverse_test',
+                        ],
+                        'data' => [],
+                    ],
+                ],
+            ],
+            'included' => [
+                [
+                    'id' => '4',
+                    'type' => 'profiles',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'gustavo-supporto',
+                        'title' => 'Gustavo Supporto profile',
+                        'description' => 'Some description about Gustavo',
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'priority' => 1,
+                        'inv_priority' => 2,
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/profiles/4',
+                    ],
+                    'relationships' => [
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/profiles/4/inverse_test',
+                                'self' => 'http://api.example.com/profiles/4/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '3',
+                    'type' => 'documents',
+                    'attributes' => [
+                        'status' => 'draft',
+                        'uname' => 'title-two',
+                        'title' => 'title two',
+                        'description' => 'description here',
+                        'body' => 'body here',
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'publish_start' => null,
+                        'publish_end' => null,
+                    ],
+                    'meta' => [
+                        'locked' => false,
+                        'created' => '2016-05-12T07:09:23+00:00',
+                        'modified' => '2016-05-13T08:30:00+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 2,
+                        'priority' => 2,
+                        'inv_priority' => 1,
+                        'params' => null,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/documents/3',
+                    ],
+                    'relationships' => [
+                        'test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/test',
+                                'self' => 'http://api.example.com/documents/3/relationships/test',
+                            ],
+                        ],
+                        'inverse_test' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/documents/3/inverse_test',
+                                'self' => 'http://api.example.com/documents/3/relationships/inverse_test',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/documents/2?include=test,inverse_test');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        static::assertEquals($expected, $result);
     }
 }

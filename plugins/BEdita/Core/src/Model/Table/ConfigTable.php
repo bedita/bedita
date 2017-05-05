@@ -33,8 +33,8 @@ class ConfigTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('config');
-        $this->primaryKey('name');
+        $this->setTable('config');
+        $this->setPrimaryKey('name');
 
         $this->addBehavior('Timestamp', [
             'events' => [

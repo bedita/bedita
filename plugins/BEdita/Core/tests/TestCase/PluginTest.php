@@ -28,6 +28,8 @@ class PluginTest extends TestCase
      * Test load from config method
      *
      * @return void
+     *
+     * @covers ::loadFromConfig()
      */
     public function testLoadConfig()
     {

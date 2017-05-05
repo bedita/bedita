@@ -13,27 +13,18 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
+use Cake\Event\Event;
 use Cake\Event\EventManager;
-use Cake\Network\Exception\InternalErrorException;
 use Cake\Network\Exception\NotFoundException;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\AppController
  */
 class AppControllerTest extends IntegrationTestCase
 {
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.roles',
-    ];
-
     /**
      * {@inheritDoc}
      */
@@ -55,7 +46,7 @@ class AppControllerTest extends IntegrationTestCase
         return [
             'json' => [
                 200,
-                'application/json; charset=UTF-8',
+                'application/json',
                 'application/json',
             ],
             'jsonapi' => [
@@ -79,7 +70,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlDebugMode' => [
                 200,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 1,
@@ -88,7 +79,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'htmlAccepted' => [
                 200,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 [
                     'debug' => 0,
@@ -117,7 +108,9 @@ class AppControllerTest extends IntegrationTestCase
         Configure::write($config);
 
         $this->configRequest([
-            'headers' => ['Accept' => $accept],
+            'headers' => [
+                'Accept' => $accept,
+            ],
         ]);
 
         $this->get('/roles');
@@ -136,7 +129,7 @@ class AppControllerTest extends IntegrationTestCase
         return [
             'notFoundJson' => [
                 404,
-                'application/json; charset=UTF-8',
+                'application/json',
                 'application/json',
                 new NotFoundException(),
             ],
@@ -148,7 +141,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'notFoundHtmlDebug' => [
                 404,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 new NotFoundException(),
                 [
@@ -158,7 +151,7 @@ class AppControllerTest extends IntegrationTestCase
             ],
             'notFoundHtmlAccepted' => [
                 404,
-                'text/html; charset=UTF-8',
+                'text/html',
                 'text/html,application/xhtml+xml',
                 new NotFoundException(),
                 [
@@ -175,6 +168,7 @@ class AppControllerTest extends IntegrationTestCase
      * @param int $expectedCode Expected response code.
      * @param string|null $expectedContentType Expected content type.
      * @param string $accept Request's "Accept" header.
+     * @param \Exception $error Error to be injected.
      * @param array|null $config Configuration to be written.
      * @return void
      *
@@ -183,7 +177,7 @@ class AppControllerTest extends IntegrationTestCase
      * @covers \BEdita\API\Controller\Component\JsonApiComponent::beforeRender()
      * @covers \BEdita\API\Error\ExceptionRenderer::render()
      */
-    public function testContentTypeError($expectedCode, $expectedContentType, $accept, $error, array $config = null)
+    public function testContentTypeError($expectedCode, $expectedContentType, $accept, \Exception $error, array $config = null)
     {
         Configure::write($config);
 
@@ -194,10 +188,12 @@ class AppControllerTest extends IntegrationTestCase
             $this->injectError($name, $error);
 
             $this->configRequest([
-                'headers' => ['Accept' => $accept],
+                'headers' => [
+                    'Accept' => $accept,
+                ],
             ]);
             $this->get('/roles');
-            $this->assertEquals($expectedCode, $this->_response->statusCode(), 'Error with event ' . $name);
+            static::assertEquals($expectedCode, $this->_response->getStatusCode(), 'Error with event ' . $name);
             $this->assertContentType($expectedContentType, 'Error with event ' . $name);
         }
     }
@@ -211,9 +207,10 @@ class AppControllerTest extends IntegrationTestCase
      */
     protected function injectError($eventName, \Exception $exception)
     {
-        $listener = function ($event) use ($exception, &$listener) {
+        $listener = function (Event $event) use ($exception, &$listener) {
             // immediately off the listener to assure to execute just one time
-            EventManager::instance()->off($event->name(), $listener);
+            EventManager::instance()->off($event->getName(), $listener);
+
             throw $exception;
         };
 
@@ -295,7 +292,7 @@ class AppControllerTest extends IntegrationTestCase
         $dbConf = $connection->config();
         $dbConf['database'] = '__fail_db_connection';
         unset($dbConf['name']);
-        ConnectionManager::config('__fail_db_connection', $dbConf);
+        ConnectionManager::setConfig('__fail_db_connection', $dbConf);
         ConnectionManager::alias('__fail_db_connection', 'default');
 
         // use $_SERVER array to assure using the right HTTP_ACCEPT header also
@@ -371,6 +368,7 @@ class AppControllerTest extends IntegrationTestCase
      * @return void
      *
      * @dataProvider apiKeysProvider
+     * @covers ::apiKeyCheck()
      */
     public function testApiKeys($expectedCode, $apiKeyCfg, $apiKeyReq = null, $origin = null)
     {
@@ -393,6 +391,8 @@ class AppControllerTest extends IntegrationTestCase
      * Test API meta info header.
      *
      * @return void
+     *
+     * @covers ::initialize()
      */
     public function testMetaInfo()
     {

@@ -13,10 +13,11 @@
 
 namespace BEdita\Core\ORM\Inheritance;
 
+use BadMethodCallException;
 use BEdita\Core\ORM\Association\ExtensionOf;
-use BEdita\Core\ORM\Inheritance\Query;
 use Cake\Datasource\EntityInterface;
 use Cake\Event\Event;
+use Cake\ORM\Query as CakeQuery;
 use Cake\ORM\Table as CakeTable;
 
 /**
@@ -31,6 +32,8 @@ use Cake\ORM\Table as CakeTable;
  * Every Table can inherit just one table and eventually inherits other tables by nested inheritance
  *
  * @since 4.0.0
+ *
+ * @method \BEdita\Core\ORM\Inheritance\Query find($type = 'all', $options = [])
  */
 class Table extends CakeTable
 {
@@ -39,7 +42,7 @@ class Table extends CakeTable
      */
     public function query()
     {
-        return new Query($this->connection(), $this);
+        return new Query($this->getConnection(), $this);
     }
 
     /**
@@ -75,14 +78,12 @@ class Table extends CakeTable
      * * prepare format result method
      *
      * @param \Cake\Event\Event $event The event dispatched
-     * @param \Cake\ORM\Query $query The query object
-     * @param \ArrayObject $options Options
-     * @param bool $primary Indicates whether or not this is the root query or an associated query
+     * @param \BEdita\Core\ORM\Inheritance\Query $query The query object
      * @return void
      */
-    public function inheritanceBeforeFind(Event $event, Query $query, \ArrayObject $options, $primary)
+    public function inheritanceBeforeFind(Event $event, Query $query)
     {
-        if (!$primary || empty($this->inheritedTables())) {
+        if ($this->inheritedTable() === null) {
             return;
         }
 
@@ -100,12 +101,12 @@ class Table extends CakeTable
      */
     public function inheritanceBeforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        $inheritedTable = current($this->inheritedTables());
-        if (empty($inheritedTable)) {
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
             return;
         }
 
-        $property = $this->association($inheritedTable->alias())->property();
+        $property = $this->association($inheritedTable->getAlias())->getProperty();
 
         $entity->dirty($property, true);
     }
@@ -144,23 +145,23 @@ class Table extends CakeTable
      */
     public function extensionOf($associated, array $options = [])
     {
-        $alreadyExists = $this->associations()->type('ExtensionOf');
-        if (!empty($alreadyExists)) {
+        $association = $this->getExtensionOf();
+        if ($association !== null) {
             throw new \RuntimeException(sprintf(
                 '"%s" has already an ExtensionOf association with %s',
-                $this->alias(),
-                $alreadyExists[0]->target()->alias()
+                $this->getAlias(),
+                $association->getAlias()
             ));
         }
 
         $options = array_merge($options, [
             'sourceTable' => $this,
-            'foreignKey' => $this->primaryKey(),
+            'foreignKey' => $this->getPrimaryKey(),
         ]);
         $options = array_diff_key($options, array_flip(['joinType', 'dependent']));
         $association = new ExtensionOf($associated, $options);
 
-        return $this->_associations->add($association->name(), $association);
+        return $this->_associations->add($association->getName(), $association);
     }
 
     /**
@@ -172,35 +173,163 @@ class Table extends CakeTable
      */
     public function isTableInherited($tableName, $nested = false)
     {
-        $inheritedTables = $this->inheritedTables($nested);
-        $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
-            return $table->alias() === $tableName;
-        });
+        if ($nested) {
+            $inheritedTables = $this->inheritedTables();
+            $found = array_filter($inheritedTables, function (Table $table) use ($tableName) {
+                return $table->getAlias() === $tableName;
+            });
 
-        return count($found) > 0;
+            return count($found) > 0;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+
+        return $inheritedTable !== null && $inheritedTable->getAlias() === $tableName;
+    }
+
+    /**
+     * Get ExtensionOf association.
+     *
+     * @return \BEdita\Core\ORM\Association\ExtensionOf|null
+     */
+    public function getExtensionOf()
+    {
+        $association = $this->associations()->type('ExtensionOf');
+        $association = current($association);
+        if (!($association instanceof ExtensionOf)) {
+            return null;
+        }
+
+        return $association;
+    }
+
+    /**
+     * Return the inherited table from current table.
+     *
+     * @return \Cake\ORM\Table|null
+     */
+    public function inheritedTable()
+    {
+        $association = $this->getExtensionOf();
+        if ($association === null) {
+            return null;
+        }
+
+        return $association->getTarget();
     }
 
     /**
      * Return the inherited tables from current Table.
      *
-     * By default return the direct inherited table (no nested).
-     * To get the the all nested inherited tables pass `$nested = true`.
-     *
-     * @param bool $nested If it must return all the inherited tables or just direct inherited table
-     * @return array
+     * @return \Cake\ORM\Table[]
      */
-    public function inheritedTables($nested = false)
+    public function inheritedTables()
     {
-        $associations = $this->_associations->type('ExtensionOf');
-        if (empty($associations)) {
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable === null) {
             return [];
         }
 
-        $association = array_shift($associations);
-        if (!$nested || !($association->target() instanceof \BEdita\Core\ORM\Inheritance\Table)) {
-            return [$association->target()];
+        if (!($inheritedTable instanceof self)) {
+            return [$inheritedTable];
         }
 
-        return array_merge([$association->target()], $association->target()->inheritedTables(true));
+        return array_merge([$inheritedTable], $inheritedTable->inheritedTables());
+    }
+
+    /**
+     * Find all common tables in inheritance chain.
+     *
+     * @param \Cake\ORM\Table $table Table to compare current table to.
+     * @return \Cake\ORM\Table[]
+     */
+    public function commonInheritance(CakeTable $table)
+    {
+        if (!($table instanceof self)) {
+            return in_array($table, $this->inheritedTables(), true) ? [$table] : [];
+        }
+
+        $inherited = array_merge(
+            array_reverse($this->inheritedTables()),
+            [$this]
+        );
+        $table = array_merge(
+            array_reverse($table->inheritedTables()),
+            [$table]
+        );
+
+        $common = [];
+        $i = 0;
+        while (isset($inherited[$i]) && isset($table[$i]) && $inherited[$i] === $table[$i]) {
+            array_unshift($common, $inherited[$i]);
+            $i++;
+        }
+
+        return $common;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasFinder($type)
+    {
+        if (parent::hasFinder($type) === true) {
+            return true;
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
+            return $inheritedTable->hasFinder($type);
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function callFinder($type, CakeQuery $query, array $options = [])
+    {
+        if (parent::hasFinder($type)) {
+            return parent::callFinder($type, $query, $options);
+        }
+
+        $inheritedTable = $this->inheritedTable();
+        if ($inheritedTable !== null) {
+            return $inheritedTable->callFinder($type, $query, $options);
+        }
+
+        throw new BadMethodCallException(
+            sprintf('Unknown finder method "%s"', $type)
+        );
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param bool $inheritedFields Should fields from inherited tables be considered?
+     */
+    public function hasField($field, $inheritedFields = true)
+    {
+        $result = parent::hasField($field);
+        $inheritedTable = $this->inheritedTable();
+
+        if ($result || !$inheritedFields || $inheritedTable === null) {
+            return $result;
+        }
+
+        return $inheritedTable->hasField($field);
+    }
+
+    /**
+     * Perform operations when cloning table.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        $this->_associations = clone $this->_associations;
+        $this->_behaviors = clone $this->_behaviors;
+        $this->_eventManager = clone $this->_eventManager;
     }
 }

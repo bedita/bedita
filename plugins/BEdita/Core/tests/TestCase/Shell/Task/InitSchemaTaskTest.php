@@ -14,6 +14,7 @@
 namespace BEdita\Core\Test\TestCase\Shell\Task;
 
 use BEdita\Core\TestSuite\ShellTestCase;
+use Cake\Core\Plugin;
 use Cake\Database\Connection;
 use Cake\Database\Schema\Table;
 use Cake\Datasource\ConnectionManager;
@@ -44,10 +45,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         ConnectionManager::get('default')
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }
@@ -91,10 +92,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--no-force', '--no-seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
         return TableRegistry::get('ObjectTypes')->find()->count();
     }
@@ -118,10 +119,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--force', '--no-seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -141,10 +142,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init', '--no-force', '--seed']);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 2, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
     }
 
     /**
@@ -178,10 +179,10 @@ class InitSchemaTaskTest extends ShellTestCase
 
         $this->invoke(['db_admin', 'init'], [], $io);
 
-        $schema = unserialize(file_get_contents(CONFIG . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
+        $schema = unserialize(file_get_contents(Plugin::configPath('BEdita/Core') . DS . 'Migrations' . DS . 'schema-dump-default.lock'));
 
         $this->assertNotAborted();
-        $this->assertCount(count($schema) + 1, $connection->schemaCollection()->listTables());
+        $this->assertCount(count($schema) + 1, $connection->getSchemaCollection()->listTables());
 
         $this->assertEquals($notSeededCount, TableRegistry::get('ObjectTypes')->find()->count());
     }

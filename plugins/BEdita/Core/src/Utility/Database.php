@@ -13,10 +13,8 @@
 
 namespace BEdita\Core\Utility;
 
-use Cake\Cache\Cache;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
-use Cake\Log\Log;
 
 /**
  * Database utilities class
@@ -46,7 +44,7 @@ class Database
 
         $connection->cacheMetadata(false);
 
-        $collection = $connection->schemaCollection();
+        $collection = $connection->getSchemaCollection();
         $tables = $collection->listTables();
         foreach ($tables as $tableName) {
             $schema[$tableName] = [];
@@ -143,19 +141,43 @@ class Database
     /**
      * Get basic database connection info
      *
-     * @param string $dbConfig input database configuration ('default' as default)
-     *
+     * @param string $dbConfig Input database configuration ('default' as default)
+     * @param string $version Retrieve or not version info
      * @return array containing requested configuration
      *          + 'vendor' key (mysql, sqlite, postgres,...)
      */
-    public static function basicInfo($dbConfig = 'default')
+    public static function basicInfo($dbConfig = 'default', $version = true)
     {
-        $config = ConnectionManager::get($dbConfig)->config();
+        $connection = ConnectionManager::get($dbConfig);
+        $config = $connection->config();
         $config['vendor'] = strtolower(substr($config['driver'], strrpos($config['driver'], '\\') + 1));
+        $config['version'] = 'unknown';
+        if ($version && $config['vendor'] !== 'sqlite') {
+            $version = $connection->execute('SELECT VERSION()')->fetch();
+            $config['version'] = implode('', $version);
+        }
 
         return $config;
     }
 
+    /**
+     * See if a DB vendor and min version matches current connection info on 'default'
+     *
+     * @param array $options Array containing 'vendor' (lower case - 'mysql', 'postgres', 'sqlite') and optionally 'version'
+     * @return bool True on match success, false otherwise
+     */
+    public static function supportedVersion($options)
+    {
+        $info = static::basicInfo();
+        if ($options['vendor'] !== $info['vendor']) {
+            return false;
+        }
+        if (!empty($options['version']) && $options['version'] > $info['version']) {
+            return false;
+        }
+
+        return true;
+    }
 
     /**
      * See if Database connection is available and working correctly

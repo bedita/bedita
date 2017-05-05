@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Behavior;
 
-use BEdita\Core\Model\Behavior\UserModifiedBehavior;
 use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -21,7 +20,7 @@ use Cake\TestSuite\TestCase;
 /**
  * {@see \BEdita\Core\Model\Behavior\UserModifiedBehavior} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Model\Behavior\UserModifiedBehavior
+ * @covers \BEdita\Core\Model\Behavior\UserModifiedBehavior
  */
 class UserModifiedBehaviorTest extends TestCase
 {
@@ -33,6 +32,8 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -45,20 +46,20 @@ class UserModifiedBehaviorTest extends TestCase
      */
     public function testUserFields()
     {
-        $this->Users = TableRegistry::get('Users');
+        $Users = TableRegistry::get('Users');
 
-        $user = $this->Users->newEntity();
+        $user = $Users->newEntity();
         $data['username'] = 'testusername';
         $user->created_by = LoggedUser::id() + 1;
-        $this->Users->patchEntity($user, $data);
-        $this->Users->setupUserFields($user);
+        $Users->patchEntity($user, $data);
+        $Users->setupUserFields($user);
 
         $this->assertEquals($user['created_by'], LoggedUser::id());
 
-        $user = $this->Users->get(1);
+        $user = $Users->get(1);
         $user->modified_by = LoggedUser::id() + 1;
-        $this->Users->patchEntity($user, $data);
-        $this->Users->setupUserFields($user);
+        $Users->patchEntity($user, $data);
+        $Users->setupUserFields($user);
 
         $this->assertEquals($user['modified_by'], LoggedUser::id());
     }

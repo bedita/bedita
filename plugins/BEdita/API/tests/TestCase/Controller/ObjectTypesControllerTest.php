@@ -12,25 +12,14 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
-use Cake\Core\Configure;
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\ObjectTypesController
  */
 class ObjectTypesControllerTest extends IntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types'
-    ];
-
     /**
      * Test index method.
      *
@@ -52,10 +41,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
             'meta' => [
                 'pagination' => [
-                    'count' => 4,
+                    'count' => 6,
                     'page' => 1,
                     'page_count' => 1,
-                    'page_items' => 4,
+                    'page_items' => 6,
                     'page_size' => 20,
                 ],
             ],
@@ -64,13 +53,20 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '1',
                     'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'document',
-                        'pluralized' => 'documents',
-                        'alias' => 'Documents',
+                        'singular' => 'document',
+                        'name' => 'documents',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
                         'model' => 'Objects',
-                        'table' => 'BEdita/Core.Objects'
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => null,
+                    ],
+                    'meta' => [
+                        'alias' => 'Documents',
+                        'relations' => [
+                            'test',
+                            'inverse_test',
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/1',
@@ -88,13 +84,19 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '2',
                     'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'profile',
-                        'pluralized' => 'profiles',
-                        'alias' => 'Profiles',
+                        'singular' => 'profile',
+                        'name' => 'profiles',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
                         'model' => 'Profiles',
-                        'table' => 'BEdita/Core.Profiles'
+                        'table' => 'BEdita/Core.Profiles',
+                        'associations' => null,
+                    ],
+                    'meta' => [
+                        'alias' => 'Profiles',
+                        'relations' => [
+                            'inverse_test',
+                        ],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/2',
@@ -112,13 +114,17 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '3',
                     'type' => 'object_types',
                     'attributes' => [
-                        'name' => 'user',
-                        'pluralized' => 'users',
-                        'alias' => 'Users',
+                        'singular' => 'user',
+                        'name' => 'users',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
                         'model' => 'Users',
-                        'table' => 'BEdita/Core.Users'
+                        'table' => 'BEdita/Core.Users',
+                        'associations' => null,
+                    ],
+                    'meta' => [
+                        'alias' => 'Users',
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/3',
@@ -136,13 +142,17 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                     'id' => '4',
                     'type' => 'object_types',
                     'attributes' => [
+                        'singular' => 'news',
                         'name' => 'news',
-                        'pluralized' => 'news',
-                        'alias' => 'News',
                         'description' => null,
                         'plugin' => 'BEdita/Core',
                         'model' => 'Objects',
-                        'table' => 'BEdita/Core.Objects'
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => null,
+                    ],
+                    'meta' => [
+                        'alias' => 'News',
+                        'relations' => [],
                     ],
                     'links' => [
                         'self' => 'http://api.example.com/object_types/4',
@@ -156,17 +166,71 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                         ],
                     ],
                 ],
+                [
+                    'id' => '5',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'location',
+                        'name' => 'locations',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Locations',
+                        'table' => 'BEdita/Core.Locations',
+                        'associations' => null,
+                    ],
+                    'meta' => [
+                        'alias' => 'Locations',
+                        'relations' => [
+                            'another_test',
+                            'inverse_another_test',
+                        ],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/object_types/5',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/5/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/5/properties',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'id' => '6',
+                    'type' => 'object_types',
+                    'attributes' => [
+                        'singular' => 'event',
+                        'name' => 'events',
+                        'description' => null,
+                        'plugin' => 'BEdita/Core',
+                        'model' => 'Objects',
+                        'table' => 'BEdita/Core.Objects',
+                        'associations' => ['DateRanges'],
+                    ],
+                    'meta' => [
+                        'alias' => 'Events',
+                        'relations' => [],
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/object_types/6',
+                    ],
+                    'relationships' => [
+                        'properties' => [
+                            'links' => [
+                                'self' => 'http://api.example.com/object_types/6/relationships/properties',
+                                'related' => 'http://api.example.com/object_types/6/properties',
+                            ],
+                        ],
+                    ],
+                ],
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -178,7 +242,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEmpty()
@@ -206,14 +270,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         TableRegistry::get('ObjectTypes')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -225,7 +284,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testSingle()
@@ -239,13 +298,20 @@ class ObjectTypesControllerTest extends IntegrationTestCase
                 'id' => '1',
                 'type' => 'object_types',
                 'attributes' => [
-                    'name' => 'document',
-                    'pluralized' => 'documents',
-                    'alias' => 'Documents',
+                    'singular' => 'document',
+                    'name' => 'documents',
                     'description' => null,
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
-                    'table' => 'BEdita/Core.Objects'
+                    'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                ],
+                'meta' => [
+                    'alias' => 'Documents',
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'relationships' => [
                     'properties' => [
@@ -258,14 +324,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types/1');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -277,7 +338,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
@@ -293,14 +354,9 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/object_types/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -318,7 +374,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -326,8 +382,8 @@ class ObjectTypesControllerTest extends IntegrationTestCase
         $data = [
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'my_object_type',
-                'pluralized' => 'my_object_types',
+                'singular' => 'my_object_type',
+                'name' => 'my_object_types',
                 'alias' => 'My Object Type',
                 'description' => null,
                 'plugin' => 'BEdita/Core',
@@ -336,19 +392,13 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertHeader('Location', 'http://api.example.com/object_types/5');
-        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['name' => 'my_object_type']));
+        $this->assertHeader('Location', 'http://api.example.com/object_types/7');
+        $this->assertTrue(TableRegistry::get('ObjectTypes')->exists(['singular' => 'my_object_type']));
     }
 
     /**
@@ -356,7 +406,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAddInvalid()
@@ -370,13 +420,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('ObjectTypes')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/object_types', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -389,7 +433,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -398,17 +442,11 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'id' => '1',
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'document new',
+                'singular' => 'document new',
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/object_types/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -416,10 +454,10 @@ class ObjectTypesControllerTest extends IntegrationTestCase
 
         $ObjectTypes = TableRegistry::get('ObjectTypes');
         $entity = $ObjectTypes->get(1);
-        $this->assertEquals('document new', $entity->get('name'));
+        $this->assertEquals('document new', $entity->get('singular'));
 
         // restore previous values
-        $entity = $ObjectTypes->patchEntity($entity, ['name' => 'document']);
+        $entity = $ObjectTypes->patchEntity($entity, ['singular' => 'document']);
         $success = $ObjectTypes->save($entity);
         $this->assertTrue((bool)$success);
     }
@@ -429,7 +467,7 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditConflict()
@@ -438,23 +476,17 @@ class ObjectTypesControllerTest extends IntegrationTestCase
             'id' => '1',
             'type' => 'object_types',
             'attributes' => [
-                'name' => 'profile new',
+                'singular' => 'profile new',
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/object_types/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
         $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(1)->get('name'));
-        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('name'));
+        $this->assertEquals('document', TableRegistry::get('ObjectTypes')->get(1)->get('singular'));
+        $this->assertEquals('profile', TableRegistry::get('ObjectTypes')->get(2)->get('singular'));
     }
 
     /**
@@ -462,18 +494,12 @@ class ObjectTypesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/object_types/1');
 
         $this->assertResponseCode(204);

@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
@@ -37,7 +36,7 @@ class EndpointsTable extends Table
     {
         parent::initialize($config);
 
-        $this->displayField('name');
+        $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
 

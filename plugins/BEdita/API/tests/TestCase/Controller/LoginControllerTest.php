@@ -13,29 +13,14 @@
 
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\LoginController
  */
 class LoginControllerTest extends IntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
-    ];
-
     /**
      * Test login method.
      *
@@ -45,15 +30,12 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testSuccessfulLogin()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
+        $this->configRequestHeaders('POST', [
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'password1']);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
 
@@ -87,7 +69,7 @@ class LoginControllerTest extends IntegrationTestCase
         ]);
 
         $this->post('/auth', []);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertTextNotEquals($meta['renew'], $result['meta']['renew']);
@@ -102,12 +84,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testFailedLogin()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST');
 
         $this->post('/auth', ['username' => 'first user', 'password' => 'wrongPassword']);
 
@@ -136,7 +113,7 @@ class LoginControllerTest extends IntegrationTestCase
 
         $this->get('/auth');
         $this->assertResponseCode(200);
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
         $this->assertNotEmpty($result);
     }
 
@@ -150,12 +127,7 @@ class LoginControllerTest extends IntegrationTestCase
      */
     public function testLoggedUserFail()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
 
         $this->get('/auth');
         $this->assertResponseCode(401);

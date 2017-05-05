@@ -40,6 +40,9 @@ class User extends Profile
     protected $_accessible = [
         '*' => true,
         'id' => false,
+        'object_type_id' => false,
+        'object_type' => false,
+        'type' => false,
         'deleted' => false,
         'locked' => false,
         'created' => false,

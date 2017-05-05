@@ -13,8 +13,7 @@
 namespace BEdita\Core\Test\TestCase\Utility;
 
 use BEdita\Core\Utility\Database;
-use Cake\Core\Plugin;
-use Cake\ORM\TableRegistry;
+use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Inflector;
 
@@ -49,6 +48,8 @@ class DatabaseTest extends TestCase
      * Test currentSchema method
      *
      * @return void
+     *
+     * @covers ::currentSchema()
      */
     public function testCurrentSchema()
     {
@@ -62,13 +63,24 @@ class DatabaseTest extends TestCase
         foreach ($fixtures as $f) {
             $this->assertArrayHasKey(Inflector::underscore($f), $schema);
         }
+
+        // test not valid Connection object
+        $mockConnection = $this->createMock('\Cake\Datasource\ConnectionInterface');
+        ConnectionManager::setConfig('__wrongConnection', $mockConnection);
+
+        $schema = Database::currentSchema('__wrongConnection');
+        $this->assertEquals([], $schema);
+
+        ConnectionManager::drop('__wrongConnection');
     }
 
     /**
      * Test schemaCompare method
      *
      * @return void
+     *
      * @expectedException \Cake\Datasource\Exception\MissingDatasourceConfigException
+     * @covers ::currentSchema()
      */
     public function testMissingDatasourceConfigException()
     {
@@ -79,6 +91,9 @@ class DatabaseTest extends TestCase
      * Test schemaCompare method
      *
      * @return void
+     *
+     * @covers ::schemaCompare()
+     * @covers ::compareSchemaItems()
      */
     public function testSchemaCompare()
     {
@@ -119,6 +134,8 @@ class DatabaseTest extends TestCase
      * Test basicInfo method
      *
      * @return void
+     *
+     * @covers ::basicInfo()
      */
     public function testBasicInfo()
     {
@@ -129,13 +146,34 @@ class DatabaseTest extends TestCase
         if ($info['vendor'] != 'sqlite') {
             $this->assertArrayHasKey('host', $info);
             $this->assertArrayHasKey('username', $info);
+            $this->assertArrayHasKey('version', $info);
         }
+    }
+
+    /**
+     * Test supportedVersion method
+     *
+     * @return void
+     *
+     * @covers ::supportedVersion()
+     */
+    public function testSupportedVersion()
+    {
+        $info = Database::basicInfo();
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => $info['version']]);
+        static::assertTrue($result);
+        $result = Database::supportedVersion(['vendor' => $info['vendor'], 'version' => 'ZZZZ']);
+        static::assertFalse(($info['vendor'] !== 'sqlite') ? $result : !$result);
+        $result = Database::supportedVersion(['vendor' => 'mongodb']);
+        static::assertFalse($result);
     }
 
     /**
      * Test connectionTest method
      *
      * @return void
+     *
+     * @covers ::connectionTest()
      */
     public function testConnectionTest()
     {
@@ -150,6 +188,11 @@ class DatabaseTest extends TestCase
         $this->assertNotEmpty($res['error']);
     }
 
+    /**
+     * Data provider for `testExecuteTransaction` test case.
+     *
+     * @return array
+     */
     public function sqlExecute()
     {
         return [
@@ -158,17 +201,25 @@ class DatabaseTest extends TestCase
             ["SELECT id from users", false, 0, 0, 'zzzzzzzzz'],
             ["UPDATE profiles SET name='Germano', surname='Mosconi' WHERE id = 1;\n" .
              "UPDATE profiles SET person_title='Spiritual Guide' WHERE id = 1;", true, 2, 2],
-            ["SELECT name from config;\n" . "SELECT name from profiles;", true, 7, 2],
+            ["SELECT name from config;\n" . "SELECT name from profiles;", true, 13, 2],
             ["SELECT something", false, 0, 0],
-            [["SAY NO TO SQL", " ", "NOSQL NOPARTY"], false, 0, 0],
+            [[" ", "SAY NO TO SQL", "NOSQL NOPARTY"], false, 0, 0],
         ];
     }
 
     /**
      * Test executeTransaction method
      *
+     * @param string $sql SQL to be executed.
+     * @param bool $success Expected success.
+     * @param int $rowCount Expected amount of affected rows.
+     * @param int $queryCount Expected amount of returned rows.
+     * @param string $dbConfig Connection name.
      * @return void
+     *
      * @dataProvider sqlExecute
+     * @covers ::splitSqlQueries()
+     * @covers ::executeTransaction()
      */
     public function testExecuteTransaction($sql, $success, $rowCount, $queryCount, $dbConfig = 'test')
     {
@@ -179,5 +230,71 @@ class DatabaseTest extends TestCase
         $this->assertEquals($success, $res['success']);
         $this->assertEquals($rowCount, $res['rowCount']);
         $this->assertEquals($queryCount, $res['queryCount']);
+    }
+
+    /**
+     * Data provider for `testExecuteTransactionStatementError` test case.
+     *
+     * @return array
+     */
+    public function connectionErrorProvider()
+    {
+        return [
+            'errorExecute' => [
+                ['execute' => false]
+            ],
+            'errorCodeTrue' => [
+                [
+                    'execute' => true,
+                    'errorCode' => true
+                ]
+            ],
+            'errorCodeDefined' => [
+                [
+                    'execute' => true,
+                    'errorCode' => '00001'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * Test `executeTransaction()` simulating errors with database statement
+     *
+     * @param array $statementMethods An array of methods (array keys) and return values (array values) to mock on `\Cake\Database\StatementInterface`.
+     * @return void
+     *
+     * @dataProvider connectionErrorProvider
+     * @covers ::executeTransaction()
+     */
+    public function testExecuteTransactionStatementError($statementMethods)
+    {
+        $mockStatement = $this->createMock('\Cake\Database\StatementInterface');
+        foreach ($statementMethods as $name => $value) {
+            $mockStatement->method($name)
+                ->willReturn($value);
+        }
+
+        $mockConnection = $this->getMockBuilder('\Cake\Database\Connection')
+            ->disableOriginalConstructor()
+            ->disableOriginalClone()
+            ->setMethods(['prepare', 'begin', 'commit', 'rollback', '__debugInfo'])
+            ->getMock();
+
+        $mockConnection->method('prepare')
+            ->willReturn($mockStatement);
+
+        $dbConfig = '__mockConnectionError';
+
+        ConnectionManager::setConfig($dbConfig, $mockConnection);
+
+        $res = Database::executeTransaction(['SELECT nothing'], $dbConfig);
+        $this->assertNotEmpty($res);
+        $this->assertEquals('Could not execute statement', $res['error']);
+        $this->assertEquals(false, $res['success']);
+        $this->assertEquals(0, $res['rowCount']);
+        $this->assertEquals(0, $res['queryCount']);
+
+        ConnectionManager::drop($dbConfig);
     }
 }

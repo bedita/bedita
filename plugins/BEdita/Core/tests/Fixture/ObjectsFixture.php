@@ -141,6 +141,44 @@ class ObjectsFixture extends TestFixture
             'publish_start' => '2016-10-13 07:09:23',
             'publish_end' => '2016-10-13 07:09:23'
         ],
+        [
+            'object_type_id' => 5,
+            'status' => 'on',
+            'uname' => 'the-two-towers',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2017-02-20 07:09:23',
+            'modified' => '2017-02-20 07:09:23',
+            'published' => '2017-02-20 07:09:23',
+            'title' => 'The Two Towers',
+            'description' => null,
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null
+        ],
+        [
+            'object_type_id' => 6,
+            'status' => 'on',
+            'uname' => 'event-one',
+            'locked' => 0,
+            'deleted' => 0,
+            'created' => '2017-03-08 07:09:23',
+            'modified' => '2016-03-08 08:30:00',
+            'published' => null,
+            'title' => 'first event',
+            'description' => 'event description goes here',
+            'body' => null,
+            'extra' => null,
+            'lang' => 'eng',
+            'created_by' => 1,
+            'modified_by' => 1,
+            'publish_start' => null,
+            'publish_end' => null
+        ],
     ];
 
     /**

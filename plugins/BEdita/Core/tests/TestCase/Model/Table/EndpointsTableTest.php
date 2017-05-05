@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\EndpointsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -72,13 +71,13 @@ class EndpointsTableTest extends TestCase
     public function testInitialize()
     {
         $this->Endpoints->initialize([]);
-        $this->assertEquals('endpoints', $this->Endpoints->table());
-        $this->assertEquals('id', $this->Endpoints->primaryKey());
-        $this->assertEquals('name', $this->Endpoints->displayField());
+        $this->assertEquals('endpoints', $this->Endpoints->getTable());
+        $this->assertEquals('id', $this->Endpoints->getPrimaryKey());
+        $this->assertEquals('name', $this->Endpoints->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Endpoints->behaviors()->get('Timestamp'));
         $this->assertInstanceOf('\Cake\ORM\Association\hasMany', $this->Endpoints->EndpointPermissions);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Endpoints->EndpointPermissions->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Endpoints->EndpointPermissions->getTarget());
     }
 
     /**
@@ -98,7 +97,7 @@ class EndpointsTableTest extends TestCase
             'notUniqueName' => [
                 false,
                 [
-                    'name' => 'roles',
+                    'name' => 'home',
                 ],
             ],
             'missingName' => [
@@ -149,7 +148,7 @@ class EndpointsTableTest extends TestCase
             'notUnique' => [
                 false,
                 [
-                    'name' => 'roles'
+                    'name' => 'home'
                 ]
             ]
         ];

@@ -13,6 +13,7 @@
 
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
+use Cake\Routing\Route\InflectedRoute;
 
 Router::plugin(
     'BEdita/API',
@@ -21,6 +22,14 @@ Router::plugin(
         '_namePrefix' => 'api:',
     ],
     function (RouteBuilder $routes) {
+        $resourcesControllers = [
+            'object_types',
+            'properties',
+            'roles',
+            'users',
+        ];
+        $routes->routeClass(InflectedRoute::class);
+
         // Home.
         $routes->redirect(
             '/',
@@ -40,160 +49,6 @@ Router::plugin(
             ['_name' => 'status']
         );
 
-        // Roles and Users rules that must be on top
-        $routes->connect(
-            '/users/:user_id/roles',
-            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'users:roles']
-        );
-        $routes->connect(
-            '/roles/:role_id/users',
-            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'roles:users']
-        );
-
-        // Roles.
-        $routes->connect(
-            '/roles',
-            ['controller' => 'Roles', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'roles:index']
-        );
-        $routes->connect(
-            '/roles/*',
-            ['controller' => 'Roles', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'roles:view']
-        );
-        $routes->connect(
-            '/roles',
-            ['controller' => 'Roles', 'action' => 'add', '_method' => 'POST'],
-            ['_name' => 'roles:add']
-        );
-        $routes->connect(
-            '/roles/*',
-            ['controller' => 'Roles', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'roles:edit']
-        );
-        $routes->connect(
-            '/roles/*',
-            ['controller' => 'Roles', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'roles:delete']
-        );
-        $routes->connect(
-            '/roles/:id/relationships/:relationship',
-            ['controller' => 'Roles', 'action' => 'relationships'],
-            ['_name' => 'roles:relationships']
-        );
-
-
-        // Object Types and Properties rules that must be on top
-        $routes->connect(
-            '/object_types/:object_type_id/properties',
-            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'object_types:properties']
-        );
-        $routes->connect(
-            '/properties/:property_id/object_types',
-            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'properties:object_types']
-        );
-        // Object Types.
-        $routes->connect(
-            '/object_types',
-            ['controller' => 'ObjectTypes', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'object_types:index']
-        );
-        $routes->connect(
-            '/object_types/*',
-            ['controller' => 'ObjectTypes', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'object_types:view']
-        );
-        $routes->connect(
-            '/object_types',
-            ['controller' => 'ObjectTypes', 'action' => 'add', '_method' => 'POST'],
-            ['_name' => 'object_types:add']
-        );
-        $routes->connect(
-            '/object_types/*',
-            ['controller' => 'ObjectTypes', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'object_types:edit']
-        );
-        $routes->connect(
-            '/object_types/*',
-            ['controller' => 'ObjectTypes', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'object_types:delete']
-        );
-
-        $routes->connect(
-            '/object_types/:id/relationships/:relationship',
-            ['controller' => 'ObjectTypes', 'action' => 'relationships'],
-            ['_name' => 'object_types:relationships']
-        );
-        // Properties.
-        $routes->connect(
-            '/properties',
-            ['controller' => 'Properties', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'properties:index']
-        );
-        $routes->connect(
-            '/properties/*',
-            ['controller' => 'Properties', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'properties:view']
-        );
-        $routes->connect(
-            '/properties',
-            ['controller' => 'Properties', 'action' => 'add', '_method' => 'POST'],
-            ['_name' => 'properties:add']
-        );
-        $routes->connect(
-            '/properties/*',
-            ['controller' => 'Properties', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'properties:edit']
-        );
-        $routes->connect(
-            '/properties/*',
-            ['controller' => 'Properties', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'properties:delete']
-        );
-        $routes->connect(
-            '/properties/:id/relationships/:relationship',
-            ['controller' => 'Properties', 'action' => 'relationships'],
-            ['_name' => 'properties:relationships']
-        );
-
-
-
-        // Users.
-        $routes->connect(
-            '/users',
-            ['controller' => 'Users', 'action' => 'index', '_method' => 'GET'],
-            ['_name' => 'users:index']
-        );
-        $routes->connect(
-            '/users/*',
-            ['controller' => 'Users', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'users:view']
-        );
-        $routes->connect(
-            '/users',
-            ['controller' => 'Users', 'action' => 'add', '_method' => 'POST'],
-            ['_name' => 'users:add']
-        );
-        $routes->connect(
-            '/users/*',
-            ['controller' => 'Users', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'users:edit']
-        );
-        $routes->connect(
-            '/users/*',
-            ['controller' => 'Users', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'users:delete']
-        );
-        $routes->connect(
-            '/users/:id/relationships/:relationship',
-            ['controller' => 'Users', 'action' => 'relationships'],
-            ['_name' => 'users:relationships']
-        );
-
         // Login.
         $routes->connect(
             '/auth',
@@ -206,6 +61,29 @@ Router::plugin(
             ['_name' => 'login:whoami']
         );
 
+        // Resources.
+        $resourcesControllers = implode('|', $resourcesControllers);
+        $routes->connect(
+            '/:controller',
+            ['action' => 'index'],
+            ['_name' => 'resources:index', 'controller' => $resourcesControllers]
+        );
+        $routes->connect(
+            '/:controller/:id',
+            ['action' => 'resource'],
+            ['_name' => 'resources:resource', 'pass' => ['id'], 'controller' => $resourcesControllers]
+        );
+        $routes->connect(
+            '/:controller/:related_id/:relationship',
+            ['action' => 'related'],
+            ['_name' => 'resources:related', 'controller' => $resourcesControllers]
+        );
+        $routes->connect(
+            '/:controller/:id/relationships/:relationship',
+            ['action' => 'relationships'],
+            ['_name' => 'resources:relationships', 'controller' => $resourcesControllers]
+        );
+
         // Trash.
         $routes->connect(
             '/trash',
@@ -213,46 +91,41 @@ Router::plugin(
             ['_name' => 'trash:index']
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'trash:view']
+            ['_name' => 'trash:resource', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'restore', '_method' => 'PATCH'],
-            ['_name' => 'trash:restore']
+            ['_name' => 'trash:restore', 'pass' => ['id']]
         );
         $routes->connect(
-            '/trash/*',
+            '/trash/:id',
             ['controller' => 'Trash', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'trash:delete']
+            ['_name' => 'trash:delete', 'pass' => ['id']]
         );
 
         // Objects.
         $routes->connect(
             '/:object_type',
-            ['controller' => 'Objects', 'action' => 'index', '_method' => 'GET'],
+            ['controller' => 'Objects', 'action' => 'index'],
             ['_name' => 'objects:index']
         );
         $routes->connect(
-            '/:object_type/*',
-            ['controller' => 'Objects', 'action' => 'view', '_method' => 'GET'],
-            ['_name' => 'objects:view']
+            '/:object_type/:id',
+            ['controller' => 'Objects', 'action' => 'resource'],
+            ['_name' => 'objects:resource', 'pass' => ['id']]
         );
         $routes->connect(
-            '/:object_type',
-            ['controller' => 'Objects', 'action' => 'add', '_method' => 'POST'],
-            ['_name' => 'objects:add']
+            '/:object_type/:related_id/:relationship',
+            ['controller' => 'Objects', 'action' => 'related'],
+            ['_name' => 'objects:related']
         );
         $routes->connect(
-            '/:object_type/*',
-            ['controller' => 'Objects', 'action' => 'edit', '_method' => 'PATCH'],
-            ['_name' => 'objects:edit']
-        );
-        $routes->connect(
-            '/:object_type/*',
-            ['controller' => 'Objects', 'action' => 'delete', '_method' => 'DELETE'],
-            ['_name' => 'objects:delete']
+            '/:object_type/:id/relationships/:relationship',
+            ['controller' => 'Objects', 'action' => 'relationships'],
+            ['_name' => 'objects:relationships']
         );
     }
 );

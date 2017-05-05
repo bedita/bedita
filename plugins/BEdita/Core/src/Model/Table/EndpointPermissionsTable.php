@@ -13,9 +13,12 @@
 
 namespace BEdita\Core\Model\Table;
 
+use Cake\Database\Expression\Comparison;
+use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
+use Cake\Utility\Hash;
 use Cake\Validation\Validator;
 
 /**
@@ -38,8 +41,8 @@ class EndpointPermissionsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('endpoint_permissions');
-        $this->displayField('id');
+        $this->setTable('endpoint_permissions');
+        $this->setDisplayField('id');
 
         $this->belongsTo('Endpoints', [
             'joinType' => 'INNER',
@@ -78,5 +81,116 @@ class EndpointPermissionsTable extends Table
         $rules->add($rules->existsIn(['role_id'], 'Roles'));
 
         return $rules;
+    }
+
+    /**
+     * Find permissions by endpoint.
+     *
+     * This finder accepts two options:
+     *  - `endpointIds`: an array of Endpoint IDs to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all endpoints
+     *      (filter out endpoint permissions with `endpoint_id = NULL`).
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByEndpoint(Query $query, array $options)
+    {
+        $field = $this->aliasField($this->Endpoints->getForeignKey());
+        $ids = array_filter((array)Hash::get($options, 'endpointIds', []));
+        $strict = Hash::get($options, 'strict', false);
+
+        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+                if (!empty($ids)) {
+                    $expr = $expr->in($field, $ids);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$ids` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
+
+                return $expr;
+            });
+        });
+    }
+
+    /**
+     * Find permissions by application.
+     *
+     * This finder accepts two options:
+     *  - `applicationId`: an Application ID to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all applications
+     *      (filter out endpoint permissions with `application_id = NULL`).
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByApplication(Query $query, array $options)
+    {
+        $field = $this->aliasField($this->Applications->getForeignKey());
+        $id = Hash::get($options, 'applicationId');
+        $strict = Hash::get($options, 'strict', false);
+
+        return $query->where(function (QueryExpression $expr) use ($id, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($id, $field, $strict) {
+                if (!empty($id)) {
+                    $expr = $expr->eq($field, $id);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$id` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
+
+                return $expr;
+            });
+        });
+    }
+
+    /**
+     * Find permissions by role.
+     *
+     * This finder accepts two options:
+     *  - `roleIds`: an array of Role IDs to filter endpoint permissions by.
+     *  - `strict`: enable strict mode to exclude endpoint permissions applied to all roles
+     *      (filter out endpoint permissions with `role_id = NULL`).
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Additional options.
+     * @return \Cake\ORM\Query
+     */
+    public function findByRole(Query $query, array $options)
+    {
+        $field = $this->aliasField($this->Roles->getForeignKey());
+        $ids = array_filter((array)Hash::get($options, 'roleIds', []));
+        $strict = Hash::get($options, 'strict', false);
+
+        return $query->where(function (QueryExpression $expr) use ($ids, $field, $strict) {
+            return $expr->or_(function (QueryExpression $expr) use ($ids, $field, $strict) {
+                if (!empty($ids)) {
+                    $expr = $expr->in($field, $ids);
+                }
+                if (empty($strict)) {
+                    $expr = $expr->isNull($field);
+                }
+                if ($expr->count() === 0) {
+                    // If no conditions have been applied so far, it means that `$ids` was empty
+                    // and nulls are not allowed. So, no results must be returned. :)
+                    $expr = $expr->add(new Comparison('0', '0', 'integer', '!='));
+                }
+
+                return $expr;
+            });
+        });
     }
 }

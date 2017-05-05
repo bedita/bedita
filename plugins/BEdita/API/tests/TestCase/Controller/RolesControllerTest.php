@@ -12,29 +12,14 @@
  */
 namespace BEdita\API\Test\TestCase\Controller;
 
+use BEdita\API\TestSuite\IntegrationTestCase;
 use Cake\ORM\TableRegistry;
-use Cake\TestSuite\IntegrationTestCase;
 
 /**
  * @coversDefaultClass \BEdita\API\Controller\RolesController
  */
 class RolesControllerTest extends IntegrationTestCase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = [
-        'plugin.BEdita/Core.object_types',
-        'plugin.BEdita/Core.objects',
-        'plugin.BEdita/Core.profiles',
-        'plugin.BEdita/Core.users',
-        'plugin.BEdita/Core.roles',
-        'plugin.BEdita/Core.roles_users',
-    ];
-
     /**
      * Test index method.
      *
@@ -70,6 +55,8 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -92,6 +79,8 @@ class RolesControllerTest extends IntegrationTestCase
                     'attributes' => [
                         'name' => 'second role',
                         'description' => 'this is a second role',
+                    ],
+                    'meta' => [
                         'unchangeable' => false,
                         'created' => '2016-04-15T11:59:12+00:00',
                         'modified' => '2016-04-15T11:59:13+00:00',
@@ -111,95 +100,21 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/roles');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
         $this->assertEquals($expected, $result);
     }
-
-    /**
-     * Test user roles method.
-     *
-     * @return void
-     *
-     * @covers ::index()
-     * @covers ::initialize()
-     */
-    public function testUserRoles()
-    {
-        $expected = [
-            'links' => [
-                'self' => 'http://api.example.com/users/1/roles',
-                'first' => 'http://api.example.com/users/1/roles',
-                'last' => 'http://api.example.com/users/1/roles',
-                'prev' => null,
-                'next' => null,
-                'home' => 'http://api.example.com/home',
-            ],
-            'meta' => [
-                'pagination' => [
-                    'count' => 1,
-                    'page' => 1,
-                    'page_count' => 1,
-                    'page_items' => 1,
-                    'page_size' => 20,
-                ],
-            ],
-            'data' => [
-                [
-                    'id' => '1',
-                    'type' => 'roles',
-                    'attributes' => [
-                        'name' => 'first role',
-                        'description' => 'this is the very first role',
-                        'unchangeable' => true,
-                        'created' => '2016-04-15T09:57:38+00:00',
-                        'modified' => '2016-04-15T09:57:38+00:00',
-                    ],
-                    'links' => [
-                        'self' => 'http://api.example.com/roles/1',
-                    ],
-                    'relationships' => [
-                        'users' => [
-                            'links' => [
-                                'self' => 'http://api.example.com/roles/1/relationships/users',
-                                'related' => 'http://api.example.com/roles/1/users',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
-        $this->get('/users/1/roles');
-        $result = json_decode($this->_response->body(), true);
-
-        $this->assertResponseCode(200);
-        $this->assertContentType('application/vnd.api+json');
-        $this->assertEquals($expected, $result);
-    }
-
 
     /**
      * Test index method.
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEmpty()
@@ -225,16 +140,12 @@ class RolesControllerTest extends IntegrationTestCase
             'data' => [],
         ];
 
+        TableRegistry::get('EndpointPermissions')->updateAll(['role_id' => null], ['role_id IS NOT' => null]);
         TableRegistry::get('Roles')->deleteAll([]);
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/roles');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -246,7 +157,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testSingle()
@@ -262,6 +173,8 @@ class RolesControllerTest extends IntegrationTestCase
                 'attributes' => [
                     'name' => 'first role',
                     'description' => 'this is the very first role',
+                ],
+                'meta' => [
                     'unchangeable' => true,
                     'created' => '2016-04-15T09:57:38+00:00',
                     'modified' => '2016-04-15T09:57:38+00:00',
@@ -277,14 +190,9 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/roles/1');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(200);
         $this->assertContentType('application/vnd.api+json');
@@ -296,7 +204,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::view()
+     * @covers ::resource()
      * @covers ::initialize()
      * @covers \BEdita\API\Error\ExceptionRenderer
      */
@@ -312,14 +220,9 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders();
         $this->get('/roles/99');
-        $result = json_decode($this->_response->body(), true);
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(404);
         $this->assertContentType('application/vnd.api+json');
@@ -337,7 +240,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAdd()
@@ -349,19 +252,15 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/roles', json_encode(compact('data')));
+        $result = json_decode((string)$this->_response->getBody(), true);
 
         $this->assertResponseCode(201);
         $this->assertContentType('application/vnd.api+json');
+        static::assertArrayHasKey('data', $result);
         $this->assertHeader('Location', 'http://api.example.com/roles/3');
-        $this->assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
+        static::assertTrue(TableRegistry::get('Roles')->exists(['name' => 'head_of_support']));
     }
 
     /**
@@ -369,7 +268,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::add()
+     * @covers ::index()
      * @covers ::initialize()
      */
     public function testAddInvalid()
@@ -383,13 +282,7 @@ class RolesControllerTest extends IntegrationTestCase
 
         $count = TableRegistry::get('Roles')->find()->count();
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('POST', $this->getUserAuthHeader());
         $this->post('/roles', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -402,7 +295,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEdit()
@@ -415,13 +308,7 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1', json_encode(compact('data')));
 
         $this->assertResponseCode(200);
@@ -434,7 +321,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditConflict()
@@ -447,13 +334,7 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/2', json_encode(compact('data')));
 
         $this->assertResponseCode(409);
@@ -467,7 +348,7 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::edit()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testEditInvalid()
@@ -480,13 +361,7 @@ class RolesControllerTest extends IntegrationTestCase
             ],
         ];
 
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('PATCH', $this->getUserAuthHeader());
         $this->patch('/roles/1', json_encode(compact('data')));
 
         $this->assertResponseCode(400);
@@ -499,22 +374,114 @@ class RolesControllerTest extends IntegrationTestCase
      *
      * @return void
      *
-     * @covers ::delete()
+     * @covers ::resource()
      * @covers ::initialize()
      */
     public function testDelete()
     {
-        $this->configRequest([
-            'headers' => [
-                'Host' => 'api.example.com',
-                'Accept' => 'application/vnd.api+json',
-                'Content-Type' => 'application/vnd.api+json',
-            ],
-        ]);
+        $this->configRequestHeaders('DELETE', $this->getUserAuthHeader());
         $this->delete('/roles/1');
 
         $this->assertResponseCode(204);
         $this->assertContentType('application/vnd.api+json');
         $this->assertFalse(TableRegistry::get('Roles')->exists(['id' => 1]));
+    }
+
+    /**
+     * Test related method to list related objects.
+     *
+     * @return void
+     *
+     * @covers ::initialize()
+     * @covers ::related()
+     * @covers ::findAssociation()
+     */
+    public function testRelated()
+    {
+        $expected = [
+            'links' => [
+                'self' => 'http://api.example.com/roles/1/users',
+                'first' => 'http://api.example.com/roles/1/users',
+                'last' => 'http://api.example.com/roles/1/users',
+                'prev' => null,
+                'next' => null,
+                'home' => 'http://api.example.com/home',
+            ],
+            'meta' => [
+                'pagination' => [
+                    'count' => 1,
+                    'page' => 1,
+                    'page_count' => 1,
+                    'page_items' => 1,
+                    'page_size' => 20,
+                ],
+            ],
+            'data' => [
+                [
+                    'id' => '1',
+                    'type' => 'users',
+                    'attributes' => [
+                        'status' => 'on',
+                        'uname' => 'first-user',
+                        'title' => 'Mr. First User',
+                        'description' => null,
+                        'body' => null,
+                        'extra' => null,
+                        'lang' => 'eng',
+                        'name' => 'First',
+                        'surname' => 'User',
+                        'email' => 'first.user@example.com',
+                        'person_title' => 'Mr.',
+                        'gender' => null,
+                        'birthdate' => null,
+                        'deathdate' => null,
+                        'company' => false,
+                        'company_name' => null,
+                        'company_kind' => null,
+                        'street_address' => null,
+                        'city' => null,
+                        'zipcode' => null,
+                        'country' => null,
+                        'state_name' => null,
+                        'phone' => null,
+                        'website' => null,
+                        'publish_start' => null,
+                        'publish_end' => null,
+                        'username' => 'first user',
+                    ],
+                    'meta' => [
+                        'locked' => true,
+                        'created' => '2016-05-13T07:09:23+00:00',
+                        'modified' => '2016-05-13T07:09:23+00:00',
+                        'published' => null,
+                        'created_by' => 1,
+                        'modified_by' => 1,
+                        'blocked' => false,
+                        'last_login' => null,
+                        'last_login_err' => null,
+                        'num_login_err' => 1,
+                    ],
+                    'links' => [
+                        'self' => 'http://api.example.com/users/1',
+                    ],
+                    'relationships' => [
+                        'roles' => [
+                            'links' => [
+                                'related' => 'http://api.example.com/users/1/roles',
+                                'self' => 'http://api.example.com/users/1/relationships/roles',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->configRequestHeaders();
+        $this->get('/roles/1/users');
+        $result = json_decode((string)$this->_response->getBody(), true);
+
+        $this->assertResponseCode(200);
+        $this->assertContentType('application/vnd.api+json');
+        $this->assertEquals($expected, $result);
     }
 }

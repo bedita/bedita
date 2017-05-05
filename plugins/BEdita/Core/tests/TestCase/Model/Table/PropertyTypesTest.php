@@ -27,7 +27,7 @@ class PropertyTypesTest extends TestCase
     /**
      * Test subject
      *
-     * @var \BEdita\Core\Model\Table\PropertyTypes
+     * @var \BEdita\Core\Model\Table\PropertyTypesTable
      */
     public $PropertyTypes;
 
@@ -68,8 +68,8 @@ class PropertyTypesTest extends TestCase
     public function testInitialization()
     {
         $this->PropertyTypes->initialize([]);
-        $this->assertEquals('property_types', $this->PropertyTypes->table());
-        $this->assertEquals('id', $this->PropertyTypes->primaryKey());
+        $this->assertEquals('property_types', $this->PropertyTypes->getTable());
+        $this->assertEquals('id', $this->PropertyTypes->getPrimaryKey());
     }
 
     /**

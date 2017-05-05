@@ -12,23 +12,31 @@
  */
 namespace BEdita\API\Controller;
 
+use BEdita\API\Model\Action\UpdateAssociatedAction;
+use BEdita\Core\Model\Action\AddRelatedObjectsAction;
+use BEdita\Core\Model\Action\DeleteObjectAction;
+use BEdita\Core\Model\Action\GetObjectAction;
+use BEdita\Core\Model\Action\ListObjectsAction;
+use BEdita\Core\Model\Action\ListRelatedObjectsAction;
+use BEdita\Core\Model\Action\RemoveAssociatedAction;
+use BEdita\Core\Model\Action\SaveEntityAction;
+use BEdita\Core\Model\Action\SetRelatedObjectsAction;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Network\Exception\BadRequestException;
 use Cake\Network\Exception\ConflictException;
 use Cake\Network\Exception\InternalErrorException;
-use Cake\Network\Exception\NotFoundException;
+use Cake\ORM\Query;
 use Cake\ORM\TableRegistry;
+use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Router;
 
 /**
  * Controller for `/objects` endpoint.
  *
  * @since 4.0.0
- *
- * @property \BEdita\Core\Model\Table\ObjectsTable $Objects
  */
-class ObjectsController extends AppController
+class ObjectsController extends ResourcesController
 {
+
     /**
      * {@inheritDoc}
      */
@@ -37,7 +45,7 @@ class ObjectsController extends AppController
     /**
      * The referred object type entity filled when `object_type` request param is set and valid
      *
-     * @var \Cake\ORM\EntityInterface
+     * @var \BEdita\Core\Model\Entity\ObjectType
      */
     protected $objectType = null;
 
@@ -46,36 +54,148 @@ class ObjectsController extends AppController
      */
     public function initialize()
     {
-        parent::initialize();
+        if (in_array($this->request->getParam('action'), ['related', 'relationships'])) {
+            $name = $this->request->getParam('relationship');
+            $allowedTypes = TableRegistry::get('ObjectTypes')
+                ->find('list')
+                ->find('byRelation', compact('name'))
+                ->toArray();
 
-        $type = $this->request->param('object_type') ?: 'objects';
-        if ($type != 'objects') {
-            try {
-                $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
-                $this->Objects = TableRegistry::get($this->objectType->alias);
-            } catch (RecordNotFoundException $e) {
-                $this->log('Type endpoint does not exist ' . $type, 'error');
-                throw new NotFoundException('Endpoint does not exist');
-            }
+            $this->setConfig(sprintf('allowedAssociations.%s', $name), $allowedTypes);
         }
 
-        $this->set('_type', 'objects');
+        parent::initialize();
+
+        $type = $this->request->getParam('object_type', $this->request->getParam('controller'));
+        if ($type !== false && $type !== 'objects') {
+            try {
+                $this->objectType = TableRegistry::get('ObjectTypes')->get($type);
+                $this->modelClass = $this->objectType->alias;
+                $this->Table = TableRegistry::get($this->modelClass);
+            } catch (RecordNotFoundException $e) {
+                $this->log(sprintf('Object type "%s" does not exist', $type), 'error', ['request' => $this->request]);
+
+                throw new MissingRouteException(['url' => $this->request->getRequestTarget()]);
+            }
+
+            $behaviorRegistry = $this->Table->behaviors();
+            if ($behaviorRegistry->hasMethod('getRelations')) {
+                $relations = array_keys($behaviorRegistry->call('getRelations'));
+                $this->setConfig('allowedAssociations', array_fill_keys($relations, []));
+            }
+
+            if (isset($this->JsonApi)) {
+                $this->JsonApi->setConfig('resourceTypes', [$this->objectType->name]);
+            }
+        }
     }
 
     /**
-     * Paginated objects list.
-     *
-     * @return void
+     * {@inheritDoc}
      */
     public function index()
     {
-        $query = $this->Objects->find('all')
-            ->where(['deleted' => 0])
-            ->contain(['ObjectTypes']);
+        $this->request->allowMethod(['get', 'post']);
 
-        if ($this->objectType) {
-            $query->andWhere(['object_type_id' => $this->objectType->id]);
+        if ($this->request->is('post')) {
+            // Add a new entity.
+            $entity = $this->Table->newEntity();
+            $entity->set('type', $this->request->getData('type'));
+            $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+
+            $data = $this->request->getData();
+            $data = $action(compact('entity', 'data'));
+
+            $action = new GetObjectAction(['table' => $this->Table]);
+            $data = $action(['primaryKey' => $data->id]);
+
+            $this->response = $this->response
+                ->withStatus(201)
+                ->withHeader(
+                    'Location',
+                    Router::url(
+                        [
+                            '_name' => 'api:objects:resource',
+                            'object_type' => $this->objectType->name,
+                            'id' => $data->id,
+                        ],
+                        true
+                    )
+                );
+        } else {
+            // List existing entities.
+            $filter = $this->request->getQuery('filter');
+            $include = $this->request->getQuery('include');
+            $contain = $include ? $this->prepareInclude($include) : [];
+
+            $action = new ListObjectsAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+            $query = $action(compact('filter', 'contain'));
+
+            $data = $this->paginate($query);
         }
+
+        $this->set(compact('data'));
+        $this->set('_serialize', ['data']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resource($id)
+    {
+        $this->request->allowMethod(['get', 'patch', 'delete']);
+
+        $include = $this->request->getQuery('include');
+        $contain = $include ? $this->prepareInclude($include) : [];
+
+        $action = new GetObjectAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+        $entity = $action(['primaryKey' => $id, 'contain' => $contain]);
+
+        if ($this->request->is('delete')) {
+            // Delete an entity.
+            $action = new DeleteObjectAction(['table' => $this->Table]);
+
+            if (!$action(compact('entity'))) {
+                throw new InternalErrorException(__d('bedita', 'Delete failed'));
+            }
+
+            return $this->response
+                ->withStatus(204);
+        }
+
+        if ($this->request->is('patch')) {
+            // Patch an existing entity.
+            if ($this->request->getData('id') !== $id) {
+                throw new ConflictException(__d('bedita', 'IDs don\'t match'));
+            }
+
+            $action = new SaveEntityAction(['table' => $this->Table, 'objectType' => $this->objectType]);
+
+            $data = $this->request->getData();
+            $entity = $action(compact('entity', 'data'));
+        }
+
+        $this->set(compact('entity'));
+        $this->set('_serialize', ['entity']);
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function related()
+    {
+        $this->request->allowMethod(['get']);
+
+        $relationship = $this->request->getParam('relationship');
+        $relatedId = $this->request->getParam('related_id');
+
+        $association = $this->findAssociation($relationship);
+        $filter = $this->request->getQuery('filter');
+
+        $action = new ListRelatedObjectsAction(compact('association'));
+        $query = $action(['primaryKey' => $relatedId, 'filter' => $filter]);
 
         $objects = $this->paginate($query);
 
@@ -84,119 +204,73 @@ class ObjectsController extends AppController
     }
 
     /**
-     * Get single object data.
-     *
-     * @param int $id Object ID.
-     * @return void
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
+     * {@inheritDoc}
      */
-    public function view($id)
+    public function relationships()
     {
-        $conditions = ['deleted' => 0];
-        if ($this->objectType) {
-            $conditions['object_type_id'] = $this->objectType->id;
+        $this->request->allowMethod(['get', 'post', 'patch', 'delete']);
+
+        $id = $this->request->getParam('id');
+        $relationship = $this->request->getParam('relationship');
+
+        $association = $this->findAssociation($relationship);
+
+        switch ($this->request->getMethod()) {
+            case 'PATCH':
+                $action = new SetRelatedObjectsAction(compact('association'));
+                break;
+
+            case 'POST':
+                $action = new AddRelatedObjectsAction(compact('association'));
+                break;
+
+            case 'DELETE':
+                $action = new RemoveAssociatedAction(compact('association'));
+                break;
+
+            case 'GET':
+            default:
+                $filter = $this->request->getQuery('filter');
+
+                $action = new ListRelatedObjectsAction(compact('association'));
+                $data = $action(['primaryKey' => $id, 'list' => true, 'filter' => $filter]);
+
+                if ($data instanceof Query) {
+                    $data = $this->paginate($data);
+                }
+
+                $this->set(compact('data'));
+                $this->set([
+                    '_serialize' => ['data'],
+                ]);
+
+                return null;
         }
-        $object = $this->Objects->get($id, [
-            'contain' => ['ObjectTypes'],
-            'conditions' => $conditions
+
+        $action = new UpdateAssociatedAction(compact('action') + ['request' => $this->request]);
+        $count = $action(['primaryKey' => $id]);
+
+        if ($count === false) {
+            throw new InternalErrorException(__d('bedita', 'Could not update relationship "{0}"', $relationship));
+        }
+
+        if (is_array($count)) {
+            $action = new ListRelatedObjectsAction(compact('association'));
+            $data = $action(['primaryKey' => $id, 'list' => true, 'only' => $count]);
+
+            $count = count($count);
+        }
+
+        if ($count === 0) {
+            return $this->response
+                ->withStatus(204);
+        }
+
+        $this->set(compact('data'));
+        $this->set([
+            '_serialize' => isset($data) ? ['data'] : [],
         ]);
 
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Add a new object.
-     *
-     * @return void
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
-     */
-    public function add()
-    {
-        $this->request->allowMethod('post');
-
-        $object = $this->Objects->newEntity($this->request->data);
-        $object->type = $this->request->data('type');
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
-            $this->log('Bad type on object creation ' . $object->type, 'error');
-            throw new BadRequestException('Invalid type');
-        }
-        if (!$this->Objects->save($object)) {
-            $this->log('Object creation failed  - ' . $object->type . ' - ' . json_encode($object->errors()), 'error');
-            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
-        }
-
-        $this->response->statusCode(201);
-        $urlOptions = ['object_type' => $object->type, '_name' => 'api:objects:view', $object->id];
-        $this->response->header('Location', Router::url($urlOptions, true));
-
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Edit an existing object.
-     *
-     * @param int $id Object ID.
-     * @return void
-     * @throws \Cake\Network\Exception\ConflictException Throws an exception if object ID in the payload doesn't match
-     *      the URL object ID.
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
-     * @throws \Cake\Network\Exception\BadRequestException Throws an exception if submitted data is invalid.
-     */
-    public function edit($id)
-    {
-        $this->request->allowMethod('patch');
-
-        if ($this->request->data('id') != $id) {
-            throw new ConflictException('IDs don\' match');
-        }
-
-        $object = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 0]
-        ]);
-
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
-            $this->log('Bad type on object edit ' . $object->type, 'error');
-            throw new NotFoundException('Invalid type');
-        }
-
-        $object = $this->Objects->patchEntity($object, $this->request->data);
-        if (!$this->Objects->save($object)) {
-            $this->log('Object edit failed ' . json_encode($object->errors()), 'error');
-            throw new BadRequestException(['title' => 'Invalid data', 'detail' => [$object->errors()]]);
-        }
-
-        $this->set(compact('object'));
-        $this->set('_serialize', ['object']);
-    }
-
-    /**
-     * Delete an existing object.
-     *
-     * @param int $id object ID.
-     * @return void
-     * @throws \Cake\Network\Exception\InternalErrorException Throws an exception if an error occurs during deletion.
-     * @throws \Cake\Network\Exception\NotFoundException Throws an exception if specified object could not be found.
-     */
-    public function delete($id)
-    {
-        $this->request->allowMethod('delete');
-
-        $object = $this->Objects->get($id, [
-            'conditions' => ['deleted' => 0]
-        ]);
-
-        if ($this->objectType && $object->type !== $this->objectType->pluralized) {
-            $this->log('Bad type on object delete ' . $object->type, 'error');
-            throw new NotFoundException('Invalid type');
-        }
-
-        $object->deleted = true;
-        if (!$this->Objects->save($object)) {
-            throw new InternalErrorException('Could not delete object');
-        }
-
-        $this->noContentResponse();
+        return null;
     }
 }

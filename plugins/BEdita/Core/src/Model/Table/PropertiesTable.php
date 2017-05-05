@@ -37,7 +37,7 @@ class PropertiesTable extends Table
     {
         parent::initialize($config);
 
-        $this->displayField('name');
+        $this->setDisplayField('name');
 
         $this->addBehavior('Timestamp');
 
@@ -51,7 +51,6 @@ class PropertiesTable extends Table
             'foreignKey' => 'object_type_id',
             'joinType' => 'INNER',
             'className' => 'BEdita/Core.ObjectTypes',
-            'propertyName' => 'object_types'
         ]);
     }
 
@@ -76,7 +75,6 @@ class PropertiesTable extends Table
 
             ->boolean('multiple')
             ->notEmpty('multiple');
-
 
         return $validator;
     }

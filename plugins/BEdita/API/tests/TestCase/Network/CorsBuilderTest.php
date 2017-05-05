@@ -13,15 +13,13 @@
 namespace BEdita\API\Test\TestCase\Network;
 
 use BEdita\API\Network\CorsBuilder;
-use Cake\Http\ServerRequestFactory;
 use Cake\TestSuite\TestCase;
-use Zend\Diactoros\Request;
 use Zend\Diactoros\Response;
 
 /**
  * Test for RoutingMiddleware
  *
- * @coversDefaultClass \BEdita\API\Network\CorsBuilder
+ * @covers \BEdita\API\Network\CorsBuilder
  */
 class CorsBuilderTest extends TestCase
 {
@@ -39,8 +37,6 @@ class CorsBuilderTest extends TestCase
      * Test build CORS response
      *
      * @return void
-     *
-     * @covers ::build()
      */
     public function testBuild()
     {

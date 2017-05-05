@@ -21,12 +21,14 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "cakephp/cakephp": "~3.2"
+        "php": ">=5.6.0",
+        "cakephp/cakephp": "~3.4.1",
+        "cakephp/migrations": "~1.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "cakephp/cakephp-codesniffer": "master-dev",
+        "phpunit/phpunit": "^5.7|^6.0",
+        "cakephp/cakephp-codesniffer": "~2.1",
+        "fzaninotto/faker": "^1.5",
         "phpmd/phpmd": "*"
     },
     "autoload": {

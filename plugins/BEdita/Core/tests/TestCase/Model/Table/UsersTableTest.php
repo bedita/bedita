@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\Event\Event;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -39,6 +40,8 @@ class UsersTableTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
@@ -52,6 +55,7 @@ class UsersTableTest extends TestCase
         parent::setUp();
 
         $this->Users = TableRegistry::get('Users');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -60,6 +64,7 @@ class UsersTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Users);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -74,9 +79,9 @@ class UsersTableTest extends TestCase
     {
         $this->Users->associations()->removeAll();
         $this->Users->initialize([]);
-        $this->assertEquals('users', $this->Users->table());
-        $this->assertEquals('id', $this->Users->primaryKey());
-        $this->assertEquals('username', $this->Users->displayField());
+        $this->assertEquals('users', $this->Users->getTable());
+        $this->assertEquals('id', $this->Users->getPrimaryKey());
+        $this->assertEquals('username', $this->Users->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->Users->ExternalAuth);
         $this->assertInstanceOf('\Cake\ORM\Association\BelongsToMany', $this->Users->Roles);
@@ -115,7 +120,7 @@ class UsersTableTest extends TestCase
      *
      * @return void
      * @dataProvider validationProvider
-     *
+     * @coversNothing
      */
     public function testValidation($expected, array $data)
     {
@@ -152,6 +157,8 @@ class UsersTableTest extends TestCase
      * Test deleted field on user deleted.
      *
      * @return void
+     *
+     * @coversNothing
      */
     public function testDeleted()
     {

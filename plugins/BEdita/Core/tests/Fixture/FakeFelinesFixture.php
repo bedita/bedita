@@ -15,9 +15,15 @@ namespace BEdita\Core\Test\Fixture;
 
 use BEdita\Core\TestSuite\Fixture\TestFixture;
 
+/**
+ * Fixture for `fake_felines` table.
+ */
 class FakeFelinesFixture extends TestFixture
 {
 
+    /**
+     * {@inheritDoc}
+     */
     public $fields = [
         'id' => ['type' => 'integer', 'length' => 10, 'unsigned' => true, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'family' => ['type' => 'string', 'length' => 255, 'null' => true, 'default' => null, 'precision' => null],

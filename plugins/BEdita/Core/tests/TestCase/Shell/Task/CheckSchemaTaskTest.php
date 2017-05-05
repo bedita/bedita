@@ -48,10 +48,10 @@ class CheckSchemaTaskTest extends ShellTestCase
 
         ConnectionManager::get('default')
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }
@@ -73,6 +73,64 @@ class CheckSchemaTaskTest extends ShellTestCase
         $this->assertErrorContains('Plugin "Migrations" must be loaded');
 
         $this->assertAborted();
+    }
+
+    /**
+     * Test check on offended SQL conventions.
+     *
+     * @return void
+     * @covers ::checkConventions()
+     * @covers ::checkSymbol()
+     * @covers ::formatMessages()
+     */
+    public function testOffendedConventions()
+    {
+        $connection = ConnectionManager::get('default');
+        if (!($connection instanceof Connection)) {
+            throw new \RuntimeException('Unable to use database connection');
+        }
+
+        $table = new Table('foo_bar');
+        $table
+            ->addColumn('foo_bar', [
+                'type' => 'string',
+                'length' => 255,
+                'null' => true,
+                'default' => null,
+            ])
+            ->addColumn('password', [
+                'type' => 'string',
+                'length' => 255,
+                'null' => true,
+                'default' => null,
+            ])
+            ->addColumn('42gustavo__suppOrto_', [
+                'type' => 'string',
+                'length' => 255,
+                'null' => true,
+                'default' => null,
+            ])
+            ->addIndex('mytestindex', [
+                'type' => Table::INDEX_INDEX,
+                'columns' => ['foo_bar'],
+            ])
+            ->addConstraint('foobar_uq', [
+                'type' => Table::CONSTRAINT_UNIQUE,
+                'columns' => ['foo_bar'],
+            ]);
+        foreach ($table->createSql($connection) as $statement) {
+            $connection->query($statement);
+        }
+
+        $result = $this->invoke(['db_admin', 'check_schema']);
+
+        $this->assertNotAborted();
+        $this->assertFalse($result);
+        $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
+        $this->assertOutputContains('Column name "password" is not valid (reserved word)');
+        $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
+        $this->assertOutputContains('Index name "mytestindex" is not valid');
+        $this->assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
     }
 
     /**
@@ -134,7 +192,7 @@ class CheckSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $table = $connection->schemaCollection()->describe('config');
+        $table = $connection->getSchemaCollection()->describe('config');
         foreach ($table->dropSql($connection) as $statement) {
             $connection->query($statement);
         }
@@ -160,7 +218,7 @@ class CheckSchemaTaskTest extends ShellTestCase
             throw new \RuntimeException('Unable to use database connection');
         }
 
-        $table = $connection->schemaCollection()->describe('objects');
+        $table = $connection->getSchemaCollection()->describe('objects');
         $constraints = $table->constraints();
         foreach ($table->dropConstraintSql($connection) as $statement) {
             $connection->query($statement);
@@ -178,63 +236,5 @@ class CheckSchemaTaskTest extends ShellTestCase
 
             $this->assertOutputContains(sprintf('Constraint "%s" has been removed', $constraint));
         }
-    }
-
-    /**
-     * Test check on offended SQL conventions.
-     *
-     * @return void
-     * @covers ::checkConventions()
-     * @covers ::checkSymbol()
-     * @covers ::formatMessages()
-     */
-    public function testOffendedConventions()
-    {
-        $connection = ConnectionManager::get('default');
-        if (!($connection instanceof Connection)) {
-            throw new \RuntimeException('Unable to use database connection');
-        }
-
-        $table = new Table('foo_bar');
-        $table
-            ->addColumn('foo_bar', [
-                'type' => 'string',
-                'length' => 255,
-                'null' => true,
-                'default' => null,
-            ])
-            ->addColumn('password', [
-                'type' => 'string',
-                'length' => 255,
-                'null' => true,
-                'default' => null,
-            ])
-            ->addColumn('42gustavo__suppOrto_', [
-                'type' => 'string',
-                'length' => 255,
-                'null' => true,
-                'default' => null,
-            ])
-            ->addIndex('mytestindex', [
-                'type' => Table::INDEX_INDEX,
-                'columns' => ['foo_bar'],
-            ])
-            ->addConstraint('foobar_uq', [
-                'type' => Table::CONSTRAINT_UNIQUE,
-                'columns' => ['foo_bar'],
-            ]);
-        foreach ($table->createSql($connection) as $statement) {
-            $connection->query($statement);
-        }
-
-        $result = $this->invoke(['db_admin', 'check_schema']);
-
-        $this->assertNotAborted();
-        $this->assertFalse($result);
-        $this->assertOutputContains('Column name "foo_bar" is not valid (same name as table)');
-        $this->assertOutputContains('Column name "password" is not valid (reserved word)');
-        $this->assertOutputContains('Column name "42gustavo__suppOrto_" is not valid');
-        $this->assertOutputContains('Index name "mytestindex" is not valid');
-        $this->assertRegExp('/Constraint name "[a-zA-Z0-9_]+" is not valid/', $this->getOutput());
     }
 }

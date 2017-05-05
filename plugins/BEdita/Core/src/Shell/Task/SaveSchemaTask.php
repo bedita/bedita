@@ -35,7 +35,7 @@ class SaveSchemaTask extends Shell
     {
         $parser = parent::getOptionParser();
         $parser
-            ->description([
+            ->setDescription([
                 'Use this command to generate a dump schema file.',
                 'File is generated using current database connection.',
             ])
@@ -46,7 +46,7 @@ class SaveSchemaTask extends Shell
                 'default' => 'default',
                 'choices' => ConnectionManager::configured(),
             ])
-            ->epilog('This command is DEPRECATED! Use `bin/cake migrations dump` instead.');
+            ->setEpilog('This command is DEPRECATED! Use `bin/cake migrations dump` instead.');
 
         return $parser;
     }
@@ -62,7 +62,7 @@ class SaveSchemaTask extends Shell
             $this->abort('Plugin "Migrations" must be loaded in order to dump current schema');
         }
 
-        $this->out(sprintf('<warning>%s</warning>', $this->getOptionParser()->epilog()), 2);
+        $this->out(sprintf('<warning>%s</warning>', $this->getOptionParser()->getEpilog()), 2);
 
         return $this->dispatchShell([
             'command' => ['migrations', 'dump'],

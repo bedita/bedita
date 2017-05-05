@@ -13,7 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
-use BEdita\Core\Model\Table\ApplicationsTable;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -71,13 +70,13 @@ class ApplicationsTableTest extends TestCase
     public function testInitialize()
     {
         $this->Applications->initialize([]);
-        $this->assertEquals('applications', $this->Applications->table());
-        $this->assertEquals('id', $this->Applications->primaryKey());
-        $this->assertEquals('name', $this->Applications->displayField());
+        $this->assertEquals('applications', $this->Applications->getTable());
+        $this->assertEquals('id', $this->Applications->getPrimaryKey());
+        $this->assertEquals('name', $this->Applications->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Behavior\TimestampBehavior', $this->Applications->behaviors()->get('Timestamp'));
         $this->assertInstanceOf('\Cake\ORM\Association\hasMany', $this->Applications->EndpointPermissions);
-        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Applications->EndpointPermissions->target());
+        $this->assertInstanceOf('\BEdita\Core\Model\Table\EndpointPermissionsTable', $this->Applications->EndpointPermissions->getTarget());
     }
 
     /**
@@ -164,8 +163,10 @@ class ApplicationsTableTest extends TestCase
      *
      * @param string $apiKey The api key to set. Empty to leave unchanged on update or auto generation on create
      * @param bool $update If the operation is an update or create
-     *
      * @return void
+     *
+     * @covers ::beforeSave()
+     * @covers ::generateApiKey()
      * @dataProvider apiKeyGenerationProvider
      */
     public function testApiKeyGeneration($apiKey, $update)
@@ -203,5 +204,54 @@ class ApplicationsTableTest extends TestCase
                 $this->assertEquals(40, strlen($testApp->api_key));
             }
         }
+    }
+
+    /**
+     * Data provider for `testFindApiKey` test case.
+     *
+     * @return array
+     */
+    public function findApiKeyProvider()
+    {
+        return [
+            'found' => [
+                1,
+                API_KEY,
+            ],
+            'disabled' => [
+                0,
+                'abcdef12345',
+            ],
+            'invalid' => [
+                0,
+                'invalid',
+            ],
+            'badMethodException' => [
+                new \BadMethodCallException('Required option "apiKey" must be a not empty string'),
+                ['this', 'is', 'not', 'a', 'string'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by API key.
+     *
+     * @param int|\Exception $expected Expected count.
+     * @param string $apiKey API key.
+     * @return void
+     *
+     * @covers ::findApiKey()
+     * @dataProvider findApiKeyProvider()
+     */
+    public function testFindApiKey($expected, $apiKey)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $count = $this->Applications->find('apiKey', compact('apiKey'))->count();
+
+        static::assertSame($expected, $count);
     }
 }

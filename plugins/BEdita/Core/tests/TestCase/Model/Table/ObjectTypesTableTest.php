@@ -41,6 +41,8 @@ class ObjectTypesTableTest extends TestCase
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
         'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
     ];
@@ -52,7 +54,8 @@ class ObjectTypesTableTest extends TestCase
     {
         parent::setUp();
 
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'File']);
 
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
@@ -63,6 +66,10 @@ class ObjectTypesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->ObjectTypes);
+
+        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
+        Cache::drop('_bedita_object_types_');
+        Cache::setConfig('_bedita_object_types_', ['className' => 'Null']);
 
         parent::tearDown();
     }
@@ -77,9 +84,9 @@ class ObjectTypesTableTest extends TestCase
     {
         $this->ObjectTypes->initialize([]);
 
-        $this->assertEquals('object_types', $this->ObjectTypes->table());
-        $this->assertEquals('id', $this->ObjectTypes->primaryKey());
-        $this->assertEquals('name', $this->ObjectTypes->displayField());
+        $this->assertEquals('object_types', $this->ObjectTypes->getTable());
+        $this->assertEquals('id', $this->ObjectTypes->getPrimaryKey());
+        $this->assertEquals('name', $this->ObjectTypes->getDisplayField());
 
         $this->assertInstanceOf('\Cake\ORM\Association\HasMany', $this->ObjectTypes->Objects);
     }
@@ -95,8 +102,8 @@ class ObjectTypesTableTest extends TestCase
             'valid' => [
                 true,
                 [
-                    'name' => 'foo',
-                    'pluralized' => 'foos',
+                    'singular' => 'foo',
+                    'name' => 'foos',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                 ],
@@ -104,8 +111,8 @@ class ObjectTypesTableTest extends TestCase
             'notUnique' => [
                 false,
                 [
-                    'name' => 'document',
-                    'pluralized' => 'many_documents',
+                    'singular' => 'document',
+                    'name' => 'many_documents',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                 ],
@@ -113,8 +120,8 @@ class ObjectTypesTableTest extends TestCase
             'notUnique2' => [
                 false,
                 [
-                    'name' => 'card',
-                    'pluralized' => 'profiles',
+                    'singular' => 'card',
+                    'name' => 'profiles',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                 ],
@@ -122,8 +129,8 @@ class ObjectTypesTableTest extends TestCase
             'notCrossUnique1' => [
                 false,
                 [
-                    'name' => 'profiles',
-                    'pluralized' => 'many_profiles',
+                    'singular' => 'profiles',
+                    'name' => 'many_profiles',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                 ],
@@ -131,10 +138,20 @@ class ObjectTypesTableTest extends TestCase
             'notCrossUnique2' => [
                 false,
                 [
-                    'name' => 'piece_of_profile',
-                    'pluralized' => 'profile',
+                    'singular' => 'piece_of_profile',
+                    'name' => 'profile',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
+                ],
+            ],
+            'notUniqueNotNew' => [
+                false,
+                [
+                    'id' => 1,
+                    'singular' => 'profiles',
+                    'name' => 'profile',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Profiles',
                 ],
             ],
         ];
@@ -153,6 +170,9 @@ class ObjectTypesTableTest extends TestCase
     public function testValidation($expected, array $data)
     {
         $objectType = $this->ObjectTypes->newEntity();
+        if (!empty($data['id'])) {
+            $objectType = $this->ObjectTypes->get($data['id']);
+        }
         $this->ObjectTypes->patchEntity($objectType, $data);
 
         $success = $this->ObjectTypes->save($objectType);
@@ -170,54 +190,92 @@ class ObjectTypesTableTest extends TestCase
             'id' => [
                 [
                     'id' => 1,
-                    'name' => 'document',
-                    'pluralized' => 'documents',
+                    'singular' => 'document',
+                    'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 1,
             ],
             'stringId' => [
                 [
                     'id' => 1,
-                    'name' => 'document',
-                    'pluralized' => 'documents',
+                    'singular' => 'document',
+                    'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 '1',
             ],
             'singular' => [
                 [
                     'id' => 1,
-                    'name' => 'document',
-                    'pluralized' => 'documents',
+                    'singular' => 'document',
+                    'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'document',
             ],
             'plural' => [
                 [
                     'id' => 1,
-                    'name' => 'document',
-                    'pluralized' => 'documents',
+                    'singular' => 'document',
+                    'name' => 'documents',
                     'description' => null,
                     'alias' => 'Documents',
                     'plugin' => 'BEdita/Core',
                     'model' => 'Objects',
                     'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
                 ],
                 'documents',
+            ],
+            'notUnderscored' => [
+                [
+                    'id' => 1,
+                    'singular' => 'document',
+                    'name' => 'documents',
+                    'description' => null,
+                    'alias' => 'Documents',
+                    'plugin' => 'BEdita/Core',
+                    'model' => 'Objects',
+                    'table' => 'BEdita/Core.Objects',
+                    'associations' => null,
+                    'relations' => [
+                        'test',
+                        'inverse_test',
+                    ],
+                ],
+                'Documents',
             ],
             'missingId' => [
                 false,
@@ -243,7 +301,7 @@ class ObjectTypesTableTest extends TestCase
     public function testGet($expected, $primaryKey)
     {
         if (!$expected) {
-            $this->setExpectedException('\Cake\Datasource\Exception\RecordNotFoundException');
+            $this->expectException('\Cake\Datasource\Exception\RecordNotFoundException');
         }
 
         $entity = $this->ObjectTypes->get($primaryKey);
@@ -264,14 +322,14 @@ class ObjectTypesTableTest extends TestCase
 
         $this->assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
         $this->assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        $this->assertNotFalse(Cache::read('map_pluralized', ObjectTypesTable::CACHE_CONFIG));
+        $this->assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
-        $entity = $this->ObjectTypes->patchEntity($entity, ['name' => 'foo', 'pluralized' => 'foos']);
+        $entity = $this->ObjectTypes->patchEntity($entity, ['singular' => 'foo', 'name' => 'foos']);
         $this->ObjectTypes->save($entity);
 
         $this->assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
         $this->assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        $this->assertFalse(Cache::read('map_pluralized', ObjectTypesTable::CACHE_CONFIG));
+        $this->assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
     }
 
     /**
@@ -287,12 +345,84 @@ class ObjectTypesTableTest extends TestCase
 
         $this->assertNotFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
         $this->assertNotFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        $this->assertNotFalse(Cache::read('map_pluralized', ObjectTypesTable::CACHE_CONFIG));
+        $this->assertNotFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
 
         $this->ObjectTypes->delete($entity);
 
         $this->assertFalse(Cache::read('id_1', ObjectTypesTable::CACHE_CONFIG));
         $this->assertFalse(Cache::read('map', ObjectTypesTable::CACHE_CONFIG));
-        $this->assertFalse(Cache::read('map_pluralized', ObjectTypesTable::CACHE_CONFIG));
+        $this->assertFalse(Cache::read('map_singular', ObjectTypesTable::CACHE_CONFIG));
+    }
+
+    /**
+     * Data provider for `testFindByRelation` test case.
+     *
+     * @return array
+     */
+    public function findByRelationProvider()
+    {
+        return [
+            'error' => [
+                new \LogicException('Missing required parameter "name"'),
+                [],
+            ],
+            'right' => [
+                ['documents', 'profiles'],
+                ['name' => 'test'],
+            ],
+            'left' => [
+                ['documents'],
+                ['name' => 'test', 'side' => 'left'],
+            ],
+            'inverse right' => [
+                ['documents'],
+                ['name' => 'inverse_test'],
+            ],
+            'inverse left' => [
+                ['documents', 'profiles'],
+                ['name' => 'inverse_test', 'side' => 'left'],
+            ],
+        ];
+    }
+
+    /**
+     * Test finder by relation name.
+     *
+     * @param array\\Exception $expected Expected results.
+     * @param array $options Finder options.
+     * @return void
+     *
+     * @covers ::findByRelation()
+     * @dataProvider findByRelationProvider()
+     */
+    public function testFindByRelation($expected, array $options)
+    {
+        if ($expected instanceof \Exception) {
+            static::expectException(get_class($expected));
+            static::expectExceptionMessage($expected->getMessage());
+        }
+
+        $result = $this->ObjectTypes
+            ->find('byRelation', $options)
+            ->find('list')
+            ->toArray();
+
+        static::assertEquals($expected, $result, '', 0, 10, true);
+    }
+
+    /**
+     * Test default finder.
+     *
+     * @return void
+     *
+     * @covers ::findAll()
+     */
+    public function testFindAll()
+    {
+        $query = $this->ObjectTypes->find();
+        $contain = $query->contain();
+
+        static::assertArrayHasKey('LeftRelations', $contain);
+        static::assertArrayHasKey('RightRelations', $contain);
     }
 }

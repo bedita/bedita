@@ -16,21 +16,18 @@ use BEdita\Core\Utility\LoggedUser;
 use Cake\TestSuite\TestCase;
 
 /**
- * \BEdita\Core\Utility\LoggedUser Test Case
+ * {@see \BEdita\Core\Utility\LoggedUser} Test Case
  *
- * @coversDefaultClass \BEdita\Core\Utility\LoggedUser
+ * @covers \BEdita\Core\Utility\LoggedUser
  */
 class LoggedUserTest extends TestCase
 {
-
     /**
-     * Test singleton
+     * {@inheritDoc}
      */
-    public function testFail()
+    public function tearDown()
     {
-        $reflection = new \ReflectionClass('\BEdita\Core\Utility\LoggedUser');
-        $this->assertFalse($reflection->isCloneable());
-        $this->assertFalse($reflection->getConstructor()->isPublic());
+        LoggedUser::resetUser();
     }
 
     /**
@@ -40,15 +37,15 @@ class LoggedUserTest extends TestCase
      */
     public function testUserData()
     {
-        $userData = LoggedUser::getUser();
+        $this->assertEquals([], LoggedUser::getUser());
 
-        LoggedUser::setUser(false);
-        $this->assertEquals($userData['id'], LoggedUser::id());
-
-        LoggedUser::setUser(['id' => 10, 'somefield' => 'somevalue']);
+        $userData = ['id' => 10, 'somefield' => 'somevalue'];
+        LoggedUser::setUser($userData);
         $this->assertEquals(10, LoggedUser::id());
 
-        LoggedUser::setUser($userData);
+        LoggedUser::setUser([]);
+        $this->assertEquals($userData['id'], LoggedUser::id());
+
         $this->assertEquals($userData, LoggedUser::getUser());
     }
 }

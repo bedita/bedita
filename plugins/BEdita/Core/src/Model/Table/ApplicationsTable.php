@@ -40,7 +40,7 @@ class ApplicationsTable extends Table
     {
         parent::initialize($config);
 
-        $this->displayField('name');
+        $this->setDisplayField('name');
         $this->addBehavior('Timestamp');
         $this->hasMany('EndpointPermissions');
     }
@@ -94,11 +94,11 @@ class ApplicationsTable extends Table
      */
     public function beforeSave(Event $event, EntityInterface $entity, \ArrayObject $options)
     {
-        if (!$entity->isNew() || !empty($entity->api_key)) {
+        if (!$entity->isNew() || $entity->has('api_key')) {
             return;
         }
 
-        $entity->api_key = $this->generateApiKey();
+        $entity->set('api_key', static::generateApiKey());
     }
 
     /**
@@ -106,8 +106,28 @@ class ApplicationsTable extends Table
      *
      * @return string
      */
-    public function generateApiKey()
+    public static function generateApiKey()
     {
         return Security::hash(Text::uuid(), 'sha1');
+    }
+
+    /**
+     * Find an active application by its API key.
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Options array. It requires an `apiKey` key.
+     * @return \Cake\ORM\Query
+     */
+    public function findApiKey(Query $query, array $options)
+    {
+        if (empty($options['apiKey']) || !is_string($options['apiKey'])) {
+            throw new \BadMethodCallException('Required option "apiKey" must be a not empty string');
+        }
+
+        return $query
+            ->where([
+                $this->aliasField('api_key') => $options['apiKey'],
+                $this->aliasField('enabled') => true,
+            ]);
     }
 }

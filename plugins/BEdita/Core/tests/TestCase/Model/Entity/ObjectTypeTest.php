@@ -13,9 +13,6 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Entity;
 
-use BEdita\Core\Model\Entity\ObjectType;
-use BEdita\Core\Model\Table\ObjectTypesTable;
-use Cake\Cache\Cache;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +38,8 @@ class ObjectTypeTest extends TestCase
      */
     public $fixtures = [
         'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
     ];
 
     /**
@@ -49,8 +48,6 @@ class ObjectTypeTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-
-        Cache::clear(false, ObjectTypesTable::CACHE_CONFIG);
 
         $this->ObjectTypes = TableRegistry::get('ObjectTypes');
     }
@@ -80,12 +77,9 @@ class ObjectTypeTest extends TestCase
             'name' => 'patched_name',
         ];
         $objectType = $this->ObjectTypes->patchEntity($objectType, $data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals(1, $objectType->id);
-        $this->assertEquals('patched_name', $objectType->name);
+        static::assertEquals(1, $objectType->id);
+        static::assertEquals('patched_name', $objectType->name);
     }
 
     /**
@@ -98,21 +92,23 @@ class ObjectTypeTest extends TestCase
     {
         $expected = [
             'id' => 1,
-            'name' => 'document',
-            'pluralized' => 'documents',
+            'name' => 'documents',
+            'singular' => 'document',
             'alias' => 'Documents',
             'description' => null,
             'plugin' => 'BEdita/Core',
             'model' => 'Objects',
             'table' => 'BEdita/Core.Objects',
+            'associations' => null,
+            'relations' => [
+                'test',
+                'inverse_test',
+            ],
         ];
 
         $objectType = $this->ObjectTypes->get(1);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expected, $objectType->toArray());
+        static::assertEquals($expected, $objectType->toArray());
     }
 
     /**
@@ -127,47 +123,41 @@ class ObjectTypeTest extends TestCase
             'name' => 'FooBar',
         ];
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals('foo_bar', $objectType->name);
+        static::assertEquals('foo_bar', $objectType->name);
     }
 
     /**
-     * Data provider for `testGetSetPluralized` test case.
+     * Data provider for `testGetSetSingular` test case.
      *
      * @return array
      */
-    public function getSetPluralizedProvider()
+    public function getSetSingularProvider()
     {
         return [
-            'default' => ['foo_bars', 'foo_bar', 'FooBars'],
-            'missing' => ['foo_bars', 'foo_bar', null],
+            'default' => ['foo_bar', 'foo_bars', 'FooBar'],
+            'missing' => ['foo_bar', 'foo_bars', null],
         ];
     }
 
     /**
-     * Test getter/setter method for `pluralized`.
+     * Test getter/setter method for `singular`.
      *
      * @param string $expected Expected result.
      * @param string $name Object type name.
-     * @param string|null $pluralized Object type pluralized name.
+     * @param string|null $singular Object type singular name.
      * @return void
      *
-     * @dataProvider getSetPluralizedProvider
-     * @covers ::_getPluralized()
-     * @covers ::_setPluralized()
+     * @dataProvider getSetSingularProvider
+     * @covers ::_getSingular()
+     * @covers ::_setSingular()
      */
-    public function testGetSetPluralized($expected, $name, $pluralized)
+    public function testGetSetSingular($expected, $name, $singular)
     {
-        $data = compact('name', 'pluralized');
+        $data = compact('name', 'singular');
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expected, $objectType->pluralized);
+        static::assertEquals($expected, $objectType->singular);
     }
 
     /**
@@ -179,18 +169,15 @@ class ObjectTypeTest extends TestCase
     public function testGetAlias()
     {
         $data = [
-            'name' => 'foo_bar',
+            'name' => 'foo_bars',
         ];
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals('FooBars', $objectType->alias);
+        static::assertEquals('FooBars', $objectType->alias);
     }
 
     /**
-     * Data provider for `testGetSetPluralized` test case.
+     * Data provider for `testGetSetTable` test case.
      *
      * @return array
      */
@@ -219,12 +206,43 @@ class ObjectTypeTest extends TestCase
     {
         $data = compact('table');
         $objectType = $this->ObjectTypes->newEntity($data);
-        if (!($objectType instanceof ObjectType)) {
-            throw new \InvalidArgumentException();
-        }
 
-        $this->assertEquals($expectedPlugin, $objectType->plugin);
-        $this->assertEquals($expectedModel, $objectType->model);
-        $this->assertEquals($expected, $objectType->table);
+        static::assertEquals($expectedPlugin, $objectType->plugin);
+        static::assertEquals($expectedModel, $objectType->model);
+        static::assertEquals($expected, $objectType->table);
+    }
+
+    /**
+     * Test getter for relations.
+     *
+     * @return void
+     *
+     * @covers ::_getRelations()
+     */
+    public function testGetRelations()
+    {
+        $expected = [
+            'inverse_test',
+        ];
+        $objectType = $this->ObjectTypes->get(2);
+
+        static::assertEquals($expected, $objectType->relations, '', 0, 10, true);
+    }
+
+    /**
+     * Test getter for relations when associations haven't been loaded.
+     *
+     * @return void
+     *
+     * @covers ::_getRelations()
+     */
+    public function testGetRelationsAssociationsNotLoaded()
+    {
+        $objectType = $this->ObjectTypes->find()
+            ->contain(['LeftRelations'], true)
+            ->firstOrFail();
+
+        static::assertInstanceOf($this->ObjectTypes->getEntityClass(), $objectType);
+        static::assertNull($objectType->relations);
     }
 }

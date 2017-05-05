@@ -13,11 +13,11 @@
 
 namespace BEdita\Core\Model\Table;
 
-use Cake\Database\Schema\Table as Schema;
+use Cake\Database\Expression\QueryExpression;
+use Cake\Database\Schema\TableSchema;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
-use Cake\ORM\TableRegistry;
 use Cake\Validation\Validator;
 
 /**
@@ -41,14 +41,24 @@ class ObjectsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('objects');
-        $this->entityClass('BEdita\Core\Model\Entity\ObjectEntity');
-        $this->primaryKey('id');
-        $this->displayField('title');
+        $this->setTable('objects');
+        $this->setEntityClass('BEdita\Core\Model\Entity\ObjectEntity');
+        $this->setPrimaryKey('id');
+        $this->setDisplayField('title');
 
         $this->addBehavior('Timestamp');
 
+        $this->addBehavior('BEdita/Core.DataCleanup');
+
         $this->addBehavior('BEdita/Core.UserModified');
+
+        $this->addBehavior('BEdita/Core.Relations');
+
+        $this->hasMany('DateRanges', [
+            'foreignKey' => 'object_id',
+            'className' => 'BEdita/Core.DateRanges',
+            'saveStrategy' => 'replace',
+        ]);
 
         $this->belongsTo('ObjectTypes', [
             'foreignKey' => 'object_type_id',
@@ -65,6 +75,8 @@ class ObjectsTable extends Table
             'foreignKey' => 'modified_by',
             'className' => 'BEdita/Core.Users'
         ]);
+
+        $this->addBehavior('BEdita/Core.UniqueName');
     }
 
     /**
@@ -80,8 +92,7 @@ class ObjectsTable extends Table
 
             ->notEmpty('status')
 
-            ->requirePresence('uname', 'create')
-            ->notEmpty('uname')
+            ->allowEmpty('uname')
             ->add('uname', 'unique', ['rule' => 'validateUnique', 'provider' => 'table'])
 
             ->boolean('locked')
@@ -132,7 +143,7 @@ class ObjectsTable extends Table
      *
      * @codeCoverageIgnore
      */
-    protected function _initializeSchema(Schema $schema)
+    protected function _initializeSchema(TableSchema $schema)
     {
         $schema->columnType('extra', 'json');
 
@@ -154,14 +165,33 @@ class ObjectsTable extends Table
      */
     public function findType(Query $query, array $options)
     {
-        $ObjectTypes = TableRegistry::get('ObjectTypes');
         foreach ($options as &$type) {
-            $type = $ObjectTypes->get($type)->id;
+            $type = $this->ObjectTypes->get($type)->id;
         }
         unset($type);
 
-        $query->where([$this->alias() . '.object_type_id IN' => $options]);
+        return $query
+            ->where(function (QueryExpression $exp) use ($options) {
+                return $exp->in(
+                    $this->aliasField($this->ObjectTypes->getForeignKey()),
+                    $options
+                );
+            });
+    }
 
-        return $query;
+    /**
+     * Find by date range using `DateRanges` table findDate filter
+     *
+     * @param \Cake\ORM\Query $query Query object instance.
+     * @param array $options Array of acceptable date range conditions.
+     * @return \Cake\ORM\Query
+     */
+    public function findDateRanges(Query $query, array $options)
+    {
+        return $query
+            ->distinct([$this->aliasField($this->getPrimaryKey())])
+            ->innerJoinWith('DateRanges', function (Query $query) use ($options) {
+                return $query->find('dateRanges', $options);
+            });
     }
 }

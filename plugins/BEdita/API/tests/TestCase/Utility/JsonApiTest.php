@@ -36,7 +36,14 @@ class JsonApiTest extends TestCase
      * @var array
      */
     public $fixtures = [
+        'plugin.BEdita/Core.object_types',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.objects',
+        'plugin.BEdita/Core.profiles',
+        'plugin.BEdita/Core.users',
         'plugin.BEdita/Core.roles',
+        'plugin.BEdita/Core.roles_users',
     ];
 
     /**
@@ -75,6 +82,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -97,6 +106,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -117,7 +128,6 @@ class JsonApiTest extends TestCase
                 function (Table $Table) {
                     return $Table->find('all');
                 },
-                'roles',
             ],
             'multipleResultSetItems' => [
                 [
@@ -127,6 +137,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -149,6 +161,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -169,7 +183,6 @@ class JsonApiTest extends TestCase
                 function (Table $Table) {
                     return $Table->find('all')->all();
                 },
-                'roles',
             ],
             'multipleArrayItems' => [
                 [
@@ -179,6 +192,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'first role',
                             'description' => 'this is the very first role',
+                        ],
+                        'meta' => [
                             'unchangeable' => true,
                             'created' => '2016-04-15T09:57:38+00:00',
                             'modified' => '2016-04-15T09:57:38+00:00',
@@ -201,6 +216,8 @@ class JsonApiTest extends TestCase
                         'attributes' => [
                             'name' => 'second role',
                             'description' => 'this is a second role',
+                        ],
+                        'meta' => [
                             'unchangeable' => false,
                             'created' => '2016-04-15T11:59:12+00:00',
                             'modified' => '2016-04-15T11:59:13+00:00',
@@ -221,7 +238,6 @@ class JsonApiTest extends TestCase
                 function (Table $Table) {
                     return $Table->find('all')->toArray();
                 },
-                'roles',
             ],
             'singleEntityItem' => [
                 [
@@ -230,6 +246,8 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -246,7 +264,6 @@ class JsonApiTest extends TestCase
                 function (Table $Table) {
                     return $Table->get(1);
                 },
-                'roles',
             ],
             'singleEntityItemAutomaticType' => [
                 [
@@ -255,6 +272,8 @@ class JsonApiTest extends TestCase
                     'attributes' => [
                         'name' => 'first role',
                         'description' => 'this is the very first role',
+                    ],
+                    'meta' => [
                         'unchangeable' => true,
                         'created' => '2016-04-15T09:57:38+00:00',
                         'modified' => '2016-04-15T09:57:38+00:00',
@@ -270,68 +289,6 @@ class JsonApiTest extends TestCase
                 ],
                 function (Table $Table) {
                     return $Table->get(1);
-                },
-            ],
-            'singleArrayItem' => [
-                [
-                    'id' => '1',
-                    'type' => 'roles',
-                    'attributes' => [
-                        'name' => 'first role',
-                        'description' => 'this is the very first role',
-                        'unchangeable' => true,
-                        'created' => '2016-04-15T09:57:38+00:00',
-                        'modified' => '2016-04-15T09:57:38+00:00',
-                    ],
-                ],
-                function (Table $Table) {
-                    return $Table->get(1)->toArray();
-                },
-                'roles',
-            ],
-            'getTypeFromItem' => [
-                [
-                    'id' => '17',
-                    'type' => 'customType',
-                    'attributes' => [
-                        'someAttribute' => 'someValue',
-                    ],
-                ],
-                function () {
-                    return [
-                        'id' => 17,
-                        'type' => 'customType',
-                        'someAttribute' => 'someValue',
-                    ];
-                },
-            ],
-            'getObjectTypeFromItem' => [
-                [
-                    'id' => '17',
-                    'type' => 'customType',
-                    'attributes' => [
-                        'someAttribute' => 'someValue',
-                    ],
-                ],
-                function () {
-                    return [
-                        'id' => 17,
-                        'type' => 'customType',
-                        'someAttribute' => 'someValue',
-                    ];
-                },
-                'objects',
-            ],
-            'noAttributes' => [
-                [
-                    'id' => '17',
-                    'type' => 'customType',
-                ],
-                function () {
-                    return [
-                        'id' => 17,
-                        'type' => 'customType',
-                    ];
                 },
             ],
             'emptyArray' => [
@@ -359,6 +316,29 @@ class JsonApiTest extends TestCase
                 },
             ],
         ];
+    }
+
+    /**
+     * Test {@see \BEdita\Core\Utility\JsonApi::formatData()} and
+     * {@see \BEdita\Core\Utility\JsonApi::formatItem()} methods.
+     *
+     * @param array|bool $expected Expected result. If `false`, an exception is expected.
+     * @param callable $items A callable that returns the items to be converted.
+     * @return void
+     *
+     * @dataProvider formatDataProvider
+     * @covers ::formatData
+     */
+    public function testFormatData($expected, callable $items)
+    {
+        if ($expected === false) {
+            $this->expectException('\InvalidArgumentException');
+        }
+
+        $result = JsonApi::formatData($items($this->Roles));
+        $result = json_decode(json_encode($result), true);
+
+        static::assertEquals($expected, $result);
     }
 
     /**
@@ -438,38 +418,31 @@ class JsonApiTest extends TestCase
                     ],
                 ],
             ],
+            'meta' => [
+                [
+                    'type' => 'customType',
+                    'name' => 'Gustavo',
+                    '_meta' => [
+                        'complex' => ['meta', 'data'],
+                        'number' => 1,
+                    ],
+                ],
+                [
+                    'type' => 'customType',
+                    'attributes' => [
+                        'name' => 'Gustavo',
+                    ],
+                    'meta' => [
+                        'complex' => ['meta', 'data'],
+                        'number' => 1,
+                    ],
+                ],
+            ],
             'empty' => [
                 [],
                 [],
             ],
         ];
-    }
-
-    /**
-     * Test {@see \BEdita\Core\Utility\JsonApi::formatData()} and
-     * {@see \BEdita\Core\Utility\JsonApi::formatItem()} methods.
-     *
-     * @param array|bool $expected Expected result. If `false`, an exception is expected.
-     * @param callable $items A callable that returns the items to be converted.
-     * @param string|null $type Type of items.
-     * @return void
-     *
-     * @dataProvider formatDataProvider
-     * @covers ::formatData
-     * @covers ::formatItem
-     * @covers ::extractType
-     * @covers ::extractAttributes
-     * @covers ::extractRelationships
-     */
-    public function testFormatData($expected, callable $items, $type = null)
-    {
-        if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
-        }
-
-        $result = JsonApi::formatData($items($this->Roles), $type);
-
-        $this->assertEquals($expected, $result);
     }
 
     /**
@@ -487,11 +460,67 @@ class JsonApiTest extends TestCase
     public function testParseData($expected, array $items)
     {
         if ($expected === false) {
-            $this->setExpectedException('\InvalidArgumentException');
+            $this->expectException('\InvalidArgumentException');
         }
 
         $result = JsonApi::parseData($items);
 
-        $this->assertEquals($expected, $result);
+        static::assertEquals($expected, $result);
+    }
+
+    /**
+     * Test generation of relationships links.
+     *
+     * @return void
+     *
+     * @covers ::formatData
+     */
+    public function testFallbackLinks()
+    {
+        $expected = [
+            'id' => '2',
+            'type' => 'documents',
+            'attributes' => [
+                'status' => 'on',
+                'uname' => 'title-one',
+                'title' => 'title one',
+                'description' => 'description here',
+                'body' => 'body here',
+                'extra' => [
+                    'abstract' => 'abstract here',
+                    'list' => ['one', 'two', 'three'],
+                ],
+                'lang' => 'eng',
+                'publish_start' => '2016-05-13T07:09:23+00:00',
+                'publish_end' => '2016-05-13T07:09:23+00:00',
+            ],
+            'meta' => [
+                'locked' => true,
+                'created' => '2016-05-13T07:09:23+00:00',
+                'modified' => '2016-05-13T07:09:23+00:00',
+                'published' => '2016-05-13T07:09:23+00:00',
+                'created_by' => 1,
+                'modified_by' => 1,
+            ],
+            'relationships' => [
+                'test' => [
+                    'links' => [
+                        'related' => '/documents/2/test',
+                        'self' => '/documents/2/relationships/test',
+                    ],
+                ],
+                'inverse_test' => [
+                    'links' => [
+                        'related' => '/documents/2/inverse_test',
+                        'self' => '/documents/2/relationships/inverse_test',
+                    ],
+                ],
+            ],
+        ];
+
+        $result = JsonApi::formatData(TableRegistry::get('Documents')->get(2));
+        $result = json_decode(json_encode($result), true);
+
+        static::assertEquals($expected, $result);
     }
 }

@@ -21,13 +21,13 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "cakephp/cakephp": "~3.2",
-        "firebase/php-jwt": "~3.0"
+        "php": ">=5.6.0",
+        "cakephp/cakephp": "~3.4.1",
+        "firebase/php-jwt": "~4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "*",
-        "cakephp/cakephp-codesniffer": "master-dev",
+        "phpunit/phpunit": "^5.7|^6.0",
+        "cakephp/cakephp-codesniffer": "~2.1",
         "phpmd/phpmd": "*"
     },
     "autoload": {

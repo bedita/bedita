@@ -16,6 +16,7 @@ use Cake\Console\Shell;
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionInterface;
 use Cake\Datasource\ConnectionManager;
+use Migrations\Migrations;
 
 /**
  * Task to initialize database.
@@ -34,7 +35,7 @@ class InitSchemaTask extends Shell
     {
         $parser = parent::getOptionParser();
         $parser
-            ->description([
+            ->setDescription([
                 'A new database schema is created using current DB connection.',
                 'BEWARE: all existing tables will be dropped!',
             ])
@@ -91,7 +92,7 @@ class InitSchemaTask extends Shell
      */
     protected function cleanup(ConnectionInterface $connection)
     {
-        if (!($connection instanceof Connection) || count($connection->schemaCollection()->listTables()) === 0) {
+        if (!($connection instanceof Connection) || count($connection->getSchemaCollection()->listTables()) === 0) {
             return;
         }
 
@@ -111,12 +112,12 @@ class InitSchemaTask extends Shell
         $this->out('Dropping all tables in database...');
         $connection
             ->disableConstraints(function (Connection $connection) {
-                $tables = $connection->schemaCollection()->listTables();
+                $tables = $connection->getSchemaCollection()->listTables();
 
                 foreach ($tables as $table) {
                     $this->verbose(sprintf(' - Dropping table <comment>%s</comment>... ', $table), 0);
 
-                    $sql = $connection->schemaCollection()->describe($table)->dropSql($connection);
+                    $sql = $connection->getSchemaCollection()->describe($table)->dropSql($connection);
                     foreach ($sql as $query) {
                         $connection->query($query);
                     }
@@ -135,8 +136,10 @@ class InitSchemaTask extends Shell
     protected function migrate(ConnectionInterface $connection)
     {
         $this->out('Running migrations... ', 0);
-        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
-        $migrations = new $className(['connection' => $connection->configName()]);
+        $migrations = new Migrations([
+            'connection' => $connection->configName(),
+            'plugin' => 'BEdita/Core',
+        ]);
         if (!$migrations->migrate()) {
             $this->out('<error>FAIL</error>');
 
@@ -164,8 +167,10 @@ class InitSchemaTask extends Shell
         }
 
         $this->out('Seeding data... ', 0);
-        $className = '\Migrations\Migrations'; // Avoid PHP fatal error if Migrations plugin isn't installed.
-        $migrations = new $className(['connection' => $connection->configName()]);
+        $migrations = new Migrations([
+            'connection' => $connection->configName(),
+            'plugin' => 'BEdita/Core',
+        ]);
         if (!$migrations->seed(['plugin' => 'BEdita/Core', 'seed' => 'InitialSeed'])) {
             $this->out('<error>FAIL</error>');
 

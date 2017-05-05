@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Test\TestCase\Model\Table;
 
+use BEdita\Core\Utility\LoggedUser;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -41,6 +42,9 @@ class ProfilesTableTest extends TestCase
         'plugin.BEdita/Core.objects',
         'plugin.BEdita/Core.profiles',
         'plugin.BEdita/Core.users',
+        'plugin.BEdita/Core.relations',
+        'plugin.BEdita/Core.relation_types',
+        'plugin.BEdita/Core.object_relations',
     ];
 
     /**
@@ -52,6 +56,7 @@ class ProfilesTableTest extends TestCase
     {
         parent::setUp();
         $this->Profiles = TableRegistry::get('Profiles');
+        LoggedUser::setUser(['id' => 1]);
     }
 
     /**
@@ -62,6 +67,7 @@ class ProfilesTableTest extends TestCase
     public function tearDown()
     {
         unset($this->Profiles);
+        LoggedUser::resetUser();
 
         parent::tearDown();
     }
@@ -76,9 +82,9 @@ class ProfilesTableTest extends TestCase
     {
         $this->Profiles->associations()->removeAll();
         $this->Profiles->initialize([]);
-        $this->assertEquals('profiles', $this->Profiles->table());
-        $this->assertEquals('id', $this->Profiles->primaryKey());
-        $this->assertEquals('name', $this->Profiles->displayField());
+        $this->assertEquals('profiles', $this->Profiles->getTable());
+        $this->assertEquals('id', $this->Profiles->getPrimaryKey());
+        $this->assertEquals('name', $this->Profiles->getDisplayField());
 
         $this->assertInstanceOf('\BEdita\Core\ORM\Association\ExtensionOf', $this->Profiles->Objects);
     }
@@ -204,15 +210,14 @@ class ProfilesTableTest extends TestCase
         $id = $profile->id;
         $this->assertEquals(true, $this->Profiles->delete($profile));
 
-
-        $inheritanceTables = $this->Profiles->inheritedTables(true);
+        $inheritanceTables = $this->Profiles->inheritedTables();
         // remove behavior to avoid auto contain() with inherited tables
         $this->Profiles->removeBehavior('ClassTableInheritance');
         $inheritanceTables[] = $this->Profiles;
 
         foreach ($inheritanceTables as $table) {
             try {
-                $entity = $table->get($id);
+                $table->get($id);
                 $this->fail(ucfirst($table) . ' record not deleted');
             } catch (\Cake\Datasource\Exception\RecordNotFoundException $ex) {
                 continue;

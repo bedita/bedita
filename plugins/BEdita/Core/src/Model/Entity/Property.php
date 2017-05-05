@@ -13,6 +13,7 @@
 
 namespace BEdita\Core\Model\Entity;
 
+use BEdita\Core\Utility\JsonApiSerializable;
 use Cake\Datasource\Exception\InvalidPrimaryKeyException;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\ORM\Entity;
@@ -38,8 +39,11 @@ use Cake\ORM\TableRegistry;
  *
  * @since 4.0.0
  */
-class Property extends Entity
+class Property extends Entity implements JsonApiSerializable
 {
+
+    use JsonApiTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -104,7 +108,9 @@ class Property extends Entity
     protected function _setPropertyTypeName($property)
     {
         try {
-            $this->property_type = TableRegistry::get('PropertyTypes')->findByName($property)->first();
+            $this->property_type = TableRegistry::get('PropertyTypes')->find()
+                ->where(['name' => $property])
+                ->firstOrFail();
             $this->property_type_id = $this->property_type->id;
         } catch (RecordNotFoundException $e) {
             return null;
@@ -130,7 +136,7 @@ class Property extends Entity
             }
         }
 
-        return $this->object_type->pluralized;
+        return $this->object_type->name;
     }
 
     /**
